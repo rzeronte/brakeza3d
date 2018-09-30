@@ -1,0 +1,3 @@
+/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles/rebuild_cache.dir
+/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles/edit_cache.dir
+/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles/sdl2_3d_engine.dir

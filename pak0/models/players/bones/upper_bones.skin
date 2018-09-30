@@ -1,0 +1,6 @@
+tag_head,
+tag_weapon,
+tag_torso,
+u_arms,models/players/bones/stiff.tga
+u_forearms,models/players/bones/stiff.tga
+u_torso,models/players/bones/stiff.tga

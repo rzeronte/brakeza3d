@@ -1,0 +1,6 @@
+tag_head,
+tag_weapon,
+u_torso,models/players/grunt/blue.tga
+tag_torso,
+u_larm,models/players/grunt/blue.tga
+u_rarm,models/players/grunt/blue.tga
