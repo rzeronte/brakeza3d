@@ -42,7 +42,7 @@ void Game::onStart()
     mono->setEnabled(true);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->rotation.x = 180;
-    mono->setPosition( Vertex(1, 1, 5) );
+    mono->setPosition( Vertex(1, 1, -1) );
     mono->loadOBJBlender("../models/mono.obj");
     mono->setHandleKeyboard(false);
     mono->setShadowCaster(true);
@@ -51,7 +51,7 @@ void Game::onStart()
     // cubo
     Mesh *cubo = new Mesh();
     cubo->scale = 500;
-    cubo->setEnabled(true);
+    cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cubo->rotation.x = 180;
     cubo->setPosition( Vertex(1, 1, 20) );
@@ -60,6 +60,7 @@ void Game::onStart()
 
     // q3 map
     Mesh *q3map = new Mesh();
+    q3map->setEnabled(false);
     q3map->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     q3map->setPosition( Vertex(1, 1, 5) );
     q3map->loadQ3Map("../pak0/maps/q3dm17.bsp");
@@ -69,7 +70,7 @@ void Game::onStart()
 
     // triangle
     Mesh *triangle = new Mesh();
-    triangle->setEnabled(true);
+    triangle->setEnabled(false);
     triangle->rotation.x-=90;
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition( Vertex(1, 1, 5) );

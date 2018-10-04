@@ -41,20 +41,20 @@ public:
 
     // Check camera - face culling
     bool faceCulling(Object3D *obj);
-    void drawNormal(SDL_Surface *screen, Camera *cam, Uint32 color);
+    void drawNormal(Camera *cam, Uint32 color);
     Vertex getNormal();
     Vertex getCenter();
     Vertex calcNormalSurface(Vector3D, Vector3D);
 
     // Rasterization
-    void drawWireframe(SDL_Surface *screen,Camera *cam);
-    bool draw(SDL_Surface *, Camera *);
+    void drawWireframe(Camera *cam);
+    bool draw(Camera *);
     void shadowMapping(LightPoint *lp);
 
-    void scanVertices(Camera *, SDL_Surface *);
-    void scanBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex, Camera*, SDL_Surface *);
-    void scanTopFlatTriangle(Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex, Camera*, SDL_Surface *);
-    void scanLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex, Camera*, SDL_Surface *);
+    void scanVertices(Camera *);
+    void scanBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex);
+    void scanTopFlatTriangle(Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex);
+    void scanLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, Vertex, Vertex, Vertex);
 
     void scanVerticesForShadowMapping(LightPoint *lp);
     void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex, Vertex, Vertex, LightPoint *lp);
@@ -69,7 +69,7 @@ public:
     void consoleInfo(const char*);
 
     // clipping triangle
-    bool clipping(SDL_Surface *screen,Camera *cam);
+    bool clipping(Camera *cam);
 
     void setLightPoints(LightPoint **lightPoints, int number);
 };

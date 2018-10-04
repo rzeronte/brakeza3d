@@ -60,11 +60,12 @@ void EngineBuffers::clearVideoBuffer()
 
 void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
 {
-    Uint32 *pixels = (Uint32 *)surface->pixels;
+    //Uint32 *pixels = (Uint32 *)surface->pixels;
+    //for (int i = 0 ; i < sizeBuffers ; i++) {
+    //    pixels[i] = videoBuffer[i];
+    //}
 
-    for (int i = 0 ; i < sizeBuffers ; i++) {
-        pixels[i] = videoBuffer[i];
-    }
+    memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
 void EngineBuffers::resetBenchmarkValues()
@@ -88,4 +89,14 @@ void EngineBuffers::consoleInfo()
     info+= "| trClippingCreated: " + std::to_string(EngineBuffers::getInstance()->trianglesClippingCreated);
 
     Logging::getInstance()->Log( info, "INFO" );
+}
+
+SDL_Surface *EngineBuffers::getScreenSurface() const
+{
+    return screenSurface;
+}
+
+void EngineBuffers::setScreenSurface(SDL_Surface *screenSurface)
+{
+    EngineBuffers::screenSurface = screenSurface;
 }

@@ -15,8 +15,9 @@ public:
     Line2D(int, int, int, int);
 
     void setup(int, int, int, int);
-    void draw(SDL_Surface *, Uint32);
-    void draw(SDL_Surface *screen);
+    void draw(Uint32);
+    void draw();
+    void drawLineaBresenham(int, int, int, int, Uint32);
 };
 
 

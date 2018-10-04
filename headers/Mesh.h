@@ -53,7 +53,7 @@ public:
     void loadTrianglesFromQ3Map();
     void loadTexturesFromQ3Map();
 
-    void draw(SDL_Surface *, Camera *);
+    void draw(Camera *);
     void shadowMapping(LightPoint *);
     void setLightPoints(LightPoint **lightPoint, int);
 };

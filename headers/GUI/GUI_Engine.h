@@ -23,7 +23,6 @@ public:
         gui_inspector = new GUI_ObjectsInspector();
         gui_lightpoints = new GUI_LightsInspector();
         gui_log = new GUI_Log();
-        EngineSetup::getInstance()->logger = this;
     }
 
     virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint **lightPoints, int numberLightPoints)

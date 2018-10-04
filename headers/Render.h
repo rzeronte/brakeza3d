@@ -14,7 +14,7 @@ public:
 
     static Vertex objectToLocal(Vertex V, Object3D *o);
 
-    static bool triangulate(Vertex *vertexes, int num_vertex, Object3D *parent, SDL_Surface *screen, Camera *cam, Vertex A, Vertex B, Vertex C, Texture *texture);
+    static bool triangulate(Vertex *vertexes, int num_vertex, Object3D *parent, Camera *cam, Vertex A, Vertex B, Vertex C, Texture *texture);
 
     static Vertex objectSpace(Vertex A, Object3D *o);
     static Vertex homogeneousClipSpace(Vertex v, Camera *cam);

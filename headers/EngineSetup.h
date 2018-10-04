@@ -23,7 +23,6 @@ public:
     static EngineSetup* instance;
     const int ENGINE_MAX_GAMEOBJECTS = 100;
 
-
     // Draw axis
     bool RENDER_AXIS = true;
     bool RENDER_OBJECTS_AXIS = true;
@@ -95,9 +94,6 @@ public:
     float GUI_MIN_SPACE_COORDINATES_VALUE = -100.f;
     float GUI_MAX_SPACE_COORDINATES_VALUE = -100.f;
     float GUI_FLOAT_SPACE_COORDINATES_SENS = -0.1f;
-
-
-    void *logger;
 
 };
 

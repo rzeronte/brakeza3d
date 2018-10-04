@@ -179,7 +179,7 @@ bool Render::isVector3DClippingPlane(Plane P, Vector3D V) {
 }
 
 
-bool Render::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, SDL_Surface *screen,Camera *cam, Vertex A, Vertex B, Vertex C, Texture *texture)
+bool Render::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Camera *cam, Vertex A, Vertex B, Vertex C, Texture *texture)
 {
 
     // Usamos un vértice arbitrario para trazar un radio
@@ -256,9 +256,9 @@ bool Render::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, SD
             //printf("init: %d, current: %d, next: %d,: num_vertex: %d\r\n", 0, current, next, num_vertex);
             EngineBuffers::getInstance()->trianglesClippingCreated++;
 
-            Drawable::drawVertex(screen, vertexes[0], cam, Color::red());
-            Drawable::drawVertex(screen, vertexes[current], cam, Color::green());
-            Drawable::drawVertex(screen, vertexes[next], cam, Color::blue());
+            Drawable::drawVertex(vertexes[0], cam, Color::red());
+            Drawable::drawVertex(vertexes[current], cam, Color::green());
+            Drawable::drawVertex(vertexes[next], cam, Color::blue());
 
             // Vertex new triangles
             Vertex tv1 = Render::objectToLocal(vertexes[0], parent);
@@ -324,25 +324,24 @@ bool Render::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, SD
                 // scanVertices() no realiza esos checks.
                 t.updateVertexObjectSpace();
                 t.updateVertexCameraSpace(cam);
-                t.scanVertices(cam, screen);
+                t.scanVertices(cam);
             }
-
 
             if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
                 Vector3D v1 = Vector3D(vertexes[0], vertexes[current]);
                 Vector3D v2 = Vector3D(vertexes[0], vertexes[next]);
                 Vector3D v3 = Vector3D(vertexes[current], vertexes[next]);
 
-                Drawable::drawVector3D(screen, v1, cam, Color::red());
-                Drawable::drawVector3D(screen, v2, cam, Color::green());
-                Drawable::drawVector3D(screen, v3, cam, Color::blue());
+                Drawable::drawVector3D(v1, cam, Color::red());
+                Drawable::drawVector3D(v2, cam, Color::green());
+                Drawable::drawVector3D(v3, cam, Color::blue());
             }
 
             if ( EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
 
-                Drawable::drawVertex(screen, nv1, cam, Color::red());
-                Drawable::drawVertex(screen, nv2, cam, Color::green());
-                Drawable::drawVertex(screen, nv3, cam, Color::blue());
+                Drawable::drawVertex(nv1, cam, Color::red());
+                Drawable::drawVertex(nv2, cam, Color::green());
+                Drawable::drawVertex(nv3, cam, Color::blue());
             }
         }
 

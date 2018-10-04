@@ -33,6 +33,8 @@ public:
     int trianglesOutFrustum = 0;
     int trianglesClippingCreated = 0;
 
+    SDL_Surface  *screenSurface;
+
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);
     float setDepthBuffer(int x, int y, float value);
@@ -40,10 +42,14 @@ public:
     void clearVideoBuffer();
     float getVideoBuffer(int x, int y);
     void setVideoBuffer(int x, int y, Uint32 value);
-    void flipVideoBuffer(SDL_Surface *surface);
+    void flipVideoBuffer(SDL_Surface *);
 
     void resetBenchmarkValues();
     void consoleInfo();
+
+    SDL_Surface *getScreenSurface() const;
+
+    void setScreenSurface(SDL_Surface *screenSurface);
 };
 
 #endif

@@ -93,7 +93,6 @@ void Mesh::loadOBJBlenderVertex()
             y = (float) atof(line_chunks[2].c_str() );
             z = (float) atof(line_chunks[3].c_str() );
 
-            printf("v[%d].x=%f; v[%d].y=%f; v[%d].z=%f;\r\n", i, x, i, y, i, z);
             this->model_vertex[i] = Vertex(x, y, z);
             i++;
         }
@@ -174,14 +173,14 @@ void Mesh::loadOBJBlenderTriangles()
             vertex_chunks = Tools::split(line_chunks[3], '/');
             idx3 = std::stoi( vertex_chunks[0]);
 
-            // In OBJ index start in 1, our index start in 0
+            // El Blender el índice empieza en 1, nosotros usamos el 0.
             idx1--; idx2--;idx3--;
 
             // triangle geometry
             this->model_triangles[i] = Triangle(
-                    this->model_vertex[idx1],
-                    this->model_vertex[idx2],
-                    this->model_vertex[idx3],
+                    this->model_vertex[idx1--],
+                    this->model_vertex[idx2--],
+                    this->model_vertex[idx3--],
                     this
             );
 
@@ -239,18 +238,18 @@ void Mesh::loadOBJBlenderMaterials() {
     Logging::getInstance()->Log("OBJ Materials: " + std::to_string(n_textures) + "", "INFO");
 }
 
-void Mesh::draw(SDL_Surface *screen, Camera *cam)
+void Mesh::draw(Camera *cam)
 {
     EngineBuffers::getInstance()->resetBenchmarkValues();
 
     // Object's axis
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(screen, this, cam, true, true, true);
+        Drawable::drawObject3DAxis(this, cam, true, true, true);
     }
 
     // Render
     for (int i = 0; i<this->n_triangles;i++) {
-        this->model_triangles[i].draw(screen, cam);
+        this->model_triangles[i].draw(cam);
     }
 
     // Console info
@@ -263,7 +262,7 @@ void Mesh::draw(SDL_Surface *screen, Camera *cam)
     if (EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD) {
         this->billboard->updateUnconstrainedQuad( 1, 1, this, cam->upVector(), cam->rightVector() );
         if (this->billboard->isDrawable()) {
-            Drawable::drawBillboard(screen, this->billboard, cam );
+            Drawable::drawBillboard(this->billboard, cam );
         }
     }
 }

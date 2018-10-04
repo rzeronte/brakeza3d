@@ -22,9 +22,6 @@ Engine::Engine()
     //The window we'll be rendering to
     window = NULL;
 
-    //The surface contained by the window
-    screenSurface = NULL;
-
     // used to finish all
     finish = false;
 
@@ -45,7 +42,6 @@ Engine::Engine()
 
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
-
     fps = 0;
 }
 
@@ -69,7 +65,7 @@ bool Engine::initWindow()
             SDL_WINDOWPOS_UNDEFINED,
             EngineSetup::getInstance()->SCREEN_WIDTH,
             EngineSetup::getInstance()->SCREEN_HEIGHT,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
 
         if (window == NULL) {
@@ -77,8 +73,10 @@ bool Engine::initWindow()
             return false;
         } else {
             gl_context = SDL_GL_CreateContext(window);
-            screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0);
+            EngineBuffers::getInstance()->setScreenSurface(SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0));
             renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+
+
             SDL_GL_SetSwapInterval(1); // Enable vsync
 
             ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -140,7 +138,6 @@ void Engine::drawGUI()
 {
     ImGui::NewFrame();
 
-
     gui_engine->setFps(fps);
 
     gui_engine->draw(
@@ -148,19 +145,14 @@ void Engine::drawGUI()
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints
     );
-    ImGui::Render();
 
+    ImGui::Render();
 }
 
 
 void Engine::windowUpdate()
 {
-    if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(screenSurface, cam->frustum, cam, true, true, true);
-    }
-
-    Drawable::drawMainAxis(screenSurface, cam);
-    EngineBuffers::getInstance()->flipVideoBuffer(screenSurface);
+    EngineBuffers::getInstance()->flipVideoBuffer( EngineBuffers::getInstance()->getScreenSurface() );
 
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -170,10 +162,11 @@ void Engine::windowUpdate()
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
     SDL_GL_SwapWindow(window);
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, screenSurface), NULL, NULL);
+
+    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, EngineBuffers::getInstance()->getScreenSurface()), NULL, NULL);
 
     //SDL_RenderPresent( renderer );
+    //SDL_RenderClear(renderer);
     //SDL_UpdateWindowSurface( window );
     //SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 }
@@ -213,10 +206,14 @@ void Engine::onUpdate()
         this->objects3DShadowMapping();
     }
 
-    // render mesh
     this->drawMeshes();
-
     this->drawLightPoints();
+
+    if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
+        Drawable::drawFrustum(cam->frustum, cam, true, true, true);
+    }
+
+    Drawable::drawMainAxis( cam );
 
 }
 
@@ -258,7 +255,7 @@ void Engine::drawMeshes()
             if (!oMesh->isEnabled()) {
                 continue;
             };
-            oMesh->draw(screenSurface, cam);
+            oMesh->draw(cam);
         }
     }
 }
@@ -274,10 +271,10 @@ void Engine::drawLightPoints()
 
             oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, cam->upVector(), cam->rightVector() );
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
-                Drawable::drawBillboard(Engine::screenSurface, oLight->billboard, Engine::cam);
+                Drawable::drawBillboard(oLight->billboard, Engine::cam);
             }
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
-                Drawable::drawObject3DAxis(screenSurface, oLight, cam, true, true, true);
+                Drawable::drawObject3DAxis(oLight, cam, true, true, true);
             }
         }
     }

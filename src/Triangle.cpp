@@ -63,7 +63,7 @@ void Triangle::shadowMapping(LightPoint *lp)
     this->scanVerticesForShadowMapping(lp);
 }
 
-bool Triangle::draw(SDL_Surface *screen, Camera *cam)
+bool Triangle::draw(Camera *cam)
 {
     this->updateVertexObjectSpace();
     this->updateVertexCameraSpace(cam);
@@ -89,7 +89,7 @@ bool Triangle::draw(SDL_Surface *screen, Camera *cam)
     // Clipping
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING ) {
         if (!faceCulling) {
-            if (this->clipping(screen, cam)) {
+            if (this->clipping(cam)) {
                 return false;
             }
         }
@@ -98,9 +98,9 @@ bool Triangle::draw(SDL_Surface *screen, Camera *cam)
     // Pixels
     if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
         if (!faceCulling) {
-            Drawable::drawVertex(screen, Co, cam, Color::red());
-            Drawable::drawVertex(screen, Bo, cam, Color::green());
-            Drawable::drawVertex(screen, Co, cam, Color::blue());
+            Drawable::drawVertex(Co, cam, Color::red());
+            Drawable::drawVertex(Bo, cam, Color::green());
+            Drawable::drawVertex(Co, cam, Color::blue());
         }
     }
 
@@ -108,10 +108,10 @@ bool Triangle::draw(SDL_Surface *screen, Camera *cam)
         if (!faceCulling) {
             if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
                 if (this->getTexture() != NULL) {
-                    this->scanVertices(cam, screen);
+                    this->scanVertices(cam);
                 } else {
                     if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-                        this->scanVertices(cam, screen);
+                        this->scanVertices(cam);
                     }
                     EngineBuffers::getInstance()->trianglesNoTexture++;
                 }
@@ -121,19 +121,19 @@ bool Triangle::draw(SDL_Surface *screen, Camera *cam)
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         if (!faceCulling) {
-            this->drawWireframe(screen, cam);
+            this->drawWireframe(cam);
         }
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_NORMAL) {
-        this->drawNormal(screen, cam, Color::white());
+        this->drawNormal(cam, Color::white());
     }
 
     return true;
 }
 
 
-bool Triangle::clipping(SDL_Surface *screen, Camera *cam)
+bool Triangle::clipping(Camera *cam)
 {
 
     Vertex At = this->Ao;
@@ -195,7 +195,7 @@ bool Triangle::clipping(SDL_Surface *screen, Camera *cam)
             }
 
             Vector3D t3 = Vector3D(temp_vertex[0], temp_vertex[num_tmp_vertex-1]);
-            Drawable::drawVector3D( screen, t3, cam, Color::pink() );
+            Drawable::drawVector3D( t3, cam, Color::pink() );
 
             if ( Render::isVector3DClippingPlane( cam->frustum->planes[ t ], t3 ) ) {
                 Vertex nT = cam->frustum->planes[t].getPointIntersection(temp_vertex[0], temp_vertex[1]);
@@ -205,7 +205,7 @@ bool Triangle::clipping(SDL_Surface *screen, Camera *cam)
         }
     }
 
-    if (num_vertex_against_frustum > 0){
+    if (num_vertex_against_frustum > 0) {
         if (cam->frustum->isPointInFrustum(At)) {
             new_vertexes[num_new_vertexes] = At; num_new_vertexes++;
         }
@@ -224,22 +224,22 @@ bool Triangle::clipping(SDL_Surface *screen, Camera *cam)
             //Drawable::drawVertex(screen, new_vertexes[j], cam, Color::red());
         }
 
-        Render::triangulate(final_vertex, num_final_vertex, parent, screen, cam, A, B, C, this->getTexture() );
+        Render::triangulate(final_vertex, num_final_vertex, parent, cam, A, B, C, this->getTexture() );
         return true;
     }
 
     return false;
 }
 
-void Triangle::drawWireframe(SDL_Surface *screen,Camera *cam)
+void Triangle::drawWireframe(Camera *cam)
 {
     Vector3D vAB(Ao, Bo);
     Vector3D vBC(Bo, Co);
     Vector3D vCA(Co, Ao);
 
-    Drawable::drawVector3D(screen, vAB, cam, Color::red());
-    Drawable::drawVector3D(screen, vBC, cam, Color::green());
-    Drawable::drawVector3D(screen, vCA, cam, Color::blue());
+    Drawable::drawVector3D( vAB, cam, Color::red());
+    Drawable::drawVector3D( vBC, cam, Color::green());
+    Drawable::drawVector3D( vCA, cam, Color::blue());
 }
 
 bool Triangle::faceCulling(Object3D *cam)
@@ -317,11 +317,11 @@ Vertex Triangle::getNormal()
     return normal;
 }
 
-void Triangle::drawNormal(SDL_Surface *screen, Camera *cam, Uint32 color)
+void Triangle::drawNormal(Camera *cam, Uint32 color)
 {
     Vector3D vecNormal(this->getCenter(), this->getNormal());
 
-    Drawable::drawVector3D(screen, vecNormal, cam, color);
+    Drawable::drawVector3D( vecNormal, cam, color );
 }
 
 /**
@@ -329,7 +329,7 @@ void Triangle::drawNormal(SDL_Surface *screen, Camera *cam, Uint32 color)
  * http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
  * https://www.davrous.com/2013/06/21/tutorial-part-4-learning-how-to-write-a-3d-software-engine-in-c-ts-or-js-rasterization-z-buffering/
  */
-void Triangle::scanVertices(Camera *cam, SDL_Surface *screen)
+void Triangle::scanVertices(Camera *cam)
 {
     Vertex Aos = this->Ao;
     Vertex Bos = this->Bo;
@@ -355,9 +355,9 @@ void Triangle::scanVertices(Camera *cam, SDL_Surface *screen)
     Tools::sortVertexByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
-        this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos,  cam, screen);
+        this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos);
     } else if (v1.y == v2.y) {
-        this->scanTopFlatTriangle( v1, v2, v3, A, B, C, Aos, Bos, Cos, cam, screen);
+        this->scanTopFlatTriangle( v1, v2, v3, A, B, C, Aos, Bos, Cos);
     } else {
         // En este caso tenemos vamos a dividir los triángulos
         // para tener uno que cumpla 'bottomFlat' y el otro 'TopFlat'
@@ -389,13 +389,13 @@ void Triangle::scanVertices(Camera *cam, SDL_Surface *screen)
 
         D.u = u; D.v = v;
 
-        this->scanBottomFlatTriangle(v1, v2, v4, A, B, D, Aos, Bos, Dos, cam, screen);
-        this->scanTopFlatTriangle(v2, v4, v3, B, D, C, Bos, Dos, Cos, cam, screen);
+        this->scanBottomFlatTriangle(v1, v2, v4, A, B, D, Aos, Bos, Dos);
+        this->scanTopFlatTriangle(v2, v4, v3, B, D, C, Bos, Dos, Cos);
 
         if (EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED) {
             Line2D extraLineDemo = Line2D();
             extraLineDemo.setup(v4.x, v4.y, v2.x, v2.y);
-            extraLineDemo.draw(screen, EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE);
+            extraLineDemo.draw(EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE);
         }
     }
 
@@ -461,7 +461,7 @@ void Triangle::scanVerticesForShadowMapping(LightPoint *lp)
     }
 }
 
-void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex A, Vertex B, Vertex C, Vertex Aos, Vertex Bos, Vertex Cos, Camera *cam, SDL_Surface *screen)
+void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex A, Vertex B, Vertex C, Vertex Aos, Vertex Bos, Vertex Cos)
 {
     float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
     float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
@@ -471,14 +471,14 @@ void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex A,
 
     for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
 
-        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam, screen );
+        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos);
 
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
 }
 
-void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex A, Vertex B, Vertex C, Vertex Aos, Vertex Bos, Vertex Cos, Camera *cam, SDL_Surface *screen)
+void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex A, Vertex B, Vertex C, Vertex Aos, Vertex Bos, Vertex Cos)
 {
     float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
     float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
@@ -488,7 +488,7 @@ void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex
 
     for (int scanlineY = (int) pa.y; scanlineY <= pb.y; scanlineY++) {
 
-        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam, screen );
+        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos);
 
         curx1 += invslope1;
         curx2 += invslope2;
@@ -535,10 +535,9 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
 void Triangle::scanLine(float start_x, float end_x, int y,
                         Point2D pa, Point2D pb, Point2D pc,
                         Vertex A, Vertex B, Vertex C,
-                        Vertex Aos, Vertex Bos, Vertex Cos,
-                        Camera *cam, SDL_Surface *screen)
+                        Vertex Aos, Vertex Bos, Vertex Cos
+                        )
 {
-    Uint32 pixelColor = EngineSetup::getInstance()->TRIANGLE_SOLID_COLOR;
 
     if (start_x == end_x) return;
 
@@ -550,6 +549,8 @@ void Triangle::scanLine(float start_x, float end_x, int y,
         end_x = tmp;
     }
 
+    Uint32 pixelColor = EngineSetup::getInstance()->TRIANGLE_SOLID_COLOR;
+
     for (int x = (int) start_x; x < end_x; x++) {
         Point2D pointFinal(x, y);
 
@@ -560,7 +561,7 @@ void Triangle::scanLine(float start_x, float end_x, int y,
             float alpha, theta, gamma;
             Render::getBarycentricCoordinates(alpha, theta, gamma, x, y, pa, pb, pc);
 
-            float z = alpha * A.z + theta * B.z + gamma * C.z;        // -> Homogeneous clipspace
+            float z = alpha * A.z + theta * B.z + gamma * C.z; // Homogeneous clipspace
 
             // EngineBuffers
             if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
@@ -602,13 +603,17 @@ void Triangle::scanLine(float start_x, float end_x, int y,
             }
 
             if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
+                Vertex D;
 
-                // Coordenadas del punto que estamos procesando en el mundo (object space)
-                float x3d = alpha * Aos.x + theta * Bos.x + gamma * Cos.x;
-                float y3d = alpha * Aos.y + theta * Bos.y + gamma * Cos.y;
-                float z3d = alpha * Aos.z + theta * Bos.z + gamma * Cos.z;
+                if (this->numberLightPoints > 0) {
+                    // Coordenadas del punto que estamos procesando en el mundo (object space)
+                    float x3d = alpha * Aos.x + theta * Bos.x + gamma * Cos.x;
+                    float y3d = alpha * Aos.y + theta * Bos.y + gamma * Cos.y;
+                    float z3d = alpha * Aos.z + theta * Bos.z + gamma * Cos.z;
 
-                Vertex D = Vertex( x3d, y3d, z3d ); // Object space
+                    D = Vertex( x3d, y3d, z3d ); // Object space
+
+                }
 
                 for (int i = 0; i < this->numberLightPoints; i++) {
                     if (!this->lightPoints[i]->isEnabled()) {
@@ -640,7 +645,6 @@ void Triangle::scanLine(float start_x, float end_x, int y,
             }
 
             EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
-            EngineBuffers::getInstance()->pixelesDrawed++;
         }
     }
 }

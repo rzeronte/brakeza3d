@@ -25,7 +25,6 @@ class Engine {
 public:
 
     SDL_Window *window;
-    SDL_Surface *screenSurface;
     SDL_Renderer *renderer;
 
     SDL_Event e;
