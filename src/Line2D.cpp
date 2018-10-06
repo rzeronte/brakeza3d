@@ -35,7 +35,6 @@ void Line2D::draw()
 
 void Line2D::draw(Uint32 col)
 {
-
     drawLineaBresenham(x1, y1, x2, y2, col);
     return;
 
@@ -114,11 +113,9 @@ void Line2D::drawLineaBresenham(int x1, int y1, int x2, int y2, Uint32 col)
         pasox = 1;
     }
 
-
     int x = x1;
     int y = y1;
     //pantalla[x][y] = 'I';
-
 
     if (deltaX>deltaY){
         int p = 2 * deltaY - deltaX;
@@ -132,7 +129,9 @@ void Line2D::drawLineaBresenham(int x1, int y1, int x2, int y2, Uint32 col)
                 y = y + pasoy;
                 p = p + incNE;
             }
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            if (Tools::isPixelInWindow(x, y)) {
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
             //pantalla[x][y] = '*';
         }
     } else{
@@ -147,7 +146,9 @@ void Line2D::drawLineaBresenham(int x1, int y1, int x2, int y2, Uint32 col)
                 x = x + pasox;
                 p = p + incNE;
             }
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            if (Tools::isPixelInWindow(x, y)) {
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
             //pantalla[x][y] = '*';
 
         }

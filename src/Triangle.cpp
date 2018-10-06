@@ -132,8 +132,83 @@ bool Triangle::draw(Camera *cam)
     return true;
 }
 
-
 bool Triangle::clipping(Camera *cam)
+{
+
+    Vertex At = this->Ao;
+    Vertex Bt = this->Bo;
+    Vertex Ct = this->Co;
+
+    Vector3D AB = Vector3D(At, Bt);
+    Vector3D AC = Vector3D(At, Ct);
+    Vector3D BC = Vector3D(Bt, Ct);
+
+    int plane_init = EngineSetup::getInstance()->FAR_PLANE; int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;
+
+    // un triángulo como máximo tendrá 9 puntos de intersección en un frustum
+    Vertex new_vertexes[10]; int num_new_vertexes = 0;
+    Vertex temp_vertex[10];  int num_tmp_vertex = 0;
+
+    int num_vertex_against_frustum = 0;
+
+    num_tmp_vertex = 0;
+    // AB
+    if ( Render::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AB ) ) {
+        Vertex newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AB.vertex1, AB.vertex2);
+        if (cam->frustum->isPointInFrustum(newVertex)) {
+            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+            num_vertex_against_frustum++;
+        }
+        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+    }
+
+    // AC
+    if ( Render::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AC )) {
+        Vertex newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AC.vertex1, AC.vertex2);
+        if (cam->frustum->isPointInFrustum(newVertex)) {
+            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+            num_vertex_against_frustum++;
+        }
+        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+    }
+
+    // BC
+    if ( Render::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], BC ) ) {
+        Vertex newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(BC.vertex1, BC.vertex2);
+        if (cam->frustum->isPointInFrustum(newVertex)) {
+            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+            num_vertex_against_frustum++;
+        }
+        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+    }
+
+    if (num_vertex_against_frustum > 0) {
+        if (cam->frustum->isPointInFrustum(At)) {
+            new_vertexes[num_new_vertexes] = At; num_new_vertexes++;
+        }
+
+        if (cam->frustum->isPointInFrustum(Bt)) {
+            new_vertexes[num_new_vertexes] = Bt; num_new_vertexes++;
+        }
+
+        if (cam->frustum->isPointInFrustum(Ct)) {
+            new_vertexes[num_new_vertexes] = Ct; num_new_vertexes++;
+        }
+
+        Vertex final_vertex[100]; int num_final_vertex = 0;
+        for (int j = 0; j < num_new_vertexes; j++) {
+            final_vertex[num_final_vertex] = new_vertexes[j]; num_final_vertex++;
+            //Drawable::drawVertex(screen, new_vertexes[j], cam, Color::red());
+        }
+
+        Render::triangulate(final_vertex, num_final_vertex, parent, cam, A, B, C, this->getTexture() );
+        return true;
+    }
+
+    return false;
+}
+
+/*bool clipping2(Camera *cam)
 {
 
     Vertex At = this->Ao;
@@ -230,6 +305,7 @@ bool Triangle::clipping(Camera *cam)
 
     return false;
 }
+*/
 
 void Triangle::drawWireframe(Camera *cam)
 {

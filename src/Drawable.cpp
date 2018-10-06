@@ -98,6 +98,13 @@ void Drawable::drawVector3D(Vector3D V, Camera *cam, Uint32 color)
     Vertex V1 = Render::cameraSpace(V.vertex1, cam);
     Vertex V2 = Render::cameraSpace(V.vertex2, cam);
 
+    if ((int) abs(V1.z) == 0 ) {
+        return;
+    }
+    if ((int) abs(V2.z) == 0 ) {
+        return;
+    }
+
     V1 = Render::homogeneousClipSpace(V1, cam);
     V2 = Render::homogeneousClipSpace(V2, cam);
 

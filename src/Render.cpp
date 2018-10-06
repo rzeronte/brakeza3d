@@ -104,8 +104,7 @@ Point2D Render::screenSpace(Vertex V, Camera *cam)
 Vertex Render::screenSpacePerspective(Vertex v, Camera *cam)
 {
     Vertex A = v;
-
-    if (v.z != 0) {
+    if (v.z != 0 || v.z != -0) {
         A.x =  - ( ( cam->frustum->nearDist * v.x) / v.z ) ;
         A.y =  - ( ( cam->frustum->nearDist * v.y) / v.z );
     }
