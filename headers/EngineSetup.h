@@ -19,6 +19,7 @@ public:
     int SCREEN_HEIGHT = 480;
 
     float MOUSE_SENSIBILITY = 0.15f;
+    bool CAMERA_MOUSE_ROTATION = true;
 
     static EngineSetup* instance;
     const int ENGINE_MAX_GAMEOBJECTS = 100;
@@ -70,12 +71,11 @@ public:
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
-
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
 
     Vertex CameraPosition = Vertex(1, 1, -5);
     float CONTROLLER_SPEED_MOVEMENT = 0.5f;
-    float CONTROLLER_SPEED_ROTATION = 2.5f;
+    float CONTROLLER_SPEED_ROTATION = 5.f;
 
     float CONTROLLER_SPEED_ROTATION_CAMERA = 0.5f;
     float CONTROLLER_SPEED_MOVEMENT_CAMERA = 0.5f;

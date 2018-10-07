@@ -76,7 +76,6 @@ bool Engine::initWindow()
             EngineBuffers::getInstance()->setScreenSurface(SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0));
             renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 
-
             SDL_GL_SetSwapInterval(1); // Enable vsync
 
             ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -126,10 +125,12 @@ void Engine::initFontsTTF()
     }
 }
 
-
 void Engine::cameraUpdate()
 {
-    //cont->handleMouse(&this->e, this->cam);
+    if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
+        cont->handleMouse(&this->e, this->cam);
+    }
+
     cont->handleKeyboard(&this->e, this->cam, this->finish);
     cam->syncFrustum();
 }
@@ -137,6 +138,9 @@ void Engine::cameraUpdate()
 void Engine::drawGUI()
 {
     ImGui::NewFrame();
+
+    bool open = true;
+    ImGui::ShowDemoWindow(&open);
 
     gui_engine->setFps(fps);
 
@@ -158,7 +162,6 @@ void Engine::windowUpdate()
     ImGui_ImplSDL2_NewFrame(window);
 
     drawGUI();
-
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
     SDL_GL_SwapWindow(window);

@@ -11,6 +11,9 @@ Controller::Controller()
 
 void Controller::handleMouse(SDL_Event *event, Camera *camera)
 {
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) return;
+
     if (event_type == SDL_MOUSEBUTTONDOWN) {
         MousePressed = true;
     }

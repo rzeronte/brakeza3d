@@ -50,6 +50,8 @@ public:
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
+                ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
+                ImGui::Separator();
                 ImGui::Checkbox("Mesh Render Logging", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
 
                 ImGui::EndMenu();

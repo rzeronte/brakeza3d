@@ -84,11 +84,19 @@ void Game::mainLoop()
 {
     fpsTimer.start();
 
+    ImGuiIO& io = ImGui::GetIO();
+
     while(!finish) {
         while (SDL_PollEvent(&e)) {
+            // GUI Events
             ImGui_ImplSDL2_ProcessEvent(&e);
+
+            // Keyboard Reading
             Engine::getController()->updateKeyboardRead(&e);
+
+            // Camera Update (Mouse & Keyboard)
             Engine::cameraUpdate();
+
             this->onUpdateEvent();
         }
 
