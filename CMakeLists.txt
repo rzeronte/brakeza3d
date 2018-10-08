@@ -95,7 +95,7 @@ add_executable(brakeda3d
         headers/GUI/GUI_Log.h
         headers/Core/Logging.cpp
         headers/Core/Logging.h
-        )
+        src/BillboardDirectional.cpp headers/BillboardDirectional.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
