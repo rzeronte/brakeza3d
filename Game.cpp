@@ -3,6 +3,8 @@
 #include "headers/EngineBuffers.h"
 #include "headers/M3.h"
 #include "headers/Render.h"
+#include "headers/Core/Logging.h"
+#include "headers/BillboardDirectional.h"
 
 void Game::run()
 {
@@ -78,6 +80,8 @@ void Game::onStart()
     triangle->setHandleKeyboard(false);
     this->addObject3D(triangle, "triangle");
 
+
+
 }
 
 void Game::mainLoop()
@@ -117,8 +121,20 @@ void Game::onUpdate()
 {
     Engine::onUpdate();
 
-    //Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
-    //q3map->rotation.x+=0.75f;
+    Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
+
+    BillboardDirectional *marine = new BillboardDirectional();
+
+    marine->loadTexture( "../sprites/marine_0.png" );
+    marine->loadTextureDirectional("../sprites/marine");
+
+    marine->updateUnconstrainedQuad( 0.3, 0.3, q3map, cam->upVector(), cam->rightVector() );
+    marine->updateTextureFromCameraAngle(q3map, cam);
+
+    //Logging::getInstance()->Log("Angle: '" + std::to_string(a) + "'", "INFO");
+
+    Drawable::drawBillboard(marine, cam );
+
 }
 
 void Game::onEnd()

@@ -333,7 +333,8 @@ float Tools::distanteBetweenpoints(Vertex v1, Vertex v2)
     return abs_vector;
 }
 
-Uint32 Tools::mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q) {
+Uint32 Tools::mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q)
+{
 
     Vertex P = lp->position;
     Vertex R = lp->forward.getUnitVector();
@@ -366,7 +367,8 @@ Uint32 Tools::mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q) {
     return c;
 }
 
-Vertex Tools::crossProduct(Vertex u, Vertex v) {
+Vertex Tools::crossProduct(Vertex u, Vertex v)
+{
     Vertex V;
 
     V.x = (u.y * v.z) - (u.z * v.y);
@@ -379,4 +381,15 @@ Vertex Tools::crossProduct(Vertex u, Vertex v) {
 float Tools::floatRound(double f, int c)
 {
     return (((float)((int)((f) * (c))) / (c)));
+}
+
+float Tools::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *cam)
+{
+    Vertex oRight = o1->right.getUnitVector();
+    Vertex R = cam->rightVector();
+
+    float rads = acosf( Vertex::dotProduct(R, oRight) / ( R.getNorm() * oRight.getNorm() ) );
+    float degs = Tools::radiansToDegrees(rads);
+
+    return degs;
 }

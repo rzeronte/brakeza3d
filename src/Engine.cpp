@@ -87,6 +87,8 @@ bool Engine::initWindow()
 
             // Setup style
             ImGui::StyleColorsDark();
+            ImGuiStyle& style = ImGui::GetStyle();
+            style.FrameBorderSize = 1.0f;
 
             ImGui_ImplOpenGL2_NewFrame();
             ImGui_ImplSDL2_NewFrame(window);
@@ -139,8 +141,8 @@ void Engine::drawGUI()
 {
     ImGui::NewFrame();
 
-    bool open = true;
-    ImGui::ShowDemoWindow(&open);
+    //bool open = true;
+    //ImGui::ShowDemoWindow(&open);
 
     gui_engine->setFps(fps);
 

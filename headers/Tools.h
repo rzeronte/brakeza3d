@@ -65,6 +65,8 @@ public:
     static Vertex crossProduct(Vertex, Vertex);
 
     static float floatRound(double dval, int n);
+    static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *cam);
+
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

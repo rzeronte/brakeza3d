@@ -23,13 +23,14 @@ public:
     Vertex Q3;
     Vertex Q4;
 
-
     Texture *texture = new Texture();
 
     Billboard();
 
     void updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex up, Vertex right);
     void loadTexture(std::string);
+
+    void setTrianglesTexture(Texture *);
 
     bool isDrawable() const;
     void setDrawable(bool drawable);

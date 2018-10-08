@@ -30,7 +30,8 @@ void Texture::loadTGA(const char *file )
     this->filename = file;
     this->loaded = true;
     texture_surface = IMG_Load(file);
-    //printf("Loading TGA texture '%s' (w: %d, h: %d)\r\n", file, texture_surface->w, texture_surface->h);
+
+    //Logging::getInstance()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
 }
 
 void Texture::drawFlat(SDL_Surface *surface)

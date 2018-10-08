@@ -4,6 +4,8 @@
 #include "../headers/Tools.h"
 #include "../headers/Drawable.h"
 #include "../headers/Triangle.h"
+#include "../headers/Core/Logging.h"
+#include "../headers/M3.h"
 
 Billboard::Billboard()
 {
@@ -13,6 +15,7 @@ Billboard::Billboard()
 void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U, Vertex R) {
     this->width  = w;
     this->height = h;
+
 
     Vertex X;
     X.x = (width/2) * R.x;
@@ -53,8 +56,7 @@ void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U,
     T1 = Triangle(Q3, Q2, Q1, o);
     T2 = Triangle(Q3, Q1, Q4, o);
 
-    T1.setTexture(this->texture);
-    T2.setTexture(this->texture);
+    setTrianglesTexture(this->texture);
 }
 
 void Billboard::loadTexture(std::string fileName) {
@@ -67,4 +69,10 @@ bool Billboard::isDrawable() const {
 
 void Billboard::setDrawable(bool drawable) {
     Billboard::drawable = drawable;
+}
+
+void Billboard::setTrianglesTexture(Texture *t)
+{
+    this->T1.setTexture(t);
+    this->T2.setTexture(t);
 }

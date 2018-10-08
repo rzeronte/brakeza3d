@@ -17,13 +17,18 @@ class GUI_LightsInspector : public GUI  {
 
         virtual void draw(LightPoint **lightpoints, int number)
         {
+            ImGuiWindowFlags window_flags = 0;
+
             if (show) {
 
                 std::string title = "Lights Inspector (" + std::to_string(number) + " lights)";
 
                 ImGui::SetNextWindowPos(ImVec2(2, 450), ImGuiSetCond_Once);
                 ImGui::SetNextWindowSize(ImVec2(250, 400), ImGuiSetCond_Once);
-                ImGui::Begin(title.c_str());
+                window_flags |= ImGuiWindowFlags_NoMove;
+                bool *open;
+
+                ImGui::Begin(title.c_str(), open, window_flags);
 
                 const float  range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
                 const float  range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
