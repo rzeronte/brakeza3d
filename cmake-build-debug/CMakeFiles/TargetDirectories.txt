@@ -1,3 +1,0 @@
-/Users/darkhead/CLionProjects/brakeza3D/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/darkhead/CLionProjects/brakeza3D/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/darkhead/CLionProjects/brakeza3D/cmake-build-debug/CMakeFiles/brakeda3d.dir
