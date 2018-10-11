@@ -5,13 +5,29 @@
 
 #include "Billboard.h"
 
+#define SPRITE_STATE_STOPPED 0
+#define SPRITE_STATE_WALKING 1
+#define SPRITE_STATE_SHOOTING 2
+#define SPRITE_STATE_DYING 3
+
+
 class BillboardDirectional : public Billboard {
+
 public:
-    Texture **textures = new Texture*[7];
+    const static int frames = 5;
+    const static int directions = 8;
+
+    Texture *frames_stopped[directions][frames];
+    Texture *frames_walking[directions][frames];
+    Texture *frames_shooting[directions][frames];
+    Texture *frames_dying[directions][frames];
+
+    int state;
 
     BillboardDirectional();
 
-    void loadTextureDirectional(std::string);
+    void loadSprite(std::string);
+    void loadTextureDirectional(std::string, std::string);
     void updateTextureFromCameraAngle(Object3D *, Camera *);
 };
 

@@ -27,9 +27,11 @@ void Texture::loadJPG(const char *file )
 
 void Texture::loadTGA(const char *file )
 {
-    this->filename = file;
-    this->loaded = true;
-    texture_surface = IMG_Load(file);
+    if (Tools::fileExists(file)) {
+        this->filename = file;
+        this->loaded = true;
+        texture_surface = IMG_Load(file);
+    }
 
     //Logging::getInstance()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
 }

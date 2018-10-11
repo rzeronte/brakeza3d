@@ -20,6 +20,7 @@
 #include "../headers/Engine.h"
 #include "../headers/Render.h"
 #include "../headers/Drawable.h"
+#include "../headers/Core/Logging.h"
 
 float Tools::degreesToRadians(float angleDegrees)
 {
@@ -143,6 +144,8 @@ bool Tools::fileExists(const std::string& name)
         fclose(file);
         return true;
     }
+
+    Logging::getInstance()->Log("File " + name  + " not found", "ERROR");
 
     return false;
 }
@@ -385,8 +388,12 @@ float Tools::floatRound(double f, int c)
 
 float Tools::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *cam)
 {
+    o1->updateAxis();
+
     Vertex oRight = o1->right.getUnitVector();
     Vertex R = cam->rightVector();
+
+    oRight.consoleInfo("oR", true);
 
     float rads = acosf( Vertex::dotProduct(R, oRight) / ( R.getNorm() * oRight.getNorm() ) );
     float degs = Tools::radiansToDegrees(rads);

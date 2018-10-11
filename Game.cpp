@@ -5,6 +5,7 @@
 #include "headers/Render.h"
 #include "headers/Core/Logging.h"
 #include "headers/BillboardDirectional.h"
+#include "headers/Sprite.h"
 
 void Game::run()
 {
@@ -41,7 +42,7 @@ void Game::onStart()
 
     // mono
     Mesh *mono = new Mesh();
-    mono->setEnabled(true);
+    mono->setEnabled(false);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->rotation.x = 180;
     mono->setPosition( Vertex(1, 1, -1) );
@@ -69,7 +70,6 @@ void Game::onStart()
     q3map->setHandleKeyboard(false);
     this->addObject3D(q3map, "q3map");
 
-
     // triangle
     Mesh *triangle = new Mesh();
     triangle->setEnabled(false);
@@ -80,7 +80,12 @@ void Game::onStart()
     triangle->setHandleKeyboard(false);
     this->addObject3D(triangle, "triangle");
 
-
+    // sprite
+    Sprite *sprite= new Sprite("marine");
+    sprite->setEnabled(true);
+    sprite->setPosition( Vertex(1, 1, 5) );
+    sprite->setHandleKeyboard(false);
+    this->addObject3D(sprite, "sprite");
 
 }
 
@@ -105,6 +110,7 @@ void Game::mainLoop()
         }
 
         this->onUpdate();
+
         Engine::windowUpdate();
         Engine::processFPS();
     }
@@ -123,17 +129,12 @@ void Game::onUpdate()
 
     Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
 
-    BillboardDirectional *marine = new BillboardDirectional();
+    /*BillboardDirectional *marine = new BillboardDirectional();
 
-    marine->loadTexture( "../sprites/marine_0.png" );
-    marine->loadTextureDirectional("../sprites/marine");
-
-    marine->updateUnconstrainedQuad( 0.3, 0.3, q3map, cam->upVector(), cam->rightVector() );
-    marine->updateTextureFromCameraAngle(q3map, cam);
-
-    //Logging::getInstance()->Log("Angle: '" + std::to_string(a) + "'", "INFO");
+    marine->loadSprite("marine");
 
     Drawable::drawBillboard(marine, cam );
+     */
 
 }
 

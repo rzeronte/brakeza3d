@@ -53,8 +53,13 @@ public:
                         ImGui::TreePop();
                     }
 
-                    ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->shadowCaster);
-                    ImGui::Checkbox(enabled_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->enabled);
+                    Mesh *pMesh = dynamic_cast<Mesh *>(objects[i]);
+
+                    if (pMesh != NULL) {
+                        ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->shadowCaster);
+                    }
+
+                    ImGui::Checkbox(enabled_text.c_str(), &objects[i]->enabled);
                 }
             }
 

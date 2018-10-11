@@ -8,6 +8,7 @@
 #include "../headers/Render.h"
 #include "../headers/LightPoint.h"
 #include "../headers/Core/Logging.h"
+#include "../headers/Sprite.h"
 #include <chrono>
 #include <iostream>
 
@@ -207,12 +208,13 @@ void Engine::onUpdate()
         // Clear every light's shadow mapping
         this->clearLightPointsShadowMappings();
 
-        // Fill ShadowMapping throw every object (mesh)
+        // Fill ShadowMapping FOR every object (mesh)
         this->objects3DShadowMapping();
     }
 
     this->drawMeshes();
     this->drawLightPoints();
+    this->drawSprites();
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
         Drawable::drawFrustum(cam->frustum, cam, true, true, true);
@@ -281,6 +283,21 @@ void Engine::drawLightPoints()
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
                 Drawable::drawObject3DAxis(oLight, cam, true, true, true);
             }
+        }
+    }
+}
+
+void Engine::drawSprites()
+{
+    // draw meshes
+    for (int i = 0; i < this->numberGameObjects; i++) {
+        Sprite *oSprite = dynamic_cast<Sprite*> (this->gameObjects[i]);
+        if (oSprite != NULL) {
+            if (!oSprite->isEnabled()) {
+                continue;
+            };
+
+            oSprite->draw(cam);
         }
     }
 }

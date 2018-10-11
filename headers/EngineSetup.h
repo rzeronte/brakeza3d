@@ -83,6 +83,8 @@ public:
     std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT    = "../icons/object3d.tga";
 
+    std::string FOLDER_SPRITES_DEFAULT    = "../sprites/";
+
     // Triangle color for TRIANGLE_MODE_COLOR_SOLID
     Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // green
 

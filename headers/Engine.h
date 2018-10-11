@@ -69,6 +69,8 @@ public:
 
     void drawMeshes();
     void drawLightPoints();
+    void drawSprites();
+
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();
 
