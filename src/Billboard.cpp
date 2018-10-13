@@ -12,7 +12,8 @@ Billboard::Billboard()
     this->texture = new Texture();
 }
 
-void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U, Vertex R) {
+void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U, Vertex R)
+{
     this->width  = w;
     this->height = h;
 

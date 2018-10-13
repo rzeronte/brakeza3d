@@ -5,7 +5,14 @@
 #include "headers/Render.h"
 #include "headers/Core/Logging.h"
 #include "headers/BillboardDirectional.h"
-#include "headers/Sprite.h"
+#include "headers/Sprite3D.h"
+
+
+enum SpriteDoom2SoldierAnimations {
+    IDLE = 0,
+    WALK = 1,
+    JUMP = 2,
+};
 
 void Game::run()
 {
@@ -47,7 +54,6 @@ void Game::onStart()
     mono->rotation.x = 180;
     mono->setPosition( Vertex(1, 1, -1) );
     mono->loadOBJBlender("../models/mono.obj");
-    mono->setHandleKeyboard(false);
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
 
@@ -67,7 +73,6 @@ void Game::onStart()
     q3map->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     q3map->setPosition( Vertex(1, 1, 5) );
     q3map->loadQ3Map("../pak0/maps/q3dm17.bsp");
-    q3map->setHandleKeyboard(false);
     this->addObject3D(q3map, "q3map");
 
     // triangle
@@ -77,16 +82,19 @@ void Game::onStart()
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition( Vertex(1, 1, 5) );
     triangle->loadOBJBlender("../models/triangle_2uv.obj");
-    triangle->setHandleKeyboard(false);
     this->addObject3D(triangle, "triangle");
 
     // sprite
-    Sprite *sprite= new Sprite("marine");
+    Sprite3D *sprite = new Sprite3D();
     sprite->setEnabled(true);
     sprite->setPosition( Vertex(1, 1, 5) );
-    sprite->setHandleKeyboard(false);
-    this->addObject3D(sprite, "sprite");
 
+    sprite->getBillboard()->addAnimationDirectional2D("marine/idle", 1);
+    sprite->getBillboard()->addAnimationDirectional2D("marine/walk", 4);
+    sprite->getBillboard()->addAnimationDirectional2D("marine/jump", 1);
+    sprite->getBillboard()->setAnimation(SpriteDoom2SoldierAnimations::WALK);
+
+    this->addObject3D(sprite, "marine");
 }
 
 void Game::mainLoop()
@@ -127,14 +135,7 @@ void Game::onUpdate()
 {
     Engine::onUpdate();
 
-    Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
-
-    /*BillboardDirectional *marine = new BillboardDirectional();
-
-    marine->loadSprite("marine");
-
-    Drawable::drawBillboard(marine, cam );
-     */
+    //Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
 
 }
 

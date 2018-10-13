@@ -8,7 +8,7 @@
 #include "../headers/Render.h"
 #include "../headers/LightPoint.h"
 #include "../headers/Core/Logging.h"
-#include "../headers/Sprite.h"
+#include "../headers/Sprite3D.h"
 #include <chrono>
 #include <iostream>
 
@@ -191,6 +191,7 @@ void Engine::onUpdateEvent()
             this->cont->handleKeyboardObject3D(&this->e, this->gameObjects[i]);
         }
     }
+
     for (int i = 0; i < this->numberLightPoints; i++) {
         this->lightPoints[i]->syncFrustum();
         if ( this->lightPoints[i]->isHandleKeyboard() ) {
@@ -291,7 +292,7 @@ void Engine::drawSprites()
 {
     // draw meshes
     for (int i = 0; i < this->numberGameObjects; i++) {
-        Sprite *oSprite = dynamic_cast<Sprite*> (this->gameObjects[i]);
+        Sprite3D *oSprite = dynamic_cast<Sprite3D*> (this->gameObjects[i]);
         if (oSprite != NULL) {
             if (!oSprite->isEnabled()) {
                 continue;

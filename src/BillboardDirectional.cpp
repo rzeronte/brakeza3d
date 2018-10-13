@@ -2,112 +2,46 @@
 #include "../headers/BillboardDirectional.h"
 #include "../headers/Core/Logging.h"
 
-#define DIR_S 0
-#define DIR_SW 1
-#define DIR_W 2
-#define DIR_NW 3
-#define DIR_N 4
-#define DIR_NE 5
-#define DIR_E 6
-#define DIR_SE 7
 
 BillboardDirectional::BillboardDirectional()
 {
-    this->state = SPRITE_STATE_STOPPED;
-
-    for (int i = 0; i <= directions ; i++) {
-        for (int j = 0; j <= frames; j++) {
-            this->frames_stopped[i][j] = new Texture();
-            this->frames_walking[i][j] = new Texture();
-            this->frames_shooting[i][j] = new Texture();
-            this->frames_dying[i][j] = new Texture();
-        }
+    for (int i = 0; i < BILLBOARD_MAX_ANIMATIONS ; i++) {
+        this->animations[i] = new AnimationDirectional2D();
     }
 }
 
-void BillboardDirectional::loadSprite(std::string fileName)
+void BillboardDirectional::addAnimationDirectional2D(std::string animation_folder, int num_frames)
 {
-    this->loadTextureDirectional( fileName, "stopped" );
-    this->loadTextureDirectional( fileName, "walking" );
-    this->loadTextureDirectional( fileName, "shooting" );
-    this->loadTextureDirectional( fileName, "dying" );
+    std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
-}
+    Logging::getInstance()->Log("Loading Animation2D: " + animation_folder + " ("+ std::to_string(num_frames)+" frames)", "BILLBOARD");
 
-void BillboardDirectional::loadTextureDirectional(std::string fileName, std::string state)
-{
-    for (int i = 0; i <= directions; i++) {
-        for (int j = 0; j <= frames; j++) {
-            std::string fullFilename = EngineSetup::getInstance()->FOLDER_SPRITES_DEFAULT + fileName + "/" + state + "/" + std::to_string(i) + "_" + std::to_string(j) + ".png";
-            Logging::getInstance()->Log(fullFilename, "SPRITE");
-
-            if  (state == "stopped") {
-                this->frames_stopped[i][j]->loadTGA( fullFilename.c_str() );
-            }
-
-            if  (state == "walking") {
-                this->frames_walking[i][j]->loadTGA( fullFilename.c_str() );
-            }
-
-            if  (state == "shooting") {
-                this->frames_shooting[i][j]->loadTGA( fullFilename.c_str() );
-            }
-
-            if  (state == "dying") {
-                this->frames_dying[i][j]->loadTGA( fullFilename.c_str() );
-            }
-        }
-    }
+    this->animations[this->num_animations]->setup(full_animation_folder, num_frames);
+    this->animations[this->num_animations]->loadImages();
+    this->num_animations++;
 }
 
 void BillboardDirectional::updateTextureFromCameraAngle(Object3D *o, Camera *cam)
 {
+    if (num_animations == 0) return;
+
     float angle = (int) Tools::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
-    int frame = 0;
-    this->state = 0;
 
-    switch (this->state) {
-        case SPRITE_STATE_STOPPED:
-            if (angle >= 0   && angle < 45)  { this->setTrianglesTexture( this->frames_stopped[DIR_S][frame] ); }
-            if (angle >= 45  && angle < 90)  { this->setTrianglesTexture( this->frames_stopped[DIR_SW][frame] ); }
-            if (angle >= 90  && angle < 135) { this->setTrianglesTexture( this->frames_stopped[DIR_W][frame] ); }
-            if (angle >= 135 && angle < 180) { this->setTrianglesTexture( this->frames_stopped[DIR_NW][frame] ); }
-            if (angle >= 180 && angle < 225) { this->setTrianglesTexture( this->frames_stopped[DIR_N][frame] ); }
-            if (angle >= 225 && angle < 270) { this->setTrianglesTexture( this->frames_stopped[DIR_NE][frame] ); }
-            if (angle >= 270 && angle < 315) { this->setTrianglesTexture( this->frames_stopped[DIR_E][frame] ); }
-            if (angle >= 315 && angle < 360) { this->setTrianglesTexture( this->frames_stopped[DIR_SE][frame] ); }
-            break;
-        case SPRITE_STATE_WALKING:
-            if (angle >= 0   && angle < 45)  { this->setTrianglesTexture( this->frames_walking[DIR_S][frame] ); }
-            if (angle >= 45  && angle < 90)  { this->setTrianglesTexture( this->frames_walking[DIR_SW][frame] ); }
-            if (angle >= 90  && angle < 135) { this->setTrianglesTexture( this->frames_walking[DIR_W][frame] ); }
-            if (angle >= 135 && angle < 180) { this->setTrianglesTexture( this->frames_walking[DIR_NW][frame] ); }
-            if (angle >= 180 && angle < 225) { this->setTrianglesTexture( this->frames_walking[DIR_N][frame] ); }
-            if (angle >= 225 && angle < 270) { this->setTrianglesTexture( this->frames_walking[DIR_NE][frame] ); }
-            if (angle >= 270 && angle < 315) { this->setTrianglesTexture( this->frames_walking[DIR_E][frame] ); }
-            if (angle >= 315 && angle < 360) { this->setTrianglesTexture( this->frames_walking[DIR_SE][frame] ); }
-            break;
-        case SPRITE_STATE_SHOOTING:
-            if (angle >= 0   && angle < 45)  { this->setTrianglesTexture( this->frames_shooting[DIR_S][frame] ); }
-            if (angle >= 45  && angle < 90)  { this->setTrianglesTexture( this->frames_shooting[DIR_SW][frame] ); }
-            if (angle >= 90  && angle < 135) { this->setTrianglesTexture( this->frames_shooting[DIR_W][frame] ); }
-            if (angle >= 135 && angle < 180) { this->setTrianglesTexture( this->frames_shooting[DIR_NW][frame] ); }
-            if (angle >= 180 && angle < 225) { this->setTrianglesTexture( this->frames_shooting[DIR_N][frame] ); }
-            if (angle >= 225 && angle < 270) { this->setTrianglesTexture( this->frames_shooting[DIR_NE][frame] ); }
-            if (angle >= 270 && angle < 315) { this->setTrianglesTexture( this->frames_shooting[DIR_E][frame] ); }
-            if (angle >= 315 && angle < 360) { this->setTrianglesTexture( this->frames_shooting[DIR_SE][frame] ); }
-            break;
-        case SPRITE_STATE_DYING:
-            if (angle >= 0   && angle < 45)  { this->setTrianglesTexture( this->frames_dying[DIR_S][frame] ); }
-            if (angle >= 45  && angle < 90)  { this->setTrianglesTexture( this->frames_dying[DIR_SW][frame] ); }
-            if (angle >= 90  && angle < 135) { this->setTrianglesTexture( this->frames_dying[DIR_W][frame] ); }
-            if (angle >= 135 && angle < 180) { this->setTrianglesTexture( this->frames_dying[DIR_NW][frame] ); }
-            if (angle >= 180 && angle < 225) { this->setTrianglesTexture( this->frames_dying[DIR_N][frame] ); }
-            if (angle >= 225 && angle < 270) { this->setTrianglesTexture( this->frames_dying[DIR_NE][frame] ); }
-            if (angle >= 270 && angle < 315) { this->setTrianglesTexture( this->frames_dying[DIR_E][frame] ); }
-            if (angle >= 315 && angle < 360) { this->setTrianglesTexture( this->frames_dying[DIR_SE][frame] ); }
-            break;
-    }
+    int direction;
 
+    if (angle >= 0   && angle < 45)  { direction = DIR_S;  }
+    if (angle >= 45  && angle < 90)  { direction = DIR_SW; }
+    if (angle >= 90  && angle < 135) { direction = DIR_W;  }
+    if (angle >= 135 && angle < 180) { direction = DIR_NW; }
+    if (angle >= 180 && angle < 225) { direction = DIR_N;  }
+    if (angle >= 225 && angle < 270) { direction = DIR_NE; }
+    if (angle >= 270 && angle < 315) { direction = DIR_E;  }
+    if (angle >= 315 && angle < 360) { direction = DIR_SE; }
 
+    this->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(direction) );
+}
+
+void BillboardDirectional::setAnimation(int index_animation)
+{
+    this->current_animation = index_animation;
 }

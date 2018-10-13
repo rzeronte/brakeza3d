@@ -24,45 +24,54 @@
 class Engine {
 public:
 
+    // Window y Renderer principal
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    // Eventos SDL
     SDL_Event e;
 
+    // Camera y Controlador (Input)
     Camera *cam;
     Controller *cont;
 
+    // Objetos 3D
     Object3D **gameObjects;
     int numberGameObjects;
 
+    // Luces
     LightPoint **lightPoints;
     int numberLightPoints;
 
+    // Exit
     bool finish;
 
     TTF_Font *font = NULL;
 
+    // Timer
     LTimer fpsTimer;
-    float fps;
 
+    // Fps counter
+    float fps;
+    int countedFrames = 0;
+
+    // GUI
     GUI_Engine *gui_engine;
 
+    // SDL GL_Context for GUI
     SDL_GLContext gl_context;
 
+    // Dear ImGUI
     ImGuiContext* imgui_context;
-
-    int countedFrames = 0;
 
     Engine();
 
     void Close();
 
     bool initWindow();
-
     void initFontsTTF();
 
     void onStart();
-
     void onUpdate();
     void onUpdateEvent();
     void onEnd();
@@ -77,8 +86,6 @@ public:
     void addObject3D(Object3D *obj, std::string label);
     void addLightPoint(LightPoint *lightPoint, std::string label);
 
-    Object3D* getObjectByLabel(std::string label);
-
     Controller *getController() const;
 
     void cameraUpdate();
@@ -87,6 +94,9 @@ public:
     void drawGUI();
 
     void processFPS();
+
+    Object3D* getObjectByLabel(std::string label);
+
 };
 
 

@@ -83,7 +83,7 @@ public:
     std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT    = "../icons/object3d.tga";
 
-    std::string FOLDER_SPRITES_DEFAULT    = "../sprites/";
+    std::string SPRITES_FOLDER = "../sprites/";
 
     // Triangle color for TRIANGLE_MODE_COLOR_SOLID
     Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // green
@@ -96,6 +96,10 @@ public:
     float GUI_MIN_SPACE_COORDINATES_VALUE = -100.f;
     float GUI_MAX_SPACE_COORDINATES_VALUE = -100.f;
     float GUI_FLOAT_SPACE_COORDINATES_SENS = -0.1f;
+
+    // Sprite3D Default size
+    float SPRITE3D_DEFAULT_WIDTH = 0.5f;
+    float SPRITE3D_DEFAULT_HEIGHT = 0.5f;
 
 };
 

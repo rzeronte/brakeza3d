@@ -393,8 +393,6 @@ float Tools::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *ca
     Vertex oRight = o1->right.getUnitVector();
     Vertex R = cam->rightVector();
 
-    oRight.consoleInfo("oR", true);
-
     float rads = acosf( Vertex::dotProduct(R, oRight) / ( R.getNorm() * oRight.getNorm() ) );
     float degs = Tools::radiansToDegrees(rads);
 

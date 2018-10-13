@@ -4,31 +4,34 @@
 
 
 #include "Billboard.h"
+#include "AnimationDirectional2D.h"
 
-#define SPRITE_STATE_STOPPED 0
-#define SPRITE_STATE_WALKING 1
-#define SPRITE_STATE_SHOOTING 2
-#define SPRITE_STATE_DYING 3
+#define DIR_C 0
+#define DIR_S 1
+#define DIR_SW 2
+#define DIR_W 3
+#define DIR_NW 4
+#define DIR_N 5
+#define DIR_NE 6
+#define DIR_E 7
+#define DIR_SE 8
+
+#define BILLBOARD_MAX_ANIMATIONS 5
 
 
 class BillboardDirectional : public Billboard {
 
 public:
-    const static int frames = 5;
-    const static int directions = 8;
+    int num_animations = 0;
+    int current_animation = 0;
 
-    Texture *frames_stopped[directions][frames];
-    Texture *frames_walking[directions][frames];
-    Texture *frames_shooting[directions][frames];
-    Texture *frames_dying[directions][frames];
-
-    int state;
+    AnimationDirectional2D *animations[BILLBOARD_MAX_ANIMATIONS];
 
     BillboardDirectional();
 
-    void loadSprite(std::string);
-    void loadTextureDirectional(std::string, std::string);
+    void addAnimationDirectional2D(std::string, int);
     void updateTextureFromCameraAngle(Object3D *, Camera *);
+    void setAnimation(int);
 };
 
 
