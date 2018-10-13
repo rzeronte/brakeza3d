@@ -22,3 +22,10 @@ void Sprite3D::draw(Camera *cam)
     Drawable::drawBillboard(this->billboard, cam );
 }
 
+void Sprite3D::setTimer(LTimer *timer)
+{
+    this->timer = timer;
+    this->getBillboard()->setTimer(this->timer);
+}
+
+

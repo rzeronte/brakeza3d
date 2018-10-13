@@ -88,6 +88,7 @@ void Game::onStart()
     Sprite3D *sprite = new Sprite3D();
     sprite->setEnabled(true);
     sprite->setPosition( Vertex(1, 1, 5) );
+    sprite->setTimer(Engine::getTimer());
 
     sprite->getBillboard()->addAnimationDirectional2D("marine/idle", 1);
     sprite->getBillboard()->addAnimationDirectional2D("marine/walk", 4);

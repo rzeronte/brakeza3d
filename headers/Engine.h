@@ -94,6 +94,7 @@ public:
     void drawGUI();
 
     void processFPS();
+    LTimer* getTimer();
 
     Object3D* getObjectByLabel(std::string label);
 

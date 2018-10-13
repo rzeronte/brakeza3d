@@ -25,6 +25,12 @@ public:
     int num_animations = 0;
     int current_animation = 0;
 
+    int fps = 2;
+
+    LTimer *timer;
+    float last_ticks;
+    float timerCurrent = 0;
+
     AnimationDirectional2D *animations[BILLBOARD_MAX_ANIMATIONS];
 
     BillboardDirectional();
@@ -32,7 +38,7 @@ public:
     void addAnimationDirectional2D(std::string, int);
     void updateTextureFromCameraAngle(Object3D *, Camera *);
     void setAnimation(int);
+    void setTimer(LTimer *);
 };
-
 
 #endif //BRAKEDA3D_BILLBOARDDIRECTIONAL_H

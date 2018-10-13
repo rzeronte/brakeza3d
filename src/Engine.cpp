@@ -348,7 +348,12 @@ void Engine::processFPS() {
     fps = countedFrames / ( fpsTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
-
 }
+
+LTimer* Engine::getTimer()
+{
+    return &this->fpsTimer;
+}
+
 
 

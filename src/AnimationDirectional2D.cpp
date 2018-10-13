@@ -38,3 +38,11 @@ Texture *AnimationDirectional2D::getCurrentFrame(int direction)
     return this->frames[direction][current];
 }
 
+void AnimationDirectional2D::nextFrame()
+{
+    current++;
+
+    if (current >= this->getNumFrames()) {
+        current = 0;
+    }
+}

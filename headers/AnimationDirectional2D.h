@@ -4,6 +4,7 @@
 
 
 #include "Texture.h"
+#include "LTimer.h"
 
 #define ANIMATION2D_MAX_FRAMES 10
 
@@ -24,6 +25,7 @@ public:
     int getNumFrames() const;
 
     Texture *getCurrentFrame(int direction);
+    void nextFrame();
 };
 
 

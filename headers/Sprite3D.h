@@ -12,12 +12,14 @@ class Sprite3D : public Object3D {
 public:
     float width;
     float height;
+    LTimer *timer;
 
     Sprite3D();
 
     BillboardDirectional *getBillboard() const;
 
     void draw(Camera *cam);
+    void setTimer(LTimer *);
 };
 
 
