@@ -6,7 +6,8 @@
 #include "../headers/M3.h"
 #include "../headers/Core/Logging.h"
 
-Vertex Render::objectSpace(Vertex A, Object3D *o) {
+Vertex Render::objectSpace(Vertex A, Object3D *o)
+{
     Vertex v = A;
 
     v = Render::rotateVertex(v, *o->getRotation());
@@ -161,7 +162,8 @@ void Render::getBarycentricCoordinates(float &alpha, float &theta, float &gamma,
 
 }
 
-bool Render::isVector3DClippingPlane(Plane P, Vector3D V) {
+bool Render::isVector3DClippingPlane(Plane P, Vector3D V)
+{
     // El clipping solo se realiza en Line2Ds que están parcialmente fuera
     // es decir, ningun punto dentro o  no están los 2 dentro
 
@@ -337,7 +339,6 @@ bool Render::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Ca
             }
 
             if ( EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
-
                 Drawable::drawVertex(nv1, cam, Color::red());
                 Drawable::drawVertex(nv2, cam, Color::green());
                 Drawable::drawVertex(nv3, cam, Color::blue());

@@ -7,6 +7,8 @@
 #include "../../imgui/imgui.h"
 #include "../../headers/Object3D.h"
 #include "../../headers/Mesh.h"
+#include "../BillboardDirectional.h"
+#include "../Sprite3D.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -19,17 +21,21 @@ public:
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
-            std::string title = "Object Inspector (" + std::to_string(number) + " objects)";
 
             ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 420), ImGuiSetCond_Once);
             window_flags |= ImGuiWindowFlags_NoMove;
+
             bool *open;
+            std::string title = "Object Inspector (" + std::to_string(number) + " objects)";
             ImGui::Begin(title.c_str(), open, window_flags);
 
-            const float  range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
-            const float  range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
-            const float  range_sensibility = EngineSetup::getInstance()->GUI_FLOAT_SPACE_COORDINATES_SENS;
+            const float range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
+            const float range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
+            const float range_sensibility = EngineSetup::getInstance()->GUI_FLOAT_SPACE_COORDINATES_SENS;
+
+            const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
+            const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
             for (int i = 0; i < number; i++) {
                 std::string header_text = objects[i]->label + "##" + std::to_string(i);
@@ -39,6 +45,7 @@ public:
                 std::string shadow_text = "Shadow##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), i)) {
+                    // position
                     if (ImGui::TreeNode( position_text.c_str() )) {
                         ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->position.x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                         ImGui::DragScalar("Y",     ImGuiDataType_Float,  &objects[i]->position.y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
@@ -46,6 +53,7 @@ public:
                         ImGui::TreePop();
                     }
 
+                    // rotation
                     if (ImGui::TreeNode( rotation_text.c_str() )) {
                         ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->rotation.x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                         ImGui::DragScalar("Y",     ImGuiDataType_Float,  &objects[i]->rotation.y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
@@ -53,12 +61,28 @@ public:
                         ImGui::TreePop();
                     }
 
-                    Mesh *pMesh = dynamic_cast<Mesh *>(objects[i]);
+                    // rotation limits
+                    if (objects[i]->rotation.x > 360) { objects[i]->rotation.x = 0; }
+                    if (objects[i]->rotation.y > 360) { objects[i]->rotation.y = 0; }
+                    if (objects[i]->rotation.z > 360) { objects[i]->rotation.z = 0; }
 
+                    if (objects[i]->rotation.x < 0) { objects[i]->rotation.x = 360; }
+                    if (objects[i]->rotation.y < 0) { objects[i]->rotation.y = 360; }
+                    if (objects[i]->rotation.z < 0) { objects[i]->rotation.z = 360; }
+
+                    // Only for meshes
+                    Mesh *pMesh = dynamic_cast<Mesh *>(objects[i]);
                     if (pMesh != NULL) {
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->shadowCaster);
                     }
 
+                    // Only for meshes
+                    Sprite3D *pSprite3D = dynamic_cast<Sprite3D *>(objects[i]);
+                    if (pSprite3D != NULL) {
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->getBillboard()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                    }
+
+                    // All Objects setup
                     ImGui::Checkbox(enabled_text.c_str(), &objects[i]->enabled);
                 }
             }

@@ -39,11 +39,9 @@ void BillboardDirectional::updateTextureFromCameraAngle(Object3D *o, Camera *cam
     if (angle >= 270 && angle < 315) { direction = DIR_E;  }
     if (angle >= 315 && angle < 360) { direction = DIR_SE; }
 
-
+    // Frame secuence control
     float deltatime = this->timer->getTicks() - this->last_ticks;
-
     this->last_ticks = this->timer->getTicks();
-
     timerCurrent += (deltatime/1000.f);
 
     float step = (float) 1 / this->fps;

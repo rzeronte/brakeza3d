@@ -136,8 +136,8 @@ void Game::onUpdate()
 {
     Engine::onUpdate();
 
-    //Mesh *q3map= (Mesh*) getObjectByLabel("q3map");
-
+    Mesh *marine= (Mesh*) getObjectByLabel("marine");
+    marine->rotation.y+=0.5f;
 }
 
 void Game::onEnd()

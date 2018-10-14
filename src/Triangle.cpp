@@ -661,12 +661,13 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                     float u = alpha * A.u + theta * B.u + gamma * C.u;
                     float v = alpha * A.v + theta * B.v + gamma * C.v;
 
-                    //if (u < 0 || v < 0) continue;
+                    if (u < 0 || v < 0) continue;
 
                     // Check for repeat U coordinate
                     float ignorablePartInt;
                     if (u > 1) { u = modf(u , &ignorablePartInt); }
                     if (v > 1) { v = modf(v , &ignorablePartInt); }
+
 
                     pixelColor = Tools::readSurfacePixelFromUV(texture->texture_surface, u, v);
                     Uint8 red, green, blue, alpha;

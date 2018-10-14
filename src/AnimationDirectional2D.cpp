@@ -5,7 +5,7 @@
 
 AnimationDirectional2D::AnimationDirectional2D()
 {
-    for (int d = 0; d < 8 ; d++) {
+    for (int d = 0; d <= 8 ; d++) {
         for (int j = 0; j < ANIMATION2D_MAX_FRAMES ; j++) {
             this->frames[d][j] = new Texture();
         }
@@ -20,9 +20,9 @@ void AnimationDirectional2D::setup(std::string file, int num_frames)
 
 void AnimationDirectional2D::loadImages()
 {
-    for (int d = 0; d < 8 ; d++) {
+    for (int d = 0; d <= 8 ; d++) {
         for (int i = 0; i < this->getNumFrames() ; i++) {
-            std::string file =  this->base_file + "/" + std::to_string(d+1) + "_" + std::to_string(i) + ".png";
+            std::string file =  this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
             this->frames[d][i]->loadTGA( file.c_str() );
         }
     }

@@ -98,7 +98,7 @@ float Vertex::dotProduct(Vertex v1, Vertex v2)
 
 float Vertex::getNorm()
 {
-    float norm = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ));
+    float norm = sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) );
 
     return norm;
 }

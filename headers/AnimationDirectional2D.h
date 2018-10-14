@@ -15,7 +15,7 @@ public:
 
     int n_frames;
     int current = 0;
-    Texture *frames[8][ANIMATION2D_MAX_FRAMES];
+    Texture *frames[9][ANIMATION2D_MAX_FRAMES];
 
     AnimationDirectional2D();
     void setup(std::string file, int num_frames);

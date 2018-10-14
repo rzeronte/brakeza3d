@@ -97,6 +97,9 @@ public:
     float GUI_MAX_SPACE_COORDINATES_VALUE = -100.f;
     float GUI_FLOAT_SPACE_COORDINATES_SENS = -0.1f;
 
+    int GUI_MIN_SPRITE3D_FRAMERATE = 1;
+    int GUI_MAX_SPRITE3D_FRAMERATE = 60;
+
     // Sprite3D Default size
     float SPRITE3D_DEFAULT_WIDTH = 0.5f;
     float SPRITE3D_DEFAULT_HEIGHT = 0.5f;

@@ -16,6 +16,11 @@ BillboardDirectional *Sprite3D::getBillboard() const {
 
 void Sprite3D::draw(Camera *cam)
 {
+    // Object's axis
+    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawObject3DAxis(this, cam, true, true, true);
+    }
+
     this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, cam->upVector(), cam->rightVector() );
     this->getBillboard()->updateTextureFromCameraAngle(this, cam);
 
