@@ -35,9 +35,10 @@ public:
 
     static bool isPixelInWindow(int x, int y);
 
-    static void getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect);
+    static void getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32);
 
     static void writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint32 color, std::string text);
+    static void writeText3D(SDL_Renderer *renderer, Camera *cam, TTF_Font *font, Vertex, Uint32 color, std::string text);
 
     static void sortVertexesByX(Vertex vertexes[], int N);
     static void sortVertexesByY(Vertex vertexes[], int N);

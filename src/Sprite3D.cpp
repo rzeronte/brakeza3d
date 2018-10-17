@@ -10,7 +10,8 @@ Sprite3D::Sprite3D()
     this->height = EngineSetup::getInstance()->SPRITE3D_DEFAULT_HEIGHT;
 }
 
-BillboardDirectional *Sprite3D::getBillboard() const {
+BillboardDirectional *Sprite3D::getBillboard() const
+{
     return billboard;
 }
 

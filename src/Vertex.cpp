@@ -8,6 +8,7 @@
 #include "../headers/Point2D.h"
 #include "../headers/Tools.h"
 #include "../headers/Color.h"
+#include "../headers/Logging.h"
 
 Vertex::Vertex()
 {
@@ -47,10 +48,9 @@ Vertex Vertex::getNormalize()
 
 void Vertex::consoleInfo(std::string label, bool returnLine)
 {
-    printf("%s: (x: %.3f, y: %.3f, z: %.3f) | ", label.c_str(), x, y, z);
-
+    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" +std::to_string(z) + ")", "VERTEX");
     if (returnLine) {
-        printf("\r\n");
+        Logging::getInstance()->Log("", "VERTEX");
     }
 }
 

@@ -8,7 +8,7 @@
 #include "../headers/LTimer.h"
 #include "../headers/Drawable.h"
 #include "../headers/LightPoint.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 #include <iostream>
 #include <string>
 #include <math.h>       /* modf */
@@ -246,6 +246,7 @@ void Mesh::draw(Camera *cam)
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this, cam, true, true, true);
     }
+
 
     // Render
     for (int i = 0; i<this->n_triangles;i++) {

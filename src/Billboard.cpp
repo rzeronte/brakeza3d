@@ -4,7 +4,7 @@
 #include "../headers/Tools.h"
 #include "../headers/Drawable.h"
 #include "../headers/Triangle.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 #include "../headers/M3.h"
 
 Billboard::Billboard()

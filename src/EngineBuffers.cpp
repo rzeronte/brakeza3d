@@ -4,7 +4,7 @@
 #include "../headers/EngineSetup.h"
 #include "../headers/Tools.h"
 #include "../headers/LTimer.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 
 EngineBuffers* EngineBuffers::instance = 0;
 

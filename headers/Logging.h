@@ -3,7 +3,7 @@
 #define SDL2_3D_ENGINE_LOGGING_H
 
 
-#include "../GUI/GUI_Log.h"
+#include "GUI/GUI_Log.h"
 
 class Logging {
 public:

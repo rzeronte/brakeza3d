@@ -20,7 +20,7 @@
 #include "../headers/Engine.h"
 #include "../headers/Render.h"
 #include "../headers/Drawable.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 
 float Tools::degreesToRadians(float angleDegrees)
 {
@@ -150,13 +150,13 @@ bool Tools::fileExists(const std::string& name)
     return false;
 }
 
-void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect)
+void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color)
 {
     int text_width;
     int text_height;
 
     SDL_Surface *surface;
-    SDL_Color textColor = {255, 255, 255, 0};
+    SDL_Color textColor = {(Uint8) Tools::getRedValueFromColor(color), (Uint8) Tools::getGreenValueFromColor(color), (Uint8) Tools::getBlueValueFromColor(color), 0};
 
     surface = TTF_RenderText_Solid(font, text, textColor);
     *texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -175,16 +175,41 @@ void Tools::writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint
 {
     SDL_Texture *textTexture;
     SDL_Rect textRect;
-    Tools::getTextAndRect(renderer, x, y, const_cast<char *>(text.c_str()), font, &textTexture, &textRect);
+    Tools::getTextAndRect(renderer, x, y, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color);
+
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
 }
 
+void Tools::writeText3D(SDL_Renderer *renderer, Camera *cam, TTF_Font *font, Vertex v, Uint32 color, std::string text)
+{
+    Vertex tmpV;
+    tmpV = Render::cameraSpace( v, cam );
+    tmpV = Render::homogeneousClipSpace(tmpV, cam);
+    Point2D text_point = Render::screenSpace(tmpV, cam);
+
+    // Las coordenadas que debemos darle, dependen del tamaño de la ventana, ya que el renderer
+    // se encuentra sampleado desde el tamaño configurado en EngineSetup.
+
+    int renderer_w, renderer_h;
+    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
+
+    int real_x = (int) (text_point.x * renderer_w / EngineSetup::getInstance()->SCREEN_WIDTH);
+    int real_y = (int) (text_point.y * renderer_h / EngineSetup::getInstance()->SCREEN_HEIGHT) ;
+
+    real_x+=20; // Offset estético
+
+    Tools::writeText(renderer, font, real_x, real_y, color, text);
+}
 
 void Tools::sortVertexByY(Vertex &A, Vertex &B, Vertex &C)
 {
     int n = 3;
     Vertex v[3];
     v[0] = A; v[1] = B; v[2] = C;
+
+    A.consoleInfo("prevA", false);
+    B.consoleInfo("prevB", false);
+    C.consoleInfo("prevC", true);
 
     for (int i = 1 ; i < n; i++) {
         for (int j = 0 ; j < (n - i); j++) {
@@ -197,6 +222,10 @@ void Tools::sortVertexByY(Vertex &A, Vertex &B, Vertex &C)
     }
 
     A = v[0]; B = v[1]; C = v[2];
+
+    A.consoleInfo("postA", false);
+    B.consoleInfo("postB", false);
+    C.consoleInfo("postC", true );
 
     return;
 }

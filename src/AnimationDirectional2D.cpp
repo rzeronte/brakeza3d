@@ -1,7 +1,7 @@
 
 #include "../headers/AnimationDirectional2D.h"
 #include "../headers/EngineSetup.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 
 AnimationDirectional2D::AnimationDirectional2D()
 {

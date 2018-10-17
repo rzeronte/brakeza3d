@@ -3,7 +3,7 @@
 #include "headers/EngineBuffers.h"
 #include "headers/M3.h"
 #include "headers/Render.h"
-#include "headers/Core/Logging.h"
+#include "headers/Logging.h"
 #include "headers/BillboardDirectional.h"
 #include "headers/Sprite3D.h"
 

@@ -65,7 +65,7 @@ float Camera::calcCanvasFarWidth() {
 }
 
 float Camera::calcCanvasFarHeight() {
-    float height = (2 * tanf( Tools::degreesToRadians( getVerticalFOV() / 2) ) * farDistance) * getScreenAspectRatio();;
+    float height = (2 * tanf( Tools::degreesToRadians( getVerticalFOV() / 2) ) * farDistance) * getScreenAspectRatio();
 
     return height;
 }

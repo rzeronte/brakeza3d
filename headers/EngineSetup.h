@@ -12,7 +12,7 @@ public:
 
     static EngineSetup* getInstance();
 
-    std::string ENGINE_TITLE = "brakeZa v0.1";
+    std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
     // Screen dimension constants
     int SCREEN_WIDTH = 640;
@@ -81,16 +81,16 @@ public:
     float CONTROLLER_SPEED_MOVEMENT_CAMERA = 0.5f;
 
     std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
-    std::string ICON_OBJECT3D_DEFAULT    = "../icons/object3d.tga";
+    std::string ICON_OBJECT3D_DEFAULT = "../icons/object3d.tga";
 
     std::string SPRITES_FOLDER = "../sprites/";
 
     // Triangle color for TRIANGLE_MODE_COLOR_SOLID
-    Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // green
+    Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // WHITE
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
-    Uint32 TRIANGLE_DEMO_EXTRALINE = 0x00FF00; // blue
+    Uint32 TRIANGLE_DEMO_EXTRALINE = 0x00FF00; // GREEN
 
     // GUI Setup values
     float GUI_MIN_SPACE_COORDINATES_VALUE = -100.f;
@@ -103,6 +103,9 @@ public:
     // Sprite3D Default size
     float SPRITE3D_DEFAULT_WIDTH = 0.5f;
     float SPRITE3D_DEFAULT_HEIGHT = 0.5f;
+
+    int TEXT_3D_SIZE = 25;
+    Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
 
 };
 

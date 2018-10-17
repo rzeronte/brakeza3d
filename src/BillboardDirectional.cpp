@@ -1,6 +1,6 @@
 
 #include "../headers/BillboardDirectional.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 
 
 BillboardDirectional::BillboardDirectional()

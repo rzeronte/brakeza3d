@@ -12,6 +12,7 @@
 #include "../headers/Drawable.h"
 #include "../headers/M3.h"
 #include "../headers/Engine.h"
+#include "../headers/Logging.h"
 
 Triangle::Triangle() {
     texture = NULL;
@@ -427,8 +428,9 @@ void Triangle::scanVertices(Camera *cam)
 
     // Ordenamos los vertices y puntos por su valor en 'y'
     Tools::sortPointsByY(v1, v2, v3);
-    Tools::sortVertexByY(A, B, C);
-    Tools::sortVertexByY(Aos, Bos, Cos);
+
+    //Tools::sortVertexByY(A, B, C);
+    //Tools::sortVertexByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
         this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos);
@@ -624,6 +626,7 @@ void Triangle::scanLine(float start_x, float end_x, int y,
         start_x = end_x;
         end_x = tmp;
     }
+
 
     Uint32 pixelColor = EngineSetup::getInstance()->TRIANGLE_SOLID_COLOR;
 

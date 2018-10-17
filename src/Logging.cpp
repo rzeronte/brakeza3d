@@ -1,5 +1,5 @@
 
-#include "Logging.h"
+#include "../headers/Logging.h"
 
 Logging* Logging::instance = 0;
 

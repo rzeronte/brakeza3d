@@ -4,7 +4,7 @@
 #include "../headers/Drawable.h"
 #include "../headers/EngineBuffers.h"
 #include "../headers/M3.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 
 Vertex Render::objectSpace(Vertex A, Object3D *o)
 {

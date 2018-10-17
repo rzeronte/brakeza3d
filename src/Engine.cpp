@@ -7,7 +7,7 @@
 #include "../headers/Drawable.h"
 #include "../headers/Render.h"
 #include "../headers/LightPoint.h"
-#include "../headers/Core/Logging.h"
+#include "../headers/Logging.h"
 #include "../headers/Sprite3D.h"
 #include <chrono>
 #include <iostream>
@@ -68,6 +68,7 @@ bool Engine::initWindow()
             EngineSetup::getInstance()->SCREEN_HEIGHT,
             SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
+        // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
 
         if (window == NULL) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -121,7 +122,7 @@ void Engine::initFontsTTF()
     } else {
         Logging::getInstance()->Log("Loading ../fonts/arial.ttf.", "INFO");
 
-        font = TTF_OpenFont( "../fonts/arial.ttf", 10 );
+        font = TTF_OpenFont( "../fonts/arial.ttf", EngineSetup::getInstance()->TEXT_3D_SIZE );
         if(!font) {
             Logging::getInstance()->Log(TTF_GetError(), "INFO");
         }
@@ -264,6 +265,8 @@ void Engine::drawMeshes()
                 continue;
             };
             oMesh->draw(cam);
+            Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+
         }
     }
 }
