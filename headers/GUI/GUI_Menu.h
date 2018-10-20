@@ -52,6 +52,9 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
                 ImGui::Separator();
+                ImGui::Checkbox("Object3D Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
+                ImGui::Checkbox("Vertices Label", &EngineSetup::getInstance()->TEXT_ON_VERTICES);
+                ImGui::Separator();
                 ImGui::Checkbox("Mesh Render Logging", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
 
                 ImGui::EndMenu();
@@ -72,7 +75,7 @@ public:
         if (ImGui::BeginPopup("New"))  {
             ImGui::Text("Brakeza v.0.1");
             ImGui::Text("Eduardo Rodríguez <eduardo@brakeza.com>");
-            ImGui::Text("Last compilation: 18-10-17");
+            ImGui::Text("https://brakeza.com");
             ImGui::EndPopup();
         }
     }

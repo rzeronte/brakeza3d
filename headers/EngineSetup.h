@@ -98,7 +98,7 @@ public:
     float GUI_FLOAT_SPACE_COORDINATES_SENS = -0.1f;
 
     int GUI_MIN_SPRITE3D_FRAMERATE = 1;
-    int GUI_MAX_SPRITE3D_FRAMERATE = 60;
+    int GUI_MAX_SPRITE3D_FRAMERATE = 30;
 
     // Sprite3D Default size
     float SPRITE3D_DEFAULT_WIDTH = 0.5f;
@@ -106,6 +106,8 @@ public:
 
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
+    bool TEXT_ON_OBJECT3D = false;
+    bool TEXT_ON_VERTICES = false;
 
 };
 

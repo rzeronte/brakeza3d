@@ -266,7 +266,6 @@ void Engine::drawMeshes()
             };
             oMesh->draw(cam);
             Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-
         }
     }
 }
@@ -301,7 +300,31 @@ void Engine::drawSprites()
                 continue;
             };
 
+            oSprite->updateTrianglesCoordinates(cam);
             oSprite->draw(cam);
+
+            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oSprite->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
+            }
+
+            if (EngineSetup::getInstance()->TEXT_ON_VERTICES) {
+                Vertex T1A = Render::objectSpace(oSprite->getBillboard()->T1.A, oSprite);
+                Vertex T1B = Render::objectSpace(oSprite->getBillboard()->T1.B, oSprite);
+                Vertex T1C = Render::objectSpace(oSprite->getBillboard()->T1.C, oSprite);
+
+                Vertex T2A = Render::objectSpace(oSprite->getBillboard()->T2.A, oSprite);
+                Vertex T2B = Render::objectSpace(oSprite->getBillboard()->T2.B, oSprite);
+                Vertex T2C = Render::objectSpace(oSprite->getBillboard()->T2.C, oSprite);
+
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T1A, EngineSetup::getInstance()->TEXT_3D_COLOR, "A");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T1B, EngineSetup::getInstance()->TEXT_3D_COLOR, "B");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T1C, EngineSetup::getInstance()->TEXT_3D_COLOR, "C");
+
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T2A, EngineSetup::getInstance()->TEXT_3D_COLOR, "A");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T2B, EngineSetup::getInstance()->TEXT_3D_COLOR, "B");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, T2C, EngineSetup::getInstance()->TEXT_3D_COLOR, "C");
+
+            }
         }
     }
 }

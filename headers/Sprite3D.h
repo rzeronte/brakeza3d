@@ -19,6 +19,7 @@ public:
     BillboardDirectional *getBillboard() const;
 
     void draw(Camera *cam);
+    void updateTrianglesCoordinates(Camera *cam);
     void setTimer(LTimer *);
 };
 

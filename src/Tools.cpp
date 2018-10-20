@@ -196,7 +196,7 @@ void Tools::writeText3D(SDL_Renderer *renderer, Camera *cam, TTF_Font *font, Ver
     int real_x = (int) (text_point.x * renderer_w / EngineSetup::getInstance()->SCREEN_WIDTH);
     int real_y = (int) (text_point.y * renderer_h / EngineSetup::getInstance()->SCREEN_HEIGHT) ;
 
-    real_x+=20; // Offset estético
+    real_x += 5; // Offset estético
 
     Tools::writeText(renderer, font, real_x, real_y, color, text);
 }

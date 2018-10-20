@@ -54,7 +54,7 @@ void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U,
     Q4.u = 1; Q4.v = 0;
 
     T1 = Triangle(Q3, Q2, Q1, o);
-    T2 = Triangle(Q3, Q1, Q4, o);
+    T2 = Triangle(Q4, Q3, Q1, o);
 
 }
 
