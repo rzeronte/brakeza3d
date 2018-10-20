@@ -4,14 +4,20 @@
 #include "headers/M3.h"
 #include "headers/Render.h"
 #include "headers/Logging.h"
-#include "headers/BillboardDirectional.h"
-#include "headers/Sprite3D.h"
+#include "headers/SpriteDirectionalObject3D.h"
+#include "headers/SpriteObject3D.h"
 
 
 enum SpriteDoom2SoldierAnimations {
     IDLE = 0,
     WALK = 1,
     JUMP = 2,
+};
+
+enum SpriteShotgunAnimations {
+    READY,
+    RELOAD,
+    SHOT
 };
 
 void Game::run()
@@ -85,17 +91,30 @@ void Game::onStart()
     this->addObject3D(triangle, "triangle");
 
     // sprite
-    Sprite3D *sprite = new Sprite3D();
-    sprite->setEnabled(true);
-    sprite->setPosition( Vertex(1, 1, 5) );
-    sprite->setTimer(Engine::getTimer());
+    SpriteDirectionalObject3D *marine = new SpriteDirectionalObject3D();
+    marine->setEnabled(true);
+    marine->setPosition( Vertex(1, 1, 5) );
+    marine->setTimer(Engine::getTimer());
 
-    sprite->getBillboard()->addAnimationDirectional2D("marine/idle", 1);
-    sprite->getBillboard()->addAnimationDirectional2D("marine/walk", 4);
-    sprite->getBillboard()->addAnimationDirectional2D("marine/jump", 1);
-    sprite->getBillboard()->setAnimation(SpriteDoom2SoldierAnimations::WALK);
+    marine->addAnimationDirectional2D("marine/idle", 1);
+    marine->addAnimationDirectional2D("marine/walk", 4);
+    marine->addAnimationDirectional2D("marine/jump", 1);
+    marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
 
-    this->addObject3D(sprite, "marine");
+    this->addObject3D(marine, "marine");
+
+    // gun
+    SpriteObject3D *gun = new SpriteObject3D();
+    gun->setEnabled(true);
+    gun->setPosition( Vertex(2, 1, 5) );
+    gun->setTimer(Engine::getTimer());
+
+    gun->addAnimation("gun/ready", 1);
+    gun->addAnimation("gun/reload", 3);
+    gun->addAnimation("gun/shot", 2);
+    gun->setAnimation(SpriteShotgunAnimations::RELOAD);
+
+    this->addObject3D(gun, "gun");
 }
 
 void Game::mainLoop()

@@ -175,5 +175,4 @@ void Drawable::drawBillboard(Billboard *B, Camera *cam)
         B->T1.drawWireframe( cam );
         B->T2.drawWireframe( cam );
     }
-
 }

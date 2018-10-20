@@ -6,8 +6,6 @@
 #include "Texture.h"
 #include "Triangle.h"
 
-class Object3D;
-
 class Billboard {
 public:
     float width;

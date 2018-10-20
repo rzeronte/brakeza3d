@@ -7,8 +7,8 @@
 #include "../../imgui/imgui.h"
 #include "../../headers/Object3D.h"
 #include "../../headers/Mesh.h"
-#include "../BillboardDirectional.h"
-#include "../Sprite3D.h"
+#include "../SpriteDirectionalObject3D.h"
+#include "../SpriteObject3D.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -76,10 +76,15 @@ public:
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->shadowCaster);
                     }
 
-                    // Only for meshes
-                    Sprite3D *pSprite3D = dynamic_cast<Sprite3D *>(objects[i]);
+                    // Only for SPRITES
+                    SpriteDirectionalObject3D *pSprite3D = dynamic_cast<SpriteDirectionalObject3D *>(objects[i]);
                     if (pSprite3D != NULL) {
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->getBillboard()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                    }
+                    // Only for SPRITES
+                    SpriteObject3D *pSprite = dynamic_cast<SpriteObject3D *>(objects[i]);
+                    if (pSprite != NULL) {
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
 
                     // All Objects setup

@@ -52,8 +52,7 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
                 ImGui::Separator();
-                ImGui::Checkbox("Object3D Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
-                ImGui::Checkbox("Vertices Label", &EngineSetup::getInstance()->TEXT_ON_VERTICES);
+                ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("Mesh Render Logging", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
 
