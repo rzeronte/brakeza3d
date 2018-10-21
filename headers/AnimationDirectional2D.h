@@ -4,7 +4,7 @@
 
 
 #include "Texture.h"
-#include "LTimer.h"
+#include "Timer.h"
 
 #define ANIMATION2D_MAX_FRAMES 10
 

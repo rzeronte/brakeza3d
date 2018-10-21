@@ -146,7 +146,7 @@ If you have other loading/merging/adding fonts, you can post on the Dear ImGui "
  Offset font vertically by altering the io.Font->DisplayOffset value:
 
    ImFont* font = io.Fonts->AddFontFromFileTTF("font.ttf", size_pixels);
-   font->DisplayOffset.y = 1;   // Render 1 pixel down
+   font->DisplayOffset.y = 1;   // Transforms 1 pixel down
 
 
 ---------------------------------------

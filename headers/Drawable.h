@@ -7,7 +7,7 @@
 #include "Frustum.h"
 #include "Camera.h"
 #include "Billboard.h"
-#include "GUI/GUI.h"
+#include "../src/GUI/GUI.h"
 
 class Drawable {
 public:

@@ -4,7 +4,7 @@
 
 
 #include "Object3D.h"
-#include "LTimer.h"
+#include "Timer.h"
 #include "AnimationDirectional2D.h"
 #include "Camera.h"
 
@@ -27,7 +27,7 @@ public:
     float width;
     float height;
 
-    LTimer *timer;
+    Timer *timer;
 
     int num_animations = 0;
     int current_animation = 0;
@@ -45,7 +45,7 @@ public:
     void addAnimationDirectional2D(std::string, int);
     void updateTextureFromCameraAngle(Object3D *, Camera *);
     void setAnimation(int);
-    void setTimer(LTimer *);
+    void setTimer(Timer *);
 
     void draw(Camera *cam);
     void updateTrianglesCoordinates(Camera *cam);

@@ -4,7 +4,7 @@
 
 
 #include "Object3D.h"
-#include "LTimer.h"
+#include "Timer.h"
 #include "Billboard.h"
 #include "Animation2D.h"
 
@@ -26,7 +26,7 @@ public:
 
     int fps = 2;
 
-    LTimer *timer;
+    Timer *timer;
     float last_ticks;
     float timerCurrent = 0;
 
@@ -36,7 +36,7 @@ public:
 
     void addAnimation(std::string, int);
     void setAnimation(int);
-    void setTimer(LTimer *);
+    void setTimer(Timer *);
     void updateTexture();
     void updateTrianglesCoordinatesAndTexture(Camera *cam);
     void draw(Camera *cam);

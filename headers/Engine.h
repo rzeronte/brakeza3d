@@ -8,7 +8,7 @@
 #include <SDL.h>
 #include "Controller.h"
 #include "EngineSetup.h"
-#include "LTimer.h"
+#include "Timer.h"
 #include "LightPoint.h"
 #include <SDL_ttf.h>
 
@@ -16,10 +16,10 @@
 #include "../imgui/examples/imgui_impl_sdl.h"
 #include "../imgui/examples/imgui_impl_opengl2.h"
 
-#include "GUI/GUI.h"
-#include "GUI/GUI_Menu.h"
-#include "GUI/GUI_ObjectsInspector.h"
-#include "GUI/GUI_Engine.h"
+#include "../src/GUI/GUI.h"
+#include "../src/GUI/GUI_Menu.h"
+#include "../src/GUI/GUI_ObjectsInspector.h"
+#include "../src/GUI/GUI_Engine.h"
 
 class Engine {
 public:
@@ -49,7 +49,7 @@ public:
     TTF_Font *font = NULL;
 
     // Timer
-    LTimer fpsTimer;
+    Timer fpsTimer;
 
     // Fps counter
     float fps;
@@ -94,7 +94,7 @@ public:
     void drawGUI();
 
     void processFPS();
-    LTimer* getTimer();
+    Timer* getTimer();
 
     Object3D* getObjectByLabel(std::string label);
 

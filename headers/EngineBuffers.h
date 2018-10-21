@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <SDL_surface.h>
-#include "LTimer.h"
+#include "Timer.h"
 #include "LightPoint.h"
 
 // Singleton

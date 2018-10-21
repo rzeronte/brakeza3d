@@ -16,14 +16,9 @@
 class Tools {
 
 public:
-    static float degreesToRadians(float);
-    static float radiansToDegrees(float);
-
     static std::vector<std::string> split(const std::string &, char);
 
     static void SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
-
-    static unsigned long createRGB(int r, int g, int b);
 
     static int getXTextureFromUV(SDL_Surface *surface, float u);
     static int getYTextureFromUV(SDL_Surface *surface, float v);
@@ -35,38 +30,14 @@ public:
 
     static bool isPixelInWindow(int x, int y);
 
-    static void getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32);
-
     static void writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint32 color, std::string text);
     static void writeText3D(SDL_Renderer *renderer, Camera *cam, TTF_Font *font, Vertex, Uint32 color, std::string text);
+    static void getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32);
 
-    static void sortVertexesByX(Vertex vertexes[], int N);
-    static void sortVertexesByY(Vertex vertexes[], int N);
-
-    static void sortVertexByY(Vertex &A, Vertex &B, Vertex &C);
-    static void sortVertexByX(Vertex &A, Vertex &B, Vertex &C);
-
-    static void sortVertexesByAngles(Vertex *vertexes, int N);
-
-    static void sortPointsByY(Point2D &A, Point2D &B, Point2D &C);
-    static void sortPointsByX(Point2D &A, Point2D &B, Point2D &C);
-
-    static void VertexSwap(Vertex *vertexes, int i, int j);
-
-    static Vertex getCenterVertices(Vertex *vertices, int num_vertices);
-
-    static float distanteBetweenpoints(Vertex v1, Vertex v2);
-
-    static Uint32 mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q);
-
+    static unsigned long createRGB(int r, int g, int b);
     static uint8_t getRedValueFromColor(uint32_t);
     static uint8_t getGreenValueFromColor(uint32_t);
     static uint8_t getBlueValueFromColor(uint32_t);
-
-    static Vertex crossProduct(Vertex, Vertex);
-
-    static float floatRound(double dval, int n);
-    static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *cam);
 
 };
 
