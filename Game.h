@@ -6,7 +6,7 @@
 #define SDL2_3D_ENGINE_GAME_H
 
 
-#include "headers/Engine.h"
+#include "headers/Render/Engine.h"
 
 class Game : public Engine {
 public:

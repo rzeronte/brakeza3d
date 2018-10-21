@@ -307,31 +307,31 @@ CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Object3D.cpp -o CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.s
 
-CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o: CMakeFiles/sdl2_3d_engine.dir/flags.make
-CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o: ../src/LTimer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o -c /Users/darkhead/CLionProjects/sdl2_3d_engine/src/LTimer.cpp
+CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o: CMakeFiles/sdl2_3d_engine.dir/flags.make
+CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o: ../src/Timer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o -c /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Timer.cpp
 
-CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/darkhead/CLionProjects/sdl2_3d_engine/src/LTimer.cpp > CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.i
+CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Timer.cpp > CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.i
 
-CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/darkhead/CLionProjects/sdl2_3d_engine/src/LTimer.cpp -o CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.s
+CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Timer.cpp -o CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.s
 
-CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o: CMakeFiles/sdl2_3d_engine.dir/flags.make
-CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o: ../src/Render.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o -c /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Render.cpp
+CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o: CMakeFiles/sdl2_3d_engine.dir/flags.make
+CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o: ../src/Transforms.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/darkhead/CLionProjects/sdl2_3d_engine/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o -c /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Transforms.cpp
 
-CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Render.cpp > CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.i
+CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Transforms.cpp > CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.i
 
-CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Render.cpp -o CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.s
+CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Transforms.cpp -o CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.s
 
 CMakeFiles/sdl2_3d_engine.dir/src/Drawable.cpp.o: CMakeFiles/sdl2_3d_engine.dir/flags.make
 CMakeFiles/sdl2_3d_engine.dir/src/Drawable.cpp.o: ../src/Drawable.cpp
@@ -510,8 +510,8 @@ sdl2_3d_engine_OBJECTS = \
 "CMakeFiles/sdl2_3d_engine.dir/src/Frustum.cpp.o" \
 "CMakeFiles/sdl2_3d_engine.dir/src/Plane.cpp.o" \
 "CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.o" \
-"CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o" \
-"CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o" \
+"CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o" \
+"CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o" \
 "CMakeFiles/sdl2_3d_engine.dir/src/Drawable.cpp.o" \
 "CMakeFiles/sdl2_3d_engine.dir/src/LightPoint.cpp.o" \
 "CMakeFiles/sdl2_3d_engine.dir/Game.cpp.o" \
@@ -547,8 +547,8 @@ sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/EngineBuffers.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Frustum.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Plane.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.o
-sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o
-sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o
+sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o
+sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/Drawable.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/src/LightPoint.cpp.o
 sdl2_3d_engine: CMakeFiles/sdl2_3d_engine.dir/Game.cpp.o

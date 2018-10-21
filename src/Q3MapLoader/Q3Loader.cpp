@@ -4,7 +4,7 @@
  * For comments or bug reports, contact : nicolas.baudrey@wanadoo.fr
  */
 
-#include "../../headers/Q3Loader.h"
+#include "../../headers/Q3MapLoader/Q3Loader.h"
 
 #pragma pack(push, Q3LOADER_H)
 #include <cstdio>

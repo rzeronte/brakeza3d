@@ -10,17 +10,17 @@
 #include <algorithm>
 #include <math.h>
 #include <cmath>
-#include "../../headers/Tools.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Line2D.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Vector3D.h"
-#include "../../headers/Triangle.h"
-#include "../../headers/M3.h"
-#include "../../headers/Engine.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/Drawable.h"
-#include "../../headers/Logging.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/Objects/Line2D.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Objects/Vector3D.h"
+#include "../../headers/Objects/Triangle3D.h"
+#include "../../headers/Render/M3.h"
+#include "../../headers/Render/Engine.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/Logging.h"
 
 std::vector<std::string> Tools::split(const std::string &text, char sep) {
     std::vector<std::string> tokens;
@@ -162,9 +162,9 @@ void Tools::writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
 }
 
-void Tools::writeText3D(SDL_Renderer *renderer, Camera *cam, TTF_Font *font, Vertex v, Uint32 color, std::string text)
+void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, Vertex3D v, Uint32 color, std::string text)
 {
-    Vertex tmpV;
+    Vertex3D tmpV;
     tmpV = Transforms::cameraSpace( v, cam );
     tmpV = Transforms::homogeneousClipSpace(tmpV, cam);
     Point2D text_point = Transforms::screenSpace(tmpV, cam);

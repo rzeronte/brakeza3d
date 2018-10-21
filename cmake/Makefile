@@ -612,32 +612,32 @@ src/Frustum.cpp.s:
 	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Frustum.cpp.s
 .PHONY : src/Frustum.cpp.s
 
-src/LTimer.o: src/LTimer.cpp.o
+src/Timer.o: src/Timer.cpp.o
 
-.PHONY : src/LTimer.o
+.PHONY : src/Timer.o
 
 # target to build an object file
-src/LTimer.cpp.o:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o
-.PHONY : src/LTimer.cpp.o
+src/Timer.cpp.o:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o
+.PHONY : src/Timer.cpp.o
 
-src/LTimer.i: src/LTimer.cpp.i
+src/Timer.i: src/Timer.cpp.i
 
-.PHONY : src/LTimer.i
+.PHONY : src/Timer.i
 
 # target to preprocess a source file
-src/LTimer.cpp.i:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.i
-.PHONY : src/LTimer.cpp.i
+src/Timer.cpp.i:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.i
+.PHONY : src/Timer.cpp.i
 
-src/LTimer.s: src/LTimer.cpp.s
+src/Timer.s: src/Timer.cpp.s
 
-.PHONY : src/LTimer.s
+.PHONY : src/Timer.s
 
 # target to generate assembly for a file
-src/LTimer.cpp.s:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.s
-.PHONY : src/LTimer.cpp.s
+src/Timer.cpp.s:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.s
+.PHONY : src/Timer.cpp.s
 
 src/LightPoint.o: src/LightPoint.cpp.o
 
@@ -855,32 +855,32 @@ src/Q3Loader.cpp.s:
 	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Q3Loader.cpp.s
 .PHONY : src/Q3Loader.cpp.s
 
-src/Render.o: src/Render.cpp.o
+src/Transforms.o: src/Transforms.cpp.o
 
-.PHONY : src/Render.o
+.PHONY : src/Transforms.o
 
 # target to build an object file
-src/Render.cpp.o:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o
-.PHONY : src/Render.cpp.o
+src/Transforms.cpp.o:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o
+.PHONY : src/Transforms.cpp.o
 
-src/Render.i: src/Render.cpp.i
+src/Transforms.i: src/Transforms.cpp.i
 
-.PHONY : src/Render.i
+.PHONY : src/Transforms.i
 
 # target to preprocess a source file
-src/Render.cpp.i:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.i
-.PHONY : src/Render.cpp.i
+src/Transforms.cpp.i:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.i
+.PHONY : src/Transforms.cpp.i
 
-src/Render.s: src/Render.cpp.s
+src/Transforms.s: src/Transforms.cpp.s
 
-.PHONY : src/Render.s
+.PHONY : src/Transforms.s
 
 # target to generate assembly for a file
-src/Render.cpp.s:
-	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.s
-.PHONY : src/Render.cpp.s
+src/Transforms.cpp.s:
+	$(MAKE) -f CMakeFiles/sdl2_3d_engine.dir/build.make CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.s
+.PHONY : src/Transforms.cpp.s
 
 src/Texture.o: src/Texture.cpp.o
 
@@ -1080,9 +1080,9 @@ help:
 	@echo "... src/Frustum.o"
 	@echo "... src/Frustum.i"
 	@echo "... src/Frustum.s"
-	@echo "... src/LTimer.o"
-	@echo "... src/LTimer.i"
-	@echo "... src/LTimer.s"
+	@echo "... src/Timer.o"
+	@echo "... src/Timer.i"
+	@echo "... src/Timer.s"
 	@echo "... src/LightPoint.o"
 	@echo "... src/LightPoint.i"
 	@echo "... src/LightPoint.s"
@@ -1107,9 +1107,9 @@ help:
 	@echo "... src/Q3Loader.o"
 	@echo "... src/Q3Loader.i"
 	@echo "... src/Q3Loader.s"
-	@echo "... src/Render.o"
-	@echo "... src/Render.i"
-	@echo "... src/Render.s"
+	@echo "... src/Transforms.o"
+	@echo "... src/Transforms.i"
+	@echo "... src/Transforms.s"
 	@echo "... src/Texture.o"
 	@echo "... src/Texture.i"
 	@echo "... src/Texture.s"

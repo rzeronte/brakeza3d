@@ -2,7 +2,7 @@
 // Created by darkhead on 10/6/18.
 //
 
-#include "../../headers/Timer.h"
+#include "../../headers/Render/Timer.h"
 
 Timer::Timer()
 {

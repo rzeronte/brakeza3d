@@ -1,10 +1,10 @@
 
-#include "../../headers/Maths.h"
-#include "../../headers/Drawable.h"
-#include "../../headers/M3.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Tools.h"
+#include "../../headers/Render/Maths.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/M3.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Render/Tools.h"
 
 
 float Maths::degreesToRadians(float angleDegrees)
@@ -25,14 +25,14 @@ float Maths::radiansToDegrees(float angleRadians)
     return degrees;
 }
 
-Vertex Maths::rotateVertex(Vertex V, Vertex rotation)
+Vertex3D Maths::rotateVertex(Vertex3D V, Vertex3D rotation)
 {
 
     M3 MRX = M3::RX(rotation.x);
     M3 MRY = M3::RY(rotation.y);
     M3 MRZ = M3::RZ(rotation.z);
 
-    Vertex B = (MRX * MRY * MRZ) * V;
+    Vertex3D B = (MRX * MRY * MRZ) * V;
 
     B.u = V.u; B.v = V.v;
 
@@ -72,12 +72,12 @@ bool Maths::isVector3DClippingPlane(Plane P, Vector3D V)
 }
 
 
-bool Maths::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Camera *cam, Vertex A, Vertex B, Vertex C, Texture *texture)
+bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture)
 {
 
     // Usamos un vértice arbitrario para trazar un radio
     // hacia el vértice 0
-    Vertex middle = Maths::getCenterVertices(vertexes, num_vertex);
+    Vertex3D middle = Maths::getCenterVertices(vertexes, num_vertex);
     Vector3D arbitrary_vector = Vector3D(middle, vertexes[0]);
     //Drawable::drawVector3D(screen, arbitrary_vector, cam, Color::yellow());
 
@@ -92,8 +92,8 @@ bool Maths::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Cam
             Vector3D ratio = Vector3D(middle, vertexes[i]);
             //Drawable::drawVector3D(screen, ratio, cam, Color::pink());
 
-            Vertex tmp1 = arbitrary_vector.getComponent();
-            Vertex tmp2 = ratio.getComponent();
+            Vertex3D tmp1 = arbitrary_vector.getComponent();
+            Vertex3D tmp2 = ratio.getComponent();
 
             float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
             float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
@@ -116,9 +116,9 @@ bool Maths::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Cam
 
     Maths::sortVertexesByAngles(vertexes, num_vertex);
 
-    Vertex Ao = A;
-    Vertex Bo = B;
-    Vertex Co = C;
+    Vertex3D Ao = A;
+    Vertex3D Bo = B;
+    Vertex3D Co = C;
 
     Ao = Transforms::objectSpace(Ao, parent);
     Bo = Transforms::objectSpace(Bo, parent);
@@ -154,17 +154,17 @@ bool Maths::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Cam
             Drawable::drawVertex(vertexes[next], cam, Color::blue());
 
             // Vertex new triangles
-            Vertex tv1 = Transforms::objectToLocal(vertexes[0], parent);
-            Vertex tv2 = Transforms::objectToLocal(vertexes[current], parent);
-            Vertex tv3 = Transforms::objectToLocal(vertexes[next], parent);
+            Vertex3D tv1 = Transforms::objectToLocal(vertexes[0], parent);
+            Vertex3D tv2 = Transforms::objectToLocal(vertexes[current], parent);
+            Vertex3D tv3 = Transforms::objectToLocal(vertexes[next], parent);
 
             //Tools::sortVertexByX(tv1, tv2,tv3);
             Maths::sortVertexByY(tv1, tv2,tv3);
 
             // Vamos a calcular las coordenadas UV para tv1, tv2 y tv3
-            Vertex nv1 = tv1;
-            Vertex nv2 = tv2;
-            Vertex nv3 = tv3;
+            Vertex3D nv1 = tv1;
+            Vertex3D nv2 = tv2;
+            Vertex3D nv3 = tv3;
 
             // Pasamos por la cámara
             nv1 = Transforms::objectSpace(nv1, parent);
@@ -241,8 +241,8 @@ bool Maths::triangulate(Vertex vertexes[], int num_vertex, Object3D *parent, Cam
     }
 }
 
-Vertex Maths::getCenterVertices(Vertex vertices[], int num_vertices) {
-    Vertex middle = Vertex(0, 0, 0);
+Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
+    Vertex3D middle = Vertex3D(0, 0, 0);
 
     for (int i = 0; i < num_vertices; i++) {
         middle.x += vertices[i].x;
@@ -258,16 +258,16 @@ Vertex Maths::getCenterVertices(Vertex vertices[], int num_vertices) {
 }
 
 
-void Maths::sortVertexByY(Vertex &A, Vertex &B, Vertex &C)
+void Maths::sortVertexByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
     int n = 3;
-    Vertex v[3];
+    Vertex3D v[3];
     v[0] = A; v[1] = B; v[2] = C;
 
     for (int i = 1 ; i < n; i++) {
         for (int j = 0 ; j < (n - i); j++) {
             if (v[j].y > v[j+1].y) {
-                Vertex aux = v[j];
+                Vertex3D aux = v[j];
                 v[j] = v[j+1];
                 v[j+1] = aux;
             }
@@ -279,16 +279,16 @@ void Maths::sortVertexByY(Vertex &A, Vertex &B, Vertex &C)
     return;
 }
 
-void Maths::sortVertexByX(Vertex &A, Vertex &B, Vertex &C)
+void Maths::sortVertexByX(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
     int n = 3;
-    Vertex v[3];
+    Vertex3D v[3];
     v[0] = A; v[1] = B; v[2] = C;
 
     for (int i = 1 ; i < n; i++) {
         for (int j = 0 ; j < (n - i); j++) {
             if (v[j].x > v[j+1].x) {
-                Vertex aux = v[j];
+                Vertex3D aux = v[j];
                 v[j] = v[j+1];
                 v[j+1] = aux;
             }
@@ -341,14 +341,14 @@ void Maths::sortPointsByX(Point2D &A, Point2D &B, Point2D &C)
     A = p[0]; B = p[1]; C = p[2];
 }
 
-void Maths::VertexSwap(Vertex vertexes[], int i, int j)
+void Maths::VertexSwap(Vertex3D vertexes[], int i, int j)
 {
-    Vertex tmp = vertexes[i];
+    Vertex3D tmp = vertexes[i];
     vertexes[i] = vertexes[j];
     vertexes[j] = tmp;
 }
 
-void Maths::sortVertexesByX(Vertex vertexes[], int N)
+void Maths::sortVertexesByX(Vertex3D vertexes[], int N)
 {
     int i, j, k;
     for (i = 0; i < N - 1; i++)
@@ -362,7 +362,7 @@ void Maths::sortVertexesByX(Vertex vertexes[], int N)
     }
 }
 
-void Maths::sortVertexesByAngles(Vertex vertexes[], int N)
+void Maths::sortVertexesByAngles(Vertex3D vertexes[], int N)
 {
     int i, j, k;
 
@@ -376,7 +376,7 @@ void Maths::sortVertexesByAngles(Vertex vertexes[], int N)
     }
 }
 
-void Maths::sortVertexesByY(Vertex vertexes[], int N)
+void Maths::sortVertexesByY(Vertex3D vertexes[], int N)
 {
     int i, j, k;
     for (i = 0; i < N - 1; i++)
@@ -390,7 +390,7 @@ void Maths::sortVertexesByY(Vertex vertexes[], int N)
     }
 }
 
-float Maths::distanteBetweenpoints(Vertex v1, Vertex v2)
+float Maths::distanteBetweenpoints(Vertex3D v1, Vertex3D v2)
 {
 
     float abs_vector = sqrtf( (v2.x - v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y) + (v2.z - v1.z)*(v2.z - v1.z) );
@@ -398,16 +398,16 @@ float Maths::distanteBetweenpoints(Vertex v1, Vertex v2)
     return abs_vector;
 }
 
-Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q)
+Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
 {
 
-    Vertex P = lp->position;
-    Vertex R = lp->forward.getUnitVector();
+    Vertex3D P = lp->position;
+    Vertex3D R = lp->forward.getUnitVector();
 
     Vector3D L = Vector3D(P, Q);
-    Vertex Lv = L.getUnitVector();
+    Vertex3D Lv = L.getUnitVector();
 
-    const float min = Vertex::dotProduct(R, Lv);
+    const float min = Vertex3D::dotProduct(R, Lv);
 
     float p = 100;
     float max = fmaxf(min, 0);
@@ -432,9 +432,9 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint *lp, Vertex Q)
     return c;
 }
 
-Vertex Maths::crossProduct(Vertex u, Vertex v)
+Vertex3D Maths::crossProduct(Vertex3D u, Vertex3D v)
 {
-    Vertex V;
+    Vertex3D V;
 
     V.x = (u.y * v.z) - (u.z * v.y);
     V.y = (u.z * v.x) - (u.x * v.z);
@@ -448,14 +448,14 @@ float Maths::floatRound(double f, int c)
     return (((float)((int)((f) * (c))) / (c)));
 }
 
-float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera *cam)
+float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
 {
     o1->updateAxis();
 
-    Vertex oRight = o1->forward.getComponent();
-    Vertex R = cam->forward.getComponent();
+    Vertex3D oRight = o1->forward.getComponent();
+    Vertex3D R = cam->forward.getComponent();
 
-    float rads = acosf(  Vertex::dotProduct(R, oRight) / (R.getNorm() * oRight.getNorm()) );
+    float rads = acosf(  Vertex3D::dotProduct(R, oRight) / (R.getNorm() * oRight.getNorm()) );
 
     float degs = Maths::radiansToDegrees(rads);
 

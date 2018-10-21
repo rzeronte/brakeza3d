@@ -1,6 +1,6 @@
 
-#include "../../headers/Animation2D.h"
-#include "../../headers/EngineSetup.h"
+#include "../../headers/2D/Animation2D.h"
+#include "../../headers/Render/EngineSetup.h"
 
 Animation2D::Animation2D()
 {

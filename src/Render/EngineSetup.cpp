@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "../../headers/EngineSetup.h"
+#include "../../headers/Render/EngineSetup.h"
 
 EngineSetup* EngineSetup::instance = 0;
 

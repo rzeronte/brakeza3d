@@ -3,8 +3,8 @@
 #define SDL2_3D_ENGINE_GUI_LIGHTSINSPECTOR_H
 
 
-#include "../../headers/LightPoint.h"
-#include "../../headers/Tools.h"
+#include "../../headers/Objects/LightPoint3D.h"
+#include "../../headers/Render/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
 
@@ -15,7 +15,7 @@ class GUI_LightsInspector : public GUI  {
 
         virtual ~GUI_LightsInspector() {}
 
-        virtual void draw(LightPoint **lightpoints, int number)
+        virtual void draw(LightPoint3D **lightpoints, int number)
         {
             ImGuiWindowFlags window_flags = 0;
 

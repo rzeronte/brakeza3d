@@ -663,8 +663,8 @@ iostream
 -
 SDL_surface.h
 -
-LTimer.h
-/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+Timer.h
+/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
 LightPoint.h
 /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
 
@@ -696,7 +696,7 @@ GUI.h
 ../../headers/Tools.h
 /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
 
-/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
 SDL_types.h
 -
 SDL_timer.h
@@ -845,8 +845,8 @@ vector
 /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
 ../headers/EngineBuffers.h
 /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineBuffers.h
-../headers/LTimer.h
-/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+../headers/Timer.h
+/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
 ../headers/Drawable.h
 /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Drawable.h
 ../headers/LightPoint.h

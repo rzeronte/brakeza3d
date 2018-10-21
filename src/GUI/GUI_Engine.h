@@ -25,7 +25,7 @@ public:
         gui_log = new GUI_Log();
     }
 
-    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint **lightPoints, int numberLightPoints)
+    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);

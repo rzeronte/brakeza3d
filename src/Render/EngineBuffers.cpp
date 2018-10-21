@@ -1,10 +1,10 @@
 
 #include <SDL_surface.h>
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Timer.h"
-#include "../../headers/Logging.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Timer.h"
+#include "../../headers/Render/Logging.h"
 
 EngineBuffers* EngineBuffers::instance = 0;
 

@@ -1,28 +1,28 @@
 
-#include "../../headers/Billboard.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Drawable.h"
-#include "../../headers/Triangle.h"
-#include "../../headers/Logging.h"
-#include "../../headers/M3.h"
+#include "../../headers/Render/Billboard.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Objects/Triangle3D.h"
+#include "../../headers/Render/Logging.h"
+#include "../../headers/Render/M3.h"
 
 Billboard::Billboard()
 {
     this->texture = new Texture();
 }
 
-void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex U, Vertex R)
+void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex3D U, Vertex3D R)
 {
     this->width  = w;
     this->height = h;
 
-    Vertex X;
+    Vertex3D X;
     X.x = (width/2) * R.x;
     X.y = (width/2) * R.y;
     X.z = (width/2) * R.z;
 
-    Vertex Y;
+    Vertex3D Y;
     Y.x = (height/2) * U.x;
     Y.y = (height/2) * U.y;
     Y.z = (height/2) * U.z;

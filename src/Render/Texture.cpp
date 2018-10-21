@@ -1,7 +1,7 @@
-#include "../../headers/Texture.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Color.h"
-#include "../../headers/Logging.h"
+#include "../../headers/Render/Texture.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Color.h"
+#include "../../headers/Render/Logging.h"
 #include <SDL_image.h>
 
 Texture::Texture()

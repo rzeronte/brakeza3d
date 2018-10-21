@@ -5,10 +5,10 @@
 
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../../headers/Object3D.h"
-#include "../../headers/Mesh.h"
-#include "../../headers/SpriteDirectionalObject3D.h"
-#include "../../headers/SpriteObject3D.h"
+#include "../../headers/Objects/Object3D.h"
+#include "../../headers/Objects/Mesh3D.h"
+#include "../../headers/Objects/SpriteDirectional3D.h"
+#include "../../headers/Objects/Sprite3D.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -70,18 +70,18 @@ public:
                     if (objects[i]->rotation.z < 0) { objects[i]->rotation.z = 360; }
 
                     // Only for meshes
-                    Mesh *pMesh = dynamic_cast<Mesh *>(objects[i]);
+                    Mesh3D *pMesh = dynamic_cast<Mesh3D *>(objects[i]);
                     if (pMesh != NULL) {
-                        ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh *>(objects[i])->shadowCaster);
+                        ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(objects[i])->shadowCaster);
                     }
 
                     // Only for SPRITES
-                    SpriteDirectionalObject3D *pSprite3D = dynamic_cast<SpriteDirectionalObject3D *>(objects[i]);
+                    SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(objects[i]);
                     if (pSprite3D != NULL) {
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
                     // Only for SPRITES
-                    SpriteObject3D *pSprite = dynamic_cast<SpriteObject3D *>(objects[i]);
+                    Sprite3D *pSprite = dynamic_cast<Sprite3D *>(objects[i]);
                     if (pSprite != NULL) {
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }

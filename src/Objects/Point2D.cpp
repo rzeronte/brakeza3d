@@ -3,8 +3,8 @@
 //
 
 #include <iostream>
-#include "../../headers/Point2D.h"
-#include "../../headers/EngineSetup.h"
+#include "../../headers/Objects/Point2D.h"
+#include "../../headers/Render/EngineSetup.h"
 
 
 Point2D::Point2D()

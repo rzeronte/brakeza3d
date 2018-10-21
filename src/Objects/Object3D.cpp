@@ -1,24 +1,24 @@
 
 #include <iostream>
-#include "../../headers/Object3D.h"
-#include "../../headers/Point2D.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Line2D.h"
-#include "../../headers/Color.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/M3.h"
-#include "../../headers/Billboard.h"
+#include "../../headers/Objects/Object3D.h"
+#include "../../headers/Objects/Point2D.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Objects/Line2D.h"
+#include "../../headers/Render/Color.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/M3.h"
+#include "../../headers/Render/Billboard.h"
 
 
 Object3D::Object3D()
 {
     this->enabled = true;
-    this->position = Vertex(1, 1, 1);
-    this->rotation = Vertex(0, 0, 0);
+    this->position = Vertex3D(1, 1, 1);
+    this->rotation = Vertex3D(0, 0, 0);
 
-    this->right   = Vector3D( Vertex(0, 0, 0), Vertex(1, 0, 0) );
-    this->up      = Vector3D( Vertex(0, 0, 0), Vertex(0, 1, 0) );
-    this->forward = Vector3D( Vertex(0, 0, 0), Vertex(0, 0, 1) );
+    this->right   = Vector3D( Vertex3D(0, 0, 0), Vertex3D(1, 0, 0) );
+    this->up      = Vector3D( Vertex3D(0, 0, 0), Vertex3D(0, 1, 0) );
+    this->forward = Vector3D( Vertex3D(0, 0, 0), Vertex3D(0, 0, 1) );
 
     this->scale = 1;
 
@@ -28,19 +28,19 @@ Object3D::Object3D()
     //this->billboard->loadTexture("../pak0/icons/icona_rocket.tga");
 }
 
-Vertex* Object3D::getPosition() {
+Vertex3D* Object3D::getPosition() {
     return &position;
 }
 
-Vertex* Object3D::getRotation() {
+Vertex3D* Object3D::getRotation() {
     return &rotation;
 }
 
-void Object3D::setPosition(Vertex p) {
+void Object3D::setPosition(Vertex3D p) {
     position = p;
 }
 
-void Object3D::setRotation(Vertex r) {
+void Object3D::setRotation(Vertex3D r) {
     this->rotation = r;
 }
 
@@ -58,9 +58,9 @@ void Object3D::updateAxis()
     M3 MRY = M3::RY(getRotation()->y);
     M3 MRZ = M3::RZ(getRotation()->z);
 
-    Vertex r = (MRZ * MRY * MRX) * Vertex(1, 0, 0);
-    Vertex u = (MRZ * MRY * MRX) * Vertex(0, 1, 0);
-    Vertex f = (MRZ * MRY * MRX) * Vertex(0, 0, 1);
+    Vertex3D r = (MRZ * MRY * MRX) * Vertex3D(1, 0, 0);
+    Vertex3D u = (MRZ * MRY * MRX) * Vertex3D(0, 1, 0);
+    Vertex3D f = (MRZ * MRY * MRX) * Vertex3D(0, 0, 1);
 
     r.addVertex(*getPosition());
     u.addVertex(*getPosition());

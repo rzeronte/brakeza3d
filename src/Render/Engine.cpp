@@ -1,15 +1,15 @@
-#include "../../headers/Engine.h"
-#include "../../headers/Mesh.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Frustum.h"
-#include "../../headers/Object3D.h"
-#include "../../headers/Timer.h"
-#include "../../headers/Drawable.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/LightPoint.h"
-#include "../../headers/Logging.h"
-#include "../../headers/SpriteDirectionalObject3D.h"
-#include "../../headers/SpriteObject3D.h"
+#include "../../headers/Render/Engine.h"
+#include "../../headers/Objects/Mesh3D.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Render/Frustum.h"
+#include "../../headers/Objects/Object3D.h"
+#include "../../headers/Render/Timer.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Objects/LightPoint3D.h"
+#include "../../headers/Render/Logging.h"
+#include "../../headers/Objects/SpriteDirectional3D.h"
+#include "../../headers/Objects/Sprite3D.h"
 #include <chrono>
 #include <iostream>
 
@@ -32,11 +32,11 @@ Engine::Engine()
     this->numberGameObjects = 0;
 
     // lights
-    this->lightPoints = new LightPoint *[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
+    this->lightPoints = new LightPoint3D *[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
     this->numberLightPoints = 0;
 
     // cam
-    cam = new Camera();
+    cam = new Camera3D();
     cam->setLabel("Camera");
 
     // input controller
@@ -182,7 +182,7 @@ void Engine::windowUpdate()
 void Engine::onStart()
 {
     cam->setPosition( EngineSetup::getInstance()->CameraPosition );
-    cam->setRotation( Vertex(0, 0, 0) );
+    cam->setRotation( Vertex3D(0, 0, 0) );
 }
 
 void Engine::onUpdateEvent()
@@ -245,7 +245,7 @@ void Engine::objects3DShadowMapping()
             continue;
         }
 
-        Mesh *oMesh = dynamic_cast<Mesh*> (this->gameObjects[i]);
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
             for (int j = 0; j < this->numberLightPoints; j++) {
                 if (oMesh->isShadowCaster()) {
@@ -260,7 +260,7 @@ void Engine::drawMeshes()
 {
     // draw meshes
     for (int i = 0; i < this->numberGameObjects; i++) {
-        Mesh *oMesh = dynamic_cast<Mesh*> (this->gameObjects[i]);
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
             if (!oMesh->isEnabled()) {
                 continue;
@@ -276,7 +276,7 @@ void Engine::drawMeshes()
 void Engine::drawLightPoints()
 {
     for (int i = 0; i < this->numberLightPoints; i++) {
-        LightPoint *oLight= this->lightPoints[i];
+        LightPoint3D *oLight= this->lightPoints[i];
         if (oLight != NULL) {
             if (!oLight->isEnabled()) {
                 continue;
@@ -297,7 +297,7 @@ void Engine::drawSprites()
 {
     for (int i = 0; i < this->numberGameObjects; i++) {
         // Sprite Directional 3D
-        SpriteDirectionalObject3D *oSpriteDirectional = dynamic_cast<SpriteDirectionalObject3D*> (this->gameObjects[i]);
+        SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (this->gameObjects[i]);
         if (oSpriteDirectional != NULL) {
             if (!oSpriteDirectional->isEnabled()) {
                 continue;
@@ -313,7 +313,7 @@ void Engine::drawSprites()
         }
 
         // Sprite 3D
-        SpriteObject3D *oSprite = dynamic_cast<SpriteObject3D*> (this->gameObjects[i]);
+        Sprite3D *oSprite = dynamic_cast<Sprite3D*> (this->gameObjects[i]);
         if (oSprite != NULL) {
             if (!oSprite->isEnabled()) {
                 continue;
@@ -343,7 +343,7 @@ void Engine::addObject3D(Object3D *obj, std::string label)
     numberGameObjects++;
 }
 
-void Engine::addLightPoint(LightPoint *lightPoint, std::string label)
+void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
 {
     Logging::getInstance()->Log("Adding LightPoint: '" + label + "'", "INFO");
 

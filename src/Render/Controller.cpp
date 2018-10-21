@@ -1,15 +1,15 @@
 
 #include <iostream>
-#include "../../headers/Controller.h"
-#include "../../headers/Mesh.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Object3D.h"
+#include "../../headers/Render/Controller.h"
+#include "../../headers/Objects/Mesh3D.h"
+#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/Objects/Object3D.h"
 
 Controller::Controller()
 {
 }
 
-void Controller::handleMouse(SDL_Event *event, Camera *camera)
+void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
@@ -47,7 +47,7 @@ void Controller::handleMouse(SDL_Event *event, Camera *camera)
     }
 }
 
-void Controller::handleKeyboard(SDL_Event *event, Camera *camera, bool &done)
+void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
 {
     if  (event_type == SDL_KEYDOWN) {
         switch( key_pressed ) {

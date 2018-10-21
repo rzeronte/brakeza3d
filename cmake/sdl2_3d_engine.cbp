@@ -143,7 +143,7 @@
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
-		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h">
+		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h">
@@ -170,7 +170,7 @@
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
-		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h">
+		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h">
@@ -260,7 +260,7 @@
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Frustum.cpp">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
-		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/LTimer.cpp">
+		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Timer.cpp">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/LightPoint.cpp">
@@ -287,7 +287,7 @@
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Q3Loader.cpp">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
-		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Render.cpp">
+		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Transforms.cpp">
 			<Option target="sdl2_3d_engine"/>
 		</Unit>
 		<Unit filename="/Users/darkhead/CLionProjects/sdl2_3d_engine/src/Texture.cpp">

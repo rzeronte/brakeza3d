@@ -4,13 +4,13 @@
 #include <SDL.h>
 #include <cstdio>
 
-#include "headers/Camera.h"
-#include "headers/Controller.h"
-#include "headers/Mesh.h"
-#include "headers/Color.h"
-#include "headers/Engine.h"
-#include "headers/Q3Loader.h"
-#include "headers/EngineBuffers.h"
+#include "headers/Objects/Camera3D.h"
+#include "headers/Render/Controller.h"
+#include "headers/Objects/Mesh3D.h"
+#include "headers/Render/Color.h"
+#include "headers/Render/Engine.h"
+#include "headers/Q3MapLoader/Q3Loader.h"
+#include "headers/Render/EngineBuffers.h"
 #include "Game.h"
 
 #pragma pack(push, MAIN)

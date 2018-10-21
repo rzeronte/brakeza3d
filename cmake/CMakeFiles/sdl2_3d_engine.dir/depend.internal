@@ -66,7 +66,7 @@ CMakeFiles/sdl2_3d_engine.dir/Game.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Menu.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/M3.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Mesh.h
@@ -74,7 +74,7 @@ CMakeFiles/sdl2_3d_engine.dir/Game.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -291,7 +291,7 @@ CMakeFiles/sdl2_3d_engine.dir/main.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Menu.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Mesh.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
@@ -366,7 +366,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Billboard.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -435,7 +435,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Camera.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -577,13 +577,13 @@ CMakeFiles/sdl2_3d_engine.dir/src/Drawable.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineSetup.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Line2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -656,14 +656,14 @@ CMakeFiles/sdl2_3d_engine.dir/src/Engine.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Menu.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Mesh.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -730,7 +730,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/EngineBuffers.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
@@ -817,7 +817,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Frustum.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Vector3D.h
@@ -825,7 +825,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Frustum.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/imgui/imconfig.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/imgui/imgui.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Frustum.cpp
-CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o
+CMakeFiles/sdl2_3d_engine.dir/src/Timer.cpp.o
  /Library/Frameworks/SDL2.framework/Headers/SDL_config.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_config_macosx.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_error.h
@@ -835,8 +835,8 @@ CMakeFiles/sdl2_3d_engine.dir/src/LTimer.cpp.o
  /Library/Frameworks/SDL2.framework/Headers/SDL_types.h
  /Library/Frameworks/SDL2.framework/Headers/begin_code.h
  /Library/Frameworks/SDL2.framework/Headers/close_code.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/src/LTimer.cpp
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Timer.cpp
 CMakeFiles/sdl2_3d_engine.dir/src/LightPoint.cpp.o
  /Library/Frameworks/SDL2.framework/Headers/SDL.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_assert.h
@@ -890,7 +890,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/LightPoint.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineBuffers.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineSetup.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
@@ -955,7 +955,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Line2D.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineBuffers.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineSetup.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Line2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
@@ -1089,7 +1089,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Mesh.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Mesh.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
@@ -1162,7 +1162,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Object3D.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -1256,7 +1256,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Point2D.cpp.o
 CMakeFiles/sdl2_3d_engine.dir/src/Q3Loader.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Q3Loader.cpp
-CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o
+CMakeFiles/sdl2_3d_engine.dir/src/Transforms.cpp.o
  /Library/Frameworks/SDL2.framework/Headers/SDL.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_assert.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_atomic.h
@@ -1314,13 +1314,13 @@ CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/M3.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -1328,7 +1328,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Render.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Vertex.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/imgui/imconfig.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/imgui/imgui.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Render.cpp
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/src/Transforms.cpp
 CMakeFiles/sdl2_3d_engine.dir/src/Texture.cpp.o
  /Library/Frameworks/SDL2.framework/Headers/SDL.h
  /Library/Frameworks/SDL2.framework/Headers/SDL_assert.h
@@ -1458,7 +1458,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Tools.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Menu.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Line2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/M3.h
@@ -1467,7 +1467,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Tools.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -1541,7 +1541,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Triangle.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Log.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_Menu.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/GUI/GUI_ObjectsInspector.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Line2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/M3.h
@@ -1550,7 +1550,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Triangle.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Plane.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Point2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Q3Loader.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Render.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Transforms.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Texture.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Tools.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Triangle.h
@@ -1614,7 +1614,7 @@ CMakeFiles/sdl2_3d_engine.dir/src/Vector3D.cpp.o
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineBuffers.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/EngineSetup.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Frustum.h
- /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LTimer.h
+ /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Timer.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/LightPoint.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Line2D.h
  /Users/darkhead/CLionProjects/sdl2_3d_engine/headers/Object3D.h

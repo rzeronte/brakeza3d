@@ -1,15 +1,15 @@
-#include "../../headers/Transforms.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Triangle.h"
-#include "../../headers/Drawable.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/M3.h"
-#include "../../headers/Logging.h"
-#include "../../headers/Maths.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Objects/Triangle3D.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Render/M3.h"
+#include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Maths.h"
 
-Vertex Transforms::objectSpace(Vertex A, Object3D *o)
+Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
-    Vertex v = A;
+    Vertex3D v = A;
 
     v = Maths::rotateVertex(v, *o->getRotation());
     v.addVertex(*o->getPosition());
@@ -21,9 +21,9 @@ Vertex Transforms::objectSpace(Vertex A, Object3D *o)
     return v;
 }
 
-Vertex Transforms::cameraSpace(Vertex V, Camera *cam)
+Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
 {
-    Vertex A = V;
+    Vertex3D A = V;
 
     A.subVertex(*cam->getPosition());
     A = Maths::rotateVertex(A, *cam->getRotation());
@@ -33,20 +33,20 @@ Vertex Transforms::cameraSpace(Vertex V, Camera *cam)
     return A;
 }
 
-Vertex Transforms::homogeneousClipSpace(Vertex v, Camera *cam)
+Vertex3D Transforms::homogeneousClipSpace(Vertex3D v, Camera3D *cam)
 {
-    Vertex vNL = cam->frustum->near_left.vertex1;
-    Vertex vNR = cam->frustum->near_right.vertex1;
+    Vertex3D vNL = cam->frustum->near_left.vertex1;
+    Vertex3D vNR = cam->frustum->near_right.vertex1;
     if (vNL.x < vNR.x) {
-        Vertex tmp = vNR;
+        Vertex3D tmp = vNR;
         vNR = vNL;
         vNL = tmp;
     }
 
-    Vertex vNT = cam->frustum->near_top.vertex1;
-    Vertex vNB = cam->frustum->near_bottom.vertex1;
+    Vertex3D vNT = cam->frustum->near_top.vertex1;
+    Vertex3D vNB = cam->frustum->near_bottom.vertex1;
     if (vNT.y < vNB.y) {
-        Vertex tmp = vNT;
+        Vertex3D tmp = vNT;
         vNT = vNB;
         vNB = tmp;
     }
@@ -63,7 +63,7 @@ Vertex Transforms::homogeneousClipSpace(Vertex v, Camera *cam)
     vNB = Transforms::screenSpacePerspective(vNB, cam);
 
     // Perspective projection ( w = 1)
-    Vertex A = Transforms::screenSpacePerspective(v, cam);
+    Vertex3D A = Transforms::screenSpacePerspective(v, cam);
 
     // HomogeneousClipSpace
     float Ax = A.x;
@@ -88,7 +88,7 @@ Vertex Transforms::homogeneousClipSpace(Vertex v, Camera *cam)
     return A;
 }
 
-Point2D Transforms::screenSpace(Vertex V, Camera *cam)
+Point2D Transforms::screenSpace(Vertex3D V, Camera3D *cam)
 {
     Point2D A;
     A.x = V.x * cam->pixelPerUnit;
@@ -103,9 +103,9 @@ Point2D Transforms::screenSpace(Vertex V, Camera *cam)
     return A;
 }
 
-Vertex Transforms::screenSpacePerspective(Vertex v, Camera *cam)
+Vertex3D Transforms::screenSpacePerspective(Vertex3D v, Camera3D *cam)
 {
-    Vertex A = v;
+    Vertex3D A = v;
     if (v.z != 0 || v.z != -0) {
         A.x =  - ( ( cam->frustum->nearDist * v.x) / v.z ) ;
         A.y =  - ( ( cam->frustum->nearDist * v.y) / v.z );
@@ -115,9 +115,9 @@ Vertex Transforms::screenSpacePerspective(Vertex v, Camera *cam)
 }
 
 
-Vertex Transforms::objectToLocal(Vertex V, Object3D *o)
+Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
 {
-    Vertex T = V;
+    Vertex3D T = V;
 
     T.x*=o->scale;
     T.y*=o->scale;
