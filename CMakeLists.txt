@@ -21,55 +21,55 @@ include_directories(${SDL2_dir} ${SDL2_image_dir} ${SDL2_ttf_dir} ${OPENGL_INCLU
 
 add_executable(brakeda3d
         main.cpp
-        src/Camera.cpp
-        headers/Camera.h
-        src/Controller.cpp
-        headers/Controller.h
-        src/Mesh.cpp
-        headers/Mesh.h
-        src/Triangle.cpp
-        headers/Triangle.h
-        src/Vertex.cpp
-        headers/Vertex.h
-        src/Vector3D.cpp
-        headers/Vector3D.h
-        src/Point2D.cpp
-        headers/Point2D.h
-        src/Tools.cpp
-        headers/Tools.h
-        src/Line2D.cpp
-        headers/Line2D.h
-        src/Color.cpp
-        headers/Color.h
-        src/Engine.cpp
-        headers/Engine.h
-        headers/EngineSetup.h
-        src/EngineSetup.cpp
-        src/Texture.cpp
-        headers/Texture.h
-        src/Q3Loader.cpp
-        headers/Q3Loader.h
-        headers/EngineBuffers.h
-        src/EngineBuffers.cpp
-        src/Frustum.cpp
-        headers/Frustum.h
-        src/Plane.cpp
-        headers/Plane.h
-        src/Object3D.cpp
-        headers/Object3D.h
-        src/LTimer.cpp
-        headers/LTimer.h
-        headers/Render.h
-        src/Render.cpp
-        src/Drawable.cpp
-        headers/Drawable.h
-        src/LightPoint.cpp
-        headers/LightPoint.h
+        src/Objects/Camera3D.cpp
+        headers/Objects/Camera3D.h
+        src/Render/Controller.cpp
+        headers/Render/Controller.h
+        src/Objects/Mesh3D.cpp
+        headers/Objects/Mesh3D.h
+        src/Objects/Triangle3D.cpp
+        headers/Objects/Triangle3D.h
+        src/Objects/Vertex3D.cpp
+        headers/Objects/Vertex3D.h
+        src/Objects/Vector3D.cpp
+        headers/Objects/Vector3D.h
+        src/Objects/Point2D.cpp
+        headers/Objects/Point2D.h
+        src/Render/Tools.cpp
+        headers/Render/Tools.h
+        src/Objects/Line2D.cpp
+        headers/Objects/Line2D.h
+        src/Render/Color.cpp
+        headers/Render/Color.h
+        src/Render/Engine.cpp
+        headers/Render/Engine.h
+        headers/Render/EngineSetup.h
+        src/Render/EngineSetup.cpp
+        src/Render/Texture.cpp
+        headers/Render/Texture.h
+        src/Q3MapLoader/Q3Loader.cpp
+        headers/Q3MapLoader/Q3Loader.h
+        headers/Render/EngineBuffers.h
+        src/Render/EngineBuffers.cpp
+        src/Render/Frustum.cpp
+        headers/Render/Frustum.h
+        src/Render/Plane.cpp
+        headers/Render/Plane.h
+        src/Objects/Object3D.cpp
+        headers/Objects/Object3D.h
+        src/Render/Timer.cpp
+        headers/Render/Timer.h
+        headers/Render/Transforms.h
+        src/Render/Transforms.cpp
+        src/Render/Drawable.cpp
+        headers/Render/Drawable.h
+        src/Objects/LightPoint3D.cpp
+        headers/Objects/LightPoint3D.h
         Game.cpp Game.h
-        src/Billboard.cpp
-        headers/Billboard.h
-        src/M3.cpp
-        headers/M3.h
+        src/Render/Billboard.cpp
+        headers/Render/Billboard.h
+        src/Render/M3.cpp
+        headers/Render/M3.h
 
         imgui/imconfig.h
         imgui/imgui.h
@@ -87,15 +87,15 @@ add_executable(brakeda3d
         imgui/examples/imgui_impl_opengl2.h
         imgui/examples/imgui_impl_opengl2.cpp
 
-        headers/GUI/GUI.h
-        headers/GUI/GUI_Menu.h
-        headers/GUI/GUI_ObjectsInspector.h
-        headers/GUI/GUI_Engine.h
-        headers/GUI/GUI_LightsInspector.h
-        headers/GUI/GUI_Log.h
-        headers/Core/Logging.cpp
-        headers/Core/Logging.h
-        src/BillboardDirectional.cpp headers/BillboardDirectional.h src/Sprite3D.cpp headers/Sprite3D.h src/AnimationDirectional2D.cpp headers/AnimationDirectional2D.h)
+        src/GUI/GUI.h
+        src/GUI/GUI_Menu.h
+        src/GUI/GUI_ObjectsInspector.h
+        src/GUI/GUI_Engine.h
+        src/GUI/GUI_LightsInspector.h
+        src/GUI/GUI_Log.h
+        src/Render/Logging.cpp
+        headers/Render/Logging.h
+        src/Objects/SpriteDirectional3D.cpp headers/Objects/SpriteDirectional3D.h src/2D/AnimationDirectional2D.cpp headers/2D/AnimationDirectional2D.h src/Objects/Sprite3D.cpp headers/Objects/Sprite3D.h src/2D/Animation2D.cpp headers/2D/Animation2D.h src/Render/Maths.cpp headers/Render/Maths.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

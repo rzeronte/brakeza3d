@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../headers/M3.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Maths.h"
+#include "../../headers/Render/M3.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Maths.h"
 
 M3::M3() {
 }
@@ -36,9 +36,9 @@ M3 M3::operator *(const float scalar)
     return M;
 }
 
-Vertex M3::operator *(const Vertex A)
+Vertex3D M3::operator *(const Vertex3D A)
 {
-    Vertex V = Vertex();
+    Vertex3D V = Vertex3D();
     V.x = (m[0] * A.x) + (m[1] * A.y) + (m[2] * A.z);
     V.y = (m[3] * A.x) + (m[4] * A.y) + (m[5] * A.z);
     V.z = (m[6] * A.x) + (m[7] * A.y) + (m[8] * A.z);
@@ -84,7 +84,7 @@ const M3 M3::MatrixIdentity() {
     return M;
 }
 
-const M3 M3::MatrixModel(Vertex V, Object3D *o) {
+const M3 M3::MatrixModel(Vertex3D V, Object3D *o) {
 }
 
 const M3 M3::MatrixNULL() {

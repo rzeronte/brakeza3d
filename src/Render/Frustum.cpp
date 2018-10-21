@@ -3,21 +3,21 @@
 //
 
 #include <iostream>
-#include "../../headers/Frustum.h"
-#include "../../headers/Line2D.h"
-#include "../../headers/Color.h"
-#include "../../headers/Tools.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Transforms.h"
+#include "../../headers/Render/Frustum.h"
+#include "../../headers/Objects/Line2D.h"
+#include "../../headers/Render/Color.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/Render/Transforms.h"
 
 Frustum::Frustum() {}
 
-Frustum::Frustum(Vertex position, Vertex direction, Vertex up, Vertex right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
+Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
 {
     setup(position, direction, up, right, nearDist, Hnear, Wnear, farDist, Hfar, Wfar);
 }
 
-void Frustum::setup(Vertex position, Vertex direction, Vertex up, Vertex right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
+void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
 {
     this->position = position;
 
@@ -96,48 +96,48 @@ void Frustum::updatePlanes() {
 
     // Near edges
     //top
-    Vertex top1(ntl.x, ntl.y, ntl.z);
-    Vertex top2(ntr.x, ntr.y, ntr.z);
+    Vertex3D top1(ntl.x, ntl.y, ntl.z);
+    Vertex3D top2(ntr.x, ntr.y, ntr.z);
     this->near_top = Vector3D(top1, top2);
 
     // bottom
-    Vertex bottom1(nbl.x, nbl.y, nbl.z);
-    Vertex bottom2(nbr.x, nbr.y, nbr.z);
+    Vertex3D bottom1(nbl.x, nbl.y, nbl.z);
+    Vertex3D bottom2(nbr.x, nbr.y, nbr.z);
     this->near_bottom = Vector3D(bottom1, bottom2);
 
     // left
-    Vertex left1(ntl.x, ntl.y, ntl.z);
-    Vertex left2(nbl.x, nbl.y, nbl.z);
+    Vertex3D left1(ntl.x, ntl.y, ntl.z);
+    Vertex3D left2(nbl.x, nbl.y, nbl.z);
     this->near_left = Vector3D(left1, left2);
 
     // right
-    Vertex right1(ntr.x, ntr.y, ntr.z);
-    Vertex right2(nbr.x, nbr.y, nbr.z);
+    Vertex3D right1(ntr.x, ntr.y, ntr.z);
+    Vertex3D right2(nbr.x, nbr.y, nbr.z);
     this->near_right = Vector3D(right1, right2);
 
     // Far edges
     // top
-    Vertex top1f(ftl.x, ftl.y, ftl.z);
-    Vertex top2f(ftr.x, ftr.y, ftr.z);
+    Vertex3D top1f(ftl.x, ftl.y, ftl.z);
+    Vertex3D top2f(ftr.x, ftr.y, ftr.z);
     this->far_top = Vector3D(top1f, top2f);
 
     // bottom
-    Vertex bottom1f(fbl.x, fbl.y, fbl.z);
-    Vertex bottom2f(fbr.x, fbr.y, fbr.z);
+    Vertex3D bottom1f(fbl.x, fbl.y, fbl.z);
+    Vertex3D bottom2f(fbr.x, fbr.y, fbr.z);
     this->far_bottom = Vector3D(bottom1f, bottom2f);
 
     // left
-    Vertex left1f(ftl.x, ftl.y, ftl.z);
-    Vertex left2f(fbl.x, fbl.y, fbl.z);
+    Vertex3D left1f(ftl.x, ftl.y, ftl.z);
+    Vertex3D left2f(fbl.x, fbl.y, fbl.z);
     this->far_left = Vector3D(left1f, left2f);
 
     // right
-    Vertex right1f(ftr.x, ftr.y, ftr.z);
-    Vertex right2f(fbr.x, fbr.y, fbr.z);
+    Vertex3D right1f(ftr.x, ftr.y, ftr.z);
+    Vertex3D right2f(fbr.x, fbr.y, fbr.z);
     this->far_right = Vector3D(right1f, right2f);
 }
 
-bool Frustum::isPointInFrustum(Vertex v) {
+bool Frustum::isPointInFrustum(Vertex3D v) {
 
     bool result = true;
     int plane_init = EngineSetup::getInstance()->FAR_PLANE; int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;

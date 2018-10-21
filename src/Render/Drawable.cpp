@@ -1,11 +1,11 @@
 
-#include "../../headers/Drawable.h"
-#include "../../headers/Line2D.h"
-#include "../../headers/Point2D.h"
-#include "../../headers/Tools.h"
-#include "../../headers/Transforms.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Billboard.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Objects/Line2D.h"
+#include "../../headers/Objects/Point2D.h"
+#include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Render/Billboard.h"
 
 void Drawable::drawBox2D(SDL_Rect r)
 {
@@ -32,7 +32,7 @@ void Drawable::drawBox2D(SDL_Rect r)
     l4.draw();
 }
 
-void Drawable::drawFrustum(Frustum *f, Camera *cam, bool drawNP, bool drawFP, bool drawSides)
+void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides)
 {
     // Center Near Plane
     Drawable::drawVertex( f->fc, cam, Color::red());
@@ -64,9 +64,9 @@ void Drawable::drawFrustum(Frustum *f, Camera *cam, bool drawNP, bool drawFP, bo
     }
 }
 
-void Drawable::drawPlaneNormalVector(Plane *plane, Camera *cam, Uint32 color)
+void Drawable::drawPlaneNormalVector(Plane *plane, Camera3D *cam, Uint32 color)
 {
-    Vertex normal = plane->getNormalVector();
+    Vertex3D normal = plane->getNormalVector();
 
     normal.addVertex(plane->A);
 
@@ -76,9 +76,9 @@ void Drawable::drawPlaneNormalVector(Plane *plane, Camera *cam, Uint32 color)
 }
 
 
-void Drawable::drawVertex(Vertex V, Camera *cam, Uint32 color) {
+void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
 
-    Vertex A = Transforms::cameraSpace(V, cam);
+    Vertex3D A = Transforms::cameraSpace(V, cam);
     A = Transforms::homogeneousClipSpace(A, cam);
 
     Point2D P1 = Transforms::screenSpace(A, cam);
@@ -88,15 +88,15 @@ void Drawable::drawVertex(Vertex V, Camera *cam, Uint32 color) {
     }
 }
 
-void Drawable::drawVector3D(Vector3D V, Camera *cam, Uint32 color)
+void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
 {
     if (!cam->frustum->isPointInFrustum(V.vertex1) && !cam->frustum->isPointInFrustum(V.vertex2)) {
         return;
     }
 
     // apply view matrix
-    Vertex V1 = Transforms::cameraSpace(V.vertex1, cam);
-    Vertex V2 = Transforms::cameraSpace(V.vertex2, cam);
+    Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
+    Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
 
     if ((int) abs(V1.z) == 0 ) {
         return;
@@ -118,7 +118,7 @@ void Drawable::drawVector3D(Vector3D V, Camera *cam, Uint32 color)
 }
 
 
-void Drawable::drawPlane(Plane plane, Camera *cam, Uint32 color)
+void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color)
 {
     Vector3D AB = Vector3D( plane.A, plane.B );
     Vector3D AC = Vector3D( plane.A, plane.C );
@@ -130,21 +130,21 @@ void Drawable::drawPlane(Plane plane, Camera *cam, Uint32 color)
 }
 
 
-void Drawable::drawMainAxis(Camera *cam)
+void Drawable::drawMainAxis(Camera3D *cam)
 {
     float axis_length = 0.1;
-    Vertex origin(0, 0, 0);
+    Vertex3D origin(0, 0, 0);
 
     // Creamos unas coordenadas de eje sobre 0, 0, 0
     // start points
-    Vertex VXstart( origin.x, origin.y, origin.z );
-    Vertex VYstart( origin.x, origin.y, origin.z );
-    Vertex VZstart( origin.x, origin.y, origin.z );
+    Vertex3D VXstart( origin.x, origin.y, origin.z );
+    Vertex3D VYstart( origin.x, origin.y, origin.z );
+    Vertex3D VZstart( origin.x, origin.y, origin.z );
 
     // end points
-    Vertex VXend( origin.x + (axis_length), origin.y , origin.z );
-    Vertex VYend( origin.x, origin.y + (axis_length), origin.z );
-    Vertex VZend( origin.x, origin.y, origin.z + (axis_length) );
+    Vertex3D VXend( origin.x + (axis_length), origin.y , origin.z );
+    Vertex3D VYend( origin.x, origin.y + (axis_length), origin.z );
+    Vertex3D VZend( origin.x, origin.y, origin.z + (axis_length) );
 
     Vector3D axis_x = Vector3D(VXstart, VXend);
     Vector3D axis_y = Vector3D(VYstart, VYend);
@@ -156,7 +156,7 @@ void Drawable::drawMainAxis(Camera *cam)
 }
 
 
-void Drawable::drawObject3DAxis(Object3D *object, Camera *cam, bool drawUp, bool drawRight, bool drawForward)
+void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)
 {
     object->updateAxis();
 
@@ -166,7 +166,7 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera *cam, bool drawUp, bool
 
 }
 
-void Drawable::drawBillboard(Billboard *B, Camera *cam)
+void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
 {
     B->T1.draw( cam );
     B->T2.draw( cam );

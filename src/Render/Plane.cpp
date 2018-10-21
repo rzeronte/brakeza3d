@@ -2,19 +2,19 @@
 // Created by darkhead on 30/5/18.
 //
 
-#include "../../headers/Plane.h"
-#include "../../headers/Tools.h"
+#include "../../headers/Render/Plane.h"
+#include "../../headers/Render/Tools.h"
 
 Plane::Plane() {}
 
-Plane::Plane(Vertex A, Vertex B, Vertex C) {
+Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C) {
     this->A = A;
     this->B = B;
     this->C = C;
 }
 
-float Plane::distance(Vertex p) {
-    Vertex normal = getNormalVector();
+float Plane::distance(Vertex3D p) {
+    Vertex3D normal = getNormalVector();
 
     float D = - ( (normal.x * A.x) + (normal.y * A.y) + (normal.z * A.z) );
     float distance = ( (normal.x * p.x) + (normal.y * p.y) + (normal.z * p.z) + D);
@@ -22,30 +22,30 @@ float Plane::distance(Vertex p) {
     return distance;
 }
 
-Vertex Plane::getNormalVector()
+Vertex3D Plane::getNormalVector()
 {
     // Los 2 vectores que conforman el plano
     Vector3D VnAB(this->A, this->B);
     Vector3D VnAC(this->A, this->C);
 
     // Lo llevamos al origen
-    Vertex U = VnAB.getComponent();
-    Vertex V = VnAC.getComponent();
+    Vertex3D U = VnAB.getComponent();
+    Vertex3D V = VnAC.getComponent();
 
     float Wx = (U.y * V.z) - (U.z * V.y);
     float Wy = (U.z * V.x) - (U.x * V.z);
     float Wz = (U.x * V.y) - (U.y * V.x);
 
-    Vertex normal = Vertex(Wx, Wy, Wz);
+    Vertex3D normal = Vertex3D(Wx, Wy, Wz);
     normal = normal.getNormalize();
 
     return normal;
 }
 
-Vertex Plane::getPointIntersection(Vertex vertex1, Vertex vertex2) {
+Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2) {
 
     // Componentes del vector director
-    Vertex componente = Vertex(
+    Vertex3D componente = Vertex3D(
         vertex2.x - vertex1.x,
         vertex2.y - vertex1.y,
         vertex2.z - vertex1.z
@@ -67,8 +67,8 @@ Vertex Plane::getPointIntersection(Vertex vertex1, Vertex vertex2) {
     // normalPlaneVector(A, B, C)
     // pointInPlane(x, y, z) = this->A
 
-    Vertex pointInPlane = this->A;
-    Vertex normalPlaneVector = this->getNormalVector();
+    Vertex3D pointInPlane = this->A;
+    Vertex3D normalPlaneVector = this->getNormalVector();
 
     float A = normalPlaneVector.x;
     float B = normalPlaneVector.y;
@@ -84,7 +84,7 @@ Vertex Plane::getPointIntersection(Vertex vertex1, Vertex vertex2) {
     float t = ( -A * vertex1.x - B  * vertex1.y - C * vertex1.z - D ) / (  a * A + b * B + c * C);
 
     // 3) punto de intersección ; sustituimos t en la ecuación de la recta entre 2 puntos
-    Vertex P(
+    Vertex3D P(
         vertex1.x + t * ( vertex2.x - vertex1.x ),
         vertex1.y + t * ( vertex2.y - vertex1.y ),
         vertex1.z + t * ( vertex2.z - vertex1.z )
