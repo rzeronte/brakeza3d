@@ -314,7 +314,7 @@ Various internal refactoring have also been done, as part of the navigation work
 
 Breaking Changes:
 
-- Obsoleted the io.RenderDrawListsFn callback, you can call your graphics engine render function after ImGui::Render().
+- Obsoleted the io.RenderDrawListsFn callback, you can call your graphics engine render function after ImGui::Transforms().
   e.g. with example backends, call ImDrawData* draw_data = ImGui::GetDrawData(); ImGui_ImplXXXX_RenderDrawData(draw_data).
 - Reorganized context handling to be more explicit: (#1599)
   - YOU NOW NEED TO CALL ImGui::CreateContext() AT THE BEGINNING OF YOUR APP, AND CALL ImGui::DestroyContext() AT THE END.
@@ -566,7 +566,7 @@ Other Changes:
 - ColorEdit4(): Support drag and drop. Color buttons can be used as drag sources, and ColorEdit widgets as drag targets. (#143)
 - ColorPicker4(): Fixed continuously returning true when holding mouse button on the sat/value/alpha locations. We only return true on value change. (#1489)
 - NewFrame(): using literal strings in the most-frequently firing IM_ASSERT expressions to increase the odd of programmers seeing them (especially those who don't use a debugger).
-- NewFrame() now asserts if neither Render or EndFrame have been called. Exposed EndFrame(). Made it legal to call EndFrame() more than one. (#1423)
+- NewFrame() now asserts if neither Transforms or EndFrame have been called. Exposed EndFrame(). Made it legal to call EndFrame() more than one. (#1423)
 - ImGuiStorage: Added BuildSortByKey() helper to rebuild storage from scratch.
 - ImFont: Added GetDebugName() helper.
 - ImFontAtlas: Added missing Thai punctuation in the GetGlyphRangesThai() ranges. (#1396) [@nProtect]
@@ -680,7 +680,7 @@ Other Changes:
 - Misc: Added `IMGUI_DISABLE_FORMAT_STRING_FUNCTIONS` support in imconfig.h to allow user reimplementing the `ImFormatString()` functions e.g. to use stb_printf(). (#1038)
 - Misc: [Windows] Fixed default Win32 `SetClipboardText()` handler leaving the Win32 clipboard handler unclosed on failure. [@pdoane]
 - Style: Added `ImGuiStyle::ScaleAllSizes(float)` helper to make it easier to have application transition e.g. from low to high DPI with a matching style.
-- Metrics: Draw window bounding boxes when hovering Pos/Size; List all draw layers; Trimming empty commands like Render() does.
+- Metrics: Draw window bounding boxes when hovering Pos/Size; List all draw layers; Trimming empty commands like Transforms() does.
 - Examples: OpenGL3: Save and restore sampler state. (#1145) [@nlguillemot]
 - Examples: OpenGL2, OpenGL3: Save and restore polygon mode. (#1307) [@JJscott]
 - Examples: DirectX11: Allow creating device with feature level 10 since we don't really need much for that example. (#1333)
