@@ -6,6 +6,7 @@
 #include "headers/Render/Logging.h"
 #include "headers/Objects/SpriteDirectional3D.h"
 #include "headers/Objects/Sprite3D.h"
+#include "headers/Objects/Weapon3D.h"
 
 
 enum SpriteDoom2SoldierAnimations {
@@ -18,6 +19,10 @@ enum SpriteShotgunAnimations {
     READY,
     RELOAD,
     SHOT
+};
+
+enum SpriteGuyAnimations {
+    NORMAL,
 };
 
 void Game::run()
@@ -90,31 +95,36 @@ void Game::onStart()
     triangle->loadOBJBlender("../models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
-    // sprite
+    // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
     marine->setEnabled(true);
     marine->setPosition( Vertex3D(1, 1, 5) );
     marine->setTimer(Engine::getTimer());
-
     marine->addAnimationDirectional2D("marine/idle", 1);
     marine->addAnimationDirectional2D("marine/walk", 4);
     marine->addAnimationDirectional2D("marine/jump", 1);
     marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
-
     this->addObject3D(marine, "marine");
 
-    // gun
-    Sprite3D *gun = new Sprite3D();
-    gun->setEnabled(true);
-    gun->setPosition( Vertex3D(2, 1, 5) );
-    gun->setTimer(Engine::getTimer());
+    // gun ( sprite )
+    Sprite3D *guy = new Sprite3D();
+    guy->setEnabled(true);
+    guy->setPosition( Vertex3D(2, 1, 5) );
+    guy->setTimer(Engine::getTimer());
+    guy->addAnimation("guy/face", 3);
+    guy->setAnimation(SpriteGuyAnimations::NORMAL);
+    this->addObject3D(guy, "guy");
 
-    gun->addAnimation("gun/ready", 1);
-    gun->addAnimation("gun/reload", 3);
-    gun->addAnimation("gun/shot", 2);
-    gun->setAnimation(SpriteShotgunAnimations::RELOAD);
-
-    this->addObject3D(gun, "gun");
+    // weapon
+    Weapon3D *weapon = new Weapon3D();
+    weapon->setEnabled(true);
+    weapon->setPosition( Vertex3D(0, 1, 5) );
+    weapon->setTimer(Engine::getTimer());
+    weapon->addAnimation("gun/ready", 1);
+    weapon->addAnimation("gun/reload", 3);
+    weapon->addAnimation("gun/shot", 2);
+    weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
+    this->addObject3D(weapon, "weapon");
 }
 
 void Game::mainLoop()

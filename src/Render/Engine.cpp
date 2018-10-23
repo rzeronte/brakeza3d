@@ -10,6 +10,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/Objects/Sprite3D.h"
+#include "../../headers/Objects/Weapon3D.h"
 #include <chrono>
 #include <iostream>
 
@@ -107,7 +108,6 @@ bool Engine::initWindow()
             // Init TTF
             initFontsTTF();
         }
-
     }
 
     return true;
@@ -324,7 +324,21 @@ void Engine::drawSprites()
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, cam, Engine::font, oSprite->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
+        }
 
+        // Weapon 3D
+        Weapon3D *oWeapon = dynamic_cast<Weapon3D*> (this->gameObjects[i]);
+        if (oWeapon != NULL) {
+            if (!oWeapon->isEnabled()) {
+                continue;
+            };
+            oWeapon->setWeaponPosition(cam);
+            oWeapon->updateTrianglesCoordinatesAndTexture(cam);
+            oWeapon->draw(cam);
+
+            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oWeapon->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
+            }
         }
 
     }

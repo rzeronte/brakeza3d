@@ -319,9 +319,9 @@ void Triangle::scanVertices(Camera3D *cam)
     Vertex3D B = Bc;
     Vertex3D C = Cc;
 
-    A = Transforms::homogeneousClipSpace(A, cam);
-    B = Transforms::homogeneousClipSpace(B, cam);
-    C = Transforms::homogeneousClipSpace(C, cam);
+    A = Transforms::NDCSpace(A, cam);
+    B = Transforms::NDCSpace(B, cam);
+    C = Transforms::NDCSpace(C, cam);
 
     // y obtenemos los puntos en la proyección 2d
     Point2D v1 = Transforms::screenSpace(A, cam);
@@ -393,9 +393,9 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
     Vertex3D B = Bc;
     Vertex3D C = Cc;
 
-    A = Transforms::homogeneousClipSpace(A, lp->cam);
-    B = Transforms::homogeneousClipSpace(B, lp->cam);
-    C = Transforms::homogeneousClipSpace(C, lp->cam);
+    A = Transforms::NDCSpace(A, lp->cam);
+    B = Transforms::NDCSpace(B, lp->cam);
+    C = Transforms::NDCSpace(C, lp->cam);
 
     // y obtenemos los puntos en la proyección 2d
     Point2D v1 = Transforms::screenSpace(A, lp->cam);
@@ -612,7 +612,7 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                         if (isMesh != NULL && isMesh->isShadowCaster()) {
                             // Shadow test
                             Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
-                            Dl = Transforms::homogeneousClipSpace(Dl, this->lightPoints[i]->cam);
+                            Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
                             Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
 
                             if (Tools::isPixelInWindow(DP.x, DP.y)) {

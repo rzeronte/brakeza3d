@@ -79,7 +79,7 @@ void Drawable::drawPlaneNormalVector(Plane *plane, Camera3D *cam, Uint32 color)
 void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
 
     Vertex3D A = Transforms::cameraSpace(V, cam);
-    A = Transforms::homogeneousClipSpace(A, cam);
+    A = Transforms::NDCSpace(A, cam);
 
     Point2D P1 = Transforms::screenSpace(A, cam);
 
@@ -105,8 +105,8 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
         return;
     }
 
-    V1 = Transforms::homogeneousClipSpace(V1, cam);
-    V2 = Transforms::homogeneousClipSpace(V2, cam);
+    V1 = Transforms::NDCSpace(V1, cam);
+    V2 = Transforms::NDCSpace(V2, cam);
 
     // get 2d coordinates
     Point2D P1 = Transforms::screenSpace(V1, cam);

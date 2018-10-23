@@ -39,6 +39,8 @@ public:
     static uint8_t getGreenValueFromColor(uint32_t);
     static uint8_t getBlueValueFromColor(uint32_t);
 
+    static float interpolate(float val, float bound_left, float bound_right);
+
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

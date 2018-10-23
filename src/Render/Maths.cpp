@@ -129,9 +129,9 @@ bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, C
     Bo = Transforms::cameraSpace(Bo, cam);
     Co = Transforms::cameraSpace(Co, cam);
 
-    Ao = Transforms::homogeneousClipSpace(Ao, cam);
-    Bo = Transforms::homogeneousClipSpace(Bo, cam);
-    Co = Transforms::homogeneousClipSpace(Co, cam);
+    Ao = Transforms::NDCSpace(Ao, cam);
+    Bo = Transforms::NDCSpace(Bo, cam);
+    Co = Transforms::NDCSpace(Co, cam);
 
     // y obtenemos los puntos en la proyección 2d
     Point2D pa = Transforms::screenSpace(Ao, cam);
@@ -175,9 +175,9 @@ bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, C
             nv2 = Transforms::cameraSpace(nv2, cam);
             nv3 = Transforms::cameraSpace(nv3, cam);
 
-            nv1 = Transforms::homogeneousClipSpace(nv1, cam);
-            nv2 = Transforms::homogeneousClipSpace(nv2, cam);
-            nv3 = Transforms::homogeneousClipSpace(nv3, cam);
+            nv1 = Transforms::NDCSpace(nv1, cam);
+            nv2 = Transforms::NDCSpace(nv2, cam);
+            nv3 = Transforms::NDCSpace(nv3, cam);
 
             // y obtenemos los puntos en la proyección 2d
             Point2D pnv1 = Transforms::screenSpace(nv1, cam);

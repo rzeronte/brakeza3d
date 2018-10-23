@@ -166,7 +166,7 @@ void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, V
 {
     Vertex3D tmpV;
     tmpV = Transforms::cameraSpace( v, cam );
-    tmpV = Transforms::homogeneousClipSpace(tmpV, cam);
+    tmpV = Transforms::NDCSpace(tmpV, cam);
     Point2D text_point = Transforms::screenSpace(tmpV, cam);
 
     // Las coordenadas que debemos darle, dependen del tamaño de la ventana, ya que el renderer
@@ -181,4 +181,16 @@ void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, V
     real_x += 5; // Offset estético
 
     Tools::writeText(renderer, font, real_x, real_y, color, text);
+}
+
+float Tools::interpolate(float val, float bound_left, float bound_right)
+{
+    float Ax = val;                     // componente X de nuestro vértice en PANTALLA2D
+    float vNLx = bound_left;            // Límite Izquierdo de PANTALLA2D
+    float vNRx = bound_right;           // Límite Derecho de PANTALLA2D
+    float tx0 = (Ax - vNLx);            // Distancia entre el límite Izquierdo y nuestro vértice
+    float tx1 =  1 / ( vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
+    float xt =  (tx0 * tx1)  - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
+
+    return xt;
 }
