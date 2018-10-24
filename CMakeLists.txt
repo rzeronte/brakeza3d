@@ -95,7 +95,18 @@ add_executable(brakeda3d
         src/GUI/GUI_Log.h
         src/Render/Logging.cpp
         headers/Render/Logging.h
-        src/Objects/SpriteDirectional3D.cpp headers/Objects/SpriteDirectional3D.h src/2D/AnimationDirectional2D.cpp headers/2D/AnimationDirectional2D.h src/Objects/Sprite3D.cpp headers/Objects/Sprite3D.h src/2D/Animation2D.cpp headers/2D/Animation2D.h src/Render/Maths.cpp headers/Render/Maths.h src/Objects/Weapon3D.cpp headers/Objects/Weapon3D.h)
+        src/Objects/SpriteDirectional3D.cpp headers/Objects/SpriteDirectional3D.h src/2D/AnimationDirectional2D.cpp headers/2D/AnimationDirectional2D.h src/Objects/Sprite3D.cpp headers/Objects/Sprite3D.h src/2D/Animation2D.cpp headers/2D/Animation2D.h src/Render/Maths.cpp headers/Render/Maths.h src/Objects/Weapon3D.cpp headers/Objects/Weapon3D.h
+        WAD/Constants.cpp
+        WAD/Constants.h
+        WAD/Directory.cpp
+        WAD/Directory.h
+        WAD/Identification.cpp
+        WAD/Identification.h
+        WAD/Signature.cpp
+        WAD/Signature.h
+        WAD/WAD.cpp
+        WAD/WAD.h
+        )
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
