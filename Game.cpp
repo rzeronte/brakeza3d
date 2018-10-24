@@ -7,6 +7,7 @@
 #include "headers/Objects/SpriteDirectional3D.h"
 #include "headers/Objects/Sprite3D.h"
 #include "headers/Objects/Weapon3D.h"
+#include "WAD/WAD.h"
 
 
 enum SpriteDoom2SoldierAnimations {
@@ -24,6 +25,8 @@ enum SpriteShotgunAnimations {
 enum SpriteGuyAnimations {
     NORMAL,
 };
+
+using namespace Biendeo::WAD;
 
 void Game::run()
 {
@@ -125,6 +128,17 @@ void Game::onStart()
     weapon->addAnimation("gun/shot", 2);
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
+
+    WAD* testWad = nullptr;
+
+    char* wadLocation = "../models/freedoom1.wad";
+    try {
+        testWad = new WAD(wadLocation);
+        testWad->Write("test.wad");
+    } catch (std::exception& e) {
+        printf("piciaa");
+        std::cerr << e.what() << "\n";
+    }
 }
 
 void Game::mainLoop()
