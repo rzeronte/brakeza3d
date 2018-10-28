@@ -67,8 +67,8 @@ namespace Biendeo {
             int cont = 0;
             // 4 bytes es el tamaño de un VERTEX
             for (int i = 0; i < linedef_vertexes.sizeData; i+=linedef_size_bytes) {
-                signed short x_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i, 1)).get());
-                signed short y_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+2, 1)).get());
+                signed short x_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i, 2)).get());
+                signed short y_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+2, 2)).get());
 
                 printf("%d) x: %d, y: %d\r\n", cont, x_pos, y_pos);
 
