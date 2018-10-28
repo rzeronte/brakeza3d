@@ -130,15 +130,9 @@ void Game::onStart()
     this->addObject3D(weapon, "weapon");
 
     WAD* testWad = nullptr;
-
     char* wadLocation = "../models/freedoom1.wad";
-    try {
-        testWad = new WAD(wadLocation);
-        testWad->Write("test.wad");
-    } catch (std::exception& e) {
-        printf("piciaa");
-        std::cerr << e.what() << "\n";
-    }
+    testWad = new WAD(wadLocation);
+    testWad->Testing();
 }
 
 void Game::mainLoop()
@@ -181,6 +175,9 @@ void Game::onUpdate()
 
     Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     marine->rotation.y+=0.5f;
+
+
+
 }
 
 void Game::onEnd()

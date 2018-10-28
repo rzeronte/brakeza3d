@@ -15,8 +15,8 @@ public:
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 480;
+    int SCREEN_WIDTH = 320;
+    int SCREEN_HEIGHT = 200;
 
     float MOUSE_SENSIBILITY = 0.15f;
     bool CAMERA_MOUSE_ROTATION = true;

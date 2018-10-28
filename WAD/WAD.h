@@ -19,6 +19,10 @@ namespace Biendeo {
 
 			// Writes this object to a given file location.
 			bool Write(char* wadLocation);
+			bool Testing();
+            int getIndexLumpByName(std::string lump_name);
+            void parseLINEDEFS(Directory );
+            void parseVERTEXES(Directory );
 
 			private:
 			// The signature of this WAD.
@@ -29,6 +33,9 @@ namespace Biendeo {
 
 			// Reads a file an returns an array of its contents.
 			byte* ReadFile(char* fileLocation);
-		};
+
+			void DoomPicture(wadAddress);
+
+            };
 	}
 }

@@ -15,10 +15,11 @@ private:
     EngineBuffers();
     ~EngineBuffers();
 
+public:
+
     float *depthBuffer;
     Uint32 *videoBuffer;
 
-public:
     int sizeBuffers;
     static EngineBuffers* getInstance();
 

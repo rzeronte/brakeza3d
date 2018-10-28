@@ -27,5 +27,10 @@ namespace Biendeo {
 
 			return arr;
 		}
+
+		void Directory::consoleInfo()
+		{
+			printf("Directory Name: %s | Size: %d\r\n", this->name, this->sizeData);
+		}
 	}
 }
