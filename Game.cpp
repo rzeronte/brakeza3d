@@ -129,10 +129,6 @@ void Game::onStart()
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
 
-    WAD* testWad = nullptr;
-    char* wadLocation = "../models/freedoom1.wad";
-    testWad = new WAD(wadLocation);
-    testWad->Testing();
 }
 
 void Game::mainLoop()
@@ -178,6 +174,10 @@ void Game::onUpdate()
 
 
 
+    WAD* testWad = nullptr;
+    char* wadLocation = "../models/freedoom1.wad";
+    testWad = new WAD(wadLocation);
+    testWad->loadMap();
 }
 
 void Game::onEnd()

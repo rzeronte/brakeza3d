@@ -6,11 +6,16 @@
 #include "Directory.h"
 #include "Identification.h"
 #include "Signature.h"
+#include "../headers/Objects/Point2D.h"
 
 namespace Biendeo {
 	namespace WAD {
 		// The base WAD class, it should contain all the information of a WAD.
 		class WAD {
+
+		    Point2D *vertices[60000];
+		    int num_vertices;
+
 			public:
 			// Creates a new WAD from the given WAD path.
 			WAD(char* wadLocation);
@@ -19,7 +24,7 @@ namespace Biendeo {
 
 			// Writes this object to a given file location.
 			bool Write(char* wadLocation);
-			bool Testing();
+			bool loadMap();
             int getIndexLumpByName(std::string lump_name);
             void parseLINEDEFS(Directory );
             void parseVERTEXES(Directory );
