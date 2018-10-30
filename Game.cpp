@@ -127,9 +127,6 @@ void Game::onStart()
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
 
-    char* wadLocation = "../models/freedoom1.wad";
-    WAD* testWad = new WAD(wadLocation);
-    testWad->loadMap("E1M1");
 }
 
 void Game::mainLoop()
@@ -173,7 +170,10 @@ void Game::onUpdate()
     Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     marine->rotation.y+=0.5f;
 
-
+    /*char* wadLocation = "../models/freedoom1.wad";
+    WAD* testWad = new WAD(wadLocation);
+    testWad->loadMap("E1M1");
+    testWad->draw2D();*/
 }
 
 void Game::onEnd()

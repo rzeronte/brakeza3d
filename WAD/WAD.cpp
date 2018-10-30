@@ -88,15 +88,24 @@ void WAD::parseLINEDEFS(Directory linedefs_lump)
     int linedef_size_bytes = 14;
     int cont = 0;
 
-    for (int i = 0; i < linedefs_lump.sizeData; i+=linedef_size_bytes) {    // 14 bytes es el tamaño de una LINEDEF
+    for (int i = 0; i < linedefs_lump.sizeData; i+=linedef_size_bytes) {
         unsigned short s_vertex = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i, 2)).get());
         unsigned short e_vertex = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+2, 2)).get());
         unsigned short flags = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+4, 2)).get());
+        unsigned short type = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+6, 2)).get());
+        unsigned short sector_tag = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+8, 2)).get());
+        unsigned short right_sidedef = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+10, 2)).get());
+        unsigned short left_sidedef = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+12, 2)).get());
 
         WADLinedef wl;
         wl.start_vertex = s_vertex;
         wl.end_vertex = e_vertex;
         wl.flags = flags;
+        wl.type = type;
+        wl.sector_tag = sector_tag;
+        wl.right_sidedef = right_sidedef;
+        wl.left_sidedef = left_sidedef;
+
         this->linedefs[this->num_linedefs] = wl;
         this->num_linedefs++;
 
@@ -272,11 +281,43 @@ void WAD::parseDoomPicture(wadAddress OffsetImage)
     }
 }
 
-
-/*
- *
- *         short int bits[8];
-        for ( int j = 0; j<8; j++ ) {
-            bits[j] = (flags >> j) & 1;
+void WAD::render()
+{
+    for (int i = 0; i < this->num_linedefs; i++) {
+        WADSidedef back_sidedef;
+        if (this->linedefs[i].haveBackSide()) {
+            back_sidedef = this->sidedefs[ this->linedefs[i].getBackSideIndex() ];
         }
- */
+
+        WADSidedef front_sidedef;
+        if (this->linedefs[i].haveFrontSide()) {
+            front_sidedef = this->sidedefs[this->linedefs[i].getFrontSideIndex()];
+        }
+    }
+}
+
+void WAD::draw2D()
+{
+    for (int i=0; i < this->num_linedefs; i++) {
+
+        Point2D *p1 = new Point2D(
+            this->vertexes[this->linedefs[i].start_vertex].x_pos,
+            this->vertexes[this->linedefs[i].start_vertex].y_pos
+        );
+
+        Point2D *p2 = new Point2D(
+            this->vertexes[this->linedefs[i].end_vertex].x_pos,
+            this->vertexes[this->linedefs[i].end_vertex].y_pos
+        );
+
+        int reducer = 10;
+        Line2D l1 = Line2D(
+            p1->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
+            p1->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2,
+            p2->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
+            p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
+        );
+
+        l1.draw();
+    }
+}

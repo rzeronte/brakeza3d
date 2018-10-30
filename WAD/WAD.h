@@ -37,6 +37,9 @@ class WAD {
     void parseSIDEDEFS( Directory );
     void parseSECTORS( Directory );
 
+    void draw2D();
+    void render();
+
     void parseDoomPicture( wadAddress );
 
     private:
@@ -46,4 +49,4 @@ class WAD {
     byte* ReadFile(char* fileLocation);
 
 
-    };
+};
