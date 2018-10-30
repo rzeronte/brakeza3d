@@ -26,8 +26,6 @@ enum SpriteGuyAnimations {
     NORMAL,
 };
 
-using namespace Biendeo::WAD;
-
 void Game::run()
 {
     this->onStart();
@@ -129,6 +127,11 @@ void Game::onStart()
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
 
+
+    WAD* testWad = nullptr;
+    char* wadLocation = "../models/freedoom1.wad";
+    testWad = new WAD(wadLocation);
+    testWad->loadMap("E1M1");
 }
 
 void Game::mainLoop()
@@ -173,11 +176,6 @@ void Game::onUpdate()
     marine->rotation.y+=0.5f;
 
 
-
-    WAD* testWad = nullptr;
-    char* wadLocation = "../models/freedoom1.wad";
-    testWad = new WAD(wadLocation);
-    testWad->loadMap();
 }
 
 void Game::onEnd()
