@@ -1,12 +1,10 @@
-//
-// Created by darkhead on 2018-10-30.
-//
 
 #ifndef BRAKEDA3D_WADSIDEDEF_H
 #define BRAKEDA3D_WADSIDEDEF_H
 
 
 class WADSidedef {
+public:
     signed short x_offset;
     signed short y_offset;
 

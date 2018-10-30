@@ -1,12 +1,10 @@
-//
-// Created by darkhead on 2018-10-30.
-//
 
 #ifndef BRAKEDA3D_WADSECTOR_H
 #define BRAKEDA3D_WADSECTOR_H
 
 
 class WADSector {
+public:
     signed short floor_height;
     signed short ceiling_height;
 

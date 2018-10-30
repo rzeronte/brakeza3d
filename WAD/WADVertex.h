@@ -4,6 +4,7 @@
 
 
 class WADVertex {
+public:
     signed short x_pos;
     signed short y_pos;
 };

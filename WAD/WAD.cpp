@@ -13,18 +13,15 @@
 char *wadFile;
 
 WAD::WAD(char* wadLocation) {
-    this->num_vertices = 0;
     wadFile = wadLocation;
     // Is it a good thing to load the whole WAD into memory?
     std::unique_ptr<byte[]> wadBinary(ReadFile(wadFile));
 
     signature = Signature(wadBinary.get());
-    {
-        wadAddress lumpAddress = signature.infoTableOfS;
-        for (size_t i = 0; i < signature.numLumps; ++i) {
-            directories.emplace_back(&wadBinary.get()[lumpAddress]);
-            lumpAddress += 16;
-        }
+    wadAddress lumpAddress = signature.infoTableOfS;
+    for (size_t i = 0; i < signature.numLumps; ++i) {
+        directories.emplace_back(&wadBinary.get()[lumpAddress]);
+        lumpAddress += 16;
     }
 }
 
@@ -32,13 +29,10 @@ WAD::~WAD() {
 
 }
 
-bool WAD::loadMap(std::string map_name) {
-
-    //std::unique_ptr<byte[]> wadBinary(ReadFile(wadFile));
-    //Directory lump_index = WAD::getIndexLumpByName("STDISK");
-    //DoomPicture(lump_index.offData);
-
+bool WAD::loadMap(std::string map_name)
+{
     int lump_index = WAD::getIndexLumpByName(map_name);
+
     Directory marker_map = directories.at(lump_index);
     Directory things     = directories.at(lump_index+1);
     Directory linedefs   = directories.at(lump_index+2);
@@ -65,17 +59,20 @@ void WAD::parseVERTEXES(Directory linedef_vertexes)
 
     byte *binaryLinedef = &wadBinary.get()[linedef_vertexes.offData];
 
-    int linedef_size_bytes = 4;
+    int vertex_size_bytes = 4;
     int cont = 0;
     // 4 bytes es el tamaño de un VERTEX
-    for (int i = 0; i < linedef_vertexes.sizeData; i+=linedef_size_bytes) {
+    for (int i = 0; i < linedef_vertexes.sizeData; i+=vertex_size_bytes) {
         signed short x_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i, 2)).get());
         signed short y_pos = (signed short) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+2, 2)).get());
 
-        //printf("%d) x: %d, y: %d\r\n", cont, x_pos, y_pos);
+        WADVertex wv;
+        wv.x_pos = x_pos;
+        wv.y_pos = y_pos;
+        this->vertexes[this->num_vertexes] = wv;
+        this->num_vertexes++;
 
-        this->vertices[this->num_vertices] = new Point2D(x_pos, y_pos);
-        this->num_vertices++;
+        //printf("%d) x: %d, y: %d\r\n", cont, x_pos, y_pos);
         cont++;
     }
 
@@ -94,30 +91,15 @@ void WAD::parseLINEDEFS(Directory linedefs_lump)
     for (int i = 0; i < linedefs_lump.sizeData; i+=linedef_size_bytes) {    // 14 bytes es el tamaño de una LINEDEF
         unsigned short s_vertex = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i, 2)).get());
         unsigned short e_vertex = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+2, 2)).get());
-
         unsigned short flags = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryLinedef, i+4, 2)).get());
 
-        Point2D *p1 = this->vertices[s_vertex];
-        Point2D *p2 = this->vertices[e_vertex];
+        WADLinedef wl;
+        wl.start_vertex = s_vertex;
+        wl.end_vertex = e_vertex;
+        wl.flags = flags;
+        this->linedefs[this->num_linedefs] = wl;
+        this->num_linedefs++;
 
-        //printf("%d) LINEDEF: V1(index): %d, V2(index): %d | V1(%d, %d), V2(%d, %d) | Flags: %d | ", cont, s_vertex, e_vertex, (int)p1->x, (int)p1->y, (int)p2->x, (int)p2->y, flags);
-
-        int reducer = 10;
-        Line2D l1 = Line2D(
-            p1->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-            p1->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2,
-            p2->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-            p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
-        );
-
-        short int bits[8];
-        for ( int j = 0; j<8; j++ ) {
-            bits[j] = (flags >> j) & 1;
-        }
-
-        //printf("\r\n");
-
-        l1.draw();
         cont++;
     }
 
@@ -130,10 +112,10 @@ void WAD::parseSIDEDEFS(Directory linedef_sidedefs)
 
     byte *binarySIDEDEFS = &wadBinary.get()[linedef_sidedefs.offData];
 
-    int linedef_size_bytes = 30;
+    int sidedef_size_bytes = 30;
     int cont = 0;
 
-    for (int i = 0; i < linedef_sidedefs.sizeData; i+=linedef_size_bytes) {    // 14 bytes es el tamaño de una LINEDEF
+    for (int i = 0; i < linedef_sidedefs.sizeData; i+=sidedef_size_bytes) {    // 14 bytes es el tamaño de una LINEDEF
         signed short x_offset = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binarySIDEDEFS, i, 2)).get());
         signed short y_offset = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binarySIDEDEFS, i+2, 2)).get());
 
@@ -147,7 +129,18 @@ void WAD::parseSIDEDEFS(Directory linedef_sidedefs)
 
         signed short sector = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binarySIDEDEFS, i+28, 2)).get());
 
-        printf("%d) SIDEDEF: X Offset: %d, Y Offset: %d: Textures: %s | %s | %s | Sector: %d\r\n", cont, x_offset, y_offset, texture_upper, texture_middle, texture_lower, sector);
+        WADSidedef ws;
+        ws.x_offset = x_offset;
+        ws.y_offset = y_offset;
+        memcpy(ws.texture_lower, texture_lower, 8);
+        memcpy(ws.texture_middle, texture_middle, 8);
+        memcpy(ws.texture_upper, texture_upper, 8);
+        ws.sector = sector;
+
+        this->sidedefs[this->num_sidedefs] = ws;
+        this->num_sidedefs++;
+
+        //printf("%d) SIDEDEF: X Offset: %d, Y Offset: %d: Textures: %s | %s | %s | Sector: %d\r\n", cont, x_offset, y_offset, texture_upper, texture_middle, texture_lower, sector);
         cont++;
     }
 
@@ -178,8 +171,20 @@ void WAD::parseSECTORS(Directory linedef_sectors)
         signed short special = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binarySIDEDEFS, i+22, 2)).get());
         signed short tag = LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binarySIDEDEFS, i+24, 2)).get());
 
-        printf("%d) SECTOR: Floor H: %d | Ceiling H: %d | Floor T: %s | Ceiling T: %s | Light: %d | Special: %d | Tag: %d \r\n", cont, floor_height, ceiling_height, (char *) floor_texture, (char *) ceiling_texture, light, special, tag);
+        //printf("%d) SECTOR: Floor H: %d | Ceiling H: %d | Floor T: %s | Ceiling T: %s | Light: %d | Special: %d | Tag: %d \r\n", cont, floor_height, ceiling_height, (char *) floor_texture, (char *) ceiling_texture, light, special, tag);
         cont++;
+
+        WADSector ws;
+        ws.floor_height = floor_height;
+        ws.ceiling_height = ceiling_height;
+        memcpy(ws.floor_texture, floor_texture, 8);
+        memcpy(ws.ceiling_texture, ceiling_texture, 8);
+        ws.light = light;
+        ws.special = special;
+        ws.tag = tag;
+
+        this->sectors[this->num_sectors] = ws;
+        this->num_sectors++;
     }
 }
 
@@ -212,7 +217,6 @@ int WAD::getIndexLumpByName(std::string lump_name)
             if (!name[j])
                 break;
 
-        printf("%s\r\n", name);
         if (strcmp(name, lump_name.c_str()) == 0) {
             return i;
         }
@@ -220,7 +224,7 @@ int WAD::getIndexLumpByName(std::string lump_name)
     }
 }
 
-void WAD::DoomPicture(wadAddress OffsetImage)
+void WAD::parseDoomPicture(wadAddress OffsetImage)
 {
     std::unique_ptr<byte[]> wadBinary(ReadFile(wadFile));
 
@@ -238,7 +242,7 @@ void WAD::DoomPicture(wadAddress OffsetImage)
 
     wadAddress columns[w];
 
-    printf("\n\nDoom Image:  width: %d, height: %d\r\n", w, h);
+    //printf("\n\nDoom Image:  width: %d, height: %d\r\n", w, h);
 
     for (int i = 0; i < w ; i++) {
         columns[i] = (wadAddress) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryImage, byte_counter, 4)).get());
@@ -259,11 +263,20 @@ void WAD::DoomPicture(wadAddress OffsetImage)
         int garbage = (uint8_t) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryImage, columns[i]+cont, 1)).get());
         cont++;
 
-        printf("%d) Offset: %d, NumPixels: %d\r\n", i, rowstart, npixels);
+        //printf("%d) Offset: %d, NumPixels: %d\r\n", i, rowstart, npixels);
 
         for (int j = 0 ; j < npixels; j++) {
             int pixel = (int) LittleEndianToInt(std::unique_ptr<byte[]>(SubArray(binaryImage, columns[i]+cont+j, 1)).get());
-            printf("Pixel: %d\r\n", pixel);
+            //printf("PaletteColor: %d\r\n", pixel);
         }
     }
 }
+
+
+/*
+ *
+ *         short int bits[8];
+        for ( int j = 0; j<8; j++ ) {
+            bits[j] = (flags >> j) & 1;
+        }
+ */

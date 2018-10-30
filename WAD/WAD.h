@@ -7,35 +7,43 @@
 #include "Identification.h"
 #include "Signature.h"
 #include "../headers/Objects/Point2D.h"
+#include "WADVertex.h"
+#include "WADLinedef.h"
+#include "WADSector.h"
+#include "WADSidedef.h"
 
 // The base WAD class, it should contain all the information of a WAD.
 class WAD {
 
-    Point2D *vertices[60000];
-    int num_vertices;
+    WADVertex  vertexes[65536];
+    WADLinedef linedefs[65536];
+    WADSidedef sidedefs[65536];
+    WADSector  sectors[65536];
+
+    int num_vertexes;
+    int num_linedefs;
+    int num_sidedefs;
+    int num_sectors;
 
     public:
-    // Creates a new WAD from the given WAD path.
     WAD(char* wadLocation);
-    // Destroys the WAD object.
     ~WAD();
 
     bool loadMap(std::string);
     int getIndexLumpByName(std::string lump_name);
-    void clearName(char *);
 
-    void parseLINEDEFS(Directory );
-    void parseVERTEXES(Directory );
-    void parseSIDEDEFS(Directory );
-    void parseSECTORS(Directory );
+    void parseLINEDEFS( Directory );
+    void parseVERTEXES( Directory );
+    void parseSIDEDEFS( Directory );
+    void parseSECTORS( Directory );
+
+    void parseDoomPicture( wadAddress );
 
     private:
     Signature signature;
     std::vector<Directory> directories;
 
-    // Reads a file an returns an array of its contents.
     byte* ReadFile(char* fileLocation);
 
-    void DoomPicture(wadAddress);
 
     };
