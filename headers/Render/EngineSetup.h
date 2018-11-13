@@ -38,7 +38,7 @@ public:
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = true;
-    bool TRIANGLE_MODE_COLOR_SOLID = true;
+    bool TRIANGLE_MODE_COLOR_SOLID = false;
     bool TRIANGLE_MODE_TEXTURIZED = true;
 
     // Normal in triangle
@@ -77,8 +77,8 @@ public:
     float CONTROLLER_SPEED_MOVEMENT = 0.5f;
     float CONTROLLER_SPEED_ROTATION = 5.f;
 
-    float CONTROLLER_SPEED_ROTATION_CAMERA = 0.5f;
-    float CONTROLLER_SPEED_MOVEMENT_CAMERA = 0.5f;
+    float CONTROLLER_SPEED_ROTATION_CAMERA = 1.f;
+    float CONTROLLER_SPEED_MOVEMENT_CAMERA = 10.f;
 
     std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../icons/object3d.tga";
@@ -107,6 +107,8 @@ public:
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
+
+    int Q1_VERTEX_DIVISOR = 1;
 
 };
 

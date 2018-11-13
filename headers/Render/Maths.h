@@ -10,6 +10,7 @@
 #include "../Objects/Camera3D.h"
 #include "Texture.h"
 #include "../Objects/LightPoint3D.h"
+#include "../Objects/Triangle3D.h"
 
 class Maths
 {

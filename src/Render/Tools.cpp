@@ -194,3 +194,8 @@ float Tools::interpolate(float val, float bound_left, float bound_right)
 
     return xt;
 }
+
+bool Tools::getBit(unsigned char byte, int position) // position in range 0-7
+{
+    return (byte >> position) & 0x1;
+}

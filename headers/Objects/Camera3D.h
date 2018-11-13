@@ -44,6 +44,7 @@ public:
     Vertex3D rightVector();
 
     void consoleInfo();
+
 };
 
 

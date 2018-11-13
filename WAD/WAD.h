@@ -38,6 +38,8 @@ class WAD {
     void parseSECTORS( Directory );
 
     void draw2D();
+    void drawLinedef(WADLinedef);
+    void drawSector(int);
     void render();
 
     void parseDoomPicture( wadAddress );

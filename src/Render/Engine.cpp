@@ -152,7 +152,8 @@ void Engine::drawGUI()
     gui_engine->draw(
         finish,
         gameObjects, numberGameObjects,
-        lightPoints, numberLightPoints
+        lightPoints, numberLightPoints,
+        cam
     );
 
     ImGui::Render();
@@ -187,19 +188,7 @@ void Engine::onStart()
 
 void Engine::onUpdateEvent()
 {
-    // handle Keyboard
-    for (int i = 0; i < this->numberGameObjects; i++) {
-        if ( this->gameObjects[i]->isHandleKeyboard() ) {
-            this->cont->handleKeyboardObject3D(&this->e, this->gameObjects[i]);
-        }
-    }
 
-    for (int i = 0; i < this->numberLightPoints; i++) {
-        this->lightPoints[i]->syncFrustum();
-        if ( this->lightPoints[i]->isHandleKeyboard() ) {
-            this->cont->handleKeyboardObject3D(&this->e, this->lightPoints[i]);
-        }
-    }
 }
 
 void Engine::onUpdate()

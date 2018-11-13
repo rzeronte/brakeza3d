@@ -25,7 +25,7 @@ public:
         gui_log = new GUI_Log();
     }
 
-    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints)
+    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
@@ -33,7 +33,7 @@ public:
         gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show);
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
-        gui_log->draw(getFps());
+        gui_log->draw(getFps(), cam);
     }
 
     float getFps() const {

@@ -4,6 +4,7 @@
 
 
 #include "WADSidedef.h"
+#include "WADVertex.h"
 
 class WADLinedef {
 public:

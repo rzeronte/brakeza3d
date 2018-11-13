@@ -40,6 +40,7 @@ public:
     static uint8_t getBlueValueFromColor(uint32_t);
 
     static float interpolate(float val, float bound_left, float bound_right);
+    static bool getBit(unsigned char byte, int position);
 
 };
 

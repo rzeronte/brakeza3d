@@ -331,8 +331,8 @@ void Triangle::scanVertices(Camera3D *cam)
     // Ordenamos los vertices y puntos por su valor en 'y'
     Maths::sortPointsByY(v1, v2, v3);
 
-    //Tools::sortVertexByY(A, B, C);
-    //Tools::sortVertexByY(Aos, Bos, Cos);
+    Maths::sortVertexByY(A, B, C);
+    Maths::sortVertexByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
         this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos);

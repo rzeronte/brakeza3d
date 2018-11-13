@@ -3,6 +3,8 @@
 #define BRAKEDA3D_WADSECTOR_H
 
 
+#include "WADLinedef.h"
+
 class WADSector {
 public:
     signed short floor_height;
@@ -14,6 +16,7 @@ public:
     signed short light;
     signed short special;
     signed short tag;
+
 };
 
 

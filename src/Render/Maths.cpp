@@ -241,6 +241,8 @@ bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, C
     }
 }
 
+
+
 Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
     Vertex3D middle = Vertex3D(0, 0, 0);
 

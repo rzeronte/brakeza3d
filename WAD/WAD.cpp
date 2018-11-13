@@ -45,9 +45,11 @@ bool WAD::loadMap(std::string map_name)
     Directory reject     = directories.at(lump_index+9);
     Directory blockmap   = directories.at(lump_index+10);
 
-    parseVERTEXES(vertexes);
-    parseLINEDEFS(linedefs);
     parseSIDEDEFS(sidedefs);
+    parseVERTEXES(vertexes);
+
+    parseLINEDEFS(linedefs);
+
     parseSECTORS(sectors);
 
     return true;
@@ -283,6 +285,8 @@ void WAD::parseDoomPicture(wadAddress OffsetImage)
 
 void WAD::render()
 {
+    // Walls
+    /*
     for (int i = 0; i < this->num_linedefs; i++) {
         WADSidedef back_sidedef;
         if (this->linedefs[i].haveBackSide()) {
@@ -293,31 +297,62 @@ void WAD::render()
         if (this->linedefs[i].haveFrontSide()) {
             front_sidedef = this->sidedefs[this->linedefs[i].getFrontSideIndex()];
         }
+    }*/
+
+    //Floor
+
+    for (int i = 0; i < this->num_sectors; i++) {
+        drawSector(i);
+    }
+}
+
+void WAD::drawLinedef(WADLinedef linedef)
+{
+    Point2D *p1 = new Point2D(
+        this->vertexes[linedef.start_vertex].x_pos,
+        this->vertexes[linedef.start_vertex].y_pos
+    );
+
+    Point2D *p2 = new Point2D(
+        this->vertexes[linedef.end_vertex].x_pos,
+        this->vertexes[linedef.end_vertex].y_pos
+    );
+
+    int reducer = 5;
+    Line2D l1 = Line2D(
+        p1->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
+        p1->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2,
+        p2->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
+        p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
+    );
+
+    l1.draw();
+}
+
+void WAD::drawSector(int sector_index) {
+    printf("SECTOR: #%d | Ceiling: %s | Floor: %s\r\n", sector_index, this->sectors[sector_index].ceiling_texture, this->sectors[sector_index].floor_texture);
+    int c = 0;
+    for (int j = 0; j < this->num_linedefs; j++) {
+        if (this->linedefs[j].haveFrontSide()) {
+            if (this->sidedefs[ this->linedefs[j].getFrontSideIndex() ].sector == sector_index) {
+                printf("%d) linedef: %d | %d\r\n",  c, this->linedefs[j].getFrontSideIndex(), this->sidedefs[ this->linedefs[j].getFrontSideIndex() ].sector);
+                c++;
+                drawLinedef(this->linedefs[j]);
+            }
+        }
+        if (this->linedefs[j].haveBackSide()) {
+            if (this->sidedefs[ this->linedefs[j].getBackSideIndex() ].sector == sector_index) {
+                printf("%d) linedef: %d | %d\r\n",  c, this->linedefs[j].getBackSideIndex(), this->sidedefs[ this->linedefs[j].getBackSideIndex() ].sector);
+                c++;
+                drawLinedef(this->linedefs[j]);
+            }
+        }
     }
 }
 
 void WAD::draw2D()
 {
     for (int i=0; i < this->num_linedefs; i++) {
-
-        Point2D *p1 = new Point2D(
-            this->vertexes[this->linedefs[i].start_vertex].x_pos,
-            this->vertexes[this->linedefs[i].start_vertex].y_pos
-        );
-
-        Point2D *p2 = new Point2D(
-            this->vertexes[this->linedefs[i].end_vertex].x_pos,
-            this->vertexes[this->linedefs[i].end_vertex].y_pos
-        );
-
-        int reducer = 10;
-        Line2D l1 = Line2D(
-            p1->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-            p1->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2,
-            p2->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-            p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
-        );
-
-        l1.draw();
+        //drawLinedef(this->linedefs[i]);
     }
 }

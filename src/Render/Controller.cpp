@@ -44,53 +44,57 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 
         camera->rotation.x+= CameraPitch;
         camera->rotation.y+= CameraYaw;
+
+        if (camera->rotation.x > 360) {
+            camera->rotation.x = 0;
+        }
+        if (camera->rotation.y < 0) {
+            camera->rotation.y = 360;
+        }
     }
 }
 
 void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
 {
+    int mov_x = 0, mov_y = 0, mov_z = 0;
+    int rot_x = 0, rot_y = 0, rot_z = 0;
+
     if  (event_type == SDL_KEYDOWN) {
         switch( key_pressed ) {
             // Camera position
             // Y
             case SDLK_q:
-                camera->getPosition()->y += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_y += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
             case SDLK_a:
-                camera->getPosition()->y -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_y -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
                 // X
             case SDLK_o:
-                camera->getPosition()->x -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_x -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
             case SDLK_p:
-                camera->getPosition()->x += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_x  += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
                 // Z
             case SDLK_w:
-                camera->getPosition()->z += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_z += EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
             case SDLK_s:
-                camera->getPosition()->z -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
+                mov_z -= EngineSetup::getInstance()->CONTROLLER_SPEED_MOVEMENT_CAMERA;
                 break;
                 // camera rotation
             case SDLK_UP:
-                camera->getRotation()->x += EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
+                rot_x += EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
                 break;
             case SDLK_DOWN:
-                camera->getRotation()->x -= EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
+                rot_x -= EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
                 break;
             case SDLK_LEFT:
-                camera->getRotation()->y -= EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
+                rot_y -= EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
                 break;
             case SDLK_RIGHT:
-                camera->getRotation()->y += EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
-                break;
-            case SDLK_f:
-                camera->getRotation()->z -= EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
-                break;
-            case SDLK_g:
-                camera->getRotation()->z += EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
+                rot_y += EngineSetup::getInstance()->CONTROLLER_SPEED_ROTATION_CAMERA;
                 break;
             case SDLK_k:
                 camera->horizontal_fov--;
@@ -112,6 +116,15 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
                 done = true;
                 break;
         }
+    }
+
+    camera->position.addVertex( Vertex3D(mov_x, mov_x, mov_z));
+
+    if (camera->rotation.x > 360) {
+        camera->rotation.x = 0;
+    }
+    if (camera->rotation.y < 0) {
+        camera->rotation.y = 360;
     }
 
 }

@@ -8,7 +8,9 @@
 #include "headers/Objects/Sprite3D.h"
 #include "headers/Objects/Weapon3D.h"
 #include "WAD/WAD.h"
+#include "Map.h"
 
+int reductor = 100;
 
 enum SpriteDoom2SoldierAnimations {
     IDLE = 0,
@@ -34,11 +36,18 @@ void Game::run()
     Close();
 }
 
+
 void Game::onStart()
 {
     Engine::onStart();
 
-    LightPoint3D *lp1 = new LightPoint3D();
+    Engine::cam->position.x = 544;
+    Engine::cam->position.y = 288;
+    Engine::cam->position.z = 32;
+
+    //Engine::cam->rotation.x = 90;
+
+    /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
     lp1->setLabel("LightPoint1");
     lp1->setPosition(Vertex3D(1, 1.5f, -1));
@@ -58,13 +67,14 @@ void Game::onStart()
     lp3->setPosition(Vertex3D(2, 1, -1));
     lp3->setColor( 0, 0, 255 );
     this->addLightPoint(lp3, "l3");
+    */
 
     // mono
     Mesh3D *mono = new Mesh3D();
-    mono->setEnabled(false);
+    mono->setEnabled(true);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->rotation.x = 180;
-    mono->setPosition( Vertex3D(1, 1, -1) );
+    mono->setPosition( Vertex3D(1, 1, 30) );
     mono->loadOBJBlender("../models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
@@ -72,20 +82,21 @@ void Game::onStart()
     // cubo
     Mesh3D *cubo = new Mesh3D();
     cubo->scale = 500;
-    cubo->setEnabled(false);
+    cubo->setEnabled(true);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cubo->rotation.x = 180;
     cubo->setPosition( Vertex3D(1, 1, 20) );
     cubo->loadOBJBlender("../models/cubo.obj");
     this->addObject3D(cubo, "cubo");
 
-    // q3 map
-    Mesh3D *q3map = new Mesh3D();
+    // q3 q1map
+    /*Mesh3D *q3map = new Mesh3D();
     q3map->setEnabled(false);
     q3map->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     q3map->setPosition( Vertex3D(1, 1, 5) );
     q3map->loadQ3Map("../pak0/maps/q3dm17.bsp");
     this->addObject3D(q3map, "q3map");
+    */
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
@@ -117,16 +128,35 @@ void Game::onStart()
     this->addObject3D(guy, "guy");
 
     // weapon
-    Weapon3D *weapon = new Weapon3D();
-    weapon->setEnabled(true);
-    weapon->setPosition( Vertex3D(0, 1, 5) );
+    /*Weapon3D *weapon = new Weapon3D();
+    weapon->setEnabled(false);
+    weapon->setPosition( Vertex3D(1, 1, 5) );
     weapon->setTimer(Engine::getTimer());
     weapon->addAnimation("gun/ready", 1);
     weapon->addAnimation("gun/reload", 3);
     weapon->addAnimation("gun/shot", 2);
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
+    */
 
+    // WAD Parser
+    /*
+    char* wadLocation = "../models/freedoom1.wad";
+    WAD* testWad = new WAD(wadLocation);
+    testWad->loadMap("E1M1");
+    testWad->draw2D();
+    testWad->render();
+    */
+
+    Map *q1map = new Map();
+    q1map->setPosition( Vertex3D(0, 0, 0) );
+
+    if (!q1map->Initialize("../assets/start.bsp", "../assets/palette.lmp")) {
+        Logging::getInstance()->Log("Quake::main() Unable to initialize q1map", "QUAKE");
+    }
+    q1map->InitializeSurfaces();
+    q1map->InitializeTextures();
+    this->addObject3D(q1map, "q1map");
 }
 
 void Game::mainLoop()
@@ -167,13 +197,14 @@ void Game::onUpdate()
 {
     Engine::onUpdate();
 
-    Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
-    marine->rotation.y+=0.5f;
+    //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
+    //marine->rotation.y+=0.5f;
 
-    /*char* wadLocation = "../models/freedoom1.wad";
-    WAD* testWad = new WAD(wadLocation);
-    testWad->loadMap("E1M1");
-    testWad->draw2D();*/
+    Map *q1map = (Map*) getObjectByLabel("q1map");
+
+    q1map->DrawLeafVisibleSet( q1map->FindLeaf(Engine::cam), Engine::cam);
+    q1map->drawTriangles(Engine::cam);
+
 }
 
 void Game::onEnd()
