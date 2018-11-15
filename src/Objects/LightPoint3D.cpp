@@ -9,9 +9,8 @@ LightPoint3D::LightPoint3D()
     this->billboard->loadTexture( EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT );
 
     cam = new Camera3D();
-    cam->setLabel("Camera LightPoint");
-    cam->setPosition(this->position);
-    cam->setRotation(this->rotation);
+    //cam->setPosition(*this->getPosition());
+    //cam->setRotation(*this->getRotation());
 
     this->sizeBuffer = EngineSetup::getInstance()->SCREEN_WIDTH * EngineSetup::getInstance()->SCREEN_HEIGHT;
     shadowMappingBuffer = new float[sizeBuffer];
@@ -19,10 +18,10 @@ LightPoint3D::LightPoint3D()
 
 void LightPoint3D::syncFrustum()
 {
-    this->cam->setPosition(this->position);
-    this->cam->setRotation(this->rotation);
+    //this->cam->setPosition(*this->getPosition());
+    //this->cam->setRotation(*this->getRotation());
 
-    this->cam->frustum->position  = this->cam->position;
+    //this->cam->frustum->position  = *this->cam->getPosition();
     this->cam->frustum->direction = this->cam->eyeVector();
     this->cam->frustum->up        = this->cam->upVector();
     this->cam->frustum->right     = this->cam->rightVector();

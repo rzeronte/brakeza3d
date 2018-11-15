@@ -38,7 +38,6 @@ Engine::Engine()
 
     // cam
     cam = new Camera3D();
-    cam->setLabel("Camera");
 
     // input controller
     cont = new Controller();
@@ -182,8 +181,8 @@ void Engine::windowUpdate()
 
 void Engine::onStart()
 {
-    cam->setPosition( EngineSetup::getInstance()->CameraPosition );
-    cam->setRotation( Vertex3D(0, 0, 0) );
+    //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
+    //cam->setRotation( Rotation3D(0, 0, 0) );
 }
 
 void Engine::onUpdateEvent()
@@ -213,7 +212,6 @@ void Engine::onUpdate()
     }
 
     Drawable::drawMainAxis( cam );
-
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -256,7 +254,10 @@ void Engine::drawMeshes()
             };
             oMesh->draw(cam);
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->up.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->right.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->forward.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
             }
         }
     }
@@ -296,7 +297,7 @@ void Engine::drawSprites()
             oSpriteDirectional->draw(cam);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oSpriteDirectional->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
 
         }
@@ -311,7 +312,7 @@ void Engine::drawSprites()
             oSprite->draw(cam);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oSprite->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
         }
 
@@ -326,7 +327,7 @@ void Engine::drawSprites()
             oWeapon->draw(cam);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oWeapon->position, EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oWeapon->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
             }
         }
 

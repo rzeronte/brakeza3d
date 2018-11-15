@@ -7,6 +7,7 @@
 #include "GUI_ObjectsInspector.h"
 #include "GUI_LightsInspector.h"
 #include "GUI_Log.h"
+#include "GUI_Camera.h"
 
 class GUI_Engine : GUI {
 public:
@@ -14,6 +15,7 @@ public:
     GUI_ObjectsInspector *gui_inspector;
     GUI_LightsInspector *gui_lightpoints;
     GUI_Log *gui_log;
+    GUI_Camera *gui_camera;
 
     float fps;
 
@@ -23,6 +25,7 @@ public:
         gui_inspector = new GUI_ObjectsInspector();
         gui_lightpoints = new GUI_LightsInspector();
         gui_log = new GUI_Log();
+        gui_camera = new GUI_Camera();
     }
 
     virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam)
@@ -34,6 +37,7 @@ public:
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
         gui_log->draw(getFps(), cam);
+        gui_camera->draw(cam);
     }
 
     float getFps() const {

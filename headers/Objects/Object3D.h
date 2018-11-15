@@ -4,14 +4,15 @@
 #include <string>
 #include "Vertex3D.h"
 #include "Vector3D.h"
+#include "../../src/Render/Rotation3D.h"
 
 class Billboard;
 
 class Object3D {
+    Vertex3D position;
+    Rotation3D rotation;
 public:
     bool enabled;
-    Vertex3D position;
-    Vertex3D rotation;
 
     Vector3D forward;
     Vector3D up;
@@ -29,10 +30,10 @@ public:
     void setLabel(const std::string label);
 
     Vertex3D* getPosition();
-    Vertex3D* getRotation();
+    Rotation3D* getRotation();
 
     void setPosition(Vertex3D p);
-    void setRotation(Vertex3D r);
+    void setRotation(Rotation3D r);
 
     void updateAxis();
 

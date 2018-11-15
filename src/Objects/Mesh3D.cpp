@@ -245,6 +245,7 @@ void Mesh3D::draw(Camera3D *cam)
     // Object's axis
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this, cam, true, true, true);
+
     }
 
     // Transforms

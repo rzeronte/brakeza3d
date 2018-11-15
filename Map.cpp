@@ -235,6 +235,7 @@ void Map::loadTriangles(Camera3D *cam)
     Logging::getInstance()->Log("\"Map Triangles: " + std::to_string(this->n_triangles), "QUAKE");
 }
 
+
 //
 // Draw the surface
 //
@@ -249,27 +250,32 @@ void Map::DrawSurface(int surface, Camera3D *cam)
 
     // Loop through all vertices of the primitive and draw a surface
     int num_edges = this->getNumEdges(surface);
+
+    Vertex3D rot = Vertex3D(0, 0, 0);
     for (int i = 0; i < num_edges ; i++, primitives++) {
         // Brakeza (x, y, z) = quake = (y = 1, z = 2, x = 0))
         Vertex3D v = Vertex3D(
-            primitives->v[0],
             primitives->v[1],
-            primitives->v[2]
+            primitives->v[2],
+            primitives->v[0]
         );
+
+        v = Transforms::objectToLocal(v, this);
 
         vertices[num_vertices] = v ; num_vertices++;
         if ( i+1 < num_edges ) {
             Vertex3D next = Vertex3D(
-                (primitives+1)->v[0],
                 (primitives+1)->v[1],
-                (primitives+1)->v[2]
+                (primitives+1)->v[2],
+                (primitives+1)->v[0]
             );
+            next = Transforms::objectToLocal(next, this);
 
             Vector3D vector_points = Vector3D(v, next);
             Drawable::drawVector3D(vector_points, cam, Color::green());
         }
     }
-    //triangulateQuakeSurface(vertices, num_vertices, cam);
+    triangulateQuakeSurface(vertices, num_vertices, cam);
 }
 
 void Map::drawTriangles(Camera3D *cam)
@@ -325,7 +331,7 @@ void Map::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
             i += 8 * *(++visibilityList);
         } else {
             for (int j = 0; j < 8; j++, i++) {
-                if (Tools::getBit(veces, j) || true) {
+                if (Tools::getBit(veces, j)) {
                     bspleaf_t *visibleLeaf = this->getLeaf(i);
                     int firstSurface = visibleLeaf->firstsurf;
                     int lastSurface = firstSurface + visibleLeaf->numsurf;
@@ -378,15 +384,13 @@ bspleaf_t *Map::FindLeaf(Camera3D *camera)
         plane_t *plane = this->getPlane(node->planenum);
 
         // Calculate distance to the intersecting plane
-        vec3_t cam_pos;
-        cam_pos[0] = camera->getPosition()->x;
-        cam_pos[1] = camera->getPosition()->y;
-        cam_pos[2] = camera->getPosition()->z;
+        Vertex3D cp = Vertex3D( camera->head[0], camera->head[1], camera->head[2]);
+        cp = Maths::rotateVertex(cp, Rotation3D(-90, 0, 0));
 
-        vec3_t plane_tmp;
-        plane_tmp[0] = plane->normal[0];
-        plane_tmp[1] = plane->normal[1];
-        plane_tmp[2] = plane->normal[2];
+        vec3_t cam_pos;
+        cam_pos[0] = cp.x;
+        cam_pos[1] = cp.y;
+        cam_pos[2] = cp.z;
 
         float distance = CalculateDistance(plane->normal, cam_pos);
 

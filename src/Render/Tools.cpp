@@ -21,6 +21,7 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Maths.h"
 
 std::vector<std::string> Tools::split(const std::string &text, char sep) {
     std::vector<std::string> tokens;

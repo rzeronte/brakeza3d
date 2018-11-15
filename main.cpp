@@ -17,6 +17,8 @@
 #include <cstdlib>
 #pragma pack(pop, MAIN)
 
+typedef float vec3_t[3];
+
 int main( int argc, const char* args[] ) {
 
     Game *engine = new Game();

@@ -14,6 +14,14 @@ public:
 
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
+    Vertex3D CameraPosition = Vertex3D(1, 1, -5);
+
+    Vertex3D right   = Vertex3D(1, 0, 0);
+    Vertex3D up      = Vertex3D(0, 1, 0);
+    Vertex3D forward = Vertex3D(0, 0, 1);
+
+    Vertex3D eye     = Vertex3D(0, 0, -1);
+
     // Screen dimension constants
     int SCREEN_WIDTH = 640;
     int SCREEN_HEIGHT = 480;
@@ -73,12 +81,11 @@ public:
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
 
-    Vertex3D CameraPosition = Vertex3D(1, 1, -5);
     float CONTROLLER_SPEED_MOVEMENT = 0.5f;
     float CONTROLLER_SPEED_ROTATION = 5.f;
 
     float CONTROLLER_SPEED_ROTATION_CAMERA = 1.f;
-    float CONTROLLER_SPEED_MOVEMENT_CAMERA = 10.f;
+    float CONTROLLER_SPEED_MOVEMENT_CAMERA = 100.f;
 
     std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../icons/object3d.tga";

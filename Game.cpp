@@ -41,11 +41,9 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::cam->position.x = 544;
-    Engine::cam->position.y = 288;
-    Engine::cam->position.z = 32;
-
-    //Engine::cam->rotation.x = 90;
+    Engine::cam->head[0] = 544;
+    Engine::cam->head[1] = -32;
+    Engine::cam->head[2] = 288;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -73,8 +71,11 @@ void Game::onStart()
     Mesh3D *mono = new Mesh3D();
     mono->setEnabled(true);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    mono->rotation.x = 180;
-    mono->setPosition( Vertex3D(1, 1, 30) );
+    //mono->rotation.x = 180;
+    mono->getPosition()->x = 544;
+    mono->getPosition()->y = 288;
+    mono->getPosition()->z = 38;
+
     mono->loadOBJBlender("../models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
@@ -84,7 +85,7 @@ void Game::onStart()
     cubo->scale = 500;
     cubo->setEnabled(true);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->rotation.x = 180;
+    cubo->getRotation()->x = 180;
     cubo->setPosition( Vertex3D(1, 1, 20) );
     cubo->loadOBJBlender("../models/cubo.obj");
     this->addObject3D(cubo, "cubo");
@@ -101,7 +102,7 @@ void Game::onStart()
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setEnabled(false);
-    triangle->rotation.x-=90;
+    triangle->getRotation()->x-=90;
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition( Vertex3D(1, 1, 5) );
     triangle->loadOBJBlender("../models/triangle_2uv.obj");
@@ -150,6 +151,7 @@ void Game::onStart()
 
     Map *q1map = new Map();
     q1map->setPosition( Vertex3D(0, 0, 0) );
+    q1map->setRotation( Rotation3D(180, 90, 0) );
 
     if (!q1map->Initialize("../assets/start.bsp", "../assets/palette.lmp")) {
         Logging::getInstance()->Log("Quake::main() Unable to initialize q1map", "QUAKE");
@@ -202,8 +204,10 @@ void Game::onUpdate()
 
     Map *q1map = (Map*) getObjectByLabel("q1map");
 
-    q1map->DrawLeafVisibleSet( q1map->FindLeaf(Engine::cam), Engine::cam);
-    q1map->drawTriangles(Engine::cam);
+    bspleaf_t *leaf = q1map->FindLeaf(Engine::cam);
+    q1map->DrawLeafVisibleSet( leaf, Engine::cam);
+    //q1map->drawTriangles(Engine::cam);
+
 
 }
 

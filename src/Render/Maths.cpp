@@ -25,7 +25,7 @@ float Maths::radiansToDegrees(float angleRadians)
     return degrees;
 }
 
-Vertex3D Maths::rotateVertex(Vertex3D V, Vertex3D rotation)
+Vertex3D Maths::rotateVertex(Vertex3D V, Rotation3D rotation)
 {
 
     M3 MRX = M3::RX(rotation.x);
@@ -403,7 +403,7 @@ float Maths::distanteBetweenpoints(Vertex3D v1, Vertex3D v2)
 Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
 {
 
-    Vertex3D P = lp->position;
+    Vertex3D P = *lp->getPosition();
     Vertex3D R = lp->forward.getUnitVector();
 
     Vector3D L = Vector3D(P, Q);
@@ -452,7 +452,8 @@ float Maths::floatRound(double f, int c)
 
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
 {
-    o1->updateAxis();
+    return 0;
+    /*o1->updateAxis();
 
     Vertex3D oRight = o1->forward.getComponent();
     Vertex3D R = cam->forward.getComponent();
@@ -467,6 +468,6 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *
         degs =  360 - degs;
     }
 
-    return degs;
+    return degs;*/
 }
 

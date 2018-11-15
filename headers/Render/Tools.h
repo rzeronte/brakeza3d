@@ -9,6 +9,7 @@
 #include "../Objects/Vector3D.h"
 #include "Texture.h"
 #include "../Objects/LightPoint3D.h"
+#include "M3.h"
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>

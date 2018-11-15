@@ -33,7 +33,6 @@ public:
     void handleKeyboard(SDL_Event *, Camera3D *, bool &);
     void handleMouse(SDL_Event *, Camera3D *);
 
-    void handleKeyboardObject3D(SDL_Event *event, Object3D *object);
     void updateKeyboardRead(SDL_Event *event);
 };
 

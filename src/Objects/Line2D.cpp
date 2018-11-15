@@ -132,7 +132,6 @@ void Line2D::drawLineaBresenham(int x1, int y1, int x2, int y2, Uint32 col)
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
             }
-            //pantalla[x][y] = '*';
         }
     } else{
         int p = 2 * deltaX - deltaY;
@@ -149,7 +148,6 @@ void Line2D::drawLineaBresenham(int x1, int y1, int x2, int y2, Uint32 col)
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
             }
-            //pantalla[x][y] = '*';
 
         }
     }

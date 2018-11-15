@@ -119,7 +119,7 @@ add_executable(brakeda3d
         WAD/Signature.h
         WAD/WAD.cpp
         WAD/WAD.h
-        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h Map.cpp Map.h)
+        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h Map.cpp Map.h src/GUI/GUI_Camera.h src/Render/Rotation3D.cpp src/Render/Rotation3D.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

@@ -98,12 +98,12 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
     Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
     Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
 
-    if ((int) abs(V1.z) == 0 ) {
+    /*if ((int) abs(V1.z) == 0 ) {
         return;
     }
     if ((int) abs(V2.z) == 0 ) {
         return;
-    }
+    }*/
 
     V1 = Transforms::NDCSpace(V1, cam);
     V2 = Transforms::NDCSpace(V2, cam);
@@ -155,6 +155,30 @@ void Drawable::drawMainAxis(Camera3D *cam)
     Drawable::drawVector3D( axis_z, cam, Color::blue() );
 }
 
+void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
+{
+    float axis_length = 0.1;
+    Vertex3D origin = offset;
+
+    // Creamos unas coordenadas de eje sobre 0, 0, 0
+    // start points
+    Vertex3D VXstart( origin.x, origin.y, origin.z );
+    Vertex3D VYstart( origin.x, origin.y, origin.z );
+    Vertex3D VZstart( origin.x, origin.y, origin.z );
+
+    // end points
+    Vertex3D VXend( origin.x + (axis_length), origin.y , origin.z );
+    Vertex3D VYend( origin.x, origin.y + (axis_length), origin.z );
+    Vertex3D VZend( origin.x, origin.y, origin.z + (axis_length) );
+
+    Vector3D axis_x = Vector3D(VXstart, VXend);
+    Vector3D axis_y = Vector3D(VYstart, VYend);
+    Vector3D axis_z = Vector3D(VZstart, VZend);
+
+    Drawable::drawVector3D( axis_x, cam, Color::red() );
+    Drawable::drawVector3D( axis_y, cam, Color::green() );
+    Drawable::drawVector3D( axis_z, cam, Color::blue() );
+}
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)
 {

@@ -13,12 +13,13 @@
 Object3D::Object3D()
 {
     this->enabled = true;
-    this->position = Vertex3D(1, 1, 1);
-    this->rotation = Vertex3D(0, 0, 0);
 
-    this->right   = Vector3D( Vertex3D(0, 0, 0), Vertex3D(1, 0, 0) );
-    this->up      = Vector3D( Vertex3D(0, 0, 0), Vertex3D(0, 1, 0) );
-    this->forward = Vector3D( Vertex3D(0, 0, 0), Vertex3D(0, 0, 1) );
+    this->position = Vertex3D(1, 1, 1);
+    this->rotation = Rotation3D(0, 0, 0);
+
+    this->right   = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->right );
+    this->up      = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->up );
+    this->forward = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->eye );
 
     this->scale = 1;
 
@@ -32,7 +33,7 @@ Vertex3D* Object3D::getPosition() {
     return &position;
 }
 
-Vertex3D* Object3D::getRotation() {
+Rotation3D* Object3D::getRotation() {
     return &rotation;
 }
 
@@ -40,7 +41,7 @@ void Object3D::setPosition(Vertex3D p) {
     position = p;
 }
 
-void Object3D::setRotation(Vertex3D r) {
+void Object3D::setRotation(Rotation3D r) {
     this->rotation = r;
 }
 
@@ -58,9 +59,9 @@ void Object3D::updateAxis()
     M3 MRY = M3::RY(getRotation()->y);
     M3 MRZ = M3::RZ(getRotation()->z);
 
-    Vertex3D r = (MRZ * MRY * MRX) * Vertex3D(1, 0, 0);
-    Vertex3D u = (MRZ * MRY * MRX) * Vertex3D(0, 1, 0);
-    Vertex3D f = (MRZ * MRY * MRX) * Vertex3D(0, 0, 1);
+    Vertex3D r = (MRX * MRY * MRZ) * EngineSetup::getInstance()->right;
+    Vertex3D u = (MRX * MRY * MRZ) * EngineSetup::getInstance()->up;
+    Vertex3D f = (MRX * MRY * MRZ) * EngineSetup::getInstance()->eye;
 
     r.addVertex(*getPosition());
     u.addVertex(*getPosition());

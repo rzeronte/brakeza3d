@@ -46,16 +46,16 @@ class GUI_LightsInspector : public GUI  {
                         ImGui::Checkbox(enabled_text.c_str(), &(lightpoints[i])->enabled);
 
                         if (ImGui::TreeNode( position_text.c_str() )) {
-                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightpoints[i]->position.x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightpoints[i]->position.y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightpoints[i]->position.z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightpoints[i]->getPosition()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightpoints[i]->getPosition()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightpoints[i]->getPosition()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                             ImGui::TreePop();
                         }
 
                         if (ImGui::TreeNode( rotation_text.c_str() )) {
-                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightpoints[i]->rotation.x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightpoints[i]->rotation.y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightpoints[i]->rotation.z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                             ImGui::TreePop();
                         }
 
@@ -80,8 +80,6 @@ class GUI_LightsInspector : public GUI  {
                 }
                 ImGui::End();
             }
-
-
         }
     };
 

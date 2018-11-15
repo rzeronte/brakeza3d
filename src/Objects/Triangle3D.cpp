@@ -72,7 +72,7 @@ bool Triangle::draw(Camera3D *cam)
 
     bool faceCulling = false;
     if (EngineSetup::getInstance()->TRIANGLE_FACECULLING)  {
-        faceCulling = this->faceCulling(cam);
+        //faceCulling = this->faceCulling(cam);
     }
 
     if (faceCulling) {
@@ -603,7 +603,7 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                     }
 
                     // Color light apply
-                    float d = Maths::distanteBetweenpoints( this->lightPoints[i]->position, D );
+                    float d = Maths::distanteBetweenpoints( *this->lightPoints[i]->getPosition(), D );
                     pixelColor = Maths::mixColor(pixelColor, d, this->lightPoints[i], D);
 
                     if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {

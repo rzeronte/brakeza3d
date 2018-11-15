@@ -80,13 +80,12 @@ public:
     {
         if (show) {
             std::string sfps = std::to_string(fps);
-            std::string title = "Log | FPS: " + sfps +" | Camera: " +
-                    std::to_string(cam->getPosition()->x) + " " +
-                    std::to_string(cam->getPosition()->y) + " " +
-                    std::to_string(cam->getPosition()->z) + " Rot: x: " +
-                    std::to_string(cam->getRotation()->x) + ", y: " +
-                    std::to_string(cam->getRotation()->y) + ", z: " +
-                    std::to_string(cam->getRotation()->z) + "###AnimatedTitle"
+            std::string title = "Log | FPS: " + sfps +" | Camera (x: " +
+                    std::to_string(cam->head[0]) + ", y: " +
+                    std::to_string(cam->head[1]) + ", z:  " +
+                    std::to_string(cam->head[2]) + " | Yaw: " +
+                    std::to_string(cam->getYaw()) + ", Pitch: " +
+                    std::to_string(cam->getPitch()) + + "###AnimatedTitle"
             ;
             log.Draw(title.c_str(), &show);
         }
