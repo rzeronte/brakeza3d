@@ -23,7 +23,7 @@ public:
             ImGui::SetNextWindowSize(ImVec2(250, 160), ImGuiSetCond_Once);
             window_flags |= ImGuiWindowFlags_NoMove;
 
-            std::string title = "Camera Inspector (Front: " + std::to_string(camera->isFront()) + ")";
+            std::string title = "Camera Inspector";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
             const float range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;

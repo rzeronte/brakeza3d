@@ -90,13 +90,9 @@ void Camera3D::syncFrustum()
 {
     frustum->position  = Vertex3D(head[0], head[1], head[2]);
 
-    frustum->direction = this->AxisBackwards();
-    frustum->up        = this->AxisUp();
-    frustum->right     = this->AxisRight();
-
-    frustum->direction.z *= -1;
-    frustum->up.z *= -1;
-    frustum->right.z *= -1;
+    frustum->direction = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->forward;
+    frustum->up        = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->up;
+    frustum->right     = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->right;
 
     frustum->updateCenters();
     frustum->updatePoints();
@@ -114,44 +110,24 @@ void Camera3D::consoleInfo()
     );
 }
 
-bool Camera3D::isFront()
-{
-    Vertex3D oRight = this->AxisRight();
-    Vertex3D R = EngineSetup::getInstance()->right;
-
-    float rads = Vertex3D::dotProduct(R, oRight) / (R.getNorm() * oRight.getNorm());
-
-    if (rads < 0) {
-        return false;
-    }
-
-    return true;
-}
-
 void Camera3D::Pitch(float pitch)
 {
     this->pitch += pitch * MOUSE_SENSITIVITY;
-    //limitPitch();
 }
 
 void Camera3D::Yaw(float yaw)
 {
     this->yaw += yaw * MOUSE_SENSITIVITY;
-    //limitYaw();
 }
 
 void Camera3D::PitchUp(void)
 {
-    if (pitch < 89.0) {
-        pitch += PITCH_SPEED;
-    }
+    pitch += PITCH_SPEED;
 }
 
 void Camera3D::PitchDown(void)
 {
-    if (pitch > -89.0) {
-        pitch -= PITCH_SPEED;
-    }
+    pitch -= PITCH_SPEED;
 }
 
 void Camera3D::MoveForward(void)
@@ -167,13 +143,11 @@ void Camera3D::MoveBackward(void)
 void Camera3D::TurnRight(void)
 {
     yaw += TURN_SPEED;
-    //limitYaw();
 }
 
 void Camera3D::TurnLeft(void)
 {
     yaw -= TURN_SPEED;
-    //limitYaw();
 }
 
 void Camera3D::StrafeRight(void)
@@ -217,8 +191,8 @@ void Camera3D::UpdateRotation(float yaw, float pitch)
 
 void Camera3D::limitYaw()
 {
-    if (this->yaw > 360) {
-        this->yaw = 0;
+    if (this->pitch < 360) {
+        this->pitch = 0;
     }
     if (this->yaw < 0) {
         this->yaw = 360;

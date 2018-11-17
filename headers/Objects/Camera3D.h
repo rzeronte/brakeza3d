@@ -42,8 +42,6 @@ public:
 
     void consoleInfo();
 
-    bool isFront();
-
     void UpdatePosition(void);
     void UpdateRotation(float, float);
 

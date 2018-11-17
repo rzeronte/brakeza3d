@@ -57,13 +57,13 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
             camera->MoveForward();
         }
         if (key_pressed == SDLK_UP ) {
-            camera->MoveForward();
+            camera->PitchUp();
         }
         if (key_pressed == SDLK_s ) {
             camera->MoveBackward();
         }
         if (key_pressed == SDLK_DOWN ) {
-            camera->MoveBackward();
+            camera->PitchDown();
         }
         if (key_pressed == SDLK_RIGHT ) {
             camera->TurnRight();
