@@ -113,6 +113,7 @@ void Camera3D::consoleInfo()
 void Camera3D::Pitch(float pitch)
 {
     this->pitch += pitch * MOUSE_SENSITIVITY;
+    limitPitch();
 }
 
 void Camera3D::Yaw(float yaw)
@@ -123,11 +124,13 @@ void Camera3D::Yaw(float yaw)
 void Camera3D::PitchUp(void)
 {
     pitch += PITCH_SPEED;
+    limitPitch();
 }
 
 void Camera3D::PitchDown(void)
 {
     pitch -= PITCH_SPEED;
+    limitPitch();
 }
 
 void Camera3D::MoveForward(void)
@@ -183,28 +186,16 @@ void Camera3D::UpdateRotation(float yaw, float pitch)
 {
     M3 im = M3::getMatrixRotationForEulerAngles(pitch, yaw, 0);
 
-    this->setRotation(getRotation() * im);
-
-    this->yaw = 0;
-    this->pitch = 0;
+    this->setRotation(im);
 }
 
-void Camera3D::limitYaw()
-{
-    if (this->pitch < 360) {
-        this->pitch = 0;
-    }
-    if (this->yaw < 0) {
-        this->yaw = 360;
-    }
-}
 
 void Camera3D::limitPitch()
 {
-    if (this->pitch > 89) {
+    if (this->pitch >= 89) {
         this->pitch = 89;
     }
-    if (this->pitch < -89) {
+    if (this->pitch <= -89) {
         this->pitch = -89;
     }
 }
