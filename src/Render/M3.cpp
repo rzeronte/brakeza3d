@@ -3,11 +3,18 @@
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Maths.h"
 
-M3::M3() {
+M3::M3()
+{
+    setMatrixIdentity();
 }
 
 M3::M3 (float m0, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8) {
     this->setup(m0, m1, m2, m3, m4, m5, m6, m7, m8);
+}
+
+M3::M3 (float x, float y, float z)
+{
+    setMatrixRotationForEulerAngles(x, y, z);
 }
 
 void M3::setup (float m0, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8) {
@@ -75,7 +82,7 @@ void M3::consoleInfo(std::string label) const {
     std::cout << m[6] << " " << m[7] << " " << m[8] << std::endl;
 }
 
-const M3 M3::MatrixIdentity() {
+M3 M3::getMatrixIdentity() {
     M3 M(
     1, 0, 0,
     0, 1, 0,
@@ -84,14 +91,11 @@ const M3 M3::MatrixIdentity() {
     return M;
 }
 
-const M3 M3::MatrixModel(Vertex3D V, Object3D *o) {
-}
-
-const M3 M3::MatrixNULL() {
+M3 M3::getMatrixNULL() {
     M3 M(
-        0, 0, 0,
-        0, 0, 0,
-        0, 0, 0
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0
     );
 
     return M;
@@ -138,4 +142,80 @@ const M3 M3::ScaleMatrix(float scale) {
     );
 
     return M;
+}
+
+const float M3::getPitch()
+{
+    return atan2f( m[7], m[8] );
+}
+
+const float M3::getYaw()
+{
+    float c2 = sqrtf( m[7]*m[7] + m[8]*m[8] );
+    return atan2f( -m[6], c2  );
+}
+
+const float M3::getRoll()
+{
+    return atan2f( m[3], m[0] );
+}
+
+M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z)
+{
+    M3 MRX = M3::RX(x);
+    M3 MRY = M3::RY(y);
+    M3 MRZ = M3::RZ(z);
+
+    M3 A = (MRX * MRY * MRZ);
+
+    return A;
+}
+
+void M3::setMatrixIdentity()
+{
+    this->setup(
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1);
+}
+
+void M3::setMatrixNULL()
+{
+    this->setup(0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+void M3::setMatrixRotationForEulerAngles(float x, float y, float z)
+{
+    M3 m = M3::getMatrixRotationForEulerAngles(x, y, z);
+    this->setup(
+    m.m[0], m.m[1], m.m[2],
+    m.m[3], m.m[4], m.m[5],
+    m.m[6], m.m[7], m.m[8]
+    );
+}
+
+M3 M3::getMatrixTranspose()
+{
+    M3 m(
+        this->m[0], this->m[3], this->m[6],
+        this->m[1], this->m[4], this->m[7],
+        this->m[2], this->m[5], this->m[8]
+    );
+
+    return m;
+}
+
+float M3::getYawDegree()
+{
+    return Maths::radiansToDegrees( this->getYaw() ) ;
+}
+
+float M3::getPitchDegree()
+{
+    return Maths::radiansToDegrees( this->getPitch() ) ;
+}
+
+float M3::getRollDegree()
+{
+    return Maths::radiansToDegrees( this->getRoll() ) ;
 }
