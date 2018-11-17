@@ -182,12 +182,9 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)
 {
-    object->updateAxis();
-
-    if (drawUp)      Drawable::drawVector3D( object->up, cam, Color::red() );
-    if (drawRight)   Drawable::drawVector3D( object->right, cam, Color::green() );
-    if (drawForward) Drawable::drawVector3D( object->forward, cam, Color::blue() );
-
+    //if (drawUp)      Drawable::drawVector3D( object->AxisUp(), cam, Color::red() );
+    //if (drawRight)   Drawable::drawVector3D( object->AxisRight(), cam, Color::green() );
+    //if (drawForward) Drawable::drawVector3D( object->AxisForward(), cam, Color::blue() );
 }
 
 void Drawable::drawBillboard(Billboard *B, Camera3D *cam)

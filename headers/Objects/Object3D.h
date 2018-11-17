@@ -4,24 +4,19 @@
 #include <string>
 #include "Vertex3D.h"
 #include "Vector3D.h"
-#include "../../src/Render/Rotation3D.h"
+#include "../../headers/Render/M3.h"
 
 class Billboard;
 
 class Object3D {
     Vertex3D position;
-    Rotation3D rotation;
+    M3 rotation;
 public:
     bool enabled;
-
-    Vector3D forward;
-    Vector3D up;
-    Vector3D right;
 
     float scale;
 
     std::string label;
-    bool handleKeyboard;
 
     Object3D();
     virtual ~Object3D() = default;
@@ -30,19 +25,23 @@ public:
     void setLabel(const std::string label);
 
     Vertex3D* getPosition();
-    Rotation3D* getRotation();
+    M3 getRotation();
 
     void setPosition(Vertex3D p);
-    void setRotation(Rotation3D r);
-
-    void updateAxis();
-
-    bool isHandleKeyboard() const;
-    void setHandleKeyboard(bool handleKeyboard);
+    void setRotation(M3 r);
 
     bool isEnabled() const;
-
     void setEnabled(bool enabled);
+
+    Vertex3D AxisUp();
+    Vertex3D AxisDown();
+
+    Vertex3D AxisForward();
+    Vertex3D AxisBackwards();
+
+    Vertex3D AxisRight();
+    Vertex3D AxisLeft();
+
 
 };
 

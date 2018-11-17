@@ -4,24 +4,31 @@
 
 
 #include "../Objects/Vertex3D.h"
-#include "../Objects/Object3D.h"
 
 class M3 {
 public:
     M3();
     M3(float, float, float, float, float, float, float, float, float);
+    M3(float, float, float);
 
     M3 operator *(const M3 pm);
     M3 operator *(const float scalar);
-    Vertex3D   operator *(const Vertex3D);
+    Vertex3D operator *(const Vertex3D);
     M3 operator +(const M3 &pm);
     M3 operator -(const M3 &pm);
 
     float m[9];
 
-    const static M3 MatrixNULL();
-    const static M3 MatrixIdentity();
-    const static M3 MatrixModel(Vertex3D, Object3D *);
+    static M3 getMatrixNULL();
+    static M3 getMatrixIdentity();
+    static M3 getMatrixRotationForEulerAngles(float x, float y, float z);
+
+    M3 getMatrixTranspose();
+
+    void setMatrixNULL();
+    void setMatrixIdentity();
+    void setMatrixRotationForEulerAngles(float x, float y, float z);
+
     const static M3 RX(float deg);
     const static M3 RY(float deg);
     const static M3 RZ(float deg);
@@ -29,6 +36,14 @@ public:
 
     void setup (float, float, float, float, float, float, float, float, float);
     void consoleInfo(std::string label) const;
+
+    const float getPitch();
+    const float getYaw();
+    const float getRoll();
+
+    float getYawDegree();
+    float getPitchDegree();
+    float getRollDegree();
 };
 
 

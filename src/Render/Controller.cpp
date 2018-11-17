@@ -12,11 +12,10 @@ Controller::Controller()
 {
 }
 
-void Controller::   handleMouse(SDL_Event *event, Camera3D *camera)
+void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
-
 
     if (event_type == SDL_MOUSEBUTTONDOWN) {
         MousePressed = true;
@@ -44,6 +43,7 @@ void Controller::   handleMouse(SDL_Event *event, Camera3D *camera)
     if (MouseMotion && MousePressed) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
+
             camera->Yaw(event->motion.xrel);
             camera->Pitch(event->motion.yrel);
         }
@@ -107,7 +107,6 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
                 break;
         }
     }
-    camera->UpdatePosition();
     //camera->getPosition()->addVertex( Vertex3D(mov_x, mov_y, mov_z) );
     //camera->getRotation()->addRotation( Rotation3D(rot_x, rot_y, rot_z) );
 

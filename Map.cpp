@@ -326,6 +326,25 @@ void Map::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
+        /*if (*visibilityList) {
+            // Loop through the visible leaves
+            for (int j = 0; j < 8; j++, i++) {
+                // Fetch the leaf that is seen from the array of leaves
+                bspleaf_t *visibleLeaf = this->getLeaf(i);
+                // Copy all the visible surfaces from the List of surfaces
+                int firstSurface = visibleLeaf->firstsurf;
+                int lastSurface = firstSurface + visibleLeaf->numsurf;
+                for (int k = firstSurface; k < lastSurface; k++) {
+                    visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+                }
+            }
+        } else {
+            // No, skip some leaves
+            i += (*visibilityList++) << 3;
+        }
+
+        continue;*/
+
         unsigned char veces = *(visibilityList);
         if (veces == 0) {
             i += 8 * *(++visibilityList);
@@ -385,7 +404,7 @@ bspleaf_t *Map::FindLeaf(Camera3D *camera)
 
         // Calculate distance to the intersecting plane
         Vertex3D cp = Vertex3D( camera->head[0], camera->head[1], camera->head[2]);
-        cp = Maths::rotateVertex(cp, Rotation3D(-90, 0, 0));
+        cp = Maths::rotateVertex(cp, M3(-90, 0, 0));
 
         vec3_t cam_pos;
         cam_pos[0] = cp.x;

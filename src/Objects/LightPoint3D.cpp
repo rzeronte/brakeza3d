@@ -22,9 +22,9 @@ void LightPoint3D::syncFrustum()
     //this->cam->setRotation(*this->getRotation());
 
     //this->cam->frustum->position  = *this->cam->getPosition();
-    this->cam->frustum->direction = this->cam->eyeVector();
-    this->cam->frustum->up        = this->cam->upVector();
-    this->cam->frustum->right     = this->cam->rightVector();
+    this->cam->frustum->direction = this->cam->AxisForward();
+    this->cam->frustum->up        = this->cam->AxisUp();
+    this->cam->frustum->right     = this->cam->AxisRight();
 
     this->cam->frustum->updateCenters();
     this->cam->frustum->updatePoints();

@@ -20,7 +20,9 @@ public:
     Vertex3D up      = Vertex3D(0, 1, 0);
     Vertex3D forward = Vertex3D(0, 0, 1);
 
-    Vertex3D eye     = Vertex3D(0, 0, -1);
+    Vertex3D left     = right.getInverse();
+    Vertex3D down     = up.getInverse();
+    Vertex3D backward = forward.getInverse();
 
     // Screen dimension constants
     int SCREEN_WIDTH = 640;

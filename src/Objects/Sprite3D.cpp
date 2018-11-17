@@ -64,6 +64,6 @@ void Sprite3D::updateTexture()
 
 void Sprite3D::updateTrianglesCoordinatesAndTexture(Camera3D *cam)
 {
-    this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, cam->upVector(), cam->rightVector() );
+    this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, cam->AxisUp(), cam->AxisRight() );
     this->updateTexture();
 }

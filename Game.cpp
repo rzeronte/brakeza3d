@@ -7,6 +7,7 @@
 #include "headers/Objects/SpriteDirectional3D.h"
 #include "headers/Objects/Sprite3D.h"
 #include "headers/Objects/Weapon3D.h"
+#include "headers/Render/Maths.h"
 #include "WAD/WAD.h"
 #include "Map.h"
 
@@ -43,7 +44,7 @@ void Game::onStart()
 
     Engine::cam->head[0] = 544;
     Engine::cam->head[1] = -32;
-    Engine::cam->head[2] = 288;
+    Engine::cam->head[2] = 300;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -85,7 +86,6 @@ void Game::onStart()
     cubo->scale = 500;
     cubo->setEnabled(true);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->getRotation()->x = 180;
     cubo->setPosition( Vertex3D(1, 1, 20) );
     cubo->loadOBJBlender("../models/cubo.obj");
     this->addObject3D(cubo, "cubo");
@@ -102,7 +102,7 @@ void Game::onStart()
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setEnabled(false);
-    triangle->getRotation()->x-=90;
+    //triangle->getRotation()->x-=90;
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition( Vertex3D(1, 1, 5) );
     triangle->loadOBJBlender("../models/triangle_2uv.obj");
@@ -151,7 +151,7 @@ void Game::onStart()
 
     Map *q1map = new Map();
     q1map->setPosition( Vertex3D(0, 0, 0) );
-    q1map->setRotation( Rotation3D(180, 90, 0) );
+    q1map->setRotation( M3(180, 90, 0) );
 
     if (!q1map->Initialize("../assets/start.bsp", "../assets/palette.lmp")) {
         Logging::getInstance()->Log("Quake::main() Unable to initialize q1map", "QUAKE");
@@ -166,8 +166,8 @@ void Game::mainLoop()
     fpsTimer.start();
 
     ImGuiIO& io = ImGui::GetIO();
-
     while(!finish) {
+
         while (SDL_PollEvent(&e)) {
             // GUI Events
             ImGui_ImplSDL2_ProcessEvent(&e);
@@ -177,8 +177,7 @@ void Game::mainLoop()
 
             // Camera Update (Mouse & Keyboard)
             Engine::cameraUpdate();
-
-            this->onUpdateEvent();
+            cam->syncFrustum();
         }
 
         this->onUpdate();
@@ -190,11 +189,6 @@ void Game::mainLoop()
     fpsTimer.stop();
 }
 
-void Game::onUpdateEvent()
-{
-    Engine::onUpdateEvent();
-}
-
 void Game::onUpdate()
 {
     Engine::onUpdate();
@@ -203,6 +197,7 @@ void Game::onUpdate()
     //marine->rotation.y+=0.5f;
 
     Map *q1map = (Map*) getObjectByLabel("q1map");
+    //Engine::cam->updateRotation( Engine::cam->getYawDegree()+0.5);
 
     bspleaf_t *leaf = q1map->FindLeaf(Engine::cam);
     q1map->DrawLeafVisibleSet( leaf, Engine::cam);

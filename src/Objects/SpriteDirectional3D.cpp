@@ -23,7 +23,7 @@ Billboard *SpriteDirectional3D::getBillboard() const
 
 void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
 {
-    this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, cam->upVector(), cam->rightVector() );
+    this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, cam->AxisUp(), cam->AxisRight() );
     this->updateTextureFromCameraAngle(this, cam);
 }
 

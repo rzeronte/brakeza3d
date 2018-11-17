@@ -131,12 +131,16 @@ void Engine::initFontsTTF()
 
 void Engine::cameraUpdate()
 {
+
     if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
         cont->handleMouse(&this->e, this->cam);
     }
 
     cont->handleKeyboard(&this->e, this->cam, this->finish);
-    cam->syncFrustum();
+
+    cam->UpdatePosition();
+
+
 }
 
 void Engine::drawGUI()
@@ -183,11 +187,6 @@ void Engine::onStart()
 {
     //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
     //cam->setRotation( Rotation3D(0, 0, 0) );
-}
-
-void Engine::onUpdateEvent()
-{
-
 }
 
 void Engine::onUpdate()
@@ -255,9 +254,9 @@ void Engine::drawMeshes()
             oMesh->draw(cam);
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, cam, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->up.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->right.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->forward.vertex2, EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisUp(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisRight(), EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
+                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisForward(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
             }
         }
     }
@@ -272,7 +271,7 @@ void Engine::drawLightPoints()
                 continue;
             }
 
-            oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, cam->upVector(), cam->rightVector() );
+            oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, cam->AxisUp(), cam->AxisRight() );
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
                 Drawable::drawBillboard(oLight->billboard, Engine::cam);
             }

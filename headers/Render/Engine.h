@@ -73,7 +73,6 @@ public:
 
     void onStart();
     void onUpdate();
-    void onUpdateEvent();
     void onEnd();
 
     void drawMeshes();

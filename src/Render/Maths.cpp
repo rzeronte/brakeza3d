@@ -25,14 +25,9 @@ float Maths::radiansToDegrees(float angleRadians)
     return degrees;
 }
 
-Vertex3D Maths::rotateVertex(Vertex3D V, Rotation3D rotation)
+Vertex3D Maths::rotateVertex(Vertex3D V, M3 rotation)
 {
-
-    M3 MRX = M3::RX(rotation.x);
-    M3 MRY = M3::RY(rotation.y);
-    M3 MRZ = M3::RZ(rotation.z);
-
-    Vertex3D B = (MRX * MRY * MRZ) * V;
+    Vertex3D B = rotation * V;
 
     B.u = V.u; B.v = V.v;
 
@@ -404,7 +399,7 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D 
 {
 
     Vertex3D P = *lp->getPosition();
-    Vertex3D R = lp->forward.getUnitVector();
+    Vertex3D R = lp->AxisForward();
 
     Vector3D L = Vector3D(P, Q);
     Vertex3D Lv = L.getUnitVector();

@@ -54,20 +54,20 @@ public:
 
                     // rotation
                     if (ImGui::TreeNode( rotation_text.c_str() )) {
-                        ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->getRotation()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y",     ImGuiDataType_Float,  &objects[i]->getRotation()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z",     ImGuiDataType_Float,  &objects[i]->getRotation()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                        //ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->getRotation()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                        //ImGui::DragScalar("Y",     ImGuiDataType_Float,  &objects[i]->getRotation()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                        //ImGui::DragScalar("Z",     ImGuiDataType_Float,  &objects[i]->getRotation()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
                     // rotation limits
-                    if (objects[i]->getRotation()->x > 360) { objects[i]->getRotation()->x = 0; }
+                    /*if (objects[i]->getRotation()->x > 360) { objects[i]->getRotation()->x = 0; }
                     if (objects[i]->getRotation()->y > 360) { objects[i]->getRotation()->y = 0; }
                     if (objects[i]->getRotation()->z > 360) { objects[i]->getRotation()->z = 0; }
 
                     if (objects[i]->getRotation()->x < 0) { objects[i]->getRotation()->x = 360; }
                     if (objects[i]->getRotation()->y < 0) { objects[i]->getRotation()->y = 360; }
-                    if (objects[i]->getRotation()->z < 0) { objects[i]->getRotation()->z = 360; }
+                    if (objects[i]->getRotation()->z < 0) { objects[i]->getRotation()->z = 360; }*/
 
                     // Only for meshes
                     Mesh3D *pMesh = dynamic_cast<Mesh3D *>(objects[i]);

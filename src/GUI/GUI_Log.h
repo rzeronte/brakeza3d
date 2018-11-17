@@ -84,8 +84,8 @@ public:
                     std::to_string(cam->head[0]) + ", y: " +
                     std::to_string(cam->head[1]) + ", z:  " +
                     std::to_string(cam->head[2]) + " | Yaw: " +
-                    std::to_string(cam->getYaw()) + ", Pitch: " +
-                    std::to_string(cam->getPitch()) + + "###AnimatedTitle"
+                    std::to_string(cam->getRotation().getYawDegree()) + ", Pitch: " +
+                    std::to_string(cam->getRotation().getPitchDegree()) + + "###AnimatedTitle"
             ;
             log.Draw(title.c_str(), &show);
         }

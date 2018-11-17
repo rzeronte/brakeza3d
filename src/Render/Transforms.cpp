@@ -11,7 +11,7 @@ Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
     Vertex3D v = A;
 
-    v = Maths::rotateVertex(v, *o->getRotation());
+    v = Maths::rotateVertex(v, o->getRotation());
     v.addVertex(*o->getPosition());
 
     v.x*=o->scale;
@@ -25,10 +25,11 @@ Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
 {
     Vertex3D A = V;
 
-        A.subVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]) );
-        A = Maths::rotateVertex(A, Rotation3D(cam->getPitch(), cam->getYaw(), 0));
+    A.subVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]) );
+    A = cam->getRotation() * A;
 
-    A.u = V.u; A.v = V.v;
+    A.u = V.u;
+    A.v = V.v;
 
     return A;
 }
@@ -37,19 +38,9 @@ Vertex3D Transforms::NDCSpace(Vertex3D v, Camera3D *cam)
 {
     Vertex3D vNL = cam->frustum->near_left.vertex1;
     Vertex3D vNR = cam->frustum->near_right.vertex1;
-    if (vNL.x < vNR.x) {
-        Vertex3D tmp = vNR;
-        vNR = vNL;
-        vNL = tmp;
-    }
 
     Vertex3D vNT = cam->frustum->near_top.vertex1;
     Vertex3D vNB = cam->frustum->near_bottom.vertex1;
-    if (vNT.y < vNB.y) {
-        Vertex3D tmp = vNT;
-        vNT = vNB;
-        vNB = tmp;
-    }
 
     vNL = Transforms::cameraSpace(vNL, cam);
     vNR = Transforms::cameraSpace(vNR, cam);
@@ -92,9 +83,6 @@ Point2D Transforms::screenSpace(Vertex3D V, Camera3D *cam)
 {
     Point2D A;
 
-    //A.x = (V.x) + ((float) EngineSetup::getInstance()->SCREEN_WIDTH/2);
-    //A.y = (V.y) + ((float) EngineSetup::getInstance()->SCREEN_HEIGHT/2);
-
     A.x = (1 + V.x) * ((float) EngineSetup::getInstance()->SCREEN_WIDTH/2);
     A.y = (1 + V.y) * ((float) EngineSetup::getInstance()->SCREEN_HEIGHT/2);
 
@@ -115,7 +103,6 @@ Vertex3D Transforms::perspectiveDivision(Vertex3D v, Camera3D *cam)
     return A;
 }
 
-
 Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
 {
     Vertex3D T = V;
@@ -125,12 +112,7 @@ Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
     T.z*=o->scale;
 
     T.subVertex(*o->getPosition());
-
-    M3 MRX = M3::RX(-o->getRotation()->x);
-    M3 MRY = M3::RY(-o->getRotation()->y);
-    M3 MRZ = M3::RZ(-o->getRotation()->z);
-
-    T = (MRZ * MRY * MRX ) * T;
+    T = o->getRotation().getMatrixTranspose() * T;
 
     return T;
 }
@@ -139,12 +121,7 @@ Vertex3D Transforms::cameraToWorld(Vertex3D V,  Camera3D *cam)
 {
     Vertex3D A;
 
-    M3 MRX = M3::RX(-cam->getPitch());
-    M3 MRY = M3::RY(-cam->getYaw());
-    M3 MRZ = M3::RZ(-0);
-
-    A = (MRZ * MRY * MRX) * V;
-
+    A = cam->getRotation().getMatrixTranspose() * V;
     A.addVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]));
 
     A.u = V.u; A.v = V.v;

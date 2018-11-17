@@ -7,26 +7,21 @@
 #include "../Render/Frustum.h"
 #include "Object3D.h"
 #include "../Render/EngineSetup.h"
+#include "../Render/M3.h"
 
 typedef float vec3_t[3];
 
-class Camera3D {
-private:
+class Camera3D : public Object3D {
+public:
     float yaw;			// Direction of travel
     float pitch;		// Neck angle
 
-public:
     float speed;		// Speed along heading
     float strafe;       // Speed along heading
-
-    Vertex3D axis_up;
-    Vertex3D axis_side;
-    Vertex3D axis_eye;
 
     vec3_t head;		// Position of head
     vec3_t view;      // Normal along viewing direction
 
-    float pixelPerUnit;
     float horizontal_fov;
 
     float farDistance ;
@@ -45,15 +40,13 @@ public:
     float getVerticalFOV();
     void syncFrustum();
 
-    Vertex3D eyeVector();
-    Vertex3D upVector();
-    Vertex3D rightVector();
-
     void consoleInfo();
 
     bool isFront();
 
     void UpdatePosition(void);
+    void UpdateRotation(float, float);
+
     void Pitch(float pitch);
     void Yaw(float yaw);
     void PitchUp(void);
@@ -64,11 +57,9 @@ public:
     void TurnLeft(void);
     void StrafeRight(void);
     void StrafeLeft(void);
-    void CreateLookAt(Vertex3D eye, Vertex3D target, Vertex3D up);
 
-    float getYaw();
-
-    float getPitch();
+    void limitYaw();
+    void limitPitch();
 };
 
 

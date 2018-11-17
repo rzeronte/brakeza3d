@@ -261,7 +261,7 @@ void Mesh3D::draw(Camera3D *cam)
 
     // Draw Billboard
     if (EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD) {
-        this->billboard->updateUnconstrainedQuad( 1, 1, this, cam->upVector(), cam->rightVector() );
+        this->billboard->updateUnconstrainedQuad( 1, 1, this, cam->AxisUp(), cam->AxisRight() );
         if (this->billboard->isDrawable()) {
             Drawable::drawBillboard(this->billboard, cam );
         }

@@ -13,35 +13,23 @@
 Object3D::Object3D()
 {
     this->enabled = true;
-
     this->position = Vertex3D(1, 1, 1);
-    this->rotation = Rotation3D(0, 0, 0);
-
-    this->right   = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->right );
-    this->up      = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->up );
-    this->forward = Vector3D( Vertex3D(0, 0, 0), EngineSetup::getInstance()->eye );
-
     this->scale = 1;
-
-    this->handleKeyboard = false;
-
-    //this->billboard = new Billboard();
-    //this->billboard->loadTexture("../pak0/icons/icona_rocket.tga");
 }
 
 Vertex3D* Object3D::getPosition() {
     return &position;
 }
 
-Rotation3D* Object3D::getRotation() {
-    return &rotation;
+M3 Object3D::getRotation() {
+    return rotation;
 }
 
 void Object3D::setPosition(Vertex3D p) {
     position = p;
 }
 
-void Object3D::setRotation(Rotation3D r) {
+void Object3D::setRotation(M3 r) {
     this->rotation = r;
 }
 
@@ -53,41 +41,54 @@ void Object3D::setLabel(const std::string label) {
     Object3D::label = label;
 }
 
-void Object3D::updateAxis()
-{
-    M3 MRX = M3::RX(getRotation()->x);
-    M3 MRY = M3::RY(getRotation()->y);
-    M3 MRZ = M3::RZ(getRotation()->z);
-
-    Vertex3D r = (MRX * MRY * MRZ) * EngineSetup::getInstance()->right;
-    Vertex3D u = (MRX * MRY * MRZ) * EngineSetup::getInstance()->up;
-    Vertex3D f = (MRX * MRY * MRZ) * EngineSetup::getInstance()->eye;
-
-    r.addVertex(*getPosition());
-    u.addVertex(*getPosition());
-    f.addVertex(*getPosition());
-
-    Vector3D axis_x = Vector3D( *getPosition(), r );
-    Vector3D axis_y = Vector3D( *getPosition(), u );
-    Vector3D axis_z = Vector3D( *getPosition(), f );
-
-    this->right   = axis_x;
-    this->up      = axis_y;
-    this->forward = axis_z;
-}
-
-bool Object3D::isHandleKeyboard() const {
-    return handleKeyboard;
-}
-
-void Object3D::setHandleKeyboard(bool handleKeyboard) {
-    Object3D::handleKeyboard = handleKeyboard;
-}
 
 bool Object3D::isEnabled() const {
     return enabled;
 }
 
-void Object3D::setEnabled(bool enabled) {
+void Object3D::setEnabled(bool enabled)
+{
     Object3D::enabled = enabled;
+}
+
+Vertex3D Object3D::AxisUp()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->up;
+    return v.getNormalize();
+}
+
+Vertex3D Object3D::AxisDown()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->down;
+    return v.getNormalize();
+}
+
+Vertex3D Object3D::AxisForward()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->forward;
+    return v.getNormalize();
+}
+
+Vertex3D Object3D::AxisBackwards()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->backward;
+
+    return v.getNormalize();
+
+}
+
+Vertex3D Object3D::AxisRight()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->right;
+
+    return v.getNormalize();
+
+}
+
+Vertex3D Object3D::AxisLeft()
+{
+    Vertex3D v = getRotation() * EngineSetup::getInstance()->left;
+
+    return v.getNormalize();
+
 }
