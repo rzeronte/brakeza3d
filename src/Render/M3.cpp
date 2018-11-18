@@ -194,7 +194,7 @@ void M3::setMatrixRotationForEulerAngles(float x, float y, float z)
     );
 }
 
-M3 M3::getMatrixTranspose()
+M3 M3::getTranspose()
 {
     M3 m(
         this->m[0], this->m[3], this->m[6],

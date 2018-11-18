@@ -43,7 +43,7 @@ public:
     void consoleInfo();
 
     void UpdatePosition(void);
-    void UpdateRotation(float, float);
+    void UpdateRotation(void);
 
     void Pitch(float pitch);
     void Yaw(float yaw);

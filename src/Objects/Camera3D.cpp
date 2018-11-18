@@ -90,9 +90,9 @@ void Camera3D::syncFrustum()
 {
     frustum->position  = Vertex3D(head[0], head[1], head[2]);
 
-    frustum->direction = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->forward;
-    frustum->up        = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->up;
-    frustum->right     = this->getRotation().getMatrixTranspose() * EngineSetup::getInstance()->right;
+    frustum->direction = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+    frustum->up        = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
+    frustum->right     = this->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
     frustum->updateCenters();
     frustum->updatePoints();
@@ -179,12 +179,11 @@ void Camera3D::UpdatePosition(void)
     speed = 0;
     strafe = 0;
 
-    UpdateRotation(yaw, pitch);
 }
 
-void Camera3D::UpdateRotation(float yaw, float pitch)
+void Camera3D::UpdateRotation()
 {
-    M3 im = M3::getMatrixRotationForEulerAngles(pitch, yaw, 0);
+    M3 im = M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, 0);
 
     this->setRotation(im);
 }

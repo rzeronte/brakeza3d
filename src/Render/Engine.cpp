@@ -139,8 +139,7 @@ void Engine::cameraUpdate()
     cont->handleKeyboard(&this->e, this->cam, this->finish);
 
     cam->UpdatePosition();
-
-
+    cam->UpdateRotation();
 }
 
 void Engine::drawGUI()

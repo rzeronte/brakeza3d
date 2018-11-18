@@ -23,7 +23,7 @@ public:
     static M3 getMatrixIdentity();
     static M3 getMatrixRotationForEulerAngles(float x, float y, float z);
 
-    M3 getMatrixTranspose();
+    M3 getTranspose();
 
     void setMatrixNULL();
     void setMatrixIdentity();
