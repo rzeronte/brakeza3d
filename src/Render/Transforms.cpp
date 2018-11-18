@@ -112,7 +112,7 @@ Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
     T.z*=o->scale;
 
     T.subVertex(*o->getPosition());
-    T = o->getRotation().getMatrixTranspose() * T;
+    T = o->getRotation().getTranspose() * T;
 
     return T;
 }
@@ -121,7 +121,7 @@ Vertex3D Transforms::cameraToWorld(Vertex3D V,  Camera3D *cam)
 {
     Vertex3D A;
 
-    A = cam->getRotation().getMatrixTranspose() * V;
+    A = cam->getRotation().getTranspose() * V;
     A.addVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]));
 
     A.u = V.u; A.v = V.v;
