@@ -20,20 +20,13 @@ class Controller {
     SDL_Keycode key_pressed;
 
     bool MousePressed = false;
-    bool Mousefirst  = true;
     bool MouseMotion = false;
-
-    float MouseRelX;
-    float MouseRelY;
-
 
 public:
     Controller();
 
     void handleKeyboard(SDL_Event *, Camera3D *, bool &);
     void handleMouse(SDL_Event *, Camera3D *);
-
-    void updateKeyboardRead(SDL_Event *event);
 };
 
 

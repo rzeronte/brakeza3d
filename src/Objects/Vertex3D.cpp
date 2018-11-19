@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 28/4/18.
-//
 
 #include <cstdio>
 #include <cmath>
@@ -30,6 +27,28 @@ Vertex3D::Vertex3D(float x, float y, float z)
     this->v = 0;
 }
 
+Vertex3D Vertex3D::operator +(const Vertex3D &v)
+{
+    Vertex3D V = Vertex3D();
+
+    V.x = this->x + v.x;
+    V.y = this->y + v.y;
+    V.z = this->z + v.z;
+
+    return V;
+}
+
+Vertex3D Vertex3D::operator -(const Vertex3D &v)
+{
+    Vertex3D V = Vertex3D();
+
+    V.x = this->x - v.x;
+    V.y = this->y - v.y;
+    V.z = this->z - v.z;
+
+    return V;
+}
+
 Vertex3D Vertex3D::getNormalize()
 {
     float modulo = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );
@@ -48,7 +67,7 @@ Vertex3D Vertex3D::getNormalize()
 
 void Vertex3D::consoleInfo(std::string label, bool returnLine)
 {
-    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" +std::to_string(z) + ")", "VERTEX");
+    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" + std::to_string(z) + ") (u:" + std::to_string(u) + ", v:" + std::to_string(v) + ")", "VERTEX");
     if (returnLine) {
         Logging::getInstance()->Log("", "VERTEX");
     }
@@ -66,29 +85,6 @@ Vertex3D Vertex3D::getInverse() {
     return t;
 }
 
-void Vertex3D::setOrigin() {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
-
-    this->u = 0;
-    this->v = 0;
-}
-
-void Vertex3D::addVertex(Vertex3D v)
-{
-    this->x += v.x;
-    this->y += v.y;
-    this->z += v.z;
-}
-
-void Vertex3D::subVertex(Vertex3D v)
-{
-    this->x -= v.x;
-    this->y -= v.y;
-    this->z -= v.z;
-}
-
 float Vertex3D::dotProduct(Vertex3D v1, Vertex3D v2)
 {
     float dot = (v1.x*v2.x) + (v1.y*v2.y) + (v1.z*v2.z);
@@ -96,7 +92,7 @@ float Vertex3D::dotProduct(Vertex3D v1, Vertex3D v2)
     return dot;
 }
 
-float Vertex3D::getNorm()
+float Vertex3D::getModule()
 {
     float norm = sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) );
 

@@ -37,7 +37,7 @@ public:
             const float range_max_yaw = 360;
 
             std::string position_text = "Position##1";
-            std::string rotation_text = "Rotation##2";
+            std::string rotation_text = "Orientation##2";
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {

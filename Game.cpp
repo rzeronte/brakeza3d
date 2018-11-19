@@ -9,7 +9,7 @@
 #include "headers/Objects/Weapon3D.h"
 #include "headers/Render/Maths.h"
 #include "WAD/WAD.h"
-#include "Map.h"
+#include "headers/Render/BSPMap.h"
 
 int reductor = 100;
 
@@ -42,9 +42,9 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::cam->head[0] = 544;
-    Engine::cam->head[1] = -32;
-    Engine::cam->head[2] = 300;
+    Engine::camera->head[0] = 544;
+    Engine::camera->head[1] = -32;
+    Engine::camera->head[2] = 300;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -69,47 +69,33 @@ void Game::onStart()
     */
 
     // mono
-    Mesh3D *mono = new Mesh3D();
+    /*Mesh3D *mono = new Mesh3D();
     mono->setEnabled(true);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    //mono->rotation.x = 180;
-    mono->getPosition()->x = 544;
-    mono->getPosition()->y = 288;
-    mono->getPosition()->z = 38;
-
     mono->loadOBJBlender("../models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
+     */
 
     // cubo
-    Mesh3D *cubo = new Mesh3D();
-    cubo->scale = 500;
+    /*Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(true);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cubo->setPosition( Vertex3D(1, 1, 20) );
     cubo->loadOBJBlender("../models/cubo.obj");
     this->addObject3D(cubo, "cubo");
-
-    // q3 q1map
-    /*Mesh3D *q3map = new Mesh3D();
-    q3map->setEnabled(false);
-    q3map->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    q3map->setPosition( Vertex3D(1, 1, 5) );
-    q3map->loadQ3Map("../pak0/maps/q3dm17.bsp");
-    this->addObject3D(q3map, "q3map");
-    */
+     */
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setEnabled(false);
-    //triangle->getRotation()->x-=90;
+    triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition( Vertex3D(1, 1, 5) );
+    triangle->setPosition( Vertex3D(1, 0.4, 20) );
     triangle->loadOBJBlender("../models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
     // marine (sprite directional)
-    SpriteDirectional3D *marine = new SpriteDirectional3D();
+    /*SpriteDirectional3D *marine = new SpriteDirectional3D();
     marine->setEnabled(true);
     marine->setPosition( Vertex3D(1, 1, 5) );
     marine->setTimer(Engine::getTimer());
@@ -118,15 +104,17 @@ void Game::onStart()
     marine->addAnimationDirectional2D("marine/jump", 1);
     marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
+    */
 
     // gun ( sprite )
-    Sprite3D *guy = new Sprite3D();
+    /*Sprite3D *guy = new Sprite3D();
     guy->setEnabled(true);
     guy->setPosition( Vertex3D(2, 1, 5) );
     guy->setTimer(Engine::getTimer());
     guy->addAnimation("guy/face", 3);
     guy->setAnimation(SpriteGuyAnimations::NORMAL);
     this->addObject3D(guy, "guy");
+     */
 
     // weapon
     /*Weapon3D *weapon = new Weapon3D();
@@ -149,16 +137,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    Map *q1map = new Map();
-    q1map->setPosition( Vertex3D(0, 0, 0) );
-    q1map->setRotation( M3(180, 90, 0) );
-
-    if (!q1map->Initialize("../assets/start.bsp", "../assets/palette.lmp")) {
-        Logging::getInstance()->Log("Quake::main() Unable to initialize q1map", "QUAKE");
-    }
-    q1map->InitializeSurfaces();
-    q1map->InitializeTextures();
-    this->addObject3D(q1map, "q1map");
+    loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -169,15 +148,9 @@ void Game::mainLoop()
     while(!finish) {
 
         while (SDL_PollEvent(&e)) {
-            // GUI Events
             ImGui_ImplSDL2_ProcessEvent(&e);
-
-            // Keyboard Reading
-            Engine::getController()->updateKeyboardRead(&e);
-
-            // Camera Update (Mouse & Keyboard)
             Engine::cameraUpdate();
-            cam->syncFrustum();
+            camera->syncFrustum();
         }
 
         this->onUpdate();
@@ -195,14 +168,6 @@ void Game::onUpdate()
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;
-
-    Map *q1map = (Map*) getObjectByLabel("q1map");
-    //Engine::cam->updateRotation( Engine::cam->getYawDegree()+0.5);
-
-    bspleaf_t *leaf = q1map->FindLeaf(Engine::cam);
-    q1map->DrawLeafVisibleSet( leaf, Engine::cam);
-    //q1map->drawTriangles(Engine::cam);
-
 
 }
 

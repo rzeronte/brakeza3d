@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 29/4/18.
-//
 
 #ifndef SDL2_3D_ENGINE_ENGINE_H
 #define SDL2_3D_ENGINE_ENGINE_H
@@ -20,6 +17,7 @@
 #include "../../src/GUI/GUI_Menu.h"
 #include "../../src/GUI/GUI_ObjectsInspector.h"
 #include "../../src/GUI/GUI_Engine.h"
+#include "BSPMap.h"
 
 class Engine {
 public:
@@ -32,12 +30,14 @@ public:
     SDL_Event e;
 
     // Camera y Controlador (Input)
-    Camera3D *cam;
-    Controller *cont;
+    Camera3D *camera;
+    Controller *controller;
 
     // Objetos 3D
     Object3D **gameObjects;
     int numberGameObjects;
+
+    BSPMap *bsp_map;
 
     // Luces
     LightPoint3D **lightPoints;
@@ -76,6 +76,7 @@ public:
     void onEnd();
 
     void drawMeshes();
+    void drawBSP();
     void drawLightPoints();
     void drawSprites();
 
@@ -85,19 +86,18 @@ public:
     void addObject3D(Object3D *obj, std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
-    Controller *getController() const;
-
     void cameraUpdate();
     void windowUpdate();
 
     void drawGUI();
 
+    void loadBSP(const char *bspFilename, const char *paletteFilename);
+
     void processFPS();
+
     Timer* getTimer();
 
     Object3D* getObjectByLabel(std::string label);
-
 };
-
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

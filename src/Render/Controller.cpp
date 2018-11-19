@@ -14,6 +14,9 @@ Controller::Controller()
 
 void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 {
+    this->key_pressed = event->key.keysym.sym;
+    this->event_type = event->type;
+
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
@@ -27,18 +30,7 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 
     if (event_type == SDL_MOUSEMOTION) {
         MouseMotion = true;
-        if (!Mousefirst) {
-            MouseRelX = event->motion.xrel;
-            MouseRelY = event->motion.yrel;
-        } else {
-            Mousefirst = false;
-            MouseRelX = 0;
-            MouseRelY = 0;
-        }
     }
-
-    float CameraYaw = 0;
-    float CameraPitch = 0;
 
     if (MouseMotion && MousePressed) {
         MouseMotion = false;
@@ -52,6 +44,9 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 
 void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
 {
+    this->key_pressed = event->key.keysym.sym;
+    this->event_type = event->type;
+
     if  (event_type == SDL_KEYDOWN) {
         if (key_pressed == SDLK_w ) {
             camera->MoveForward();
@@ -77,43 +72,8 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
         if (key_pressed == SDLK_a ) {
             camera->StrafeLeft();
         }
-        if (key_pressed == SDLK_PAGEUP ) {
-            camera->PitchUp();
-        }
-        if (key_pressed == SDLK_PAGEDOWN ) {
-            camera->PitchDown();
-        }
-
-        switch( key_pressed ) {
-
-            case SDLK_k:
-                camera->horizontal_fov--;
-                printf("Camera HFOV: %f\r\n", camera->horizontal_fov);
-                break;
-
-            case SDLK_l:
-                camera->horizontal_fov++;
-                printf("Camera HFOV: %f\r\n", camera->horizontal_fov);
-                break;
-
-            case SDLK_ESCAPE:
-                done = true;
-                break;
-            case SDL_WINDOWEVENT_CLOSE:
-                done = true;
-                break;
-            case SDL_QUIT:
-                done = true;
-                break;
+        if (key_pressed == SDLK_ESCAPE) {
+            done = true;
         }
     }
-    //camera->getPosition()->addVertex( Vertex3D(mov_x, mov_y, mov_z) );
-    //camera->getRotation()->addRotation( Rotation3D(rot_x, rot_y, rot_z) );
-
-}
-
-void Controller::updateKeyboardRead(SDL_Event *event)
-{
-    this->key_pressed = event->key.keysym.sym;
-    this->event_type = event->type;
 }

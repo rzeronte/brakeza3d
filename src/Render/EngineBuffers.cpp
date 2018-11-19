@@ -60,16 +60,12 @@ void EngineBuffers::clearVideoBuffer()
 
 void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
 {
-    //Uint32 *pixels = (Uint32 *)surface->pixels;
-    //for (int i = 0 ; i < sizeBuffers ; i++) {
-    //    pixels[i] = videoBuffer[i];
-    //}
-
     memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
 void EngineBuffers::resetBenchmarkValues()
 {
+    EngineBuffers::getInstance()->trianglesDrawed = 0;
     EngineBuffers::getInstance()->pixelesDrawed = 0;
     EngineBuffers::getInstance()->pixelesOutOfWindow = 0;
     EngineBuffers::getInstance()->trianglesOutFrustum = 0;
@@ -81,12 +77,13 @@ void EngineBuffers::resetBenchmarkValues()
 void EngineBuffers::consoleInfo()
 {
     std::string info;
-    info+= "pxDrawed: " + std::to_string(EngineBuffers::getInstance()->pixelesDrawed);
-    info+= "| pxOutOfCamera: " + std::to_string(EngineBuffers::getInstance()->pixelesOutOfWindow);
-    info+= "| pxBehindOfCamera: " + std::to_string(EngineBuffers::getInstance()->pixelesBehindOfCamera);
-    info+= "| trOutFrustum: " + std::to_string(EngineBuffers::getInstance()->trianglesOutFrustum);
-    info+= "| trHByFaceCuling: " + std::to_string(EngineBuffers::getInstance()->trianglesHidenByFaceCuling);
-    info+= "| trClippingCreated: " + std::to_string(EngineBuffers::getInstance()->trianglesClippingCreated);
+    info+= "TrDrawed: " + std::to_string(EngineBuffers::getInstance()->trianglesDrawed);
+    info+= "| TrOutFrustum: " + std::to_string(EngineBuffers::getInstance()->trianglesOutFrustum);
+    info+= "| TrHByFaceCuling: " + std::to_string(EngineBuffers::getInstance()->trianglesHidenByFaceCuling);
+    info+= "| TrClipCreated: " + std::to_string(EngineBuffers::getInstance()->trianglesClippingCreated);
+    info+= "| pxDrawed: " + std::to_string(EngineBuffers::getInstance()->pixelesDrawed);
+    info+= "| pxOutOfWin: " + std::to_string(EngineBuffers::getInstance()->pixelesOutOfWindow);
+    info+= "| pxBehindOfCam: " + std::to_string(EngineBuffers::getInstance()->pixelesBehindOfCamera);
 
     Logging::getInstance()->Log( info, "INFO" );
 }

@@ -205,24 +205,18 @@ bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, C
             tv3.v = pvnv3;
 
             Triangle t = Triangle( tv1, tv2, tv3, parent );
-            if (texture != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-                t.setTexture(texture);
-                // No usamos draw() pq coinciden con los planos del frustum y
-                // se autoeliminaría en el check isPointInFrustum
-                // scanVertices() no realiza esos checks.
-                t.updateVertexObjectSpace();
-                t.updateVertexCameraSpace(cam);
-                t.scanVertices(cam);
-            }
+            t.setTexture(texture);
+            t.setClipped(true);
+            t.draw(cam);
 
             if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
                 Vector3D v1 = Vector3D(vertexes[0], vertexes[current]);
                 Vector3D v2 = Vector3D(vertexes[0], vertexes[next]);
                 Vector3D v3 = Vector3D(vertexes[current], vertexes[next]);
 
-                Drawable::drawVector3D(v1, cam, Color::red());
-                Drawable::drawVector3D(v2, cam, Color::green());
-                Drawable::drawVector3D(v3, cam, Color::blue());
+                Drawable::drawVector3D(v1, cam, Color::yellow());
+                Drawable::drawVector3D(v2, cam, Color::yellow());
+                Drawable::drawVector3D(v3, cam, Color::yellow());
             }
 
             if ( EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
@@ -440,20 +434,12 @@ Vertex3D Maths::crossProduct(Vertex3D u, Vertex3D v)
     return V;
 }
 
-float Maths::floatRound(double f, int c)
-{
-    return (((float)((int)((f) * (c))) / (c)));
-}
-
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
 {
-    return 0;
-    /*o1->updateAxis();
+    Vertex3D oRight = o1->AxisForward();
+    Vertex3D R = cam->AxisForward();
 
-    Vertex3D oRight = o1->forward.getComponent();
-    Vertex3D R = cam->forward.getComponent();
-
-    float rads = acosf(  Vertex3D::dotProduct(R, oRight) / (R.getNorm() * oRight.getNorm()) );
+    float rads = acosf(  Vertex3D::dotProduct(R, oRight) / (R.getModule() * oRight.getModule()) );
 
     float degs = Maths::radiansToDegrees(rads);
 
@@ -463,6 +449,6 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *
         degs =  360 - degs;
     }
 
-    return degs;*/
+    return degs;
 }
 

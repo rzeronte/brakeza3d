@@ -118,7 +118,7 @@ void Camera3D::Pitch(float pitch)
 
 void Camera3D::Yaw(float yaw)
 {
-    this->yaw += yaw * MOUSE_SENSITIVITY;
+    this->yaw -= yaw * MOUSE_SENSITIVITY;
 }
 
 void Camera3D::PitchUp(void)
@@ -145,12 +145,12 @@ void Camera3D::MoveBackward(void)
 
 void Camera3D::TurnRight(void)
 {
-    yaw += TURN_SPEED;
+    yaw -= TURN_SPEED;
 }
 
 void Camera3D::TurnLeft(void)
 {
-    yaw -= TURN_SPEED;
+    yaw += TURN_SPEED;
 }
 
 void Camera3D::StrafeRight(void)
@@ -176,7 +176,7 @@ void Camera3D::UpdatePosition(void)
     }
 
     // Reset speed
-    speed = 0;
+    speed  = 0;
     strafe = 0;
 
 }

@@ -7,23 +7,27 @@
 #include <string>
 
 class Texture {
-public:
-    bool loaded;
+private:
+    SDL_Surface *texture_surface;
     std::string filename;
+public:
+    bool loaded = false;
 
     Texture();
+    Texture(int, int);
 
-    SDL_Surface *texture_surface;
-
-    void drawFlat(SDL_Surface *surface);
+    void drawFlat(int, int);
 
     void loadBMP(const char *file);
     void loadJPG(const char *file);
-    void drawUVFlat(SDL_Surface *surface, float x, float y, Uint32);
-
     void loadTGA(const char *file);
+    void loadFromRaw(unsigned int *texture, int, int);
 
+    SDL_Surface *getSurface();
     void consoleInfo();
+
+    const std::string &getFilename() const;
+    void setFilename(const std::string &filename);
 };
 
 

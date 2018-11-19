@@ -6,7 +6,6 @@
 #include "Vertex3D.h"
 #include "Triangle3D.h"
 #include "../Render/Tools.h"
-#include "../Q3MapLoader/Q3Loader.h"
 #include "../Render/EngineSetup.h"
 #include "Object3D.h"
 #include "LightPoint3D.h"
@@ -18,7 +17,6 @@
 class Mesh3D : public Object3D {
 
 public:
-    TMapQ3 lMap;
     Billboard *billboard;
 
     std::string mesh_file;

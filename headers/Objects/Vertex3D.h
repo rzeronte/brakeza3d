@@ -11,7 +11,9 @@
 
 class Vertex3D {
 public:
-    bool debug = false;
+    Vertex3D operator +(const Vertex3D &pm);
+    Vertex3D operator -(const Vertex3D &pm);
+
     float x, y, z;
 
     float angle;
@@ -22,16 +24,12 @@ public:
     Vertex3D(float, float, float);
 
     Vertex3D getNormalize();
+    Vertex3D getInverse();
+    float getModule();
 
     void consoleInfo(std::string label, bool);
 
-    Vertex3D getInverse();
-    void setOrigin();
-    void addVertex(Vertex3D v);
-    void subVertex(Vertex3D v);
-
     static float dotProduct(Vertex3D, Vertex3D);
-    float getNorm();
 };
 
 

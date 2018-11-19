@@ -29,6 +29,7 @@ public:
     Object3D *parent;
 
     int order = 0;
+    bool is_clipped = false;
 
     LightPoint3D **lightPoints;
     int numberLightPoints = 0;
@@ -41,14 +42,15 @@ public:
 
     // Check camera - face culling
     bool faceCulling(Object3D *obj);
-    void drawNormal(Camera3D *cam, Uint32 color);
+
     Vertex3D getNormal();
     Vertex3D getCenter();
-    Vertex3D calcNormalSurface(Vector3D, Vector3D);
 
     // Rasterization
     void drawWireframe(Camera3D *cam);
     bool draw(Camera3D *);
+    void drawNormal(Camera3D *cam, Uint32 color);
+
     void shadowMapping(LightPoint3D *lp);
 
     void scanVertices(Camera3D *);
@@ -65,13 +67,13 @@ public:
     Texture *getTexture() const;
     void setTexture(Texture *texture);
 
-    // debug helpers
-    void consoleInfo(const char*);
-
     // clipping triangle
     bool clipping(Camera3D *cam);
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
+
+    void setClipped(bool);
+    bool isClipped();
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

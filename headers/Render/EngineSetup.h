@@ -42,14 +42,16 @@ public:
 
     // Triangle render options
     // FaceCulling
-    bool TRIANGLE_FACECULLING = true;
+    bool TRIANGLE_FACECULLING = false;
     bool TRIANGLE_FRUSTUM_CULLING = true;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = true;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = true;
+    bool TRIANGLE_MODE_TEXTURIZED = false;
+
+    bool Q1MAP_FACES = false;
 
     // Normal in triangle
     bool TRIANGLE_RENDER_NORMAL = false;
@@ -89,10 +91,11 @@ public:
     float CONTROLLER_SPEED_ROTATION_CAMERA = 1.f;
     float CONTROLLER_SPEED_MOVEMENT_CAMERA = 100.f;
 
-    std::string ICON_LIGHTPOINTS_DEFAULT = "../icons/lightpoint.tga";
-    std::string ICON_OBJECT3D_DEFAULT = "../icons/object3d.tga";
+    std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/lightpoint.tga";
+    std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";
 
-    std::string SPRITES_FOLDER = "../sprites/";
+    std::string SPRITES_FOLDER = "../assets/ssprites/";
+    std::string ASSETS_FOLDER = "../assets/";
 
     // Triangle color for TRIANGLE_MODE_COLOR_SOLID
     Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // WHITE

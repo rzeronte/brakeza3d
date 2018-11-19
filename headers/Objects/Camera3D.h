@@ -20,10 +20,8 @@ public:
     float strafe;       // Speed along heading
 
     vec3_t head;		// Position of head
-    vec3_t view;      // Normal along viewing direction
 
     float horizontal_fov;
-
     float farDistance ;
     float aspectRatio;
 
@@ -56,7 +54,6 @@ public:
     void StrafeRight(void);
     void StrafeLeft(void);
 
-    void limitYaw();
     void limitPitch();
 };
 

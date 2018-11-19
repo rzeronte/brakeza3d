@@ -3,7 +3,6 @@
 #include <vector>
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Q3MapLoader/Q3Loader.h"
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Drawable.h"
@@ -54,23 +53,6 @@ bool Mesh3D::loadOBJBlender(const char *name)
     this->loadOBJBlenderMaterials();
     this->loadOBJBlenderTextureCoordinates();
     this->loadOBJBlenderTriangles();
-}
-
-
-void Mesh3D::loadQ3Map(const std::string& pFilename)
-{
-    Logging::getInstance()->Log("Loading Q3BSP " + pFilename, "INFO");
-
-    readMap(pFilename, this->lMap); // Load Q3Map Info Structure
-    this->loadTexturesFromQ3Map();
-    this->loadTrianglesFromQ3Map();
-
-    Logging::getInstance()->Log("Loading Q3Map (Nº Faces: " + std::to_string(lMap.mFaces.size())+", Nº Textures: "+ std::to_string(lMap.mTextures.size())+")", "INFO");
-
-    //FILE* lFile = fopen("final_debug.txt", "w+");
-    //debugInformations(lMap, lFile);
-    //fclose(lFile);
-    //freeMap(lMap);
 }
 
 void Mesh3D::loadOBJBlenderVertex()
@@ -240,7 +222,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
 
 void Mesh3D::draw(Camera3D *cam)
 {
-    EngineBuffers::getInstance()->resetBenchmarkValues();
+    //EngineBuffers::getInstance()->resetBenchmarkValues();
 
     // Object's axis
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
@@ -255,7 +237,6 @@ void Mesh3D::draw(Camera3D *cam)
 
     // Console info
     if (EngineSetup::getInstance()->MESH_DEBUG_INFO) {
-        getPosition()->consoleInfo("T", false);
         EngineBuffers::getInstance()->consoleInfo();
     }
 
@@ -266,130 +247,6 @@ void Mesh3D::draw(Camera3D *cam)
             Drawable::drawBillboard(this->billboard, cam );
         }
     }
-}
-
-// http://www.mralligator.com/q3/
-void Mesh3D::loadTrianglesFromQ3Map()
-{
-    int cont = 0;
-    Vertex3D A, B, C;
-
-    float scale = 0.001f;
-
-    for (int i = 0 ; i < lMap.mFaces.size() ; i++) {
-
-        // polygon
-        int vertexIndex = lMap.mFaces[i].mVertex;
-        int firstMeshVertexIndex = lMap.mFaces[i].mMeshVertex;
-
-        int textureIndex = lMap.mFaces[i].mTextureIndex;
-
-        //printf("%s\r\n",lMap.mTextures[textureIndex].mName );
-
-        if ( lMap.mFaces[i].mType == 1 ) {
-
-            for ( int j = 0 ; j < lMap.mFaces[i].mNbMeshVertices ; j+=3 ) {
-
-                int i0 = lMap.mMeshVertices[firstMeshVertexIndex+0].mMeshVert;
-                int i1 = lMap.mMeshVertices[firstMeshVertexIndex+1].mMeshVert;
-                int i2 = lMap.mMeshVertices[firstMeshVertexIndex+2].mMeshVert;
-
-                A = Vertex3D (
-                    lMap.mVertices[vertexIndex+i0].mPosition[0] * scale,
-                    lMap.mVertices[vertexIndex+i0].mPosition[1] * scale,
-                    lMap.mVertices[vertexIndex+i0].mPosition[2] * scale
-                );
-                A.u = lMap.mVertices[vertexIndex+i0].mTexCoord[0][0];
-                A.v = lMap.mVertices[vertexIndex+i0].mTexCoord[0][1];
-
-                // --
-
-                B = Vertex3D (
-                    lMap.mVertices[vertexIndex+i1].mPosition[0] * scale,
-                    lMap.mVertices[vertexIndex+i1].mPosition[1] * scale,
-                    lMap.mVertices[vertexIndex+i1].mPosition[2] * scale
-                );
-                B.u = lMap.mVertices[vertexIndex+i1].mTexCoord[0][0];
-                B.v = lMap.mVertices[vertexIndex+i1].mTexCoord[0][1];
-
-                C = Vertex3D (
-                    lMap.mVertices[vertexIndex+i2].mPosition[0] * scale,
-                    lMap.mVertices[vertexIndex+i2].mPosition[1] * scale,
-                    lMap.mVertices[vertexIndex+i2].mPosition[2] * scale
-                );
-                C.u = lMap.mVertices[vertexIndex+i2].mTexCoord[0][0];
-                C.v = lMap.mVertices[vertexIndex+i2].mTexCoord[0][1];
-
-                Triangle t = Triangle(A, B, C, this);
-
-                this->model_triangles[cont] = t;
-                this->model_triangles[cont].order = cont;
-
-                if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-                    if (this->model_textures[textureIndex].loaded) {
-                        this->model_triangles[cont].setTexture(&this->model_textures[textureIndex]);
-                    }
-                }
-
-                cont++;
-                firstMeshVertexIndex+=3;
-            }
-        }
-    }
-
-    this->n_triangles = cont;
-
-    Logging::getInstance()->Log("Q3Map Triangles 'polygon': " + std::to_string(this->n_triangles), "INFO");
-}
-
-void Mesh3D::loadTexturesFromQ3Map()
-{
-    char tgaExt[64] = ".tga";
-    char jpgExt[64] = ".jpg";
-
-    for (int i=0 ; i< lMap.mTextures.size() ; i++) {
-        char tgaNameTexture[64];
-        char jpgNameTexture[64];
-
-        Texture t = Texture();
-
-        strcpy(tgaNameTexture, "../pak0/");
-        strcat(tgaNameTexture, lMap.mTextures[i].mName);
-        strcat(tgaNameTexture, tgaExt);
-
-        strcpy(jpgNameTexture, "../pak0/");
-        strcat(jpgNameTexture, lMap.mTextures[i].mName);
-        strcat(jpgNameTexture, jpgExt);
-
-        int existsTGATexture = 0;
-        int existsJPGTexture = 0;
-        int existsTexture = 0;
-
-        if (Tools::fileExists(tgaNameTexture) ) {
-            existsTGATexture = 1;
-            existsTexture = 1;
-        }
-
-        if (Tools::fileExists(jpgNameTexture) ) {
-            existsJPGTexture = 1;
-            existsTexture = 1;
-        }
-
-        if (existsTexture && existsJPGTexture) {
-            t.loadJPG( jpgNameTexture );
-            this->model_textures[i] = t;
-            this->n_textures++;
-        }
-
-        if (existsTexture && existsTGATexture) {
-            t.loadTGA( tgaNameTexture);
-            this->model_textures[i] = t;
-            this->n_textures++;
-        }
-        //printf("Loading Texture: index: %d - '%s' texture (existsTexture: %d, existsJPGTexture: %d, existsTGATexture: %d, Content: %d, Flags: %d)\r\n", i, lMap.mTextures[i].mName, existsTexture, existsJPGTexture, existsTGATexture, lMap.mTextures[i].mContents, lMap.mTextures[i].mFlags);
-    }
-
-    Logging::getInstance()->Log("Q3Map Textures: " + std::to_string(this->n_textures), "INFO");
 }
 
 void Mesh3D::setLightPoints(LightPoint3D **lightPoints, int number)

@@ -12,7 +12,6 @@
 class Drawable {
 public:
     static void drawBox2D(SDL_Rect r);
-    static void drawPlaneNormalVector(Plane *object, Camera3D *cam, Uint32 col);
     static void drawVertex(Vertex3D v, Camera3D *cam, Uint32 color);
     static void drawVector3D(Vector3D V, Camera3D *cam, Uint32 color);
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
@@ -21,7 +20,6 @@ public:
     static void drawMainAxis(Camera3D *cam);
     static void drawBillboard(Billboard *B, Camera3D *cam);
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
-
 };
 
 

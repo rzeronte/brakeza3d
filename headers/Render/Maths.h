@@ -48,7 +48,6 @@ public:
 
     static Vertex3D crossProduct(Vertex3D, Vertex3D);
 
-    static float floatRound(double dval, int n);
     static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam);
 };
 

@@ -54,8 +54,13 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
-                ImGui::Checkbox("Mesh Transforms Logging", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
 
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Map")) {
+                ImGui::Checkbox("Map info Debug", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
+                ImGui::Checkbox("Show Faces", &EngineSetup::getInstance()->Q1MAP_FACES);
                 ImGui::EndMenu();
             }
 

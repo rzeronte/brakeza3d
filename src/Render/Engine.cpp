@@ -37,10 +37,10 @@ Engine::Engine()
     this->numberLightPoints = 0;
 
     // cam
-    cam = new Camera3D();
+    camera = new Camera3D();
 
     // input controller
-    cont = new Controller();
+    controller = new Controller();
 
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
@@ -131,15 +131,14 @@ void Engine::initFontsTTF()
 
 void Engine::cameraUpdate()
 {
-
     if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-        cont->handleMouse(&this->e, this->cam);
+        controller->handleMouse(&this->e, this->camera);
     }
 
-    cont->handleKeyboard(&this->e, this->cam, this->finish);
+    controller->handleKeyboard(&this->e, this->camera, this->finish);
 
-    cam->UpdatePosition();
-    cam->UpdateRotation();
+    camera->UpdatePosition();
+    camera->UpdateRotation();
 }
 
 void Engine::drawGUI()
@@ -155,7 +154,7 @@ void Engine::drawGUI()
         finish,
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
-        cam
+        camera
     );
 
     ImGui::Render();
@@ -201,15 +200,16 @@ void Engine::onUpdate()
         this->objects3DShadowMapping();
     }
 
+    this->drawBSP();
     this->drawMeshes();
     this->drawLightPoints();
     this->drawSprites();
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(cam->frustum, cam, true, true, true);
+        Drawable::drawFrustum(camera->frustum, camera, true, true, true);
     }
 
-    Drawable::drawMainAxis( cam );
+    Drawable::drawMainAxis( camera );
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -241,6 +241,13 @@ void Engine::objects3DShadowMapping()
     }
 }
 
+void Engine::drawBSP()
+{
+    bspleaf_t *leaf = bsp_map->FindLeaf( camera );
+    bsp_map->DrawLeafVisibleSet( leaf, camera );
+    bsp_map->drawTriangles( camera );
+}
+
 void Engine::drawMeshes()
 {
     // draw meshes
@@ -250,12 +257,12 @@ void Engine::drawMeshes()
             if (!oMesh->isEnabled()) {
                 continue;
             };
-            oMesh->draw(cam);
+            oMesh->draw(camera);
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisUp(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisRight(), EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, oMesh->AxisForward(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisUp(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisRight(), EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisForward(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
             }
         }
     }
@@ -270,12 +277,12 @@ void Engine::drawLightPoints()
                 continue;
             }
 
-            oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, cam->AxisUp(), cam->AxisRight() );
+            oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, camera->AxisUp(), camera->AxisRight() );
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
-                Drawable::drawBillboard(oLight->billboard, Engine::cam);
+                Drawable::drawBillboard(oLight->billboard, Engine::camera);
             }
             if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
-                Drawable::drawObject3DAxis(oLight, cam, true, true, true);
+                Drawable::drawObject3DAxis(oLight, camera, true, true, true);
             }
         }
     }
@@ -291,11 +298,11 @@ void Engine::drawSprites()
                 continue;
             };
 
-            oSpriteDirectional->updateTrianglesCoordinates(cam);
-            oSpriteDirectional->draw(cam);
+            oSpriteDirectional->updateTrianglesCoordinates(camera);
+            oSpriteDirectional->draw(camera);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
 
         }
@@ -306,11 +313,11 @@ void Engine::drawSprites()
             if (!oSprite->isEnabled()) {
                 continue;
             };
-            oSprite->updateTrianglesCoordinatesAndTexture(cam);
-            oSprite->draw(cam);
+            oSprite->updateTrianglesCoordinatesAndTexture(camera);
+            oSprite->draw(camera);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
         }
 
@@ -320,12 +327,12 @@ void Engine::drawSprites()
             if (!oWeapon->isEnabled()) {
                 continue;
             };
-            oWeapon->setWeaponPosition(cam);
-            oWeapon->updateTrianglesCoordinatesAndTexture(cam);
-            oWeapon->draw(cam);
+            oWeapon->setWeaponPosition(camera);
+            oWeapon->updateTrianglesCoordinatesAndTexture(camera);
+            oWeapon->draw(camera);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, cam, Engine::font, *oWeapon->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
+                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oWeapon->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
             }
         }
 
@@ -369,10 +376,6 @@ void Engine::Close()
     SDL_Quit();
 }
 
-Controller *Engine::getController() const {
-    return cont;
-}
-
 void Engine::processFPS() {
     fps = countedFrames / ( fpsTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
@@ -382,6 +385,15 @@ void Engine::processFPS() {
 Timer* Engine::getTimer()
 {
     return &this->fpsTimer;
+}
+
+void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
+{
+    this->bsp_map = new BSPMap();
+    this->bsp_map->Initialize("start.bsp", "palette.lmp");
+    this->bsp_map->InitializeSurfaces();
+    this->bsp_map->InitializeTextures();
+
 }
 
 

@@ -70,9 +70,13 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexObjectSpace();
     this->updateVertexCameraSpace(cam);
 
+    if (Ac.z < 0 || Bc.z < 0 || Cc.z < 0) {
+        return false;
+    }
+
     bool faceCulling = false;
     if (EngineSetup::getInstance()->TRIANGLE_FACECULLING)  {
-        //faceCulling = this->faceCulling(cam);
+        faceCulling = this->faceCulling(cam);
     }
 
     if (faceCulling) {
@@ -81,7 +85,7 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     // Frustum Culling
-    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING) {
+    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !this->isClipped()) {
         if ( !cam->frustum->isPointInFrustum(Ao) && !cam->frustum->isPointInFrustum(Bo) && !cam->frustum->isPointInFrustum(Co) ) {
             EngineBuffers::getInstance()->trianglesOutFrustum++;
             return false;
@@ -89,7 +93,7 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     // Clipping
-    if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING ) {
+    if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !this->isClipped()) {
         if (!faceCulling) {
             if (this->clipping(cam)) {
                 return false;
@@ -106,18 +110,11 @@ bool Triangle::draw(Camera3D *cam)
         }
     }
 
+    EngineBuffers::getInstance()->trianglesDrawed++;
+
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
         if (!faceCulling) {
-            if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-                if (this->getTexture() != NULL) {
-                    this->scanVertices(cam);
-                } else {
-                    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-                        this->scanVertices(cam);
-                    }
-                    EngineBuffers::getInstance()->trianglesNoTexture++;
-                }
-            }
+            this->scanVertices(cam);
         }
     }
 
@@ -145,65 +142,52 @@ bool Triangle::clipping(Camera3D *cam)
     Vector3D AC = Vector3D(At, Ct);
     Vector3D BC = Vector3D(Bt, Ct);
 
-    int plane_init = EngineSetup::getInstance()->FAR_PLANE; int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;
-
     // un triángulo como máximo tendrá 9 puntos de intersección en un frustum
     Vertex3D new_vertexes[10]; int num_new_vertexes = 0;
-    Vertex3D temp_vertex[10];  int num_tmp_vertex = 0;
 
     int num_vertex_against_frustum = 0;
 
-    num_tmp_vertex = 0;
     // AB
     if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AB ) ) {
         Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AB.vertex1, AB.vertex2);
-        if (cam->frustum->isPointInFrustum(newVertex)) {
-            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-            num_vertex_against_frustum++;
-        }
-        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+        num_vertex_against_frustum++;
+        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
     }
 
     // AC
     if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AC )) {
         Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AC.vertex1, AC.vertex2);
-        if (cam->frustum->isPointInFrustum(newVertex)) {
-            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-            num_vertex_against_frustum++;
-        }
-        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+        num_vertex_against_frustum++;
+        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
     }
 
     // BC
     if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], BC ) ) {
         Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(BC.vertex1, BC.vertex2);
-        if (cam->frustum->isPointInFrustum(newVertex)) {
-            new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-            num_vertex_against_frustum++;
-        }
-        temp_vertex[num_tmp_vertex] = newVertex; num_tmp_vertex++;
+        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
+        num_vertex_against_frustum++;
+        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
     }
 
+    //Logging::getInstance()->Log("Clipping vertex: " + std::to_string(num_vertex_against_frustum), "CLIPPING");
+
     if (num_vertex_against_frustum > 0) {
-        if (cam->frustum->isPointInFrustum(At)) {
+        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(At) < 0) {
             new_vertexes[num_new_vertexes] = At; num_new_vertexes++;
         }
 
-        if (cam->frustum->isPointInFrustum(Bt)) {
+        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(Bt) < 0) {
             new_vertexes[num_new_vertexes] = Bt; num_new_vertexes++;
         }
 
-        if (cam->frustum->isPointInFrustum(Ct)) {
+        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(Ct) < 0) {
             new_vertexes[num_new_vertexes] = Ct; num_new_vertexes++;
         }
 
-        Vertex3D final_vertex[100]; int num_final_vertex = 0;
-        for (int j = 0; j < num_new_vertexes; j++) {
-            final_vertex[num_final_vertex] = new_vertexes[j]; num_final_vertex++;
-            //Drawable::drawVertex(screen, new_vertexes[j], cam, Color::red());
-        }
+        Maths::triangulate(new_vertexes, num_new_vertexes, parent, cam, A, B, C, this->getTexture() );
 
-        Maths::triangulate(final_vertex, num_final_vertex, parent, cam, A, B, C, this->getTexture() );
         return true;
     }
 
@@ -255,24 +239,6 @@ Vertex3D Triangle::getCenter()
     return A;
 }
 
-Vertex3D Triangle::calcNormalSurface(Vector3D u, Vector3D v)
-{
-    // Lo llevamos al origen
-    Vertex3D U = u.getComponent();
-    Vertex3D V = v.getComponent();
-
-    float Wx = (U.y * V.z) - (U.z * V.y);
-    float Wy = (U.z * V.x) - (U.x * V.z);
-    float Wz = (U.x * V.y) - (U.y * V.x);
-
-    Vertex3D R;
-
-    R = Vertex3D(Wx, Wy, Wz);
-    R = R.getNormalize();
-
-    return R;
-}
-
 Vertex3D Triangle::getNormal()
 {
     Vertex3D At = this->Ao;
@@ -282,12 +248,19 @@ Vertex3D Triangle::getNormal()
     Vector3D VnAB(At, Bt);
     Vector3D VnAC(At, Ct);
 
-    Vertex3D normal = this->calcNormalSurface(VnAB, VnAC);
+    Vertex3D U = VnAB.getComponent();
+    Vertex3D V = VnAC.getComponent();
+
+    float Wx = (U.y * V.z) - (U.z * V.y);
+    float Wy = (U.z * V.x) - (U.x * V.z);
+    float Wz = (U.x * V.y) - (U.y * V.x);
+
+    Vertex3D normal = Vertex3D(Wx, Wy, Wz).getNormalize();
 
     // Como se calcula con la componente (respecto al origen),
     // lo vuelvo a poner sobre A y aplico distancia al centro
 
-    normal.addVertex(At);
+    normal = normal + At;
 
     normal.x+=this->getCenter().x-At.x;
     normal.y+=this->getCenter().y-At.y;
@@ -331,8 +304,8 @@ void Triangle::scanVertices(Camera3D *cam)
     // Ordenamos los vertices y puntos por su valor en 'y'
     Maths::sortPointsByY(v1, v2, v3);
 
-    Maths::sortVertexByY(A, B, C);
-    Maths::sortVertexByY(Aos, Bos, Cos);
+    //Maths::sortVertexByY(A, B, C);
+    //Maths::sortVertexByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
         this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos);
@@ -378,8 +351,6 @@ void Triangle::scanVertices(Camera3D *cam)
             extraLineDemo.draw(EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE);
         }
     }
-
-    EngineBuffers::getInstance()->trianglesDrawed++;
 }
 
 void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
@@ -518,7 +489,6 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                         Vertex3D Aos, Vertex3D Bos, Vertex3D Cos
                         )
 {
-
     if (start_x == end_x) return;
 
     // forzamos de izquierda a derecha
@@ -535,10 +505,9 @@ void Triangle::scanLine(float start_x, float end_x, int y,
     for (int x = (int) start_x; x < end_x; x++) {
         Point2D pointFinal(x, y);
 
-        if (Tools::isPixelInWindow(pointFinal.x, pointFinal.y)) {
+        if (Tools::isPixelInWindow((int) pointFinal.x, (int) pointFinal.y)) {
 
-            // barycentric coordinates (from screen coordinates)
-            // Hayamos las coordenadas baricéntricas del punto v4 respecto al triángulo pa, pb, pc
+            // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo pa, pb, pc
             float alpha, theta, gamma;
             Maths::getBarycentricCoordinates(alpha, theta, gamma, x, y, pa, pb, pc);
 
@@ -566,17 +535,14 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                     float u = alpha * A.u + theta * B.u + gamma * C.u;
                     float v = alpha * A.v + theta * B.v + gamma * C.v;
 
-                    if (u < 0 || v < 0) continue;
-
                     // Check for repeat U coordinate
                     float ignorablePartInt;
-                    if (u > 1) { u = modf(u , &ignorablePartInt); }
-                    if (v > 1) { v = modf(v , &ignorablePartInt); }
+                    u = modf(u , &ignorablePartInt);
+                    v = modf(v , &ignorablePartInt);
 
-
-                    pixelColor = Tools::readSurfacePixelFromUV(texture->texture_surface, u, v);
+                    pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
                     Uint8 red, green, blue, alpha;
-                    SDL_GetRGBA(pixelColor, texture->texture_surface->format, &red, &green, &blue, &alpha);
+                    SDL_GetRGBA(pixelColor, texture->getSurface()->format, &red, &green, &blue, &alpha);
 
                     if (alpha == 0) {
                         continue;
@@ -594,7 +560,6 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                     float z3d = alpha * Aos.z + theta * Bos.z + gamma * Cos.z;
 
                     D = Vertex3D( x3d, y3d, z3d ); // Object space
-
                 }
 
                 for (int i = 0; i < this->numberLightPoints; i++) {
@@ -626,7 +591,10 @@ void Triangle::scanLine(float start_x, float end_x, int y,
                 }
             }
 
+            EngineBuffers::getInstance()->pixelesDrawed++;
             EngineBuffers::getInstance()->setVideoBuffer( (int) pointFinal.x, (int) pointFinal.y, pixelColor);
+        } else {
+            EngineBuffers::getInstance()->pixelesOutOfWindow++;
         }
     }
 }
@@ -670,16 +638,6 @@ void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
     }
 }
 
-void Triangle::consoleInfo(const char *text)
-{
-    printf("%s Triangle consoleInfo: (%f, %f, %f) (u: %f, v: %f) | (%f, %f, %f) (u: %f, v: %f) | (%f, %f, %f) (u: %f, v: %f)\r\n",
-           text,
-           this->A.x, this->A.y, this->A.z, A.u, A.v,
-           this->B.x, this->B.y, this->B.z, B.u, B.v,
-           this->C.x, this->C.y, this->C.z, C.u, C.v
-    );
-}
-
 Texture *Triangle::getTexture() const
 {
     return texture;
@@ -696,3 +654,12 @@ void Triangle::setLightPoints(LightPoint3D **lightPoints, int number)
     this->numberLightPoints = number;
 }
 
+void Triangle::setClipped(bool value)
+{
+    this->is_clipped = value;
+}
+
+bool Triangle::isClipped()
+{
+    return this->is_clipped;
+}
