@@ -9,7 +9,6 @@
 #include "headers/Objects/Mesh3D.h"
 #include "headers/Render/Color.h"
 #include "headers/Render/Engine.h"
-#include "headers/Q3MapLoader/Q3Loader.h"
 #include "headers/Render/EngineBuffers.h"
 #include "Game.h"
 

@@ -64,18 +64,6 @@ void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, 
     }
 }
 
-void Drawable::drawPlaneNormalVector(Plane *plane, Camera3D *cam, Uint32 color)
-{
-    Vertex3D normal = plane->getNormalVector();
-
-    normal.addVertex(plane->A);
-
-    Vector3D vectorNormal = Vector3D (plane->A, normal);
-
-    Drawable::drawVector3D(vectorNormal, cam, color );
-}
-
-
 void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
 
     Vertex3D A = Transforms::cameraSpace(V, cam);
@@ -97,13 +85,6 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
     // apply view matrix
     Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
     Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
-
-    /*if ((int) abs(V1.z) == 0 ) {
-        return;
-    }
-    if ((int) abs(V2.z) == 0 ) {
-        return;
-    }*/
 
     V1 = Transforms::NDCSpace(V1, cam);
     V2 = Transforms::NDCSpace(V2, cam);
@@ -132,27 +113,10 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color)
 
 void Drawable::drawMainAxis(Camera3D *cam)
 {
-    float axis_length = 0.1;
-    Vertex3D origin(0, 0, 0);
+    Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
 
-    // Creamos unas coordenadas de eje sobre 0, 0, 0
-    // start points
-    Vertex3D VXstart( origin.x, origin.y, origin.z );
-    Vertex3D VYstart( origin.x, origin.y, origin.z );
-    Vertex3D VZstart( origin.x, origin.y, origin.z );
-
-    // end points
-    Vertex3D VXend( origin.x + (axis_length), origin.y , origin.z );
-    Vertex3D VYend( origin.x, origin.y + (axis_length), origin.z );
-    Vertex3D VZend( origin.x, origin.y, origin.z + (axis_length) );
-
-    Vector3D axis_x = Vector3D(VXstart, VXend);
-    Vector3D axis_y = Vector3D(VYstart, VYend);
-    Vector3D axis_z = Vector3D(VZstart, VZend);
-
-    Drawable::drawVector3D( axis_x, cam, Color::red() );
-    Drawable::drawVector3D( axis_y, cam, Color::green() );
-    Drawable::drawVector3D( axis_z, cam, Color::blue() );
+    Point2D fixed_position = Point2D(EngineSetup::getInstance()->SCREEN_WIDTH - 50, 30);
+    Drawable::drawMainAxisOffset( cam, Transforms::Point2DToWorld( fixed_position, cam) );
 }
 
 void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)

@@ -9,23 +9,22 @@
 
 Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
-    Vertex3D v = A;
+    Vertex3D V = A;
 
-    v = Maths::rotateVertex(v, o->getRotation());
-    v.addVertex(*o->getPosition());
+    V = Maths::rotateVertex(V, o->getRotation());
+    V = V + *o->getPosition();
 
-    v.x*=o->scale;
-    v.y*=o->scale;
-    v.z*=o->scale;
+    V.u = A.u;
+    V.v = A.v;
 
-    return v;
+    return V;
 }
 
 Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
 {
     Vertex3D A = V;
 
-    A.subVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]) );
+    A = A - Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
     A = cam->getRotation() * A;
 
     A.u = V.u;
@@ -107,12 +106,10 @@ Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
 {
     Vertex3D T = V;
 
-    T.x*=o->scale;
-    T.y*=o->scale;
-    T.z*=o->scale;
-
-    T.subVertex(*o->getPosition());
+    T = T - *o->getPosition();
     T = o->getRotation().getTranspose() * T;
+
+    T.u = V.u; T.v = V.v;
 
     return T;
 }
@@ -122,9 +119,10 @@ Vertex3D Transforms::cameraToWorld(Vertex3D V,  Camera3D *cam)
     Vertex3D A;
 
     A = cam->getRotation().getTranspose() * V;
-    A.addVertex( Vertex3D(cam->head[0], cam->head[1], cam->head[2]));
+    A = A + Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
 
-    A.u = V.u; A.v = V.v;
+    A.u = V.u;
+    A.v = V.v;
 
     return A;
 }
@@ -139,19 +137,9 @@ Vertex3D Transforms::Point2DToWorld(Point2D p, Camera3D *cam)
 
     Vertex3D vNL = cam->frustum->near_left.vertex1;
     Vertex3D vNR = cam->frustum->near_right.vertex1;
-    if (vNL.x < vNR.x) {
-        Vertex3D tmp = vNR;
-        vNR = vNL;
-        vNL = tmp;
-    }
 
     Vertex3D vNT = cam->frustum->near_top.vertex1;
     Vertex3D vNB = cam->frustum->near_bottom.vertex1;
-    if (vNT.y < vNB.y) {
-        Vertex3D tmp = vNT;
-        vNT = vNB;
-        vNB = tmp;
-    }
 
     vNL = Transforms::cameraSpace(vNL, cam);
     vNR = Transforms::cameraSpace(vNR, cam);
