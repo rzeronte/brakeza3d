@@ -26,9 +26,17 @@ void M3::setup (float m0, float m1, float m2, float m3, float m4, float m5, floa
 M3 M3::operator *(const M3 v)
 {
     M3 M = M3();
-    M.m[0] = m[0]*v.m[0] + m[1]*v.m[3] + m[2]*v.m[6]  ;  M.m[1] = m[0]*v.m[1] + m[1]*v.m[4] + m[2]*v.m[7]  ;  M.m[2] = m[0]*v.m[2] + m[1]*v.m[5] + m[2]*v.m[8];
-    M.m[3] = m[3]*v.m[0] + m[4]*v.m[3] + m[5]*v.m[6]  ;  M.m[4] = m[3]*v.m[1] + m[4]*v.m[4] + m[5]*v.m[7]  ;  M.m[5] = m[3]*v.m[2] + m[4]*v.m[5] + m[5]*v.m[8];
-    M.m[6] = m[6]*v.m[0] + m[7]*v.m[3] + m[8]*v.m[6]  ;  M.m[7] = m[6]*v.m[1] + m[7]*v.m[4] + m[8]*v.m[7]  ;  M.m[8] = m[6]*v.m[2] + m[7]*v.m[5] + m[8]*v.m[8];
+    M.m[0] = m[0]*v.m[0] + m[1]*v.m[3] + m[2]*v.m[6];
+    M.m[3] = m[3]*v.m[0] + m[4]*v.m[3] + m[5]*v.m[6];
+    M.m[6] = m[6]*v.m[0] + m[7]*v.m[3] + m[8]*v.m[6];
+
+    M.m[1] = m[0]*v.m[1] + m[1]*v.m[4] + m[2]*v.m[7];
+    M.m[4] = m[3]*v.m[1] + m[4]*v.m[4] + m[5]*v.m[7];
+    M.m[7] = m[6]*v.m[1] + m[7]*v.m[4] + m[8]*v.m[7];
+
+    M.m[2] = m[0]*v.m[2] + m[1]*v.m[5] + m[2]*v.m[8];
+    M.m[5] = m[3]*v.m[2] + m[4]*v.m[5] + m[5]*v.m[8];
+    M.m[8] = m[6]*v.m[2] + m[7]*v.m[5] + m[8]*v.m[8];
 
     return M;
 }
@@ -101,37 +109,34 @@ M3 M3::getMatrixNULL() {
     return M;
 }
 
-const M3 M3::RX(float degrees) {
+const M3 M3::RX(float degrees)
+{
     float rads = Maths::degreesToRadians(degrees);
-    M3 M(
+    return M3(
         1, 0        , 0         ,
         0, cos(rads), -sin(rads),
         0, sin(rads), cos(rads)
     );
-
-    return M;
 }
 
-const M3 M3::RY(float degrees) {
+const M3 M3::RY(float degrees)
+{
     float rads = Maths::degreesToRadians(degrees);
-    M3 M(
+    return M3(
         cos(rads) , 0 , sin(rads),
         0         , 1 , 0        ,
         -sin(rads), 0 , cos(rads)
     );
-
-    return M;
 }
 
-const M3 M3::RZ(float degrees) {
+const M3 M3::RZ(float degrees)
+{
     float rads = Maths::degreesToRadians(degrees);
-    M3 M(
+    return M3(
         cos(rads) , -sin(rads) , 0,
         sin(rads) , cos(rads)  , 0,
         0         , 0          , 1
     );
-
-    return M;
 }
 
 const M3 M3::ScaleMatrix(float scale) {
