@@ -11,8 +11,6 @@
 #include "WAD/WAD.h"
 #include "headers/Render/BSPMap.h"
 
-int reductor = 100;
-
 enum SpriteDoom2SoldierAnimations {
     IDLE = 0,
     WALK = 1,
@@ -42,9 +40,9 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::camera->head[0] = 544;
-    Engine::camera->head[1] = -32;
-    Engine::camera->head[2] = 300;
+    //Engine::camera->head[0] = 544;
+    //Engine::camera->head[1] = -32;
+    //Engine::camera->head[2] = 300;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -72,26 +70,25 @@ void Game::onStart()
     /*Mesh3D *mono = new Mesh3D();
     mono->setEnabled(true);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    mono->loadOBJBlender("../models/mono.obj");
+    mono->loadOBJBlender("../assets/models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
-     */
-
+    */
     // cubo
-    /*Mesh3D *cubo = new Mesh3D();
-    cubo->setEnabled(true);
+    Mesh3D *cubo = new Mesh3D();
+    cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cubo->setPosition( Vertex3D(1, 1, 20) );
-    cubo->loadOBJBlender("../models/cubo.obj");
+    cubo->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cubo, "cubo");
-     */
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition( Vertex3D(1, 0.4, 20) );
-    triangle->loadOBJBlender("../models/triangle_2uv.obj");
+    triangle->setPosition( Vertex3D(1, 0.4, 5) );
+    triangle->setRotation(M3(75, 0, 0));
+    triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
     // marine (sprite directional)

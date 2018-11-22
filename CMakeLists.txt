@@ -47,8 +47,6 @@ add_executable(brakeda3d
         src/Render/EngineSetup.cpp
         src/Render/Texture.cpp
         headers/Render/Texture.h
-        src/Q3MapLoader/Q3Loader.cpp
-        headers/Q3MapLoader/Q3Loader.h
         headers/Render/EngineBuffers.h
         src/Render/EngineBuffers.cpp
         src/Render/Frustum.cpp
@@ -119,7 +117,7 @@ add_executable(brakeda3d
         WAD/Signature.h
         WAD/WAD.cpp
         WAD/WAD.h
-        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h Map.cpp Map.h src/GUI/GUI_Camera.h )
+        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h src/Render/BSPMap.cpp headers/Render/BSPMap.h src/GUI/GUI_Camera.h )
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

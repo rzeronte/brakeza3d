@@ -243,9 +243,11 @@ void Engine::objects3DShadowMapping()
 
 void Engine::drawBSP()
 {
-    bspleaf_t *leaf = bsp_map->FindLeaf( camera );
-    bsp_map->DrawLeafVisibleSet( leaf, camera );
-    bsp_map->drawTriangles( camera );
+    if (bsp_map) {
+        bspleaf_t *leaf = bsp_map->FindLeaf( camera );
+        bsp_map->DrawLeafVisibleSet( leaf, camera );
+        bsp_map->drawTriangles( camera );
+    }
 }
 
 void Engine::drawMeshes()

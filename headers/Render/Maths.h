@@ -20,8 +20,6 @@ public:
 
     static bool isVector3DClippingPlane(Plane P, Vector3D V);
 
-    static bool triangulate(Vertex3D *vertexes, int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture);
-
     static float barycentricSide(int x, int y, Point2D pa, Point2D pb);
     static void getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
 

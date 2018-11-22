@@ -9,26 +9,17 @@
 
 float Maths::degreesToRadians(float angleDegrees)
 {
-    float rads;
-
-    rads = angleDegrees * (float) M_PI / (float) 180.0;
-
-    return rads;
+    return angleDegrees * (float) M_PI / (float) 180.0;;
 }
 
 float Maths::radiansToDegrees(float angleRadians)
 {
-    float degrees;
-
-    degrees = angleRadians * (float) 180.0 / (float) M_PI;
-
-    return degrees;
+    return angleRadians * (float) 180.0 / (float) M_PI;;
 }
 
 Vertex3D Maths::rotateVertex(Vertex3D V, M3 rotation)
 {
     Vertex3D B = rotation * V;
-
     B.u = V.u; B.v = V.v;
 
     return B;
@@ -53,7 +44,6 @@ bool Maths::isVector3DClippingPlane(Plane P, Vector3D V)
 {
     // El clipping solo se realiza en Line2Ds que están parcialmente fuera
     // es decir, ningun punto dentro o  no están los 2 dentro
-
     float min_distance_to_clipping = EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE;
 
     if (! (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) > min_distance_to_clipping)
@@ -65,172 +55,6 @@ bool Maths::isVector3DClippingPlane(Plane P, Vector3D V)
 
     return false;
 }
-
-
-bool Maths::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture)
-{
-
-    // Usamos un vértice arbitrario para trazar un radio
-    // hacia el vértice 0
-    Vertex3D middle = Maths::getCenterVertices(vertexes, num_vertex);
-    Vector3D arbitrary_vector = Vector3D(middle, vertexes[0]);
-    //Drawable::drawVector3D(screen, arbitrary_vector, cam, Color::yellow());
-
-    // Vamos recorriendo cada 'radio', salvo el primero (i > 0), cuyo radio contra si mismo será 0.
-    // Estámos organizando los vértices clockwise
-    for (int i = 0; i < num_vertex; i++) {
-        float angle = 0;
-        float dot;
-
-        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
-        if (i > 0) {
-            Vector3D ratio = Vector3D(middle, vertexes[i]);
-            //Drawable::drawVector3D(screen, ratio, cam, Color::pink());
-
-            Vertex3D tmp1 = arbitrary_vector.getComponent();
-            Vertex3D tmp2 = ratio.getComponent();
-
-            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
-            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
-                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
-            float cos_angle_vectors = numerador / denominador;
-            angle = acos(cos_angle_vectors);
-
-            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
-
-            if (dot < 0) {
-                angle = angle * -1;
-            }
-
-            angle = Maths::radiansToDegrees(angle);
-        }
-
-        vertexes[i].angle = angle;
-        //std::cout << "Angle vertex " << i << " " << label << ", deg: " << angle << std::endl;
-    }
-
-    Maths::sortVertexesByAngles(vertexes, num_vertex);
-
-    Vertex3D Ao = A;
-    Vertex3D Bo = B;
-    Vertex3D Co = C;
-
-    Ao = Transforms::objectSpace(Ao, parent);
-    Bo = Transforms::objectSpace(Bo, parent);
-    Co = Transforms::objectSpace(Co, parent);
-
-    // Pasamos por la cámara
-    Ao = Transforms::cameraSpace(Ao, cam);
-    Bo = Transforms::cameraSpace(Bo, cam);
-    Co = Transforms::cameraSpace(Co, cam);
-
-    Ao = Transforms::NDCSpace(Ao, cam);
-    Bo = Transforms::NDCSpace(Bo, cam);
-    Co = Transforms::NDCSpace(Co, cam);
-
-    // y obtenemos los puntos en la proyección 2d
-    Point2D pa = Transforms::screenSpace(Ao, cam);
-    Point2D pb = Transforms::screenSpace(Bo, cam);
-    Point2D pc = Transforms::screenSpace(Co, cam);
-
-    float alpha, theta, gamma;
-
-    // triangulamos con un sencillo algoritmo que recorre los vértices: 012, 023, 034...
-    int current = 1;
-    while(current < num_vertex-1 ) {
-        int next = current + 1;
-
-        if (next+1 <= num_vertex) {
-            //printf("init: %d, current: %d, next: %d,: num_vertex: %d\r\n", 0, current, next, num_vertex);
-            EngineBuffers::getInstance()->trianglesClippingCreated++;
-
-            Drawable::drawVertex(vertexes[0], cam, Color::red());
-            Drawable::drawVertex(vertexes[current], cam, Color::green());
-            Drawable::drawVertex(vertexes[next], cam, Color::blue());
-
-            // Vertex new triangles
-            Vertex3D tv1 = Transforms::objectToLocal(vertexes[0], parent);
-            Vertex3D tv2 = Transforms::objectToLocal(vertexes[current], parent);
-            Vertex3D tv3 = Transforms::objectToLocal(vertexes[next], parent);
-
-            //Tools::sortVertexByX(tv1, tv2,tv3);
-            Maths::sortVertexByY(tv1, tv2,tv3);
-
-            // Vamos a calcular las coordenadas UV para tv1, tv2 y tv3
-            Vertex3D nv1 = tv1;
-            Vertex3D nv2 = tv2;
-            Vertex3D nv3 = tv3;
-
-            // Pasamos por la cámara
-            nv1 = Transforms::objectSpace(nv1, parent);
-            nv2 = Transforms::objectSpace(nv2, parent);
-            nv3 = Transforms::objectSpace(nv3, parent);
-
-            nv1 = Transforms::cameraSpace(nv1, cam);
-            nv2 = Transforms::cameraSpace(nv2, cam);
-            nv3 = Transforms::cameraSpace(nv3, cam);
-
-            nv1 = Transforms::NDCSpace(nv1, cam);
-            nv2 = Transforms::NDCSpace(nv2, cam);
-            nv3 = Transforms::NDCSpace(nv3, cam);
-
-            // y obtenemos los puntos en la proyección 2d
-            Point2D pnv1 = Transforms::screenSpace(nv1, cam);
-            Point2D pnv2 = Transforms::screenSpace(nv2, cam);
-            Point2D pnv3 = Transforms::screenSpace(nv3, cam);
-
-            // Hayamos las coordenadas baricéntricas del punto pnv1 respecto al triángulo pa, pb, pc
-            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv1.x, pnv1.y, pa, pb, pc);
-
-            float punv1 = alpha * A.u + theta * B.u + gamma * C.u;
-            float pvnv1 = alpha * A.v + theta * B.v + gamma * C.v;
-            tv1.u = punv1;
-            tv1.v = pvnv1;
-
-            // Hayamos las coordenadas baricéntricas del punto pnv2 respecto al triángulo pa, pb, pc
-            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv2.x, pnv2.y, pa, pb, pc);
-
-            float punv2 = alpha * A.u + theta * B.u + gamma * C.u;
-            float pvnv2 = alpha * A.v + theta * B.v + gamma * C.v;
-            tv2.u = punv2;
-            tv2.v = pvnv2;
-
-            // Hayamos las coordenadas baricéntricas del punto pnv3 respecto al triángulo pa, pb, pc
-            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv3.x, pnv3.y, pa, pb, pc);
-
-            float punv3 = alpha * A.u + theta * B.u + gamma * C.u;
-            float pvnv3 = alpha * A.v + theta * B.v + gamma * C.v;
-
-            tv3.u = punv3;
-            tv3.v = pvnv3;
-
-            Triangle t = Triangle( tv1, tv2, tv3, parent );
-            t.setTexture(texture);
-            t.setClipped(true);
-            t.draw(cam);
-
-            if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-                Vector3D v1 = Vector3D(vertexes[0], vertexes[current]);
-                Vector3D v2 = Vector3D(vertexes[0], vertexes[next]);
-                Vector3D v3 = Vector3D(vertexes[current], vertexes[next]);
-
-                Drawable::drawVector3D(v1, cam, Color::yellow());
-                Drawable::drawVector3D(v2, cam, Color::yellow());
-                Drawable::drawVector3D(v3, cam, Color::yellow());
-            }
-
-            if ( EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
-                Drawable::drawVertex(nv1, cam, Color::red());
-                Drawable::drawVertex(nv2, cam, Color::green());
-                Drawable::drawVertex(nv3, cam, Color::blue());
-            }
-        }
-
-        current+=1;
-    }
-}
-
-
 
 Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
     Vertex3D middle = Vertex3D(0, 0, 0);
@@ -247,7 +71,6 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
 
     return middle;
 }
-
 
 void Maths::sortVertexByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {

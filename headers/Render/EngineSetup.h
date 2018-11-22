@@ -74,8 +74,6 @@ public:
 
     // FRUSTUM PLANES
     int NEAR_PLANE   = 0;
-
-    // VIEW FRUSTUM
     int FAR_PLANE    = 1;
     int LEFT_PLANE   = 2;
     int RIGHT_PLANE  = 3;

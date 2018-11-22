@@ -131,67 +131,135 @@ bool Triangle::draw(Camera3D *cam)
     return true;
 }
 
-bool Triangle::clipping(Camera3D *cam)
+void Triangle::clippingPlane(Camera3D *cam, int id_plane, Vertex3D *vertices, int &nvertices)
 {
-
-    Vertex3D At = this->Ao;
-    Vertex3D Bt = this->Bo;
-    Vertex3D Ct = this->Co;
-
-    Vector3D AB = Vector3D(At, Bt);
-    Vector3D AC = Vector3D(At, Ct);
-    Vector3D BC = Vector3D(Bt, Ct);
-
-    // un triángulo como máximo tendrá 9 puntos de intersección en un frustum
-    Vertex3D new_vertexes[10]; int num_new_vertexes = 0;
-
-    int num_vertex_against_frustum = 0;
+    Vector3D AB = Vector3D(Ao, Bo);
+    Vector3D AC = Vector3D(Ao, Co);
+    Vector3D BC = Vector3D(Bo, Co);
 
     // AB
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AB ) ) {
-        Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AB.vertex1, AB.vertex2);
-        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-        num_vertex_against_frustum++;
-        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
+    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], AB ) ) {
+        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(AB.vertex1, AB.vertex2);
+        vertices[nvertices] = newVertex;
+        nvertices++;
     }
 
     // AC
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], AC )) {
-        Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(AC.vertex1, AC.vertex2);
-        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-        num_vertex_against_frustum++;
-        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
+    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], AC )) {
+        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(AC.vertex1, AC.vertex2);
+        vertices[nvertices] = newVertex;
+        nvertices++;
     }
 
     // BC
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ], BC ) ) {
-        Vertex3D newVertex = cam->frustum->planes[EngineSetup::getInstance()->NEAR_PLANE].getPointIntersection(BC.vertex1, BC.vertex2);
-        new_vertexes[num_new_vertexes] = newVertex; num_new_vertexes++;
-        num_vertex_against_frustum++;
-        Drawable::drawVertex(new_vertexes[num_new_vertexes], cam, Color::red());
+    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], BC ) ) {
+        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(BC.vertex1, BC.vertex2);
+        vertices[nvertices] = newVertex;
+        nvertices++;
+    }
+}
+
+bool Triangle::clipping(Camera3D *cam)
+{
+    int plane_init = EngineSetup::getInstance()->NEAR_PLANE;
+    int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
+
+    Triangle new_triangles[5];
+    int num_new_triangles = 0;
+
+    Vertex3D new_vertexes[10];
+    int num_new_vertexes = 0;
+
+    for( int i = plane_init; i <= plane_end; i++) {
+        this->clippingPlane(cam, i, new_vertexes, num_new_vertexes);
     }
 
-    //Logging::getInstance()->Log("Clipping vertex: " + std::to_string(num_vertex_against_frustum), "CLIPPING");
-
-    if (num_vertex_against_frustum > 0) {
-        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(At) < 0) {
-            new_vertexes[num_new_vertexes] = At; num_new_vertexes++;
+    if (num_new_vertexes > 0) {
+        if (cam->frustum->isPointInFrustum( Ao )) {
+            new_vertexes[num_new_vertexes] = Ao; num_new_vertexes++;
         }
 
-        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(Bt) < 0) {
-            new_vertexes[num_new_vertexes] = Bt; num_new_vertexes++;
+        if (cam->frustum->isPointInFrustum( Bo )) {
+            new_vertexes[num_new_vertexes] = Bo; num_new_vertexes++;
         }
 
-        if (cam->frustum->planes[ EngineSetup::getInstance()->NEAR_PLANE ].distance(Ct) < 0) {
-            new_vertexes[num_new_vertexes] = Ct; num_new_vertexes++;
+        if (cam->frustum->isPointInFrustum( Co )) {
+            new_vertexes[num_new_vertexes] = Co; num_new_vertexes++;
         }
+        sortVertexClockWise(new_vertexes, num_new_vertexes);
+        triangulate(new_vertexes, num_new_vertexes, parent, cam, A, B, C, this->getTexture(), new_triangles, num_new_triangles);
 
-        Maths::triangulate(new_vertexes, num_new_vertexes, parent, cam, A, B, C, this->getTexture() );
-
+        for (int i = 0; i < num_new_triangles; i++) {
+            new_triangles[i].draw(cam);
+        }
         return true;
     }
 
     return false;
+}
+
+bool Triangle::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture, Triangle *triangles, int &ntriangles)
+{
+    // triangulamos con un sencillo algoritmo que recorre los vértices: 012, 023, 034...
+    int current = 1;
+    while(current < num_vertex-1 ) {
+        int next = current + 1;
+
+        if (next+1 <= num_vertex) {
+            EngineBuffers::getInstance()->trianglesClippingCreated++;
+
+            // Vertex new triangles
+            Vertex3D tv1 = Transforms::objectToLocal(vertexes[0], this->parent);
+            Vertex3D tv2 = Transforms::objectToLocal(vertexes[current], this->parent);
+            Vertex3D tv3 = Transforms::objectToLocal(vertexes[next], this->parent);
+
+            Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setClipped(true);
+            t.setTexture(texture);
+            t.setClipped(true);
+
+            triangles[ntriangles] = t;
+            ntriangles++;
+        }
+
+        current+=1;
+    }
+}
+
+void Triangle::sortVertexClockWise(Vertex3D vertexes[], int num_vertex)
+{
+    Vertex3D middle = Maths::getCenterVertices(vertexes, num_vertex);
+    Vector3D arbitrary_vector = Vector3D(middle, vertexes[0]);
+
+    for (int i = 0; i < num_vertex; i++) {
+        float angle = 0;
+        float dot;
+
+        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
+        if (i > 0) {
+            Vector3D ratio = Vector3D(middle, vertexes[i]);
+
+            Vertex3D tmp1 = arbitrary_vector.getComponent();
+            Vertex3D tmp2 = ratio.getComponent();
+
+            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
+            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
+                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
+            float cos_angle_vectors = numerador / denominador;
+            angle = acos(cos_angle_vectors);
+
+            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
+
+            if (dot < 0) {
+                angle = angle * -1;
+            }
+
+            angle = Maths::radiansToDegrees(angle);
+        }
+        vertexes[i].angle = angle;
+    }
+
+    Maths::sortVertexesByAngles(vertexes, num_vertex);
 }
 
 void Triangle::drawWireframe(Camera3D *cam)
@@ -271,9 +339,7 @@ Vertex3D Triangle::getNormal()
 
 void Triangle::drawNormal(Camera3D *cam, Uint32 color)
 {
-    Vector3D vecNormal(this->getCenter(), this->getNormal());
-
-    Drawable::drawVector3D( vecNormal, cam, color );
+    Drawable::drawVector3D( Vector3D( this->getCenter(), this->getNormal() ), cam, color );
 }
 
 /**

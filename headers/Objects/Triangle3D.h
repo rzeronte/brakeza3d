@@ -69,11 +69,17 @@ public:
 
     // clipping triangle
     bool clipping(Camera3D *cam);
+    void clippingPlane(Camera3D *cam, int id_plane, Vertex3D *, int &);
+
+    void sortVertexClockWise(Vertex3D vertexes[], int num_vertex);
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
     void setClipped(bool);
     bool isClipped();
+
+    bool triangulate(Vertex3D [], int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture, Triangle *triangles, int &);
+
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

@@ -12,6 +12,7 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Engine.h"
 
 BSPMap::BSPMap()
 {
@@ -275,7 +276,7 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
                     (primitives+1)->v[0]
                 );
                 next = Transforms::objectToLocal(next, this);
-                Drawable::drawVector3D(Vector3D(v, next), cam, Color::pink());
+                Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
             } else {
                 // Cerramos contra el primer vértice
                 primdesc_t *primitives_start = &surfacePrimitives[numMaxEdgesPerSurface * surface];
@@ -323,7 +324,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertexes[], int num_vertex, int su
 
             Triangle t = Triangle(tv1, tv2, tv3, this);
             t.setTexture( &textures[textureInfo->texid] );;
-            t.setClipped(true);
+            t.setClipped(false);
 
             this->model_triangles[this->n_triangles] = t;
             this->n_triangles++;
