@@ -5,6 +5,8 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Engine.h"
+#include "../../headers/Render/Logging.h"
 
 
 float Maths::degreesToRadians(float angleDegrees)
@@ -72,7 +74,7 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
     return middle;
 }
 
-void Maths::sortVertexByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
+void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
     int n = 3;
     Vertex3D v[3];
@@ -93,7 +95,7 @@ void Maths::sortVertexByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
     return;
 }
 
-void Maths::sortVertexByX(Vertex3D &A, Vertex3D &B, Vertex3D &C)
+void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
     int n = 3;
     Vertex3D v[3];
@@ -162,7 +164,7 @@ void Maths::VertexSwap(Vertex3D vertexes[], int i, int j)
     vertexes[j] = tmp;
 }
 
-void Maths::sortVertexesByX(Vertex3D vertexes[], int N)
+void Maths::sortVerticesByX(Vertex3D *vertexes, int N)
 {
     int i, j, k;
     for (i = 0; i < N - 1; i++)
@@ -190,7 +192,28 @@ void Maths::sortVertexesByAngles(Vertex3D vertexes[], int N)
     }
 }
 
-void Maths::sortVertexesByY(Vertex3D vertexes[], int N)
+void Maths::sortVertexesByAngles(Vertex3D &A, Vertex3D &B, Vertex3D &C)
+{
+    int n = 3;
+    Vertex3D v[3];
+    v[0] = A; v[1] = B; v[2] = C;
+
+    for (int i = 1 ; i < n; i++) {
+        for (int j = 0 ; j < (n - i); j++) {
+            if (v[j].angle > v[j+1].angle) {
+                Vertex3D aux = v[j];
+                v[j] = v[j+1];
+                v[j+1] = aux;
+            }
+        }
+    }
+
+    A = v[0]; B = v[1]; C = v[2];
+
+    return;
+}
+
+void Maths::sortVerticesByY(Vertex3D *vertexes, int N)
 {
     int i, j, k;
     for (i = 0; i < N - 1; i++)
@@ -275,3 +298,215 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *
     return degs;
 }
 
+
+void Maths::sortVerticesClockWise(Vertex3D *vertices, int num_vertex)
+{
+    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
+    Vector3D arbitrary_vector = Vector3D(middle, vertices[0]);
+
+    for (int i = 0; i < num_vertex; i++) {
+        float angle = 0;
+        float dot;
+
+        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
+        if (i > 0) {
+            Vector3D ratio = Vector3D(middle, vertices[i]);
+
+            Vertex3D tmp1 = arbitrary_vector.getComponent();
+            Vertex3D tmp2 = ratio.getComponent();
+
+            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
+            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
+                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
+            float cos_angle_vectors = numerador / denominador;
+            angle = acos(cos_angle_vectors);
+
+            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
+
+            if (dot < 0) {
+                angle = angle * -1;
+            }
+
+            angle = Maths::radiansToDegrees(angle);
+        }
+
+        vertices[i].angle = angle;
+    }
+
+    Maths::sortVertexesByAngles(vertices, num_vertex);
+}
+
+long Maths::GetNextActive(long x, long vertexCount, const bool *active)
+{
+    for (;;)
+    {
+        if (++x == vertexCount) x = 0;
+        if (active[x])
+            return (x);
+    }
+}
+
+long Maths::GetPrevActive( long x, long vertexCount, const bool *active)
+{
+    for (;;) {
+        if (--x == -1) x = vertexCount - 1;
+        if (active[x])
+            return (x);
+    }
+}
+
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
+{
+    bool *active = new bool[vertexCount];
+    for (long a = 0; a < vertexCount; a++) active[a] = true;
+    int triangleCount = 0;
+    long start = 0;
+    long p1 = 0;
+    long p2 = 1;
+    long m1 = vertexCount - 1;
+    long m2 = vertexCount - 2;
+    bool lastPositive = false;
+    for (;;) {
+        if (p2 == m2) {
+            // Only three vertices remain.
+            // Triangle creation
+            Vertex3D tv1 = Transforms::objectToLocal(vertices[m1], parent);
+            Vertex3D tv2 = Transforms::objectToLocal(vertices[p1], parent);
+            Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
+
+            Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setTexture(texture);
+            t.setClipped(clipped);
+            triangle[ntriangles] = t;
+            ntriangles++;
+
+            triangleCount++;
+            break;
+        }
+
+        Vertex3D vp1 = vertices[p1];
+        Vertex3D vp2 = vertices[p2];
+        Vertex3D vm1 = vertices[m1];
+        Vertex3D vm2 = vertices[m2];
+
+        bool positive = false;
+        bool negative = false;
+
+        // Determine whether vp1, vp2, and vm1 form a valid triangle.
+        Vertex3D n1 = normal % (vm1 - vp2).getNormalize();
+        if (n1 * (vp1 - vp2) > EngineSetup::getInstance()->EPSILON ) {
+            positive   = true;
+            Vertex3D n2 = (normal % (vp1 - vm1).getNormalize());
+            Vertex3D n3 = (normal % (vp2 - vp1).getNormalize());
+            for (long a = 0; a < vertexCount; a++) {
+                // Look for other vertices inside the triangle.
+                if ((active[a]) && (a != p1) && (a != p2) && (a != m1)) {
+                    Vertex3D v = vertices[a];
+                    if (   (n1 * (v - vp2).getNormalize() > -EngineSetup::getInstance()->EPSILON)
+                        && (n2 * (v - vm1).getNormalize() > -EngineSetup::getInstance()->EPSILON)
+                        && (n3 * (v - vp1).getNormalize() > -EngineSetup::getInstance()->EPSILON))
+                    {
+                        positive = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Determine whether vm1, vm2, and vp1 form a valid triangle.
+        n1 = normal % (vm2 - vp1).getNormalize();
+        if (n1 * (vm1 - vp1) > EngineSetup::getInstance()->EPSILON) {
+            negative = true;
+            Vertex3D n2 = (normal % (vm1 - vm2).getNormalize());
+            Vertex3D n3 = (normal % (vp1 - vm1).getNormalize());
+            for (long a = 0; a < vertexCount; a++)
+            {
+                // Look for other vertices inside the triangle.
+                if ((active[a]) && (a != m1) && (a != m2) && (a != p1)) {
+                    Vertex3D v = vertices[a];
+                    if (   (n1 * (v - vp1).getNormalize() > -EngineSetup::getInstance()->EPSILON)
+                        && (n2 * (v - vm2).getNormalize() > -EngineSetup::getInstance()->EPSILON)
+                        && (n3 * (v - vm1).getNormalize() > -EngineSetup::getInstance()->EPSILON))
+                    {
+                        negative = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If both triangles are valid, choose the one having
+        // the larger smallest angle.
+        if ((positive) && (negative)) {
+            float pd = (vp2 - vm1).getNormalize() * (vm2 - vm1).getNormalize();
+            float md = (vm2 - vp1).getNormalize() * (vp2 - vp1).getNormalize();
+            if (fabs(pd - md) < EngineSetup::getInstance()->EPSILON) {
+                if (lastPositive) positive = false;
+                else negative = false;
+            } else {
+                if (pd < md) negative = false;
+                else positive = false;
+            }
+        }
+
+        if (positive) {
+            // Output the triangle m1, p1, p2.
+            active[p1] = false;
+
+            Vertex3D tv1 = Transforms::objectToLocal(vertices[m1], parent);
+            Vertex3D tv2 = Transforms::objectToLocal(vertices[p1], parent);
+            Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
+
+            Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setTexture(texture);
+            t.setClipped(clipped);
+
+            triangle[ntriangles] = t;
+            ntriangles++;
+
+            triangleCount++;
+            //triangle++;
+            p1 = GetNextActive(p1, vertexCount, active);
+            p2 = GetNextActive(p2, vertexCount, active);
+            lastPositive = true;
+            start =  -1;
+        } else if (negative) {
+            // Output the triangle m2, m1, p1.
+            active[m1] = false;
+
+            Vertex3D tv1 = Transforms::objectToLocal(vertices[m2], parent);
+            Vertex3D tv2 = Transforms::objectToLocal(vertices[m1], parent);
+            Vertex3D tv3 = Transforms::objectToLocal(vertices[p1], parent);
+
+            Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setTexture(texture);
+            t.setClipped(clipped);
+
+            triangle[ntriangles] = t;
+            ntriangles++;
+
+            triangleCount++;
+            //triangle++;
+            m1 = GetPrevActive(m1, vertexCount, active);
+            m2 = GetPrevActive(m2, vertexCount, active);
+            lastPositive = false;
+            start = -1;
+        } else {
+            // Exit if we've gone all the way around the
+            // polygon without finding a valid triangle.
+            if (start == -1) start = p2;
+            else if (p2 == start) {
+                break;
+            }
+
+            // Advance working set of vertices.
+            m2 = m1;
+            m1 = p1;
+            p1 = p2;
+            p2 = GetNextActive(p2, vertexCount, active);
+        }
+    }
+
+    delete[] active;
+    return (triangleCount);
+}

@@ -28,11 +28,12 @@ public:
     int SCREEN_WIDTH = 640;
     int SCREEN_HEIGHT = 480;
 
-    float MOUSE_SENSIBILITY = 0.15f;
     bool CAMERA_MOUSE_ROTATION = true;
 
     static EngineSetup* instance;
     const int ENGINE_MAX_GAMEOBJECTS = 100;
+
+    const float EPSILON = 0.001;
 
     // Draw axis
     bool RENDER_AXIS = true;
@@ -40,9 +41,10 @@ public:
 
     bool MESH_DEBUG_INFO = false;
 
-    // Triangle render options
     // FaceCulling
-    bool TRIANGLE_FACECULLING = false;
+    bool TRIANGLE_FACECULLING = true;
+    bool SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES = false;
+
     bool TRIANGLE_FRUSTUM_CULLING = true;
 
     // Fill Triangle modes
@@ -60,6 +62,8 @@ public:
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
+    bool DEBUG_BSP_MODE = false;
+    bool DEBUG_MESH_MODE = false;
 
     // Z BUFFER
     bool TRIANGLE_RENDER_DEPTH_BUFFER = true;
@@ -83,11 +87,8 @@ public:
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
 
-    float CONTROLLER_SPEED_MOVEMENT = 0.5f;
-    float CONTROLLER_SPEED_ROTATION = 5.f;
-
-    float CONTROLLER_SPEED_ROTATION_CAMERA = 1.f;
-    float CONTROLLER_SPEED_MOVEMENT_CAMERA = 100.f;
+    bool BSP_MAP_ONLY_SURFACE = false;
+    float BSP_SELECTED_SURFACE = 1016;
 
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";

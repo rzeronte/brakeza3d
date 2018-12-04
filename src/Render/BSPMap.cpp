@@ -145,6 +145,7 @@ bool BSPMap::InitializeSurfaces(void)
             // Get an edge id from the surface. Fetch the correct edge by using the id in the Edge List.
             // The winding is backwards!
             int edgeId = this->getEdgeList(this->getSurface(i)->firstedge + (numEdges - 1 - j));
+
             // Fetch one of the egde's vertex
             int vertexId = ((edgeId >= 0) ? this->getEdge(edgeId)->startVertex : this->getEdge(-edgeId)->endVertex);
 
@@ -246,7 +247,7 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
     // Get the surface primitive
     primdesc_t *primitives = &surfacePrimitives[numMaxEdgesPerSurface * surface];
 
-    Vertex3D vertices[20];  // Max face vertex
+    Vertex3D vertices[30];  // Max face vertex
     int num_vertices = 0;
 
     // Loop through all vertices of the primitive and draw a surface
@@ -271,67 +272,99 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
         if (EngineSetup::getInstance()->Q1MAP_FACES) {
             if ( i+1 < num_edges ) {
                 Vertex3D next = Vertex3D(
-                    (primitives+1)->v[1],
-                    (primitives+1)->v[2],
-                    (primitives+1)->v[0]
+                        (primitives+1)->v[1],
+                        (primitives+1)->v[2],
+                        (primitives+1)->v[0]
                 );
                 next = Transforms::objectToLocal(next, this);
                 Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
+
             } else {
+                Vertex3D nextf = Vertex3D(
+                        (primitives+1)->v[1],
+                        (primitives+1)->v[2],
+                        (primitives+1)->v[0]
+                );
                 // Cerramos contra el primer vértice
                 primdesc_t *primitives_start = &surfacePrimitives[numMaxEdgesPerSurface * surface];
 
                 Vertex3D next = Vertex3D(
-                    primitives_start->v[1],
-                    primitives_start->v[2],
-                    primitives_start->v[0]
+                        primitives_start->v[1],
+                        primitives_start->v[2],
+                        primitives_start->v[0]
                 );
 
                 next = Transforms::objectToLocal(next, this);
-                Drawable::drawVector3D(Vector3D(v, next), cam, Color::pink());
+                Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
+                //vertices[num_vertices] = next ; num_vertices++;
+
             }
         }
     }
 
-    triangulateQuakeSurface(vertices, num_vertices, surface, cam);
+    texinfo_t *textureInfo = this->getTextureInfo(surface);
+
+    Plane tp = Plane(vertices[0], vertices[1], vertices[2]);
+
+    //this->sortVerticesClockWise(vertices, num_vertices, cam);
+    //Maths::TriangulatePolygon(num_vertices, vertices, tp.getNormalVector(), this->model_triangles, this->n_triangles, this, &textures[textureInfo->texid], false);
+
+    /*for (int i = 0; i < this->n_triangles; i++) {
+        this->model_triangles->draw(cam);
+    }*/
+
+    triangulateQuakeSurface(vertices, num_vertices, surface, cam, Vertex3D(0, 0, 0));
 }
 
 void BSPMap::drawTriangles(Camera3D *cam)
 {
-    EngineBuffers::getInstance()->resetBenchmarkValues();
+    if (EngineSetup::getInstance()->DEBUG_BSP_MODE) {
+        EngineBuffers::getInstance()->resetBenchmarkValues();
+    }
 
     for (int i = 0; i < this->n_triangles ; i++) {
-        this->model_triangles[i].draw(cam);
+        //if (EngineBuffers::getInstance()->pixelesDrawed < EngineBuffers::getInstance()->sizeBuffers) {
+            this->model_triangles[i].draw(cam);
+        //}
     }
 }
 
-bool BSPMap::triangulateQuakeSurface(Vertex3D vertexes[], int num_vertex, int surface, Camera3D *cam)
+bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int surface, Camera3D *cam, Vertex3D normal)
 {
     texinfo_t *textureInfo = this->getTextureInfo(surface);
 
-    // triangulamos con un sencillo algoritmo que recorre los vértices: 012, 023, 034...
-    int current = 1;
-    while(current < num_vertex-1 ) {
-        int next = current + 1;
+    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
+    Drawable::drawVertex(middle, cam, Color::pink());
 
-        if (next+1 <= num_vertex) {
-            EngineBuffers::getInstance()->trianglesClippingCreated++;
+    for (int i = 0; i < num_vertex ; i++) {
+        Drawable::drawVertex(vertices[i], cam, Color::yellow());
 
-            // Vertex new triangles
-            Vertex3D tv1 = Transforms::objectToLocal(vertexes[0], this);
-            Vertex3D tv2 = Transforms::objectToLocal(vertexes[current], this);
-            Vertex3D tv3 = Transforms::objectToLocal(vertexes[next], this);
+        Vertex3D tv1, tv2, tv3;
+        // Vertex new triangles
+        int current = i;
+        int next = i+1;
 
-            Triangle t = Triangle(tv1, tv2, tv3, this);
-            t.setTexture( &textures[textureInfo->texid] );;
-            t.setClipped(false);
-
-            this->model_triangles[this->n_triangles] = t;
-            this->n_triangles++;
+        if (next < num_vertex){
+            tv1 = Transforms::objectToLocal(middle, this);
+            tv2 = Transforms::objectToLocal(vertices[current], this);
+            tv3 = Transforms::objectToLocal(vertices[next], this);
+        } else {
+            tv1 = Transforms::objectToLocal(middle, this);
+            tv2 = Transforms::objectToLocal(vertices[current], this);
+            tv3 = Transforms::objectToLocal(vertices[0], this);
         }
 
-        current+=1;
+        Triangle t = Triangle(tv1, tv2, tv3, this);
+        t.setTexture( &textures[textureInfo->texid] );
+        t.setClipped(false);
+        EngineBuffers::getInstance()->trianglesClippingCreated++;
+
+        this->model_triangles[this->n_triangles] = t;
+        this->n_triangles++;
+
     }
+
+    return false;
 }
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
@@ -349,17 +382,39 @@ void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
-        unsigned char veces = *(visibilityList);
-        if (veces == 0) {
-            i += 8 * *(++visibilityList);
-        } else {
-            for (int j = 0; j < 8; j++, i++) {
-                if (Tools::getBit(veces, j)) {
-                    bspleaf_t *visibleLeaf = this->getLeaf(i);
-                    int firstSurface = visibleLeaf->firstsurf;
-                    int lastSurface = firstSurface + visibleLeaf->numsurf;
-                    for (int k = firstSurface; k < lastSurface; k++) {
+        if (EngineSetup::getInstance()->BSP_MAP_ONLY_SURFACE) {
+            if (i == EngineSetup::getInstance()->BSP_SELECTED_SURFACE) {
+                // Fetch the leaf that is seen from the array of leaves
+                bspleaf_t *visibleLeaf = this->getLeaf(i);
+                // Copy all the visible surfaces from the List of surfaces
+                int firstSurface = visibleLeaf->firstsurf;
+                int lastSurface = firstSurface + visibleLeaf->numsurf;
+                int t = 0;
+                for (int k = firstSurface; k < lastSurface; k++) {
+                    if (t == 3) {
                         visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+
+                    }
+                    t++;
+                }
+            }
+            i++;
+            continue;
+
+        } else {
+
+            unsigned char veces = *(visibilityList);
+            if (veces == 0) {
+                i += 8 * *(++visibilityList);
+            } else {
+                for (int j = 0; j < 8; j++, i++) {
+                    if (Tools::getBit(veces, j)) {
+                        bspleaf_t *visibleLeaf = this->getLeaf(i);
+                        int firstSurface = visibleLeaf->firstsurf;
+                        int lastSurface = firstSurface + visibleLeaf->numsurf;
+                        for (int k = firstSurface; k < lastSurface; k++) {
+                            visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+                        }
                     }
                 }
             }
@@ -419,4 +474,42 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
     }
 
     return leaf;
+}
+
+
+void BSPMap::sortVerticesClockWise(Vertex3D *vertices, int num_vertex, Camera3D *cam)
+{
+    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
+    Vector3D arbitrary_vector = Vector3D(middle, vertices[0]);
+
+    for (int i = 0; i < num_vertex; i++) {
+        float angle = 0;
+        float dot;
+
+        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
+        if (i > 0) {
+            Vector3D ratio = Vector3D(middle, vertices[i]);
+
+            Vertex3D tmp1 = arbitrary_vector.getComponent();
+            Vertex3D tmp2 = ratio.getComponent();
+
+            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
+            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
+                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
+            float cos_angle_vectors = numerador / denominador;
+            angle = acos(cos_angle_vectors);
+
+            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
+
+            if (dot < 0) {
+                angle = angle * -1;
+            }
+
+            angle = Maths::radiansToDegrees(angle);
+        }
+
+        vertices[i].angle = angle;
+    }
+
+    Maths::sortVertexesByAngles(vertices, num_vertex);
 }

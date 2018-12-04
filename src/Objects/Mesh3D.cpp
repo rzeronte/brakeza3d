@@ -222,7 +222,9 @@ void Mesh3D::loadOBJBlenderMaterials() {
 
 void Mesh3D::draw(Camera3D *cam)
 {
-    //EngineBuffers::getInstance()->resetBenchmarkValues();
+    if (EngineSetup::getInstance()->DEBUG_MESH_MODE) {
+        EngineBuffers::getInstance()->resetBenchmarkValues();
+    }
 
     // Object's axis
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {

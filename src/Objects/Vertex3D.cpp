@@ -49,6 +49,25 @@ Vertex3D Vertex3D::operator -(const Vertex3D &v)
     return V;
 }
 
+Vertex3D Vertex3D::operator %(const Vertex3D &v)
+{
+    Vertex3D V;
+
+    V.x = (this->y * v.z) - (this->z * v.y);
+    V.y = (this->z * v.x) - (this->x * v.z);
+    V.z = (this->x * v.y) - (this->y * v.x);
+
+    return V;
+}
+
+float Vertex3D::operator *(const Vertex3D &v)
+{
+    float dot = (this->x * v.x) + (this->y * v.y) + (this->z * v.z);
+
+    return dot;
+}
+
+
 Vertex3D Vertex3D::getNormalize()
 {
     float modulo = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );

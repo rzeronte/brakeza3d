@@ -27,12 +27,13 @@ public:
 
     static Vertex3D getCenterVertices(Vertex3D vertices[], int num_vertices);
 
-    static void sortVertexesByX(Vertex3D vertexes[], int N);
-    static void sortVertexesByY(Vertex3D vertexes[], int N);
+    static void sortVerticesByX(Vertex3D *vertexes, int N);
+    static void sortVerticesByY(Vertex3D *vertexes, int N);
 
-    static void sortVertexByY(Vertex3D &A, Vertex3D &B, Vertex3D &C);
-    static void sortVertexByX(Vertex3D &A, Vertex3D &B, Vertex3D &C);
+    static void sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C);
+    static void sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C);
 
+    static void sortVertexesByAngles(Vertex3D &A, Vertex3D &B, Vertex3D &C);
     static void sortVertexesByAngles(Vertex3D *vertexes, int N);
 
     static void sortPointsByY(Point2D &A, Point2D &B, Point2D &C);
@@ -47,6 +48,13 @@ public:
     static Vertex3D crossProduct(Vertex3D, Vertex3D);
 
     static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam);
+    static void sortVerticesClockWise(Vertex3D *vertices, int num_vertex);
+
+    static long GetNextActive(long x, long vertexCount, const bool *active);
+    static long GetPrevActive(long x, long vertexCount, const bool *active);
+    static int TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
+
+
 };
 
 

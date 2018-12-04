@@ -14,6 +14,9 @@ public:
     Vertex3D operator +(const Vertex3D &pm);
     Vertex3D operator -(const Vertex3D &pm);
 
+    Vertex3D operator %(const Vertex3D &pm);
+    float    operator *(const Vertex3D &pm);
+
     float x, y, z;
 
     float angle;

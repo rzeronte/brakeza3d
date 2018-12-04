@@ -51,7 +51,7 @@ void Triangle::shadowMapping(LightPoint3D *lp)
     this->updateVertexObjectSpace();
     this->updateVertexCameraSpace(lp->cam);
 
-    if (this->faceCulling(lp))  {
+    if (this->isBackFaceCulling(lp->cam))  {
         return;
     }
 
@@ -70,26 +70,20 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexObjectSpace();
     this->updateVertexCameraSpace(cam);
 
-    if (Ac.z < 0 || Bc.z < 0 || Cc.z < 0) {
-        return false;
-    }
 
     bool faceCulling = false;
-    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING)  {
-        faceCulling = this->faceCulling(cam);
+    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING && !this->isClipped())  {
+        faceCulling = this->isBackFaceCulling(cam);
     }
 
     if (faceCulling) {
+        if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES && !this->isClipped()) {
+            Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
+            Drawable::drawVector3D( Vector3D(Bo, Co), cam, Color::yellow());
+            Drawable::drawVector3D( Vector3D(Co, Ao), cam, Color::yellow());
+        }
         EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
         return false;
-    }
-
-    // Frustum Culling
-    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !this->isClipped()) {
-        if ( !cam->frustum->isPointInFrustum(Ao) && !cam->frustum->isPointInFrustum(Bo) && !cam->frustum->isPointInFrustum(Co) ) {
-            EngineBuffers::getInstance()->trianglesOutFrustum++;
-            return false;
-        }
     }
 
     // Clipping
@@ -100,6 +94,15 @@ bool Triangle::draw(Camera3D *cam)
             }
         }
     }
+
+    // Frustum Culling
+    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING) {
+        if ( !cam->frustum->isPointInFrustum(Ao) && !cam->frustum->isPointInFrustum(Bo) && !cam->frustum->isPointInFrustum(Co) ) {
+            EngineBuffers::getInstance()->trianglesOutFrustum++;
+            return false;
+        }
+    }
+
 
     // Pixels
     if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
@@ -161,105 +164,50 @@ void Triangle::clippingPlane(Camera3D *cam, int id_plane, Vertex3D *vertices, in
 
 bool Triangle::clipping(Camera3D *cam)
 {
-    int plane_init = EngineSetup::getInstance()->NEAR_PLANE;
-    int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
-
-    Triangle new_triangles[5];
+    Triangle new_triangles[50];
     int num_new_triangles = 0;
 
-    Vertex3D new_vertexes[10];
-    int num_new_vertexes = 0;
+    Vertex3D new_vertices[50];
+    int num_new_vertices = 0;
 
-    for( int i = plane_init; i <= plane_end; i++) {
-        this->clippingPlane(cam, i, new_vertexes, num_new_vertexes);
-    }
+    this->clippingPlane(cam, EngineSetup::getInstance()->NEAR_PLANE  , new_vertices, num_new_vertices);
+    this->clippingPlane(cam, EngineSetup::getInstance()->LEFT_PLANE  , new_vertices, num_new_vertices);
+    this->clippingPlane(cam, EngineSetup::getInstance()->RIGHT_PLANE , new_vertices, num_new_vertices);
+    this->clippingPlane(cam, EngineSetup::getInstance()->BOTTOM_PLANE, new_vertices, num_new_vertices);
+    this->clippingPlane(cam, EngineSetup::getInstance()->TOP_PLANE   , new_vertices, num_new_vertices);
 
-    if (num_new_vertexes > 0) {
+    if (num_new_vertices > 0) {
         if (cam->frustum->isPointInFrustum( Ao )) {
-            new_vertexes[num_new_vertexes] = Ao; num_new_vertexes++;
+            new_vertices[num_new_vertices] = Ao; num_new_vertices++;
         }
 
         if (cam->frustum->isPointInFrustum( Bo )) {
-            new_vertexes[num_new_vertexes] = Bo; num_new_vertexes++;
+            new_vertices[num_new_vertices] = Bo; num_new_vertices++;
         }
 
         if (cam->frustum->isPointInFrustum( Co )) {
-            new_vertexes[num_new_vertexes] = Co; num_new_vertexes++;
+            new_vertices[num_new_vertices] = Co; num_new_vertices++;
         }
-        sortVertexClockWise(new_vertexes, num_new_vertexes);
-        triangulate(new_vertexes, num_new_vertexes, parent, cam, A, B, C, this->getTexture(), new_triangles, num_new_triangles);
+
+        for(int j = 0; j < num_new_vertices; j++) {
+            Drawable::drawVertex(new_vertices[j], cam, Color::yellow());
+        }
+
+        //Maths::sortVerticesByX(new_vertices, num_new_vertices);
+        Maths::sortVerticesClockWise(new_vertices, num_new_vertices);
+
+        Maths::TriangulatePolygon(num_new_vertices, new_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
+
+        //triangulate(num_new_vertices, new_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
 
         for (int i = 0; i < num_new_triangles; i++) {
             new_triangles[i].draw(cam);
         }
+
         return true;
     }
 
     return false;
-}
-
-bool Triangle::triangulate(Vertex3D vertexes[], int num_vertex, Object3D *parent, Camera3D *cam, Vertex3D A, Vertex3D B, Vertex3D C, Texture *texture, Triangle *triangles, int &ntriangles)
-{
-    // triangulamos con un sencillo algoritmo que recorre los vértices: 012, 023, 034...
-    int current = 1;
-    while(current < num_vertex-1 ) {
-        int next = current + 1;
-
-        if (next+1 <= num_vertex) {
-            EngineBuffers::getInstance()->trianglesClippingCreated++;
-
-            // Vertex new triangles
-            Vertex3D tv1 = Transforms::objectToLocal(vertexes[0], this->parent);
-            Vertex3D tv2 = Transforms::objectToLocal(vertexes[current], this->parent);
-            Vertex3D tv3 = Transforms::objectToLocal(vertexes[next], this->parent);
-
-            Triangle t = Triangle(tv1, tv2, tv3, parent);
-            t.setClipped(true);
-            t.setTexture(texture);
-            t.setClipped(true);
-
-            triangles[ntriangles] = t;
-            ntriangles++;
-        }
-
-        current+=1;
-    }
-}
-
-void Triangle::sortVertexClockWise(Vertex3D vertexes[], int num_vertex)
-{
-    Vertex3D middle = Maths::getCenterVertices(vertexes, num_vertex);
-    Vector3D arbitrary_vector = Vector3D(middle, vertexes[0]);
-
-    for (int i = 0; i < num_vertex; i++) {
-        float angle = 0;
-        float dot;
-
-        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
-        if (i > 0) {
-            Vector3D ratio = Vector3D(middle, vertexes[i]);
-
-            Vertex3D tmp1 = arbitrary_vector.getComponent();
-            Vertex3D tmp2 = ratio.getComponent();
-
-            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
-            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
-                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
-            float cos_angle_vectors = numerador / denominador;
-            angle = acos(cos_angle_vectors);
-
-            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
-
-            if (dot < 0) {
-                angle = angle * -1;
-            }
-
-            angle = Maths::radiansToDegrees(angle);
-        }
-        vertexes[i].angle = angle;
-    }
-
-    Maths::sortVertexesByAngles(vertexes, num_vertex);
 }
 
 void Triangle::drawWireframe(Camera3D *cam)
@@ -273,23 +221,21 @@ void Triangle::drawWireframe(Camera3D *cam)
     Drawable::drawVector3D( vCA, cam, Color::blue());
 }
 
-bool Triangle::faceCulling(Object3D *cam)
+// (v0 - P) . N
+bool Triangle::isBackFaceCulling(Camera3D *cam)
 {
-    Vector3D vecNormal(this->getCenter(), this->getNormal());
+    Vector3D AB = Vector3D(this->Ao, this->Bo);
+    Vector3D AC = Vector3D(this->Ao, this->Co);
 
-    Vertex3D componente = vecNormal.getComponent().getNormalize();
-    Vertex3D t = Transforms::objectSpace(A, parent);
+    // Triangle normal adyacent to v0 (Ao)
+    Vertex3D normal = Maths::crossProduct(AB.getComponent(), AC.getComponent());
 
-    Vertex3D V (
-        t.x - cam->getPosition()->x,
-        t.y - cam->getPosition()->y,
-        t.z - cam->getPosition()->z
-    );
+    Vertex3D cp = Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
 
-    // -V . Normal
-    float val = (-V.x*componente.x) + (-V.y*componente.y) + (-V.z*componente.z);
+    // Camera-triangle vector
+    Vertex3D v = this->Ao - cp;
 
-    return val <= 0;
+    return Vertex3D::dotProduct(v, normal) >= 0;
 }
 
 Vertex3D Triangle::getCenter()
@@ -319,11 +265,7 @@ Vertex3D Triangle::getNormal()
     Vertex3D U = VnAB.getComponent();
     Vertex3D V = VnAC.getComponent();
 
-    float Wx = (U.y * V.z) - (U.z * V.y);
-    float Wy = (U.z * V.x) - (U.x * V.z);
-    float Wz = (U.x * V.y) - (U.y * V.x);
-
-    Vertex3D normal = Vertex3D(Wx, Wy, Wz).getNormalize();
+    Vertex3D normal = U % V;
 
     // Como se calcula con la componente (respecto al origen),
     // lo vuelvo a poner sobre A y aplico distancia al centro
@@ -374,9 +316,9 @@ void Triangle::scanVertices(Camera3D *cam)
     //Maths::sortVertexByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
-        this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos);
+        this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos, cam);
     } else if (v1.y == v2.y) {
-        this->scanTopFlatTriangle( v1, v2, v3, A, B, C, Aos, Bos, Cos);
+        this->scanTopFlatTriangle( v1, v2, v3, A, B, C, Aos, Bos, Cos, cam);
     } else {
         // En este caso tenemos vamos a dividir los triángulos
         // para tener uno que cumpla 'bottomFlat' y el otro 'TopFlat'
@@ -408,8 +350,8 @@ void Triangle::scanVertices(Camera3D *cam)
 
         D.u = u; D.v = v;
 
-        this->scanBottomFlatTriangle(v1, v2, v4, A, B, D, Aos, Bos, Dos);
-        this->scanTopFlatTriangle(v2, v4, v3, B, D, C, Bos, Dos, Cos);
+        this->scanBottomFlatTriangle(v1, v2, v4, A, B, D, Aos, Bos, Dos, cam);
+        this->scanTopFlatTriangle(v2, v4, v3, B, D, C, Bos, Dos, Cos, cam);
 
         if (EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED) {
             Line2D extraLineDemo = Line2D();
@@ -441,8 +383,8 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 
     // Ordenamos los vertices y puntos por su valor en 'y'
     Maths::sortPointsByY(v1, v2, v3);
-    Maths::sortVertexByY(A, B, C);
-    Maths::sortVertexByY(Aos, Bos, Cos);
+    Maths::sortVerticesByY(A, B, C);
+    Maths::sortVerticesByY(Aos, Bos, Cos);
 
     if (v2.y == v3.y) {
         this->scanShadowMappingBottomFlatTriangle(v1, v2, v3, A, B, C, lp);
@@ -478,7 +420,7 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
     }
 }
 
-void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, Vertex3D Aos, Vertex3D Bos, Vertex3D Cos)
+void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, Vertex3D Aos, Vertex3D Bos, Vertex3D Cos, Camera3D *cam)
 {
     float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
     float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
@@ -486,16 +428,19 @@ void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D 
     float curx1 = pc.x;
     float curx2 = pc.x;
 
+
     for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
 
-        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos);
+        //if (scanlineY >= 0 && scanlineY <= EngineSetup::getInstance()->SCREEN_HEIGHT) {
+            this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
+        //}
 
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
 }
 
-void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, Vertex3D Aos, Vertex3D Bos, Vertex3D Cos)
+void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, Vertex3D Aos, Vertex3D Bos, Vertex3D Cos, Camera3D *cam)
 {
     float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
     float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
@@ -505,7 +450,9 @@ void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex
 
     for (int scanlineY = (int) pa.y; scanlineY <= pb.y; scanlineY++) {
 
-        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos);
+        //if (scanlineY >= 0 && scanlineY <= EngineSetup::getInstance()->SCREEN_HEIGHT) {
+            this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
+        //}
 
         curx1 += invslope1;
         curx2 += invslope2;
@@ -552,8 +499,8 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
 void Triangle::scanLine(float start_x, float end_x, int y,
                         Point2D pa, Point2D pb, Point2D pc,
                         Vertex3D A, Vertex3D B, Vertex3D C,
-                        Vertex3D Aos, Vertex3D Bos, Vertex3D Cos
-                        )
+                        Vertex3D Aos, Vertex3D Bos, Vertex3D Cos,
+                        Camera3D *cam)
 {
     if (start_x == end_x) return;
 
@@ -564,7 +511,6 @@ void Triangle::scanLine(float start_x, float end_x, int y,
         start_x = end_x;
         end_x = tmp;
     }
-
 
     Uint32 pixelColor = EngineSetup::getInstance()->TRIANGLE_SOLID_COLOR;
 
@@ -660,6 +606,7 @@ void Triangle::scanLine(float start_x, float end_x, int y,
             EngineBuffers::getInstance()->pixelesDrawed++;
             EngineBuffers::getInstance()->setVideoBuffer( (int) pointFinal.x, (int) pointFinal.y, pixelColor);
         } else {
+
             EngineBuffers::getInstance()->pixelesOutOfWindow++;
         }
     }
@@ -728,4 +675,34 @@ void Triangle::setClipped(bool value)
 bool Triangle::isClipped()
 {
     return this->is_clipped;
+}
+
+int Triangle::triangulate(long num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
+{
+    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
+
+    for (int i = 0; i < num_vertex ; i++) {
+        Vertex3D tv1, tv2, tv3;
+        // Vertex new triangles
+        int current = i;
+        int next = i+1;
+
+        if (next < num_vertex){
+            tv1 = Transforms::objectToLocal(middle, parent);
+            tv2 = Transforms::objectToLocal(vertices[current], parent);
+            tv3 = Transforms::objectToLocal(vertices[next], parent);
+        } else {
+            tv1 = Transforms::objectToLocal(middle, parent);
+            tv2 = Transforms::objectToLocal(vertices[current], parent);
+            tv3 = Transforms::objectToLocal(vertices[0], parent);
+        }
+
+        Triangle t = Triangle(tv1, tv2, tv3, parent);
+        t.setTexture( texture );
+        t.setClipped(clipped);
+        EngineBuffers::getInstance()->trianglesClippingCreated++;
+
+        triangle[ntriangles] = t;
+        ntriangles++;
+    }
 }

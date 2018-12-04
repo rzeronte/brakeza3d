@@ -23,13 +23,12 @@ public:
     int sizeBuffers;
     static EngineBuffers* getInstance();
 
+    // Benchmark Meshes
     int pixelesDrawed = 0;
     int pixelesOutOfWindow = 0;
     int pixelesBehindOfCamera = 0;
-
     int trianglesDrawed = 0;
     int trianglesHidenByFaceCuling = 0;
-    int trianglesNoTexture = 0;
     int trianglesOutFrustum = 0;
     int trianglesClippingCreated = 0;
 
@@ -39,16 +38,16 @@ public:
     float getDepthBuffer(int x, int y);
     float setDepthBuffer(int x, int y, float value);
 
-    void clearVideoBuffer();
     float getVideoBuffer(int x, int y);
+    void clearVideoBuffer();
     void setVideoBuffer(int x, int y, Uint32 value);
     void flipVideoBuffer(SDL_Surface *);
 
     void resetBenchmarkValues();
+
     void consoleInfo();
 
     SDL_Surface *getScreenSurface() const;
-
     void setScreenSurface(SDL_Surface *screenSurface);
 };
 

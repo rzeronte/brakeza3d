@@ -40,9 +40,9 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //Engine::camera->head[0] = 544;
-    //Engine::camera->head[1] = -32;
-    //Engine::camera->head[2] = 300;
+    Engine::camera->head[0] = 544;
+    Engine::camera->head[1] = -32;
+    Engine::camera->head[2] = 300;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -67,13 +67,21 @@ void Game::onStart()
     */
 
     // mono
-    /*Mesh3D *mono = new Mesh3D();
-    mono->setEnabled(true);
+    Mesh3D *mono = new Mesh3D();
+    mono->setEnabled(false);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->loadOBJBlender("../assets/models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
-    */
+
+    // ball
+    Mesh3D *ball = new Mesh3D();
+    ball->setEnabled(false);
+    ball->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    ball->loadOBJBlender("../assets/models/Wolf.obj");
+    ball->setShadowCaster(true);
+    this->addObject3D(ball, "box");
+
     // cubo
     Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(false);
@@ -87,7 +95,7 @@ void Game::onStart()
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition( Vertex3D(1, 0.4, 5) );
-    triangle->setRotation(M3(75, 0, 0));
+    triangle->setRotation( M3(-90, -45, 0) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 

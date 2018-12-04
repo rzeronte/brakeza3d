@@ -10,7 +10,7 @@
 #include "Object3D.h"
 #include "LightPoint3D.h"
 
-#define MAX_MODEL_TRIANGLES 10000
+#define MAX_MODEL_TRIANGLES 100000
 #define MAX_VERTEX_MODEL 100000
 #define MAX_MESH_TEXTURES 100
 
