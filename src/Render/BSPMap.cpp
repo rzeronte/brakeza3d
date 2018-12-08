@@ -295,16 +295,6 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
         }
     }
 
-    /*texinfo_t *textureInfo = this->getTextureInfo(surface);
-    Plane tp = Plane(vertices[0], vertices[1], vertices[2]);
-
-    this->sortVerticesClockWise(vertices, num_vertices, cam);
-    Maths::TriangulatePolygon(num_vertices, vertices, tp.getNormalVector(), this->model_triangles, this->n_triangles, this, &textures[textureInfo->texid], false);
-
-    for (int i = 0; i < this->n_triangles; i++) {
-        this->model_triangles->draw(cam);
-    }*/
-
     triangulateQuakeSurface(vertices, num_vertices, surface, cam, Vertex3D(0, 0, 0));
 }
 
@@ -315,9 +305,7 @@ void BSPMap::drawTriangles(Camera3D *cam)
     }
 
     for (int i = 0; i < this->n_triangles ; i++) {
-        //if (EngineBuffers::getInstance()->pixelesDrawed < EngineBuffers::getInstance()->sizeBuffers) {
-            this->model_triangles[i].draw(cam);
-        //}
+        this->model_triangles[i].draw(cam);
     }
 }
 

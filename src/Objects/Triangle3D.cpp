@@ -126,14 +126,9 @@ bool Triangle::draw(Camera3D *cam)
 
 bool Triangle::clipping(Camera3D *cam)
 {
-    Triangle new_triangles[10];
-    int num_new_triangles = 0;
-
-    Vertex3D output_vertices[10];
-    int noutvertices = 0;
-
-    Vertex3D input_vertices[10];
-    int ninputvertices = 0;
+    Triangle new_triangles[10]   ; int num_new_triangles = 0;
+    Vertex3D output_vertices[10] ; int noutvertices = 0;
+    Vertex3D input_vertices[10]  ; int ninputvertices = 0;
 
     input_vertices[0] = this->Ao; ninputvertices++;
     input_vertices[1] = this->Bo; ninputvertices++;
@@ -141,7 +136,8 @@ bool Triangle::clipping(Camera3D *cam)
 
     // clip against planes
     bool any_new_vertex = false;
-    for (int i = 1; i <= 5; i++) {
+    int plane_init = EngineSetup::getInstance()->FAR_PLANE+1; int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;
+    for (int i = plane_init ; i <= plane_end ; i++) {
         bool isClip = Maths::ClippingPolygon(input_vertices, ninputvertices, output_vertices, noutvertices, i, cam);
 
         if (isClip) any_new_vertex = true;
@@ -273,9 +269,6 @@ void Triangle::scanVertices(Camera3D *cam)
     // Ordenamos los vertices y puntos por su valor en 'y'
     Maths::sortPointsByY(v1, v2, v3);
 
-    //Maths::sortVertexByY(A, B, C);
-    //Maths::sortVertexByY(Aos, Bos, Cos);
-
     if (v2.y == v3.y) {
         this->scanBottomFlatTriangle(v1, v2, v3, A, B, C, Aos, Bos, Cos, cam);
     } else if (v1.y == v2.y) {
@@ -391,11 +384,7 @@ void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D 
 
 
     for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
-
-        //if (scanlineY >= 0 && scanlineY <= EngineSetup::getInstance()->SCREEN_HEIGHT) {
-            this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
-        //}
-
+        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
@@ -410,11 +399,7 @@ void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex
     float curx2 = pa.x;
 
     for (int scanlineY = (int) pa.y; scanlineY <= pb.y; scanlineY++) {
-
-        //if (scanlineY >= 0 && scanlineY <= EngineSetup::getInstance()->SCREEN_HEIGHT) {
-            this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
-        //}
-
+        this->scanLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, Aos, Bos, Cos, cam);
         curx1 += invslope1;
         curx2 += invslope2;
     }
@@ -429,9 +414,7 @@ void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D 
     float curx2 = pc.x;
 
     for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
-
         this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
-
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
@@ -446,17 +429,12 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
     float curx2 = pa.x;
 
     for (int scanlineY = (int) pa.y; scanlineY <= pb.y; scanlineY++) {
-
         this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
-
         curx1 += invslope1;
         curx2 += invslope2;
     }
 }
 
-/**
- * Escanea una línea horizontal entre x1 y x2 en una coordenada y indicada.
- */
 void Triangle::scanLine(float start_x, float end_x, int y,
                         Point2D pa, Point2D pb, Point2D pc,
                         Vertex3D A, Vertex3D B, Vertex3D C,
@@ -567,7 +545,6 @@ void Triangle::scanLine(float start_x, float end_x, int y,
             EngineBuffers::getInstance()->pixelesDrawed++;
             EngineBuffers::getInstance()->setVideoBuffer( (int) pointFinal.x, (int) pointFinal.y, pixelColor);
         } else {
-
             EngineBuffers::getInstance()->pixelesOutOfWindow++;
         }
     }

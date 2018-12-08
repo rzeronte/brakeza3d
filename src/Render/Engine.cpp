@@ -173,8 +173,10 @@ void Engine::windowUpdate()
 
     SDL_GL_SwapWindow(window);
 
-    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, EngineBuffers::getInstance()->getScreenSurface()), NULL, NULL);
+    SDL_Texture *engine = SDL_CreateTextureFromSurface(renderer, EngineBuffers::getInstance()->getScreenSurface());
+    SDL_RenderCopy(renderer, engine, NULL, NULL);
 
+    SDL_DestroyTexture(engine);
     //SDL_RenderPresent( renderer );
     //SDL_RenderClear(renderer);
     //SDL_UpdateWindowSurface( window );
@@ -256,16 +258,12 @@ void Engine::drawMeshes()
     for (int i = 0; i < this->numberGameObjects; i++) {
         Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
-            if (!oMesh->isEnabled()) {
-                continue;
+            if (oMesh->isEnabled()) {
+                oMesh->draw(camera);
+                if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
+                    Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                }
             };
-            oMesh->draw(camera);
-            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisUp(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Y");
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisRight(), EngineSetup::getInstance()->TEXT_3D_COLOR, "X");
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, oMesh->AxisForward(), EngineSetup::getInstance()->TEXT_3D_COLOR, "Z");
-            }
         }
     }
 }
@@ -275,16 +273,14 @@ void Engine::drawLightPoints()
     for (int i = 0; i < this->numberLightPoints; i++) {
         LightPoint3D *oLight= this->lightPoints[i];
         if (oLight != NULL) {
-            if (!oLight->isEnabled()) {
-                continue;
-            }
-
-            oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, camera->AxisUp(), camera->AxisRight() );
-            if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
-                Drawable::drawBillboard(oLight->billboard, Engine::camera);
-            }
-            if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
-                Drawable::drawObject3DAxis(oLight, camera, true, true, true);
+            if (oLight->isEnabled()) {
+                oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, camera->AxisUp(), camera->AxisRight() );
+                if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
+                    Drawable::drawBillboard(oLight->billboard, Engine::camera);
+                }
+                if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
+                    Drawable::drawObject3DAxis(oLight, camera, true, true, true);
+                }
             }
         }
     }

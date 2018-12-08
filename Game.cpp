@@ -151,7 +151,6 @@ void Game::mainLoop()
 
     ImGuiIO& io = ImGui::GetIO();
     while(!finish) {
-
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
             Engine::cameraUpdate();
