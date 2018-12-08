@@ -280,11 +280,6 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
                 Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
 
             } else {
-                Vertex3D nextf = Vertex3D(
-                        (primitives+1)->v[1],
-                        (primitives+1)->v[2],
-                        (primitives+1)->v[0]
-                );
                 // Cerramos contra el primer vértice
                 primdesc_t *primitives_start = &surfacePrimitives[numMaxEdgesPerSurface * surface];
 
@@ -296,20 +291,17 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
 
                 next = Transforms::objectToLocal(next, this);
                 Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
-                //vertices[num_vertices] = next ; num_vertices++;
-
             }
         }
     }
 
-    texinfo_t *textureInfo = this->getTextureInfo(surface);
-
+    /*texinfo_t *textureInfo = this->getTextureInfo(surface);
     Plane tp = Plane(vertices[0], vertices[1], vertices[2]);
 
-    //this->sortVerticesClockWise(vertices, num_vertices, cam);
-    //Maths::TriangulatePolygon(num_vertices, vertices, tp.getNormalVector(), this->model_triangles, this->n_triangles, this, &textures[textureInfo->texid], false);
+    this->sortVerticesClockWise(vertices, num_vertices, cam);
+    Maths::TriangulatePolygon(num_vertices, vertices, tp.getNormalVector(), this->model_triangles, this->n_triangles, this, &textures[textureInfo->texid], false);
 
-    /*for (int i = 0; i < this->n_triangles; i++) {
+    for (int i = 0; i < this->n_triangles; i++) {
         this->model_triangles->draw(cam);
     }*/
 
@@ -332,14 +324,11 @@ void BSPMap::drawTriangles(Camera3D *cam)
 bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int surface, Camera3D *cam, Vertex3D normal)
 {
     texinfo_t *textureInfo = this->getTextureInfo(surface);
-
     Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-    Drawable::drawVertex(middle, cam, Color::pink());
 
     for (int i = 0; i < num_vertex ; i++) {
-        Drawable::drawVertex(vertices[i], cam, Color::yellow());
-
         Vertex3D tv1, tv2, tv3;
+
         // Vertex new triangles
         int current = i;
         int next = i+1;
@@ -361,7 +350,6 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
 
         this->model_triangles[this->n_triangles] = t;
         this->n_triangles++;
-
     }
 
     return false;

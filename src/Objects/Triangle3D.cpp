@@ -70,14 +70,13 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexObjectSpace();
     this->updateVertexCameraSpace(cam);
 
-
     bool faceCulling = false;
-    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING && !this->isClipped())  {
+    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING && !this->isClipped()) {
         faceCulling = this->isBackFaceCulling(cam);
     }
 
     if (faceCulling) {
-        if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES && !this->isClipped()) {
+        if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES) {
             Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
             Drawable::drawVector3D( Vector3D(Bo, Co), cam, Color::yellow());
             Drawable::drawVector3D( Vector3D(Co, Ao), cam, Color::yellow());
@@ -87,11 +86,9 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     // Clipping
-    if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !this->isClipped()) {
-        if (!faceCulling) {
-            if (this->clipping(cam)) {
-                return false;
-            }
+    if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !isClipped()) {
+        if (this->clipping(cam)) {
+            return false;
         }
     }
 
@@ -103,28 +100,21 @@ bool Triangle::draw(Camera3D *cam)
         }
     }
 
-
     // Pixels
     if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
-        if (!faceCulling) {
-            Drawable::drawVertex(Co, cam, Color::red());
-            Drawable::drawVertex(Bo, cam, Color::green());
-            Drawable::drawVertex(Co, cam, Color::blue());
-        }
+        Drawable::drawVertex(Co, cam, Color::red());
+        Drawable::drawVertex(Bo, cam, Color::green());
+        Drawable::drawVertex(Co, cam, Color::blue());
     }
 
     EngineBuffers::getInstance()->trianglesDrawed++;
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        if (!faceCulling) {
-            this->scanVertices(cam);
-        }
+        this->scanVertices(cam);
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        if (!faceCulling) {
-            this->drawWireframe(cam);
-        }
+        this->drawWireframe(cam);
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_NORMAL) {
@@ -134,73 +124,44 @@ bool Triangle::draw(Camera3D *cam)
     return true;
 }
 
-void Triangle::clippingPlane(Camera3D *cam, int id_plane, Vertex3D *vertices, int &nvertices)
-{
-    Vector3D AB = Vector3D(Ao, Bo);
-    Vector3D AC = Vector3D(Ao, Co);
-    Vector3D BC = Vector3D(Bo, Co);
-
-    // AB
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], AB ) ) {
-        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(AB.vertex1, AB.vertex2);
-        vertices[nvertices] = newVertex;
-        nvertices++;
-    }
-
-    // AC
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], AC )) {
-        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(AC.vertex1, AC.vertex2);
-        vertices[nvertices] = newVertex;
-        nvertices++;
-    }
-
-    // BC
-    if ( Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], BC ) ) {
-        Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(BC.vertex1, BC.vertex2);
-        vertices[nvertices] = newVertex;
-        nvertices++;
-    }
-}
-
 bool Triangle::clipping(Camera3D *cam)
 {
-    Triangle new_triangles[50];
+    Triangle new_triangles[10];
     int num_new_triangles = 0;
 
-    Vertex3D new_vertices[50];
-    int num_new_vertices = 0;
+    Vertex3D output_vertices[10];
+    int noutvertices = 0;
 
-    this->clippingPlane(cam, EngineSetup::getInstance()->NEAR_PLANE  , new_vertices, num_new_vertices);
-    this->clippingPlane(cam, EngineSetup::getInstance()->LEFT_PLANE  , new_vertices, num_new_vertices);
-    this->clippingPlane(cam, EngineSetup::getInstance()->RIGHT_PLANE , new_vertices, num_new_vertices);
-    this->clippingPlane(cam, EngineSetup::getInstance()->BOTTOM_PLANE, new_vertices, num_new_vertices);
-    this->clippingPlane(cam, EngineSetup::getInstance()->TOP_PLANE   , new_vertices, num_new_vertices);
+    Vertex3D input_vertices[10];
+    int ninputvertices = 0;
 
-    if (num_new_vertices > 0) {
-        if (cam->frustum->isPointInFrustum( Ao )) {
-            new_vertices[num_new_vertices] = Ao; num_new_vertices++;
+    input_vertices[0] = this->Ao; ninputvertices++;
+    input_vertices[1] = this->Bo; ninputvertices++;
+    input_vertices[2] = this->Co; ninputvertices++;
+
+    // clip against planes
+    bool any_new_vertex = false;
+    for (int i = 1; i <= 5; i++) {
+        bool isClip = Maths::ClippingPolygon(input_vertices, ninputvertices, output_vertices, noutvertices, i, cam);
+
+        if (isClip) any_new_vertex = true;
+        for (int j = 0; j < noutvertices; j++) {
+            input_vertices[j] = output_vertices[j];
         }
+        ninputvertices = noutvertices;
+        noutvertices = 0;
+    }
 
-        if (cam->frustum->isPointInFrustum( Bo )) {
-            new_vertices[num_new_vertices] = Bo; num_new_vertices++;
-        }
+    if ( any_new_vertex && ninputvertices != 0) {
 
-        if (cam->frustum->isPointInFrustum( Co )) {
-            new_vertices[num_new_vertices] = Co; num_new_vertices++;
-        }
+        Vector3D AB = Vector3D(this->Ao, this->Bo);
+        Vector3D AC = Vector3D(this->Ao, this->Co);
+        Vertex3D normal = Maths::crossProduct(AB.getComponent(), AC.getComponent());
 
-        for(int j = 0; j < num_new_vertices; j++) {
-            Drawable::drawVertex(new_vertices[j], cam, Color::yellow());
-        }
-
-        //Maths::sortVerticesByX(new_vertices, num_new_vertices);
-        Maths::sortVerticesClockWise(new_vertices, num_new_vertices);
-
-        Maths::TriangulatePolygon(num_new_vertices, new_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
-
-        //triangulate(num_new_vertices, new_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
+        Maths::TriangulatePolygon(ninputvertices, input_vertices, normal, new_triangles, num_new_triangles, parent, this->getTexture(), true);
 
         for (int i = 0; i < num_new_triangles; i++) {
+            EngineBuffers::getInstance()->trianglesClippingCreated++;
             new_triangles[i].draw(cam);
         }
 

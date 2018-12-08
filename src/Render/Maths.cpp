@@ -42,20 +42,31 @@ void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, 
 
 }
 
-bool Maths::isVector3DClippingPlane(Plane P, Vector3D V)
+/**
+ * 0 = dos vértices dentro
+ * 1 = ningún vértice dentro
+ * 2 = vértice A dentro
+ * 3 = vértice B dentro
+ */
+int Maths::isVector3DClippingPlane(Plane P, Vector3D V)
 {
-    // El clipping solo se realiza en Line2Ds que están parcialmente fuera
-    // es decir, ningun punto dentro o  no están los 2 dentro
     float min_distance_to_clipping = EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE;
 
-    if (! (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) > min_distance_to_clipping)
-        &&
-        ! (P.distance(V.vertex1) < min_distance_to_clipping && P.distance(V.vertex2) < min_distance_to_clipping )
-            ) {
-        return true;
+    if (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) > min_distance_to_clipping) {
+        return 1;
+    } else {
+        if (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) < min_distance_to_clipping) {
+            return 3;
+        }
+
+        if (P.distance(V.vertex2) > min_distance_to_clipping && P.distance(V.vertex1) < min_distance_to_clipping) {
+            return 2;
+        }
+
+        return 0;
     }
 
-    return false;
+    return 0;
 }
 
 Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
@@ -509,4 +520,37 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
 
     delete[] active;
     return (triangleCount);
+}
+
+bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int id_plane, Camera3D *cam)
+{
+    Vector3D edge;
+
+    bool new_vertices = false;
+
+    for (int i = 0; i < ninput; i++) {
+        int next = i + 1;
+        if ( next < ninput ) {
+            edge = Vector3D(input[i], input[next]);
+        } else {
+            edge = Vector3D(input[i], input[0]);
+        }
+        // test clip plane
+        int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
+
+        /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
+        // Si el primer vértice está dentro, lo añadimos a la salida
+        if (testClip == 0 || testClip == 2) {
+            output[noutput] = edge.vertex1; noutput++;
+        }
+
+        // Si el primer y el segundo vértice no tienen el mismo estado añadimos el punto de intersección al plano
+        if (testClip > 1) {
+            Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2);
+            output[noutput] = newVertex; noutput++;
+            new_vertices = true;
+        }
+    }
+
+    return new_vertices;
 }

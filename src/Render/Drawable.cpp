@@ -113,7 +113,7 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color)
 
 void Drawable::drawMainAxis(Camera3D *cam)
 {
-    Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
+    //Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
 
     Point2D fixed_position = Point2D(EngineSetup::getInstance()->SCREEN_WIDTH - 50, 30);
     Drawable::drawMainAxisOffset( cam, Transforms::Point2DToWorld( fixed_position, cam) );

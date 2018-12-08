@@ -58,7 +58,6 @@ public:
     void setTexture(Texture *texture);
 
     bool clipping(Camera3D *cam);
-    void clippingPlane(Camera3D *cam, int id_plane, Vertex3D *, int &);
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
