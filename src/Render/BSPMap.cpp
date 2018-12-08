@@ -424,7 +424,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
         plane_t *plane = this->getPlane(node->planenum);
 
         // Calculate distance to the intersecting plane
-        Vertex3D cp = Vertex3D( camera->head[0], camera->head[1], camera->head[2]);
+        Vertex3D cp = *camera->getPosition();
         cp = Maths::rotateVertex(cp, M3(-90, 0, 0));
 
         vec3_t cam_pos;

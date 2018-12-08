@@ -167,7 +167,7 @@ void Mesh3D::loadOBJBlenderTriangles()
             );
 
             // set texture
-            if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->model_textures[0].loaded) {
+            if (this->model_textures[0].loaded) {
                 this->model_triangles[i].setTexture(&this->model_textures[0]);
             }
 

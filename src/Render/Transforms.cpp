@@ -24,7 +24,7 @@ Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
 {
     Vertex3D A = V;
 
-    A = A - Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
+    A = A - *cam->getPosition();
     A = cam->getRotation() * A;
 
     A.u = V.u;
@@ -119,7 +119,7 @@ Vertex3D Transforms::cameraToWorld(Vertex3D V,  Camera3D *cam)
     Vertex3D A;
 
     A = cam->getRotation().getTranspose() * V;
-    A = A + Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
+    A = A + *cam->getPosition();
 
     A.u = V.u;
     A.v = V.v;

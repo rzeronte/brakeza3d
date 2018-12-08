@@ -19,8 +19,6 @@ public:
     float speed;		// Speed along heading
     float strafe;       // Speed along heading
 
-    vec3_t head;		// Position of head
-
     float horizontal_fov;
     float farDistance ;
     float aspectRatio;

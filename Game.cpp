@@ -40,9 +40,9 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::camera->head[0] = 544;
-    Engine::camera->head[1] = -32;
-    Engine::camera->head[2] = 300;
+    //Engine::camera->head[0] = 544;
+    //Engine::camera->head[1] = -32;
+    //Engine::camera->head[2] = 300;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -142,7 +142,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    loadBSP("start.bsp", "palette.lmp");
+    //loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()

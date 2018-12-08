@@ -30,7 +30,7 @@ Camera3D::Camera3D()
     // Inicializamos el frusutm que acompañará a la cámara
     frustum = new Frustum();
     frustum->setup(
-        Vertex3D(head[0], head[1], head[2]),
+        *getPosition(),
         Vertex3D(0, 0, 1),
         EngineSetup::getInstance()->up,
         EngineSetup::getInstance()->right,
@@ -88,7 +88,7 @@ float Camera3D::getScreenAspectRatio()
 
 void Camera3D::syncFrustum()
 {
-    frustum->position  = Vertex3D(head[0], head[1], head[2]);
+    frustum->position  = *getPosition();
 
     frustum->direction = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     frustum->up        = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
@@ -167,12 +167,12 @@ void Camera3D::UpdatePosition(void)
 {
     // Move the camera forward
     if ((fabs(speed) > 0)) {
-        head[2] += speed ;
+        getPosition()->z+=speed;
     }
 
     // Move the camera sideways
     if ((fabs(strafe) > 0)) {
-        head[0] -= strafe;
+        getPosition()->x-=speed;
     }
 
     // Reset speed

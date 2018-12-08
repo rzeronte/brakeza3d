@@ -46,11 +46,6 @@ public:
     void loadOBJBlenderTextureCoordinates();
     void loadOBJBlenderMaterials();
 
-    // BSP
-    void loadQ3Map(const std::string &pFilename);
-    void loadTrianglesFromQ3Map();
-    void loadTexturesFromQ3Map();
-
     void draw(Camera3D *);
     void shadowMapping(LightPoint3D *);
     void setLightPoints(LightPoint3D **lightPoint, int);

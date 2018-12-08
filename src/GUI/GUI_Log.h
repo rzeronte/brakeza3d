@@ -81,9 +81,9 @@ public:
         if (show) {
             std::string sfps = std::to_string(fps);
             std::string title = "Log | FPS: " + sfps +" | Camera (x: " +
-                    std::to_string(cam->head[0]) + ", y: " +
-                    std::to_string(cam->head[1]) + ", z:  " +
-                    std::to_string(cam->head[2]) + " | Yaw: " +
+                    std::to_string(cam->getPosition()->x) + ", y: " +
+                    std::to_string(cam->getPosition()->y) + ", z:  " +
+                    std::to_string(cam->getPosition()->z) + " | Yaw: " +
                     std::to_string(cam->getRotation().getYawDegree()) + ", Pitch: " +
                     std::to_string(cam->getRotation().getPitchDegree()) + + "###AnimatedTitle"
             ;

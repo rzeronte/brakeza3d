@@ -71,7 +71,7 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexCameraSpace(cam);
 
     bool faceCulling = false;
-    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING && !this->isClipped()) {
+    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING) {
         faceCulling = this->isBackFaceCulling(cam);
     }
 
@@ -155,9 +155,65 @@ bool Triangle::clipping(Camera3D *cam)
         Vertex3D normal = Maths::crossProduct(AB.getComponent(), AC.getComponent());
 
         Maths::TriangulatePolygon(ninputvertices, input_vertices, normal, new_triangles, num_new_triangles, parent, this->getTexture(), true);
+        float alpha, theta, gamma;
+
+        Vertex3D Andc = Transforms::NDCSpace(Ac, cam);
+        Vertex3D Bndc = Transforms::NDCSpace(Bc, cam);
+        Vertex3D Cndc = Transforms::NDCSpace(Cc, cam);
+
+        // y obtenemos los puntos en la proyección 2d
+        Point2D pa = Transforms::screenSpace(Andc, cam);
+        Point2D pb = Transforms::screenSpace(Bndc, cam);
+        Point2D pc = Transforms::screenSpace(Cndc, cam);
 
         for (int i = 0; i < num_new_triangles; i++) {
+
+            // Vamos a calcular las coordenadas UV para tv1, tv2 y tv3
+            Vertex3D nv1 = new_triangles[i].A;
+            Vertex3D nv2 = new_triangles[i].B;
+            Vertex3D nv3 = new_triangles[i].C;
+
+            // Pasamos por la cámara
+            nv1 = Transforms::objectSpace(nv1, parent);
+            nv2 = Transforms::objectSpace(nv2, parent);
+            nv3 = Transforms::objectSpace(nv3, parent);
+
+            nv1 = Transforms::cameraSpace(nv1, cam);
+            nv2 = Transforms::cameraSpace(nv2, cam);
+            nv3 = Transforms::cameraSpace(nv3, cam);
+
+            nv1 = Transforms::NDCSpace(nv1, cam);
+            nv2 = Transforms::NDCSpace(nv2, cam);
+            nv3 = Transforms::NDCSpace(nv3, cam);
+
+            // y obtenemos los puntos en la proyección 2d
+            Point2D pnv1 = Transforms::screenSpace(nv1, cam);
+            Point2D pnv2 = Transforms::screenSpace(nv2, cam);
+            Point2D pnv3 = Transforms::screenSpace(nv3, cam);
+
+            // Hayamos las coordenadas baricéntricas del punto pnv1 respecto al triángulo pa, pb, pc
+            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv1.x, pnv1.y, pa, pb, pc);
+            float punv1 = alpha * A.u + theta * B.u + gamma * C.u;
+            float pvnv1 = alpha * A.v + theta * B.v + gamma * C.v;
+            new_triangles[i].A.u = punv1;
+            new_triangles[i].A.v = pvnv1;
+
+            // Hayamos las coordenadas baricéntricas del punto pnv2 respecto al triángulo pa, pb, pc
+            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv2.x, pnv2.y, pa, pb, pc);
+            float punv2 = alpha * A.u + theta * B.u + gamma * C.u;
+            float pvnv2 = alpha * A.v + theta * B.v + gamma * C.v;
+            new_triangles[i].B.u = punv2;
+            new_triangles[i].B.v = pvnv2;
+
+            // Hayamos las coordenadas baricéntricas del punto pnv3 respecto al triángulo pa, pb, pc
+            Maths::getBarycentricCoordinates(alpha, theta, gamma, pnv3.x, pnv3.y, pa, pb, pc);
+            float punv3 = alpha * A.u + theta * B.u + gamma * C.u;
+            float pvnv3 = alpha * A.v + theta * B.v + gamma * C.v;
+            new_triangles[i].C.u = punv3;
+            new_triangles[i].C.v = pvnv3;
+
             EngineBuffers::getInstance()->trianglesClippingCreated++;
+
             new_triangles[i].draw(cam);
         }
 
@@ -187,7 +243,7 @@ bool Triangle::isBackFaceCulling(Camera3D *cam)
     // Triangle normal adyacent to v0 (Ao)
     Vertex3D normal = Maths::crossProduct(AB.getComponent(), AC.getComponent());
 
-    Vertex3D cp = Vertex3D(cam->head[0], cam->head[1], cam->head[2]);
+    Vertex3D cp = *cam->getPosition();
 
     // Camera-triangle vector
     Vertex3D v = this->Ao - cp;
@@ -613,34 +669,4 @@ void Triangle::setClipped(bool value)
 bool Triangle::isClipped()
 {
     return this->is_clipped;
-}
-
-int Triangle::triangulate(long num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
-{
-    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-
-    for (int i = 0; i < num_vertex ; i++) {
-        Vertex3D tv1, tv2, tv3;
-        // Vertex new triangles
-        int current = i;
-        int next = i+1;
-
-        if (next < num_vertex){
-            tv1 = Transforms::objectToLocal(middle, parent);
-            tv2 = Transforms::objectToLocal(vertices[current], parent);
-            tv3 = Transforms::objectToLocal(vertices[next], parent);
-        } else {
-            tv1 = Transforms::objectToLocal(middle, parent);
-            tv2 = Transforms::objectToLocal(vertices[current], parent);
-            tv3 = Transforms::objectToLocal(vertices[0], parent);
-        }
-
-        Triangle t = Triangle(tv1, tv2, tv3, parent);
-        t.setTexture( texture );
-        t.setClipped(clipped);
-        EngineBuffers::getInstance()->trianglesClippingCreated++;
-
-        triangle[ntriangles] = t;
-        ntriangles++;
-    }
 }

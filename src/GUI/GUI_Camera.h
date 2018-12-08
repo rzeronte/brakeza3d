@@ -46,9 +46,9 @@ public:
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {
-                ImGui::DragScalar("X", ImGuiDataType_Float,  &camera->head[0], range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("Y", ImGuiDataType_Float,  &camera->head[1], range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("Z", ImGuiDataType_Float,  &camera->head[2], range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("X", ImGuiDataType_Float,  &camera->getPosition()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float,  &camera->getPosition()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float,  &camera->getPosition()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                 ImGui::TreePop();
             }
 
