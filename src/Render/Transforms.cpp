@@ -104,9 +104,9 @@ Vertex3D Transforms::perspectiveDivision(Vertex3D v, Camera3D *cam)
 
 Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
 {
-    Vertex3D T = V;
+    Vertex3D T;
 
-    T = T - *o->getPosition();
+    T = V - *o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
     T.u = V.u; T.v = V.v;

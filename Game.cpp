@@ -40,9 +40,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //Engine::camera->head[0] = 544;
-    //Engine::camera->head[1] = -32;
-    //Engine::camera->head[2] = 300;
+    Engine::camera->setPosition(Vertex3D(544, -32, 300));
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -100,7 +98,7 @@ void Game::onStart()
     this->addObject3D(triangle, "triangle");
 
     // marine (sprite directional)
-    /*SpriteDirectional3D *marine = new SpriteDirectional3D();
+    SpriteDirectional3D *marine = new SpriteDirectional3D();
     marine->setEnabled(true);
     marine->setPosition( Vertex3D(1, 1, 5) );
     marine->setTimer(Engine::getTimer());
@@ -109,7 +107,6 @@ void Game::onStart()
     marine->addAnimationDirectional2D("marine/jump", 1);
     marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
-    */
 
     // gun ( sprite )
     /*Sprite3D *guy = new Sprite3D();
@@ -142,7 +139,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    //loadBSP("start.bsp", "palette.lmp");
+    loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()

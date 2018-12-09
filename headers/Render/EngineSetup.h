@@ -87,21 +87,15 @@ public:
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
 
-    bool BSP_MAP_ONLY_SURFACE = false;
-    float BSP_SELECTED_SURFACE = 1016;
-
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";
 
-    std::string SPRITES_FOLDER = "../assets/ssprites/";
+    std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string ASSETS_FOLDER = "../assets/";
-
-    // Triangle color for TRIANGLE_MODE_COLOR_SOLID
-    Uint32 TRIANGLE_SOLID_COLOR = 0xFFFFFF;    // WHITE
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
-    Uint32 TRIANGLE_DEMO_EXTRALINE = 0x00FF00; // GREEN
+    Uint32 TRIANGLE_DEMO_EXTRALINE_COLOR = 0x00FF00; // GREEN
 
     // GUI Setup values
     float GUI_MIN_SPACE_COORDINATES_VALUE = -100.f;
@@ -118,8 +112,6 @@ public:
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
-
-    int Q1_VERTEX_DIVISOR = 1;
 
 };
 

@@ -30,16 +30,14 @@ Vertex3D Maths::rotateVertex(Vertex3D V, M3 rotation)
 // https://elcodigografico.wordpress.com/2014/03/29/coordenadas-baricentricas-en-triangulos/
 float Maths::barycentricSide(int x, int y, Point2D pa, Point2D pb)
 {
-    return (pa.y - pb.y) * x + (pb.x - pa.x) * y + pa.x*pb.y - pb.x*pa.y;
+    return (pa.y - pb.y) * x + (pb.x - pa.x) * y + pa.x * pb.y - pb.x * pa.y;
 }
 
-void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, int x, int y, Point2D v1, Point2D v2,
-                                       Point2D v3)
+void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, int x, int y, Point2D v1, Point2D v2, Point2D v3)
 {
     alpha = Maths::barycentricSide( x, y, v2, v3 ) / Maths::barycentricSide( v1.x, v1.y, v2, v3 );
     theta = Maths::barycentricSide( x, y, v3, v1 ) / Maths::barycentricSide( v2.x, v2.y, v3, v1 );
     gamma = Maths::barycentricSide( x, y, v1, v2 ) / Maths::barycentricSide( v3.x, v3.y, v1, v2 );
-
 }
 
 /**
@@ -76,11 +74,16 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
         middle.x += vertices[i].x;
         middle.y += vertices[i].y;
         middle.z += vertices[i].z;
+        middle.u += vertices[i].u;
+        middle.v += vertices[i].v;
     }
 
     middle.x/= num_vertices;
     middle.y/= num_vertices;
     middle.z/= num_vertices;
+
+    middle.u/= num_vertices;
+    middle.v/= num_vertices;
 
     return middle;
 }
@@ -528,6 +531,10 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
 
     bool new_vertices = false;
 
+    //Logging::getInstance()->Log(">>>> ClippingPolygon (" + std::to_string(ninput)+")", "");
+
+    std::string lo = "";
+
     for (int i = 0; i < ninput; i++) {
         int next = i + 1;
         if ( next < ninput ) {
@@ -538,19 +545,30 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
         // test clip plane
         int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
 
+        //Logging::getInstance()->Log("Clipping against plane " + std::to_string(id_plane) + " | testClip: " + std::to_string(testClip), "");
+
         /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
         // Si el primer vértice está dentro, lo añadimos a la salida
         if (testClip == 0 || testClip == 2) {
+            lo+="First(u:"+std::to_string(edge.vertex1.u)+", v:"+std::to_string(edge.vertex1.v)+")-";
             output[noutput] = edge.vertex1; noutput++;
         }
 
         // Si el primer y el segundo vértice no tienen el mismo estado añadimos el punto de intersección al plano
         if (testClip > 1) {
-            Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2);
+            float t = 0;
+            Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
+            newVertex.u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
+            newVertex.v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
+            lo+="New(u:"+std::to_string(newVertex.u)+", v:"+std::to_string(newVertex.v)+")-";
+
             output[noutput] = newVertex; noutput++;
             new_vertices = true;
         }
     }
+    //Logging::getInstance()->Log("= Vertices after clipping: " + lo, "");
+    //Logging::getInstance()->Log("", "");
+
 
     return new_vertices;
 }

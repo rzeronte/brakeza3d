@@ -17,6 +17,8 @@ public:
     Vertex3D A, B, C;
     Vertex3D Ao, Bo, Co;
     Vertex3D Ac, Bc, Cc;
+    Vertex3D An, Bn, Cn;
+    Point2D As, Bs, Cs;
 
     Texture *texture;
     Object3D *parent;
@@ -30,8 +32,7 @@ public:
     Triangle();
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
-    void updateVertexObjectSpace();
-    void updateVertexCameraSpace(Camera3D *cam);
+    void updateVertexSpaces(Camera3D *cam);
 
     bool isBackFaceCulling(Camera3D *cam);
 
@@ -45,9 +46,10 @@ public:
     void shadowMapping(LightPoint3D *lp);
 
     void scanVertices(Camera3D *);
-    void scanBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Camera3D*);
-    void scanTopFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Camera3D*);
-    void scanLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Vertex3D, Camera3D*);
+    void scanBottomFlatTriangle(Point2D, Point2D, Point2D);
+    void scanTopFlatTriangle(Point2D, Point2D, Point2D);
+    void scanLine(float x1 , float x2 , int y);
+    void processPixel(Point2D);
 
     void scanVerticesForShadowMapping(LightPoint3D *lp);
     void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
@@ -63,6 +65,10 @@ public:
 
     void setClipped(bool);
     bool isClipped();
+
+
+    int triangulate(int num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
+
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

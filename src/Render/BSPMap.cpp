@@ -156,8 +156,8 @@ bool BSPMap::InitializeSurfaces(void)
             primitives->v[2] = ((float *)vertex)[2];
 
             // Calculate the vertex's texture coords and store it in the primitive array
-            primitives->t[0] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->toff) / mipTexture->height;
-            primitives->t[1] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->soff) / mipTexture->width;
+            primitives->t[1] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->toff) / mipTexture->height;
+            primitives->t[0] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->soff) / mipTexture->width;
         }
     }
 
@@ -262,8 +262,8 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
             primitives->v[0]
         );
 
-        v.u = primitives->t[1];
-        v.v = primitives->t[0];
+        v.u = primitives->t[0];
+        v.v = primitives->t[1];
 
         v = Transforms::objectToLocal(v, this);
 
@@ -358,39 +358,17 @@ void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
-        if (EngineSetup::getInstance()->BSP_MAP_ONLY_SURFACE) {
-            if (i == EngineSetup::getInstance()->BSP_SELECTED_SURFACE) {
-                // Fetch the leaf that is seen from the array of leaves
-                bspleaf_t *visibleLeaf = this->getLeaf(i);
-                // Copy all the visible surfaces from the List of surfaces
-                int firstSurface = visibleLeaf->firstsurf;
-                int lastSurface = firstSurface + visibleLeaf->numsurf;
-                int t = 0;
-                for (int k = firstSurface; k < lastSurface; k++) {
-                    if (t == 3) {
-                        visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
-
-                    }
-                    t++;
-                }
-            }
-            i++;
-            continue;
-
+        unsigned char veces = *(visibilityList);
+        if (veces == 0) {
+            i += 8 * *(++visibilityList);
         } else {
-
-            unsigned char veces = *(visibilityList);
-            if (veces == 0) {
-                i += 8 * *(++visibilityList);
-            } else {
-                for (int j = 0; j < 8; j++, i++) {
-                    if (Tools::getBit(veces, j)) {
-                        bspleaf_t *visibleLeaf = this->getLeaf(i);
-                        int firstSurface = visibleLeaf->firstsurf;
-                        int lastSurface = firstSurface + visibleLeaf->numsurf;
-                        for (int k = firstSurface; k < lastSurface; k++) {
-                            visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
-                        }
+            for (int j = 0; j < 8; j++, i++) {
+                if (Tools::getBit(veces, j)) {
+                    bspleaf_t *visibleLeaf = this->getLeaf(i);
+                    int firstSurface = visibleLeaf->firstsurf;
+                    int lastSurface = firstSurface + visibleLeaf->numsurf;
+                    for (int k = firstSurface; k < lastSurface; k++) {
+                        visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
                     }
                 }
             }

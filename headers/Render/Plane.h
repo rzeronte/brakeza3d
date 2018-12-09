@@ -17,7 +17,7 @@ public:
     float distance(Vertex3D p);
     Vertex3D getNormalVector();
 
-    Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2);
+    Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2, float &transition);
 };
 
 

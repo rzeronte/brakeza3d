@@ -53,12 +53,6 @@ public:
             }
 
             ImGui::Separator();
-            ImGui::Checkbox("Only surface", &EngineSetup::getInstance()->BSP_MAP_ONLY_SURFACE);
-
-            if (EngineSetup::getInstance()->BSP_MAP_ONLY_SURFACE) {
-                ImGui::DragScalar("Surface", ImGuiDataType_Float,  &EngineSetup::getInstance()->BSP_SELECTED_SURFACE, range_sensibility_test,  &range_min, &range_max, "%f", 1.0f);
-            }
-            ImGui::Separator();
 
             // rotation
             if (ImGui::TreeNode( rotation_text.c_str() )) {

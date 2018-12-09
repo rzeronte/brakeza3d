@@ -78,8 +78,8 @@ void EngineBuffers::consoleInfo()
 {
     std::string info;
     info+= "TrDrawed: " + std::to_string(EngineBuffers::getInstance()->trianglesDrawed);
-    info+= "| TrOutFrustum: " + std::to_string(EngineBuffers::getInstance()->trianglesOutFrustum);
     info+= "| TrHByFaceCuling: " + std::to_string(EngineBuffers::getInstance()->trianglesHidenByFaceCuling);
+    info+= "| TrOutFrustum: " + std::to_string(EngineBuffers::getInstance()->trianglesOutFrustum);
     info+= "| TrClipCreated: " + std::to_string(EngineBuffers::getInstance()->trianglesClippingCreated);
     info+= "| pxDrawed: " + std::to_string(EngineBuffers::getInstance()->pixelesDrawed);
     info+= "| pxOutOfWin: " + std::to_string(EngineBuffers::getInstance()->pixelesOutOfWindow);
