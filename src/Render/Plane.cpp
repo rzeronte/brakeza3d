@@ -42,7 +42,7 @@ Vertex3D Plane::getNormalVector()
     return normal;
 }
 
-Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2) {
+Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) {
 
     // Componentes del vector director
     Vertex3D componente = Vertex3D(
@@ -82,6 +82,8 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2) {
     // Despejamos la incógnita t (podemos usar el plugin de despejar incógnita de wolframa :)
     // http://www.wolframalpha.com/widgets/view.jsp?id=c86d8aea1b6e9c6a9503a2cecea55b13
     float t = ( -A * vertex1.x - B  * vertex1.y - C * vertex1.z - D ) / (  a * A + b * B + c * C);
+
+    transition = t;
 
     // 3) punto de intersección ; sustituimos t en la ecuación de la recta entre 2 puntos
     Vertex3D P(
