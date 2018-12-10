@@ -75,10 +75,11 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexSpaces(cam);
 
     bool faceCulling = false;
-    if (EngineSetup::getInstance()->TRIANGLE_FACECULLING) {
+    if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
         faceCulling = this->isBackFaceCulling(cam);
     }
 
+    // Wireframe for faceculling polygons
     if (faceCulling) {
         if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES) {
             Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
@@ -97,7 +98,7 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     // Frustum Culling
-    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && ! isClipped()) {
+    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !isClipped()) {
         if ( !cam->frustum->isPointInFrustum(Ao) && !cam->frustum->isPointInFrustum(Bo) && !cam->frustum->isPointInFrustum(Co) ) {
             EngineBuffers::getInstance()->trianglesOutFrustum++;
             return false;
@@ -130,8 +131,7 @@ bool Triangle::draw(Camera3D *cam)
 
 bool Triangle::clipping(Camera3D *cam)
 {
-    Triangle new_triangles[10]   ; int num_new_triangles = 0;
-    Vertex3D output_vertices[10] ; int num_outvertices = 0;
+    Vertex3D output_vertices[10] ; int num_outvertices   = 0;
     Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
 
     input_vertices[0] = this->Ao; num_inputvertices++;
@@ -149,16 +149,15 @@ bool Triangle::clipping(Camera3D *cam)
 
         if (isClip) any_new_vertex = true;
         memcpy (&input_vertices, &output_vertices, sizeof(output_vertices));
-
-        /*for (int j = 0; j < num_outvertices; j++) {
-            input_vertices[j] = output_vertices[j];
-        }*/
+        /*for (int j = 0; j < num_outvertices; j++) { input_vertices[j] = output_vertices[j]; }*/
 
         num_inputvertices = num_outvertices;
         num_outvertices = 0;
     }
 
     if ( any_new_vertex && num_inputvertices != 0) {
+        Triangle new_triangles[10];
+        int num_new_triangles = 0;
 
         Maths::TriangulatePolygon(num_inputvertices, input_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
         //this->triangulate(num_inputvertices, input_vertices,  this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(),true);
@@ -214,7 +213,7 @@ Vertex3D Triangle::getNormal()
     Vector3D v1 = Vector3D(this->Ao, this->Bo);
     Vector3D v2 = Vector3D(this->Ao, this->Co);
 
-    Vertex3D normal = Maths::crossProduct(v1.getComponent(), v2.getComponent());
+    Vertex3D normal = v1.getComponent() % v2.getComponent();
 
     return normal;
 }
@@ -224,11 +223,6 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
     Drawable::drawVector3D( Vector3D( this->Ao, this->getNormal() ), cam, color );
 }
 
-/**
- * Rellena un triángulo de color
- * http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
- * https://www.davrous.com/2013/06/21/tutorial-part-4-learning-how-to-write-a-3d-software-engine-in-c-ts-or-js-rasterization-z-buffering/
- */
 void Triangle::scanVertices(Camera3D *cam)
 {
     // y obtenemos los puntos en la proyección 2d
@@ -292,7 +286,6 @@ void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc)
     }
 }
 
-
 void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 {
     Vertex3D Aos = this->Ao;
@@ -340,9 +333,9 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 
         // Creamos un nuevo vértice que representa v4 (el nuevo punto creado) en el triángulo original
         Vertex3D D = Vertex3D(
-                alpha * A.x + theta * B.x + gamma * C.x,
-                alpha * A.y + theta * B.y + gamma * C.y,
-                alpha * A.z + theta * B.z + gamma * C.z
+            alpha * A.x + theta * B.x + gamma * C.x,
+            alpha * A.y + theta * B.y + gamma * C.y,
+            alpha * A.z + theta * B.z + gamma * C.z
         );
 
         D.u = u; D.v = v;
@@ -430,8 +423,8 @@ void Triangle::processPixel(Point2D pointFinal)
 
                 // Check for repeat U coordinate
                 float ignorablePartInt;
-                u = modf(u , &ignorablePartInt);
                 v = modf(v , &ignorablePartInt);
+                u = modf(u , &ignorablePartInt);
 
                 pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
                 Uint8 red, green, blue, alpha;

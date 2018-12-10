@@ -87,9 +87,9 @@ bool BSPMap::LoadPalette(const char *filename)
     }
 
     for (int i = 0; i < 256; i++) {
-        unsigned int r = tempPal[i * 3 + 0];
+        unsigned int b = tempPal[i * 3 + 0];
         unsigned int g = tempPal[i * 3 + 1];
-        unsigned int b = tempPal[i * 3 + 2];
+        unsigned int r = tempPal[i * 3 + 2];
         palette[i] = (r) | (g << 8) | (b << 16);
     }
 
@@ -428,42 +428,4 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
     }
 
     return leaf;
-}
-
-
-void BSPMap::sortVerticesClockWise(Vertex3D *vertices, int num_vertex, Camera3D *cam)
-{
-    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-    Vector3D arbitrary_vector = Vector3D(middle, vertices[0]);
-
-    for (int i = 0; i < num_vertex; i++) {
-        float angle = 0;
-        float dot;
-
-        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
-        if (i > 0) {
-            Vector3D ratio = Vector3D(middle, vertices[i]);
-
-            Vertex3D tmp1 = arbitrary_vector.getComponent();
-            Vertex3D tmp2 = ratio.getComponent();
-
-            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
-            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
-                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
-            float cos_angle_vectors = numerador / denominador;
-            angle = acos(cos_angle_vectors);
-
-            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
-
-            if (dot < 0) {
-                angle = angle * -1;
-            }
-
-            angle = Maths::radiansToDegrees(angle);
-        }
-
-        vertices[i].angle = angle;
-    }
-
-    Maths::sortVertexesByAngles(vertices, num_vertex);
 }

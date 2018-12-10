@@ -25,8 +25,8 @@ public:
     Vertex3D backward = forward.getInverse();
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 480;
+    int SCREEN_WIDTH = 320;
+    int SCREEN_HEIGHT = 240;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
@@ -42,7 +42,7 @@ public:
     bool MESH_DEBUG_INFO = false;
 
     // FaceCulling
-    bool TRIANGLE_FACECULLING = true;
+    bool TRIANGLE_BACK_FACECULLING = true;
     bool SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES = false;
 
     bool TRIANGLE_FRUSTUM_CULLING = true;

@@ -192,41 +192,6 @@ void Maths::sortVerticesByX(Vertex3D *vertexes, int N)
     }
 }
 
-void Maths::sortVertexesByAngles(Vertex3D vertexes[], int N)
-{
-    int i, j, k;
-
-    for (i = 0; i < N - 1; i++) {
-        for (k = i, j = i + 1; j < N; j++) {
-            if (vertexes[j].angle < vertexes[k].angle) {
-                k = j;
-            }
-        }
-        Maths::VertexSwap (vertexes, i, k);
-    }
-}
-
-void Maths::sortVertexesByAngles(Vertex3D &A, Vertex3D &B, Vertex3D &C)
-{
-    int n = 3;
-    Vertex3D v[3];
-    v[0] = A; v[1] = B; v[2] = C;
-
-    for (int i = 1 ; i < n; i++) {
-        for (int j = 0 ; j < (n - i); j++) {
-            if (v[j].angle > v[j+1].angle) {
-                Vertex3D aux = v[j];
-                v[j] = v[j+1];
-                v[j+1] = aux;
-            }
-        }
-    }
-
-    A = v[0]; B = v[1]; C = v[2];
-
-    return;
-}
-
 void Maths::sortVerticesByY(Vertex3D *vertexes, int N)
 {
     int i, j, k;
@@ -283,17 +248,6 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D 
     return c;
 }
 
-Vertex3D Maths::crossProduct(Vertex3D u, Vertex3D v)
-{
-    Vertex3D V;
-
-    V.x = (u.y * v.z) - (u.z * v.y);
-    V.y = (u.z * v.x) - (u.x * v.z);
-    V.z = (u.x * v.y) - (u.y * v.x);
-
-    return V;
-}
-
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
 {
     Vertex3D oRight = o1->AxisForward();
@@ -310,44 +264,6 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *
     }
 
     return degs;
-}
-
-
-void Maths::sortVerticesClockWise(Vertex3D *vertices, int num_vertex)
-{
-    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-    Vector3D arbitrary_vector = Vector3D(middle, vertices[0]);
-
-    for (int i = 0; i < num_vertex; i++) {
-        float angle = 0;
-        float dot;
-
-        // Ya utilizo el primer vertice como radio "referencia" por tanto sé q su angulo es 0. Puedo ignorar su cálculo
-        if (i > 0) {
-            Vector3D ratio = Vector3D(middle, vertices[i]);
-
-            Vertex3D tmp1 = arbitrary_vector.getComponent();
-            Vertex3D tmp2 = ratio.getComponent();
-
-            float numerador = (tmp1.x * tmp2.x) + (tmp1.y * tmp2.y) + (tmp1.z * tmp2.z);
-            float denominador = sqrt((tmp1.x * tmp1.x) + (tmp1.y * tmp1.y) + (tmp1.z * tmp1.z)) *
-                                sqrt((tmp2.x * tmp2.x) + (tmp2.y * tmp2.y) + (tmp2.z * tmp2.z));
-            float cos_angle_vectors = numerador / denominador;
-            angle = acos(cos_angle_vectors);
-
-            dot = tmp1.x * tmp2.y - tmp1.y * tmp2.x;
-
-            if (dot < 0) {
-                angle = angle * -1;
-            }
-
-            angle = Maths::radiansToDegrees(angle);
-        }
-
-        vertices[i].angle = angle;
-    }
-
-    Maths::sortVertexesByAngles(vertices, num_vertex);
 }
 
 long Maths::GetNextActive(long x, long vertexCount, const bool *active)

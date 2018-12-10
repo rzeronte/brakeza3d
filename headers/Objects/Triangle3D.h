@@ -60,12 +60,10 @@ public:
     void setTexture(Texture *texture);
 
     bool clipping(Camera3D *cam);
-
-    void setLightPoints(LightPoint3D **lightPoints, int number);
-
     void setClipped(bool);
     bool isClipped();
 
+    void setLightPoints(LightPoint3D **lightPoints, int number);
 
     int triangulate(int num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
 

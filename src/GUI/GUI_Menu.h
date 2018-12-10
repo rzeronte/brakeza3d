@@ -31,8 +31,8 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Draw extra line", &EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED);
                 ImGui::Separator();
-                ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_FACECULLING);
-                if (EngineSetup::getInstance()->TRIANGLE_FACECULLING) {
+                ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING);
+                if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
                     ImGui::Checkbox("Show BFC triangles", &EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES);
                 }
                 ImGui::Separator();
