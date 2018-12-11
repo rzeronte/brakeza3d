@@ -35,22 +35,11 @@ Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
 
 Vertex3D Transforms::NDCSpace(Vertex3D v, Camera3D *cam)
 {
-    Vertex3D vNL = cam->frustum->near_left.vertex1;
-    Vertex3D vNR = cam->frustum->near_right.vertex1;
+    Vertex3D vNL = cam->frustum->vNLpers;
+    Vertex3D vNR = cam->frustum->vNRpers;
 
-    Vertex3D vNT = cam->frustum->near_top.vertex1;
-    Vertex3D vNB = cam->frustum->near_bottom.vertex1;
-
-    vNL = Transforms::cameraSpace(vNL, cam);
-    vNR = Transforms::cameraSpace(vNR, cam);
-    vNT = Transforms::cameraSpace(vNT, cam);
-    vNB = Transforms::cameraSpace(vNB, cam);
-
-    // get 2d coordinates
-    vNL = Transforms::perspectiveDivision(vNL, cam);
-    vNR = Transforms::perspectiveDivision(vNR, cam);
-    vNT = Transforms::perspectiveDivision(vNT, cam);
-    vNB = Transforms::perspectiveDivision(vNB, cam);
+    Vertex3D vNT = cam->frustum->vNTpers;
+    Vertex3D vNB = cam->frustum->vNBpers;
 
     // Perspective projection ( w = 1)
     Vertex3D A = Transforms::perspectiveDivision(v, cam);
@@ -73,7 +62,7 @@ Vertex3D Transforms::NDCSpace(Vertex3D v, Camera3D *cam)
     A.x = xt;
     A.y = yt;
 
-    A.z = v.z;      // Almaceno z (deberia ser w)
+    A.z = v.z; // Almaceno z (deberia ser w)
 
     return A;
 }

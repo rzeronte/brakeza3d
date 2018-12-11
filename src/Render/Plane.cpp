@@ -24,22 +24,13 @@ float Plane::distance(Vertex3D p) {
 
 Vertex3D Plane::getNormalVector()
 {
-    // Los 2 vectores que conforman el plano
     Vector3D VnAB(this->A, this->B);
     Vector3D VnAC(this->A, this->C);
 
-    // Lo llevamos al origen
     Vertex3D U = VnAB.getComponent();
     Vertex3D V = VnAC.getComponent();
 
-    float Wx = (U.y * V.z) - (U.z * V.y);
-    float Wy = (U.z * V.x) - (U.x * V.z);
-    float Wz = (U.x * V.y) - (U.y * V.x);
-
-    Vertex3D normal = Vertex3D(Wx, Wy, Wz);
-    normal = normal.getNormalize();
-
-    return normal;
+    return U % V;
 }
 
 Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) {

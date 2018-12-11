@@ -9,27 +9,22 @@
 
 void Drawable::drawBox2D(SDL_Rect r)
 {
-    Line2D l1, l2, l3, l4;
-
     int x = r.x;
     int y = r.y;
 
     // top
-    l1.setup(x, y, x + r.w, y);
-
+    Line2D l1 = Line2D(x, y, x + r.w, y);
     //left
-    l2.setup(x, y, x, y + r.h);
-
+    Line2D l2 = Line2D(x, y, x, y + r.h);
     //bottom
-    l3.setup(x, y + r.h, x + r.w, y + r.h);
-
+    Line2D l3 = Line2D(x, y + r.h, x + r.w, y + r.h);
     //right
-    l4.setup(x + r.w, y, x + r.w, y + r.h);
+    Line2D l4 = Line2D(x + r.w, y, x + r.w, y + r.h);
 
-    l1.draw();
-    l2.draw();
-    l3.draw();
-    l4.draw();
+    Drawable::drawLine2D(l1, Color::green());
+    Drawable::drawLine2D(l2, Color::green());
+    Drawable::drawLine2D(l3, Color::green());
+    Drawable::drawLine2D(l4, Color::green());
 }
 
 void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides)
@@ -76,12 +71,75 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
     }
 }
 
-void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
+void Drawable::drawLine2D(Line2D L, Uint32 color)
 {
-    if (!cam->frustum->isPointInFrustum(V.vertex1) && !cam->frustum->isPointInFrustum(V.vertex2)) {
-        return;
+    int x1 = L.x1;
+    int y1 = L.y1;
+    int x2 = L.x2;
+    int y2 = L.y2;
+
+    Uint32 col = color;
+    int pasoy;
+    int pasox;
+    int deltaX = (x2 - x1);
+    int deltaY = (y2 - y1);
+
+    if (deltaY < 0) {
+        deltaY = -deltaY;
+        pasoy = -1;
+    } else {
+        pasoy = 1;
     }
 
+
+    if (deltaX < 0) {
+        deltaX = -deltaX;
+        pasox = -1;
+    } else {
+        pasox = 1;
+    }
+
+    int x = x1;
+    int y = y1;
+
+    if (deltaX>deltaY){
+        int p = 2 * deltaY - deltaX;
+        int incE = 2 * deltaY;
+        int incNE = 2 * (deltaY - deltaX);
+        while (x != x2){
+            x = x + pasox;
+            if (p < 0){
+                p = p + incE;
+            } else {
+                y = y + pasoy;
+                p = p + incNE;
+            }
+            if (Tools::isPixelInWindow(x, y)) {
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
+        }
+    } else{
+        int p = 2 * deltaX - deltaY;
+        int incE = 2 * deltaX;
+        int incNE = 2 * (deltaX - deltaY);
+        while (y != y2){
+            y = y + pasoy;
+            if (p < 0) {
+                p = p + incE;
+            } else {
+                x = x + pasox;
+                p = p + incNE;
+            }
+            if (Tools::isPixelInWindow(x, y)) {
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
+
+        }
+    }
+}
+
+void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
+{
     // apply view matrix
     Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
     Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
@@ -95,7 +153,7 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
 
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 
-    line.draw(color);
+    Drawable::drawLine2D(line, color);
 }
 
 
@@ -113,7 +171,7 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color)
 
 void Drawable::drawMainAxis(Camera3D *cam)
 {
-    //Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
+    Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
 
     Point2D fixed_position = Point2D(EngineSetup::getInstance()->SCREEN_WIDTH - 50, 30);
     Drawable::drawMainAxisOffset( cam, Transforms::Point2DToWorld( fixed_position, cam) );
@@ -157,7 +215,7 @@ void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
     B->T2.draw( cam );
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        B->T1.drawWireframe( cam );
-        B->T2.drawWireframe( cam );
+        B->T1.drawWireframe();
+        B->T2.drawWireframe();
     }
 }

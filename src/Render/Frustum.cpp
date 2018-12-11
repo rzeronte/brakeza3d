@@ -150,6 +150,7 @@ bool Frustum::isPointInFrustum(Vertex3D v) {
     return result;
 }
 
+
 void Frustum::consoleInfo() {
 
     printf("Frustum: ");
