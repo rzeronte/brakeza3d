@@ -20,7 +20,7 @@ Vertex3D::Vertex3D(float x, float y, float z)
 
 Vertex3D Vertex3D::operator +(const Vertex3D &v)
 {
-    Vertex3D V = Vertex3D();
+    Vertex3D V;
 
     V.x = this->x + v.x;
     V.y = this->y + v.y;
@@ -31,7 +31,7 @@ Vertex3D Vertex3D::operator +(const Vertex3D &v)
 
 Vertex3D Vertex3D::operator -(const Vertex3D &v)
 {
-    Vertex3D V = Vertex3D();
+    Vertex3D V;
 
     V.x = this->x - v.x;
     V.y = this->y - v.y;
@@ -53,9 +53,7 @@ Vertex3D Vertex3D::operator %(const Vertex3D &v)
 
 float Vertex3D::operator *(const Vertex3D &v)
 {
-    float dot = (this->x * v.x) + (this->y * v.y) + (this->z * v.z);
-
-    return dot;
+    return (this->x * v.x) + (this->y * v.y) + (this->z * v.z);;
 }
 
 
@@ -83,8 +81,10 @@ void Vertex3D::consoleInfo(std::string label, bool returnLine)
     }
 }
 
-Vertex3D Vertex3D::getInverse() {
-    Vertex3D t = Vertex3D();
+Vertex3D Vertex3D::getInverse()
+{
+    Vertex3D t;
+
     t.x = -this->x;
     t.y = -this->y;
     t.z = -this->z;
@@ -93,13 +93,6 @@ Vertex3D Vertex3D::getInverse() {
     t.v = this->v;
 
     return t;
-}
-
-float Vertex3D::dotProduct(Vertex3D v1, Vertex3D v2)
-{
-    float dot = (v1.x*v2.x) + (v1.y*v2.y) + (v1.z*v2.z);
-
-    return dot;
 }
 
 float Vertex3D::getModule()

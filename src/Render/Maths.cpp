@@ -46,7 +46,7 @@ void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, 
  * 2 = vértice A dentro
  * 3 = vértice B dentro
  */
-int Maths::isVector3DClippingPlane(Plane P, Vector3D V)
+int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V)
 {
     float min_distance_to_clipping = EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE;
 
@@ -60,8 +60,6 @@ int Maths::isVector3DClippingPlane(Plane P, Vector3D V)
         if (P.distance(V.vertex2) > min_distance_to_clipping && P.distance(V.vertex1) < min_distance_to_clipping) {
             return 2;
         }
-
-        return 0;
     }
 
     return 0;
@@ -223,7 +221,7 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D 
     Vector3D L = Vector3D(P, Q);
     Vertex3D Lv = L.getUnitVector();
 
-    const float min = Vertex3D::dotProduct(R, Lv);
+    const float min = R * Lv;
 
     float p = 100;
     float max = fmaxf(min, 0);
@@ -253,7 +251,7 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *
     Vertex3D oRight = o1->AxisForward();
     Vertex3D R = cam->AxisForward();
 
-    float rads = acosf(  Vertex3D::dotProduct(R, oRight) / (R.getModule() * oRight.getModule()) );
+    float rads = acosf(  R * oRight / (R.getModule() * oRight.getModule()) );
 
     float degs = Maths::radiansToDegrees(rads);
 
@@ -447,10 +445,6 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
 
     bool new_vertices = false;
 
-    //Logging::getInstance()->Log(">>>> ClippingPolygon (" + std::to_string(ninput)+")", "");
-
-    //std::string lo = "";
-
     for (int i = 0; i < ninput; i++) {
         int next = i + 1;
         if ( next < ninput ) {
@@ -461,13 +455,11 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
         // test clip plane
         int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
 
-        //Logging::getInstance()->Log("Clipping against plane " + std::to_string(id_plane) + " | testClip: " + std::to_string(testClip), "");
-
         /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
         // Si el primer vértice está dentro, lo añadimos a la salida
         if (testClip == 0 || testClip == 2) {
-            //lo+="First(u:"+std::to_string(edge.vertex1.u)+", v:"+std::to_string(edge.vertex1.v)+")-";
-            output[noutput] = edge.vertex1; noutput++;
+            output[noutput] = edge.vertex1;
+            noutput++;
         }
 
         // Si el primer y el segundo vértice no tienen el mismo estado añadimos el punto de intersección al plano
@@ -476,15 +468,12 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
             Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
             newVertex.u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
             newVertex.v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
-            //lo+="New(u:"+std::to_string(newVertex.u)+", v:"+std::to_string(newVertex.v)+")-";
 
-            output[noutput] = newVertex; noutput++;
+            output[noutput] = newVertex;
+            noutput++;
             new_vertices = true;
         }
     }
-
-    //Logging::getInstance()->Log("= Vertices after clipping: " + lo, "");
-    //Logging::getInstance()->Log("", "");
 
     return new_vertices;
 }

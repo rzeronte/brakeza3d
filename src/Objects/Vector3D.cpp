@@ -35,7 +35,8 @@ Vertex3D Vector3D::getComponent()
     return componente;
 }
 
-Vertex3D Vector3D::getUnitVector() {
+Vertex3D Vector3D::getUnitVector()
+{
     Vertex3D c = this->getComponent();
 
     float modulo_v = sqrt( (c.x*c.x) + (c.y*c.y) + (c.z*c.z));
@@ -46,12 +47,4 @@ Vertex3D Vector3D::getUnitVector() {
     final_vertex.z = c.z / modulo_v;
 
     return final_vertex;
-}
-
-
-Vertex3D Vector3D::consoleInfo(std::string label) {
-    printf("%s: ", label.c_str());
-    this->vertex1.consoleInfo("v1", false);
-    this->vertex2.consoleInfo("v2", false);
-    printf("\r\n");
 }

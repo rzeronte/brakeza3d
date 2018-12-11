@@ -7,13 +7,15 @@
 
 Plane::Plane() {}
 
-Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C) {
+Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
+{
     this->A = A;
     this->B = B;
     this->C = C;
 }
 
-float Plane::distance(Vertex3D p) {
+float Plane::distance(Vertex3D p)
+{
     Vertex3D normal = getNormalVector();
 
     float D = - ( (normal.x * A.x) + (normal.y * A.y) + (normal.z * A.z) );

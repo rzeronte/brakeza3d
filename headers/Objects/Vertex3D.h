@@ -1,6 +1,4 @@
-//
-// Created by darkhead on 28/4/18.
-//
+
 
 #ifndef SDL2_3D_ENGINE_VERTEX_H
 #define SDL2_3D_ENGINE_VERTEX_H
@@ -30,11 +28,10 @@ public:
 
     Vertex3D getNormalize();
     Vertex3D getInverse();
+
     float getModule();
 
     void consoleInfo(std::string label, bool);
-
-    static float dotProduct(Vertex3D, Vertex3D);
 };
 
 

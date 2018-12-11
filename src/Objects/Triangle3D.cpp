@@ -145,7 +145,7 @@ bool Triangle::clipping(Camera3D *cam)
     bool any_new_vertex = false;
 
     int plane_init = EngineSetup::getInstance()->LEFT_PLANE;
-    int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;
+    int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
 
     // clip against planes
     for (int i = plane_init ; i <= plane_end ; i++) {
@@ -190,7 +190,7 @@ bool Triangle::isBackFaceCulling(Camera3D *cam)
     // Camera-triangle vector
     Vertex3D v = this->Ao - *cam->getPosition();
 
-    return Vertex3D::dotProduct(v, this->getNormal()) >= 0;
+    return (v * this->getNormal()) >= 0;
 }
 
 Vertex3D Triangle::getCenter()

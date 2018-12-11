@@ -18,7 +18,7 @@ public:
     static float degreesToRadians(float);
     static float radiansToDegrees(float);
 
-    static int isVector3DClippingPlane(Plane P, Vector3D V);
+    static int isVector3DClippingPlane(Plane &P, Vector3D &V);
 
     static float barycentricSide(int x, int y, Point2D pa, Point2D pb);
     static void  getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
