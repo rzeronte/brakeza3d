@@ -97,6 +97,18 @@ void Camera3D::syncFrustum()
     frustum->updateCenters();
     frustum->updatePoints();
     frustum->updatePlanes();
+
+    // Actualizamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
+    frustum->vNLs = Transforms::cameraSpace(frustum->near_left.vertex1, this);
+    frustum->vNRs = Transforms::cameraSpace(frustum->near_right.vertex1, this);
+    frustum->vNTs = Transforms::cameraSpace(frustum->near_top.vertex1, this);
+    frustum->vNBs = Transforms::cameraSpace(frustum->near_bottom.vertex1, this);
+
+    // get 2d coordinates
+    frustum->vNLpers = Transforms::perspectiveDivision(frustum->vNLs, this);
+    frustum->vNRpers = Transforms::perspectiveDivision(frustum->vNRs, this);
+    frustum->vNTpers = Transforms::perspectiveDivision(frustum->vNTs, this);
+    frustum->vNBpers = Transforms::perspectiveDivision(frustum->vNBs, this);
 }
 
 void Camera3D::consoleInfo()

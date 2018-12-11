@@ -13,11 +13,6 @@ public:
 
     Line2D();
     Line2D(int, int, int, int);
-
-    void setup(int, int, int, int);
-    void draw(Uint32);
-    void draw();
-    void drawLineaBresenham(int, int, int, int, Uint32);
 };
 
 

@@ -25,8 +25,8 @@ public:
     Vertex3D backward = forward.getInverse();
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 320;
-    int SCREEN_HEIGHT = 240;
+    int SCREEN_WIDTH = 640;
+    int SCREEN_HEIGHT = 480;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
@@ -36,7 +36,6 @@ public:
     const float EPSILON = 0.001;
 
     // Draw axis
-    bool RENDER_AXIS = true;
     bool RENDER_OBJECTS_AXIS = true;
 
     bool MESH_DEBUG_INFO = false;

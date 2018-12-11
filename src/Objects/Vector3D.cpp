@@ -24,12 +24,6 @@ Vector3D::Vector3D(Vertex3D A, Vertex3D B)
     this->vertex2 = B;
 }
 
-/**
- * Obtiene el vector componente
- *
- * En la práctica equivale a situar punto inicial del vector en el eje 0, 0, 0 manteniendo el resto de información
- * @return
- */
 Vertex3D Vector3D::getComponent()
 {
     Vertex3D componente = Vertex3D(

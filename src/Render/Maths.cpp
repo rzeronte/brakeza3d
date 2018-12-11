@@ -449,7 +449,7 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
 
     //Logging::getInstance()->Log(">>>> ClippingPolygon (" + std::to_string(ninput)+")", "");
 
-    std::string lo = "";
+    //std::string lo = "";
 
     for (int i = 0; i < ninput; i++) {
         int next = i + 1;
@@ -466,7 +466,7 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
         /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
         // Si el primer vértice está dentro, lo añadimos a la salida
         if (testClip == 0 || testClip == 2) {
-            lo+="First(u:"+std::to_string(edge.vertex1.u)+", v:"+std::to_string(edge.vertex1.v)+")-";
+            //lo+="First(u:"+std::to_string(edge.vertex1.u)+", v:"+std::to_string(edge.vertex1.v)+")-";
             output[noutput] = edge.vertex1; noutput++;
         }
 
@@ -476,15 +476,15 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
             Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
             newVertex.u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
             newVertex.v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
-            lo+="New(u:"+std::to_string(newVertex.u)+", v:"+std::to_string(newVertex.v)+")-";
+            //lo+="New(u:"+std::to_string(newVertex.u)+", v:"+std::to_string(newVertex.v)+")-";
 
             output[noutput] = newVertex; noutput++;
             new_vertices = true;
         }
     }
+
     //Logging::getInstance()->Log("= Vertices after clipping: " + lo, "");
     //Logging::getInstance()->Log("", "");
-
 
     return new_vertices;
 }

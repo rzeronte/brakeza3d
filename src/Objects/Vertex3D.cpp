@@ -9,12 +9,6 @@
 
 Vertex3D::Vertex3D()
 {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
-
-    this->u = 0;
-    this->v = 0;
 }
 
 Vertex3D::Vertex3D(float x, float y, float z)
@@ -22,9 +16,6 @@ Vertex3D::Vertex3D(float x, float y, float z)
     this->x = x;
     this->y = y;
     this->z = z;
-
-    this->u = 0;
-    this->v = 0;
 }
 
 Vertex3D Vertex3D::operator +(const Vertex3D &v)

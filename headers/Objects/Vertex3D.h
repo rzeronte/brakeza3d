@@ -17,11 +17,13 @@ public:
     Vertex3D operator %(const Vertex3D &pm);
     float    operator *(const Vertex3D &pm);
 
-    float x, y, z;
+    float x = 0;
+    float y = 0;
+    float z = 0;
 
-    float angle;
     // texture coordenates
-    float u, v;
+    float u = 0;
+    float v = 0;
 
     Vertex3D();
     Vertex3D(float, float, float);

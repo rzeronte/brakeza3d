@@ -25,6 +25,7 @@ public:
 
     int order = 0;
     bool is_clipped = false;
+    bool is_bsp = false;
 
     LightPoint3D **lightPoints;
     int numberLightPoints = 0;
@@ -39,7 +40,7 @@ public:
     Vertex3D getNormal();
     Vertex3D getCenter();
 
-    void drawWireframe(Camera3D *cam);
+    void drawWireframe();
     bool draw(Camera3D *);
     void drawNormal(Camera3D *cam, Uint32 color);
 
@@ -62,6 +63,9 @@ public:
     bool clipping(Camera3D *cam);
     void setClipped(bool);
     bool isClipped();
+
+    void setBSP(bool);
+    bool isBSP();
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 

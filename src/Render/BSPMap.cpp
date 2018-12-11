@@ -313,20 +313,20 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
 {
     texinfo_t *textureInfo = this->getTextureInfo(surface);
     Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-
+    Vertex3D middleLocale = Transforms::objectToLocal(middle, this);
+;
     for (int i = 0; i < num_vertex ; i++) {
         Vertex3D tv1, tv2, tv3;
 
-        // Vertex new triangles
         int current = i;
-        int next = i+1;
+        int next = i + 1;
 
         if (next < num_vertex){
-            tv1 = Transforms::objectToLocal(middle, this);
+            tv1 = middleLocale;
             tv2 = Transforms::objectToLocal(vertices[current], this);
             tv3 = Transforms::objectToLocal(vertices[next], this);
         } else {
-            tv1 = Transforms::objectToLocal(middle, this);
+            tv1 = middleLocale;
             tv2 = Transforms::objectToLocal(vertices[current], this);
             tv3 = Transforms::objectToLocal(vertices[0], this);
         }
@@ -334,10 +334,11 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
         Triangle t = Triangle(tv1, tv2, tv3, this);
         t.setTexture( &textures[textureInfo->texid] );
         t.setClipped(false);
+        t.setBSP(true);
+
         EngineBuffers::getInstance()->trianglesClippingCreated++;
 
-        this->model_triangles[this->n_triangles] = t;
-        this->n_triangles++;
+        this->model_triangles[this->n_triangles++] = t;
     }
 
     return false;
@@ -346,11 +347,6 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
 void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
 {
-    // Object's axis
-    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(this, cam, true, true, true);
-    }
-
     this->n_triangles = 0;
     int numVisibleSurfaces = 0;
 

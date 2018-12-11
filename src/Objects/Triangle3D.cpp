@@ -82,9 +82,13 @@ bool Triangle::draw(Camera3D *cam)
     // Wireframe for faceculling polygons
     if (faceCulling) {
         if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES) {
-            Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
-            Drawable::drawVector3D( Vector3D(Bo, Co), cam, Color::yellow());
-            Drawable::drawVector3D( Vector3D(Co, Ao), cam, Color::yellow());
+            Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::yellow());
+            Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::yellow());
+            Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::yellow());
+
+            //Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
+            //Drawable::drawVector3D( Vector3D(Bo, Co), cam, Color::yellow());
+            //Drawable::drawVector3D( Vector3D(Co, Ao), cam, Color::yellow());
         }
         EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
         return false;
@@ -119,7 +123,7 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        this->drawWireframe(cam);
+        this->drawWireframe();
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_NORMAL) {
@@ -173,15 +177,11 @@ bool Triangle::clipping(Camera3D *cam)
     return false;
 }
 
-void Triangle::drawWireframe(Camera3D *cam)
+void Triangle::drawWireframe()
 {
-    Vector3D vAB(Ao, Bo);
-    Vector3D vBC(Bo, Co);
-    Vector3D vCA(Co, Ao);
-
-    Drawable::drawVector3D( vAB, cam, Color::red());
-    Drawable::drawVector3D( vBC, cam, Color::green());
-    Drawable::drawVector3D( vCA, cam, Color::blue());
+    Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::red());
+    Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::green());
+    Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::blue());
 }
 
 // (v0 - P) . N
@@ -250,7 +250,7 @@ void Triangle::scanVertices(Camera3D *cam)
 
         if (EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED) {
             Line2D extraLineDemo = Line2D(v4.x, v4.y, v2.x, v2.y);
-            extraLineDemo.draw(EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_COLOR);
+            Drawable::drawLine2D(extraLineDemo, EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_COLOR);
         }
     }
 }
@@ -547,6 +547,16 @@ void Triangle::setClipped(bool value)
 bool Triangle::isClipped()
 {
     return this->is_clipped;
+}
+
+void Triangle::setBSP(bool value)
+{
+    this->is_bsp = value;
+}
+
+bool Triangle::isBSP()
+{
+    return this->is_bsp;
 }
 
 int Triangle::triangulate(int num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)

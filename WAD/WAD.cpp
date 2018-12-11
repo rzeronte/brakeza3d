@@ -3,6 +3,7 @@
 #include "../headers/Render/Color.h"
 #include "../headers/Objects/Line2D.h"
 #include "../headers/Render/EngineSetup.h"
+#include "../headers/Render/Drawable.h"
 
 #include <fstream>
 #include <memory>
@@ -326,7 +327,7 @@ void WAD::drawLinedef(WADLinedef linedef)
         p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
     );
 
-    l1.draw();
+    Drawable::drawLine2D(l1, Color::red());
 }
 
 void WAD::drawSector(int sector_index) {
