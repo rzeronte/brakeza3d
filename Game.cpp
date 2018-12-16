@@ -97,6 +97,16 @@ void Game::onStart()
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
+    // plane
+    Mesh3D *plane = new Mesh3D();
+    plane->setEnabled(true);
+    plane->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    plane->setPosition( Vertex3D(2, 0.4, 5) );
+    plane->setRotation( M3(-90, -45, 0) );
+    plane->loadOBJBlender("../assets/models/plane.obj");
+    this->addObject3D(plane, "plane");
+
+
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
     marine->setEnabled(true);

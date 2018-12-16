@@ -53,7 +53,7 @@ public:
     void scanBottomFlatTriangle(Point2D, Point2D, Point2D);
     void scanTopFlatTriangle(Point2D, Point2D, Point2D);
     void scanLine(float x1 , float x2 , const int y);
-    void processPixel(const Point2D &);
+    void processPixel(const Point2D &, float lambda);
 
     void scanVerticesForShadowMapping(LightPoint3D *lp);
     void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);

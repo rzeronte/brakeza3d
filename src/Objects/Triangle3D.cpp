@@ -391,11 +391,14 @@ void Triangle::scanLine(float start_x, float end_x, const int y)
 
     for (int x = (int) start_x ; x < end_x; x++) {
         const Point2D p = Point2D(x, y);
-        processPixel(p);
+        float lambda;
+        lambda = ( x - start_x) / (end_x - start_x);
+
+        processPixel(p, lambda);
     }
 }
 
-void Triangle::processPixel(const Point2D &pointFinal)
+void Triangle::processPixel(const Point2D &pointFinal, float lambda)
 {
     if (Tools::isPixelInWindow((int) pointFinal.x, (int) pointFinal.y)) {
         // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo As, Bs, Cs
@@ -403,9 +406,10 @@ void Triangle::processPixel(const Point2D &pointFinal)
         Maths::getBarycentricCoordinates(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs);
         Uint32 pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
 
+        float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);               // Homogeneous clipspace
+
         // EngineBuffers
         if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
-            const float z = alpha * An.z + theta * Bn.z + gamma * Cn.z;               // Homogeneous clipspace
             const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
 
             if (buffer_z != NULL) {
@@ -422,9 +426,14 @@ void Triangle::processPixel(const Point2D &pointFinal)
         // Texture
         if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
             if (this->getTexture() != NULL) {
-                // UV texture coordinates
-                float u = alpha * An.u + theta * Bn.u + gamma * Cn.u;
-                float v = alpha * An.v + theta * Bn.v + gamma * Cn.v;
+                float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
+
+                // Correct perspective mapping
+                float u = ( alpha * (Ac.u/Ac.z) + theta * (Bc.u/Bc.z) + gamma * (Cc.u/Cc.z) );
+                float v = ( alpha * (Ac.v/Ac.z) + theta * (Bc.v/Bc.z) + gamma * (Cc.v/Cc.z) );
+
+                u*=z;
+                v*=z;
 
                 float ignorablePartInt;
                 if (!std::signbit(u)) {

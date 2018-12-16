@@ -25,8 +25,8 @@ public:
     Vertex3D backward = forward.getInverse();
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 320;
-    int SCREEN_HEIGHT = 240;
+    int SCREEN_WIDTH = 640;
+    int SCREEN_HEIGHT = 480;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
