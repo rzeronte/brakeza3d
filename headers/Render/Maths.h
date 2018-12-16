@@ -23,8 +23,6 @@ public:
     static float barycentricSide(int x, int y, Point2D pa, Point2D pb);
     static void  getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
 
-    static Vertex3D rotateVertex(Vertex3D V, M3 rotation);
-
     static Vertex3D getCenterVertices(Vertex3D vertices[], int num_vertices);
 
     static void sortVerticesByX(Vertex3D *vertexes, int N);

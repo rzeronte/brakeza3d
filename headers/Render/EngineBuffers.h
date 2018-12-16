@@ -36,11 +36,11 @@ public:
 
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);
-    float setDepthBuffer(int x, int y, float value);
+    float setDepthBuffer(const int x, const int y, const float value);
 
     float getVideoBuffer(int x, int y);
     void clearVideoBuffer();
-    void setVideoBuffer(int x, int y, Uint32 value);
+    void setVideoBuffer(const int x, const int y, Uint32 value);
     void flipVideoBuffer(SDL_Surface *);
 
     void resetBenchmarkValues();

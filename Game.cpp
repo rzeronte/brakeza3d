@@ -40,7 +40,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::camera->setPosition(Vertex3D(544, -32, 300));
+    Engine::camera->setPosition(Vertex3D(544, -32, 233));
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);

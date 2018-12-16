@@ -42,10 +42,9 @@ float EngineBuffers::setDepthBuffer(int x, int y, float value)
     depthBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x] = value;
 }
 
-void EngineBuffers::setVideoBuffer(int x, int y, Uint32 value)
+void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value)
 {
-    int index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
-    videoBuffer[ index ] = value;
+    videoBuffer[ ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ] = value;
 }
 
 float EngineBuffers::getVideoBuffer(int x, int y)

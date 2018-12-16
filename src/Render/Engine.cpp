@@ -388,7 +388,7 @@ Timer* Engine::getTimer()
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 {
     this->bsp_map = new BSPMap();
-    this->bsp_map->Initialize("start.bsp", "palette.lmp");
+    this->bsp_map->Initialize(bspFilename, paletteFilename);
     this->bsp_map->InitializeSurfaces();
     this->bsp_map->InitializeTextures();
 

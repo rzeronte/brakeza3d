@@ -38,14 +38,11 @@ std::vector<std::string> Tools::split(const std::string &text, char sep) {
 
 void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
-    if (isPixelInWindow(x, y)) {
-        //Convert the pixels to 32 bit
-        Uint32 *pixels = (Uint32 *)surface->pixels;
+    //Convert the pixels to 32 bit
+    Uint32 *pixels = (Uint32 *)surface->pixels;
 
-        //Set the pixel
-        pixels[ ( y * surface->w ) + x ] = pixel;
-        //EngineBuffers::getInstance()->pixelesDrawed++;
-    }
+    //Set the pixel
+    pixels[ ( y * surface->w ) + x ] = pixel;
 }
 
 bool Tools::isPixelInWindow(int x, int y)

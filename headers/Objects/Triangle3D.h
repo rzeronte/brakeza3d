@@ -23,6 +23,8 @@ public:
     Texture *texture;
     Object3D *parent;
 
+    Vertex3D normal;
+
     int order = 0;
     bool is_clipped = false;
     bool is_bsp = false;
@@ -38,6 +40,7 @@ public:
     bool isBackFaceCulling(Camera3D *cam);
 
     Vertex3D getNormal();
+    void     updateNormal();
     Vertex3D getCenter();
 
     void drawWireframe();
@@ -49,8 +52,8 @@ public:
     void scanVertices(Camera3D *);
     void scanBottomFlatTriangle(Point2D, Point2D, Point2D);
     void scanTopFlatTriangle(Point2D, Point2D, Point2D);
-    void scanLine(float x1 , float x2 , int y);
-    void processPixel(Point2D);
+    void scanLine(float x1 , float x2 , const int y);
+    void processPixel(const Point2D &);
 
     void scanVerticesForShadowMapping(LightPoint3D *lp);
     void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);

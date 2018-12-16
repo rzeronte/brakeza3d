@@ -26,7 +26,7 @@ BSPMap::BSPMap()
     if (visibleSurfaces) delete[] visibleSurfaces;
 
     n_triangles = 0;
-    this->model_triangles = new Triangle[50000];
+    this->model_triangles = new Triangle[80000];
     this->textures = new Texture[MAX_MAP_TEXTURES];
 
     this->demo_texture = new Texture();
@@ -156,8 +156,9 @@ bool BSPMap::InitializeSurfaces(void)
             primitives->v[2] = ((float *)vertex)[2];
 
             // Calculate the vertex's texture coords and store it in the primitive array
-            primitives->t[1] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->toff) / mipTexture->height;
-            primitives->t[0] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->soff) / mipTexture->width;
+            primitives->t[1] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff) / mipTexture->width;
+            primitives->t[0] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff) / mipTexture->height;
+
         }
     }
 
@@ -267,7 +268,8 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
 
         v = Transforms::objectToLocal(v, this);
 
-        vertices[num_vertices] = v ; num_vertices++;
+        vertices[num_vertices] = v;
+        num_vertices++;
 
         if (EngineSetup::getInstance()->Q1MAP_FACES) {
             if ( i+1 < num_edges ) {
@@ -314,7 +316,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
     texinfo_t *textureInfo = this->getTextureInfo(surface);
     Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
     Vertex3D middleLocale = Transforms::objectToLocal(middle, this);
-;
+
     for (int i = 0; i < num_vertex ; i++) {
         Vertex3D tv1, tv2, tv3;
 
@@ -332,9 +334,13 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
         }
 
         Triangle t = Triangle(tv1, tv2, tv3, this);
-        t.setTexture( &textures[textureInfo->texid] );
+        if (!textures[textureInfo->texid].getFilename().compare("switch_1")) {
+        }
+
+            t.setTexture( &textures[textureInfo->texid] );
         t.setClipped(false);
         t.setBSP(true);
+
 
         EngineBuffers::getInstance()->trianglesClippingCreated++;
 
@@ -354,7 +360,7 @@ void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
-        unsigned char veces = *(visibilityList);
+        const unsigned char veces = *(visibilityList);
         if (veces == 0) {
             i += 8 * *(++visibilityList);
         } else {
@@ -399,7 +405,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
 
         // Calculate distance to the intersecting plane
         Vertex3D cp = *camera->getPosition();
-        cp = Maths::rotateVertex(cp, M3(-90, 0, 0));
+        cp = M3(-90, 0, 0) * cp;
 
         vec3_t cam_pos;
         cam_pos[0] = cp.x;

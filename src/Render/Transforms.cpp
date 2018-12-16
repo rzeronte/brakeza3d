@@ -11,7 +11,9 @@ Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
     Vertex3D V = A;
 
-    V = Maths::rotateVertex(V, o->getRotation());
+    //V = Maths::rotateVertex(V, o->getRotation());
+
+    V = o->getRotation() * V;
     V = V + *o->getPosition();
 
     V.u = A.u;
@@ -49,15 +51,15 @@ Vertex3D Transforms::NDCSpace(Vertex3D v, Camera3D *cam)
     float vNLx = vNL.x;                 // Límite Izquierdo de PANTALLA2D
     float vNRx = vNR.x;                 // Límite Derecho de PANTALLA2D
     float tx0 = (Ax - vNLx);            // Distancia entre el límite Izquierdo y nuestro vértice
-    float tx1 =  2 / ( vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
-    float xt =  (tx0 * tx1)  - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
+    float tx1 = 2 / ( vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
+    float xt = (tx0 * tx1)  - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
 
     float Ay = A.y;
     float vNBy = vNB.y;
     float vNTy = vNT.y;
     float ty0 = (Ay - vNBy);
-    float ty1 =  2 / (vNTy - vNBy);
-    float yt =  (ty0 * ty1)  - 1;
+    float ty1 = 2 / (vNTy - vNBy);
+    float yt = (ty0 * ty1)  - 1;
 
     A.x = xt;
     A.y = yt;
@@ -124,25 +126,19 @@ Vertex3D Transforms::Point2DToWorld(Point2D p, Camera3D *cam)
 
     //*******
 
-    Vertex3D vNL = cam->frustum->near_left.vertex1;
-    Vertex3D vNR = cam->frustum->near_right.vertex1;
-
-    Vertex3D vNT = cam->frustum->near_top.vertex1;
-    Vertex3D vNB = cam->frustum->near_bottom.vertex1;
-
-    vNL = Transforms::cameraSpace(vNL, cam);
-    vNR = Transforms::cameraSpace(vNR, cam);
-    vNT = Transforms::cameraSpace(vNT, cam);
-    vNB = Transforms::cameraSpace(vNB, cam);
+    Vertex3D vNLs = cam->frustum->vNLs;
+    Vertex3D vNRs = cam->frustum->vNRs;
+    Vertex3D vNTs = cam->frustum->vNTs;
+    Vertex3D vNBs = cam->frustum->vNBs;
 
     //***********
-    float vNLx = vNL.x;
-    float vNRx = vNR.x;
+    float vNLx = vNLs.x;
+    float vNRx = vNRs.x;
     float tx1 =  (xt) * (vNRx - vNLx);
 
     //***********
-    float vNBy = vNB.y;
-    float vNTy = vNT.y;
+    float vNBy = vNBs.y;
+    float vNTy = vNTs.y;
     float ty1 =  (yt) * (vNTy - vNBy);
 
     Vertex3D v;

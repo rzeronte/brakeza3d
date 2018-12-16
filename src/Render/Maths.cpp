@@ -19,14 +19,6 @@ float Maths::radiansToDegrees(float angleRadians)
     return angleRadians * (float) 180.0 / (float) M_PI;;
 }
 
-Vertex3D Maths::rotateVertex(Vertex3D V, M3 rotation)
-{
-    Vertex3D B = rotation * V;
-    B.u = V.u; B.v = V.v;
-
-    return B;
-}
-
 // https://elcodigografico.wordpress.com/2014/03/29/coordenadas-baricentricas-en-triangulos/
 float Maths::barycentricSide(int x, int y, Point2D pa, Point2D pb)
 {
@@ -48,24 +40,26 @@ void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, 
  */
 int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V)
 {
-    float min_distance_to_clipping = EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE;
-
-    if (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) > min_distance_to_clipping) {
+    if (P.distance(V.vertex1) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex2) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
-    } else {
-        if (P.distance(V.vertex1) > min_distance_to_clipping && P.distance(V.vertex2) < min_distance_to_clipping) {
-            return 3;
-        }
+    }
 
-        if (P.distance(V.vertex2) > min_distance_to_clipping && P.distance(V.vertex1) < min_distance_to_clipping) {
-            return 2;
-        }
+    if (P.distance(V.vertex2) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex1) < EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        return 2;
+    }
+
+    if (P.distance(V.vertex1) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex2) < EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        return 3;
     }
 
     return 0;
 }
 
-Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
+Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices)
+{
     Vertex3D middle = Vertex3D(0, 0, 0);
 
     for (int i = 0; i < num_vertices; i++) {
@@ -79,7 +73,6 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
     middle.x/= num_vertices;
     middle.y/= num_vertices;
     middle.z/= num_vertices;
-
     middle.u/= num_vertices;
     middle.v/= num_vertices;
 
@@ -88,7 +81,7 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices) {
 
 void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
-    int n = 3;
+    const int n = 3;
     Vertex3D v[3];
     v[0] = A; v[1] = B; v[2] = C;
 
@@ -109,7 +102,7 @@ void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 
 void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
-    int n = 3;
+    const int n = 3;
     Vertex3D v[3];
     v[0] = A; v[1] = B; v[2] = C;
 
@@ -130,10 +123,9 @@ void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 
 void Maths::sortPointsByY(Point2D &A, Point2D &B, Point2D &C)
 {
-    int n = 3;
+    const int n = 3;
     Point2D p[3];
     p[0] = A; p[1] = B; p[2] = C;
-
 
     for (int i = 1 ; i < n ; i++) {
         for (int j = 0 ; j < (n - i) ; j++) {
@@ -152,7 +144,7 @@ void Maths::sortPointsByY(Point2D &A, Point2D &B, Point2D &C)
 
 void Maths::sortPointsByX(Point2D &A, Point2D &B, Point2D &C)
 {
-    int n = 3;
+    const int n = 3;
     Point2D p[3];
     p[0] = A; p[1] = B; p[2] = C;
 
@@ -288,11 +280,11 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
     int triangleCount = 0;
-    long start = 0;
-    long p1 = 0;
-    long p2 = 1;
-    long m1 = vertexCount - 1;
-    long m2 = vertexCount - 2;
+    int start = 0;
+    int p1 = 0;
+    int p2 = 1;
+    int m1 = vertexCount - 1;
+    int m2 = vertexCount - 2;
     bool lastPositive = false;
     for (;;) {
         if (p2 == m2) {
@@ -446,14 +438,13 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
     bool new_vertices = false;
 
     for (int i = 0; i < ninput; i++) {
-        int next = i + 1;
-        if ( next < ninput ) {
-            edge = Vector3D(input[i], input[next]);
+        if ( i + 1 < ninput ) {
+            edge = Vector3D(input[i], input[i + 1]);
         } else {
             edge = Vector3D(input[i], input[0]);
         }
         // test clip plane
-        int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
+        const int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
 
         /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
         // Si el primer vértice está dentro, lo añadimos a la salida
@@ -465,11 +456,10 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
         // Si el primer y el segundo vértice no tienen el mismo estado añadimos el punto de intersección al plano
         if (testClip > 1) {
             float t = 0;
-            Vertex3D newVertex = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
-            newVertex.u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
-            newVertex.v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
+            output[noutput]   = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
+            output[noutput].u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
+            output[noutput].v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
 
-            output[noutput] = newVertex;
             noutput++;
             new_vertices = true;
         }

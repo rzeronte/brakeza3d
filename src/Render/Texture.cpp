@@ -50,6 +50,8 @@ void Texture::drawFlat(int pos_x, int pos_y)
     int width = texture_surface->w;
     int height = texture_surface->h;
 
+    //Logging::getInstance()->Log("Draw Texture: Width: " + std::to_string(width) + ", Height: " + std::to_string(height), "");
+
     for (int i = 0 ; i < height ; i++) {
         for (int j = 0 ; j < width ; j++) {
             Uint32 *pixels = (Uint32 *)texture_surface->pixels;
@@ -68,15 +70,16 @@ void Texture::loadFromRaw(unsigned int *texture, int w, int h)
     //texture_surface = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
     //memcpy (&texture_surface->pixels, &texture, sizeof(texture_surface->pixels));
 
+    this->texture_surface = SDL_CreateRGBSurface(0, h, w, 32, 0, 0, 0, 0);
+
     int width = texture_surface->w;
     int height = texture_surface->h;
 
     Uint32 *pixels = (Uint32 *)texture_surface->pixels;
 
-    for (int i = 0 ; i < height ; i++) {
-        for (int j = 0 ; j < width ; j++) {
-            Tools::SurfacePutPixel(texture_surface, j, i, texture[i * w + j]);
-            //EngineBuffers::getInstance()->setVideoBuffer(j, i, texture[i * w + j]);
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            Tools::SurfacePutPixel(texture_surface, x, y, texture[y + x * w]);
         }
     }
 }

@@ -25,8 +25,8 @@ public:
     Vertex3D backward = forward.getInverse();
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 480;
+    int SCREEN_WIDTH = 320;
+    int SCREEN_HEIGHT = 240;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
@@ -53,6 +53,7 @@ public:
     bool TRIANGLE_MODE_TEXTURIZED = false;
 
     bool Q1MAP_FACES = false;
+    int Q1MAP_SURFACE_SELECTED = 1;
 
     // Normal in triangle
     bool TRIANGLE_RENDER_NORMAL = false;
@@ -85,6 +86,7 @@ public:
 
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
+    int TEST = 0;
 
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/lightpoint.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";

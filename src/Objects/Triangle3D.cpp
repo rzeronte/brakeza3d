@@ -50,6 +50,21 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
     As = Transforms::screenSpace(An, cam);
     Bs = Transforms::screenSpace(Bn, cam);
     Cs = Transforms::screenSpace(Cn, cam);
+
+    updateNormal();
+}
+
+void Triangle::updateNormal()
+{
+    Vector3D v1 = Vector3D(this->Ao, this->Bo);
+    Vector3D v2 = Vector3D(this->Ao, this->Co);
+
+    this->normal = v1.getComponent() % v2.getComponent();
+}
+
+Vertex3D Triangle::getNormal()
+{
+    return this->normal;
 }
 
 void Triangle::shadowMapping(LightPoint3D *lp)
@@ -144,8 +159,8 @@ bool Triangle::clipping(Camera3D *cam)
 
     bool any_new_vertex = false;
 
-    int plane_init = EngineSetup::getInstance()->LEFT_PLANE;
-    int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
+    const int plane_init = EngineSetup::getInstance()->LEFT_PLANE;
+    const int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
 
     // clip against planes
     for (int i = plane_init ; i <= plane_end ; i++) {
@@ -208,16 +223,6 @@ Vertex3D Triangle::getCenter()
     return A;
 }
 
-Vertex3D Triangle::getNormal()
-{
-    Vector3D v1 = Vector3D(this->Ao, this->Bo);
-    Vector3D v2 = Vector3D(this->Ao, this->Co);
-
-    Vertex3D normal = v1.getComponent() % v2.getComponent();
-
-    return normal;
-}
-
 void Triangle::drawNormal(Camera3D *cam, Uint32 color)
 {
     Drawable::drawVector3D( Vector3D( this->Ao, this->getNormal() ), cam, color );
@@ -240,16 +245,16 @@ void Triangle::scanVertices(Camera3D *cam)
     } else {
         // En este caso vamos a dividir el triángulo en dos
         // para tener uno que cumpla 'bottomFlat' y el otro 'TopFlat' y necesitamos un punto extra para separar ambos
-        int x = (int) (v1.x + ((v2.y - v1.y) / (v3.y - v1.y)) * (v3.x - v1.x));
-        int y = (int) v2.y;
+        const int x = (int) (v1.x + ((v2.y - v1.y) / (v3.y - v1.y)) * (v3.x - v1.x));
+        const int y = (int) v2.y;
 
-        Point2D v4(x, y);
+        const Point2D v4(x, y);
 
         this->scanBottomFlatTriangle(v1, v2, v4);
         this->scanTopFlatTriangle(v4, v2, v3);
 
         if (EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED) {
-            Line2D extraLineDemo = Line2D(v4.x, v4.y, v2.x, v2.y);
+            const Line2D extraLineDemo = Line2D(v4.x, v4.y, v2.x, v2.y);
             Drawable::drawLine2D(extraLineDemo, EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_COLOR);
         }
     }
@@ -257,12 +262,11 @@ void Triangle::scanVertices(Camera3D *cam)
 
 void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc)
 {
-    float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
-    float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
+    const float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
+    const float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
 
     float curx1 = pc.x;
     float curx2 = pc.x;
-
 
     for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
         this->scanLine(curx1, curx2, scanlineY);
@@ -273,8 +277,8 @@ void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc)
 
 void Triangle::scanBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc)
 {
-    float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
-    float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
+    const float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
+    const float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
 
     float curx1 = pa.x;
     float curx2 = pa.x;
@@ -319,17 +323,17 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
         // En este caso tenemos vamos a dividir los triángulos
         // para tener uno que cumpla 'bottomFlat' y el otro 'TopFlat'
         // y necesitamos un punto extra para separar ambos.
-        int x = (int) (v1.x + ((v2.y - v1.y) / (v3.y - v1.y)) * (v3.x - v1.x));
-        int y = (int) v2.y;
+        const int x = (v1.x + ((v2.y - v1.y) / (v3.y - v1.y)) * (v3.x - v1.x));
+        const int y = v2.y;
 
-        Point2D v4(x, y);
+        const Point2D v4(x, y);
 
         // Hayamos las coordenadas baricéntricas del punto v4 respecto al triángulo v1, v2, v3
         float alpha, theta, gamma;
         Maths::getBarycentricCoordinates(alpha, theta, gamma, v4.x, v4.y, v1, v2, v3);
 
-        float u = alpha * A.u + theta * B.u + gamma * C.u;
-        float v = alpha * A.v + theta * B.v + gamma * C.v;
+        const float u = alpha * A.u + theta * B.u + gamma * C.u;
+        const float v = alpha * A.v + theta * B.v + gamma * C.v;
 
         // Creamos un nuevo vértice que representa v4 (el nuevo punto creado) en el triángulo original
         Vertex3D D = Vertex3D(
@@ -347,13 +351,13 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 
 void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
-    float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
-    float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
+    float invslope1 = (float) (pc.x - pa.x) / (pc.y - pa.y);
+    float invslope2 = (float) (pc.x - pb.x) / (pc.y - pb.y);
 
     float curx1 = pc.x;
     float curx2 = pc.x;
 
-    for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
+    for (int scanlineY = pc.y; scanlineY > pa.y; scanlineY--) {
         this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
         curx1 -= invslope1;
         curx2 -= invslope2;
@@ -362,35 +366,36 @@ void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D 
 
 void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
-    float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
-    float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
+    float invslope1 = (float) (pb.x - pa.x) / (pb.y - pa.y);
+    float invslope2 = (float) (pc.x - pa.x) / (pc.y - pa.y);
 
     float curx1 = pa.x;
     float curx2 = pa.x;
 
-    for (int scanlineY = (int) pa.y; scanlineY <= pb.y; scanlineY++) {
+    for (int scanlineY = pa.y; scanlineY <= pb.y; scanlineY++) {
         this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
         curx1 += invslope1;
         curx2 += invslope2;
     }
 }
 
-void Triangle::scanLine(float start_x, float end_x, int y)
+void Triangle::scanLine(float start_x, float end_x, const int y)
 {
     if (start_x == end_x) return;
 
     if (start_x > end_x) {
-        int tmp = (int) start_x;
+        const int tmp = (int) start_x;
         start_x = end_x;
         end_x = tmp;
     }
 
     for (int x = (int) start_x ; x < end_x; x++) {
-        processPixel(Point2D(x, y));
+        const Point2D p = Point2D(x, y);
+        processPixel(p);
     }
 }
 
-void Triangle::processPixel(Point2D pointFinal)
+void Triangle::processPixel(const Point2D &pointFinal)
 {
     if (Tools::isPixelInWindow((int) pointFinal.x, (int) pointFinal.y)) {
         // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo As, Bs, Cs
@@ -400,8 +405,8 @@ void Triangle::processPixel(Point2D pointFinal)
 
         // EngineBuffers
         if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
-            float z = alpha * An.z + theta * Bn.z + gamma * Cn.z;               // Homogeneous clipspace
-            float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
+            const float z = alpha * An.z + theta * Bn.z + gamma * Cn.z;               // Homogeneous clipspace
+            const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
 
             if (buffer_z != NULL) {
                 if ( z < buffer_z ) {
@@ -421,10 +426,19 @@ void Triangle::processPixel(Point2D pointFinal)
                 float u = alpha * An.u + theta * Bn.u + gamma * Cn.u;
                 float v = alpha * An.v + theta * Bn.v + gamma * Cn.v;
 
-                // Check for repeat U coordinate
                 float ignorablePartInt;
-                v = modf(v , &ignorablePartInt);
-                u = modf(u , &ignorablePartInt);
+                if (!std::signbit(u)) {
+                    u = modf(abs(u) , &ignorablePartInt);
+                } else {
+                    u = 1 - modf(abs(u) , &ignorablePartInt);
+                }
+
+                // Check for inversion U
+                if (!std::signbit(v)) {
+                    v = modf(abs(v) , &ignorablePartInt);
+                } else {
+                    v = 1 - modf(abs(v) , &ignorablePartInt);
+                }
 
                 pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
                 Uint8 red, green, blue, alpha;
@@ -464,7 +478,7 @@ void Triangle::processPixel(Point2D pointFinal)
                         // Shadow test
                         Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
                         Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
-                        Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
+                        const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
 
                         if (Tools::isPixelInWindow(DP.x, DP.y)) {
                             float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
@@ -478,7 +492,7 @@ void Triangle::processPixel(Point2D pointFinal)
         }
 
         EngineBuffers::getInstance()->pixelesDrawed++;
-        EngineBuffers::getInstance()->setVideoBuffer( (int) pointFinal.x, (int) pointFinal.y, pixelColor);
+        EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
     } else {
         EngineBuffers::getInstance()->pixelesOutOfWindow++;
     }
@@ -503,7 +517,7 @@ void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
     float alpha, theta, gamma;
 
     for (int x = (int) start_x; x < end_x; x++) {
-        Point2D pointFinal(x, y);
+        const Point2D pointFinal(x, y);
 
         if (Tools::isPixelInWindow(pointFinal.x, pointFinal.y)) {
             // Hayamos las coordenadas baricéntricas del punto v4 respecto al triángulo pa, pb, pc

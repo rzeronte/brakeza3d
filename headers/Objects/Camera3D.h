@@ -34,9 +34,8 @@ public:
     float calcCanvasFarHeight();
     float getNearDistance();
     float getVerticalFOV();
-    void syncFrustum();
 
-    void consoleInfo();
+    void syncFrustum();
 
     void UpdatePosition(void);
     void UpdateRotation(void);
@@ -53,6 +52,8 @@ public:
     void StrafeLeft(void);
 
     void limitPitch();
+
+    void consoleInfo();
 };
 
 

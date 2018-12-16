@@ -12,9 +12,11 @@ Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
     this->A = A;
     this->B = B;
     this->C = C;
+
+    updateNormalVector();
 }
 
-float Plane::distance(Vertex3D p)
+float Plane::distance(Vertex3D &p)
 {
     Vertex3D normal = getNormalVector();
 
@@ -24,7 +26,7 @@ float Plane::distance(Vertex3D p)
     return distance;
 }
 
-Vertex3D Plane::getNormalVector()
+void Plane::updateNormalVector()
 {
     Vector3D VnAB(this->A, this->B);
     Vector3D VnAC(this->A, this->C);
@@ -32,7 +34,12 @@ Vertex3D Plane::getNormalVector()
     Vertex3D U = VnAB.getComponent();
     Vertex3D V = VnAC.getComponent();
 
-    return U % V;
+    normal = U % V;
+}
+
+Vertex3D Plane::getNormalVector()
+{
+    return this->normal;
 }
 
 Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) {

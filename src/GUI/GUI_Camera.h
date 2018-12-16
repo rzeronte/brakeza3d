@@ -34,8 +34,8 @@ public:
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
-            const float range_min_yaw = -360;
-            const float range_max_yaw = 360;
+            const float range_min_yaw = 0;
+            const float range_max_yaw = 0;
 
             const float test_min = 0;
             const float test_max = 100000;

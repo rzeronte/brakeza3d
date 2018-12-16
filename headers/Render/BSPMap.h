@@ -13,7 +13,7 @@
 #define MAXLIGHTMAPS	4
 #define ANIM_TEX_FRAMES	32
 
-#define MAX_MAP_TEXTURES 100
+#define MAX_MAP_TEXTURES 500
 
 // BSP entries
 struct dentry_t
