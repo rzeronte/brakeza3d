@@ -252,13 +252,12 @@ bool BSPMap::InitializeTriangles(Camera3D *cam)
         this->surface_triangles[i].offset = start_number_triangle;
 
         Logging::getInstance()->Log(
-            "Surface: " + std::to_string(i) + " - triangles:  "+ std::to_string(surface_num_triangles) +" | start: " +
-            std::to_string(start_number_triangle) + ", end: " +
-            std::to_string(end_number_triangle) + ", total triangles: " +
+            "Surface: " + std::to_string(i) + " - triangles:  "+ std::to_string(surface_num_triangles) +" | offset: " +
+            std::to_string(start_number_triangle) + ", ends: " +
+            std::to_string(end_number_triangle) + ", Total triangles: " +
             std::to_string(n_triangles)
             , ""
         );
-
     }
 }
 
@@ -305,16 +304,6 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     int num = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++){
-        this->model_triangles[i].draw(cam);
-    }
-}
-
-void BSPMap::drawTriangles(Camera3D *cam)
-{
-    if (EngineSetup::getInstance()->DEBUG_BSP_MODE) {
-        EngineBuffers::getInstance()->resetBenchmarkValues();
-    }
-    for (int i = 0; i < this->n_triangles ; i++) {
         this->model_triangles[i].draw(cam);
     }
 }

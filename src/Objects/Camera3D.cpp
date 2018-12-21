@@ -12,10 +12,10 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
-#define WALKING_SPEED		5.0
+#define WALKING_SPEED		10.0
 #define TURN_SPEED			2.0
 #define PITCH_SPEED			1.0
-#define STRAFE_SPEED		5.0
+#define STRAFE_SPEED		10.0
 #define MOUSE_SENSITIVITY	0.3
 
 Camera3D::Camera3D()
@@ -98,7 +98,7 @@ void Camera3D::syncFrustum()
     frustum->updatePoints();
     frustum->updatePlanes();
 
-    // Actualizamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
+    // Cacheamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
     frustum->vNLs = Transforms::cameraSpace(frustum->near_left.vertex1, this);
     frustum->vNRs = Transforms::cameraSpace(frustum->near_right.vertex1, this);
     frustum->vNTs = Transforms::cameraSpace(frustum->near_top.vertex1, this);
@@ -179,18 +179,21 @@ void Camera3D::UpdatePosition(void)
 {
     // Move the camera forward
     if ((fabs(speed) > 0)) {
-        getPosition()->z+=speed;
+        getPosition()->z += speed * cos(-yaw * M_PI / 180.0);
+        getPosition()->x += speed * sin(-yaw * M_PI / 180.0);
+        //
+        getPosition()->y += speed * sin(pitch * M_PI / 180.0);
     }
 
     // Move the camera sideways
     if ((fabs(strafe) > 0)) {
-        getPosition()->x-=strafe;
+        getPosition()->z += strafe * -sin(-yaw * M_PI / 180.0);
+        getPosition()->x -= strafe * -cos(-yaw * M_PI / 180.0);
     }
 
     // Reset speed
     speed  = 0;
     strafe = 0;
-
 }
 
 void Camera3D::UpdateRotation()

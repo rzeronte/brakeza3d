@@ -325,9 +325,6 @@ public:
     void DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
     bspleaf_t *FindLeaf(Camera3D *camera);
 
-    void drawTriangles(Camera3D *cam);
-    void DrawAllSurfacesTriangles(Camera3D *cam);
-
     bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertex, int surface);
 
     // Get array of edges, contains the index to the start and end vertices in the pV
