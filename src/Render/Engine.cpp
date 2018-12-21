@@ -248,7 +248,8 @@ void Engine::drawBSP()
     if (bsp_map) {
         bspleaf_t *leaf = bsp_map->FindLeaf( camera );
         bsp_map->DrawLeafVisibleSet( leaf, camera );
-        bsp_map->drawTriangles( camera );
+        //bsp_map->DrawAllSurfacesTriangles(camera);
+        //bsp_map->drawTriangles( camera );
     }
 }
 
@@ -391,6 +392,7 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map->Initialize(bspFilename, paletteFilename);
     this->bsp_map->InitializeSurfaces();
     this->bsp_map->InitializeTextures();
+    this->bsp_map->InitializeTriangles(this->camera);
 
 }
 

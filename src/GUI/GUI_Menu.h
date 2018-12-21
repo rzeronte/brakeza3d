@@ -11,7 +11,7 @@ public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info) {
 
         bool show_about_window = false;
 
@@ -43,6 +43,7 @@ public:
             }
 
             if (ImGui::BeginMenu("View")) {
+                ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
                 ImGui::Checkbox("Ligths Inspector", &show_window_lights_inspector);
                 ImGui::Checkbox("Log", &show_window_log);
@@ -67,7 +68,6 @@ public:
             }
 
             if (ImGui::BeginMenu("BSP")) {
-                ImGui::Checkbox("Show Map Faces", &EngineSetup::getInstance()->Q1MAP_FACES);
                 ImGui::EndMenu();
             }
 

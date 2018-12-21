@@ -100,7 +100,8 @@ Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
     T = V - *o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
-    T.u = V.u; T.v = V.v;
+    T.u = V.u;
+    T.v = V.v;
 
     return T;
 }

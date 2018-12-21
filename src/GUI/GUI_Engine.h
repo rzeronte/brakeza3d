@@ -33,7 +33,7 @@ public:
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
 
-        gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show);
+        gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show, gui_camera->show);
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
         gui_log->draw(getFps(), cam);

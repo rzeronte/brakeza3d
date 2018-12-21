@@ -52,6 +52,10 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
     Cs = Transforms::screenSpace(Cn, cam);
 
     updateNormal();
+
+    bs1 = Maths::barycentricSide( (int) As.x, (int) As.y, Bs, Cs );
+    bs2 = Maths::barycentricSide( (int) Bs.x, (int) Bs.y, Cs, As );
+    bs3 = Maths::barycentricSide( (int) Cs.x, (int) Cs.y, As, Bs );
 }
 
 void Triangle::updateNormal()
@@ -391,120 +395,115 @@ void Triangle::scanLine(float start_x, float end_x, const int y)
 
     for (int x = (int) start_x ; x < end_x; x++) {
         const Point2D p = Point2D(x, y);
-        float lambda;
-        lambda = ( x - start_x) / (end_x - start_x);
-
-        processPixel(p, lambda);
+        processPixel(p);
     }
 }
 
-void Triangle::processPixel(const Point2D &pointFinal, float lambda)
+void Triangle::processPixel(const Point2D &pointFinal)
 {
-    if (Tools::isPixelInWindow((int) pointFinal.x, (int) pointFinal.y)) {
-        // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo As, Bs, Cs
-        float alpha, theta, gamma;
-        Maths::getBarycentricCoordinates(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs);
-        Uint32 pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
+    // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo As, Bs, Cs
+    float alpha, theta, gamma;
+    Maths::getBarycentricCoordinatesPrecalc(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs, bs1, bs2, bs3);
 
-        float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);               // Homogeneous clipspace
+    Uint32 pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
 
-        // EngineBuffers
-        if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
-            const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
+    float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);               // Homogeneous clipspace
 
-            if (buffer_z != NULL) {
-                if ( z < buffer_z ) {
-                    EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
-                } else {
-                    return;
-                }
-            }  else {
+    // EngineBuffers
+    if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
+        const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
+
+        if (buffer_z != NULL) {
+            if ( z < buffer_z ) {
                 EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
+            } else {
+                return;
+            }
+        }  else {
+            EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
+        }
+    }
+
+    // Texture
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
+        if (this->getTexture() != NULL) {
+            float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
+
+            // Correct perspective mapping
+            float u = ( alpha * (Ac.u/Ac.z) + theta * (Bc.u/Bc.z) + gamma * (Cc.u/Cc.z) );
+            float v = ( alpha * (Ac.v/Ac.z) + theta * (Bc.v/Bc.z) + gamma * (Cc.v/Cc.z) );
+
+            u*=z;
+            v*=z;
+
+            float ignorablePartInt;
+            if (!std::signbit(u)) {
+                u = modf(abs(u) , &ignorablePartInt);
+            } else {
+                u = 1 - modf(abs(u) , &ignorablePartInt);
+            }
+
+            // Check for inversion U
+            if (!std::signbit(v)) {
+                v = modf(abs(v) , &ignorablePartInt);
+            } else {
+                v = 1 - modf(abs(v) , &ignorablePartInt);
+            }
+
+            pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
+            Uint8 red, green, blue, alpha;
+            SDL_GetRGBA(pixelColor, texture->getSurface()->format, &red, &green, &blue, &alpha);
+
+            if (alpha == 0) {
+                return;
             }
         }
+    }
 
-        // Texture
-        if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-            if (this->getTexture() != NULL) {
-                float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
+    if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
+        Vertex3D D;
 
-                // Correct perspective mapping
-                float u = ( alpha * (Ac.u/Ac.z) + theta * (Bc.u/Bc.z) + gamma * (Cc.u/Cc.z) );
-                float v = ( alpha * (Ac.v/Ac.z) + theta * (Bc.v/Bc.z) + gamma * (Cc.v/Cc.z) );
+        if (this->numberLightPoints > 0) {
+            // Coordenadas del punto que estamos procesando en el mundo (object space)
+            float x3d = alpha * Ao.x + theta * Bo.x + gamma * Co.x;
+            float y3d = alpha * Ao.y + theta * Bo.y + gamma * Co.y;
+            float z3d = alpha * Ao.z + theta * Bo.z + gamma * Co.z;
 
-                u*=z;
-                v*=z;
-
-                float ignorablePartInt;
-                if (!std::signbit(u)) {
-                    u = modf(abs(u) , &ignorablePartInt);
-                } else {
-                    u = 1 - modf(abs(u) , &ignorablePartInt);
-                }
-
-                // Check for inversion U
-                if (!std::signbit(v)) {
-                    v = modf(abs(v) , &ignorablePartInt);
-                } else {
-                    v = 1 - modf(abs(v) , &ignorablePartInt);
-                }
-
-                pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
-                Uint8 red, green, blue, alpha;
-                SDL_GetRGBA(pixelColor, texture->getSurface()->format, &red, &green, &blue, &alpha);
-
-                if (alpha == 0) {
-                    return;
-                }
-            }
+            D = Vertex3D( x3d, y3d, z3d ); // Object space
         }
 
-        if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
-            Vertex3D D;
-
-            if (this->numberLightPoints > 0) {
-                // Coordenadas del punto que estamos procesando en el mundo (object space)
-                float x3d = alpha * Ao.x + theta * Bo.x + gamma * Co.x;
-                float y3d = alpha * Ao.y + theta * Bo.y + gamma * Co.y;
-                float z3d = alpha * Ao.z + theta * Bo.z + gamma * Co.z;
-
-                D = Vertex3D( x3d, y3d, z3d ); // Object space
+        for (int i = 0; i < this->numberLightPoints; i++) {
+            if (!this->lightPoints[i]->isEnabled()) {
+                continue;
             }
 
-            for (int i = 0; i < this->numberLightPoints; i++) {
-                if (!this->lightPoints[i]->isEnabled()) {
-                    continue;
-                }
+            // Color light apply
+            float d = Maths::distanteBetweenpoints( *this->lightPoints[i]->getPosition(), D );
+            pixelColor = Maths::mixColor(pixelColor, d, this->lightPoints[i], D);
 
-                // Color light apply
-                float d = Maths::distanteBetweenpoints( *this->lightPoints[i]->getPosition(), D );
-                pixelColor = Maths::mixColor(pixelColor, d, this->lightPoints[i], D);
+            if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
+                Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
 
-                if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
-                    Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
+                if (isMesh != NULL && isMesh->isShadowCaster()) {
+                    // Shadow test
+                    Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
+                    Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
+                    const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
 
-                    if (isMesh != NULL && isMesh->isShadowCaster()) {
-                        // Shadow test
-                        Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
-                        Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
-                        const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
-
-                        if (Tools::isPixelInWindow(DP.x, DP.y)) {
-                            float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
-                            if ( Dl.z > buffer_shadowmapping_z) {
-                                pixelColor = Color::red();
-                            }
+                    if (Tools::isPixelInWindow(DP.x, DP.y)) {
+                        float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
+                        if ( Dl.z > buffer_shadowmapping_z) {
+                            pixelColor = Color::red();
                         }
                     }
                 }
             }
         }
-
-        EngineBuffers::getInstance()->pixelesDrawed++;
-        EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
-    } else {
-        EngineBuffers::getInstance()->pixelesOutOfWindow++;
     }
+
+    EngineBuffers::getInstance()->pixelesDrawed++;
+    EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
+
 }
 
 void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,

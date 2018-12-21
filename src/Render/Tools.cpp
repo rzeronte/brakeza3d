@@ -47,7 +47,7 @@ void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 
 bool Tools::isPixelInWindow(int x, int y)
 {
-    if ( !(x >= 0 && x < EngineSetup::getInstance()->SCREEN_WIDTH && y >= 0 && y < EngineSetup::getInstance()->SCREEN_HEIGHT) ) {
+    if ( !(x >= 0 && x <= EngineSetup::getInstance()->SCREEN_WIDTH && y >= 0 && y <= EngineSetup::getInstance()->SCREEN_HEIGHT) ) {
         return false;
     }
 
@@ -92,8 +92,9 @@ Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
     int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+    return *(Uint32 *)p;
 
-    switch(bpp) {
+    /*switch(bpp) {
         case 1:
             return *p;
             break;
@@ -115,7 +116,7 @@ Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
 
         default:
             return 0;
-    }
+    }*/
 }
 
 bool Tools::fileExists(const std::string& name)

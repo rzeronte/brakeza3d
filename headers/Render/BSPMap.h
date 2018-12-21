@@ -14,6 +14,7 @@
 #define ANIM_TEX_FRAMES	32
 
 #define MAX_MAP_TEXTURES 500
+#define MAX_BSP_TRIANGLES 50000
 
 // BSP entries
 struct dentry_t
@@ -159,6 +160,12 @@ typedef struct entity_t
     int				edict;
 } ;
 
+struct surface_triangles_t
+{
+    int num;        // número de triángulos
+    int offset;		// índice del primer triángulo
+};
+
 class BSPMap: public Object3D
 {
 private:
@@ -173,13 +180,17 @@ private:
     int *visibleSurfaces;			// Array of visible surfaces, contains an index to the surfaces
     int numMaxEdgesPerSurface;      // Max edges per surface
 
+
+
 public:
+    dheader_t *header;
+
+    surface_triangles_t *surface_triangles;
+    Triangle *model_triangles;
+    unsigned int n_triangles = 0;
+
     Texture *textures;
     Texture *demo_texture;
-
-    Triangle *model_triangles;
-    int n_triangles = 0;
-
     unsigned int palette[256];
 
     BSPMap();
@@ -198,7 +209,7 @@ public:
     int getNumEdges(int surfaceId) { return getSurface(surfaceId)->numedge; }
 
     // Get number of surfaces
-    int getNumSurfaces() { return header->surfaces.size / sizeof (getSurfaces()[0]); }
+    int getNumSurfaces() { return header->surfaces.size / (sizeof (getSurfaces()[0])); }
 
     // Get number of textures
     int getNumTextures() { return ((mipheader_t *) getMipHeader())->numtex; }
@@ -301,21 +312,28 @@ public:
 
     bool InitializeSurfaces(void);
     bool InitializeTextures(void);
+    bool InitializeTriangles(Camera3D *cam);
+
+    void createTrianglesForSurface(int surface, Camera3D *cam);
+
     float CalculateDistance(vec3_t a, vec3_t b);
     void DrawSurface(int surface, Camera3D *camera);
+    void DrawSurfaceTriangles(int surface, Camera3D *camera);
+
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 
     void DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
     bspleaf_t *FindLeaf(Camera3D *camera);
 
     void drawTriangles(Camera3D *cam);
+    void DrawAllSurfacesTriangles(Camera3D *cam);
 
-    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertex, int surface, Camera3D *cam, Vertex3D normal);
+    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertex, int surface);
 
     // Get array of edges, contains the index to the start and end vertices in the pV
     entity_t *getEntities() { return (entity_t *) &bsp[header->entities.offset]; }
 
-    dheader_t *header;
+
 };
 
 #endif

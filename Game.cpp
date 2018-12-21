@@ -99,7 +99,7 @@ void Game::onStart()
 
     // plane
     Mesh3D *plane = new Mesh3D();
-    plane->setEnabled(true);
+    plane->setEnabled(false);
     plane->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     plane->setPosition( Vertex3D(2, 0.4, 5) );
     plane->setRotation( M3(-90, -45, 0) );
@@ -109,7 +109,7 @@ void Game::onStart()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(true);
+    marine->setEnabled(false);
     marine->setPosition( Vertex3D(1, 1, 5) );
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("marine/idle", 1);
@@ -148,6 +148,7 @@ void Game::onStart()
     testWad->draw2D();
     testWad->render();
     */
+
 
     loadBSP("start.bsp", "palette.lmp");
 }

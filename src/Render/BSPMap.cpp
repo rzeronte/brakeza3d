@@ -26,7 +26,7 @@ BSPMap::BSPMap()
     if (visibleSurfaces) delete[] visibleSurfaces;
 
     n_triangles = 0;
-    this->model_triangles = new Triangle[80000];
+    this->model_triangles = new Triangle[MAX_BSP_TRIANGLES];
     this->textures = new Texture[MAX_MAP_TEXTURES];
 
     this->demo_texture = new Texture();
@@ -36,6 +36,8 @@ BSPMap::BSPMap()
     // La rotación x = 180, y = 90, es para ajustar los ejes con los que quake1 trabaja. (z la vertical)
     setPosition( Vertex3D(0, 0, 0) );
     setRotation( M3(180, 90, 0) );
+
+    this->surface_triangles = new surface_triangles_t[MAX_BSP_TRIANGLES];
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
@@ -236,14 +238,31 @@ bool BSPMap::InitializeTextures(void)
     return true;
 }
 
-// Return the dotproduct of two vectors
-float BSPMap::CalculateDistance(vec3_t a, vec3_t b)
+bool BSPMap::InitializeTriangles(Camera3D *cam)
 {
-    return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
+    for (int i = 0; i < this->getNumSurfaces(); i++) {
+        // Creamos triángulos
+        int start_number_triangle = this->n_triangles;
+        this->createTrianglesForSurface(i, cam);
+        int end_number_triangle = this->n_triangles;
+        int surface_num_triangles = end_number_triangle - start_number_triangle ;
+
+        // Creamos el registro que relaciona una surface con sus triángulos
+        this->surface_triangles[i].num = surface_num_triangles;
+        this->surface_triangles[i].offset = start_number_triangle;
+
+        Logging::getInstance()->Log(
+            "Surface: " + std::to_string(i) + " - triangles:  "+ std::to_string(surface_num_triangles) +" | start: " +
+            std::to_string(start_number_triangle) + ", end: " +
+            std::to_string(end_number_triangle) + ", total triangles: " +
+            std::to_string(n_triangles)
+            , ""
+        );
+
+    }
 }
 
-// Draw the surface
-void BSPMap::DrawSurface(int surface, Camera3D *cam)
+void BSPMap::createTrianglesForSurface(int surface, Camera3D *cam)
 {
     // Get the surface primitive
     primdesc_t *primitives = &surfacePrimitives[numMaxEdgesPerSurface * surface];
@@ -255,8 +274,7 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
     int num_edges = this->getNumEdges(surface);
 
     for (int i = 0; i < num_edges ; i++, primitives++) {
-        // IMPORTANTE: Las coordenadas del mapa de quake1 son distintas (la Z es la vertical)
-        // por eso usamos el orden (y, z, x)
+        // IMPORTANTE: Las coordenadas del mapa de quake1 son distintas (la Z es la vertical) por eso usamos el orden (y, z, x)
         Vertex3D v = Vertex3D(
             primitives->v[1],
             primitives->v[2],
@@ -270,34 +288,25 @@ void BSPMap::DrawSurface(int surface, Camera3D *cam)
 
         vertices[num_vertices] = v;
         num_vertices++;
-
-        if (EngineSetup::getInstance()->Q1MAP_FACES) {
-            if ( i+1 < num_edges ) {
-                Vertex3D next = Vertex3D(
-                        (primitives+1)->v[1],
-                        (primitives+1)->v[2],
-                        (primitives+1)->v[0]
-                );
-                next = Transforms::objectToLocal(next, this);
-                Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
-
-            } else {
-                // Cerramos contra el primer vértice
-                primdesc_t *primitives_start = &surfacePrimitives[numMaxEdgesPerSurface * surface];
-
-                Vertex3D next = Vertex3D(
-                        primitives_start->v[1],
-                        primitives_start->v[2],
-                        primitives_start->v[0]
-                );
-
-                next = Transforms::objectToLocal(next, this);
-                Drawable::drawVector3D(Vector3D(v, next), cam, Color::green());
-            }
-        }
     }
 
-    triangulateQuakeSurface(vertices, num_vertices, surface, cam, Vertex3D(0, 0, 0));
+    triangulateQuakeSurface(vertices, num_vertices, surface);
+}
+
+// Return the dotproduct of two vectors
+float BSPMap::CalculateDistance(vec3_t a, vec3_t b)
+{
+    return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
+}
+
+void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
+{
+    int offset = this->surface_triangles[surface].offset;
+    int num = this->surface_triangles[surface].num;
+
+    for (int i = offset; i < offset+num; i++){
+        this->model_triangles[i].draw(cam);
+    }
 }
 
 void BSPMap::drawTriangles(Camera3D *cam)
@@ -305,13 +314,12 @@ void BSPMap::drawTriangles(Camera3D *cam)
     if (EngineSetup::getInstance()->DEBUG_BSP_MODE) {
         EngineBuffers::getInstance()->resetBenchmarkValues();
     }
-
     for (int i = 0; i < this->n_triangles ; i++) {
         this->model_triangles[i].draw(cam);
     }
 }
 
-bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int surface, Camera3D *cam, Vertex3D normal)
+bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int surface)
 {
     texinfo_t *textureInfo = this->getTextureInfo(surface);
     Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
@@ -334,13 +342,9 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
         }
 
         Triangle t = Triangle(tv1, tv2, tv3, this);
-        if (!textures[textureInfo->texid].getFilename().compare("switch_1")) {
-        }
-
-            t.setTexture( &textures[textureInfo->texid] );
+        t.setTexture( &textures[textureInfo->texid] );
         t.setClipped(false);
         t.setBSP(true);
-
 
         EngineBuffers::getInstance()->trianglesClippingCreated++;
 
@@ -353,7 +357,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertex, int su
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
 void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
 {
-    this->n_triangles = 0;
+    //this->n_triangles = 0;
     int numVisibleSurfaces = 0;
 
     // Get a pointer to the visibility list that is associated with the BSP leaf
@@ -385,7 +389,8 @@ void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camer
 {
     // Loop through all the visible surfaces and activate the texture objects
     for (int i = 0; i < numVisibleSurfaces; i++) {
-        DrawSurface(visibleSurfaces[i], cam);
+        //DrawSurface(visibleSurfaces[i], cam);
+        DrawSurfaceTriangles(visibleSurfaces[i], cam);
     }
 }
 

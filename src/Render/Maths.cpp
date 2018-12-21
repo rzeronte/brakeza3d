@@ -32,6 +32,13 @@ void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, 
     gamma = Maths::barycentricSide( x, y, v1, v2 ) / Maths::barycentricSide( v3.x, v3.y, v1, v2 );
 }
 
+void Maths::getBarycentricCoordinatesPrecalc(float &alpha, float &theta, float &gamma, int x, int y,  Point2D v1, Point2D v2, Point2D v3, float r1, float r2, float r3)
+{
+    alpha = Maths::barycentricSide( x, y, v2, v3 ) / r1;
+    theta = Maths::barycentricSide( x, y, v3, v1 ) / r2;
+    gamma = Maths::barycentricSide( x, y, v1, v2 ) / r3;
+}
+
 /**
  * 0 = dos vértices dentro
  * 1 = ningún vértice dentro
