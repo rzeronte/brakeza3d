@@ -32,7 +32,7 @@ void Game::run()
     this->onStart();
     this->mainLoop();
     this->onEnd();
-    
+
     Close();
 }
 

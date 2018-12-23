@@ -104,7 +104,7 @@ void Camera3D::syncFrustum()
     frustum->vNTs = Transforms::cameraSpace(frustum->near_top.vertex1, this);
     frustum->vNBs = Transforms::cameraSpace(frustum->near_bottom.vertex1, this);
 
-    // get 2d coordinates
+    // cacheamos las coordenadas 2D de los marcos del near plane
     frustum->vNLpers = Transforms::perspectiveDivision(frustum->vNLs, this);
     frustum->vNRpers = Transforms::perspectiveDivision(frustum->vNRs, this);
     frustum->vNTpers = Transforms::perspectiveDivision(frustum->vNTs, this);
@@ -185,7 +185,7 @@ void Camera3D::UpdatePosition(void)
         getPosition()->y += speed * sin(pitch * M_PI / 180.0);
     }
 
-    // Move the camera sideways
+    // Move the camera side ways
     if ((fabs(strafe) > 0)) {
         getPosition()->z += strafe * -sin(-yaw * M_PI / 180.0);
         getPosition()->x -= strafe * -cos(-yaw * M_PI / 180.0);

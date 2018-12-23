@@ -60,6 +60,7 @@ public:
                 ImGui::DragScalar("Pitch", ImGuiDataType_Float,  &camera->pitch, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
+            ImGui::Separator();
 
             if (ImGui::TreeNode( moving_test.c_str() )) {
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->speed).c_str() );
@@ -67,7 +68,6 @@ public:
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->strafe).c_str() );
                 ImGui::TreePop();
             }
-
 
             ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
 
