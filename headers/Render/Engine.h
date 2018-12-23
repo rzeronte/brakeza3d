@@ -86,7 +86,7 @@ public:
     void addObject3D(Object3D *obj, std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
-    void cameraUpdate();
+    void handleInput();
     void windowUpdate();
 
     void drawGUI();

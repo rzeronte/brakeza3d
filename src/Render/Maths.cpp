@@ -282,7 +282,7 @@ long Maths::GetPrevActive( long x, long vertexCount, const bool *active)
     }
 }
 
-int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
 {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
@@ -304,7 +304,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Triangle t = Triangle(tv1, tv2, tv3, parent);
             t.setTexture(texture);
             t.setClipped(clipped);
-            triangle[ntriangles] = t;
+            triangles[ntriangles] = t;
             ntriangles++;
 
             triangleCount++;
@@ -319,14 +319,14 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
         bool positive = false;
         bool negative = false;
 
-        // Determine whether vp1, vp2, and vm1 form a valid triangle.
+        // Determine whether vp1, vp2, and vm1 form a valid triangles.
         Vertex3D n1 = normal % (vm1 - vp2).getNormalize();
         if (n1 * (vp1 - vp2) > EngineSetup::getInstance()->EPSILON ) {
             positive   = true;
             Vertex3D n2 = (normal % (vp1 - vm1).getNormalize());
             Vertex3D n3 = (normal % (vp2 - vp1).getNormalize());
             for (long a = 0; a < vertexCount; a++) {
-                // Look for other vertices inside the triangle.
+                // Look for other vertices inside the triangles.
                 if ((active[a]) && (a != p1) && (a != p2) && (a != m1)) {
                     Vertex3D v = vertices[a];
                     if (   (n1 * (v - vp2).getNormalize() > -EngineSetup::getInstance()->EPSILON)
@@ -340,7 +340,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             }
         }
 
-        // Determine whether vm1, vm2, and vp1 form a valid triangle.
+        // Determine whether vm1, vm2, and vp1 form a valid triangles.
         n1 = normal % (vm2 - vp1).getNormalize();
         if (n1 * (vm1 - vp1) > EngineSetup::getInstance()->EPSILON) {
             negative = true;
@@ -348,7 +348,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D n3 = (normal % (vp1 - vm1).getNormalize());
             for (long a = 0; a < vertexCount; a++)
             {
-                // Look for other vertices inside the triangle.
+                // Look for other vertices inside the triangles.
                 if ((active[a]) && (a != m1) && (a != m2) && (a != p1)) {
                     Vertex3D v = vertices[a];
                     if (   (n1 * (v - vp1).getNormalize() > -EngineSetup::getInstance()->EPSILON)
@@ -377,7 +377,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
         }
 
         if (positive) {
-            // Output the triangle m1, p1, p2.
+            // Output the triangles m1, p1, p2.
             active[p1] = false;
 
             Vertex3D tv1 = Transforms::objectToLocal(vertices[m1], parent);
@@ -388,17 +388,17 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
 
-            triangle[ntriangles] = t;
+            triangles[ntriangles] = t;
             ntriangles++;
 
             triangleCount++;
-            //triangle++;
+            //triangles++;
             p1 = GetNextActive(p1, vertexCount, active);
             p2 = GetNextActive(p2, vertexCount, active);
             lastPositive = true;
             start =  -1;
         } else if (negative) {
-            // Output the triangle m2, m1, p1.
+            // Output the triangles m2, m1, p1.
             active[m1] = false;
 
             Vertex3D tv1 = Transforms::objectToLocal(vertices[m2], parent);
@@ -409,18 +409,18 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
 
-            triangle[ntriangles] = t;
+            triangles[ntriangles] = t;
             ntriangles++;
 
             triangleCount++;
-            //triangle++;
+            //triangles++;
             m1 = GetPrevActive(m1, vertexCount, active);
             m2 = GetPrevActive(m2, vertexCount, active);
             lastPositive = false;
             start = -1;
         } else {
             // Exit if we've gone all the way around the
-            // polygon without finding a valid triangle.
+            // polygon without finding a valid triangles.
             if (start == -1) start = p2;
             else if (p2 == start) {
                 break;

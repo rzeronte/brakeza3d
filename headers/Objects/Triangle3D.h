@@ -75,8 +75,6 @@ public:
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
-    int triangulate(int num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
-
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

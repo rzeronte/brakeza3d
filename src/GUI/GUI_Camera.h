@@ -42,7 +42,7 @@ public:
 
             std::string position_text = "Position##1";
             std::string rotation_text = "Orientation##2";
-            std::string test_text = "Test value##3";
+            std::string moving_test = "Moving values##3";
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {
@@ -60,6 +60,14 @@ public:
                 ImGui::DragScalar("Pitch", ImGuiDataType_Float,  &camera->pitch, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
+
+            if (ImGui::TreeNode( moving_test.c_str() )) {
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->speed).c_str() );
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->strafe).c_str() );
+                ImGui::TreePop();
+            }
+
 
             ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
 

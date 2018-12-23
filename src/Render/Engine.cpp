@@ -129,16 +129,9 @@ void Engine::initFontsTTF()
     }
 }
 
-void Engine::cameraUpdate()
+void Engine::handleInput()
 {
-    if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-        controller->handleMouse(&this->e, this->camera);
-    }
 
-    controller->handleKeyboard(&this->e, this->camera, this->finish);
-
-    camera->UpdatePosition();
-    camera->UpdateRotation();
 }
 
 void Engine::drawGUI()

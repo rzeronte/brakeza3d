@@ -187,7 +187,7 @@ public:
 
     surface_triangles_t *surface_triangles;
     Triangle *model_triangles;
-    unsigned int n_triangles = 0;
+    int n_triangles = 0;
 
     Texture *textures;
     Texture *demo_texture;
@@ -325,7 +325,7 @@ public:
     void DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
     bspleaf_t *FindLeaf(Camera3D *camera);
 
-    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertex, int surface);
+    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
 
     // Get array of edges, contains the index to the start and end vertices in the pV
     entity_t *getEntities() { return (entity_t *) &bsp[header->entities.offset]; }

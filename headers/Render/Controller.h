@@ -12,21 +12,20 @@
 
 class Controller {
 
-    Uint32 event_type;
-
     bool debug = true;
     bool click = false;
-
-    SDL_Keycode key_pressed;
 
     bool MousePressed = false;
     bool MouseMotion = false;
 
+    Uint8* keyboard;
+
 public:
     Controller();
 
-    void handleKeyboard(SDL_Event *, Camera3D *, bool &);
+    void handleKeyboard(Camera3D *, bool &);
     void handleMouse(SDL_Event *, Camera3D *);
+
 };
 
 

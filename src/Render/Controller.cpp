@@ -14,66 +14,60 @@ Controller::Controller()
 
 void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
 {
-    this->key_pressed = event->key.keysym.sym;
-    this->event_type = event->type;
 
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
-    if (event_type == SDL_MOUSEBUTTONDOWN) {
+    if (event->type == SDL_MOUSEBUTTONDOWN) {
         MousePressed = true;
     }
 
-    if (event_type == SDL_MOUSEBUTTONUP) {
+    if (event->type == SDL_MOUSEBUTTONUP) {
         MousePressed = false;
     }
 
-    if (event_type == SDL_MOUSEMOTION) {
+    if (event->type == SDL_MOUSEMOTION) {
         MouseMotion = true;
     }
 
     if (MouseMotion && MousePressed) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
-
             camera->Yaw(event->motion.xrel);
             camera->Pitch(event->motion.yrel);
         }
     }
 }
 
-void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &done)
+void Controller::handleKeyboard(Camera3D *camera, bool &done)
 {
-    this->key_pressed = event->key.keysym.sym;
-    this->event_type = event->type;
+    this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
 
-    if  (event_type == SDL_KEYDOWN) {
-        if (key_pressed == SDLK_w ) {
-            camera->MoveForward();
-        }
-        if (key_pressed == SDLK_UP ) {
-            camera->PitchUp();
-        }
-        if (key_pressed == SDLK_s ) {
-            camera->MoveBackward();
-        }
-        if (key_pressed == SDLK_DOWN ) {
-            camera->PitchDown();
-        }
-        if (key_pressed == SDLK_RIGHT ) {
-            camera->TurnRight();
-        }
-        if (key_pressed == SDLK_LEFT ) {
-            camera->TurnLeft();
-        }
-        if (key_pressed == SDLK_d ) {
-            camera->StrafeRight();
-        }
-        if (key_pressed == SDLK_a ) {
-            camera->StrafeLeft();
-        }
-        if (key_pressed == SDLK_ESCAPE) {
-            done = true;
-        }
+    if (keyboard[SDL_SCANCODE_W]) {
+        camera->MoveForward();
+    }
+    if (keyboard[SDL_SCANCODE_S]) {
+        camera->MoveBackward();
+    }
+    if (keyboard[SDL_SCANCODE_A]) {
+        camera->StrafeLeft();
+    }
+    if (keyboard[SDL_SCANCODE_D]) {
+        camera->StrafeRight();
+    }
+    if (keyboard[SDL_SCANCODE_RIGHT]) {
+        camera->TurnRight();
+    }
+    if (keyboard[SDL_SCANCODE_LEFT]) {
+        camera->TurnLeft();
+    }
+    if (keyboard[SDL_SCANCODE_DOWN]) {
+        camera->PitchUp();
+    }
+    if (keyboard[SDL_SCANCODE_UP]) {
+        camera->PitchDown();
+    }
+    if (keyboard[SDL_SCANCODE_ESCAPE]) {
+        done = true;
     }
 }

@@ -183,7 +183,6 @@ bool Triangle::clipping(Camera3D *cam)
         int num_new_triangles = 0;
 
         Maths::TriangulatePolygon(num_inputvertices, input_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
-        //this->triangulate(num_inputvertices, input_vertices,  this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(),true);
 
         for (int i = 0; i < num_new_triangles; i++) {
             EngineBuffers::getInstance()->trianglesClippingCreated++;
@@ -394,8 +393,7 @@ void Triangle::scanLine(float start_x, float end_x, const int y)
     }
 
     for (int x = (int) start_x ; x < end_x; x++) {
-        const Point2D p = Point2D(x, y);
-        processPixel(p);
+        processPixel(Point2D(x, y));
     }
 }
 
@@ -580,35 +578,3 @@ bool Triangle::isBSP()
 {
     return this->is_bsp;
 }
-
-int Triangle::triangulate(int num_vertex, Vertex3D *vertices, Vertex3D normal, Triangle *triangle, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
-{
-    Vertex3D middle = Maths::getCenterVertices(vertices, num_vertex);
-
-    for (int i = 0; i < num_vertex ; i++) {
-        Vertex3D tv1, tv2, tv3;
-        // Vertex new triangles
-        int current = i;
-        int next = i+1;
-
-        if (next < num_vertex){
-            tv1 = Transforms::objectToLocal(middle, parent);
-            tv2 = Transforms::objectToLocal(vertices[current], parent);
-            tv3 = Transforms::objectToLocal(vertices[next], parent);
-        } else {
-            tv1 = Transforms::objectToLocal(middle, parent);
-            tv2 = Transforms::objectToLocal(vertices[current], parent);
-            tv3 = Transforms::objectToLocal(vertices[0], parent);
-        }
-
-        Triangle t = Triangle(tv1, tv2, tv3, parent);
-        t.setTexture( texture );
-        t.setClipped(clipped);
-        EngineBuffers::getInstance()->trianglesClippingCreated++;
-
-        triangle[ntriangles] = t;
-        ntriangles++;
-    }
-}
-
-

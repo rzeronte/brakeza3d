@@ -32,6 +32,7 @@ void Game::run()
     this->onStart();
     this->mainLoop();
     this->onEnd();
+    
     Close();
 }
 
@@ -118,7 +119,7 @@ void Game::onStart()
     marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
 
-    // gun ( sprite )
+    // marine ( sprite )
     /*Sprite3D *guy = new Sprite3D();
     guy->setEnabled(true);
     guy->setPosition( Vertex3D(2, 1, 5) );
@@ -129,7 +130,7 @@ void Game::onStart()
      */
 
     // weapon
-    /*Weapon3D *weapon = new Weapon3D();
+    Weapon3D *weapon = new Weapon3D();
     weapon->setEnabled(false);
     weapon->setPosition( Vertex3D(1, 1, 5) );
     weapon->setTimer(Engine::getTimer());
@@ -138,7 +139,7 @@ void Game::onStart()
     weapon->addAnimation("gun/shot", 2);
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
-    */
+
 
     // WAD Parser
     /*
@@ -161,13 +162,27 @@ void Game::mainLoop()
     while(!finish) {
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
-            Engine::cameraUpdate();
-            camera->syncFrustum();
+
+            if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) { controller->handleMouse(&this->e, this->camera); }
         }
 
+        // Check aray Uint8 *keyboard
+        controller->handleKeyboard(this->camera, this->finish);
+
+        // update camera position and rotation
+        camera->UpdatePosition();
+        camera->UpdateRotation();
+
+        // align frustum to camera
+        camera->syncFrustum();
+
+        // game level update
         this->onUpdate();
 
+        // Update window
         Engine::windowUpdate();
+
+        // FPS calculation
         Engine::processFPS();
     }
 
@@ -176,6 +191,7 @@ void Game::mainLoop()
 
 void Game::onUpdate()
 {
+    // Core onUpdate
     Engine::onUpdate();
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
