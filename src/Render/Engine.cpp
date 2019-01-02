@@ -185,6 +185,26 @@ void Engine::preUpdate()
 void Engine::postUpdate()
 {
     camera->V2 = *camera->getPosition();
+
+    camera->setIsInCollision(false);
+
+    if (EngineSetup::getInstance()->BSP_COLLISIONS_STATUS) {
+        checkCollisionsBSP();
+    }
+
+    checkCollisionsMesh();
+
+    if (camera->isIsInCollision()) {
+        camera->setPosition(camera->V1);
+        this->cameraUpdate();
+    }
+}
+
+void Engine::cameraUpdate()
+{
+    camera->UpdateRotation();
+    camera->UpdatePosition();
+    camera->UpdateFrustum();
 }
 
 void Engine::onUpdate()
@@ -198,22 +218,6 @@ void Engine::onUpdate()
 
         // Fill ShadowMapping FOR every object (mesh)
         this->objects3DShadowMapping();
-    }
-
-    camera->setIsInCollision(false);
-
-    if (EngineSetup::getInstance()->BSP_COLLISIONS_STATUS) {
-        checkCollisionsBSP();
-    }
-
-    checkCollisionsMesh();
-
-    if (camera->isIsInCollision()) {
-        camera->setPosition(camera->V1);
-
-        camera->UpdateRotation();
-        camera->UpdatePosition();
-        camera->UpdateFrustum();
     }
 
     this->drawBSP();

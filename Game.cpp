@@ -169,12 +169,10 @@ void Game::mainLoop()
         // Check aray Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish);
 
-        camera->UpdateRotation();
-        camera->UpdatePosition();
+        // update camera position, rotation and frustum
+        this->cameraUpdate();
 
-        // align frustum to camera
-        camera->UpdateFrustum();
-
+        // Checks pre update frame
         this->postUpdate();
 
         // game level update
@@ -203,9 +201,6 @@ void Game::preUpdate()
 {
     // Core preUpdate
     Engine::preUpdate();
-
-    //Engine::camera->getPosition()->z+=5;
-
 }
 
 void Game::onEnd()

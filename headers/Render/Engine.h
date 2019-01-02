@@ -77,6 +77,8 @@ public:
     void postUpdate();
     void onEnd();
 
+    void cameraUpdate();
+
     void drawMeshes();
     void drawBSP();
     void drawLightPoints();
