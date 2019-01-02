@@ -12,6 +12,8 @@
 typedef float vec3_t[3];
 
 class Camera3D : public Object3D {
+private:
+    bool isInCollision = false;
 public:
     float yaw;			// Direction of travel
     float pitch;		// Neck angle
@@ -25,6 +27,13 @@ public:
 
     Frustum *frustum;
 
+    // Camera velocity vector (for collision detection)
+    Vertex3D V1;
+    Vertex3D V2;
+
+    bool isIsInCollision() const;
+    void setIsInCollision(bool isInCollision);
+
     Camera3D();
 
     float calcCanvasNearWidth();
@@ -35,8 +44,7 @@ public:
     float getNearDistance();
     float getVerticalFOV();
 
-    void syncFrustum();
-
+    void UpdateFrustum();
     void UpdatePosition(void);
     void UpdateRotation(void);
 
@@ -54,6 +62,8 @@ public:
     void limitPitch();
 
     void consoleInfo();
+
+    Vertex3D getVelocity();
 };
 
 

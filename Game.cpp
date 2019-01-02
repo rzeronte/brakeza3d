@@ -36,7 +36,6 @@ void Game::run()
     Close();
 }
 
-
 void Game::onStart()
 {
     Engine::onStart();
@@ -67,6 +66,7 @@ void Game::onStart()
 
     // mono
     Mesh3D *mono = new Mesh3D();
+    mono->setPosition(Vertex3D(544, -32, 643));
     mono->setEnabled(false);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->loadOBJBlender("../assets/models/mono.obj");
@@ -85,7 +85,7 @@ void Game::onStart()
     Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->setPosition( Vertex3D(1, 1, 20) );
+    cubo->setPosition(Vertex3D(544, -32, 643));
     cubo->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cubo, "cubo");
 
@@ -93,7 +93,7 @@ void Game::onStart()
     Mesh3D *triangle = new Mesh3D();
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition( Vertex3D(1, 0.4, 5) );
+    triangle->setPosition(Vertex3D(544, -32, 603));
     triangle->setRotation( M3(-90, -45, 0) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
@@ -106,7 +106,6 @@ void Game::onStart()
     plane->setRotation( M3(-90, -45, 0) );
     plane->loadOBJBlender("../assets/models/plane.obj");
     this->addObject3D(plane, "plane");
-
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
@@ -140,7 +139,6 @@ void Game::onStart()
     weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
 
-
     // WAD Parser
     /*
     char* wadLocation = "../models/freedoom1.wad";
@@ -149,7 +147,6 @@ void Game::onStart()
     testWad->draw2D();
     testWad->render();
     */
-
 
     loadBSP("start.bsp", "palette.lmp");
 }
@@ -160,6 +157,9 @@ void Game::mainLoop()
 
     ImGuiIO& io = ImGui::GetIO();
     while(!finish) {
+
+        this->preUpdate();
+
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
 
@@ -169,12 +169,13 @@ void Game::mainLoop()
         // Check aray Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish);
 
-        // update camera position and rotation
-        camera->UpdatePosition();
         camera->UpdateRotation();
+        camera->UpdatePosition();
 
         // align frustum to camera
-        camera->syncFrustum();
+        camera->UpdateFrustum();
+
+        this->postUpdate();
 
         // game level update
         this->onUpdate();
@@ -196,6 +197,14 @@ void Game::onUpdate()
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;
+}
+
+void Game::preUpdate()
+{
+    // Core preUpdate
+    Engine::preUpdate();
+
+    //Engine::camera->getPosition()->z+=5;
 
 }
 

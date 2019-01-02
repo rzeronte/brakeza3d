@@ -31,6 +31,8 @@ public:
 
     float getModule();
 
+    Vertex3D getScaled(float);
+
     void consoleInfo(std::string label, bool);
 };
 

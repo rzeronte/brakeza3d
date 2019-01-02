@@ -110,6 +110,8 @@ public:
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
+    bool BSP_COLLISIONS_STATUS = true;
+
 };
 
 

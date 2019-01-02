@@ -31,6 +31,7 @@ public:
     int order = 0;
     bool is_clipped = false;
     bool is_bsp = false;
+    bool is_colliding = false;
 
     LightPoint3D **lightPoints;
     int numberLightPoints = 0;
@@ -47,6 +48,8 @@ public:
     Vertex3D getCenter();
 
     void drawWireframe();
+    void drawWireframeColor(Uint32 c);
+
     bool draw(Camera3D *);
     void drawNormal(Camera3D *cam, Uint32 color);
 
@@ -74,6 +77,13 @@ public:
     bool isBSP();
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
+
+    float distanceToVertex3D(Vertex3D);
+
+    bool isPointInside(Vertex3D);
+
+    bool isCollisionWithEllipsoid(Camera3D *cam);
+
 
 };
 

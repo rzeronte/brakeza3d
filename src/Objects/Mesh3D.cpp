@@ -233,6 +233,7 @@ void Mesh3D::draw(Camera3D *cam)
 
     // Transforms
     for (int i = 0; i < this->n_triangles ; i++) {
+
         this->model_triangles[i].draw(cam);
     }
 

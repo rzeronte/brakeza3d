@@ -71,6 +71,7 @@ void EngineBuffers::resetBenchmarkValues()
     EngineBuffers::getInstance()->trianglesHidenByFaceCuling = 0;
     EngineBuffers::getInstance()->pixelesBehindOfCamera = 0;
     EngineBuffers::getInstance()->trianglesClippingCreated = 0;
+    EngineBuffers::getInstance()->trianglesHitted = 0;
 }
 
 void EngineBuffers::consoleInfo()
@@ -83,6 +84,7 @@ void EngineBuffers::consoleInfo()
     info+= "| pxDrawed: " + std::to_string(EngineBuffers::getInstance()->pixelesDrawed);
     info+= "| pxOutOfWin: " + std::to_string(EngineBuffers::getInstance()->pixelesOutOfWindow);
     info+= "| pxBehindOfCam: " + std::to_string(EngineBuffers::getInstance()->pixelesBehindOfCamera);
+    info+= "| trHit: " + std::to_string(EngineBuffers::getInstance()->trianglesHitted);
 
     Logging::getInstance()->Log( info, "INFO" );
 }

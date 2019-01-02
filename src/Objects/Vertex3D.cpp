@@ -101,3 +101,14 @@ float Vertex3D::getModule()
 
     return norm;
 }
+
+Vertex3D Vertex3D::getScaled(float s)
+{
+    Vertex3D v;
+
+    v.x = this->x * s;
+    v.y = this->y * s;
+    v.z = this->z * s;
+
+    return v;
+}

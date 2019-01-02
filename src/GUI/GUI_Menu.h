@@ -24,10 +24,10 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
-                ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
-                ImGui::Checkbox("Textures", &EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED);
-                ImGui::Checkbox("Solid", &EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID);
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
+                ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
+                ImGui::Checkbox("Solid", &EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID);
+                ImGui::Checkbox("Textures", &EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw extra line", &EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED);
                 ImGui::Separator();
@@ -68,6 +68,8 @@ public:
             }
 
             if (ImGui::BeginMenu("BSP")) {
+                ImGui::Checkbox("Collisions", &EngineSetup::getInstance()->BSP_COLLISIONS_STATUS);
+                ImGui::Separator();
                 ImGui::EndMenu();
             }
 

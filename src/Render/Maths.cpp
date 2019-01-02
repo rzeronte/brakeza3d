@@ -460,9 +460,9 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
             noutput++;
         }
 
-        // Si el primer y el segundo vértice no tienen el mismo estado añadimos el punto de intersección al plano
+        // Si el primer y el segundo vértice no tienen el mismo estado, añadimos el punto de intersección al plano
         if (testClip > 1) {
-            float t = 0;
+            float t = 0;    // [0,1] range point intersección
             output[noutput]   = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
             output[noutput].u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
             output[noutput].v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
@@ -473,4 +473,50 @@ bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &
     }
 
     return new_vertices;
+}
+
+float Maths::distancePointVector(Vertex3D Q, Vector3D L)
+{
+    Vertex3D d = L.getComponent().getNormalize();
+
+    Vector3D firstL_Q = Vector3D(L.vertex1, Q);
+    Vertex3D v = firstL_Q.getComponent();
+
+    float t = v * d;
+
+    Vertex3D P;
+
+    P.x = L.vertex1.x + (t * d.x);
+    P.y = L.vertex1.y + (t * d.y);
+    P.z = L.vertex1.z + (t * d.z);
+
+    Vertex3D AP = P - Q;
+
+    float distance =  AP.getModule();
+
+    // Camera-triangle vector
+    Vertex3D z = L.vertex1 - Q;
+
+    if ( (z * (z % AP)) >= 0 ) {
+        return distance;
+    }
+
+    return -distance;
+}
+
+bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b)
+{
+    Vertex3D cp1 = (b-a) % (p1-a);
+    Vertex3D cp2 = (b-a) % (p2-a);
+
+    if ( (cp1 * cp2) >= 0) {
+        return true;
+    }
+
+    return false;
+}
+
+bool Maths::PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b,Vertex3D c)
+{
+    return sameSide(p, a, b, c) && sameSide(p, b, a, c) && sameSide(p, c, a, b);
 }

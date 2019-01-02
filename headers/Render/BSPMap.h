@@ -323,6 +323,8 @@ public:
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 
     void DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
+    void PhysicsLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
+
     bspleaf_t *FindLeaf(Camera3D *camera);
 
     bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);

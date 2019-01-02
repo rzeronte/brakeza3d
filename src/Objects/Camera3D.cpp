@@ -12,10 +12,10 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
-#define WALKING_SPEED		10.0
+#define WALKING_SPEED		5.0
 #define TURN_SPEED			2.0
 #define PITCH_SPEED			1.0
-#define STRAFE_SPEED		10.0
+#define STRAFE_SPEED		5.0
 #define MOUSE_SENSITIVITY	0.3
 
 Camera3D::Camera3D()
@@ -86,7 +86,7 @@ float Camera3D::getScreenAspectRatio()
     return this->aspectRatio;
 }
 
-void Camera3D::syncFrustum()
+void Camera3D::UpdateFrustum()
 {
     frustum->position  = *getPosition();
 
@@ -181,7 +181,6 @@ void Camera3D::UpdatePosition(void)
     if ((fabs(speed) > 0)) {
         getPosition()->z += speed * cos(-yaw * M_PI / 180.0);
         getPosition()->x += speed * sin(-yaw * M_PI / 180.0);
-        //
         getPosition()->y += speed * sin(pitch * M_PI / 180.0);
     }
 
@@ -212,4 +211,17 @@ void Camera3D::limitPitch()
     if (this->pitch <= -89) {
         this->pitch = -89;
     }
+}
+
+Vertex3D Camera3D::getVelocity()
+{
+    return this->V2 - this->V1;
+}
+
+bool Camera3D::isIsInCollision() const {
+    return isInCollision;
+}
+
+void Camera3D::setIsInCollision(bool isInCollision) {
+    Camera3D::isInCollision = isInCollision;
 }

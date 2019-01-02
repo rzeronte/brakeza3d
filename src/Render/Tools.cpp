@@ -71,52 +71,27 @@ uint8_t Tools::getBlueValueFromColor(uint32_t c) {
     return (c);
 }
 
-int Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
+const int Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
     return surface->w * u;
 }
 
-int Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
+const int Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
     return surface->h * v;
 }
 
 Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float u, float v)
 {
-    int x = Tools::getXTextureFromUV(surface, u);
-    int y = Tools::getYTextureFromUV(surface, v);
+    const int x = Tools::getXTextureFromUV(surface, u);
+    const int y = Tools::getYTextureFromUV(surface, v);
 
     return Tools::readSurfacePixel(surface, x, y);
 }
 
 Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
 {
-    int bpp = surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
-    return *(Uint32 *)p;
+    Uint32 *pixels = (Uint32 *)surface->pixels;
 
-    /*switch(bpp) {
-        case 1:
-            return *p;
-            break;
-
-        case 2:
-            return *(Uint16 *)p;
-            break;
-
-        case 3:
-            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-                return p[0] << 16 | p[1] << 8 | p[2];
-            else
-                return p[0] | p[1] << 8 | p[2] << 16;
-            break;
-
-        case 4:
-            return *(Uint32 *)p;
-            break;
-
-        default:
-            return 0;
-    }*/
+    return pixels[ ( y * surface->w ) + x ];
 }
 
 bool Tools::fileExists(const std::string& name)

@@ -73,6 +73,8 @@ public:
 
     void onStart();
     void onUpdate();
+    void preUpdate();
+    void postUpdate();
     void onEnd();
 
     void drawMeshes();
@@ -80,13 +82,15 @@ public:
     void drawLightPoints();
     void drawSprites();
 
+    void checkCollisionsBSP();
+    void checkCollisionsMesh();
+
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();
 
     void addObject3D(Object3D *obj, std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
-    void handleInput();
     void windowUpdate();
 
     void drawGUI();

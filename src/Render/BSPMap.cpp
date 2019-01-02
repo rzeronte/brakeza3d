@@ -259,6 +259,10 @@ bool BSPMap::InitializeTriangles(Camera3D *cam)
             , ""
         );*/
     }
+
+    for (int i = 0; i < n_triangles; i++){
+        this->model_triangles[i].is_bsp = true;
+    }
 }
 
 void BSPMap::createTrianglesForSurface(int surface, Camera3D *cam)
@@ -319,6 +323,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
         normal.z += (((vertices[i].y) + (vertices[j].y)) * ((vertices[j].x) - (vertices[i].x)));
     }
     normal = normal.getInverse();
+
     texinfo_t *textureInfo = this->getTextureInfo(surface);
 
     Maths::TriangulatePolygon(
@@ -338,7 +343,6 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
 void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
 {
-    //this->n_triangles = 0;
     int numVisibleSurfaces = 0;
 
     // Get a pointer to the visibility list that is associated with the BSP leaf
@@ -363,6 +367,50 @@ void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
     }
 
     DrawSurfaceList(visibleSurfaces, numVisibleSurfaces, cam);
+}
+
+
+// Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
+void BSPMap::PhysicsLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
+{
+    int numVisibleSurfaces = 0;
+
+    // Get a pointer to the visibility list that is associated with the BSP leaf
+    unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
+
+    for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
+        unsigned char veces = *(visibilityList);
+        if (veces == 0) {
+            i += 8 * *(++visibilityList);
+        } else {
+            for (int j = 0; j < 8; j++, i++) {
+                if (Tools::getBit(veces, j)) {
+                    bspleaf_t *visibleLeaf = this->getLeaf(i);
+                    int firstSurface = visibleLeaf->firstsurf;
+                    int lastSurface = firstSurface + visibleLeaf->numsurf;
+                    for (int k = firstSurface; k < lastSurface; k++) {
+                        visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < numVisibleSurfaces; i++) {
+
+        int surface = visibleSurfaces[i];
+
+        const int offset = this->surface_triangles[surface].offset;
+        const int num = this->surface_triangles[surface].num;
+
+        for (int i = offset; i < offset+num; i++) {
+            model_triangles[i].is_colliding = false;
+            if (model_triangles[i].isCollisionWithEllipsoid(cam)) {
+                model_triangles[i].is_colliding = true;
+                cam->setIsInCollision(true);
+            }
+        }
+    }
 }
 
 // Draw the visible surfaces

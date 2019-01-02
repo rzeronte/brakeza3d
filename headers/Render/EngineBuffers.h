@@ -32,6 +32,8 @@ public:
     int trianglesOutFrustum = 0;
     int trianglesClippingCreated = 0;
 
+    int trianglesHitted = 0;
+
     SDL_Surface  *screenSurface;
 
     void clearDepthBuffer();

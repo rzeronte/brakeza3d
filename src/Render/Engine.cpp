@@ -129,11 +129,6 @@ void Engine::initFontsTTF()
     }
 }
 
-void Engine::handleInput()
-{
-
-}
-
 void Engine::drawGUI()
 {
     ImGui::NewFrame();
@@ -182,6 +177,16 @@ void Engine::onStart()
     //cam->setRotation( Rotation3D(0, 0, 0) );
 }
 
+void Engine::preUpdate()
+{
+    camera->V1 = *camera->getPosition();
+}
+
+void Engine::postUpdate()
+{
+    camera->V2 = *camera->getPosition();
+}
+
 void Engine::onUpdate()
 {
     EngineBuffers::getInstance()->clearDepthBuffer();
@@ -193,6 +198,22 @@ void Engine::onUpdate()
 
         // Fill ShadowMapping FOR every object (mesh)
         this->objects3DShadowMapping();
+    }
+
+    camera->setIsInCollision(false);
+
+    if (EngineSetup::getInstance()->BSP_COLLISIONS_STATUS) {
+        checkCollisionsBSP();
+    }
+
+    checkCollisionsMesh();
+
+    if (camera->isIsInCollision()) {
+        camera->setPosition(camera->V1);
+
+        camera->UpdateRotation();
+        camera->UpdatePosition();
+        camera->UpdateFrustum();
     }
 
     this->drawBSP();
@@ -241,8 +262,33 @@ void Engine::drawBSP()
     if (bsp_map) {
         bspleaf_t *leaf = bsp_map->FindLeaf( camera );
         bsp_map->DrawLeafVisibleSet( leaf, camera );
-        //bsp_map->DrawAllSurfacesTriangles(camera);
-        //bsp_map->drawTriangles( camera );
+    }
+}
+
+void Engine::checkCollisionsMesh()
+{
+    // draw meshes
+    for (int i = 0; i < this->numberGameObjects; i++) {
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
+        if (oMesh != NULL) {
+            if (oMesh->isEnabled()) {
+                for (int j = 0; j< oMesh->n_triangles; j++) {
+                    oMesh->model_triangles[j].is_colliding = false;
+                    if (oMesh->model_triangles[j].isCollisionWithEllipsoid(camera)) {
+                        oMesh->model_triangles[j].is_colliding = true;
+                        camera->setIsInCollision(true);
+                    }
+                }
+            };
+        }
+    }
+}
+
+void Engine::checkCollisionsBSP()
+{
+    if (bsp_map) {
+        bspleaf_t *leaf = bsp_map->FindLeaf( camera );
+        bsp_map->PhysicsLeafVisibleSet( leaf, camera );
     }
 }
 

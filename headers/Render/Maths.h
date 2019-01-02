@@ -49,6 +49,10 @@ public:
     static int  TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
     static bool ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int plane_id , Camera3D *cam);
 
+    static float distancePointVector(Vertex3D, Vector3D );
+    static bool sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b);
+    static bool PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c);
+
 };
 
 

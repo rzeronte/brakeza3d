@@ -43,6 +43,7 @@ public:
             std::string position_text = "Position##1";
             std::string rotation_text = "Orientation##2";
             std::string moving_test = "Moving values##3";
+            std::string is_in_collision = "Is in collision?##4";
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {
@@ -63,13 +64,25 @@ public:
             ImGui::Separator();
 
             if (ImGui::TreeNode( moving_test.c_str() )) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->speed).c_str() );
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->getVelocity().x).c_str() );
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->strafe).c_str() );
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->getVelocity().y).c_str() );
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->getVelocity().z).c_str() );
                 ImGui::TreePop();
             }
 
+            if (camera->isIsInCollision()) {
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "COLLISION" );
+            } else {
+                ImGui::TextColored(ImVec4(0.0f, 01.0f, 0.0f, 1.0f), "NO COLLISION" );
+            }
+
+            ImGui::Separator();
+
             ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
+
+            ImGui::Separator();
 
             ImGui::End();
         }

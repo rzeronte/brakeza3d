@@ -104,11 +104,8 @@ bool Triangle::draw(Camera3D *cam)
             Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::yellow());
             Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::yellow());
             Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::yellow());
-
-            //Drawable::drawVector3D( Vector3D(Ao, Bo), cam, Color::yellow());
-            //Drawable::drawVector3D( Vector3D(Bo, Co), cam, Color::yellow());
-            //Drawable::drawVector3D( Vector3D(Co, Ao), cam, Color::yellow());
         }
+
         EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
         return false;
     }
@@ -138,11 +135,17 @@ bool Triangle::draw(Camera3D *cam)
     EngineBuffers::getInstance()->trianglesDrawed++;
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+
+
         this->scanVertices(cam);
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        this->drawWireframe();
+        if (is_colliding) {
+            this->drawWireframeColor(Color::white());
+        } else {
+            this->drawWireframe();
+        }
     }
 
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_NORMAL) {
@@ -200,6 +203,13 @@ void Triangle::drawWireframe()
     Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::red());
     Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::green());
     Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::blue());
+}
+
+void Triangle::drawWireframeColor(Uint32 c)
+{
+    Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), c);
+    Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), c);
+    Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), c);
 }
 
 // (v0 - P) . N
@@ -401,9 +411,9 @@ void Triangle::processPixel(const Point2D &pointFinal)
 {
     // Hayamos las coordenadas baricéntricas del punto (x,y) respecto al triángulo As, Bs, Cs
     float alpha, theta, gamma;
-    Maths::getBarycentricCoordinatesPrecalc(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs, bs1, bs2, bs3);
+    Uint32 pixelColor;
 
-    Uint32 pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
+    Maths::getBarycentricCoordinatesPrecalc(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs, bs1, bs2, bs3);
 
     float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);               // Homogeneous clipspace
 
@@ -422,10 +432,14 @@ void Triangle::processPixel(const Point2D &pointFinal)
         }
     }
 
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+        pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
+    }
+
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
         if (this->getTexture() != NULL) {
-            float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
+            const float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
 
             // Correct perspective mapping
             float u = ( alpha * (Ac.u/Ac.z) + theta * (Bc.u/Bc.z) + gamma * (Cc.u/Cc.z) );
@@ -577,4 +591,108 @@ void Triangle::setBSP(bool value)
 bool Triangle::isBSP()
 {
     return this->is_bsp;
+}
+
+float Triangle::distanceToVertex3D(Vertex3D v)
+{
+    return Plane(Ao, Bo, Co).distance(v);
+}
+
+bool Triangle::isPointInside(Vertex3D v)
+{
+    return Maths::PointInTriangle(v, Ao, Bo, Co);
+}
+
+
+bool Triangle::isCollisionWithEllipsoid(Camera3D *cam)
+{
+    if (this->isBackFaceCulling(cam)) return false;
+
+    updateVertexSpaces(cam);
+
+    // Make the plane containing this triangle.
+    Plane trianglePlane = Plane(Ao, Bo, Co);
+    Vertex3D triangleNormal = trianglePlane.getNormalVector().getNormalize();
+
+    Vertex3D velocity = cam->getVelocity();
+
+    // Get interval of plane intersection:
+    float t0, t1;
+    bool embeddedInPlane = false;
+
+    // Calculate the signed distance from sphere
+    // position to triangle plane
+    float signedDistToTrianglePlane = trianglePlane.distance(*cam->getPosition());
+
+    // cache this as we’re going to use it a few times below:
+    float normalDotVelocity = triangleNormal * velocity;
+
+    // if sphere is travelling parrallel to the plane:
+    if (normalDotVelocity == 0.0f) {
+        if (fabs(signedDistToTrianglePlane) >= 1.0f) {
+            // Sphere is not embedded in plane.
+            // No collision possible:
+            return false;
+        } else {
+            // sphere is embedded in plane.
+            // It intersects in the whole range [0..1]
+            //embeddedInPlane = true;
+            t0 = 0.0;
+            t1 = 1.0;
+        }
+    } else {
+        // N dot D is not 0. Calculate intersection interval:
+        t0 = (-1.0 - signedDistToTrianglePlane) / normalDotVelocity;
+        t1 = (1.0 - signedDistToTrianglePlane) / normalDotVelocity;
+        // Swap so t0 < t1
+        if (t0 > t1) {
+            double temp = t1;
+            t1 = t0;
+            t0 = temp;
+        }
+        // Check that at least one result is within range:
+        if (t0 > 1.0f || t1 < 0.0f) {
+            // Both t values are outside values [0,1]
+            // No collision possible:
+            return false;
+        }
+        // Clamp to [0,1]
+        if (t0 < 0.0) t0 = 0.0;
+        if (t1 < 0.0) t1 = 0.0;
+        if (t0 > 1.0) t0 = 1.0;
+        if (t1 > 1.0) t1 = 1.0;
+    }
+
+    // OK, at this point we have two time values t0 and t1
+    // between which the swept sphere intersects with the
+    // triangle plane. If any collision is to occur it must
+    // happen within this interval.
+
+    Vertex3D collisionPoint;
+    bool foundCollison = false;
+    float t = 1.0;
+
+    // First we check for the easy case - collision inside
+    // the triangle. If this happens it must be at time t0
+    // as this is when the sphere rests on the front side
+    // of the triangle plane. Note, this can only happen if
+    // the sphere is not embedded in the triangle plane.
+
+    if(!embeddedInPlane) {
+
+        Vertex3D planeIntersectionPoint = (*cam->getPosition() - triangleNormal) + velocity.getScaled(t0);
+
+        if (isPointInside(planeIntersectionPoint)) {
+            foundCollison = true;
+            t = t0;
+            collisionPoint = planeIntersectionPoint;
+            Drawable::drawVertex(planeIntersectionPoint, cam, Color::yellow());
+        }
+    }
+
+    //if (foundCollison) {
+        //std::cout << t << " t\r\n";
+    //}
+
+    return foundCollison; // Exit here since I'm not using collision response yet.
 }

@@ -21,8 +21,8 @@ public:
 
     static void SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
-    static int getXTextureFromUV(SDL_Surface *surface, float u);
-    static int getYTextureFromUV(SDL_Surface *surface, float v);
+    static const int getXTextureFromUV(SDL_Surface *surface, float u);
+    static const int getYTextureFromUV(SDL_Surface *surface, float v);
 
     static Uint32 readSurfacePixelFromUV(SDL_Surface *surface, float u, float v);
     static Uint32 readSurfacePixel(SDL_Surface *surface, int x, int y);

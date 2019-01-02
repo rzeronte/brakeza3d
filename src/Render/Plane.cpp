@@ -18,7 +18,7 @@ Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
 
 float Plane::distance(Vertex3D &p)
 {
-    Vertex3D normal = getNormalVector();
+    Vertex3D normal = getNormalVector().getNormalize();
 
     float D = - ( (normal.x * A.x) + (normal.y * A.y) + (normal.z * A.z) );
     float distance = ( (normal.x * p.x) + (normal.y * p.y) + (normal.z * p.z) + D);
@@ -87,9 +87,9 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
 
     // 3) punto de intersección ; sustituimos t en la ecuación de la recta entre 2 puntos
     Vertex3D P(
-        vertex1.x + t * ( vertex2.x - vertex1.x ),
-        vertex1.y + t * ( vertex2.y - vertex1.y ),
-        vertex1.z + t * ( vertex2.z - vertex1.z )
+        vertex1.x + t * ( a ),
+        vertex1.y + t * ( b ),
+        vertex1.z + t * ( c )
     );
 
     return P;
