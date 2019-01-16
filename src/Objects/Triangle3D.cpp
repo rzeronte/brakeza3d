@@ -603,96 +603,201 @@ bool Triangle::isPointInside(Vertex3D v)
     return Maths::PointInTriangle(v, Ao, Bo, Co);
 }
 
-
-bool Triangle::isCollisionWithEllipsoid(Camera3D *cam)
+bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *cam)
 {
-    if (this->isBackFaceCulling(cam)) return false;
-
     updateVertexSpaces(cam);
+    this->is_colliding = false;
 
-    // Make the plane containing this triangle.
-    Plane trianglePlane = Plane(Ao, Bo, Co);
+    Plane    trianglePlane = Plane(this->Ao, this->Bo, this->Co);
     Vertex3D triangleNormal = trianglePlane.getNormalVector().getNormalize();
 
-    Vertex3D velocity = cam->getVelocity();
+    if (!trianglePlane.isFrontFacingTo(collider->normalizedVelocity)) {
+        return false;
+    }
 
-    // Get interval of plane intersection:
     float t0, t1;
     bool embeddedInPlane = false;
 
-    // Calculate the signed distance from sphere
-    // position to triangle plane
-    float signedDistToTrianglePlane = trianglePlane.distance(*cam->getPosition());
+    float signedDistToTrianglePlane = trianglePlane.distance(collider->basePoint);
+    float normalDotVelocity = triangleNormal * collider->velocity;
 
-    // cache this as we’re going to use it a few times below:
-    float normalDotVelocity = triangleNormal * velocity;
-
-    // if sphere is travelling parrallel to the plane:
     if (normalDotVelocity == 0.0f) {
-        if (fabs(signedDistToTrianglePlane) >= 1.0f) {
+        if (fabs(signedDistToTrianglePlane) >= radius) {
             // Sphere is not embedded in plane.
             // No collision possible:
+            Logging::getInstance()->Log("isCollisionWithSphere: normalDotVelocity abs > radius", "");
+
             return false;
         } else {
             // sphere is embedded in plane.
             // It intersects in the whole range [0..1]
-            //embeddedInPlane = true;
+            embeddedInPlane = true;
             t0 = 0.0;
             t1 = 1.0;
         }
     } else {
-        // N dot D is not 0. Calculate intersection interval:
-        t0 = (-1.0 - signedDistToTrianglePlane) / normalDotVelocity;
-        t1 = (1.0 - signedDistToTrianglePlane) / normalDotVelocity;
+        t0 = (-1 - signedDistToTrianglePlane) / normalDotVelocity;
+        t1 = (1 - signedDistToTrianglePlane) / normalDotVelocity;
+
         // Swap so t0 < t1
         if (t0 > t1) {
-            double temp = t1;
+            float temp = t1;
             t1 = t0;
             t0 = temp;
         }
-        // Check that at least one result is within range:
+
         if (t0 > 1.0f || t1 < 0.0f) {
-            // Both t values are outside values [0,1]
-            // No collision possible:
+            //Logging::getInstance()->Log("isCollisionWithSphere: Out of range t0 t1", "");
+
             return false;
         }
-        // Clamp to [0,1]
+
         if (t0 < 0.0) t0 = 0.0;
         if (t1 < 0.0) t1 = 0.0;
         if (t0 > 1.0) t0 = 1.0;
         if (t1 > 1.0) t1 = 1.0;
     }
 
-    // OK, at this point we have two time values t0 and t1
-    // between which the swept sphere intersects with the
-    // triangle plane. If any collision is to occur it must
-    // happen within this interval.
-
-    Vertex3D collisionPoint;
     bool foundCollison = false;
+    int collisionType = 0; // 0 == inside, 1 == vertex, 2 == edge
+    Vertex3D collisionPoint;
     float t = 1.0;
 
-    // First we check for the easy case - collision inside
-    // the triangle. If this happens it must be at time t0
-    // as this is when the sphere rests on the front side
-    // of the triangle plane. Note, this can only happen if
-    // the sphere is not embedded in the triangle plane.
-
-    if(!embeddedInPlane) {
-
-        Vertex3D planeIntersectionPoint = (*cam->getPosition() - triangleNormal) + velocity.getScaled(t0);
-
-        if (isPointInside(planeIntersectionPoint)) {
+    if (!embeddedInPlane) {
+        Logging::getInstance()->Log("isCollisionWithSphere: !embeddedInPlane", "");
+            Vertex3D planeIntersectionPoint = (collider->basePoint - triangleNormal) + collider->velocity.getScaled(t0);
+        if (this->isPointInside(planeIntersectionPoint)) {
+            Logging::getInstance()->Log("isCollisionWithSphere: !embeddedInPlane: OK Inside", "");
             foundCollison = true;
-            t = t0;
             collisionPoint = planeIntersectionPoint;
-            Drawable::drawVertex(planeIntersectionPoint, cam, Color::yellow());
+            t = t0;
+            collisionType = 0;
         }
     }
 
-    //if (foundCollison) {
-        //std::cout << t << " t\r\n";
-    //}
+    // some commonly used terms:
+    Vertex3D base = collider->basePoint;
+    Vertex3D velocity = collider->velocity;
 
-    return foundCollison; // Exit here since I'm not using collision response yet.
+    float velocitySquaredLength = velocity.squaredLength();
+    float a, b, c; // Params for equation
+    float newT;
+
+    if (!foundCollison) {
+        a = velocitySquaredLength;
+        // P1
+        b = 2.0 * (velocity * (base - this->Ao));
+        c = (this->Ao - base).squaredLength() - 1.0;
+        if (Maths::getLowestRoot(a, b, c, t, &newT)) {
+            t = newT;
+            foundCollison = true;
+            collisionPoint = this->Ao;
+            collisionType = 1;
+        }
+        // P2
+        b = 2.0 * (velocity * (base - this->Bo));
+        c = (this->Bo - base).squaredLength() - 1.0;
+        if (Maths::getLowestRoot(a, b, c, t, &newT)) {
+            t = newT;
+            foundCollison = true;
+            collisionPoint = this->Bo;
+            collisionType = 1;
+        }
+
+        // P3
+        b = 2.0 * (velocity * (base - this->Co));
+        c = (this->Co - base).squaredLength() - 1.0;
+        if (Maths::getLowestRoot(a, b, c, t, &newT)) {
+            t = newT;
+            foundCollison = true;
+            collisionPoint = this->Co;
+            collisionType = 1;
+        }
+    }
+
+    if (!foundCollison) {
+        // Check agains edges:
+        // p1 -> p2:
+        Vertex3D edge = this->Bo - this->Ao;
+        Vertex3D baseToVertex = this->Ao - base;
+        float edgeSquaredLength = edge.squaredLength();
+        float edgeDotVelocity = edge * velocity;
+        float edgeDotBaseToVertex = edge * baseToVertex;
+        // Calculate parameters for equation
+        a = edgeSquaredLength * -velocitySquaredLength + (edgeDotVelocity * edgeDotVelocity);
+        b = edgeSquaredLength * ( 2 * (velocity * baseToVertex)) - 2.0 * (edgeDotVelocity * edgeDotBaseToVertex);
+        c = edgeSquaredLength * ( 1 - baseToVertex.squaredLength()) + (edgeDotBaseToVertex * edgeDotBaseToVertex);
+        // Does the swept sphere collide against infinite edge?
+        if(Maths::getLowestRoot(a, b, c, t, &newT)) {
+            // Check if intersection is within line segment:
+            float f = (edgeDotVelocity*newT - edgeDotBaseToVertex) / edgeSquaredLength;
+            if (f >= 0.0 && f <= 1.0) {
+                // intersection took place within segment.
+                t = newT;
+                foundCollison = true;
+                collisionPoint = this->Ao + edge.getScaled(f);
+                collisionType = 2;
+            }
+        }
+
+        // p2 -> p3:
+        edge = this->Co - this->Bo;
+        baseToVertex = this->Bo - base;
+        edgeSquaredLength = edge.squaredLength();
+        edgeDotVelocity = edge * velocity;
+        edgeDotBaseToVertex = edge * baseToVertex;
+        // Calculate parameters for equation
+        a = edgeSquaredLength * -velocitySquaredLength + (edgeDotVelocity * edgeDotVelocity);
+        b = edgeSquaredLength * ( 2 * (velocity * baseToVertex) ) - 2.0 * (edgeDotVelocity * edgeDotBaseToVertex);
+        c = edgeSquaredLength * ( 1 - baseToVertex.squaredLength() ) + (edgeDotBaseToVertex * edgeDotBaseToVertex);
+        if (Maths::getLowestRoot(a, b, c, t, &newT)) {
+            float f = (edgeDotVelocity*newT - edgeDotBaseToVertex) / edgeSquaredLength;
+            if (f >= 0.0 && f <= 1.0) {
+                t = newT;
+                foundCollison = true;
+                collisionPoint = this->Bo + edge.getScaled(f);
+                collisionType = 2;
+            }
+        }
+        // p3 -> p1:
+        edge = this->Ao - this->Co;
+        baseToVertex = this->Co - base;
+        edgeSquaredLength = edge.squaredLength();
+        edgeDotVelocity = edge * velocity;
+        edgeDotBaseToVertex = edge * baseToVertex;
+        // Calculate parameters for equation
+        a = edgeSquaredLength * -velocitySquaredLength + (edgeDotVelocity * edgeDotVelocity);
+        b = edgeSquaredLength * ( 2 * (velocity * baseToVertex)) - 2.0 * (edgeDotVelocity * edgeDotBaseToVertex);
+        c = edgeSquaredLength * ( 1 - baseToVertex.squaredLength()) + (edgeDotBaseToVertex * edgeDotBaseToVertex);
+        if (Maths::getLowestRoot(a, b, c, t, &newT)) {
+            float f = (edgeDotVelocity*newT - edgeDotBaseToVertex) / edgeSquaredLength;
+            if (f >= 0.0 && f <= 1.0) {
+                t = newT;
+                foundCollison = true;
+                collisionPoint = this->Co + edge.getScaled(f);
+                collisionType = 2;
+            }
+        }
+    }
+
+    Logging::getInstance()->Log("isCollisionWithSphere: Nothing", "");
+
+    if (foundCollison) {
+        Logging::getInstance()->Log("isCollisionWithSphere: foundCollison", "");
+
+        float distToCollision = t * collider->velocity.getModule();
+
+        if (!collider->foundCollision || distToCollision < collider->nearestDistance) {
+
+            collider->nearestDistance = distToCollision;
+            collider->intersectionPoint = collisionPoint;
+
+            collider->foundCollision = true;
+            collider->normalPlane = this->getNormal();
+            collider->collisionType = collisionType;
+            this->is_colliding = true;
+        }
+    }
+
+    return foundCollison;
 }

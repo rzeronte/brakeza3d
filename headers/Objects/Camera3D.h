@@ -8,6 +8,7 @@
 #include "Object3D.h"
 #include "../Render/EngineSetup.h"
 #include "../Render/M3.h"
+#include "../../src/Collider.h"
 
 typedef float vec3_t[3];
 
@@ -27,12 +28,9 @@ public:
 
     Frustum *frustum;
 
-    // Camera velocity vector (for collision detection)
-    Vertex3D V1;
-    Vertex3D V2;
+    Collider *collider;
 
-    bool isIsInCollision() const;
-    void setIsInCollision(bool isInCollision);
+    bool first_collision = false;
 
     Camera3D();
 
@@ -62,8 +60,6 @@ public:
     void limitPitch();
 
     void consoleInfo();
-
-    Vertex3D getVelocity();
 };
 
 

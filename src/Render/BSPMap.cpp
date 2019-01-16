@@ -404,10 +404,7 @@ void BSPMap::PhysicsLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
         const int num = this->surface_triangles[surface].num;
 
         for (int i = offset; i < offset+num; i++) {
-            model_triangles[i].is_colliding = false;
-            if (model_triangles[i].isCollisionWithEllipsoid(cam)) {
-                model_triangles[i].is_colliding = true;
-                cam->setIsInCollision(true);
+            if (model_triangles[i].isCollisionWithSphere(cam->collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, cam)) {
             }
         }
     }

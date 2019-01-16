@@ -83,6 +83,7 @@ public:
     bool isPointInside(Vertex3D);
 
     bool isCollisionWithEllipsoid(Camera3D *cam);
+    bool isCollisionWithSphere(Collider *, int, Camera3D *cam);
 
 
 };

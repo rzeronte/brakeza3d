@@ -40,7 +40,11 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::camera->setPosition(Vertex3D(544, -32, 233));
+    Engine::camera->setPosition(Vertex3D(544, -32, 500));
+    //Engine::camera->setPosition(Vertex3D(551.6973, -32, 608.89));
+
+    //camera->yaw = -33.35128;
+    //camera->pitch = 168.3631;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -79,13 +83,13 @@ void Game::onStart()
     ball->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     ball->loadOBJBlender("../assets/models/Wolf.obj");
     ball->setShadowCaster(true);
-    this->addObject3D(ball, "box");
+    this->addObject3D(ball, "lobo");
 
     // cubo
     Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->setPosition(Vertex3D(544, -32, 643));
+    cubo->setPosition(Vertex3D(544.3, -32, 643));
     cubo->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cubo, "cubo");
 
@@ -93,7 +97,7 @@ void Game::onStart()
     Mesh3D *triangle = new Mesh3D();
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition(Vertex3D(544, -32, 603));
+    triangle->setPosition(Vertex3D(544.3, -32, 550.200));
     triangle->setRotation( M3(-90, -45, 0) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
@@ -102,7 +106,7 @@ void Game::onStart()
     Mesh3D *plane = new Mesh3D();
     plane->setEnabled(false);
     plane->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    plane->setPosition( Vertex3D(2, 0.4, 5) );
+    plane->setPosition(Vertex3D(544, -32, 613));
     plane->setRotation( M3(-90, -45, 0) );
     plane->loadOBJBlender("../assets/models/plane.obj");
     this->addObject3D(plane, "plane");
@@ -148,7 +152,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    loadBSP("start.bsp", "palette.lmp");
+    //loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -168,9 +172,10 @@ void Game::mainLoop()
 
         // Check aray Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish);
-
         // update camera position, rotation and frustum
-        this->cameraUpdate();
+        //this->cameraUpdate();
+
+        camera->UpdatePosition();
 
         // Checks pre update frame
         this->postUpdate();
@@ -193,14 +198,58 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
+    /*Vector3D vel = Vector3D(
+            Vertex3D(544.000, -32.000, 610.000),
+            Vertex3D(544.000, -32.000, 615.00)
+    );
+
+    // input
+    Vertex3D basePoint = vel.vertex1;
+    Vertex3D destination = vel.vertex2;
+
+    Mesh3D *triangleMesh= (Mesh3D*) getObjectByLabel("triangle");
+
+    Triangle triangle = triangleMesh->model_triangles[0];
+    triangle.parent->setRotation(triangle.parent->getRotation() * M3(0.1, 0.1, 0));
+
+    Collider *collider = new Collider();
+
+    collider->basePoint = vel.vertex1;
+    collider->velocity = vel.getComponent();
+    collider->normalizedVelocity = vel.getComponent().getNormalize();
+
+    triangle.isCollisionWithSphere(collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, camera);
+
+    // Determine the sliding plane
+    Vertex3D slidePlaneOrigin = collider->intersectionPoint;
+    Vertex3D slidePlaneNormal = basePoint - collider->intersectionPoint;
+    slidePlaneNormal = slidePlaneNormal.getNormalize();
+    Plane slidingPlane(slidePlaneOrigin,slidePlaneNormal);
+
+    // Again, sorry about formatting.. but look carefully ;)
+    float d = slidingPlane.distance(destination);
+    Vertex3D newDestinationPoint = destination - slidePlaneNormal.getScaled(d);
+
+    // Generate the slide vector, which will become our new
+    // velocity vector for the next iteration
+    Vertex3D newVelocityVector = newDestinationPoint - collider->intersectionPoint;
+
+    Vector3D newVelocity = Vector3D(collider->intersectionPoint, newDestinationPoint);
+
+    Drawable::drawVector3D(vel, camera, Color::blue());
+    Drawable::drawVector3D(newVelocity, camera, Color::green());
+
+    Logging::getInstance()->Log("Collision type: " + std::to_string(collider->collisionType), "");
+
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
-    //marine->rotation.y+=0.5f;
+    //marine->rotation.y+=0.5f;*/
 }
 
 void Game::preUpdate()
 {
     // Core preUpdate
     Engine::preUpdate();
+
 }
 
 void Game::onEnd()

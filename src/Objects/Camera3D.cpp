@@ -12,11 +12,11 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
-#define WALKING_SPEED		5.0
-#define TURN_SPEED			2.0
+#define WALKING_SPEED		3.0
+#define TURN_SPEED			3.0
 #define PITCH_SPEED			1.0
-#define STRAFE_SPEED		5.0
-#define MOUSE_SENSITIVITY	0.3
+#define STRAFE_SPEED		3.0
+#define MOUSE_SENSITIVITY	0.5
 
 Camera3D::Camera3D()
 {
@@ -39,6 +39,8 @@ Camera3D::Camera3D()
         farDistance,
         calcCanvasFarHeight(), calcCanvasFarWidth()
     );
+
+    collider = new Collider();
 }
 
 float Camera3D::getNearDistance()
@@ -211,17 +213,4 @@ void Camera3D::limitPitch()
     if (this->pitch <= -89) {
         this->pitch = -89;
     }
-}
-
-Vertex3D Camera3D::getVelocity()
-{
-    return this->V2 - this->V1;
-}
-
-bool Camera3D::isIsInCollision() const {
-    return isInCollision;
-}
-
-void Camera3D::setIsInCollision(bool isInCollision) {
-    Camera3D::isInCollision = isInCollision;
 }

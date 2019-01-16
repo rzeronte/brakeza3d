@@ -64,15 +64,15 @@ public:
             ImGui::Separator();
 
             if (ImGui::TreeNode( moving_test.c_str() )) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->getVelocity().x).c_str() );
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.x).c_str() );
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->getVelocity().y).c_str() );
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->getVelocity().z).c_str() );
+                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->velocity.z).c_str() );
                 ImGui::TreePop();
             }
 
-            if (camera->isIsInCollision()) {
+            if (camera->collider->foundCollision) {
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "COLLISION" );
             } else {
                 ImGui::TextColored(ImVec4(0.0f, 01.0f, 0.0f, 1.0f), "NO COLLISION" );

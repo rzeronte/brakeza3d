@@ -16,6 +16,12 @@ Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
     updateNormalVector();
 }
 
+Plane::Plane(const Vertex3D P, const Vertex3D N)
+{
+    this->normal = N;
+    this->A = P;
+}
+
 float Plane::distance(Vertex3D &p)
 {
     Vertex3D normal = getNormalVector().getNormalize();
@@ -93,4 +99,10 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
     );
 
     return P;
+}
+
+bool Plane::isFrontFacingTo(Vertex3D direction)
+{
+    double dot = this->normal * direction;
+    return (dot <= 0);
 }

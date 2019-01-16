@@ -30,8 +30,10 @@ public:
     Vertex3D getInverse();
 
     float getModule();
+    float squaredLength();
 
     Vertex3D getScaled(float);
+    void setLength(float);
 
     void consoleInfo(std::string label, bool);
 };

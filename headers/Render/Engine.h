@@ -104,6 +104,11 @@ public:
     Timer* getTimer();
 
     Object3D* getObjectByLabel(std::string label);
+
+    Vertex3D collideWithWorld( Vertex3D pos, const Vertex3D vel, int &collisionRecursionDepth, Collider *collider);
+    void worldCheckCollision(Collider *collider);
+    void collideAndSlide(Vertex3D vel, Vertex3D gravity, Collider *collider);
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

@@ -111,7 +111,7 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     bool BSP_COLLISIONS_STATUS = true;
-
+    int PLAYER_SPHERE_RADIUS = 1;
 };
 
 

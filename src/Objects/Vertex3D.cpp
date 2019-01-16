@@ -102,6 +102,13 @@ float Vertex3D::getModule()
     return norm;
 }
 
+float Vertex3D::squaredLength()
+{
+    float norm = (this->x*this->x) + (this->y*this->y) + (this->z*this->z);
+
+    return norm;
+}
+
 Vertex3D Vertex3D::getScaled(float s)
 {
     Vertex3D v;
@@ -111,4 +118,14 @@ Vertex3D Vertex3D::getScaled(float s)
     v.z = this->z * s;
 
     return v;
+}
+
+void Vertex3D::setLength(float length)
+{
+    Vertex3D n = this->getNormalize();
+
+    this->x = n.x * length;
+    this->y = n.y * length;
+    this->z = n.z * length;
+
 }
