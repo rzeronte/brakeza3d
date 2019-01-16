@@ -30,8 +30,8 @@ void Drawable::drawBox2D(SDL_Rect r)
 void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides)
 {
     // Center Near Plane
-    Drawable::drawVertex( f->fc, cam, Color::red());
-    Drawable::drawVertex( f->nc, cam, Color::white());
+    //Drawable::drawVertex( f->fc, cam, Color::red());
+    //Drawable::drawVertex( f->nc, cam, Color::white());
 
     //Drawable::drawObject3DAxis(screen, f, cam, false, false, true);
 
