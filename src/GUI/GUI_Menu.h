@@ -15,6 +15,11 @@ public:
 
         bool show_about_window = false;
 
+        const float range_min_radius = 1;
+        const float range_max_radius = 500;
+
+        const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
+
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza")) {
                 if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
@@ -35,6 +40,10 @@ public:
                 if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
                     ImGui::Checkbox("Show BFC triangles", &EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES);
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("Collisions", &EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED);
+                ImGui::DragScalar("Radius", ImGuiDataType_Float,  &EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, range_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
                 ImGui::Checkbox("Frustum Culling", &EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING);
@@ -64,12 +73,6 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Capture BSP data", &EngineSetup::getInstance()->DEBUG_BSP_MODE);
                 ImGui::Checkbox("Capture Mesh data", &EngineSetup::getInstance()->DEBUG_MESH_MODE);
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("BSP")) {
-                ImGui::Checkbox("Collisions", &EngineSetup::getInstance()->BSP_COLLISIONS_STATUS);
-                ImGui::Separator();
                 ImGui::EndMenu();
             }
 

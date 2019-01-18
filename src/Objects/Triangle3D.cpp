@@ -593,19 +593,13 @@ bool Triangle::isBSP()
     return this->is_bsp;
 }
 
-float Triangle::distanceToVertex3D(Vertex3D v)
-{
-    return Plane(Ao, Bo, Co).distance(v);
-}
-
 bool Triangle::isPointInside(Vertex3D v)
 {
     return Maths::PointInTriangle(v, Ao, Bo, Co);
 }
 
-bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *cam)
+bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D *cam)
 {
-    updateVertexSpaces(cam);
     this->is_colliding = false;
 
     Plane    trianglePlane = Plane(this->Ao, this->Bo, this->Co);
@@ -625,8 +619,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
         if (fabs(signedDistToTrianglePlane) >= radius) {
             // Sphere is not embedded in plane.
             // No collision possible:
-            Logging::getInstance()->Log("isCollisionWithSphere: normalDotVelocity abs > radius", "");
-
             return false;
         } else {
             // sphere is embedded in plane.
@@ -636,8 +628,8 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
             t1 = 1.0;
         }
     } else {
-        t0 = (-1 - signedDistToTrianglePlane) / normalDotVelocity;
-        t1 = (1 - signedDistToTrianglePlane) / normalDotVelocity;
+        t0 = (-radius - signedDistToTrianglePlane) / normalDotVelocity;
+        t1 = (radius - signedDistToTrianglePlane) / normalDotVelocity;
 
         // Swap so t0 < t1
         if (t0 > t1) {
@@ -647,8 +639,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
         }
 
         if (t0 > 1.0f || t1 < 0.0f) {
-            //Logging::getInstance()->Log("isCollisionWithSphere: Out of range t0 t1", "");
-
             return false;
         }
 
@@ -659,19 +649,15 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
     }
 
     bool foundCollison = false;
-    int collisionType = 0; // 0 == inside, 1 == vertex, 2 == edge
     Vertex3D collisionPoint;
     float t = 1.0;
 
     if (!embeddedInPlane) {
-        Logging::getInstance()->Log("isCollisionWithSphere: !embeddedInPlane", "");
-            Vertex3D planeIntersectionPoint = (collider->basePoint - triangleNormal) + collider->velocity.getScaled(t0);
+            Vertex3D planeIntersectionPoint = (collider->basePoint - triangleNormal.getScaled(radius)) + collider->velocity.getScaled(t0);
         if (this->isPointInside(planeIntersectionPoint)) {
-            Logging::getInstance()->Log("isCollisionWithSphere: !embeddedInPlane: OK Inside", "");
             foundCollison = true;
             collisionPoint = planeIntersectionPoint;
             t = t0;
-            collisionType = 0;
         }
     }
 
@@ -692,7 +678,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
             t = newT;
             foundCollison = true;
             collisionPoint = this->Ao;
-            collisionType = 1;
         }
         // P2
         b = 2.0 * (velocity * (base - this->Bo));
@@ -701,7 +686,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
             t = newT;
             foundCollison = true;
             collisionPoint = this->Bo;
-            collisionType = 1;
         }
 
         // P3
@@ -711,7 +695,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
             t = newT;
             foundCollison = true;
             collisionPoint = this->Co;
-            collisionType = 1;
         }
     }
 
@@ -736,7 +719,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
                 t = newT;
                 foundCollison = true;
                 collisionPoint = this->Ao + edge.getScaled(f);
-                collisionType = 2;
             }
         }
 
@@ -756,7 +738,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
                 t = newT;
                 foundCollison = true;
                 collisionPoint = this->Bo + edge.getScaled(f);
-                collisionType = 2;
             }
         }
         // p3 -> p1:
@@ -775,16 +756,11 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
                 t = newT;
                 foundCollison = true;
                 collisionPoint = this->Co + edge.getScaled(f);
-                collisionType = 2;
             }
         }
     }
 
-    Logging::getInstance()->Log("isCollisionWithSphere: Nothing", "");
-
     if (foundCollison) {
-        Logging::getInstance()->Log("isCollisionWithSphere: foundCollison", "");
-
         float distToCollision = t * collider->velocity.getModule();
 
         if (!collider->foundCollision || distToCollision < collider->nearestDistance) {
@@ -793,8 +769,6 @@ bool Triangle::isCollisionWithSphere(Collider *collider, int radius, Camera3D *c
             collider->intersectionPoint = collisionPoint;
 
             collider->foundCollision = true;
-            collider->normalPlane = this->getNormal();
-            collider->collisionType = collisionType;
             this->is_colliding = true;
         }
     }

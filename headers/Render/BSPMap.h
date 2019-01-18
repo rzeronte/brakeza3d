@@ -179,8 +179,7 @@ private:
     unsigned int *textureObjNames;	// Array of available texture object names, the name is a number
     int *visibleSurfaces;			// Array of visible surfaces, contains an index to the surfaces
     int numMaxEdgesPerSurface;      // Max edges per surface
-
-
+    int numVisibleSurfacesFrame = 0;
 
 public:
     dheader_t *header;
@@ -319,11 +318,13 @@ public:
     float CalculateDistance(vec3_t a, vec3_t b);
     void DrawSurface(int surface, Camera3D *camera);
     void DrawSurfaceTriangles(int surface, Camera3D *camera);
+    void CheckPhysicsSurfaceTriangles(int surface, Camera3D *camera);
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
+    void CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 
-    void DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
-    void PhysicsLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *Cam);
+    void DrawLeafVisibleSet(Camera3D *Cam);
+    void PhysicsLeafVisibleSet(Camera3D *Cam);
 
     bspleaf_t *FindLeaf(Camera3D *camera);
 
@@ -332,6 +333,7 @@ public:
     // Get array of edges, contains the index to the start and end vertices in the pV
     entity_t *getEntities() { return (entity_t *) &bsp[header->entities.offset]; }
 
+    void setVisibleSet(bspleaf_t *pLeaf);
 
 };
 

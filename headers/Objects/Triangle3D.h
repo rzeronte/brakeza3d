@@ -78,12 +78,9 @@ public:
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
-    float distanceToVertex3D(Vertex3D);
-
     bool isPointInside(Vertex3D);
 
-    bool isCollisionWithEllipsoid(Camera3D *cam);
-    bool isCollisionWithSphere(Collider *, int, Camera3D *cam);
+    bool isCollisionWithSphere(Collider *, float, Camera3D *cam);
 
 
 };

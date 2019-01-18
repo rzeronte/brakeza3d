@@ -41,10 +41,6 @@ void Game::onStart()
     Engine::onStart();
 
     Engine::camera->setPosition(Vertex3D(544, -32, 500));
-    //Engine::camera->setPosition(Vertex3D(551.6973, -32, 608.89));
-
-    //camera->yaw = -33.35128;
-    //camera->pitch = 168.3631;
 
     /*LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -152,7 +148,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    //loadBSP("start.bsp", "palette.lmp");
+    loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -170,11 +166,10 @@ void Game::mainLoop()
             if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) { controller->handleMouse(&this->e, this->camera); }
         }
 
-        // Check aray Uint8 *keyboard
+        // Check array Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish);
-        // update camera position, rotation and frustum
-        //this->cameraUpdate();
 
+        // update camera position
         camera->UpdatePosition();
 
         // Checks pre update frame
@@ -198,49 +193,6 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
-    /*Vector3D vel = Vector3D(
-            Vertex3D(544.000, -32.000, 610.000),
-            Vertex3D(544.000, -32.000, 615.00)
-    );
-
-    // input
-    Vertex3D basePoint = vel.vertex1;
-    Vertex3D destination = vel.vertex2;
-
-    Mesh3D *triangleMesh= (Mesh3D*) getObjectByLabel("triangle");
-
-    Triangle triangle = triangleMesh->model_triangles[0];
-    triangle.parent->setRotation(triangle.parent->getRotation() * M3(0.1, 0.1, 0));
-
-    Collider *collider = new Collider();
-
-    collider->basePoint = vel.vertex1;
-    collider->velocity = vel.getComponent();
-    collider->normalizedVelocity = vel.getComponent().getNormalize();
-
-    triangle.isCollisionWithSphere(collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, camera);
-
-    // Determine the sliding plane
-    Vertex3D slidePlaneOrigin = collider->intersectionPoint;
-    Vertex3D slidePlaneNormal = basePoint - collider->intersectionPoint;
-    slidePlaneNormal = slidePlaneNormal.getNormalize();
-    Plane slidingPlane(slidePlaneOrigin,slidePlaneNormal);
-
-    // Again, sorry about formatting.. but look carefully ;)
-    float d = slidingPlane.distance(destination);
-    Vertex3D newDestinationPoint = destination - slidePlaneNormal.getScaled(d);
-
-    // Generate the slide vector, which will become our new
-    // velocity vector for the next iteration
-    Vertex3D newVelocityVector = newDestinationPoint - collider->intersectionPoint;
-
-    Vector3D newVelocity = Vector3D(collider->intersectionPoint, newDestinationPoint);
-
-    Drawable::drawVector3D(vel, camera, Color::blue());
-    Drawable::drawVector3D(newVelocity, camera, Color::green());
-
-    Logging::getInstance()->Log("Collision type: " + std::to_string(collider->collisionType), "");
-
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;*/
 }
@@ -249,7 +201,6 @@ void Game::preUpdate()
 {
     // Core preUpdate
     Engine::preUpdate();
-
 }
 
 void Game::onEnd()

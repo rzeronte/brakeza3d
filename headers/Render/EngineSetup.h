@@ -95,9 +95,10 @@ public:
     Uint32 TRIANGLE_DEMO_EXTRALINE_COLOR = 0x00FF00; // GREEN
 
     // GUI Setup values
-    float GUI_MIN_SPACE_COORDINATES_VALUE = -100.f;
-    float GUI_MAX_SPACE_COORDINATES_VALUE = -100.f;
-    float GUI_FLOAT_SPACE_COORDINATES_SENS = -0.1f;
+    float GUI_BAR_DEFAULT_MIN_VALUE = -999999999.f;
+    float GUI_BAR_DEFAULT_MAX_VALUE = -999999999.f;
+
+    float GUI_BAR_SENSITIVITY = -0.1f;
 
     int GUI_MIN_SPRITE3D_FRAMERATE = 1;
     int GUI_MAX_SPRITE3D_FRAMERATE = 30;
@@ -110,8 +111,16 @@ public:
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
-    bool BSP_COLLISIONS_STATUS = true;
-    int PLAYER_SPHERE_RADIUS = 1;
+    // COLLISION SYSTEM
+    bool BSP_COLLISIONS_ENABLED = true;
+    float PLAYER_SPHERE_RADIUS = 50;
+
+    // KEYBOARD & MOUSE
+    float WALKING_SPEED     = 10.0;
+    float TURN_SPEED        = 10.0;
+    float PITCH_SPEED       = 2.0;
+    float STRAFE_SPEED      = 3.0;
+    float MOUSE_SENSITIVITY	= 0.5;
 };
 
 

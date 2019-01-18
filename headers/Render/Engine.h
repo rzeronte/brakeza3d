@@ -106,8 +106,7 @@ public:
     Object3D* getObjectByLabel(std::string label);
 
     Vertex3D collideWithWorld( Vertex3D pos, const Vertex3D vel, int &collisionRecursionDepth, Collider *collider);
-    void worldCheckCollision(Collider *collider);
-    void collideAndSlide(Vertex3D vel, Vertex3D gravity, Collider *collider);
+    void collideAndSlide(Vertex3D vel, Vertex3D gravity);
 
 };
 

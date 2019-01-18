@@ -13,11 +13,6 @@
 class Collider {
 
 public:
-    Vertex3D eRadius;  // ellipsoid radius
-    // Information about the move being requested: (in R3)
-
-    Vertex3D R3Velocity;
-    Vertex3D R3Position;
 
     // Information about the move being requested: (in eSpace)
     Vertex3D velocity;
@@ -29,8 +24,6 @@ public:
     double nearestDistance;
     Vertex3D intersectionPoint;
 
-    Vertex3D normalPlane;
-    int collisionType;
 };
 
 #endif //BRAKEDA3D_COLLIDER_H

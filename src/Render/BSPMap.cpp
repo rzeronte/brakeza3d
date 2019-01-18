@@ -312,10 +312,21 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     }
 }
 
+void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
+{
+    const int offset = this->surface_triangles[surface].offset;
+    const int num = this->surface_triangles[surface].num;
+
+    for (int i = offset; i < offset+num; i++){
+        this->model_triangles[i].isCollisionWithSphere(cam->collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, cam);
+    }
+}
+
 bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int surface)
 {
     Vertex3D normal;
 
+    // Hayamos la normal al triángulo
     for (int i = 0, j = 1; i<num_vertices; i++, j++) {
         if (j == num_vertices) j = 0;
         normal.x += (((vertices[i].z) + (vertices[j].z)) * ((vertices[j].y) - (vertices[i].y)));
@@ -340,8 +351,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     return true;
 }
 
-// Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
+void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 {
     int numVisibleSurfaces = 0;
 
@@ -366,47 +376,26 @@ void BSPMap::DrawLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
         }
     }
 
-    DrawSurfaceList(visibleSurfaces, numVisibleSurfaces, cam);
+    this->numVisibleSurfacesFrame = numVisibleSurfaces;
+}
+
+// Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
+void BSPMap::DrawLeafVisibleSet(Camera3D *cam)
+{
+    DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam);
 }
 
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::PhysicsLeafVisibleSet(bspleaf_t *pLeaf, Camera3D *cam)
+void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam)
 {
-    int numVisibleSurfaces = 0;
+    CheckPhysicsSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam);
+}
 
-    // Get a pointer to the visibility list that is associated with the BSP leaf
-    unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
-
-    for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
-        unsigned char veces = *(visibilityList);
-        if (veces == 0) {
-            i += 8 * *(++visibilityList);
-        } else {
-            for (int j = 0; j < 8; j++, i++) {
-                if (Tools::getBit(veces, j)) {
-                    bspleaf_t *visibleLeaf = this->getLeaf(i);
-                    int firstSurface = visibleLeaf->firstsurf;
-                    int lastSurface = firstSurface + visibleLeaf->numsurf;
-                    for (int k = firstSurface; k < lastSurface; k++) {
-                        visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
-                    }
-                }
-            }
-        }
-    }
-
+void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam)
+{
     for (int i = 0; i < numVisibleSurfaces; i++) {
-
-        int surface = visibleSurfaces[i];
-
-        const int offset = this->surface_triangles[surface].offset;
-        const int num = this->surface_triangles[surface].num;
-
-        for (int i = offset; i < offset+num; i++) {
-            if (model_triangles[i].isCollisionWithSphere(cam->collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, cam)) {
-            }
-        }
+        CheckPhysicsSurfaceTriangles(visibleSurfaces[i], cam);
     }
 }
 

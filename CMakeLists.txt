@@ -113,8 +113,11 @@ add_executable(brakeda3d
         WAD/Directory.h
         WAD/Identification.cpp
         WAD/Identification.h
+        src/Collider.cpp
+        src/Collider.h
         WAD/Signature.cpp
         WAD/Signature.h
+
         WAD/WAD.cpp
         WAD/WAD.h
         WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h src/Render/BSPMap.cpp headers/Render/BSPMap.h src/GUI/GUI_Camera.h )

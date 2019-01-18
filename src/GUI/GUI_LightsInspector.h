@@ -29,9 +29,9 @@ class GUI_LightsInspector : public GUI  {
 
                 ImGui::Begin(title.c_str(), &show, window_flags);
 
-                const float  range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
-                const float  range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
-                const float  range_sensibility = EngineSetup::getInstance()->GUI_FLOAT_SPACE_COORDINATES_SENS;
+                const float  range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
+                const float  range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
+                const float  range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
 
                 for (int i = 0; i < number; i++) {
                     bool changed_color = false;

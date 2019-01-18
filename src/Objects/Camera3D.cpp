@@ -12,12 +12,6 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
-#define WALKING_SPEED		3.0
-#define TURN_SPEED			3.0
-#define PITCH_SPEED			1.0
-#define STRAFE_SPEED		3.0
-#define MOUSE_SENSITIVITY	0.5
-
 Camera3D::Camera3D()
 {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
@@ -126,55 +120,55 @@ void Camera3D::consoleInfo()
 
 void Camera3D::Pitch(float pitch)
 {
-    this->pitch += pitch * MOUSE_SENSITIVITY;
+    this->pitch += pitch * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
     limitPitch();
 }
 
 void Camera3D::Yaw(float yaw)
 {
-    this->yaw -= yaw * MOUSE_SENSITIVITY;
+    this->yaw -= yaw * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
 }
 
 void Camera3D::PitchUp(void)
 {
-    pitch += PITCH_SPEED;
+    pitch += EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
 void Camera3D::PitchDown(void)
 {
-    pitch -= PITCH_SPEED;
+    pitch -= EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
 void Camera3D::MoveForward(void)
 {
-    speed += WALKING_SPEED;
+    speed += EngineSetup::getInstance()->WALKING_SPEED;
 }
 
 void Camera3D::MoveBackward(void)
 {
-    speed -= WALKING_SPEED;
+    speed -= EngineSetup::getInstance()->WALKING_SPEED;
 }
 
 void Camera3D::TurnRight(void)
 {
-    yaw -= TURN_SPEED;
+    yaw -= EngineSetup::getInstance()->TURN_SPEED;
 }
 
 void Camera3D::TurnLeft(void)
 {
-    yaw += TURN_SPEED;
+    yaw += EngineSetup::getInstance()->TURN_SPEED;
 }
 
 void Camera3D::StrafeRight(void)
 {
-    strafe += STRAFE_SPEED;
+    strafe += EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
 void Camera3D::StrafeLeft(void)
 {
-    strafe -= STRAFE_SPEED;
+    strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
 void Camera3D::UpdatePosition(void)

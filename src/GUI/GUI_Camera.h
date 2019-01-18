@@ -20,16 +20,16 @@ public:
         if (show) {
 
             ImGui::SetNextWindowPos(ImVec2(260, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 160), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 240), ImGuiSetCond_Once);
             window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Camera Inspector";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
-            const float range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
-            const float range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
-            const float range_sensibility = EngineSetup::getInstance()->GUI_FLOAT_SPACE_COORDINATES_SENS;
-            const float range_sensibility_test = 1;
+            const float range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
+            const float range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
+
+            const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
 
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
@@ -37,13 +37,19 @@ public:
             const float range_min_yaw = 0;
             const float range_max_yaw = 0;
 
+            const float range_min_movement = 0;
+            const float range_max_movement = 50;
+
+            const float range_min_mouse_sensitivity = 0;
+            const float range_max_mouse_sensitivity = 3;
+
             const float test_min = 0;
             const float test_max = 100000;
 
             std::string position_text = "Position##1";
             std::string rotation_text = "Orientation##2";
-            std::string moving_test = "Moving values##3";
-            std::string is_in_collision = "Is in collision?##4";
+            std::string movement_text = "Keyboard##3";
+            std::string mouse_text    = "Mouse##4";
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {
@@ -61,9 +67,17 @@ public:
                 ImGui::DragScalar("Pitch", ImGuiDataType_Float,  &camera->pitch, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
+
             ImGui::Separator();
 
-            if (ImGui::TreeNode( moving_test.c_str() )) {
+            if (ImGui::TreeNode( movement_text.c_str() )) {
+                ImGui::DragScalar("Walking", ImGuiDataType_Float, &EngineSetup::getInstance()->WALKING_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Turn", ImGuiDataType_Float,    &EngineSetup::getInstance()->TURN_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Pitch", ImGuiDataType_Float,   &EngineSetup::getInstance()->PITCH_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Strafe", ImGuiDataType_Float,  &EngineSetup::getInstance()->STRAFE_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
+
+                ImGui::Separator();
+
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.x).c_str() );
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
@@ -72,17 +86,13 @@ public:
                 ImGui::TreePop();
             }
 
-            if (camera->collider->foundCollision) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "COLLISION" );
-            } else {
-                ImGui::TextColored(ImVec4(0.0f, 01.0f, 0.0f, 1.0f), "NO COLLISION" );
+            ImGui::Separator();
+
+            if (ImGui::TreeNode( mouse_text.c_str() )) {
+                ImGui::Checkbox("Free look", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
+                ImGui::DragScalar("Sens.", ImGuiDataType_Float,  &EngineSetup::getInstance()->MOUSE_SENSITIVITY, range_sensibility,  &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f", 1.0f);
+                ImGui::TreePop();
             }
-
-            ImGui::Separator();
-
-            ImGui::Checkbox("Mouse Rotation", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
-
-            ImGui::Separator();
 
             ImGui::End();
         }

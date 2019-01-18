@@ -29,9 +29,9 @@ public:
             std::string title = "Object Inspector (" + std::to_string(number) + " objects)";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
-            const float range_min = EngineSetup::getInstance()->GUI_MIN_SPACE_COORDINATES_VALUE;
-            const float range_max = EngineSetup::getInstance()->GUI_MAX_SPACE_COORDINATES_VALUE;
-            const float range_sensibility = EngineSetup::getInstance()->GUI_FLOAT_SPACE_COORDINATES_SENS;
+            const float range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
+            const float range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
+            const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
 
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;

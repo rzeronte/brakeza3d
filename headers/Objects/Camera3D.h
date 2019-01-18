@@ -30,8 +30,6 @@ public:
 
     Collider *collider;
 
-    bool first_collision = false;
-
     Camera3D();
 
     float calcCanvasNearWidth();
