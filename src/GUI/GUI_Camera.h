@@ -83,6 +83,13 @@ public:
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->velocity.z).c_str() );
+
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->jumpVelocity.x).c_str() );
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->jumpVelocity.y).c_str() );
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->jumpVelocity.z).c_str() );
+
                 ImGui::TreePop();
             }
 

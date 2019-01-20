@@ -24,6 +24,11 @@ public:
     double nearestDistance;
     Vertex3D intersectionPoint;
 
+    bool jumping;
+    float startJumpTime;
+
+    Vertex3D jumpVelocity;
+
 };
 
 #endif //BRAKEDA3D_COLLIDER_H

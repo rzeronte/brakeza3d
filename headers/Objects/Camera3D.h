@@ -14,7 +14,6 @@ typedef float vec3_t[3];
 
 class Camera3D : public Object3D {
 private:
-    bool isInCollision = false;
 public:
     float yaw;			// Direction of travel
     float pitch;		// Neck angle
@@ -55,6 +54,7 @@ public:
     void StrafeRight(void);
     void StrafeLeft(void);
 
+    void Jump();
     void limitPitch();
 
     void consoleInfo();

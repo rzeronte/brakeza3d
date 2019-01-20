@@ -133,7 +133,7 @@ void Engine::drawGUI()
 {
     ImGui::NewFrame();
 
-    //bool open = true;
+    ///bool open = true;
     //ImGui::ShowDemoWindow(&open);
 
     gui_engine->setFps(fps);
@@ -194,7 +194,7 @@ void Engine::postUpdate()
     if ( EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED) {
         this->collideAndSlide(
             Vector3D(camera->collider->basePoint, *camera->getPosition()).getComponent(),
-            Vertex3D(0, 0, 0)
+            EngineSetup::getInstance()->gravity
         );
     } else {
         this->cameraUpdate();
@@ -414,15 +414,9 @@ void Engine::Close()
     SDL_Quit();
 }
 
-void Engine::processFPS() {
-    fps = countedFrames / ( fpsTimer.getTicks() / 1000.f );
-    if( fps > 2000000 ) { fps = 0; }
-    ++countedFrames;
-}
-
 Timer* Engine::getTimer()
 {
-    return &this->fpsTimer;
+    return &this->engineTimer;
 }
 
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
@@ -436,7 +430,6 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
 Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRecursionDepth, Collider *collider)
 {
-
     const float unitsPerMeter = 100.0f;
 
     // All hard-coded distances in this function is
@@ -512,15 +505,73 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
 
 void Engine::collideAndSlide(Vertex3D vel, Vertex3D gravity)
 {
-    // calculate position and velocity in eSpace
-    Vertex3D eSpacePosition = camera->collider->basePoint;
-    Vertex3D eSpaceVelocity = vel;
-
-    // Iterate until we have our final position.
+    // slide
     int collisionRecursionDepth = 0;
-    Vertex3D finalPosition = collideWithWorld(eSpacePosition, eSpaceVelocity, collisionRecursionDepth, camera->collider);
+    Vertex3D finalPosition = collideWithWorld(camera->collider->basePoint, vel, collisionRecursionDepth, camera->collider);
 
-    // Move the entity (application specific function)
+    if (camera->collider->jumping) {
+        // jumping
+        collisionRecursionDepth = 0;
+        camera->collider->jumpVelocity = camera->collider->jumpVelocity - EngineSetup::getInstance()->gravity.getScaled(camera->collider->startJumpTime);
+        camera->collider->startJumpTime += 1/this->getDeltaTime();
+
+        if (camera->collider->jumpVelocity.y <= 0) {
+            camera->collider->jumping = false;
+        }
+
+        camera->collider->basePoint = finalPosition;
+        camera->collider->velocity = camera->collider->jumpVelocity;
+        camera->collider->normalizedVelocity = camera->collider->jumpVelocity.getNormalize();
+
+        finalPosition = collideWithWorld(finalPosition, camera->collider->jumpVelocity.getInverse(), collisionRecursionDepth, camera->collider);
+
+    } else {
+        // gravity
+        camera->collider->basePoint = finalPosition;
+        camera->collider->velocity = gravity;
+        camera->collider->normalizedVelocity = gravity.getNormalize();
+
+        collisionRecursionDepth = 0;
+        finalPosition = collideWithWorld(finalPosition, gravity, collisionRecursionDepth, camera->collider);
+    }
+
     camera->setPosition(finalPosition);
     cameraUpdate();
+}
+
+void Engine::updateTimer()
+{
+    this->current_ticks = this->engineTimer.getTicks();
+    this->deltaTime = this->current_ticks - this->last_ticks;
+    this->last_ticks = this->current_ticks;
+
+    this->timerCurrent+= this->deltaTime/1000.f;
+
+    //float step = (float) 1 / 1;
+
+    if (timerCurrent >= 1) {
+        timerCurrent = 0;
+    }
+}
+
+float Engine::getDeltaTime()
+{
+    return this->deltaTime;
+}
+
+void Engine::processFPS()
+{
+    this->updateTimer();
+
+    /*countedFrames2++;
+
+    if (timerCurrent == 0) {
+        fps = countedFrames2;
+        countedFrames2 = 0;
+        Logging::getInstance()->Log(std::to_string(fps), "INFO");
+    }*/
+
+    fps = countedFrames / ( engineTimer.getTicks() / 1000.f );
+    if( fps > 2000000 ) { fps = 0; }
+    ++countedFrames;
 }

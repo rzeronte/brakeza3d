@@ -24,6 +24,8 @@ public:
     Vertex3D down     = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
+    Vertex3D gravity = Vertex3D(0, 9.8f, 0);
+
     // Screen dimension constants
     int SCREEN_WIDTH = 320;
     int SCREEN_HEIGHT = 240;
@@ -113,7 +115,7 @@ public:
 
     // COLLISION SYSTEM
     bool BSP_COLLISIONS_ENABLED = true;
-    float PLAYER_SPHERE_RADIUS = 50;
+    float PLAYER_SPHERE_RADIUS = 1;
 
     // KEYBOARD & MOUSE
     float WALKING_SPEED     = 10.0;
@@ -121,6 +123,9 @@ public:
     float PITCH_SPEED       = 2.0;
     float STRAFE_SPEED      = 3.0;
     float MOUSE_SENSITIVITY	= 0.5;
+
+    float JUMP_FORCE = 10;
+
 };
 
 

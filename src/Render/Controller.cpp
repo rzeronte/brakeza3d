@@ -67,6 +67,11 @@ void Controller::handleKeyboard(Camera3D *camera, bool &done)
     if (keyboard[SDL_SCANCODE_UP]) {
         camera->PitchDown();
     }
+
+    if (keyboard[SDL_SCANCODE_SPACE]) {
+        camera->Jump();
+    }
+
     if (keyboard[SDL_SCANCODE_ESCAPE]) {
         done = true;
     }

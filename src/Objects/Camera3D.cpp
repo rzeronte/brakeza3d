@@ -208,3 +208,18 @@ void Camera3D::limitPitch()
         this->pitch = -89;
     }
 }
+
+void Camera3D::Jump()
+{
+    if (!this->collider->jumping) {
+
+        this->collider->jumping = true;
+        this->collider->startJumpTime = 0;
+        this->collider->jumpVelocity = Vertex3D(
+            this->collider->velocity.x,
+            EngineSetup::getInstance()->JUMP_FORCE,
+            this->collider->velocity.z
+        );
+
+    }
+}

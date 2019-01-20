@@ -74,12 +74,12 @@ void Game::onStart()
     this->addObject3D(mono, "mono");
 
     // ball
-    Mesh3D *ball = new Mesh3D();
-    ball->setEnabled(false);
-    ball->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    ball->loadOBJBlender("../assets/models/Wolf.obj");
-    ball->setShadowCaster(true);
-    this->addObject3D(ball, "lobo");
+    Mesh3D *wolf = new Mesh3D();
+    wolf->setEnabled(false);
+    wolf->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    wolf->loadOBJBlender("../assets/models/Wolf.obj");
+    wolf->setShadowCaster(true);
+    this->addObject3D(wolf, "wolf");
 
     // cubo
     Mesh3D *cubo = new Mesh3D();
@@ -91,7 +91,7 @@ void Game::onStart()
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setEnabled(true);
+    triangle->setEnabled(false);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition(Vertex3D(544.3, -32, 550.200));
     triangle->setRotation( M3(-90, -45, 0) );
@@ -148,12 +148,12 @@ void Game::onStart()
     testWad->render();
     */
 
-    loadBSP("start.bsp", "palette.lmp");
+    loadBSP("e1m1.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
 {
-    fpsTimer.start();
+    engineTimer.start();
 
     ImGuiIO& io = ImGui::GetIO();
     while(!finish) {
@@ -185,7 +185,7 @@ void Game::mainLoop()
         Engine::processFPS();
     }
 
-    fpsTimer.stop();
+    engineTimer.stop();
 }
 
 void Game::onUpdate()

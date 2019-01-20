@@ -49,7 +49,11 @@ public:
     TTF_Font *font = NULL;
 
     // Timer
-    Timer fpsTimer;
+    Timer engineTimer;
+    float deltaTime;
+    float last_ticks;
+    float current_ticks;
+    float timerCurrent;
 
     // Fps counter
     float fps;
@@ -107,6 +111,9 @@ public:
 
     Vertex3D collideWithWorld( Vertex3D pos, const Vertex3D vel, int &collisionRecursionDepth, Collider *collider);
     void collideAndSlide(Vertex3D vel, Vertex3D gravity);
+
+    void updateTimer();
+    float getDeltaTime();
 
 };
 
