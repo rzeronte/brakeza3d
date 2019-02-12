@@ -91,6 +91,7 @@ add_executable(brakeda3d
         src/GUI/GUI_Engine.h
         src/GUI/GUI_LightsInspector.h
         src/GUI/GUI_Log.h
+        src/GUI/GUI_Physics.h
         src/Render/Logging.cpp
 
         headers/Render/Logging.h
