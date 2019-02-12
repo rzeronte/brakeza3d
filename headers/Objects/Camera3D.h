@@ -29,6 +29,8 @@ public:
 
     Collider *collider;
 
+    //Vector3D frameVelocity;
+
     Camera3D();
 
     float calcCanvasNearWidth();
@@ -40,7 +42,7 @@ public:
     float getVerticalFOV();
 
     void UpdateFrustum();
-    void UpdatePosition(void);
+    void UpdateColliderForceMovement(void);
     void UpdateRotation(void);
 
     void Pitch(float pitch);

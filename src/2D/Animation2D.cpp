@@ -21,7 +21,7 @@ void Animation2D::loadImages()
 {
     for (int i = 0; i < this->getNumFrames() ; i++) {
         std::string file = EngineSetup::getInstance()->SPRITES_FOLDER + this->base_file + "_" + std::to_string(i) + ".png";
-        this->frames[i]->loadTGA( file.c_str() );
+        this->frames[i]->loadTGA( file.c_str(), 1 );
     }
 }
 

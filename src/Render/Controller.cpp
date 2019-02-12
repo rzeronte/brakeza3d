@@ -43,36 +43,38 @@ void Controller::handleKeyboard(Camera3D *camera, bool &done)
 {
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
 
-    if (keyboard[SDL_SCANCODE_W]) {
-        camera->MoveForward();
-    }
-    if (keyboard[SDL_SCANCODE_S]) {
-        camera->MoveBackward();
-    }
-    if (keyboard[SDL_SCANCODE_A]) {
-        camera->StrafeLeft();
-    }
-    if (keyboard[SDL_SCANCODE_D]) {
-        camera->StrafeRight();
-    }
-    if (keyboard[SDL_SCANCODE_RIGHT]) {
-        camera->TurnRight();
-    }
-    if (keyboard[SDL_SCANCODE_LEFT]) {
-        camera->TurnLeft();
-    }
-    if (keyboard[SDL_SCANCODE_DOWN]) {
-        camera->PitchUp();
-    }
-    if (keyboard[SDL_SCANCODE_UP]) {
-        camera->PitchDown();
-    }
-
-    if (keyboard[SDL_SCANCODE_SPACE]) {
-        camera->Jump();
-    }
-
     if (keyboard[SDL_SCANCODE_ESCAPE]) {
         done = true;
+    }
+
+    if (camera->collider->onGround || EngineSetup::getInstance()->ENABLE_FLYING) {
+        if (keyboard[SDL_SCANCODE_W]) {
+            camera->MoveForward();
+        }
+        if (keyboard[SDL_SCANCODE_S]) {
+            camera->MoveBackward();
+        }
+        if (keyboard[SDL_SCANCODE_A]) {
+            camera->StrafeLeft();
+        }
+        if (keyboard[SDL_SCANCODE_D]) {
+            camera->StrafeRight();
+        }
+        if (keyboard[SDL_SCANCODE_RIGHT]) {
+            camera->TurnRight();
+        }
+        if (keyboard[SDL_SCANCODE_LEFT]) {
+            camera->TurnLeft();
+        }
+        if (keyboard[SDL_SCANCODE_DOWN]) {
+            camera->PitchUp();
+        }
+        if (keyboard[SDL_SCANCODE_UP]) {
+            camera->PitchDown();
+        }
+
+        if (keyboard[SDL_SCANCODE_SPACE]) {
+            camera->Jump();
+        }
     }
 }

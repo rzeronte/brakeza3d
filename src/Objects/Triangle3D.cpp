@@ -18,6 +18,7 @@
 Triangle::Triangle() {
     texture = NULL;
     parent = NULL;
+    lightmap = new Texture();
 }
 
 Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
@@ -30,6 +31,9 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
 
     // la textura se carga bajo demanda
     texture = NULL;
+    this->lod = 1;
+    
+    lightmap = new Texture();
 }
 
 
@@ -56,6 +60,32 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
     bs1 = Maths::barycentricSide( (int) As.x, (int) As.y, Bs, Cs );
     bs2 = Maths::barycentricSide( (int) Bs.x, (int) Bs.y, Cs, As );
     bs3 = Maths::barycentricSide( (int) Cs.x, (int) Cs.y, As, Bs );
+
+    // lightmap coordinates
+    if (getLightmap()->isLightMapped()) {
+        light_u1 = Ac.u;
+        light_v1 = Ac.v;
+
+        light_u2 = Bc.u;
+        light_v2 = Bc.v;
+
+        light_u3 = Cc.u;
+        light_v3 = Cc.v;
+    }
+
+    // texture coordinates
+    if (this->getTexture() != NULL) {
+            tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
+            tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
+
+            tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
+            tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
+
+            tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
+            tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
+
+    }
+
 }
 
 void Triangle::updateNormal()
@@ -185,7 +215,7 @@ bool Triangle::clipping(Camera3D *cam)
         Triangle new_triangles[10];
         int num_new_triangles = 0;
 
-        Maths::TriangulatePolygon(num_inputvertices, input_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), true);
+        Maths::TriangulatePolygon(num_inputvertices, input_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), this->getLightmap(), true);
 
         for (int i = 0; i < num_new_triangles; i++) {
             EngineBuffers::getInstance()->trianglesClippingCreated++;
@@ -243,6 +273,8 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
 
 void Triangle::scanVertices(Camera3D *cam)
 {
+    this->lod = processLOD();
+
     // y obtenemos los puntos en la proyección 2d
     Point2D v1 = this->As;
     Point2D v2 = this->Bs;
@@ -281,7 +313,7 @@ void Triangle::scanTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc)
     float curx1 = pc.x;
     float curx2 = pc.x;
 
-    for (int scanlineY = (int) pc.y; scanlineY > pa.y; scanlineY--) {
+    for (int scanlineY = (int) pc.y; scanlineY >= pa.y; scanlineY--) {
         this->scanLine(curx1, curx2, scanlineY);
         curx1 -= invslope1;
         curx2 -= invslope2;
@@ -402,7 +434,7 @@ void Triangle::scanLine(float start_x, float end_x, const int y)
         end_x = tmp;
     }
 
-    for (int x = (int) start_x ; x < end_x; x++) {
+    for (int x = (int) start_x ; x <= end_x; x++) {
         processPixel(Point2D(x, y));
     }
 }
@@ -414,8 +446,8 @@ void Triangle::processPixel(const Point2D &pointFinal)
     Uint32 pixelColor;
 
     Maths::getBarycentricCoordinatesPrecalc(alpha, theta, gamma, pointFinal.x, pointFinal.y, As, Bs, Cs, bs1, bs2, bs3);
-
-    float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);               // Homogeneous clipspace
+    float z = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z); // Homogeneous clipspace
+    float ignorablePartInt;
 
     // EngineBuffers
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
@@ -432,6 +464,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
         }
     }
 
+    // Gradient
     if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
         pixelColor = (Uint32) Tools::createRGB(alpha * 255, theta * 255, gamma * 255);
     }
@@ -439,32 +472,81 @@ void Triangle::processPixel(const Point2D &pointFinal)
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
         if (this->getTexture() != NULL) {
-            const float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
 
             // Correct perspective mapping
-            float u = ( alpha * (Ac.u/Ac.z) + theta * (Bc.u/Bc.z) + gamma * (Cc.u/Cc.z) );
-            float v = ( alpha * (Ac.v/Ac.z) + theta * (Bc.v/Bc.z) + gamma * (Cc.v/Cc.z) );
+            const float z = 1 / ( alpha * (1/Ac.z) + theta * (1/Bc.z) + gamma * (1/Cc.z) );
 
-            u*=z;
-            v*=z;
+            // lightmap coordinates
+            float light_u = ( alpha * (light_u1/Ac.z) + theta * (light_u2/Bc.z) + gamma * (light_u3/Cc.z) );
+            float light_v = ( alpha * (light_v1/Ac.z) + theta * (light_v2/Bc.z) + gamma * (light_v3/Cc.z) );
 
-            float ignorablePartInt;
-            if (!std::signbit(u)) {
-                u = modf(abs(u) , &ignorablePartInt);
-            } else {
-                u = 1 - modf(abs(u) , &ignorablePartInt);
-            }
+            // texture coordinates
+            float tex_u = ( alpha * (tex_u1/Ac.z) + theta * (tex_u2/Bc.z) + gamma * (tex_u3/Cc.z) );
+            float tex_v = ( alpha * (tex_v1/Ac.z) + theta * (tex_v2/Bc.z) + gamma * (tex_v3/Cc.z) );
+
+            // apply perspective correct
+            tex_u   *= z; tex_v   *= z;
+            light_u *= z; light_v *= z;
 
             // Check for inversion U
-            if (!std::signbit(v)) {
-                v = modf(abs(v) , &ignorablePartInt);
+            if (!std::signbit(tex_u)) {
+                tex_u = modf(abs(tex_u) , &ignorablePartInt);
             } else {
-                v = 1 - modf(abs(v) , &ignorablePartInt);
+                tex_u = 1 - modf(abs(tex_u) , &ignorablePartInt);
             }
 
-            pixelColor = Tools::readSurfacePixelFromUV(texture->getSurface(), u, v);
+            // Check for inversion V
+            if (!std::signbit(tex_v)) {
+                tex_v = modf(abs(tex_v) , &ignorablePartInt);
+            } else {
+                tex_v = 1 - modf(abs(tex_v) , &ignorablePartInt);
+            }
+
+            tex_u = modf(abs(tex_u) , &ignorablePartInt);
+            tex_v = modf(abs(tex_v) , &ignorablePartInt);
+
+            int lod;
+            if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
+                lod = this->lod;
+            } else {
+                lod = EngineSetup::getInstance()->LOAD_OF_DETAIL;
+            }
+
+            pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
+
+            if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
+
+                light_u -= lightmap->mins[1];
+                light_u /= (lightmap->maxs[1] - lightmap->mins[1]);
+                light_u = modf(abs(light_u) , &ignorablePartInt);
+
+                light_v -= lightmap->mins[0];
+                light_v /= (lightmap->maxs[0] - lightmap->mins[0]);
+                light_v = modf(abs(light_v) , &ignorablePartInt);
+
+                Uint32 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
+
+                Uint8 lred, lgreen, lblue, lalpha;
+                SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &lred, &lgreen, &lblue, &lalpha);
+
+                Uint8 pred, pgreen, pblue, palpha;
+                SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
+
+                float t = Maths::normalizeToRange(lred, 0, 255) + EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
+
+                pixelColor = (Uint32) Tools::createRGB(
+                    pred * t,
+                    pgreen * t,
+                    pblue * t
+                );
+
+                if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
+                    pixelColor = lightmap_color;
+                }
+            }
+
             Uint8 red, green, blue, alpha;
-            SDL_GetRGBA(pixelColor, texture->getSurface()->format, &red, &green, &blue, &alpha);
+            SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &red, &green, &blue, &alpha);
 
             if (alpha == 0) {
                 return;
@@ -567,6 +649,16 @@ void Triangle::setTexture(Texture *t)
     texture = t;
 }
 
+Texture *Triangle::getLightmap() const
+{
+    return lightmap;
+}
+
+void Triangle::setLightmap(Texture *t)
+{
+    lightmap = t;
+}
+
 void Triangle::setLightPoints(LightPoint3D **lightPoints, int number)
 {
     this->lightPoints = lightPoints;
@@ -581,16 +673,6 @@ void Triangle::setClipped(bool value)
 bool Triangle::isClipped()
 {
     return this->is_clipped;
-}
-
-void Triangle::setBSP(bool value)
-{
-    this->is_bsp = value;
-}
-
-bool Triangle::isBSP()
-{
-    return this->is_bsp;
 }
 
 bool Triangle::isPointInside(Vertex3D v)
@@ -613,7 +695,7 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
     bool embeddedInPlane = false;
 
     float signedDistToTrianglePlane = trianglePlane.distance(collider->basePoint);
-    float normalDotVelocity = triangleNormal * collider->velocity;
+    float normalDotVelocity = triangleNormal * collider->frameVelocity;
 
     if (normalDotVelocity == 0.0f) {
         if (fabs(signedDistToTrianglePlane) >= radius) {
@@ -653,7 +735,7 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
     float t = 1.0;
 
     if (!embeddedInPlane) {
-            Vertex3D planeIntersectionPoint = (collider->basePoint - triangleNormal.getScaled(radius)) + collider->velocity.getScaled(t0);
+            Vertex3D planeIntersectionPoint = (collider->basePoint - triangleNormal.getScaled(radius)) + collider->frameVelocity.getScaled(t0);
         if (this->isPointInside(planeIntersectionPoint)) {
             foundCollison = true;
             collisionPoint = planeIntersectionPoint;
@@ -663,7 +745,7 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
 
     // some commonly used terms:
     Vertex3D base = collider->basePoint;
-    Vertex3D velocity = collider->velocity;
+    Vertex3D velocity = collider->frameVelocity;
 
     float velocitySquaredLength = velocity.squaredLength();
     float a, b, c; // Params for equation
@@ -761,7 +843,7 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
     }
 
     if (foundCollison) {
-        float distToCollision = t * collider->velocity.getModule();
+        float distToCollision = t * collider->frameVelocity.getModule();
 
         if (!collider->foundCollision || distToCollision < collider->nearestDistance) {
 
@@ -770,8 +852,37 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
 
             collider->foundCollision = true;
             this->is_colliding = true;
+
+            Vector3D down = Vector3D(collider->basePoint, collider->basePoint + Vertex3D(0, 1, 0).getScaled(radius+1));
+            int on_ground = Maths::isVector3DClippingPlane(trianglePlane, down);
+            if (on_ground > 1) {
+                cam->collider->onGround = true;
+            }
         }
     }
 
     return foundCollison;
+}
+
+int Triangle::processLOD()
+{
+    float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
+    float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
+
+    float r = area_texture / area_screen;
+
+    int lod = (int) floor(r);
+    int clamped_lod = 1;
+
+    if (lod < 10) {
+        clamped_lod = 1;
+    } else if (lod >= 10 && lod  < 15) {
+        clamped_lod = 2;
+    } else if (lod >= 15 && lod  < 25) {
+        clamped_lod = 4;
+    } else if (lod > 25) {
+        clamped_lod = 8;
+    }
+
+    return clamped_lod;
 }

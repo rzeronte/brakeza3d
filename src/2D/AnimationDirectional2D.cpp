@@ -23,7 +23,7 @@ void AnimationDirectional2D::loadImages()
     for (int d = 0; d <= 8 ; d++) {
         for (int i = 0; i < this->getNumFrames() ; i++) {
             std::string file =  this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
-            this->frames[d][i]->loadTGA( file.c_str() );
+            this->frames[d][i]->loadTGA( file.c_str(), 1 );
         }
     }
 }

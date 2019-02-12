@@ -22,8 +22,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 420), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(2, 215), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 220), ImGuiSetCond_Once);
             window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Object Inspector (" + std::to_string(number) + " objects)";

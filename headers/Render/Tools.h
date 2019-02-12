@@ -21,8 +21,8 @@ public:
 
     static void SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
-    static const int getXTextureFromUV(SDL_Surface *surface, float u);
-    static const int getYTextureFromUV(SDL_Surface *surface, float v);
+    static const float getXTextureFromUV(SDL_Surface *surface, float u);
+    static const float getYTextureFromUV(SDL_Surface *surface, float v);
 
     static Uint32 readSurfacePixelFromUV(SDL_Surface *surface, float u, float v);
     static Uint32 readSurfacePixel(SDL_Surface *surface, int x, int y);
@@ -42,6 +42,10 @@ public:
 
     static float interpolate(float val, float bound_left, float bound_right);
     static bool getBit(unsigned char byte, int position);
+
+    static float clamp(float n, float lower, float upper);
+    static Vertex3D SetLengthOnAxis(Vertex3D v, Vertex3D axis, float len);
+
 
 };
 

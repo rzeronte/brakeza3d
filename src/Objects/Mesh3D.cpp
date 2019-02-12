@@ -210,7 +210,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
 
         if (line_chunks[0].compare("map_Kd") == 0) {
             Texture t = Texture();
-            t.loadTGA( line_chunks[1].c_str() );
+            t.loadTGA( line_chunks[1].c_str(), 1 );
             this->model_textures[i] = t;
             this->n_textures++;
             cont_materials++;

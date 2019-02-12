@@ -110,7 +110,9 @@ public:
     Object3D* getObjectByLabel(std::string label);
 
     Vertex3D collideWithWorld( Vertex3D pos, const Vertex3D vel, int &collisionRecursionDepth, Collider *collider);
-    void collideAndSlide(Vertex3D vel, Vertex3D gravity);
+    void collideAndSlide(Vertex3D vel);
+
+    Vertex3D updatePhysics();
 
     void updateTimer();
     float getDeltaTime();

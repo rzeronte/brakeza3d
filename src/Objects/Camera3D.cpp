@@ -35,6 +35,7 @@ Camera3D::Camera3D()
     );
 
     collider = new Collider();
+
 }
 
 float Camera3D::getNearDistance()
@@ -171,19 +172,21 @@ void Camera3D::StrafeLeft(void)
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
-void Camera3D::UpdatePosition(void)
+void Camera3D::UpdateColliderForceMovement(void)
 {
     // Move the camera forward
     if ((fabs(speed) > 0)) {
-        getPosition()->z += speed * cos(-yaw * M_PI / 180.0);
-        getPosition()->x += speed * sin(-yaw * M_PI / 180.0);
-        getPosition()->y += speed * sin(pitch * M_PI / 180.0);
+        this->collider->movement.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
+        this->collider->movement.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
+        if (EngineSetup::getInstance()->ENABLE_FLYING) {
+            this->collider->movement.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0);
+        }
     }
 
     // Move the camera side ways
     if ((fabs(strafe) > 0)) {
-        getPosition()->z += strafe * -sin(-yaw * M_PI / 180.0);
-        getPosition()->x -= strafe * -cos(-yaw * M_PI / 180.0);
+        this->collider->movement.vertex2.z = getPosition()->z + strafe * (float) -sin(-yaw * M_PI / 180.0);
+        this->collider->movement.vertex2.x = getPosition()->x - strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
     // Reset speed
@@ -211,15 +214,7 @@ void Camera3D::limitPitch()
 
 void Camera3D::Jump()
 {
-    if (!this->collider->jumping) {
-
-        this->collider->jumping = true;
-        this->collider->startJumpTime = 0;
-        this->collider->jumpVelocity = Vertex3D(
-            this->collider->velocity.x,
-            EngineSetup::getInstance()->JUMP_FORCE,
-            this->collider->velocity.z
-        );
-
+    if (this->collider->onGround) {
+        this->collider->movement.vertex2 = this->collider->movement.vertex2 + EngineSetup::getInstance()->JUMP_FORCE;
     }
 }

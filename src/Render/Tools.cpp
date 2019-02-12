@@ -71,20 +71,74 @@ uint8_t Tools::getBlueValueFromColor(uint32_t c) {
     return (c);
 }
 
-const int Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
+const float Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
     return surface->w * u;
 }
 
-const int Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
+const float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
     return surface->h * v;
 }
 
 Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float u, float v)
 {
-    const int x = Tools::getXTextureFromUV(surface, u);
-    const int y = Tools::getYTextureFromUV(surface, v);
+    float x, y;
 
-    return Tools::readSurfacePixel(surface, x, y);
+    x = Tools::getXTextureFromUV(surface, u);
+    y = Tools::getYTextureFromUV(surface, v);
+
+    if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
+        int x1 = (int) floor(x);
+        int y1 = (int) floor(y);
+
+        if (x1+1 == surface->w || y1+1 == surface->h) {
+            return Tools::readSurfacePixel(surface, x, y);
+        }
+
+        int x2, y2;
+        x2 = x1 + 1;
+        y2 = y1 + 1;
+
+        Uint8 Q1red, Q1green, Q1blue, Q1alpha;
+        Uint8 Q2red, Q2green, Q2blue, Q2alpha;
+        Uint8 Q3red, Q3green, Q3blue, Q3alpha;
+        Uint8 Q4red, Q4green, Q4blue, Q4alpha;
+
+        Uint32 Q1 = Tools::readSurfacePixel(surface, x1, y1);
+        Uint32 Q3 = Tools::readSurfacePixel(surface, x1, y2);
+        Uint32 Q2 = Tools::readSurfacePixel(surface, x2, y1);
+        Uint32 Q4 = Tools::readSurfacePixel(surface, x2, y2);
+
+        SDL_GetRGBA(Q1, surface->format, &Q1red, &Q1green, &Q1blue, &Q1alpha);
+        SDL_GetRGBA(Q2, surface->format, &Q2red, &Q2green, &Q2blue, &Q2alpha);
+        SDL_GetRGBA(Q3, surface->format, &Q3red, &Q3green, &Q3blue, &Q3alpha);
+        SDL_GetRGBA(Q4, surface->format, &Q4red, &Q4green, &Q4blue, &Q4alpha);
+
+        float f1 = (x2 - x) / (x2 - x1);
+        float f2 = (x - x1) / (x2 - x1);
+
+        Uint8 R1red, R1green, R1blue;
+        R1red =   (f1 * Q1red)   + (f2 * Q2red);
+        R1green = (f1 * Q1green) + (f2 * Q2green);
+        R1blue =  (f1 * Q1blue)  + (f2 * Q2blue);
+
+        Uint8 R2red, R2green, R2blue;
+        R2red =   (f1 * Q3red)   + (f2 * Q4red);
+        R2green = (f1 * Q3green) + (f2 * Q4green);
+        R2blue =  (f1 * Q3blue)  + (f2 * Q4blue);
+
+        float fy1 = (y2 - y) / (y2 - y1);
+        float fy2 = (y - y1) / (y2 - y1);
+
+        Uint8 Cred, Cgreen, Cblue;
+        Cred =   (fy1 * R1red)   + (fy2 * R2red);
+        Cgreen = (fy1 * R1green) + (fy2 * R2green);
+        Cblue =  (fy1 * R1blue)  + (fy2 * R2blue);
+
+        return (Uint32) Tools::createRGB(Cred, Cgreen, Cblue);
+    } else {
+        return Tools::readSurfacePixel(surface, x, y);
+    }
+
 }
 
 Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
@@ -172,4 +226,17 @@ float Tools::interpolate(float val, float bound_left, float bound_right)
 bool Tools::getBit(unsigned char byte, int position) // position in range 0-7
 {
     return (byte >> position) & 0x1;
+}
+
+float Tools::clamp(float n, float lower, float upper)
+{
+    return std::max(lower, std::min(n, upper));
+}
+
+Vertex3D Tools::SetLengthOnAxis(Vertex3D v, Vertex3D axis, float len)
+{
+    axis = axis.getNormalize();
+    float d = len - (v * axis);
+
+    return v + axis.getScaled(d);
 }

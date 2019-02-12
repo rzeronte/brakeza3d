@@ -40,9 +40,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    Engine::camera->setPosition(Vertex3D(544, -32, 500));
-
-    /*LightPoint3D *lp1 = new LightPoint3D();
+    LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
     lp1->setLabel("LightPoint1");
     lp1->setPosition(Vertex3D(1, 1.5f, -1));
@@ -62,7 +60,7 @@ void Game::onStart()
     lp3->setPosition(Vertex3D(2, 1, -1));
     lp3->setColor( 0, 0, 255 );
     this->addLightPoint(lp3, "l3");
-    */
+
 
     // mono
     Mesh3D *mono = new Mesh3D();
@@ -149,6 +147,7 @@ void Game::onStart()
     */
 
     loadBSP("e1m1.bsp", "palette.lmp");
+    EngineSetup::getInstance()->TESTING = 11372;
 }
 
 void Game::mainLoop()
@@ -169,8 +168,11 @@ void Game::mainLoop()
         // Check array Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish);
 
-        // update camera position
-        camera->UpdatePosition();
+        // update collider forces
+        camera->UpdateColliderForceMovement();
+
+        // update deltaTime
+        this->updateTimer();
 
         // Checks pre update frame
         this->postUpdate();
@@ -195,12 +197,24 @@ void Game::onUpdate()
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;*/
+    int test = (int) (EngineSetup::getInstance()->TESTING);
+    //EngineSetup::getInstance()->TESTING+=0.7;
+
+/*    Triangle *t = &bsp_map->model_triangles[test];
+    t->getLightmap()->drawFlatLightMap(230, 20);
+
+    int surface_id = bsp_map->model_triangles[test].bsp_surface;
+    bsp_map->lightmaps[surface_id].drawFlatLightMap(200, 20);
+*/
 }
 
 void Game::preUpdate()
 {
     // Core preUpdate
     Engine::preUpdate();
+
+
+    //Logging::getInstance()->Log("Núm LightMaps: " + std::to_string(nl), "");
 }
 
 void Game::onEnd()

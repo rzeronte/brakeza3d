@@ -43,6 +43,7 @@ public:
     float getVideoBuffer(int x, int y);
     void clearVideoBuffer();
     void setVideoBuffer(const int x, const int y, Uint32 value);
+    void setVideoBuffer(const int i, Uint32 value);
     void flipVideoBuffer(SDL_Surface *);
 
     void resetBenchmarkValues();

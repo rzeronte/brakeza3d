@@ -13,22 +13,30 @@
 class Collider {
 
 public:
+    Collider();
 
-    // Information about the move being requested: (in eSpace)
-    Vertex3D velocity;
-    Vertex3D normalizedVelocity;
+    // Punto inicial
     Vertex3D basePoint;
+
+    // Velocidad
+    Vertex3D frameVelocity;
+    Vertex3D normalizedVelocity;
 
     // Hit information
     bool foundCollision;
     double nearestDistance;
     Vertex3D intersectionPoint;
 
-    bool jumping;
-    float startJumpTime;
 
-    Vertex3D jumpVelocity;
+    bool onGround = false;
+    bool veryClosed = false;
+    bool maxDeepRecursion = false;
 
+    // forces
+    Vertex3D air;
+    Vertex3D gravity;
+    Vector3D movement;
+    Vertex3D friction;
 };
 
 #endif //BRAKEDA3D_COLLIDER_H

@@ -24,14 +24,30 @@ public:
     float bs1, bs2, bs3;
 
     Texture *texture;
+    Texture *lightmap;
+
+    // lightmap coordinates
+    float light_u1, light_v1 = 0;
+    float light_u2, light_v2 = 0;
+    float light_u3, light_v3 = 0;
+
+    // texture vertex coordinates
+    float tex_u1, tex_v1 = 0;
+    float tex_u2, tex_v2 = 0;
+    float tex_u3, tex_v3 = 0;
+
     Object3D *parent;
 
     Vertex3D normal;
 
     int order = 0;
     bool is_clipped = false;
-    bool is_bsp = false;
     bool is_colliding = false;
+
+    bool is_bsp = false;
+    int bsp_surface = 0;
+
+    int lod;
 
     LightPoint3D **lightPoints;
     int numberLightPoints = 0;
@@ -69,12 +85,12 @@ public:
     Texture *getTexture() const;
     void setTexture(Texture *texture);
 
+    Texture *getLightmap() const;
+    void setLightmap(Texture *texture);
+
     bool clipping(Camera3D *cam);
     void setClipped(bool);
     bool isClipped();
-
-    void setBSP(bool);
-    bool isBSP();
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
@@ -82,7 +98,7 @@ public:
 
     bool isCollisionWithSphere(Collider *, float, Camera3D *cam);
 
-
+    int processLOD();
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

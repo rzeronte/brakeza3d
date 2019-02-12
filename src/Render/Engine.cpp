@@ -45,6 +45,7 @@ Engine::Engine()
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
     fps = 0;
+
 }
 
 bool Engine::initWindow()
@@ -133,7 +134,7 @@ void Engine::drawGUI()
 {
     ImGui::NewFrame();
 
-    ///bool open = true;
+    //bool open = true;
     //ImGui::ShowDemoWindow(&open);
 
     gui_engine->setFps(fps);
@@ -142,12 +143,12 @@ void Engine::drawGUI()
         finish,
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
-        camera
+        camera,
+        getDeltaTime()
     );
 
     ImGui::Render();
 }
-
 
 void Engine::windowUpdate()
 {
@@ -175,14 +176,21 @@ void Engine::onStart()
 {
     //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
     //cam->setRotation( Rotation3D(0, 0, 0) );
+
+    Engine::camera->setPosition(Vertex3D(544, -32, 500));
+    //Engine::camera->setPosition(Vertex3D(476.42, -78, -340.942));
+
+    Engine::camera->collider->movement.vertex1 = *Engine::camera->getPosition();
+    Engine::camera->collider->movement.vertex2 = *Engine::camera->getPosition();
 }
 
 void Engine::preUpdate()
 {
     // Posición inicial del vector velocidad que llevará la cámara
-    camera->collider->basePoint = *camera->getPosition();
+    camera->collider->movement.vertex1 = *camera->getPosition();
+    camera->collider->movement.vertex2 = *camera->getPosition();
 
-    // Si hay mapa BSP cargado, determinados su VPS
+    // Determinamos VPS
     if (bsp_map) {
         bspleaf_t *leaf = bsp_map->FindLeaf( camera );
         bsp_map->setVisibleSet(leaf);
@@ -191,12 +199,12 @@ void Engine::preUpdate()
 
 void Engine::postUpdate()
 {
-    if ( EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED) {
-        this->collideAndSlide(
-            Vector3D(camera->collider->basePoint, *camera->getPosition()).getComponent(),
-            EngineSetup::getInstance()->gravity
-        );
+    Vertex3D frameVelocity = updatePhysics();
+
+    if ( EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED ) {
+        this->collideAndSlide( frameVelocity );
     } else {
+        this->camera->setPosition(camera->collider->movement.vertex2);
         this->cameraUpdate();
     }
 }
@@ -204,7 +212,6 @@ void Engine::postUpdate()
 void Engine::cameraUpdate()
 {
     camera->UpdateRotation();
-    camera->UpdatePosition();
     camera->UpdateFrustum();
 }
 
@@ -425,7 +432,9 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map->Initialize(bspFilename, paletteFilename);
     this->bsp_map->InitializeSurfaces();
     this->bsp_map->InitializeTextures();
-    this->bsp_map->InitializeTriangles(this->camera);
+    this->bsp_map->InitializeLightmaps();
+    this->bsp_map->InitializeTriangles();
+    this->bsp_map->bindTrianglesLightmaps();
 }
 
 Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRecursionDepth, Collider *collider)
@@ -438,22 +447,27 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
     float veryCloseDistance = 0.005f * unitScale;
 
     // do we need to worry?
-    if (collisionRecursionDepth > 5) {
+    if (collisionRecursionDepth > 3) {
+        collider->maxDeepRecursion = true;
+
         return pos;
     }
 
     // Ok, we need to worry:
-    collider->velocity = vel;
+    collider->frameVelocity = vel;
     collider->normalizedVelocity = vel.getNormalize();
     collider->basePoint = pos;
     collider->foundCollision = false;
+
+    collider->veryClosed = false;
+    collider->maxDeepRecursion = false;
 
     // Check for collision (calls the collision routines)
     // Application specific!!
     this->checkCollisionsBSP();
     this->checkCollisionsMesh();
 
-    // If no collision we just move along the velocity
+    // If no collision we just move along the frameVelocity
     if (!collider->foundCollision) {
         return pos + vel;
     }
@@ -466,7 +480,8 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
     // only update if we are not already very close
     // and if so we only move very close to intersection..not
     // to the exact spot.
-    if (collider->nearestDistance >= veryCloseDistance) {
+    //if (collider->nearestDistance >= veryCloseDistance) {
+    if (vel.getModule() > 0) {
         Vertex3D V = vel;
         V.setLength(collider->nearestDistance - veryCloseDistance);
         newBasePoint = collider->basePoint + V;
@@ -474,7 +489,6 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
         // Adjust polygon intersection point (so sliding
         // plane will be unaffected by the fact that we
         // move slightly less than collision tells us)
-
         V = V.getNormalize();
         collider->intersectionPoint = collider->intersectionPoint - V.getScaled(veryCloseDistance);
     }
@@ -490,12 +504,14 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
     Vertex3D newDestinationPoint = destinationPoint - slidePlaneNormal.getScaled(d);
 
     // Generate the slide vector, which will become our new
-    // velocity vector for the next iteration
+    // frameVelocity vector for the next iteration
     Vertex3D newVelocityVector = newDestinationPoint - collider->intersectionPoint;
 
     // Recurse:
-    // dont recurse if the new velocity is very small
+    // dont recurse if the new frameVelocity is very small
     if (newVelocityVector.getModule() < veryCloseDistance) {
+        collider->veryClosed = true;
+
         return newBasePoint;
     }
 
@@ -503,40 +519,60 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
     return collideWithWorld(newBasePoint, newVelocityVector, collisionRecursionDepth, collider);
 }
 
-void Engine::collideAndSlide(Vertex3D vel, Vertex3D gravity)
+void Engine::collideAndSlide(Vertex3D vel)
 {
-    // slide
+    camera->collider->onGround = false;
+
     int collisionRecursionDepth = 0;
-    Vertex3D finalPosition = collideWithWorld(camera->collider->basePoint, vel, collisionRecursionDepth, camera->collider);
+    Vertex3D finalPosition = collideWithWorld(*camera->getPosition(), vel, collisionRecursionDepth, camera->collider);
 
-    if (camera->collider->jumping) {
-        // jumping
-        collisionRecursionDepth = 0;
-        camera->collider->jumpVelocity = camera->collider->jumpVelocity - EngineSetup::getInstance()->gravity.getScaled(camera->collider->startJumpTime);
-        camera->collider->startJumpTime += 1/this->getDeltaTime();
-
-        if (camera->collider->jumpVelocity.y <= 0) {
-            camera->collider->jumping = false;
-        }
-
-        camera->collider->basePoint = finalPosition;
-        camera->collider->velocity = camera->collider->jumpVelocity;
-        camera->collider->normalizedVelocity = camera->collider->jumpVelocity.getNormalize();
-
-        finalPosition = collideWithWorld(finalPosition, camera->collider->jumpVelocity.getInverse(), collisionRecursionDepth, camera->collider);
-
-    } else {
-        // gravity
-        camera->collider->basePoint = finalPosition;
-        camera->collider->velocity = gravity;
-        camera->collider->normalizedVelocity = gravity.getNormalize();
-
-        collisionRecursionDepth = 0;
-        finalPosition = collideWithWorld(finalPosition, gravity, collisionRecursionDepth, camera->collider);
+    if (camera->collider->onGround) {
+        camera->collider->gravity.y = 0;
+        camera->collider->frameVelocity.y = 0;
     }
 
     camera->setPosition(finalPosition);
     cameraUpdate();
+}
+
+Vertex3D Engine::updatePhysics()
+{
+    Vertex3D o = Vertex3D(0, 0, 0);
+
+    Vertex3D inertia  = camera->collider->frameVelocity;
+    Vertex3D movement = camera->collider->movement.getComponent().getScaled(getDeltaTime());
+
+    o = o + inertia;
+    o = o + movement;
+
+    // contact friction
+    if (EngineSetup::getInstance()->ENABLE_FRICTION) {
+        Vertex3D friction = inertia.getScaled(EngineSetup::getInstance()->FRICTION_COEFICIENT);
+        friction.y = 0;
+
+        if (!camera->collider->onGround) {
+            friction = Vertex3D(0, 0, 0);
+        }
+        camera->collider->friction = friction;
+        o = o - friction;
+    }
+
+    // Air friction
+    if (EngineSetup::getInstance()->ENABLE_AIR_FRICTION) {
+        float air_resistance = inertia.squaredLength() * EngineSetup::getInstance()->AIR_RESISTANCE;
+        Vertex3D air = inertia.getScaled(air_resistance);
+        camera->collider->air = air;
+        o = o - air;
+    }
+
+    // Gravity
+    if (EngineSetup::getInstance()->ENABLE_GRAVITY) {
+        Vertex3D gravity  = camera->collider->gravity + EngineSetup::getInstance()->gravity.getScaled(getDeltaTime());
+        camera->collider->gravity = gravity;
+        o = o + gravity;
+    }
+
+    return o;
 }
 
 void Engine::updateTimer()
@@ -556,13 +592,11 @@ void Engine::updateTimer()
 
 float Engine::getDeltaTime()
 {
-    return this->deltaTime;
+    return this->deltaTime/1000;
 }
 
 void Engine::processFPS()
 {
-    this->updateTimer();
-
     /*countedFrames2++;
 
     if (timerCurrent == 0) {

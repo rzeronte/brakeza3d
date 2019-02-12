@@ -282,7 +282,7 @@ long Maths::GetPrevActive( long x, long vertexCount, const bool *active)
     }
 }
 
-int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, bool clipped)
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped)
 {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
@@ -303,6 +303,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
 
             Triangle t = Triangle(tv1, tv2, tv3, parent);
             t.setTexture(texture);
+            t.setLightmap(lightmap);
             t.setClipped(clipped);
             triangles[ntriangles] = t;
             ntriangles++;
@@ -385,6 +386,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
 
             Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setLightmap(lightmap);
             t.setTexture(texture);
             t.setClipped(clipped);
 
@@ -406,6 +408,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p1], parent);
 
             Triangle t = Triangle(tv1, tv2, tv3, parent);
+            t.setLightmap(lightmap);
             t.setTexture(texture);
             t.setClipped(clipped);
 
@@ -557,4 +560,20 @@ bool Maths::getLowestRoot(float a, float b, float c, float maxR, float* root)
 
     // No (valid) solutions
     return false;
+}
+
+float Maths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2, float dY2)
+{
+    float area = ((dX1 - dX0)*(dY2 - dY0) - (dX2 - dX0)*(dY1 - dY0)) / 2;
+
+    return abs(area);
+}
+
+float Maths::normalizeToRange(float value, float min, float max)
+{
+    if ((max - min) == 0) {
+        return 0;
+    }
+
+    return (value - min) / (max - min);
 }

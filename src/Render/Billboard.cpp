@@ -59,7 +59,7 @@ void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex3D 
 }
 
 void Billboard::loadTexture(std::string fileName) {
-    this->texture->loadTGA( fileName.c_str() );
+    this->texture->loadTGA( fileName.c_str(), 1);
     setTrianglesTexture(this->texture);
 }
 

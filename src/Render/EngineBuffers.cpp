@@ -46,7 +46,10 @@ void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value)
 {
     videoBuffer[ ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ] = value;
 }
-
+void EngineBuffers::setVideoBuffer(const int i, Uint32 value)
+{
+    videoBuffer[ i ] = value;
+}
 float EngineBuffers::getVideoBuffer(int x, int y)
 {
     return videoBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ];

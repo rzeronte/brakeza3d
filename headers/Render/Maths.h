@@ -46,7 +46,7 @@ public:
 
     static long GetNextActive(long x, long vertexCount, const bool *active);
     static long GetPrevActive(long x, long vertexCount, const bool *active);
-    static int  TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, bool clipped);
+    static int  TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped);
     static bool ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int plane_id , Camera3D *cam);
 
     static float distancePointVector(Vertex3D, Vector3D );
@@ -54,6 +54,11 @@ public:
     static bool PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c);
 
     static bool getLowestRoot(float a, float b, float c, float maxR, float* root);
+
+    static float TriangleArea(float x0, float y0, float x1, float y1, float x2, float y2);
+
+    static float normalizeToRange(float value, float min, float max);
+
 };
 
 

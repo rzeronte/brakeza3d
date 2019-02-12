@@ -19,8 +19,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(260, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 240), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 190), ImGuiSetCond_Once);
             window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Camera Inspector";
@@ -50,6 +50,7 @@ public:
             std::string rotation_text = "Orientation##2";
             std::string movement_text = "Keyboard##3";
             std::string mouse_text    = "Mouse##4";
+            std::string forces_text   = "Forces##5";
 
             // position
             if (ImGui::TreeNode( position_text.c_str() )) {
@@ -76,20 +77,6 @@ public:
                 ImGui::DragScalar("Pitch", ImGuiDataType_Float,   &EngineSetup::getInstance()->PITCH_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
                 ImGui::DragScalar("Strafe", ImGuiDataType_Float,  &EngineSetup::getInstance()->STRAFE_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
 
-                ImGui::Separator();
-
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.x).c_str() );
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->velocity.z).c_str() );
-
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->jumpVelocity.x).c_str() );
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->jumpVelocity.y).c_str() );
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->jumpVelocity.z).c_str() );
-
                 ImGui::TreePop();
             }
 
@@ -101,6 +88,7 @@ public:
                 ImGui::TreePop();
             }
 
+            ImGui::Separator();
             ImGui::End();
         }
     }

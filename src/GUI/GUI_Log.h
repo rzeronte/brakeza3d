@@ -76,7 +76,7 @@ public:
     ExampleAppLog log;
     bool show = true;
 
-    virtual void draw(float fps, Camera3D *cam)
+    virtual void draw(float fps, float deltaTime, Camera3D *cam)
     {
         if (show) {
             std::string sfps = std::to_string(fps);
@@ -85,7 +85,8 @@ public:
                     std::to_string(cam->getPosition()->y) + ", z:  " +
                     std::to_string(cam->getPosition()->z) + " | Yaw: " +
                     std::to_string(cam->getRotation().getYawDegree()) + ", Pitch: " +
-                    std::to_string(cam->getRotation().getPitchDegree()) + + "###AnimatedTitle"
+                    std::to_string(cam->getRotation().getPitchDegree()) + ", deltaTime: " +
+                    std::to_string(deltaTime) + "###AnimatedTitle"
             ;
             log.Draw(title.c_str(), &show);
         }

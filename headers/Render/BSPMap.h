@@ -74,7 +74,7 @@ struct mipheader_t
 };
 
 // Mip Texture
-struct miptex_t
+/*struct miptex_t
 {
     char name[16];			// Name of the texture
     unsigned int width;		// Width of the texture, must be a multiple of 8 (converted from long!)
@@ -83,7 +83,7 @@ struct miptex_t
     unsigned int offset2;	// -> byte texture[width/2 * height/2] (converted from long!)
     unsigned int offset4;	// -> byte texture[width/4 * height/4] (converted from long!)
     unsigned int offset8;	// -> byte texture[width/8 * height/8] (converted from long!)
-};
+};*/
 
 struct plane_t
 {
@@ -166,10 +166,21 @@ struct surface_triangles_t
     int offset;		// índice del primer triángulo
 };
 
+struct lightmap_t
+{
+    int offset;
+    int width; int height;
+    int	  bmins[2], bmaxs[2];
+    float mins[2], maxs[2];
+    short extents[2];
+
+    float min_u, max_u;
+    float min_v, max_v;
+};
+
 class BSPMap: public Object3D
 {
 private:
-    char *bsp;
 
     int LoadFile(const char *filename, void **bufferptr);
     bool LoadPalette(const char *filename);
@@ -189,7 +200,10 @@ public:
     int n_triangles = 0;
 
     Texture *textures;
-    Texture *demo_texture;
+
+    lightmap_t *surface_lightmaps;
+    Texture *lightmaps;
+
     unsigned int palette[256];
 
     BSPMap();
@@ -301,7 +315,24 @@ public:
     miptex_t *getMipTexture(int id) { return (miptex_t *)(getMipHeader() + ((mipheader_t *)getMipHeader())->offset[id]); }
 
     // Get raw texture
-    unsigned char *getRawTexture(int id) { return (unsigned char *)(getMipHeader() + ((mipheader_t *)getMipHeader())->offset[id] + getMipTexture(id)->offset1); }
+    unsigned char *getRawTexture(int id, int numMipMap) {
+        unsigned int mipMapOffset;
+        switch (numMipMap) {
+            case 1:
+                mipMapOffset = getMipTexture(id)->offset1;
+                break;
+            case 2:
+                mipMapOffset = getMipTexture(id)->offset2;
+                break;
+            case 4:
+                mipMapOffset = getMipTexture(id)->offset4;
+                break;
+            case 8:
+                mipMapOffset = getMipTexture(id)->offset8;
+                break;
+        }
+        return (unsigned char *)(getMipHeader() + ((mipheader_t *)getMipHeader())->offset[id] + mipMapOffset);
+    }
 
     // Get array of texture info for every surface, contains an index to pMipTex
     texinfo_t *getTextureInfo() { return (texinfo_t *) &bsp[header->texinfo.offset]; }
@@ -311,9 +342,11 @@ public:
 
     bool InitializeSurfaces(void);
     bool InitializeTextures(void);
-    bool InitializeTriangles(Camera3D *cam);
+    bool InitializeTriangles();
+    bool InitializeLightmaps();
+    void bindTrianglesLightmaps();
 
-    void createTrianglesForSurface(int surface, Camera3D *cam);
+    void createTrianglesForSurface(int surface);
 
     float CalculateDistance(vec3_t a, vec3_t b);
     void DrawSurface(int surface, Camera3D *camera);
@@ -333,8 +366,16 @@ public:
     // Get array of edges, contains the index to the start and end vertices in the pV
     entity_t *getEntities() { return (entity_t *) &bsp[header->entities.offset]; }
 
+    unsigned char *getLightmaps() { return (unsigned char *)(&bsp[header->lightmaps.offset]); }
+    int getNumLightmaps() { return header->lightmaps.size; }
+
+    unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
+
     void setVisibleSet(bspleaf_t *pLeaf);
 
+    void CalcSurfaceExtents (int surface, lightmap_t* l);
+
+    char *bsp;
 };
 
 #endif

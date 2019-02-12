@@ -23,8 +23,8 @@ class GUI_LightsInspector : public GUI  {
 
                 std::string title = "Lights Inspector (" + std::to_string(number) + " lights)";
 
-                ImGui::SetNextWindowPos(ImVec2(2, 450), ImGuiSetCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(250, 400), ImGuiSetCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(250, 167), ImGuiSetCond_Once);
                 window_flags |= ImGuiWindowFlags_NoMove;
 
                 ImGui::Begin(title.c_str(), &show, window_flags);
