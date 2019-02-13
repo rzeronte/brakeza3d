@@ -75,17 +75,15 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
 
     // texture coordinates
     if (this->getTexture() != NULL) {
-            tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
-            tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
+        tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
+        tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
 
-            tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
-            tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
+        tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
+        tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
 
-            tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
-            tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
-
+        tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
+        tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
     }
-
 }
 
 void Triangle::updateNormal()
@@ -505,8 +503,6 @@ void Triangle::processPixel(const Point2D &pointFinal)
             tex_u = modf(abs(tex_u) , &ignorablePartInt);
             tex_v = modf(abs(tex_v) , &ignorablePartInt);
 
-            int lod = this->getLOD();
-
             if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
                 pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
             } else {
@@ -525,18 +521,18 @@ void Triangle::processPixel(const Point2D &pointFinal)
 
                 Uint32 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
 
-                Uint8 lred, lgreen, lblue, lalpha;
-                SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &lred, &lgreen, &lblue, &lalpha);
-
-                Uint8 pred, pgreen, pblue, palpha;
-                SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
-
-                float t = Maths::normalizeToRange(lred, 0, 255) + EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
-
-                pixelColor = (Uint32) Tools::createRGB((pred * t), (pgreen * t), (pblue * t) );
-
                 if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
                     pixelColor = lightmap_color;
+                } else {
+                    Uint8 lred, lgreen, lblue, lalpha;
+                    SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &lred, &lgreen, &lblue, &lalpha);
+
+                    Uint8 pred, pgreen, pblue, palpha;
+                    SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
+
+                    float t = Maths::normalizeToRange(lred, 0, 255) + EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
+
+                    pixelColor = (Uint32) Tools::createRGB((pred * t), (pgreen * t), (pblue * t) );
                 }
             }
 
@@ -592,7 +588,6 @@ void Triangle::processPixel(const Point2D &pointFinal)
 
     EngineBuffers::getInstance()->pixelesDrawed++;
     EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
-
 }
 
 void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
@@ -862,32 +857,30 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
 
 int Triangle::processLOD()
 {
-    float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
-    float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
+    int lod = EngineSetup::getInstance()->LOAD_OF_DETAIL;
 
-    float r = area_texture / area_screen;
-
-    int lod = (int) floor(r);
-    int clamped_lod = 1;
-
-    if (lod < 10) {
-        clamped_lod = 1;
-    } else if (lod >= 10 && lod  < 15) {
-        clamped_lod = 2;
-    } else if (lod >= 15 && lod  < 25) {
-        clamped_lod = 4;
-    } else if (lod > 25) {
-        clamped_lod = 8;
-    }
-
-    return clamped_lod;
-}
-
-int Triangle::getLOD()
-{
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
-        return this->lod;
-    } else {
-        return EngineSetup::getInstance()->LOAD_OF_DETAIL;
+        float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
+        float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
+
+        float r = area_texture / area_screen;
+
+        int triangle_lod = (int) floor(r);
+        int clamped_lod = 1;
+
+        // Range LOD selection
+        if (triangle_lod < 10) {
+            clamped_lod = 1;
+        } else if (triangle_lod >= 10 && triangle_lod  < 15) {
+            clamped_lod = 2;
+        } else if (triangle_lod >= 15 && triangle_lod  < 25) {
+            clamped_lod = 4;
+        } else if (triangle_lod > 25) {
+            clamped_lod = 8;
+        }
+
+        lod =  clamped_lod;
     }
+
+    return lod;
 }

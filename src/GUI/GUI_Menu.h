@@ -29,7 +29,7 @@ public:
         const float lod_sensibility = 0;
 
         if (ImGui::BeginMainMenuBar()) {
-            if (ImGui::BeginMenu("Brakeza")) {
+            if (ImGui::BeginMenu("Brakeza3D")) {
                 if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
                 ImGui::Separator();
                 if (ImGui::MenuItem("Exit", "CTRL+W")) done = true;
@@ -59,6 +59,10 @@ public:
                             ImGui::TreePop();
                         }
                     }
+                    ImGui::Checkbox("Lightmaps", &EngineSetup::getInstance()->ENABLE_LIGHTMAPPING);
+                    if (EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
+                        ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
+                    }
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Draw extra line", &EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED);
@@ -67,8 +71,6 @@ public:
                 if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
                     ImGui::Checkbox("Show BFC triangles", &EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES);
                 }
-                ImGui::Separator();
-                ImGui::Checkbox("Lightmaps", &EngineSetup::getInstance()->ENABLE_LIGHTMAPPING);
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
                 ImGui::Checkbox("Frustum Culling", &EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING);
@@ -123,8 +125,6 @@ public:
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);
                 ImGui::Separator();
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
-                ImGui::Separator();
-                ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
                 ImGui::EndMenu();
             }
 
@@ -139,7 +139,7 @@ public:
         if (show_about_window) ImGui::OpenPopup("New");
 
         if (ImGui::BeginPopup("New"))  {
-            ImGui::Text("Brakeza v.0.1");
+            ImGui::Text("Brakeza v.0.6.");
             ImGui::Text("Eduardo Rodríguez <eduardo@brakeza.com>");
             ImGui::Text("https://brakeza.com");
             ImGui::EndPopup();

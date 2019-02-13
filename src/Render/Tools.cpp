@@ -232,11 +232,3 @@ float Tools::clamp(float n, float lower, float upper)
 {
     return std::max(lower, std::min(n, upper));
 }
-
-Vertex3D Tools::SetLengthOnAxis(Vertex3D v, Vertex3D axis, float len)
-{
-    axis = axis.getNormalize();
-    float d = len - (v * axis);
-
-    return v + axis.getScaled(d);
-}

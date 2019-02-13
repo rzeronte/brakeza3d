@@ -45,7 +45,6 @@ public:
     static bool getBit(unsigned char byte, int position);
 
     static float clamp(float n, float lower, float upper);
-    static Vertex3D SetLengthOnAxis(Vertex3D v, Vertex3D axis, float len);
 
 
 };
