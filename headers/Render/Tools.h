@@ -25,6 +25,7 @@ public:
     static const float getYTextureFromUV(SDL_Surface *surface, float v);
 
     static Uint32 readSurfacePixelFromUV(SDL_Surface *surface, float u, float v);
+    static Uint32 readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, float v);
     static Uint32 readSurfacePixel(SDL_Surface *surface, int x, int y);
 
     static bool fileExists(const std::string &name);

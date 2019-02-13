@@ -99,6 +99,7 @@ public:
     bool isCollisionWithSphere(Collider *, float, Camera3D *cam);
 
     int processLOD();
+    int getLOD();
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

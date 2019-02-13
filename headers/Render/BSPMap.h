@@ -170,12 +170,7 @@ struct lightmap_t
 {
     int offset;
     int width; int height;
-    int	  bmins[2], bmaxs[2];
     float mins[2], maxs[2];
-    short extents[2];
-
-    float min_u, max_u;
-    float min_v, max_v;
 };
 
 class BSPMap: public Object3D
@@ -201,8 +196,8 @@ public:
 
     Texture *textures;
 
-    lightmap_t *surface_lightmaps;
-    Texture *lightmaps;
+    lightmap_t *surface_lightmaps;   // info surface-lightmap
+    Texture *lightmaps;              // lightmaps textures
 
     unsigned int palette[256];
 

@@ -505,23 +505,22 @@ void Triangle::processPixel(const Point2D &pointFinal)
             tex_u = modf(abs(tex_u) , &ignorablePartInt);
             tex_v = modf(abs(tex_v) , &ignorablePartInt);
 
-            int lod;
-            if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
-                lod = this->lod;
-            } else {
-                lod = EngineSetup::getInstance()->LOAD_OF_DETAIL;
-            }
+            int lod = this->getLOD();
 
-            pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
+            if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
+                pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
+            } else {
+                pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
+            }
 
             if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
 
-                light_u -= lightmap->mins[1];
-                light_u /= (lightmap->maxs[1] - lightmap->mins[1]);
+                light_u -= getLightmap()->mins[1];
+                light_u /= (getLightmap()->maxs[1] - getLightmap()->mins[1]);
                 light_u = modf(abs(light_u) , &ignorablePartInt);
 
-                light_v -= lightmap->mins[0];
-                light_v /= (lightmap->maxs[0] - lightmap->mins[0]);
+                light_v -= getLightmap()->mins[0];
+                light_v /= (getLightmap()->maxs[0] - getLightmap()->mins[0]);
                 light_v = modf(abs(light_v) , &ignorablePartInt);
 
                 Uint32 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
@@ -534,11 +533,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
 
                 float t = Maths::normalizeToRange(lred, 0, 255) + EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
 
-                pixelColor = (Uint32) Tools::createRGB(
-                    pred * t,
-                    pgreen * t,
-                    pblue * t
-                );
+                pixelColor = (Uint32) Tools::createRGB((pred * t), (pgreen * t), (pblue * t) );
 
                 if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
                     pixelColor = lightmap_color;
@@ -684,12 +679,13 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
 {
     this->is_colliding = false;
 
-    Plane    trianglePlane = Plane(this->Ao, this->Bo, this->Co);
-    Vertex3D triangleNormal = trianglePlane.getNormalVector().getNormalize();
+    Plane trianglePlane = Plane(this->Ao, this->Bo, this->Co);
 
     if (!trianglePlane.isFrontFacingTo(collider->normalizedVelocity)) {
         return false;
     }
+
+    Vertex3D triangleNormal = trianglePlane.getNormalVector().getNormalize();
 
     float t0, t1;
     bool embeddedInPlane = false;
@@ -885,4 +881,13 @@ int Triangle::processLOD()
     }
 
     return clamped_lod;
+}
+
+int Triangle::getLOD()
+{
+    if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
+        return this->lod;
+    } else {
+        return EngineSetup::getInstance()->LOAD_OF_DETAIL;
+    }
 }

@@ -276,12 +276,7 @@ bool BSPMap::InitializeLightmaps()
         lightmap_t *lt = &surface_lightmaps[surfaceId];
         CalcSurfaceExtents(surfaceId, lt);
 
-        if (lt->offset == -1) {
-            this->lightmaps[surfaceId].setLightMapped(false);
-            Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ", lightmap offset: " + std::to_string(lt->offset), "");
-            continue;
-        } else {
-
+        if (lt->offset != -1) {
             this->lightmaps[surfaceId].setLightMapped(true);
 
             int smax = lt->width;
@@ -289,7 +284,7 @@ bool BSPMap::InitializeLightmaps()
 
             int lightMapSize = lt->width * lt->height;
 
-            unsigned char *lm_data = (unsigned char *) &bsp[header->lightmaps.offset + lt->offset];
+            unsigned char *lm_data = getLightmap(lt->offset);
             unsigned int *texture = new unsigned int [lightMapSize];
 
             for (int y = 0 ; y < tmax; y++) {
@@ -302,6 +297,11 @@ bool BSPMap::InitializeLightmaps()
             }
 
             this->lightmaps[surfaceId].loadLightmapFromRaw(texture, smax, tmax);
+            Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ", lightmap w: " + std::to_string(smax) + ", height: " + std::to_string(tmax), "");
+
+        } else {
+            this->lightmaps[surfaceId].setLightMapped(false);
+            Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ", lightmap offset: " + std::to_string(lt->offset), "");
         }
     }
 }
@@ -319,25 +319,11 @@ void BSPMap::bindTrianglesLightmaps()
             this->model_triangles[j].is_bsp = true;
 
             if (lightmaps[surfaceId].isLightMapped()) {
-                lightmap_t *lt = new lightmap_t;
-                CalcSurfaceExtents(surfaceId, lt);
+                lightmap_t *lt = &surface_lightmaps[surfaceId];
                 this->model_triangles[j].getLightmap()->mins[0] = lt->mins[0];
                 this->model_triangles[j].getLightmap()->mins[1] = lt->mins[1];
                 this->model_triangles[j].getLightmap()->maxs[0] = lt->maxs[0];
                 this->model_triangles[j].getLightmap()->maxs[1] = lt->maxs[1];
-
-                this->model_triangles[j].getLightmap()->bmins[0] = lt->bmins[0];
-                this->model_triangles[j].getLightmap()->bmins[1] = lt->bmins[1];
-                this->model_triangles[j].getLightmap()->bmaxs[0] = lt->bmaxs[0];
-                this->model_triangles[j].getLightmap()->bmaxs[1] = lt->bmaxs[1];
-
-                this->model_triangles[j].getLightmap()->extents[0] = lt->extents[0];
-                this->model_triangles[j].getLightmap()->extents[1] = lt->extents[1];
-
-                this->model_triangles[j].getLightmap()->min_u = lt->min_u;
-                this->model_triangles[j].getLightmap()->max_u = lt->max_u;
-                this->model_triangles[j].getLightmap()->min_v = lt->min_v;
-                this->model_triangles[j].getLightmap()->max_v = lt->max_v;
 
                 this->model_triangles[j].setLightmap(&lightmaps[surfaceId]);
             }
@@ -469,21 +455,6 @@ void BSPMap::CalcSurfaceExtents (int surface, lightmap_t* l)
             //Logging::getInstance()->Log("Error lightmap surface: " + std::to_string(extents[i]), "");
         }
     }
-
-    l->min_u = min_u;
-    l->min_v = min_v;
-
-    l->max_u = max_u;
-    l->max_v = max_v;
-
-    l->extents[0] = extents[0];
-    l->extents[1] = extents[1];
-
-    l->bmaxs[0] = bmaxs[0];
-    l->bmaxs[1] = bmaxs[1];
-
-    l->bmins[0] = bmins[0];
-    l->bmins[1] = bmins[1];
 
     l->mins[0] = mins[0];
     l->mins[1] = mins[1];

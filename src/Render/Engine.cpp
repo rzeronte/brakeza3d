@@ -177,8 +177,8 @@ void Engine::onStart()
     //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
     //cam->setRotation( Rotation3D(0, 0, 0) );
 
-    Engine::camera->setPosition(Vertex3D(544, -32, 500));
-    //Engine::camera->setPosition(Vertex3D(476.42, -78, -340.942));
+    //Engine::camera->setPosition(Vertex3D(544, -32, 500));
+    Engine::camera->setPosition(Vertex3D(476.42, -78, -340.942));
 
     Engine::camera->collider->movement.vertex1 = *Engine::camera->getPosition();
     Engine::camera->collider->movement.vertex2 = *Engine::camera->getPosition();
