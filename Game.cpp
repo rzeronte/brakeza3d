@@ -147,12 +147,10 @@ void Game::onStart()
     */
 
     loadBSP("e1m1.bsp", "palette.lmp");
-    EngineSetup::getInstance()->TESTING = 11372;
 }
 
 void Game::mainLoop()
 {
-    engineTimer.start();
 
     ImGuiIO& io = ImGui::GetIO();
     while(!finish) {
@@ -187,7 +185,6 @@ void Game::mainLoop()
         Engine::processFPS();
     }
 
-    engineTimer.stop();
 }
 
 void Game::onUpdate()
@@ -197,15 +194,6 @@ void Game::onUpdate()
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;*/
-    int test = (int) (EngineSetup::getInstance()->TESTING);
-    //EngineSetup::getInstance()->TESTING+=0.7;
-
-/*    Triangle *t = &bsp_map->model_triangles[test];
-    t->getLightmap()->drawFlatLightMap(230, 20);
-
-    int surface_id = bsp_map->model_triangles[test].bsp_surface;
-    bsp_map->lightmaps[surface_id].drawFlatLightMap(200, 20);
-*/
 }
 
 void Game::preUpdate()

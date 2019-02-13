@@ -35,13 +35,9 @@ private:
 public:
     bool loaded = false;
 
-    // lihtmap info
-    int	bmins[2], bmaxs[2];
+    // lightmap info
     float mins[2], maxs[2];
-    short extents[2];
-
-    float min_u, min_v;
-    float max_u, max_v;
+    float extents[2];
 
     Texture();
     Texture(int, int);

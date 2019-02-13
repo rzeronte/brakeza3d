@@ -320,10 +320,14 @@ void BSPMap::bindTrianglesLightmaps()
 
             if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];
+
                 this->model_triangles[j].getLightmap()->mins[0] = lt->mins[0];
                 this->model_triangles[j].getLightmap()->mins[1] = lt->mins[1];
                 this->model_triangles[j].getLightmap()->maxs[0] = lt->maxs[0];
                 this->model_triangles[j].getLightmap()->maxs[1] = lt->maxs[1];
+
+                this->model_triangles[j].getLightmap()->extents[0] = lt->maxs[1] - lt->mins[1];
+                this->model_triangles[j].getLightmap()->extents[1] = lt->maxs[0] - lt->mins[0];
 
                 this->model_triangles[j].setLightmap(&lightmaps[surfaceId]);
             }

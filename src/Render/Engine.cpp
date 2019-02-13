@@ -174,6 +174,8 @@ void Engine::windowUpdate()
 
 void Engine::onStart()
 {
+    engineTimer.start();
+
     //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
     //cam->setRotation( Rotation3D(0, 0, 0) );
 
@@ -384,8 +386,9 @@ void Engine::drawSprites()
     }
 }
 
-void Engine::onEnd() {
-
+void Engine::onEnd()
+{
+    engineTimer.stop();
 }
 
 void Engine::addObject3D(Object3D *obj, std::string label)

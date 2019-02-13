@@ -122,7 +122,7 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexSpaces(cam);
 
     bool faceCulling = false;
-    if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
+    if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING && !isClipped()) {
         faceCulling = this->isBackFaceCulling(cam);
     }
 
@@ -147,7 +147,10 @@ bool Triangle::draw(Camera3D *cam)
 
     // Frustum Culling
     if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !isClipped()) {
-        if ( !cam->frustum->isPointInFrustum(Ao) && !cam->frustum->isPointInFrustum(Bo) && !cam->frustum->isPointInFrustum(Co) ) {
+        if (!cam->frustum->isPointInFrustum(Ao) &&
+            !cam->frustum->isPointInFrustum(Bo) &&
+            !cam->frustum->isPointInFrustum(Co)
+        ) {
             EngineBuffers::getInstance()->trianglesOutFrustum++;
             return false;
         }
@@ -163,8 +166,6 @@ bool Triangle::draw(Camera3D *cam)
     EngineBuffers::getInstance()->trianglesDrawed++;
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-
-
         this->scanVertices(cam);
     }
 
@@ -503,20 +504,19 @@ void Triangle::processPixel(const Point2D &pointFinal)
             tex_u = modf(abs(tex_u) , &ignorablePartInt);
             tex_v = modf(abs(tex_v) , &ignorablePartInt);
 
+            pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
             if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
                 pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
-            } else {
-                pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
             }
 
             if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
 
                 light_u -= getLightmap()->mins[1];
-                light_u /= (getLightmap()->maxs[1] - getLightmap()->mins[1]);
+                light_u /= getLightmap()->extents[0];
                 light_u = modf(abs(light_u) , &ignorablePartInt);
 
                 light_v -= getLightmap()->mins[0];
-                light_v /= (getLightmap()->maxs[0] - getLightmap()->mins[0]);
+                light_v /= getLightmap()->extents[1];
                 light_v = modf(abs(light_v) , &ignorablePartInt);
 
                 Uint32 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
