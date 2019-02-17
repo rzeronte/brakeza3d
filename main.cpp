@@ -28,6 +28,6 @@ int main( int argc, const char* args[] ) {
         std::cout << "Error iniciando el game" << std::endl;
     }
 
-    printf("\r\nEnds");
+    printf("\r\nBrakeza3D exit, good bye ;)");
     return 0;
 }
