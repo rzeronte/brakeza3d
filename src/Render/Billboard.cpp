@@ -76,3 +76,9 @@ void Billboard::setTrianglesTexture(Texture *t)
     this->T1.setTexture(t);
     this->T2.setTexture(t);
 }
+
+void Billboard::reassignTexture()
+{
+    setTrianglesTexture(this->texture);
+
+}

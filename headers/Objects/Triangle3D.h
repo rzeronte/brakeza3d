@@ -45,7 +45,7 @@ public:
     bool is_colliding = false;
 
     bool is_bsp = false;
-    int bsp_surface = 0;
+    int bsp_surface = -1;
 
     int lod;
 

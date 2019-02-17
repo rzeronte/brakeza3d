@@ -17,8 +17,6 @@
 class Mesh3D : public Object3D {
 
 public:
-    Billboard *billboard;
-
     std::string mesh_file;
 
     Texture *model_textures;

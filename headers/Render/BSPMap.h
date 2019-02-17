@@ -1,8 +1,3 @@
-//
-// Quake map viewer
-//
-// Author: Johan Gardhage <johan.gardhage@gmail.com>
-//
 #ifndef _MAP_H_
 #define _MAP_H_
 
@@ -150,16 +145,6 @@ struct primdesc_t
     vec3_t v;	// Vertex coordinate
 };
 
-typedef struct entity_t
-{
-    char*		     string;
-    float			_float;
-    float			vector[3];
-    unsigned int    function;
-    int				_int;
-    int				edict;
-} ;
-
 struct surface_triangles_t
 {
     int num;        // número de triángulos
@@ -169,8 +154,23 @@ struct surface_triangles_t
 struct lightmap_t
 {
     int offset;
-    int width; int height;
+    int width;
+    int height;
     float mins[2], maxs[2];
+};
+
+
+typedef struct epair_s
+{
+    char	key[100];
+    char	value[100];
+};
+
+typedef struct entity_t
+{
+    int         id;
+    int         num_attributes = 0;
+    epair_s     attributes[50];
 };
 
 class BSPMap: public Object3D
@@ -196,6 +196,9 @@ public:
 
     Texture *textures;
 
+    entity_t *entities;
+    int n_entities;
+
     lightmap_t *surface_lightmaps;   // info surface-lightmap
     Texture *lightmaps;              // lightmaps textures
 
@@ -203,15 +206,9 @@ public:
 
     BSPMap();
 
-    ~BSPMap() {
-        if (bsp) free (bsp);
-    }
+    ~BSPMap() { if (bsp) free (bsp); }
 
     bool Initialize(const char *bspFilename, const char *paletteFilename);
-
-    //
-    // BSP helper methods
-    //
 
     // Get number of edges for surface
     int getNumEdges(int surfaceId) { return getSurface(surfaceId)->numedge; }
@@ -340,10 +337,11 @@ public:
     bool InitializeTriangles();
     bool InitializeLightmaps();
     void bindTrianglesLightmaps();
-
-    void createTrianglesForSurface(int surface);
+    void InitializeEntities();
 
     float CalculateDistance(vec3_t a, vec3_t b);
+    void CalcSurfaceExtents (int surface, lightmap_t* l);
+
     void DrawSurface(int surface, Camera3D *camera);
     void DrawSurfaceTriangles(int surface, Camera3D *camera);
     void CheckPhysicsSurfaceTriangles(int surface, Camera3D *camera);
@@ -355,20 +353,23 @@ public:
     void PhysicsLeafVisibleSet(Camera3D *Cam);
 
     bspleaf_t *FindLeaf(Camera3D *camera);
-
-    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
-
-    // Get array of edges, contains the index to the start and end vertices in the pV
-    entity_t *getEntities() { return (entity_t *) &bsp[header->entities.offset]; }
-
-    unsigned char *getLightmaps() { return (unsigned char *)(&bsp[header->lightmaps.offset]); }
-    int getNumLightmaps() { return header->lightmaps.size; }
-
-    unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
-
     void setVisibleSet(bspleaf_t *pLeaf);
 
-    void CalcSurfaceExtents (int surface, lightmap_t* l);
+    bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
+    void createTrianglesForSurface(int surface);
+
+    // Get array of edges, contains the index to the start and end vertices in the pV
+    char *getEntities() { return (char *) &bsp[header->entities.offset]; }
+    char *parseEntities (char *s);
+    int  getFirstEntityByClassname(char *);
+    char *getEntityValue(int entityId, char *);
+    bool hasEntityAttribute(int entityId, char *);
+    Vertex3D parsePositionFromEntityAttribute(char *);
+
+    Vertex3D getStartMapPosition();
+
+
+    unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
 
     char *bsp;
 };

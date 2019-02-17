@@ -5,9 +5,6 @@
 
 LightPoint3D::LightPoint3D()
 {
-    this->billboard = new Billboard();
-    this->billboard->loadTexture( EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT );
-
     cam = new Camera3D();
     //cam->setPosition(*this->getPosition());
     //cam->setRotation(*this->getRotation());

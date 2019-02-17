@@ -24,8 +24,6 @@ public:
     float kl = 0;   // linear attenuation
     float kq = 0;   // quadratic attenuation
 
-    Billboard *billboard;
-
     Camera3D *cam;
     float *shadowMappingBuffer;
     int sizeBuffer;

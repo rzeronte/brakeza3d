@@ -61,7 +61,6 @@ void Game::onStart()
     lp3->setColor( 0, 0, 255 );
     this->addLightPoint(lp3, "l3");
 
-
     // mono
     Mesh3D *mono = new Mesh3D();
     mono->setPosition(Vertex3D(544, -32, 643));
@@ -107,8 +106,8 @@ void Game::onStart()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(false);
-    marine->setPosition( Vertex3D(1, 1, 5) );
+    marine->setEnabled(true);
+    marine->setPosition(Vertex3D(500, -68, 351));
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("marine/idle", 1);
     marine->addAnimationDirectional2D("marine/walk", 4);
@@ -151,7 +150,6 @@ void Game::onStart()
 
 void Game::mainLoop()
 {
-
     ImGuiIO& io = ImGui::GetIO();
     while(!finish) {
 
@@ -184,7 +182,6 @@ void Game::mainLoop()
         // FPS calculation
         Engine::processFPS();
     }
-
 }
 
 void Game::onUpdate()

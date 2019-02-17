@@ -26,9 +26,6 @@ Texture::Texture(int w, int h)
 
 SDL_Surface *Texture::getSurface(int mip_mapping)
 {
-    if (!isMipMapped()) {
-        return this->mip_mapping_1;
-    }
 
     switch(mip_mapping) {
         case 1:

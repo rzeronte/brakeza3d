@@ -18,6 +18,7 @@
 #include "../../src/GUI/GUI_ObjectsInspector.h"
 #include "../../src/GUI/GUI_Engine.h"
 #include "BSPMap.h"
+#include "../Objects/BSPEntity3D.h"
 
 class Engine {
 public:
@@ -35,6 +36,7 @@ public:
 
     // Objetos 3D
     Object3D **gameObjects;
+
     int numberGameObjects;
 
     BSPMap *bsp_map;
@@ -87,6 +89,7 @@ public:
     void drawBSP();
     void drawLightPoints();
     void drawSprites();
+    void drawObjectsBillboard();
 
     void checkCollisionsBSP();
     void checkCollisionsMesh();

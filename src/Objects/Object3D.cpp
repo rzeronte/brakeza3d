@@ -15,6 +15,10 @@ Object3D::Object3D()
     this->enabled = true;
     this->position = Vertex3D(1, 1, 1);
     this->scale = 1;
+
+    this->billboard = new Billboard();
+    this->setDefaultBillboard();
+    this->drawBillboard = false;
 }
 
 Vertex3D* Object3D::getPosition() {
@@ -90,5 +94,25 @@ Vertex3D Object3D::AxisLeft()
     Vertex3D v = getRotation() * EngineSetup::getInstance()->left;
 
     return v.getNormalize();
+}
 
+void Object3D::setDefaultBillboard()
+{
+    this->billboard->loadTexture( EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT );
+}
+
+Billboard *Object3D::getBillboard() const {
+    return billboard;
+}
+
+void Object3D::setBillboard(Billboard *billboard) {
+    Object3D::billboard = billboard;
+}
+
+bool Object3D::isDrawBillboard() const {
+    return drawBillboard;
+}
+
+void Object3D::setDrawBillboard(bool drawBillboard) {
+    Object3D::drawBillboard = drawBillboard;
 }

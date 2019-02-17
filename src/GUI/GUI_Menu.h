@@ -19,8 +19,8 @@ public:
         const float range_max_radius = 100000;
 
         const float range_min_lightmap_intensity = 0;
-        const float range_max_lightmap_intensity = 1;
-
+        const float range_max_lightmap_intensity = 0.5;
+        const float range_sensibility_lightmap_intensity = 0.0001;
 
         const float range_min_lod = 1;
         const float range_max_lod = 8;
@@ -107,7 +107,7 @@ public:
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
-                ImGui::DragScalar("BSP Lightmapping Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("BSP Lightmapping Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 

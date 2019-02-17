@@ -3,8 +3,8 @@
 #define SDL2_3D_ENGINE_BILLBOARD_H
 
 #include "../Objects/Object3D.h"
-#include "Texture.h"
 #include "../Objects/Triangle3D.h"
+#include "Texture.h"
 
 class Billboard {
 public:
@@ -29,6 +29,7 @@ public:
     void loadTexture(std::string);
 
     void setTrianglesTexture(Texture *);
+    void reassignTexture();
 
     bool isDrawable() const;
     void setDrawable(bool drawable);

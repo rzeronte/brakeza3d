@@ -75,14 +75,25 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
 
     // texture coordinates
     if (this->getTexture() != NULL) {
-        tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
-        tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
+        if (is_bsp) {
+            tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
+            tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
 
-        tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
-        tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
+            tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
+            tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
 
-        tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
-        tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
+            tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
+            tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
+        } else {
+            tex_u1 = Ac.u;
+            tex_v1 = Ac.v;
+
+            tex_u2 = Bc.u;
+            tex_v2 = Bc.v;
+
+            tex_u3 = Cc.u;
+            tex_v3 = Cc.v;
+        }
     }
 }
 
@@ -218,6 +229,7 @@ bool Triangle::clipping(Camera3D *cam)
 
         for (int i = 0; i < num_new_triangles; i++) {
             EngineBuffers::getInstance()->trianglesClippingCreated++;
+            new_triangles[i].is_bsp = true;
             new_triangles[i].draw(cam);
         }
 
@@ -452,14 +464,10 @@ void Triangle::processPixel(const Point2D &pointFinal)
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
         const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
 
-        if (buffer_z != NULL) {
-            if ( z < buffer_z ) {
-                EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
-            } else {
-                return;
-            }
-        }  else {
+        if ( z < buffer_z ) {
             EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
+        } else {
+            return;
         }
     }
 
@@ -505,6 +513,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
             tex_v = modf(abs(tex_v) , &ignorablePartInt);
 
             pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
+
             if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
                 pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
             }
@@ -512,27 +521,29 @@ void Triangle::processPixel(const Point2D &pointFinal)
             if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
 
                 light_u -= getLightmap()->mins[1];
-                light_u /= getLightmap()->extents[0];
-                light_u = modf(abs(light_u) , &ignorablePartInt);
+                light_u /= getLightmap()->extents[1];
+                light_u  = modf(abs(light_u), &ignorablePartInt);
 
                 light_v -= getLightmap()->mins[0];
-                light_v /= getLightmap()->extents[1];
-                light_v = modf(abs(light_v) , &ignorablePartInt);
+                light_v /= getLightmap()->extents[0];
+                light_v  = modf(abs(light_v), &ignorablePartInt);
 
                 Uint32 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
+                Uint8 lightmap_intensity = Tools::getRedValueFromColor(lightmap_color); // RGB son iguales en un gris
+
+                Uint8 pred, pgreen, pblue, palpha;
+                SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
+
+                float t = lightmap_intensity * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
+
+                pixelColor = (Uint32) Tools::createRGB(
+                    std::min(int(pred * t), 255),
+                    std::min(int(pgreen * t), 255),
+                    std::min(int(pblue * t), 255)
+                );
 
                 if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
                     pixelColor = lightmap_color;
-                } else {
-                    Uint8 lred, lgreen, lblue, lalpha;
-                    SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &lred, &lgreen, &lblue, &lalpha);
-
-                    Uint8 pred, pgreen, pblue, palpha;
-                    SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
-
-                    float t = Maths::normalizeToRange(lred, 0, 255) + EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
-
-                    pixelColor = (Uint32) Tools::createRGB((pred * t), (pgreen * t), (pblue * t) );
                 }
             }
 
@@ -844,6 +855,7 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
             collider->foundCollision = true;
             this->is_colliding = true;
 
+            // Check if is player is on ground
             Vector3D down = Vector3D(collider->basePoint, collider->basePoint + Vertex3D(0, 1, 0).getScaled(radius+1));
             int on_ground = Maths::isVector3DClippingPlane(trianglePlane, down);
             if (on_ground > 1) {
@@ -858,6 +870,8 @@ bool Triangle::isCollisionWithSphere(Collider *collider, float radius, Camera3D 
 int Triangle::processLOD()
 {
     int lod = EngineSetup::getInstance()->LOAD_OF_DETAIL;
+
+    if (getTexture() == NULL) return 0;
 
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
         float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);

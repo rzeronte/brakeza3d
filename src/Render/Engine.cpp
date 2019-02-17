@@ -11,6 +11,7 @@
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/Objects/Sprite3D.h"
 #include "../../headers/Objects/Weapon3D.h"
+#include "../../headers/Objects/BSPEntity3D.h"
 #include <chrono>
 #include <iostream>
 
@@ -176,11 +177,7 @@ void Engine::onStart()
 {
     engineTimer.start();
 
-    //cam->setPosition( EngineSetup::getInstance()->CameraPosition );
-    //cam->setRotation( Rotation3D(0, 0, 0) );
-
-    //Engine::camera->setPosition(Vertex3D(544, -32, 500));
-    Engine::camera->setPosition(Vertex3D(476.42, -78, -340.942));
+    Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
 
     Engine::camera->collider->movement.vertex1 = *Engine::camera->getPosition();
     Engine::camera->collider->movement.vertex2 = *Engine::camera->getPosition();
@@ -234,6 +231,7 @@ void Engine::onUpdate()
     this->drawMeshes();
     this->drawLightPoints();
     this->drawSprites();
+    this->drawObjectsBillboard();
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
         Drawable::drawFrustum(camera->frustum, camera, true, true, true);
@@ -323,9 +321,10 @@ void Engine::drawLightPoints()
         LightPoint3D *oLight= this->lightPoints[i];
         if (oLight != NULL) {
             if (oLight->isEnabled()) {
-                oLight->billboard->updateUnconstrainedQuad( 0.3, 0.3, oLight, camera->AxisUp(), camera->AxisRight() );
+                oLight->getBillboard()->updateUnconstrainedQuad( 30, 30, oLight, camera->AxisUp(), camera->AxisRight() );
+                oLight->getBillboard()->reassignTexture();
                 if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
-                    Drawable::drawBillboard(oLight->billboard, Engine::camera);
+                    Drawable::drawBillboard(oLight->getBillboard(), Engine::camera);
                 }
                 if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
                     Drawable::drawObject3DAxis(oLight, camera, true, true, true);
@@ -351,7 +350,6 @@ void Engine::drawSprites()
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
-
         }
 
         // Sprite 3D
@@ -383,6 +381,25 @@ void Engine::drawSprites()
             }
         }
 
+    }
+}
+
+void Engine::drawObjectsBillboard()
+{
+    if (EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD) {
+
+        Vertex3D u = camera->getRotation().getTranspose() * EngineSetup::getInstance()->up;
+        Vertex3D r = camera->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+
+        // draw meshes
+        for (int i = 0; i < this->numberGameObjects; i++) {
+            if (this->gameObjects[i]->isDrawBillboard()) {
+
+                this->gameObjects[i]->getBillboard()->updateUnconstrainedQuad( 30, 30, this->gameObjects[i], u, r );
+                this->gameObjects[i]->getBillboard()->reassignTexture();
+                Drawable::drawBillboard(this->gameObjects[i]->getBillboard(), Engine::camera);
+            }
+        }
     }
 }
 
@@ -438,6 +455,21 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map->InitializeLightmaps();
     this->bsp_map->InitializeTriangles();
     this->bsp_map->bindTrianglesLightmaps();
+    this->bsp_map->InitializeEntities();
+
+    this->camera->setPosition(this->bsp_map->getStartMapPosition());
+
+    for (int i = 0 ; i < this->bsp_map->n_entities ; i++) {
+        if (bsp_map->hasEntityAttribute(i, "origin")) {
+            char *value = bsp_map->getEntityValue(i, "origin");
+            Vertex3D pos = bsp_map->parsePositionFromEntityAttribute(value);
+            Object3D *o = new Object3D();
+            o->setEnabled(true);
+            o->setPosition( pos );
+            o->setDrawBillboard(true);
+            this->addObject3D( o, "entity_" +  std::to_string(i) );
+        }
+    }
 }
 
 Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRecursionDepth, Collider *collider)
@@ -540,12 +572,10 @@ void Engine::collideAndSlide(Vertex3D vel)
 
 Vertex3D Engine::updatePhysics()
 {
-    Vertex3D o = Vertex3D(0, 0, 0);
-
     Vertex3D inertia  = camera->collider->frameVelocity;
     Vertex3D movement = camera->collider->movement.getComponent().getScaled(getDeltaTime());
 
-    o = o + inertia;
+    Vertex3D o = inertia;
     o = o + movement;
 
     // contact friction
@@ -570,7 +600,7 @@ Vertex3D Engine::updatePhysics()
 
     // Gravity
     if (EngineSetup::getInstance()->ENABLE_GRAVITY) {
-        Vertex3D gravity  = camera->collider->gravity + EngineSetup::getInstance()->gravity.getScaled(getDeltaTime());
+        Vertex3D gravity = camera->collider->gravity + EngineSetup::getInstance()->gravity.getScaled(getDeltaTime());
         camera->collider->gravity = gravity;
         o = o + gravity;
     }

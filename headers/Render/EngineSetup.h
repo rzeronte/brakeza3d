@@ -33,7 +33,7 @@ public:
     bool CAMERA_MOUSE_ROTATION = true;
 
     static EngineSetup* instance;
-    const int ENGINE_MAX_GAMEOBJECTS = 100;
+    const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
     const float EPSILON = 0.001;
 
@@ -108,8 +108,8 @@ public:
     int GUI_MAX_SPRITE3D_FRAMERATE = 30;
 
     // SpriteDirectional3D Default size
-    float SPRITE3D_DEFAULT_WIDTH = 0.5f;
-    float SPRITE3D_DEFAULT_HEIGHT = 0.5f;
+    float SPRITE3D_DEFAULT_WIDTH = 25.f;
+    float SPRITE3D_DEFAULT_HEIGHT = 25.f;
 
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
@@ -123,7 +123,7 @@ public:
     float MOUSE_SENSITIVITY	= 0.5;
 
     // COLLISION SYSTEM
-    bool BSP_COLLISIONS_ENABLED = true;
+    bool BSP_COLLISIONS_ENABLED = false;
     bool ENABLE_GRAVITY = false;
     bool ENABLE_FRICTION = true;
     bool ENABLE_AIR_FRICTION = true;
@@ -143,7 +143,7 @@ public:
 
     bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_INTENSITY = 0.3;
+    float LIGHTMAPPING_INTENSITY = 0.015;
 };
 
 

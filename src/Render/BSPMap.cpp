@@ -39,6 +39,8 @@ BSPMap::BSPMap()
     this->surface_triangles = new surface_triangles_t[MAX_BSP_TRIANGLES];
     this->surface_lightmaps = new lightmap_t[MAX_BSP_TRIANGLES];
 
+    this->entities = new entity_t[1000];
+
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
@@ -240,7 +242,6 @@ bool BSPMap::InitializeTextures(void)
             textures[i].loadFromRaw(texture, width, height, mip_m);
             delete texture;
         }
-
     }
 
     return true;
@@ -266,7 +267,6 @@ bool BSPMap::InitializeTriangles()
 
     Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->n_triangles), "");
     Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
-    Logging::getInstance()->Log("BSP Lightmaps Size Bytes: " + std::to_string(this->getNumLightmaps()), "");
 }
 
 bool BSPMap::InitializeLightmaps()
@@ -306,6 +306,21 @@ bool BSPMap::InitializeLightmaps()
     }
 }
 
+void BSPMap::InitializeEntities()
+{
+    Logging::getInstance()->Log("InitializeEntities:", "");
+
+    char *e = getEntities();
+    this->parseEntities(e);
+
+    /*for (int i = 0; i < this->n_entities; i++) {
+        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
+        for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
+            Logging::getInstance()->Log("Key: " + (std::string)this->entities[i].attributes[j].key + " - Value: " + (std::string)this->entities[i].attributes[j].value, "");
+        }
+    }*/
+}
+
 void BSPMap::bindTrianglesLightmaps()
 {
     for (int surfaceId = 0; surfaceId < this->getNumSurfaces(); surfaceId++) {
@@ -326,8 +341,8 @@ void BSPMap::bindTrianglesLightmaps()
                 this->model_triangles[j].getLightmap()->maxs[0] = lt->maxs[0];
                 this->model_triangles[j].getLightmap()->maxs[1] = lt->maxs[1];
 
-                this->model_triangles[j].getLightmap()->extents[0] = lt->maxs[1] - lt->mins[1];
-                this->model_triangles[j].getLightmap()->extents[1] = lt->maxs[0] - lt->mins[0];
+                this->model_triangles[j].getLightmap()->extents[1] = lt->maxs[1] - lt->mins[1];
+                this->model_triangles[j].getLightmap()->extents[0] = lt->maxs[0] - lt->mins[0];
 
                 this->model_triangles[j].setLightmap(&lightmaps[surfaceId]);
             }
@@ -605,4 +620,125 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
     }
 
     return leaf;
+}
+
+char *BSPMap::parseEntities (char *s)
+{
+    char pkey[512];
+    char value[512];
+    int i = 0;
+
+    bool saving_key = false;
+    bool saving_value = false;
+    int  count_commas = 0;
+
+    int entityId = 0;
+    int attributeId = 0;
+
+    int t;
+    while (s[i] != '\0') {
+        char c = s[i];
+        if (s[i] == '{') {
+            //printf("\r\nEntity: ");
+            this->entities[entityId].id = entityId;
+            attributeId = 0;
+        } else if (s[i] == '\"' && count_commas == 0) {
+            //printf("\r\nKey: ");
+            saving_key = true;
+            saving_value = false;
+            count_commas++;
+            t = 0;
+        } else if (s[i] == '\"' && count_commas == 1) {
+            count_commas++;
+        } else if (s[i] == '\"' && count_commas == 2) {
+            //printf("Value: ");
+            saving_key = false;
+            saving_value = true;
+            count_commas++;
+            t = 0;
+        } else if (s[i] == '\"' && count_commas == 3) {
+            count_commas = 0;
+            attributeId++;
+            this->entities[entityId].num_attributes++;
+        } else {
+            if (c != '{' && c != '}' && c != '\n') {
+                if (saving_key && c != ' ') { // key doesnt accept whitespaces
+                    this->entities[entityId].attributes[attributeId].key[t] = c;
+                    pkey[t] = c;
+                    t++;
+                }
+                if (saving_value) {
+                    this->entities[entityId].attributes[attributeId].value[t] = c;
+                    value[t] = c;
+                    t++;
+                }
+
+                //printf("%c", c);
+            }
+            if (c == '}' ) {
+                //printf("End element");
+                entityId++;
+                this->n_entities++;
+            }
+        }
+        i++;
+    }
+}
+
+char *BSPMap::getEntityValue(int entityId, char *key)
+{
+    for (int j = 0 ; j < this->entities[entityId].num_attributes ; j++ ) {
+        if (!strcmp(this->entities[entityId].attributes[j].key, key)) {
+            return this->entities[entityId].attributes[j].value;
+        }
+    }
+}
+
+int BSPMap::getFirstEntityByClassname(char *value)
+{
+    for (int i = 0 ; i <= this->n_entities ; i++) {
+        if (hasEntityAttribute(i, "classname")) {
+            char *v = getEntityValue(i, "classname");
+            if (!strcmp(v, value)) {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+bool BSPMap::hasEntityAttribute(int entityId, char *key)
+{
+    for (int j = 0 ; j < this->entities[entityId].num_attributes ; j++ ) {
+        if (!strcmp(this->entities[entityId].attributes[j].key, key)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line)
+{
+    std::vector<std::string> line_chunks;
+    line_chunks = Tools::split(line, ' ');
+
+    float x = atof(line_chunks[0].c_str() );
+    float y = -atof(line_chunks[2].c_str() );
+    float z = atof(line_chunks[1].c_str() );
+
+    return Vertex3D(x, y, z);
+}
+
+Vertex3D BSPMap::getStartMapPosition()
+{
+    int entityID = this->getFirstEntityByClassname("info_player_start");
+
+    if (entityID != -1) {
+        char *value = getEntityValue(entityID, "origin");
+        return parsePositionFromEntityAttribute(value);
+    } else {
+        Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
+    }
 }

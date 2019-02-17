@@ -11,12 +11,17 @@ class Billboard;
 class Object3D {
     Vertex3D position;
     M3 rotation;
+
+    Billboard *billboard;
+    bool drawBillboard;
+
 public:
     bool enabled;
 
     float scale;
 
     std::string label;
+
 
     Object3D();
     virtual ~Object3D() = default;
@@ -42,7 +47,15 @@ public:
     Vertex3D AxisRight();
     Vertex3D AxisLeft();
 
+    void setDefaultBillboard();
 
+    Billboard *getBillboard() const;
+
+    void setBillboard(Billboard *billboard);
+
+    bool isDrawBillboard() const;
+
+    void setDrawBillboard(bool drawBillboard);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

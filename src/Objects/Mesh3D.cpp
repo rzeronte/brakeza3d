@@ -30,10 +30,6 @@ Mesh3D::Mesh3D()
     this->lightPoints = new LightPoint3D*[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
     this->numberLightPoints = 0;
 
-    this->billboard = new Billboard();
-    this->billboard->setDrawable(false);
-    this->billboard->loadTexture( EngineSetup::getInstance()->ICON_OBJECT3D_DEFAULT);
-
     shadowCaster = false;
 }
 
@@ -231,23 +227,14 @@ void Mesh3D::draw(Camera3D *cam)
         Drawable::drawObject3DAxis(this, cam, true, true, true);
     }
 
-    // Transforms
+    // draw triangles of mesh
     for (int i = 0; i < this->n_triangles ; i++) {
-
         this->model_triangles[i].draw(cam);
     }
 
     // Console info
     if (EngineSetup::getInstance()->MESH_DEBUG_INFO) {
         EngineBuffers::getInstance()->consoleInfo();
-    }
-
-    // Draw Billboard
-    if (EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD) {
-        this->billboard->updateUnconstrainedQuad( 1, 1, this, cam->AxisUp(), cam->AxisRight() );
-        if (this->billboard->isDrawable()) {
-            Drawable::drawBillboard(this->billboard, cam );
-        }
     }
 }
 

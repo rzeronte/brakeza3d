@@ -29,7 +29,7 @@ EngineBuffers::EngineBuffers()
 
 void EngineBuffers::clearDepthBuffer()
 {
-    std::fill(depthBuffer, depthBuffer + sizeBuffers, NULL);
+    std::fill(depthBuffer, depthBuffer + sizeBuffers, 999999);
 }
 
 float EngineBuffers::getDepthBuffer(int x, int y)

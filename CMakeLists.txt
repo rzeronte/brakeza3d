@@ -61,8 +61,11 @@ add_executable(brakeda3d
         src/Render/Transforms.cpp
         src/Render/Drawable.cpp
         headers/Render/Drawable.h
+        src/Objects/BSPEntity3D.cpp
+        headers/Objects/BSPEntity3D.h
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
+
         Game.cpp Game.h
         src/Render/Billboard.cpp
         headers/Render/Billboard.h
