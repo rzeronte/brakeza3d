@@ -11,6 +11,7 @@ public:
     ~EngineSetup();
 
     static EngineSetup* getInstance();
+    static EngineSetup* instance;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
@@ -32,7 +33,6 @@ public:
 
     bool CAMERA_MOUSE_ROTATION = true;
 
-    static EngineSetup* instance;
     const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
     const float EPSILON = 0.001;
@@ -88,8 +88,17 @@ public:
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
 
-    std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/lightpoint.tga";
+    // BSP ITEM BILLBOARDS
+    std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/light.tga";
     std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";
+    std::string ICON_WEAPON_SHOTGUN = "../assets/icons/weapon_shotgun.tga";
+    std::string ICON_ITEM_HEALTH = "../assets/icons/item_health.tga";
+    std::string ICON_FUNC_BUTTON = "../assets/icons/func_button.tga";
+    std::string ICON_MONSTER_GENERIC = "../assets/icons/monster.tga";
+    std::string ICON_SHIELD_GENERIC = "../assets/icons/shield.tga";
+    std::string ICON_INFO_PLAYER_START = "../assets/icons/info_player_start.tga";
+    std::string ICON_INFO_TELEPORT_DESTINATION = "../assets/icons/info_teleport_destination.tga";
+    std::string ICON_LIGHT_FLAME = "../assets/icons/light_flame.tga";
 
     std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string ASSETS_FOLDER = "../assets/";
@@ -108,8 +117,8 @@ public:
     int GUI_MAX_SPRITE3D_FRAMERATE = 30;
 
     // SpriteDirectional3D Default size
-    float SPRITE3D_DEFAULT_WIDTH = 25.f;
-    float SPRITE3D_DEFAULT_HEIGHT = 25.f;
+    float BILLBOARD_WIDTH_DEFAULT = 20.f;
+    float BILLBOARD_HEIGHT_DEFAULT = 20.f;
 
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
@@ -145,6 +154,5 @@ public:
     bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_INTENSITY = 0.015;
 };
-
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

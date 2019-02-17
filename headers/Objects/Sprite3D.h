@@ -18,8 +18,8 @@ class Sprite3D : public Object3D{
 
 public:
 
-    float width = EngineSetup::getInstance()->SPRITE3D_DEFAULT_WIDTH;
-    float height = EngineSetup::getInstance()->SPRITE3D_DEFAULT_HEIGHT;
+    float width = EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
+    float height = EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
     int num_animations = 0;
     int current_animation = 0;
 

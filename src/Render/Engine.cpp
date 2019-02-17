@@ -321,7 +321,12 @@ void Engine::drawLightPoints()
         LightPoint3D *oLight= this->lightPoints[i];
         if (oLight != NULL) {
             if (oLight->isEnabled()) {
-                oLight->getBillboard()->updateUnconstrainedQuad( 30, 30, oLight, camera->AxisUp(), camera->AxisRight() );
+                oLight->getBillboard()->updateUnconstrainedQuad(
+                    oLight,
+                    camera->AxisUp(),
+                    camera->AxisRight()
+                );
+
                 oLight->getBillboard()->reassignTexture();
                 if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
                     Drawable::drawBillboard(oLight->getBillboard(), Engine::camera);
@@ -342,7 +347,7 @@ void Engine::drawSprites()
         if (oSpriteDirectional != NULL) {
             if (!oSpriteDirectional->isEnabled()) {
                 continue;
-            };
+            }
 
             oSpriteDirectional->updateTrianglesCoordinates(camera);
             oSpriteDirectional->draw(camera);
@@ -357,7 +362,8 @@ void Engine::drawSprites()
         if (oSprite != NULL) {
             if (!oSprite->isEnabled()) {
                 continue;
-            };
+            }
+
             oSprite->updateTrianglesCoordinatesAndTexture(camera);
             oSprite->draw(camera);
 
@@ -380,7 +386,6 @@ void Engine::drawSprites()
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oWeapon->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
             }
         }
-
     }
 }
 
@@ -395,7 +400,7 @@ void Engine::drawObjectsBillboard()
         for (int i = 0; i < this->numberGameObjects; i++) {
             if (this->gameObjects[i]->isDrawBillboard()) {
 
-                this->gameObjects[i]->getBillboard()->updateUnconstrainedQuad( 30, 30, this->gameObjects[i], u, r );
+                this->gameObjects[i]->getBillboard()->updateUnconstrainedQuad(this->gameObjects[i], u, r );
                 this->gameObjects[i]->getBillboard()->reassignTexture();
                 Drawable::drawBillboard(this->gameObjects[i]->getBillboard(), Engine::camera);
             }
@@ -449,6 +454,7 @@ Timer* Engine::getTimer()
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 {
     this->bsp_map = new BSPMap();
+
     this->bsp_map->Initialize(bspFilename, paletteFilename);
     this->bsp_map->InitializeSurfaces();
     this->bsp_map->InitializeTextures();
@@ -457,17 +463,77 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map->bindTrianglesLightmaps();
     this->bsp_map->InitializeEntities();
 
+    // Load start position from BSP
     this->camera->setPosition(this->bsp_map->getStartMapPosition());
 
+    // Create Objects3D from BSP Entities
     for (int i = 0 ; i < this->bsp_map->n_entities ; i++) {
-        if (bsp_map->hasEntityAttribute(i, "origin")) {
-            char *value = bsp_map->getEntityValue(i, "origin");
-            Vertex3D pos = bsp_map->parsePositionFromEntityAttribute(value);
-            Object3D *o = new Object3D();
-            o->setEnabled(true);
-            o->setPosition( pos );
-            o->setDrawBillboard(true);
-            this->addObject3D( o, "entity_" +  std::to_string(i) );
+        if (bsp_map->hasEntityAttribute(i, "classname")) {
+            char *classname = bsp_map->getEntityValue(i, "classname");
+            if (bsp_map->hasEntityAttribute(i, "origin")) {
+                char *value = bsp_map->getEntityValue(i, "origin");
+                Vertex3D pos = bsp_map->parsePositionFromEntityAttribute(value);
+                Object3D *o = new Object3D();
+                o->setEnabled(true);
+                o->setPosition( pos );
+                o->setDrawBillboard(true);
+
+                // light
+                if (!strcmp(classname, "light")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT);
+                }
+
+                // item_health
+                if (!strcmp(classname, "item_health")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_ITEM_HEALTH);
+                }
+
+                // weapon wildcard
+                std::string s1(classname);
+                if (s1.find("weapon") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
+                    o->getBillboard()->width = 50.f;
+                }
+
+                // monster wildcard
+                std::string s2(classname);
+                if (s2.find("monster") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_MONSTER_GENERIC);
+                }
+
+                // armor wildcard
+                std::string s3(classname);
+                if (s2.find("armor") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_SHIELD_GENERIC);
+                }
+
+                // info_player_start
+                if (!strcmp(classname, "info_player_start") ||
+                    !strcmp(classname, "info_player_coop") ||
+                    !strcmp(classname, "info_player_deathmatch")
+                ) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_PLAYER_START);
+                }
+
+                // info teleport destination
+                if (!strcmp(classname, "info_teleport_destination")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_TELEPORT_DESTINATION);
+                }
+
+                // light_flame_large_yellow
+                if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch")
+                ) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHT_FLAME);
+                }
+
+                // func_button
+                if (!strcmp(classname, "func_button")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_FUNC_BUTTON);
+                }
+
+                o->setLabel("BSPEntity_" +  std::to_string(i));
+                this->addObject3D( o, "BSPEntity_" +  std::to_string(i) );
+            }
         }
     }
 }
@@ -614,9 +680,7 @@ void Engine::updateTimer()
     this->deltaTime = this->current_ticks - this->last_ticks;
     this->last_ticks = this->current_ticks;
 
-    this->timerCurrent+= this->deltaTime/1000.f;
-
-    //float step = (float) 1 / 1;
+    this->timerCurrent += this->deltaTime/1000.f;
 
     if (timerCurrent >= 1) {
         timerCurrent = 0;

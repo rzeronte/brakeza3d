@@ -464,9 +464,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER) {
         const float buffer_z = EngineBuffers::getInstance()->getDepthBuffer(pointFinal.x, pointFinal.y);
 
-        if ( z < buffer_z ) {
-            EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
-        } else {
+        if ( z >= buffer_z ) {
             return;
         }
     }
@@ -556,6 +554,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
         }
     }
 
+
     if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
         Vertex3D D;
 
@@ -598,6 +597,7 @@ void Triangle::processPixel(const Point2D &pointFinal)
     }
 
     EngineBuffers::getInstance()->pixelesDrawed++;
+    EngineBuffers::getInstance()->setDepthBuffer(pointFinal.x, pointFinal.y, z);
     EngineBuffers::getInstance()->setVideoBuffer(pointFinal.x, pointFinal.y, pixelColor);
 }
 

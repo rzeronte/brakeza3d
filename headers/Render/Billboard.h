@@ -25,7 +25,7 @@ public:
 
     Billboard();
 
-    void updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex3D up, Vertex3D right);
+    void updateUnconstrainedQuad(Object3D *o, Vertex3D up, Vertex3D right);
     void loadTexture(std::string);
 
     void setTrianglesTexture(Texture *);

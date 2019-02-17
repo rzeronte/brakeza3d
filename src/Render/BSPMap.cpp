@@ -313,12 +313,12 @@ void BSPMap::InitializeEntities()
     char *e = getEntities();
     this->parseEntities(e);
 
-    /*for (int i = 0; i < this->n_entities; i++) {
+    for (int i = 0; i < this->n_entities; i++) {
         Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
         for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
-            Logging::getInstance()->Log("Key: " + (std::string)this->entities[i].attributes[j].key + " - Value: " + (std::string)this->entities[i].attributes[j].value, "");
+            Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
         }
-    }*/
+    }
 }
 
 void BSPMap::bindTrianglesLightmaps()

@@ -8,8 +8,8 @@ SpriteDirectional3D::SpriteDirectional3D()
 {
     this->billboard = new Billboard();
 
-    this->width = EngineSetup::getInstance()->SPRITE3D_DEFAULT_WIDTH;
-    this->height = EngineSetup::getInstance()->SPRITE3D_DEFAULT_HEIGHT;
+    this->width = EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
+    this->height = EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
 
     for (int i = 0; i< BILLBOARD3D_MAX_ANIMATIONS; i++) {
         this->animations[i] = new AnimationDirectional2D();
@@ -26,7 +26,7 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
     Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
     Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
-    this->getBillboard()->updateUnconstrainedQuad( this->width, this->height, this, up, right );
+    this->getBillboard()->updateUnconstrainedQuad( this, up, right );
     this->updateTextureFromCameraAngle(this, cam);
 }
 

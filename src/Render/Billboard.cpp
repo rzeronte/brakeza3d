@@ -10,13 +10,12 @@
 Billboard::Billboard()
 {
     this->texture = new Texture();
+    this->width  = EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
+    this->height = EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
 }
 
-void Billboard::updateUnconstrainedQuad(float w, float h, Object3D *o, Vertex3D U, Vertex3D R)
+void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D U, Vertex3D R)
 {
-    this->width  = w;
-    this->height = h;
-
     Vertex3D X;
     X.x = (width/2) * R.x;
     X.y = (width/2) * R.y;

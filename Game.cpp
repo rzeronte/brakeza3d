@@ -145,7 +145,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    loadBSP("e1m1.bsp", "palette.lmp");
+    loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()

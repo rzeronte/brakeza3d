@@ -21,32 +21,39 @@ Object3D::Object3D()
     this->drawBillboard = false;
 }
 
-Vertex3D* Object3D::getPosition() {
+Vertex3D* Object3D::getPosition()
+{
     return &position;
 }
 
-M3 Object3D::getRotation() {
+M3 Object3D::getRotation()
+{
     return rotation;
 }
 
-void Object3D::setPosition(Vertex3D p) {
+void Object3D::setPosition(Vertex3D p)
+{
     position = p;
 }
 
-void Object3D::setRotation(M3 r) {
+void Object3D::setRotation(M3 r)
+{
     this->rotation = r;
 }
 
-std::string Object3D::getLabel() const {
+std::string Object3D::getLabel() const
+{
     return label;
 }
 
-void Object3D::setLabel(const std::string label) {
+void Object3D::setLabel(const std::string label)
+{
     Object3D::label = label;
 }
 
 
-bool Object3D::isEnabled() const {
+bool Object3D::isEnabled() const
+{
     return enabled;
 }
 
@@ -98,21 +105,24 @@ Vertex3D Object3D::AxisLeft()
 
 void Object3D::setDefaultBillboard()
 {
-    this->billboard->loadTexture( EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT );
+    this->billboard->loadTexture( EngineSetup::getInstance()->ICON_OBJECT3D_DEFAULT );
 }
 
 Billboard *Object3D::getBillboard() const {
     return billboard;
 }
 
-void Object3D::setBillboard(Billboard *billboard) {
+void Object3D::setBillboard(Billboard *billboard)
+{
     Object3D::billboard = billboard;
 }
 
-bool Object3D::isDrawBillboard() const {
+bool Object3D::isDrawBillboard() const
+{
     return drawBillboard;
 }
 
-void Object3D::setDrawBillboard(bool drawBillboard) {
+void Object3D::setDrawBillboard(bool drawBillboard)
+{
     Object3D::drawBillboard = drawBillboard;
 }
