@@ -275,6 +275,9 @@ public:
     // Get hull
     bsphull_t *getHull(int hullId) { return &getHulls()[hullId]; }
 
+    // Get number of surfaces
+    int getNumHulls() { return header->hulls.size / (sizeof (getHulls()[0])); }
+
     // Get array of nodes, contains an index to the plane which intersects the node
     // contains an index to a right and a left node or to a leaf
     // used when traversing the bsp tree to find the leaf containing visible surfaces
@@ -350,6 +353,8 @@ public:
     void CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 
     void DrawLeafVisibleSet(Camera3D *Cam);
+    void DrawHulls(Camera3D *cam);
+
     void PhysicsLeafVisibleSet(Camera3D *Cam);
 
     bspleaf_t *FindLeaf(Camera3D *camera);

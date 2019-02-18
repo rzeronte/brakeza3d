@@ -145,7 +145,7 @@ void Game::onStart()
     testWad->render();
     */
 
-    loadBSP("start.bsp", "palette.lmp");
+    loadBSP("e1m1.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -189,6 +189,7 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
+
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;*/
 }
@@ -199,7 +200,6 @@ void Game::preUpdate()
     Engine::preUpdate();
 
 
-    //Logging::getInstance()->Log("Núm LightMaps: " + std::to_string(nl), "");
 }
 
 void Game::onEnd()

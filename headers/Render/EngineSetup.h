@@ -153,6 +153,8 @@ public:
     bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_INTENSITY = 0.015;
+
+    bool DRAW_BSP_HULLS = false;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

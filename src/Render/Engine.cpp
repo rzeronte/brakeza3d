@@ -274,6 +274,9 @@ void Engine::drawBSP()
 {
     if (bsp_map) {
         bsp_map->DrawLeafVisibleSet( camera );
+        if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
+            bsp_map->DrawHulls( camera );
+        }
     }
 }
 

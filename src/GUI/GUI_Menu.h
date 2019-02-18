@@ -125,6 +125,8 @@ public:
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);
                 ImGui::Separator();
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
+                ImGui::Separator();
+                ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
                 ImGui::EndMenu();
             }
 

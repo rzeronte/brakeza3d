@@ -547,6 +547,18 @@ void BSPMap::DrawLeafVisibleSet(Camera3D *cam)
     DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam);
 }
 
+void BSPMap::DrawHulls(Camera3D *cam)
+{
+    int numHulls = this->getNumHulls();
+
+    for (int m = 1; m < numHulls; m++) {
+        bsphull_t *h = this->getHull(m);
+
+        for (int i = h->firstsurf; i < h->firstsurf + h->numsurf ; i++) {
+            this->DrawSurfaceTriangles(i, cam);
+        }
+    }
+}
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
 void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam)
