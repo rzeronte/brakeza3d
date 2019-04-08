@@ -187,19 +187,27 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
     Vertex3D VXstart( origin.x, origin.y, origin.z );
     Vertex3D VYstart( origin.x, origin.y, origin.z );
     Vertex3D VZstart( origin.x, origin.y, origin.z );
+    Vertex3D VelocityStart( origin.x, origin.y, origin.z );
 
     // end points
     Vertex3D VXend( origin.x + (axis_length), origin.y , origin.z );
     Vertex3D VYend( origin.x, origin.y + (axis_length), origin.z );
     Vertex3D VZend( origin.x, origin.y, origin.z + (axis_length) );
 
+    Vertex3D VelocityEnd( origin.x + (cam->collider->velocity.x), origin.y + (cam->collider->velocity.y), origin.z + (cam->collider->velocity.z));
+
     Vector3D axis_x = Vector3D(VXstart, VXend);
     Vector3D axis_y = Vector3D(VYstart, VYend);
     Vector3D axis_z = Vector3D(VZstart, VZend);
 
+    Vector3D velocity = Vector3D(VelocityStart, VelocityEnd);
+
     Drawable::drawVector3D( axis_x, cam, Color::red() );
     Drawable::drawVector3D( axis_y, cam, Color::green() );
     Drawable::drawVector3D( axis_z, cam, Color::blue() );
+
+    Drawable::drawVector3D( velocity, cam, Color::yellow() );
+
 }
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)

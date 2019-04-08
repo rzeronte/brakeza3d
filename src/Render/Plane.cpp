@@ -4,6 +4,7 @@
 
 #include "../../headers/Render/Plane.h"
 #include "../../headers/Render/Tools.h"
+#include "../../headers/Render/Maths.h"
 
 Plane::Plane() {}
 
@@ -22,14 +23,24 @@ Plane::Plane(const Vertex3D P, const Vertex3D N)
     this->A = P;
 }
 
-float Plane::distance(Vertex3D &p)
+void Plane::setOrigin(Vertex3D origin)
 {
-    Vertex3D normal = getNormalVector().getNormalize();
+    this->A = origin;
+}
 
-    float D = - ( (normal.x * A.x) + (normal.y * A.y) + (normal.z * A.z) );
-    float distance = ( (normal.x * p.x) + (normal.y * p.y) + (normal.z * p.z) + D);
+void Plane::setNormal(Vertex3D n)
+{
+    this->normal = n;
+}
 
-    return distance;
+float Plane::distance(const Vertex3D &p)
+{
+    Vertex3D n = getNormalVector().getNormalize();
+
+    float D = - ( (n.x * A.x) + (n.y * A.y) + (n.z * A.z) );
+    float dist = ( (n.x * p.x) + (n.y * p.y) + (n.z * p.z) + D);
+
+    return dist;
 }
 
 void Plane::updateNormalVector()
@@ -48,7 +59,8 @@ Vertex3D Plane::getNormalVector()
     return this->normal;
 }
 
-Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) {
+Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition)
+{
 
     // Componentes del vector director
     Vertex3D componente = Vertex3D(
@@ -105,4 +117,27 @@ bool Plane::isFrontFacingTo(Vertex3D direction)
 {
     double dot = this->normal * direction;
     return (dot <= 0);
+}
+
+bool Plane::intersect(Vector3D ray, float &t)
+{
+    if (Maths::isVector3DClippingPlane(*this, ray)) {
+        Vertex3D intersectionPoint = this->getPointIntersection(ray.origin(), ray.end(), t);
+
+        return true;
+    }
+
+    return false;
+}
+
+Vertex3D Plane::origin() const
+{
+    return this->A;
+}
+
+Vertex3D Plane::closest( Vertex3D p )
+{
+    float t = this->distance(p);
+
+    return p - this->getNormalVector().getNormalize().getScaled( t );
 }

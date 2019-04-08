@@ -35,6 +35,28 @@ Vertex3D Transforms::cameraSpace(Vertex3D V, Camera3D *cam)
     return A;
 }
 
+Vertex3D Transforms::R3ToEllipsoidSpace(Vertex3D V, Vertex3D eRadius)
+{
+    Vertex3D A = V;
+
+    A.x = V.x / eRadius.x;
+    A.y = V.y / eRadius.y;
+    A.z = V.z / eRadius.z;
+
+    return A;
+}
+
+Vertex3D Transforms::EllipsoidSpaceToR3(Vertex3D V, Vertex3D eRadius)
+{
+    Vertex3D A = V;
+
+    A.x = V.x * eRadius.x;
+    A.y = V.y * eRadius.y;
+    A.z = V.z * eRadius.z;
+
+    return A;
+}
+
 Vertex3D Transforms::NDCSpace(Vertex3D v, Camera3D *cam)
 {
     Vertex3D vNL = cam->frustum->vNLpers;
