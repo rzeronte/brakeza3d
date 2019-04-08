@@ -56,7 +56,6 @@ float Vertex3D::operator *(const Vertex3D &v)
     return (this->x * v.x) + (this->y * v.y) + (this->z * v.z);;
 }
 
-
 Vertex3D Vertex3D::getNormalize()
 {
     float modulo = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );
@@ -75,7 +74,7 @@ Vertex3D Vertex3D::getNormalize()
 
 void Vertex3D::consoleInfo(std::string label, bool returnLine)
 {
-    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" + std::to_string(z) + ") (u:" + std::to_string(u) + ", v:" + std::to_string(v) + ")", "VERTEX");
+    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" + std::to_string(z) + ")", "VERTEX");
     if (returnLine) {
         Logging::getInstance()->Log("", "VERTEX");
     }
@@ -127,5 +126,11 @@ void Vertex3D::setLength(float length)
     this->x = n.x * length;
     this->y = n.y * length;
     this->z = n.z * length;
+}
 
+float Vertex3D::distance(Vertex3D to)
+{
+    Vector3D tmpV(*this, to);
+
+    return tmpV.getComponent().getModule();
 }

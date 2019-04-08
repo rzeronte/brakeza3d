@@ -24,8 +24,7 @@ Vector3D::Vector3D(Vertex3D A, Vertex3D B)
     this->vertex2 = B;
 }
 
-Vertex3D Vector3D::getComponent()
-{
+Vertex3D Vector3D::getComponent() const {
     Vertex3D componente = Vertex3D(
         this->vertex2.x - this->vertex1.x,
         this->vertex2.y - this->vertex1.y,
@@ -35,7 +34,7 @@ Vertex3D Vector3D::getComponent()
     return componente;
 }
 
-Vertex3D Vector3D::getUnitVector()
+Vertex3D Vector3D::normal() const
 {
     Vertex3D c = this->getComponent();
 
@@ -47,4 +46,19 @@ Vertex3D Vector3D::getUnitVector()
     final_vertex.z = c.z / modulo_v;
 
     return final_vertex;
+}
+
+Vertex3D Vector3D::origin() const
+{
+    return this->vertex1;
+}
+
+Vertex3D Vector3D::end() const
+{
+    return this->vertex2;
+}
+
+Vertex3D Vector3D::end(float t) const
+{
+    return origin() + normal().getScaled(t);
 }

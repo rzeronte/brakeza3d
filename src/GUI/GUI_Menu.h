@@ -119,7 +119,6 @@ public:
                 ImGui::Checkbox("Physics", &show_window_physics);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::getInstance()->DRAW_FRUSTUM);
-                ImGui::Checkbox("Draw Triangle normal", &EngineSetup::getInstance()->TRIANGLE_RENDER_NORMAL);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::getInstance()->RENDER_OBJECTS_AXIS);
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);

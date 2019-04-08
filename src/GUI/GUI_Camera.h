@@ -38,7 +38,7 @@ public:
             const float range_max_yaw = 0;
 
             const float range_min_movement = 0;
-            const float range_max_movement = 50;
+            const float range_max_movement = 500;
 
             const float range_min_mouse_sensitivity = 0;
             const float range_max_mouse_sensitivity = 3;
@@ -66,6 +66,7 @@ public:
             if (ImGui::TreeNode( rotation_text.c_str() )) {
                 ImGui::DragScalar("Yaw", ImGuiDataType_Float,  &camera->yaw, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
                 ImGui::DragScalar("Pitch", ImGuiDataType_Float,  &camera->pitch, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Roll", ImGuiDataType_Float,  &camera->roll, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
 

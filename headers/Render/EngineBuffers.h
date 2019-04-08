@@ -38,7 +38,10 @@ public:
 
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);
-    float setDepthBuffer(const int x, const int y, const float value);
+    float getDepthBuffer(int i);
+
+    void setDepthBuffer(const int x, const int y, const float value);
+    void setDepthBuffer(const int i, const float value);
 
     float getVideoBuffer(int x, int y);
     void clearVideoBuffer();

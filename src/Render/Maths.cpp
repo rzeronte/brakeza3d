@@ -86,6 +86,11 @@ Vertex3D Maths::getCenterVertices(Vertex3D vertices[], int num_vertices)
     return middle;
 }
 
+int Maths::orient2d(const Point2D& a, const Point2D& b, const Point2D& c)
+{
+    return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
+}
+
 void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C)
 {
     const int n = 3;
@@ -218,7 +223,7 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D 
     Vertex3D R = lp->AxisForward();
 
     Vector3D L = Vector3D(P, Q);
-    Vertex3D Lv = L.getUnitVector();
+    Vertex3D Lv = L.normal();
 
     const float min = R * Lv;
 
@@ -305,6 +310,8 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setLightmap(lightmap);
             t.setClipped(clipped);
+            t.setId(ntriangles);
+
             triangles[ntriangles] = t;
             ntriangles++;
 
@@ -389,6 +396,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setLightmap(lightmap);
             t.setTexture(texture);
             t.setClipped(clipped);
+            t.setId(ntriangles);
 
             triangles[ntriangles] = t;
             ntriangles++;
@@ -411,6 +419,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setLightmap(lightmap);
             t.setTexture(texture);
             t.setClipped(clipped);
+            t.setId(ntriangles);
 
             triangles[ntriangles] = t;
             ntriangles++;
@@ -505,6 +514,99 @@ float Maths::distancePointVector(Vertex3D Q, Vector3D L)
     }
 
     return -distance;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+// Returns the closest point to 'p' on the line-segment defined by a & b. Sets 'edge' to true if result is one of the endpoints
+// ---------------------------------------------------------------------------------------------------------------------------------
+
+Vertex3D Maths::closestPointOnLineSegment( Vertex3D &a, Vertex3D &b, Vertex3D &p, bool &edge)
+{
+    Vertex3D c = p - a;
+    Vertex3D v = b - a;
+    v = v.getNormalize();
+
+    edge = false;
+    float t = v * c;
+    if (t < 0) return a;
+
+    float d = b.distance(a);
+    if (t > d) return b;
+
+    edge = true;
+
+    return a + v.getScaled(t);
+}
+
+Vertex3D Maths::closestPointOnLine( Vertex3D &a,  Vertex3D &b,  Vertex3D &p)
+{
+    Vertex3D c = p - a;
+    Vertex3D v = b - a;
+
+    v = v.getNormalize();
+
+    float t = v * c;
+    float d = b.distance(a);
+
+    return a + v.getScaled( t );
+}
+
+Vertex3D Maths::closestPointOnPerimeter( Triangle &triangle, Vertex3D &p, Vertex3D &e0, Vertex3D &e1, bool &edgeFlag)
+{
+    bool	found = false;
+    float	closestDistance = 0.f;
+    Vertex3D	closestPoint = Vertex3D(0, 0, 0);
+    Vertex3D	closestP0, closestP1;
+    int	closestIndex;
+
+    std::vector<Vertex3D> vertices;
+    vertices.push_back(triangle.Ao);
+    vertices.push_back(triangle.Bo);
+    vertices.push_back(triangle.Co);
+
+    Vertex3D	p0 = vertices.back();
+
+    int	index = 0;
+    for (auto i = vertices.begin() ; i != vertices.end(); ++i, ++index)
+    {
+        Vertex3D	p1 = *i;
+        bool	edge;
+        Vertex3D	cp = Maths::closestPointOnLineSegment(p0, p1, p, edge);
+        float	d = cp.distance(p);
+
+        if (!found || d < closestDistance)
+        {
+            closestDistance = d;
+            closestPoint = cp;
+            closestP0 = p0;
+            closestP1 = p1;
+            edgeFlag = edge;
+            closestIndex = index;
+            found = true;
+        }
+
+        p0 = p1;
+    }
+
+    if (!edgeFlag)
+    {
+        int	a = closestIndex - 1; if (a < 0) a = vertices.size() - 1;
+        int	b = closestIndex + 1; if (b >= vertices.size()) b = 0;
+        e0 = vertices[a];
+        e1 = vertices[b];
+    }
+    else
+    {
+        e0 = closestP0;
+        e1 = closestP1;
+    }
+
+    return closestPoint;
+}
+
+bool Maths::isPointInsideEdge( Vertex3D &a,  Vertex3D &b,  const Vertex3D &p)
+{
+    return ((a-p) * (b-p)) <= 0;
 }
 
 bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b)

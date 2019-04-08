@@ -36,6 +36,7 @@ public:
     const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
     const float EPSILON = 0.001;
+    const float EPSILON2 = 0.05;
 
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;
@@ -56,10 +57,7 @@ public:
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;
 
-    // Normal in triangle
-    bool TRIANGLE_RENDER_NORMAL = false;
-
-    bool DRAW_OBJECT3D_BILLBOARD = true;
+    bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
@@ -125,32 +123,34 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD & MOUSE
-    float WALKING_SPEED     = 30.0;
+    float WALKING_SPEED     = 100.0;
     float TURN_SPEED        = 10.0;
     float PITCH_SPEED       = 2.0;
-    float STRAFE_SPEED      = 30.0;
+    float STRAFE_SPEED      = 50.0;
     float MOUSE_SENSITIVITY	= 0.5;
 
+    bool HEAD_BOB = false;
+
     // COLLISION SYSTEM
-    bool BSP_COLLISIONS_ENABLED = false;
-    bool ENABLE_GRAVITY = false;
+    bool BSP_COLLISIONS_ENABLED = true;
+    bool ENABLE_GRAVITY = true;
     bool ENABLE_FRICTION = true;
     bool ENABLE_AIR_FRICTION = true;
     bool ENABLE_FLYING = true;
 
-    float PLAYER_SPHERE_RADIUS = 1;
+    float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -500, 0);
 
     const float FRICTION_COEFICIENT = 0.25f;
     const float AIR_RESISTANCE = 0.0005f;
 
-    float TESTING = 0.0000f;
+    float TESTING = 4829;
 
     int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
-    bool ENABLE_LIGHTMAPPING = true;
+    bool ENABLE_LIGHTMAPPING = false;
     bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_INTENSITY = 0.015;
 

@@ -11,6 +11,7 @@
 #include "../../headers/Render/M3.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/EngineBuffers.h"
 
 Camera3D::Camera3D()
 {
@@ -21,7 +22,7 @@ Camera3D::Camera3D()
 
     this->consoleInfo();
 
-    // Inicializamos el frusutm que acompañará a la cámara
+    // Inicializamos el frustum que acompañará a la cámara
     frustum = new Frustum();
     frustum->setup(
         *getPosition(),
@@ -165,6 +166,7 @@ void Camera3D::TurnLeft(void)
 void Camera3D::StrafeRight(void)
 {
     strafe += EngineSetup::getInstance()->STRAFE_SPEED;
+
 }
 
 void Camera3D::StrafeLeft(void)
@@ -175,28 +177,33 @@ void Camera3D::StrafeLeft(void)
 void Camera3D::UpdateColliderForceMovement(void)
 {
     // Move the camera forward
-    if ((fabs(speed) > 0)) {
-        this->collider->movement.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
-        this->collider->movement.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
-        if (EngineSetup::getInstance()->ENABLE_FLYING) {
-            this->collider->movement.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0);
+    if (fabs(jump) > 0 ) {
+        this->collider->movement.vertex2.y += jump;
+    } else {
+        if ((fabs(speed) > 0)) {
+            this->collider->movement.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
+            this->collider->movement.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
+            if (EngineSetup::getInstance()->ENABLE_FLYING) {
+                this->collider->movement.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0);
+            }
         }
-    }
 
-    // Move the camera side ways
-    if ((fabs(strafe) > 0)) {
-        this->collider->movement.vertex2.z = getPosition()->z + strafe * (float) -sin(-yaw * M_PI / 180.0);
-        this->collider->movement.vertex2.x = getPosition()->x - strafe * (float) -cos(-yaw * M_PI / 180.0);
+        // Move the camera side ways
+        if ((fabs(strafe) > 0)) {
+            this->collider->movement.vertex2.z += strafe * (float) -sin(-yaw * M_PI / 180.0);
+            this->collider->movement.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
+        }
     }
 
     // Reset speed
     speed  = 0;
     strafe = 0;
+    jump   = 0;
 }
 
 void Camera3D::UpdateRotation()
 {
-    M3 im = M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, 0);
+    M3 im = M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, this->roll);
 
     this->setRotation(im);
 }
@@ -215,6 +222,18 @@ void Camera3D::limitPitch()
 void Camera3D::Jump()
 {
     if (this->collider->onGround) {
-        this->collider->movement.vertex2 = this->collider->movement.vertex2 + EngineSetup::getInstance()->JUMP_FORCE;
+        jump += EngineSetup::getInstance()->JUMP_FORCE.y;
+    }
+}
+
+void Camera3D::HeadBob()
+{
+    // head bob
+    if (abs(this->collider->velocity.x) > 0.5 || abs(this->collider->velocity.z) > 0.5 ) {
+        this->getPosition()->y+= sin( Maths::degreesToRadians(this->head_vertical) );
+        this->head_vertical+=32;
+        if (this->head_vertical > 360) {
+            this->head_vertical = 0;
+        }
     }
 }

@@ -24,6 +24,8 @@ public:
     static void  getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
     static void  getBarycentricCoordinatesPrecalc(float &, float &, float &, int, int,  Point2D, Point2D, Point2D, float, float, float);
 
+    static int orient2d(const Point2D& a, const Point2D& b, const Point2D& c);
+
     static Vertex3D getCenterVertices(Vertex3D vertices[], int num_vertices);
 
     static void sortVerticesByX(Vertex3D *vertexes, int N);
@@ -50,6 +52,11 @@ public:
     static bool ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int plane_id , Camera3D *cam);
 
     static float distancePointVector(Vertex3D, Vector3D );
+    static Vertex3D closestPointOnLineSegment( Vertex3D &a,  Vertex3D &b,  Vertex3D &p, bool &edge);
+    static Vertex3D closestPointOnLine(Vertex3D &a,  Vertex3D &b,  Vertex3D &p);
+    static Vertex3D closestPointOnPerimeter( Triangle &triangle, Vertex3D &p, Vertex3D &e0, Vertex3D &e1, bool &edgeFlag);
+    static bool isPointInsideEdge( Vertex3D &a,  Vertex3D &b,  const Vertex3D &p);
+
     static bool sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b);
     static bool PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c);
 

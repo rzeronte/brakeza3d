@@ -20,6 +20,9 @@ public:
     static Vertex3D NDCSpace(Vertex3D v, Camera3D *cam);
     static Vertex3D cameraSpace(Vertex3D V, Camera3D *cam);
 
+    static Vertex3D R3ToEllipsoidSpace(Vertex3D V, Vertex3D eRadius);
+    static Vertex3D EllipsoidSpaceToR3(Vertex3D V, Vertex3D eRadius);
+
     static Vertex3D perspectiveDivision(Vertex3D v, Camera3D *cam);
     static Point2D screenSpace(Vertex3D, Camera3D *cam);
 

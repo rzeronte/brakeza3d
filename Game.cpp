@@ -157,7 +157,6 @@ void Game::mainLoop()
 
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
-
             if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) { controller->handleMouse(&this->e, this->camera); }
         }
 
@@ -188,7 +187,6 @@ void Game::onUpdate()
 {
     // Core onUpdate
     Engine::onUpdate();
-
 
     //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
     //marine->rotation.y+=0.5f;*/

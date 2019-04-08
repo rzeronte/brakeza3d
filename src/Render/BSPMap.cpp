@@ -509,7 +509,7 @@ void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
     const int num    = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++){
-        this->model_triangles[i].isCollisionWithSphere(cam->collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, cam);
+        this->model_triangles[i].isCollisionWithSphere(cam->collider, cam);
     }
 }
 

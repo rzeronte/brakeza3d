@@ -15,11 +15,15 @@ typedef float vec3_t[3];
 class Camera3D : public Object3D {
 private:
 public:
-    float yaw;			// Direction of travel
-    float pitch;		// Neck angle
+    float yaw = 0;			// Direction of travel
+    float pitch = 0;		// Neck angle
+    float roll = 0;
+
+    float head_vertical = 180;
 
     float speed;		// Speed along heading
     float strafe;       // Speed along heading
+    float jump;         // Speed along vertical
 
     float horizontal_fov;
     float farDistance ;
@@ -29,7 +33,7 @@ public:
 
     Collider *collider;
 
-    //Vector3D frameVelocity;
+    //Vector3D velocity;
 
     Camera3D();
 
@@ -59,7 +63,10 @@ public:
     void Jump();
     void limitPitch();
 
+    void HeadBob();
+
     void consoleInfo();
+
 };
 
 

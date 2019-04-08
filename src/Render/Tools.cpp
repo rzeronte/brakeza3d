@@ -133,12 +133,13 @@ Uint32 Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, floa
     return (Uint32) Tools::createRGB(Cred, Cgreen, Cblue);
 }
 
-Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float u, float v)
+Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v)
 {
-    float x = Tools::getXTextureFromUV(surface, u);
-    float y = Tools::getYTextureFromUV(surface, v);
-
-    return Tools::readSurfacePixel(surface, x, y);
+    return Tools::readSurfacePixel(
+        surface,
+        Tools::getXTextureFromUV(surface, u),
+        Tools::getYTextureFromUV(surface, v)
+    );
 }
 
 Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
@@ -232,3 +233,16 @@ float Tools::clamp(float n, float lower, float upper)
 {
     return std::max(lower, std::min(n, upper));
 }
+
+
+int Tools::random(int min, int max) //range : [min, max)
+{
+    static bool first = true;
+    if (first)
+    {
+        srand( time(NULL) ); //seeding for the first time only!
+        first = false;
+    }
+    return min + rand() % (( max + 1 ) - min);
+}
+

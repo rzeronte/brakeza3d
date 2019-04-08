@@ -37,12 +37,13 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera)
             camera->Pitch(event->motion.yrel);
         }
     }
+
+    this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
+
 }
 
 void Controller::handleKeyboard(Camera3D *camera, bool &done)
 {
-    this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
-
     if (keyboard[SDL_SCANCODE_ESCAPE]) {
         done = true;
     }

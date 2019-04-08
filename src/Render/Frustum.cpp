@@ -33,7 +33,6 @@ void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D
 
     this->Hfar = Hfar;
     this->Wfar = Wfar;
-
 }
 
 void Frustum::updateCenters() {
@@ -85,6 +84,7 @@ void Frustum::updatePoints() {
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 void Frustum::updatePlanes() {
 
+    // near/far plane
     planes[EngineSetup::getInstance()->NEAR_PLANE]   = Plane(ntl, ntr, nbl);   // near
     planes[EngineSetup::getInstance()->FAR_PLANE]    = Plane(ftr, ftl, fbl);   // far
 

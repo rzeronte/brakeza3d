@@ -112,7 +112,7 @@ public:
 
     Object3D* getObjectByLabel(std::string label);
 
-    Vertex3D collideWithWorld( Vertex3D pos, const Vertex3D vel, int &collisionRecursionDepth, Collider *collider);
+    Vertex3D collideWithWorld( Vertex3D eSpacePosition, Vertex3D eSpaceVelocity, int &collisionRecursionDepth, Collider *collider);
     void collideAndSlide(Vertex3D vel);
 
     Vertex3D updatePhysics();

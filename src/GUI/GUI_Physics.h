@@ -28,11 +28,11 @@ public:
 
 
             ImGui::TextColored(ImVec4(255.0f, 255.0f, 255.0f,1.0f), "Velocity");
-            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->frameVelocity.x).c_str() );
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.x).c_str() );
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->frameVelocity.y).c_str() );
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->frameVelocity.z).c_str() );
+            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->velocity.z).c_str() );
 
             ImGui::TextColored(ImVec4(255.0f, 255.0f, 255.0f,1.0f), "Gravity");
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->gravity.x).c_str() );
@@ -63,6 +63,8 @@ public:
             ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->air.z).c_str() );
 
             ImGui::Separator();
+
+            ImGui::Checkbox("Head Bob", &EngineSetup::getInstance()->HEAD_BOB);
 
             if (camera->collider->onGround) {
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), "On Ground");

@@ -14,8 +14,13 @@ public:
 
     Vector3D(Vertex3D, Vertex3D);
 
-    Vertex3D getComponent();
-    Vertex3D getUnitVector();
+    Vertex3D getComponent() const;
+    Vertex3D normal() const;
+
+    Vertex3D origin() const;
+    Vertex3D end() const;
+    Vertex3D end(float) const;
+
 };
 
 

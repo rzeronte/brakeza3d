@@ -184,6 +184,7 @@ private:
     primdesc_t *surfacePrimitives;	// Array of surface primitives, contains vertex and texture information for every surface
     unsigned int *textureObjNames;	// Array of available texture object names, the name is a number
     int *visibleSurfaces;			// Array of visible surfaces, contains an index to the surfaces
+
     int numMaxEdgesPerSurface;      // Max edges per surface
     int numVisibleSurfacesFrame = 0;
 

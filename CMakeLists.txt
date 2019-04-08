@@ -3,6 +3,9 @@ project(brakeda3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
 set(SDL2_dir /Library/Frameworks/SDL2.framework/Headers)
@@ -117,14 +120,13 @@ add_executable(brakeda3d
         WAD/Directory.h
         WAD/Identification.cpp
         WAD/Identification.h
-        src/Collider.cpp
         src/Collider.h
         WAD/Signature.cpp
         WAD/Signature.h
 
         WAD/WAD.cpp
         WAD/WAD.h
-        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h src/Render/BSPMap.cpp headers/Render/BSPMap.h src/GUI/GUI_Camera.h )
+        WAD/WADSector.cpp WAD/WADSector.h WAD/WADLinedef.cpp WAD/WADLinedef.h WAD/WADSidedef.cpp WAD/WADSidedef.h WAD/WADVertex.cpp WAD/WADVertex.h src/Render/BSPMap.cpp headers/Render/BSPMap.h src/GUI/GUI_Camera.h headers/Collision.cpp headers/Collision.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

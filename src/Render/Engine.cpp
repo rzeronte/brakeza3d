@@ -12,6 +12,7 @@
 #include "../../headers/Objects/Sprite3D.h"
 #include "../../headers/Objects/Weapon3D.h"
 #include "../../headers/Objects/BSPEntity3D.h"
+#include "../../headers/Render/Maths.h"
 #include <chrono>
 #include <iostream>
 
@@ -288,7 +289,7 @@ void Engine::checkCollisionsMesh()
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
                 for (int j = 0; j< oMesh->n_triangles; j++) {
-                    oMesh->model_triangles[j].isCollisionWithSphere(camera->collider, EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, camera);
+                    oMesh->model_triangles[j].isCollisionWithSphere(camera->collider, camera);
                 }
             }
         }
@@ -552,29 +553,30 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
 
     // do we need to worry?
     if (collisionRecursionDepth > 3) {
-        collider->maxDeepRecursion = true;
-
         return pos;
     }
 
     // Ok, we need to worry:
-    collider->frameVelocity = vel;
+    collider->velocity = vel;
     collider->normalizedVelocity = vel.getNormalize();
     collider->basePoint = pos;
     collider->foundCollision = false;
 
-    collider->veryClosed = false;
-    collider->maxDeepRecursion = false;
-
     // Check for collision (calls the collision routines)
     // Application specific!!
-    this->checkCollisionsBSP();
-    this->checkCollisionsMesh();
 
-    // If no collision we just move along the frameVelocity
+    camera->collider->numCollisionInTest = 0;
+
+    this->checkCollisionsBSP();
+    //this->checkCollisionsMesh();
+
+    // If no collision we just move along the velocity
     if (!collider->foundCollision) {
+        Logging::getInstance()->Log("iteration=" + std::to_string(collisionRecursionDepth) + ", numCollisionInTest=" + std::to_string(camera->collider->numCollisionInTest) + ", foundCollision=" + std::to_string(collider->foundCollision), "");
         return pos + vel;
     }
+
+    Logging::getInstance()->Log("iteration=" + std::to_string(collisionRecursionDepth) + ", numCollisionInTest=" + std::to_string(camera->collider->numCollisionInTest) + ", foundCollision=" + std::to_string(collider->foundCollision)+ ", ID: " + std::to_string(collider->collisionID), "");
 
     // *** Collision occured ***
     // The original destination point
@@ -585,7 +587,6 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
     // and if so we only move very close to intersection..not
     // to the exact spot.
     //if (collider->nearestDistance >= veryCloseDistance) {
-    if (vel.getModule() > 0) {
         Vertex3D V = vel;
         V.setLength(collider->nearestDistance - veryCloseDistance);
         newBasePoint = collider->basePoint + V;
@@ -593,29 +594,32 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
         // Adjust polygon intersection point (so sliding
         // plane will be unaffected by the fact that we
         // move slightly less than collision tells us)
+
         V = V.getNormalize();
         collider->intersectionPoint = collider->intersectionPoint - V.getScaled(veryCloseDistance);
-    }
+    //x}
+
+    Vertex3D slidePlaneOrigin, slidePlaneNormal;
+    Plane slidingPlane;
+    Vertex3D newDestinationPoint;
+    float d;
+    Vertex3D newVelocityVector;
 
     // Determine the sliding plane
-    Vertex3D slidePlaneOrigin = collider->intersectionPoint;
-    Vertex3D slidePlaneNormal = newBasePoint - collider->intersectionPoint;
+    slidePlaneOrigin = collider->intersectionPoint;
+    slidePlaneNormal = newBasePoint - collider->intersectionPoint;
     slidePlaneNormal = slidePlaneNormal.getNormalize();
-    Plane slidingPlane(slidePlaneOrigin,slidePlaneNormal);
+    slidingPlane = Plane(slidePlaneOrigin,slidePlaneNormal);
 
-    // Again, sorry about formatting.. but look carefully ;)
-    float d = slidingPlane.distance(destinationPoint);
-    Vertex3D newDestinationPoint = destinationPoint - slidePlaneNormal.getScaled(d);
+        // Again, sorry about formatting.. but look carefully ;)
+        d = slidingPlane.distance(destinationPoint);
+        newDestinationPoint = destinationPoint - slidePlaneNormal.getScaled(d);
 
     // Generate the slide vector, which will become our new
-    // frameVelocity vector for the next iteration
-    Vertex3D newVelocityVector = newDestinationPoint - collider->intersectionPoint;
+    // velocity vector for the next iteration
+    newVelocityVector = newDestinationPoint - collider->intersectionPoint;
 
-    // Recurse:
-    // dont recurse if the new frameVelocity is very small
     if (newVelocityVector.getModule() < veryCloseDistance) {
-        collider->veryClosed = true;
-
         return newBasePoint;
     }
 
@@ -626,22 +630,43 @@ Vertex3D Engine::collideWithWorld( Vertex3D pos, Vertex3D vel, int &collisionRec
 void Engine::collideAndSlide(Vertex3D vel)
 {
     camera->collider->onGround = false;
+    camera->collider->triangleIdSelected = 0;
+
+    camera->collider->historicalTriangleIdCollisionInTest.clear();
+    camera->collider->historicalPlanesIntersectedInTest.clear();
+    camera->collider->historicalIntersectionPointsInTest.clear();
+
+    camera->collider->R3Position = *camera->getPosition();
+    camera->collider->R3Velocity = vel;
+
+    // calculate position and velocity in eSpace
+    Vertex3D eSpacePosition = Transforms::R3ToEllipsoidSpace(camera->collider->R3Position, camera->collider->eRadius);
+    Vertex3D eSpaceVelocity = Transforms::R3ToEllipsoidSpace(camera->collider->R3Velocity, camera->collider->eRadius);
+
+    Logging::getInstance()->Log("collideAndSlide", "");
 
     int collisionRecursionDepth = 0;
-    Vertex3D finalPosition = collideWithWorld(*camera->getPosition(), vel, collisionRecursionDepth, camera->collider);
+    Vertex3D finalPosition = collideWithWorld(eSpacePosition, eSpaceVelocity, collisionRecursionDepth, camera->collider);
+
+    finalPosition = Transforms::EllipsoidSpaceToR3(finalPosition, camera->collider->eRadius);
+
+    camera->setPosition(finalPosition);
 
     if (camera->collider->onGround) {
         camera->collider->gravity.y = 0;
-        camera->collider->frameVelocity.y = 0;
+        //camera->collider->velocity.y = 0;
     }
 
-    camera->setPosition(finalPosition);
+    if (EngineSetup::getInstance()->HEAD_BOB) {
+        camera->HeadBob();
+    }
+
     cameraUpdate();
 }
 
 Vertex3D Engine::updatePhysics()
 {
-    Vertex3D inertia  = camera->collider->frameVelocity;
+    Vertex3D inertia  = Transforms::EllipsoidSpaceToR3(camera->collider->velocity, camera->collider->eRadius);
     Vertex3D movement = camera->collider->movement.getComponent().getScaled(getDeltaTime());
 
     Vertex3D o = inertia;

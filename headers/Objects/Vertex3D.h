@@ -20,8 +20,8 @@ public:
     float z = 0;
 
     // texture coordenates
-    float u = 0;
-    float v = 0;
+    float u;
+    float v;
 
     Vertex3D();
     Vertex3D(float, float, float);
@@ -34,6 +34,9 @@ public:
 
     Vertex3D getScaled(float);
     void setLength(float);
+
+    float distance(Vertex3D);
+
 
     void consoleInfo(std::string label, bool);
 };
