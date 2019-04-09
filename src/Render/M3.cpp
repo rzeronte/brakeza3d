@@ -148,6 +148,16 @@ const M3 M3::ScaleMatrix(float scale) {
 
     return M;
 }
+const static M3 ScaleMatrix(float xScale, float yScale, float zScale)
+{
+    M3 M(
+            xScale, 0    , 0,
+            0    , yScale, 0,
+            0    , 0    , zScale
+    );
+
+    return M;
+}
 
 const float M3::getPitch()
 {
