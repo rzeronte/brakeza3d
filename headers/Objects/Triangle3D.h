@@ -22,6 +22,8 @@ public:
     Vertex3D An, Bn, Cn;
     Point2D As, Bs, Cs;
 
+    Vertex3D Ae, Be, Ce;
+
     float fullArea;
     float reciprocalFullArea;
 

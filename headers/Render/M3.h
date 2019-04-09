@@ -33,6 +33,7 @@ public:
     const static M3 RY(float deg);
     const static M3 RZ(float deg);
     const static M3 ScaleMatrix(float scale);
+    const static M3 ScaleMatrix(float, float, float);
 
     void setup (float, float, float, float, float, float, float, float, float);
     void consoleInfo(std::string label) const;

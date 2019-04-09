@@ -11,9 +11,187 @@ Vertex3D Collision::collideAndStop(const Vertex3D &radiusVector, std::vector<Tri
 
 }
 
-Vertex3D Collision::collideAndSlide(const Vertex3D &radiusVector, std::vector<Triangle> &polygonList, const Vector3D &r, Vertex3D &lastDir, const bool filterPuseJumps)
+Vertex3D Collision::collideAndSlide( Vertex3D &radiusVector, std::vector<Triangle> &polygonList, Vector3D &r, Vertex3D &lastDir, const bool filterPuseJumps)
 {
+    unsigned int	maxLoops = 30;
+    lastDir = Vertex3D::zero();
 
+    // Scale our world according to the radius vector
+
+    M3 scaleMatrix = M3::ScaleMatrix(
+        1 / radiusVector.x,
+        1 / radiusVector.y,
+        1 / radiusVector.z
+    );
+
+    std::vector<Triangle> scaledPolygons = polygonList;
+    for (std::vector<Triangle>::iterator i = scaledPolygons.begin(); i != scaledPolygons.end(); ++i)
+    {
+        Triangle	&p = *i;
+        p.Ae = scaleMatrix * p.Ao;
+        p.Be = scaleMatrix * p.Bo;
+        p.Ce = scaleMatrix * p.Co;
+
+        //p.calcPlane(false);
+    }
+
+    // Scale our input & output rays
+
+    Vector3D	outputRay(r);
+    outputRay.vertex1 = scaleMatrix * outputRay.vertex1;
+    outputRay.vertex2 = scaleMatrix * outputRay.vertex2;
+
+    Vector3D	inputRay(r);
+    inputRay.vertex1 = scaleMatrix * inputRay.vertex1;
+    inputRay.vertex2 = scaleMatrix * inputRay.vertex2;
+
+    // Clear the skip list
+
+    skipList.clear();
+
+    // Skiding is an iterative process
+
+    while(maxLoops-- && outputRay.getComponent() != Vertex3D::zero() && outputRay.getComponent().getModule() > EPSILON)
+    {
+        // This is handy
+
+        lastDir = outputRay.getComponent();
+
+        // Get the colliders
+
+        CollisionList	cl = calcColliders(scaledPolygons, outputRay);
+
+        // We can consider these polygons again
+
+        skipList.clear();
+
+        // If we didn't hit anything just return the destination
+
+        if (!cl.size())
+        {
+            outputRay.origin() = outputRay.end();
+            break;
+        }
+
+        // Keep track of what's going on
+
+        traceCollision(cl);
+
+        // If it was embedded, push away
+
+        if (cl[0].collisionType == CT_EMBEDDED)
+        {
+            // If it's embedded, back up along the collision plane normal
+
+            outputRay.vertex1 = outputRay.vertex1 - cl[0].collisionPlane.getNormalVector().getNormalize().getScaled( cl[0].collisionDistance );
+        }
+        else
+        {
+            // We hit something -- move as far as we can
+
+            outputRay.vertex1 = outputRay.vertex1 + outputRay.normal().getScaled( cl[0].collisionDistance );
+
+            // If we hit two or more, find the two with the most "pressure"
+
+            if (cl.size() >= 2)
+            {
+                int	c0;
+                float	d0 = 2;
+
+                for (int i = 0; i < cl.size(); i++)
+                {
+                    float	dot = cl[i].collisionPlane.getNormalVector().getNormalize() * outputRay.normal();
+                    if (dot < d0)
+                    {
+                        d0 = dot;
+                        c0 = i;
+                    }
+                }
+
+                int	c1;
+                float	d1 = 2;
+
+                for (int j = 0; j < cl.size(); j++)
+                {
+                    if (j == c0) continue;
+                    float	dot = cl[j].collisionPlane.getNormalVector() * outputRay.normal();
+                    if (dot < d1)
+                    {
+                        d1 = dot;
+                        c1 = j;
+                    }
+                }
+
+
+                // Temp vector
+
+                Vertex3D	tempV = outputRay.getComponent();
+
+                // Point along the crease
+
+                Vertex3D	perp(cl[c1].collisionPlane.getNormalVector() % cl[c0].collisionPlane.getNormalVector());
+                perp = perp.getAbsolute(); //perp.abs();
+
+                //tempV *= perp;
+                tempV = tempV.getScaled(perp.x, perp.y, perp.z);
+
+                if (tempV.getModule() < EPSILON) continue;
+
+                tempV.setLength(outputRay.getComponent().getModule());
+
+                // Find out how much to scale our vector that points along the crease
+
+                Vertex3D	n1 = tempV;			            n1.getNormalize();
+                Vertex3D	n2 = outputRay.getComponent();	n2.getNormalize();
+                float	scalar = n1 * n2;
+
+                // New vector is new direction vector, scaled
+                //outputRay.vector() = tempV.getScaled( scalar );
+                outputRay.vertex2 = tempV.getScaled( scalar );
+
+                /*if (filterPulseJumps)
+                {
+                    if ((outputRay.vector() ^ inputRay.vector()) < 0) outputRay.vector() = vector3::zero();
+                }*/
+
+                lastDir = outputRay.getComponent();
+
+                // Don't collide with these next time
+
+                skipList.push_back(cl[c0].collider);
+                skipList.push_back(cl[c1].collider);
+
+                // Iterate
+
+                continue;
+            }
+
+            // Otherwise we slide
+
+            Vertex3D	slideSrc = cl[0].collisionPlane.closest(outputRay.origin());
+            Vertex3D	slideDst = cl[0].collisionPlane.closest(outputRay.end());
+
+            // slideDst - slideSrc
+            outputRay.vertex1 = slideSrc;
+            outputRay.vertex1 = slideDst;
+
+            /*if (filterPulseJumps)
+            {
+                if ((outputRay.vector() ^ inputRay.vector()) < 0) outputRay.vector() = vector3::zero();
+            }*/
+
+            lastDir = outputRay.getComponent();
+
+            // Don't collide with this one next time
+
+            skipList.push_back(cl[0].collider);
+        }
+    }
+
+    // Un-scale our result
+    scaleMatrix = M3::ScaleMatrix( radiusVector.x, radiusVector.y, radiusVector.z );
+    lastDir = scaleMatrix * lastDir;
+    return scaleMatrix * outputRay.origin();
 }
 
 void Collision::traceCollision(CollisionList &cl)
@@ -21,14 +199,51 @@ void Collision::traceCollision(CollisionList &cl)
 
 }
 
-bool Collision::unitSphereIntersection(const Vertex3D &center, const Vector3D &r, float &time)
-{
 
+bool Collision::unitSphereIntersection(Vertex3D center, Vector3D r, float &time)
+{
+    Vertex3D	q = center - r.origin();
+    float	c = q.getModule();
+    float	v = q * r.normal();
+    float	d = 1 - (c * c - v * v);
+
+    // Was there an intersection?
+
+    if (d < 0) {
+        time = 0;
+        return false;
+    }
+
+    // Return the distance to the [first] intersecting point
+
+    time = v - sqrt(d);
+    return true;
 }
 
-bool Collision::isEmbedded(const Triangle &p, const Vertex3D &sphereCenter, Vertex3D &innerMostPoint)
+bool Collision::isEmbedded(Triangle &p, Vertex3D sphereCenter, Vertex3D &innerMostPoint)
 {
+    // How far is the sphere from the plane?
 
+    float	t = p.plane().distance(sphereCenter);
+
+    // If the plane is farther than the radius of the sphere, it's not embedded
+
+    if (t > 1 - EPSILON) return false;
+
+    // Find the closest point on the polygon to the center of the sphere
+
+    innerMostPoint = sphereCenter - p.plane().getNormalVector().getNormalize().getScaled( t );
+
+    // If the closest point on the plane is within the polygon, the polygon is embedded
+
+    if (!p.isPointInside(innerMostPoint, EPSILON)) {
+        Vertex3D e0, e1;
+        bool ef;
+        innerMostPoint = Maths::closestPointOnPerimeter(p, innerMostPoint, e0, e1, ef);
+        if (innerMostPoint.distance(sphereCenter) > 1 - EPSILON) return false;
+    }
+
+    return true;
 }
 
 CollisionList Collision::calcColliders(std::vector<Triangle> &polygonList, const Vector3D &r)

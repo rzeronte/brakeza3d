@@ -32,13 +32,13 @@ class Collision
 public:
 
     static Vertex3D collideAndStop(const Vertex3D &radiusVector, std::vector<Triangle> &polygonList, const Vector3D &r);
-    static Vertex3D collideAndSlide(const Vertex3D &radiusVector, std::vector<Triangle> &polygonList, const Vector3D &r, Vertex3D &lastDir, const bool filterPuseJumps = false);
+    static Vertex3D collideAndSlide( Vertex3D &radiusVector, std::vector<Triangle> &polygonList, Vector3D &r, Vertex3D &lastDir, const bool filterPuseJumps = false);
 
 private:
 
     static void traceCollision(CollisionList &cl);
-    static bool unitSphereIntersection(const Vertex3D &center, const Vector3D &r, float &time);
-    static bool isEmbedded(const Triangle &p, const Vertex3D &sphereCenter, Vertex3D &innerMostPoint);
+    static bool unitSphereIntersection( Vertex3D center,  Vector3D r, float &time);
+    static bool isEmbedded( Triangle &p,  Vertex3D sphereCenter, Vertex3D &innerMostPoint);
     static CollisionList calcColliders(std::vector<Triangle> &polygonList, const Vector3D &r);
 };
 
