@@ -13,6 +13,7 @@
 #include "../../headers/Objects/Weapon3D.h"
 #include "../../headers/Objects/BSPEntity3D.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Collision.h"
 #include <chrono>
 #include <iostream>
 
@@ -194,6 +195,8 @@ void Engine::preUpdate()
     if (bsp_map) {
         bspleaf_t *leaf = bsp_map->FindLeaf( camera );
         bsp_map->setVisibleSet(leaf);
+        this->checkCollisionsBSP();
+
     }
 }
 
@@ -202,7 +205,9 @@ void Engine::postUpdate()
     Vertex3D frameVelocity = updatePhysics();
 
     if ( EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED ) {
+
         this->collideAndSlide( frameVelocity );
+
     } else {
         this->camera->setPosition(camera->collider->movement.vertex2);
         this->cameraUpdate();

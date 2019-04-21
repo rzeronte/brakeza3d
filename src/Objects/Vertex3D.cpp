@@ -90,7 +90,7 @@ Vertex3D Vertex3D::getNormalize()
     return C;
 }
 
-Vertex3D zero()
+Vertex3D Vertex3D::zero()
 {
     return Vertex3D(0, 0, 0);
 }

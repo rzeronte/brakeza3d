@@ -510,6 +510,7 @@ void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
 
     for (int i = offset; i < offset+num; i++){
         this->model_triangles[i].isCollisionWithSphere(cam->collider, cam);
+        polygonList.push_back(this->model_triangles[i]);
     }
 }
 
@@ -568,6 +569,7 @@ void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam)
 
 void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam)
 {
+    polygonList.clear();
     for (int i = 0; i < numVisibleSurfaces; i++) {
         CheckPhysicsSurfaceTriangles(visibleSurfaces[i], cam);
     }

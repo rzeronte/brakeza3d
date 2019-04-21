@@ -205,6 +205,8 @@ public:
 
     unsigned int palette[256];
 
+    std::vector<Triangle> polygonList;
+
     BSPMap();
 
     ~BSPMap() { if (bsp) free (bsp); }
