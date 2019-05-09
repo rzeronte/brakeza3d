@@ -3,6 +3,7 @@
 #define SDL2_3D_ENGINE_CAMERA_H
 
 #include <SDL_surface.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include "Vertex3D.h"
 #include "../Render/Frustum.h"
 #include "Object3D.h"
@@ -15,9 +16,9 @@ typedef float vec3_t[3];
 class Camera3D : public Object3D {
 private:
 public:
-    float yaw = 0;			// Direction of travel
+    float yaw   = 0;			// Direction of travel
     float pitch = 0;		// Neck angle
-    float roll = 0;
+    float roll  = 0;
 
     float head_vertical = 180;
 
@@ -33,7 +34,9 @@ public:
 
     Collider *collider;
 
-    //Vector3D velocity;
+    btPairCachingGhostObject *m_ghostObject;
+    btKinematicCharacterController* charCon;
+    btConvexShape* capsule;
 
     Camera3D();
 

@@ -20,6 +20,8 @@
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
 
+#include <btBulletDynamicsCommon.h>
+
 class Engine {
 public:
 
@@ -70,6 +72,22 @@ public:
     // Dear ImGUI
     ImGuiContext* imgui_context;
 
+    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+    btDefaultCollisionConfiguration* collisionConfiguration;
+
+    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    btCollisionDispatcher* dispatcher;
+
+    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+    btBroadphaseInterface* overlappingPairCache;
+
+    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+    btSequentialImpulseConstraintSolver* solver;
+
+    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+
+    btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
     Engine();
 
     void Close();
@@ -91,9 +109,6 @@ public:
     void drawSprites();
     void drawObjectsBillboard();
 
-    void checkCollisionsBSP();
-    void checkCollisionsMesh();
-
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();
 
@@ -112,8 +127,6 @@ public:
 
     Object3D* getObjectByLabel(std::string label);
 
-    Vertex3D collideWithWorld( Vertex3D eSpacePosition, Vertex3D eSpaceVelocity, int &collisionRecursionDepth, Collider *collider);
-    void collideAndSlide(Vertex3D vel);
 
     Vertex3D updatePhysics();
 

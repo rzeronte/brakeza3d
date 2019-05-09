@@ -48,7 +48,7 @@ void Controller::handleKeyboard(Camera3D *camera, bool &done)
         done = true;
     }
 
-    if (camera->collider->onGround || EngineSetup::getInstance()->ENABLE_FLYING) {
+    if (EngineSetup::getInstance()->ENABLE_FLYING) {
         if (keyboard[SDL_SCANCODE_W]) {
             camera->MoveForward();
         }

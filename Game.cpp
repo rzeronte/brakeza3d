@@ -82,7 +82,7 @@ void Game::onStart()
     Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->setPosition(Vertex3D(544.3, -32, 643));
+    cubo->setPosition(Vertex3D(500, -68, 391));
     cubo->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cubo, "cubo");
 

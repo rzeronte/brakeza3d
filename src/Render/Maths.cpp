@@ -516,99 +516,6 @@ float Maths::distancePointVector(Vertex3D Q, Vector3D L)
     return -distance;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------------
-// Returns the closest point to 'p' on the line-segment defined by a & b. Sets 'edge' to true if result is one of the endpoints
-// ---------------------------------------------------------------------------------------------------------------------------------
-
-Vertex3D Maths::closestPointOnLineSegment( Vertex3D &a, Vertex3D &b, Vertex3D &p, bool &edge)
-{
-    Vertex3D c = p - a;
-    Vertex3D v = b - a;
-    v = v.getNormalize();
-
-    edge = false;
-    float t = v * c;
-    if (t < 0) return a;
-
-    float d = b.distance(a);
-    if (t > d) return b;
-
-    edge = true;
-
-    return a + v.getScaled(t);
-}
-
-Vertex3D Maths::closestPointOnLine( Vertex3D &a,  Vertex3D &b,  Vertex3D &p)
-{
-    Vertex3D c = p - a;
-    Vertex3D v = b - a;
-
-    v = v.getNormalize();
-
-    float t = v * c;
-    float d = b.distance(a);
-
-    return a + v.getScaled( t );
-}
-
-Vertex3D Maths::closestPointOnPerimeter( Triangle &triangle, Vertex3D &p, Vertex3D &e0, Vertex3D &e1, bool &edgeFlag)
-{
-    bool	found = false;
-    float	closestDistance = 0.f;
-    Vertex3D	closestPoint = Vertex3D(0, 0, 0);
-    Vertex3D	closestP0, closestP1;
-    int	closestIndex;
-
-    std::vector<Vertex3D> vertices;
-    vertices.push_back(triangle.Ao);
-    vertices.push_back(triangle.Bo);
-    vertices.push_back(triangle.Co);
-
-    Vertex3D	p0 = vertices.back();
-
-    int	index = 0;
-    for (auto i = vertices.begin() ; i != vertices.end(); ++i, ++index)
-    {
-        Vertex3D	p1 = *i;
-        bool	edge;
-        Vertex3D	cp = Maths::closestPointOnLineSegment(p0, p1, p, edge);
-        float	d = cp.distance(p);
-
-        if (!found || d < closestDistance)
-        {
-            closestDistance = d;
-            closestPoint = cp;
-            closestP0 = p0;
-            closestP1 = p1;
-            edgeFlag = edge;
-            closestIndex = index;
-            found = true;
-        }
-
-        p0 = p1;
-    }
-
-    if (!edgeFlag)
-    {
-        int	a = closestIndex - 1; if (a < 0) a = vertices.size() - 1;
-        int	b = closestIndex + 1; if (b >= vertices.size()) b = 0;
-        e0 = vertices[a];
-        e1 = vertices[b];
-    }
-    else
-    {
-        e0 = closestP0;
-        e1 = closestP1;
-    }
-
-    return closestPoint;
-}
-
-bool Maths::isPointInsideEdge( Vertex3D &a,  Vertex3D &b,  const Vertex3D &p)
-{
-    return ((a-p) * (b-p)) <= 0;
-}
-
 bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b)
 {
     Vertex3D cp1 = (b-a) % (p1-a);
@@ -678,4 +585,169 @@ float Maths::normalizeToRange(float value, float min, float max)
     }
 
     return (value - min) / (max - min);
+}
+
+// ----------------------------------------------------------------------
+// Name  : intersectRayPlane()
+// Input : rOrigin - origin of ray in world space
+//         rVector - vector describing direction of ray in world space
+//         pOrigin - Origin of plane
+//         pNormal - Normal to plane
+// Notes : Normalized directional vectors expected
+// Return: distance to plane in world units, -1 if no intersection.
+// -----------------------------------------------------------------------
+double Maths::intersectRayPlane(Vertex3D rOrigin, Vertex3D rVector, Vertex3D pOrigin, Vertex3D pNormal) {
+
+    double d = - ((pNormal * pOrigin));
+
+    double numer = (pNormal * rOrigin) + d;
+    double denom = (pNormal * rVector);
+
+    if (denom == 0) {  // normal is orthogonal to vector, cant intersect
+        return (-1.0f);
+    }
+
+    return -(numer / denom);
+}
+
+// ----------------------------------------------------------------------
+// Name  : intersectRaySphere()
+// Input : rO - origin of ray in world space
+//         rV - vector describing direction of ray in world space
+//         sO - Origin of sphere
+//         sR - radius of sphere
+// Notes : Normalized directional vectors expected
+// Return: distance to sphere in world units, -1 if no intersection.
+// -----------------------------------------------------------------------
+double Maths::intersectRaySphere(Vertex3D rO, Vertex3D rV, Vertex3D sO, double sR) {
+
+    Vertex3D Q = sO-rO;
+
+    double c = Q.getModule();
+    double v = Q * rV;
+    double d = sR * sR - (c * c - v * v);
+
+    // If there was no intersection, return -1
+    if (d < 0.0) return (-1.0f);
+
+    // Return the distance to the [first] intersecting point
+    return (v - sqrt(d));
+}
+
+// ----------------------------------------------------------------------
+// Name  : CheckPointInTriangle()
+// Input : point - point we wish to check for inclusion
+//         sO - Origin of sphere
+//         sR - radius of sphere
+// Notes :
+// Return: TRUE if point is in sphere, FALSE if not.
+// -----------------------------------------------------------------------
+
+bool Maths::CheckPointInSphere(Vertex3D point, Vertex3D sO, double sR) {
+
+    double d = (point - sO).getModule();
+
+    if (d <= sR) return true;
+    return false;
+}
+
+// ----------------------------------------------------------------------
+// Name  : CheckPointInTriangle()
+// Input : point - point we wish to check for inclusion
+//         a - first vertex in triangle
+//         b - second vertex in triangle
+//         c - third vertex in triangle
+// Notes : Triangle should be defined in clockwise order a,b,c
+// Return: TRUE if point is in triangle, FALSE if not.
+// -----------------------------------------------------------------------
+
+bool Maths::CheckPointInTriangle(Vertex3D point, Vertex3D a, Vertex3D b, Vertex3D c) {
+
+    double total_angles = 0.0f;
+
+    // make the 3 vectors
+    Vertex3D v1 = point-a;
+    Vertex3D v2 = point-b;
+    Vertex3D v3 = point-c;
+
+    v1 = v1.getNormalize();
+    v2 = v2.getNormalize();
+    v3 = v3.getNormalize();
+
+    total_angles += acos(v1 * v2);
+    total_angles += acos(v2 * v3);
+    total_angles += acos(v3 * v1);
+
+    if (fabs(total_angles - 2 * M_PI) <= 0.005)
+        return (true);
+
+    return(false);
+}
+
+
+// ----------------------------------------------------------------------
+// Name  : closestPointOnTriangle()
+// Input : a - first vertex in triangle
+//         b - second vertex in triangle
+//         c - third vertex in triangle
+//         p - point we wish to find closest point on triangle from
+// Notes :
+// Return: closest point on line triangle edge
+// -----------------------------------------------------------------------
+
+Vertex3D Maths::closestPointOnTriangle(Vertex3D a, Vertex3D b, Vertex3D c, Vertex3D p) {
+
+    Vertex3D Rab = Maths::closestPointOnLine(a, b, p);
+    Vertex3D Rbc = Maths::closestPointOnLine(b, c, p);
+    Vertex3D Rca = Maths::closestPointOnLine(c, a, p);
+
+    double dAB = (p-Rab).getModule();
+    double dBC = (p-Rbc).getModule();
+    double dCA = (p-Rca).getModule();
+
+    double min = dAB;
+    Vertex3D result = Rab;
+
+    if (dBC < min) {
+        min = dBC;
+        result = Rbc;
+    }
+
+    if (dCA < min)
+        result = Rca;
+
+    return (result);
+}
+
+// ----------------------------------------------------------------------
+// Name  : closestPointOnLine()
+// Input : a - first end of line segment
+//         b - second end of line segment
+//         p - point we wish to find closest point on line from
+// Notes : Helper function for closestPointOnTriangle()
+// Return: closest point on line segment
+// -----------------------------------------------------------------------
+
+Vertex3D Maths::closestPointOnLine(Vertex3D& a, Vertex3D& b, Vertex3D& p) {
+
+    // Determine t (the length of the vector from �a� to �p�)
+    Vertex3D c = p-a;
+    Vertex3D V = b-a;
+
+    double d = V.getModule();
+
+    V = V.getNormalize();
+    double t = (V * c);
+
+    // Check to see if �t� is beyond the extents of the line segment
+    if (t < 0.0f) return (a);
+    if (t > d) return (b);
+
+    // Return the point between �a� and �b�
+    //set length of V to t. V is normalized so this is easy
+    V.x = V.x * t;
+    V.y = V.y * t;
+    V.z = V.z * t;
+
+    return (a+V);
 }

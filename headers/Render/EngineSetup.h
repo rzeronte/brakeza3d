@@ -122,20 +122,22 @@ public:
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
-    // KEYBOARD & MOUSE
-    float WALKING_SPEED     = 100.0;
-    float TURN_SPEED        = 10.0;
-    float PITCH_SPEED       = 2.0;
-    float STRAFE_SPEED      = 50.0;
-    float MOUSE_SENSITIVITY	= 0.5;
+    // KEYBOARD
+    float WALKING_SPEED     = 0.50;
+    float TURN_SPEED        = 0.50;
+    float PITCH_SPEED       = 0.50;
+    float STRAFE_SPEED      = 0.50;
+
+    // MOUSE
+    float MOUSE_SENSITIVITY	= 0.50;
 
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
     bool BSP_COLLISIONS_ENABLED = true;
-    bool ENABLE_GRAVITY = true;
-    bool ENABLE_FRICTION = true;
-    bool ENABLE_AIR_FRICTION = true;
+    bool ENABLE_GRAVITY = false;
+    bool ENABLE_FRICTION = false;
+    bool ENABLE_AIR_FRICTION = false;
     bool ENABLE_FLYING = true;
 
     float PLAYER_SPHERE_RADIUS = 30.f;

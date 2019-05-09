@@ -108,8 +108,6 @@ public:
 
     bool isPointInside(Vertex3D, float);
 
-    bool isCollisionWithSphere(Collider *, Camera3D *cam);
-
     int processLOD();
     int getLOD();
     float processFullArea();

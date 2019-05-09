@@ -25,7 +25,7 @@ BSPMap::BSPMap()
     if (textureObjNames) delete[] textureObjNames;
     if (visibleSurfaces) delete[] visibleSurfaces;
 
-    n_triangles = 0;
+    this->n_triangles = 0;
     this->model_triangles = new Triangle[MAX_BSP_TRIANGLES];
 
     this->textures  = new Texture[MAX_MAP_TEXTURES];
@@ -39,7 +39,8 @@ BSPMap::BSPMap()
     this->surface_triangles = new surface_triangles_t[MAX_BSP_TRIANGLES];
     this->surface_lightmaps = new lightmap_t[MAX_BSP_TRIANGLES];
 
-    this->entities = new entity_t[1000];
+    this->entities = new entity_t[MAX_BSP_ENTITIES];
+    this->n_entities = 0;
 
 }
 
@@ -156,16 +157,16 @@ bool BSPMap::InitializeSurfaces(void)
 
             // Store the vertex in the primitive array
             vec3_t *vertex = this->getVertex(vertexId);
-            primitives->v[0] = ((float *)vertex)[0];
-            primitives->v[1] = ((float *)vertex)[1];
-            primitives->v[2] = ((float *)vertex)[2];
+            primitives->v[0] = ((float *)vertex)[0]*scale;
+            primitives->v[1] = ((float *)vertex)[1]*scale;
+            primitives->v[2] = ((float *)vertex)[2]*scale;
 
             // Calculate the vertex's texture coords and store it in the primitive array
             //primitives->t[1] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff) / mipTexture->width;
             //primitives->t[0] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff) / mipTexture->height;
 
-            primitives->t[0] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff);
-            primitives->t[1] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff);
+            primitives->t[0] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff) / scale;
+            primitives->t[1] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff) / scale;
         }
     }
 
@@ -308,15 +309,20 @@ bool BSPMap::InitializeLightmaps()
 
 void BSPMap::InitializeEntities()
 {
-    Logging::getInstance()->Log("InitializeEntities:", "");
 
     char *e = getEntities();
     this->parseEntities(e);
+    Logging::getInstance()->Log("BSP Num Entities: "+ std::to_string(this->n_entities), "");
+
+    if (this->n_entities > MAX_BSP_ENTITIES) {
+        printf("Error: Entities overflow");
+        exit(-1);
+    }
 
     for (int i = 0; i < this->n_entities; i++) {
-        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
+        //Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
         for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
-            Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
+            //Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
         }
     }
 }
@@ -508,9 +514,13 @@ void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
     const int offset = this->surface_triangles[surface].offset;
     const int num    = this->surface_triangles[surface].num;
 
-    for (int i = offset; i < offset+num; i++){
-        this->model_triangles[i].isCollisionWithSphere(cam->collider, cam);
-        polygonList.push_back(this->model_triangles[i]);
+    for (int i = offset; i < offset+num; i++) {
+        this->model_triangles[i].updateVertexSpaces(cam);
+        btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
+        btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
+        btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
+
+        this->tetraMesh.addTriangle(a, b, c, false);
     }
 }
 
@@ -562,17 +572,39 @@ void BSPMap::DrawHulls(Camera3D *cam)
 }
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam)
+void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld)
 {
-    CheckPhysicsSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam);
+    CheckPhysicsSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam, dynamicsWorld);
 }
 
-void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam)
+void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld)
 {
-    polygonList.clear();
+    this->tetraMesh = new btTriangleMesh();
+
     for (int i = 0; i < numVisibleSurfaces; i++) {
         CheckPhysicsSurfaceTriangles(visibleSurfaces[i], cam);
     }
+
+    btVector3 localInertia(0, 0, 0);
+
+    this->tetraShape = new btBvhTriangleMeshShape(&tetraMesh, false);
+
+    this->tetraShape->calculateLocalInertia(0, localInertia);
+
+    btTransform trans;
+    trans.setIdentity();
+    trans.setOrigin(btVector3(0, 0, 0));
+
+    this->motionState = new btDefaultMotionState(trans);
+
+    this->body = new btRigidBody(0, motionState, tetraShape, localInertia);
+
+    this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    this->body->setCcdMotionThreshold(.5);
+    this->body->setCcdSweptSphereRadius(.5);
+
+    dynamicsWorld->addRigidBody(this->body);
+
 }
 
 // Draw the visible surfaces
@@ -606,6 +638,9 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
 
         // Get a pointer to the plane which intersects the node
         plane_t *plane = this->getPlane(node->planenum);
+        plane->normal[0] = plane->normal[0];
+        plane->normal[1] = plane->normal[1];
+        plane->normal[2] = plane->normal[2];
 
         // Calculate distance to the intersecting plane
         Vertex3D cp = *camera->getPosition();
@@ -619,7 +654,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
         float distance = CalculateDistance(plane->normal, cam_pos);
 
         // If the camera is in front of the plane, traverse the right (front) node, otherwise traverse the left (back) node
-        if (distance > plane->dist) {
+        if (distance > plane->dist*scale) {
             nextNodeId = node->front;
         } else {
             nextNodeId = node->back;
@@ -653,11 +688,11 @@ char *BSPMap::parseEntities (char *s)
     while (s[i] != '\0') {
         char c = s[i];
         if (s[i] == '{') {
-            //printf("\r\nEntity: ");
+            printf("\r\nEntity: ");
             this->entities[entityId].id = entityId;
             attributeId = 0;
         } else if (s[i] == '\"' && count_commas == 0) {
-            //printf("\r\nKey: ");
+            printf("\r\nKey: ");
             saving_key = true;
             saving_value = false;
             count_commas++;
@@ -665,7 +700,7 @@ char *BSPMap::parseEntities (char *s)
         } else if (s[i] == '\"' && count_commas == 1) {
             count_commas++;
         } else if (s[i] == '\"' && count_commas == 2) {
-            //printf("Value: ");
+            printf("Value: ");
             saving_key = false;
             saving_value = true;
             count_commas++;
@@ -687,10 +722,10 @@ char *BSPMap::parseEntities (char *s)
                     t++;
                 }
 
-                //printf("%c", c);
+                printf("%c", c);
             }
             if (c == '}' ) {
-                //printf("End element");
+                printf("End element");
                 entityId++;
                 this->n_entities++;
             }
@@ -742,7 +777,7 @@ Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line)
     float y = -atof(line_chunks[2].c_str() );
     float z = atof(line_chunks[1].c_str() );
 
-    return Vertex3D(x, y, z);
+    return Vertex3D(x*scale, y*scale, z*scale);
 }
 
 Vertex3D BSPMap::getStartMapPosition()

@@ -246,3 +246,46 @@ int Tools::random(int min, int max) //range : [min, max)
     return min + rand() % (( max + 1 ) - min);
 }
 
+
+Vertex3D Tools::wedge(Vertex3D v1, Vertex3D v2)
+{
+    Vertex3D result;
+
+    result.x = (v1.y * v2.z) - (v2.y * v1.z);
+    result.y = (v1.z * v2.x) - (v2.z * v1.x);
+    result.z = (v1.x * v2.y) - (v2.x * v1.y);
+
+    return (result);
+}
+
+int Tools::classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN) {
+
+    Vertex3D dir = pO - point;
+    double d = (dir * pN);
+
+    if (d<-0.001f)
+        return PLANE_FRONT;
+    else
+    if (d>0.001f)
+        return PLANE_BACKSIDE;
+
+    return ON_PLANE;
+}
+
+bool Tools::isZeroVector(Vertex3D& v)
+{
+    if ((v.x == 0.0f) && (v.y == 0.0f) && (v.z == 0.0f)) {
+        return true;
+    }
+
+    return false;
+}
+
+bool Tools::isValidVector(Vertex3D& v)
+{
+    if (isnan(v.x) || isnan(v.y == v.y) || isnan(v.z)) {
+        return false;
+    }
+
+    return true;
+}

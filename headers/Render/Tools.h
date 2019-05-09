@@ -14,6 +14,10 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#define PLANE_BACKSIDE 0x000001
+#define PLANE_FRONT    0x000010
+#define ON_PLANE       0x000100
+
 class Tools {
 
 public:
@@ -46,7 +50,11 @@ public:
 
     static float clamp(float n, float lower, float upper);
     static int random(int min, int max); //range : [min, max)
+    static Vertex3D wedge(Vertex3D v1, Vertex3D v2);
+    static int classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN);
 
+    static bool isZeroVector(Vertex3D& v);
+    static bool isValidVector(Vertex3D& v);
 
 
 };

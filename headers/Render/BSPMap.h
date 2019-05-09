@@ -3,6 +3,7 @@
 
 #include "../Objects/Camera3D.h"
 #include "../Objects/Triangle3D.h"
+#include "btBulletDynamicsCommon.h";
 
 #define BSP_VERSION		29
 #define MAXLIGHTMAPS	4
@@ -10,6 +11,7 @@
 
 #define MAX_MAP_TEXTURES 500
 #define MAX_BSP_TRIANGLES 50000
+#define MAX_BSP_ENTITIES 10000
 
 // BSP entries
 struct dentry_t
@@ -189,6 +191,7 @@ private:
     int numVisibleSurfacesFrame = 0;
 
 public:
+    float scale = 0.1f;
     dheader_t *header;
 
     surface_triangles_t *surface_triangles;
@@ -205,7 +208,11 @@ public:
 
     unsigned int palette[256];
 
-    std::vector<Triangle> polygonList;
+    btTriangleMesh tetraMesh;
+    btConvexHullShape *convexTetraMesh;
+    btBvhTriangleMeshShape *tetraShape;
+    btDefaultMotionState* motionState;
+    btRigidBody* body;
 
     BSPMap();
 
@@ -353,12 +360,12 @@ public:
     void CheckPhysicsSurfaceTriangles(int surface, Camera3D *camera);
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
-    void CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
+    void CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld);
 
     void DrawLeafVisibleSet(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);
 
-    void PhysicsLeafVisibleSet(Camera3D *Cam);
+    void PhysicsLeafVisibleSet(Camera3D *Cam, btDiscreteDynamicsWorld* dynamicsWorld);
 
     bspleaf_t *FindLeaf(Camera3D *camera);
     void setVisibleSet(bspleaf_t *pLeaf);
@@ -375,8 +382,6 @@ public:
     Vertex3D parsePositionFromEntityAttribute(char *);
 
     Vertex3D getStartMapPosition();
-
-
     unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
 
     char *bsp;

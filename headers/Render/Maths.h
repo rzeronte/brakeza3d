@@ -52,10 +52,6 @@ public:
     static bool ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int plane_id , Camera3D *cam);
 
     static float distancePointVector(Vertex3D, Vector3D );
-    static Vertex3D closestPointOnLineSegment( Vertex3D &a,  Vertex3D &b,  Vertex3D &p, bool &edge);
-    static Vertex3D closestPointOnLine(Vertex3D &a,  Vertex3D &b,  Vertex3D &p);
-    static Vertex3D closestPointOnPerimeter( Triangle &triangle, Vertex3D &p, Vertex3D &e0, Vertex3D &e1, bool &edgeFlag);
-    static bool isPointInsideEdge( Vertex3D &a,  Vertex3D &b,  const Vertex3D &p);
 
     static bool sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b);
     static bool PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c);
@@ -65,6 +61,15 @@ public:
     static float TriangleArea(float x0, float y0, float x1, float y1, float x2, float y2);
 
     static float normalizeToRange(float value, float min, float max);
+
+    static double intersectRayPlane(Vertex3D rOrigin, Vertex3D rVector, Vertex3D pOrigin, Vertex3D pNormal);
+    static double intersectRaySphere(Vertex3D rO, Vertex3D rV, Vertex3D sO, double sR);
+
+    // point inclusion
+    static bool CheckPointInTriangle(Vertex3D point ,Vertex3D a, Vertex3D b, Vertex3D c);
+    static bool CheckPointInSphere(Vertex3D point, Vertex3D sO, double sR);
+    static Vertex3D closestPointOnTriangle(Vertex3D a, Vertex3D b, Vertex3D c, Vertex3D p);
+    static Vertex3D closestPointOnLine(Vertex3D& a, Vertex3D& b, Vertex3D& p);
 
 };
 

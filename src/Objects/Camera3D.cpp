@@ -13,6 +13,11 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/EngineBuffers.h"
 
+#include <btBulletDynamicsCommon.h>
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+#include "LinearMath/btTransform.h"
+
 Camera3D::Camera3D()
 {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
@@ -37,6 +42,19 @@ Camera3D::Camera3D()
 
     collider = new Collider();
 
+    btTransform startTransform;
+    startTransform.setIdentity ();
+    startTransform.setOrigin (btVector3(0, 0, 0));
+
+    m_ghostObject = new btPairCachingGhostObject();
+    m_ghostObject->setWorldTransform(startTransform);
+
+    capsule = new btCapsuleShape(2.75f, 4.f);
+
+    m_ghostObject->setCollisionShape(capsule);
+    m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+
+    charCon = new btKinematicCharacterController(m_ghostObject, capsule, 0.35f);
 }
 
 float Camera3D::getNearDistance()
@@ -221,9 +239,10 @@ void Camera3D::limitPitch()
 
 void Camera3D::Jump()
 {
-    if (this->collider->onGround) {
-        jump += EngineSetup::getInstance()->JUMP_FORCE.y;
+    if( charCon->onGround() ) {
+        charCon->jump(btVector3(0, -24, 0));
     }
+    //jump += EngineSetup::getInstance()->JUMP_FORCE.y;
 }
 
 void Camera3D::HeadBob()
