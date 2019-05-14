@@ -121,7 +121,6 @@ add_executable(brakeda3d
         WAD/Directory.h
         WAD/Identification.cpp
         WAD/Identification.h
-        src/Collider.h
         WAD/Signature.cpp
         WAD/Signature.h
 
@@ -138,7 +137,9 @@ add_executable(brakeda3d
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
         src/GUI/GUI_Camera.h
-    )
+        src/Mesh3DPhysic.cpp
+        src/Mesh3DPhysic.h
+        src/PhysicsDebugDraw.cpp src/PhysicsDebugDraw.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
