@@ -208,11 +208,11 @@ public:
 
     unsigned int palette[256];
 
-    btTriangleMesh tetraMesh;
-    btConvexHullShape *convexTetraMesh;
-    btBvhTriangleMeshShape *tetraShape;
+    btTriangleMesh bspBtMesh;
+    btBvhTriangleMeshShape *bspBtShape;
     btDefaultMotionState* motionState;
-    btRigidBody* body;
+    btRigidBody* bspRigidBody;
+    btCollisionObject* bspCollisionObject;
 
     BSPMap();
 

@@ -8,6 +8,7 @@
 #include "../Objects/Camera3D.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Object3D.h"
+#include "btBulletDynamicsCommon.h"
 #include <SDL.h>
 
 class Controller {
@@ -23,7 +24,7 @@ class Controller {
 public:
     Controller();
 
-    void handleKeyboard(Camera3D *, bool &);
+    void handleKeyboard(Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld );
     void handleMouse(SDL_Event *, Camera3D *);
 
 };

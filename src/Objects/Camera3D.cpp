@@ -40,8 +40,9 @@ Camera3D::Camera3D()
         calcCanvasFarHeight(), calcCanvasFarWidth()
     );
 
-    collider = new Collider();
+    this->velocity = Vector3D( Vertex3D::zero(), Vertex3D::zero() );
 
+    // Bullet Physics
     btTransform startTransform;
     startTransform.setIdentity ();
     startTransform.setOrigin (btVector3(0, 0, 0));
@@ -49,12 +50,11 @@ Camera3D::Camera3D()
     m_ghostObject = new btPairCachingGhostObject();
     m_ghostObject->setWorldTransform(startTransform);
 
-    capsule = new btCapsuleShape(2.75f, 4.f);
-
+    capsule = new btCapsuleShape(1.55f, 4.0f);
     m_ghostObject->setCollisionShape(capsule);
     m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
-    charCon = new btKinematicCharacterController(m_ghostObject, capsule, 0.35f);
+    charCon = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
 }
 
 float Camera3D::getNearDistance()
@@ -192,25 +192,20 @@ void Camera3D::StrafeLeft(void)
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
-void Camera3D::UpdateColliderForceMovement(void)
+void Camera3D::UpdateVelocity(void)
 {
     // Move the camera forward
-    if (fabs(jump) > 0 ) {
-        this->collider->movement.vertex2.y += jump;
-    } else {
-        if ((fabs(speed) > 0)) {
-            this->collider->movement.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
-            this->collider->movement.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
-            if (EngineSetup::getInstance()->ENABLE_FLYING) {
-                this->collider->movement.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0);
-            }
-        }
 
-        // Move the camera side ways
-        if ((fabs(strafe) > 0)) {
-            this->collider->movement.vertex2.z += strafe * (float) -sin(-yaw * M_PI / 180.0);
-            this->collider->movement.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
-        }
+    if ((fabs(speed) > 0)) {
+        this->velocity.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
+        //this->velocity.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
+    }
+
+    // Move the camera side ways
+    if ((fabs(strafe) > 0)) {
+        this->velocity.vertex2.z += strafe * (float) -sin(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
     // Reset speed
@@ -240,15 +235,19 @@ void Camera3D::limitPitch()
 void Camera3D::Jump()
 {
     if( charCon->onGround() ) {
-        charCon->jump(btVector3(0, -24, 0));
+        charCon->jump(btVector3(0, -10, 0));
     }
-    //jump += EngineSetup::getInstance()->JUMP_FORCE.y;
+}
+
+void Camera3D::Fire()
+{
+
 }
 
 void Camera3D::HeadBob()
 {
     // head bob
-    if (abs(this->collider->velocity.x) > 0.5 || abs(this->collider->velocity.z) > 0.5 ) {
+    if (abs(this->velocity.vertex2.x) > 0.5 || abs(this->velocity.vertex2.z) > 0.5 ) {
         this->getPosition()->y+= sin( Maths::degreesToRadians(this->head_vertical) );
         this->head_vertical+=32;
         if (this->head_vertical > 360) {

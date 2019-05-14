@@ -20,8 +20,6 @@
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
 
-#define EPSILON 0.05f
-
 Engine::Engine()
 {
     // GUI engine
@@ -54,35 +52,8 @@ Engine::Engine()
     imgui_context = ImGui::CreateContext();
     fps = 0;
 
-    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    this->collisionConfiguration = new btDefaultCollisionConfiguration();
+    this->initPhysics();
 
-    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    this->overlappingPairCache = new btDbvtBroadphase();
-
-    /*btVector3 worldMin(-1000,-1000,-1000);
-    btVector3 worldMax(1000,1000,1000);
-    btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);
-    this->overlappingPairCache = sweepBP;*/
-
-    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    this->solver = new btSequentialImpulseConstraintSolver;
-
-    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, 98, 0));
-
-    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-
-    this->camera->charCon->setGravity( this->dynamicsWorld->getGravity() );
-    this->camera->charCon->setMaxJumpHeight(10);
-
-    //this->dynamicsWorld->addCollisionObject( this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::AllFilter );
-    this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
-
-    this->dynamicsWorld->addAction(this->camera->charCon);
 }
 
 bool Engine::initWindow()
@@ -166,6 +137,34 @@ void Engine::initFontsTTF()
         }
     }
 }
+void Engine::initPhysics()
+{
+    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+    this->collisionConfiguration = new btDefaultCollisionConfiguration();
+
+    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+    this->overlappingPairCache = new btDbvtBroadphase();
+
+    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+    this->solver = new btSequentialImpulseConstraintSolver;
+
+    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    this->dynamicsWorld->setGravity(btVector3(0, 10, 0));
+
+    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+    this->camera->charCon->setGravity( dynamicsWorld->getGravity() );
+
+    this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
+    this->dynamicsWorld->addAction(this->camera->charCon);
+
+    this->debugDraw = new PhysicsDebugDraw(this->camera);
+    this->dynamicsWorld->setDebugDrawer(debugDraw);
+    this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+}
 
 void Engine::drawGUI()
 {
@@ -215,15 +214,15 @@ void Engine::onStart()
 
     Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
 
-    Engine::camera->collider->movement.vertex1 = *Engine::camera->getPosition();
-    Engine::camera->collider->movement.vertex2 = *Engine::camera->getPosition();
+    Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
+    Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
 }
 
 void Engine::preUpdate()
 {
     // Posición inicial del vector velocidad que llevará la cámara
-    camera->collider->movement.vertex1 = *camera->getPosition();
-    camera->collider->movement.vertex2 = *camera->getPosition();
+    camera->velocity.vertex1 = *camera->getPosition();
+    camera->velocity.vertex2 = *camera->getPosition();
 
     // Determinamos VPS
     if (bsp_map) {
@@ -238,22 +237,41 @@ void Engine::postUpdate()
         this->bsp_map->PhysicsLeafVisibleSet( camera , this->dynamicsWorld);
     }
 
-    Vertex3D vel = Engine::camera->collider->movement.getComponent();
-    btVector3 velBullet = btVector3( vel.x, vel.y, vel.z);
-    this->camera->charCon->setWalkDirection( velBullet );
+    Vertex3D vel = Engine::camera->velocity.getComponent();
 
-    dynamicsWorld->stepSimulation(this->deltaTime, 2);
+    btVector3 bulletVelocity = btVector3( vel.x, vel.y, vel.z);
 
-    btTransform trans = this->camera->charCon->getGhostObject()->getWorldTransform();
-    btVector3 pos = trans.getOrigin();
+    if (this->camera->charCon->onGround()) {
+        bulletVelocity = btVector3( vel.x, vel.y, vel.z);
+    } else {
+        bulletVelocity = btVector3( vel.x, vel.y, vel.z)/1.25;
+    }
 
-    Vertex3D finalVelocity = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
+    this->camera->charCon->setWalkDirection( bulletVelocity );
+
+    Vertex3D finalVelocity;
+    if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
+        // Bullet Step Simulation
+        dynamicsWorld->stepSimulation(this->deltaTime, 10);
+
+        // Physics for meshes
+        this->syncPhysicObjects();
+        btTransform trans = this->camera->charCon->getGhostObject()->getWorldTransform();
+
+        btVector3 pos = trans.getOrigin();
+        float BSP_YOffset = 1;
+        finalVelocity = Vertex3D(pos.getX(), pos.getY()-BSP_YOffset, pos.getZ());
+    } else {
+        finalVelocity = this->camera->velocity.vertex2;
+    }
+
 
     this->camera->setPosition(finalVelocity);
     this->cameraUpdate();
 
+
     if (this->bsp_map) {
-        this->dynamicsWorld->removeCollisionObject(this->bsp_map->body);
+        this->dynamicsWorld->removeCollisionObject(this->bsp_map->bspRigidBody);
     }
 }
 
@@ -281,6 +299,10 @@ void Engine::onUpdate()
     this->drawLightPoints();
     this->drawSprites();
     this->drawObjectsBillboard();
+
+    if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
+        dynamicsWorld->debugDrawWorld();
+    }
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
         Drawable::drawFrustum(camera->frustum, camera, true, true, true);
@@ -494,16 +516,16 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map->InitializeEntities();
 
     // Load start position from BSP
-    this->camera->setPosition(this->bsp_map->getStartMapPosition());
-    //this->camera->setPosition(Vertex3D(544*this->bsp_map->scale, -32*this->bsp_map->scale, 233*this->bsp_map->scale));
+    Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
+
+    this->camera->setPosition(bspOriginalPosition);
 
     btTransform initialTransform;
 
-    btVector3 position = btVector3(this->camera->getPosition()->x, this->camera->getPosition()->y, this->camera->getPosition()->z);
+    btVector3 position = btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z);
     initialTransform.setOrigin(position);
 
     this->camera->charCon->getGhostObject()->setWorldTransform(initialTransform);
-
 
     // Create Objects3D from BSP Entities
     for (int i = 0 ; i < this->bsp_map->n_entities ; i++) {
@@ -608,4 +630,12 @@ void Engine::processFPS()
     fps = countedFrames / ( engineTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
+}
+
+void Engine::syncPhysicObjects()
+{
+    std::vector<Mesh3DPhysic *>::iterator it;
+    for (it = meshPhysics.begin() ; it!= meshPhysics.end() ; it++) {
+        (*it)->integrate( this->camera );
+    }
 }

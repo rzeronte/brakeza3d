@@ -10,6 +10,7 @@
 #include "headers/Render/Maths.h"
 #include "WAD/WAD.h"
 #include "headers/Render/BSPMap.h"
+#include "src/Mesh3DPhysic.h"
 
 enum SpriteDoom2SoldierAnimations {
     IDLE = 0,
@@ -82,7 +83,7 @@ void Game::onStart()
     Mesh3D *cubo = new Mesh3D();
     cubo->setEnabled(false);
     cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->setPosition(Vertex3D(500, -68, 391));
+    cubo->setPosition(*camera->getPosition());
     cubo->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cubo, "cubo");
 
@@ -145,6 +146,23 @@ void Game::onStart()
     testWad->render();
     */
 
+    // cubo
+    Mesh3DPhysic *cuboPhysic = new Mesh3DPhysic();
+    cuboPhysic->setEnabled(true);
+    cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cuboPhysic->setPosition(Vertex3D(54, -16, 57));
+    cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
+    cuboPhysic->makeRigidBody(Engine::meshPhysics, Engine::camera, this->dynamicsWorld);
+    this->addObject3D(cuboPhysic, "cuboPhysic");
+
+    Mesh3DPhysic *cuboPhysicTwo = new Mesh3DPhysic();
+    cuboPhysicTwo->setEnabled(true);
+    cuboPhysicTwo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cuboPhysicTwo->setPosition(Vertex3D(54, -10, 57));
+    cuboPhysicTwo->loadOBJBlender("../assets/models/cubo.obj");
+    cuboPhysicTwo->makeRigidBody(Engine::meshPhysics, Engine::camera, this->dynamicsWorld);
+    this->addObject3D(cuboPhysicTwo, "cuboPhysicTwo");
+
     loadBSP("e1m1.bsp", "palette.lmp");
 }
 
@@ -161,10 +179,10 @@ void Game::mainLoop()
         }
 
         // Check array Uint8 *keyboard
-        controller->handleKeyboard(this->camera, this->finish);
+        controller->handleKeyboard(this->camera, this->finish, Engine::dynamicsWorld);
 
         // update collider forces
-        camera->UpdateColliderForceMovement();
+        camera->UpdateVelocity();
 
         // update deltaTime
         this->updateTimer();
@@ -188,7 +206,8 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
-    //Mesh3D *marine= (Mesh3D*) getObjectByLabel("marine");
+    //Mesh3DPhysic *marine= (Mesh3DPhysic*) getObjectByLabel("cuboPhysic");
+
     //marine->rotation.y+=0.5f;*/
 }
 

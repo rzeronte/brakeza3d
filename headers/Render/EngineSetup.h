@@ -123,10 +123,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 0.50;
-    float TURN_SPEED        = 0.50;
-    float PITCH_SPEED       = 0.50;
-    float STRAFE_SPEED      = 0.50;
+    float WALKING_SPEED     = 0.099f;
+    float TURN_SPEED        = 0.099f;
+    float PITCH_SPEED       = 0.099f;
+    float STRAFE_SPEED      = 0.099f;
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.50;
@@ -134,15 +134,12 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BSP_COLLISIONS_ENABLED = true;
-    bool ENABLE_GRAVITY = false;
-    bool ENABLE_FRICTION = false;
-    bool ENABLE_AIR_FRICTION = false;
-    bool ENABLE_FLYING = true;
+    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_DEBUG_MODE = true;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -500, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -10, 0);
 
     const float FRICTION_COEFICIENT = 0.25f;
     const float AIR_RESISTANCE = 0.0005f;

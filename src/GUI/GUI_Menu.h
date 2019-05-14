@@ -80,12 +80,8 @@ public:
 
             if (ImGui::BeginMenu("Physics")) {
                 ImGui::Separator();
-                ImGui::Checkbox("Gravity", &EngineSetup::getInstance()->ENABLE_GRAVITY);
-                ImGui::Checkbox("Fly", &EngineSetup::getInstance()->ENABLE_FLYING);
-                ImGui::Checkbox("Friction", &EngineSetup::getInstance()->ENABLE_FRICTION);
-                ImGui::Checkbox("Air", &EngineSetup::getInstance()->ENABLE_AIR_FRICTION);
-                ImGui::Separator();
-                ImGui::Checkbox("Collisions", &EngineSetup::getInstance()->BSP_COLLISIONS_ENABLED);
+                ImGui::Checkbox("StepSimulation", &EngineSetup::getInstance()->BULLET_STEP_SIMULATION);
+                ImGui::Checkbox("Debug Mode", &EngineSetup::getInstance()->BULLET_DEBUG_MODE);
                 ImGui::DragScalar("Radius", ImGuiDataType_Float,  &EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, range_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
 
                 ImGui::EndMenu();

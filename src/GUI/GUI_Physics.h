@@ -28,11 +28,11 @@ public:
 
 
             ImGui::TextColored(ImVec4(255.0f, 255.0f, 255.0f,1.0f), "Velocity");
-            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.x).c_str() );
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( camera->velocity.vertex2.x).c_str() );
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->collider->velocity.y).c_str() );
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( camera->velocity.vertex2.y).c_str() );
             ImGui::SameLine();
-            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->collider->velocity.z).c_str() );
+            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( camera->velocity.vertex2.z).c_str() );
 
             ImGui::Separator();
             ImGui::End();

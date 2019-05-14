@@ -520,7 +520,7 @@ void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
         btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
         btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
 
-        this->tetraMesh.addTriangle(a, b, c, false);
+        this->bspBtMesh.addTriangle(a, b, c, false);
     }
 }
 
@@ -579,7 +579,7 @@ void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam, btDiscreteDynamicsWorld* dynam
 
 void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld)
 {
-    this->tetraMesh = new btTriangleMesh();
+    this->bspBtMesh = new btTriangleMesh();
 
     for (int i = 0; i < numVisibleSurfaces; i++) {
         CheckPhysicsSurfaceTriangles(visibleSurfaces[i], cam);
@@ -587,23 +587,26 @@ void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurface
 
     btVector3 localInertia(0, 0, 0);
 
-    this->tetraShape = new btBvhTriangleMeshShape(&tetraMesh, false);
+    this->bspBtShape = new btBvhTriangleMeshShape(&bspBtMesh, true, true);
 
-    this->tetraShape->calculateLocalInertia(0, localInertia);
+    this->bspBtShape->calculateLocalInertia(0, localInertia);
 
     btTransform trans;
     trans.setIdentity();
-    trans.setOrigin(btVector3(0, 0, 0));
+
+    Vertex3D pos = *this->getPosition();
+
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     this->motionState = new btDefaultMotionState(trans);
+    btRigidBody::btRigidBodyConstructionInfo info(0.0f, motionState, bspBtShape, localInertia) ;
+    this->bspRigidBody = new btRigidBody(info);
 
-    this->body = new btRigidBody(0, motionState, tetraShape, localInertia);
+    this->bspRigidBody->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    this->bspRigidBody->setCcdMotionThreshold(.5);
+    this->bspRigidBody->setCcdSweptSphereRadius(.5);
 
-    this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    this->body->setCcdMotionThreshold(.5);
-    this->body->setCcdSweptSphereRadius(.5);
-
-    dynamicsWorld->addRigidBody(this->body);
+    dynamicsWorld->addRigidBody(this->bspRigidBody);
 
 }
 
@@ -671,6 +674,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
     return leaf;
 }
 
+// Original Quake source function :_)
 char *BSPMap::parseEntities (char *s)
 {
     char pkey[512];
@@ -688,11 +692,11 @@ char *BSPMap::parseEntities (char *s)
     while (s[i] != '\0') {
         char c = s[i];
         if (s[i] == '{') {
-            printf("\r\nEntity: ");
+            //printf("\r\nEntity: ");
             this->entities[entityId].id = entityId;
             attributeId = 0;
         } else if (s[i] == '\"' && count_commas == 0) {
-            printf("\r\nKey: ");
+            //printf("\r\nKey: ");
             saving_key = true;
             saving_value = false;
             count_commas++;
@@ -700,7 +704,7 @@ char *BSPMap::parseEntities (char *s)
         } else if (s[i] == '\"' && count_commas == 1) {
             count_commas++;
         } else if (s[i] == '\"' && count_commas == 2) {
-            printf("Value: ");
+            //printf("Value: ");
             saving_key = false;
             saving_value = true;
             count_commas++;
@@ -722,10 +726,10 @@ char *BSPMap::parseEntities (char *s)
                     t++;
                 }
 
-                printf("%c", c);
+                //printf("%c", c);
             }
             if (c == '}' ) {
-                printf("End element");
+                //printf("End element");
                 entityId++;
                 this->n_entities++;
             }

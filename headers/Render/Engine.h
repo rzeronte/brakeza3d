@@ -19,6 +19,8 @@
 #include "../../src/GUI/GUI_Engine.h"
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
+#include "../../src/Mesh3DPhysic.h"
+#include "../../src/PhysicsDebugDraw.h"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -38,6 +40,8 @@ public:
 
     // Objetos 3D
     Object3D **gameObjects;
+
+    std::vector<Mesh3DPhysic *> meshPhysics;
 
     int numberGameObjects;
 
@@ -86,7 +90,7 @@ public:
 
     btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-    btAlignedObjectArray<btCollisionShape*> collisionShapes;
+    PhysicsDebugDraw* debugDraw;
 
     Engine();
 
@@ -94,6 +98,7 @@ public:
 
     bool initWindow();
     void initFontsTTF();
+    void initPhysics();
 
     void onStart();
     void onUpdate();
@@ -108,6 +113,8 @@ public:
     void drawLightPoints();
     void drawSprites();
     void drawObjectsBillboard();
+
+    void syncPhysicObjects();
 
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();

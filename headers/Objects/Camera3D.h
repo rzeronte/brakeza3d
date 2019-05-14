@@ -9,7 +9,6 @@
 #include "Object3D.h"
 #include "../Render/EngineSetup.h"
 #include "../Render/M3.h"
-#include "../../src/Collider.h"
 
 typedef float vec3_t[3];
 
@@ -32,7 +31,7 @@ public:
 
     Frustum *frustum;
 
-    Collider *collider;
+    Vector3D velocity;
 
     btPairCachingGhostObject *m_ghostObject;
     btKinematicCharacterController* charCon;
@@ -49,7 +48,7 @@ public:
     float getVerticalFOV();
 
     void UpdateFrustum();
-    void UpdateColliderForceMovement(void);
+    void UpdateVelocity(void);
     void UpdateRotation(void);
 
     void Pitch(float pitch);
@@ -65,6 +64,7 @@ public:
 
     void Jump();
     void limitPitch();
+    void Fire();
 
     void HeadBob();
 

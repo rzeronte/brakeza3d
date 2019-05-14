@@ -56,21 +56,9 @@ public:
     static bool sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b);
     static bool PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c);
 
-    static bool getLowestRoot(float a, float b, float c, float maxR, float* root);
-
     static float TriangleArea(float x0, float y0, float x1, float y1, float x2, float y2);
 
     static float normalizeToRange(float value, float min, float max);
-
-    static double intersectRayPlane(Vertex3D rOrigin, Vertex3D rVector, Vertex3D pOrigin, Vertex3D pNormal);
-    static double intersectRaySphere(Vertex3D rO, Vertex3D rV, Vertex3D sO, double sR);
-
-    // point inclusion
-    static bool CheckPointInTriangle(Vertex3D point ,Vertex3D a, Vertex3D b, Vertex3D c);
-    static bool CheckPointInSphere(Vertex3D point, Vertex3D sO, double sR);
-    static Vertex3D closestPointOnTriangle(Vertex3D a, Vertex3D b, Vertex3D c, Vertex3D p);
-    static Vertex3D closestPointOnLine(Vertex3D& a, Vertex3D& b, Vertex3D& p);
-
 };
 
 
