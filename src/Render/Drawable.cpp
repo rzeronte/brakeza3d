@@ -197,7 +197,6 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
     Vector3D axis_y = Vector3D(VYstart, VYend);
     Vector3D axis_z = Vector3D(VZstart, VZend);
 
-
     Drawable::drawVector3D( axis_x, cam, Color::red() );
     Drawable::drawVector3D( axis_y, cam, Color::green() );
     Drawable::drawVector3D( axis_z, cam, Color::blue() );
