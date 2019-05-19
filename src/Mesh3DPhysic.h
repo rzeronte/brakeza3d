@@ -13,7 +13,7 @@ class Mesh3DPhysic: public Mesh3D {
 public:
     Mesh3DPhysic();
 
-    void integrate(Camera3D *);
+    void integrate();
     btRigidBody* getRigidBody() { return m_body;}
     btCollisionObject* getCollider() { return m_collider;}
     void disableRotation() { m_disableRotation = true ;}

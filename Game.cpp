@@ -107,8 +107,8 @@ void Game::onStart()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(true);
-    marine->setPosition(Vertex3D(500, -68, 351));
+    marine->setEnabled(false);
+    marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("marine/idle", 1);
     marine->addAnimationDirectional2D("marine/walk", 4);
@@ -117,14 +117,13 @@ void Game::onStart()
     this->addObject3D(marine, "marine");
 
     // marine ( sprite )
-    /*Sprite3D *guy = new Sprite3D();
-    guy->setEnabled(true);
-    guy->setPosition( Vertex3D(2, 1, 5) );
+    Sprite3D *guy = new Sprite3D();
+    guy->setEnabled(false);
+    guy->setPosition( Vertex3D(2, 1, 15) );
     guy->setTimer(Engine::getTimer());
     guy->addAnimation("guy/face", 3);
     guy->setAnimation(SpriteGuyAnimations::NORMAL);
     this->addObject3D(guy, "guy");
-     */
 
     // weapon
     Weapon3D *weapon = new Weapon3D();
@@ -148,7 +147,7 @@ void Game::onStart()
 
     // cubo
     Mesh3DPhysic *cuboPhysic = new Mesh3DPhysic();
-    cuboPhysic->setEnabled(true);
+    cuboPhysic->setEnabled(false);
     cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 57));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
@@ -156,7 +155,7 @@ void Game::onStart()
     this->addObject3D(cuboPhysic, "cuboPhysic");
 
     Mesh3DPhysic *cuboPhysicTwo = new Mesh3DPhysic();
-    cuboPhysicTwo->setEnabled(true);
+    cuboPhysicTwo->setEnabled(false);
     cuboPhysicTwo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysicTwo->setPosition(Vertex3D(54, -10, 57));
     cuboPhysicTwo->loadOBJBlender("../assets/models/cubo.obj");
@@ -181,12 +180,6 @@ void Game::mainLoop()
         // Check array Uint8 *keyboard
         controller->handleKeyboard(this->camera, this->finish, Engine::dynamicsWorld);
 
-        // update collider forces
-        camera->UpdateVelocity();
-
-        // update deltaTime
-        this->updateTimer();
-
         // Checks pre update frame
         this->postUpdate();
 
@@ -207,8 +200,6 @@ void Game::onUpdate()
     Engine::onUpdate();
 
     //Mesh3DPhysic *marine= (Mesh3DPhysic*) getObjectByLabel("cuboPhysic");
-
-    //marine->rotation.y+=0.5f;*/
 }
 
 void Game::preUpdate()
@@ -216,10 +207,11 @@ void Game::preUpdate()
     // Core preUpdate
     Engine::preUpdate();
 
-
 }
 
 void Game::onEnd()
 {
     Engine::onEnd();
 }
+
+Game::Game() {}

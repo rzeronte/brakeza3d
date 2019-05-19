@@ -53,7 +53,6 @@ public:
 
     int order = 0;
     bool is_clipped = false;
-    bool is_colliding = false;
 
     bool is_bsp = false;
     int bsp_surface = -1;

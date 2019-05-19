@@ -191,6 +191,7 @@ private:
     int numVisibleSurfacesFrame = 0;
 
 public:
+
     float scale = 0.1f;
     dheader_t *header;
 

@@ -6,6 +6,8 @@
 
 class Game: public Engine {
 public:
+    Game();
+public:
     void run();
     void mainLoop();
     void onStart();

@@ -9,6 +9,7 @@
 #include "GUI_Log.h"
 #include "GUI_Camera.h"
 #include "GUI_Physics.h"
+#include "../../headers/Render/EngineBuffers.h"
 
 class GUI_Engine : GUI {
 public:
@@ -31,7 +32,7 @@ public:
         gui_physics = new GUI_Physics();
     }
 
-    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam, float timeDelta)
+    virtual void draw(bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
@@ -39,7 +40,7 @@ public:
         gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show, gui_camera->show, gui_physics->show);
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
-        gui_log->draw(getFps(), timeDelta, cam);
+        gui_log->draw(getFps(), EngineBuffers::getInstance()->deltaTime, cam);
         gui_camera->draw(cam);
         gui_physics->draw(cam);
     }

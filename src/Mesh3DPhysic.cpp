@@ -53,12 +53,11 @@ btRigidBody* Mesh3DPhysic::makeRigidBody(std::vector<Mesh3DPhysic*> &physicsObje
     return this->m_body;
 }
 
-void Mesh3DPhysic::integrate(Camera3D *cam)
+void Mesh3DPhysic::integrate()
 {
-    if(m_isActive) {
+    if (m_isActive) {
         m_body->activate();
     }
-
     // Sync position
     btTransform t ;
     m_body->getMotionState()->getWorldTransform(t);

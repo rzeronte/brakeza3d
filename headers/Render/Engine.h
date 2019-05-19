@@ -56,13 +56,6 @@ public:
 
     TTF_Font *font = NULL;
 
-    // Timer
-    Timer engineTimer;
-    float deltaTime;
-    float last_ticks;
-    float current_ticks;
-    float timerCurrent;
-
     // Fps counter
     float fps;
     int countedFrames = 0;
@@ -137,8 +130,6 @@ public:
 
     Vertex3D updatePhysics();
 
-    void updateTimer();
-    float getDeltaTime();
 
 };
 

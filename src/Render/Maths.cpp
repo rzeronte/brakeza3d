@@ -287,7 +287,7 @@ long Maths::GetPrevActive( long x, long vertexCount, const bool *active)
     }
 }
 
-int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped)
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped, bool isBsp)
 {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
@@ -311,6 +311,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setLightmap(lightmap);
             t.setClipped(clipped);
             t.setId(ntriangles);
+            t.is_bsp = isBsp;
 
             triangles[ntriangles] = t;
             ntriangles++;
@@ -397,6 +398,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
             t.setId(ntriangles);
+            t.is_bsp = isBsp;
 
             triangles[ntriangles] = t;
             ntriangles++;
@@ -420,6 +422,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
             t.setId(ntriangles);
+            t.is_bsp = isBsp;
 
             triangles[ntriangles] = t;
             ntriangles++;

@@ -151,21 +151,17 @@ bool Triangle::draw(Camera3D *cam)
     this->updateVertexSpaces(cam);
 
     bool faceCulling = false;
+
+    // back face culling
     if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING && !isClipped()) {
         faceCulling = this->isBackFaceCulling(cam);
-    }
 
-    // Wireframe for faceculling polygons
-    if (faceCulling) {
-        if (EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES) {
-            Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::yellow());
-            Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::yellow());
-            Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::yellow());
+        if (faceCulling) {
+            EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
+            return false;
         }
-
-        EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
-        return false;
     }
+
 
     // Clipping
     if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !isClipped()) {
@@ -194,10 +190,6 @@ bool Triangle::draw(Camera3D *cam)
     // wireframe
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         this->drawWireframe();
-    }
-
-    if (getId() == (int) EngineSetup::getInstance()->TESTING) {
-        drawWireframe();
     }
 
     // Pixels
@@ -239,14 +231,19 @@ bool Triangle::clipping(Camera3D *cam)
         Triangle new_triangles[10];
         int num_new_triangles = 0;
 
-        Maths::TriangulatePolygon(num_inputvertices, input_vertices, this->getNormal(), new_triangles, num_new_triangles, parent, this->getTexture(), this->getLightmap(), true);
+        Maths::TriangulatePolygon(
+                num_inputvertices, input_vertices,
+                this->getNormal(),
+                new_triangles, num_new_triangles,
+                parent,
+                this->getTexture(),
+                this->getLightmap(),
+                true,
+                this->is_bsp
+        );
 
         for (int i = 0; i < num_new_triangles; i++) {
             EngineBuffers::getInstance()->trianglesClippingCreated++;
-            new_triangles[i].is_bsp = true;
-            if (this->is_colliding) {
-                new_triangles[i].is_colliding = true;
-            }
             new_triangles[i].draw(cam);
         }
 
@@ -281,15 +278,16 @@ void Triangle::rasterize(Camera3D *cam)
     int w1_row = Maths::orient2d(Cs, As, startP);
     int w2_row = Maths::orient2d(As, Bs, startP);
 
-
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
-    for (int i = minY ; i < maxY ; i++) {
+
+
+    for (int y = minY ; y < maxY ; y++) {
         int w0 = w0_row;
         int w1 = w1_row;
         int w2 = w2_row;
 
-        for (int j = minX ; j < maxX ; j++) {
+        for (int x = minX ; x < maxX ; x++) {
 
             if ((w0 | w1 | w2) > 0) {
 
@@ -301,11 +299,12 @@ void Triangle::rasterize(Camera3D *cam)
                 affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
                 texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
                 texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
+
                 lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
                 lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
 
                 processPixel(
-                        j, i,
+                        x, y,
                         alpha, theta, gamma,
                         depth,
                         texu, texv,
@@ -492,19 +491,25 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
 
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->getTexture() != NULL) {
+        if (getTexture()->animated && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+            texu = (texu/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*EngineBuffers::getInstance()->timerCurrent+texv/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texv = (texv/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*EngineBuffers::getInstance()->timerCurrent+texu/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
+        }
+
         pixelColor = this->processPixelTexture(texu, texv);
         if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
             pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv);
         }
     }
-    /*if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
+
+    if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
         Vertex3D D;
 
         if (this->numberLightPoints > 0) {
             // Coordenadas del punto que estamos procesando en el mundo (object space)
-            float x3d = alpha * Ao.x + theta * Bo.x + gamma * Co.x;
-            float y3d = alpha * Ao.y + theta * Bo.y + gamma * Co.y;
-            float z3d = alpha * Ao.z + theta * Bo.z + gamma * Co.z;
+            float x3d = w0 * Ao.x + w1 * Bo.x + w2 * Co.x;
+            float y3d = w0 * Ao.y + w1 * Bo.y + w2 * Co.y;
+            float z3d = w0 * Ao.z + w1 * Bo.z + w2 * Co.z;
 
             D = Vertex3D( x3d, y3d, z3d ); // Object space
         }
@@ -536,7 +541,7 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
                 }
             }
         }
-    }*/
+    }
 
     EngineBuffers::getInstance()->setDepthBuffer(buffer_index, z);
     EngineBuffers::getInstance()->setVideoBuffer(buffer_index, pixelColor);

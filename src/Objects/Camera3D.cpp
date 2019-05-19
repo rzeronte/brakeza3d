@@ -235,7 +235,7 @@ void Camera3D::limitPitch()
 void Camera3D::Jump()
 {
     if( charCon->onGround() ) {
-        charCon->jump(btVector3(0, -10, 0));
+        charCon->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
     }
 }
 

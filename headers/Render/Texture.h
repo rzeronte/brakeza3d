@@ -34,6 +34,7 @@ private:
     std::string filename;
 public:
     bool loaded = false;
+    bool animated = false;
 
     // lightmap info
     float mins[2], maxs[2];

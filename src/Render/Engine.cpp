@@ -137,6 +137,7 @@ void Engine::initFontsTTF()
         }
     }
 }
+
 void Engine::initPhysics()
 {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
@@ -152,7 +153,7 @@ void Engine::initPhysics()
     this->solver = new btSequentialImpulseConstraintSolver;
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, 10, 0));
+    this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::getInstance()->gravity.y, 0));
 
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
@@ -179,8 +180,7 @@ void Engine::drawGUI()
         finish,
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
-        camera,
-        getDeltaTime()
+        camera
     );
 
     ImGui::Render();
@@ -210,7 +210,7 @@ void Engine::windowUpdate()
 
 void Engine::onStart()
 {
-    engineTimer.start();
+    EngineBuffers::getInstance()->engineTimer.start();
 
     Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
 
@@ -233,6 +233,13 @@ void Engine::preUpdate()
 
 void Engine::postUpdate()
 {
+    // update collider forces
+    camera->UpdateVelocity();
+
+    // update deltaTime
+    EngineBuffers::getInstance()->updateTimer();
+
+    // set visibles surfaces
     if (this->bsp_map) {
         this->bsp_map->PhysicsLeafVisibleSet( camera , this->dynamicsWorld);
     }
@@ -244,7 +251,7 @@ void Engine::postUpdate()
     if (this->camera->charCon->onGround()) {
         bulletVelocity = btVector3( vel.x, vel.y, vel.z);
     } else {
-        bulletVelocity = btVector3( vel.x, vel.y, vel.z)/1.25;
+        bulletVelocity = btVector3( vel.x, vel.y, vel.z)/EngineSetup::getInstance()->AIR_RESISTANCE;
     }
 
     this->camera->charCon->setWalkDirection( bulletVelocity );
@@ -252,7 +259,7 @@ void Engine::postUpdate()
     Vertex3D finalVelocity;
     if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        dynamicsWorld->stepSimulation(this->deltaTime, 10);
+        dynamicsWorld->stepSimulation(EngineBuffers::getInstance()->deltaTime, 10);
 
         // Physics for meshes
         this->syncPhysicObjects();
@@ -265,10 +272,8 @@ void Engine::postUpdate()
         finalVelocity = this->camera->velocity.vertex2;
     }
 
-
     this->camera->setPosition(finalVelocity);
     this->cameraUpdate();
-
 
     if (this->bsp_map) {
         this->dynamicsWorld->removeCollisionObject(this->bsp_map->bspRigidBody);
@@ -362,7 +367,7 @@ void Engine::drawMeshes()
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
                 }
-            };
+            }
         }
     }
 }
@@ -462,13 +467,12 @@ void Engine::drawObjectsBillboard()
 
 void Engine::onEnd()
 {
-    engineTimer.stop();
+    EngineBuffers::getInstance()->engineTimer.stop();
 }
 
 void Engine::addObject3D(Object3D *obj, std::string label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
-
     gameObjects[numberGameObjects] = obj;
     gameObjects[numberGameObjects]->setLabel(label);
     numberGameObjects++;
@@ -500,7 +504,7 @@ void Engine::Close()
 
 Timer* Engine::getTimer()
 {
-    return &this->engineTimer;
+    return &EngineSetup::getInstance()->engineTimer;
 }
 
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
@@ -517,13 +521,10 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
-
     this->camera->setPosition(bspOriginalPosition);
 
     btTransform initialTransform;
-
-    btVector3 position = btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z);
-    initialTransform.setOrigin(position);
+    initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
 
     this->camera->charCon->getGhostObject()->setWorldTransform(initialTransform);
 
@@ -599,24 +600,6 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     }
 }
 
-void Engine::updateTimer()
-{
-    this->current_ticks = this->engineTimer.getTicks();
-    this->deltaTime = this->current_ticks - this->last_ticks;
-    this->last_ticks = this->current_ticks;
-
-    this->timerCurrent += this->deltaTime/1000.f;
-
-    if (timerCurrent >= 1) {
-        timerCurrent = 0;
-    }
-}
-
-float Engine::getDeltaTime()
-{
-    return this->deltaTime/1000;
-}
-
 void Engine::processFPS()
 {
     /*countedFrames2++;
@@ -627,7 +610,7 @@ void Engine::processFPS()
         Logging::getInstance()->Log(std::to_string(fps), "INFO");
     }*/
 
-    fps = countedFrames / ( engineTimer.getTicks() / 1000.f );
+    fps = countedFrames / ( EngineBuffers::getInstance()->engineTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
 }
@@ -636,6 +619,6 @@ void Engine::syncPhysicObjects()
 {
     std::vector<Mesh3DPhysic *>::iterator it;
     for (it = meshPhysics.begin() ; it!= meshPhysics.end() ; it++) {
-        (*it)->integrate( this->camera );
+        (*it)->integrate( );
     }
 }

@@ -3,6 +3,7 @@
 
 #include "Color.h"
 #include "../Objects/Vertex3D.h"
+#include "Timer.h"
 
 class EngineSetup {
 
@@ -12,6 +13,11 @@ public:
 
     static EngineSetup* getInstance();
     static EngineSetup* instance;
+
+    Timer engineTimer;
+    float current_ticks;
+    float last_ticks;
+    float timerCurrent;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
@@ -25,7 +31,7 @@ public:
     Vertex3D down     = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 9.8f, 0);
+    Vertex3D gravity = Vertex3D(0, 10.f, 0);
 
     // Screen dimension constants
     int SCREEN_WIDTH = 320;
@@ -36,7 +42,6 @@ public:
     const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
     const float EPSILON = 0.001;
-    const float EPSILON2 = 0.05;
 
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;
@@ -45,7 +50,6 @@ public:
 
     // FaceCulling
     bool TRIANGLE_BACK_FACECULLING = true;
-    bool SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES = false;
 
     bool TRIANGLE_FRUSTUM_CULLING = true;
 
@@ -103,7 +107,6 @@ public:
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
-    Uint32 TRIANGLE_DEMO_EXTRALINE_COLOR = 0x00FF00; // GREEN
 
     // GUI Setup values
     float GUI_BAR_DEFAULT_MIN_VALUE = -999999999.f;
@@ -115,18 +118,18 @@ public:
     int GUI_MAX_SPRITE3D_FRAMERATE = 30;
 
     // SpriteDirectional3D Default size
-    float BILLBOARD_WIDTH_DEFAULT = 20.f;
-    float BILLBOARD_HEIGHT_DEFAULT = 20.f;
+    float BILLBOARD_WIDTH_DEFAULT = 3.f;
+    float BILLBOARD_HEIGHT_DEFAULT = 3.f;
 
     int TEXT_3D_SIZE = 25;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 0.099f;
+    float WALKING_SPEED     = 0.2f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 0.099f;
+    float STRAFE_SPEED      = 0.15f;
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.50;
@@ -135,25 +138,33 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
-    bool BULLET_DEBUG_MODE = true;
+    bool BULLET_DEBUG_MODE = false;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
     Vertex3D JUMP_FORCE = Vertex3D(0, -10, 0);
 
-    const float FRICTION_COEFICIENT = 0.25f;
-    const float AIR_RESISTANCE = 0.0005f;
+    const float AIR_RESISTANCE = 1.1f;
 
     float TESTING = 4829;
 
     int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
-    bool ENABLE_LIGHTMAPPING = false;
+    bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_INTENSITY = 0.015;
 
     bool DRAW_BSP_HULLS = false;
+
+    // BSP TEXTURES ANIMATED
+    bool TRIANGLE_TEXTURES_ANIMATED = true;
+
+    //BSP LAVA EFFECT
+    float LAVA_CLOSENESS = 1.0f;
+    float LAVA_INTENSITY = 0.5f;
+    float LAVA_SPEED = 0.5f;
+    float LAVA_SCALE = 1.f;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

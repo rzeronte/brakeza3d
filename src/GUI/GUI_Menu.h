@@ -22,6 +22,10 @@ public:
         const float range_max_lightmap_intensity = 0.5;
         const float range_sensibility_lightmap_intensity = 0.0001;
 
+        const float range_sensibility_lava = 0.05;
+        const float range_sensibility_lava_min = -5;
+        const float range_sensibility_lava_max = 5;
+
         const float range_min_lod = 1;
         const float range_max_lod = 8;
 
@@ -68,13 +72,22 @@ public:
                 ImGui::Checkbox("Draw extra line", &EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED);
                 ImGui::Separator();
                 ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING);
-                if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-                    ImGui::Checkbox("Show BFC triangles", &EngineSetup::getInstance()->SHOW_WIREFRAME_FOR_BFC_HIDDEN_TRIANGLES);
-                }
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
                 ImGui::Checkbox("Frustum Culling", &EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING);
                 ImGui::Checkbox("Frustum Clipping", &EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("BSP Map")) {
+                ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
+                if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                }
+                ImGui::Separator();
                 ImGui::EndMenu();
             }
 

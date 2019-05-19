@@ -141,6 +141,7 @@ bool BSPMap::InitializeSurfaces(void)
 
         // Get a pointer to texinfo for this surface
         texinfo_t *textureInfo = this->getTextureInfo(i);
+
         // Get a pointer to the surface's miptextures
         miptex_t *mipTexture = this->getMipTexture(textureInfo->texid);
 
@@ -165,8 +166,8 @@ bool BSPMap::InitializeSurfaces(void)
             //primitives->t[1] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff) / mipTexture->width;
             //primitives->t[0] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff) / mipTexture->height;
 
-            primitives->t[0] = (CalculateDistance(textureInfo->snrm, primitives->v) + textureInfo->soff) / scale;
-            primitives->t[1] = (CalculateDistance(textureInfo->tnrm, primitives->v) + textureInfo->toff) / scale;
+            primitives->t[0] = (CalculateDistance(textureInfo->snrm, *vertex) + textureInfo->soff);
+            primitives->t[1] = (CalculateDistance(textureInfo->tnrm, *vertex) + textureInfo->toff);
         }
     }
 
@@ -201,13 +202,13 @@ bool BSPMap::InitializeTextures(void)
     // Loop through all texture objects to associate them with a texture and calculate mipmaps from it
     for (int i = 0; i < this->getNumTextures(); i++) {
         miptex_t *mipTexture = this->getMipTexture(i);
-
         // NULL textures exist, don't use them!
         if (!mipTexture->name[0]) {
             continue;
         }
 
         textures[i].setFilename( std::string(mipTexture->name) );
+
         int width = mipTexture->width;
         int height = mipTexture->height;
         textures[i] = Texture(width, height);
@@ -250,11 +251,10 @@ bool BSPMap::InitializeTextures(void)
 
 bool BSPMap::InitializeTriangles()
 {
+    // Creamos triángulos
     for (int i = 0; i < this->getNumSurfaces(); i++) {
 
-        // Creamos triángulos
         int start_number_triangle = this->n_triangles;
-
         this->createTrianglesForSurface(i);
 
         // Hayamos el número de triángulos creados para esta superficie
@@ -309,7 +309,6 @@ bool BSPMap::InitializeLightmaps()
 
 void BSPMap::InitializeEntities()
 {
-
     char *e = getEntities();
     this->parseEntities(e);
     Logging::getInstance()->Log("BSP Num Entities: "+ std::to_string(this->n_entities), "");
@@ -319,12 +318,12 @@ void BSPMap::InitializeEntities()
         exit(-1);
     }
 
-    for (int i = 0; i < this->n_entities; i++) {
-        //Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
+    /*for (int i = 0; i < this->n_entities; i++) {
+        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
         for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
-            //Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
+            Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
         }
-    }
+    }*/
 }
 
 void BSPMap::bindTrianglesLightmaps()
@@ -395,6 +394,12 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     }
     normal = normal.getInverse();
 
+    texinfo_t *tInfo =  this->getTextureInfo( surface );
+
+    if (tInfo->flag) {
+        textures[this->getTextureInfo(surface)->texid].animated = true;
+    }
+
     Maths::TriangulatePolygon(
         num_vertices,
         vertices,
@@ -404,7 +409,8 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
         this,
         &textures[this->getTextureInfo(surface)->texid],
         &lightmaps[surface],
-        false
+        false,
+        true
     );
 
     return true;
