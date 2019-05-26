@@ -4,6 +4,7 @@
 
 
 #include <SDL.h>
+#include "Point2D.h"
 
 class Line2D {
 public:
@@ -13,6 +14,8 @@ public:
 
     Line2D();
     Line2D(int, int, int, int);
+    Point2D middlePoint() ;
+
 };
 
 

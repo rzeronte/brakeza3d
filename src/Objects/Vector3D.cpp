@@ -62,3 +62,8 @@ Vertex3D Vector3D::end(float t) const
 {
     return origin() + normal().getScaled(t);
 }
+
+Vertex3D Vector3D::middlePoint() const
+{
+    return Vertex3D( (vertex1.x + vertex2.x)/2 ,  (vertex1.y + vertex2.y)/2 ,  (vertex1.z + vertex2.z)/2 );
+}

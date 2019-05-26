@@ -274,6 +274,7 @@ void Engine::postUpdate()
 
     this->camera->setPosition(finalVelocity);
     this->cameraUpdate();
+    this->updateWeaponPosition();
 
     if (this->bsp_map) {
         this->dynamicsWorld->removeCollisionObject(this->bsp_map->bspRigidBody);
@@ -426,21 +427,6 @@ void Engine::drawSprites()
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
-            }
-        }
-
-        // Weapon 3D
-        Weapon3D *oWeapon = dynamic_cast<Weapon3D*> (this->gameObjects[i]);
-        if (oWeapon != NULL) {
-            if (!oWeapon->isEnabled()) {
-                continue;
-            };
-            oWeapon->setWeaponPosition(camera);
-            oWeapon->updateTrianglesCoordinatesAndTexture(camera);
-            oWeapon->draw(camera);
-
-            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oWeapon->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oWeapon->getLabel());
             }
         }
     }
@@ -621,4 +607,32 @@ void Engine::syncPhysicObjects()
     for (it = meshPhysics.begin() ; it!= meshPhysics.end() ; it++) {
         (*it)->integrate( );
     }
+}
+
+Mesh3D *Engine::getWeapon() const {
+    return weapon;
+}
+
+void Engine::setWeapon(Mesh3D *weapon) {
+    Engine::weapon = weapon;
+}
+
+void Engine::updateWeaponPosition()
+{
+    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+    Vertex3D up        = camera->getRotation().getTranspose() * EngineSetup::getInstance()->up;
+    Vertex3D right     = camera->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+
+    float farDist = 1;
+    float YOffset = 0.5;
+    float XOffset = -0.5;
+
+    this->getWeapon()->setRotation(camera->getRotation().getTranspose());
+
+    Vertex3D p = *camera->getPosition();
+    p.x = p.x + direction.x * farDist + (up.x * YOffset) - (right.x * XOffset);
+    p.y = p.y + direction.y * farDist + (up.y * YOffset) - (right.y * XOffset);
+    p.z = p.z + direction.z * farDist + (up.z * YOffset) - (right.z * XOffset);
+
+    this->getWeapon()->setPosition(p);
 }

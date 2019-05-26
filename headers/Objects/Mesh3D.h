@@ -23,6 +23,8 @@ public:
     Triangle *model_triangles;
     Vertex3D *model_vertex;
 
+    vec3_t *obj_uv_list;
+
     int n_triangles;
     int n_vertex;
     int n_textures;

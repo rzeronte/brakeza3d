@@ -220,3 +220,66 @@ void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
         B->T2.drawWireframe();
     }
 }
+
+void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
+{
+    float generations = EngineSetup::getInstance()->LIGHTNING_GENERATIONS;
+    std::vector<Vector3D> segmentList;
+    std::vector<Vector3D> tmpList;
+    std::vector<Vector3D> newSegments;
+    std::vector<Uint32> colorList;
+
+    float offsetAmount = EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION;
+    float multiplier = EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT;
+    float probabilityBranch = EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH;
+
+    segmentList.push_back(Vector3D(A, B));
+
+    colorList.push_back(Color::yellow());
+    for (int i = 0; i < generations; i++) {
+        tmpList = segmentList;
+        int j = 0;
+        for (auto ir = tmpList.begin(); ir != tmpList.end(); j) {
+            segmentList.erase(segmentList.begin() + j);
+
+            Vertex3D midPoint = ir.base()->middlePoint();
+
+            midPoint.x += Tools::random(-offsetAmount, offsetAmount) * multiplier;
+            midPoint.y += Tools::random(-offsetAmount, offsetAmount) * multiplier;
+            midPoint.z += Tools::random(-offsetAmount, offsetAmount) * multiplier;
+
+            if ( Tools::random(1, 10) > 10-probabilityBranch) {
+
+                Vertex3D splitEnd;
+                splitEnd.x = midPoint.x + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).x;
+                splitEnd.y = midPoint.y + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).y;
+                splitEnd.z = midPoint.z + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).z;
+
+                Vector3D segmentBranch = Vector3D(midPoint, splitEnd);
+                newSegments.push_back(segmentBranch);
+                colorList.push_back(Color::red());
+
+            }
+
+
+            Vector3D segment1 = Vector3D(ir.base()->vertex1, midPoint);
+            Vector3D segment2 = Vector3D(midPoint, ir.base()->vertex2);
+            newSegments.push_back(segment1);
+            newSegments.push_back(segment2);
+            colorList.push_back(Color::yellow());
+            colorList.push_back(Color::yellow());
+
+            ++ir;
+        }
+        segmentList = newSegments;
+        newSegments.clear();
+        colorList.clear();
+
+        offsetAmount/=2;
+    }
+
+    auto ib = colorList.begin();
+    for (auto ir = segmentList.begin() ; ir != segmentList.end(); ++ir, ++ib) {
+        Drawable::drawVector3D(*ir.base(), cam, *ib.base());
+    }
+}

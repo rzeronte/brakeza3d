@@ -41,7 +41,7 @@ public:
 
     const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
-    const float EPSILON = 0.001;
+    const float EPSILON = 0.00001f;
 
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;
@@ -137,7 +137,7 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     bool BULLET_DEBUG_MODE = false;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
@@ -165,6 +165,12 @@ public:
     float LAVA_INTENSITY = 0.5f;
     float LAVA_SPEED = 0.5f;
     float LAVA_SCALE = 1.f;
+
+    //LIGHTNING  EFFECT
+    float LIGHTNING_GENERATIONS = 5;
+    float LIGHTNING_OFFSET_REDUCTION = 5.f;
+    float LIGHTNING_PROBABILITY_BRANCH = 1.5;
+    float LIGHTNING_SEGMENT_SHIFT = 0.7;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

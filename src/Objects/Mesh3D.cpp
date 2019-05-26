@@ -18,6 +18,8 @@ Mesh3D::Mesh3D()
     this->model_triangles = new Triangle[MAX_MODEL_TRIANGLES];
     this->model_vertex = new Vertex3D[MAX_VERTEX_MODEL];
     this->model_textures = new Texture[MAX_MESH_TEXTURES];
+    this->obj_uv_list = new vec3_t[MAX_VERTEX_MODEL];
+
     this->n_triangles = 0;
     this->n_vertex = 0;
     this->n_textures = 0;
@@ -64,14 +66,14 @@ void Mesh3D::loadOBJBlenderVertex()
         getline (myfile,line);
 
         //Si empieza por 'v' es un vértice
-        if (line[0] == 'v') {
+        if (line[0] == 'v' && line[1] != 't') {
             line_chunks = Tools::split(line, ' ');
 
             x = (float) atof(line_chunks[1].c_str() );
             y = (float) atof(line_chunks[2].c_str() );
             z = (float) atof(line_chunks[3].c_str() );
 
-            this->model_vertex[i] = Vertex3D(x, y, z);
+            this->model_vertex[i] = Vertex3D(-x, -y, z);
             i++;
         }
     }
@@ -94,6 +96,7 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
     if (!Tools::fileExists(mesh_file)) {
         return;
     }
+
     std::ifstream myfile (mesh_file);
     while(!myfile.eof()) {
         getline (myfile,line);
@@ -105,11 +108,9 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
             u = atof(line_chunks[1].c_str() );
             v = atof(line_chunks[2].c_str() );
 
-            this->model_vertex[i].u = u;
-            this->model_vertex[i].v = v;
-
+            this->obj_uv_list[i][0] = u;
+            this->obj_uv_list[i][1] = v;
             //printf("u %f v%f:\r\n", u, v);
-
             i++;
         }
     }
@@ -126,7 +127,8 @@ void Mesh3D::loadOBJBlenderTriangles()
     std::vector<std::string> vertex_chunks;
 
     int i = 0;
-    int idx1, idx2, idx3;
+    int idx1_vertex = -1, idx2_vertex = -1, idx3_vertex = -1;
+    int idx1_uv = -1, idx2_uv = -1, idx3_uv = -1;
 
     if (!Tools::fileExists(mesh_file)) {
         return;
@@ -143,24 +145,48 @@ void Mesh3D::loadOBJBlenderTriangles()
 
             // Example:  f 123//121 312//043 094//234 -> (123, 321, 094)
             vertex_chunks = Tools::split(line_chunks[1], '/');
-            idx1 = std::stoi(vertex_chunks[0]);
+            idx1_vertex = std::stoi(vertex_chunks[0]);
+            if (!vertex_chunks[1].empty()) {
+                idx1_uv =  std::stoi(vertex_chunks[1]);
+            }
 
             vertex_chunks = Tools::split(line_chunks[2], '/');
-            idx2 = std::stoi( vertex_chunks[0]);
+            idx2_vertex = std::stoi( vertex_chunks[0]);
+            if (!vertex_chunks[1].empty()) {
+                idx2_uv =  std::stoi(vertex_chunks[1]);
+            }
 
             vertex_chunks = Tools::split(line_chunks[3], '/');
-            idx3 = std::stoi( vertex_chunks[0]);
+            idx3_vertex = std::stoi( vertex_chunks[0]);
+            if (!vertex_chunks[1].empty()) {
+                idx3_uv =  std::stoi(vertex_chunks[1]);
+            }
 
             // El Blender el índice empieza en 1, nosotros usamos el 0.
-            idx1--; idx2--;idx3--;
+            idx1_vertex--; idx2_vertex--;idx3_vertex--;
+            idx1_uv--; idx2_uv--;idx3_uv--;
+
+            Vertex3D V1 = this->model_vertex[idx1_vertex];
+            Vertex3D V2 = this->model_vertex[idx2_vertex];
+            Vertex3D V3 = this->model_vertex[idx3_vertex];
+
+            if (idx1_uv >= 0) {
+                V1.u = this->obj_uv_list[idx1_uv][0];
+                V1.v = this->obj_uv_list[idx1_uv][1];
+            }
+
+            if (idx2_uv >= 0) {
+                V2.u = this->obj_uv_list[idx2_uv][0];
+                V2.v = this->obj_uv_list[idx2_uv][1];
+            }
+
+            if (idx3_uv >= 0) {
+                V3.u = this->obj_uv_list[idx3_uv][0];
+                V3.v = this->obj_uv_list[idx3_uv][1];
+            }
 
             // triangle geometry
-            this->model_triangles[i] = Triangle(
-                    this->model_vertex[idx1--],
-                    this->model_vertex[idx2--],
-                    this->model_vertex[idx3--],
-                    this
-            );
+            this->model_triangles[i] = Triangle(V1, V2, V3, this);
 
             // set texture
             if (this->model_textures[0].loaded) {
@@ -179,7 +205,7 @@ void Mesh3D::loadOBJBlenderTriangles()
 
     this->n_triangles = i;
 
-    Logging::getInstance()->Log("OBJ Mesh Triangles: " + std::to_string(this->n_triangles) + "", "INFO");
+    Logging::getInstance()->Log(this->label + ": OBJ Mesh Triangles: " + std::to_string(this->n_triangles) + "", "INFO");
 }
 
 void Mesh3D::loadOBJBlenderMaterials() {

@@ -20,6 +20,7 @@ public:
     Vertex3D origin() const;
     Vertex3D end() const;
     Vertex3D end(float) const;
+    Vertex3D middlePoint() const;
 
 };
 

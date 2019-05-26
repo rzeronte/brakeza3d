@@ -4,8 +4,9 @@
 
 
 #include "Sprite3D.h"
+#include "Mesh3D.h"
 
-class Weapon3D : public Sprite3D {
+class Weapon3D : public Mesh3D {
 public:
     void setWeaponPosition(Camera3D *cam);
 };

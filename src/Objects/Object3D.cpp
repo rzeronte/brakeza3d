@@ -126,3 +126,12 @@ void Object3D::setDrawBillboard(bool drawBillboard)
 {
     Object3D::drawBillboard = drawBillboard;
 }
+
+float Object3D::getScale() const {
+    return scale;
+}
+
+void Object3D::setScale(float scale) {
+    Object3D::scale = scale;
+}
+

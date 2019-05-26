@@ -12,9 +12,13 @@ Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
     Vertex3D V = A;
 
     //V = Maths::rotateVertex(V, o->getRotation());
+    V.x*=o->scale;
+    V.y*=o->scale;
+    V.z*=o->scale;
 
     V = o->getRotation() * V;
     V = V + *o->getPosition();
+
 
     V.u = A.u;
     V.v = A.v;
@@ -121,6 +125,11 @@ Vertex3D Transforms::objectToLocal(Vertex3D V, Object3D *o)
 
     T = V - *o->getPosition();
     T = o->getRotation().getTranspose() * T;
+
+    T.x/=o->scale;
+    T.y/=o->scale;
+    T.z/=o->scale;
+
 
     T.u = V.u;
     T.v = V.v;

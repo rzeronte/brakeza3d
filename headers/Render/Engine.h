@@ -85,6 +85,8 @@ public:
 
     PhysicsDebugDraw* debugDraw;
 
+    Mesh3D *weapon;
+
     Engine();
 
     void Close();
@@ -127,9 +129,10 @@ public:
 
     Object3D* getObjectByLabel(std::string label);
 
+    Mesh3D *getWeapon() const;
 
-    Vertex3D updatePhysics();
-
+    void setWeapon(Mesh3D *weapon);
+    void updateWeaponPosition();
 
 };
 

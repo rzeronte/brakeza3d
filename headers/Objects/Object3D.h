@@ -17,11 +17,9 @@ class Object3D {
 
 public:
     bool enabled;
-
     float scale;
 
     std::string label;
-
 
     Object3D();
     virtual ~Object3D() = default;
@@ -48,14 +46,13 @@ public:
     Vertex3D AxisLeft();
 
     void setDefaultBillboard();
-
     Billboard *getBillboard() const;
-
     void setBillboard(Billboard *billboard);
-
     bool isDrawBillboard() const;
-
     void setDrawBillboard(bool drawBillboard);
+
+    float getScale() const;
+    void  setScale(float scale);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

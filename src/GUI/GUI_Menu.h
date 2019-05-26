@@ -26,6 +26,10 @@ public:
         const float range_sensibility_lava_min = -5;
         const float range_sensibility_lava_max = 5;
 
+        const float range_sensibility_lightnin = 0.05;
+        const float range_sensibility_lightnin_min = -10;
+        const float range_sensibility_lightnin_max = 10;
+
         const float range_min_lod = 1;
         const float range_max_lod = 8;
 
@@ -79,18 +83,6 @@ public:
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("BSP Map")) {
-                ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
-                if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
-                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                }
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
-
             if (ImGui::BeginMenu("Physics")) {
                 ImGui::Separator();
                 ImGui::Checkbox("StepSimulation", &EngineSetup::getInstance()->BULLET_STEP_SIMULATION);
@@ -117,6 +109,32 @@ public:
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
                 ImGui::DragScalar("BSP Lightmapping Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::EndMenu();
+            }
+
+
+            if (ImGui::BeginMenu("Effects FX")) {
+                if (ImGui::BeginMenu("Liquid Shader")) {
+                    ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
+                    if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+                        ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                        ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                        ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                        ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    }
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Lightning")) {
+                    ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
+                    if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+                        ImGui::DragScalar("Generations", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("Probability branch", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    }
+                    ImGui::EndMenu();
+                }
+
                 ImGui::EndMenu();
             }
 

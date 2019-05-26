@@ -129,11 +129,6 @@ void Game::onStart()
     Weapon3D *weapon = new Weapon3D();
     weapon->setEnabled(false);
     weapon->setPosition( Vertex3D(1, 1, 5) );
-    weapon->setTimer(Engine::getTimer());
-    weapon->addAnimation("gun/ready", 1);
-    weapon->addAnimation("gun/reload", 3);
-    weapon->addAnimation("gun/shot", 2);
-    weapon->setAnimation(SpriteShotgunAnimations::RELOAD);
     this->addObject3D(weapon, "weapon");
 
     // WAD Parser
@@ -147,7 +142,7 @@ void Game::onStart()
 
     // cubo
     Mesh3DPhysic *cuboPhysic = new Mesh3DPhysic();
-    cuboPhysic->setEnabled(false);
+    cuboPhysic->setEnabled(true);
     cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 57));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
@@ -155,14 +150,24 @@ void Game::onStart()
     this->addObject3D(cuboPhysic, "cuboPhysic");
 
     Mesh3DPhysic *cuboPhysicTwo = new Mesh3DPhysic();
-    cuboPhysicTwo->setEnabled(false);
+    cuboPhysicTwo->setEnabled(true);
     cuboPhysicTwo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysicTwo->setPosition(Vertex3D(54, -10, 57));
     cuboPhysicTwo->loadOBJBlender("../assets/models/cubo.obj");
     cuboPhysicTwo->makeRigidBody(Engine::meshPhysics, Engine::camera, this->dynamicsWorld);
     this->addObject3D(cuboPhysicTwo, "cuboPhysicTwo");
 
-    loadBSP("e1m1.bsp", "palette.lmp");
+    // cubo
+    Mesh3D *hammer = new Mesh3D();
+    hammer->setScale(0.011);
+    hammer->setEnabled(true);
+    hammer->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    hammer->loadOBJBlender("../assets/models/hammer.obj");
+    this->setWeapon(hammer);
+    this->addObject3D(hammer, "hammer");
+
+    loadBSP("start.bsp", "palette.lmp");
+
 }
 
 void Game::mainLoop()
@@ -199,11 +204,16 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
-    //Mesh3DPhysic *marine= (Mesh3DPhysic*) getObjectByLabel("cuboPhysic");
+    Vertex3D startPoint = Vertex3D(45, -2, 40);
+    Vertex3D endPoint   = Vertex3D(70, -2, 40);
+    Drawable::drawLightning(camera, startPoint, endPoint);
+
 }
 
 void Game::preUpdate()
 {
+    //Mesh3D *hammer= (Mesh3D*) getObjectByLabel("hammer");
+
     // Core preUpdate
     Engine::preUpdate();
 
