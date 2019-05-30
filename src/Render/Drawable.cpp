@@ -138,6 +138,85 @@ void Drawable::drawLine2D(Line2D L, Uint32 color)
     }
 }
 
+void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_increment)
+{
+    float current_z = z_start;
+
+    int x1 = L.x1;
+    int y1 = L.y1;
+    int x2 = L.x2;
+    int y2 = L.y2;
+
+    Uint32 col = color;
+    int pasoy;
+    int pasox;
+    int deltaX = (x2 - x1);
+    int deltaY = (y2 - y1);
+
+    if (deltaY < 0) {
+        deltaY = -deltaY;
+        pasoy = -1;
+    } else {
+        pasoy = 1;
+    }
+
+
+    if (deltaX < 0) {
+        deltaX = -deltaX;
+        pasox = -1;
+    } else {
+        pasox = 1;
+    }
+
+    int x = x1;
+    int y = y1;
+
+    if (deltaX>deltaY){
+        int p = 2 * deltaY - deltaX;
+        int incE = 2 * deltaY;
+        int incNE = 2 * (deltaY - deltaX);
+        while (x != x2){
+            x = x + pasox;
+            if (p < 0){
+                p = p + incE;
+            } else {
+                y = y + pasoy;
+                p = p + incNE;
+            }
+
+            if (Tools::isPixelInWindow(x, y)) {
+                current_z+=z_increment;
+                const int buffer_index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                if (current_z  >= EngineBuffers::getInstance()->getDepthBuffer( buffer_index ) ) {
+                    continue;
+                }
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
+        }
+    } else{
+        int p = 2 * deltaX - deltaY;
+        int incE = 2 * deltaX;
+        int incNE = 2 * (deltaX - deltaY);
+        while (y != y2){
+            y = y + pasoy;
+            if (p < 0) {
+                p = p + incE;
+            } else {
+                x = x + pasox;
+                p = p + incNE;
+            }
+            if (Tools::isPixelInWindow(x, y)) {
+                current_z+=z_increment;
+                const int buffer_index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                if (current_z >= EngineBuffers::getInstance()->getDepthBuffer( buffer_index ) ) {
+                    continue;
+                }
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+            }
+        }
+    }
+}
+
 void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
 {
     // apply view matrix
@@ -154,6 +233,32 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 
     Drawable::drawLine2D(line, color);
+}
+
+void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color)
+{
+    if ( !cam->frustum->isPointInFrustum(V.vertex1) && !cam->frustum->isPointInFrustum(V.vertex2) ) {
+        return;
+    }
+
+    // apply view matrix
+    Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
+    Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
+
+    V1 = Transforms::NDCSpace(V1, cam);
+    V2 = Transforms::NDCSpace(V2, cam);
+
+    // get 2d coordinates
+    Point2D P1 = Transforms::screenSpace(V1, cam);
+    Point2D P2 = Transforms::screenSpace(V2, cam);
+
+    Line2D line(P1.x,P1.y, P2.x, P2.y);
+
+    float z_diff = abs(V1.z-V2.z);
+    float z_increment = z_diff/V.getComponent().getModule();
+
+
+    Drawable::drawLine2DZBuffer(line, color, V1.z, z_increment);
 }
 
 
@@ -227,7 +332,6 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
     std::vector<Vector3D> segmentList;
     std::vector<Vector3D> tmpList;
     std::vector<Vector3D> newSegments;
-    std::vector<Uint32> colorList;
 
     float offsetAmount = EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION;
     float multiplier = EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT;
@@ -235,13 +339,10 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
 
     segmentList.push_back(Vector3D(A, B));
 
-    colorList.push_back(Color::yellow());
     for (int i = 0; i < generations; i++) {
         tmpList = segmentList;
         int j = 0;
-        for (auto ir = tmpList.begin(); ir != tmpList.end(); j) {
-            segmentList.erase(segmentList.begin() + j);
-
+        for (auto ir = tmpList.begin(); ir != tmpList.end(); ++j) {
             Vertex3D midPoint = ir.base()->middlePoint();
 
             midPoint.x += Tools::random(-offsetAmount, offsetAmount) * multiplier;
@@ -251,35 +352,29 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
             if ( Tools::random(1, 10) > 10-probabilityBranch) {
 
                 Vertex3D splitEnd;
-                splitEnd.x = midPoint.x + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).x;
-                splitEnd.y = midPoint.y + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).y;
-                splitEnd.z = midPoint.z + ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 ).z;
+                Vertex3D direction = ir.base()->getComponent().getNormalize().getScaled( offsetAmount * 2 );
+                splitEnd.x = midPoint.x + direction.x;
+                splitEnd.y = midPoint.y + direction.y;
+                splitEnd.z = midPoint.z + direction.z;
 
                 Vector3D segmentBranch = Vector3D(midPoint, splitEnd);
                 newSegments.push_back(segmentBranch);
-                colorList.push_back(Color::red());
-
             }
-
 
             Vector3D segment1 = Vector3D(ir.base()->vertex1, midPoint);
             Vector3D segment2 = Vector3D(midPoint, ir.base()->vertex2);
             newSegments.push_back(segment1);
             newSegments.push_back(segment2);
-            colorList.push_back(Color::yellow());
-            colorList.push_back(Color::yellow());
 
             ++ir;
         }
         segmentList = newSegments;
         newSegments.clear();
-        colorList.clear();
 
         offsetAmount/=2;
     }
 
-    auto ib = colorList.begin();
-    for (auto ir = segmentList.begin() ; ir != segmentList.end(); ++ir, ++ib) {
-        Drawable::drawVector3D(*ir.base(), cam, *ib.base());
+    for (auto ir = segmentList.begin() ; ir != segmentList.end(); ++ir) {
+        Drawable::drawVector3DZBuffer(*ir.base(), cam, Color::cyan());
     }
 }

@@ -19,9 +19,12 @@
 
 typedef float vec3_t[3];
 
+Engine *brakeza3D;
+
 int main( int argc, const char* args[] ) {
 
     Game *engine = new Game();
+    brakeza3D = engine;
 
     if (engine->initWindow() ) {
         engine->run();
