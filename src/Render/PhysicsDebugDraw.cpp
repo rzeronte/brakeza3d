@@ -2,10 +2,10 @@
 // Created by darkhead on 2019-05-12.
 //
 
-#include "PhysicsDebugDraw.h"
-#include "../headers/Objects/Vector3D.h"
-#include "../headers/Render/Drawable.h"
-#include "../headers/Render/Transforms.h"
+#include "../../headers/Render/PhysicsDebugDraw.h"
+#include "../../headers/Objects/Vector3D.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/Transforms.h"
 
 PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam)
 {

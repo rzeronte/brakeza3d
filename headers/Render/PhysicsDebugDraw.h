@@ -7,7 +7,7 @@
 
 
 #include <LinearMath/btIDebugDraw.h>
-#include "../headers/Objects/Camera3D.h"
+#include "../Objects/Camera3D.h"
 
 class PhysicsDebugDraw : public btIDebugDraw{
 public:

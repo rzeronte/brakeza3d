@@ -137,7 +137,7 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = false;
+    bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
 
     float PLAYER_SPHERE_RADIUS = 30.f;

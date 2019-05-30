@@ -137,9 +137,9 @@ add_executable(brakeda3d
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
         src/GUI/GUI_Camera.h
-        src/Mesh3DPhysic.cpp
-        src/Mesh3DPhysic.h
-        src/PhysicsDebugDraw.cpp src/PhysicsDebugDraw.h)
+        src/Objects/Mesh3DPhysic.cpp
+        headers/Objects/Mesh3DPhysic.h
+        src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

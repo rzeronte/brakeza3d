@@ -15,7 +15,10 @@ public:
     static void drawBox2D(SDL_Rect r);
     static void drawVertex(Vertex3D v, Camera3D *cam, Uint32 color);
     static void drawVector3D(Vector3D V, Camera3D *cam, Uint32 color);
+    static void drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color);
+
     static void drawLine2D(Line2D L, Uint32 color);
+    static void drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_increment);
 
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
     static void drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides);

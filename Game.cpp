@@ -10,7 +10,8 @@
 #include "headers/Render/Maths.h"
 #include "WAD/WAD.h"
 #include "headers/Render/BSPMap.h"
-#include "src/Mesh3DPhysic.h"
+#include "headers/Objects/Mesh3DPhysic.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 enum SpriteDoom2SoldierAnimations {
     IDLE = 0,
@@ -144,20 +145,20 @@ void Game::onStart()
     Mesh3DPhysic *cuboPhysic = new Mesh3DPhysic();
     cuboPhysic->setEnabled(true);
     cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cuboPhysic->setPosition(Vertex3D(54, -16, 57));
+    cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
-    cuboPhysic->makeRigidBody(Engine::meshPhysics, Engine::camera, this->dynamicsWorld);
+    cuboPhysic->makeRigidBody(1.0f, Engine::meshPhysics, Engine::camera, this->dynamicsWorld, false);
     this->addObject3D(cuboPhysic, "cuboPhysic");
 
-    Mesh3DPhysic *cuboPhysicTwo = new Mesh3DPhysic();
-    cuboPhysicTwo->setEnabled(true);
-    cuboPhysicTwo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cuboPhysicTwo->setPosition(Vertex3D(54, -10, 57));
-    cuboPhysicTwo->loadOBJBlender("../assets/models/cubo.obj");
-    cuboPhysicTwo->makeRigidBody(Engine::meshPhysics, Engine::camera, this->dynamicsWorld);
-    this->addObject3D(cuboPhysicTwo, "cuboPhysicTwo");
+    Mesh3DPhysic *cuboPhysicGhost = new Mesh3DPhysic();
+    cuboPhysicGhost->setEnabled(true);
+    cuboPhysicGhost->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cuboPhysicGhost->setPosition(Vertex3D(52, -0.2, 87));
+    cuboPhysicGhost->loadOBJBlender("../assets/models/cubo.obj");
+    cuboPhysicGhost->makeGhostBody(Engine::camera, this->dynamicsWorld, true);
+    this->addObject3D(cuboPhysicGhost, "cuboPhysicGhost");
 
-    // cubo
+    // hammer
     Mesh3D *hammer = new Mesh3D();
     hammer->setScale(0.011);
     hammer->setEnabled(true);
@@ -166,8 +167,7 @@ void Game::onStart()
     this->setWeapon(hammer);
     this->addObject3D(hammer, "hammer");
 
-    loadBSP("start.bsp", "palette.lmp");
-
+    this->loadBSP("start.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -212,8 +212,35 @@ void Game::onUpdate()
 
 void Game::preUpdate()
 {
-    //Mesh3D *hammer= (Mesh3D*) getObjectByLabel("hammer");
+/*
+    Mesh3DPhysic *obj= (Mesh3DPhysic*) getObjectByLabel("cuboPhysicGhost");
+    btPairCachingGhostObject* m_ghostObject = obj->getGhostObject();
 
+    btManifoldArray m_manifoldArray;
+    for (int i = 0; i < m_ghostObject->getOverlappingPairCache()->getNumOverlappingPairs(); i++) {
+        m_manifoldArray.resize(0);
+        btBroadphasePair* collisionPair = &m_ghostObject->getOverlappingPairCache()->getOverlappingPairArray()[i];
+
+        if (collisionPair->m_algorithm)
+            collisionPair->m_algorithm->getAllContactManifolds(m_manifoldArray);
+
+        for (int j = 0; j < m_manifoldArray.size(); j++)
+        {
+            btPersistentManifold* contactManifold = m_manifoldArray[j];
+            if (contactManifold->getNumContacts() > 0) {
+                const btCollisionObject *obA = contactManifold->getBody0();
+                const btCollisionObject *obB = contactManifold->getBody1();
+
+                Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
+                Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
+
+                Logging::getInstance()->getInstance()->Log("contacto entre " + std::to_string(i) + " - " + brkObjectA->getLabel() + " y " + brkObjectB->getLabel());
+
+            }
+
+        }
+    }
+    */
     // Core preUpdate
     Engine::preUpdate();
 

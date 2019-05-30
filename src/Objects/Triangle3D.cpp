@@ -280,8 +280,6 @@ void Triangle::rasterize(Camera3D *cam)
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
-
-
     for (int y = minY ; y < maxY ; y++) {
         int w0 = w0_row;
         int w1 = w1_row;

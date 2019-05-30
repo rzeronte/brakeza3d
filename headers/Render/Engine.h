@@ -19,8 +19,8 @@
 #include "../../src/GUI/GUI_Engine.h"
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
-#include "../../src/Mesh3DPhysic.h"
-#include "../../src/PhysicsDebugDraw.h"
+#include "../Objects/Mesh3DPhysic.h"
+#include "PhysicsDebugDraw.h"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -86,6 +86,7 @@ public:
     PhysicsDebugDraw* debugDraw;
 
     Mesh3D *weapon;
+    Mesh3DPhysic *triggerCamera;
 
     Engine();
 
@@ -109,7 +110,7 @@ public:
     void drawSprites();
     void drawObjectsBillboard();
 
-    void syncPhysicObjects();
+    void updatePhysicObjects();
 
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();
@@ -133,6 +134,12 @@ public:
 
     void setWeapon(Mesh3D *weapon);
     void updateWeaponPosition();
+
+    bool test(btCollisionWorld* collisionWorld);
+    bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+
+    btManifoldArray m_manifoldArray;
+    btScalar m_maxPenetrationDepth = 0.2;
 
 };
 

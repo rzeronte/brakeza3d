@@ -52,9 +52,14 @@ Camera3D::Camera3D()
 
     capsule = new btCapsuleShape(1.55f, 4.0f);
     m_ghostObject->setCollisionShape(capsule);
-    m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+    m_ghostObject->setUserPointer(this);
+
+    //m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+    //m_ghostObject->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
 
     charCon = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
+
+    setLabel("Camera");
 }
 
 float Camera3D::getNearDistance()

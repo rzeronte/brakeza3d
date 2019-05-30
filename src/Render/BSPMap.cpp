@@ -14,6 +14,8 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
 
+extern Engine *brakeza3D;
+
 BSPMap::BSPMap()
 {
     bsp = NULL;
@@ -41,6 +43,7 @@ BSPMap::BSPMap()
 
     this->entities = new entity_t[MAX_BSP_ENTITIES];
     this->n_entities = 0;
+    this->setLabel("BSPMap");
 
 }
 
@@ -307,6 +310,34 @@ bool BSPMap::InitializeLightmaps()
     }
 }
 
+void BSPMap::createMesh3DPhysicFromHulls()
+{
+    int numHulls = this->getNumHulls();
+
+    for (int m = 1; m < numHulls; m++) {
+        bsphull_t *h = this->getHull(m);
+
+        Mesh3DPhysic *mesh = new Mesh3DPhysic();
+        mesh->setPosition(Vertex3D::zero());
+        mesh->setEnabled(false);
+
+        for (int surface = h->firstsurf; surface < h->firstsurf + h->numsurf ; surface++) {
+
+            const int offset = this->surface_triangles[surface].offset;
+            const int num = this->surface_triangles[surface].num;
+
+            for (int i = offset; i < offset+num; i++) {
+                mesh->model_triangles[mesh->n_triangles] = this->model_triangles[i];
+                mesh->n_triangles++;
+            }
+        }
+
+        //mesh->makeRigidBody(0.0f, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->dynamicsWorld, true);
+        mesh->makeGhostBody(brakeza3D->camera, brakeza3D->dynamicsWorld, true);
+        brakeza3D->addObject3D(mesh, "hull_" + std::to_string(m)) ;
+    }
+}
+
 void BSPMap::InitializeEntities()
 {
     char *e = getEntities();
@@ -318,12 +349,77 @@ void BSPMap::InitializeEntities()
         exit(-1);
     }
 
-    /*for (int i = 0; i < this->n_entities; i++) {
-        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
-        for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
-            Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
+    // Create Objects3D from BSP Entities
+    for (int i = 0 ; i < brakeza3D->bsp_map->n_entities ; i++) {
+        if (brakeza3D->bsp_map->hasEntityAttribute(i, "classname")) {
+            char *classname = brakeza3D->bsp_map->getEntityValue(i, "classname");
+            if (brakeza3D->bsp_map->hasEntityAttribute(i, "origin")) {
+                char *value = brakeza3D->bsp_map->getEntityValue(i, "origin");
+                Vertex3D pos = brakeza3D->bsp_map->parsePositionFromEntityAttribute(value);
+
+                Object3D *o = new Object3D();
+                o->setEnabled(true);
+                o->setPosition( pos );
+                o->setDrawBillboard(true);
+
+                // light
+                if (!strcmp(classname, "light")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT);
+                }
+
+                // item_health
+                if (!strcmp(classname, "item_health")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_ITEM_HEALTH);
+                }
+
+                // weapon wildcard
+                std::string s1(classname);
+                if (s1.find("weapon") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
+                    o->getBillboard()->width = 50.f;
+                }
+
+                // monster wildcard
+                std::string s2(classname);
+                if (s2.find("monster") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_MONSTER_GENERIC);
+                }
+
+                // armor wildcard
+                std::string s3(classname);
+                if (s2.find("armor") != std::string::npos) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_SHIELD_GENERIC);
+                }
+
+                // info_player_start
+                if (!strcmp(classname, "info_player_start") ||
+                    !strcmp(classname, "info_player_coop") ||
+                    !strcmp(classname, "info_player_deathmatch")
+                        ) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_PLAYER_START);
+                }
+
+                // info teleport destination
+                if (!strcmp(classname, "info_teleport_destination")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_TELEPORT_DESTINATION);
+                }
+
+                // light_flame_large_yellow
+                if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch")
+                        ) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHT_FLAME);
+                }
+
+                // func_button
+                if (!strcmp(classname, "func_button")) {
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_FUNC_BUTTON);
+                }
+
+                o->setLabel("BSPEntity_" +  std::to_string(i));
+                brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) );
+            }
         }
-    }*/
+    }
 }
 
 void BSPMap::bindTrianglesLightmaps()
@@ -611,7 +707,7 @@ void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurface
     this->bspRigidBody->setContactProcessingThreshold(BT_LARGE_FLOAT);
     this->bspRigidBody->setCcdMotionThreshold(.5);
     this->bspRigidBody->setCcdSweptSphereRadius(.5);
-
+    this->bspRigidBody->setUserPointer(this);
     dynamicsWorld->addRigidBody(this->bspRigidBody);
 
 }
