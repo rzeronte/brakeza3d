@@ -9,26 +9,20 @@
 #include "Mesh3D.h"
 
 
-class Mesh3DPhysic: public Mesh3D {
+class Mesh3DBody: public Mesh3D {
 public:
-    Mesh3DPhysic();
+    Mesh3DBody();
 
     void integrate();
     btRigidBody* getRigidBody() { return m_body; }
     btCollisionObject* getCollider() { return m_collider; }
     void disableRotation() { m_disableRotation = true ; }
 
-    btRigidBody* makeRigidBody(float mass, std::vector<Mesh3DPhysic *> &, Camera3D *cam, btDiscreteDynamicsWorld*,  bool useObjectSpace);
-    btRigidBody* makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld*,  bool useObjectSpace);
-    static bool CheckGhost(btPairCachingGhostObject* Ghost);
-
-    btPairCachingGhostObject* getGhostObject() { return m_ghostObject; };
+    btRigidBody* makeRigidBody(float mass, std::vector<Mesh3DBody *> &, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     btRigidBody* getRigidObject() { return m_body; };
 
-    float mass = 10.f;
-
+    float mass;
     btRigidBody* m_body;
-    btPairCachingGhostObject *m_ghostObject;
 
 private:
 

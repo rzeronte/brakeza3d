@@ -19,8 +19,6 @@ void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, cons
 
     if ( cam->frustum->isPointInFrustum(a) && cam->frustum->isPointInFrustum(b) ) {
         Drawable::drawVector3D(Vector3D(a, b), cam, Color::red());
-        Drawable::drawVertex(a, cam, Color::red());
-        Drawable::drawVertex(b, cam, Color::red());
     }
 }
 

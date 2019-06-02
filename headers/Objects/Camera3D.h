@@ -34,8 +34,7 @@ public:
     Vector3D velocity;
 
     btPairCachingGhostObject *m_ghostObject;
-    btKinematicCharacterController* charCon;
-    btConvexShape* capsule;
+    btKinematicCharacterController* kinematicController;
 
     Camera3D();
 

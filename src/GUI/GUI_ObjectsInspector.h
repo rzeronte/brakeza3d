@@ -43,7 +43,7 @@ public:
                 std::string rotation_text = "Rotation##" + std::to_string(i);
                 std::string shadow_text = "Shadow##" + std::to_string(i);
 
-                if (ImGui::CollapsingHeader(header_text.c_str(), i)) {
+                if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
                     if (ImGui::TreeNode( position_text.c_str() )) {
                         ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->getPosition()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);

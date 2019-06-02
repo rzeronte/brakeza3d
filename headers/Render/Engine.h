@@ -19,10 +19,24 @@
 #include "../../src/GUI/GUI_Engine.h"
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
-#include "../Objects/Mesh3DPhysic.h"
+#include "../Objects/Mesh3DBody.h"
 #include "PhysicsDebugDraw.h"
+#include "../Objects/Mesh3DGhost.h"
 
 #include <btBulletDynamicsCommon.h>
+
+enum collisionGroups
+{
+    DefaultFilter = 1,
+    StaticFilter = 2,
+    KinematicFilter = 4,
+    DebrisFilter = 8,
+    SensorTrigger = 16,
+    CharacterFilter = 32,
+    CameraTrigger = 64,
+    BSPHullTrigger = 128,
+    AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
+} ;
 
 class Engine {
 public:
@@ -41,7 +55,7 @@ public:
     // Objetos 3D
     Object3D **gameObjects;
 
-    std::vector<Mesh3DPhysic *> meshPhysics;
+    std::vector<Mesh3DBody *> meshPhysics;
 
     int numberGameObjects;
 
@@ -86,7 +100,7 @@ public:
     PhysicsDebugDraw* debugDraw;
 
     Mesh3D *weapon;
-    Mesh3DPhysic *triggerCamera;
+    Mesh3DGhost *triggerCamera;
 
     Engine();
 
@@ -135,11 +149,9 @@ public:
     void setWeapon(Mesh3D *weapon);
     void updateWeaponPosition();
 
-    bool test(btCollisionWorld* collisionWorld);
+    void processPairsCollisions();
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 
-    btManifoldArray m_manifoldArray;
-    btScalar m_maxPenetrationDepth = 0.2;
 
 };
 

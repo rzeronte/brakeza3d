@@ -3,8 +3,8 @@ project(brakeda3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -137,9 +137,9 @@ add_executable(brakeda3d
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
         src/GUI/GUI_Camera.h
-        src/Objects/Mesh3DPhysic.cpp
-        headers/Objects/Mesh3DPhysic.h
-        src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h)
+        src/Objects/Mesh3DBody.cpp
+        headers/Objects/Mesh3DBody.h
+        src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h src/Objects/Mesh3DGhost.cpp headers/Objects/Mesh3DGhost.h)
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}

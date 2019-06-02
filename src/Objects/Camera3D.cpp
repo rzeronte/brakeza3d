@@ -44,21 +44,17 @@ Camera3D::Camera3D()
 
     // Bullet Physics
     btTransform startTransform;
-    startTransform.setIdentity ();
+    startTransform.setIdentity();
     startTransform.setOrigin (btVector3(0, 0, 0));
 
     m_ghostObject = new btPairCachingGhostObject();
     m_ghostObject->setWorldTransform(startTransform);
 
-    capsule = new btCapsuleShape(1.55f, 4.0f);
+    btConvexShape* capsule = new btCapsuleShape(1.55f, 4.0f);
     m_ghostObject->setCollisionShape(capsule);
     m_ghostObject->setUserPointer(this);
 
-    //m_ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
-    //m_ghostObject->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
-
-    charCon = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
-
+    kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
     setLabel("Camera");
 }
 
@@ -239,8 +235,8 @@ void Camera3D::limitPitch()
 
 void Camera3D::Jump()
 {
-    if( charCon->onGround() ) {
-        charCon->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
+    if( kinematicController->onGround() ) {
+        kinematicController->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
     }
 }
 

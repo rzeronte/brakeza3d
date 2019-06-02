@@ -33,6 +33,7 @@ Mesh3D::Mesh3D()
     this->numberLightPoints = 0;
 
     shadowCaster = false;
+    bsp_entity_index = -1;
 }
 
 bool Mesh3D::loadOBJBlender(const char *name)
@@ -283,4 +284,12 @@ bool Mesh3D::isShadowCaster() const {
 
 void Mesh3D::setShadowCaster(bool shadow_caster) {
     Mesh3D::shadowCaster = shadow_caster;
+}
+
+int Mesh3D::getBspEntityIndex() const {
+    return bsp_entity_index;
+}
+
+void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
+    bsp_entity_index = bspEntityIndex;
 }

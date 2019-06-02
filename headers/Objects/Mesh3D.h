@@ -10,8 +10,8 @@
 #include "Object3D.h"
 #include "LightPoint3D.h"
 
-#define MAX_MODEL_TRIANGLES 100000
-#define MAX_VERTEX_MODEL 100000
+#define MAX_MODEL_TRIANGLES 10000
+#define MAX_VERTEX_MODEL 10000
 #define MAX_MESH_TEXTURES 100
 
 class Mesh3D : public Object3D {
@@ -33,6 +33,7 @@ public:
     int numberLightPoints;
 
     bool shadowCaster;
+    int bsp_entity_index;
 
     bool isShadowCaster() const;
     void setShadowCaster(bool shadow_caster);
@@ -49,6 +50,10 @@ public:
     void draw(Camera3D *);
     void shadowMapping(LightPoint3D *);
     void setLightPoints(LightPoint3D **lightPoint, int);
+
+    int getBspEntityIndex() const;
+
+    void setBspEntityIndex(int bspEntityIndex);
 };
 
 

@@ -35,6 +35,7 @@ public:
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
         const float lod_sensibility = 0;
+        const float range_test_sensibility = 0.1;
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
@@ -125,7 +126,6 @@ public:
                     ImGui::EndMenu();
                 }
                 if (ImGui::BeginMenu("Lightning")) {
-                    ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
                     if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
                         ImGui::DragScalar("Generations", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                         ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
@@ -153,11 +153,13 @@ public:
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
+                ImGui::Separator();
+                ImGui::Checkbox("Show weapon", &EngineSetup::getInstance()->SHOW_WEAPON);
                 ImGui::EndMenu();
             }
 
             if (ImGui::BeginMenu("Developers")) {
-                ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+                ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 

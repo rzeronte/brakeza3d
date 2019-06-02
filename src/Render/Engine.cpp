@@ -19,6 +19,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
+#include "../../headers/Objects/Mesh3DGhost.h"
 
 Engine::Engine()
 {
@@ -53,8 +54,6 @@ Engine::Engine()
     fps = 0;
 
     this->initPhysics();
-
-
 }
 
 bool Engine::initWindow()
@@ -150,8 +149,8 @@ void Engine::initPhysics()
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     this->overlappingPairCache = new btDbvtBroadphase();
 
-    btVector3 worldMin(-1000,-1000,-1000);
-    btVector3 worldMax(1000,1000,1000);
+    btVector3 worldMin(-500,-500,-500);
+    btVector3 worldMax(500,500,500);
     btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);
     this->overlappingPairCache = sweepBP;
 
@@ -166,33 +165,23 @@ void Engine::initPhysics()
 
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
-    this->camera->charCon->setGravity( dynamicsWorld->getGravity() );
+    this->camera->kinematicController->setGravity(dynamicsWorld->getGravity() );
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
-    this->dynamicsWorld->addAction(this->camera->charCon);
+    this->dynamicsWorld->addAction(this->camera->kinematicController);
 
     this->dynamicsWorld->setDebugDrawer(debugDraw);
-    this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+        this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
-    this->triggerCamera = new Mesh3DPhysic();
+    /// trigger for detect collision between player and other triggers
+    this->triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel("triggerCamera");
     triggerCamera->setEnabled(true);
     triggerCamera->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triggerCamera->setPosition(*camera->getPosition());
-
-    // triggerCamera
-    btTransform trans;
-    trans.setIdentity();
-    Vertex3D pos = *this->camera->getPosition();
-    trans.setOrigin(btVector3(52, 2, 65));
-    triggerCamera->getGhostObject()->setCollisionShape(camera->charCon->getGhostObject()->getCollisionShape());
-    triggerCamera->getGhostObject()->setWorldTransform(trans);
-
+    triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
-    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::SensorTrigger);
-
-
-    //dynamicsWorld->setInternalTickCallback(myTickCallback);
+    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
 }
 
 void Engine::drawGUI()
@@ -244,6 +233,8 @@ void Engine::onStart()
 
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
+
+
 }
 
 void Engine::preUpdate()
@@ -259,41 +250,41 @@ void Engine::preUpdate()
     }
 }
 
-void Engine::postUpdate() {
+void Engine::postUpdate()
+{
     // update collider forces
     camera->UpdateVelocity();
 
     // update deltaTime
     EngineBuffers::getInstance()->updateTimer();
 
-    // set visibles surfaces
-    if (this->bsp_map) {
-        this->bsp_map->PhysicsLeafVisibleSet(camera, this->dynamicsWorld);
-    }
+    this->processPairsCollisions();
 
     Vertex3D vel = Engine::camera->velocity.getComponent();
 
     btVector3 bulletVelocity = btVector3(vel.x, vel.y, vel.z);
 
-    if (this->camera->charCon->onGround()) {
+    if (this->camera->kinematicController->onGround()) {
         bulletVelocity = btVector3(vel.x, vel.y, vel.z);
     } else {
         bulletVelocity = btVector3(vel.x, vel.y, vel.z) / EngineSetup::getInstance()->AIR_RESISTANCE;
     }
 
+    this->camera->kinematicController->setWalkDirection(bulletVelocity);
 
-    this->camera->charCon->setWalkDirection(bulletVelocity);
     Vertex3D finalVelocity;
     if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        dynamicsWorld->stepSimulation(EngineBuffers::getInstance()->deltaTime, 5);
+        dynamicsWorld->stepSimulation(EngineBuffers::getInstance()->getDeltaTime(), 1);
 
         // Physics for meshes
         this->updatePhysicObjects();
-        btTransform trans = this->camera->charCon->getGhostObject()->getWorldTransform();
+        btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
 
         btVector3 pos = trans.getOrigin();
         float BSP_YOffset = 1;
+        // El offset es porqué nuestros ojos deberian estar por encima del punto central
+        // de la cápsula que hemos utilizando. De lo contrario colocaríamos en el centro del mismo la cámara.
         finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());
     } else {
         finalVelocity = this->camera->velocity.vertex2;
@@ -301,107 +292,70 @@ void Engine::postUpdate() {
 
     this->camera->setPosition(finalVelocity);
     this->cameraUpdate();
-    this->updateWeaponPosition();
 
-    this->test(this->dynamicsWorld);
+    if (EngineSetup::getInstance()->SHOW_WEAPON) {
+        this->getWeapon()->setEnabled(true);
+        this->updateWeaponPosition();
+    } else {
+        this->getWeapon()->setEnabled(false);
+    }
+}
 
-
+void Engine::processPairsCollisions()
+{
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
-    Logging::getInstance()->getInstance()->Log("getNumManifolds: " + std::to_string(numManifolds));
     for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-        const btCollisionObject *obA = contactManifold->getBody0();
-        const btCollisionObject *obB = contactManifold->getBody1();
-
-        Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
-        Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
         if (contactManifold->getNumContacts() > 0) {
             const btCollisionObject *obA = contactManifold->getBody0();
             const btCollisionObject *obB = contactManifold->getBody1();
 
-            Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
-            Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
+            Mesh3D *brkObjectA = (Mesh3D *) obA->getUserPointer();
+            Mesh3D *brkObjectB = (Mesh3D *) obB->getUserPointer();
 
-            Logging::getInstance()->getInstance()->Log("contacto entre " + std::to_string(i) + " - " + brkObjectA->getLabel() + " y " + brkObjectB->getLabel());
+            if (brkObjectB->getLabel().find("hull") != std::string::npos) {
+                int entityIndex = brkObjectB->getBspEntityIndex();
 
-        }
-    }
+                /*
+                Logging::getInstance()->getInstance()->Log( "EntityId:" + std::to_string(entityIndex) );
+                Logging::getInstance()->getInstance()->Log( "classname:" + std::string(bsp_map->getEntityValue(entityIndex, "classname")) );
+                Logging::getInstance()->getInstance()->Log( "model:" + std::string(bsp_map->getEntityValue(entityIndex, "model")) );
+                Logging::getInstance()->getInstance()->Log( "target:" + std::string(bsp_map->getEntityValue(entityIndex, "target")) );
+                 */
 
-    /*if (Mesh3DPhysic::CheckGhost( camera->charCon->getGhostObject()) ) {
-        Logging::getInstance()->getInstance()->Log("paez que si");
-    }*/
-    /*btGhostObject *m_ghostObject = this->camera->charCon->getGhostObject();
+                if (strlen(bsp_map->getEntityValue(entityIndex, "target")) > 0) {
+                    int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
+                    if (targetEntityId >= 0) {
+                        //Logging::getInstance()->getInstance()->Log( "encontrada entidad para el target:" + std::string(bsp_map->getEntityValue(targetEntityId, "origin")));
 
-    for (int i = 0; i < m_ghostObject->getNumOverlappingObjects(); i++) {
-        btCollisionObject *obj = m_ghostObject->getOverlappingObject(i);
-        Object3D *brkObjectA = (Object3D *) obj->getUserPointer();
-        Logging::getInstance()->getInstance()->Log("contacto n: " + std::to_string(i) + "player y " + brkObjectA->getLabel());
+                        if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
+                            char *value = bsp_map->getEntityValue(targetEntityId, "origin");
+                            char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
+                            Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
 
-    }*/
+                            float BSP_YOffset = -5;
+                            float BSP_ZOffset = 0;
 
-    /*btPairCachingGhostObject *m_ghostObject = this->camera->charCon->getGhostObject();
+                            int angleInt = atoi( std::string(angle).c_str() );
+                            camera->yaw   = 90-angleInt;
+                            camera->pitch = 0;
+                            camera->roll  = 0;
 
-    btVector3 minAabb, maxAabb;
-    btCollisionShape* m_convexShape = camera->charCon->getGhostObject()->getCollisionShape();
-    m_convexShape->getAabb(m_ghostObject->getWorldTransform(), minAabb, maxAabb);
-    dynamicsWorld->getBroadphase()->setAabb(m_ghostObject->getBroadphaseHandle(),
-                                            minAabb,
-                                            maxAabb,
-                                            dynamicsWorld->getDispatcher());
+                            btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
 
-    dynamicsWorld->getDispatcher()->dispatchAllCollisionPairs(m_ghostObject->getOverlappingPairCache(), dynamicsWorld->getDispatchInfo(), dynamicsWorld->getDispatcher());
+                            btTransform initialTransform;
+                            initialTransform.setOrigin( btPos );
 
-    int numOverlappingObjects = this->camera->charCon->getGhostObject()->getNumOverlappingObjects();
-    Logging::getInstance()->getInstance()->Log("getNumManifolds: " + std::to_string(numOverlappingObjects));
+                            this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
+                            Logging::getInstance()->getInstance()->Log( "teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
 
-    for (int i = 0; i < this->camera->charCon->getGhostObject()->getNumOverlappingObjects(); i++) {
-        btBroadphasePair *collisionPair = &this->camera->charCon->getGhostObject()->getOverlappingPairCache()->getOverlappingPairArray()[i];
-        btCollisionObject *co = this->camera->charCon->getGhostObject()->getOverlappingObject(i);
-        Object3D *brkObjectA = (Object3D *) co->getUserPointer();
-        Logging::getInstance()->getInstance()->Log("contacto player y " + brkObjectA->getLabel());
-
-
-    }*/
-
-    /*btPairCachingGhostObject *m_ghostObject = this->camera->charCon->getGhostObject();
-
-    btVector3 minAabb, maxAabb;
-    btCollisionShape* m_convexShape = camera->charCon->getGhostObject()->getCollisionShape();
-    m_convexShape->getAabb(m_ghostObject->getWorldTransform(), minAabb, maxAabb);
-    dynamicsWorld->getBroadphase()->setAabb(m_ghostObject->getBroadphaseHandle(),
-                                            minAabb,
-                                            maxAabb,
-                                            dynamicsWorld->getDispatcher());
-
-    dynamicsWorld->getDispatcher()->dispatchAllCollisionPairs(m_ghostObject->getOverlappingPairCache(), dynamicsWorld->getDispatchInfo(), dynamicsWorld->getDispatcher());
-
-    btManifoldArray m_manifoldArray;
-    for (int i = 0; i < m_ghostObject->getOverlappingPairCache()->getNumOverlappingPairs(); i++) {
-        m_manifoldArray.resize(0);
-        btBroadphasePair* collisionPair = &m_ghostObject->getOverlappingPairCache()->getOverlappingPairArray()[i];
-
-        if (collisionPair->m_algorithm)
-            collisionPair->m_algorithm->getAllContactManifolds(m_manifoldArray);
-
-        for (int j = 0; j < m_manifoldArray.size(); j++)
-        {
-            btPersistentManifold* contactManifold = m_manifoldArray[j];
-            if (contactManifold->getNumContacts() > 0) {
-                const btCollisionObject *obA = contactManifold->getBody0();
-                const btCollisionObject *obB = contactManifold->getBody1();
-
-                Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
-                Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
-
-                Logging::getInstance()->getInstance()->Log("contacto entre " + std::to_string(i) + " - " + brkObjectA->getLabel() + " y " + brkObjectB->getLabel());
-
+                        }
+                    }
+                }
             }
 
+            //Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
         }
-    }*/
-
-    if (this->bsp_map) {
-        this->dynamicsWorld->removeCollisionObject(this->bsp_map->bspRigidBody);
     }
 }
 
@@ -622,36 +576,18 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     this->bsp_map = new BSPMap();
 
     this->bsp_map->Initialize(bspFilename, paletteFilename);
-    this->bsp_map->InitializeSurfaces();
-    this->bsp_map->InitializeTextures();
-    this->bsp_map->InitializeLightmaps();
-    this->bsp_map->InitializeTriangles();
-    this->bsp_map->bindTrianglesLightmaps();
-    this->bsp_map->InitializeEntities();
-    this->bsp_map->createMesh3DPhysicFromHulls();
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
-    this->camera->setPosition(bspOriginalPosition);
-
     btTransform initialTransform;
     initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
 
-    this->camera->charCon->getGhostObject()->setWorldTransform(initialTransform);
-
-
+    this->camera->setPosition(bspOriginalPosition);
+    this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
 }
 
 void Engine::processFPS()
 {
-    /*countedFrames2++;
-
-    if (timerCurrent == 0) {
-        fps = countedFrames2;
-        countedFrames2 = 0;
-        Logging::getInstance()->Log(std::to_string(fps), "INFO");
-    }*/
-
     fps = countedFrames / ( EngineBuffers::getInstance()->engineTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
@@ -659,17 +595,23 @@ void Engine::processFPS()
 
 void Engine::updatePhysicObjects()
 {
-    std::vector<Mesh3DPhysic *>::iterator it;
+    std::vector<Mesh3DBody *>::iterator it;
     for (it = meshPhysics.begin() ; it!= meshPhysics.end() ; it++) {
         (*it)->integrate( );
     }
 
     // Sync position
-    btTransform t ;
-    t = camera->charCon->getGhostObject()->getWorldTransform();
-    Vertex3D pos = *this->camera->getPosition();
-    btVector3 origin = t.getOrigin();
-    t.setOrigin(btVector3(origin.x(), origin.y()-0.5, origin.z()));
+    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+    Vertex3D p = *camera->getPosition();
+
+    float farDist = 1;
+    p.x = p.x + direction.x * farDist;
+    p.y = p.y + direction.y * farDist;
+    p.z = p.z + direction.z * farDist;
+
+    btTransform t;
+    t.setIdentity();
+    t.setOrigin(btVector3(p.x, p.y, p.z));
     triggerCamera->getGhostObject()->setWorldTransform(t);
 }
 
@@ -699,63 +641,6 @@ void Engine::updateWeaponPosition()
     p.z = p.z + direction.z * farDist + (up.z * YOffset) - (right.z * XOffset);
 
     this->getWeapon()->setPosition(p);
-}
-
-bool Engine::test(btCollisionWorld* collisionWorld)
-{
-    // Here we must refresh the overlapping paircache as the penetrating movement itself or the
-    // previous recovery iteration might have used setWorldTransform and pushed us into an object
-    // that is not in the previous cache contents from the last timestep, as will happen if we
-    // are pushed into a new AABB overlap. Unhandled this means the next convex sweep gets stuck.
-    //
-    // Do this by calling the broadphase's setAabb with the moved AABB, this will update the broadphase
-    // paircache and the ghostobject's internal paircache at the same time.    /BW
-
-    btVector3 minAabb, maxAabb;
-    camera->charCon->getGhostObject()->getCollisionShape()->getAabb(camera->charCon->getGhostObject()->getWorldTransform(), minAabb, maxAabb);
-    collisionWorld->getBroadphase()->setAabb(camera->charCon->getGhostObject()->getBroadphaseHandle(),
-                                             minAabb,
-                                             maxAabb,
-                                             collisionWorld->getDispatcher());
-
-    bool penetration = false;
-
-    collisionWorld->getDispatcher()->dispatchAllCollisionPairs(camera->charCon->getGhostObject()->getOverlappingPairCache(), collisionWorld->getDispatchInfo(), collisionWorld->getDispatcher());
-
-
-    for (int i = 0; i < camera->charCon->getGhostObject()->getOverlappingPairCache()->getNumOverlappingPairs(); i++)
-    {
-        m_manifoldArray.resize(0);
-
-        btBroadphasePair* collisionPair = &camera->charCon->getGhostObject()->getOverlappingPairCache()->getOverlappingPairArray()[i];
-
-        btCollisionObject* obj0 = static_cast<btCollisionObject*>(collisionPair->m_pProxy0->m_clientObject);
-        btCollisionObject* obj1 = static_cast<btCollisionObject*>(collisionPair->m_pProxy1->m_clientObject);
-
-        if ((obj0 && !obj0->hasContactResponse()) || (obj1 && !obj1->hasContactResponse()))
-            continue;
-
-        if (!needsCollision(obj0, obj1))
-            continue;
-
-        if (collisionPair->m_algorithm)
-            collisionPair->m_algorithm->getAllContactManifolds(m_manifoldArray);
-
-        for (int j = 0; j < m_manifoldArray.size(); j++)
-        {
-
-            btPersistentManifold* manifold = m_manifoldArray[j];
-            btScalar directionSign = manifold->getBody0() == camera->charCon->getGhostObject() ? btScalar(-1.0) : btScalar(1.0);
-
-            if (manifold->getNumContacts() > 0) {
-                Logging::getInstance()->Log("contacto");
-
-            }
-            //manifold->clearManifold();
-        }
-    }
-
-    return penetration;
 }
 
 bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)

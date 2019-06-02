@@ -13,6 +13,7 @@
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
+#include "../../headers/Objects/Mesh3DGhost.h"
 
 extern Engine *brakeza3D;
 
@@ -61,6 +62,15 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
         printf("[ERROR] Map::Initialize() Error loading palette\n");
         return false;
     }
+
+    this->InitializeSurfaces();
+    this->InitializeTextures();
+    this->InitializeLightmaps();
+    this->InitializeTriangles();
+    this->bindTrianglesLightmaps();
+    this->InitializeEntities();                // necesario para getStartMapPosition
+    this->createMesh3DPhysicFromHulls();
+    this->bulletPhysics();
 
     return true;
 }
@@ -121,11 +131,17 @@ bool BSPMap::LoadBSP(const char *filename)
     return true;
 }
 
+void BSPMap::init()
+{
+
+}
+
 // Calculate primitive surfaces
 bool BSPMap::InitializeSurfaces(void)
 {
     // Allocate memory for the visible surfaces array
     visibleSurfaces = new int [this->getNumSurfaceLists()];
+    allSurfaces = new int [this->getNumSurfaceLists()];
 
     // Calculate max number of edges per surface
     numMaxEdgesPerSurface = 0;
@@ -317,9 +333,16 @@ void BSPMap::createMesh3DPhysicFromHulls()
     for (int m = 1; m < numHulls; m++) {
         bsphull_t *h = this->getHull(m);
 
-        Mesh3DPhysic *mesh = new Mesh3DPhysic();
+        Mesh3DGhost *mesh = new Mesh3DGhost();
         mesh->setPosition(Vertex3D::zero());
         mesh->setEnabled(false);
+
+        // Buscamos entidades que figuren con el modelo
+        std::string targetName = "*" + std::to_string(m);
+        int entityIndex = this->getIndexOfFirstEntityByModel( targetName.c_str() );
+        if (entityIndex >= 1 ) {
+            mesh->setBspEntityIndex(entityIndex);
+        }
 
         for (int surface = h->firstsurf; surface < h->firstsurf + h->numsurf ; surface++) {
 
@@ -332,7 +355,6 @@ void BSPMap::createMesh3DPhysicFromHulls()
             }
         }
 
-        //mesh->makeRigidBody(0.0f, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->dynamicsWorld, true);
         mesh->makeGhostBody(brakeza3D->camera, brakeza3D->dynamicsWorld, true);
         brakeza3D->addObject3D(mesh, "hull_" + std::to_string(m)) ;
     }
@@ -349,6 +371,12 @@ void BSPMap::InitializeEntities()
         exit(-1);
     }
 
+    for (int i = 0; i < this->n_entities; i++) {
+        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
+        for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
+            Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
+        }
+    }
     // Create Objects3D from BSP Entities
     for (int i = 0 ; i < brakeza3D->bsp_map->n_entities ; i++) {
         if (brakeza3D->bsp_map->hasEntityAttribute(i, "classname")) {
@@ -395,7 +423,7 @@ void BSPMap::InitializeEntities()
                 if (!strcmp(classname, "info_player_start") ||
                     !strcmp(classname, "info_player_coop") ||
                     !strcmp(classname, "info_player_deathmatch")
-                        ) {
+                ) {
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_PLAYER_START);
                 }
 
@@ -611,19 +639,55 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     }
 }
 
-void BSPMap::CheckPhysicsSurfaceTriangles(int surface, Camera3D *cam)
+void BSPMap::bulletPhysics()
 {
-    const int offset = this->surface_triangles[surface].offset;
-    const int num    = this->surface_triangles[surface].num;
+    int numVisibleSurfaces = 0;
 
-    for (int i = offset; i < offset+num; i++) {
-        //this->model_triangles[i].updateVertexSpaces(cam);
-        btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
-        btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
-        btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
-
-        this->bspBtMesh.addTriangle(a, b, c, false);
+    bsphull_t *bspHull = getHull(0);
+    int firstSurface = bspHull->firstsurf;
+    int lastSurface = firstSurface + bspHull->numsurf;
+    for (int k = firstSurface; k < lastSurface; k++) {
+        allSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
     }
+
+    this->numAllSurfaces = numVisibleSurfaces;
+    this->bspBtMesh = new btTriangleMesh();
+
+    Logging::getInstance()->Log("numAllSurfaces: " + std::to_string(numAllSurfaces));
+    for (int surface = 0; surface < numAllSurfaces; surface++) {
+        const int offset = surface_triangles[surface].offset;
+        const int num = surface_triangles[surface].num;
+
+        for (int i = offset; i < offset+num; i++){
+            model_triangles[i].drawWireframe();
+            this->model_triangles[i].updateVertexSpaces(brakeza3D->camera);
+            btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
+            btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
+            btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
+
+            this->bspBtMesh.addTriangle(a, b, c, false);
+        }
+    }
+
+    btTransform trans;
+    trans.setIdentity();
+    btVector3 localInertia(0, 0, 0);
+
+    this->bspBtShape = new btBvhTriangleMeshShape(&bspBtMesh, true, true);
+    this->bspBtShape->calculateLocalInertia(0, localInertia);
+
+    Vertex3D pos = *this->getPosition();
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+    this->motionState = new btDefaultMotionState(trans);
+    btRigidBody::btRigidBodyConstructionInfo info(0.0f, motionState, bspBtShape, localInertia) ;
+    this->bspRigidBody = new btRigidBody(info);
+
+    this->bspRigidBody->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    this->bspRigidBody->setCcdMotionThreshold(.5);
+    this->bspRigidBody->setCcdSweptSphereRadius(.5);
+    this->bspRigidBody->setUserPointer(this);
+    brakeza3D->dynamicsWorld->addRigidBody(this->bspRigidBody);
 }
 
 void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
@@ -671,45 +735,6 @@ void BSPMap::DrawHulls(Camera3D *cam)
             this->DrawSurfaceTriangles(i, cam);
         }
     }
-}
-
-// Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::PhysicsLeafVisibleSet(Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld)
-{
-    CheckPhysicsSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam, dynamicsWorld);
-}
-
-void BSPMap::CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld)
-{
-    this->bspBtMesh = new btTriangleMesh();
-
-    for (int i = 0; i < numVisibleSurfaces; i++) {
-        CheckPhysicsSurfaceTriangles(visibleSurfaces[i], cam);
-    }
-
-    btVector3 localInertia(0, 0, 0);
-
-    this->bspBtShape = new btBvhTriangleMeshShape(&bspBtMesh, true, true);
-
-    this->bspBtShape->calculateLocalInertia(0, localInertia);
-
-    btTransform trans;
-    trans.setIdentity();
-
-    Vertex3D pos = *this->getPosition();
-
-    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
-
-    this->motionState = new btDefaultMotionState(trans);
-    btRigidBody::btRigidBodyConstructionInfo info(0.0f, motionState, bspBtShape, localInertia) ;
-    this->bspRigidBody = new btRigidBody(info);
-
-    this->bspRigidBody->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    this->bspRigidBody->setCcdMotionThreshold(.5);
-    this->bspRigidBody->setCcdSweptSphereRadius(.5);
-    this->bspRigidBody->setUserPointer(this);
-    dynamicsWorld->addRigidBody(this->bspRigidBody);
-
 }
 
 // Draw the visible surfaces
@@ -849,11 +874,39 @@ char *BSPMap::getEntityValue(int entityId, char *key)
     }
 }
 
-int BSPMap::getFirstEntityByClassname(char *value)
+int BSPMap::getIndexOfFirstEntityByClassname(char *value)
 {
     for (int i = 0 ; i <= this->n_entities ; i++) {
         if (hasEntityAttribute(i, "classname")) {
             char *v = getEntityValue(i, "classname");
+            if (!strcmp(v, value)) {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+int  BSPMap::getIndexOfFirstEntityByTargetname(const char *value)
+{
+    for (int i = 0 ; i <= this->n_entities ; i++) {
+        if (hasEntityAttribute(i, "targetname")) {
+            char *v = getEntityValue(i, "targetname");
+            if (!strcmp(v, value)) {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+int BSPMap::getIndexOfFirstEntityByModel(const char *value)
+{
+    for (int i = 0 ; i <= this->n_entities ; i++) {
+        if (hasEntityAttribute(i, "model")) {
+            char *v = getEntityValue(i, "model");
             if (!strcmp(v, value)) {
                 return i;
             }
@@ -888,7 +941,7 @@ Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line)
 
 Vertex3D BSPMap::getStartMapPosition()
 {
-    int entityID = this->getFirstEntityByClassname("info_player_start");
+    int entityID = this->getIndexOfFirstEntityByClassname("info_player_start");
 
     if (entityID != -1) {
         char *value = getEntityValue(entityID, "origin");

@@ -31,7 +31,7 @@ public:
     Vertex3D down     = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 10.f, 0);
+    Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
     int SCREEN_WIDTH = 320;
@@ -126,10 +126,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 0.2f;
+    float WALKING_SPEED     = 0.9f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 0.15f;
+    float STRAFE_SPEED      = 0.9f;
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.50;
@@ -142,11 +142,11 @@ public:
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -10, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -50, 0);
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 4829;
+    float TESTING = 0;
 
     int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
@@ -171,6 +171,10 @@ public:
     float LIGHTNING_OFFSET_REDUCTION = 5.f;
     float LIGHTNING_PROBABILITY_BRANCH = 1.5;
     float LIGHTNING_SEGMENT_SHIFT = 0.7;
+
+    //WEAPON
+
+    bool SHOW_WEAPON = true;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

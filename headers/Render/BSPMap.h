@@ -10,8 +10,8 @@
 #define ANIM_TEX_FRAMES	32
 
 #define MAX_MAP_TEXTURES 500
-#define MAX_BSP_TRIANGLES 50000
-#define MAX_BSP_ENTITIES 10000
+#define MAX_BSP_TRIANGLES 250000
+#define MAX_BSP_ENTITIES 1000
 
 // BSP entries
 struct dentry_t
@@ -182,15 +182,20 @@ private:
     int LoadFile(const char *filename, void **bufferptr);
     bool LoadPalette(const char *filename);
     bool LoadBSP(const char *filename);
+    void init();
 
     primdesc_t *surfacePrimitives;	// Array of surface primitives, contains vertex and texture information for every surface
     unsigned int *textureObjNames;	// Array of available texture object names, the name is a number
     int *visibleSurfaces;			// Array of visible surfaces, contains an index to the surfaces
 
+
     int numMaxEdgesPerSurface;      // Max edges per surface
     int numVisibleSurfacesFrame = 0;
 
 public:
+
+    int *allSurfaces;			    // Array of full surfaces, contains an index to the surfaces
+    int numAllSurfaces = 0;
 
     float scale = 0.1f;
     dheader_t *header;
@@ -359,18 +364,15 @@ public:
 
     void DrawSurface(int surface, Camera3D *camera);
     void DrawSurfaceTriangles(int surface, Camera3D *camera);
-    void CheckPhysicsSurfaceTriangles(int surface, Camera3D *camera);
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
-    void CheckPhysicsSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam, btDiscreteDynamicsWorld* dynamicsWorld);
 
     void DrawLeafVisibleSet(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);
 
-    void PhysicsLeafVisibleSet(Camera3D *Cam, btDiscreteDynamicsWorld* dynamicsWorld);
-
     bspleaf_t *FindLeaf(Camera3D *camera);
     void setVisibleSet(bspleaf_t *pLeaf);
+    void bulletPhysics();
 
     bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
     void createTrianglesForSurface(int surface);
@@ -378,7 +380,11 @@ public:
     // Get array of edges, contains the index to the start and end vertices in the pV
     char *getEntities() { return (char *) &bsp[header->entities.offset]; }
     char *parseEntities (char *s);
-    int  getFirstEntityByClassname(char *);
+
+    int getIndexOfFirstEntityByClassname(char *);
+    int getIndexOfFirstEntityByTargetname(const char *);
+    int getIndexOfFirstEntityByModel(const char *);
+
     char *getEntityValue(int entityId, char *);
     bool hasEntityAttribute(int entityId, char *);
     Vertex3D parsePositionFromEntityAttribute(char *);

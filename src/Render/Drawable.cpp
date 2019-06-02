@@ -59,7 +59,8 @@ void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, 
     }
 }
 
-void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
+void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color)
+{
 
     Vertex3D A = Transforms::cameraSpace(V, cam);
     A = Transforms::NDCSpace(A, cam);
