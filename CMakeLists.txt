@@ -139,7 +139,8 @@ add_executable(brakeda3d
         src/GUI/GUI_Camera.h
         src/Objects/Mesh3DBody.cpp
         headers/Objects/Mesh3DBody.h
-        src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h src/Objects/Mesh3DGhost.cpp headers/Objects/Mesh3DGhost.h)
+        src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h src/Objects/Mesh3DGhost.cpp headers/Objects/Mesh3DGhost.h
+        )
 
 target_link_libraries(brakeda3d ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
