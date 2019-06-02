@@ -17,6 +17,9 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
+#include "../../headers/Render/Engine.h"
+
+extern Engine *brakeza3D;
 
 Camera3D::Camera3D()
 {
@@ -243,16 +246,4 @@ void Camera3D::Jump()
 void Camera3D::Fire()
 {
 
-}
-
-void Camera3D::HeadBob()
-{
-    // head bob
-    if (abs(this->velocity.vertex2.x) > 0.5 || abs(this->velocity.vertex2.z) > 0.5 ) {
-        this->getPosition()->y+= sin( Maths::degreesToRadians(this->head_vertical) );
-        this->head_vertical+=32;
-        if (this->head_vertical > 360) {
-            this->head_vertical = 0;
-        }
-    }
 }

@@ -98,6 +98,7 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Capture BSP data", &EngineSetup::getInstance()->DEBUG_BSP_MODE);
                 ImGui::Checkbox("Capture Mesh data", &EngineSetup::getInstance()->DEBUG_MESH_MODE);
+                ImGui::Checkbox("Collision objects", &EngineSetup::getInstance()->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();
             }
 

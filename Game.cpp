@@ -160,16 +160,29 @@ void Game::onStart()
     this->addObject3D(cuboPhysicGhost, "cuboPhysicGhost");
     */
 
-    // weapon
-    Mesh3D *hammer = new Mesh3D();
+    // hammer
+    Weapon3D *hammer = new Weapon3D();
     hammer->setScale(0.011);
+    hammer->setup(1, -0.5, 0.75);
     hammer->setEnabled(true);
     hammer->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     hammer->loadOBJBlender("../assets/models/hammer.obj");
     this->setWeapon(hammer);
     this->addObject3D(hammer, "hammer");
 
-    this->loadBSP("start.bsp", "palette.lmp");
+    // shotgun
+    Weapon3D *shotgun = new Weapon3D();
+    shotgun->setScale(1);
+    shotgun->setup(0.6, -0.5, 0.75);
+    shotgun->setPosition(Vertex3D(50, -5, 47));
+    shotgun->setEnabled(true);
+    shotgun->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    shotgun->loadOBJBlender("../assets/models/shotgun.obj");
+    this->setWeapon(shotgun);
+    this->addObject3D(shotgun, "shotgun");
+
+    // bsp
+    this->loadBSP("e1m1.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()

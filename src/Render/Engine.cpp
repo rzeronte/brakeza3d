@@ -85,7 +85,7 @@ bool Engine::initWindow()
             return false;
         } else {
             gl_context = SDL_GL_CreateContext(window);
-            EngineBuffers::getInstance()->setScreenSurface(SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0));
+            screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0);
             renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -129,9 +129,10 @@ void Engine::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        Logging::getInstance()->Log("Loading ../fonts/arial.ttf.", "INFO");
+        std::string pathFont = "../fonts/alterebro-pixel-font.ttf";
+        Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
-        font = TTF_OpenFont( "../fonts/arial.ttf", EngineSetup::getInstance()->TEXT_3D_SIZE );
+        font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
         if(!font) {
             Logging::getInstance()->Log(TTF_GetError(), "INFO");
         }
@@ -194,6 +195,7 @@ void Engine::drawGUI()
     gui_engine->setFps(fps);
 
     gui_engine->draw(
+        getDeltaTime(),
         finish,
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
@@ -205,7 +207,7 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
-    EngineBuffers::getInstance()->flipVideoBuffer( EngineBuffers::getInstance()->getScreenSurface() );
+    EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -215,7 +217,7 @@ void Engine::windowUpdate()
 
     SDL_GL_SwapWindow(window);
 
-    SDL_Texture *engine = SDL_CreateTextureFromSurface(renderer, EngineBuffers::getInstance()->getScreenSurface());
+    SDL_Texture *engine = SDL_CreateTextureFromSurface(renderer, screenSurface);
     SDL_RenderCopy(renderer, engine, NULL, NULL);
 
     SDL_DestroyTexture(engine);
@@ -227,14 +229,12 @@ void Engine::windowUpdate()
 
 void Engine::onStart()
 {
-    EngineBuffers::getInstance()->engineTimer.start();
+    this->engineTimer.start();
 
     Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
 
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
-
-
 }
 
 void Engine::preUpdate()
@@ -256,7 +256,7 @@ void Engine::postUpdate()
     camera->UpdateVelocity();
 
     // update deltaTime
-    EngineBuffers::getInstance()->updateTimer();
+    this->updateTimer();
 
     this->processPairsCollisions();
 
@@ -275,7 +275,7 @@ void Engine::postUpdate()
     Vertex3D finalVelocity;
     if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        dynamicsWorld->stepSimulation(EngineBuffers::getInstance()->getDeltaTime(), 1);
+        dynamicsWorld->stepSimulation(getDeltaTime(), 1);
 
         // Physics for meshes
         this->updatePhysicObjects();
@@ -284,7 +284,7 @@ void Engine::postUpdate()
         btVector3 pos = trans.getOrigin();
         float BSP_YOffset = 1;
         // El offset es porqué nuestros ojos deberian estar por encima del punto central
-        // de la cápsula que hemos utilizando. De lo contrario colocaríamos en el centro del mismo la cámara.
+        // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.
         finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());
     } else {
         finalVelocity = this->camera->velocity.vertex2;
@@ -295,7 +295,7 @@ void Engine::postUpdate()
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
         this->getWeapon()->setEnabled(true);
-        this->updateWeaponPosition();
+        this->getWeapon()->updateWeaponPosition( camera );
     } else {
         this->getWeapon()->setEnabled(false);
     }
@@ -304,6 +304,7 @@ void Engine::postUpdate()
 void Engine::processPairsCollisions()
 {
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+
     for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
         if (contactManifold->getNumContacts() > 0) {
@@ -322,11 +323,13 @@ void Engine::processPairsCollisions()
                 Logging::getInstance()->getInstance()->Log( "model:" + std::string(bsp_map->getEntityValue(entityIndex, "model")) );
                 Logging::getInstance()->getInstance()->Log( "target:" + std::string(bsp_map->getEntityValue(entityIndex, "target")) );
                  */
+                char *classname = bsp_map->getEntityValue(entityIndex, "classname");
 
-                if (strlen(bsp_map->getEntityValue(entityIndex, "target")) > 0) {
+                if (!strcmp(classname, "trigger_teleport")) {
+
                     int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
                     if (targetEntityId >= 0) {
-                        //Logging::getInstance()->getInstance()->Log( "encontrada entidad para el target:" + std::string(bsp_map->getEntityValue(targetEntityId, "origin")));
+                        Logging::getInstance()->getInstance()->Log( "Founded entity:" + std::string(bsp_map->getEntityValue(entityIndex, "target")));
 
                         if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
                             char *value = bsp_map->getEntityValue(targetEntityId, "origin");
@@ -348,13 +351,22 @@ void Engine::processPairsCollisions()
 
                             this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
                             Logging::getInstance()->getInstance()->Log( "teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
-
                         }
                     }
                 }
+
+                if (!strcmp(classname, "trigger_multiple")) {
+                    // check for message response
+                    if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
+                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
+                    }
+
+                }
             }
 
-            //Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+            }
         }
     }
 }
@@ -531,7 +543,7 @@ void Engine::drawObjectsBillboard()
 
 void Engine::onEnd()
 {
-    EngineBuffers::getInstance()->engineTimer.stop();
+    this->engineTimer.stop();
 }
 
 void Engine::addObject3D(Object3D *obj, std::string label)
@@ -568,7 +580,7 @@ void Engine::Close()
 
 Timer* Engine::getTimer()
 {
-    return &EngineSetup::getInstance()->engineTimer;
+    return &this->engineTimer;
 }
 
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
@@ -579,8 +591,15 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
+
+    int entityID = this->bsp_map->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
     initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
+    char *angle = bsp_map->getEntityValue(entityID, "angle");
+    int angleInt = atoi( std::string(angle).c_str() );
+    camera->yaw   = 90-angleInt;
+    camera->pitch = 0;
+    camera->roll  = 0;
 
     this->camera->setPosition(bspOriginalPosition);
     this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
@@ -588,7 +607,7 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
 void Engine::processFPS()
 {
-    fps = countedFrames / ( EngineBuffers::getInstance()->engineTimer.getTicks() / 1000.f );
+    fps = countedFrames / ( this->engineTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
 }
@@ -615,37 +634,34 @@ void Engine::updatePhysicObjects()
     triggerCamera->getGhostObject()->setWorldTransform(t);
 }
 
-Mesh3D *Engine::getWeapon() const {
+Weapon3D *Engine::getWeapon() const {
     return weapon;
 }
 
-void Engine::setWeapon(Mesh3D *weapon) {
+void Engine::setWeapon(Weapon3D *weapon) {
     Engine::weapon = weapon;
 }
 
-void Engine::updateWeaponPosition()
-{
-    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
-    Vertex3D up        = camera->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    Vertex3D right     = camera->getRotation().getTranspose() * EngineSetup::getInstance()->right;
-
-    float farDist = 1;
-    float YOffset = 0.5;
-    float XOffset = -0.5;
-
-    this->getWeapon()->setRotation(camera->getRotation().getTranspose());
-
-    Vertex3D p = *camera->getPosition();
-    p.x = p.x + direction.x * farDist + (up.x * YOffset) - (right.x * XOffset);
-    p.y = p.y + direction.y * farDist + (up.y * YOffset) - (right.y * XOffset);
-    p.z = p.z + direction.z * farDist + (up.z * YOffset) - (right.z * XOffset);
-
-    this->getWeapon()->setPosition(p);
-}
 
 bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
 {
     bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
     collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup & body0->getBroadphaseHandle()->m_collisionFilterMask);
     return collides;
+}
+
+void Engine::updateTimer()
+{
+    //Logging::getInstance()->Log("updateTimer: " + std::to_string(this->engineTimer.getTicks()));
+
+    this->current_ticks = this->engineTimer.getTicks();
+    this->deltaTime = this->current_ticks - this->last_ticks;
+    this->last_ticks = this->current_ticks;
+
+    this->timerCurrent += this->deltaTime/1000.f;
+}
+
+float Engine::getDeltaTime()
+{
+    return this->deltaTime/1000;
 }

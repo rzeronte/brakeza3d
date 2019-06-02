@@ -28,7 +28,7 @@ struct ExampleAppLog
         ScrollToBottom = true;
     }
 
-    void    Draw(const char* title, bool* p_open = NULL)
+    void Draw(const char* title, bool* p_open = NULL)
     {
         ImGui::SetNextWindowPos(ImVec2(260, 650), ImGuiSetCond_Once);
         ImGui::SetNextWindowSize(ImVec2(1170, 200), ImGuiSetCond_Once);

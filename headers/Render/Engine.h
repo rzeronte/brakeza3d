@@ -22,6 +22,7 @@
 #include "../Objects/Mesh3DBody.h"
 #include "PhysicsDebugDraw.h"
 #include "../Objects/Mesh3DGhost.h"
+#include "../Objects/Weapon3D.h"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -44,6 +45,8 @@ public:
     // Window y Renderer principal
     SDL_Window *window;
     SDL_Renderer *renderer;
+
+    SDL_Surface  *screenSurface;
 
     // Eventos SDL
     SDL_Event e;
@@ -99,8 +102,15 @@ public:
 
     PhysicsDebugDraw* debugDraw;
 
-    Mesh3D *weapon;
+    Weapon3D *weapon;
     Mesh3DGhost *triggerCamera;
+
+    // Timer
+    Timer engineTimer;
+    float deltaTime = 0;
+    float last_ticks = 0;
+    float current_ticks = 0;
+    float timerCurrent = 0;
 
     Engine();
 
@@ -144,13 +154,16 @@ public:
 
     Object3D* getObjectByLabel(std::string label);
 
-    Mesh3D *getWeapon() const;
+    Weapon3D *getWeapon() const;
 
-    void setWeapon(Mesh3D *weapon);
-    void updateWeaponPosition();
+    void setWeapon(Weapon3D *weapon);
 
     void processPairsCollisions();
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+
+    void updateTimer();
+    float getDeltaTime();
+
 
 
 };

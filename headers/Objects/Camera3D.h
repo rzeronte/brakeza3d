@@ -19,8 +19,6 @@ public:
     float pitch = 0;		// Neck angle
     float roll  = 0;
 
-    float head_vertical = 180;
-
     float speed;		// Speed along heading
     float strafe;       // Speed along heading
     float jump;         // Speed along vertical
@@ -64,8 +62,6 @@ public:
     void Jump();
     void limitPitch();
     void Fire();
-
-    void HeadBob();
 
     void consoleInfo();
 

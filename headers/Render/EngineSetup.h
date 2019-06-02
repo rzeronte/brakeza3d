@@ -34,8 +34,8 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 320;
-    int SCREEN_HEIGHT = 240;
+    int SCREEN_WIDTH = 250;
+    int SCREEN_HEIGHT = 250;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
@@ -121,7 +121,7 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 3.f;
     float BILLBOARD_HEIGHT_DEFAULT = 3.f;
 
-    int TEXT_3D_SIZE = 25;
+    int TEXT_3D_SIZE = 50;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
@@ -153,7 +153,7 @@ public:
 
     bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_INTENSITY = 0.015;
+    float LIGHTMAPPING_INTENSITY = 0.025f;
 
     bool DRAW_BSP_HULLS = false;
 
@@ -175,6 +175,8 @@ public:
     //WEAPON
 
     bool SHOW_WEAPON = true;
+
+    bool LOG_COLLISION_OBJECTS = true;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

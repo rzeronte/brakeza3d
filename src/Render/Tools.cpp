@@ -161,6 +161,31 @@ bool Tools::fileExists(const std::string& name)
     return false;
 }
 
+void Tools::getTextAndRectCenter(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color)
+{
+    int renderer_w, renderer_h;
+    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
+
+    int text_width;
+    int text_height;
+
+    SDL_Surface *surface;
+    SDL_Color textColor = {(Uint8) Tools::getRedValueFromColor(color), (Uint8) Tools::getGreenValueFromColor(color), (Uint8) Tools::getBlueValueFromColor(color), 0};
+
+    surface = TTF_RenderText_Solid(font, text, textColor);
+    *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    text_width = surface->w;
+    text_height = surface->h;
+    SDL_FreeSurface(surface);
+
+    rect->x = renderer_w/2 - text_width/2;
+    rect->y = renderer_h/2 - 50; // 20 = offset estético
+
+    rect->w = text_width;
+    rect->h = text_height;
+}
+
 void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color)
 {
     int text_width;
@@ -189,6 +214,16 @@ void Tools::writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint
     Tools::getTextAndRect(renderer, x, y, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color);
 
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+}
+
+void Tools::writeTextCenter(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string text)
+{
+    SDL_Texture *textTexture;
+    SDL_Rect textRect;
+    Tools::getTextAndRectCenter(renderer, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color);
+
+    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+
 }
 
 void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, Vertex3D v, Uint32 color, std::string text)

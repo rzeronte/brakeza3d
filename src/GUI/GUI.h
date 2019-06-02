@@ -5,12 +5,11 @@
 #ifndef SDL2_3D_ENGINE_GUI_H
 #define SDL2_3D_ENGINE_GUI_H
 
-#include "../../headers/Render/EngineSetup.h"
-
 class GUI {
 public:
 
     GUI() {}
+
 
     virtual void draw() {}
 };

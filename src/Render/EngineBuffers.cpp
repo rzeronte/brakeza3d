@@ -103,30 +103,3 @@ void EngineBuffers::consoleInfo()
 
     Logging::getInstance()->Log( info, "INFO" );
 }
-
-SDL_Surface *EngineBuffers::getScreenSurface() const
-{
-    return screenSurface;
-}
-
-void EngineBuffers::setScreenSurface(SDL_Surface *screenSurface)
-{
-    EngineBuffers::screenSurface = screenSurface;
-}
-
-
-void EngineBuffers::updateTimer()
-{
-    //Logging::getInstance()->Log("updateTimer: " + std::to_string(this->engineTimer.getTicks()));
-
-    this->current_ticks = this->engineTimer.getTicks();
-    this->deltaTime = this->current_ticks - this->last_ticks;
-    this->last_ticks = this->current_ticks;
-
-    this->timerCurrent += this->deltaTime/1000.f;
-}
-
-float EngineBuffers::getDeltaTime()
-{
-    return this->deltaTime/1000;
-}

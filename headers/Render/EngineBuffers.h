@@ -35,13 +35,6 @@ public:
 
     SDL_Surface  *screenSurface;
 
-    // Timer
-    Timer engineTimer;
-    float deltaTime = 0;
-    float last_ticks = 0;
-    float current_ticks = 0;
-    float timerCurrent = 0;
-
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);
     float getDepthBuffer(int i);
@@ -57,14 +50,8 @@ public:
 
     void resetBenchmarkValues();
 
-    void updateTimer();
-
     void consoleInfo();
 
-    SDL_Surface *getScreenSurface() const;
-    void setScreenSurface(SDL_Surface *screenSurface);
-
-    float getDeltaTime();
 };
 
 #endif

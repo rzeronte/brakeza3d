@@ -15,6 +15,8 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 
+extern Engine *brakeza3D;
+
 Triangle::Triangle()
 {
     texture = NULL;
@@ -490,11 +492,19 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->getTexture() != NULL) {
         if (getTexture()->animated && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
-            texu = (texu/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*EngineBuffers::getInstance()->timerCurrent+texv/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
-            texv = (texv/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*EngineBuffers::getInstance()->timerCurrent+texu/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texu = (texu/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*brakeza3D->timerCurrent+texv/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texv = (texv/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*brakeza3D->timerCurrent+texu/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
         }
 
         pixelColor = this->processPixelTexture(texu, texv);
+
+        Uint8 red, green, blue, alpha;
+        SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &red, &green, &blue, &alpha);
+
+        if (alpha == 0) {
+            return;
+        }
+
         if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
             pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv);
         }
@@ -569,12 +579,7 @@ Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
 
     return Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
 
-    /*Uint8 red, green, blue, alpha;
-    SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &red, &green, &blue, &alpha);
-
-    if (alpha == 0) {
-        return;
-    }*/
+    /**/
 }
 
 Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v)
