@@ -20,8 +20,16 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Bullet REQUIRED)
+find_package(OpenCL REQUIRED)
 
-include_directories(${SDL2_dir} ${SDL2_image_dir} ${SDL2_ttf_dir} ${OPENGL_INCLUDE_DIRS} ${BULLET_INCLUDE_DIRS})
+include_directories(
+        ${SDL2_dir}
+        ${SDL2_image_dir}
+        ${SDL2_ttf_dir}
+        ${OPENGL_INCLUDE_DIRS}
+        ${BULLET_INCLUDE_DIRS}
+        ${OpenCL_INCLUDE_DIRS}
+        )
 
 add_executable(brakeda3d
         main.cpp
@@ -142,6 +150,11 @@ add_executable(brakeda3d
         src/Render/PhysicsDebugDraw.cpp headers/Render/PhysicsDebugDraw.h src/Objects/Mesh3DGhost.cpp headers/Objects/Mesh3DGhost.h
         )
 
-target_link_libraries(brakeda3d ${SDL2_LIBRARY}
+target_link_libraries(brakeda3d
+        ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
-        ${SDLTTF_LIBRARY} ${OPENGL_LIBRARIES} ${BULLET_LIBRARIES})
+        ${SDLTTF_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${BULLET_LIBRARIES}
+        ${OpenCL_LIBRARY}
+)
