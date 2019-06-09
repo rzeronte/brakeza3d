@@ -33,6 +33,7 @@ public:
     static Uint32 readSurfacePixel(SDL_Surface *surface, int x, int y);
 
     static bool fileExists(const std::string &name);
+    static char* readFile(const std::string &name, size_t &source_size);
 
     static bool isPixelInWindow(int x, int y);
 

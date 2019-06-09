@@ -10,6 +10,7 @@
 #include "Object3D.h"
 #include "LightPoint3D.h"
 #include <list>
+#include "../Render/EngineBuffers.h"
 
 class Triangle {
 
@@ -47,6 +48,8 @@ public:
     float tex_v1_Ac_z,   tex_v2_Bc_z,   tex_v3_Cc_z;
     float persp_correct_Az, persp_correct_Bz, persp_correct_Cz;
 
+    int maxX, minX, maxY, minY;
+
     Object3D *parent;
 
     Vertex3D normal;
@@ -66,10 +69,12 @@ public:
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
     void updateVertexSpaces(Camera3D *cam);
+    void updateUVCache();
 
     bool isBackFaceCulling(Camera3D *cam);
 
-    void rasterize(Camera3D *cam);
+    void hardwareRasterizer(Camera3D *cam);
+    void softwareRasterizer(Camera3D *cam);
 
     Vertex3D getNormal();
     void     updateNormal();
@@ -111,6 +116,8 @@ public:
     int getLOD();
     float processFullArea();
     void getBoundingBox(int &minX, int &minY, int &maxX, int &maxY);
+
+    OCLTriangle getOpenCL();
 
     int getId() const;
     void setId(int id);

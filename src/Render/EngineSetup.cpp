@@ -15,7 +15,4 @@ EngineSetup* EngineSetup::getInstance()
 
 EngineSetup::EngineSetup()
 {
-    this->engineTimer.start();
-    this->current_ticks = 0;
-    this->timerCurrent = 0;
 }

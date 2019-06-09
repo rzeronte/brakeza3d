@@ -20,6 +20,9 @@
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
 #include "../../headers/Objects/Mesh3DGhost.h"
+#include <OpenCL/opencl.h>
+
+#define MAX_SOURCE_SIZE (0x100000)
 
 Engine::Engine()
 {
@@ -54,6 +57,7 @@ Engine::Engine()
     fps = 0;
 
     this->initPhysics();
+    this->initOpenCL();
 }
 
 bool Engine::initWindow()
@@ -185,6 +189,201 @@ void Engine::initPhysics()
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
 }
 
+void Engine::initOpenCL()
+{
+    //checkOpenCL();
+
+    size_t valueSize;
+    char* value;
+    cl_context_properties properties[3];
+
+    platform_id = NULL;
+    device_id = NULL;
+
+    ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms) ;
+    if (ret != CL_SUCCESS) {
+        printf("Unable to get platform_id");
+    }
+
+    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
+    if (ret != CL_SUCCESS) {
+        printf("Unable to get device_id");
+    }
+
+    // print device name
+    clGetDeviceInfo(device_id, CL_DEVICE_NAME, 0, NULL, &valueSize);
+    value = (char*) malloc(valueSize);
+    clGetDeviceInfo(device_id, CL_DEVICE_NAME, valueSize, value, NULL);
+    printf("OpenCL Device: %s\n",value);
+    free(value);
+
+    properties[0]= CL_CONTEXT_PLATFORM;
+    properties[1]= (cl_context_properties) platform_id;
+    properties[2]= 0;
+
+    // Create an OpenCL context
+    context = clCreateContext( properties, 1, &device_id, NULL, NULL, &ret);
+
+    command_queue = clCreateCommandQueue(context, device_id, NULL, &ret);
+
+    // Load the kernel source code into the array source_str
+    size_t source_size;
+    char *source_str = Tools::readFile("../opencl.cl", source_size);
+
+    // Create a program from the kernel source
+    program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
+
+    // Build the program
+    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+
+    // Create the OpenCL kernel
+    kernel = clCreateKernel(program, "rasterizer", &ret);
+
+    opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
+    opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
+
+    OpenCLInfo();
+}
+
+
+void Engine::processOpenCL()
+{
+    int LIST_SIZE = EngineBuffers::getInstance()->numOCLTriangles;
+
+    if (LIST_SIZE == 0) return;
+
+    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(OCLTriangle), NULL, &ret);
+
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, LIST_SIZE * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+
+    clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_depth);
+
+    size_t global_item_size = LIST_SIZE; // Process the entire lists
+    size_t local_item_size = 1;          // Divide work items into groups of 64
+
+    ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+
+    //clEnqueueReadBuffer(command_queue, opencl_buffer_video, CL_TRUE, 0, EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32), EngineBuffers::getInstance()->videoBuffer, 0, NULL, NULL);
+
+    char buffer[10240];
+    clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+    if (strlen(buffer) > 0 ) {
+        Logging::getInstance()->getInstance()->Log( buffer );
+    }
+}
+
+void Engine::OpenCLInfo()
+{
+    int i, j;
+    char* value;
+    size_t valueSize;
+    cl_uint platformCount;
+    cl_platform_id* platforms;
+    cl_uint deviceCount;
+    cl_device_id* devices;
+    cl_uint maxComputeUnits;
+
+    // get all platforms
+    clGetPlatformIDs(0, NULL, &platformCount);
+    platforms = (cl_platform_id*) malloc(sizeof(cl_platform_id) * platformCount);
+    clGetPlatformIDs(platformCount, platforms, NULL);
+
+    for (i = 0; i < platformCount; i++) {
+
+        // get all devices
+        clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &deviceCount);
+        devices = (cl_device_id*) malloc(sizeof(cl_device_id) * deviceCount);
+        clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, deviceCount, devices, NULL);
+
+        // for each device print critical attributes
+        for (j = 0; j < deviceCount; j++) {
+
+            // print device name
+            clGetDeviceInfo(devices[j], CL_DEVICE_NAME, 0, NULL, &valueSize);
+            value = (char*) malloc(valueSize);
+            clGetDeviceInfo(devices[j], CL_DEVICE_NAME, valueSize, value, NULL);
+            printf("%d. Device: %s\n", j+1, value);
+            free(value);
+
+            // print hardware device version
+            clGetDeviceInfo(devices[j], CL_DEVICE_VERSION, 0, NULL, &valueSize);
+            value = (char*) malloc(valueSize);
+            clGetDeviceInfo(devices[j], CL_DEVICE_VERSION, valueSize, value, NULL);
+            printf(" %d.%d Hardware version: %s\n", j+1, 1, value);
+            free(value);
+
+            // print software driver version
+            clGetDeviceInfo(devices[j], CL_DRIVER_VERSION, 0, NULL, &valueSize);
+            value = (char*) malloc(valueSize);
+            clGetDeviceInfo(devices[j], CL_DRIVER_VERSION, valueSize, value, NULL);
+            printf(" %d.%d Software version: %s\n", j+1, 2, value);
+            free(value);
+
+            // print c version supported by compiler for device
+            clGetDeviceInfo(devices[j], CL_DEVICE_OPENCL_C_VERSION, 0, NULL, &valueSize);
+            value = (char*) malloc(valueSize);
+            clGetDeviceInfo(devices[j], CL_DEVICE_OPENCL_C_VERSION, valueSize, value, NULL);
+            printf(" %d.%d OpenCL C version: %s\n", j+1, 3, value);
+            free(value);
+
+            // print parallel compute units
+            clGetDeviceInfo(devices[j], CL_DEVICE_MAX_COMPUTE_UNITS,
+                            sizeof(maxComputeUnits), &maxComputeUnits, NULL);
+            printf(" %d.%d Parallel compute units: %d\n", j+1, 4, maxComputeUnits);
+
+        }
+
+        free(devices);
+
+    }
+
+    free(platforms);
+}
+
+
+void Engine::testOpenCL()
+{
+    int i;
+    const int LIST_SIZE = 100024000;
+    int *A = (int*)malloc(sizeof(int)*LIST_SIZE);
+    int *B = (int*)malloc(sizeof(int)*LIST_SIZE);
+    for(i = 0; i < LIST_SIZE; i++) {
+        A[i] = i;
+        B[i] = LIST_SIZE - i;
+    }
+
+    // Create memory buffers on the device for each vector
+    cl_mem a_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(int), NULL, &ret);
+    cl_mem b_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(int), NULL, &ret);
+    cl_mem c_mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY,LIST_SIZE * sizeof(int), NULL, &ret);
+
+    Timer *t = new Timer();
+    Timer *ts1 = new Timer();
+    t->start();
+    ts1->start();
+
+    // Copy the lists A and B to their respective memory buffers
+    clEnqueueWriteBuffer(command_queue, a_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), A, 0, NULL, NULL);
+    clEnqueueWriteBuffer(command_queue, b_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), B, 0, NULL, NULL);
+
+    // Set the arguments of the kernel
+    clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
+    clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
+
+    // Execute the OpenCL kernel on the list
+    size_t global_item_size = LIST_SIZE; // Process the entire lists
+    size_t local_item_size = 64; // Divide work items into groups of 64
+    clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+
+    // Read the memory buffer C on the device to the local variable C
+    int *C = (int*)malloc(sizeof(int)*LIST_SIZE);
+    clEnqueueReadBuffer(command_queue, c_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), C, 0, NULL, NULL);
+}
+
 void Engine::drawGUI()
 {
     ImGui::NewFrame();
@@ -205,8 +404,12 @@ void Engine::drawGUI()
     ImGui::Render();
 }
 
-void Engine::windowUpdate()
-{
+void Engine::windowUpdate() {
+    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        this->processOpenCL();
+        EngineBuffers::getInstance()->numOCLTriangles = 0;
+    }
+
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
@@ -303,72 +506,79 @@ void Engine::postUpdate()
 
 void Engine::processPairsCollisions()
 {
-    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
 
-    for (int i = 0; i < numManifolds; i++) {
-        btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-        if (contactManifold->getNumContacts() > 0) {
-            const btCollisionObject *obA = contactManifold->getBody0();
-            const btCollisionObject *obB = contactManifold->getBody1();
+    for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
+        const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
+        Mesh3D *brkObjectB = (Mesh3D *) obj->getUserPointer();
+        if (brkObjectB->getLabel().find("hull") != std::string::npos) {
+            int entityIndex = brkObjectB->getBspEntityIndex();
+            char *classname = bsp_map->getEntityValue(entityIndex, "classname");
 
-            Mesh3D *brkObjectA = (Mesh3D *) obA->getUserPointer();
-            Mesh3D *brkObjectB = (Mesh3D *) obB->getUserPointer();
+            if (!strcmp(classname, "trigger_teleport")) {
+                int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
+                if (targetEntityId >= 0) {
+                    Logging::getInstance()->getInstance()->Log( "Founded entity:" + std::string(bsp_map->getEntityValue(entityIndex, "target")));
 
-            if (brkObjectB->getLabel().find("hull") != std::string::npos) {
-                int entityIndex = brkObjectB->getBspEntityIndex();
+                    if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
+                        char *value = bsp_map->getEntityValue(targetEntityId, "origin");
+                        char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
+                        Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
 
-                /*
-                Logging::getInstance()->getInstance()->Log( "EntityId:" + std::to_string(entityIndex) );
-                Logging::getInstance()->getInstance()->Log( "classname:" + std::string(bsp_map->getEntityValue(entityIndex, "classname")) );
-                Logging::getInstance()->getInstance()->Log( "model:" + std::string(bsp_map->getEntityValue(entityIndex, "model")) );
-                Logging::getInstance()->getInstance()->Log( "target:" + std::string(bsp_map->getEntityValue(entityIndex, "target")) );
-                 */
-                char *classname = bsp_map->getEntityValue(entityIndex, "classname");
+                        float BSP_YOffset = -5;
+                        float BSP_ZOffset = 0;
 
-                if (!strcmp(classname, "trigger_teleport")) {
+                        int angleInt = atoi( std::string(angle).c_str() );
+                        camera->yaw   = 90-angleInt;
+                        camera->pitch = 0;
+                        camera->roll  = 0;
 
-                    int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
-                    if (targetEntityId >= 0) {
-                        Logging::getInstance()->getInstance()->Log( "Founded entity:" + std::string(bsp_map->getEntityValue(entityIndex, "target")));
+                        btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
 
-                        if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
-                            char *value = bsp_map->getEntityValue(targetEntityId, "origin");
-                            char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
-                            Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
+                        btTransform initialTransform;
+                        initialTransform.setOrigin( btPos );
 
-                            float BSP_YOffset = -5;
-                            float BSP_ZOffset = 0;
-
-                            int angleInt = atoi( std::string(angle).c_str() );
-                            camera->yaw   = 90-angleInt;
-                            camera->pitch = 0;
-                            camera->roll  = 0;
-
-                            btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
-
-                            btTransform initialTransform;
-                            initialTransform.setOrigin( btPos );
-
-                            this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
-                            Logging::getInstance()->getInstance()->Log( "teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
-                        }
+                        this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
+                        Logging::getInstance()->getInstance()->Log( "teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
                     }
-                }
-
-                if (!strcmp(classname, "trigger_multiple")) {
-                    // check for message response
-                    if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
-                    }
-
                 }
             }
 
-            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+            if (!strcmp(classname, "func_door")) {
+                Logging::getInstance()->getInstance()->Log( "ros");
+                Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
+            }
+
+            if (!strcmp(classname, "trigger_multiple")) {
+                // check for message response
+                if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
+                    Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
+                }
+            }
+        }
+
+        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+            Logging::getInstance()->getInstance()->Log("Collision between triggerCamera and " + brkObjectB->getLabel());
+        }
+    }
+
+    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+    if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
+        for (int i = 0; i < numManifolds; i++) {
+            btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            if (contactManifold->getNumContacts() > 0) {
+                const btCollisionObject *obA = contactManifold->getBody0();
+                const btCollisionObject *obB = contactManifold->getBody1();
+
+                Mesh3D *brkObjectA = (Mesh3D *) obA->getUserPointer();
+                Mesh3D *brkObjectB = (Mesh3D *) obB->getUserPointer();
+
+                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                    Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+                }
             }
         }
     }
+
 }
 
 void Engine::cameraUpdate()
@@ -390,8 +600,8 @@ void Engine::onUpdate()
         this->objects3DShadowMapping();
     }
 
-    this->drawBSP();
     this->drawMeshes();
+    this->drawBSP();
     this->drawLightPoints();
     this->drawSprites();
     this->drawObjectsBillboard();
@@ -610,6 +820,8 @@ void Engine::processFPS()
     fps = countedFrames / ( this->engineTimer.getTicks() / 1000.f );
     if( fps > 2000000 ) { fps = 0; }
     ++countedFrames;
+
+    Tools::writeText(Engine::renderer, Engine::font, 10, 20, Color::yellow(), "FPS: " + std::to_string(fps) );
 }
 
 void Engine::updatePhysicObjects()

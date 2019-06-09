@@ -69,8 +69,8 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
     this->InitializeTriangles();
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
-    this->createMesh3DAndGhostsFromHulls();
-    this->bulletPhysics();
+    //this->createMesh3DAndGhostsFromHulls();
+    //this->bulletPhysics();
 
     return true;
 }
@@ -691,7 +691,6 @@ void BSPMap::bulletPhysics()
     this->numAllSurfaces = numVisibleSurfaces;
     this->bspBtMesh = new btTriangleMesh();
 
-    Logging::getInstance()->Log("numAllSurfaces: " + std::to_string(numAllSurfaces));
     for (int surface = 0; surface < numAllSurfaces; surface++) {
         const int offset = surface_triangles[surface].offset;
         const int num = surface_triangles[surface].num;

@@ -25,6 +25,8 @@ EngineBuffers::EngineBuffers()
 
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
+    OCLTrianglesBuffer = new OCLTriangle[5000];
+
 }
 
 void EngineBuffers::clearDepthBuffer()
@@ -62,6 +64,12 @@ void EngineBuffers::setVideoBuffer(const int i, Uint32 value)
     videoBuffer[ i ] = value;
 }
 
+void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
+{
+    OCLTrianglesBuffer[numOCLTriangles] = oclt;
+    numOCLTriangles++;
+}
+
 float EngineBuffers::getVideoBuffer(int x, int y)
 {
     return videoBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ];
@@ -80,7 +88,6 @@ void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
 void EngineBuffers::resetBenchmarkValues()
 {
     EngineBuffers::getInstance()->trianglesDrawed = 0;
-    EngineBuffers::getInstance()->pixelesDrawed = 0;
     EngineBuffers::getInstance()->pixelesOutOfWindow = 0;
     EngineBuffers::getInstance()->trianglesOutFrustum = 0;
     EngineBuffers::getInstance()->trianglesHidenByFaceCuling = 0;

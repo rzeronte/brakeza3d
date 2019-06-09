@@ -23,6 +23,8 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 
+#define MAX_SOURCE_SIZE (0x100000)
+
 std::vector<std::string> Tools::split(const std::string &text, char sep) {
     std::vector<std::string> tokens;
     std::size_t start = 0, end = 0;
@@ -159,6 +161,26 @@ bool Tools::fileExists(const std::string& name)
     Logging::getInstance()->Log("File " + name  + " not found", "ERROR");
 
     return false;
+}
+
+char * Tools::readFile(const std::string &name, size_t &source_size)
+{
+    // Load the kernel source code into the array source_str
+    FILE *fp;
+
+    fp = fopen(name.c_str(), "r");
+
+    if (!fp) {
+        Logging::getInstance()->Log("File " + name  + " not can be loaded", "ERROR");
+        return "";
+    }
+    char *file_str = (char*)malloc(MAX_SOURCE_SIZE);
+
+    source_size = fread( file_str, 1, MAX_SOURCE_SIZE, fp);
+
+    fclose( fp );
+    return file_str;
+
 }
 
 void Tools::getTextAndRectCenter(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color)

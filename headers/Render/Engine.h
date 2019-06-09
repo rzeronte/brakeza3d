@@ -25,6 +25,7 @@
 #include "../Objects/Weapon3D.h"
 
 #include <btBulletDynamicsCommon.h>
+#include <OpenCL/opencl.h>
 
 enum collisionGroups
 {
@@ -112,6 +113,21 @@ public:
     float current_ticks = 0;
     float timerCurrent = 0;
 
+    cl_platform_id platform_id;
+    cl_device_id device_id;
+    cl_uint ret_num_devices;
+    cl_uint ret_num_platforms;
+    cl_int ret;
+    cl_context context;
+    cl_program program;
+    cl_kernel kernel;
+
+    cl_mem opencl_buffer_triangles;
+    cl_mem opencl_buffer_depth;
+    cl_mem opencl_buffer_video;
+
+    cl_command_queue command_queue;
+
     Engine();
 
     void Close();
@@ -119,6 +135,8 @@ public:
     bool initWindow();
     void initFontsTTF();
     void initPhysics();
+    void initOpenCL();
+    void OpenCLInfo();
 
     void onStart();
     void onUpdate();
@@ -164,7 +182,8 @@ public:
     void updateTimer();
     float getDeltaTime();
 
-
+    void testOpenCL();
+    void processOpenCL();
 
 };
 

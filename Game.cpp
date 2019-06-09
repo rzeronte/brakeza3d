@@ -90,10 +90,11 @@ void Game::onStart()
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setEnabled(false);
+    triangle->setScale(0.1);
+    triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition(Vertex3D(544.3, -32, 550.200));
-    triangle->setRotation( M3(-90, -45, 0) );
+    triangle->setPosition(Vertex3D(54.3, -0, 47.200));
+    //triangle->setRotation( M3(-90, -45, 0) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
@@ -167,8 +168,8 @@ void Game::onStart()
     hammer->setEnabled(true);
     hammer->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     hammer->loadOBJBlender("../assets/models/hammer.obj");
-    this->setWeapon(hammer);
-    this->addObject3D(hammer, "hammer");
+    //this->setWeapon(hammer);
+    //this->addObject3D(hammer, "hammer");
 
     // shotgun
     Weapon3D *shotgun = new Weapon3D();
@@ -182,7 +183,9 @@ void Game::onStart()
     this->addObject3D(shotgun, "shotgun");
 
     // bsp
-    this->loadBSP("e1m1.bsp", "palette.lmp");
+    this->loadBSP("start.bsp", "palette.lmp");
+
+
 }
 
 void Game::mainLoop()
@@ -223,6 +226,7 @@ void Game::onUpdate()
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
+
 }
 
 void Game::preUpdate()
@@ -230,6 +234,15 @@ void Game::preUpdate()
 
     // Core preUpdate
     Engine::preUpdate();
+
+    /*Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
+    Triangle t = triangle->model_triangles[0];
+    t.updateVertexSpaces(camera);
+    t.processFullArea();
+    EngineBuffers::getInstance()->addOCLTriangle(t.getOpenCL());*/
+
+    //Logging::getInstance()->Log("Original fullArea: " + std::to_string(t.fullArea));
+
 
 }
 

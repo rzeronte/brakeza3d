@@ -46,6 +46,8 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+                ImGui::Checkbox("Hardware", &EngineSetup::getInstance()->RENDER_WITH_HARDWARE);
+                ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
                 ImGui::Checkbox("Solid", &EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID);
@@ -88,8 +90,9 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("StepSimulation", &EngineSetup::getInstance()->BULLET_STEP_SIMULATION);
                 ImGui::Checkbox("Debug Mode", &EngineSetup::getInstance()->BULLET_DEBUG_MODE);
+                ImGui::Checkbox("Check All Pairs", &EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS);
+                ImGui::Separator();
                 ImGui::DragScalar("Radius", ImGuiDataType_Float,  &EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, range_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
-
                 ImGui::EndMenu();
             }
 

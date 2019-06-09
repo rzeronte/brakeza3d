@@ -59,7 +59,10 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
     Cs = Transforms::screenSpace(Cn, cam);
 
     updateNormal();
+}
 
+void Triangle::updateUVCache()
+{
     // lightmap coordinates
     if (getLightmap()->isLightMapped()) {
         light_u1 = Ac.u;
@@ -114,7 +117,6 @@ void Triangle::updateVertexSpaces(Camera3D *cam)
         persp_correct_Bz = 1/Bc.z;
         persp_correct_Cz = 1/Cc.z;
     }
-
 }
 
 void Triangle::updateNormal()
@@ -186,7 +188,12 @@ bool Triangle::draw(Camera3D *cam)
 
     // rasterization
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        this->rasterize(cam);
+        this->updateUVCache();
+        if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+            this->hardwareRasterizer(cam);
+        } else {
+            this->softwareRasterizer(cam);
+        }
     }
 
     // wireframe
@@ -255,7 +262,12 @@ bool Triangle::clipping(Camera3D *cam)
     return false;
 }
 
-void Triangle::rasterize(Camera3D *cam)
+void Triangle::hardwareRasterizer(Camera3D *cam)
+{
+    EngineBuffers::getInstance()->addOCLTriangle(this->getOpenCL());
+}
+
+void Triangle::softwareRasterizer(Camera3D *cam)
 {
     // LOD determination
     this->lod = processLOD();
@@ -263,7 +275,6 @@ void Triangle::rasterize(Camera3D *cam)
     // Full area for get barycentric
     this->processFullArea();
 
-    int maxX, minX, maxY, minY;
     this->getBoundingBox(minX, minY, maxX, maxY);
 
     // Triangle setup
@@ -327,16 +338,17 @@ void Triangle::rasterize(Camera3D *cam)
 
 void Triangle::getBoundingBox(int &minX, int &minY, int &maxX, int &maxY)
 {
-    maxX = (int) std::max(As.x, std::max(Bs.x, Cs.x));
-    minX = (int) std::min(As.x, std::min(Bs.x, Cs.x));
-    maxY = (int) std::max(As.y, std::max(Bs.y, Cs.y));
-    minY = (int) std::min(As.y, std::min(Bs.y, Cs.y));
+    maxX = std::max(As.x, std::max(Bs.x, Cs.x));
+    minX = std::min(As.x, std::min(Bs.x, Cs.x));
+    maxY = std::max(As.y, std::max(Bs.y, Cs.y));
+    minY = std::min(As.y, std::min(Bs.y, Cs.y));
 }
 
 float Triangle::processFullArea()
 {
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;
+
 }
 
 void Triangle::drawWireframe()
@@ -492,8 +504,10 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->getTexture() != NULL) {
         if (getTexture()->animated && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
-            texu = (texu/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*brakeza3D->timerCurrent+texv/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
-            texv = (texv/EngineSetup::getInstance()->LAVA_CLOSENESS+EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED*brakeza3D->timerCurrent+texu/EngineSetup::getInstance()->LAVA_CLOSENESS) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            float cache1 = texu / EngineSetup::getInstance()->LAVA_CLOSENESS;
+            float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
+            texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->timerCurrent + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->timerCurrent + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
         }
 
         pixelColor = this->processPixelTexture(texu, texv);
@@ -510,7 +524,7 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
         }
     }
 
-    if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
+    /*if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
         Vertex3D D;
 
         if (this->numberLightPoints > 0) {
@@ -549,7 +563,7 @@ void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z,
                 }
             }
         }
-    }
+    }*/
 
     EngineBuffers::getInstance()->setDepthBuffer(buffer_index, z);
     EngineBuffers::getInstance()->setVideoBuffer(buffer_index, pixelColor);
@@ -757,4 +771,59 @@ void Triangle::setId(int id) {
 Plane Triangle::plane()
 {
     return Plane(this->Ao, this->Bo, this->Co);
+}
+
+
+OCLTriangle Triangle::getOpenCL()
+{
+    OCLTriangle ot;
+
+    ot.As_x = As.x;
+    ot.As_y = As.y;
+    ot.Bs_x = Bs.x;
+    ot.Bs_y = Bs.y;
+    ot.Cs_x = Cs.x;
+    ot.Cs_y = Cs.y;
+
+    ot.An_x = An.x;
+    ot.An_y = An.y;
+    ot.An_z = An.z;
+    ot.Bn_x = Bn.x;
+    ot.Bn_y = Bn.y;
+    ot.Bn_z = Bn.z;
+    ot.Cn_x = Cn.x;
+    ot.Cn_y = Cn.y;
+    ot.Cn_z = Cn.z;
+
+    ot.persp_correct_Az = persp_correct_Az;
+    ot.persp_correct_Bz = persp_correct_Bz;
+    ot.persp_correct_Cz = persp_correct_Cz;
+
+    ot.tex_u1_Ac_z = tex_u1_Ac_z;
+    ot.tex_u2_Bc_z = tex_u2_Bc_z;
+    ot.tex_u3_Cc_z = tex_u3_Cc_z;
+    ot.tex_v1_Ac_z = tex_v1_Ac_z;
+    ot.tex_v2_Bc_z = tex_v2_Bc_z;
+    ot.tex_v3_Cc_z = tex_v3_Cc_z;
+
+    ot.light_u1_Ac_z = light_u1_Ac_z;
+    ot.light_u2_Bc_z = light_u2_Bc_z;
+    ot.light_u3_Cc_z = light_u3_Cc_z;
+    ot.light_v1_Ac_z = light_v1_Ac_z;
+    ot.light_v2_Bc_z = light_v2_Bc_z;
+    ot.light_v3_Cc_z = light_v3_Cc_z;
+
+    if (getTexture()->animated) {
+        ot.isAnimated = true;
+    } else {
+        ot.isAnimated = false;
+    }
+
+    if (getTexture()->isLightMapped()) {
+        ot.isLightmapped = true;
+    } else {
+        ot.isLightmapped = false;
+    }
+
+    return ot;
 }

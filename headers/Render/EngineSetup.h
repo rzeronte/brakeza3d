@@ -14,11 +14,6 @@ public:
     static EngineSetup* getInstance();
     static EngineSetup* instance;
 
-    Timer engineTimer;
-    float current_ticks;
-    float last_ticks;
-    float timerCurrent;
-
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
     Vertex3D CameraPosition = Vertex3D(1, 1, -5);
@@ -34,14 +29,18 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 250;
-    int SCREEN_HEIGHT = 250;
+    int SCREEN_WIDTH = 640;
+    int SCREEN_HEIGHT = 480;
+
+    int RESOLUTION = SCREEN_WIDTH * SCREEN_HEIGHT;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
     const int ENGINE_MAX_GAMEOBJECTS = 1000;
 
     const float EPSILON = 0.00001f;
+
+    bool RENDER_WITH_HARDWARE = false;
 
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;
@@ -137,8 +136,9 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     bool BULLET_DEBUG_MODE = false;
+    bool BULLET_CHECK_ALL_PAIRS = true;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
@@ -176,7 +176,9 @@ public:
 
     bool SHOW_WEAPON = true;
 
-    bool LOG_COLLISION_OBJECTS = true;
+    bool LOG_COLLISION_OBJECTS = false;
+
+    int MAX_FRAGMENTS = 500000;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H
