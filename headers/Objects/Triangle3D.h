@@ -88,7 +88,7 @@ public:
 
     void shadowMapping(LightPoint3D *lp);
 
-    void processPixel(int, int, float, float, float, float, float, float, float, float);
+    void processPixel(int, int, int, float, float, float, float, float, float, float, float);
     Uint32 processPixelTexture(float, float);
     Uint32 processPixelLightmap(Uint32, float, float);
 

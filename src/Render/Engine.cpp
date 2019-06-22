@@ -825,7 +825,7 @@ void Engine::hiddenSurfaceRemoval()
         numVisibleTriangles++;
     }
 
-    Logging::getInstance()->Log("frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
+    //Logging::getInstance()->Log("frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
 }
 
 void Engine::handleTrianglesToTiles()

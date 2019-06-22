@@ -35,7 +35,7 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
     // la textura se carga bajo demanda
     texture = NULL;
     this->lod = 1;
-    
+
     lightmap = new Texture();
 }
 
@@ -143,7 +143,7 @@ void Triangle::shadowMapping(LightPoint3D *lp)
     if ( !lp->cam->frustum->isPointInFrustum(Ao) &&
          !lp->cam->frustum->isPointInFrustum(Bo) &&
          !lp->cam->frustum->isPointInFrustum(Co)
-     ) {
+            ) {
         return;
     }
 
@@ -279,6 +279,15 @@ void Triangle::softwareRasterizer(Camera3D *cam)
                 gamma = 1 - alpha - theta;
 
                 depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
+
+                const int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+
+                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER &&
+                    depth >= EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )
+                        ) {
+                    continue;
+                }
+
                 affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
                 texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
                 texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
@@ -287,6 +296,7 @@ void Triangle::softwareRasterizer(Camera3D *cam)
                 lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
 
                 processPixel(
+                        bufferIndex,
                         x, y,
                         alpha, theta, gamma,
                         depth,
@@ -413,9 +423,9 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 
         // Creamos un nuevo vértice que representa v4 (el nuevo punto creado) en el triángulo original
         Vertex3D D = Vertex3D(
-            alpha * A.x + theta * B.x + gamma * C.x,
-            alpha * A.y + theta * B.y + gamma * C.y,
-            alpha * A.z + theta * B.z + gamma * C.z
+                alpha * A.x + theta * B.x + gamma * C.x,
+                alpha * A.y + theta * B.y + gamma * C.y,
+                alpha * A.z + theta * B.z + gamma * C.z
         );
 
         D.u = u; D.v = v;
@@ -456,16 +466,8 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
 }
 
 
-void Triangle::processPixel(int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
+void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
-    const int buffer_index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
-
-    if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER &&
-        z >= EngineBuffers::getInstance()->getDepthBuffer( buffer_index )
-    ) {
-        return;
-    }
-
     Uint32 pixelColor;
 
     // Gradient
@@ -602,8 +604,8 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
 }
 
 void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
-                        Point2D pa, Point2D pb, Point2D pc,
-                        Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
+                                     Point2D pa, Point2D pb, Point2D pc,
+                                     Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
     float offset_self_shadow = 0.25f;
 
