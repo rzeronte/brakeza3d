@@ -6,6 +6,9 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Billboard.h"
+#include "../../headers/Render/Engine.h"
+
+extern Engine *brakeza3D;
 
 void Drawable::drawBox2D(SDL_Rect r)
 {
@@ -318,8 +321,13 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 
 void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
 {
-    B->T1.draw( cam );
-    B->T2.draw( cam );
+    //B->T1.draw( cam );
+    brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = B->T1;
+    brakeza3D->numFrameTriangles++;
+
+    //B->T2.draw( cam );
+    brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = B->T2;
+    brakeza3D->numFrameTriangles++;
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         B->T1.drawWireframe();
