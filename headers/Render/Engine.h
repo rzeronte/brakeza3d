@@ -40,14 +40,25 @@ enum collisionGroups
     AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
 } ;
 
+
+struct Tile {
+    int id;
+    int id_x;
+    int id_y;
+    int start_x;
+    int start_y;
+    std::vector <Triangle> triangles;
+    unsigned int *buffer;
+};
+
 class Engine {
 public:
-
     // Window y Renderer principal
     SDL_Window *window;
     SDL_Renderer *renderer;
 
     SDL_Surface  *screenSurface;
+    SDL_Texture *screenTexture;
 
     // Eventos SDL
     SDL_Event e;
@@ -77,6 +88,12 @@ public:
     // Fps counter
     float fps;
     int countedFrames = 0;
+
+    Triangle *frameTriangles;
+    int numFrameTriangles = 0;
+
+    Triangle *visibleTriangles;
+    int numVisibleTriangles = 0;
 
     // GUI
     GUI_Engine *gui_engine;
@@ -114,19 +131,29 @@ public:
     float timerCurrent = 0;
 
     cl_platform_id platform_id;
-    cl_device_id device_id;
+    cl_device_id cpu_device_id;
+    cl_device_id gpu_device_id;
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;
     cl_context context;
     cl_program program;
     cl_kernel kernel;
+    cl_kernel makeFragments;
 
     cl_mem opencl_buffer_triangles;
     cl_mem opencl_buffer_depth;
     cl_mem opencl_buffer_video;
 
     cl_command_queue command_queue;
+    cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
+
+    int sizeTileWidth = 16;
+    int sizeTileHeight = 16;
+    int tilesWidth;
+    int tilesHeight;
+
+    std::vector<Tile> tiles;
 
     Engine();
 
@@ -136,6 +163,8 @@ public:
     void initFontsTTF();
     void initPhysics();
     void initOpenCL();
+    void initTiles();
+
     void OpenCLInfo();
 
     void onStart();
@@ -146,11 +175,15 @@ public:
 
     void cameraUpdate();
 
-    void drawMeshes();
-    void drawBSP();
-    void drawLightPoints();
-    void drawSprites();
-    void drawObjectsBillboard();
+    void getMesh3DTriangles();
+    void getQuakeMapTriangles();
+    void getLightPointsTriangles();
+    void getSpritesTriangles();
+    void getObjectsBillboardTriangles();
+
+    void hiddenSurfaceRemoval();
+    void drawFrameTriangles();
+    void handleTrianglesToTiles();
 
     void updatePhysicObjects();
 
@@ -183,7 +216,8 @@ public:
     float getDeltaTime();
 
     void testOpenCL();
-    void processOpenCL();
+    void processOpenCL(int numTriangles);
+
 
 };
 

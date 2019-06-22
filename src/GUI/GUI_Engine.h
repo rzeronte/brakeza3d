@@ -20,8 +20,6 @@ public:
     GUI_Camera *gui_camera;
     GUI_Physics *gui_physics;
 
-    float fps;
-
     GUI_Engine()
     {
         gui_menu = new GUI_Menu();
@@ -40,19 +38,10 @@ public:
         gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show, gui_camera->show, gui_physics->show);
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
-        gui_log->draw(getFps(), timedelta, cam);
+        gui_log->draw(timedelta, cam);
         gui_camera->draw(cam);
         gui_physics->draw(cam);
     }
-
-    float getFps() const {
-        return fps;
-    }
-
-    void setFps(float fps) {
-        GUI_Engine::fps = fps;
-    }
-
 };
 
 

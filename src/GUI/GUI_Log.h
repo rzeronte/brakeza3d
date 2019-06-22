@@ -76,11 +76,10 @@ public:
     ExampleAppLog log;
     bool show = true;
 
-    virtual void draw(float fps, float deltaTime, Camera3D *cam)
+    virtual void draw(float deltaTime, Camera3D *cam)
     {
         if (show) {
-            std::string sfps = std::to_string(fps);
-            std::string title = "Log | FPS: " + sfps +" | Camera (x: " +
+            std::string title = "Log | Camera (x: " +
                     std::to_string(cam->getPosition()->x) + ", y: " +
                     std::to_string(cam->getPosition()->y) + ", z:  " +
                     std::to_string(cam->getPosition()->z) + " | Yaw: " +

@@ -8,10 +8,13 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Objects/LightPoint3D.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Engine.h"
 #include <iostream>
 #include <string>
 #include <math.h>       /* modf */
 #include <cstdio>
+
+extern Engine *brakeza3D;
 
 Mesh3D::Mesh3D()
 {
@@ -256,7 +259,9 @@ void Mesh3D::draw(Camera3D *cam)
 
     // draw triangles of mesh
     for (int i = 0; i < this->n_triangles ; i++) {
-        this->model_triangles[i].draw(cam);
+        brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
+        brakeza3D->numFrameTriangles++;
+        //this->model_triangles[i].draw(cam);
     }
 
     // Console info

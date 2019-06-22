@@ -185,7 +185,6 @@ void Game::onStart()
     // bsp
     this->loadBSP("start.bsp", "palette.lmp");
 
-
 }
 
 void Game::mainLoop()
@@ -226,6 +225,30 @@ void Game::onUpdate()
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
+    Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
+
+    /*Triangle *t = &triangle->model_triangles[0];
+    t->updateVertexSpaces(camera);
+    t->processFullArea();
+    t->getBoundingBox(t->minX, t->minY, t->maxX, t->maxY);
+
+    Point2D l1 = Point2D(t->minX, t->minY);
+    Point2D r1 = Point2D(t->maxX, t->maxY);
+
+    EngineBuffers::getInstance()->setVideoBuffer(l1.x, l1.y, Color::red());
+    EngineBuffers::getInstance()->setVideoBuffer(r1.x, r1.y, Color::red());
+
+
+    Point2D l2 = Point2D(100, 100);
+    Point2D r2 = Point2D(200, 200);
+
+    EngineBuffers::getInstance()->setVideoBuffer(l2.x, l2.y, Color::green());
+    EngineBuffers::getInstance()->setVideoBuffer(r2.x, r2.y, Color::green());
+
+    if (Tools::checkRectangleAABBOverlap(l1, r1, l2, r2)) {
+        Logging::getInstance()->Log("Overlap");
+    }*/
+
 
 }
 
@@ -235,13 +258,6 @@ void Game::preUpdate()
     // Core preUpdate
     Engine::preUpdate();
 
-    /*Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
-    Triangle t = triangle->model_triangles[0];
-    t.updateVertexSpaces(camera);
-    t.processFullArea();
-    EngineBuffers::getInstance()->addOCLTriangle(t.getOpenCL());*/
-
-    //Logging::getInstance()->Log("Original fullArea: " + std::to_string(t.fullArea));
 
 
 }

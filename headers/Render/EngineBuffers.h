@@ -10,31 +10,20 @@ typedef struct {
     float Bs_x, Bs_y;
     float Cs_x, Cs_y;
 
-    float An_x, An_y, An_z;
-    float Bn_x, Bn_y, Bn_z;
-    float Cn_x, Cn_y, Cn_z;
-
-    float persp_correct_Az;
-    float persp_correct_Bz;
-    float persp_correct_Cz;
-
-    float tex_u1_Ac_z;
-    float tex_u2_Bc_z;
-    float tex_u3_Cc_z;
-    float tex_v1_Ac_z;
-    float tex_v2_Bc_z;
-    float tex_v3_Cc_z;
-
-    float light_u1_Ac_z;
-    float light_u2_Bc_z;
-    float light_u3_Cc_z;
-    float light_v1_Ac_z;
-    float light_v2_Bc_z;
-    float light_v3_Cc_z;
-
-    bool isAnimated;
-    bool isLightmapped;
+    float An_z;
+    float Bn_z;
+    float Cn_z;
 } OCLTriangle;
+
+struct pixelFragment {
+    int x;
+    int y;
+    int depth;
+    int triangleId;
+    int w0;
+    int w1;
+    int w2;
+};
 
 // Singleton
 class EngineBuffers {
@@ -54,6 +43,9 @@ public:
     OCLTriangle *OCLTrianglesBuffer;
     int numOCLTriangles = 0;
 
+    pixelFragment *fragmentsBuffer;
+    int numFragments = 0;
+
     static EngineBuffers* getInstance();
 
     // Benchmark Meshes
@@ -66,8 +58,6 @@ public:
     int trianglesClippingCreated = 0;
 
     int trianglesHitted = 0;
-
-    SDL_Surface  *screenSurface;
 
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);

@@ -1,32 +1,22 @@
-struct OCLTriangle {
+struct OCLTriangle
+ {
     float As_x, As_y;
     float Bs_x, Bs_y;
     float Cs_x, Cs_y;
 
-    float An_x, An_y, An_z;
-    float Bn_x, Bn_y, Bn_z;
-    float Cn_x, Cn_y, Cn_z;
+    float An_z;
+    float Bn_z;
+    float Cn_z;
+};
 
-    float persp_correct_Az;
-    float persp_correct_Bz;
-    float persp_correct_Cz;
-
-    float tex_u1_Ac_z;
-    float tex_u2_Bc_z;
-    float tex_u3_Cc_z;
-    float tex_v1_Ac_z;
-    float tex_v2_Bc_z;
-    float tex_v3_Cc_z;
-
-    float light_u1_Ac_z;
-    float light_u2_Bc_z;
-    float light_u3_Cc_z;
-    float light_v1_Ac_z;
-    float light_v2_Bc_z;
-    float light_v3_Cc_z;
-
-    bool isAnimated;
-    bool isLightmapped;
+struct pixelFragment {
+    int x;
+    int y;
+    int depth;
+    int triangleId;
+    int w0;
+    int w1;
+    int w2;
 };
 
 
@@ -34,30 +24,43 @@ int orient2d(int pa_x, int pa_y, int pb_x, int pb_y, int pc_x, int pc_y);
 float processFullArea(int Bs_x, int Bs_y, int Cs_x, int Cs_y, int As_x, int As_y);
 unsigned int createRGB(int r, int g, int b);
 
-__kernel void rasterizer(__global struct OCLTriangle *tri, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer)
+kernel __attribute__((reqd_work_group_size(1, 1, 1)))
+
+__kernel void rasterizer( int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer, __global struct OCLTriangle *tri)
 {
     int i = get_global_id(0);
 
-    int A01 = (int) -((int)tri[i].As_y - (int)tri[i].Bs_y);
-    int A12 = (int) -((int)tri[i].Bs_y - (int)tri[i].Cs_y);
-    int A20 = (int) -((int)tri[i].Cs_y - (int)tri[i].As_y);
+    int As_x = tri[i].As_x;
+    int Bs_x = tri[i].Bs_x;
+    int Cs_x = tri[i].Cs_x;
+    int As_y = tri[i].As_y;
+    int Bs_y = tri[i].Bs_y;
+    int Cs_y = tri[i].Cs_y;
 
-    int B01 = (int) -((int)tri[i].Bs_x - (int)tri[i].As_x);
-    int B12 = (int) -((int)tri[i].Cs_x - (int)tri[i].Bs_x);
-    int B20 = (int) -((int)tri[i].As_x - (int)tri[i].Cs_x);
+    int An_z = tri[i].An_z;
+    int Bn_z = tri[i].Bn_z;
+    int Cn_z = tri[i].Cn_z;
 
-    int maxX = max(tri[i].As_x, max(tri[i].Bs_x, tri[i].Cs_x));
-    int minX = min(tri[i].As_x, min(tri[i].Bs_x, tri[i].Cs_x));
-    int maxY = max(tri[i].As_y, max(tri[i].Bs_y, tri[i].Cs_y));
-    int minY = min(tri[i].As_y, min(tri[i].Bs_y, tri[i].Cs_y));
+    int A01 = (int) -( As_y - Bs_y );
+    int A12 = (int) -( Bs_y - Cs_y );
+    int A20 = (int) -( Cs_y - As_y );
 
-    int w0_row = orient2d(tri[i].Bs_x, tri[i].Bs_y, tri[i].Cs_x, tri[i].Cs_y, minX, minY);
-    int w1_row = orient2d(tri[i].Cs_x, tri[i].Cs_y, tri[i].As_x, tri[i].As_y, minX, minY);
-    int w2_row = orient2d(tri[i].As_x, tri[i].As_y, tri[i].Bs_x, tri[i].Bs_y, minX, minY);
+    int B01 = (int) -( Bs_x - As_x );
+    int B12 = (int) -( Cs_x - Bs_x );
+    int B20 = (int) -( As_x - Cs_x );
+
+    int maxX = max( As_x, max( Bs_x, Cs_x ) );
+    int minX = min( As_x, min( Bs_x, Cs_x ) );
+    int maxY = max( As_y, max( Bs_y, Cs_y ) );
+    int minY = min( As_y, min( Bs_y, Cs_y ) );
+
+    int w0_row = orient2d( Bs_x, Bs_y, Cs_x, Cs_y, minX, minY );
+    int w1_row = orient2d( Cs_x, Cs_y, As_x, As_y, minX, minY );
+    int w2_row = orient2d( As_x, As_y, Bs_x, Bs_y, minX, minY );
 
     float alpha, theta, gamma;
 
-    float fullArea = processFullArea(tri[i].Bs_x, tri[i].Bs_y, tri[i].Cs_x, tri[i].Cs_y, tri[i].As_x, tri[i].As_y);
+    float fullArea = processFullArea(Bs_x, Bs_y, Cs_x, Cs_y, As_x, As_y);
     float reciprocalFullArea = 1 / fullArea;
 
     for (int y = minY ; y < maxY ; y++) {
@@ -73,14 +76,13 @@ __kernel void rasterizer(__global struct OCLTriangle *tri, int SCREEN_WIDTH, __g
                     theta = w1 * reciprocalFullArea;
                     gamma = 1 - alpha - theta;
 
-                    float depth = alpha * (tri[i].An_z) + theta * (tri[i].Bn_z) + gamma * (tri[i].Cn_z);
+                    float depth = alpha * (An_z) + theta * (Bn_z) + gamma * (Cn_z);
 
-                    if (depth >= ZBuffer[bufferIndex] ) {
-                        continue;
+                    if (depth <= ZBuffer[bufferIndex] ) {
+                        ZBuffer[bufferIndex] = depth;
+                        video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
                     }
 
-                    video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-                    ZBuffer[bufferIndex] = depth;
                 }
 
                 // edge function increments

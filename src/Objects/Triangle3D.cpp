@@ -152,46 +152,16 @@ void Triangle::shadowMapping(LightPoint3D *lp)
 
 bool Triangle::draw(Camera3D *cam)
 {
-    this->updateVertexSpaces(cam);
-
-    bool faceCulling = false;
-
-    // back face culling
-    if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING && !isClipped()) {
-        faceCulling = this->isBackFaceCulling(cam);
-
-        if (faceCulling) {
-            EngineBuffers::getInstance()->trianglesHidenByFaceCuling++;
-            return false;
-        }
-    }
-
-
-    // Clipping
-    if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !isClipped()) {
-        if (this->testForClipping( cam ) ) {
-            this->clipping(cam);
-            return false;
-        }
-    }
-
-    // Frustum Culling
-    if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !isClipped()) {
-        if (!cam->frustum->isPointInFrustum(Ao) &&
-            !cam->frustum->isPointInFrustum(Bo) &&
-            !cam->frustum->isPointInFrustum(Co)
-        ) {
-            EngineBuffers::getInstance()->trianglesOutFrustum++;
-            return false;
-        }
+    if (isClipped()) {
+        this->updateVertexSpaces(cam);
     }
 
     // rasterization
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        this->updateUVCache();
         if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
             this->hardwareRasterizer(cam);
         } else {
+            this->updateUVCache();
             this->softwareRasterizer(cam);
         }
     }
@@ -213,7 +183,7 @@ bool Triangle::draw(Camera3D *cam)
     return true;
 }
 
-bool Triangle::clipping(Camera3D *cam)
+bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
 {
     Vertex3D output_vertices[10] ; int num_outvertices   = 0;
     Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
@@ -237,13 +207,13 @@ bool Triangle::clipping(Camera3D *cam)
     }
 
     if (num_inputvertices != 0) {
-        Triangle new_triangles[10];
-        int num_new_triangles = 0;
+        //Triangle new_triangles[10];
+        //int num_new_triangles = 0;
 
         Maths::TriangulatePolygon(
                 num_inputvertices, input_vertices,
                 this->getNormal(),
-                new_triangles, num_new_triangles,
+                arrayTriangles, numTriangles,
                 parent,
                 this->getTexture(),
                 this->getLightmap(),
@@ -251,10 +221,12 @@ bool Triangle::clipping(Camera3D *cam)
                 this->is_bsp
         );
 
-        for (int i = 0; i < num_new_triangles; i++) {
+        /*for (int i = 0; i < num_new_triangles; i++) {
             EngineBuffers::getInstance()->trianglesClippingCreated++;
-            new_triangles[i].draw(cam);
-        }
+            //brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = &new_triangles[i];
+            //brakeza3D->numFrameTriangles++;
+            //new_triangles[i].draw(cam);
+        }*/
 
         return true;
     }
@@ -785,45 +757,9 @@ OCLTriangle Triangle::getOpenCL()
     ot.Cs_x = Cs.x;
     ot.Cs_y = Cs.y;
 
-    ot.An_x = An.x;
-    ot.An_y = An.y;
     ot.An_z = An.z;
-    ot.Bn_x = Bn.x;
-    ot.Bn_y = Bn.y;
     ot.Bn_z = Bn.z;
-    ot.Cn_x = Cn.x;
-    ot.Cn_y = Cn.y;
     ot.Cn_z = Cn.z;
-
-    ot.persp_correct_Az = persp_correct_Az;
-    ot.persp_correct_Bz = persp_correct_Bz;
-    ot.persp_correct_Cz = persp_correct_Cz;
-
-    ot.tex_u1_Ac_z = tex_u1_Ac_z;
-    ot.tex_u2_Bc_z = tex_u2_Bc_z;
-    ot.tex_u3_Cc_z = tex_u3_Cc_z;
-    ot.tex_v1_Ac_z = tex_v1_Ac_z;
-    ot.tex_v2_Bc_z = tex_v2_Bc_z;
-    ot.tex_v3_Cc_z = tex_v3_Cc_z;
-
-    ot.light_u1_Ac_z = light_u1_Ac_z;
-    ot.light_u2_Bc_z = light_u2_Bc_z;
-    ot.light_u3_Cc_z = light_u3_Cc_z;
-    ot.light_v1_Ac_z = light_v1_Ac_z;
-    ot.light_v2_Bc_z = light_v2_Bc_z;
-    ot.light_v3_Cc_z = light_v3_Cc_z;
-
-    if (getTexture()->animated) {
-        ot.isAnimated = true;
-    } else {
-        ot.isAnimated = false;
-    }
-
-    if (getTexture()->isLightMapped()) {
-        ot.isLightmapped = true;
-    } else {
-        ot.isLightmapped = false;
-    }
 
     return ot;
 }

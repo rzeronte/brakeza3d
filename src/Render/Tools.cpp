@@ -236,6 +236,7 @@ void Tools::writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint
     Tools::getTextAndRect(renderer, x, y, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color);
 
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+    SDL_DestroyTexture(textTexture);
 }
 
 void Tools::writeTextCenter(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string text)
@@ -345,4 +346,35 @@ bool Tools::isValidVector(Vertex3D& v)
     }
 
     return true;
+}
+
+// Returns true if two rectangles (l1, r1) and (l2, r2) overlap
+bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2)
+{
+    int Axmin = l1.x;
+    int Axmax = r1.x;
+    int Aymax = r1.y;
+    int Aymin = l1.y;
+
+    int Bxmin = l2.x;
+    int Bxmax = r2.x;
+    int Bymax = r2.y;
+    int Bymin = l2.y;
+
+    // Collision check
+    if(Axmax < Bxmin || Axmin > Bxmax ) return false;
+    if(Aymax < Bymin || Aymin > Bymax ) return false;
+
+    return true;
+}
+
+std::string Tools::floatTruncate(float val, int numDigits)
+{
+    std::string output = std::to_string(val).substr(0, numDigits+1);
+    if (output.find('.') ==  std::string::npos ||
+        output.back() == '.')
+    {
+        output.pop_back();
+    }
+    return output;
 }

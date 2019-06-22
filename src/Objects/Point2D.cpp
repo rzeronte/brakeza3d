@@ -15,7 +15,6 @@ Point2D::Point2D(float x, float y)
 {
     this->x = x;
     this->y = y;
-    //ctor
 }
 
 void Point2D::consoleInfo(std::string label, bool jump) {

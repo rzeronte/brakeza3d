@@ -58,7 +58,8 @@ public:
 
     static bool isZeroVector(Vertex3D& v);
     static bool isValidVector(Vertex3D& v);
-
+    static bool checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2);
+    static std::string floatTruncate(float val, int numDigits);
 
 };
 

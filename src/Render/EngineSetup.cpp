@@ -16,3 +16,9 @@ EngineSetup* EngineSetup::getInstance()
 EngineSetup::EngineSetup()
 {
 }
+
+void EngineSetup::setResolution(int w, int h)
+{
+    EngineSetup::getInstance()->SCREEN_WIDTH = w;
+    EngineSetup::getInstance()->SCREEN_HEIGHT = h;
+}

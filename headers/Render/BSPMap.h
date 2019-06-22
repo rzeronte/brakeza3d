@@ -367,7 +367,7 @@ public:
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 
-    void DrawLeafVisibleSet(Camera3D *Cam);
+    void DrawVisibleLeaf(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);
 
     bspleaf_t *FindLeaf(Camera3D *camera);

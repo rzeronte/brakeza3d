@@ -103,7 +103,7 @@ public:
     Texture *getLightmap() const;
     void setLightmap(Texture *texture);
 
-    bool clipping(Camera3D *cam);
+    bool clipping(Camera3D *cam, Triangle*, int&);
     void setClipped(bool);
     bool isClipped();
     bool testForClipping(Camera3D *cam);

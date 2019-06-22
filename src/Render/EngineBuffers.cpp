@@ -5,6 +5,9 @@
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Engine.h"
+
+extern Engine *brakeza3D;
 
 EngineBuffers* EngineBuffers::instance = 0;
 
@@ -25,13 +28,14 @@ EngineBuffers::EngineBuffers()
 
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
-    OCLTrianglesBuffer = new OCLTriangle[5000];
+    //fragmentsBuffer = new pixelFragment[EngineSetup::getInstance()->ENGINE_MAX_FRAGMENTS];
+    OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
 
 }
 
 void EngineBuffers::clearDepthBuffer()
 {
-    std::fill(depthBuffer, depthBuffer + sizeBuffers, 999999);
+    std::fill(depthBuffer, depthBuffer + sizeBuffers, 10000);
 }
 
 float EngineBuffers::getDepthBuffer(int x, int y)
@@ -68,6 +72,8 @@ void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
 {
     OCLTrianglesBuffer[numOCLTriangles] = oclt;
     numOCLTriangles++;
+
+
 }
 
 float EngineBuffers::getVideoBuffer(int x, int y)

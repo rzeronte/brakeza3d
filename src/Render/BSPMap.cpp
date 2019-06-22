@@ -69,8 +69,8 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
     this->InitializeTriangles();
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
-    //this->createMesh3DAndGhostsFromHulls();
-    //this->bulletPhysics();
+    this->createMesh3DAndGhostsFromHulls();
+    this->bulletPhysics();
 
     return true;
 }
@@ -673,7 +673,9 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     const int num = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++){
-        this->model_triangles[i].draw(cam);
+        brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
+        brakeza3D->numFrameTriangles++;
+        //this->model_triangles[i].draw(cam);
     }
 }
 
@@ -696,7 +698,7 @@ void BSPMap::bulletPhysics()
         const int num = surface_triangles[surface].num;
 
         for (int i = offset; i < offset+num; i++){
-            model_triangles[i].drawWireframe();
+            //model_triangles[i].drawWireframe();
             this->model_triangles[i].updateVertexSpaces(brakeza3D->camera);
             btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
             btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
@@ -756,9 +758,9 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 }
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::DrawLeafVisibleSet(Camera3D *cam)
+void BSPMap::DrawVisibleLeaf(Camera3D *Cam)
 {
-    DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, cam);
+    DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, Cam);
 }
 
 void BSPMap::DrawHulls(Camera3D *cam)
