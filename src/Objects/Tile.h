@@ -11,7 +11,19 @@ struct Tile {
     int id_y;
     int start_x;
     int start_y;
-    std::vector <Triangle> triangles;
-    unsigned int *buffer;
+    int numTriangles;
+    int triangleIds[1024];
 };
+
+struct OCLTile {
+    bool draw;
+    int id;
+    int id_x;
+    int id_y;
+    int start_x;
+    int start_y;
+    int numTriangles;
+    int triangleIds[1024];
+};
+
 #endif //SDL2_3D_ENGINE_GUI_H

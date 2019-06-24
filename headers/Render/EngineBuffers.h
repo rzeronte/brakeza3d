@@ -6,6 +6,8 @@
 #include "Timer.h"
 
 typedef struct {
+    int id;
+
     float As_x, As_y;
     float Bs_x, Bs_y;
     float Cs_x, Cs_y;

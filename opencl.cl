@@ -1,5 +1,7 @@
+// Types
 struct OCLTriangle
  {
+    int id;
     float As_x, As_y;
     float Bs_x, Bs_y;
     float Cs_x, Cs_y;
@@ -7,6 +9,17 @@ struct OCLTriangle
     float An_z;
     float Bn_z;
     float Cn_z;
+};
+
+struct OCLTile {
+    bool draw;
+    int id;
+    int id_x;
+    int id_y;
+    int start_x;
+    int start_y;
+    int numTriangles;
+    int triangleIds[1024];
 };
 
 struct pixelFragment {
@@ -20,26 +33,42 @@ struct pixelFragment {
 };
 
 
+// Functions helpers declarations
 int orient2d(int pa_x, int pa_y, int pb_x, int pb_y, int pc_x, int pc_y);
 float processFullArea(int Bs_x, int Bs_y, int Cs_x, int Cs_y, int As_x, int As_y);
 unsigned int createRGB(int r, int g, int b);
+void rasterizeTriangle(struct OCLTriangle t, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer);
 
+
+// OpenCL Queue Setup
 kernel __attribute__((reqd_work_group_size(1, 1, 1)))
 
-__kernel void rasterizer( int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer, __global struct OCLTriangle *tri)
+// Kernel called from Brakeza3D
+__kernel void handleTiles( int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer, __global struct OCLTriangle *triangles, __global struct OCLTile *tiles)
 {
     int i = get_global_id(0);
 
-    int As_x = tri[i].As_x;
-    int Bs_x = tri[i].Bs_x;
-    int Cs_x = tri[i].Cs_x;
-    int As_y = tri[i].As_y;
-    int Bs_y = tri[i].Bs_y;
-    int Cs_y = tri[i].Cs_y;
+    if (!tiles[i].draw) return;
 
-    int An_z = tri[i].An_z;
-    int Bn_z = tri[i].Bn_z;
-    int Cn_z = tri[i].Cn_z;
+    for (int j = 0 ; j < tiles[i].numTriangles; j++) {
+        int triangleId = tiles[i].triangleIds[j];
+        rasterizeTriangle(triangles[triangleId], SCREEN_WIDTH, video, ZBuffer);
+    }
+}
+
+// Function Helpers
+void rasterizeTriangle(struct OCLTriangle t, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer)
+{
+    int As_x = t.As_x;
+    int Bs_x = t.Bs_x;
+    int Cs_x = t.Cs_x;
+    int As_y = t.As_y;
+    int Bs_y = t.Bs_y;
+    int Cs_y = t.Cs_y;
+
+    int An_z = t.An_z;
+    int Bn_z = t.Bn_z;
+    int Cn_z = t.Cn_z;
 
     int A01 = (int) -( As_y - Bs_y );
     int A12 = (int) -( Bs_y - Cs_y );
@@ -65,34 +94,33 @@ __kernel void rasterizer( int SCREEN_WIDTH, __global unsigned int *video, __glob
 
     for (int y = minY ; y < maxY ; y++) {
 
-            int w0 = w0_row;
-            int w1 = w1_row;
-            int w2 = w2_row;
+        int w0 = w0_row;
+        int w1 = w1_row;
+        int w2 = w2_row;
 
-            for (int x = minX ; x < maxX ; x++) {
-                if ((w0 | w1 | w2) > 0) {
-                    int bufferIndex = ( y * SCREEN_WIDTH ) + x;
-                    alpha = w0 * reciprocalFullArea;
-                    theta = w1 * reciprocalFullArea;
-                    gamma = 1 - alpha - theta;
+        for (int x = minX ; x < maxX ; x++) {
+            if ((w0 | w1 | w2) > 0) {
+                int bufferIndex = ( y * SCREEN_WIDTH ) + x;
+                alpha = w0 * reciprocalFullArea;
+                theta = w1 * reciprocalFullArea;
+                gamma = 1 - alpha - theta;
 
-                    float depth = alpha * (An_z) + theta * (Bn_z) + gamma * (Cn_z);
-                    if (depth <= ZBuffer[bufferIndex] ) {
-                        ZBuffer[bufferIndex] = depth;
-                        video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-                    }
-
+                float depth = alpha * (An_z) + theta * (Bn_z) + gamma * (Cn_z);
+                if (depth <= ZBuffer[bufferIndex] ) {
+                    ZBuffer[bufferIndex] = depth;
+                    video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
                 }
-
-                // edge function increments
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
 
-            w0_row += B12;
-            w1_row += B20;
-            w2_row += B01;
+            // edge function increments
+            w0 += A12;
+            w1 += A20;
+            w2 += A01;
+        }
+
+        w0_row += B12;
+        w1_row += B20;
+        w2_row += B01;
     }
 }
 

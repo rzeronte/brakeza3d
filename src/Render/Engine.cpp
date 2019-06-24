@@ -235,7 +235,7 @@ void Engine::initOpenCL()
     clBuildProgram(program, 1, &cpu_device_id, NULL, NULL, NULL);
 
     // Create the OpenCL kernel
-    kernel = clCreateKernel(program, "rasterizer", &ret);
+    kernel = clCreateKernel(program, "handleTiles", &ret);
 
     opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
     opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32), EngineBuffers::getInstance()->videoBuffer, &ret);
@@ -243,22 +243,47 @@ void Engine::initOpenCL()
     OpenCLInfo();
 }
 
-void Engine::processOpenCL(int numTriangles)
+void Engine::processOpenCL()
 {
-    if (numTriangles == 0) return;
 
-    int LIST_SIZE = numTriangles;
+    // Create OCLTriangles
+    for (int i = 0 ; i < numVisibleTriangles ; i++) {
+        EngineBuffers::getInstance()->addOCLTriangle(visibleTriangles[i].getOpenCL());
+    }
+
+    // Create OCLTiles
+    OCLTile tilesOCL[numTiles];
+    for (int i = 0 ; i < numTiles ; i++) {
+        int numTrianglesTile = this->tiles[i].numTriangles;
+
+        tilesOCL[i].draw    = this->tiles[i].draw;
+        tilesOCL[i].start_x = this->tiles[i].start_x;
+        tilesOCL[i].start_y = this->tiles[i].start_y;
+        tilesOCL[i].id      = this->tiles[i].id;
+        tilesOCL[i].id_x    = this->tiles[i].id_x;
+        tilesOCL[i].id_y    = this->tiles[i].id_y;
+
+        tilesOCL[i].numTriangles = numTrianglesTile;
+        for (int j = 0 ; j < numTrianglesTile ; j++) {
+            tilesOCL[i].triangleIds[j] = this->tiles[i].triangleIds[j];
+        }
+    }
+
+    int LIST_SIZE = EngineBuffers::getInstance()->numOCLTriangles;
 
     opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(OCLTriangle), NULL, &ret);
-
     clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, LIST_SIZE * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+
+    opencl_buffer_tiles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
     clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opencl_buffer_video);
     clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_depth);
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
 
-    size_t global_item_size = LIST_SIZE; // Process the entire lists
+    size_t global_item_size = numTiles; // Process the entire lists
     size_t local_item_size = 1;          // Divide work items into groups of 64
 
     ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
@@ -275,6 +300,65 @@ void Engine::processOpenCL(int numTriangles)
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
 }
+
+/*void processOpenCL2()
+{
+    OCLTile tilesOCL[numTiles];
+
+    for (int i = 0 ; i < numVisibleTriangles ; i++) {
+        visibleTriangles[i].updateFullVertexSpaces(camera);
+        EngineBuffers::getInstance()->addOCLTriangle(visibleTriangles[i].getOpenCL());
+    }
+
+    Logging::getInstance()->getInstance()->Log( "OCLTriangles: " + std::to_string(EngineBuffers::getInstance()->numOCLTriangles) );
+
+    for (int i = 0 ; i < numTiles ; i++) {
+        int numTrianglesTile = this->tiles[i].numTriangles;
+
+        tilesOCL[i].draw    = this->tiles[i].draw;
+        tilesOCL[i].start_x = this->tiles[i].start_x;
+        tilesOCL[i].start_y = this->tiles[i].start_y;
+        tilesOCL[i].id      = this->tiles[i].id;
+        tilesOCL[i].id_x    = this->tiles[i].id_x;
+        tilesOCL[i].id_y    = this->tiles[i].id_y;
+
+        tilesOCL[i].numTriangles = numTrianglesTile;
+        for (int j = 0 ; j < numTrianglesTile ; j++) {
+            tilesOCL[i].triangleIds[j] = this->tiles[i].triangleIds[j];
+        }
+    }
+
+    opencl_buffer_tiles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
+    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), NULL, &ret);
+
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), &EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
+
+    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+    clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_depth);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
+
+    size_t global_item_size = numTiles; // Process the entire lists
+    size_t local_item_size = 1;          // Divide work items into groups of 64
+
+    ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+
+    if (ret != CL_SUCCESS) {
+        Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
+
+        char buffer[1024];
+        clGetProgramBuildInfo(program, cpu_device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        if (strlen(buffer) > 0 ) {
+            Logging::getInstance()->getInstance()->Log( buffer );
+        }
+    }
+    clReleaseMemObject(opencl_buffer_tiles);
+    clReleaseMemObject(opencl_buffer_triangles);
+    EngineBuffers::getInstance()->numOCLTriangles = 0;
+
+}*/
 
 void Engine::OpenCLInfo()
 {
@@ -433,7 +517,7 @@ void Engine::drawGUI()
 void Engine::windowUpdate()
 {
     if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-        this->processOpenCL( EngineBuffers::getInstance()->numOCLTriangles );
+        this->processOpenCL( );
     }
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
@@ -630,7 +714,9 @@ void Engine::onUpdate()
 
     this->hiddenSurfaceRemoval();
 
-    if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        this->handleTrianglesToTiles();
+    } else {
         if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
             this->handleTrianglesToTiles();
             this->drawTilesTriangles();
@@ -802,7 +888,7 @@ void Engine::drawTilesGrid()
         Tile *t = &this->tiles[j];
         Uint32 color = Color::white();
 
-        if (t->triangles.size() > 0) {
+        if (t->numTriangles > 0) {
             color = Color::red();
         }
 
@@ -855,11 +941,6 @@ void Engine::hiddenSurfaceRemoval()
         this->frameTriangles[i].updateUVCache();
         this->frameTriangles[i].updateBoundingBox();
 
-        // Add triangle to hardware pipeline if is needed
-        if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
-        }
-
         // Add triangle to visible list
         visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
         numVisibleTriangles++;
@@ -870,12 +951,20 @@ void Engine::hiddenSurfaceRemoval()
 
 void Engine::drawTilesTriangles()
 {
-    int numTiles = this->tilesWidth*this->tilesHeight;
-    for (int i = 0 ; i < numTiles ; i++) {
-        for (int j = 0 ; j < this->tiles[i].triangles.size() ; j++) {
-            if (!this->tiles[i].triangles[j].drawed && this->tiles[i].draw) {
+    for (int i = 0 ; i < this->numTiles ; i++) {
+        if (!this->tiles[i].draw) continue;
+
+        for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
+            int triangleId = this->tiles[i].triangleIds[j];
+            if (!this->visibleTriangles[triangleId].drawed) {
                 Tile *t = &this->tiles[i];
-                this->tiles[i].triangles[j].drawForTile(camera, t->start_x, t->start_y, t->start_x+sizeTileWidth, t->start_y+sizeTileHeight);
+                this->visibleTriangles[triangleId].drawForTile(
+                    camera,
+                    t->start_x,
+                    t->start_y,
+                    t->start_x+sizeTileWidth,
+                    t->start_y+sizeTileHeight
+                );
             }
         }
     }
@@ -883,8 +972,8 @@ void Engine::drawTilesTriangles()
 
 void Engine::handleTrianglesToTiles()
 {
-    for (int i = 0 ; i < this->tilesWidth*this->tilesHeight ; i++) {
-        this->tiles[i].triangles.clear();
+    for (int i = 0 ; i < this->numTiles ; i++) {
+        this->tiles[i].numTriangles = 0;
     }
 
     for (int i = 0 ; i < numVisibleTriangles ; i++) {
@@ -897,7 +986,8 @@ void Engine::handleTrianglesToTiles()
         for (int y = tileStartY; y <= tileEndY ; y++) {
             for (int x = tileStartX; x <= tileEndX ; x++) {
                 int tileOffset = y * tilesWidth + x;
-                this->tiles[tileOffset].triangles.push_back(this->visibleTriangles[i]);
+                this->tiles[tileOffset].triangleIds[ this->tiles[tileOffset].numTriangles ] = i;
+                this->tiles[tileOffset].numTriangles++;
             }
         }
     }
@@ -1038,6 +1128,8 @@ void Engine::initTiles()
     // Tiles Raster setup
     this->tilesWidth  = EngineSetup::getInstance()->SCREEN_WIDTH / this->sizeTileWidth;
     this->tilesHeight = EngineSetup::getInstance()->SCREEN_HEIGHT / this->sizeTileHeight;
+    this->numTiles = tilesWidth * tilesHeight;
+
     Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+")");
 
     for (int y = 0 ; y < EngineSetup::getInstance()->SCREEN_HEIGHT; y+=this->sizeTileHeight)

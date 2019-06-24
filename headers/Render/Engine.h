@@ -131,6 +131,7 @@ public:
     cl_kernel makeFragments;
 
     cl_mem opencl_buffer_triangles;
+    cl_mem opencl_buffer_tiles;
     cl_mem opencl_buffer_depth;
     cl_mem opencl_buffer_video;
 
@@ -141,6 +142,7 @@ public:
     int sizeTileHeight = 48;
     int tilesWidth;
     int tilesHeight;
+    int numTiles;
 
     std::vector<Tile> tiles;
 
@@ -209,7 +211,7 @@ public:
     float getDeltaTime();
 
     void testOpenCL();
-    void processOpenCL(int numTriangles);
+    void processOpenCL();
 
 
 };

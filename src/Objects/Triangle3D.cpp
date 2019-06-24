@@ -236,9 +236,6 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
             arrayTriangles[i].updateFullArea();
-            if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-                EngineBuffers::getInstance()->addOCLTriangle(arrayTriangles[i].getOpenCL());
-            }
         }
 
         return true;
@@ -822,6 +819,7 @@ OCLTriangle Triangle::getOpenCL()
 {
     OCLTriangle ot;
 
+    ot.id = 69;
     ot.As_x = As.x;
     ot.As_y = As.y;
     ot.Bs_x = Bs.x;
