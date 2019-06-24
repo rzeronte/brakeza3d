@@ -72,8 +72,6 @@ void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
 {
     OCLTrianglesBuffer[numOCLTriangles] = oclt;
     numOCLTriangles++;
-
-
 }
 
 float EngineBuffers::getVideoBuffer(int x, int y)

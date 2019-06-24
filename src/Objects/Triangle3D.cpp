@@ -175,11 +175,7 @@ void Triangle::draw(Camera3D *cam)
     drawed = true;
     // rasterization
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-            this->hardwareRasterizer();
-        } else {
-            this->softwareRasterizer();
-        }
+        this->softwareRasterizer();
     }
 
     // wireframe
@@ -221,9 +217,6 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
     }
 
     if (num_inputvertices != 0) {
-        //Triangle new_triangles[10];
-        //int num_new_triangles = 0;
-
         int oldNumTriangles = numTriangles;
 
         Maths::TriangulatePolygon(
@@ -237,22 +230,21 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
                 this->is_bsp
         );
 
+        // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < numTriangles; i++) {
             arrayTriangles[i].updateFullVertexSpaces(cam);
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
             arrayTriangles[i].updateFullArea();
+            if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+                EngineBuffers::getInstance()->addOCLTriangle(arrayTriangles[i].getOpenCL());
+            }
         }
 
         return true;
     }
 
     return false;
-}
-
-void Triangle::hardwareRasterizer()
-{
-    EngineBuffers::getInstance()->addOCLTriangle(this->getOpenCL());
 }
 
 void Triangle::softwareRasterizerForTile(int minX, int minY, int maxX, int maxY)

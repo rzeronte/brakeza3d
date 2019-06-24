@@ -80,10 +80,8 @@ public:
 
     bool isBackFaceCulling(Camera3D *cam);
 
-    void hardwareRasterizer();
     void softwareRasterizer();
     void softwareRasterizerForTile(int minX, int minY, int maxX, int maxY);
-
 
     Vertex3D getNormal();
     void     updateNormal();

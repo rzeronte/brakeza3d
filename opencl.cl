@@ -77,7 +77,6 @@ __kernel void rasterizer( int SCREEN_WIDTH, __global unsigned int *video, __glob
                     gamma = 1 - alpha - theta;
 
                     float depth = alpha * (An_z) + theta * (Bn_z) + gamma * (Cn_z);
-
                     if (depth <= ZBuffer[bufferIndex] ) {
                         ZBuffer[bufferIndex] = depth;
                         video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);

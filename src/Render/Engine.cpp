@@ -237,14 +237,16 @@ void Engine::initOpenCL()
     // Create the OpenCL kernel
     kernel = clCreateKernel(program, "rasterizer", &ret);
 
-    opencl_buffer_depth     = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
-    opencl_buffer_video     = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32), EngineBuffers::getInstance()->videoBuffer, &ret);
+    opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
+    opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32), EngineBuffers::getInstance()->videoBuffer, &ret);
 
     OpenCLInfo();
 }
 
 void Engine::processOpenCL(int numTriangles)
 {
+    if (numTriangles == 0) return;
+
     int LIST_SIZE = numTriangles;
 
     opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(OCLTriangle), NULL, &ret);
@@ -260,7 +262,15 @@ void Engine::processOpenCL(int numTriangles)
     size_t local_item_size = 1;          // Divide work items into groups of 64
 
     ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+    if (ret != CL_SUCCESS) {
+        Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
 
+        char buffer[1024];
+        clGetProgramBuildInfo(program, cpu_device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        if (strlen(buffer) > 0 ) {
+            Logging::getInstance()->getInstance()->Log( buffer );
+        }
+    }
     clReleaseMemObject(opencl_buffer_triangles);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
@@ -808,36 +818,35 @@ void Engine::hiddenSurfaceRemoval()
     numVisibleTriangles = 0;
 
     for (int i = 0; i < this->numFrameTriangles ; i++) {
-        Triangle *t = &this->frameTriangles[i];
 
         this->frameTriangles[i].updateObjectSpace();
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (t->isBackFaceCulling(camera)) {
+            if (this->frameTriangles[i].isBackFaceCulling(camera)) {
                 continue;
             }
         }
 
         // Clipping (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING) {
-            if (t->testForClipping( camera ) ) {
-                t->clipping(camera, visibleTriangles, numVisibleTriangles);
+            if (this->frameTriangles[i].testForClipping( camera ) ) {
+                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
                 continue;
             }
         }
 
         // Frustum Culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING) {
-            if (!camera->frustum->isPointInFrustum(t->Ao) &&
-                !camera->frustum->isPointInFrustum(t->Bo) &&
-                !camera->frustum->isPointInFrustum(t->Co)
+            if (!camera->frustum->isPointInFrustum(this->frameTriangles[i].Ao) &&
+                !camera->frustum->isPointInFrustum(this->frameTriangles[i].Bo) &&
+                !camera->frustum->isPointInFrustum(this->frameTriangles[i].Co)
             ) {
                 continue;
             }
         }
 
-        // Triangle precached vertices
+        // Triangle precached data
         this->frameTriangles[i].updateCameraSpace(camera);
         this->frameTriangles[i].updateNDCSpace(camera);
         this->frameTriangles[i].updateScreenSpace(camera);
@@ -846,6 +855,12 @@ void Engine::hiddenSurfaceRemoval()
         this->frameTriangles[i].updateUVCache();
         this->frameTriangles[i].updateBoundingBox();
 
+        // Add triangle to hardware pipeline if is needed
+        if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
+        }
+
+        // Add triangle to visible list
         visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
         numVisibleTriangles++;
     }
