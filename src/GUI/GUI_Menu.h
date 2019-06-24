@@ -46,6 +46,11 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+                ImGui::Checkbox("Tiled Based", &EngineSetup::getInstance()->BASED_TILE_RENDER);
+                if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
+                    ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
+                }
+                ImGui::Separator();
                 ImGui::Checkbox("Hardware", &EngineSetup::getInstance()->RENDER_WITH_HARDWARE);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);

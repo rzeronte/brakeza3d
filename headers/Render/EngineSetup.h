@@ -31,10 +31,12 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 480;
+    int SCREEN_WIDTH = 320;
+    int SCREEN_HEIGHT = 240;
 
     const int RESOLUTION = SCREEN_WIDTH * SCREEN_HEIGHT;
+
+    bool BASED_TILE_RENDER = false;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
@@ -45,6 +47,8 @@ public:
     const float EPSILON = 0.00001f;
 
     bool RENDER_WITH_HARDWARE = false;
+
+    bool DRAW_TILES_GRID = false;
 
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;

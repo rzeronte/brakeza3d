@@ -24,7 +24,7 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &phy
     btConvexHullShape* me = new btConvexHullShape();
 
     for (int i=0; i < this->n_triangles; i++) {
-        this->model_triangles[i].updateVertexSpaces(cam);
+        this->model_triangles[i].updateFullVertexSpaces(cam);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {

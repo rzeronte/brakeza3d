@@ -699,7 +699,7 @@ void BSPMap::bulletPhysics()
 
         for (int i = offset; i < offset+num; i++){
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i].updateVertexSpaces(brakeza3D->camera);
+            this->model_triangles[i].updateFullVertexSpaces(brakeza3D->camera);
             btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
             btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
             btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );

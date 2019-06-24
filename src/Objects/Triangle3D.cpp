@@ -39,26 +39,41 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
     lightmap = new Texture();
 }
 
-
-void Triangle::updateVertexSpaces(Camera3D *cam)
+void Triangle::updateObjectSpace()
 {
     Ao = Transforms::objectSpace(A, parent);
     Bo = Transforms::objectSpace(B, parent);
     Co = Transforms::objectSpace(C, parent);
+}
 
+void Triangle::updateCameraSpace(Camera3D *cam)
+{
     Ac = Transforms::cameraSpace(Ao, cam);
     Bc = Transforms::cameraSpace(Bo, cam);
     Cc = Transforms::cameraSpace(Co, cam);
+}
 
+void Triangle::updateNDCSpace(Camera3D *cam)
+{
     An = Transforms::NDCSpace(Ac, cam);
     Bn = Transforms::NDCSpace(Bc, cam);
     Cn = Transforms::NDCSpace(Cc, cam);
+}
 
+void Triangle::updateScreenSpace(Camera3D *cam)
+{
     As = Transforms::screenSpace(An, cam);
     Bs = Transforms::screenSpace(Bn, cam);
     Cs = Transforms::screenSpace(Cn, cam);
+}
 
-    updateNormal();
+void Triangle::updateFullVertexSpaces(Camera3D *cam)
+{
+    this->updateObjectSpace();
+    this->updateCameraSpace(cam);
+    this->updateNDCSpace(cam);
+    this->updateScreenSpace(cam);
+    this->updateNormal();
 }
 
 void Triangle::updateUVCache()
@@ -134,7 +149,7 @@ Vertex3D Triangle::getNormal()
 
 void Triangle::shadowMapping(LightPoint3D *lp)
 {
-    this->updateVertexSpaces(lp->cam);
+    this->updateFullVertexSpaces(lp->cam);
 
     if (this->isBackFaceCulling(lp->cam))  {
         return;
@@ -150,19 +165,20 @@ void Triangle::shadowMapping(LightPoint3D *lp)
     this->scanVerticesForShadowMapping(lp);
 }
 
-bool Triangle::draw(Camera3D *cam)
+void Triangle::drawForTile(Camera3D *cam, int minX, int minY, int maxX, int maxY)
 {
-    if (isClipped()) {
-        this->updateVertexSpaces(cam);
-    }
+    softwareRasterizerForTile( minX,  minY,  maxX,  maxY);
+}
 
+void Triangle::draw(Camera3D *cam)
+{
+    drawed = true;
     // rasterization
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
         if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-            this->hardwareRasterizer(cam);
+            this->hardwareRasterizer();
         } else {
-            this->updateUVCache();
-            this->softwareRasterizer(cam);
+            this->softwareRasterizer();
         }
     }
 
@@ -179,8 +195,6 @@ bool Triangle::draw(Camera3D *cam)
     }
 
     EngineBuffers::getInstance()->trianglesDrawed++;
-
-    return true;
 }
 
 bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
@@ -210,6 +224,8 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
         //Triangle new_triangles[10];
         //int num_new_triangles = 0;
 
+        int oldNumTriangles = numTriangles;
+
         Maths::TriangulatePolygon(
                 num_inputvertices, input_vertices,
                 this->getNormal(),
@@ -221,12 +237,12 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
                 this->is_bsp
         );
 
-        /*for (int i = 0; i < num_new_triangles; i++) {
-            EngineBuffers::getInstance()->trianglesClippingCreated++;
-            //brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = &new_triangles[i];
-            //brakeza3D->numFrameTriangles++;
-            //new_triangles[i].draw(cam);
-        }*/
+        for (int i = oldNumTriangles; i < numTriangles; i++) {
+            arrayTriangles[i].updateFullVertexSpaces(cam);
+            arrayTriangles[i].updateUVCache();
+            arrayTriangles[i].updateBoundingBox();
+            arrayTriangles[i].updateFullArea();
+        }
 
         return true;
     }
@@ -234,20 +250,86 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
     return false;
 }
 
-void Triangle::hardwareRasterizer(Camera3D *cam)
+void Triangle::hardwareRasterizer()
 {
     EngineBuffers::getInstance()->addOCLTriangle(this->getOpenCL());
 }
 
-void Triangle::softwareRasterizer(Camera3D *cam)
+void Triangle::softwareRasterizerForTile(int minX, int minY, int maxX, int maxY)
 {
     // LOD determination
     this->lod = processLOD();
 
-    // Full area for get barycentric
-    this->processFullArea();
+    // Triangle setup
+    int A01 = (int) -(As.y - Bs.y);
+    int A12 = (int) -(Bs.y - Cs.y);
+    int A20 = (int) -(Cs.y - As.y);
 
-    this->getBoundingBox(minX, minY, maxX, maxY);
+    int B01 = (int) -(Bs.x - As.x);
+    int B12 = (int) -(Cs.x - Bs.x);
+    int B20 = (int) -(As.x - Cs.x);
+
+    Point2D startP(minX, minY);
+    int w0_row = Maths::orient2d(Bs, Cs, startP);
+    int w1_row = Maths::orient2d(Cs, As, startP);
+    int w2_row = Maths::orient2d(As, Bs, startP);
+
+    float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
+
+    for (int y = minY ; y < maxY ; y++) {
+        int w0 = w0_row;
+        int w1 = w1_row;
+        int w2 = w2_row;
+
+        for (int x = minX ; x < maxX ; x++) {
+            if ( (x < minX || x > maxX) || (y < minY || y > maxY ) ) continue;
+
+            if ((w0 | w1 | w2) > 0) {
+
+                alpha = w0 * reciprocalFullArea;
+                theta = w1 * reciprocalFullArea;
+                gamma = 1 - alpha - theta;
+
+                depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
+
+                const int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+
+                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                    affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
+                    texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
+                    texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
+
+                    lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
+                    lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
+
+                    processPixel(
+                            bufferIndex,
+                            x, y,
+                            alpha, theta, gamma,
+                            depth,
+                            texu, texv,
+                            lightu, lightv
+                    );
+                }
+            }
+
+            // edge function increments
+            w0 += A12;
+            w1 += A20;
+            w2 += A01;
+        }
+
+        w0_row += B12;
+        w1_row += B20;
+        w2_row += B01;
+    }
+
+}
+
+void Triangle::softwareRasterizer()
+{
+    // LOD determination
+    this->lod = processLOD();
 
     // Triangle setup
     int A01 = (int) -(As.y - Bs.y);
@@ -280,29 +362,25 @@ void Triangle::softwareRasterizer(Camera3D *cam)
 
                 depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
 
-                const int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
 
-                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER &&
-                    depth >= EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )
-                        ) {
-                    continue;
+                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                    affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
+                    texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
+                    texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
+
+                    lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
+                    lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
+
+                    processPixel(
+                            bufferIndex,
+                            x, y,
+                            alpha, theta, gamma,
+                            depth,
+                            texu, texv,
+                            lightu, lightv
+                    );
                 }
-
-                affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
-                texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
-                texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
-
-                lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
-                lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
-
-                processPixel(
-                        bufferIndex,
-                        x, y,
-                        alpha, theta, gamma,
-                        depth,
-                        texu, texv,
-                        lightu, lightv
-                );
             }
 
             // edge function increments
@@ -318,7 +396,7 @@ void Triangle::softwareRasterizer(Camera3D *cam)
 
 }
 
-void Triangle::getBoundingBox(int &minX, int &minY, int &maxX, int &maxY)
+void Triangle::updateBoundingBox()
 {
     maxX = std::max(As.x, std::max(Bs.x, Cs.x));
     minX = std::min(As.x, std::min(Bs.x, Cs.x));
@@ -326,7 +404,7 @@ void Triangle::getBoundingBox(int &minX, int &minY, int &maxX, int &maxY)
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
 }
 
-float Triangle::processFullArea()
+float Triangle::updateFullArea()
 {
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;
@@ -678,7 +756,7 @@ bool Triangle::isClipped()
     return this->is_clipped;
 }
 
-bool Triangle::isPointInside(Vertex3D v, float EPSILON)
+bool Triangle::isPointInside(Vertex3D v)
 {
     return Maths::PointInTriangle(v, Ao, Bo, Co);
 }

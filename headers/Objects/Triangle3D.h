@@ -16,6 +16,7 @@ class Triangle {
 
 public:
     int id;
+    bool drawed = false;
 
     Vertex3D A, B, C;
     Vertex3D Ao, Bo, Co;
@@ -68,13 +69,21 @@ public:
     Triangle();
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
-    void updateVertexSpaces(Camera3D *cam);
+    void updateFullVertexSpaces(Camera3D *cam);
+
+    void updateObjectSpace();
+    void updateCameraSpace(Camera3D *cam);
+    void updateNDCSpace(Camera3D *cam);
+    void updateScreenSpace(Camera3D *cam);
+
     void updateUVCache();
 
     bool isBackFaceCulling(Camera3D *cam);
 
-    void hardwareRasterizer(Camera3D *cam);
-    void softwareRasterizer(Camera3D *cam);
+    void hardwareRasterizer();
+    void softwareRasterizer();
+    void softwareRasterizerForTile(int minX, int minY, int maxX, int maxY);
+
 
     Vertex3D getNormal();
     void     updateNormal();
@@ -83,7 +92,9 @@ public:
     void drawWireframe();
     void drawWireframeColor(Uint32 c);
 
-    bool draw(Camera3D *);
+    void draw(Camera3D *);
+    void drawForTile(Camera3D *cam, int minX, int minY, int maxX, int maxY);
+
     void drawNormal(Camera3D *cam, Uint32 color);
 
     void shadowMapping(LightPoint3D *lp);
@@ -110,12 +121,13 @@ public:
 
     void setLightPoints(LightPoint3D **lightPoints, int number);
 
-    bool isPointInside(Vertex3D, float);
+    bool isPointInside(Vertex3D);
 
     int processLOD();
     int getLOD();
-    float processFullArea();
-    void getBoundingBox(int &minX, int &minY, int &maxX, int &maxY);
+
+    float updateFullArea();
+    void updateBoundingBox();
 
     OCLTriangle getOpenCL();
 

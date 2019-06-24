@@ -228,9 +228,9 @@ void Game::onUpdate()
     Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
 
     /*Triangle *t = &triangle->model_triangles[0];
-    t->updateVertexSpaces(camera);
-    t->processFullArea();
-    t->getBoundingBox(t->minX, t->minY, t->maxX, t->maxY);
+    t->updateFullVertexSpaces(camera);
+    t->updateFullArea();
+    t->updateBoundingBox(t->minX, t->minY, t->maxX, t->maxY);
 
     Point2D l1 = Point2D(t->minX, t->minY);
     Point2D r1 = Point2D(t->maxX, t->maxY);

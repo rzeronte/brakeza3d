@@ -413,7 +413,8 @@ void Engine::drawGUI()
         finish,
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
-        camera
+        camera,
+        tiles, tilesWidth
     );
 
     ImGui::Render();
@@ -439,10 +440,6 @@ void Engine::windowUpdate()
     SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
 
     SDL_DestroyTexture(screenTexture);
-    //SDL_RenderPresent( renderer );
-    //SDL_RenderClear(renderer);
-    //SDL_UpdateWindowSurface( window );
-    //SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 }
 
 void Engine::onStart()
@@ -624,8 +621,15 @@ void Engine::onUpdate()
     this->hiddenSurfaceRemoval();
 
     if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-        this->drawFrameTriangles();
-        //this->handleTrianglesToTiles();
+        if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
+            this->handleTrianglesToTiles();
+            this->drawTilesTriangles();
+            if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
+                this->drawTilesGrid();
+            }
+        } else {
+            this->drawFrameTriangles();
+        }
     }
 
     this->numFrameTriangles = 0;
@@ -782,37 +786,49 @@ void Engine::drawFrameTriangles()
     }
 }
 
+void Engine::drawTilesGrid()
+{
+    for (int j = 0 ; j < (this->tilesWidth*this->tilesHeight) ; j++) {
+        Tile *t = &this->tiles[j];
+        Uint32 color = Color::white();
+
+        if (t->triangles.size() > 0) {
+            color = Color::red();
+        }
+
+        Line2D top = Line2D(t->start_x, t->start_y, t->start_x+sizeTileWidth, t->start_y);
+        Line2D left = Line2D(t->start_x, t->start_y, t->start_x, t->start_y+sizeTileHeight);
+        Drawable::drawLine2D(top, color);
+        Drawable::drawLine2D(left, color);
+    }
+}
+
 void Engine::hiddenSurfaceRemoval()
 {
-    if (this->numFrameTriangles == 0) return;
-
     numVisibleTriangles = 0;
 
     for (int i = 0; i < this->numFrameTriangles ; i++) {
         Triangle *t = &this->frameTriangles[i];
 
-        t->updateVertexSpaces(camera);
-        t->updateNormal();
+        this->frameTriangles[i].updateObjectSpace();
 
-        // back face culling
-        if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING && !t->isClipped()) {
-            bool faceCulling = t->isBackFaceCulling(camera);
-
-            if (faceCulling) {
+        // back face culling (needs objectSpace)
+        if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
+            if (t->isBackFaceCulling(camera)) {
                 continue;
             }
         }
 
-        // Clipping
-        if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING && !t->isClipped()) {
+        // Clipping (needs objectSpace)
+        if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING) {
             if (t->testForClipping( camera ) ) {
                 t->clipping(camera, visibleTriangles, numVisibleTriangles);
                 continue;
             }
         }
 
-        // Frustum Culling
-        if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING && !t->isClipped()) {
+        // Frustum Culling (needs objectSpace)
+        if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING) {
             if (!camera->frustum->isPointInFrustum(t->Ao) &&
                 !camera->frustum->isPointInFrustum(t->Bo) &&
                 !camera->frustum->isPointInFrustum(t->Co)
@@ -821,11 +837,33 @@ void Engine::hiddenSurfaceRemoval()
             }
         }
 
+        // Triangle precached vertices
+        this->frameTriangles[i].updateCameraSpace(camera);
+        this->frameTriangles[i].updateNDCSpace(camera);
+        this->frameTriangles[i].updateScreenSpace(camera);
+        this->frameTriangles[i].updateNormal();
+        this->frameTriangles[i].updateFullArea();
+        this->frameTriangles[i].updateUVCache();
+        this->frameTriangles[i].updateBoundingBox();
+
         visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
         numVisibleTriangles++;
     }
 
     //Logging::getInstance()->Log("frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
+}
+
+void Engine::drawTilesTriangles()
+{
+    int numTiles = this->tilesWidth*this->tilesHeight;
+    for (int i = 0 ; i < numTiles ; i++) {
+        for (int j = 0 ; j < this->tiles[i].triangles.size() ; j++) {
+            if (!this->tiles[i].triangles[j].drawed && this->tiles[i].draw) {
+                Tile *t = &this->tiles[i];
+                this->tiles[i].triangles[j].drawForTile(camera, t->start_x, t->start_y, t->start_x+sizeTileWidth, t->start_y+sizeTileHeight);
+            }
+        }
+    }
 }
 
 void Engine::handleTrianglesToTiles()
@@ -835,32 +873,19 @@ void Engine::handleTrianglesToTiles()
     }
 
     for (int i = 0 ; i < numVisibleTriangles ; i++) {
-        int numMatchTriangleTiles = 0;
-        Point2D l1 = Point2D(this->visibleTriangles[i].minX, this->visibleTriangles[i].minY);
-        Point2D r1 = Point2D(this->visibleTriangles[i].maxX, this->visibleTriangles[i].maxY);
+        int tileStartX =  std::max((float)(this->visibleTriangles[i].minX/this->sizeTileWidth), 0.0f);
+        int tileEndX   =  std::min((float)(this->visibleTriangles[i].maxX/this->sizeTileWidth), (float)this->tilesWidth-1);
 
-        for (int j = 0 ; j < (this->tilesWidth*this->tilesHeight) ; j++) {
-            Tile *t = &this->tiles[j];
+        int tileStartY =  std::max((float)(this->visibleTriangles[i].minY/this->sizeTileHeight), 0.0f);
+        int tileEndY   =  std::min((float)(this->visibleTriangles[i].maxY/this->sizeTileHeight), (float)this->tilesHeight-1);
 
-            //Point2D l2 = Point2D(t.start_x, t.start_y);
-            //Point2D r2 = Point2D(t.start_x+sizeTileWidth, t.start_y+sizeTileHeight);
-
-            /*if ( Tools::checkRectangleAABBOverlap(l1, r1, l2, r2) ) {
-                this->tiles[j].triangles.push_back(this->visibleTriangles[i]);
-                numMatchTriangleTiles++;
+        for (int y = tileStartY; y <= tileEndY ; y++) {
+            for (int x = tileStartX; x <= tileEndX ; x++) {
+                int tileOffset = y * tilesWidth + x;
+                this->tiles[tileOffset].triangles.push_back(this->visibleTriangles[i]);
             }
-
-            if (numMatchTriangleTiles > 1) {
-                continue;
-            }*/
         }
     }
-
-    Logging::getInstance()->Log("............................");
-    for (int i = 0 ; i < (this->tilesWidth*this->tilesHeight) ; i++) {
-        Logging::getInstance()->Log("Tile("+std::to_string(i)+"): numTriangles: " + std::to_string(this->tiles[i].triangles.size()) );
-    }
-
 }
 
 void Engine::onEnd()
@@ -1006,6 +1031,7 @@ void Engine::initTiles()
         {
             Tile t;
 
+            t.draw    = true;
             t.id_x    = (x/this->sizeTileWidth);
             t.id_y    = (y/this->sizeTileHeight);
             t.id      = t.id_y * this->tilesWidth + t.id_x;

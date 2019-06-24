@@ -40,17 +40,6 @@ enum collisionGroups
     AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
 } ;
 
-
-struct Tile {
-    int id;
-    int id_x;
-    int id_y;
-    int start_x;
-    int start_y;
-    std::vector <Triangle> triangles;
-    unsigned int *buffer;
-};
-
 class Engine {
 public:
     // Window y Renderer principal
@@ -148,8 +137,8 @@ public:
     cl_command_queue command_queue;
     cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
 
-    int sizeTileWidth = 16;
-    int sizeTileHeight = 16;
+    int sizeTileWidth = 64;
+    int sizeTileHeight = 48;
     int tilesWidth;
     int tilesHeight;
 
@@ -182,8 +171,12 @@ public:
     void getObjectsBillboardTriangles();
 
     void hiddenSurfaceRemoval();
-    void drawFrameTriangles();
     void handleTrianglesToTiles();
+
+    void drawTilesGrid();
+
+    void drawTilesTriangles();
+    void drawFrameTriangles();
 
     void updatePhysicObjects();
 

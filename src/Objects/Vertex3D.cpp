@@ -20,35 +20,29 @@ Vertex3D::Vertex3D(float x, float y, float z)
 
 Vertex3D Vertex3D::operator +(const Vertex3D &v)
 {
-    Vertex3D V;
-
-    V.x = this->x + v.x;
-    V.y = this->y + v.y;
-    V.z = this->z + v.z;
-
-    return V;
+    return Vertex3D(
+        this->x + v.x,
+        this->y + v.y,
+        this->z + v.z
+    );
 }
 
 Vertex3D Vertex3D::operator -(const Vertex3D &v)
 {
-    Vertex3D V;
-
-    V.x = this->x - v.x;
-    V.y = this->y - v.y;
-    V.z = this->z - v.z;
-
-    return V;
+    return Vertex3D(
+        this->x - v.x,
+        this->y - v.y,
+        this->z - v.z
+    );
 }
 
 Vertex3D Vertex3D::operator %(const Vertex3D &v)
 {
-    Vertex3D V;
-
-    V.x = (this->y * v.z) - (this->z * v.y);
-    V.y = (this->z * v.x) - (this->x * v.z);
-    V.z = (this->x * v.y) - (this->y * v.x);
-
-    return V;
+    return Vertex3D(
+        (this->y * v.z) - (this->z * v.y),
+        (this->z * v.x) - (this->x * v.z),
+        (this->x * v.y) - (this->y * v.x)
+    );
 }
 
 float Vertex3D::operator *(const Vertex3D &v)
@@ -143,6 +137,13 @@ float Vertex3D::squaredLength()
     float norm = (this->x*this->x) + (this->y*this->y) + (this->z*this->z);
 
     return norm;
+}
+
+Vertex3D Vertex3D::setScaled(float s)
+{
+    this->x*=s;
+    this->y*=s;
+    this->z*=s;
 }
 
 Vertex3D Vertex3D::getScaled(float s)
