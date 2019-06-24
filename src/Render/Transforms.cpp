@@ -10,15 +10,10 @@
 Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
     Vertex3D V = A;
-
-    //V = Maths::rotateVertex(V, o->getRotation());
-    V.x*=o->scale;
-    V.y*=o->scale;
-    V.z*=o->scale;
+    V.setScaled(o->scale);
 
     V = o->getRotation() * V;
     V = V + *o->getPosition();
-
 
     V.u = A.u;
     V.v = A.v;

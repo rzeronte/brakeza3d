@@ -106,8 +106,10 @@ add_executable(brakeda3d
         src/GUI/GUI_Engine.h
         src/GUI/GUI_LightsInspector.h
         src/GUI/GUI_Log.h
-        src/GUI/GUI_Physics.h
+        src/GUI/GUI_Tiles.h
         src/Render/Logging.cpp
+
+        src/Objects/Tile.h
 
         headers/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp
