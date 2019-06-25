@@ -203,16 +203,16 @@ void Engine::initOpenCL()
     cl_context_properties properties[3];
 
     platform_id = NULL;
-    cpu_device_id = NULL;
+    device_id = NULL;
 
     ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms) ;
     if (ret != CL_SUCCESS) {
         printf("Unable to get platform_id");
     }
 
-    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &cpu_device_id, &ret_num_devices);
+    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, &ret_num_devices);
     if (ret != CL_SUCCESS) {
-        printf("Unable to get cpu_device_id");
+        printf("Unable to get device_id");
     }
 
     properties[0]= CL_CONTEXT_PLATFORM;
@@ -220,9 +220,9 @@ void Engine::initOpenCL()
     properties[2]= 0;
 
     // Create an OpenCL context
-    context = clCreateContext(properties, 1, &cpu_device_id, NULL, NULL, &ret);
+    context = clCreateContext(properties, 1, &device_id, NULL, NULL, &ret);
 
-    command_queue = clCreateCommandQueue(context, cpu_device_id, NULL, &ret);
+    command_queue = clCreateCommandQueue(context, device_id, NULL, &ret);
 
     // Load the kernel source code into the array source_str
     size_t source_size;
@@ -232,7 +232,7 @@ void Engine::initOpenCL()
     program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
 
     // Build the program
-    clBuildProgram(program, 1, &cpu_device_id, NULL, NULL, NULL);
+    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
 
     // Create the OpenCL kernel
     kernel = clCreateKernel(program, "handleTiles", &ret);
@@ -245,7 +245,6 @@ void Engine::initOpenCL()
 
 void Engine::processOpenCL()
 {
-
     // Create OCLTriangles
     for (int i = 0 ; i < numVisibleTriangles ; i++) {
         EngineBuffers::getInstance()->addOCLTriangle(visibleTriangles[i].getOpenCL());
@@ -278,10 +277,12 @@ void Engine::processOpenCL()
     clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
-    clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opencl_buffer_video);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_depth);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
+    clSetKernelArg(kernel, 1, sizeof(int), &this->sizeTileWidth);
+    clSetKernelArg(kernel, 2, sizeof(int), &this->sizeTileHeight);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
+    clSetKernelArg(kernel, 6, (sizeTileWidth*sizeTileHeight) * sizeof(float), NULL); // Local ZBuffer for Tile render
 
     size_t global_item_size = numTiles; // Process the entire lists
     size_t local_item_size = 1;          // Divide work items into groups of 64
@@ -291,12 +292,14 @@ void Engine::processOpenCL()
         Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
 
         char buffer[1024];
-        clGetProgramBuildInfo(program, cpu_device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
         if (strlen(buffer) > 0 ) {
             Logging::getInstance()->getInstance()->Log( buffer );
         }
     }
+
     clReleaseMemObject(opencl_buffer_triangles);
+    clReleaseMemObject(opencl_buffer_tiles);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
 }
@@ -349,7 +352,7 @@ void Engine::processOpenCL()
         Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
 
         char buffer[1024];
-        clGetProgramBuildInfo(program, cpu_device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
         if (strlen(buffer) > 0 ) {
             Logging::getInstance()->getInstance()->Log( buffer );
         }
@@ -956,16 +959,14 @@ void Engine::drawTilesTriangles()
 
         for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
             int triangleId = this->tiles[i].triangleIds[j];
-            if (!this->visibleTriangles[triangleId].drawed) {
-                Tile *t = &this->tiles[i];
-                this->visibleTriangles[triangleId].drawForTile(
-                    camera,
-                    t->start_x,
-                    t->start_y,
-                    t->start_x+sizeTileWidth,
-                    t->start_y+sizeTileHeight
-                );
-            }
+            Tile *t = &this->tiles[i];
+            this->visibleTriangles[triangleId].drawForTile(
+                camera,
+                t->start_x,
+                t->start_y,
+                t->start_x+sizeTileWidth,
+                t->start_y+sizeTileHeight
+            );
         }
     }
 }

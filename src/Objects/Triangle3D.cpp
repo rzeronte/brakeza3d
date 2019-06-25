@@ -244,7 +244,7 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
     return false;
 }
 
-void Triangle::softwareRasterizerForTile(int minX, int minY, int maxX, int maxY)
+void Triangle::softwareRasterizerForTile(int minTileX, int minTileY, int maxTileX, int maxTileY)
 {
     // LOD determination
     this->lod = processLOD();
@@ -271,7 +271,6 @@ void Triangle::softwareRasterizerForTile(int minX, int minY, int maxX, int maxY)
         int w2 = w2_row;
 
         for (int x = minX ; x < maxX ; x++) {
-            if ( (x < minX || x > maxX) || (y < minY || y > maxY ) ) continue;
 
             if ((w0 | w1 | w2) > 0) {
 
@@ -291,14 +290,16 @@ void Triangle::softwareRasterizerForTile(int minX, int minY, int maxX, int maxY)
                     lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
                     lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
 
-                    processPixel(
-                            bufferIndex,
-                            x, y,
-                            alpha, theta, gamma,
-                            depth,
-                            texu, texv,
-                            lightu, lightv
-                    );
+                    if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
+                        processPixel(
+                                bufferIndex,
+                                x, y,
+                                alpha, theta, gamma,
+                                depth,
+                                texu, texv,
+                                lightu, lightv
+                        );
+                    }
                 }
             }
 

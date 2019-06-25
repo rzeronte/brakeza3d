@@ -120,8 +120,7 @@ public:
     float timerCurrent = 0;
 
     cl_platform_id platform_id;
-    cl_device_id cpu_device_id;
-    cl_device_id gpu_device_id;
+    cl_device_id device_id;
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;

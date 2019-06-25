@@ -37,27 +37,38 @@ struct pixelFragment {
 int orient2d(int pa_x, int pa_y, int pb_x, int pb_y, int pc_x, int pc_y);
 float processFullArea(int Bs_x, int Bs_y, int Cs_x, int Cs_y, int As_x, int As_y);
 unsigned int createRGB(int r, int g, int b);
-void rasterizeTriangle(struct OCLTriangle t, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer);
+void rasterizeTriangle(struct OCLTriangle t, int tileWidth, int tileHeight, int tileStartX, int tileStartY, int screenWidth, __global unsigned int *video, __local float *ZBuffer);
 
 
 // OpenCL Queue Setup
 kernel __attribute__((reqd_work_group_size(1, 1, 1)))
 
 // Kernel called from Brakeza3D
-__kernel void handleTiles( int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer, __global struct OCLTriangle *triangles, __global struct OCLTile *tiles)
-{
+__kernel void handleTiles(
+    int screenWidth,
+    int tileWidth,
+    int tileHeight,
+    __global unsigned int *video,
+    __global struct OCLTriangle *triangles,
+    __global struct OCLTile *tiles,
+    __local float *ZBuffer
+) {
     int i = get_global_id(0);
 
     if (!tiles[i].draw) return;
 
+    for (int j = 0; j < tileWidth*tileHeight ; j++) {
+        ZBuffer[j] = 0;
+    }
+
     for (int j = 0 ; j < tiles[i].numTriangles; j++) {
         int triangleId = tiles[i].triangleIds[j];
-        rasterizeTriangle(triangles[triangleId], SCREEN_WIDTH, video, ZBuffer);
+        rasterizeTriangle(triangles[triangleId], tileWidth, tileHeight, tiles[i].start_x, tiles[i].start_y, screenWidth, video, ZBuffer);
     }
 }
 
 // Function Helpers
-void rasterizeTriangle(struct OCLTriangle t, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer)
+void rasterizeTriangle(struct OCLTriangle t, int tileWidth, int tileHeight, int tileStartX, int tileStartY, int screenWidth, __global unsigned int *video, __local float *ZBuffer)
 {
     int As_x = t.As_x;
     int Bs_x = t.Bs_x;
@@ -92,35 +103,46 @@ void rasterizeTriangle(struct OCLTriangle t, int SCREEN_WIDTH, __global unsigned
     float fullArea = processFullArea(Bs_x, Bs_y, Cs_x, Cs_y, As_x, As_y);
     float reciprocalFullArea = 1 / fullArea;
 
+    int local_x = 0;
+    int local_y = 0;
+
     for (int y = minY ; y < maxY ; y++) {
 
         int w0 = w0_row;
         int w1 = w1_row;
         int w2 = w2_row;
 
+        local_x = 0;
         for (int x = minX ; x < maxX ; x++) {
+
             if ((w0 | w1 | w2) > 0) {
-                int bufferIndex = ( y * SCREEN_WIDTH ) + x;
+                int bufferZIndex = ( local_y * tileWidth ) + local_x;
+                int bufferVideoIndex = ( y * screenWidth ) + x;
                 alpha = w0 * reciprocalFullArea;
                 theta = w1 * reciprocalFullArea;
                 gamma = 1 - alpha - theta;
 
                 float depth = alpha * (An_z) + theta * (Bn_z) + gamma * (Cn_z);
-                if (depth <= ZBuffer[bufferIndex] ) {
-                    ZBuffer[bufferIndex] = depth;
-                    video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+                if  (! ((y < tileStartY || y > tileStartY + tileHeight) || (x < tileStartX || x > tileStartX + tileWidth)) ) {
+                    if (depth <= ZBuffer[bufferZIndex] || ZBuffer[bufferZIndex] == 0) {
+                        ZBuffer[bufferZIndex] = depth;
+                        //video[bufferVideoIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+                    }
                 }
+
             }
 
             // edge function increments
             w0 += A12;
             w1 += A20;
             w2 += A01;
+            local_x++;
         }
 
         w0_row += B12;
         w1_row += B20;
         w2_row += B01;
+        local_y++;
     }
 }
 
