@@ -236,6 +236,9 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
             arrayTriangles[i].updateFullArea();
+            if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+                EngineBuffers::getInstance()->addOCLTriangle(arrayTriangles[i].getOpenCL());
+            }
         }
 
         return true;
@@ -548,8 +551,8 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
         if (getTexture()->animated && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
             float cache1 = texu / EngineSetup::getInstance()->LAVA_CLOSENESS;
             float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
-            texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->timerCurrent + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
-            texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->timerCurrent + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
+            texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
         }
 
         pixelColor = this->processPixelTexture(texu, texv);
@@ -820,7 +823,22 @@ OCLTriangle Triangle::getOpenCL()
 {
     OCLTriangle ot;
 
-    ot.id = 69;
+    ot.id = 0;
+
+    ot.o_x = parent->getPosition()->x;
+    ot.o_y = parent->getPosition()->y;
+    ot.o_z = parent->getPosition()->z;
+
+    ot.o_scale = parent->scale;
+
+    ot.oPitch = parent->getRotation().getPitch();
+    ot.oYaw = parent->getRotation().getYaw();
+    ot.oRoll = parent->getRotation().getRoll();
+
+    ot.A_x = A.x; ot.A_y = A.y; ot.A_z = A.z;
+    ot.B_x = B.x; ot.B_y = B.y; ot.B_z = B.z;
+    ot.C_x = C.x; ot.C_y = C.y; ot.C_z = C.z;
+
     ot.As_x = As.x;
     ot.As_y = As.y;
     ot.Bs_x = Bs.x;

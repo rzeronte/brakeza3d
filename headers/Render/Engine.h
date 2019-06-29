@@ -75,7 +75,7 @@ public:
     TTF_Font *font = NULL;
 
     // Fps counter
-    float fps;
+    int fps;
     int countedFrames = 0;
 
     Triangle *frameTriangles;
@@ -117,7 +117,8 @@ public:
     float deltaTime = 0;
     float last_ticks = 0;
     float current_ticks = 0;
-    float timerCurrent = 0;
+    float executionTime = 0;
+    float frameTime = 0;
 
     cl_platform_id platform_id;
     cl_device_id device_id;
@@ -126,24 +127,29 @@ public:
     cl_int ret;
     cl_context context;
     cl_program program;
-    cl_kernel kernel;
-    cl_kernel makeFragments;
+    cl_kernel processTileTriangles;
+    cl_kernel processAllTriangles;
+    cl_kernel processTransformTriangles;
+
 
     cl_mem opencl_buffer_triangles;
     cl_mem opencl_buffer_tiles;
-    cl_mem opencl_buffer_depth;
     cl_mem opencl_buffer_video;
+    cl_mem opencl_buffer_depth;
+    cl_mem opencl_buffer_frustum;
 
     cl_command_queue command_queue;
     cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
 
-    int sizeTileWidth = 64;
-    int sizeTileHeight = 48;
+    int sizeTileWidth = 80;
+    int sizeTileHeight = 80;
     int tilesWidth;
     int tilesHeight;
     int numTiles;
+    int tilePixelsBufferSize;
 
     std::vector<Tile> tiles;
+    OCLTriangle *trianglesTile;
 
     Engine();
 
@@ -209,9 +215,11 @@ public:
     void updateTimer();
     float getDeltaTime();
 
-    void testOpenCL();
-    void processOpenCL();
+    void handleOpenCLTriangles();
+    void handleOpenCLTrianglesForTiles();
+    void dumpTileToFrameBuffer(Tile *t);
 
+    void handleOpenCLTransform();
 
 };
 

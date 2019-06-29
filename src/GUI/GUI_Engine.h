@@ -29,7 +29,7 @@ public:
         gui_tiles = new GUI_Tiles();
     }
 
-    virtual void draw(float timedelta, bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns)
+    virtual void draw(float timedelta, bool &finish, Object3D **gameObjects, int numberGameObjects, LightPoint3D **lightPoints, int numberLightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
@@ -37,7 +37,7 @@ public:
         gui_menu->draw(finish, gui_inspector->show, gui_lightpoints->show, gui_log->show, gui_camera->show, gui_tiles->show);
         gui_inspector->draw(gameObjects, numberGameObjects);
         gui_lightpoints->draw(lightPoints, numberLightPoints);
-        gui_log->draw(timedelta, cam);
+        gui_log->draw(timedelta, cam, numVisibleTriangles);
         gui_camera->draw(cam);
         gui_tiles->draw(cam, tiles, numTilesColumns);
     }

@@ -42,11 +42,11 @@ public:
 
     const int ENGINE_MAX_GAMEOBJECTS  = 1500;
     const int ENGINE_MAX_FRAGMENTS    = 256000;
-    const int ENGINE_MAX_OCLTRIANGLES = 64000;
+    const int ENGINE_MAX_OCLTRIANGLES = 10240;
 
     const float EPSILON = 0.00001f;
 
-    bool RENDER_WITH_HARDWARE = false;
+    bool RENDER_WITH_HARDWARE = true;
 
     bool DRAW_TILES_GRID = false;
 
@@ -85,6 +85,7 @@ public:
     bool TRIANGLE_RENDER_CLIPPING = true;
 
     bool DRAW_FRUSTUM = false;
+    bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
     int NEAR_PLANE   = 0;

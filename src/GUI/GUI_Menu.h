@@ -51,7 +51,7 @@ public:
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Hardware", &EngineSetup::getInstance()->RENDER_WITH_HARDWARE);
+                ImGui::Checkbox("OpenCL", &EngineSetup::getInstance()->RENDER_WITH_HARDWARE);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
@@ -164,6 +164,8 @@ public:
                 ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
                 ImGui::Separator();
                 ImGui::Checkbox("Show weapon", &EngineSetup::getInstance()->SHOW_WEAPON);
+                ImGui::Separator();
+                ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);
                 ImGui::EndMenu();
             }
 

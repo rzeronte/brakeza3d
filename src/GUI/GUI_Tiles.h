@@ -24,16 +24,17 @@ public:
 
             ImGui::SetNextWindowPos(ImVec2(2, 608), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 240), ImGuiSetCond_Once);
-            window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Tiles";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
             ImGui::Columns(numColumns, "mycolumns3", false);
 
-            for (int i = 0 ; i < tiles.size(); i++) {
-                ImGui::Checkbox(std::string(std::to_string(i)).c_str(), &tiles[i].draw);
-                ImGui::NextColumn();
+            if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
+                for (int i = 0 ; i < tiles.size(); i++) {
+                    ImGui::Checkbox(std::string(std::to_string(i) + " ("+ std::to_string(tiles[i].numTriangles)+")").c_str(), &tiles[i].draw);
+                    ImGui::NextColumn();
+                }
             }
 
             ImGui::Columns(1);

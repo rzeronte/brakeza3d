@@ -76,7 +76,7 @@ public:
     ExampleAppLog log;
     bool show = true;
 
-    virtual void draw(float deltaTime, Camera3D *cam)
+    virtual void draw(float deltaTime, Camera3D *cam, int numVisibleTriangles)
     {
         if (show) {
             std::string title = "Log | Camera (x: " +
@@ -85,7 +85,8 @@ public:
                     std::to_string(cam->getPosition()->z) + " | Yaw: " +
                     std::to_string(cam->getRotation().getYawDegree()) + ", Pitch: " +
                     std::to_string(cam->getRotation().getPitchDegree()) + ", deltaTime: " +
-                    std::to_string(deltaTime) + "###AnimatedTitle"
+                    std::to_string(deltaTime) + ", numTriangles: " +
+                    std::to_string(numVisibleTriangles) + "###AnimatedTitle"
             ;
             log.Draw(title.c_str(), &show);
         }

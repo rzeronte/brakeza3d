@@ -210,7 +210,7 @@ void Engine::initOpenCL()
         printf("Unable to get platform_id");
     }
 
-    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, &ret_num_devices);
+    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_id, &ret_num_devices);
     if (ret != CL_SUCCESS) {
         printf("Unable to get device_id");
     }
@@ -235,25 +235,52 @@ void Engine::initOpenCL()
     clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
 
     // Create the OpenCL kernel
-    kernel = clCreateKernel(program, "handleTiles", &ret);
+    processAllTriangles       = clCreateKernel(program, "rasterizerFrameTrianglesKernel", &ret);
+    processTileTriangles      = clCreateKernel(program, "rasterizerFrameTileTrianglesKernel", &ret);
+    processTransformTriangles = clCreateKernel(program, "transformTrianglesKernel", &ret);
 
-    opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
-    opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32), EngineBuffers::getInstance()->videoBuffer, &ret);
+    opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
+    opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
 
     OpenCLInfo();
 }
 
-void Engine::processOpenCL()
+void Engine::handleOpenCLTriangles()
 {
-    // Create OCLTriangles
-    for (int i = 0 ; i < numVisibleTriangles ; i++) {
-        EngineBuffers::getInstance()->addOCLTriangle(visibleTriangles[i].getOpenCL());
+    int numTriangles = EngineBuffers::getInstance()->numOCLTriangles;
+
+    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTriangles * sizeof(OCLTriangle), NULL, &ret);
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+
+    clSetKernelArg(processAllTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+    clSetKernelArg(processAllTriangles, 1, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+    clSetKernelArg(processAllTriangles, 2, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(processAllTriangles, 3, sizeof(cl_mem), (void *)&opencl_buffer_depth);
+
+    size_t global_item_size = numTriangles; // Process the entire lists
+    size_t local_item_size = 1;          // Divide work items into groups of 64
+
+    ret = clEnqueueNDRangeKernel(command_queue, processAllTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+
+    if (ret != CL_SUCCESS) {
+        Logging::getInstance()->getInstance()->Log( "Error processAllTriangles: " + std::to_string(ret) );
+
+        char buffer[1024];
+        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        if (strlen(buffer) > 0 ) {
+            Logging::getInstance()->getInstance()->Log( buffer );
+        }
     }
+    clFinish(command_queue);
+    EngineBuffers::getInstance()->numOCLTriangles = 0;
+}
+
+void Engine::handleOpenCLTrianglesForTiles()
+{
 
     // Create OCLTiles
     OCLTile tilesOCL[numTiles];
     for (int i = 0 ; i < numTiles ; i++) {
-        int numTrianglesTile = this->tiles[i].numTriangles;
 
         tilesOCL[i].draw    = this->tiles[i].draw;
         tilesOCL[i].start_x = this->tiles[i].start_x;
@@ -262,94 +289,148 @@ void Engine::processOpenCL()
         tilesOCL[i].id_x    = this->tiles[i].id_x;
         tilesOCL[i].id_y    = this->tiles[i].id_y;
 
-        tilesOCL[i].numTriangles = numTrianglesTile;
-        for (int j = 0 ; j < numTrianglesTile ; j++) {
-            tilesOCL[i].triangleIds[j] = this->tiles[i].triangleIds[j];
-        }
     }
-
-    int LIST_SIZE = EngineBuffers::getInstance()->numOCLTriangles;
-
-    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(OCLTriangle), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, LIST_SIZE * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
 
     opencl_buffer_tiles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
     clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
 
-    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
-    clSetKernelArg(kernel, 1, sizeof(int), &this->sizeTileWidth);
-    clSetKernelArg(kernel, 2, sizeof(int), &this->sizeTileHeight);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
-    clSetKernelArg(kernel, 6, (sizeTileWidth*sizeTileHeight) * sizeof(float), NULL); // Local ZBuffer for Tile render
+    for (int i = 0 ; i < numTiles ; i++) {
+        if (!this->tiles[i].draw) continue;
 
-    size_t global_item_size = numTiles; // Process the entire lists
-    size_t local_item_size = 1;          // Divide work items into groups of 64
-
-    ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
-    if (ret != CL_SUCCESS) {
-        Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
-
-        char buffer[1024];
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
-        if (strlen(buffer) > 0 ) {
-            Logging::getInstance()->getInstance()->Log( buffer );
+        int numTrianglesTile = this->tiles[i].numTriangles;
+        trianglesTile = new OCLTriangle[this->tiles[i].numTriangles];
+        for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
+            int triangleId = this->tiles[i].triangleIds[j];
+            trianglesTile[j] = EngineBuffers::getInstance()->OCLTrianglesBuffer[ triangleId ];
         }
+
+        opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->tiles[i].numTriangles * sizeof(OCLTriangle), trianglesTile, &ret);
+
+        clSetKernelArg(processTileTriangles, 0, sizeof(int), &this->tiles[i].id);
+        clSetKernelArg(processTileTriangles, 1, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+        clSetKernelArg(processTileTriangles, 2, sizeof(int), &this->sizeTileWidth);
+        clSetKernelArg(processTileTriangles, 3, sizeof(int), &this->sizeTileHeight);
+        clSetKernelArg(processTileTriangles, 4, sizeof(cl_mem), (void *)&this->tiles[i].clBuffer);
+        clSetKernelArg(processTileTriangles, 5, sizeof(cl_mem), (void *)&this->tiles[i].clBufferDepth);
+        clSetKernelArg(processTileTriangles, 6, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+        clSetKernelArg(processTileTriangles, 7, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
+
+        size_t global_item_size = numTrianglesTile; // Process the entire lists
+        size_t local_item_size = 1;                 // Divide work items into groups of 64
+
+        ret = clEnqueueNDRangeKernel(command_queue, processTileTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+
+        if (ret != CL_SUCCESS) {
+            Logging::getInstance()->getInstance()->Log( "Error processTileTriangles: " + std::to_string(ret) );
+
+            char buffer[1024];
+            clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+            if (strlen(buffer) > 0 ) {
+                Logging::getInstance()->getInstance()->Log( buffer );
+            }
+        }
+        clReleaseMemObject(opencl_buffer_triangles);
     }
 
-    clReleaseMemObject(opencl_buffer_triangles);
+    clFinish(command_queue);
+    for (int i = 0 ; i < numTiles ; i++) {
+        if (!this->tiles[i].draw) continue;
+        this->dumpTileToFrameBuffer(&this->tiles[i]);
+    }
+
     clReleaseMemObject(opencl_buffer_tiles);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
 }
 
-/*void processOpenCL2()
+void Engine::dumpTileToFrameBuffer(Tile *t)
 {
-    OCLTile tilesOCL[numTiles];
+    int start_x = t->start_x;
+    int start_y = t->start_y;
 
-    for (int i = 0 ; i < numVisibleTriangles ; i++) {
-        visibleTriangles[i].updateFullVertexSpaces(camera);
-        EngineBuffers::getInstance()->addOCLTriangle(visibleTriangles[i].getOpenCL());
-    }
-
-    Logging::getInstance()->getInstance()->Log( "OCLTriangles: " + std::to_string(EngineBuffers::getInstance()->numOCLTriangles) );
-
-    for (int i = 0 ; i < numTiles ; i++) {
-        int numTrianglesTile = this->tiles[i].numTriangles;
-
-        tilesOCL[i].draw    = this->tiles[i].draw;
-        tilesOCL[i].start_x = this->tiles[i].start_x;
-        tilesOCL[i].start_y = this->tiles[i].start_y;
-        tilesOCL[i].id      = this->tiles[i].id;
-        tilesOCL[i].id_x    = this->tiles[i].id_x;
-        tilesOCL[i].id_y    = this->tiles[i].id_y;
-
-        tilesOCL[i].numTriangles = numTrianglesTile;
-        for (int j = 0 ; j < numTrianglesTile ; j++) {
-            tilesOCL[i].triangleIds[j] = this->tiles[i].triangleIds[j];
+    for (int buffer_y = 0; buffer_y < sizeTileHeight; buffer_y++) {
+        for (int buffer_x = 0; buffer_x < sizeTileWidth; buffer_x++) {
+            int index = (buffer_y * sizeTileWidth) + buffer_x;
+            EngineBuffers::getInstance()->setVideoBuffer(start_x + buffer_x, start_y + buffer_y, t->buffer[index]);
         }
     }
 
-    opencl_buffer_tiles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
-    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), NULL, &ret);
+    std::fill(t->buffer, t->buffer + (sizeTileWidth*sizeTileHeight), 0);
+    std::fill(t->bufferDepth, t->bufferDepth + (sizeTileWidth*sizeTileHeight), 10000);
+}
 
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), &EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
+void Engine::handleOpenCLTransform()
+{
+    EngineBuffers::getInstance()->numOCLTriangles = 0;
+    for (int i = 0; i < this->numFrameTriangles ; i++) {
+        EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
+    }
 
-    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
-    clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opencl_buffer_video);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_depth);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
+    OCLPlane planesOCL[4];
+    int cont = 0;
+    for (int i = EngineSetup::getInstance()->LEFT_PLANE ; i <= EngineSetup::getInstance()->BOTTOM_PLANE ; i++) {
+        planesOCL[cont].A[0] = camera->frustum->planes[i].A.x;
+        planesOCL[cont].A[1] = camera->frustum->planes[i].A.y;
+        planesOCL[cont].A[2] = camera->frustum->planes[i].A.z;
 
-    size_t global_item_size = numTiles; // Process the entire lists
-    size_t local_item_size = 1;          // Divide work items into groups of 64
+        planesOCL[cont].B[0] = camera->frustum->planes[i].B.x;
+        planesOCL[cont].B[1] = camera->frustum->planes[i].B.y;
+        planesOCL[cont].B[2] = camera->frustum->planes[i].B.z;
 
-    ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+        planesOCL[cont].C[0] = camera->frustum->planes[i].C.x;
+        planesOCL[cont].C[1] = camera->frustum->planes[i].C.y;
+        planesOCL[cont].C[2] = camera->frustum->planes[i].C.z;
+
+        planesOCL[cont].normal[0] = camera->frustum->planes[i].normal.x;
+        planesOCL[cont].normal[1] = camera->frustum->planes[i].normal.y;
+        planesOCL[cont].normal[2] = camera->frustum->planes[i].normal.z;
+
+        cont++;
+    }
+
+    opencl_buffer_frustum = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
+    clEnqueueWriteBuffer(command_queue, opencl_buffer_frustum, CL_TRUE, 0, 4 * sizeof(OCLPlane), planesOCL, 0, NULL, NULL);
+
+    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
+
+    clSetKernelArg(processTransformTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
+
+    clSetKernelArg(processTransformTriangles, 1, sizeof(float), &camera->getPosition()->x);
+    clSetKernelArg(processTransformTriangles, 2, sizeof(float), &camera->getPosition()->y);
+    clSetKernelArg(processTransformTriangles, 3, sizeof(float), &camera->getPosition()->z);
+
+    clSetKernelArg(processTransformTriangles, 4, sizeof(float), &camera->pitch);
+    clSetKernelArg(processTransformTriangles, 5, sizeof(float), &camera->yaw);
+    clSetKernelArg(processTransformTriangles, 6, sizeof(float), &camera->roll);
+
+    clSetKernelArg(processTransformTriangles, 7, sizeof(float), &camera->frustum->vNLpers.x);
+    clSetKernelArg(processTransformTriangles, 8, sizeof(float), &camera->frustum->vNLpers.y);
+    clSetKernelArg(processTransformTriangles, 9, sizeof(float), &camera->frustum->vNLpers.z);
+
+    clSetKernelArg(processTransformTriangles, 10, sizeof(float), &camera->frustum->vNRpers.x);
+    clSetKernelArg(processTransformTriangles, 11, sizeof(float), &camera->frustum->vNRpers.y);
+    clSetKernelArg(processTransformTriangles, 12, sizeof(float), &camera->frustum->vNRpers.z);
+
+    clSetKernelArg(processTransformTriangles, 13, sizeof(float), &camera->frustum->vNTpers.x);
+    clSetKernelArg(processTransformTriangles, 14, sizeof(float), &camera->frustum->vNTpers.y);
+    clSetKernelArg(processTransformTriangles, 15, sizeof(float), &camera->frustum->vNTpers.z);
+
+    clSetKernelArg(processTransformTriangles, 16, sizeof(float), &camera->frustum->vNBpers.x);
+    clSetKernelArg(processTransformTriangles, 17, sizeof(float), &camera->frustum->vNBpers.y);
+    clSetKernelArg(processTransformTriangles, 18, sizeof(float), &camera->frustum->vNBpers.z);
+
+    clSetKernelArg(processTransformTriangles, 19, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+    clSetKernelArg(processTransformTriangles, 20, sizeof(int), &EngineSetup::getInstance()->SCREEN_HEIGHT);
+
+    clSetKernelArg(processTransformTriangles, 21, sizeof(cl_mem), (void *)&opencl_buffer_frustum);
+
+    size_t global_item_size = EngineBuffers::getInstance()->numOCLTriangles;
+    size_t local_item_size = 1;
+
+    ret = clEnqueueNDRangeKernel(command_queue, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
-        Logging::getInstance()->getInstance()->Log( "Error kernel: " + std::to_string(ret) );
+        Logging::getInstance()->getInstance()->Log( "Error processTransformTriangles: " + std::to_string(ret) );
 
         char buffer[1024];
         clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
@@ -357,11 +438,66 @@ void Engine::processOpenCL()
             Logging::getInstance()->getInstance()->Log( buffer );
         }
     }
-    clReleaseMemObject(opencl_buffer_tiles);
-    clReleaseMemObject(opencl_buffer_triangles);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
-}*/
+}
+
+void Engine::initTiles()
+{
+    if (EngineSetup::getInstance()->SCREEN_WIDTH % this->sizeTileWidth != 0) {
+        printf("Bad sizetileWidth\r\n");
+        exit(-1);
+    }
+    if (EngineSetup::getInstance()->SCREEN_HEIGHT % this->sizeTileHeight != 0) {
+        printf("Bad sizeTileHeight\r\n");
+        exit(-1);
+    }
+
+    // Tiles Raster setup
+    this->tilesWidth  = EngineSetup::getInstance()->SCREEN_WIDTH / this->sizeTileWidth;
+    this->tilesHeight = EngineSetup::getInstance()->SCREEN_HEIGHT / this->sizeTileHeight;
+    this->numTiles = tilesWidth * tilesHeight;
+    this->tilePixelsBufferSize = this->sizeTileWidth*this->sizeTileHeight;
+
+    Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+") - bufferTileSize: " + std::to_string(sizeTileWidth*sizeTileHeight));
+
+    for (int y = 0 ; y < EngineSetup::getInstance()->SCREEN_HEIGHT; y+=this->sizeTileHeight) {
+        for (int x = 0 ; x < EngineSetup::getInstance()->SCREEN_WIDTH; x+=this->sizeTileWidth) {
+
+            Tile t;
+
+            t.draw    = true;
+            t.id_x    = (x/this->sizeTileWidth);
+            t.id_y    = (y/this->sizeTileHeight);
+            t.id      = t.id_y * this->tilesWidth + t.id_x;
+            t.start_x = x;
+            t.start_y = y;
+
+            this->tiles.push_back(t);
+            // Load up the vector with MyClass objects
+
+
+            Logging::getInstance()->Log("Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x)+", offset_y: " + std::to_string(y) + ")");
+        }
+    }
+
+    // Create local buffers and openCL buffer pointers
+    for (int i = 0; i < numTiles; i++) {
+
+        this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
+        for (int j = 0; j < tilePixelsBufferSize ; j++) {
+            this->tiles[i].buffer[j] = Color::red();
+        }
+
+        this->tiles[i].bufferDepth = new float[tilePixelsBufferSize];
+        for (int j = 0; j < tilePixelsBufferSize ; j++) {
+            this->tiles[i].bufferDepth[j] = 0;
+        }
+
+        this->tiles[i].clBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(unsigned int), this->tiles[i].buffer, &ret);
+        this->tiles[i].clBufferDepth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(float), this->tiles[i].bufferDepth, &ret);
+    }
+}
 
 void Engine::OpenCLInfo()
 {
@@ -373,11 +509,6 @@ void Engine::OpenCLInfo()
     cl_uint deviceCount;
     cl_device_id* devices;
     cl_uint maxComputeUnits;
-    cl_ulong maxMem;
-    cl_ulong maxLocalMem;
-    cl_uint maxWorkItemsSize;
-    size_t maxWorkGrouptItems;
-    size_t maxWorkGroupSize;
 
     // get all platforms
     clGetPlatformIDs(0, NULL, &platformCount);
@@ -426,28 +557,6 @@ void Engine::OpenCLInfo()
             clGetDeviceInfo(devices[j], CL_DEVICE_MAX_COMPUTE_UNITS,
                             sizeof(maxComputeUnits), &maxComputeUnits, NULL);
             printf(" %d.%d Parallel compute units: %d\n", j+1, 4, maxComputeUnits);
-
-            // print parallel compute units
-            clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE,
-                            sizeof(maxMem), &maxMem, NULL);
-            printf(" %d.%d CL_DEVICE_GLOBAL_MEM_SIZE: %ld\n", j+1, 4, maxMem);
-
-            // print parallel compute units
-            clGetDeviceInfo(devices[j], CL_DEVICE_LOCAL_MEM_SIZE,
-                            sizeof(maxLocalMem), &maxLocalMem, NULL);
-            printf(" %d.%d CL_DEVICE_LOCAL_MEM_SIZE: %ld\n", j+1, 4, maxLocalMem);
-
-            clGetDeviceInfo(devices[j], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
-                            sizeof(maxWorkItemsSize), &maxWorkItemsSize, NULL);
-            printf(" %d.%d CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS: %d\n", j+1, 4, maxWorkItemsSize);
-
-            clGetDeviceInfo(devices[j], CL_DEVICE_MAX_WORK_GROUP_SIZE,
-                            sizeof(maxWorkGrouptItems), &maxWorkGrouptItems, NULL);
-            printf(" %d.%d CL_DEVICE_MAX_WORK_GROUP_SIZE: %d\n", j+1, 4, maxWorkGrouptItems);
-
-            clGetDeviceInfo(devices[j], CL_DEVICE_MAX_WORK_ITEM_SIZES,
-                            sizeof(maxWorkGroupSize), &maxWorkGroupSize, NULL);
-            printf(" %d.%d CL_DEVICE_MAX_WORK_ITEM_SIZES: %d\n", j+1, 4, maxWorkGroupSize);
         }
 
         free(devices);
@@ -455,47 +564,6 @@ void Engine::OpenCLInfo()
     }
 
     free(platforms);
-}
-
-
-void Engine::testOpenCL()
-{
-    int i;
-    const int LIST_SIZE = 100024000;
-    int *A = (int*)malloc(sizeof(int)*LIST_SIZE);
-    int *B = (int*)malloc(sizeof(int)*LIST_SIZE);
-    for(i = 0; i < LIST_SIZE; i++) {
-        A[i] = i;
-        B[i] = LIST_SIZE - i;
-    }
-
-    // Create memory buffers on the device for each vector
-    cl_mem a_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(int), NULL, &ret);
-    cl_mem b_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, LIST_SIZE * sizeof(int), NULL, &ret);
-    cl_mem c_mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY,LIST_SIZE * sizeof(int), NULL, &ret);
-
-    Timer *t = new Timer();
-    Timer *ts1 = new Timer();
-    t->start();
-    ts1->start();
-
-    // Copy the lists A and B to their respective memory buffers
-    clEnqueueWriteBuffer(command_queue, a_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), A, 0, NULL, NULL);
-    clEnqueueWriteBuffer(command_queue, b_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), B, 0, NULL, NULL);
-
-    // Set the arguments of the kernel
-    clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
-    clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
-
-    // Execute the OpenCL kernel on the list
-    size_t global_item_size = LIST_SIZE; // Process the entire lists
-    size_t local_item_size = 64; // Divide work items into groups of 64
-    clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
-
-    // Read the memory buffer C on the device to the local variable C
-    int *C = (int*)malloc(sizeof(int)*LIST_SIZE);
-    clEnqueueReadBuffer(command_queue, c_mem_obj, CL_TRUE, 0, LIST_SIZE * sizeof(int), C, 0, NULL, NULL);
 }
 
 void Engine::drawGUI()
@@ -511,7 +579,8 @@ void Engine::drawGUI()
         gameObjects, numberGameObjects,
         lightPoints, numberLightPoints,
         camera,
-        tiles, tilesWidth
+        tiles, tilesWidth,
+        this->numVisibleTriangles
     );
 
     ImGui::Render();
@@ -519,9 +588,6 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
-    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
-        this->processOpenCL( );
-    }
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
@@ -710,28 +776,37 @@ void Engine::onUpdate()
     }
 
     this->getMesh3DTriangles();
-    this->getQuakeMapTriangles();
+    //this->getQuakeMapTriangles();
     this->getLightPointsTriangles();
     this->getSpritesTriangles();
     this->getObjectsBillboardTriangles();
 
+    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        this->handleOpenCLTransform();
+    }
+
     this->hiddenSurfaceRemoval();
 
-    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+    if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
-    } else {
-        if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
-            this->handleTrianglesToTiles();
+
+        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
             this->drawTilesTriangles();
-            if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
-                this->drawTilesGrid();
-            }
         } else {
+            this->handleOpenCLTrianglesForTiles();
+        }
+
+        if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
+            this->drawTilesGrid();
+        }
+    } else {
+        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
             this->drawFrameTriangles();
+        } else {
+            this->handleOpenCLTriangles();
         }
     }
 
-    this->numFrameTriangles = 0;
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
         dynamicsWorld->debugDrawWorld();
@@ -909,18 +984,11 @@ void Engine::hiddenSurfaceRemoval()
     for (int i = 0; i < this->numFrameTriangles ; i++) {
 
         this->frameTriangles[i].updateObjectSpace();
+        this->frameTriangles[i].updateNormal();
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
             if (this->frameTriangles[i].isBackFaceCulling(camera)) {
-                continue;
-            }
-        }
-
-        // Clipping (needs objectSpace)
-        if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING) {
-            if (this->frameTriangles[i].testForClipping( camera ) ) {
-                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
                 continue;
             }
         }
@@ -935,19 +1003,33 @@ void Engine::hiddenSurfaceRemoval()
             }
         }
 
+        // Clipping (needs objectSpace)
+        if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING) {
+            if (this->frameTriangles[i].testForClipping( camera ) ) {
+                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
+                continue;
+            }
+        }
+
         // Triangle precached data
         this->frameTriangles[i].updateCameraSpace(camera);
         this->frameTriangles[i].updateNDCSpace(camera);
         this->frameTriangles[i].updateScreenSpace(camera);
-        this->frameTriangles[i].updateNormal();
-        this->frameTriangles[i].updateFullArea();
-        this->frameTriangles[i].updateUVCache();
         this->frameTriangles[i].updateBoundingBox();
+
+        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+            this->frameTriangles[i].updateFullArea();
+            this->frameTriangles[i].updateUVCache();
+        } else {
+            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
+        }
 
         // Add triangle to visible list
         visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
         numVisibleTriangles++;
     }
+
+    this->numFrameTriangles = 0;
 
     //Logging::getInstance()->Log("frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
 }
@@ -1060,13 +1142,28 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
 void Engine::processFPS()
 {
-    fps = countedFrames / ( this->engineTimer.getTicks() / 1000.f );
-    if( fps > 2000000 ) { fps = 0; }
+    if (!EngineSetup::getInstance()->DRAW_FPS) return;
+
     ++countedFrames;
+    if (this->frameTime > 1000) {
+        fps = countedFrames;
+        frameTime = 0;
+        countedFrames = 0;
+    }
 
     int renderer_w, renderer_h;
     SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
-    Tools::writeText(Engine::renderer, Engine::font, renderer_w-150, 14, Color::yellow(), "FPS: " + Tools::floatTruncate(fps, 4) );
+    Tools::writeText(Engine::renderer, Engine::font, renderer_w-150, 14, Color::yellow(), std::to_string(fps) +"fps");
+}
+
+void Engine::updateTimer()
+{
+    this->current_ticks = this->engineTimer.getTicks();
+    this->deltaTime = this->current_ticks - this->last_ticks;
+    this->last_ticks = this->current_ticks;
+
+    this->frameTime += this->deltaTime;
+    this->executionTime += this->deltaTime / 1000.f;
 }
 
 void Engine::updatePhysicObjects()
@@ -1107,51 +1204,7 @@ bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObj
     return collides;
 }
 
-void Engine::updateTimer()
-{
-    //Logging::getInstance()->Log("updateTimer: " + std::to_string(this->engineTimer.getTicks()));
-
-    this->current_ticks = this->engineTimer.getTicks();
-    this->deltaTime = this->current_ticks - this->last_ticks;
-    this->last_ticks = this->current_ticks;
-
-    this->timerCurrent += this->deltaTime/1000.f;
-    //this->fps = 1000/this->deltaTime;
-}
-
 float Engine::getDeltaTime()
 {
     return this->deltaTime/1000;
-}
-
-void Engine::initTiles()
-{
-    // Tiles Raster setup
-    this->tilesWidth  = EngineSetup::getInstance()->SCREEN_WIDTH / this->sizeTileWidth;
-    this->tilesHeight = EngineSetup::getInstance()->SCREEN_HEIGHT / this->sizeTileHeight;
-    this->numTiles = tilesWidth * tilesHeight;
-
-    Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+")");
-
-    for (int y = 0 ; y < EngineSetup::getInstance()->SCREEN_HEIGHT; y+=this->sizeTileHeight)
-    {
-        for (int x = 0 ; x < EngineSetup::getInstance()->SCREEN_WIDTH; x+=this->sizeTileWidth)
-        {
-            Tile t;
-
-            t.draw    = true;
-            t.id_x    = (x/this->sizeTileWidth);
-            t.id_y    = (y/this->sizeTileHeight);
-            t.id      = t.id_y * this->tilesWidth + t.id_x;
-            t.start_x = x;
-            t.start_y = y;
-
-            this->tiles.push_back(t);
-            // Load up the vector with MyClass objects
-
-
-            Logging::getInstance()->Log("Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x)+", offset_y: " + std::to_string(y) + ")");
-        }
-
-    }
 }

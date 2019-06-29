@@ -94,7 +94,7 @@ void Game::onStart()
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     triangle->setPosition(Vertex3D(54.3, -0, 47.200));
-    //triangle->setRotation( M3(-90, -45, 0) );
+    triangle->setRotation( M3(1, 30, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
@@ -225,30 +225,7 @@ void Game::onUpdate()
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
-    Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
-
-    /*Triangle *t = &triangle->model_triangles[0];
-    t->updateFullVertexSpaces(camera);
-    t->updateFullArea();
-    t->updateBoundingBox(t->minX, t->minY, t->maxX, t->maxY);
-
-    Point2D l1 = Point2D(t->minX, t->minY);
-    Point2D r1 = Point2D(t->maxX, t->maxY);
-
-    EngineBuffers::getInstance()->setVideoBuffer(l1.x, l1.y, Color::red());
-    EngineBuffers::getInstance()->setVideoBuffer(r1.x, r1.y, Color::red());
-
-
-    Point2D l2 = Point2D(100, 100);
-    Point2D r2 = Point2D(200, 200);
-
-    EngineBuffers::getInstance()->setVideoBuffer(l2.x, l2.y, Color::green());
-    EngineBuffers::getInstance()->setVideoBuffer(r2.x, r2.y, Color::green());
-
-    if (Tools::checkRectangleAABBOverlap(l1, r1, l2, r2)) {
-        Logging::getInstance()->Log("Overlap");
-    }*/
-
+    //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
 
 }
 

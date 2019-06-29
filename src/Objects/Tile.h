@@ -3,6 +3,7 @@
 
 #include "../../headers/Objects/Triangle3D.h"
 #include <vector>
+#include <OpenCL/opencl.h>
 
 struct Tile {
     bool draw;
@@ -12,7 +13,11 @@ struct Tile {
     int start_x;
     int start_y;
     int numTriangles;
-    int triangleIds[1024];
+    int triangleIds[1500];
+    unsigned int *buffer;
+    float *bufferDepth;
+    cl_mem clBuffer;
+    cl_mem clBufferDepth;
 };
 
 struct OCLTile {
@@ -23,7 +28,7 @@ struct OCLTile {
     int start_x;
     int start_y;
     int numTriangles;
-    int triangleIds[1024];
+    int triangleIds[1500];
 };
 
 #endif //SDL2_3D_ENGINE_GUI_H
