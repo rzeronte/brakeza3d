@@ -121,12 +121,15 @@ public:
     float frameTime = 0;
 
     cl_platform_id platform_id;
-    cl_device_id device_id;
+    cl_device_id device_cpu_id;
+    cl_device_id device_gpu_id;
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;
-    cl_context context;
-    cl_program program;
+    cl_context contextCPU;
+    cl_context contextGPU;
+    cl_program programCPU;
+    cl_program programGPU;
     cl_kernel processTileTriangles;
     cl_kernel processAllTriangles;
     cl_kernel processTransformTriangles;
@@ -138,8 +141,8 @@ public:
     cl_mem opencl_buffer_depth;
     cl_mem opencl_buffer_frustum;
 
-    cl_command_queue command_queue;
-    cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
+    cl_command_queue command_queue_rasterizer;
+    cl_command_queue command_queue_transforms;
 
     int sizeTileWidth = 80;
     int sizeTileHeight = 80;

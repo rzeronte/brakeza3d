@@ -22,7 +22,7 @@ EngineBuffers* EngineBuffers::getInstance()
 
 EngineBuffers::EngineBuffers()
 {
-    sizeBuffers = EngineSetup::getInstance()->SCREEN_WIDTH * EngineSetup::getInstance()->SCREEN_HEIGHT;
+    sizeBuffers = EngineSetup::getInstance()->screenWidth * EngineSetup::getInstance()->screenHeight;
 
     Logging::getInstance()->Log("EngineBuffers size: " + std::to_string(sizeBuffers), "INFO");
 
@@ -40,7 +40,7 @@ void EngineBuffers::clearDepthBuffer()
 
 float EngineBuffers::getDepthBuffer(int x, int y)
 {
-    return depthBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x];
+    return depthBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x];
 }
 
 float EngineBuffers::getDepthBuffer(int i)
@@ -50,7 +50,7 @@ float EngineBuffers::getDepthBuffer(int i)
 
 void EngineBuffers::setDepthBuffer(int x, int y, float value)
 {
-    depthBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x] = value;
+    depthBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x] = value;
 }
 
 void EngineBuffers::setDepthBuffer(const int i, const float value)
@@ -60,7 +60,7 @@ void EngineBuffers::setDepthBuffer(const int i, const float value)
 
 void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value)
 {
-    videoBuffer[ ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ] = value;
+    videoBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x ] = value;
 }
 
 void EngineBuffers::setVideoBuffer(const int i, Uint32 value)
@@ -76,7 +76,7 @@ void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
 
 float EngineBuffers::getVideoBuffer(int x, int y)
 {
-    return videoBuffer[( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ];
+    return videoBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x ];
 }
 
 void EngineBuffers::clearVideoBuffer()

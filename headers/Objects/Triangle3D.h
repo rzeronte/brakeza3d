@@ -24,8 +24,6 @@ public:
     Vertex3D An, Bn, Cn;
     Point2D As, Bs, Cs;
 
-    Vertex3D Ae, Be, Ce;
-
     float fullArea;
     float reciprocalFullArea;
 
@@ -57,6 +55,7 @@ public:
 
     int order = 0;
     bool is_clipped = false;
+    bool is_clipped_cl = false;
 
     bool is_bsp = false;
     int bsp_surface = -1;

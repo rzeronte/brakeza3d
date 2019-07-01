@@ -84,8 +84,8 @@ bool Engine::initWindow()
             EngineSetup::getInstance()->ENGINE_TITLE.c_str(),
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
-            EngineSetup::getInstance()->SCREEN_WIDTH,
-            EngineSetup::getInstance()->SCREEN_HEIGHT,
+            EngineSetup::getInstance()->screenWidth,
+            EngineSetup::getInstance()->screenHeight,
             SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
         // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
@@ -95,7 +95,7 @@ bool Engine::initWindow()
             return false;
         } else {
             gl_context = SDL_GL_CreateContext(window);
-            screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->SCREEN_WIDTH, EngineSetup::getInstance()->SCREEN_HEIGHT, 32, 0, 0, 0, 0);
+            screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->screenWidth, EngineSetup::getInstance()->screenHeight, 32, 0, 0, 0, 0);
             renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -118,7 +118,7 @@ bool Engine::initWindow()
             drawGUI();
 
             Logging::getInstance()->Log(
-                "Window size: " + std::to_string(EngineSetup::getInstance()->SCREEN_WIDTH) + " x " + std::to_string(EngineSetup::getInstance()->SCREEN_HEIGHT), "INFO"
+                    "Window size: " + std::to_string(EngineSetup::getInstance()->screenWidth) + " x " + std::to_string(EngineSetup::getInstance()->screenHeight), "INFO"
             );
 
             SDL_GL_SwapWindow(window);
@@ -197,50 +197,55 @@ void Engine::initPhysics()
 
 void Engine::initOpenCL()
 {
-
-    size_t valueSize;
-    char* value;
-    cl_context_properties properties[3];
-
     platform_id = NULL;
-    device_id = NULL;
+    device_cpu_id = NULL;
 
     ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms) ;
     if (ret != CL_SUCCESS) {
         printf("Unable to get platform_id");
     }
 
-    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_id, &ret_num_devices);
+    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_cpu_id, &ret_num_devices);
     if (ret != CL_SUCCESS) {
-        printf("Unable to get device_id");
+        printf("Unable to get device_cpu_id");
     }
 
+    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_gpu_id, &ret_num_devices);
+    if (ret != CL_SUCCESS) {
+        printf("Unable to get device_gpu_id");
+    }
+
+    cl_context_properties properties[3];
     properties[0]= CL_CONTEXT_PLATFORM;
     properties[1]= (cl_context_properties) platform_id;
     properties[2]= 0;
 
     // Create an OpenCL context
-    context = clCreateContext(properties, 1, &device_id, NULL, NULL, &ret);
+    contextCPU = clCreateContext(properties, 1, &device_cpu_id, NULL, NULL, &ret);
+    contextGPU = clCreateContext(properties, 1, &device_gpu_id, NULL, NULL, &ret);
 
-    command_queue = clCreateCommandQueue(context, device_id, NULL, &ret);
+    command_queue_rasterizer = clCreateCommandQueue(contextCPU, device_cpu_id, NULL, &ret);
+    command_queue_transforms = clCreateCommandQueue(contextGPU, device_gpu_id, CL_QUEUE_PROFILING_ENABLE, &ret);
 
     // Load the kernel source code into the array source_str
     size_t source_size;
     char *source_str = Tools::readFile("../opencl.cl", source_size);
 
     // Create a program from the kernel source
-    program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
+    programCPU = clCreateProgramWithSource(contextCPU, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
+    programGPU = clCreateProgramWithSource(contextGPU, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
 
     // Build the program
-    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+    clBuildProgram(programCPU, 1, &device_cpu_id, NULL, NULL, NULL);
+    clBuildProgram(programGPU, 1, &device_gpu_id, NULL, NULL, NULL);
 
     // Create the OpenCL kernel
-    processAllTriangles       = clCreateKernel(program, "rasterizerFrameTrianglesKernel", &ret);
-    processTileTriangles      = clCreateKernel(program, "rasterizerFrameTileTrianglesKernel", &ret);
-    processTransformTriangles = clCreateKernel(program, "transformTrianglesKernel", &ret);
+    processAllTriangles       = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
+    processTileTriangles      = clCreateKernel(programCPU, "rasterizerFrameTileTrianglesKernel", &ret);
+    processTransformTriangles = clCreateKernel(programGPU, "transformTrianglesKernel", &ret);
 
-    opencl_buffer_depth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
-    opencl_buffer_video = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,  EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
+    opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
+    opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
 
     OpenCLInfo();
 }
@@ -249,35 +254,34 @@ void Engine::handleOpenCLTriangles()
 {
     int numTriangles = EngineBuffers::getInstance()->numOCLTriangles;
 
-    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTriangles * sizeof(OCLTriangle), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+    opencl_buffer_triangles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTriangles * sizeof(OCLTriangle), NULL, &ret);
+    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
 
     clSetKernelArg(processAllTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(processAllTriangles, 1, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+    clSetKernelArg(processAllTriangles, 1, sizeof(int), &EngineSetup::getInstance()->screenWidth);
     clSetKernelArg(processAllTriangles, 2, sizeof(cl_mem), (void *)&opencl_buffer_video);
     clSetKernelArg(processAllTriangles, 3, sizeof(cl_mem), (void *)&opencl_buffer_depth);
 
     size_t global_item_size = numTriangles; // Process the entire lists
     size_t local_item_size = 1;          // Divide work items into groups of 64
 
-    ret = clEnqueueNDRangeKernel(command_queue, processAllTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+    ret = clEnqueueNDRangeKernel(command_queue_rasterizer, processAllTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
         Logging::getInstance()->getInstance()->Log( "Error processAllTriangles: " + std::to_string(ret) );
 
         char buffer[1024];
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        clGetProgramBuildInfo(programCPU, device_cpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
         if (strlen(buffer) > 0 ) {
             Logging::getInstance()->getInstance()->Log( buffer );
         }
     }
-    clFinish(command_queue);
+    clFinish(command_queue_rasterizer);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 }
 
 void Engine::handleOpenCLTrianglesForTiles()
 {
-
     // Create OCLTiles
     OCLTile tilesOCL[numTiles];
     for (int i = 0 ; i < numTiles ; i++) {
@@ -291,8 +295,8 @@ void Engine::handleOpenCLTrianglesForTiles()
 
     }
 
-    opencl_buffer_tiles = clCreateBuffer(context, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
+    opencl_buffer_tiles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
+    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
 
     for (int i = 0 ; i < numTiles ; i++) {
         if (!this->tiles[i].draw) continue;
@@ -304,10 +308,10 @@ void Engine::handleOpenCLTrianglesForTiles()
             trianglesTile[j] = EngineBuffers::getInstance()->OCLTrianglesBuffer[ triangleId ];
         }
 
-        opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->tiles[i].numTriangles * sizeof(OCLTriangle), trianglesTile, &ret);
+        opencl_buffer_triangles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->tiles[i].numTriangles * sizeof(OCLTriangle), trianglesTile, &ret);
 
         clSetKernelArg(processTileTriangles, 0, sizeof(int), &this->tiles[i].id);
-        clSetKernelArg(processTileTriangles, 1, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
+        clSetKernelArg(processTileTriangles, 1, sizeof(int), &EngineSetup::getInstance()->screenWidth);
         clSetKernelArg(processTileTriangles, 2, sizeof(int), &this->sizeTileWidth);
         clSetKernelArg(processTileTriangles, 3, sizeof(int), &this->sizeTileHeight);
         clSetKernelArg(processTileTriangles, 4, sizeof(cl_mem), (void *)&this->tiles[i].clBuffer);
@@ -318,13 +322,13 @@ void Engine::handleOpenCLTrianglesForTiles()
         size_t global_item_size = numTrianglesTile; // Process the entire lists
         size_t local_item_size = 1;                 // Divide work items into groups of 64
 
-        ret = clEnqueueNDRangeKernel(command_queue, processTileTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+        ret = clEnqueueNDRangeKernel(command_queue_rasterizer, processTileTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
 
         if (ret != CL_SUCCESS) {
             Logging::getInstance()->getInstance()->Log( "Error processTileTriangles: " + std::to_string(ret) );
 
             char buffer[1024];
-            clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+            clGetProgramBuildInfo(programCPU, device_cpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
             if (strlen(buffer) > 0 ) {
                 Logging::getInstance()->getInstance()->Log( buffer );
             }
@@ -332,7 +336,7 @@ void Engine::handleOpenCLTrianglesForTiles()
         clReleaseMemObject(opencl_buffer_triangles);
     }
 
-    clFinish(command_queue);
+    clFinish(command_queue_rasterizer);
     for (int i = 0 ; i < numTiles ; i++) {
         if (!this->tiles[i].draw) continue;
         this->dumpTileToFrameBuffer(&this->tiles[i]);
@@ -388,20 +392,24 @@ void Engine::handleOpenCLTransform()
         cont++;
     }
 
-    opencl_buffer_frustum = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
-    clEnqueueWriteBuffer(command_queue, opencl_buffer_frustum, CL_TRUE, 0, 4 * sizeof(OCLPlane), planesOCL, 0, NULL, NULL);
+    opencl_buffer_frustum   = clCreateBuffer(contextGPU, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, 4 * sizeof(OCLPlane), planesOCL, &ret);
+    opencl_buffer_triangles = clCreateBuffer(contextGPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
 
-    opencl_buffer_triangles = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
+    Vertex3D camPos = *camera->getPosition();
+    M3 camRot = camera->getRotation();
+    float pitch = camRot.getPitch();
+    float yaw   = camRot.getYaw();
+    float roll  = camRot.getRoll();
 
     clSetKernelArg(processTransformTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
 
-    clSetKernelArg(processTransformTriangles, 1, sizeof(float), &camera->getPosition()->x);
-    clSetKernelArg(processTransformTriangles, 2, sizeof(float), &camera->getPosition()->y);
-    clSetKernelArg(processTransformTriangles, 3, sizeof(float), &camera->getPosition()->z);
+    clSetKernelArg(processTransformTriangles, 1, sizeof(float), &camPos.x);
+    clSetKernelArg(processTransformTriangles, 2, sizeof(float), &camPos.y);
+    clSetKernelArg(processTransformTriangles, 3, sizeof(float), &camPos.z);
 
-    clSetKernelArg(processTransformTriangles, 4, sizeof(float), &camera->pitch);
-    clSetKernelArg(processTransformTriangles, 5, sizeof(float), &camera->yaw);
-    clSetKernelArg(processTransformTriangles, 6, sizeof(float), &camera->roll);
+    clSetKernelArg(processTransformTriangles, 4, sizeof(float), &pitch);
+    clSetKernelArg(processTransformTriangles, 5, sizeof(float), &yaw);
+    clSetKernelArg(processTransformTriangles, 6, sizeof(float), &roll);
 
     clSetKernelArg(processTransformTriangles, 7, sizeof(float), &camera->frustum->vNLpers.x);
     clSetKernelArg(processTransformTriangles, 8, sizeof(float), &camera->frustum->vNLpers.y);
@@ -419,50 +427,120 @@ void Engine::handleOpenCLTransform()
     clSetKernelArg(processTransformTriangles, 17, sizeof(float), &camera->frustum->vNBpers.y);
     clSetKernelArg(processTransformTriangles, 18, sizeof(float), &camera->frustum->vNBpers.z);
 
-    clSetKernelArg(processTransformTriangles, 19, sizeof(int), &EngineSetup::getInstance()->SCREEN_WIDTH);
-    clSetKernelArg(processTransformTriangles, 20, sizeof(int), &EngineSetup::getInstance()->SCREEN_HEIGHT);
+    clSetKernelArg(processTransformTriangles, 19, sizeof(int), &EngineSetup::getInstance()->screenWidth);
+    clSetKernelArg(processTransformTriangles, 20, sizeof(int), &EngineSetup::getInstance()->screenHeight);
 
     clSetKernelArg(processTransformTriangles, 21, sizeof(cl_mem), (void *)&opencl_buffer_frustum);
 
     size_t global_item_size = EngineBuffers::getInstance()->numOCLTriangles;
     size_t local_item_size = 1;
 
-    ret = clEnqueueNDRangeKernel(command_queue, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
+    cl_event event;
+    ret = clEnqueueNDRangeKernel(command_queue_transforms, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, &event);
 
     if (ret != CL_SUCCESS) {
         Logging::getInstance()->getInstance()->Log( "Error processTransformTriangles: " + std::to_string(ret) );
 
         char buffer[1024];
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        clGetProgramBuildInfo(programGPU, device_gpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
         if (strlen(buffer) > 0 ) {
             Logging::getInstance()->getInstance()->Log( buffer );
         }
     }
+
+    if (EngineSetup::getInstance()->OPENCL_SHOW_TIME_KERNELS) {
+        clWaitForEvents(1, &event);
+        clFinish(command_queue_transforms);
+
+        cl_ulong time_start;
+        cl_ulong time_end;
+
+        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
+        double nanoSeconds = time_end-time_start;
+
+        Logging::getInstance()->Log("OpenCL processTransformTriangles kernel time is: "+ std::to_string(nanoSeconds / 1000000.0) + " milliseconds");
+    } else {
+        clFinish(command_queue_transforms);
+    }
+
+    // Recover transform Data
+    for (int i = 0; i < this->numFrameTriangles ; i++) {
+        OCLTriangle oclt = EngineBuffers::getInstance()->OCLTrianglesBuffer[i];
+        frameTriangles[i].Ao.x = oclt.Ao_x;
+        frameTriangles[i].Ao.y = oclt.Ao_y;
+        frameTriangles[i].Ao.z = oclt.Ao_z;
+        frameTriangles[i].Bo.x = oclt.Bo_x;
+        frameTriangles[i].Bo.y = oclt.Bo_y;
+        frameTriangles[i].Bo.z = oclt.Bo_z;
+        frameTriangles[i].Co.x = oclt.Co_x;
+        frameTriangles[i].Co.y = oclt.Co_y;
+        frameTriangles[i].Co.z = oclt.Co_z;
+
+        frameTriangles[i].Ac.x = oclt.Ac_x;
+        frameTriangles[i].Ac.y = oclt.Ac_y;
+        frameTriangles[i].Ac.z = oclt.Ac_z;
+        frameTriangles[i].Bc.x = oclt.Bc_x;
+        frameTriangles[i].Bc.y = oclt.Bc_y;
+        frameTriangles[i].Bc.z = oclt.Bc_z;
+        frameTriangles[i].Cc.x = oclt.Cc_x;
+        frameTriangles[i].Cc.y = oclt.Cc_y;
+        frameTriangles[i].Cc.z = oclt.Cc_z;
+
+        frameTriangles[i].An.x = oclt.An_x;
+        frameTriangles[i].An.y = oclt.An_y;
+        frameTriangles[i].An.z = oclt.An_z;
+        frameTriangles[i].Bn.x = oclt.Bn_x;
+        frameTriangles[i].Bn.y = oclt.Bn_y;
+        frameTriangles[i].Bn.z = oclt.Bn_z;
+        frameTriangles[i].Cn.x = oclt.Cn_x;
+        frameTriangles[i].Cn.y = oclt.Cn_y;
+        frameTriangles[i].Cn.z = oclt.Cn_z;
+
+        frameTriangles[i].As.x = oclt.As_x;
+        frameTriangles[i].As.y = oclt.As_y;
+        frameTriangles[i].Bs.x = oclt.Bs_x;
+        frameTriangles[i].Bs.y = oclt.Bs_y;
+        frameTriangles[i].Cs.x = oclt.Cs_x;
+        frameTriangles[i].Cs.y = oclt.Cs_y;
+
+        frameTriangles[i].minX = oclt.minX;
+        frameTriangles[i].maxX = oclt.maxX;
+        frameTriangles[i].minY = oclt.minY;
+        frameTriangles[i].maxY = oclt.maxY;
+
+        frameTriangles[i].normal.x = oclt.normal[0];
+        frameTriangles[i].normal.y = oclt.normal[1];
+        frameTriangles[i].normal.z = oclt.normal[2];
+
+        frameTriangles[i].is_clipped_cl = oclt.is_clipping;
+    }
+
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 
 }
 
 void Engine::initTiles()
 {
-    if (EngineSetup::getInstance()->SCREEN_WIDTH % this->sizeTileWidth != 0) {
+    if (EngineSetup::getInstance()->screenWidth % this->sizeTileWidth != 0) {
         printf("Bad sizetileWidth\r\n");
         exit(-1);
     }
-    if (EngineSetup::getInstance()->SCREEN_HEIGHT % this->sizeTileHeight != 0) {
+    if (EngineSetup::getInstance()->screenHeight % this->sizeTileHeight != 0) {
         printf("Bad sizeTileHeight\r\n");
         exit(-1);
     }
 
     // Tiles Raster setup
-    this->tilesWidth  = EngineSetup::getInstance()->SCREEN_WIDTH / this->sizeTileWidth;
-    this->tilesHeight = EngineSetup::getInstance()->SCREEN_HEIGHT / this->sizeTileHeight;
+    this->tilesWidth  = EngineSetup::getInstance()->screenWidth / this->sizeTileWidth;
+    this->tilesHeight = EngineSetup::getInstance()->screenHeight / this->sizeTileHeight;
     this->numTiles = tilesWidth * tilesHeight;
     this->tilePixelsBufferSize = this->sizeTileWidth*this->sizeTileHeight;
 
     Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+") - bufferTileSize: " + std::to_string(sizeTileWidth*sizeTileHeight));
 
-    for (int y = 0 ; y < EngineSetup::getInstance()->SCREEN_HEIGHT; y+=this->sizeTileHeight) {
-        for (int x = 0 ; x < EngineSetup::getInstance()->SCREEN_WIDTH; x+=this->sizeTileWidth) {
+    for (int y = 0 ; y < EngineSetup::getInstance()->screenHeight; y+=this->sizeTileHeight) {
+        for (int x = 0 ; x < EngineSetup::getInstance()->screenWidth; x+=this->sizeTileWidth) {
 
             Tile t;
 
@@ -494,8 +572,8 @@ void Engine::initTiles()
             this->tiles[i].bufferDepth[j] = 0;
         }
 
-        this->tiles[i].clBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(unsigned int), this->tiles[i].buffer, &ret);
-        this->tiles[i].clBufferDepth = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(float), this->tiles[i].bufferDepth, &ret);
+        this->tiles[i].clBuffer = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(unsigned int), this->tiles[i].buffer, &ret);
+        this->tiles[i].clBufferDepth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(float), this->tiles[i].bufferDepth, &ret);
     }
 }
 
@@ -588,7 +666,6 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
-
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
@@ -776,12 +853,12 @@ void Engine::onUpdate()
     }
 
     this->getMesh3DTriangles();
-    //this->getQuakeMapTriangles();
+    this->getQuakeMapTriangles();
     this->getLightPointsTriangles();
     this->getSpritesTriangles();
     this->getObjectsBillboardTriangles();
 
-    if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+    if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
         this->handleOpenCLTransform();
     }
 
@@ -790,7 +867,7 @@ void Engine::onUpdate()
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
 
-        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
             this->drawTilesTriangles();
         } else {
             this->handleOpenCLTrianglesForTiles();
@@ -800,13 +877,12 @@ void Engine::onUpdate()
             this->drawTilesGrid();
         }
     } else {
-        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
             this->drawFrameTriangles();
         } else {
             this->handleOpenCLTriangles();
         }
     }
-
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
         dynamicsWorld->debugDrawWorld();
@@ -983,8 +1059,13 @@ void Engine::hiddenSurfaceRemoval()
 
     for (int i = 0; i < this->numFrameTriangles ; i++) {
 
-        this->frameTriangles[i].updateObjectSpace();
-        this->frameTriangles[i].updateNormal();
+        // Si la transformación es mediante openCL ya están todas hechas
+        // pero si vamos por software actualizamos ObjectSpace y su normal
+        // ya que es el mínimo necesario para el clipping y el faceculling
+        if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
+            this->frameTriangles[i].updateObjectSpace();
+            this->frameTriangles[i].updateNormal();
+        }
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
@@ -993,31 +1074,38 @@ void Engine::hiddenSurfaceRemoval()
             }
         }
 
-        // Frustum Culling (needs objectSpace)
-        if (EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING) {
-            if (!camera->frustum->isPointInFrustum(this->frameTriangles[i].Ao) &&
-                !camera->frustum->isPointInFrustum(this->frameTriangles[i].Bo) &&
-                !camera->frustum->isPointInFrustum(this->frameTriangles[i].Co)
-            ) {
+        // Clipping (needs objectSpace)
+        if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
+            if (this->frameTriangles[i].is_clipped_cl ) {
+                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
                 continue;
             }
-        }
-
-        // Clipping (needs objectSpace)
-        if (EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING) {
+        } else {
             if (this->frameTriangles[i].testForClipping( camera ) ) {
                 this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
                 continue;
             }
         }
 
-        // Triangle precached data
-        this->frameTriangles[i].updateCameraSpace(camera);
-        this->frameTriangles[i].updateNDCSpace(camera);
-        this->frameTriangles[i].updateScreenSpace(camera);
-        this->frameTriangles[i].updateBoundingBox();
+        // Frustum Culling (needs objectSpace)
+        if (!camera->frustum->isPointInFrustum(this->frameTriangles[i].Ao) &&
+            !camera->frustum->isPointInFrustum(this->frameTriangles[i].Bo) &&
+            !camera->frustum->isPointInFrustum(this->frameTriangles[i].Co)
+        ) {
+            continue;
+        }
 
-        if (!EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+        // Triangle precached data
+        // Estas operaciones las hacemos después de descartar triángulos
+        // para optimización en el rasterizador por software
+        if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
+            this->frameTriangles[i].updateCameraSpace(camera);
+            this->frameTriangles[i].updateNDCSpace(camera);
+            this->frameTriangles[i].updateScreenSpace(camera);
+            this->frameTriangles[i].updateBoundingBox();
+        }
+
+        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
             this->frameTriangles[i].updateFullArea();
             this->frameTriangles[i].updateUVCache();
         } else {

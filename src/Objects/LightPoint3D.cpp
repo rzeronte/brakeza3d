@@ -9,7 +9,7 @@ LightPoint3D::LightPoint3D()
     //cam->setPosition(*this->getPosition());
     //cam->setRotation(*this->getRotation());
 
-    this->sizeBuffer = EngineSetup::getInstance()->SCREEN_WIDTH * EngineSetup::getInstance()->SCREEN_HEIGHT;
+    this->sizeBuffer = EngineSetup::getInstance()->screenWidth * EngineSetup::getInstance()->screenHeight;
     shadowMappingBuffer = new float[sizeBuffer];
 }
 
@@ -35,12 +35,12 @@ void LightPoint3D::clearShadowMappingBuffer()
 
 float LightPoint3D::getShadowMappingBuffer(int x, int y)
 {
-    return shadowMappingBuffer[(y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ];
+    return shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth ) + x ];
 }
 
 float LightPoint3D::setShadowMappingBuffer(int x, int y, float value)
 {
-    shadowMappingBuffer[(y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x ] = value;
+    shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth ) + x ] = value;
 }
 
 void LightPoint3D::setColor(int r, int g, int b)

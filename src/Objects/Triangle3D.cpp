@@ -80,36 +80,36 @@ void Triangle::updateUVCache()
 {
     // lightmap coordinates
     if (getLightmap()->isLightMapped()) {
-        light_u1 = Ac.u;
-        light_v1 = Ac.v;
+        light_u1 = A.u;
+        light_v1 = A.v;
 
-        light_u2 = Bc.u;
-        light_v2 = Bc.v;
+        light_u2 = B.u;
+        light_v2 = B.v;
 
-        light_u3 = Cc.u;
-        light_v3 = Cc.v;
+        light_u3 = C.u;
+        light_v3 = C.v;
     }
 
     // texture coordinates
     if (this->getTexture() != NULL) {
         if (is_bsp) {
-            tex_u1 = Ac.u / getTexture()->getSurface(1)->w;
-            tex_v1 = Ac.v / getTexture()->getSurface(1)->h;
+            tex_u1 = A.u / getTexture()->getSurface(1)->w;
+            tex_v1 = A.v / getTexture()->getSurface(1)->h;
 
-            tex_u2 = Bc.u / getTexture()->getSurface(1)->w;
-            tex_v2 = Bc.v / getTexture()->getSurface(1)->h;
+            tex_u2 = B.u / getTexture()->getSurface(1)->w;
+            tex_v2 = B.v / getTexture()->getSurface(1)->h;
 
-            tex_u3 = Cc.u / getTexture()->getSurface(1)->w;
-            tex_v3 = Cc.v / getTexture()->getSurface(1)->h;
+            tex_u3 = C.u / getTexture()->getSurface(1)->w;
+            tex_v3 = C.v / getTexture()->getSurface(1)->h;
         } else {
-            tex_u1 = Ac.u;
-            tex_v1 = Ac.v;
+            tex_u1 = A.u;
+            tex_v1 = A.v;
 
-            tex_u2 = Bc.u;
-            tex_v2 = Bc.v;
+            tex_u2 = B.u;
+            tex_v2 = B.v;
 
-            tex_u3 = Cc.u;
-            tex_v3 = Cc.v;
+            tex_u3 = C.u;
+            tex_v3 = C.v;
         }
 
         light_u1_Ac_z = light_u1 / Ac.z;
@@ -236,7 +236,7 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
             arrayTriangles[i].updateFullArea();
-            if (EngineSetup::getInstance()->RENDER_WITH_HARDWARE) {
+            if (EngineSetup::getInstance()->RASTERIZER_OPENCL) {
                 EngineBuffers::getInstance()->addOCLTriangle(arrayTriangles[i].getOpenCL());
             }
         }
@@ -283,7 +283,7 @@ void Triangle::softwareRasterizerForTile(int minTileX, int minTileY, int maxTile
 
                 depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
 
-                const int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                const int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
 
                 if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
@@ -355,7 +355,7 @@ void Triangle::softwareRasterizer()
 
                 depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
 
-                int bufferIndex = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
 
                 if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
@@ -831,24 +831,20 @@ OCLTriangle Triangle::getOpenCL()
 
     ot.o_scale = parent->scale;
 
-    ot.oPitch = parent->getRotation().getPitch();
-    ot.oYaw = parent->getRotation().getYaw();
-    ot.oRoll = parent->getRotation().getRoll();
+    M3 objRot = parent->getRotation();
+    ot.oPitch = objRot.getPitch();
+    ot.oYaw   = objRot.getYaw();
+    ot.oRoll  = objRot.getRoll();
 
     ot.A_x = A.x; ot.A_y = A.y; ot.A_z = A.z;
     ot.B_x = B.x; ot.B_y = B.y; ot.B_z = B.z;
     ot.C_x = C.x; ot.C_y = C.y; ot.C_z = C.z;
 
-    ot.As_x = As.x;
-    ot.As_y = As.y;
-    ot.Bs_x = Bs.x;
-    ot.Bs_y = Bs.y;
-    ot.Cs_x = Cs.x;
-    ot.Cs_y = Cs.y;
+    ot.As_x = As.x; ot.As_y = As.y;
+    ot.Bs_x = Bs.x; ot.Bs_y = Bs.y;
+    ot.Cs_x = Cs.x; ot.Cs_y = Cs.y;
 
-    ot.An_z = An.z;
-    ot.Bn_z = Bn.z;
-    ot.Cn_z = Cn.z;
+    ot.An_z = An.z; ot.Bn_z = Bn.z; ot.Cn_z = Cn.z;
 
     return ot;
 }

@@ -31,10 +31,10 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int SCREEN_WIDTH = 320;
-    int SCREEN_HEIGHT = 240;
+    int screenWidth = 320;
+    int screenHeight = 240;
 
-    const int RESOLUTION = SCREEN_WIDTH * SCREEN_HEIGHT;
+    const int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = false;
 
@@ -46,7 +46,8 @@ public:
 
     const float EPSILON = 0.00001f;
 
-    bool RENDER_WITH_HARDWARE = true;
+    bool RASTERIZER_OPENCL = true;
+    bool TRANSFORMS_OPENCL = true;
 
     bool DRAW_TILES_GRID = false;
 
@@ -54,11 +55,10 @@ public:
     bool RENDER_OBJECTS_AXIS = true;
 
     bool MESH_DEBUG_INFO = false;
+    bool OPENCL_SHOW_TIME_KERNELS = false;
 
     // FaceCulling
     bool TRIANGLE_BACK_FACECULLING = true;
-
-    bool TRIANGLE_FRUSTUM_CULLING = true;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
@@ -81,8 +81,6 @@ public:
     bool SHOW_SHADOWMAPPING_BUFFER = false;
     bool ENABLE_SHADOW_CASTING = false;
     bool ENABLE_LIGHTS = true;
-
-    bool TRIANGLE_RENDER_CLIPPING = true;
 
     bool DRAW_FRUSTUM = false;
     bool DRAW_FPS = false;

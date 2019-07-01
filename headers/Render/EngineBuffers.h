@@ -40,6 +40,8 @@ typedef struct {
 
     int maxX,  minX, maxY,minY;
 
+    float normal[3];
+
     bool is_clipping;
 } OCLTriangle;
 

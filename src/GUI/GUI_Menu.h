@@ -51,7 +51,8 @@ public:
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("OpenCL", &EngineSetup::getInstance()->RENDER_WITH_HARDWARE);
+                ImGui::Checkbox("OpenCL Rasterizer", &EngineSetup::getInstance()->RASTERIZER_OPENCL);
+                ImGui::Checkbox("OpenCL Transforms", &EngineSetup::getInstance()->TRANSFORMS_OPENCL);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
@@ -86,8 +87,6 @@ public:
                 ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING);
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
-                ImGui::Checkbox("Frustum Culling", &EngineSetup::getInstance()->TRIANGLE_FRUSTUM_CULLING);
-                ImGui::Checkbox("Frustum Clipping", &EngineSetup::getInstance()->TRIANGLE_RENDER_CLIPPING);
                 ImGui::EndMenu();
             }
 
@@ -107,6 +106,8 @@ public:
                 ImGui::Checkbox("Capture BSP data", &EngineSetup::getInstance()->DEBUG_BSP_MODE);
                 ImGui::Checkbox("Capture Mesh data", &EngineSetup::getInstance()->DEBUG_MESH_MODE);
                 ImGui::Checkbox("Collision objects", &EngineSetup::getInstance()->LOG_COLLISION_OBJECTS);
+                ImGui::Separator();
+                ImGui::Checkbox("OpenCL kernel time", &EngineSetup::getInstance()->OPENCL_SHOW_TIME_KERNELS);
                 ImGui::EndMenu();
             }
 
@@ -152,7 +153,7 @@ public:
                 ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
                 ImGui::Checkbox("Ligths Inspector", &show_window_lights_inspector);
                 ImGui::Checkbox("Log", &show_window_log);
-                ImGui::Checkbox("Physics", &show_window_physics);
+                ImGui::Checkbox("Tiles", &show_window_physics);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::getInstance()->DRAW_FRUSTUM);
                 ImGui::Separator();

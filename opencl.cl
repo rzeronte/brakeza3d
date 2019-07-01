@@ -1,6 +1,9 @@
 /***************************
 * Types
 ****************************/
+#define PI 3.141592
+#define FRUSTUM_CLIPPING_DISTANCE 0.0001
+
 struct OCLTriangle {
     int id;
 
@@ -30,6 +33,8 @@ struct OCLTriangle {
 
     int maxX,  minX, maxY, minY;
 
+    float normal[3];
+
     bool is_clipping;
 };
 
@@ -44,17 +49,6 @@ struct OCLTile {
     int triangleIds[1500];
 };
 
-struct Vertex3D {
-    float x;
-    float y;
-    float z;
-};
-
-struct Point2D {
-    int x;
-    int y;
-};
-
 struct OCLPlane {
     float A[3];
     float B[3];
@@ -62,9 +56,20 @@ struct OCLPlane {
     float normal[3];
 };
 
+struct Vertex3D {
+    __local float x;
+    __local float y;
+    __local float z;
+};
+
+struct Point2D {
+    __local int x;
+    __local int y;
+};
+
 struct Vector3D {
-    struct Vertex3D A;
-    struct Vertex3D B;
+    __local struct Vertex3D A;
+    __local struct Vertex3D B;
 };
 
 /***************************
@@ -95,6 +100,9 @@ bool testForClipping(
 int isVector3DClippingPlane(struct OCLPlane plane, struct Vector3D V);
 float distancePlaneVertex(struct OCLPlane plane, struct Vertex3D p);
 struct Vertex3D getNormalize(struct Vertex3D V);
+struct Vertex3D getNormal(struct OCLTriangle t);
+struct Vertex3D getComponent(struct Vector3D V);
+struct Vertex3D crossProduct(struct Vertex3D v1, struct Vertex3D v2);
 
 /***************************
 * Kernels
@@ -113,67 +121,55 @@ __kernel void transformTrianglesKernel(
     __global struct OCLPlane *frustumPlanes
 ) {
     int i = get_global_id(0);
-    struct OCLTriangle t = triangles[i];
+    __local struct OCLTriangle t;
+    t = triangles[i];
 
-    struct Vertex3D A, B, C;
-    struct Vertex3D Ao, Bo, Co;
-    struct Vertex3D Ac, Bc, Cc;
-    struct Vertex3D An, Bn, Cn;
-    struct Point2D As, Bs, Cs;
+    __local struct Vertex3D A, B, C;
+    __local struct Vertex3D Ao, Bo, Co;
+    __local struct Vertex3D Ac, Bc, Cc;
+    __local struct Vertex3D An, Bn, Cn;
+    __local struct Point2D As, Bs, Cs;
 
-    A.x = t.A_x;  A.y = t.A_y; A.z = t.A_z;
-    B.x = t.B_x;  B.y = t.B_y; B.z = t.B_z;
-    C.x = t.C_x;  C.y = t.C_y; C.z = t.C_z;
+    A.x = t.A_x;  A.y = t.A_y;  A.z = t.A_z;
+    B.x = t.B_x;  B.y = t.B_y;  B.z = t.B_z;
+    C.x = t.C_x;  C.y = t.C_y;  C.z = t.C_z;
 
-    struct Vertex3D objPos;
+    __local struct Vertex3D objPos;
     objPos.x = t.o_x;
     objPos.y = t.o_y;
     objPos.z = t.o_z;
 
-    struct  Vertex3D objRot;
+    __local struct Vertex3D objRot;
     objRot.x = t.oPitch;
     objRot.y = t.oYaw;
     objRot.z = t.oRoll;
 
-    float oScale = t.o_scale;
-
-    struct Vertex3D camPos;
+    __local struct Vertex3D camPos;
     camPos.x = camX;
     camPos.y = camY;
     camPos.z = camZ;
 
-    struct  Vertex3D camRot;
+    __local struct Vertex3D camRot;
     camRot.x = yaw;
     camRot.y = pitch;
     camRot.z = roll;
 
-    struct Vertex3D vNL, vNR, vNT, vNB;
+    __local struct Vertex3D vNL, vNR, vNT, vNB;
     vNL.x = vNL_x;     vNL.y = vNL_y;     vNL.z = vNL_z;
     vNR.x = vNR_x;     vNR.y = vNR_y;     vNR.z = vNR_z;
     vNT.x = vNT_x;     vNT.y = vNT_y;     vNT.z = vNT_z;
     vNB.x = vNB_x;     vNB.y = vNB_y;     vNB.z = vNB_z;
 
     //*******************
-
+    float oScale = t.o_scale;
     Ao = objectSpace(A, objPos, objRot, oScale);
     Bo = objectSpace(B, objPos, objRot, oScale);
     Co = objectSpace(C, objPos, objRot, oScale);
 
-    Ac = cameraSpace(Ao, camPos, camRot);
-    Bc = cameraSpace(Bo, camPos, camRot);
-    Cc = cameraSpace(Co, camPos, camRot);
-
-    An = NDCSpace(Ac, objPos, camRot, vNL, vNR, vNT, vNB);
-    Bn = NDCSpace(Bc, objPos, camRot, vNL, vNR, vNT, vNB);
-    Cn = NDCSpace(Cc, objPos, camRot, vNL, vNR, vNT, vNB);
-
-    As = screenSpace(An, screenWidth, screenHeight);
-    Bs = screenSpace(Bn, screenWidth, screenHeight);
-    Cs = screenSpace(Cn, screenWidth, screenHeight);
-
     //******************
 
-    bool is_clipping = testForClipping(
+    __local bool is_clipping;
+    is_clipping = testForClipping(
         frustumPlanes,
         Ao.x, Ao.y, Ao.z,
         Bo.x, Bo.y, Bo.z,
@@ -181,13 +177,24 @@ __kernel void transformTrianglesKernel(
     );
 
     //*******************
-    
+
+    if (!is_clipping) {
+        Ac = cameraSpace(Ao, camPos, camRot);
+        Bc = cameraSpace(Bo, camPos, camRot);
+        Cc = cameraSpace(Co, camPos, camRot);
+
+        An = NDCSpace(Ac, objPos, camRot, vNL, vNR, vNT, vNB);
+        Bn = NDCSpace(Bc, objPos, camRot, vNL, vNR, vNT, vNB);
+        Cn = NDCSpace(Cc, objPos, camRot, vNL, vNR, vNT, vNB);
+
+        As = screenSpace(An, screenWidth, screenHeight);
+        Bs = screenSpace(Bn, screenWidth, screenHeight);
+        Cs = screenSpace(Cn, screenWidth, screenHeight);
+    }
+
     triangles[i].is_clipping = is_clipping;
 
-    triangles[i].maxX = max(t.As_x, max( t.Bs_x, t.Cs_x));
-    triangles[i].minX = min(t.As_x, min( t.Bs_x, t.Cs_x));
-    triangles[i].maxY = max(t.As_y, max( t.Bs_y, t.Cs_y));
-    triangles[i].minY = min(t.As_y, min( t.Bs_y, t.Cs_y));
+    //*******************
 
     triangles[i].Ao_x = Ao.x;
     triangles[i].Ao_y = Ao.y;
@@ -225,6 +232,25 @@ __kernel void transformTrianglesKernel(
     triangles[i].Cn_y = Cn.y;
     triangles[i].Cn_z = Cn.z;
 
+    triangles[i].As_x = As.x;
+    triangles[i].As_y = As.y;
+
+    triangles[i].Bs_x = Bs.x;
+    triangles[i].Bs_y = Bs.y;
+
+    triangles[i].Cs_x = Cs.x;
+    triangles[i].Cs_y = Cs.y;
+
+    __local struct Vertex3D normal;
+    normal = getNormal(triangles[i]);
+    triangles[i].normal[0] = normal.x;
+    triangles[i].normal[1] = normal.y;
+    triangles[i].normal[2] = normal.z;
+
+    triangles[i].maxX = max( As.x, max( Bs.x, Cs.x ) );
+    triangles[i].minX = min( As.x, min( Bs.x, Cs.x ) );
+    triangles[i].maxY = max( As.y, max( Bs.y, Cs.y ) );
+    triangles[i].minY = min( As.y, min( Bs.y, Cs.y ) );
 }
 
 __kernel void rasterizerFrameTrianglesKernel(__global struct OCLTriangle *triangles, int SCREEN_WIDTH, __global unsigned int *video, __global float *ZBuffer)
@@ -407,30 +433,32 @@ unsigned int createRGB(int r, int g, int b)
 
 struct Vertex3D objectSpace(struct Vertex3D A, struct Vertex3D objPos, struct Vertex3D objRot, float oScale)
 {
-    struct Vertex3D v = A;
+    A.x *= oScale;
+    A.y *= oScale;
+    A.z *= oScale;
 
-    v = scaleVertex(v, oScale);
+    A = rotarEjeX(A, objRot.x);
+    A = rotarEjeY(A, objRot.y);
+    A = rotarEjeZ(A, objRot.z);
 
+    A.x += objPos.x;
+    A.y += objPos.y;
+    A.z += objPos.z;
 
-    v = rotarEjeX(v, objRot.x);
-    v = rotarEjeY(v, objRot.y);
-    v = rotarEjeZ(v, objRot.z);
-
-    v = addVertex(v, objPos.x, objPos.y, objPos.z);
-
-    return v;
+    return A;
 }
 
 struct Vertex3D cameraSpace(struct Vertex3D V, struct Vertex3D camPos, struct Vertex3D camRot)
 {
-    struct Vertex3D A = V;
+    V.x -= camPos.x;
+    V.y -= camPos.y;
+    V.z -= camPos.z;
 
-    A = subVertex(A, camPos.x, camPos.y, camPos.z);
-    A = rotarEjeX(A, camRot.x);
-    A = rotarEjeY(A, camRot.y);
-    A = rotarEjeZ(A, camRot.z);
+    V = rotarEjeX(V, camRot.x);
+    V = rotarEjeY(V, camRot.y);
+    V = rotarEjeZ(V, camRot.z);
 
-    return A;
+    return V;
 }
 
 struct Vertex3D NDCSpace(struct Vertex3D v, struct Vertex3D camPos, struct Vertex3D camRot, struct Vertex3D vNL, struct Vertex3D vNR, struct Vertex3D vNT, struct Vertex3D vNB)
@@ -460,7 +488,6 @@ struct Vertex3D NDCSpace(struct Vertex3D v, struct Vertex3D camPos, struct Verte
     A.z = v.z; // Almaceno z (deberia ser w)
 
     return A;
-    return A;
 }
 
 struct Point2D screenSpace(struct Vertex3D V, int screenWidth, int screenHeight)
@@ -476,16 +503,14 @@ struct Point2D screenSpace(struct Vertex3D V, int screenWidth, int screenHeight)
     return A;
 }
 
-struct Vertex3D perspectiveDivision(struct Vertex3D v, float frustumNearDist)
+struct Vertex3D perspectiveDivision(struct Vertex3D V, float frustumNearDist)
 {
-    struct Vertex3D A = v;
-
-    if (v.z != 0 || v.z != -0) {
-        A.x =  - ( ( frustumNearDist * v.x) / v.z ) ;
-        A.y =  - ( ( frustumNearDist * v.y) / v.z );
+    if (V.z != 0 || V.z != -0) {
+        V.x =  - ( ( frustumNearDist * V.x) / V.z ) ;
+        V.y =  - ( ( frustumNearDist * V.y) / V.z );
     }
 
-    return A;
+    return V;
 }
 
 struct Vertex3D rotarEjeX(struct Vertex3D  V, float rads)
@@ -493,13 +518,13 @@ struct Vertex3D rotarEjeX(struct Vertex3D  V, float rads)
     struct Vertex3D  A;
 
     A.x = 1 * V.x;
-    A.y =  cos(rads) * V.y - sin(rads) * V.z;
-    A.z =  sin(rads) * V.y + cos(rads) * V.z;
+    A.y = cos(rads) * V.y - sin(rads) * V.z;
+    A.z = sin(rads) * V.y + cos(rads) * V.z;
 
     return A;
 }
 
-struct Vertex3D rotarEjeY(struct Vertex3D  V, float rads)
+struct Vertex3D rotarEjeY(struct Vertex3D V, float rads)
 {
     struct Vertex3D  A;
 
@@ -510,7 +535,7 @@ struct Vertex3D rotarEjeY(struct Vertex3D  V, float rads)
     return A;
 }
 
-struct Vertex3D rotarEjeZ(struct Vertex3D  V, float rads)
+struct Vertex3D rotarEjeZ(struct Vertex3D V, float rads)
 {
     struct Vertex3D  A;
 
@@ -523,7 +548,7 @@ struct Vertex3D rotarEjeZ(struct Vertex3D  V, float rads)
 
 float degreesToRadians(float angle)
 {
-    return angle * (float) M_PI / (float) 180.0;;
+    return angle * PI / 180.0;
 }
 
 struct Vertex3D subVertex(struct Vertex3D v, float x, float y, float z)
@@ -587,10 +612,10 @@ bool testForClipping(
     edges[2].B.z = Ao_z;
 
      // 4 planes
-    for (int i = 0 ; i <= 3 ; i++) {
+    for (int i = 0 ; i < 4 ; i++) {
         // 3 vertices
         for (int e = 0 ; e < 3 ; e++) {
-            if ( isVector3DClippingPlane(planes[i], edges[e]) > 1 ) {
+            if ( isVector3DClippingPlane( planes[i], edges[e] ) > 1 ) {
                 return true;
             }
         }
@@ -601,8 +626,6 @@ bool testForClipping(
 
 int isVector3DClippingPlane(struct OCLPlane P, struct Vector3D V)
 {
-    float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
-
     if (distancePlaneVertex(P, V.A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V.B) > FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
     }
@@ -620,29 +643,63 @@ int isVector3DClippingPlane(struct OCLPlane P, struct Vector3D V)
 
 float distancePlaneVertex(struct OCLPlane plane, struct Vertex3D p)
 {
-    struct Vertex3D n;
+    float D = - ( (plane.normal[0] * plane.A[0]) + (plane.normal[1] * plane.A[1]) + (plane.normal[2] * plane.A[2]) );
 
-    n.x = plane.normal[0];
-    n.y = plane.normal[1];
-    n.z = plane.normal[2];
-
-    //n = getgetNormalize(n);
-
-    float D = - ( (n.x * plane.A[0]) + (n.y * plane.A[1]) + (n.z * plane.A[2]) );
-    float dist = ( (n.x * p.x) + (n.y * p.y) + (n.z * p.z) + D);
-
-    return dist;
+    return ( (plane.normal[0] * p.x) + (plane.normal[1] * p.y) + (plane.normal[2] * p.z) + D);
 }
 
 struct Vertex3D getNormalize(struct Vertex3D V)
 {
     float modulo = fabs(sqrt( (V.x * V.x) + (V.y * V.y) + (V.z * V.z) ) );
 
-    struct Vertex3D C;
+    V.x /= modulo;
+    V.y /= modulo;
+    V.z /= modulo;
 
-    C.x = V.x / modulo;
-    C.y = V.y / modulo;
-    C.z = V.z / modulo;
+    return V;
+}
 
-    return C;
+struct Vertex3D getNormal(struct OCLTriangle t)
+{
+    struct Vector3D vector1;
+    vector1.A.x = t.Ao_x;
+    vector1.A.y = t.Ao_y;
+    vector1.A.z = t.Ao_z;
+
+    vector1.B.x = t.Bo_x;
+    vector1.B.y = t.Bo_y;
+    vector1.B.z = t.Bo_z;
+
+    struct Vector3D vector2;
+    vector2.A.x = t.Ao_x;
+    vector2.A.y = t.Ao_y;
+    vector2.A.z = t.Ao_z;
+
+    vector2.B.x = t.Co_x;
+    vector2.B.y = t.Co_y;
+    vector2.B.z = t.Co_z;
+
+    return crossProduct( getComponent(vector1), getComponent(vector2) );
+}
+
+struct Vertex3D getComponent(struct Vector3D V)
+{
+    struct Vertex3D c;
+
+    c.x = V.B.x - V.A.x;
+    c.y = V.B.y - V.A.y;
+    c.z = V.B.z - V.A.z;
+
+    return c;
+}
+
+struct Vertex3D crossProduct(struct Vertex3D v1, struct Vertex3D v2)
+{
+    struct Vertex3D r;
+
+    r.x = (v1.y * v2.z) - (v1.z * v2.y);
+    r.y = (v1.z * v2.x) - (v1.x * v2.z);
+    r.z = (v1.x * v2.y) - (v1.y * v2.x);
+
+    return r;
 }

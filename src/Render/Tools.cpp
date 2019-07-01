@@ -49,7 +49,7 @@ void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 
 bool Tools::isPixelInWindow(int x, int y)
 {
-    if ( !(x >= 0 && x <= EngineSetup::getInstance()->SCREEN_WIDTH && y >= 0 && y <= EngineSetup::getInstance()->SCREEN_HEIGHT) ) {
+    if ( !(x >= 0 && x <= EngineSetup::getInstance()->screenWidth && y >= 0 && y <= EngineSetup::getInstance()->screenHeight) ) {
         return false;
     }
 
@@ -262,8 +262,8 @@ void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, V
     int renderer_w, renderer_h;
     SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
 
-    int real_x = (int) (text_point.x * renderer_w / EngineSetup::getInstance()->SCREEN_WIDTH);
-    int real_y = (int) (text_point.y * renderer_h / EngineSetup::getInstance()->SCREEN_HEIGHT) ;
+    int real_x = (int) (text_point.x * renderer_w / EngineSetup::getInstance()->screenWidth);
+    int real_y = (int) (text_point.y * renderer_h / EngineSetup::getInstance()->screenHeight) ;
 
     real_x += 5; // Offset estético
 

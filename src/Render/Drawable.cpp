@@ -190,7 +190,7 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
 
             if (Tools::isPixelInWindow(x, y)) {
                 current_z+=z_increment;
-                const int buffer_index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                const int buffer_index = ( y * EngineSetup::getInstance()->screenWidth ) + x;
                 if (current_z  >= EngineBuffers::getInstance()->getDepthBuffer( buffer_index ) ) {
                     continue;
                 }
@@ -211,7 +211,7 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
             }
             if (Tools::isPixelInWindow(x, y)) {
                 current_z+=z_increment;
-                const int buffer_index = ( y * EngineSetup::getInstance()->SCREEN_WIDTH ) + x;
+                const int buffer_index = ( y * EngineSetup::getInstance()->screenWidth ) + x;
                 if (current_z >= EngineBuffers::getInstance()->getDepthBuffer( buffer_index ) ) {
                     continue;
                 }
@@ -282,7 +282,7 @@ void Drawable::drawMainAxis(Camera3D *cam)
 {
     Drawable::drawMainAxisOffset( cam, Vertex3D(0, 0, 0) );
 
-    Point2D fixed_position = Point2D(EngineSetup::getInstance()->SCREEN_WIDTH - 50, 30);
+    Point2D fixed_position = Point2D(EngineSetup::getInstance()->screenWidth - 50, 30);
     Drawable::drawMainAxisOffset( cam, Transforms::Point2DToWorld( fixed_position, cam) );
 }
 
