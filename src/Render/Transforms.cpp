@@ -94,8 +94,8 @@ Point2D Transforms::screenSpace(Vertex3D V, Camera3D *cam)
 {
     Point2D A;
 
-    A.x = (1 + V.x) * ((float) EngineSetup::getInstance()->SCREEN_WIDTH/2);
-    A.y = (1 + V.y) * ((float) EngineSetup::getInstance()->SCREEN_HEIGHT/2);
+    A.x = (1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2);
+    A.y = (1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2);
 
     A.x = (int) A.x;
     A.y = (int) A.y;
@@ -148,8 +148,8 @@ Vertex3D Transforms::cameraToWorld(Vertex3D V,  Camera3D *cam)
 Vertex3D Transforms::Point2DToWorld(Point2D p, Camera3D *cam)
 {
     // 0 ... 1
-    float xt = Tools::interpolate(p.x, 0, EngineSetup::getInstance()->SCREEN_WIDTH);
-    float yt = Tools::interpolate(p.y, 0, EngineSetup::getInstance()->SCREEN_HEIGHT);
+    float xt = Tools::interpolate(p.x, 0, EngineSetup::getInstance()->screenWidth);
+    float yt = Tools::interpolate(p.y, 0, EngineSetup::getInstance()->screenHeight);
 
     //*******
 
