@@ -82,8 +82,6 @@ public:
                     }
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Draw extra line", &EngineSetup::getInstance()->TRIANGLE_DEMO_EXTRALINE_ENABLED);
-                ImGui::Separator();
                 ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING);
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);

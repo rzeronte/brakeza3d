@@ -366,6 +366,8 @@ void Engine::dumpTileToFrameBuffer(Tile *t)
 void Engine::handleOpenCLTransform()
 {
     EngineBuffers::getInstance()->numOCLTriangles = 0;
+    if (this->numFrameTriangles == 0) return;
+
     for (int i = 0; i < this->numFrameTriangles ; i++) {
         EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
     }
@@ -436,7 +438,7 @@ void Engine::handleOpenCLTransform()
     size_t local_item_size = 1;
 
     cl_event event;
-    ret = clEnqueueNDRangeKernel(command_queue_transforms, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, &event);
+    ret = clEnqueueNDRangeKernel(command_queue_transforms, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
         Logging::getInstance()->getInstance()->Log( "Error processTransformTriangles: " + std::to_string(ret) );
@@ -756,6 +758,24 @@ void Engine::postUpdate()
     }
 }
 
+void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
+
+    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
+
+    char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
+    char *speed = bsp_map->getEntityValue(targetEntityId, "speed");
+
+    float angleFloat = atof( std::string(angle).c_str() );
+    float speedFloat = atof( std::string(speed).c_str() );
+
+    oRemoteBody->setMoving(true);
+    oRemoteBody->setAngleMoving(angleFloat);
+
+    if (speedFloat > 0) {
+        oRemoteBody->setSpeedMoving(speedFloat);
+    }
+}
+
 void Engine::processPairsCollisions()
 {
 
@@ -821,16 +841,76 @@ void Engine::processPairsCollisions()
                 const btCollisionObject *obA = contactManifold->getBody0();
                 const btCollisionObject *obB = contactManifold->getBody1();
 
-                Mesh3D *brkObjectA = (Mesh3D *) obA->getUserPointer();
-                Mesh3D *brkObjectB = (Mesh3D *) obB->getUserPointer();
+                Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
+                Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
 
-                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                    Logging::getInstance()->getInstance()->Log("Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+                BSPMap *oMap = dynamic_cast<BSPMap*> (brkObjectB);
+                if (oMap != NULL) {
+                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                        Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
+                    }
+                }
+
+                Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
+                if (oMesh != NULL) {
+                    int entityIndex = oMesh->getBspEntityIndex();
+
+                    if ( entityIndex > 0) {
+                        char *classname = bsp_map->getEntityValue(entityIndex, "classname");
+
+                        if (!strcmp(classname, "func_door") || !strcmp(classname, "func_button") ) {
+                            char *currentTargetName = bsp_map->getEntityValue(entityIndex, "targetname");
+
+                            // Tiene targetname?
+                            // Deduzco que si el objeto aunque sea de tipo func_door, tiene 'targetname' definido
+                            // es pq otro debe desencadenar el movimiento de este (un func_button, por ejemplo)
+                            // Al depender de otro objeto, entendemos que no tiene autonomia para moverse por
+                            // el mero hecho de haber contactado (como haria una puerta normal)
+                            if (strlen(currentTargetName) > 0) {
+                                return;
+                            }
+
+                            // desencadena este objecto el movimiento de otro objeo?
+                            char *targetRemote = bsp_map->getEntityValue(entityIndex, "target");
+                            int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( targetRemote );
+
+                            if (targetEntityId >= 0) {
+                                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                    Logging::getInstance()->getInstance()->Log("This collision launch event in other BSPEntityId: " + std::to_string(targetEntityId));
+                                }
+                                // Buscamos algún objeto cuya BSPEntity coincida
+                                for (int k = 0; k < this->numberGameObjects; k++) {
+                                    Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
+                                    if (oRemoteMesh != NULL) {
+                                        if (oRemoteMesh->getBspEntityIndex() == targetEntityId) {
+
+                                            Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
+                                            this-> moveMesh3DBody(oRemoteBody, targetEntityId);
+
+                                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                                Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + oRemoteBody->getLabel());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Mesh3DBody *oBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
+                            this-> moveMesh3DBody(oBody, entityIndex);
+
+                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                Logging::getInstance()->getInstance()->Log("[func_door!] Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel() + " width BSPEntity: " + std::to_string(entityIndex));
+                            }
+                        }
+                    } else {
+                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
+                        }
+                    }
                 }
             }
         }
     }
-
 }
 
 void Engine::cameraUpdate()

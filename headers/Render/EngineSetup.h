@@ -46,8 +46,8 @@ public:
 
     const float EPSILON = 0.00001f;
 
-    bool RASTERIZER_OPENCL = true;
-    bool TRANSFORMS_OPENCL = true;
+    bool RASTERIZER_OPENCL = false;
+    bool TRANSFORMS_OPENCL = false;
 
     bool DRAW_TILES_GRID = false;
 

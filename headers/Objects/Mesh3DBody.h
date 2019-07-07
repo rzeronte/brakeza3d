@@ -13,10 +13,24 @@ class Mesh3DBody: public Mesh3D {
 public:
     Mesh3DBody();
 
+    bool isMoving() const;
+    void setMoving(bool moving);
+    bool isReverseMoving() const;
+    void setReverseMoving(bool moving);
+    void setWaiting(bool waiting);
+    bool isWaiting() const;
+    void setSpeedMoving(float speed);
+    float getSpeedMoving();
+
+    float getAngleMoving() const;
+
+    void setAngleMoving(float angleMoving);
+
     void integrate();
+    void integrateMoving();
+
     btRigidBody* getRigidBody() { return m_body; }
     btCollisionObject* getCollider() { return m_collider; }
-    void disableRotation() { m_disableRotation = true ; }
 
     btRigidBody* makeRigidBody(float mass, std::vector<Mesh3DBody *> &, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     btRigidBody* getRigidObject() { return m_body; };
@@ -24,11 +38,20 @@ public:
     float mass;
     btRigidBody* m_body;
 
+    float speedMoving = 100;
+    float angleMoving;
+    bool moving;
+    bool waiting;
+    bool reverseMoving;
+    float offsetMoving;
+    Timer *timer;
+    float waitTime = 3;
+    float last_ticks = 0;
+    float timerCurrent = 0;
+
 private:
 
     bool m_isActive;
-    bool m_disableRotation;
-    btMotionState* motion;
 
     btCollisionObject* m_collider;
 };

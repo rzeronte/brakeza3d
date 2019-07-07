@@ -321,10 +321,10 @@ void WAD::drawLinedef(WADLinedef linedef)
 
     int reducer = 5;
     Line2D l1 = Line2D(
-        p1->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-        p1->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2,
-        p2->x/reducer + EngineSetup::getInstance()->SCREEN_WIDTH/2,
-        p2->y/reducer + EngineSetup::getInstance()->SCREEN_HEIGHT/2
+        p1->x/reducer + EngineSetup::getInstance()->screenWidth / 2,
+        p1->y/reducer + EngineSetup::getInstance()->screenHeight / 2,
+        p2->x/reducer + EngineSetup::getInstance()->screenWidth / 2,
+        p2->y/reducer + EngineSetup::getInstance()->screenHeight / 2
     );
 
     Drawable::drawLine2D(l1, Color::red());

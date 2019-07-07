@@ -14,6 +14,7 @@ extern Engine *brakeza3D;
 Mesh3DGhost::Mesh3DGhost()
 {
     this->m_ghostObject = new btPairCachingGhostObject();
+    bsp_entity_index = -1;
 }
 
 void Mesh3DGhost::makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)

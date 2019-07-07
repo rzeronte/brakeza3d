@@ -35,6 +35,9 @@ public:
     bool shadowCaster;
     int bsp_entity_index;
 
+    Vertex3D aabbMin;
+    Vertex3D aabbMax;
+
     bool isShadowCaster() const;
     void setShadowCaster(bool shadow_caster);
 

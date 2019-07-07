@@ -9,6 +9,7 @@
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/Objects/Sprite3D.h"
+#include "../../headers/Objects/Mesh3DBody.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -66,6 +67,21 @@ public:
                     Mesh3D *pMesh = dynamic_cast<Mesh3D *>(objects[i]);
                     if (pMesh != NULL) {
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(objects[i])->shadowCaster);
+                    }
+
+                    // Only for Mesh3DBody
+                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(objects[i]);
+                    if (pMeshBody != NULL) {
+                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(objects[i])->moving);
+                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(objects[i])->reverseMoving);
+                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(objects[i])->waiting);
+                        if (pMeshBody->moving) {
+                            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( pMeshBody->offsetMoving ).c_str() );
+                        }
+                        if (pMeshBody->reverseMoving) {
+                            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f,1.0f), std::to_string( pMeshBody->offsetMoving ).c_str() );
+                        }
+
                     }
 
                     // Only for SPRITES

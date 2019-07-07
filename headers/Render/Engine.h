@@ -213,6 +213,7 @@ public:
     void setWeapon(Weapon3D *weapon);
 
     void processPairsCollisions();
+    void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 
     void updateTimer();

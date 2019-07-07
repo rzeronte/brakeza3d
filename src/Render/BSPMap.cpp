@@ -348,6 +348,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
             if (!strcmp(classname, "func_episodegate") ||
                 !strcmp(classname, "func_door") ||
+                !strcmp(classname, "func_button") ||
                 !strcmp(classname, "func_bossgate") ||
                 !strcmp(classname, "func_wall")
             ) {
@@ -356,9 +357,24 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
         }
 
+        vec3_t v3aabbMax;
+        v3aabbMax[0] = h->box.max[0];
+        v3aabbMax[1] = -h->box.max[2];
+        v3aabbMax[2] = h->box.max[1];
+        vec3_t v3aabbMin;
+        v3aabbMin[0] = h->box.min[0];
+        v3aabbMin[1] = -h->box.min[2];
+        v3aabbMin[2] = h->box.min[1];
+
+        Vertex3D aabbMax = Vertex3D(v3aabbMax[0]*scale, v3aabbMax[1]*scale, v3aabbMax[2]*scale);
+        Vertex3D aabbMin = Vertex3D(v3aabbMin[0]*scale, v3aabbMin[1]*scale, v3aabbMin[2]*scale);
+
         if (rigid) {
             Mesh3DBody *body = new Mesh3DBody();
-            body->setPosition(Vertex3D::zero());
+            body->aabbMax = aabbMax;
+            body->aabbMin = aabbMin;
+            body->setPosition(*this->getPosition());
+            body->setRotation(this->getRotation());
             body->setEnabled(true);
             if (entityIndex >= 1 ) {
                 body->setBspEntityIndex(entityIndex);
@@ -370,6 +386,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
                 for (int i = offset; i < offset+num; i++) {
                     body->model_triangles[body->n_triangles] = this->model_triangles[i];
+                    body->model_triangles[body->n_triangles].parent = body;
                     body->n_triangles++;
                 }
             }
@@ -378,7 +395,11 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
         } else {
             Mesh3DGhost *ghost = new Mesh3DGhost();
-            ghost->setPosition(Vertex3D::zero());
+            ghost->aabbMax = aabbMax;
+            ghost->aabbMin = aabbMin;
+            ghost->setPosition(*this->getPosition());
+            ghost->setRotation(this->getRotation());
+
             if (entityIndex >= 1 ) {
                 ghost->setBspEntityIndex(entityIndex);
             }
@@ -390,6 +411,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
                 for (int i = offset; i < offset+num; i++) {
                     ghost->model_triangles[ghost->n_triangles] = this->model_triangles[i];
+                    ghost->model_triangles[ghost->n_triangles].parent = ghost;
                     ghost->n_triangles++;
                 }
             }
@@ -410,7 +432,7 @@ void BSPMap::InitializeEntities()
     }
 
     for (int i = 0; i < this->n_entities; i++) {
-        Logging::getInstance()->Log("BSPEntity - id:" + std::to_string(this->entities[i].id), "");
+        Logging::getInstance()->Log("BSPEntity: " + std::to_string(this->entities[i].id), "");
         for (int j = 0 ; j < this->entities[i].num_attributes ; j++ ) {
             Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
         }
