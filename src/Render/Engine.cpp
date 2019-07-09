@@ -847,59 +847,103 @@ void Engine::processPairsCollisions()
                 BSPMap *oMap = dynamic_cast<BSPMap*> (brkObjectB);
                 if (oMap != NULL) {
                     if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                        Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
+                        //Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
                     }
                 }
 
                 Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
                 if (oMesh != NULL) {
-                    int entityIndex = oMesh->getBspEntityIndex();
+                    int originalEntityIndex = oMesh->getBspEntityIndex();
 
-                    if ( entityIndex > 0) {
-                        char *classname = bsp_map->getEntityValue(entityIndex, "classname");
+                    if (originalEntityIndex > 0) {
+                        char *classname = bsp_map->getEntityValue(originalEntityIndex, "classname");
+                        char *currentTargetName = bsp_map->getEntityValue(originalEntityIndex, "targetname");
 
-                        if (!strcmp(classname, "func_door") || !strcmp(classname, "func_button") ) {
-                            char *currentTargetName = bsp_map->getEntityValue(entityIndex, "targetname");
-
-                            // Tiene targetname?
-                            // Deduzco que si el objeto aunque sea de tipo func_door, tiene 'targetname' definido
-                            // es pq otro debe desencadenar el movimiento de este (un func_button, por ejemplo)
-                            // Al depender de otro objeto, entendemos que no tiene autonomia para moverse por
-                            // el mero hecho de haber contactado (como haria una puerta normal)
-                            if (strlen(currentTargetName) > 0) {
-                                return;
-                            }
-
-                            // desencadena este objecto el movimiento de otro objeo?
-                            char *targetRemote = bsp_map->getEntityValue(entityIndex, "target");
-                            int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( targetRemote );
-
-                            if (targetEntityId >= 0) {
-                                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                    Logging::getInstance()->getInstance()->Log("This collision launch event in other BSPEntityId: " + std::to_string(targetEntityId));
+                        if ( !strcmp(classname, "func_door") ) {
+                            if (!bsp_map->hasEntityAttribute(originalEntityIndex, "targetname")) {
+                                // No tiene targetname
+                                Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
+                                if (originalBody != NULL) {
+                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
                                 }
-                                // Buscamos algún objeto cuya BSPEntity coincida
-                                for (int k = 0; k < this->numberGameObjects; k++) {
-                                    Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
-                                    if (oRemoteMesh != NULL) {
-                                        if (oRemoteMesh->getBspEntityIndex() == targetEntityId) {
+                            } else {
+                                int targetRemoteEntityId = bsp_map->getIndexOfFirstEntityByTarget( currentTargetName );
+                                char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
 
-                                            Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
-                                            this-> moveMesh3DBody(oRemoteBody, targetEntityId);
+                                if ( !strcmp(classnameRemote, "trigger_counter") ) {
+                                    for (int k = 0; k < this->numberGameObjects; k++) {
+                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
+                                        if (oRemoteMesh != NULL) {
+                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
+                                                Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
+                                                int currentCounter = oRemoteGhost->currentTriggerCounter;
 
-                                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + oRemoteBody->getLabel());
+                                                char *countValue = bsp_map->getEntityValue(targetRemoteEntityId, "count");
+                                                int countValueInt = atoi( std::string(countValue).c_str() );
+
+                                                if (countValueInt == currentCounter) {
+                                                    Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
+
+                                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
+                                                } else {
+                                                    if (strlen(bsp_map->getEntityValue(originalEntityIndex, "message")) > 0) {
+                                                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(originalEntityIndex, "message")) );
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                        }
 
-                            Mesh3DBody *oBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                            this-> moveMesh3DBody(oBody, entityIndex);
+                        //***************************
+                        if ( !strcmp(classname, "func_button") ) {
+                            char *targetRemote = bsp_map->getEntityValue(originalEntityIndex, "target");
+                            int targetRemoteEntityId = bsp_map->getIndexOfFirstEntityByTargetname(targetRemote );
 
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log("[func_door!] Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel() + " width BSPEntity: " + std::to_string(entityIndex));
+                            Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
+                            this->moveMesh3DBody(originalBody, originalEntityIndex);
+
+                            if (targetRemoteEntityId >= 0) {
+                                char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
+                                if (!strcmp(classnameRemote, "func_door")) {
+                                    // Buscamos algún objeto cuya BSPEntity coincida
+                                    for (int k = 0; k < this->numberGameObjects; k++) {
+                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
+                                        if (oRemoteMesh != NULL) {
+                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
+
+                                                Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
+                                                this->moveMesh3DBody(oRemoteBody, targetRemoteEntityId);
+
+                                                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                                    Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + oRemoteBody->getLabel());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (!strcmp(classnameRemote, "trigger_counter") ) {
+                                    // Si el objeto original era un botón
+                                    if (!strcmp(classname, "func_button")) {
+                                        Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (brkObjectB);
+                                        if (oButton->active) {
+                                            for (int k = 0; k < this->numberGameObjects; k++) {
+                                                Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
+                                                if (oRemoteMesh != NULL) {
+                                                    if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
+
+                                                        Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
+                                                        oRemoteGhost->currentTriggerCounter++;
+                                                        oButton->active = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {

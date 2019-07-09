@@ -963,6 +963,20 @@ int  BSPMap::getIndexOfFirstEntityByTargetname(const char *value)
     return -1;
 }
 
+int  BSPMap::getIndexOfFirstEntityByTarget(const char *value)
+{
+    for (int i = 0 ; i <= this->n_entities ; i++) {
+        if (hasEntityAttribute(i, "target")) {
+            char *v = getEntityValue(i, "target");
+            if (!strcmp(v, value)) {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
 int BSPMap::getIndexOfFirstEntityByModel(const char *value)
 {
     for (int i = 0 ; i <= this->n_entities ; i++) {

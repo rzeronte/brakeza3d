@@ -119,7 +119,7 @@ void Mesh3DBody::integrateMoving()
     float sizeY = this->aabbMax.y - this->aabbMin.y;
     float sizeZ = this->aabbMax.z - this->aabbMin.z;
 
-    float speed = speedMoving / 50; // quake speed reductor for Brakeza3D
+    float speed = speedMoving / 25; // quake speed reductor for Brakeza3D
 
     // Sync position
     btTransform t;

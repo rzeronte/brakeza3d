@@ -49,6 +49,8 @@ public:
     float last_ticks = 0;
     float timerCurrent = 0;
 
+    bool active = true;
+
 private:
 
     bool m_isActive;

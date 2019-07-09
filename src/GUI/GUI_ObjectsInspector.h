@@ -10,6 +10,7 @@
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/Objects/Sprite3D.h"
 #include "../../headers/Objects/Mesh3DBody.h"
+#include "../../headers/Objects/Mesh3DGhost.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -46,20 +47,26 @@ public:
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
-                    if (ImGui::TreeNode( position_text.c_str() )) {
-                        ImGui::DragScalar("X",     ImGuiDataType_Float,  &objects[i]->getPosition()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y",     ImGuiDataType_Float,  &objects[i]->getPosition()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z",     ImGuiDataType_Float,  &objects[i]->getPosition()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                    if (ImGui::TreeNode(position_text.c_str())) {
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &objects[i]->getPosition()->x, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &objects[i]->getPosition()->y, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &objects[i]->getPosition()->z, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
                     // rotation
-                    if (ImGui::TreeNode( rotation_text.c_str() )) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f,1.0f), std::to_string( objects[i]->getRotation().getPitchDegree()).c_str() );
+                    if (ImGui::TreeNode(rotation_text.c_str())) {
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),
+                                           std::to_string(objects[i]->getRotation().getPitchDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f,1.0f), std::to_string( objects[i]->getRotation().getYawDegree()).c_str() );
+                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),
+                                           std::to_string(objects[i]->getRotation().getYawDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( objects[i]->getRotation().getRollDegree()).c_str() );
+                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                           std::to_string(objects[i]->getRotation().getRollDegree()).c_str());
                         ImGui::TreePop();
                     }
 
@@ -67,21 +74,6 @@ public:
                     Mesh3D *pMesh = dynamic_cast<Mesh3D *>(objects[i]);
                     if (pMesh != NULL) {
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(objects[i])->shadowCaster);
-                    }
-
-                    // Only for Mesh3DBody
-                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(objects[i]);
-                    if (pMeshBody != NULL) {
-                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(objects[i])->moving);
-                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(objects[i])->reverseMoving);
-                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(objects[i])->waiting);
-                        if (pMeshBody->moving) {
-                            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f,1.0f), std::to_string( pMeshBody->offsetMoving ).c_str() );
-                        }
-                        if (pMeshBody->reverseMoving) {
-                            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f,1.0f), std::to_string( pMeshBody->offsetMoving ).c_str() );
-                        }
-
                     }
 
                     // Only for SPRITES
@@ -97,6 +89,25 @@ public:
 
                     // All Objects setup
                     ImGui::Checkbox(enabled_text.c_str(), &objects[i]->enabled);
+
+                    // Only for Mesh3DGhost
+                    Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(objects[i]);
+                    if (pMeshGhost != NULL) {
+                        std::string counterText = "currentTriggerCounter: " + std::to_string(pMeshGhost->currentTriggerCounter);
+                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), counterText.c_str());
+                    }
+
+                    // Only for Mesh3DBody
+                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(objects[i]);
+                    if (pMeshBody != NULL) {
+                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(objects[i])->moving);
+                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(objects[i])->reverseMoving);
+                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(objects[i])->waiting);
+                        if (pMeshBody->moving || pMeshBody->reverseMoving) {
+                            std::string offsetText = "OffsetMoving :" + std::to_string(pMeshBody->offsetMoving);
+                            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), offsetText.c_str());
+                        }
+                    }
                 }
             }
 

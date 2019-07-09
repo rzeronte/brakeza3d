@@ -383,6 +383,7 @@ public:
 
     int getIndexOfFirstEntityByClassname(char *);
     int getIndexOfFirstEntityByTargetname(const char *);
+    int getIndexOfFirstEntityByTarget(const char *);
     int getIndexOfFirstEntityByModel(const char *);
 
     char *getEntityValue(int entityId, char *);

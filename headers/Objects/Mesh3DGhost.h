@@ -22,6 +22,9 @@ public:
 
     btPairCachingGhostObject *m_ghostObject;
 
+    int currentTriggerCounter = 0;
+
 private:
+
 };
 #endif //BRAKEDA3D_MESH3DGHOST_H
