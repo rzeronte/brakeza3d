@@ -151,6 +151,7 @@ struct surface_triangles_t
 {
     int num;        // número de triángulos
     int offset;		// índice del primer triángulo
+    int flags;
 };
 
 struct lightmap_t
@@ -372,7 +373,7 @@ public:
 
     bspleaf_t *FindLeaf(Camera3D *camera);
     void setVisibleSet(bspleaf_t *pLeaf);
-    void bulletPhysics();
+    void createBulletPhysicsShape();
 
     bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
     void createTrianglesForSurface(int surface);

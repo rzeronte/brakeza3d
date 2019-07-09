@@ -70,7 +70,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
     this->createMesh3DAndGhostsFromHulls();
-    this->bulletPhysics();
+    this->createBulletPhysicsShape();
 
     return true;
 }
@@ -273,6 +273,10 @@ bool BSPMap::InitializeTriangles()
     // Creamos triángulos
     for (int i = 0; i < this->getNumSurfaces(); i++) {
 
+        surface_t *s = this->getSurface(i);
+        texinfo_t *tInfo =  this->getTextureInfo( i );
+
+
         int start_number_triangle = this->n_triangles;
         this->createTrianglesForSurface(i);
 
@@ -283,6 +287,8 @@ bool BSPMap::InitializeTriangles()
         // Creamos el registro que relaciona una surface con sus triángulos
         this->surface_triangles[i].num = surface_num_triangles;
         this->surface_triangles[i].offset = start_number_triangle;
+        this->surface_triangles[i].flags = tInfo->flag;
+
     }
 
     Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->n_triangles), "");
@@ -346,7 +352,8 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
             char *classname = brakeza3D->bsp_map->getEntityValue(entityIndex, "classname");
 
-            if (!strcmp(classname, "func_episodegate") ||
+            if (
+//                !strcmp(classname, "func_episodegate") ||
                 !strcmp(classname, "func_door") ||
                 !strcmp(classname, "func_button") ||
                 !strcmp(classname, "func_bossgate") ||
@@ -701,7 +708,7 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     }
 }
 
-void BSPMap::bulletPhysics()
+void BSPMap::createBulletPhysicsShape()
 {
     int numVisibleSurfaces = 0;
 
@@ -716,6 +723,9 @@ void BSPMap::bulletPhysics()
     this->bspBtMesh = new btTriangleMesh();
 
     for (int surface = 0; surface < numAllSurfaces; surface++) {
+
+        if (surface_triangles[surface].flags) continue; // Ignore physics for water/lava
+
         const int offset = surface_triangles[surface].offset;
         const int num = surface_triangles[surface].num;
 

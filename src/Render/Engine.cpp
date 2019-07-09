@@ -860,11 +860,17 @@ void Engine::processPairsCollisions()
                         char *currentTargetName = bsp_map->getEntityValue(originalEntityIndex, "targetname");
 
                         if ( !strcmp(classname, "func_door") ) {
+                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                Logging::getInstance()->getInstance()->Log("[AllPairs] Collision with func_door");
+                            }
                             if (!bsp_map->hasEntityAttribute(originalEntityIndex, "targetname")) {
                                 // No tiene targetname
                                 Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
                                 if (originalBody != NULL) {
                                     this->moveMesh3DBody(originalBody, originalEntityIndex);
+                                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                        Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + originalBody->getLabel());
+                                    }
                                 }
                             } else {
                                 int targetRemoteEntityId = bsp_map->getIndexOfFirstEntityByTarget( currentTargetName );
@@ -918,7 +924,7 @@ void Engine::processPairsCollisions()
                                                 this->moveMesh3DBody(oRemoteBody, targetRemoteEntityId);
 
                                                 if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                    Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + oRemoteBody->getLabel());
+                                                    Logging::getInstance()->getInstance()->Log("Moving Door: " + oRemoteBody->getLabel());
                                                 }
                                             }
                                         }
@@ -938,6 +944,9 @@ void Engine::processPairsCollisions()
                                                         Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
                                                         oRemoteGhost->currentTriggerCounter++;
                                                         oButton->active = false;
+                                                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                                            Logging::getInstance()->getInstance()->Log("trigger_counter for BSPEntity: " + std::to_string(targetRemoteEntityId) + "=" + std::to_string(oRemoteGhost->currentTriggerCounter));
+                                                        }
                                                     }
                                                 }
                                             }

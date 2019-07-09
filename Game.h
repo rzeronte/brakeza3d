@@ -14,6 +14,8 @@ public:
     void preUpdate();
     void onUpdate();
     void onEnd();
+
+    void loadDemoObjects();
 };
 
 
