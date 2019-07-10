@@ -225,6 +225,8 @@ public:
 
     void handleOpenCLTransform();
 
+    void waterShader();
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

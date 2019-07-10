@@ -64,6 +64,7 @@ Engine::Engine()
     this->initOpenCL();
 
     this->initTiles();
+
 }
 
 bool Engine::initWindow()
@@ -176,7 +177,7 @@ void Engine::initPhysics()
 
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
-    this->camera->kinematicController->setGravity(dynamicsWorld->getGravity() );
+    this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
     this->dynamicsWorld->addAction(this->camera->kinematicController);
@@ -668,6 +669,12 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
+    if (bsp_map) {
+        if (bsp_map->isCurrentLeafLiquid()) {
+            this->waterShader();
+        }
+    }
+
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
@@ -702,8 +709,23 @@ void Engine::preUpdate()
 
     // Determinamos VPS
     if (bsp_map) {
+
+        int leafType = NULL;
+
+        if (this->bsp_map->currentLeaf != NULL) {
+            leafType = this->bsp_map->currentLeaf->type;
+        }
+
         bspleaf_t *leaf = bsp_map->FindLeaf( camera );
         bsp_map->setVisibleSet(leaf);
+
+        if (leafType != bsp_map->currentLeaf->type) {
+            if (bsp_map->isCurrentLeafLiquid()) {
+                this->camera->kinematicController->setFallSpeed(5);
+            } else {
+                this->camera->kinematicController->setFallSpeed(30);
+            }
+        }
     }
 }
 
@@ -1428,4 +1450,61 @@ bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObj
 float Engine::getDeltaTime()
 {
     return this->deltaTime/1000;
+}
+
+void Engine::waterShader()
+{
+    //BSP LAVA EFFECT
+    float LAVA_CLOSENESS = 2.35;
+    float LAVA_INTENSITY = 0.45;
+    float LAVA_SPEED = 2.55;
+    float LAVA_SCALE = 2.35;
+
+    float intensity_r = 0.5;
+    float intensity_g = 0.5;
+    float intensity_b = 1;
+
+    //water = -3 |mud = -4 | lava = -5
+    switch(bsp_map->currentLeaf->type) {
+        case -3:
+            break;
+        case -4:
+            intensity_r = 0.5;
+            intensity_g = 1;
+            intensity_b = 0.5;
+            break;
+        case -5:
+            intensity_r = 1;
+            intensity_g = 0.5;
+            intensity_b = 0.5;
+            break;
+    }
+
+    Uint32 *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
+
+    for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
+        for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
+            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
+
+            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor)   * intensity_r);
+            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
+            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor)  * intensity_b);
+
+            currentPixelColor = Tools::createRGB( r_light, g_light, b_light );
+
+            float cache1 = x / LAVA_CLOSENESS;
+            float cache2 = y / LAVA_CLOSENESS;
+
+            int nx = (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * this->executionTime + cache2) ) * LAVA_SCALE;
+            int ny = (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * this->executionTime + cache1) ) * LAVA_SCALE;
+
+            int bufferIndex = nx + ny * EngineSetup::getInstance()->screenWidth;
+
+            if(Tools::isPixelInWindow(nx, ny)) {
+                newVideoBuffer[bufferIndex] = currentPixelColor;
+            }
+        }
+    }
+
+    memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }

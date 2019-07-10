@@ -395,6 +395,7 @@ public:
     Vertex3D getStartMapPosition();
     unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
 
+    bool isCurrentLeafLiquid();
     char *bsp;
 };
 

@@ -127,12 +127,12 @@ public:
             if (ImGui::BeginMenu("Effects FX")) {
                 if (ImGui::BeginMenu("Liquid Shader")) {
                     ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
-                    if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+                    //if (EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
                         ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
                         ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
                         ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
                         ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    }
+                    //}
                     ImGui::EndMenu();
                 }
                 if (ImGui::BeginMenu("Lightning")) {

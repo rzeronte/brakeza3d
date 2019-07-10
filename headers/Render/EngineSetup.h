@@ -137,6 +137,8 @@ public:
     float PITCH_SPEED       = 0.099f;
     float STRAFE_SPEED      = 0.9f;
 
+    float WALKING_SPEED_LIQUID_DIVISOR = 2.0;
+
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.50;
 
@@ -149,7 +151,7 @@ public:
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -50, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -60, 0);
 
     const float AIR_RESISTANCE = 1.1f;
 

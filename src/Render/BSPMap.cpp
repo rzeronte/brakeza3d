@@ -1037,3 +1037,9 @@ Vertex3D BSPMap::getStartMapPosition()
         Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
     }
 }
+
+bool BSPMap::isCurrentLeafLiquid()
+{
+    // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
+    return (this->currentLeaf->type < -2);
+}

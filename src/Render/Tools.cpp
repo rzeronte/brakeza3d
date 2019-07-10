@@ -49,7 +49,7 @@ void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 
 bool Tools::isPixelInWindow(int x, int y)
 {
-    if ( !(x >= 0 && x <= EngineSetup::getInstance()->screenWidth && y >= 0 && y <= EngineSetup::getInstance()->screenHeight) ) {
+    if ( !(x >= 0 && x < EngineSetup::getInstance()->screenWidth && y >= 0 && y < EngineSetup::getInstance()->screenHeight) ) {
         return false;
     }
 

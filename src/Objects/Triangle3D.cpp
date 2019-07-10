@@ -548,7 +548,7 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
 
     // Texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->getTexture() != NULL) {
-        if ((getTexture()->animated || brakeza3D->bsp_map->currentLeaf->type < -2) && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED) {
+        if ( getTexture()->animated && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = texu / EngineSetup::getInstance()->LAVA_CLOSENESS;
             float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
             texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
