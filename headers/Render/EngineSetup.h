@@ -183,6 +183,8 @@ public:
     bool SHOW_WEAPON = false;
 
     bool LOG_COLLISION_OBJECTS = false;
+    bool LOG_LEAF_TYPE = false;
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

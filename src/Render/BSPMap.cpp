@@ -276,7 +276,6 @@ bool BSPMap::InitializeTriangles()
         surface_t *s = this->getSurface(i);
         texinfo_t *tInfo =  this->getTextureInfo( i );
 
-
         int start_number_triangle = this->n_triangles;
         this->createTrianglesForSurface(i);
 
@@ -833,7 +832,6 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
 
     // Fetch the start node
     bspnode_t *node = this->getStartNode();
-
     while (!leaf) {
         short nextNodeId;
 
@@ -866,6 +864,10 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
             node = this->getNode(nextNodeId);
         } else {
             leaf = this->getLeaf(~nextNodeId);
+            this->currentLeaf = this->getLeaf(~nextNodeId);
+            if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
+                Logging::getInstance()->Log("leafType: " + std::to_string(leaf->type) + " [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]");
+            }
         }
     }
 

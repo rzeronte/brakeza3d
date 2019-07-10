@@ -219,7 +219,8 @@ public:
     btBvhTriangleMeshShape *bspBtShape;
     btDefaultMotionState* motionState;
     btRigidBody* bspRigidBody;
-    btCollisionObject* bspCollisionObject;
+
+    bspleaf_t *currentLeaf = NULL;
 
     BSPMap();
 
