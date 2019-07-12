@@ -134,6 +134,33 @@ void Triangle::updateUVCache()
     }
 }
 
+void Triangle::updateTextureAnimated()
+{
+    if (this->getTexture()->animated) {
+        this->timerFrameControl += brakeza3D->deltaTime / 1000;
+
+        int maxFrames = this->getTexture()->numAnimatedFrames;
+
+        if (currentBSPTextureAnimatedFrame <= maxFrames) {
+            std::string baseName = this->getTexture()->getFilename().substr(2, this->getTexture()->getFilename().length());
+
+            std::string n = "+" + std::to_string(currentBSPTextureAnimatedFrame) + baseName;
+
+            float stepTime = (float) 1 / (float) maxFrames;
+
+            if (this->timerFrameControl >= stepTime) {
+                this->setTexture(brakeza3D->bsp_map->getTexture(n));
+                this->currentBSPTextureAnimatedFrame++;
+                this->timerFrameControl = 0;
+            }
+
+            if ( currentBSPTextureAnimatedFrame >= maxFrames ) {
+                currentBSPTextureAnimatedFrame = 0;
+            }
+        }
+    }
+}
+
 void Triangle::updateNormal()
 {
     Vector3D v1 = Vector3D(this->Ao, this->Bo);

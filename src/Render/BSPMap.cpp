@@ -708,7 +708,7 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     const int offset = this->surface_triangles[surface].offset;
     const int num = this->surface_triangles[surface].num;
 
-    for (int i = offset; i < offset+num; i++){
+    for (int i = offset; i < offset+num; i++) {
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
         brakeza3D->numFrameTriangles++;
         //this->model_triangles[i].draw(cam);
@@ -1069,5 +1069,15 @@ int BSPMap::getTextureAnimatedFrames(std::string name)
     }
 
     Logging::getInstance()->Log("[getTextureAnimatedFrames] baseName: " + baseName + ", max: " + std::to_string(count));
+
+    return count;
 }
 
+Texture *BSPMap::getTexture(std::string name)
+{
+    for (int i = 0; i < this->getNumTextures(); i++) {
+        if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
+            return &textures[i];
+        }
+    }
+}

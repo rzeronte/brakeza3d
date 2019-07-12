@@ -65,6 +65,9 @@ public:
     LightPoint3D **lightPoints;
     int numberLightPoints = 0;
 
+    int currentBSPTextureAnimatedFrame = 0;
+    float timerFrameControl = 0;
+
     Triangle();
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
@@ -74,6 +77,8 @@ public:
     void updateCameraSpace(Camera3D *cam);
     void updateNDCSpace(Camera3D *cam);
     void updateScreenSpace(Camera3D *cam);
+
+    void updateTextureAnimated();
 
     void updateUVCache();
 

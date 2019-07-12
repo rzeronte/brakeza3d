@@ -1219,6 +1219,7 @@ void Engine::hiddenSurfaceRemoval()
         // Si la transformación es mediante openCL ya están todas hechas
         // pero si vamos por software actualizamos ObjectSpace y su normal
         // ya que es el mínimo necesario para el clipping y el faceculling
+
         if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
             this->frameTriangles[i].updateObjectSpace();
             this->frameTriangles[i].updateNormal();

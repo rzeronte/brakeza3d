@@ -399,6 +399,7 @@ public:
     bool hasTexture(std::string);
     int getTextureAnimatedFrames(std::string name);
 
+    Texture *getTexture(std::string name);
     char *bsp;
 };
 
