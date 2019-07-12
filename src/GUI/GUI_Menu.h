@@ -99,10 +99,8 @@ public:
             }
 
             if (ImGui::BeginMenu("Logging")) {
-                ImGui::Checkbox("Show debug data", &EngineSetup::getInstance()->MESH_DEBUG_INFO);
+                ImGui::Checkbox("Show debug data", &EngineSetup::getInstance()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
-                ImGui::Checkbox("Capture BSP data", &EngineSetup::getInstance()->DEBUG_BSP_MODE);
-                ImGui::Checkbox("Capture Mesh data", &EngineSetup::getInstance()->DEBUG_MESH_MODE);
                 ImGui::Checkbox("Collision objects", &EngineSetup::getInstance()->LOG_COLLISION_OBJECTS);
                 ImGui::Separator();
                 ImGui::Checkbox("BSP type Leaf", &EngineSetup::getInstance()->LOG_LEAF_TYPE);

@@ -248,10 +248,6 @@ void Mesh3D::loadOBJBlenderMaterials() {
 
 void Mesh3D::draw(Camera3D *cam)
 {
-    if (EngineSetup::getInstance()->DEBUG_MESH_MODE) {
-        EngineBuffers::getInstance()->resetBenchmarkValues();
-    }
-
     // Object's axis
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this, cam, true, true, true);
@@ -262,11 +258,6 @@ void Mesh3D::draw(Camera3D *cam)
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
         brakeza3D->numFrameTriangles++;
         //this->model_triangles[i].draw(cam);
-    }
-
-    // Console info
-    if (EngineSetup::getInstance()->MESH_DEBUG_INFO) {
-        EngineBuffers::getInstance()->consoleInfo();
     }
 }
 

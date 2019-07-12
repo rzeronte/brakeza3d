@@ -396,6 +396,9 @@ public:
     unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
 
     bool isCurrentLeafLiquid();
+    bool hasTexture(std::string);
+    int getTextureAnimatedFrames(std::string name);
+
     char *bsp;
 };
 

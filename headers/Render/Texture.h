@@ -34,7 +34,9 @@ private:
     std::string filename;
 public:
     bool loaded = false;
+    bool liquid = false;
     bool animated = false;
+    int  numAnimatedFrames = 0;
 
     // lightmap info
     float mins[2], maxs[2];

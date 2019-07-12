@@ -89,28 +89,3 @@ void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
     memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
-void EngineBuffers::resetBenchmarkValues()
-{
-    EngineBuffers::getInstance()->trianglesDrawed = 0;
-    EngineBuffers::getInstance()->pixelesOutOfWindow = 0;
-    EngineBuffers::getInstance()->trianglesOutFrustum = 0;
-    EngineBuffers::getInstance()->trianglesHidenByFaceCuling = 0;
-    EngineBuffers::getInstance()->pixelesBehindOfCamera = 0;
-    EngineBuffers::getInstance()->trianglesClippingCreated = 0;
-    EngineBuffers::getInstance()->trianglesHitted = 0;
-}
-
-void EngineBuffers::consoleInfo()
-{
-    std::string info;
-    info+= "TrDrawed: " + std::to_string(EngineBuffers::getInstance()->trianglesDrawed);
-    info+= "| TrHByFaceCuling: " + std::to_string(EngineBuffers::getInstance()->trianglesHidenByFaceCuling);
-    info+= "| TrOutFrustum: " + std::to_string(EngineBuffers::getInstance()->trianglesOutFrustum);
-    info+= "| TrClipCreated: " + std::to_string(EngineBuffers::getInstance()->trianglesClippingCreated);
-    info+= "| pxDrawed: " + std::to_string(EngineBuffers::getInstance()->pixelesDrawed);
-    info+= "| pxOutOfWin: " + std::to_string(EngineBuffers::getInstance()->pixelesOutOfWindow);
-    info+= "| pxBehindOfCam: " + std::to_string(EngineBuffers::getInstance()->pixelesBehindOfCamera);
-    info+= "| trHit: " + std::to_string(EngineBuffers::getInstance()->trianglesHitted);
-
-    Logging::getInstance()->Log( info, "INFO" );
-}

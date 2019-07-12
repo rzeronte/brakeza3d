@@ -81,7 +81,7 @@ void Game::onStart()
     this->addObject3D(shotgun, "shotgun");
 
     // bsp
-    this->loadBSP("start.bsp", "palette.lmp");
+    this->loadBSP("e1m1.bsp", "palette.lmp");
 
 }
 

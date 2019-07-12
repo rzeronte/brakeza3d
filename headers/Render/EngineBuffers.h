@@ -72,17 +72,6 @@ public:
 
     static EngineBuffers* getInstance();
 
-    // Benchmark Meshes
-    int pixelesDrawed = 0;
-    int pixelesOutOfWindow = 0;
-    int pixelesBehindOfCamera = 0;
-    int trianglesDrawed = 0;
-    int trianglesHidenByFaceCuling = 0;
-    int trianglesOutFrustum = 0;
-    int trianglesClippingCreated = 0;
-
-    int trianglesHitted = 0;
-
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);
     float getDepthBuffer(int i);
@@ -98,10 +87,6 @@ public:
 
     void setNumOCLTriangles(int num);
     void addOCLTriangle(OCLTriangle);
-
-    void resetBenchmarkValues();
-
-    void consoleInfo();
 
 };
 

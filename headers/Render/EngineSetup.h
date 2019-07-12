@@ -54,7 +54,7 @@ public:
     // Draw axis
     bool RENDER_OBJECTS_AXIS = true;
 
-    bool MESH_DEBUG_INFO = false;
+    bool DEBUG_RENDER_INFO = false;
     bool OPENCL_SHOW_TIME_KERNELS = false;
 
     // FaceCulling

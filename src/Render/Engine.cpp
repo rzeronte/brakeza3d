@@ -800,7 +800,6 @@ void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
 
 void Engine::processPairsCollisions()
 {
-
     for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
         const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
         Mesh3D *brkObjectB = (Mesh3D *) obj->getUserPointer();
@@ -811,7 +810,6 @@ void Engine::processPairsCollisions()
             if (!strcmp(classname, "trigger_teleport")) {
                 int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
                 if (targetEntityId >= 0) {
-                    Logging::getInstance()->getInstance()->Log( "Founded entity:" + std::string(bsp_map->getEntityValue(entityIndex, "target")));
 
                     if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
                         char *value = bsp_map->getEntityValue(targetEntityId, "origin");
@@ -832,13 +830,15 @@ void Engine::processPairsCollisions()
                         initialTransform.setOrigin( btPos );
 
                         this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
-                        Logging::getInstance()->getInstance()->Log( "teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
+
+                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                            Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
+                        }
                     }
                 }
             }
 
             if (!strcmp(classname, "func_door")) {
-                Logging::getInstance()->getInstance()->Log( "ros");
                 Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
             }
 
@@ -851,7 +851,7 @@ void Engine::processPairsCollisions()
         }
 
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->getInstance()->Log("Collision between triggerCamera and " + brkObjectB->getLabel());
+            Logging::getInstance()->getInstance()->Log("[LOG_COLLISION_OBJECTS] Collision between triggerCamera and " + brkObjectB->getLabel());
         }
     }
 
@@ -1047,7 +1047,9 @@ void Engine::onUpdate()
         Drawable::drawFrustum(camera->frustum, camera, true, true, true);
     }
 
-    Drawable::drawMainAxis( camera );
+    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawMainAxis( camera );
+    }
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -1272,9 +1274,12 @@ void Engine::hiddenSurfaceRemoval()
         numVisibleTriangles++;
     }
 
+    if (EngineSetup::getInstance()->DEBUG_RENDER_INFO) {
+        Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
+    }
+
     this->numFrameTriangles = 0;
 
-    //Logging::getInstance()->Log("frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
 }
 
 void Engine::drawTilesTriangles()

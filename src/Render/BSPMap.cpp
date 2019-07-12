@@ -209,7 +209,7 @@ bool BSPMap::InitializeTextures(void)
             numSkyTextures++;
         }
     }
-    //printf("%d animated textures, %d sky textures\n", numAnimTextues, numSkyTextures);
+    //printf("%d liquid textures, %d sky textures\n", numAnimTextues, numSkyTextures);
 
     // Calculate the total number of textures
     int numTotalTextures = this->getNumTextures() + numAnimTextues * (ANIM_TEX_FRAMES - 1) + numSkyTextures * 2;
@@ -221,23 +221,30 @@ bool BSPMap::InitializeTextures(void)
     // Loop through all texture objects to associate them with a texture and calculate mipmaps from it
     for (int i = 0; i < this->getNumTextures(); i++) {
         miptex_t *mipTexture = this->getMipTexture(i);
-        // NULL textures exist, don't use them!
-        if (!mipTexture->name[0]) {
-            continue;
-        }
+
+        int width  = mipTexture->width;
+        int height = mipTexture->height;
+
+        textures[i] = Texture(width, height);
 
         textures[i].setFilename( std::string(mipTexture->name) );
 
-        int width = mipTexture->width;
-        int height = mipTexture->height;
-        textures[i] = Texture(width, height);
+        if (strncmp(mipTexture->name, "*", 1) == 0) {
+            textures[i].liquid = true;
+        }
+        if (strncmp(mipTexture->name, "+", 1) == 0) {
+            textures[i].animated = true;
+        }
         textures[i].setMipMapped(true);
 
         Logging::getInstance()->Log(
-                "InitializeTextures: textureId: " + std::to_string(i) + " '" + textures[i].getFilename().c_str() + "'" +
-                " | w: " + std::to_string(textures[i].getSurface(1)->w) +
-                " | h: " + std::to_string(textures[i].getSurface(1)->h),
-                "Q1MAP"
+            "InitializeTextures: "+ std::string(mipTexture->name) +
+            " | animated: " + std::to_string(textures[i].animated) +
+            " | liquid: " + std::to_string(textures[i].liquid) +
+            " | textureId: " + std::to_string(i) + " '" +
+            " | w: " + std::to_string(textures[i].getSurface(1)->w) +
+            " | h: " + std::to_string(textures[i].getSurface(1)->h),
+            "Q1MAP"
         );
 
         // Guardamos la textura, con sus mip mappings
@@ -262,6 +269,14 @@ bool BSPMap::InitializeTextures(void)
 
             textures[i].loadFromRaw(texture, width, height, mip_m);
             delete texture;
+        }
+    }
+
+    // No podemos hacerlo en el bucle superior, pq no estarían rellenados todos los "frames" en cada iteracción
+    // Así nos aseguramos de que todos los "+Xname" está cargado en textures[]
+    for (int i = 0; i < this->getNumTextures(); i++) {
+        if (textures[i].animated) {
+            textures[i].numAnimatedFrames = getTextureAnimatedFrames(textures[i].getFilename());
         }
     }
 
@@ -337,7 +352,6 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
     for (int m = 1; m < numHulls; m++) {
         bool rigid = false;
-        bool existEntityForThisHull = false;
 
         bsphull_t *h = this->getHull(m);
 
@@ -346,13 +360,12 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         int entityIndex = this->getIndexOfFirstEntityByModel( targetName.c_str() );
 
         if (entityIndex >= 1 ) {
-            bool existEntityForThisHull = false;
             Logging::getInstance()->Log("Hull_"+ std::to_string(m) + " associated with BSPEntity: " + std::to_string(entityIndex));
 
             char *classname = brakeza3D->bsp_map->getEntityValue(entityIndex, "classname");
 
             if (
-//                !strcmp(classname, "func_episodegate") ||
+                 //!strcmp(classname, "func_episodegate") ||
                 !strcmp(classname, "func_door") ||
                 !strcmp(classname, "func_button") ||
                 !strcmp(classname, "func_bossgate") ||
@@ -360,13 +373,13 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             ) {
                 rigid = true;
             }
-
         }
 
         vec3_t v3aabbMax;
         v3aabbMax[0] = h->box.max[0];
         v3aabbMax[1] = -h->box.max[2];
         v3aabbMax[2] = h->box.max[1];
+
         vec3_t v3aabbMin;
         v3aabbMin[0] = h->box.min[0];
         v3aabbMin[1] = -h->box.min[2];
@@ -582,13 +595,8 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
         normal.y += (((vertices[i].x) + (vertices[j].x)) * ((vertices[j].z) - (vertices[i].z)));
         normal.z += (((vertices[i].y) + (vertices[j].y)) * ((vertices[j].x) - (vertices[i].x)));
     }
+
     normal = normal.getInverse();
-
-    texinfo_t *tInfo =  this->getTextureInfo( surface );
-
-    if (tInfo->flag) {
-        textures[this->getTextureInfo(surface)->texid].animated = true;
-    }
 
     Maths::TriangulatePolygon(
         num_vertices,
@@ -810,18 +818,9 @@ void BSPMap::DrawHulls(Camera3D *cam)
 // Draw the visible surfaces
 void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam)
 {
-    if (EngineSetup::getInstance()->DEBUG_BSP_MODE) {
-        EngineBuffers::getInstance()->resetBenchmarkValues();
-    }
-
     // Loop through all the visible surfaces and activate the texture objects
     for (int i = 0; i < numVisibleSurfaces; i++) {
         DrawSurfaceTriangles(visibleSurfaces[i], cam);
-    }
-
-    // Console info
-    if (EngineSetup::getInstance()->DEBUG_BSP_MODE) {
-        EngineBuffers::getInstance()->consoleInfo();
     }
 }
 
@@ -866,7 +865,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
             leaf = this->getLeaf(~nextNodeId);
             this->currentLeaf = this->getLeaf(~nextNodeId);
             if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
-                Logging::getInstance()->Log("leafType: " + std::to_string(leaf->type) + " [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]");
+                Logging::getInstance()->Log("[LOG_LEAF_TYPE] leafType: " + std::to_string(leaf->type) + " [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]");
             }
         }
     }
@@ -1043,3 +1042,32 @@ bool BSPMap::isCurrentLeafLiquid()
     // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
     return (this->currentLeaf->type < -2);
 }
+
+bool BSPMap::hasTexture(std::string name)
+{
+    for (int i = 0; i < this->getNumTextures(); i++) {
+        if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int BSPMap::getTextureAnimatedFrames(std::string name)
+{
+    int count = atoi(name.substr(1, 1).c_str());
+    std::string baseName = name.substr(2, name.length());
+
+    bool end = false;
+    while (!end) {
+        std::string n = "+" + std::to_string(count + 1) + baseName;
+        if (!this->hasTexture(n)) {
+            end = true;
+        }
+        count++;
+    }
+
+    Logging::getInstance()->Log("[getTextureAnimatedFrames] baseName: " + baseName + ", max: " + std::to_string(count));
+}
+
