@@ -187,6 +187,7 @@ bool BSPMap::InitializeSurfaces(void)
 
             primitives->t[0] = (CalculateDistance(textureInfo->snrm, *vertex) + textureInfo->soff);
             primitives->t[1] = (CalculateDistance(textureInfo->tnrm, *vertex) + textureInfo->toff);
+
         }
     }
 
@@ -221,6 +222,8 @@ bool BSPMap::InitializeTextures(void)
     // Loop through all texture objects to associate them with a texture and calculate mipmaps from it
     for (int i = 0; i < this->getNumTextures(); i++) {
         miptex_t *mipTexture = this->getMipTexture(i);
+
+        if (strlen(mipTexture->name) == 0) continue;
 
         int width  = mipTexture->width;
         int height = mipTexture->height;
@@ -312,7 +315,7 @@ bool BSPMap::InitializeTriangles()
 bool BSPMap::InitializeLightmaps()
 {
     for (int surfaceId = 0; surfaceId < this->getNumSurfaces(); surfaceId++) {
-
+        surface_t *surf = this->getSurface(surfaceId);
         lightmap_t *lt = &surface_lightmaps[surfaceId];
         CalcSurfaceExtents(surfaceId, lt);
 
@@ -321,27 +324,42 @@ bool BSPMap::InitializeLightmaps()
 
             int smax = lt->width;
             int tmax = lt->height;
-
             int lightMapSize = lt->width * lt->height;
 
-            unsigned char *lm_data = getLightmap(lt->offset);
             unsigned int *texture = new unsigned int [lightMapSize];
+            // Clear block
+            for (int c = 0 ; c < lightMapSize; c++) {
+                texture[c] = 0;
+            }
 
-            for (int y = 0 ; y < tmax; y++) {
-                for (int x = 0 ; x < smax; x++) {
-                    int i = x + y * smax;
-                    unsigned char lumen = *lm_data;
-                    texture[i] = (Uint32) Tools::createRGB(lumen, lumen, lumen);
-                    lm_data++;
+            // Itering over lightmaps for create unique lightmap (max 4 lights)
+            unsigned char *lm_data = getLightmap(lt->offset);
+            for (int maps = 0 ; maps < MAXLIGHTMAPS && surf->lightstyle[maps] != 255 ; maps++) {
+
+                for (int y = 0 ; y < tmax; y++) {
+                    for (int x = 0 ; x < smax; x++) {
+                        int i = x + y * smax;
+                        unsigned char lumen = *lm_data + surf->lightstyle[maps];
+                        texture[i] += (Uint32) Tools::createRGB(lumen, lumen, lumen);
+                        lm_data++;
+                    }
                 }
             }
 
             this->lightmaps[surfaceId].loadLightmapFromRaw(texture, smax, tmax);
-            //Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ", lightmap w: " + std::to_string(smax) + ", height: " + std::to_string(tmax), "");
+            Logging::getInstance()->Log(
+                    "InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) +
+                    ", lightmap w: " + std::to_string(smax) +
+                    ", height: " + std::to_string(tmax) +
+                    ", mins[0]: " + std::to_string(lt->mins[0]) +
+                    ", mins[1]: " + std::to_string(lt->mins[1]) +
+                    ", maxs[0]: " + std::to_string(lt->maxs[0]) +
+                    ", maxs[1]: " + std::to_string(lt->maxs[1])
+            );
 
         } else {
             this->lightmaps[surfaceId].setLightMapped(false);
-            //Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ", lightmap offset: " + std::to_string(lt->offset), "");
+            Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ",  No lightmap");
         }
     }
 }
@@ -549,8 +567,13 @@ void BSPMap::bindTrianglesLightmaps()
                 this->model_triangles[j].getLightmap()->maxs[0] = lt->maxs[0];
                 this->model_triangles[j].getLightmap()->maxs[1] = lt->maxs[1];
 
-                this->model_triangles[j].getLightmap()->extents[1] = lt->maxs[1] - lt->mins[1];
-                this->model_triangles[j].getLightmap()->extents[0] = lt->maxs[0] - lt->mins[0];
+                this->model_triangles[j].getLightmap()->minu[0] = lt->minu[0];
+                this->model_triangles[j].getLightmap()->minu[1] = lt->minu[1];
+                this->model_triangles[j].getLightmap()->maxv[0] = lt->maxv[0];
+                this->model_triangles[j].getLightmap()->maxv[1] = lt->maxv[1];
+
+                this->model_triangles[j].getLightmap()->extents[1] = abs(lt->maxs[1] - lt->mins[1]);
+                this->model_triangles[j].getLightmap()->extents[0] = abs(lt->maxs[0] - lt->mins[0]);
 
                 this->model_triangles[j].setLightmap(&lightmaps[surfaceId]);
             }
@@ -597,6 +620,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     }
 
     normal = normal.getInverse();
+    surface_t *surf = this->getSurface(surface);
 
     Maths::TriangulatePolygon(
         num_vertices,
@@ -608,7 +632,8 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
         &textures[this->getTextureInfo(surface)->texid],
         &lightmaps[surface],
         false,
-        true
+        true,
+        surf->lightstyle
     );
 
     return true;
@@ -618,6 +643,7 @@ void BSPMap::CalcSurfaceExtents (int surface, lightmap_t* l)
 {
     float	mins[2], maxs[2];
     int		bmins[2], bmaxs[2];
+
     mins[0] = mins[1] = 999999;
     maxs[0] = maxs[1] = -99999;
     short extents[2];
@@ -646,14 +672,21 @@ void BSPMap::CalcSurfaceExtents (int surface, lightmap_t* l)
         vertex_fixed[1] = ((float *)vertex)[1];
         vertex_fixed[2] = ((float *)vertex)[2];
 
-        float u = (CalculateDistance(textureInfo->tnrm, vertex_fixed) + textureInfo->toff) / mipTexture->height;
-        float v = (CalculateDistance(textureInfo->snrm, vertex_fixed) + textureInfo->soff) / mipTexture->width;
+        float u = (CalculateDistance(textureInfo->tnrm, vertex_fixed) + textureInfo->toff) / mipTexture->width;
+        float v = (CalculateDistance(textureInfo->snrm, vertex_fixed) + textureInfo->soff) / mipTexture->height;
+
 
         min_u = std::min((u), min_u);
         min_v = std::min((v), min_v);
 
         max_u = std::max((u), max_u);
         max_v = std::max((v), max_v);
+
+        l->minu[0] = min_u;
+        l->minu[1] = min_v;
+
+        l->maxv[0] = max_u;
+        l->maxv[1] = max_v;
 
         for (int k=0 ;  k < 2 ; k++) {
             float val;
@@ -685,11 +718,11 @@ void BSPMap::CalcSurfaceExtents (int surface, lightmap_t* l)
         }
     }
 
-    l->mins[0] = mins[0];
-    l->mins[1] = mins[1];
+    l->mins[0] = (mins[0]);
+    l->mins[1] = (mins[1]);
 
-    l->maxs[0] = maxs[0];
-    l->maxs[1] = maxs[1];
+    l->maxs[0] = (maxs[0]);
+    l->maxs[1] = (maxs[1]);
 
     l->width  = (extents[0]>>4)+1;
     l->height = (extents[1]>>4)+1;
@@ -709,9 +742,10 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
     const int num = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++) {
+        this->model_triangles[i].updateTextureAnimated();
+        this->model_triangles[i].updateFrameLight();
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
         brakeza3D->numFrameTriangles++;
-        //this->model_triangles[i].draw(cam);
     }
 }
 

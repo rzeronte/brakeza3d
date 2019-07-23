@@ -155,7 +155,8 @@ public:
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 0;
+    float TESTING = 1749;
+    bool TESTING_BOOL = false;
 
     int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;

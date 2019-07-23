@@ -160,6 +160,7 @@ struct lightmap_t
     int width;
     int height;
     float mins[2], maxs[2];
+    float minu[2], maxv[2];
 };
 
 

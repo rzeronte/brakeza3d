@@ -29,6 +29,7 @@ public:
 
     Texture *texture;
     Texture *lightmap;
+    unsigned char typelight[4];
 
     // lightmap coordinates
     float light_u1, light_v1;
@@ -66,7 +67,9 @@ public:
     int numberLightPoints = 0;
 
     int currentBSPTextureAnimatedFrame = 0;
-    float timerFrameControl = 0;
+    float timerTextureAnimatedFrameControl = 0;
+
+    int currentBSPLightFrame = 0;
 
     Triangle();
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
@@ -81,6 +84,7 @@ public:
     void updateTextureAnimated();
 
     void updateUVCache();
+    void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v);
 
     bool isBackFaceCulling(Camera3D *cam);
 
@@ -103,7 +107,7 @@ public:
 
     void processPixel(int, int, int, float, float, float, float, float, float, float, float);
     Uint32 processPixelTexture(float, float);
-    Uint32 processPixelLightmap(Uint32, float, float);
+    Uint32 processPixelLightmap(Uint32, float, float, float, float);
 
     void scanVerticesForShadowMapping(LightPoint3D *lp);
     void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
@@ -130,6 +134,7 @@ public:
 
     float updateFullArea();
     void updateBoundingBox();
+    int updateFrameLight();
 
     OCLTriangle getOpenCL();
 

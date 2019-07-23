@@ -168,6 +168,8 @@ public:
 
             if (ImGui::BeginMenu("Developers")) {
                 ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+                ImGui::Checkbox("Boolean TEST", &EngineSetup::getInstance()->TESTING_BOOL);
+
                 ImGui::EndMenu();
             }
 

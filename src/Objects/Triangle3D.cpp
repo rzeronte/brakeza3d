@@ -78,20 +78,24 @@ void Triangle::updateFullVertexSpaces(Camera3D *cam)
 
 void Triangle::updateUVCache()
 {
-    // lightmap coordinates
     if (getLightmap()->isLightMapped()) {
-        light_u1 = A.u;
-        light_v1 = A.v;
-
-        light_u2 = B.u;
-        light_v2 = B.v;
-
-        light_u3 = C.u;
-        light_v3 = C.v;
+        getLightmapCoordinatesFromUV(light_u1, light_v1, A.u, A.v);
+        getLightmapCoordinatesFromUV(light_u2, light_v2, B.u, B.v);
+        getLightmapCoordinatesFromUV(light_u3, light_v3, C.u, C.v);
     }
 
     // texture coordinates
     if (this->getTexture() != NULL) {
+
+        tex_u1 = A.u;
+        tex_v1 = A.v;
+
+        tex_u2 = B.u;
+        tex_v2 = B.v;
+
+        tex_u3 = C.u;
+        tex_v3 = C.v;
+
         if (is_bsp) {
             tex_u1 = A.u / getTexture()->getSurface(1)->w;
             tex_v1 = A.v / getTexture()->getSurface(1)->h;
@@ -101,15 +105,6 @@ void Triangle::updateUVCache()
 
             tex_u3 = C.u / getTexture()->getSurface(1)->w;
             tex_v3 = C.v / getTexture()->getSurface(1)->h;
-        } else {
-            tex_u1 = A.u;
-            tex_v1 = A.v;
-
-            tex_u2 = B.u;
-            tex_v2 = B.v;
-
-            tex_u3 = C.u;
-            tex_v3 = C.v;
         }
 
         light_u1_Ac_z = light_u1 / Ac.z;
@@ -134,10 +129,38 @@ void Triangle::updateUVCache()
     }
 }
 
+void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v)
+{
+    float cu = tex_u;
+    float cv = tex_v;
+
+    float intpart;
+    /* Por alguna razón, la superficie 1749 de start.bsp, mapea erróneamente el lightmap si no hago este trick */
+    if (
+        getLightmap()->mins[0] < 0 &&
+        modf( getLightmap()->minu[0], &intpart) == 0 &&
+        modf( getLightmap()->maxv[0], &intpart) == 0 &&
+        modf( getLightmap()->minu[1], &intpart) == 0 &&
+        modf( getLightmap()->maxv[1], &intpart) == 0
+    ) {
+        cu /= getLightmap()->extents[1];
+        cv /= getLightmap()->extents[0];
+    } else {
+        cu -= getLightmap()->mins[1];
+        cu /= getLightmap()->extents[1];
+
+        cv -= getLightmap()->mins[0];
+        cv /= getLightmap()->extents[0];
+    }
+
+    lu = cu;
+    lv = cv;
+}
+
 void Triangle::updateTextureAnimated()
 {
     if (this->getTexture()->animated) {
-        this->timerFrameControl += brakeza3D->deltaTime / 1000;
+        this->timerTextureAnimatedFrameControl += brakeza3D->deltaTime / 1000;
 
         int maxFrames = this->getTexture()->numAnimatedFrames;
 
@@ -148,10 +171,10 @@ void Triangle::updateTextureAnimated()
 
             float stepTime = (float) 1 / (float) maxFrames;
 
-            if (this->timerFrameControl >= stepTime) {
+            if (this->timerTextureAnimatedFrameControl >= stepTime) {
                 this->setTexture(brakeza3D->bsp_map->getTexture(n));
                 this->currentBSPTextureAnimatedFrame++;
-                this->timerFrameControl = 0;
+                this->timerTextureAnimatedFrameControl = 0;
             }
 
             if ( currentBSPTextureAnimatedFrame >= maxFrames ) {
@@ -252,11 +275,13 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
                 this->getTexture(),
                 this->getLightmap(),
                 true,
-                this->is_bsp
+                this->is_bsp,
+                this->typelight
         );
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < numTriangles; i++) {
+            arrayTriangles[i].updateFrameLight();
             arrayTriangles[i].updateFullVertexSpaces(cam);
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
@@ -365,6 +390,8 @@ void Triangle::softwareRasterizer()
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
+    float ignorablePartInt;
+
     for (int y = minY ; y < maxY ; y++) {
         int w0 = w0_row;
         int w1 = w1_row;
@@ -420,6 +447,11 @@ void Triangle::updateBoundingBox()
     minX = std::min(As.x, std::min(Bs.x, Cs.x));
     maxY = std::max(As.y, std::max(Bs.y, Cs.y));
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
+}
+
+int Triangle::updateFrameLight()
+{
+    currentBSPLightFrame = (int) brakeza3D->currentLightmapIndex/2;
 }
 
 float Triangle::updateFullArea()
@@ -590,9 +622,11 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
         }
 
         if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
-            pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv);
+
+            pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv, texu, texv);
         }
     }
+
 
     /*if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
         Vertex3D D;
@@ -666,17 +700,23 @@ Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
     /**/
 }
 
-Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v)
+Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v, float tex_u, float tex_v)
 {
-    float ignorablePartInt;
 
-    light_u -= getLightmap()->mins[1];
-    light_u /= getLightmap()->extents[1];
-    light_u  = modf(abs(light_u), &ignorablePartInt);
+    float intpart;
+    // Check for inversion U
+    if (!std::signbit(light_u)) {
+        light_u = modf(light_u , &intpart);
+    } else {
+        light_u = 1 - modf(abs(light_u) , &intpart);
+    }
 
-    light_v -= getLightmap()->mins[0];
-    light_v /= getLightmap()->extents[0];
-    light_v  = modf(abs(light_v), &ignorablePartInt);
+    // Check for inversion V
+    if (!std::signbit(light_v)) {
+        light_v = modf(light_v , &intpart);
+    } else {
+        light_v = 1 - modf(abs(light_v) , &intpart);
+    }
 
     Uint32 lightmap_color    = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
     Uint8 lightmap_intensity = Tools::getRedValueFromColor(lightmap_color); // RGB son iguales en un gris
@@ -685,6 +725,10 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
     SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
     float t = lightmap_intensity * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
+
+    if ( typelight[currentBSPLightFrame] > 0 && typelight[currentBSPLightFrame] < 32 && typelight[currentBSPLightFrame] != 255 ) {
+        t = t + (typelight[currentBSPLightFrame] / 10);
+    }
 
     pixelColor = (Uint32) Tools::createRGB(
             std::min(int(pred * t), 255),

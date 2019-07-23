@@ -48,7 +48,7 @@ public:
 
     static long GetNextActive(long x, long vertexCount, const bool *active);
     static long GetPrevActive(long x, long vertexCount, const bool *active);
-    static int  TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool isClipped, bool isBsp);
+    static int  TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool isClipped, bool isBsp, unsigned char[4]);
     static bool ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int plane_id , Camera3D *cam);
 
     static float distancePointVector(Vertex3D, Vector3D );

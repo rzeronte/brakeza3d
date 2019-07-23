@@ -256,6 +256,7 @@ void Mesh3D::draw(Camera3D *cam)
     // draw triangles of mesh
     for (int i = 0; i < this->n_triangles ; i++) {
         this->model_triangles[i].updateTextureAnimated();
+        this->model_triangles[i].updateFrameLight();
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
         brakeza3D->numFrameTriangles++;
         //this->model_triangles[i].draw(cam);

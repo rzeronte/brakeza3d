@@ -39,7 +39,8 @@ public:
     int  numAnimatedFrames = 0;
 
     // lightmap info
-    float mins[2], maxs[2];
+    float mins[2], maxs[2], minu[2], maxv[2];
+
     float extents[2];
 
     Texture();

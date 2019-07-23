@@ -1375,6 +1375,9 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
+    //bspOriginalPosition.x = 7.6;
+    //bspOriginalPosition.y = -11.65;
+    //bspOriginalPosition.z = 166.15;
 
     int entityID = this->bsp_map->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
@@ -1413,6 +1416,14 @@ void Engine::updateTimer()
 
     this->frameTime += this->deltaTime;
     this->executionTime += this->deltaTime / 1000.f;
+    this->decimalTime += this->deltaTime / 1000.f;
+    if (decimalTime > 1 ) {
+        this->decimalTime = 0;
+    }
+
+    if (floor( (decimalTime/0.125)) > 4 ) {
+        currentLightmapIndex = Tools::random(0, 3);
+    }
 }
 
 void Engine::updatePhysicObjects()
