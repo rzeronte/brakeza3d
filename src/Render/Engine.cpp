@@ -178,6 +178,7 @@ void Engine::initPhysics()
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
+    this->camera->kinematicController->setFallSpeed(60);
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
     this->dynamicsWorld->addAction(this->camera->kinematicController);
@@ -723,7 +724,7 @@ void Engine::preUpdate()
             if (bsp_map->isCurrentLeafLiquid()) {
                 this->camera->kinematicController->setFallSpeed(5);
             } else {
-                this->camera->kinematicController->setFallSpeed(30);
+                this->camera->kinematicController->setFallSpeed(256);
             }
         }
     }
@@ -1188,6 +1189,7 @@ void Engine::getObjectsBillboardTriangles()
 
 void Engine::drawFrameTriangles()
 {
+
     for (int i = 0; i < numVisibleTriangles; i++) {
         this->visibleTriangles[i].draw(camera);
     }
@@ -1416,14 +1418,12 @@ void Engine::updateTimer()
 
     this->frameTime += this->deltaTime;
     this->executionTime += this->deltaTime / 1000.f;
-    this->decimalTime += this->deltaTime / 1000.f;
-    if (decimalTime > 1 ) {
+    this->decimalTime += this->deltaTime / 100.f;
+    if (decimalTime > 10 ) {
         this->decimalTime = 0;
     }
-
-    if (floor( (decimalTime/0.125)) > 4 ) {
-        currentLightmapIndex = Tools::random(0, 3);
-    }
+    currentLightmapIndex = this->decimalTime;
+    //Logging::getInstance()->Log(std::to_string((int)(decimalTime)));
 }
 
 void Engine::updatePhysicObjects()

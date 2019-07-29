@@ -19,7 +19,7 @@ public:
         const float range_max_radius = 100000;
 
         const float range_min_lightmap_intensity = 0;
-        const float range_max_lightmap_intensity = 0.5;
+        const float range_max_lightmap_intensity = 1;
         const float range_sensibility_lightmap_intensity = 0.0001;
 
         const float range_sensibility_lava = 0.05;
@@ -32,6 +32,9 @@ public:
 
         const float range_min_lod = 1;
         const float range_max_lod = 8;
+
+        const float range_min_test_int = 0;
+        const float range_max_test_int = 3;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
         const float lod_sensibility = 0;
@@ -60,7 +63,9 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Textures", &EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED);
                 if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-                    ImGui::Checkbox("Bilinear Interpolation", &EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION);
+                    ImGui::Separator();
+                    ImGui::Checkbox("UV Bilinear", &EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION);
+                    ImGui::Checkbox("Lightmap Bilinear", &EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION);
                     ImGui::Checkbox("Mip-Mapping", &EngineSetup::getInstance()->ENABLE_MIPMAPPING);
                     if (!EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
                         if (ImGui::TreeNode("Force LOD level")) {
@@ -118,6 +123,7 @@ public:
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
                 ImGui::DragScalar("BSP Lightmapping Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("Texture color Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->TEXTURE_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 
@@ -168,8 +174,8 @@ public:
 
             if (ImGui::BeginMenu("Developers")) {
                 ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
                 ImGui::Checkbox("Boolean TEST", &EngineSetup::getInstance()->TESTING_BOOL);
-
                 ImGui::EndMenu();
             }
 

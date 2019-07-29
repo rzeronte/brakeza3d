@@ -143,16 +143,34 @@ void Texture::consoleInfo()
     Logging::getInstance()->Log("consoleInfo: Texture " + std::to_string(loaded) +  "(w: " + std::to_string(mip_mapping_1->w) + ", h: " + std::to_string(mip_mapping_1->h), "TEXTURE");
 }
 
-void Texture::loadLightmapFromRaw(unsigned int *texture, int w, int h)
+void Texture::loadLightmapFromRaw(int frame, unsigned int *texture, int w, int h)
 {
-    this->lightmap = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    SDL_Surface *surf;
+    switch(frame) {
+        case 0:
+            this->lightmap = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+            surf = this->lightmap;
+            break;
+        case 1:
+            this->lightmap2 = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+            surf = this->lightmap2;
+            break;
+        case 2:
+            this->lightmap3 = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+            surf = this->lightmap3;
+            break;
+        case 3:
+            this->lightmap4 = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+            surf = this->lightmap4;
+            break;
+    }
 
-    int width  = lightmap->w;
-    int height = lightmap->h;
+    int width  = w;
+    int height = h;
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            Tools::SurfacePutPixel(lightmap, x, y, texture[(y * width) + x]);
+            Tools::SurfacePutPixel(surf, x, y, texture[(y * width) + x]);
         }
     }
 }

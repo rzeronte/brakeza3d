@@ -19,8 +19,10 @@ public:
     static Uint32 black(){return 0x000000;}
     static Uint32 yellow(){return 0xFFFF00;}
     static Uint32 pink(){return 0xff00bf;}
-    static Uint32 cyan(){return 0x00ffff;}
-    static Uint32 orange(){return 0xFFA500;}
+    static Uint32 cyan(){return 0x00FFFF;}
+    static Uint32 orange(){return 0xFF8000;}
+    static Uint32 magenta(){return 0xFF00FF;}
+
 
 };
 

@@ -300,6 +300,7 @@ bool BSPMap::InitializeTriangles()
         // Hayamos el número de triángulos creados para esta superficie
         int end_number_triangle = this->n_triangles;
         int surface_num_triangles = end_number_triangle - start_number_triangle ;
+        Logging::getInstance()->Log("Surface: " + std::to_string(i) + ", NumTriangles: " + std::to_string(surface_num_triangles) +", startOffset: " + std::to_string(start_number_triangle) + ", endOffset: " + std::to_string(end_number_triangle), "");
 
         // Creamos el registro que relaciona una surface con sus triángulos
         this->surface_triangles[i].num = surface_num_triangles;
@@ -326,27 +327,61 @@ bool BSPMap::InitializeLightmaps()
             int tmax = lt->height;
             int lightMapSize = lt->width * lt->height;
 
-            unsigned int *texture = new unsigned int [lightMapSize];
+            unsigned int *texture  = new unsigned int [lightMapSize];
+            unsigned int *texture2 = new unsigned int [lightMapSize];
+            unsigned int *texture3 = new unsigned int [lightMapSize];
+            unsigned int *texture4 = new unsigned int [lightMapSize];
+
             // Clear block
             for (int c = 0 ; c < lightMapSize; c++) {
                 texture[c] = 0;
+                texture2[c] = 0;
+                texture3[c] = 0;
+                texture4[c] = 0;
             }
 
             // Itering over lightmaps for create unique lightmap (max 4 lights)
             unsigned char *lm_data = getLightmap(lt->offset);
             for (int maps = 0 ; maps < MAXLIGHTMAPS && surf->lightstyle[maps] != 255 ; maps++) {
-
                 for (int y = 0 ; y < tmax; y++) {
                     for (int x = 0 ; x < smax; x++) {
                         int i = x + y * smax;
-                        unsigned char lumen = *lm_data + surf->lightstyle[maps];
-                        texture[i] += (Uint32) Tools::createRGB(lumen, lumen, lumen);
+                        unsigned char lumen = *lm_data;
+                        Uint32 c = (Uint32) Tools::createRGB(lumen/5, lumen/5, lumen/5);
+                        switch(maps) {
+                            case 0:
+                                texture[i] += c;
+                                break;
+                            case 1:
+                                texture2[i] += c;
+                                break;
+                            case 2:
+                                texture3[i] += c;
+                                break;
+                            case 3:
+                                texture4[i] += c;
+                                break;
+                        }
                         lm_data++;
                     }
                 }
+                switch(maps) {
+                    case 0:
+                        this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture, smax, tmax);
+                        break;
+                    case 1:
+                        this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture2, smax, tmax);
+                        break;
+                    case 2:
+                        this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture3, smax, tmax);
+                        break;
+                    case 3:
+                        this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture4, smax, tmax);
+                        break;
+                }
+                this->lightmaps[surfaceId].numLightmaps++;
             }
 
-            this->lightmaps[surfaceId].loadLightmapFromRaw(texture, smax, tmax);
             Logging::getInstance()->Log(
                     "InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) +
                     ", lightmap w: " + std::to_string(smax) +
@@ -743,7 +778,7 @@ void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
 
     for (int i = offset; i < offset+num; i++) {
         this->model_triangles[i].updateTextureAnimated();
-        this->model_triangles[i].updateFrameLight();
+        this->model_triangles[i].updateLightmapFrame();
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
         brakeza3D->numFrameTriangles++;
     }
@@ -806,21 +841,48 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 {
     int numVisibleSurfaces = 0;
 
+    /*
+        // Suppose Leaf is the leaf the player is in.
+        v = Leaf.vislist;
+        for (L = 1; L < numleaves; v++)
+          {
+            if (visisz[v] == 0)           // value 0, leaves invisible
+              {
+                L += 8 * visisz[v + 1]    // skip some leaves
+                v++;
+              }
+            else                          // tag 8 leaves, if needed
+              {                           // examine bits right to left
+                for (bit = 1; bit != 0; bit = bit * 2, L++)
+                  {
+                    if (visisz[v] & bit)
+                      TagLeafAsVisible(L);
+                  }
+              }
+          }
+     */
     // Get a pointer to the visibility list that is associated with the BSP leaf
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
-    for ( int i = 1; i < this->getNumLeaves(); visibilityList++) {
+    for (int L = 1; L < this->getNumLeaves(); visibilityList++) {
         const unsigned char veces = *(visibilityList);
         if (veces == 0) {
-            i += 8 * *(++visibilityList);
+            L += 8 * *(++visibilityList);
         } else {
-            for (int j = 0; j < 8; j++, i++) {
+            for (int j = 0; j < 8; j++, L++) {
                 if (Tools::getBit(veces, j)) {
-                    bspleaf_t *visibleLeaf = this->getLeaf(i);
+                    bspleaf_t *visibleLeaf = this->getLeaf(L);
                     int firstSurface = visibleLeaf->firstsurf;
                     int lastSurface = firstSurface + visibleLeaf->numsurf;
-                    for (int k = firstSurface; k < lastSurface; k++) {
-                        visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+                    for (int k = firstSurface; k < lastSurface ; k++) {
+                        bool repeat = false;
+                        for (int x = 0; x < numVisibleSurfaces; x++) {
+                            if (visibleSurfaces[x] == this->getSurfaceList(k)) {
+                                repeat = true;
+                            }
+                        }
+                        if (!repeat)
+                            visibleSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
                     }
                 }
             }

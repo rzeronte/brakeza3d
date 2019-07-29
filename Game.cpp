@@ -124,7 +124,7 @@ void Game::onUpdate()
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
     //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
-
+    //EngineSetup::getInstance()->TESTING+=1;
 }
 
 void Game::preUpdate()

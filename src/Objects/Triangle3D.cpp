@@ -17,6 +17,7 @@
 
 extern Engine *brakeza3D;
 
+
 Triangle::Triangle()
 {
     texture = NULL;
@@ -239,6 +240,11 @@ void Triangle::draw(Camera3D *cam)
         Drawable::drawVertex(Bo, cam, Color::green());
         Drawable::drawVertex(Co, cam, Color::blue());
     }
+
+    /*if ((int) EngineSetup::getInstance()->TESTING == this->bsp_surface) {
+        drawWireframe();
+        getLightmap()->drawFlatLightMap(100, 100);
+    }*/
 }
 
 bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
@@ -281,11 +287,16 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < numTriangles; i++) {
-            arrayTriangles[i].updateFrameLight();
+            //arrayTriangles[i].updateLightmapFrame();
+            arrayTriangles[i].lightmapIndexPattern  = this->lightmapIndexPattern;
+            arrayTriangles[i].lightmapIndexPattern2 = this->lightmapIndexPattern2;
+            arrayTriangles[i].lightmapIndexPattern3 = this->lightmapIndexPattern3;
+            arrayTriangles[i].lightmapIndexPattern4 = this->lightmapIndexPattern4;
             arrayTriangles[i].updateFullVertexSpaces(cam);
             arrayTriangles[i].updateUVCache();
             arrayTriangles[i].updateBoundingBox();
             arrayTriangles[i].updateFullArea();
+
             if (EngineSetup::getInstance()->RASTERIZER_OPENCL) {
                 EngineBuffers::getInstance()->addOCLTriangle(arrayTriangles[i].getOpenCL());
             }
@@ -449,9 +460,45 @@ void Triangle::updateBoundingBox()
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
 }
 
-int Triangle::updateFrameLight()
+int Triangle::updateLightmapFrame()
 {
-    currentBSPLightFrame = (int) brakeza3D->currentLightmapIndex/2;
+    int style;
+    int length;
+    for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
+        style = typelight[nl];
+        float timeIncrement = brakeza3D->deltaTime / 100.0f;
+        if ( style > 11) continue;
+        switch(nl) {
+            case 0:
+                lightmapIndexPattern += timeIncrement;
+                length = strlen(EngineSetup::getInstance()->LIGHT_PATTERNS[style]);
+                if ((int) lightmapIndexPattern >= length) {
+                    lightmapIndexPattern = 0;
+                }
+                break;
+            case 1:
+                lightmapIndexPattern2 += timeIncrement;
+                length = strlen(EngineSetup::getInstance()->LIGHT_PATTERNS[style]);
+                if ((int) lightmapIndexPattern2 >= length) {
+                    lightmapIndexPattern2 = 0;
+                }
+                break;
+            case 2:
+                lightmapIndexPattern3 += timeIncrement;
+                length = strlen(EngineSetup::getInstance()->LIGHT_PATTERNS[style]);
+                if ((int) lightmapIndexPattern3 >= length) {
+                    lightmapIndexPattern3 = 0;
+                }
+                break;
+            case 3:
+                lightmapIndexPattern4 += timeIncrement;
+                length = strlen(EngineSetup::getInstance()->LIGHT_PATTERNS[style]);
+                if ((int) lightmapIndexPattern4 >= length) {
+                    lightmapIndexPattern4 = 0;
+                }
+                break;
+        }
+    }
 }
 
 float Triangle::updateFullArea()
@@ -622,7 +669,6 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
         }
 
         if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
-
             pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv, texu, texv);
         }
     }
@@ -702,7 +748,6 @@ Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
 
 Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v, float tex_u, float tex_v)
 {
-
     float intpart;
     // Check for inversion U
     if (!std::signbit(light_u)) {
@@ -718,26 +763,72 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
         light_v = 1 - modf(abs(light_v) , &intpart);
     }
 
-    Uint32 lightmap_color    = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
-    Uint8 lightmap_intensity = Tools::getRedValueFromColor(lightmap_color); // RGB son iguales en un gris
+    Uint32 lightmap_color;
+    Uint8 lightmap_intensity = 0;
+    char c = 255;
+
+    for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
+        int indexPattern;
+        int style = typelight[nl];
+        if (style > 11) continue;
+        switch(nl) {
+            case 0:
+                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
+                } else {
+                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap, light_v, light_u);
+                }
+                indexPattern = (int)(lightmapIndexPattern);
+                break;
+            case 1:
+                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap2, light_v, light_u);
+                } else {
+                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap2, light_v, light_u);
+                }
+                indexPattern = (int)(lightmapIndexPattern2);
+                break;
+            case 2:
+                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap3, light_v, light_u);
+                } else {
+                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap3, light_v, light_u);
+                }
+                indexPattern = (int)(lightmapIndexPattern3);
+                break;
+            case 3:
+                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
+                } else {
+                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap4, light_v, light_u);
+                }
+                indexPattern = (int)(lightmapIndexPattern4);
+                break;
+        }
+        c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
+        lightmap_intensity += Tools::getRedValueFromColor(lightmap_color)  * (c/10  * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
+    }
 
     Uint8 pred, pgreen, pblue, palpha;
     SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
-    float t = lightmap_intensity * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY;
-
-    if ( typelight[currentBSPLightFrame] > 0 && typelight[currentBSPLightFrame] < 32 && typelight[currentBSPLightFrame] != 255 ) {
-        t = t + (typelight[currentBSPLightFrame] / 10);
-    }
+    float t = ( lightmap_intensity);
 
     pixelColor = (Uint32) Tools::createRGB(
-            std::min(int(pred * t), 255),
-            std::min(int(pgreen * t), 255),
-            std::min(int(pblue * t), 255)
+        std::min(int((pred * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c),
+        std::min(int((pgreen * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c),
+        std::min(int((pblue * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c)
     );
 
     if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
-        pixelColor = lightmap_color;
+        Uint8 pred, pgreen, pblue, palpha;
+        SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
+
+        pixelColor = (Uint32) Tools::createRGB(
+                std::min(int((pred) * t ), c*1),
+                std::min(int((pgreen) * t), c*1),
+                std::min(int((pblue) * t), c*1)
+        );
     }
 
     return pixelColor;

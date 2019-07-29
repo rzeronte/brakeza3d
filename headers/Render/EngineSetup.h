@@ -67,6 +67,7 @@ public:
     bool TRIANGLE_MODE_TEXTURIZED = true;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;
+    bool LIGHTMAPS_BILINEAR_INTERPOLATION = false;
 
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
@@ -155,7 +156,8 @@ public:
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 1749;
+    float TESTING = 2661;
+    float TESTING_INT = 0;
     bool TESTING_BOOL = false;
 
     int LOAD_OF_DETAIL = 1;
@@ -163,7 +165,8 @@ public:
 
     bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_INTENSITY = 0.025f;
+    float LIGHTMAPPING_INTENSITY = 0.125f;
+    float TEXTURE_INTENSITY = 0.1f;
 
     bool DRAW_BSP_HULLS = false;
 
@@ -188,6 +191,7 @@ public:
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_LEAF_TYPE = false;
 
+    char *LIGHT_PATTERNS[12];
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

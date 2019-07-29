@@ -40,8 +40,14 @@ public:
 
     // lightmap info
     float mins[2], maxs[2], minu[2], maxv[2];
-
     float extents[2];
+
+    // Surfaces for lightmaps
+    SDL_Surface *lightmap;
+    SDL_Surface *lightmap2;
+    SDL_Surface *lightmap3;
+    SDL_Surface *lightmap4;
+    int numLightmaps = 0;
 
     Texture();
     Texture(int, int);
@@ -53,7 +59,7 @@ public:
     void loadJPG(const char *file, int);
     void loadTGA(const char *file, int);
     void loadFromRaw(unsigned int *texture, int, int, int);
-    void loadLightmapFromRaw(unsigned int *texture, int, int);
+    void loadLightmapFromRaw(int frame, unsigned int *texture, int, int);
 
     SDL_Surface *getSurface(int);
     void consoleInfo();
@@ -70,7 +76,6 @@ public:
 
     void setLightMapped(bool lightMapped);
 
-    SDL_Surface *lightmap;
 };
 
 

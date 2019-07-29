@@ -69,7 +69,11 @@ public:
     int currentBSPTextureAnimatedFrame = 0;
     float timerTextureAnimatedFrameControl = 0;
 
-    int currentBSPLightFrame = 0;
+    // Control lightmaps animations
+    float lightmapIndexPattern = 0;
+    float lightmapIndexPattern2 = 0;
+    float lightmapIndexPattern3 = 0;
+    float lightmapIndexPattern4 = 0;
 
     Triangle();
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
@@ -134,7 +138,7 @@ public:
 
     float updateFullArea();
     void updateBoundingBox();
-    int updateFrameLight();
+    int updateLightmapFrame();
 
     OCLTriangle getOpenCL();
 
