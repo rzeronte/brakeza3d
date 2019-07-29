@@ -162,7 +162,7 @@ public:
 
     bool initWindow();
     void initFontsTTF();
-    void initPhysics();
+    void initBulletPhysics();
     void initOpenCL();
     void initTiles();
 

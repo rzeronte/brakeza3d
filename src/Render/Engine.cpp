@@ -60,7 +60,7 @@ Engine::Engine()
     imgui_context = ImGui::CreateContext();
     fps = 0;
 
-    this->initPhysics();
+    this->initBulletPhysics();
     this->initOpenCL();
 
     this->initTiles();
@@ -150,7 +150,7 @@ void Engine::initFontsTTF()
     }
 }
 
-void Engine::initPhysics()
+void Engine::initBulletPhysics()
 {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     this->collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -762,7 +762,7 @@ void Engine::postUpdate()
         btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
 
         btVector3 pos = trans.getOrigin();
-        float BSP_YOffset = 1;
+        float BSP_YOffset = 3;
         // El offset es porqué nuestros ojos deberian estar por encima del punto central
         // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.
         finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());

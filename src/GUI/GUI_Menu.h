@@ -65,7 +65,6 @@ public:
                 if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
                     ImGui::Separator();
                     ImGui::Checkbox("UV Bilinear", &EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION);
-                    ImGui::Checkbox("Lightmap Bilinear", &EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION);
                     ImGui::Checkbox("Mip-Mapping", &EngineSetup::getInstance()->ENABLE_MIPMAPPING);
                     if (!EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
                         if (ImGui::TreeNode("Force LOD level")) {
@@ -81,8 +80,10 @@ public:
                             ImGui::TreePop();
                         }
                     }
+                    ImGui::Separator();
                     ImGui::Checkbox("Lightmaps", &EngineSetup::getInstance()->ENABLE_LIGHTMAPPING);
                     if (EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
+                        ImGui::Checkbox("Lightmap Bilinear", &EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION);
                         ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
                     }
                 }
