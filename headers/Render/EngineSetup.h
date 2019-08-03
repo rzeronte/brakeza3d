@@ -110,6 +110,7 @@ public:
     std::string ICON_LIGHT_FLAME = "../assets/icons/light_flame.tga";
 
     std::string SPRITES_FOLDER = "../assets/sprites/";
+    std::string MAPS_FOLDER = "../assets/maps/";
     std::string ASSETS_FOLDER = "../assets/";
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
@@ -147,7 +148,7 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = false;
+    bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 

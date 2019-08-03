@@ -50,8 +50,8 @@ BSPMap::BSPMap()
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
 {
-    std::string bspFilename_str = std::string(EngineSetup::getInstance()->ASSETS_FOLDER + bspFilename).c_str();
-    std::string paletteFilename_str = std::string(EngineSetup::getInstance()->ASSETS_FOLDER + paletteFilename).c_str();
+    std::string bspFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename).c_str();
+    std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename).c_str();
 
     if (!LoadBSP(bspFilename_str.c_str())) {
         printf("[ERROR] Map::Initialize() Error loading bsp file\n");
