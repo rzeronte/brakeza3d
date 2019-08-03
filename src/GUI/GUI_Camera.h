@@ -9,7 +9,7 @@
 
 class GUI_Camera : public GUI  {
 public:
-    bool show = true;
+    bool show = false;
 
     virtual ~GUI_Camera() {}
 
@@ -21,7 +21,7 @@ public:
 
             ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 190), ImGuiSetCond_Once);
-            window_flags |= ImGuiWindowFlags_NoMove;
+            //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Camera Inspector";
             ImGui::Begin(title.c_str(), &show, window_flags);

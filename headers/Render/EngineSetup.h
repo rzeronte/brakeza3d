@@ -130,6 +130,7 @@ public:
 
     int TEXT_3D_SIZE = 40;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
+    Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
@@ -156,8 +157,8 @@ public:
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 2661;
-    float TESTING_INT = 0;
+    float TESTING = 915;
+    float TESTING_INT = 900;
     bool TESTING_BOOL = false;
 
     int LOAD_OF_DETAIL = 1;
@@ -165,7 +166,7 @@ public:
 
     bool ENABLE_LIGHTMAPPING = true;
     bool SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_INTENSITY = 0.125f;
+    float LIGHTMAPPING_INTENSITY = 0.08f;
     float TEXTURE_INTENSITY = 0.1f;
 
     bool DRAW_BSP_HULLS = false;
@@ -192,6 +193,23 @@ public:
     bool LOG_LEAF_TYPE = false;
 
     char *LIGHT_PATTERNS[12];
+
+    enum SpriteDoom2SoldierAnimations {
+        IDLE = 0,
+        WALK = 1,
+        JUMP = 2,
+    };
+
+    enum SpriteShotgunAnimations {
+        READY,
+        RELOAD,
+        SHOT
+    };
+
+    enum SpriteGuyAnimations {
+        NORMAL,
+    };
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

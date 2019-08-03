@@ -14,7 +14,7 @@
 
 class GUI_ObjectsInspector : public GUI  {
 public:
-    bool show = true;
+    bool show = false;
 
     virtual ~GUI_ObjectsInspector() {}
 
@@ -26,7 +26,7 @@ public:
 
             ImGui::SetNextWindowPos(ImVec2(2, 215), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 220), ImGuiSetCond_Once);
-            window_flags |= ImGuiWindowFlags_NoMove;
+            //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Object Inspector (" + std::to_string(number) + " objects)";
             ImGui::Begin(title.c_str(), &show, window_flags);

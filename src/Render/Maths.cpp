@@ -16,7 +16,7 @@ float Maths::degreesToRadians(float angleDegrees)
 
 float Maths::radiansToDegrees(float angleRadians)
 {
-    return angleRadians * (float) 180.0 / (float) M_PI;;
+    return angleRadians * (float) 180.0 / (float) M_PI;
 }
 
 // https://elcodigografico.wordpress.com/2014/03/29/coordenadas-baricentricas-en-triangulos/
@@ -249,20 +249,19 @@ Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D 
 
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
 {
-    Vertex3D oRight = o1->AxisForward();
-    Vertex3D R = cam->AxisForward();
+    Vertex3D a = cam->AxisForward();
+    Vertex3D b = o1->AxisForward();
 
-    float rads = acosf(  R * oRight / (R.getModule() * oRight.getModule()) );
+    float angle = acos( (a * b) / (a.getModule() * b.getModule()) );
+    angle = Maths::radiansToDegrees(angle);
 
-    float degs = Maths::radiansToDegrees(rads);
+    float dotP = a.getNormalize() * EngineSetup::getInstance()->right;
 
-    float dot2d = oRight.x * R.y - oRight.y * R.x;
-
-    if (signbit(dot2d)) {
-        degs =  360 - degs;
+    if(signbit(dotP)) {
+        angle = abs(360 - angle);
     }
 
-    return degs;
+    return angle;
 }
 
 long Maths::GetNextActive(long x, long vertexCount, const bool *active)

@@ -59,6 +59,7 @@ Engine::Engine()
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
     fps = 0;
+    bsp_map = NULL;
 
     this->initBulletPhysics();
     this->initOpenCL();
@@ -1051,6 +1052,8 @@ void Engine::onUpdate()
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
         Drawable::drawMainAxis( camera );
     }
+
+    Drawable::drawCrossHair();
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -1101,6 +1104,9 @@ void Engine::getMesh3DTriangles()
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
                 oMesh->draw(camera);
+                if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+                    Drawable::drawObject3DAxis(oMesh, camera, true, true, true);
+                }
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
                 }
@@ -1146,6 +1152,10 @@ void Engine::getSpritesTriangles()
             oSpriteDirectional->updateTrianglesCoordinates(camera);
             oSpriteDirectional->draw(camera);
 
+            if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+                Drawable::drawObject3DAxis(oSpriteDirectional, camera, true, true, true);
+            }
+
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
@@ -1160,6 +1170,10 @@ void Engine::getSpritesTriangles()
 
             oSprite->updateTrianglesCoordinatesAndTexture(camera);
             oSprite->draw(camera);
+
+            if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+                Drawable::drawObject3DAxis(oSprite, camera, true, true, true);
+            }
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
@@ -1377,9 +1391,9 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
-    //bspOriginalPosition.x = 7.6;
-    //bspOriginalPosition.y = -11.65;
-    //bspOriginalPosition.z = 166.15;
+    //bspOriginalPosition.x = 81.6;
+    //bspOriginalPosition.y = 8.65;
+    //bspOriginalPosition.z = 229.15;
 
     int entityID = this->bsp_map->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;

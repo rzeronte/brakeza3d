@@ -27,7 +27,7 @@ public:
     static void drawBillboard(Billboard *B, Camera3D *cam);
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
     static void drawLightning(Camera3D *cam, Vertex3D, Vertex3D);
-
+    static void drawCrossHair();
 };
 
 

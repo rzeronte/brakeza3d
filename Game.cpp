@@ -13,22 +13,6 @@
 #include "headers/Objects/Mesh3DBody.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
-enum SpriteDoom2SoldierAnimations {
-    IDLE = 0,
-    WALK = 1,
-    JUMP = 2,
-};
-
-enum SpriteShotgunAnimations {
-    READY,
-    RELOAD,
-    SHOT
-};
-
-enum SpriteGuyAnimations {
-    NORMAL,
-};
-
 void Game::run()
 {
     this->onStart();
@@ -81,7 +65,7 @@ void Game::onStart()
     this->addObject3D(shotgun, "shotgun");
 
     // bsp
-    this->loadBSP("start.bsp", "palette.lmp");
+    this->loadBSP("e1m2.bsp", "palette.lmp");
 
 }
 
@@ -124,7 +108,7 @@ void Game::onUpdate()
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
     //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
-    //EngineSetup::getInstance()->TESTING+=1;
+    //EngineSetup::getInstance()->TESTING_INT+=1;
 }
 
 void Game::preUpdate()
@@ -133,8 +117,13 @@ void Game::preUpdate()
     // Core preUpdate
     Engine::preUpdate();
 
-
-
+   /*for (int i = 0; i < this->numberGameObjects; i++) {
+        std::string s2 = this->gameObjects[i]->getLabel();
+        if (s2.find("BSPEntity_245 (monster)") != std::string::npos) {
+            float angle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(this->gameObjects[i], camera);
+            Logging::getInstance()->Log(std::to_string(angle));
+        }
+    }*/
 }
 
 void Game::onEnd()
@@ -169,12 +158,19 @@ void Game::loadDemoObjects()
 
     // mono
     Mesh3D *mono = new Mesh3D();
-    mono->setPosition(Vertex3D(544, -32, 643));
     mono->setEnabled(false);
     mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     mono->loadOBJBlender("../assets/models/mono.obj");
     mono->setShadowCaster(true);
     this->addObject3D(mono, "mono");
+
+    // aventador
+    Mesh3D *aventador = new Mesh3D();
+    aventador->setEnabled(false);
+    aventador->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    aventador->loadOBJBlender("../assets/models/aventador.obj");
+    aventador->setShadowCaster(true);
+    this->addObject3D(aventador, "aventador");
 
     // ball
     Mesh3D *wolf = new Mesh3D();
@@ -219,7 +215,7 @@ void Game::loadDemoObjects()
     marine->addAnimationDirectional2D("marine/idle", 1);
     marine->addAnimationDirectional2D("marine/walk", 4);
     marine->addAnimationDirectional2D("marine/jump", 1);
-    marine->setAnimation(SpriteDoom2SoldierAnimations::WALK);
+    marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
 
     // marine ( sprite )
@@ -228,11 +224,11 @@ void Game::loadDemoObjects()
     guy->setPosition( Vertex3D(2, 1, 15) );
     guy->setTimer(Engine::getTimer());
     guy->addAnimation("guy/face", 3);
-    guy->setAnimation(SpriteGuyAnimations::NORMAL);
+    guy->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     this->addObject3D(guy, "guy");
 
     // cubo physics
-    Mesh3DBody *cuboPhysic = new Mesh3DBody();
+    /*Mesh3DBody *cuboPhysic = new Mesh3DBody();
     cuboPhysic->setEnabled(true);
     cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
@@ -246,5 +242,5 @@ void Game::loadDemoObjects()
     cuboPhysicGhost->setPosition(Vertex3D(52, -0.2, 87));
     cuboPhysicGhost->loadOBJBlender("../assets/models/cubo.obj");
     cuboPhysicGhost->makeGhostBody(Engine::camera, this->dynamicsWorld, true);
-    this->addObject3D(cuboPhysicGhost, "cuboPhysicGhost");
+    this->addObject3D(cuboPhysicGhost, "cuboPhysicGhost");*/
 }

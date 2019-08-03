@@ -343,6 +343,7 @@ bool BSPMap::InitializeLightmaps()
             // Itering over lightmaps for create unique lightmap (max 4 lights)
             unsigned char *lm_data = getLightmap(lt->offset);
             for (int maps = 0 ; maps < MAXLIGHTMAPS && surf->lightstyle[maps] != 255 ; maps++) {
+
                 for (int y = 0 ; y < tmax; y++) {
                     for (int x = 0 ; x < smax; x++) {
                         int i = x + y * smax;
@@ -365,6 +366,7 @@ bool BSPMap::InitializeLightmaps()
                         lm_data++;
                     }
                 }
+
                 switch(maps) {
                     case 0:
                         this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture, smax, tmax);
@@ -384,6 +386,7 @@ bool BSPMap::InitializeLightmaps()
 
             Logging::getInstance()->Log(
                     "InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) +
+                    ", numLightmaps: " + std::to_string(this->lightmaps[surfaceId].numLightmaps) +
                     ", lightmap w: " + std::to_string(smax) +
                     ", height: " + std::to_string(tmax) +
                     ", mins[0]: " + std::to_string(lt->mins[0]) +
@@ -517,38 +520,59 @@ void BSPMap::InitializeEntities()
                 char *value = brakeza3D->bsp_map->getEntityValue(i, "origin");
                 Vertex3D pos = brakeza3D->bsp_map->parsePositionFromEntityAttribute(value);
 
-                Object3D *o = new Object3D();
-                o->setEnabled(true);
-                o->setPosition( pos );
-                o->setDrawBillboard(true);
-
                 // light
                 if (!strcmp(classname, "light")) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHTPOINTS_DEFAULT);
                 }
 
                 // item_health
                 if (!strcmp(classname, "item_health")) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_ITEM_HEALTH);
+                    o->setEnabled(true);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (health)");
                 }
 
                 // weapon wildcard
                 std::string s1(classname);
                 if (s1.find("weapon") != std::string::npos) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
-                    o->getBillboard()->width = 50.f;
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (weapon)" );
                 }
 
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_MONSTER_GENERIC);
+                    SpriteDirectional3D *o = new SpriteDirectional3D();
+                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
+                    o->setTimer(brakeza3D->getTimer());
+                    o->addAnimationDirectional2D("marine/idle", 1);
+                    o->addAnimationDirectional2D("marine/walk", 4);
+                    o->addAnimationDirectional2D("marine/jump", 1);
+                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
+                    o->setEnabled(true);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    o->getBillboard()->width = 4.f;
+                    o->getBillboard()->height = 5.f;
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
+
                 }
 
                 // armor wildcard
                 std::string s3(classname);
                 if (s2.find("armor") != std::string::npos) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_SHIELD_GENERIC);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (armor)" );
                 }
 
                 // info_player_start
@@ -556,27 +580,40 @@ void BSPMap::InitializeEntities()
                     !strcmp(classname, "info_player_coop") ||
                     !strcmp(classname, "info_player_deathmatch")
                 ) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_PLAYER_START);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (player_spawn)" );
                 }
 
                 // info teleport destination
                 if (!strcmp(classname, "info_teleport_destination")) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_INFO_TELEPORT_DESTINATION);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (teleport_destination)" );
                 }
 
                 // light_flame_large_yellow
                 if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch")
-                        ) {
+                ) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_LIGHT_FLAME);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i)  + " (light)");
                 }
 
                 // func_button
                 if (!strcmp(classname, "func_button")) {
+                    Object3D *o = new Object3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_FUNC_BUTTON);
+                    o->setPosition( pos );
+                    o->setDrawBillboard(true);
+                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i)  + " (func_button)");
                 }
-
-                o->setLabel("BSPEntity_" +  std::to_string(i));
-                brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) );
             }
         }
     }

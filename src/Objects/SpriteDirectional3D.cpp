@@ -63,14 +63,22 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
 
     int direction;
 
-    if (angle >= 0   && angle < 45)  { direction = DIR_S;  }
-    if (angle >= 45  && angle < 90)  { direction = DIR_SW; }
-    if (angle >= 90  && angle < 135) { direction = DIR_W;  }
-    if (angle >= 135 && angle < 180) { direction = DIR_NW; }
-    if (angle >= 180 && angle < 225) { direction = DIR_N;  }
-    if (angle >= 225 && angle < 270) { direction = DIR_NE; }
-    if (angle >= 270 && angle < 315) { direction = DIR_E;  }
-    if (angle >= 315 && angle < 360) { direction = DIR_SE; }
+    if (angle >= 337.5f || angle < 22.5f)
+        direction = DIR_N;
+    else if (angle >= 22.5f && angle < 67.5f)
+        direction = DIR_NW;
+    else if (angle >= 67.5f && angle < 112.5f)
+        direction = DIR_W;
+    else if (angle >= 112.5f && angle < 157.5f)
+        direction = DIR_SW;
+    else if (angle >= 157.5f && angle < 202.5f)
+        direction = DIR_S;
+    else if (angle >= 202.5f && angle < 247.5f)
+        direction = DIR_SE;
+    else if (angle >= 247.5f && angle < 292.5f)
+        direction = DIR_E;
+    else if (angle >= 292.5f && angle < 337.5f)
+        direction = DIR_NE;
 
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->last_ticks;

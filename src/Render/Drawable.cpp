@@ -311,9 +311,9 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)
 {
-    //if (drawUp)      Drawable::drawVector3D( object->AxisUp(), cam, Color::red() );
-    //if (drawRight)   Drawable::drawVector3D( object->AxisRight(), cam, Color::green() );
-    //if (drawForward) Drawable::drawVector3D( object->AxisForward(), cam, Color::blue() );
+    if (drawRight)   Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisRight().getScaled(5)), cam, Color::green() );
+    if (drawUp)      Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisUp().getScaled(5)), cam, Color::red() );
+    if (drawForward) Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisForward().getScaled(5)), cam, Color::blue() );
 }
 
 void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
@@ -382,5 +382,21 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
 
     for (auto ir = segmentList.begin() ; ir != segmentList.end(); ++ir) {
         Drawable::drawVector3DZBuffer(*ir.base(), cam, Color::cyan());
+    }
+}
+
+void Drawable::drawCrossHair()
+{
+    int x, y;
+
+    x = EngineSetup::getInstance()->screenWidth / 2;
+    y = EngineSetup::getInstance()->screenHeight / 2;
+
+    Uint32 color = EngineSetup::getInstance()->CROSSHAIR_COLOR;
+    for (int cw = 1; cw < 3; cw++) {
+        EngineBuffers::getInstance()->setVideoBuffer(x+cw, y, color);
+        EngineBuffers::getInstance()->setVideoBuffer(x-cw, y, color);
+        EngineBuffers::getInstance()->setVideoBuffer(x, y+cw, color);
+        EngineBuffers::getInstance()->setVideoBuffer(x, y-cw, color);
     }
 }

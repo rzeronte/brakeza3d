@@ -12,7 +12,7 @@
 
 class GUI_Tiles : public GUI  {
 public:
-    bool show = true;
+    bool show = false;
 
     virtual ~GUI_Tiles() {}
 

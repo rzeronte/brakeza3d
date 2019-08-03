@@ -138,7 +138,6 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
     float intpart;
     /* Por alguna razón, la superficie 1749 de start.bsp, mapea erróneamente el lightmap si no hago este trick */
     if (
-        getLightmap()->mins[0] < 0 &&
         modf( getLightmap()->minu[0], &intpart) == 0 &&
         modf( getLightmap()->maxv[0], &intpart) == 0 &&
         modf( getLightmap()->minu[1], &intpart) == 0 &&
@@ -160,6 +159,8 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
 
 void Triangle::updateTextureAnimated()
 {
+    if (this->getTexture() == NULL) return;
+
     if (this->getTexture()->animated) {
         this->timerTextureAnimatedFrameControl += brakeza3D->deltaTime / 1000;
 
@@ -241,10 +242,10 @@ void Triangle::draw(Camera3D *cam)
         Drawable::drawVertex(Co, cam, Color::blue());
     }
 
-    /*if ((int) EngineSetup::getInstance()->TESTING == this->bsp_surface) {
+    if ((int) EngineSetup::getInstance()->TESTING == this->bsp_surface) {
         drawWireframe();
         getLightmap()->drawFlatLightMap(100, 100);
-    }*/
+    }
 }
 
 bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
@@ -467,7 +468,7 @@ int Triangle::updateLightmapFrame()
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         style = typelight[nl];
         float timeIncrement = brakeza3D->deltaTime / 100.0f;
-        if ( style > 11) continue;
+        if ( style > 10) continue;
         switch(nl) {
             case 0:
                 lightmapIndexPattern += timeIncrement;
@@ -763,9 +764,13 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
         light_v = 1 - modf(abs(light_v) , &intpart);
     }
 
+    light_u = modf(light_u , &intpart);
+    light_v = modf(light_v , &intpart);
+
     Uint32 lightmap_color;
     Uint8 lightmap_intensity = 0;
-    char c = 255;
+    char c = 10;
+    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
 
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         int indexPattern;
@@ -779,6 +784,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern);
+                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 1:
                 if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
@@ -787,6 +793,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap2, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern2);
+                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 2:
                 if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
@@ -795,6 +802,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap3, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern3);
+                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 3:
                 if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
@@ -803,9 +811,12 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap4, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern4);
+                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
                 break;
+            default:
+                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
+
         }
-        c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
         lightmap_intensity += Tools::getRedValueFromColor(lightmap_color)  * (c/10  * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
     }
 

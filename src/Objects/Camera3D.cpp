@@ -53,7 +53,7 @@ Camera3D::Camera3D()
     m_ghostObject = new btPairCachingGhostObject();
     m_ghostObject->setWorldTransform(startTransform);
 
-    btConvexShape* capsule = new btCapsuleShape(1.55f, 4.0f);
+    btConvexShape* capsule = new btCapsuleShape(1.55f, 3.5f);
     m_ghostObject->setCollisionShape(capsule);
     m_ghostObject->setUserPointer(this);
 
@@ -199,16 +199,20 @@ void Camera3D::StrafeLeft(void)
 void Camera3D::UpdateVelocity(void)
 {
     // Move the camera forward
-    if (brakeza3D->bsp_map->isCurrentLeafLiquid()) {
-        speed  /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
-        strafe /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+    if (brakeza3D->bsp_map) {
+        if (brakeza3D->bsp_map->isCurrentLeafLiquid()) {
+            speed  /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+            strafe /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+        }
     }
 
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
-        if (brakeza3D->bsp_map->isCurrentLeafLiquid()) {
-            this->velocity.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
+        if (brakeza3D->bsp_map) {
+            if (brakeza3D->bsp_map->isCurrentLeafLiquid()) {
+                this->velocity.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
+            }
         }
     }
 

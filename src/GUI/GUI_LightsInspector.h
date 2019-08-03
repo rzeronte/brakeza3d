@@ -10,7 +10,7 @@
 
 class GUI_LightsInspector : public GUI  {
         public:
-        bool show = true;
+        bool show = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
 
         virtual ~GUI_LightsInspector() {}
@@ -25,7 +25,7 @@ class GUI_LightsInspector : public GUI  {
 
                 ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
                 ImGui::SetNextWindowSize(ImVec2(250, 167), ImGuiSetCond_Once);
-                window_flags |= ImGuiWindowFlags_NoMove;
+                //window_flags |= ImGuiWindowFlags_NoMove;
 
                 ImGui::Begin(title.c_str(), &show, window_flags);
 
