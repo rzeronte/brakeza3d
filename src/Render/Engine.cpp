@@ -1049,7 +1049,7 @@ void Engine::onUpdate()
         Drawable::drawFrustum(camera->frustum, camera, true, true, true);
     }
 
-    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+    if (EngineSetup::getInstance()->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis( camera );
     }
 

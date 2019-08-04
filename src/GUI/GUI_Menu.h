@@ -160,6 +160,7 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::getInstance()->DRAW_FRUSTUM);
                 ImGui::Separator();
+                ImGui::Checkbox("Draw Main Axis", &EngineSetup::getInstance()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::getInstance()->RENDER_OBJECTS_AXIS);
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);
                 ImGui::Separator();

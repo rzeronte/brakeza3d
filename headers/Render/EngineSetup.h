@@ -52,7 +52,8 @@ public:
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
-    bool RENDER_OBJECTS_AXIS = true;
+    bool RENDER_MAIN_AXIS = true;
+    bool RENDER_OBJECTS_AXIS = false;
 
     bool DEBUG_RENDER_INFO = false;
     bool OPENCL_SHOW_TIME_KERNELS = false;

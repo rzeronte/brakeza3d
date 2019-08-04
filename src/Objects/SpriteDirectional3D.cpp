@@ -70,11 +70,11 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     else if (angle >= 67.5f && angle < 112.5f)
         direction = DIR_E;
     else if (angle >= 112.5f && angle < 157.5f)
-        direction = DIR_SW;
+        direction = DIR_SE;
     else if (angle >= 157.5f && angle < 202.5f)
         direction = DIR_S;
     else if (angle >= 202.5f && angle < 247.5f)
-        direction = DIR_SE;
+        direction = DIR_SW;
     else if (angle >= 247.5f && angle < 292.5f)
         direction = DIR_W;
     else if (angle >= 292.5f && angle < 337.5f)
