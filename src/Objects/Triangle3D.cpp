@@ -242,10 +242,6 @@ void Triangle::draw(Camera3D *cam)
         Drawable::drawVertex(Co, cam, Color::blue());
     }
 
-    if ((int) EngineSetup::getInstance()->TESTING == this->bsp_surface) {
-        drawWireframe();
-        getLightmap()->drawFlatLightMap(100, 100);
-    }
 }
 
 bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
