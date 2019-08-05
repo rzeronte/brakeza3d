@@ -20,11 +20,20 @@ void AnimationDirectional2D::setup(std::string file, int num_frames)
 
 void AnimationDirectional2D::loadImages()
 {
-    for (int d = 0; d <= 8 ; d++) {
+    for (int d = 1; d <= 8 ; d++) {
         for (int i = 0; i < this->getNumFrames() ; i++) {
             std::string file =  this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
             this->frames[d][i]->loadTGA( file.c_str(), 1 );
         }
+    }
+}
+
+void AnimationDirectional2D::loadImagesForZeroDirection()
+{
+    int d = 0;
+    for (int i = 0; i < this->getNumFrames() ; i++) {
+        std::string file =  this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
+        this->frames[0][i]->loadTGA( file.c_str(), 1 );
     }
 }
 

@@ -552,9 +552,10 @@ void BSPMap::InitializeEntities()
                     SpriteDirectional3D *o = new SpriteDirectional3D();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
-                    o->addAnimationDirectional2D("marine/idle", 1);
-                    o->addAnimationDirectional2D("marine/walk", 4);
-                    o->addAnimationDirectional2D("marine/jump", 1);
+                    o->addAnimationDirectional2D("soldier/walk", 4, false);
+                    o->addAnimationDirectional2D("soldier/fire", 2, false);
+                    o->addAnimationDirectional2D("soldier/injuried", 1, false);
+                    o->addAnimationDirectional2D("soldier/dead", 5, true);
                     o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
                     o->setEnabled(true);
                     o->setPosition( pos );

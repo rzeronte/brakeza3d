@@ -11,6 +11,7 @@
 #include "../../headers/Objects/Sprite3D.h"
 #include "../../headers/Objects/Mesh3DBody.h"
 #include "../../headers/Objects/Mesh3DGhost.h"
+#include "../../headers/Render/Logging.h"
 
 class GUI_ObjectsInspector : public GUI  {
 public:
@@ -76,11 +77,49 @@ public:
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(objects[i])->shadowCaster);
                     }
 
-                    // Only for SPRITES
+                    // Only for SPRITES DIRECTIONALS
                     SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(objects[i]);
                     if (pSprite3D != NULL) {
+                        static ImGuiComboFlags flags = 0;
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        const char* items[] = { "walk", "fire", "injuried", "dead" };
+                        static const char* item_current; // Here our selection is a single pointer stored outside the object.
+
+                        switch (pSprite3D->current_animation) {
+                            case 0:
+                                item_current = items[0];
+                                break;
+                            case 1:
+                                item_current = items[1];
+                                break;
+                            case 2:
+                                item_current = items[2];
+                                break;
+                            case 3:
+                                item_current = items[3];
+                                break;
+                        }
+
+                        if ( ImGui::BeginCombo("Animation", item_current, flags)) { // The second parameter is the label previewed before opening the combo.
+                            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+                                bool is_selected = (item_current == items[n]);
+                                if (ImGui::Selectable(items[n], is_selected)) {
+                                    item_current = items[n];
+                                }
+
+                                if (is_selected) {
+                                    ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+                                }
+
+                                if (ImGui::IsItemDeactivatedAfterEdit()) {
+                                    pSprite3D->current_animation = n;
+                                    Logging::getInstance()->Log(("Changing animation frame to: " + std::to_string(n)));
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
                     }
+
                     // Only for SPRITES
                     Sprite3D *pSprite = dynamic_cast<Sprite3D *>(objects[i]);
                     if (pSprite != NULL) {

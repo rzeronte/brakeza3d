@@ -44,14 +44,19 @@ void SpriteDirectional3D::setTimer(Timer *timer)
     this->timer = timer;
 }
 
-void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int num_frames)
+void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int num_frames, bool zeroDirection)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
     Logging::getInstance()->Log("Loading AnimationDirectional2D: " + animation_folder + " ("+ std::to_string(num_frames)+" frames)", "BILLBOARD");
 
     this->animations[this->num_animations]->setup(full_animation_folder, num_frames);
-    this->animations[this->num_animations]->loadImages();
+    if (!zeroDirection) {
+        this->animations[this->num_animations]->loadImages();
+    } else {
+        this->animations[this->num_animations]->loadImagesForZeroDirection();
+        this->animations[this->num_animations]->isZeroDirection = true;
+    }
     this->num_animations++;
 }
 
@@ -92,7 +97,11 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
         timerCurrent = 0;
     }
 
-    this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(direction) );
+    if (this->animations[current_animation]->isZeroDirection) {
+        this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(0) );
+    } else {
+        this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(direction) );
+    }
 }
 
 void SpriteDirectional3D::setAnimation(int index_animation)

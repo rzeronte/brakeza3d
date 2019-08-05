@@ -65,7 +65,7 @@ void Game::onStart()
     this->addObject3D(shotgun, "shotgun");
 
     // bsp
-    this->loadBSP("e1m2.bsp", "palette.lmp");
+    this->loadBSP("e1m1.bsp", "palette.lmp");
 
 }
 
@@ -212,9 +212,9 @@ void Game::loadDemoObjects()
     marine->setEnabled(false);
     marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
-    marine->addAnimationDirectional2D("marine/idle", 1);
-    marine->addAnimationDirectional2D("marine/walk", 4);
-    marine->addAnimationDirectional2D("marine/jump", 1);
+    marine->addAnimationDirectional2D("soldier/walk", 4, false);
+    marine->addAnimationDirectional2D("soldier/fire", 2, false);
+    marine->addAnimationDirectional2D("soldier/injuried", 1, false);
     marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
 

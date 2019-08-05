@@ -15,12 +15,14 @@ public:
 
     int n_frames;
     int current = 0;
+    bool isZeroDirection = false;
     Texture *frames[9][ANIMATION2D_MAX_FRAMES];
 
     AnimationDirectional2D();
     void setup(std::string file, int num_frames);
 
     void loadImages();
+    void loadImagesForZeroDirection();
 
     int getNumFrames() const;
 

@@ -197,9 +197,9 @@ public:
     char *LIGHT_PATTERNS[12];
 
     enum SpriteDoom2SoldierAnimations {
-        IDLE = 0,
-        WALK = 1,
-        JUMP = 2,
+        WALK = 0,
+        FIRE = 1,
+        INJURIED = 2
     };
 
     enum SpriteShotgunAnimations {

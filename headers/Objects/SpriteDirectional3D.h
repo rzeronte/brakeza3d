@@ -42,7 +42,7 @@ public:
     SpriteDirectional3D();
 
     Billboard *getBillboard() const;
-    void addAnimationDirectional2D(std::string, int);
+    void addAnimationDirectional2D(std::string, int frames, bool zeroDirection);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
     void setTimer(Timer *);
