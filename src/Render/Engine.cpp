@@ -653,8 +653,8 @@ void Engine::drawGUI()
 {
     ImGui::NewFrame();
 
-    bool open = true;
-    ImGui::ShowDemoWindow(&open);
+    //bool open = true;
+    //ImGui::ShowDemoWindow(&open);
 
     gui_engine->draw(
         getDeltaTime(),

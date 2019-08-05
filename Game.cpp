@@ -65,8 +65,7 @@ void Game::onStart()
     this->addObject3D(shotgun, "shotgun");
 
     // bsp
-    this->loadBSP("e1m1.bsp", "palette.lmp");
-
+    this->loadBSP("e1m2.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -209,7 +208,7 @@ void Game::loadDemoObjects()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(false);
+    marine->setEnabled(true);
     marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("soldier/walk", 4, false);
