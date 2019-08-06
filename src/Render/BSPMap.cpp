@@ -6,14 +6,11 @@
 #include <unistd.h> // lseek, read, close
 #include <cstring>
 #include "../../headers/Render/BSPMap.h"
-#include "../../headers/Objects/Vertex3D.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
-#include "../../headers/Objects/Mesh3DGhost.h"
 
 extern Engine *brakeza3D;
 

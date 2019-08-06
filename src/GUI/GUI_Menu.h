@@ -5,13 +5,15 @@
 
 #include "GUI.h"
 #include "../../imgui/imgui.h"
+#include "../cJSON.h"
+#include "../../headers/Render/Logging.h"
 
 class GUI_Menu : public GUI  {
 public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, cJSON *maps) {
 
         bool show_about_window = false;
 
@@ -151,6 +153,24 @@ public:
                 ImGui::EndMenu();
             }
 
+            if (ImGui::BeginMenu("Maps")) {
+                cJSON *currentMap = NULL;
+                cJSON_ArrayForEach(currentMap, maps) {
+                    cJSON *name = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
+                    if (cJSON_IsString(name)) {
+                        ImGui::MenuItem(std::string(name->valuestring).c_str(), "", false);
+                        if (ImGui::IsItemClicked()) {
+                            EngineSetup::getInstance()->EVENT_GUI = true;
+                            EngineSetup::getInstance()->EVENT_LAUNCH = EngineSetup::getInstance()->EVENT_GUI_CHANGE_MAP;
+                            EngineSetup::getInstance()->EVENT_DATA = name->valuestring;
+                        }
+
+                        ImGui::Separator();
+                    }
+                }
+                ImGui::EndMenu();
+            }
+
             if (ImGui::BeginMenu("View")) {
                 ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
@@ -171,6 +191,8 @@ public:
                 ImGui::Checkbox("Show weapon", &EngineSetup::getInstance()->SHOW_WEAPON);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);
+                ImGui::Separator();
+                ImGui::Checkbox("Show Menu", &EngineSetup::getInstance()->MENU_ACTIVE);
                 ImGui::EndMenu();
             }
 

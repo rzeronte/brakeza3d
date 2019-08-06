@@ -171,7 +171,7 @@ char * Tools::readFile(const std::string &name, size_t &source_size)
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::getInstance()->Log("File " + name  + " not can be loaded", "ERROR");
+        Logging::getInstance()->Log("File " + name  + " can't be loaded!", "ERROR");
         return "";
     }
     char *file_str = (char*)malloc(MAX_SOURCE_SIZE);

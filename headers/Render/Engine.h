@@ -13,7 +13,6 @@
 #include "../../imgui/examples/imgui_impl_sdl.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 
-#include "../../src/GUI/GUI.h"
 #include "../../src/GUI/GUI_Menu.h"
 #include "../../src/GUI/GUI_ObjectsInspector.h"
 #include "../../src/GUI/GUI_Engine.h"
@@ -26,6 +25,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
+#include "../../src/cJSON.h"
 
 enum collisionGroups
 {
@@ -122,6 +122,7 @@ public:
     float decimalTime = 0;
     int currentLightmapIndex = 0;
 
+    // OpenCL Rasterizer
     cl_platform_id platform_id;
     cl_device_id device_cpu_id;
     cl_device_id device_gpu_id;
@@ -136,7 +137,6 @@ public:
     cl_kernel processAllTriangles;
     cl_kernel processTransformTriangles;
 
-
     cl_mem opencl_buffer_triangles;
     cl_mem opencl_buffer_tiles;
     cl_mem opencl_buffer_video;
@@ -146,6 +146,7 @@ public:
     cl_command_queue command_queue_rasterizer;
     cl_command_queue command_queue_transforms;
 
+    // Tiled rasterizer
     int sizeTileWidth = 80;
     int sizeTileHeight = 80;
     int tilesWidth;
@@ -155,6 +156,12 @@ public:
 
     std::vector<Tile> tiles;
     OCLTriangle *trianglesTile;
+
+    // maps.json
+    cJSON *maps;
+
+    // menu background surface
+    SDL_Surface *menu_background;
 
     Engine();
 
@@ -229,6 +236,10 @@ public:
 
     void waterShader();
 
-};
+    void getMapsJSON();
+    void drawMenu();
+
+
+    };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

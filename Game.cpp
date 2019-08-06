@@ -26,7 +26,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //this->loadDemoObjects();
+    this->loadDemoObjects();
 
     // weapon
     Weapon3D *weapon = new Weapon3D();
@@ -64,8 +64,6 @@ void Game::onStart()
     this->setWeapon(shotgun);
     this->addObject3D(shotgun, "shotgun");
 
-    // bsp
-    this->loadBSP("e1m2.bsp", "palette.lmp");
 }
 
 void Game::mainLoop()
@@ -208,7 +206,7 @@ void Game::loadDemoObjects()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(true);
+    marine->setEnabled(false);
     marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("soldier/walk", 4, false);
@@ -216,6 +214,16 @@ void Game::loadDemoObjects()
     marine->addAnimationDirectional2D("soldier/injuried", 1, false);
     marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
+
+    // cacodemon (sprite directional)
+    SpriteDirectional3D *cacodemon = new SpriteDirectional3D();
+    cacodemon->setEnabled(true);
+    cacodemon->setPosition(Vertex3D(10, 0, -10));
+    cacodemon->setTimer(Engine::getTimer());
+    cacodemon->addAnimationDirectional2D("cacodemon/walk", 6, false);
+    cacodemon->addAnimationDirectional2D("cacodemon/dead", 6, false);
+    cacodemon->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
+    this->addObject3D(cacodemon, "cacodemon");
 
     // marine ( sprite )
     Sprite3D *guy = new Sprite3D();

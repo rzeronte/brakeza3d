@@ -1,26 +1,15 @@
 #include "../../headers/Render/Engine.h"
-#include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/Frustum.h"
-#include "../../headers/Objects/Object3D.h"
-#include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Objects/LightPoint3D.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Objects/SpriteDirectional3D.h"
-#include "../../headers/Objects/Sprite3D.h"
-#include "../../headers/Objects/Weapon3D.h"
 #include "../../headers/Objects/BSPEntity3D.h"
-#include "../../headers/Render/Maths.h"
 #include <chrono>
 #include <iostream>
 
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../../headers/Objects/Mesh3DGhost.h"
 #include <OpenCL/opencl.h>
+#include <SDL_image.h>
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -66,6 +55,9 @@ Engine::Engine()
 
     this->initTiles();
 
+    // Load MENU Background
+    const char *file = std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str();
+    menu_background = IMG_Load(file);
 }
 
 bool Engine::initWindow()
@@ -141,7 +133,7 @@ void Engine::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = "../fonts/alterebro-pixel-font.ttf";
+        std::string pathFont = "../fonts/1467_pannartz_latin.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
         font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
@@ -663,7 +655,8 @@ void Engine::drawGUI()
         lightPoints, numberLightPoints,
         camera,
         tiles, tilesWidth,
-        this->numVisibleTriangles
+        this->numVisibleTriangles,
+        maps
     );
 
     ImGui::Render();
@@ -671,6 +664,10 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
+    if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        this->drawMenu();
+    }
+
     if (bsp_map) {
         if (bsp_map->isCurrentLeafLiquid()) {
             this->waterShader();
@@ -682,8 +679,17 @@ void Engine::windowUpdate()
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
 
+    EngineSetup::getInstance()->EVENT_GUI = false;
     drawGUI();
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+
+    if (EngineSetup::getInstance()->EVENT_GUI) {
+        if (EngineSetup::getInstance()->EVENT_LAUNCH == EngineSetup::getInstance()->EVENT_GUI_CHANGE_MAP) {
+            this->loadBSP(std::string(EngineSetup::getInstance()->EVENT_DATA).c_str(), "palette.lmp");
+        }
+
+        Logging::getInstance()->Log("Event from GUI (" + std::to_string(EngineSetup::getInstance()->EVENT_LAUNCH) + ", " + EngineSetup::getInstance()->EVENT_DATA + ")");
+    }
 
     SDL_GL_SwapWindow(window);
 
@@ -701,6 +707,8 @@ void Engine::onStart()
 
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
+
+    this->getMapsJSON();
 }
 
 void Engine::preUpdate()
@@ -1385,15 +1393,15 @@ Timer* Engine::getTimer()
 
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 {
+    Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
+
     this->bsp_map = new BSPMap();
+    EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
     this->bsp_map->Initialize(bspFilename, paletteFilename);
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
-    //bspOriginalPosition.x = 81.6;
-    //bspOriginalPosition.y = 8.65;
-    //bspOriginalPosition.z = 229.15;
 
     int entityID = this->bsp_map->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
@@ -1538,4 +1546,43 @@ void Engine::waterShader()
     }
 
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
+}
+
+void Engine::getMapsJSON()
+{
+    size_t file_size;
+    const char* mapsFile = Tools::readFile(EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_MAPS, file_size);
+    cJSON *myDataJSON = cJSON_Parse(mapsFile);
+    if (myDataJSON == NULL) {
+        Logging::getInstance()->Log("maps.json can't be loaded", "ERROR");
+        return;
+    }
+
+    cJSON *currentMap = NULL;
+    maps = cJSON_GetObjectItemCaseSensitive( myDataJSON, "maps" );
+    int sizeMaps = cJSON_GetArraySize(maps);
+
+    if (sizeMaps > 0) {
+        cJSON *firstMap = cJSON_GetArrayItem(maps, 0);
+        cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
+        Logging::getInstance()->Log("maps.json have " + std::to_string(sizeMaps) + " maps");
+        if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
+            this->loadBSP(nameMap->valuestring, "palette.lmp");
+        }
+    } else {
+        Logging::getInstance()->Log("maps.json is empty", "ERROR");
+    }
+
+    cJSON_ArrayForEach(currentMap, maps) {
+        cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
+
+        if (cJSON_IsString(nameMap)) {
+            Logging::getInstance()->Log("Map JSON detected: " + std::string(nameMap->valuestring));
+        }
+    }
+}
+
+void Engine::drawMenu()
+{
+    SDL_BlitSurface(menu_background, NULL, this->screenSurface, NULL);
 }

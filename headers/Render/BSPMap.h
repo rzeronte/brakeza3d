@@ -10,8 +10,8 @@
 #define ANIM_TEX_FRAMES	32
 
 #define MAX_MAP_TEXTURES 500
-#define MAX_BSP_TRIANGLES 250000
-#define MAX_BSP_ENTITIES 1000
+#define MAX_BSP_TRIANGLES 256000
+#define MAX_BSP_ENTITIES 5000
 
 // BSP entries
 struct dentry_t

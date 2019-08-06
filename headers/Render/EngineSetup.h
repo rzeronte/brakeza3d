@@ -61,6 +61,8 @@ public:
     // FaceCulling
     bool TRIANGLE_BACK_FACECULLING = true;
 
+    bool MENU_ACTIVE = true;
+
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
@@ -112,7 +114,11 @@ public:
 
     std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string MAPS_FOLDER = "../assets/maps/";
+    std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
+    std::string CONFIG_FOLDER = "../config/";
+
+    std::string CFG_MAPS = "maps.json";
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
@@ -149,7 +155,7 @@ public:
     bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
@@ -196,12 +202,23 @@ public:
 
     char *LIGHT_PATTERNS[12];
 
+    bool CFG_AUTOLOAD_MAP = true;
+
+    bool EVENT_GUI = false;
+    int EVENT_LAUNCH = 0;
+    int EVENT_GUI_CHANGE_MAP = 1000;
+    std::string EVENT_DATA = "";
+
     enum SpriteDoom2SoldierAnimations {
         WALK = 0,
         FIRE = 1,
         INJURIED = 2
     };
 
+    enum SpriteDoom2CacodemonAnimations {
+        FLY = 0,
+        DEAD = 1
+    };
     enum SpriteShotgunAnimations {
         READY,
         RELOAD,
