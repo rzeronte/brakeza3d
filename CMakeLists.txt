@@ -11,6 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 set(SDL2_dir /Library/Frameworks/SDL2.framework/Headers)
 set(SDL2_image_dir /Library/Frameworks/SDL2_image.framework/Headers)
 set(SDL2_ttf_dir /Library/Frameworks/SDL2_ttf.framework/Headers)
+set(SDL2_mixer_dir /Library/Frameworks/SDL2_mixer.framework/Headers)
 set(OpenGL_dir /Library/Frameworks/OpenGL.framework/Headers/)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -18,6 +19,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Bullet REQUIRED)
 find_package(OpenCL REQUIRED)
@@ -26,6 +28,7 @@ include_directories(
         ${SDL2_dir}
         ${SDL2_image_dir}
         ${SDL2_ttf_dir}
+        ${SDL2_mixer_dir}
         ${OPENGL_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
         ${OpenCL_INCLUDE_DIRS}
@@ -107,6 +110,7 @@ add_executable(brakeda3d
         src/GUI/GUI_LightsInspector.h
         src/GUI/GUI_Log.h
         src/GUI/GUI_Tiles.h
+        src/GUI/GUI_Weapons.h
         src/Render/Logging.cpp
 
         src/Objects/Tile.h
@@ -114,16 +118,14 @@ add_executable(brakeda3d
         headers/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp
         headers/Objects/SpriteDirectional3D.h
-        src/2D/AnimationDirectional2D.cpp
-        headers/2D/AnimationDirectional2D.h
+        src/2D/TextureAnimationDirectional.cpp
+        headers/2D/TextureAnimationDirectional.h
         src/Objects/Sprite3D.cpp
         headers/Objects/Sprite3D.h
-        src/2D/Animation2D.cpp
-        headers/2D/Animation2D.h
+        src/2D/TextureAnimation.cpp
+        headers/2D/TextureAnimation.h
         src/Render/Maths.cpp
         headers/Render/Maths.h
-        src/Objects/Weapon3D.cpp
-        headers/Objects/Weapon3D.h
 
         WAD/Constants.cpp
         WAD/Constants.h
@@ -147,20 +149,21 @@ add_executable(brakeda3d
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
         src/GUI/GUI_Camera.h
-        src/Objects/Mesh3DBody.cpp
-        headers/Objects/Mesh3DBody.h
+        src/Physics/Mesh3DBody.cpp
+        headers/Physics/Mesh3DBody.h
         src/Render/PhysicsDebugDraw.cpp
         headers/Render/PhysicsDebugDraw.h
-        src/Objects/Mesh3DGhost.cpp
-        headers/Objects/Mesh3DGhost.h
+        src/Physics/Mesh3DGhost.cpp
+        headers/Physics/Mesh3DGhost.h
         src/cJSON.h
         src/cJSON.c
-        )
+        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/Weapon.cpp headers/2D/Weapon.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/Menu.cpp headers/2D/Menu.h src/2D/MenuOption.cpp headers/2D/MenuOption.h)
 
 target_link_libraries(brakeda3d
         ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
         ${SDLTTF_LIBRARY}
+        ${SDL2_MIXER_LIBRARY}
         ${OPENGL_LIBRARIES}
         ${BULLET_LIBRARIES}
         ${OpenCL_LIBRARY}
