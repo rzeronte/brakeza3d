@@ -8,11 +8,11 @@ SpriteDirectional3D::SpriteDirectional3D()
 {
     this->billboard = new Billboard();
 
-    this->width = EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
-    this->height = EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
+    this->width = 10; //EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
+    this->height = 10; //EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
 
     for (int i = 0; i< BILLBOARD3D_MAX_ANIMATIONS; i++) {
-        this->animations[i] = new AnimationDirectional2D();
+        this->animations[i] = new TextureAnimationDirectional();
     }
 }
 
@@ -48,15 +48,17 @@ void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
-    Logging::getInstance()->Log("Loading AnimationDirectional2D: " + animation_folder + " ("+ std::to_string(num_frames)+" frames)", "BILLBOARD");
+    Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
 
     this->animations[this->num_animations]->setup(full_animation_folder, num_frames);
+
     if (!zeroDirection) {
         this->animations[this->num_animations]->loadImages();
     } else {
         this->animations[this->num_animations]->loadImagesForZeroDirection();
         this->animations[this->num_animations]->isZeroDirection = true;
     }
+
     this->num_animations++;
 }
 
@@ -107,4 +109,15 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
 void SpriteDirectional3D::setAnimation(int index_animation)
 {
     this->current_animation = index_animation;
+}
+
+void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone)
+{
+    this->num_animations = clone->num_animations;
+    for (int i = 0; i < clone->num_animations; i++) {
+        this->animations[i]->importTextures(clone->animations[i], clone->animations[i]->numFrames);
+        this->animations[i]->isZeroDirection = clone->animations[i]->isZeroDirection;
+        this->animations[i]->numFrames = clone->animations[i]->numFrames;
+        this->animations[i]->base_file = clone->animations[i]->base_file;
+    }
 }

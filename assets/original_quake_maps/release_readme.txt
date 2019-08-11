@@ -5,7 +5,7 @@ Released October 2006 during Quake's 10th Anniversary
 **************************************************
 
 These are the original Quake map source files as of Quake v1.06.  I've included the chopped-off
-beginning to E2M6 (The Dismal Oubliette) as well, named E2M10.MAP.  The majority of these maps
+beginning to E2M6 (The Dismal Oubliette) as well, named E2M10.MAP.  The majority of these optionsJSON
 were created during the last 7 months of Quake's development cycle when we had decided on the
 final direction of the game.  For a comprehensive listing of each map, its name, author and
 place in the final game please visit the Wikipedia (http://en.wikipedia.org/wiki/Quake).

@@ -5,7 +5,7 @@
 
 #include "Object3D.h"
 #include "../Render/Timer.h"
-#include "../2D/AnimationDirectional2D.h"
+#include "../2D/TextureAnimationDirectional.h"
 #include "Camera3D.h"
 
 #define DIR_C 0
@@ -37,7 +37,7 @@ public:
     float last_ticks;
     float timerCurrent = 0;
 
-    AnimationDirectional2D *animations[BILLBOARD3D_MAX_ANIMATIONS];
+    TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];
 
     SpriteDirectional3D();
 
@@ -49,6 +49,7 @@ public:
 
     void draw(Camera3D *cam);
     void updateTrianglesCoordinates(Camera3D *cam);
+    void linkTexturesTo(SpriteDirectional3D *clone);
 };
 
 

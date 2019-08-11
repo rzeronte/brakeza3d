@@ -98,7 +98,7 @@ public:
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
-    float FRUSTUM_CLIPPING_DISTANCE = 0.0001f;
+    float FRUSTUM_CLIPPING_DISTANCE = 0.001f;
 
     // BSP ITEM BILLBOARDS
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/light.tga";
@@ -111,14 +111,20 @@ public:
     std::string ICON_INFO_PLAYER_START = "../assets/icons/info_player_start.tga";
     std::string ICON_INFO_TELEPORT_DESTINATION = "../assets/icons/info_teleport_destination.tga";
     std::string ICON_LIGHT_FLAME = "../assets/icons/light_flame.tga";
-
     std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string MAPS_FOLDER = "../assets/maps/";
     std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
     std::string CONFIG_FOLDER = "../config/";
+    std::string SOUNDS_FOLDER = "../assets/sounds/";
+
+    std::string SOUND_MAINMENU = "tartani.wav";
+    std::string SOUND_WEAPON_1 = "gun_shot_1.wav";
+    std::string SOUND_BASE_LEVEL_0 = "base_level_0.wav";
 
     std::string CFG_MAPS = "maps.json";
+    std::string CFG_MENU = "menu.json";
+    bool RENDER_BSP_MAP = true;
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
@@ -165,8 +171,8 @@ public:
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 915;
-    float TESTING_INT = 900;
+    float TESTING = 0;
+    float TESTING_INT = 0;
     bool TESTING_BOOL = false;
 
     int LOAD_OF_DETAIL = 1;
@@ -209,6 +215,9 @@ public:
     int EVENT_GUI_CHANGE_MAP = 1000;
     std::string EVENT_DATA = "";
 
+    int FIRE_WIDTH = 320;
+    int FIRE_HEIGHT = 240;
+
     enum SpriteDoom2SoldierAnimations {
         WALK = 0,
         FIRE = 1,
@@ -227,6 +236,18 @@ public:
 
     enum SpriteGuyAnimations {
         NORMAL,
+    };
+
+    enum WeaponsTypes {
+        WEAPON_TYPE_MELEE = 0,
+        WEAPON_TYPE_GUN = 1,
+        WEAPON_TYPE_MACHINEGUN = 2,
+    };
+
+    enum WeaponsActions {
+        WEAPON_ACTION_WALK = 0,
+        WEAPON_ACTION_FIRE = 1,
+        WEAPON_ACTION_RELOAD = 2,
     };
 
 };

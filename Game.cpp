@@ -6,11 +6,10 @@
 #include "headers/Render/Logging.h"
 #include "headers/Objects/SpriteDirectional3D.h"
 #include "headers/Objects/Sprite3D.h"
-#include "headers/Objects/Weapon3D.h"
 #include "headers/Render/Maths.h"
 #include "WAD/WAD.h"
 #include "headers/Render/BSPMap.h"
-#include "headers/Objects/Mesh3DBody.h"
+#include "headers/Physics/Mesh3DBody.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 void Game::run()
@@ -27,43 +26,6 @@ void Game::onStart()
     Engine::onStart();
 
     this->loadDemoObjects();
-
-    // weapon
-    Weapon3D *weapon = new Weapon3D();
-    weapon->setEnabled(false);
-    weapon->setPosition( Vertex3D(1, 1, 5) );
-    this->addObject3D(weapon, "weapon");
-
-    // WAD Parser
-    /*
-    char* wadLocation = "../models/freedoom1.wad";
-    WAD* testWad = new WAD(wadLocation);
-    testWad->loadMap("E1M1");
-    testWad->draw2D();
-    testWad->render();
-    */
-
-    // hammer
-    Weapon3D *hammer = new Weapon3D();
-    hammer->setScale(0.011);
-    hammer->setup(1, -0.5, 0.75);
-    hammer->setEnabled(true);
-    hammer->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    hammer->loadOBJBlender("../assets/models/hammer.obj");
-    //this->setWeapon(hammer);
-    //this->addObject3D(hammer, "hammer");
-
-    // shotgun
-    Weapon3D *shotgun = new Weapon3D();
-    shotgun->setScale(1);
-    shotgun->setup(0.6, -0.5, 0.75);
-    shotgun->setPosition(Vertex3D(50, -5, 47));
-    shotgun->setEnabled(true);
-    shotgun->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    shotgun->loadOBJBlender("../assets/models/shotgun.obj");
-    this->setWeapon(shotgun);
-    this->addObject3D(shotgun, "shotgun");
-
 }
 
 void Game::mainLoop()
@@ -75,11 +37,15 @@ void Game::mainLoop()
 
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
-            if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) { controller->handleMouse(&this->e, this->camera); }
+            if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
+                controller->handleMouse(&this->e, this->camera, Engine::dynamicsWorld, Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
+            }
+            controller->handleKeyboard(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
         }
 
         // Check array Uint8 *keyboard
-        controller->handleKeyboard(this->camera, this->finish, Engine::dynamicsWorld);
+        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
+
 
         // Checks pre update frame
         this->postUpdate();
@@ -106,21 +72,13 @@ void Game::onUpdate()
 
     //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
     //EngineSetup::getInstance()->TESTING_INT+=1;
+
 }
 
 void Game::preUpdate()
 {
-
     // Core preUpdate
     Engine::preUpdate();
-
-   /*for (int i = 0; i < this->numberGameObjects; i++) {
-        std::string s2 = this->gameObjects[i]->getLabel();
-        if (s2.find("BSPEntity_245 (monster)") != std::string::npos) {
-            float angle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(this->gameObjects[i], camera);
-            Logging::getInstance()->Log(std::to_string(angle));
-        }
-    }*/
 }
 
 void Game::onEnd()
@@ -154,20 +112,12 @@ void Game::loadDemoObjects()
     this->addLightPoint(lp3, "l3");
 
     // mono
-    Mesh3D *mono = new Mesh3D();
-    mono->setEnabled(false);
-    mono->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    mono->loadOBJBlender("../assets/models/mono.obj");
-    mono->setShadowCaster(true);
-    this->addObject3D(mono, "mono");
-
-    // aventador
-    Mesh3D *aventador = new Mesh3D();
-    aventador->setEnabled(false);
-    aventador->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    aventador->loadOBJBlender("../assets/models/aventador.obj");
-    aventador->setShadowCaster(true);
-    this->addObject3D(aventador, "aventador");
+    Mesh3D *monkey = new Mesh3D();
+    monkey->setEnabled(false);
+    monkey->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    monkey->loadOBJBlender("../assets/models/mono.obj");
+    monkey->setShadowCaster(true);
+    this->addObject3D(monkey, "monkey");
 
     // ball
     Mesh3D *wolf = new Mesh3D();
@@ -178,20 +128,20 @@ void Game::loadDemoObjects()
     this->addObject3D(wolf, "wolf");
 
     // cubo
-    Mesh3D *cubo = new Mesh3D();
-    cubo->setEnabled(false);
-    cubo->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    cubo->setPosition(*camera->getPosition());
-    cubo->loadOBJBlender("../assets/models/cubo.obj");
-    this->addObject3D(cubo, "cubo");
+    Mesh3D *cube = new Mesh3D();
+    cube->setEnabled(false);
+    cube->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cube->setPosition(*camera->getPosition());
+    cube->loadOBJBlender("../assets/models/cubo.obj");
+    this->addObject3D(cube, "cube");
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setScale(0.1);
     triangle->setEnabled(false);
     triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
-    triangle->setPosition(Vertex3D(54.3, -0, 47.200));
-    triangle->setRotation( M3(1, 30, 3) );
+    triangle->setPosition(Vertex3D(0, 0, 10));
+    triangle->setRotation( M3(90, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 
@@ -212,13 +162,23 @@ void Game::loadDemoObjects()
     marine->addAnimationDirectional2D("soldier/walk", 4, false);
     marine->addAnimationDirectional2D("soldier/fire", 2, false);
     marine->addAnimationDirectional2D("soldier/injuried", 1, false);
+    marine->addAnimationDirectional2D("soldier/dead", 5, true);
     marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
     this->addObject3D(marine, "marine");
 
+    // skull (sprite directional)
+    SpriteDirectional3D *skull = new SpriteDirectional3D();
+    skull->setEnabled(false);
+    skull->setPosition(Vertex3D(5, 0, -10));
+    skull->setTimer(Engine::getTimer());
+    skull->addAnimationDirectional2D("skull/idle", 5, false);
+    skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
+    this->addObject3D(skull, "skull");
+
     // cacodemon (sprite directional)
     SpriteDirectional3D *cacodemon = new SpriteDirectional3D();
-    cacodemon->setEnabled(true);
-    cacodemon->setPosition(Vertex3D(10, 0, -10));
+    cacodemon->setEnabled(false);
+    cacodemon->setPosition(Vertex3D(20, 0, -10));
     cacodemon->setTimer(Engine::getTimer());
     cacodemon->addAnimationDirectional2D("cacodemon/walk", 6, false);
     cacodemon->addAnimationDirectional2D("cacodemon/dead", 6, false);
@@ -226,13 +186,15 @@ void Game::loadDemoObjects()
     this->addObject3D(cacodemon, "cacodemon");
 
     // marine ( sprite )
-    Sprite3D *guy = new Sprite3D();
-    guy->setEnabled(false);
-    guy->setPosition( Vertex3D(2, 1, 15) );
-    guy->setTimer(Engine::getTimer());
-    guy->addAnimation("guy/face", 3);
-    guy->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
-    this->addObject3D(guy, "guy");
+    Sprite3D *doomFace = new Sprite3D();
+    doomFace->setEnabled(false);
+    doomFace->setPosition( Vertex3D(2, 1, 15) );
+    doomFace->setTimer(Engine::getTimer());
+    doomFace->addAnimation("doom_face/face", 3);
+    doomFace->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
+    doomFace->getBillboard()->setDimensions(1, 1);
+
+    this->addObject3D(doomFace, "doomFace");
 
     // cubo physics
     /*Mesh3DBody *cuboPhysic = new Mesh3DBody();

@@ -13,6 +13,7 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #define PLANE_BACKSIDE 0x000001
 #define PLANE_FRONT    0x000010
@@ -60,7 +61,7 @@ public:
     static bool isValidVector(Vertex3D& v);
     static bool checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2);
     static std::string floatTruncate(float val, int numDigits);
-
+    static void playMixedSound(Mix_Chunk *chunk);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

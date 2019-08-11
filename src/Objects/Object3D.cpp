@@ -13,6 +13,7 @@
 Object3D::Object3D()
 {
     this->enabled = true;
+    this->removed = false;
     this->position = Vertex3D(1, 1, 1);
     this->scale = 1;
 

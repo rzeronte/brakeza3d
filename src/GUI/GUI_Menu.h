@@ -13,7 +13,7 @@ public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, cJSON *maps) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, cJSON *maps) {
 
         bool show_about_window = false;
 
@@ -154,6 +154,8 @@ public:
             }
 
             if (ImGui::BeginMenu("Maps")) {
+                ImGui::Checkbox("Render map", &EngineSetup::getInstance()->RENDER_BSP_MAP);
+
                 cJSON *currentMap = NULL;
                 cJSON_ArrayForEach(currentMap, maps) {
                     cJSON *name = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
@@ -177,6 +179,7 @@ public:
                 ImGui::Checkbox("Ligths Inspector", &show_window_lights_inspector);
                 ImGui::Checkbox("Log", &show_window_log);
                 ImGui::Checkbox("Tiles", &show_window_physics);
+                ImGui::Checkbox("Weapons", &show_window_weapons);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::getInstance()->DRAW_FRUSTUM);
                 ImGui::Separator();

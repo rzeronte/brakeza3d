@@ -58,12 +58,50 @@ Engine::Engine()
     // Load MENU Background
     const char *file = std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str();
     menu_background = IMG_Load(file);
+
+    skull = new SpriteDirectional3D();
+    skull->setPosition(Vertex3D(5, 0, -10));
+    skull->setTimer(getTimer());
+    skull->addAnimationDirectional2D("bullet/idle", 1, false);
+    skull->setAnimation(0);
+    skull->width = 2;
+    skull->height = 2;
+
+    weapon = new Weapon();
+    weapon->addWeaponType("melee");
+    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/walk", 1, 50, 40);
+    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/fire", 6, 60, 73);
+    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/reload", 3, 0, 150);
+
+    weapon->addWeaponType("gun");
+    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/walk", 1, 70, 60);
+    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/fire", 5, 0, 72);
+    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/reload", 17, 0, 60);
+
+    weapon->addWeaponType("machinegun");
+    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/walk", 1, 80, 120);
+    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/fire", 8, 80, 120);
+    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/reload", 4, 0, 0);
+
+    weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
+
+    menu = new Menu();
+    menu->getOptionsJSON();
+}
+
+bool Engine::initSound()
+{
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    }
+
+    EngineBuffers::getInstance()->loadWAVs();
 }
 
 bool Engine::initWindow()
 {
     //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return false;
     } else {
@@ -80,7 +118,7 @@ bool Engine::initWindow()
             SDL_WINDOWPOS_UNDEFINED,
             EngineSetup::getInstance()->screenWidth,
             EngineSetup::getInstance()->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
+            SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
         // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
 
@@ -171,7 +209,7 @@ void Engine::initBulletPhysics()
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
-    this->camera->kinematicController->setFallSpeed(60);
+    this->camera->kinematicController->setFallSpeed(00);
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
     this->dynamicsWorld->addAction(this->camera->kinematicController);
@@ -656,7 +694,8 @@ void Engine::drawGUI()
         camera,
         tiles, tilesWidth,
         this->numVisibleTriangles,
-        maps
+        maps,
+        weapon
     );
 
     ImGui::Render();
@@ -666,12 +705,20 @@ void Engine::windowUpdate()
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         this->drawMenu();
+        //this->waterShader();
+        this->fireShader();
+    } else {
+        if (bsp_map) {
+            if (bsp_map->isCurrentLeafLiquid()) {
+                this->waterShader();
+            }
+        }
     }
 
-    if (bsp_map) {
-        if (bsp_map->isCurrentLeafLiquid()) {
-            this->waterShader();
-        }
+    // draw weapon
+    if (EngineSetup::getInstance()->SHOW_WEAPON) {
+        this->weapon->setAction(this->camera, this->controller->isFiring());
+        this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(screenSurface);
     }
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
@@ -709,10 +756,16 @@ void Engine::onStart()
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
 
     this->getMapsJSON();
+
+    this->initSound();
+
+    Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
 
 void Engine::preUpdate()
 {
+    this->controller->resetFlags();
+
     // Posición inicial del vector velocidad que llevará la cámara
     camera->velocity.vertex1 = *camera->getPosition();
     camera->velocity.vertex2 = *camera->getPosition();
@@ -747,6 +800,7 @@ void Engine::postUpdate()
     // update deltaTime
     this->updateTimer();
 
+    // check for collisions
     this->processPairsCollisions();
 
     Vertex3D vel = Engine::camera->velocity.getComponent();
@@ -783,10 +837,7 @@ void Engine::postUpdate()
     this->cameraUpdate();
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        this->getWeapon()->setEnabled(true);
-        this->getWeapon()->updateWeaponPosition( camera );
     } else {
-        this->getWeapon()->setEnabled(false);
     }
 }
 
@@ -810,52 +861,60 @@ void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
 
 void Engine::processPairsCollisions()
 {
+    //Logging::getInstance()->Log("Collision objects: " + std::to_string(dynamicsWorld->getNumCollisionObjects()));
+    //Logging::getInstance()->Log("projectiles: " + std::to_string(projectilePhysics.size()));
+
+    // Collisions for trigger camera
     for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
         const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
         Mesh3D *brkObjectB = (Mesh3D *) obj->getUserPointer();
-        if (brkObjectB->getLabel().find("hull") != std::string::npos) {
-            int entityIndex = brkObjectB->getBspEntityIndex();
-            char *classname = bsp_map->getEntityValue(entityIndex, "classname");
 
-            if (!strcmp(classname, "trigger_teleport")) {
-                int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
-                if (targetEntityId >= 0) {
+        // No siempre tienen por qué ser Mesh
+        if (brkObjectB != NULL) {
+            if (brkObjectB->getLabel().find("hull") != std::string::npos) {
+                int entityIndex = brkObjectB->getBspEntityIndex();
+                char *classname = bsp_map->getEntityValue(entityIndex, "classname");
 
-                    if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
-                        char *value = bsp_map->getEntityValue(targetEntityId, "origin");
-                        char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
-                        Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
+                if (!strcmp(classname, "trigger_teleport")) {
+                    int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
+                    if (targetEntityId >= 0) {
 
-                        float BSP_YOffset = -5;
-                        float BSP_ZOffset = 0;
+                        if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
+                            char *value = bsp_map->getEntityValue(targetEntityId, "origin");
+                            char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
+                            Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
 
-                        int angleInt = atoi( std::string(angle).c_str() );
-                        camera->yaw   = 90-angleInt;
-                        camera->pitch = 0;
-                        camera->roll  = 0;
+                            float BSP_YOffset = -5;
+                            float BSP_ZOffset = 0;
 
-                        btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
+                            int angleInt = atoi( std::string(angle).c_str() );
+                            camera->yaw   = 90-angleInt;
+                            camera->pitch = 0;
+                            camera->roll  = 0;
 
-                        btTransform initialTransform;
-                        initialTransform.setOrigin( btPos );
+                            btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
 
-                        this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
+                            btTransform initialTransform;
+                            initialTransform.setOrigin( btPos );
 
-                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                            Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
+                            this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
+
+                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                                Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
+                            }
                         }
                     }
                 }
-            }
 
-            if (!strcmp(classname, "func_door")) {
-                Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
-            }
+                if (!strcmp(classname, "func_door")) {
+                    Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
+                }
 
-            if (!strcmp(classname, "trigger_multiple")) {
-                // check for message response
-                if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
-                    Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
+                if (!strcmp(classname, "trigger_multiple")) {
+                    // check for message response
+                    if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
+                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
+                    }
                 }
             }
         }
@@ -865,6 +924,7 @@ void Engine::processPairsCollisions()
         }
     }
 
+    // All collisions pairs
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
     if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
         for (int i = 0; i < numManifolds; i++) {
@@ -878,9 +938,20 @@ void Engine::processPairsCollisions()
 
                 BSPMap *oMap = dynamic_cast<BSPMap*> (brkObjectB);
                 if (oMap != NULL) {
-                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                        //Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
+
+                    if (brkObjectA->getLabel() == "projectile") {
+                        dynamicsWorld->removeCollisionObject((btCollisionObject *) obA);
+                        this->removeObject3D(brkObjectA);
                     }
+
+                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                        Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
+                    }
+                }
+
+                SpriteDirectional3DBody *oSpriteDirectional = dynamic_cast<SpriteDirectional3DBody*> (brkObjectB);
+                if (oSpriteDirectional != NULL) {
+                    //Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and SpriteDirectional3DBody");
                 }
 
                 Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
@@ -1096,7 +1167,7 @@ void Engine::objects3DShadowMapping()
 
 void Engine::getQuakeMapTriangles()
 {
-    if (bsp_map) {
+    if (bsp_map && EngineSetup::getInstance()->RENDER_BSP_MAP) {
         bsp_map->DrawVisibleLeaf(camera);
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
             bsp_map->DrawHulls( camera );
@@ -1149,6 +1220,20 @@ void Engine::getLightPointsTriangles()
 
 void Engine::getSpritesTriangles()
 {
+    std::vector<SpriteDirectional3DBody *>::iterator it;
+
+    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
+        SpriteDirectional3D *oSpriteDirectional = *(it);
+
+        if (!oSpriteDirectional->isEnabled()) {
+            continue;
+        }
+        oSpriteDirectional->width = 10;
+        oSpriteDirectional->height = 10;
+        oSpriteDirectional->updateTrianglesCoordinates(camera);
+        oSpriteDirectional->draw(camera);
+    }
+
     for (int i = 0; i < this->numberGameObjects; i++) {
         // Sprite Directional 3D
         SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (this->gameObjects[i]);
@@ -1211,7 +1296,6 @@ void Engine::getObjectsBillboardTriangles()
 
 void Engine::drawFrameTriangles()
 {
-
     for (int i = 0; i < numVisibleTriangles; i++) {
         this->visibleTriangles[i].draw(camera);
     }
@@ -1362,6 +1446,19 @@ void Engine::addObject3D(Object3D *obj, std::string label)
     numberGameObjects++;
 }
 
+void Engine::removeObject3D(Object3D *obj)
+{
+    std::vector<SpriteDirectional3DBody *>::iterator it;
+
+    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
+        Object3D *oSpriteDirectional = *(it);
+        if (obj == oSpriteDirectional) {
+            projectilePhysics.erase(it);
+            return;
+        }
+    }
+}
+
 void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
 {
     Logging::getInstance()->Log("Adding LightPoint: '" + label + "'", "INFO");
@@ -1444,18 +1541,23 @@ void Engine::updateTimer()
     if (decimalTime > 10 ) {
         this->decimalTime = 0;
     }
-    currentLightmapIndex = this->decimalTime;
-    //Logging::getInstance()->Log(std::to_string((int)(decimalTime)));
 }
 
 void Engine::updatePhysicObjects()
 {
-    std::vector<Mesh3DBody *>::iterator it;
-    for (it = meshPhysics.begin() ; it!= meshPhysics.end() ; it++) {
-        (*it)->integrate( );
+    std::vector<SpriteDirectional3DBody *>::iterator it;
+
+    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
+        (*it)->integrate();
     }
 
-    // Sync position
+    // mesh physics
+    std::vector<Mesh3DBody *>::iterator it2;
+    for (it2 = meshPhysics.begin() ; it2 != meshPhysics.end() ; it2++) {
+        (*it2)->integrate( );
+    }
+
+    // Sync position for triggerCamera
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     Vertex3D p = *camera->getPosition();
 
@@ -1469,15 +1571,6 @@ void Engine::updatePhysicObjects()
     t.setOrigin(btVector3(p.x, p.y, p.z));
     triggerCamera->getGhostObject()->setWorldTransform(t);
 }
-
-Weapon3D *Engine::getWeapon() const {
-    return weapon;
-}
-
-void Engine::setWeapon(Weapon3D *weapon) {
-    Engine::weapon = weapon;
-}
-
 
 bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
 {
@@ -1499,8 +1592,9 @@ void Engine::waterShader()
     float LAVA_SPEED = 2.55;
     float LAVA_SCALE = 2.35;
 
-    float intensity_r = 0.5;
-    float intensity_g = 0.5;
+    // Default config is used in menu mode
+    float intensity_r = 1;
+    float intensity_g = 1;
     float intensity_b = 1;
 
     //water = -3 |mud = -4 | lava = -5
@@ -1548,6 +1642,41 @@ void Engine::waterShader()
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
+void Engine::fireShader()
+{
+    // Set whole screen to 0 (color: 0x07,0x07,0x07)
+    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
+    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
+
+    for(int x = 0 ; x < FIRE_WIDTH ; x++) {
+        for (int y = 1; y < FIRE_HEIGHT ; y++) {
+            int src = (y * FIRE_WIDTH + x);
+
+            int pixel = EngineBuffers::getInstance()->firePixelsBuffer[src];
+
+            if ( pixel == 0) {
+                EngineBuffers::getInstance()->firePixelsBuffer[src - FIRE_WIDTH] = 0;
+            } else {
+                int randIdx = Tools::random(0, 3) & 3;
+                int dst = src - randIdx + 1;
+                EngineBuffers::getInstance()->firePixelsBuffer[dst - FIRE_WIDTH ] = pixel - (randIdx & 1);
+            }
+        }
+    }
+
+    for (int y = 1; y < FIRE_HEIGHT; y++) {
+        for(int x = 0 ; x < FIRE_WIDTH ; x++) {
+            int index = y * FIRE_WIDTH + x;
+            int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
+
+            if (fireIndex != 0) {
+                //Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
+                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black();
+            }
+        }
+    }
+}
+
 void Engine::getMapsJSON()
 {
     size_t file_size;
@@ -1585,4 +1714,5 @@ void Engine::getMapsJSON()
 void Engine::drawMenu()
 {
     SDL_BlitSurface(menu_background, NULL, this->screenSurface, NULL);
+    this->menu->drawOptions(screenSurface);
 }

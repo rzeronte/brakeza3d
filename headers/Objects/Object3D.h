@@ -17,6 +17,7 @@ class Object3D {
 
 public:
     bool enabled;
+    bool removed;
     float scale;
 
     std::string label;

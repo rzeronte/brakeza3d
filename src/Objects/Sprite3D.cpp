@@ -3,20 +3,20 @@
 #include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/2D/Animation2D.h"
+#include "../../headers/2D/TextureAnimation.h"
 
 Sprite3D::Sprite3D()
 {
     this->billboard = new Billboard();
 
     for (int i = 0; i< ANIMATEDSPRITE_MAX_ANIMATIONS; i++) {
-        this->animations[i] = new Animation2D();
+        this->animations[i] = new TextureAnimation();
     }
 }
 
 void Sprite3D::addAnimation(std::string animation2d, int num_frames)
 {
-    Logging::getInstance()->Log("Loading Animation2D: " + animation2d + " ("+ std::to_string(num_frames)+" frames)", "BILLBOARD");
+    Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
 
     this->animations[this->num_animations]->setup(animation2d, num_frames);
     this->num_animations++;

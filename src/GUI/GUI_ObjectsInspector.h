@@ -9,8 +9,8 @@
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/Objects/Sprite3D.h"
-#include "../../headers/Objects/Mesh3DBody.h"
-#include "../../headers/Objects/Mesh3DGhost.h"
+#include "../../headers/Physics/Mesh3DBody.h"
+#include "../../headers/Physics/Mesh3DGhost.h"
 #include "../../headers/Render/Logging.h"
 
 class GUI_ObjectsInspector : public GUI  {
@@ -45,6 +45,7 @@ public:
                 std::string position_text = "Position##" + std::to_string(i);
                 std::string rotation_text = "Rotation##" + std::to_string(i);
                 std::string shadow_text = "Shadow##" + std::to_string(i);
+                std::string animation_text = "Animation##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
@@ -100,7 +101,7 @@ public:
                                 break;
                         }
 
-                        if ( ImGui::BeginCombo("Animation", item_current, flags)) { // The second parameter is the label previewed before opening the combo.
+                        if ( ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) { // The second parameter is the label previewed before opening the combo.
                             for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
                                 bool is_selected = (item_current == items[n]);
                                 if (ImGui::Selectable(items[n], is_selected)) {

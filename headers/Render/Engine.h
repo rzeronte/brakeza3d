@@ -16,16 +16,20 @@
 #include "../../src/GUI/GUI_Menu.h"
 #include "../../src/GUI/GUI_ObjectsInspector.h"
 #include "../../src/GUI/GUI_Engine.h"
+#include "../../src/GUI/GUI_Weapons.h"
+
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
-#include "../Objects/Mesh3DBody.h"
+#include "../Physics/Mesh3DBody.h"
 #include "PhysicsDebugDraw.h"
-#include "../Objects/Mesh3DGhost.h"
-#include "../Objects/Weapon3D.h"
+#include "../Physics/Mesh3DGhost.h"
+#include "../Physics/SpriteDirectional3DBody.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
 #include "../../src/cJSON.h"
+#include "../2D/Weapon.h"
+#include "../2D/Menu.h"
 
 enum collisionGroups
 {
@@ -52,6 +56,7 @@ public:
     // Eventos SDL
     SDL_Event e;
 
+
     // Camera y Controlador (Input)
     Camera3D *camera;
     Controller *controller;
@@ -60,6 +65,7 @@ public:
     Object3D **gameObjects;
 
     std::vector<Mesh3DBody *> meshPhysics;
+    std::vector<SpriteDirectional3DBody *> projectilePhysics;
 
     int numberGameObjects;
 
@@ -109,7 +115,6 @@ public:
 
     PhysicsDebugDraw* debugDraw;
 
-    Weapon3D *weapon;
     Mesh3DGhost *triggerCamera;
 
     // Timer
@@ -120,7 +125,6 @@ public:
     float executionTime = 0;
     float frameTime = 0;
     float decimalTime = 0;
-    int currentLightmapIndex = 0;
 
     // OpenCL Rasterizer
     cl_platform_id platform_id;
@@ -157,17 +161,23 @@ public:
     std::vector<Tile> tiles;
     OCLTriangle *trianglesTile;
 
-    // maps.json
+    // optionsJSON.json
     cJSON *maps;
 
     // menu background surface
     SDL_Surface *menu_background;
+    Menu *menu;
+
+    SpriteDirectional3D *skull;
+
+    Weapon *weapon;
 
     Engine();
 
     void Close();
 
     bool initWindow();
+    bool initSound();
     void initFontsTTF();
     void initBulletPhysics();
     void initOpenCL();
@@ -203,6 +213,7 @@ public:
     void clearLightPointsShadowMappings();
 
     void addObject3D(Object3D *obj, std::string label);
+    void removeObject3D(Object3D *obj);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
     void windowUpdate();
@@ -216,10 +227,6 @@ public:
     Timer* getTimer();
 
     Object3D* getObjectByLabel(std::string label);
-
-    Weapon3D *getWeapon() const;
-
-    void setWeapon(Weapon3D *weapon);
 
     void processPairsCollisions();
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
@@ -235,10 +242,10 @@ public:
     void handleOpenCLTransform();
 
     void waterShader();
+    void fireShader();
 
     void getMapsJSON();
     void drawMenu();
-
 
     };
 

@@ -34,6 +34,8 @@ public:
     bool isDrawable() const;
     void setDrawable(bool drawable);
 
+    void setDimensions(float w, float h);
+
 };
 
 

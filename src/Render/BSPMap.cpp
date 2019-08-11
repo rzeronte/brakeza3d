@@ -272,7 +272,7 @@ bool BSPMap::InitializeTextures(void)
         }
     }
 
-    // No podemos hacerlo en el bucle superior, pq no estarían rellenados todos los "frames" en cada iteracción
+    // No podemos hacerlo en el bucle superior, pq no estarían rellenados todos los "animations" en cada iteracción
     // Así nos aseguramos de que todos los "+Xname" está cargado en textures[]
     for (int i = 0; i < this->getNumTextures(); i++) {
         if (textures[i].animated) {

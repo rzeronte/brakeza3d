@@ -1,0 +1,19 @@
+{
+    "options": [
+        {
+          "name": "new game",
+          "image_on": "option_newgame_on.png",
+          "image_off": "option_newgame_off.png"
+        },
+        {
+          "name": "credits",
+          "image_on": "option_credits_on.png",
+          "image_off": "option_credits_off.png"
+        },
+        {
+          "name": "exit",
+          "image_on": "option_exit_on.png",
+          "image_off": "option_exit_off.png"
+        }
+    ]
+}

@@ -28,9 +28,20 @@ EngineBuffers::EngineBuffers()
 
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
+
+    // buffer for fire shader
+    int firePixelsBufferSize = EngineSetup::getInstance()->FIRE_WIDTH * EngineSetup::getInstance()->FIRE_HEIGHT;
+    firePixelsBuffer = new int[firePixelsBufferSize];
+
     //fragmentsBuffer = new pixelFragment[EngineSetup::getInstance()->ENGINE_MAX_FRAGMENTS];
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
 
+    // sounds
+    Logging::getInstance()->Log("Inicializando EngineBuffer");
+
+    // 37 colores * 3 (rgb channels)
+    this->makeFireColors();
+    this->fireShaderSetup();
 }
 
 void EngineBuffers::clearDepthBuffer()
@@ -89,3 +100,44 @@ void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
     memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
+void EngineBuffers::makeFireColors()
+{
+    Logging::getInstance()->Log("Making fire colors palette", "INFO");
+
+    // Populate pallete
+    for (int i = 0; i < 111 / 3; i++) {
+        fireColors[i] = Tools::createRGB(
+            rgbs[i * 3 + 0],
+            rgbs[i * 3 + 1],
+            rgbs[i * 3 + 2]
+        );
+
+        videoBuffer[100 * 320 +i] = fireColors[i];
+    }
+}
+
+void EngineBuffers::fireShaderSetup()
+{
+    Logging::getInstance()->Log("fireShaderSetup", "INFO");
+
+    // Set whole screen to 0 (color: 0x07,0x07,0x07)
+    int FIRE_WIDTH  = EngineSetup::getInstance()->FIRE_WIDTH;
+    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
+
+    int firePixelsBufferSize = FIRE_HEIGHT * FIRE_WIDTH;
+    for(int i = 0 ; i < firePixelsBufferSize ; i++) {
+        this->firePixelsBuffer[i] = 0;
+    }
+
+    // Set bottom line to 37 (color white: 0xFF,0xFF,0xFF)
+    for(int i = 0; i < FIRE_WIDTH; i++) {
+        this->firePixelsBuffer[ (FIRE_HEIGHT-1) * FIRE_WIDTH + i] = 36;
+    }
+}
+
+void EngineBuffers::loadWAVs()
+{
+    this->snd_base_menu    = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_MAINMENU).c_str() );
+    this->snd_weapon_1 = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_WEAPON_1).c_str() );
+    this->snd_base_level_0 = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_BASE_LEVEL_0).c_str() );
+}

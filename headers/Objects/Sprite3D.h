@@ -11,7 +11,7 @@
 
 #define ANIMATEDSPRITE_MAX_ANIMATIONS 5
 
-class Animation2D;
+class TextureAnimation;
 
 class Sprite3D : public Object3D{
     Billboard *billboard;
@@ -23,7 +23,7 @@ public:
     int num_animations = 0;
     int current_animation = 0;
 
-    Animation2D *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
+    TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
     int fps = 2;
 
