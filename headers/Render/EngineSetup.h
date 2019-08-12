@@ -219,9 +219,10 @@ public:
     int FIRE_HEIGHT = 240;
 
     enum SpriteDoom2SoldierAnimations {
-        WALK = 0,
-        FIRE = 1,
-        INJURIED = 2
+        SOLDIER_WALK = 0,
+        SOLDIER_FIRE = 1,
+        SOLDIER_INJURIED = 2,
+        SOLDIER_DEAD = 3
     };
 
     enum SpriteDoom2CacodemonAnimations {
@@ -242,6 +243,7 @@ public:
         WEAPON_TYPE_MELEE = 0,
         WEAPON_TYPE_GUN = 1,
         WEAPON_TYPE_MACHINEGUN = 2,
+        WEAPON_TYPE_ROCKETLAUNCHER = 3,
     };
 
     enum WeaponsActions {

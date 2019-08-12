@@ -7,6 +7,7 @@
 #include "../Render/Timer.h"
 #include "../2D/TextureAnimationDirectional.h"
 #include "Camera3D.h"
+#include "../../src/Enemy.h"
 
 #define DIR_C 0
 #define DIR_S 1
@@ -20,7 +21,7 @@
 
 #define BILLBOARD3D_MAX_ANIMATIONS 5
 
-class SpriteDirectional3D : public Object3D {
+class SpriteDirectional3D : public Object3D, public Enemy {
     Billboard *billboard;
 
 public:
@@ -42,7 +43,7 @@ public:
     SpriteDirectional3D();
 
     Billboard *getBillboard() const;
-    void addAnimationDirectional2D(std::string, int frames, bool zeroDirection);
+    void addAnimationDirectional2D(std::string, int frames, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
     void setTimer(Timer *);

@@ -1,16 +1,10 @@
 
-#include <iostream>
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <LinearMath/btDefaultMotionState.h>
-#include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include "../../headers/Render/Controller.h"
-#include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Objects/Object3D.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Physics/SpriteDirectional3DBody.h"
 
 Controller::Controller()
 {
@@ -96,23 +90,25 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
      }
 
     if (keyboard[SDL_SCANCODE_TAB]) {
-        Logging::getInstance()->Log("Fire");
+
         this->firing = true;
-        SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
-        projectile->setPosition(*camera->getPosition());
-        projectile->setLabel("projectile");
-        projectile->setEnabled(true);
-        projectile->setTimer(timer);
-        projectile->linkTexturesTo(bulletTemplate);
-        projectile->setAnimation(0);
-        projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, 700);
-        projectile->getBillboard()->setDimensions(0.5, 0.5);
+        if (weapon->currentWeapon != EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE) {
+            SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
+            projectile->setPosition(*camera->getPosition());
+            projectile->setLabel("projectile");
+            projectile->setEnabled(true);
+            projectile->setTimer(timer);
+            projectile->linkTexturesTo(bulletTemplate);
+            projectile->setAnimation(0);
+            projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, 700);
+            projectile->getBillboard()->setDimensions(0.4, 0.4);
 
-        // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
-        // del impulso en el interior del makeRigidBody
-        projectile->setRotation(camera->getRotation());
+            // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
+            // del impulso en el interior del makeRigidBody
+            projectile->setRotation(camera->getRotation());
 
-        Tools::playMixedSound(EngineBuffers::getInstance()->snd_weapon_1);
+            Tools::playMixedSound(EngineBuffers::getInstance()->snd_weapon_1);
+        }
     }
 }
 
@@ -132,15 +128,23 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
     }
 
     if (keyboard[SDL_SCANCODE_1]) {
-        weapon->currentWeapon = 0;
+        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
+        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_2]) {
-        weapon->currentWeapon = 1;
+        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
+        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_3]) {
-        weapon->currentWeapon = 2;
+        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MACHINEGUN;
+        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
+    }
+
+    if (keyboard[SDL_SCANCODE_4]) {
+        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
+        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
@@ -160,8 +164,9 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
     }
 
     if (keyboard[SDL_SCANCODE_RETURN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE) {
-                end = true;
+        Logging::getInstance()->Log(menu->options[weapon->currentWeapon]->label);
+        if (EngineSetup::getInstance()->MENU_ACTIVE && menu->options[menu->currentOptions]->label == "exit") {
+            end = true;
         }
     }
 

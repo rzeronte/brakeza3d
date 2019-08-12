@@ -58,7 +58,7 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &phy
     btCollisionShape* shape = new btConvexHullShape(*me);
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);
-    m_body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    //m_body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
 
     this->m_body->setUserPointer(this);
 

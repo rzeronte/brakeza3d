@@ -41,6 +41,7 @@ enum collisionGroups
     CharacterFilter = 32,
     CameraTrigger = 64,
     BSPHullTrigger = 128,
+    BillboardsTrigger = 256,
     AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
 } ;
 

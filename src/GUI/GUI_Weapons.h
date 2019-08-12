@@ -36,7 +36,7 @@ class GUI_Weapons : public GUI  {
             const float  range_max = 10;
             const float  range_sensibility = 1;
 
-            const char *items[] = {"melee", "gun", "machinegun"};
+            const char *items[] = {"melee", "gun", "machinegun", "rocketlauncher"};
             static const char *item_current = items[weapon->currentWeapon]; // Here our selection is a single pointer stored outside the object.
             static ImGuiComboFlags flags = 0;
 
@@ -58,7 +58,11 @@ class GUI_Weapons : public GUI  {
                 ImGui::EndCombo();
             }
 
+
             ImGui::DragScalar("Framerate", ImGuiDataType_S32, &weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Current Frame: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->current)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("NumFrames: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->getNumFrames())).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Timer: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->timer->getTicks())).c_str());
 
             ImGui::End();
         }

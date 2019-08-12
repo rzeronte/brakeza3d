@@ -12,6 +12,7 @@ WeaponAnimation::WeaponAnimation()
 {
     timer = new Timer();
     timer->start();
+    current = 0;
 }
 
 void WeaponAnimation::setup(std::string file, int num_frames, int offsetX, int offsetY)
@@ -53,7 +54,6 @@ void WeaponAnimation::nextFrame()
 
 void WeaponAnimation::draw(SDL_Surface *dst)
 {
-    this->updateFrame();
     SDL_Rect destPos;
     destPos.x = offsetX;
     destPos.y = offsetY;
@@ -71,7 +71,7 @@ void WeaponAnimation::updateFrame()
     float step = (float) 1 / this->fps;
 
     if (timerCurrent > step) {
-        this->nextFrame();
         timerCurrent = 0;
+        this->nextFrame();
     }
 }

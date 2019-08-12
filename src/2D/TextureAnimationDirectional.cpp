@@ -12,10 +12,11 @@ TextureAnimationDirectional::TextureAnimationDirectional()
     }
 }
 
-void TextureAnimationDirectional::setup(std::string file, int num_frames)
+void TextureAnimationDirectional::setup(std::string file, int num_frames, int maxTimes)
 {
     this->base_file = file;
     this->numFrames = num_frames;
+    this->maxTimes = maxTimes;
 }
 
 void TextureAnimationDirectional::loadImages()
@@ -51,8 +52,12 @@ void TextureAnimationDirectional::nextFrame()
 {
     current++;
 
-    if (current >= this->getNumFrames()) {
+    if (current >= this->getNumFrames() ) {
         current = 0;
+        times++;
+        if ((maxTimes != -1 && times >= maxTimes)) {
+            current = getNumFrames()-1;
+        }
     }
 }
 

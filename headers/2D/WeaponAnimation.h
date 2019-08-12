@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include "../Render/Timer.h"
 
-#define WEAPON_ANIMATION_MAX_FRAMES 20
+#define WEAPON_ANIMATION_MAX_FRAMES 30
 
 class WeaponAnimation {
 

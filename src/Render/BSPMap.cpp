@@ -546,20 +546,22 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    SpriteDirectional3D *o = new SpriteDirectional3D();
+                    SpriteDirectional3DBody *o = new SpriteDirectional3DBody();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
-                    o->addAnimationDirectional2D("soldier/walk", 4, false);
-                    o->addAnimationDirectional2D("soldier/fire", 2, false);
-                    o->addAnimationDirectional2D("soldier/injuried", 1, false);
-                    o->addAnimationDirectional2D("soldier/dead", 5, true);
-                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
+                    o->addAnimationDirectional2D("soldier/walk", 4, false, -1);
+                    o->addAnimationDirectional2D("soldier/fire", 2, false, -1);
+                    o->addAnimationDirectional2D("soldier/injuried", 1, false, -1);
+                    o->addAnimationDirectional2D("soldier/dead", 5, true, 1);
+                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
                     o->setEnabled(true);
                     o->setPosition( pos );
                     o->setDrawBillboard(true);
-                    o->getBillboard()->width = 4.f;
-                    o->getBillboard()->height = 5.f;
-                    brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
+                    o->getBillboard()->setDimensions(4, 6);
+                    o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
+                    o->makeRigidBody(0, brakeza3D->projectilePhysics, brakeza3D->camera, brakeza3D->dynamicsWorld, false, 0);
+
+                    //brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
 
                 }
 

@@ -3,7 +3,10 @@
 //
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 #include "../../headers/Physics/SpriteDirectional3DBody.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/Render/Engine.h"
 
 SpriteDirectional3DBody::SpriteDirectional3DBody()
 {
@@ -39,26 +42,40 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Spri
     trans.setIdentity();
 
     Vertex3D pos = *this->getPosition();
+
     Vertex3D dir = cam->getRotation().getTranspose() * AxisForward();
     pos = pos + dir.getScaled(10);
-
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
-    btCollisionShape* shape = new btSphereShape(1.0f);
-    btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
+    //btCollisionShape* shape = new btSphereShape(1.0f);
+    btCollisionShape* shape;
+    if (this->mass == 0) {
+        shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
+    } else {
+        shape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+    }
+
+    btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);
     this->m_body->setUserPointer(this);
-
+    this->m_body->setCcdMotionThreshold(0.01f);
+    this->m_body->setCcdSweptSphereRadius(0.02f);
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
         btVector3 impulse(dir.x, dir.y, dir.z);
         this->m_body->applyCentralImpulse(impulse);
     }
+
+    if (this->mass == 0) {
+    } else {
+    }
+
+    //this->m_body->setCollisionFlags( btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
     world->addRigidBody(this->m_body);
 

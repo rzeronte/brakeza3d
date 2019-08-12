@@ -159,11 +159,11 @@ void Game::loadDemoObjects()
     marine->setEnabled(false);
     marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
-    marine->addAnimationDirectional2D("soldier/walk", 4, false);
-    marine->addAnimationDirectional2D("soldier/fire", 2, false);
-    marine->addAnimationDirectional2D("soldier/injuried", 1, false);
-    marine->addAnimationDirectional2D("soldier/dead", 5, true);
-    marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
+    marine->addAnimationDirectional2D("soldier/walk", 4, false, -1);
+    marine->addAnimationDirectional2D("soldier/fire", 2, false, -1);
+    marine->addAnimationDirectional2D("soldier/injuried", 1, false, -1);
+    marine->addAnimationDirectional2D("soldier/dead", 5, true, 1);
+    marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(marine, "marine");
 
     // skull (sprite directional)
@@ -171,8 +171,8 @@ void Game::loadDemoObjects()
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->setTimer(Engine::getTimer());
-    skull->addAnimationDirectional2D("skull/idle", 5, false);
-    skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::WALK);
+    skull->addAnimationDirectional2D("skull/idle", 5, false, -1);
+    skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(skull, "skull");
 
     // cacodemon (sprite directional)
@@ -180,8 +180,8 @@ void Game::loadDemoObjects()
     cacodemon->setEnabled(false);
     cacodemon->setPosition(Vertex3D(20, 0, -10));
     cacodemon->setTimer(Engine::getTimer());
-    cacodemon->addAnimationDirectional2D("cacodemon/walk", 6, false);
-    cacodemon->addAnimationDirectional2D("cacodemon/dead", 6, false);
+    cacodemon->addAnimationDirectional2D("cacodemon/walk", 6, false, -1);
+    cacodemon->addAnimationDirectional2D("cacodemon/dead", 6, false, -1);
     cacodemon->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
     this->addObject3D(cacodemon, "cacodemon");
 
@@ -197,7 +197,7 @@ void Game::loadDemoObjects()
     this->addObject3D(doomFace, "doomFace");
 
     // cubo physics
-    /*Mesh3DBody *cuboPhysic = new Mesh3DBody();
+    Mesh3DBody *cuboPhysic = new Mesh3DBody();
     cuboPhysic->setEnabled(true);
     cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
@@ -205,7 +205,7 @@ void Game::loadDemoObjects()
     cuboPhysic->makeRigidBody(1.0f, Engine::meshPhysics, Engine::camera, this->dynamicsWorld, false);
     this->addObject3D(cuboPhysic, "cuboPhysic");
 
-    Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();
+    /*Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();
     cuboPhysicGhost->setEnabled(true);
     cuboPhysicGhost->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
     cuboPhysicGhost->setPosition(Vertex3D(52, -0.2, 87));

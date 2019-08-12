@@ -62,7 +62,7 @@ Engine::Engine()
     skull = new SpriteDirectional3D();
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->setTimer(getTimer());
-    skull->addAnimationDirectional2D("bullet/idle", 1, false);
+    skull->addAnimationDirectional2D("bullet/idle", 1, false, -1);
     skull->setAnimation(0);
     skull->width = 2;
     skull->height = 2;
@@ -82,6 +82,11 @@ Engine::Engine()
     weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/walk", 1, 80, 120);
     weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/fire", 8, 80, 120);
     weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/reload", 4, 0, 0);
+
+    weapon->addWeaponType("rocketlauncher");
+    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/walk", 1, 0, 75);
+    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/fire", 21, 0, 75);
+    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/reload", 8, 0, 75);
 
     weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
 
@@ -705,9 +710,15 @@ void Engine::windowUpdate()
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         this->drawMenu();
-        //this->waterShader();
-        this->fireShader();
     } else {
+        // draw weapon
+        if (EngineSetup::getInstance()->SHOW_WEAPON) {
+            this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->updateFrame();
+            this->weapon->setAction(this->camera, this->controller->isFiring());
+            this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(screenSurface);
+
+        }
+
         if (bsp_map) {
             if (bsp_map->isCurrentLeafLiquid()) {
                 this->waterShader();
@@ -715,11 +726,6 @@ void Engine::windowUpdate()
         }
     }
 
-    // draw weapon
-    if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        this->weapon->setAction(this->camera, this->controller->isFiring());
-        this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(screenSurface);
-    }
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
@@ -949,9 +955,46 @@ void Engine::processPairsCollisions()
                     }
                 }
 
-                SpriteDirectional3DBody *oSpriteDirectional = dynamic_cast<SpriteDirectional3DBody*> (brkObjectB);
+                SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
                 if (oSpriteDirectional != NULL) {
-                    //Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and SpriteDirectional3DBody");
+
+                    Enemy *oSpriteDirectionalEnemyA = dynamic_cast<Enemy*> (brkObjectA);
+                    Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (brkObjectB);
+
+                    if ( ( oSpriteDirectionalEnemyA != NULL || oSpriteDirectionalEnemyB != NULL) &&
+                         ( brkObjectA->getLabel() == "projectile" || brkObjectB->getLabel() == "projectile" )
+                    ) {
+                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between projectile and Enemy");
+                        }
+                        if (oSpriteDirectionalEnemyA != NULL) {
+                            oSpriteDirectionalEnemyA->stamina--;
+                            if (oSpriteDirectionalEnemyA->stamina < 0) {
+                                SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectA);
+                                tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                                dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
+                            }
+
+                        } else {
+                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
+                            this->removeObject3D( brkObjectB );
+                        }
+
+                        if (oSpriteDirectionalEnemyB != NULL) {
+                            oSpriteDirectionalEnemyB->stamina--;
+                            if (oSpriteDirectionalEnemyB->stamina < 0) {
+                                SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
+                                tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                                dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
+
+                            }
+
+                        } else {
+                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
+                            this->removeObject3D( brkObjectA );
+                        }
+                    }
+
                 }
 
                 Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
@@ -1715,4 +1758,6 @@ void Engine::drawMenu()
 {
     SDL_BlitSurface(menu_background, NULL, this->screenSurface, NULL);
     this->menu->drawOptions(screenSurface);
+    //this->waterShader();
+    this->fireShader();
 }

@@ -44,13 +44,13 @@ void SpriteDirectional3D::setTimer(Timer *timer)
     this->timer = timer;
 }
 
-void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int num_frames, bool zeroDirection)
+void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int num_frames, bool zeroDirection, int maxTimes)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
     Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
 
-    this->animations[this->num_animations]->setup(full_animation_folder, num_frames);
+    this->animations[this->num_animations]->setup(full_animation_folder, num_frames, maxTimes);
 
     if (!zeroDirection) {
         this->animations[this->num_animations]->loadImages();
