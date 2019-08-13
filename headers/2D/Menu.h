@@ -4,12 +4,14 @@
 
 #include <string>
 #include "MenuOption.h"
-#include "../../src/cJSON.h"
+#include "../cJSON.h"
 
 #define MAX_MENU_OPTIONS 10
 
 class Menu {
 public:
+    // menu background surface
+    SDL_Surface *menu_background;
 
     Menu();
     MenuOption *options[MAX_MENU_OPTIONS];

@@ -127,25 +127,6 @@ add_executable(brakeda3d
         src/Render/Maths.cpp
         headers/Render/Maths.h
 
-        WAD/Constants.cpp
-        WAD/Constants.h
-        WAD/Directory.cpp
-        WAD/Directory.h
-        WAD/Identification.cpp
-        WAD/Identification.h
-        WAD/Signature.cpp
-        WAD/Signature.h
-
-        WAD/WAD.cpp
-        WAD/WAD.h
-        WAD/WADSector.cpp
-        WAD/WADSector.h
-        WAD/WADLinedef.cpp
-        WAD/WADLinedef.h
-        WAD/WADSidedef.cpp
-        WAD/WADSidedef.h
-        WAD/WADVertex.cpp
-        WAD/WADVertex.h
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
         src/GUI/GUI_Camera.h
@@ -155,9 +136,9 @@ add_executable(brakeda3d
         headers/Render/PhysicsDebugDraw.h
         src/Physics/Mesh3DGhost.cpp
         headers/Physics/Mesh3DGhost.h
-        src/cJSON.h
+        headers/cJSON.h
         src/cJSON.c
-        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/Weapon.cpp headers/2D/Weapon.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/Menu.cpp headers/2D/Menu.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp src/Enemy.h)
+        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/Weapon.cpp headers/2D/Weapon.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/Menu.cpp headers/2D/Menu.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp headers/Objects/Enemy.h src/Brakeza3D.cpp headers/Brakeza3D.h)
 
 target_link_libraries(brakeda3d
         ${SDL2_LIBRARY}

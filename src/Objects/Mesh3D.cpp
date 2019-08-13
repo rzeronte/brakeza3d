@@ -31,10 +31,6 @@ Mesh3D::Mesh3D()
         this->model_textures[i] = Texture();
     }
 
-    // lights
-    this->lightPoints = new LightPoint3D*[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
-    this->numberLightPoints = 0;
-
     shadowCaster = false;
     bsp_entity_index = -1;
 }
@@ -198,7 +194,7 @@ void Mesh3D::loadOBJBlenderTriangles()
             }
 
             // set light points
-            this->model_triangles[i].setLightPoints(this->lightPoints, this->numberLightPoints);
+            this->model_triangles[i].setLightPoints(this->lightPoints);
 
             // triangle order in mesh
             this->model_triangles[i].order = i;
@@ -259,10 +255,9 @@ void Mesh3D::draw(Camera3D *cam)
 
 }
 
-void Mesh3D::setLightPoints(LightPoint3D **lightPoints, int number)
+void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 {
     this->lightPoints = lightPoints;
-    this->numberLightPoints = number;
 }
 
 void Mesh3D::shadowMapping(LightPoint3D *lp)

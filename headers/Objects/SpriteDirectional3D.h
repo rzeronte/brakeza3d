@@ -7,7 +7,7 @@
 #include "../Render/Timer.h"
 #include "../2D/TextureAnimationDirectional.h"
 #include "Camera3D.h"
-#include "../../src/Enemy.h"
+#include "Enemy.h"
 
 #define DIR_C 0
 #define DIR_S 1

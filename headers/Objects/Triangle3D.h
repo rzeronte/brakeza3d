@@ -10,6 +10,7 @@
 #include "Object3D.h"
 #include "LightPoint3D.h"
 #include <list>
+#include <vector>
 #include "../Render/EngineBuffers.h"
 
 class Triangle {
@@ -63,8 +64,7 @@ public:
 
     int lod;
 
-    LightPoint3D **lightPoints;
-    int numberLightPoints = 0;
+    std::vector<LightPoint3D *> lightPoints;
 
     int currentBSPTextureAnimatedFrame = 0;
     float timerTextureAnimatedFrameControl = 0;
@@ -129,7 +129,7 @@ public:
     bool isClipped();
     bool testForClipping(Camera3D *cam);
 
-    void setLightPoints(LightPoint3D **lightPoints, int number);
+    void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
 
     bool isPointInside(Vertex3D);
 

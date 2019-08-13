@@ -400,3 +400,38 @@ void Drawable::drawCrossHair()
         EngineBuffers::getInstance()->setVideoBuffer(x, y-cw, color);
     }
 }
+
+void Drawable::drawFireShader()
+{
+    // Set whole screen to 0 (color: 0x07,0x07,0x07)
+    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
+    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
+
+    for(int x = 0 ; x < FIRE_WIDTH ; x++) {
+        for (int y = 1; y < FIRE_HEIGHT ; y++) {
+            int src = (y * FIRE_WIDTH + x);
+
+            int pixel = EngineBuffers::getInstance()->firePixelsBuffer[src];
+
+            if ( pixel == 0) {
+                EngineBuffers::getInstance()->firePixelsBuffer[src - FIRE_WIDTH] = 0;
+            } else {
+                int randIdx = Tools::random(0, 3) & 3;
+                int dst = src - randIdx + 1;
+                EngineBuffers::getInstance()->firePixelsBuffer[dst - FIRE_WIDTH ] = pixel - (randIdx & 1);
+            }
+        }
+    }
+
+    for (int y = 1; y < FIRE_HEIGHT; y++) {
+        for(int x = 0 ; x < FIRE_WIDTH ; x++) {
+            int index = y * FIRE_WIDTH + x;
+            int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
+
+            if (fireIndex != 0) {
+                //Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
+                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black();
+            }
+        }
+    }
+}

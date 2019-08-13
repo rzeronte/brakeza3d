@@ -6,6 +6,7 @@
 #include <SDL_audio.h>
 #include <SDL_mixer.h>
 #include "Timer.h"
+#include "../Objects/SpriteDirectional3D.h"
 
 typedef struct {
     int id;
@@ -73,6 +74,8 @@ public:
 
     OCLTriangle *OCLTrianglesBuffer;
     int numOCLTriangles = 0;
+
+    SpriteDirectional3D *skull;
 
     // sounds
     Mix_Music *snd_base_menu;       // menu
