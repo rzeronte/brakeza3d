@@ -901,10 +901,9 @@ void Triangle::setLightmap(Texture *t)
     lightmap = t;
 }
 
-void Triangle::setLightPoints(LightPoint3D **lightPoints, int number)
+void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 {
     this->lightPoints = lightPoints;
-    this->numberLightPoints = number;
 }
 
 void Triangle::setClipped(bool value)

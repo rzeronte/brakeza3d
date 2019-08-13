@@ -28,14 +28,6 @@ Engine::Engine()
     // used to finish all
     finish = false;
 
-    // gameobjects
-    this->gameObjects = new Object3D *[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
-    this->numberGameObjects = 0;
-
-    // lights
-    this->lightPoints = new LightPoint3D *[EngineSetup::getInstance()->ENGINE_MAX_GAMEOBJECTS];
-    this->numberLightPoints = 0;
-
     // cam
     camera = new Camera3D();
 
@@ -54,18 +46,6 @@ Engine::Engine()
     this->initOpenCL();
 
     this->initTiles();
-
-    // Load MENU Background
-    const char *file = std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str();
-    menu_background = IMG_Load(file);
-
-    skull = new SpriteDirectional3D();
-    skull->setPosition(Vertex3D(5, 0, -10));
-    skull->setTimer(getTimer());
-    skull->addAnimationDirectional2D("bullet/idle", 1, false, -1);
-    skull->setAnimation(0);
-    skull->width = 2;
-    skull->height = 2;
 
     weapon = new Weapon();
     weapon->addWeaponType("melee");
@@ -226,7 +206,7 @@ void Engine::initBulletPhysics()
     this->triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel("triggerCamera");
     triggerCamera->setEnabled(true);
-    triggerCamera->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    triggerCamera->setLightPoints(Engine::lightPoints);
     triggerCamera->setPosition(*camera->getPosition());
     triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
@@ -694,8 +674,8 @@ void Engine::drawGUI()
     gui_engine->draw(
         getDeltaTime(),
         finish,
-        gameObjects, numberGameObjects,
-        lightPoints, numberLightPoints,
+        gameObjects,
+        lightPoints,
         camera,
         tiles, tilesWidth,
         this->numVisibleTriangles,
@@ -1023,7 +1003,7 @@ void Engine::processPairsCollisions()
                                 char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
 
                                 if ( !strcmp(classnameRemote, "trigger_counter") ) {
-                                    for (int k = 0; k < this->numberGameObjects; k++) {
+                                    for (int k = 0; k < this->gameObjects.size(); k++) {
                                         Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
                                         if (oRemoteMesh != NULL) {
                                             if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
@@ -1061,7 +1041,7 @@ void Engine::processPairsCollisions()
                                 char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
                                 if (!strcmp(classnameRemote, "func_door")) {
                                     // Buscamos algún objeto cuya BSPEntity coincida
-                                    for (int k = 0; k < this->numberGameObjects; k++) {
+                                    for (int k = 0; k < this->gameObjects.size(); k++) {
                                         Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
                                         if (oRemoteMesh != NULL) {
                                             if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
@@ -1082,7 +1062,7 @@ void Engine::processPairsCollisions()
                                     if (!strcmp(classname, "func_button")) {
                                         Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (brkObjectB);
                                         if (oButton->active) {
-                                            for (int k = 0; k < this->numberGameObjects; k++) {
+                                            for (int k = 0; k < this->gameObjects.size(); k++) {
                                                 Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
                                                 if (oRemoteMesh != NULL) {
                                                     if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
@@ -1180,7 +1160,7 @@ void Engine::onUpdate()
 
 void Engine::clearLightPointsShadowMappings()
 {
-    for (int i = 0; i < this->numberLightPoints; i++) {
+    for (int i = 0; i < this->lightPoints.size(); i++) {
         if (!this->lightPoints[i]->isEnabled()) {
             continue;
         }
@@ -1191,14 +1171,14 @@ void Engine::clearLightPointsShadowMappings()
 
 void Engine::objects3DShadowMapping()
 {
-    for (int i = 0; i < this->numberGameObjects; i++) {
+    for (int i = 0; i < this->gameObjects.size(); i++) {
         if (!this->gameObjects[i]->isEnabled()) {
             continue;
         }
 
         Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
-            for (int j = 0; j < this->numberLightPoints; j++) {
+            for (int j = 0; j < this->lightPoints.size(); j++) {
                 if (oMesh->isShadowCaster()) {
                     oMesh->shadowMapping(this->lightPoints[j]);
                 }
@@ -1221,7 +1201,7 @@ void Engine::getQuakeMapTriangles()
 void Engine::getMesh3DTriangles()
 {
     // draw meshes
-    for (int i = 0; i < this->numberGameObjects; i++) {
+    for (int i = 0; i < this->gameObjects.size(); i++) {
         Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
@@ -1239,7 +1219,7 @@ void Engine::getMesh3DTriangles()
 
 void Engine::getLightPointsTriangles()
 {
-    for (int i = 0; i < this->numberLightPoints; i++) {
+    for (int i = 0; i < this->lightPoints.size(); i++) {
         LightPoint3D *oLight= this->lightPoints[i];
         if (oLight != NULL) {
             if (oLight->isEnabled()) {
@@ -1277,7 +1257,7 @@ void Engine::getSpritesTriangles()
         oSpriteDirectional->draw(camera);
     }
 
-    for (int i = 0; i < this->numberGameObjects; i++) {
+    for (int i = 0; i < this->gameObjects.size(); i++) {
         // Sprite Directional 3D
         SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (this->gameObjects[i]);
         if (oSpriteDirectional != NULL) {
@@ -1326,7 +1306,7 @@ void Engine::getObjectsBillboardTriangles()
         Vertex3D r = camera->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
         // draw meshes
-        for (int i = 0; i < this->numberGameObjects; i++) {
+        for (int i = 0; i < this->gameObjects.size(); i++) {
             if (this->gameObjects[i]->isDrawBillboard()) {
 
                 this->gameObjects[i]->getBillboard()->updateUnconstrainedQuad(this->gameObjects[i], u, r );
@@ -1484,9 +1464,10 @@ void Engine::onEnd()
 void Engine::addObject3D(Object3D *obj, std::string label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
-    gameObjects[numberGameObjects] = obj;
-    gameObjects[numberGameObjects]->setLabel(label);
-    numberGameObjects++;
+    gameObjects.push_back(obj);
+    //gameObjects[numberGameObjects] = obj;
+    //gameObjects[numberGameObjects]->setLabel(label);
+    //numberGameObjects++;
 }
 
 void Engine::removeObject3D(Object3D *obj)
@@ -1506,13 +1487,12 @@ void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
 {
     Logging::getInstance()->Log("Adding LightPoint: '" + label + "'", "INFO");
 
-    lightPoints[numberLightPoints] = lightPoint;
-    numberLightPoints++;
+    lightPoints.push_back(lightPoint);
 }
 
 Object3D* Engine::getObjectByLabel(std::string label)
 {
-    for (int i = 0; i < numberGameObjects; i++ ) {
+    for (int i = 0; i < this->gameObjects.size(); i++ ) {
         if (!gameObjects[i]->getLabel().compare(label)) {
             return gameObjects[i];
         }
@@ -1560,11 +1540,11 @@ void Engine::processFPS()
 {
     if (!EngineSetup::getInstance()->DRAW_FPS) return;
 
-    ++countedFrames;
+    ++fpsFrameCounter;
     if (this->frameTime > 1000) {
-        fps = countedFrames;
+        fps = fpsFrameCounter;
         frameTime = 0;
-        countedFrames = 0;
+        fpsFrameCounter = 0;
     }
 
     int renderer_w, renderer_h;
@@ -1685,41 +1665,6 @@ void Engine::waterShader()
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
-void Engine::fireShader()
-{
-    // Set whole screen to 0 (color: 0x07,0x07,0x07)
-    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
-    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
-
-    for(int x = 0 ; x < FIRE_WIDTH ; x++) {
-        for (int y = 1; y < FIRE_HEIGHT ; y++) {
-            int src = (y * FIRE_WIDTH + x);
-
-            int pixel = EngineBuffers::getInstance()->firePixelsBuffer[src];
-
-            if ( pixel == 0) {
-                EngineBuffers::getInstance()->firePixelsBuffer[src - FIRE_WIDTH] = 0;
-            } else {
-                int randIdx = Tools::random(0, 3) & 3;
-                int dst = src - randIdx + 1;
-                EngineBuffers::getInstance()->firePixelsBuffer[dst - FIRE_WIDTH ] = pixel - (randIdx & 1);
-            }
-        }
-    }
-
-    for (int y = 1; y < FIRE_HEIGHT; y++) {
-        for(int x = 0 ; x < FIRE_WIDTH ; x++) {
-            int index = y * FIRE_WIDTH + x;
-            int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
-
-            if (fireIndex != 0) {
-                //Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black();
-            }
-        }
-    }
-}
-
 void Engine::getMapsJSON()
 {
     size_t file_size;
@@ -1756,8 +1701,7 @@ void Engine::getMapsJSON()
 
 void Engine::drawMenu()
 {
-    SDL_BlitSurface(menu_background, NULL, this->screenSurface, NULL);
     this->menu->drawOptions(screenSurface);
     //this->waterShader();
-    this->fireShader();
+    Drawable::drawFireShader();
 }

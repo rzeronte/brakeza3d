@@ -1,9 +1,7 @@
-//
-// Created by darkhead on 2019-08-10.
-//
 
+#include <SDL_image.h>
 #include "../../headers/2D/Menu.h"
-#include "../cJSON.h"
+#include "../../headers/cJSON.h"
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Logging.h"
 
@@ -12,6 +10,11 @@ Menu::Menu()
 {
     this->currentOptions = 0;
     this->numOptions = 0;
+
+    // Load MENU Background
+    const char *file = std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str();
+    menu_background = IMG_Load(file);
+
 }
 
 void Menu::getOptionsJSON()
@@ -62,6 +65,9 @@ void Menu::addOption(std::string label, std::string image_on, std::string image_
 
 void Menu::drawOptions(SDL_Surface *dst)
 {
+    // Draw back
+    SDL_BlitSurface(menu_background, NULL, dst, NULL);
+
     int offsetY = 20;
     int offsetX = 50;
 

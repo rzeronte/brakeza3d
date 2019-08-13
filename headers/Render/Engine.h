@@ -27,7 +27,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
-#include "../../src/cJSON.h"
+#include "../cJSON.h"
 #include "../2D/Weapon.h"
 #include "../2D/Menu.h"
 
@@ -57,24 +57,19 @@ public:
     // Eventos SDL
     SDL_Event e;
 
-
     // Camera y Controlador (Input)
     Camera3D *camera;
     Controller *controller;
 
     // Objetos 3D
-    Object3D **gameObjects;
-
+    std::vector<Object3D*> gameObjects;
     std::vector<Mesh3DBody *> meshPhysics;
     std::vector<SpriteDirectional3DBody *> projectilePhysics;
-
-    int numberGameObjects;
 
     BSPMap *bsp_map;
 
     // Luces
-    LightPoint3D **lightPoints;
-    int numberLightPoints;
+    std::vector<LightPoint3D *> lightPoints;
 
     // Exit
     bool finish;
@@ -83,7 +78,7 @@ public:
 
     // Fps counter
     int fps;
-    int countedFrames = 0;
+    int fpsFrameCounter = 0;
 
     Triangle *frameTriangles;
     int numFrameTriangles = 0;
@@ -102,20 +97,14 @@ public:
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration* collisionConfiguration;
-
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
     btCollisionDispatcher* dispatcher;
-
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     btBroadphaseInterface* overlappingPairCache;
-
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     btSequentialImpulseConstraintSolver* solver;
-
     btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-
     PhysicsDebugDraw* debugDraw;
-
     Mesh3DGhost *triggerCamera;
 
     // Timer
@@ -152,6 +141,9 @@ public:
     cl_command_queue command_queue_transforms;
 
     // Tiled rasterizer
+    std::vector<Tile> tiles;
+    OCLTriangle *trianglesTile;
+
     int sizeTileWidth = 80;
     int sizeTileHeight = 80;
     int tilesWidth;
@@ -159,18 +151,10 @@ public:
     int numTiles;
     int tilePixelsBufferSize;
 
-    std::vector<Tile> tiles;
-    OCLTriangle *trianglesTile;
-
     // optionsJSON.json
     cJSON *maps;
 
-    // menu background surface
-    SDL_Surface *menu_background;
     Menu *menu;
-
-    SpriteDirectional3D *skull;
-
     Weapon *weapon;
 
     Engine();
@@ -243,7 +227,6 @@ public:
     void handleOpenCLTransform();
 
     void waterShader();
-    void fireShader();
 
     void getMapsJSON();
     void drawMenu();

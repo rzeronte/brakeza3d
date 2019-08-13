@@ -29,8 +29,7 @@ public:
     int n_vertex;
     int n_textures;
 
-    LightPoint3D **lightPoints;
-    int numberLightPoints;
+    std::vector<LightPoint3D *>lightPoints;
 
     bool shadowCaster;
     int bsp_entity_index;
@@ -52,7 +51,7 @@ public:
 
     void draw(Camera3D *);
     void shadowMapping(LightPoint3D *);
-    void setLightPoints(LightPoint3D **lightPoint, int);
+    void setLightPoints(std::vector<LightPoint3D*> &);
 
     int getBspEntityIndex() const;
 

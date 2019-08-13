@@ -30,10 +30,10 @@ class Controller {
 public:
     Controller();
 
-    void handleKeyboardContinuous(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, SpriteDirectional3D *bullet, Menu *menu, Weapon *weapon);
-    void handleKeyboard(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, SpriteDirectional3D *bullet, Menu *menu, Weapon *weapon);
+    void handleKeyboardContinuous(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, Menu *menu, Weapon *weapon);
+    void handleKeyboard(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, Menu *menu, Weapon *weapon);
 
-    void handleMouse(SDL_Event *, Camera3D *, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, SpriteDirectional3D *bulletTemplate, Menu *menu, Weapon *weapon);
+    void handleMouse(SDL_Event *, Camera3D *, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, Menu *menu, Weapon *weapon);
 
     bool isFiring();
     void resetFlags();

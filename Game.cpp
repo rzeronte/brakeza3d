@@ -1,15 +1,7 @@
 #include "Game.h"
 #include "headers/Render/Drawable.h"
-#include "headers/Render/EngineBuffers.h"
-#include "headers/Render/M3.h"
-#include "headers/Render/Transforms.h"
-#include "headers/Render/Logging.h"
-#include "headers/Objects/SpriteDirectional3D.h"
 #include "headers/Objects/Sprite3D.h"
 #include "headers/Render/Maths.h"
-#include "WAD/WAD.h"
-#include "headers/Render/BSPMap.h"
-#include "headers/Physics/Mesh3DBody.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 void Game::run()
@@ -38,13 +30,13 @@ void Game::mainLoop()
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
             if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-                controller->handleMouse(&this->e, this->camera, Engine::dynamicsWorld, Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
+                controller->handleMouse(&this->e, this->camera, Engine::dynamicsWorld, Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
             }
-            controller->handleKeyboard(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
+            controller->handleKeyboard(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
         }
 
         // Check array Uint8 *keyboard
-        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), skull, menu, weapon);
+        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, Engine::dynamicsWorld,Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
 
 
         // Checks pre update frame
@@ -114,7 +106,7 @@ void Game::loadDemoObjects()
     // mono
     Mesh3D *monkey = new Mesh3D();
     monkey->setEnabled(false);
-    monkey->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    monkey->setLightPoints(Engine::lightPoints);
     monkey->loadOBJBlender("../assets/models/mono.obj");
     monkey->setShadowCaster(true);
     this->addObject3D(monkey, "monkey");
@@ -122,7 +114,7 @@ void Game::loadDemoObjects()
     // ball
     Mesh3D *wolf = new Mesh3D();
     wolf->setEnabled(false);
-    wolf->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    wolf->setLightPoints(Engine::lightPoints);
     wolf->loadOBJBlender("../assets/models/Wolf.obj");
     wolf->setShadowCaster(true);
     this->addObject3D(wolf, "wolf");
@@ -130,7 +122,7 @@ void Game::loadDemoObjects()
     // cubo
     Mesh3D *cube = new Mesh3D();
     cube->setEnabled(false);
-    cube->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cube->setLightPoints(Engine::lightPoints);
     cube->setPosition(*camera->getPosition());
     cube->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cube, "cube");
@@ -139,7 +131,7 @@ void Game::loadDemoObjects()
     Mesh3D *triangle = new Mesh3D();
     triangle->setScale(0.1);
     triangle->setEnabled(false);
-    triangle->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    triangle->setLightPoints(Engine::lightPoints);
     triangle->setPosition(Vertex3D(0, 0, 10));
     triangle->setRotation( M3(90, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
@@ -148,7 +140,7 @@ void Game::loadDemoObjects()
     // plane
     Mesh3D *plane = new Mesh3D();
     plane->setEnabled(false);
-    plane->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    plane->setLightPoints(Engine::lightPoints);
     plane->setPosition(Vertex3D(544, -32, 613));
     plane->setRotation( M3(-90, -45, 0) );
     plane->loadOBJBlender("../assets/models/plane.obj");
@@ -199,7 +191,7 @@ void Game::loadDemoObjects()
     // cubo physics
     Mesh3DBody *cuboPhysic = new Mesh3DBody();
     cuboPhysic->setEnabled(true);
-    cuboPhysic->setLightPoints(Engine::lightPoints, Engine::numberLightPoints);
+    cuboPhysic->setLightPoints(Engine::lightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
     cuboPhysic->makeRigidBody(1.0f, Engine::meshPhysics, Engine::camera, this->dynamicsWorld, false);

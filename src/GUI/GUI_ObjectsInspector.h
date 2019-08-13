@@ -19,7 +19,7 @@ public:
 
     virtual ~GUI_ObjectsInspector() {}
 
-    virtual void draw(Object3D **objects, int number)
+    virtual void draw(std::vector<Object3D*> &gameObjects)
     {
         ImGuiWindowFlags window_flags = 0;
 
@@ -29,7 +29,7 @@ public:
             ImGui::SetNextWindowSize(ImVec2(250, 220), ImGuiSetCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
-            std::string title = "Object Inspector (" + std::to_string(number) + " objects)";
+            std::string title = "Object Inspector (" + std::to_string(gameObjects.size()) + " objects)";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
             const float range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
@@ -39,8 +39,8 @@ public:
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
-            for (int i = 0; i < number; i++) {
-                std::string header_text = objects[i]->label + "##" + std::to_string(i);
+            for (int i = 0; i < gameObjects.size(); i++) {
+                std::string header_text = gameObjects[i]->label + "##" + std::to_string(i);
                 std::string enabled_text = "Enabled##" + std::to_string(i);
                 std::string position_text = "Position##" + std::to_string(i);
                 std::string rotation_text = "Rotation##" + std::to_string(i);
@@ -50,11 +50,11 @@ public:
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &objects[i]->getPosition()->x, range_sensibility,
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition()->x, range_sensibility,
                                           &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &objects[i]->getPosition()->y, range_sensibility,
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition()->y, range_sensibility,
                                           &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &objects[i]->getPosition()->z, range_sensibility,
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition()->z, range_sensibility,
                                           &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
@@ -62,24 +62,24 @@ public:
                     // rotation
                     if (ImGui::TreeNode(rotation_text.c_str())) {
                         ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),
-                                           std::to_string(objects[i]->getRotation().getPitchDegree()).c_str());
+                                           std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
                         ImGui::SameLine();
                         ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),
-                                           std::to_string(objects[i]->getRotation().getYawDegree()).c_str());
+                                           std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
                         ImGui::SameLine();
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                           std::to_string(objects[i]->getRotation().getRollDegree()).c_str());
+                                           std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
                         ImGui::TreePop();
                     }
 
                     // Only for meshes
-                    Mesh3D *pMesh = dynamic_cast<Mesh3D *>(objects[i]);
+                    Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
                     if (pMesh != NULL) {
-                        ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(objects[i])->shadowCaster);
+                        ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(gameObjects[i])->shadowCaster);
                     }
 
                     // Only for SPRITES DIRECTIONALS
-                    SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(objects[i]);
+                    SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(gameObjects[i]);
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
@@ -122,27 +122,27 @@ public:
                     }
 
                     // Only for SPRITES
-                    Sprite3D *pSprite = dynamic_cast<Sprite3D *>(objects[i]);
+                    Sprite3D *pSprite = dynamic_cast<Sprite3D *>(gameObjects[i]);
                     if (pSprite != NULL) {
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
 
                     // All Objects setup
-                    ImGui::Checkbox(enabled_text.c_str(), &objects[i]->enabled);
+                    ImGui::Checkbox(enabled_text.c_str(), &gameObjects[i]->enabled);
 
                     // Only for Mesh3DGhost
-                    Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(objects[i]);
+                    Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(gameObjects[i]);
                     if (pMeshGhost != NULL) {
                         std::string counterText = "currentTriggerCounter: " + std::to_string(pMeshGhost->currentTriggerCounter);
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), counterText.c_str());
                     }
 
                     // Only for Mesh3DBody
-                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(objects[i]);
+                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(gameObjects[i]);
                     if (pMeshBody != NULL) {
-                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(objects[i])->moving);
-                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(objects[i])->reverseMoving);
-                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(objects[i])->waiting);
+                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->moving);
+                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->reverseMoving);
+                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->waiting);
                         if (pMeshBody->moving || pMeshBody->reverseMoving) {
                             std::string offsetText = "OffsetMoving :" + std::to_string(pMeshBody->offsetMoving);
                             ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), offsetText.c_str());
@@ -150,7 +150,7 @@ public:
                     }
 
                     // Only for SPRITES
-                    Enemy *oEnemy = dynamic_cast<Enemy *>(objects[i]);
+                    Enemy *oEnemy = dynamic_cast<Enemy *>(gameObjects[i]);
                     if (oEnemy != NULL) {
                         std::string staminaText = "Stamina :" + std::to_string(oEnemy->stamina);
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
