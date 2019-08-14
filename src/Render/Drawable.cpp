@@ -429,8 +429,8 @@ void Drawable::drawFireShader()
             int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
 
             if (fireIndex != 0) {
-                //Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black();
+                Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
+                EngineBuffers::getInstance()->videoBuffer[ index ] = fireColor; //::black();
             }
         }
     }

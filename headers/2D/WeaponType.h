@@ -12,6 +12,9 @@ public:
 
     std::string label;
 
+    float cadence = 1;
+    Timer cadenceTimer;
+
     int num_animations = 0;
     int current_animation = 0;
 
@@ -20,6 +23,8 @@ public:
     void addAnimation(std::string, int frames, int offsetX, int offsetY);
 
     WeaponAnimation *getCurrentWeaponAnimation();
+
+    void setCadence(float cadence);
 };
 
 

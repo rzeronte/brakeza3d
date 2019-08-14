@@ -6,7 +6,7 @@
 
 Weapon::Weapon()
 {
-
+    this->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
 }
 
 void Weapon::addWeaponType(std::string label)
