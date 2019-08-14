@@ -124,6 +124,7 @@ public:
 
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";
+    std::string CFG_WEAPONS = "weapons.json";
     bool RENDER_BSP_MAP = true;
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing

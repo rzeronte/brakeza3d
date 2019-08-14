@@ -152,7 +152,8 @@ public:
     int tilePixelsBufferSize;
 
     // optionsJSON.json
-    cJSON *maps;
+    cJSON *mapsJSONList;
+    cJSON *weaponsJSONList;
 
     Menu *menu;
     Weapon *weapon;
@@ -229,6 +230,8 @@ public:
     void waterShader();
 
     void getMapsJSON();
+    void getWeaponsJSON();
+
     void drawMenu();
 
     };

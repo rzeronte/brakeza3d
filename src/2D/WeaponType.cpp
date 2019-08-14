@@ -29,3 +29,8 @@ WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
 {
     return this->animations[current_animation];
 }
+
+void WeaponType::setCadence(float cadence)
+{
+    this->cadence = cadence;
+}

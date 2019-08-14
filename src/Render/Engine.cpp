@@ -48,27 +48,6 @@ Engine::Engine()
     this->initTiles();
 
     weapon = new Weapon();
-    weapon->addWeaponType("melee");
-    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/walk", 1, 50, 40);
-    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/fire", 6, 60, 73);
-    weapon->getWeaponTypeByLabel("melee")->addAnimation("melee/reload", 3, 0, 150);
-
-    weapon->addWeaponType("gun");
-    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/walk", 1, 70, 60);
-    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/fire", 5, 0, 72);
-    weapon->getWeaponTypeByLabel("gun")->addAnimation("gun/reload", 17, 0, 60);
-
-    weapon->addWeaponType("machinegun");
-    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/walk", 1, 80, 120);
-    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/fire", 8, 80, 120);
-    weapon->getWeaponTypeByLabel("machinegun")->addAnimation("machinegun/reload", 4, 0, 0);
-
-    weapon->addWeaponType("rocketlauncher");
-    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/walk", 1, 0, 75);
-    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/fire", 21, 0, 75);
-    weapon->getWeaponTypeByLabel("rocketlauncher")->addAnimation("rocketlauncher/reload", 8, 0, 75);
-
-    weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
 
     menu = new Menu();
     menu->getOptionsJSON();
@@ -672,15 +651,15 @@ void Engine::drawGUI()
     //ImGui::ShowDemoWindow(&open);
 
     gui_engine->draw(
-        getDeltaTime(),
-        finish,
-        gameObjects,
-        lightPoints,
-        camera,
-        tiles, tilesWidth,
-        this->numVisibleTriangles,
-        maps,
-        weapon
+            getDeltaTime(),
+            finish,
+            gameObjects,
+            lightPoints,
+            camera,
+            tiles, tilesWidth,
+            this->numVisibleTriangles,
+            mapsJSONList,
+            weapon
     );
 
     ImGui::Render();
@@ -741,6 +720,7 @@ void Engine::onStart()
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
 
+    this->getWeaponsJSON();
     this->getMapsJSON();
 
     this->initSound();
@@ -1665,6 +1645,62 @@ void Engine::waterShader()
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
+void Engine::getWeaponsJSON()
+{
+    size_t file_size;
+    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_WEAPONS;
+    const char* mapsFile = Tools::readFile(filePath, file_size);
+    cJSON *myDataJSON = cJSON_Parse(mapsFile);
+
+    if (myDataJSON == NULL) {
+        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        return;
+    }
+
+    weaponsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons" );
+    int sizeWeaponsList = cJSON_GetArraySize(weaponsJSONList);
+
+    if (sizeWeaponsList > 0) {
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
+    } else {
+        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
+    }
+
+    // weapons loop
+    cJSON *currentWeapon;
+    cJSON_ArrayForEach(currentWeapon, weaponsJSONList) {
+        cJSON *name = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
+        cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
+        cJSON *animations = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
+
+        weapon->addWeaponType(name->valuestring);
+        weapon->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
+
+        Logging::getInstance()->Log("Weapon JSON detected: " + std::string(name->valuestring));
+
+        // animation's weapon loop
+        cJSON *weaponAnimationsJSONList;
+        weaponAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentWeapon, "animations" );
+
+        cJSON *currentWeaponAnimation;
+        cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
+            cJSON *subfolder = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
+            cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
+            cJSON *offsetX   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
+            cJSON *offsetY   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
+
+            weapon->getWeaponTypeByLabel(name->valuestring)->addAnimation(
+                std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
+                frames->valueint,
+                offsetX->valueint,
+                offsetY->valueint
+            );
+
+            Logging::getInstance()->Log("Weapon Animation: " + std::string(subfolder->valuestring));
+        }
+    }
+}
+
 void Engine::getMapsJSON()
 {
     size_t file_size;
@@ -1676,11 +1712,11 @@ void Engine::getMapsJSON()
     }
 
     cJSON *currentMap = NULL;
-    maps = cJSON_GetObjectItemCaseSensitive( myDataJSON, "maps" );
-    int sizeMaps = cJSON_GetArraySize(maps);
+    mapsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "maps" );
+    int sizeMaps = cJSON_GetArraySize(mapsJSONList);
 
     if (sizeMaps > 0) {
-        cJSON *firstMap = cJSON_GetArrayItem(maps, 0);
+        cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
         cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
         Logging::getInstance()->Log("maps.json have " + std::to_string(sizeMaps) + " maps");
         if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
@@ -1690,7 +1726,7 @@ void Engine::getMapsJSON()
         Logging::getInstance()->Log("maps.json is empty", "ERROR");
     }
 
-    cJSON_ArrayForEach(currentMap, maps) {
+    cJSON_ArrayForEach(currentMap, mapsJSONList) {
         cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
 
         if (cJSON_IsString(nameMap)) {
