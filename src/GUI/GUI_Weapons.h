@@ -27,7 +27,7 @@ class GUI_Weapons : public GUI  {
             std::string title = "Weapons Inspector (" + std::to_string(1) + " lights)";
 
             ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 167), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 250), ImGuiSetCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             ImGui::Begin(title.c_str(), &show, window_flags);
@@ -62,7 +62,11 @@ class GUI_Weapons : public GUI  {
             ImGui::DragScalar("Framerate", ImGuiDataType_S32, &weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Current Frame: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->current)).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("NumFrames: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->getNumFrames())).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Timer: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->timer->getTicks())).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("AnimationTimer: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->timer->getTicks())).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadence: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->cadence)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimerTest: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->cadenceTimerTest())).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimer acumulatedTime: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->acumulatedTime)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimer isStarted: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->cadenceTimer.isStarted())).c_str());
 
             ImGui::End();
         }

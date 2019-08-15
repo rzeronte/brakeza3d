@@ -25,6 +25,8 @@ public:
     WeaponType *getCurrentWeaponType();
 
     void setAction(Camera3D *cam, bool isFiring);
+
+    void onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst);
 };
 
 

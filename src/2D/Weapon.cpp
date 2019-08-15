@@ -41,3 +41,11 @@ void Weapon::setAction(Camera3D *cam, bool isFiring)
         this->getCurrentWeaponType()->current_animation = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE;
     }
 }
+
+void Weapon::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst)
+{
+    this->getCurrentWeaponType()->updateCadenceTimer();
+    this->getCurrentWeaponType()->getCurrentWeaponAnimation()->updateFrame();
+    this->setAction(cam, isFiring);
+    this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst);
+}
