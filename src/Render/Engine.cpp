@@ -672,10 +672,7 @@ void Engine::windowUpdate()
     } else {
         // draw weapon
         if (EngineSetup::getInstance()->SHOW_WEAPON) {
-            this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->updateFrame();
-            this->weapon->setAction(this->camera, this->controller->isFiring());
-            this->weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(screenSurface);
-
+            this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface);
         }
 
         if (bsp_map) {
@@ -684,7 +681,6 @@ void Engine::windowUpdate()
             }
         }
     }
-
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
 
@@ -1671,10 +1667,11 @@ void Engine::getWeaponsJSON()
     cJSON_ArrayForEach(currentWeapon, weaponsJSONList) {
         cJSON *name = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
         cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
-        cJSON *animations = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
+        cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
 
         weapon->addWeaponType(name->valuestring);
         weapon->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
+        weapon->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
 
         Logging::getInstance()->Log("Weapon JSON detected: " + std::string(name->valuestring));
 

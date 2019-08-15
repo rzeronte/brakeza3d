@@ -89,25 +89,28 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
         camera->Jump();
      }
 
-    if (keyboard[SDL_SCANCODE_TAB]) {
+    if (keyboard[SDL_SCANCODE_Q]) {
 
         this->firing = true;
-        if (weapon->currentWeapon != EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE) {
-            SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
-            projectile->setPosition(*camera->getPosition());
-            projectile->setLabel("projectile");
-            projectile->setEnabled(true);
-            projectile->setTimer(timer);
-            projectile->linkTexturesTo(EngineBuffers::getInstance()->skull);
-            projectile->setAnimation(0);
-            projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, 700);
-            projectile->getBillboard()->setDimensions(0.4, 0.4);
+        if (weapon->getCurrentWeaponType()->cadenceTimerTest()) {
+            if (weapon->currentWeapon != EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE) {
+                SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
+                projectile->setPosition(*camera->getPosition());
+                projectile->setLabel("projectile");
+                projectile->setEnabled(true);
+                projectile->setTimer(timer);
+                projectile->linkTexturesTo(EngineBuffers::getInstance()->skull);
+                projectile->setAnimation(0);
+                projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, 700);
+                projectile->getBillboard()->setDimensions(0.4, 0.4);
 
-            // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
-            // del impulso en el interior del makeRigidBody
-            projectile->setRotation(camera->getRotation());
+                // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
+                // del impulso en el interior del makeRigidBody
+                projectile->setRotation(camera->getRotation());
 
-            Tools::playMixedSound(EngineBuffers::getInstance()->snd_weapon_1);
+                weapon->getCurrentWeaponType()->startFireAction();
+                Tools::playMixedSound(EngineBuffers::getInstance()->snd_weapon_1);
+            }
         }
     }
 }

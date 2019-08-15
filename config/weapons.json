@@ -2,7 +2,8 @@
   "weapons": [
     {
       "name": "melee",
-      "cadence": 0.5,
+      "cadence": 0.1,
+      "speed": 0,
       "animations": [
         { "subfolder": "walk", "frames": 1, "offsetX": 50, "offsetY": 40 },
         { "subfolder": "fire", "frames": 6, "offsetX": 60, "offsetY": 73 },
@@ -11,7 +12,8 @@
     },
     {
       "name": "gun",
-      "cadence": 0.5,
+      "cadence": 0.1,
+      "speed": 700,
       "animations": [
         { "subfolder": "walk", "frames": 1, "offsetX": 70, "offsetY": 60 },
         { "subfolder": "fire", "frames": 5, "offsetX": 0, "offsetY": 72 },
@@ -20,7 +22,8 @@
     },
     {
       "name": "machinegun",
-      "cadence": 0.5,
+      "cadence": 0.1,
+      "speed": 700,
       "animations": [
         { "subfolder": "walk", "frames": 1, "offsetX": 50, "offsetY": 120 },
         { "subfolder": "fire", "frames": 8, "offsetX": 60, "offsetY": 120 },
@@ -29,7 +32,8 @@
     },
     {
       "name": "rocketlauncher",
-      "cadence": 0.5,
+      "cadence": 0.9,
+      "speed": 700,
       "animations": [
         { "subfolder": "walk", "frames": 1, "offsetX": 0, "offsetY": 75 },
         { "subfolder": "fire", "frames": 21, "offsetX": 0, "offsetY": 75 },

@@ -14,6 +14,10 @@ public:
 
     float cadence = 1;
     Timer cadenceTimer;
+    float lastTicks;
+    float acumulatedTime = 0;
+
+    int speed = 500;
 
     int num_animations = 0;
     int current_animation = 0;
@@ -25,6 +29,11 @@ public:
     WeaponAnimation *getCurrentWeaponAnimation();
 
     void setCadence(float cadence);
+    void setSpeed(float cadence);
+
+    void startFireAction();
+    void updateCadenceTimer();
+    bool cadenceTimerTest();
 };
 
 
