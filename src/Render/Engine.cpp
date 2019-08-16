@@ -672,7 +672,7 @@ void Engine::windowUpdate()
     } else {
         // draw weapon
         if (EngineSetup::getInstance()->SHOW_WEAPON) {
-            this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface);
+            this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
         }
 
         if (bsp_map) {
@@ -1492,6 +1492,7 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
     Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
 
     this->bsp_map = new BSPMap();
+
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
     this->bsp_map->Initialize(bspFilename, paletteFilename);
@@ -1666,14 +1667,23 @@ void Engine::getWeaponsJSON()
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, weaponsJSONList) {
         cJSON *name = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
+        cJSON *hit = cJSON_GetObjectItemCaseSensitive(currentWeapon, "hit");
         cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
         cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
+        cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
+        cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
 
         weapon->addWeaponType(name->valuestring);
+        weapon->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
         weapon->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
         weapon->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
+        weapon->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
 
-        Logging::getInstance()->Log("Weapon JSON detected: " + std::string(name->valuestring));
+        Logging::getInstance()->Log("Weapon JSON detected: name: " + std::string(name->valuestring) +
+            ", hitType: " + std::to_string(hit->valueint) +
+            ", cadence: " + std::to_string(cadence->valuedouble) +
+            ", speed: " + std::to_string(speed->valuedouble)
+        );
 
         // animation's weapon loop
         cJSON *weaponAnimationsJSONList;
@@ -1683,17 +1693,20 @@ void Engine::getWeaponsJSON()
         cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
             cJSON *subfolder = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
             cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
+            cJSON *fps       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "fps");
             cJSON *offsetX   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
             cJSON *offsetY   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
+
+            Logging::getInstance()->Log("Reading JSON Weapon Animation: " + std::string(subfolder->valuestring));
 
             weapon->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                 std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
                 frames->valueint,
+                fps->valueint,
                 offsetX->valueint,
                 offsetY->valueint
             );
 
-            Logging::getInstance()->Log("Weapon Animation: " + std::string(subfolder->valuestring));
         }
     }
 }

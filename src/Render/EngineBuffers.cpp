@@ -43,13 +43,6 @@ EngineBuffers::EngineBuffers()
     this->makeFireColors();
     this->fireShaderSetup();
 
-    skull = new SpriteDirectional3D();
-    skull->setPosition(Vertex3D(5, 0, -10));
-    skull->addAnimationDirectional2D("bullet/idle", 1, false, -1);
-    skull->setAnimation(0);
-    skull->width = 2;
-    skull->height = 2;
-
 }
 
 void EngineBuffers::clearDepthBuffer()

@@ -3,6 +3,7 @@
 #include "../../headers/2D/Weapon.h"
 #include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Maths.h"
 
 Weapon::Weapon()
 {
@@ -34,18 +35,37 @@ WeaponType* Weapon::getCurrentWeaponType()
 void Weapon::setAction(Camera3D *cam, bool isFiring)
 {
     if (cam->kinematicController->onGround()) {
-        this->getCurrentWeaponType()->current_animation = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
+        this->getCurrentWeaponType()->currentAnimationIndex = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
     }
 
     if (isFiring) {
-        this->getCurrentWeaponType()->current_animation = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE;
+        this->getCurrentWeaponType()->currentAnimationIndex = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE;
     }
 }
 
-void Weapon::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst)
+void Weapon::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst, Vector3D velocity)
 {
     this->getCurrentWeaponType()->updateCadenceTimer();
     this->getCurrentWeaponType()->getCurrentWeaponAnimation()->updateFrame();
     this->setAction(cam, isFiring);
-    this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst);
+    this->headBob(velocity);
+    this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
+}
+
+void Weapon::headBob(Vector3D velocity)
+{
+    Vertex3D v = velocity.getComponent();
+
+    // head bob
+    if (abs(v.x) > 0.5 || abs(v.z) > 0.5 ) {
+        this->offsetY = sin( Maths::degreesToRadians(this->headBobOffsetY) );
+        this->offsetY = abs(this->offsetY) * 7;
+
+        this->headBobOffsetY += 20;
+        if (this->headBobOffsetY > 360) {
+            this->headBobOffsetY = 0;
+        }
+    } else {
+        this->headBobOffsetY = 0;
+    }
 }

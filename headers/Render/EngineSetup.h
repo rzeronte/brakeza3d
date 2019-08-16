@@ -247,6 +247,11 @@ public:
         WEAPON_TYPE_ROCKETLAUNCHER = 3,
     };
 
+    enum WeaponsHitTypes {
+        WEAPON_HIT_MELEE = 0,
+        WEAPON_HIT_PROJECTILE = 1,
+    };
+
     enum WeaponsActions {
         WEAPON_ACTION_WALK = 0,
         WEAPON_ACTION_FIRE = 1,

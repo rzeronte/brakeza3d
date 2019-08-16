@@ -75,8 +75,6 @@ public:
     OCLTriangle *OCLTrianglesBuffer;
     int numOCLTriangles = 0;
 
-    SpriteDirectional3D *skull;
-
     // sounds
     Mix_Music *snd_base_menu;       // menu
     Mix_Chunk *snd_weapon_1;    // weapon 1 fire
