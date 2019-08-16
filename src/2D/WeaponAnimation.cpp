@@ -15,9 +15,10 @@ WeaponAnimation::WeaponAnimation()
     current = 0;
 }
 
-void WeaponAnimation::setup(std::string file, int num_frames, int offsetX, int offsetY)
+void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY)
 {
     this->base_file = file;
+    this->fps = fps;
     this->n_frames = num_frames;
     this->current = 0;
     this->offsetX = offsetX;
@@ -52,11 +53,11 @@ void WeaponAnimation::nextFrame()
     }
 }
 
-void WeaponAnimation::draw(SDL_Surface *dst)
+void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY)
 {
     SDL_Rect destPos;
-    destPos.x = offsetX;
-    destPos.y = offsetY;
+    destPos.x = offsetX + globalOffsetX;
+    destPos.y = offsetY + globalOffsetY;
 
     SDL_BlitSurface(this->frames[current], NULL, dst, &destPos);
 }

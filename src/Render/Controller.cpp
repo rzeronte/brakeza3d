@@ -93,16 +93,19 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
 
         this->firing = true;
         if (weapon->getCurrentWeaponType()->cadenceTimerTest()) {
-            if (weapon->currentWeapon != EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE) {
+            if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
                 SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
                 projectile->setPosition(*camera->getPosition());
                 projectile->setLabel("projectile");
                 projectile->setEnabled(true);
                 projectile->setTimer(timer);
-                projectile->linkTexturesTo(EngineBuffers::getInstance()->skull);
+                projectile->linkTexturesTo(weapon->getCurrentWeaponType()->getProjectileTemplate());
                 projectile->setAnimation(0);
-                projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, 700);
-                projectile->getBillboard()->setDimensions(0.4, 0.4);
+                projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
+                projectile->getBillboard()->setDimensions(
+                    weapon->getCurrentWeaponType()->projectileWidth,
+                    weapon->getCurrentWeaponType()->projectileHeight
+                );
 
                 // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
                 // del impulso en el interior del makeRigidBody

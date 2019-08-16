@@ -18,6 +18,12 @@ public:
     int numWeaponsType = 0;
     int currentWeapon = 0;
 
+    float headBobOffsetY = 0;
+
+    // Global Offset When drawing
+    float offsetX = 0;
+    float offsetY = 0;
+
     WeaponType *weaponsType[WEAPON_MAX_ANIMATIONS];
     void addWeaponType(std::string);
 
@@ -26,7 +32,9 @@ public:
 
     void setAction(Camera3D *cam, bool isFiring);
 
-    void onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst);
+    void onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst, Vector3D velocity);
+
+    void headBob(Vector3D velocity);
 };
 
 

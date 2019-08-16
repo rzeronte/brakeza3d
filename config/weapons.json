@@ -1,43 +1,55 @@
 {
   "weapons": [
     {
-      "name": "melee",
+      "name": "melee_magic",
       "cadence": 0.1,
+      "hit": 0,
       "speed": 0,
+      "projectile_width": 0,
+      "projectile_height": 0,
       "animations": [
-        { "subfolder": "walk", "frames": 1, "offsetX": 50, "offsetY": 40 },
-        { "subfolder": "fire", "frames": 6, "offsetX": 60, "offsetY": 73 },
-        { "subfolder": "reload", "frames": 5, "offsetX": 0, "offsetY": 150 }
+        { "subfolder": "walk", "frames": 3, "fps": 14, "offsetX": 50, "offsetY": 185 },
+        { "subfolder": "fire", "frames": 6, "fps": 10, "offsetX": 60, "offsetY": 150 },
+        { "subfolder": "reload", "frames": 5, "fps": 10, "offsetX": 0, "offsetY": 150 }
       ]
     },
     {
       "name": "gun",
       "cadence": 0.1,
+      "hit": 1,
       "speed": 700,
+      "projectile_width": 0.75,
+      "projectile_height": 0.75,
       "animations": [
-        { "subfolder": "walk", "frames": 1, "offsetX": 70, "offsetY": 60 },
-        { "subfolder": "fire", "frames": 5, "offsetX": 0, "offsetY": 72 },
-        { "subfolder": "reload", "frames": 17, "offsetX": 0, "offsetY": 60 }
+        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 70, "offsetY": 60 },
+        { "subfolder": "fire", "frames": 5, "fps": 10, "offsetX": 0, "offsetY": 72 },
+        { "subfolder": "reload", "frames": 17, "fps": 10, "offsetX": 0, "offsetY": 60 }
       ]
     },
     {
       "name": "machinegun",
-      "cadence": 0.1,
+      "cadence": 0.05,
+      "hit": 1,
       "speed": 700,
+      "projectile_width": 0.75,
+      "projectile_height": 0.75,
       "animations": [
-        { "subfolder": "walk", "frames": 1, "offsetX": 50, "offsetY": 120 },
-        { "subfolder": "fire", "frames": 8, "offsetX": 60, "offsetY": 120 },
-        { "subfolder": "reload", "frames": 4, "offsetX": 0, "offsetY": 0 }
+        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 50, "offsetY": 120 },
+        { "subfolder": "fire", "frames": 8, "fps": 20, "offsetX": 60, "offsetY": 120 },
+        { "subfolder": "reload", "frames": 4, "fps": 10, "offsetX": 0, "offsetY": 0 }
       ]
     },
     {
       "name": "rocketlauncher",
       "cadence": 0.9,
-      "speed": 700,
+      "hit": 1,
+      "speed": 200,
+      "projectile_width": 6,
+      "projectile_height": 6,
       "animations": [
-        { "subfolder": "walk", "frames": 1, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "fire", "frames": 21, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "reload", "frames": 8, "offsetX": 0, "offsetY": 75 }
+        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 0, "offsetY": 75 },
+        { "subfolder": "fire", "frames": 21, "fps": 10, "offsetX": 0, "offsetY": 75 },
+        { "subfolder": "reload", "frames": 8, "fps": 10, "offsetX": 0, "offsetY": 75 }
       ]
     }
   ]

@@ -27,7 +27,7 @@ public:
     int offsetX = 0;
     int offsetY = 0;
 
-    void setup(std::string file, int num_frames, int offsetX, int offsetY);
+    void setup(std::string file, int num_frames, int fps, int offsetX, int offsetY);
     void loadImages();
 
     int getNumFrames() const;
@@ -35,7 +35,7 @@ public:
     SDL_Surface *getCurrentSurface();
     void nextFrame();
 
-    void draw(SDL_Surface *dst);
+    void draw(SDL_Surface *dst, int globalOffsetX, int headBobOffsetY);
 
     void updateFrame();
 
