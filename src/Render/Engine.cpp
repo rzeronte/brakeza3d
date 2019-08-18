@@ -714,30 +714,13 @@ void Engine::postUpdate()
     // update deltaTime
     this->updateTimer();
 
-    // step simulations and update camera position
+    // step simulation
     Vertex3D finalVelocity = collisionsManager->stepSimulation(getDeltaTime());
+
+    // update camera position/rotation/frustum
     this->camera->setPosition(finalVelocity);
     this->camera->UpdateRotation();
     this->camera->UpdateFrustum();
-
-}
-
-void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
-
-    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
-
-    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
-    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
-
-    float angleFloat = atof( std::string(angle).c_str() );
-    float speedFloat = atof( std::string(speed).c_str() );
-
-    oRemoteBody->setMoving(true);
-    oRemoteBody->setAngleMoving(angleFloat);
-
-    if (speedFloat > 0) {
-        oRemoteBody->setSpeedMoving(speedFloat);
-    }
 }
 
 void Engine::onUpdate()
@@ -797,7 +780,9 @@ void Engine::onUpdate()
         Drawable::drawMainAxis( camera );
     }
 
-    Drawable::drawCrossHair();
+    if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
+    }
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -1202,10 +1187,7 @@ void Engine::updateTimer()
 
     this->frameTime += this->deltaTime;
     this->executionTime += this->deltaTime / 1000.f;
-    this->decimalTime += this->deltaTime / 100.f;
-    if (decimalTime > 10 ) {
-        this->decimalTime = 0;
-    }
+
 }
 
 float Engine::getDeltaTime()

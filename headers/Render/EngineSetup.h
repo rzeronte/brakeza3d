@@ -148,6 +148,7 @@ public:
     int TEXT_3D_SIZE = 40;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
+    bool DRAW_CROSSHAIR = true;
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD

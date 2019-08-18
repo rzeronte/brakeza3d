@@ -36,8 +36,6 @@ public:
     void checkCollisionsForTriggerCamera();
     void checkCollisionsForAll();
 
-    void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
-
     btDiscreteDynamicsWorld *getDynamicsWorld() const;
     void setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld);
 

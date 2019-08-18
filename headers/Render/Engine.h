@@ -103,7 +103,6 @@ public:
     float current_ticks = 0;
     float executionTime = 0;
     float frameTime = 0;
-    float decimalTime = 0;
 
     // OpenCL Rasterizer
     cl_platform_id platform_id;
@@ -208,8 +207,6 @@ public:
     void loadBSP(const char *bspFilename, const char *paletteFilename);
 
     Timer* getTimer();
-
-    void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
 
     void  updateTimer();
     float getDeltaTime();

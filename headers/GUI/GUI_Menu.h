@@ -195,7 +195,9 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);
                 ImGui::Separator();
-                ImGui::Checkbox("Show Menu", &EngineSetup::getInstance()->MENU_ACTIVE);
+                ImGui::Checkbox("Show Menu Screen", &EngineSetup::getInstance()->MENU_ACTIVE);
+                ImGui::Separator();
+                ImGui::Checkbox("Show CrossHair", &EngineSetup::getInstance()->DRAW_CROSSHAIR);
                 ImGui::EndMenu();
             }
 

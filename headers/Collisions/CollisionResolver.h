@@ -6,10 +6,12 @@
 #include "../Objects/Object3D.h"
 #include "../Objects/Mesh3D.h"
 #include "../Render/BSPMap.h"
+#include "../Physics/Mesh3DBody.h"
 
 class CollisionResolver {
 
 public:
+
     Object3D *objA;
     Object3D *objB;
     BSPMap *bspMap;
@@ -29,6 +31,8 @@ public:
     bool isSomeMesh3dFuncButton();
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
+    void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
+
 };
 
 

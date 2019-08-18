@@ -165,6 +165,25 @@ bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, std::string query)
     return false;
 }
 
+
+void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
+
+    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
+
+    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
+    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
+
+    float angleFloat = atof( std::string(angle).c_str() );
+    float speedFloat = atof( std::string(speed).c_str() );
+
+    oRemoteBody->setMoving(true);
+    oRemoteBody->setAngleMoving(angleFloat);
+
+    if (speedFloat > 0) {
+        oRemoteBody->setSpeedMoving(speedFloat);
+    }
+}
+
 CollisionResolver::~CollisionResolver() {
 
 }

@@ -118,25 +118,6 @@ void CollisionsManager::makeGhostForCamera()
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
 }
 
-void CollisionsManager::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
-
-    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
-
-    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
-    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
-
-    float angleFloat = atof( std::string(angle).c_str() );
-    float speedFloat = atof( std::string(speed).c_str() );
-
-    oRemoteBody->setMoving(true);
-    oRemoteBody->setAngleMoving(angleFloat);
-
-    if (speedFloat > 0) {
-        oRemoteBody->setSpeedMoving(speedFloat);
-    }
-}
-
-
 bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
 {
     bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
@@ -232,13 +213,13 @@ void CollisionsManager::checkCollisionsForAll()
                 }
 
                 if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR) {
-                    CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(brkObjectA, brkObjectB, getBspMap());
+                    CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
                 }
 
                 if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON) {
-                    CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(brkObjectA, brkObjectB, getBspMap());
+                    CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
                 }
