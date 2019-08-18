@@ -199,7 +199,7 @@ void Camera3D::StrafeLeft(void)
 void Camera3D::UpdateVelocity(void)
 {
     // Move the camera forward
-    if (brakeza3D->bspMap) {
+    if (brakeza3D->bspMap->isLoaded()) {
         if (brakeza3D->bspMap->isCurrentLeafLiquid()) {
             speed  /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
             strafe /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
@@ -209,7 +209,7 @@ void Camera3D::UpdateVelocity(void)
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
-        if (brakeza3D->bspMap) {
+        if (brakeza3D->bspMap->isLoaded()) {
             if (brakeza3D->bspMap->isCurrentLeafLiquid()) {
                 this->velocity.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
             }

@@ -1,22 +1,22 @@
 
 #include <SDL_image.h>
-#include "../../headers/2D/Weapon.h"
+#include "../../headers/2D/WeaponsManager.h"
 #include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 
-Weapon::Weapon()
+WeaponsManager::WeaponsManager()
 {
     this->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
 }
 
-void Weapon::addWeaponType(std::string label)
+void WeaponsManager::addWeaponType(std::string label)
 {
     this->weaponsType[numWeaponsType] = new WeaponType(label);
     numWeaponsType++;
 }
 
-WeaponType* Weapon::getWeaponTypeByLabel(std::string label)
+WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
 {
     for (int i = 0; i < numWeaponsType; i++) {
         if (this->weaponsType[i]->label == label) {
@@ -27,12 +27,12 @@ WeaponType* Weapon::getWeaponTypeByLabel(std::string label)
     return NULL;
 }
 
-WeaponType* Weapon::getCurrentWeaponType()
+WeaponType* WeaponsManager::getCurrentWeaponType()
 {
     return this->weaponsType[currentWeapon];
 }
 
-void Weapon::setAction(Camera3D *cam, bool isFiring)
+void WeaponsManager::setAction(Camera3D *cam, bool isFiring)
 {
     if (cam->kinematicController->onGround()) {
         this->getCurrentWeaponType()->currentAnimationIndex = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
@@ -43,7 +43,7 @@ void Weapon::setAction(Camera3D *cam, bool isFiring)
     }
 }
 
-void Weapon::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst, Vector3D velocity)
+void WeaponsManager::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst, Vector3D velocity)
 {
     this->getCurrentWeaponType()->updateCadenceTimer();
     this->getCurrentWeaponType()->getCurrentWeaponAnimation()->updateFrame();
@@ -52,7 +52,7 @@ void Weapon::onUpdate(Camera3D *cam, bool isFiring, SDL_Surface *dst, Vector3D v
     this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
 }
 
-void Weapon::headBob(Vector3D velocity)
+void WeaponsManager::headBob(Vector3D velocity)
 {
     Vertex3D v = velocity.getComponent();
 

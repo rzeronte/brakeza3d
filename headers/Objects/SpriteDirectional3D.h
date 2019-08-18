@@ -21,7 +21,7 @@
 
 #define BILLBOARD3D_MAX_ANIMATIONS 5
 
-class SpriteDirectional3D : public Object3D, public Enemy {
+class SpriteDirectional3D : public Object3D {
     Billboard *billboard;
 
 public:

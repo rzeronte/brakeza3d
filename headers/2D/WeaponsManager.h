@@ -1,6 +1,6 @@
 
-#ifndef BRAKEDA3D_WEAPON_H
-#define BRAKEDA3D_WEAPON_H
+#ifndef BRAKEDA3D_WEAPONSMANAGER_H
+#define BRAKEDA3D_WEAPONSMANAGER_H
 
 #include <string>
 #include <SDL.h>
@@ -11,9 +11,9 @@
 
 #define WEAPON_MAX_ANIMATIONS 10
 
-class Weapon {
+class WeaponsManager {
 public:
-    Weapon();
+    WeaponsManager();
 
     int numWeaponsType = 0;
     int currentWeapon = 0;
@@ -38,4 +38,4 @@ public:
 };
 
 
-#endif //BRAKEDA3D_WEAPON_H
+#endif //BRAKEDA3D_WEAPONSMANAGER_H

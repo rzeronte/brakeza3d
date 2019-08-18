@@ -28,8 +28,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
 #include "../cJSON.h"
-#include "../2D/Weapon.h"
-#include "../2D/Menu.h"
+#include "../2D/WeaponsManager.h"
+#include "../2D/MenuManager.h"
 #include "../Physics/CollisionsManager.h"
 
 enum collisionGroups
@@ -67,13 +67,13 @@ public:
     std::vector<Mesh3DBody *> meshPhysics;
     std::vector<SpriteDirectional3DBody *> projectilePhysics;
 
-    BSPMap *bspMap = NULL;
+    BSPMap *bspMap;
 
     // Luces
     std::vector<LightPoint3D *> lightPoints;
 
     // Exit
-    bool finish;
+    bool finish = false;
 
     TTF_Font *font = NULL;
 
@@ -144,9 +144,14 @@ public:
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
 
+    // collision Manager
     CollisionsManager *collisionsManager;
-    Menu *menu;
-    Weapon *weapon;
+
+    // menuManager
+    MenuManager *menu;
+
+    // weaponManager
+    WeaponsManager *weapon;
 
     Engine();
 

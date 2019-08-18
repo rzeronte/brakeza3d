@@ -10,7 +10,7 @@ Controller::Controller()
 {
 }
 
-void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, Menu *menu, Weapon *weapon)
+void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
 
     ImGuiIO& io = ImGui::GetIO();
@@ -58,7 +58,7 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynam
 
 }
 
-void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, Menu *menu, Weapon *weapon)
+void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
     if (keyboard[SDL_SCANCODE_W]) {
         camera->MoveForward();
@@ -118,7 +118,7 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
     }
 }
 
-void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, Menu *menu, Weapon *weapon)
+void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;

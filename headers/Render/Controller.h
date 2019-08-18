@@ -10,10 +10,10 @@
 #include "../Objects/Object3D.h"
 #include "btBulletDynamicsCommon.h"
 #include "../Physics/SpriteDirectional3DBody.h"
-#include "../2D/Menu.h"
+#include "../2D/MenuManager.h"
 #include <SDL.h>
 #include "../Render/Billboard.h"
-#include "../2D/Weapon.h"
+#include "../2D/WeaponsManager.h"
 
 class Controller {
 
@@ -30,10 +30,10 @@ class Controller {
 public:
     Controller();
 
-    void handleKeyboardContinuous(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, Menu *menu, Weapon *weapon);
-    void handleKeyboard(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, Menu *menu, Weapon *weapon);
+    void handleKeyboardContinuous(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, MenuManager *menu, WeaponsManager *weapon);
+    void handleKeyboard(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &, Timer *, MenuManager *menu, WeaponsManager *weapon);
 
-    void handleMouse(SDL_Event *, Camera3D *, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, Menu *menu, Weapon *weapon);
+    void handleMouse(SDL_Event *, Camera3D *, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon);
 
     bool isFiring();
     void resetFlags();

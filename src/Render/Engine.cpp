@@ -20,14 +20,11 @@ Engine::Engine()
     // GUI engine
     gui_engine = new GUI_Engine();
 
-    // Link GUI_log with Logging singleton
-    Logging::getInstance()->setGUILog(gui_engine->gui_log);
-
-    // used to finish all
-    finish = false;
-
     // cam
     camera = new Camera3D();
+
+    // Link GUI_log with Logging singleton
+    Logging::getInstance()->setGUILog(gui_engine->gui_log);
 
     // input controller
     controller = new Controller();
@@ -38,18 +35,19 @@ Engine::Engine()
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
 
-    // Init Physics System
-    this->collisionsManager = new CollisionsManager();
-    this->initCollisionsManager();
-
     this->initOpenCL();
 
     this->initTiles();
 
-    weapon = new Weapon();
+    this->bspMap = new BSPMap();
 
-    menu = new Menu();
-    menu->getOptionsJSON();
+    // Init Physics System
+    this->collisionsManager = new CollisionsManager();
+    this->initCollisionsManager();
+
+    weapon = new WeaponsManager();
+
+    menu = new MenuManager();
 
 }
 
@@ -628,7 +626,7 @@ void Engine::windowUpdate()
             this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
         }
 
-        if (bspMap) {
+        if (bspMap->isLoaded()) {
             if (bspMap->isCurrentLeafLiquid()) {
                 this->waterShader();
             }
@@ -669,6 +667,7 @@ void Engine::onStart()
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
 
+    this->menu->getOptionsJSON();
     this->getWeaponsJSON();
     this->getMapsJSON();
 
@@ -686,7 +685,7 @@ void Engine::preUpdate()
     camera->velocity.vertex2 = *camera->getPosition();
 
     // Determinamos VPS
-    if (bspMap) {
+    if (bspMap->isLoaded()) {
 
         int leafType = NULL;
 
@@ -833,7 +832,7 @@ void Engine::objects3DShadowMapping()
 
 void Engine::getQuakeMapTriangles()
 {
-    if (bspMap && EngineSetup::getInstance()->RENDER_BSP_MAP) {
+    if (bspMap->isLoaded() && EngineSetup::getInstance()->RENDER_BSP_MAP) {
         bspMap->DrawVisibleLeaf(camera);
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
             bspMap->DrawHulls(camera );
@@ -1107,6 +1106,7 @@ void Engine::onEnd()
 void Engine::addObject3D(Object3D *obj, std::string label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
+    obj->setLabel(label);
     gameObjects.push_back(obj);
     //gameObjects[numberGameObjects] = obj;
     //gameObjects[numberGameObjects]->setLabel(label);
@@ -1157,8 +1157,6 @@ Timer* Engine::getTimer()
 void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 {
     Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
-
-    this->bspMap = new BSPMap();
 
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
@@ -1390,9 +1388,7 @@ void Engine::initCollisionsManager()
     this->collisionsManager->setBspMap(this->bspMap);
     this->collisionsManager->setCamera(this->camera);
     this->collisionsManager->setGameObjects(&this->gameObjects);
-
     this->collisionsManager->setProjectilePhysics(&this->projectilePhysics);
     this->collisionsManager->setMeshPhysics(&this->meshPhysics);
-
     this->collisionsManager->initBulletSystem();
 }

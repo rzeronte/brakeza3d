@@ -184,7 +184,6 @@ private:
     int LoadFile(const char *filename, void **bufferptr);
     bool LoadPalette(const char *filename);
     bool LoadBSP(const char *filename);
-    void init();
 
     primdesc_t *surfacePrimitives;	// Array of surface primitives, contains vertex and texture information for every surface
     unsigned int *textureObjNames;	// Array of available texture object names, the name is a number
@@ -195,6 +194,7 @@ private:
     int numVisibleSurfacesFrame = 0;
 
 public:
+    bool loaded = false;
 
     int *allSurfaces;			    // Array of full surfaces, contains an index to the surfaces
     int numAllSurfaces = 0;
@@ -222,10 +222,15 @@ public:
     btRigidBody* bspRigidBody;
 
     bspleaf_t *currentLeaf = NULL;
+    char *bsp;
 
     BSPMap();
 
     ~BSPMap() { if (bsp) free (bsp); }
+
+    bool isLoaded() const;
+
+    void setLoaded(bool loaded);
 
     bool Initialize(const char *bspFilename, const char *paletteFilename);
 
@@ -401,7 +406,8 @@ public:
     int getTextureAnimatedFrames(std::string name);
 
     Texture *getTexture(std::string name);
-    char *bsp;
+
+    void init();
 };
 
 #endif

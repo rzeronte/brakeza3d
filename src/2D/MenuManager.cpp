@@ -1,12 +1,12 @@
 
 #include <SDL_image.h>
-#include "../../headers/2D/Menu.h"
+#include "../../headers/2D/MenuManager.h"
 #include "../../headers/cJSON.h"
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Logging.h"
 
 
-Menu::Menu()
+MenuManager::MenuManager()
 {
     this->currentOptions = 0;
     this->numOptions = 0;
@@ -17,7 +17,7 @@ Menu::Menu()
 
 }
 
-void Menu::getOptionsJSON()
+void MenuManager::getOptionsJSON()
 {
     size_t file_size;
     const char *mapsFile;
@@ -56,14 +56,14 @@ void Menu::getOptionsJSON()
     }
 }
 
-void Menu::addOption(std::string label, std::string image_on, std::string image_off )
+void MenuManager::addOption(std::string label, std::string image_on, std::string image_off )
 {
     Logging::getInstance()->Log("Adding menu option '" + label + "'");
     this->options[numOptions] = new MenuOption(label, image_on, image_off);
     numOptions++;
 }
 
-void Menu::drawOptions(SDL_Surface *dst)
+void MenuManager::drawOptions(SDL_Surface *dst)
 {
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
