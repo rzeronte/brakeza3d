@@ -8,7 +8,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../../headers/Physics/CollisionResolver.h"
+#include "../../headers/Physics/CollisionsManager.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -22,9 +22,6 @@ Engine::Engine()
 
     // Link GUI_log with Logging singleton
     Logging::getInstance()->setGUILog(gui_engine->gui_log);
-
-    //The window we'll be rendering to
-    window = NULL;
 
     // used to finish all
     finish = false;
@@ -40,14 +37,11 @@ Engine::Engine()
 
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
-    fps = 0;
-    bsp_map = NULL;
 
     // Init Physics System
-    this->collisionResolver = new CollisionResolver();
-    this->initCollisionResolver();
+    this->collisionsManager = new CollisionsManager();
+    this->initCollisionsManager();
 
-    this->initBulletPhysics();
     this->initOpenCL();
 
     this->initTiles();
@@ -149,53 +143,6 @@ void Engine::initFontsTTF()
             Logging::getInstance()->Log(TTF_GetError(), "INFO");
         }
     }
-}
-
-void Engine::initBulletPhysics()
-{
-    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    this->collisionConfiguration = new btDefaultCollisionConfiguration();
-
-    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    this->overlappingPairCache = new btDbvtBroadphase();
-
-    btVector3 worldMin(-500,-500,-500);
-    btVector3 worldMax(500,500,500);
-    btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);
-    this->overlappingPairCache = sweepBP;
-
-    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    this->solver = new btSequentialImpulseConstraintSolver;
-
-    /// Debug drawer
-    this->debugDraw = new PhysicsDebugDraw(this->camera);
-
-    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::getInstance()->gravity.y, 0));
-
-    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-
-    this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
-    this->camera->kinematicController->setFallSpeed(00);
-
-    this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
-    this->dynamicsWorld->addAction(this->camera->kinematicController);
-
-    this->dynamicsWorld->setDebugDrawer(debugDraw);
-    this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
-
-    /// trigger for detect collision between player and other triggers
-    this->triggerCamera = new Mesh3DGhost();
-    triggerCamera->setLabel("triggerCamera");
-    triggerCamera->setEnabled(true);
-    triggerCamera->setLightPoints(Engine::lightPoints);
-    triggerCamera->setPosition(*camera->getPosition());
-    triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
-    triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
-    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
 }
 
 void Engine::initOpenCL()
@@ -674,15 +621,15 @@ void Engine::drawGUI()
 void Engine::windowUpdate()
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
-        this->drawMenu();
+        this->drawMenuScreen();
     } else {
         // draw weapon
         if (EngineSetup::getInstance()->SHOW_WEAPON) {
             this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
         }
 
-        if (bsp_map) {
-            if (bsp_map->isCurrentLeafLiquid()) {
+        if (bspMap) {
+            if (bspMap->isCurrentLeafLiquid()) {
                 this->waterShader();
             }
         }
@@ -739,19 +686,19 @@ void Engine::preUpdate()
     camera->velocity.vertex2 = *camera->getPosition();
 
     // Determinamos VPS
-    if (bsp_map) {
+    if (bspMap) {
 
         int leafType = NULL;
 
-        if (this->bsp_map->currentLeaf != NULL) {
-            leafType = this->bsp_map->currentLeaf->type;
+        if (this->bspMap->currentLeaf != NULL) {
+            leafType = this->bspMap->currentLeaf->type;
         }
 
-        bspleaf_t *leaf = bsp_map->FindLeaf( camera );
-        bsp_map->setVisibleSet(leaf);
+        bspleaf_t *leaf = bspMap->FindLeaf(camera );
+        bspMap->setVisibleSet(leaf);
 
-        if (leafType != bsp_map->currentLeaf->type) {
-            if (bsp_map->isCurrentLeafLiquid()) {
+        if (leafType != bspMap->currentLeaf->type) {
+            if (bspMap->isCurrentLeafLiquid()) {
                 this->camera->kinematicController->setFallSpeed(5);
             } else {
                 this->camera->kinematicController->setFallSpeed(256);
@@ -768,53 +715,20 @@ void Engine::postUpdate()
     // update deltaTime
     this->updateTimer();
 
-    // check for collisions
-    this->processPairsCollisions();
-
-    Vertex3D vel = Engine::camera->velocity.getComponent();
-
-    btVector3 bulletVelocity = btVector3(vel.x, vel.y, vel.z);
-
-    if (this->camera->kinematicController->onGround()) {
-        bulletVelocity = btVector3(vel.x, vel.y, vel.z);
-    } else {
-        bulletVelocity = btVector3(vel.x, vel.y, vel.z) / EngineSetup::getInstance()->AIR_RESISTANCE;
-    }
-
-    this->camera->kinematicController->setWalkDirection(bulletVelocity);
-
-    Vertex3D finalVelocity;
-    if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
-        // Bullet Step Simulation
-        dynamicsWorld->stepSimulation(getDeltaTime(), 1);
-
-        // Physics for meshes
-        this->updatePhysicObjects();
-        btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
-
-        btVector3 pos = trans.getOrigin();
-        float BSP_YOffset = 3;
-        // El offset es porqué nuestros ojos deberian estar por encima del punto central
-        // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.
-        finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());
-    } else {
-        finalVelocity = this->camera->velocity.vertex2;
-    }
-
+    // step simulations and update camera position
+    Vertex3D finalVelocity = collisionsManager->stepSimulation(getDeltaTime());
     this->camera->setPosition(finalVelocity);
-    this->cameraUpdate();
+    this->camera->UpdateRotation();
+    this->camera->UpdateFrustum();
 
-    if (EngineSetup::getInstance()->SHOW_WEAPON) {
-    } else {
-    }
 }
 
 void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
 
     if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
 
-    char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
-    char *speed = bsp_map->getEntityValue(targetEntityId, "speed");
+    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
+    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
 
     float angleFloat = atof( std::string(angle).c_str() );
     float speedFloat = atof( std::string(speed).c_str() );
@@ -825,260 +739,6 @@ void Engine::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
     if (speedFloat > 0) {
         oRemoteBody->setSpeedMoving(speedFloat);
     }
-}
-
-void Engine::processPairsCollisions()
-{
-    //Logging::getInstance()->Log("Collision objects: " + std::to_string(dynamicsWorld->getNumCollisionObjects()));
-    //Logging::getInstance()->Log("projectiles: " + std::to_string(projectilePhysics.size()));
-
-    // Collisions for trigger camera
-    for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
-        const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
-        Mesh3D *brkObjectB = (Mesh3D *) obj->getUserPointer();
-
-        // No siempre tienen por qué ser Mesh
-        if (brkObjectB != NULL) {
-            if (brkObjectB->getLabel().find("hull") != std::string::npos) {
-                int entityIndex = brkObjectB->getBspEntityIndex();
-                char *classname = bsp_map->getEntityValue(entityIndex, "classname");
-
-                if (!strcmp(classname, "trigger_teleport")) {
-                    int targetEntityId = bsp_map->getIndexOfFirstEntityByTargetname( bsp_map->getEntityValue(entityIndex, "target") );
-                    if (targetEntityId >= 0) {
-
-                        if (this->bsp_map->hasEntityAttribute(targetEntityId, "origin")) {
-                            char *value = bsp_map->getEntityValue(targetEntityId, "origin");
-                            char *angle = bsp_map->getEntityValue(targetEntityId, "angle");
-                            Vertex3D teleportPos = bsp_map->parsePositionFromEntityAttribute(value);
-
-                            float BSP_YOffset = -5;
-                            float BSP_ZOffset = 0;
-
-                            int angleInt = atoi( std::string(angle).c_str() );
-                            camera->yaw   = 90-angleInt;
-                            camera->pitch = 0;
-                            camera->roll  = 0;
-
-                            btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
-
-                            btTransform initialTransform;
-                            initialTransform.setOrigin( btPos );
-
-                            this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
-
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bsp_map->getEntityValue(entityIndex, "target")));
-                            }
-                        }
-                    }
-                }
-
-                if (!strcmp(classname, "func_door")) {
-                    Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
-                }
-
-                if (!strcmp(classname, "trigger_multiple")) {
-                    // check for message response
-                    if (strlen(bsp_map->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(entityIndex, "message")) );
-                    }
-                }
-            }
-        }
-
-        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->getInstance()->Log("[LOG_COLLISION_OBJECTS] Collision between triggerCamera and " + brkObjectB->getLabel());
-        }
-    }
-
-    // All collisions pairs
-    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
-    if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
-        for (int i = 0; i < numManifolds; i++) {
-            btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-            if (contactManifold->getNumContacts() > 0) {
-                const btCollisionObject *obA = contactManifold->getBody0();
-                const btCollisionObject *obB = contactManifold->getBody1();
-
-                Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
-                Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
-
-                BSPMap *oMap = dynamic_cast<BSPMap*> (brkObjectB);
-                if (oMap != NULL) {
-
-                    if (brkObjectA->getLabel() == "projectile") {
-                        dynamicsWorld->removeCollisionObject((btCollisionObject *) obA);
-                        this->removeObject3D(brkObjectA);
-                    }
-
-                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                        Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
-                    }
-                }
-
-                SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
-                if (oSpriteDirectional != NULL) {
-
-                    Enemy *oSpriteDirectionalEnemyA = dynamic_cast<Enemy*> (brkObjectA);
-                    Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (brkObjectB);
-
-                    if ( ( oSpriteDirectionalEnemyA != NULL || oSpriteDirectionalEnemyB != NULL) &&
-                         ( brkObjectA->getLabel() == "projectile" || brkObjectB->getLabel() == "projectile" )
-                    ) {
-                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between projectile and Enemy");
-                        }
-                        if (oSpriteDirectionalEnemyA != NULL) {
-                            oSpriteDirectionalEnemyA->stamina -= weapon->getCurrentWeaponType()->getDamage();
-
-                            if (oSpriteDirectionalEnemyA->stamina < 0) {
-                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectA);
-                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
-                            }
-
-                        } else {
-                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
-                            this->removeObject3D( brkObjectB );
-                        }
-
-                        if (oSpriteDirectionalEnemyB != NULL) {
-                            oSpriteDirectionalEnemyB->stamina--;
-                            if (oSpriteDirectionalEnemyB->stamina < 0) {
-                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
-                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
-
-                            }
-
-                        } else {
-                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
-                            this->removeObject3D( brkObjectA );
-                        }
-                    }
-
-                }
-
-                Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
-                if (oMesh != NULL) {
-                    int originalEntityIndex = oMesh->getBspEntityIndex();
-
-                    if (originalEntityIndex > 0) {
-                        char *classname = bsp_map->getEntityValue(originalEntityIndex, "classname");
-                        char *currentTargetName = bsp_map->getEntityValue(originalEntityIndex, "targetname");
-
-                        if ( !strcmp(classname, "func_door") ) {
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log("[AllPairs] Collision with func_door");
-                            }
-                            if (!bsp_map->hasEntityAttribute(originalEntityIndex, "targetname")) {
-                                // No tiene targetname
-                                Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                                if (originalBody != NULL) {
-                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
-                                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                        Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + originalBody->getLabel());
-                                    }
-                                }
-                            } else {
-                                int targetRemoteEntityId = bsp_map->getIndexOfFirstEntityByTarget( currentTargetName );
-                                char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
-
-                                if ( !strcmp(classnameRemote, "trigger_counter") ) {
-                                    for (int k = 0; k < this->gameObjects.size(); k++) {
-                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
-                                        if (oRemoteMesh != NULL) {
-                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-                                                Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
-                                                int currentCounter = oRemoteGhost->currentTriggerCounter;
-
-                                                char *countValue = bsp_map->getEntityValue(targetRemoteEntityId, "count");
-                                                int countValueInt = atoi( std::string(countValue).c_str() );
-
-                                                if (countValueInt == currentCounter) {
-                                                    Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-
-                                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
-                                                } else {
-                                                    if (strlen(bsp_map->getEntityValue(originalEntityIndex, "message")) > 0) {
-                                                        Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bsp_map->getEntityValue(originalEntityIndex, "message")) );
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        //***************************
-                        if ( !strcmp(classname, "func_button") ) {
-                            char *targetRemote = bsp_map->getEntityValue(originalEntityIndex, "target");
-                            int targetRemoteEntityId = bsp_map->getIndexOfFirstEntityByTargetname(targetRemote );
-
-                            Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                            this->moveMesh3DBody(originalBody, originalEntityIndex);
-
-                            if (targetRemoteEntityId >= 0) {
-                                char *classnameRemote = bsp_map->getEntityValue(targetRemoteEntityId, "classname");
-                                if (!strcmp(classnameRemote, "func_door")) {
-                                    // Buscamos algún objeto cuya BSPEntity coincida
-                                    for (int k = 0; k < this->gameObjects.size(); k++) {
-                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
-                                        if (oRemoteMesh != NULL) {
-                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-
-                                                Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
-                                                this->moveMesh3DBody(oRemoteBody, targetRemoteEntityId);
-
-                                                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                    Logging::getInstance()->getInstance()->Log("Moving Door: " + oRemoteBody->getLabel());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (!strcmp(classnameRemote, "trigger_counter") ) {
-                                    // Si el objeto original era un botón
-                                    if (!strcmp(classname, "func_button")) {
-                                        Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                                        if (oButton->active) {
-                                            for (int k = 0; k < this->gameObjects.size(); k++) {
-                                                Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> (this->gameObjects[k]);
-                                                if (oRemoteMesh != NULL) {
-                                                    if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-
-                                                        Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
-                                                        oRemoteGhost->currentTriggerCounter++;
-                                                        oButton->active = false;
-                                                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                            Logging::getInstance()->getInstance()->Log("trigger_counter for BSPEntity: " + std::to_string(targetRemoteEntityId) + "=" + std::to_string(oRemoteGhost->currentTriggerCounter));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-void Engine::cameraUpdate()
-{
-    camera->UpdateRotation();
-    camera->UpdateFrustum();
 }
 
 void Engine::onUpdate()
@@ -1127,7 +787,7 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
-        dynamicsWorld->debugDrawWorld();
+        collisionsManager->getDynamicsWorld()->debugDrawWorld();
     }
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
@@ -1173,10 +833,10 @@ void Engine::objects3DShadowMapping()
 
 void Engine::getQuakeMapTriangles()
 {
-    if (bsp_map && EngineSetup::getInstance()->RENDER_BSP_MAP) {
-        bsp_map->DrawVisibleLeaf(camera);
+    if (bspMap && EngineSetup::getInstance()->RENDER_BSP_MAP) {
+        bspMap->DrawVisibleLeaf(camera);
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
-            bsp_map->DrawHulls( camera );
+            bspMap->DrawHulls(camera );
         }
     }
 }
@@ -1498,19 +1158,19 @@ void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
 {
     Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
 
-    this->bsp_map = new BSPMap();
+    this->bspMap = new BSPMap();
 
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
-    this->bsp_map->Initialize(bspFilename, paletteFilename);
+    this->bspMap->Initialize(bspFilename, paletteFilename);
 
     // Load start position from BSP
-    Vertex3D bspOriginalPosition = this->bsp_map->getStartMapPosition();
+    Vertex3D bspOriginalPosition = this->bspMap->getStartMapPosition();
 
-    int entityID = this->bsp_map->getIndexOfFirstEntityByClassname("info_player_start");
+    int entityID = this->bspMap->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
     initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
-    char *angle = bsp_map->getEntityValue(entityID, "angle");
+    char *angle = bspMap->getEntityValue(entityID, "angle");
     int angleInt = atoi( std::string(angle).c_str() );
     camera->yaw   = 90-angleInt;
     camera->pitch = 0;
@@ -1550,42 +1210,6 @@ void Engine::updateTimer()
     }
 }
 
-void Engine::updatePhysicObjects()
-{
-    std::vector<SpriteDirectional3DBody *>::iterator it;
-
-    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
-        (*it)->integrate();
-    }
-
-    // mesh physics
-    std::vector<Mesh3DBody *>::iterator it2;
-    for (it2 = meshPhysics.begin() ; it2 != meshPhysics.end() ; it2++) {
-        (*it2)->integrate( );
-    }
-
-    // Sync position for triggerCamera
-    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
-    Vertex3D p = *camera->getPosition();
-
-    float farDist = 1;
-    p.x = p.x + direction.x * farDist;
-    p.y = p.y + direction.y * farDist;
-    p.z = p.z + direction.z * farDist;
-
-    btTransform t;
-    t.setIdentity();
-    t.setOrigin(btVector3(p.x, p.y, p.z));
-    triggerCamera->getGhostObject()->setWorldTransform(t);
-}
-
-bool Engine::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
-{
-    bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
-    collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup & body0->getBroadphaseHandle()->m_collisionFilterMask);
-    return collides;
-}
-
 float Engine::getDeltaTime()
 {
     return this->deltaTime/1000;
@@ -1605,7 +1229,7 @@ void Engine::waterShader()
     float intensity_b = 1;
 
     //water = -3 |mud = -4 | lava = -5
-    switch(bsp_map->currentLeaf->type) {
+    switch(bspMap->currentLeaf->type) {
         case -3:
             break;
         case -4:
@@ -1754,20 +1378,21 @@ void Engine::getMapsJSON()
     }
 }
 
-void Engine::drawMenu()
+void Engine::drawMenuScreen()
 {
     this->menu->drawOptions(screenSurface);
     //this->waterShader();
     Drawable::drawFireShader();
 }
 
-void Engine::initCollisionResolver()
+void Engine::initCollisionsManager()
 {
-    this->collisionResolver->setBspMap(this->bsp_map);
-    this->collisionResolver->setCamera(this->camera);
-    this->collisionResolver->setDynamicsWorld(this->dynamicsWorld);
-    this->collisionResolver->setTriggerCamera(this->triggerCamera);
-    this->collisionResolver->setGameObjects(&this->gameObjects);
-    this->collisionResolver->initBulletSystem();
+    this->collisionsManager->setBspMap(this->bspMap);
+    this->collisionsManager->setCamera(this->camera);
+    this->collisionsManager->setGameObjects(&this->gameObjects);
 
+    this->collisionsManager->setProjectilePhysics(&this->projectilePhysics);
+    this->collisionsManager->setMeshPhysics(&this->meshPhysics);
+
+    this->collisionsManager->initBulletSystem();
 }

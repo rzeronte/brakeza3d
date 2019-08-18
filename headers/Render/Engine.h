@@ -30,7 +30,7 @@
 #include "../cJSON.h"
 #include "../2D/Weapon.h"
 #include "../2D/Menu.h"
-#include "../Physics/CollisionResolver.h"
+#include "../Physics/CollisionsManager.h"
 
 enum collisionGroups
 {
@@ -49,10 +49,10 @@ enum collisionGroups
 class Engine {
 public:
     // Window y Renderer principal
-    SDL_Window *window;
+    SDL_Window *window = NULL;
     SDL_Renderer *renderer;
 
-    SDL_Surface  *screenSurface;
+    SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
     // Eventos SDL
@@ -67,7 +67,7 @@ public:
     std::vector<Mesh3DBody *> meshPhysics;
     std::vector<SpriteDirectional3DBody *> projectilePhysics;
 
-    BSPMap *bsp_map;
+    BSPMap *bspMap = NULL;
 
     // Luces
     std::vector<LightPoint3D *> lightPoints;
@@ -78,7 +78,7 @@ public:
     TTF_Font *font = NULL;
 
     // Fps counter
-    int fps;
+    int fps = 0;
     int fpsFrameCounter = 0;
 
     Triangle *frameTriangles;
@@ -95,18 +95,6 @@ public:
 
     // Dear ImGUI
     ImGuiContext* imgui_context;
-
-    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    btDefaultCollisionConfiguration* collisionConfiguration;
-    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    btCollisionDispatcher* dispatcher;
-    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    btBroadphaseInterface* overlappingPairCache;
-    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver* solver;
-    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    PhysicsDebugDraw* debugDraw;
-    Mesh3DGhost *triggerCamera;
 
     // Timer
     Timer engineTimer;
@@ -156,7 +144,7 @@ public:
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
 
-    CollisionResolver *collisionResolver;
+    CollisionsManager *collisionsManager;
     Menu *menu;
     Weapon *weapon;
 
@@ -167,61 +155,58 @@ public:
     bool initWindow();
     bool initSound();
     void initFontsTTF();
-    void initBulletPhysics();
     void initOpenCL();
     void initTiles();
-    void initCollisionResolver();
+    void initCollisionsManager();
 
     void OpenCLInfo();
 
+    // Cycle of life
     void onStart();
     void onUpdate();
     void preUpdate();
     void postUpdate();
     void onEnd();
 
-    void cameraUpdate();
-
+    // Triangle recollector
     void getMesh3DTriangles();
     void getQuakeMapTriangles();
     void getLightPointsTriangles();
     void getSpritesTriangles();
     void getObjectsBillboardTriangles();
 
+    // Triangles filter
     void hiddenSurfaceRemoval();
     void handleTrianglesToTiles();
 
+    // Draw triangles
     void drawTilesGrid();
-
     void drawTilesTriangles();
     void drawFrameTriangles();
 
-    void updatePhysicObjects();
-
+    // TODO: erase
     void objects3DShadowMapping();
     void clearLightPointsShadowMappings();
 
+    // Objects3D Managing
     void addObject3D(Object3D *obj, std::string label);
     void removeObject3D(Object3D *obj);
+    Object3D* getObjectByLabel(std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
+    // Window update
     void windowUpdate();
 
     void drawGUI();
+    void processFPS();
 
     void loadBSP(const char *bspFilename, const char *paletteFilename);
 
-    void processFPS();
-
     Timer* getTimer();
 
-    Object3D* getObjectByLabel(std::string label);
-
-    void processPairsCollisions();
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
-    bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 
-    void updateTimer();
+    void  updateTimer();
     float getDeltaTime();
 
     void handleOpenCLTriangles();
@@ -235,8 +220,8 @@ public:
     void getMapsJSON();
     void getWeaponsJSON();
 
-    void drawMenu();
+    void drawMenuScreen();
 
-    };
+};
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

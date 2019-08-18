@@ -1,13 +1,13 @@
-#include "CollisionResolver.h"
+#include "../../headers/Physics/CollisionsManager.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "../Render/Engine.h"
+#include "../../headers/Render/Engine.h"
 
-CollisionResolver::CollisionResolver()
+CollisionsManager::CollisionsManager()
 {
 
 }
 
-void CollisionResolver::initBulletSystem()
+void CollisionsManager::initBulletSystem()
 {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     this->collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -44,10 +44,66 @@ void CollisionResolver::initBulletSystem()
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
     this->makeGhostForCamera();
-
 }
 
-void CollisionResolver::makeGhostForCamera()
+btDiscreteDynamicsWorld *CollisionsManager::getDynamicsWorld() const {
+    return dynamicsWorld;
+}
+
+void CollisionsManager::setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld) {
+    CollisionsManager::dynamicsWorld = dynamicsWorld;
+}
+
+Camera3D *CollisionsManager::getCamera() const {
+    return camera;
+}
+
+void CollisionsManager::setCamera(Camera3D *camera) {
+    CollisionsManager::camera = camera;
+}
+
+Mesh3DGhost *CollisionsManager::getTriggerCamera() const {
+    return triggerCamera;
+}
+
+void CollisionsManager::setTriggerCamera(Mesh3DGhost *triggerCamera) {
+    CollisionsManager::triggerCamera = triggerCamera;
+}
+
+BSPMap *CollisionsManager::getBspMap() const {
+    return bspMap;
+}
+
+void CollisionsManager::setBspMap(BSPMap *bspMap) {
+    CollisionsManager::bspMap = bspMap;
+}
+
+std::vector<Object3D *> *CollisionsManager::getGameObjects() const {
+    return gameObjects;
+}
+
+void CollisionsManager::setGameObjects(std::vector<Object3D *> *gameObjects) {
+    CollisionsManager::gameObjects = gameObjects;
+}
+
+
+std::vector<Mesh3DBody *> *CollisionsManager::getMeshPhysics() const {
+    return meshPhysics;
+}
+
+void CollisionsManager::setMeshPhysics(std::vector<Mesh3DBody *> *meshPhysics) {
+    CollisionsManager::meshPhysics = meshPhysics;
+}
+
+std::vector<SpriteDirectional3DBody *> *CollisionsManager::getProjectilePhysics() const {
+    return projectilePhysics;
+}
+
+void CollisionsManager::setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics) {
+    CollisionsManager::projectilePhysics = projectilePhysics;
+}
+
+void CollisionsManager::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel("triggerCamera");
@@ -58,7 +114,34 @@ void CollisionResolver::makeGhostForCamera()
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
 }
 
-void CollisionResolver::checkTriggerCamera()
+void CollisionsManager::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
+
+    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
+
+    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
+    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
+
+    float angleFloat = atof( std::string(angle).c_str() );
+    float speedFloat = atof( std::string(speed).c_str() );
+
+    oRemoteBody->setMoving(true);
+    oRemoteBody->setAngleMoving(angleFloat);
+
+    if (speedFloat > 0) {
+        oRemoteBody->setSpeedMoving(speedFloat);
+    }
+}
+
+
+bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
+{
+    bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
+    collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup & body0->getBroadphaseHandle()->m_collisionFilterMask);
+
+    return collides;
+}
+
+void CollisionsManager::checkTriggerCamera()
 {
     for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
         const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
@@ -120,7 +203,7 @@ void CollisionResolver::checkTriggerCamera()
     }
 }
 
-void CollisionResolver::checkAll()
+void CollisionsManager::checkAll()
 {
 // All collisions pairs
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -305,60 +388,71 @@ void CollisionResolver::checkAll()
     }
 }
 
-btDiscreteDynamicsWorld *CollisionResolver::getDynamicsWorld() const {
-    return dynamicsWorld;
-}
-
-void CollisionResolver::setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld) {
-    CollisionResolver::dynamicsWorld = dynamicsWorld;
-}
-
-Camera3D *CollisionResolver::getCamera() const {
-    return camera;
-}
-
-void CollisionResolver::setCamera(Camera3D *camera) {
-    CollisionResolver::camera = camera;
-}
-
-Mesh3DGhost *CollisionResolver::getTriggerCamera() const {
-    return triggerCamera;
-}
-
-void CollisionResolver::setTriggerCamera(Mesh3DGhost *triggerCamera) {
-    CollisionResolver::triggerCamera = triggerCamera;
-}
-
-BSPMap *CollisionResolver::getBspMap() const {
-    return bspMap;
-}
-
-void CollisionResolver::setBspMap(BSPMap *bspMap) {
-    CollisionResolver::bspMap = bspMap;
-}
-
-void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
-
-    if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
-
-    char *angle = bspMap->getEntityValue(targetEntityId, "angle");
-    char *speed = bspMap->getEntityValue(targetEntityId, "speed");
-
-    float angleFloat = atof( std::string(angle).c_str() );
-    float speedFloat = atof( std::string(speed).c_str() );
-
-    oRemoteBody->setMoving(true);
-    oRemoteBody->setAngleMoving(angleFloat);
-
-    if (speedFloat > 0) {
-        oRemoteBody->setSpeedMoving(speedFloat);
+void CollisionsManager::updatePhysicObjects()
+{
+    std::vector<SpriteDirectional3DBody *>::iterator it;
+    for (it = projectilePhysics->begin(); it != projectilePhysics->end(); it++) {
+        (*it)->integrate();
     }
+
+    // mesh physics
+    std::vector<Mesh3DBody *>::iterator it2;
+    for (it2 = meshPhysics->begin() ; it2 != meshPhysics->end() ; it2++) {
+        (*it2)->integrate( );
+    }
+
+    // Sync position for triggerCamera
+    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+    Vertex3D p = *camera->getPosition();
+
+    float farDist = 1;
+    p.x = p.x + direction.x * farDist;
+    p.y = p.y + direction.y * farDist;
+    p.z = p.z + direction.z * farDist;
+
+    btTransform t;
+    t.setIdentity();
+    t.setOrigin(btVector3(p.x, p.y, p.z));
+    getTriggerCamera()->getGhostObject()->setWorldTransform(t);
 }
 
-std::vector<Object3D *> *CollisionResolver::getGameObjects() const {
-    return gameObjects;
-}
+Vertex3D CollisionsManager::stepSimulation(float time)
+{
+    // check for collisions
+    checkTriggerCamera();
+    checkAll();
 
-void CollisionResolver::setGameObjects(std::vector<Object3D *> *gameObjects) {
-    CollisionResolver::gameObjects = gameObjects;
+    Vertex3D vel = getCamera()->velocity.getComponent();
+
+    btVector3 bulletVelocity = btVector3(vel.x, vel.y, vel.z);
+
+    if (this->camera->kinematicController->onGround()) {
+        bulletVelocity = btVector3(vel.x, vel.y, vel.z);
+    } else {
+        bulletVelocity = btVector3(vel.x, vel.y, vel.z) / EngineSetup::getInstance()->AIR_RESISTANCE;
+    }
+
+    this->camera->kinematicController->setWalkDirection(bulletVelocity);
+
+    Vertex3D finalVelocity;
+
+    if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
+        // Bullet Step Simulation
+        getDynamicsWorld()->stepSimulation(time, 1);
+
+        // Physics for meshes
+        updatePhysicObjects();
+
+        btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
+
+        btVector3 pos = trans.getOrigin();
+        float BSP_YOffset = 3;
+        // El offset es porqué nuestros ojos deberian estar por encima del punto central
+        // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.
+        finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());
+    } else {
+        finalVelocity = this->camera->velocity.vertex2;
+    }
+
+    return finalVelocity;
 }

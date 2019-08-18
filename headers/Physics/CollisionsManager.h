@@ -1,19 +1,22 @@
 
-#ifndef BRAKEDA3D_COLLISIONRESOLVER_H
-#define BRAKEDA3D_COLLISIONRESOLVER_H
+#ifndef BRAKEDA3D_COLLISIONSMANAGER_H
+#define BRAKEDA3D_COLLISIONSMANAGER_H
 
 
 #include "Mesh3DGhost.h"
 #include "../Render/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "Mesh3DBody.h"
+#include "SpriteDirectional3DBody.h"
 
-class CollisionResolver {
+class CollisionsManager {
 public:
     Camera3D *camera;
     Mesh3DGhost *triggerCamera;
     BSPMap *bspMap;
     std::vector<Object3D*> *gameObjects;
+    std::vector<Mesh3DBody *> *meshPhysics;
+    std::vector<SpriteDirectional3DBody *> *projectilePhysics;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration* collisionConfiguration;
@@ -26,7 +29,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     PhysicsDebugDraw* debugDraw;
 
-    CollisionResolver();
+    CollisionsManager();
 
     void initBulletSystem();
     void makeGhostForCamera();
@@ -53,9 +56,22 @@ public:
     void setBspMap(BSPMap *bspMap);
 
     std::vector<Object3D *> *getGameObjects() const;
-
     void setGameObjects(std::vector<Object3D *> *gameObjects);
+
+    std::vector<Mesh3DBody *> *getMeshPhysics() const;
+
+    void setMeshPhysics(std::vector<Mesh3DBody *> *meshPhysics);
+
+    std::vector<SpriteDirectional3DBody *> *getProjectilePhysics() const;
+
+    void setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics);
+
+    bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
+
+    void updatePhysicObjects();
+
+    Vertex3D stepSimulation(float time);
 };
 
 
-#endif //BRAKEDA3D_COLLISIONRESOLVER_H
+#endif //BRAKEDA3D_COLLISIONSMANAGER_H
