@@ -103,14 +103,14 @@ add_executable(brakeda3d
         imgui/examples/imgui_impl_opengl2.h
         imgui/examples/imgui_impl_opengl2.cpp
 
-        src/GUI/GUI.h
-        src/GUI/GUI_Menu.h
-        src/GUI/GUI_ObjectsInspector.h
-        src/GUI/GUI_Engine.h
-        src/GUI/GUI_LightsInspector.h
-        src/GUI/GUI_Log.h
-        src/GUI/GUI_Tiles.h
-        src/GUI/GUI_Weapons.h
+        headers/GUI/GUI.h
+        headers/GUI/GUI_Menu.h
+        headers/GUI/GUI_Objects3D.h
+        headers/GUI/GUI_Engine.h
+        headers/GUI/GUI_Lights.h
+        headers/GUI/GUI_Log.h
+        headers/GUI/GUI_Tiles.h
+        headers/GUI/GUI_Weapons.h
         src/Render/Logging.cpp
 
         src/Objects/Tile.h
@@ -129,7 +129,7 @@ add_executable(brakeda3d
 
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
-        src/GUI/GUI_Camera.h
+        headers/GUI/GUI_Camera.h
         src/Physics/Mesh3DBody.cpp
         headers/Physics/Mesh3DBody.h
         src/Render/PhysicsDebugDraw.cpp
@@ -138,7 +138,7 @@ add_executable(brakeda3d
         headers/Physics/Mesh3DGhost.h
         headers/cJSON.h
         src/cJSON.c
-        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/WeaponsManager.cpp headers/2D/WeaponsManager.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/MenuManager.cpp headers/2D/MenuManager.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp headers/Objects/Enemy.h src/Brakeza3D.cpp headers/Brakeza3D.h src/Physics/CollisionsManager.cpp headers/Physics/CollisionsManager.h src/Physics/NPCEnemyBody.cpp headers/Physics/NPCEnemyBody.h)
+        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/WeaponsManager.cpp headers/2D/WeaponsManager.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/MenuManager.cpp headers/2D/MenuManager.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp headers/Objects/Enemy.h src/Brakeza3D.cpp headers/Brakeza3D.h src/Collisions/CollisionsManager.cpp headers/Collisions/CollisionsManager.h src/Physics/NPCEnemyBody.cpp headers/Physics/NPCEnemyBody.h src/Collisions/CollisionResolver.cpp headers/Collisions/CollisionResolver.h src/Physics/Projectile3DBody.cpp headers/Physics/Projectile3DBody.h headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h)
 
 target_link_libraries(brakeda3d
         ${SDL2_LIBRARY}

@@ -58,7 +58,7 @@ Camera3D::Camera3D()
     m_ghostObject->setUserPointer(this);
 
     kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
-    setLabel("Camera");
+    setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
 }
 
 float Camera3D::getNearDistance()

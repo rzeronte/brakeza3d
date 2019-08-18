@@ -13,10 +13,10 @@
 #include "../../imgui/examples/imgui_impl_sdl.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 
-#include "../../src/GUI/GUI_Menu.h"
-#include "../../src/GUI/GUI_ObjectsInspector.h"
-#include "../../src/GUI/GUI_Engine.h"
-#include "../../src/GUI/GUI_Weapons.h"
+#include "../../headers/GUI/GUI_Menu.h"
+#include "../GUI/GUI_Objects3D.h"
+#include "../../headers/GUI/GUI_Engine.h"
+#include "../../headers/GUI/GUI_Weapons.h"
 
 #include "BSPMap.h"
 #include "../Objects/BSPEntity3D.h"
@@ -30,7 +30,7 @@
 #include "../cJSON.h"
 #include "../2D/WeaponsManager.h"
 #include "../2D/MenuManager.h"
-#include "../Physics/CollisionsManager.h"
+#include "../Collisions/CollisionsManager.h"
 
 enum collisionGroups
 {
@@ -140,7 +140,7 @@ public:
     int numTiles;
     int tilePixelsBufferSize;
 
-    // optionsJSON.json
+    // JSON for maps and weapons
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
 

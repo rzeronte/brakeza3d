@@ -8,7 +8,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../../headers/Physics/CollisionsManager.h"
+#include "../../headers/Collisions/CollisionsManager.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
