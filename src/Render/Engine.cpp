@@ -8,6 +8,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
+#include "../../headers/Physics/CollisionResolver.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -42,6 +43,10 @@ Engine::Engine()
     fps = 0;
     bsp_map = NULL;
 
+    // Init Physics System
+    this->collisionResolver = new CollisionResolver();
+    this->initCollisionResolver();
+
     this->initBulletPhysics();
     this->initOpenCL();
 
@@ -51,6 +56,7 @@ Engine::Engine()
 
     menu = new Menu();
     menu->getOptionsJSON();
+
 }
 
 bool Engine::initSound()
@@ -924,11 +930,12 @@ void Engine::processPairsCollisions()
                             Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between projectile and Enemy");
                         }
                         if (oSpriteDirectionalEnemyA != NULL) {
-                            oSpriteDirectionalEnemyA->stamina--;
+                            oSpriteDirectionalEnemyA->stamina -= weapon->getCurrentWeaponType()->getDamage();
+
                             if (oSpriteDirectionalEnemyA->stamina < 0) {
-                                SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectA);
-                                tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
+                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectA);
+                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
                             }
 
                         } else {
@@ -939,9 +946,9 @@ void Engine::processPairsCollisions()
                         if (oSpriteDirectionalEnemyB != NULL) {
                             oSpriteDirectionalEnemyB->stamina--;
                             if (oSpriteDirectionalEnemyB->stamina < 0) {
-                                SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
-                                tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
+                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
+                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
 
                             }
 
@@ -1669,13 +1676,16 @@ void Engine::getWeaponsJSON()
         cJSON *name = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
         cJSON *hit = cJSON_GetObjectItemCaseSensitive(currentWeapon, "hit");
         cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
+        cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
         cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
 
+        // Weapon Type attributes
         weapon->addWeaponType(name->valuestring);
         weapon->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
         weapon->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
+        weapon->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
         weapon->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
         weapon->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
 
@@ -1706,7 +1716,6 @@ void Engine::getWeaponsJSON()
                 offsetX->valueint,
                 offsetY->valueint
             );
-
         }
     }
 }
@@ -1750,4 +1759,15 @@ void Engine::drawMenu()
     this->menu->drawOptions(screenSurface);
     //this->waterShader();
     Drawable::drawFireShader();
+}
+
+void Engine::initCollisionResolver()
+{
+    this->collisionResolver->setBspMap(this->bsp_map);
+    this->collisionResolver->setCamera(this->camera);
+    this->collisionResolver->setDynamicsWorld(this->dynamicsWorld);
+    this->collisionResolver->setTriggerCamera(this->triggerCamera);
+    this->collisionResolver->setGameObjects(&this->gameObjects);
+    this->collisionResolver->initBulletSystem();
+
 }

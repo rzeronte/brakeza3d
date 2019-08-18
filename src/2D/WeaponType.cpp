@@ -108,3 +108,13 @@ void WeaponType::setProjectileSize(float w, float h)
     this->projectileWidth = w;
     this->projectileHeight = h;
 }
+
+int WeaponType::getDamage()
+{
+    return this->damage;
+}
+
+void WeaponType::setDamage(int damage)
+{
+    this->damage = damage;
+}

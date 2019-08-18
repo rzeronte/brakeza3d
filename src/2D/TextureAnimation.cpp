@@ -12,7 +12,7 @@ TextureAnimation::TextureAnimation()
 void TextureAnimation::setup(std::string file, int num_frames)
 {
     this->base_file = file;
-    this->n_frames = num_frames;
+    this->numFrames = num_frames;
 
     this->loadImages();
 }
@@ -27,19 +27,19 @@ void TextureAnimation::loadImages()
 
 int TextureAnimation::getNumFrames() const
 {
-    return n_frames;
+    return numFrames;
 }
 
 Texture *TextureAnimation::getCurrentFrame()
 {
-    return this->frames[current];
+    return this->frames[currentFrame];
 }
 
 void TextureAnimation::nextFrame()
 {
-    current++;
+    currentFrame++;
 
-    if (current >= this->getNumFrames()) {
-        current = 0;
+    if (currentFrame >= this->getNumFrames()) {
+        currentFrame = 0;
     }
 }

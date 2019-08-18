@@ -12,15 +12,15 @@ WeaponAnimation::WeaponAnimation()
 {
     timer = new Timer();
     timer->start();
-    current = 0;
+    currentFrame = 0;
 }
 
 void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY)
 {
-    this->base_file = file;
+    this->baseFile = file;
     this->fps = fps;
-    this->n_frames = num_frames;
-    this->current = 0;
+    this->numFrames = num_frames;
+    this->currentFrame = 0;
     this->offsetX = offsetX;
     this->offsetY = offsetY;
 }
@@ -28,7 +28,7 @@ void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offse
 void WeaponAnimation::loadImages()
 {
     for (int i = 0; i < this->getNumFrames() ; i++) {
-        std::string file = this->base_file + "/" + std::to_string(i) + ".png";
+        std::string file = this->baseFile + "/" + std::to_string(i) + ".png";
         Logging::getInstance()->Log("Loading weapon image: " + file);
         this->frames[i] = IMG_Load(file.c_str());
     }
@@ -36,20 +36,20 @@ void WeaponAnimation::loadImages()
 
 int WeaponAnimation::getNumFrames() const
 {
-    return n_frames;
+    return numFrames;
 }
 
 SDL_Surface *WeaponAnimation::getCurrentSurface()
 {
-    return this->frames[current];
+    return this->frames[currentFrame];
 }
 
 void WeaponAnimation::nextFrame()
 {
-    current++;
+    currentFrame++;
 
-    if (current >= this->getNumFrames()) {
-        current = 0;
+    if (currentFrame >= this->getNumFrames()) {
+        currentFrame = 0;
     }
 }
 
@@ -59,7 +59,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     destPos.x = offsetX + globalOffsetX;
     destPos.y = offsetY + globalOffsetY;
 
-    SDL_BlitSurface(this->frames[current], NULL, dst, &destPos);
+    SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }
 
 void WeaponAnimation::updateFrame()
