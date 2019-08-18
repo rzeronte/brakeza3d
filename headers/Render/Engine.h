@@ -30,6 +30,7 @@
 #include "../cJSON.h"
 #include "../2D/Weapon.h"
 #include "../2D/Menu.h"
+#include "../Physics/CollisionResolver.h"
 
 enum collisionGroups
 {
@@ -155,6 +156,7 @@ public:
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
 
+    CollisionResolver *collisionResolver;
     Menu *menu;
     Weapon *weapon;
 
@@ -168,6 +170,7 @@ public:
     void initBulletPhysics();
     void initOpenCL();
     void initTiles();
+    void initCollisionResolver();
 
     void OpenCLInfo();
 

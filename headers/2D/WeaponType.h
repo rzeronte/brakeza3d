@@ -18,6 +18,8 @@ public:
 
     int hitType;
 
+    int damage;
+
     float cadence = 1;
     Timer cadenceTimer;
     float lastTicks;
@@ -50,6 +52,9 @@ public:
     SpriteDirectional3D* getProjectileTemplate();
 
     void setProjectileSize(float w, float h);
+
+    int getDamage();
+    void setDamage(int damage);
 };
 
 

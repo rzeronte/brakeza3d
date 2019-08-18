@@ -12,11 +12,11 @@ class WeaponAnimation {
 public:
     WeaponAnimation();
 
-    std::string base_file;
+    std::string baseFile;
 
     int fps = 25;
-    int n_frames;
-    int current = 0;
+    int numFrames;
+    int currentFrame = 0;
 
     SDL_Surface *frames[WEAPON_ANIMATION_MAX_FRAMES];
 
@@ -33,6 +33,7 @@ public:
     int getNumFrames() const;
 
     SDL_Surface *getCurrentSurface();
+
     void nextFrame();
 
     void draw(SDL_Surface *dst, int globalOffsetX, int headBobOffsetY);

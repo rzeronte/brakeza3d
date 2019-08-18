@@ -11,8 +11,8 @@ class TextureAnimation {
 public:
     std::string base_file;
 
-    int n_frames;
-    int current = 0;
+    int numFrames;
+    int currentFrame = 0;
     Texture *frames[ANIMATION2D_MAX_FRAMES];
 
     TextureAnimation();
