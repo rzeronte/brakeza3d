@@ -419,8 +419,10 @@ void CollisionsManager::updatePhysicObjects()
 Vertex3D CollisionsManager::stepSimulation(float time)
 {
     // check for collisions
-    checkTriggerCamera();
-    checkAll();
+    if (bspMap->isLoaded()) {
+        checkTriggerCamera();
+        checkAll();
+    }
 
     Vertex3D vel = getCamera()->velocity.getComponent();
 

@@ -11,10 +11,16 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
+#include "../../headers/Physics/NPCEnemyBody.h"
 
 extern Engine *brakeza3D;
 
 BSPMap::BSPMap()
+{
+}
+
+
+void BSPMap::init()
 {
     bsp = NULL;
     surfacePrimitives = NULL;
@@ -42,11 +48,13 @@ BSPMap::BSPMap()
     this->entities = new entity_t[MAX_BSP_ENTITIES];
     this->n_entities = 0;
     this->setLabel("BSPMap");
-
+    this->setLoaded(true);
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
 {
+    this->init();
+
     std::string bspFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename).c_str();
     std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename).c_str();
 
@@ -126,11 +134,6 @@ bool BSPMap::LoadBSP(const char *filename)
     }
 
     return true;
-}
-
-void BSPMap::init()
-{
-
 }
 
 // Calculate primitive surfaces
@@ -547,7 +550,7 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    SpriteDirectional3DBody *o = new SpriteDirectional3DBody();
+                    NPCEnemyBody *o = new NPCEnemyBody();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
                     o->addAnimationDirectional2D("soldier/walk", 4, false, -1);
@@ -563,7 +566,6 @@ void BSPMap::InitializeEntities()
                     o->makeRigidBody(0, brakeza3D->projectilePhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
 
                     //brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
-
                 }
 
                 // armor wildcard
@@ -1214,4 +1216,12 @@ Texture *BSPMap::getTexture(std::string name)
             return &textures[i];
         }
     }
+}
+
+bool BSPMap::isLoaded() const {
+    return loaded;
+}
+
+void BSPMap::setLoaded(bool loaded) {
+    BSPMap::loaded = loaded;
 }

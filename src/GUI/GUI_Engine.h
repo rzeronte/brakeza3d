@@ -31,7 +31,7 @@ public:
         gui_weapons = new GUI_Weapons();
     }
 
-    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, std::vector<LightPoint3D*> &lightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles, cJSON *maps, Weapon *weapon)
+    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, std::vector<LightPoint3D*> &lightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles, cJSON *maps, WeaponsManager *weapon)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);

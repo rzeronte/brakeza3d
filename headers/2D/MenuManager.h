@@ -1,6 +1,6 @@
 
-#ifndef BRAKEDA3D_MENU_H
-#define BRAKEDA3D_MENU_H
+#ifndef BRAKEDA3D_MENUMANAGER_H
+#define BRAKEDA3D_MENUMANAGER_H
 
 #include <string>
 #include "MenuOption.h"
@@ -8,12 +8,12 @@
 
 #define MAX_MENU_OPTIONS 10
 
-class Menu {
+class MenuManager {
 public:
     // menu background surface
     SDL_Surface *menu_background;
 
-    Menu();
+    MenuManager();
     MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
 
@@ -29,4 +29,4 @@ public:
 };
 
 
-#endif //BRAKEDA3D_MENU_H
+#endif //BRAKEDA3D_MENUMANAGER_H

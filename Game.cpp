@@ -17,7 +17,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    this->loadDemoObjects();
+    //this->loadDemoObjects();
 }
 
 void Game::mainLoop()

@@ -1,11 +1,9 @@
-//
-// Created by darkhead on 2019-08-07.
-//
 
 #ifndef BRAKEDA3D_SPRITEDIRECTIONAL3DBODY_H
 #define BRAKEDA3D_SPRITEDIRECTIONAL3DBODY_H
 
 
+#include <btBulletDynamicsCommon.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "../Render/Timer.h"
 #include "../Objects/SpriteDirectional3D.h"

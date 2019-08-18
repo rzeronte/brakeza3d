@@ -7,7 +7,7 @@
 #include "../../headers/Render/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../../headers/2D/Weapon.h"
+#include "../../headers/2D/WeaponsManager.h"
 
 class GUI_Weapons : public GUI  {
     public:
@@ -16,7 +16,7 @@ class GUI_Weapons : public GUI  {
 
     virtual ~GUI_Weapons() {}
 
-    virtual void draw(Weapon *weapon)
+    virtual void draw(WeaponsManager *weapon)
     {
         ImGuiWindowFlags window_flags = 0;
 
@@ -24,7 +24,7 @@ class GUI_Weapons : public GUI  {
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
-            std::string title = "Weapons Inspector (" + std::to_string(1) + " lights)";
+            std::string title = "Weapons Inspector (" + std::to_string(weapon->numWeaponsType) + " types)";
 
             ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 250), ImGuiSetCond_Once);
