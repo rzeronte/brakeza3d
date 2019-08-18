@@ -138,7 +138,7 @@ add_executable(brakeda3d
         headers/Physics/Mesh3DGhost.h
         headers/cJSON.h
         src/cJSON.c
-        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/Weapon.cpp headers/2D/Weapon.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/Menu.cpp headers/2D/Menu.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp headers/Objects/Enemy.h src/Brakeza3D.cpp headers/Brakeza3D.h)
+        src/Physics/SpriteDirectional3DBody.cpp headers/Physics/SpriteDirectional3DBody.h src/2D/Weapon.cpp headers/2D/Weapon.h src/2D/WeaponAnimation.cpp headers/2D/WeaponAnimation.h src/2D/WeaponType.cpp headers/2D/WeaponType.h src/2D/Menu.cpp headers/2D/Menu.h src/2D/MenuOption.cpp headers/2D/MenuOption.h src/Enemy.cpp headers/Objects/Enemy.h src/Brakeza3D.cpp headers/Brakeza3D.h src/Physics/CollisionsManager.cpp headers/Physics/CollisionsManager.h)
 
 target_link_libraries(brakeda3d
         ${SDL2_LIBRARY}

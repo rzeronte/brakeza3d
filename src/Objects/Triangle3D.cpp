@@ -174,7 +174,7 @@ void Triangle::updateTextureAnimated()
             float stepTime = (float) 1 / (float) maxFrames;
 
             if (this->timerTextureAnimatedFrameControl >= stepTime) {
-                this->setTexture(brakeza3D->bsp_map->getTexture(n));
+                this->setTexture(brakeza3D->bspMap->getTexture(n));
                 this->currentBSPTextureAnimatedFrame++;
                 this->timerTextureAnimatedFrameControl = 0;
             }

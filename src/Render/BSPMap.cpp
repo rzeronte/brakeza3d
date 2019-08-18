@@ -415,7 +415,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         if (entityIndex >= 1 ) {
             Logging::getInstance()->Log("Hull_"+ std::to_string(m) + " associated with BSPEntity: " + std::to_string(entityIndex));
 
-            char *classname = brakeza3D->bsp_map->getEntityValue(entityIndex, "classname");
+            char *classname = brakeza3D->bspMap->getEntityValue(entityIndex, "classname");
 
             if (
                  //!strcmp(classname, "func_episodegate") ||
@@ -462,7 +462,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                     body->n_triangles++;
                 }
             }
-            body->makeRigidBody(0, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->dynamicsWorld, true);
+            body->makeRigidBody(0, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
             brakeza3D->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
         } else {
@@ -487,11 +487,12 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                     ghost->n_triangles++;
                 }
             }
-            ghost->makeGhostBody(brakeza3D->camera, brakeza3D->dynamicsWorld, true);
+            ghost->makeGhostBody(brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
             brakeza3D->addObject3D(ghost, "hull_" + std::to_string(m) + " (ghost)") ;
         }
     }
 }
+
 void BSPMap::InitializeEntities()
 {
     char *e = getEntities();
@@ -510,12 +511,12 @@ void BSPMap::InitializeEntities()
         }
     }
     // Create Objects3D from BSP Entities
-    for (int i = 0 ; i < brakeza3D->bsp_map->n_entities ; i++) {
-        if (brakeza3D->bsp_map->hasEntityAttribute(i, "classname")) {
-            char *classname = brakeza3D->bsp_map->getEntityValue(i, "classname");
-            if (brakeza3D->bsp_map->hasEntityAttribute(i, "origin")) {
-                char *value = brakeza3D->bsp_map->getEntityValue(i, "origin");
-                Vertex3D pos = brakeza3D->bsp_map->parsePositionFromEntityAttribute(value);
+    for (int i = 0 ; i < brakeza3D->bspMap->n_entities ; i++) {
+        if (brakeza3D->bspMap->hasEntityAttribute(i, "classname")) {
+            char *classname = brakeza3D->bspMap->getEntityValue(i, "classname");
+            if (brakeza3D->bspMap->hasEntityAttribute(i, "origin")) {
+                char *value = brakeza3D->bspMap->getEntityValue(i, "origin");
+                Vertex3D pos = brakeza3D->bspMap->parsePositionFromEntityAttribute(value);
 
                 // light
                 if (!strcmp(classname, "light")) {
@@ -559,7 +560,7 @@ void BSPMap::InitializeEntities()
                     o->setDrawBillboard(true);
                     o->getBillboard()->setDimensions(4, 6);
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    o->makeRigidBody(0, brakeza3D->projectilePhysics, brakeza3D->camera, brakeza3D->dynamicsWorld, false, 0);
+                    o->makeRigidBody(0, brakeza3D->projectilePhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
 
                     //brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
 
@@ -871,7 +872,7 @@ void BSPMap::createBulletPhysicsShape()
     this->bspRigidBody->setCcdMotionThreshold(.5);
     this->bspRigidBody->setCcdSweptSphereRadius(.5);
     this->bspRigidBody->setUserPointer(this);
-    brakeza3D->dynamicsWorld->addRigidBody(this->bspRigidBody);
+    brakeza3D->collisionsManager->getDynamicsWorld()->addRigidBody(this->bspRigidBody);
 }
 
 void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
