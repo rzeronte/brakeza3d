@@ -3,11 +3,11 @@
 #define BRAKEDA3D_COLLISIONSMANAGER_H
 
 
-#include "Mesh3DGhost.h"
+#include "../Physics/Mesh3DGhost.h"
 #include "../Render/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
-#include "Mesh3DBody.h"
-#include "SpriteDirectional3DBody.h"
+#include "../Physics/Mesh3DBody.h"
+#include "../Physics/SpriteDirectional3DBody.h"
 
 class CollisionsManager {
 public:
@@ -33,37 +33,30 @@ public:
 
     void initBulletSystem();
     void makeGhostForCamera();
-    void checkTriggerCamera();
-    void checkAll();
+    void checkCollisionsForTriggerCamera();
+    void checkCollisionsForAll();
 
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
 
-
     btDiscreteDynamicsWorld *getDynamicsWorld() const;
-
     void setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld);
 
     Camera3D *getCamera() const;
-
     void setCamera(Camera3D *camera);
 
     Mesh3DGhost *getTriggerCamera() const;
-
     void setTriggerCamera(Mesh3DGhost *triggerCamera);
 
     BSPMap *getBspMap() const;
-
     void setBspMap(BSPMap *bspMap);
 
     std::vector<Object3D *> *getGameObjects() const;
     void setGameObjects(std::vector<Object3D *> *gameObjects);
 
     std::vector<Mesh3DBody *> *getMeshPhysics() const;
-
     void setMeshPhysics(std::vector<Mesh3DBody *> *meshPhysics);
 
     std::vector<SpriteDirectional3DBody *> *getProjectilePhysics() const;
-
     void setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics);
 
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);

@@ -5,19 +5,19 @@
 
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../../headers/Objects/Object3D.h"
-#include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Objects/SpriteDirectional3D.h"
-#include "../../headers/Objects/Sprite3D.h"
-#include "../../headers/Physics/Mesh3DBody.h"
-#include "../../headers/Physics/Mesh3DGhost.h"
-#include "../../headers/Render/Logging.h"
+#include "../Objects/Object3D.h"
+#include "../Objects/Mesh3D.h"
+#include "../Objects/SpriteDirectional3D.h"
+#include "../Objects/Sprite3D.h"
+#include "../Physics/Mesh3DBody.h"
+#include "../Physics/Mesh3DGhost.h"
+#include "../Render/Logging.h"
 
-class GUI_ObjectsInspector : public GUI  {
+class GUI_Objects3D : public GUI  {
 public:
     bool show = false;
 
-    virtual ~GUI_ObjectsInspector() {}
+    virtual ~GUI_Objects3D() {}
 
     virtual void draw(std::vector<Object3D*> &gameObjects)
     {

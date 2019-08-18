@@ -3,17 +3,17 @@
 #define SDL2_3D_ENGINE_GUI_LIGHTSINSPECTOR_H
 
 
-#include "../../headers/Objects/LightPoint3D.h"
-#include "../../headers/Render/Tools.h"
+#include "../Objects/LightPoint3D.h"
+#include "../Render/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
 
-class GUI_LightsInspector : public GUI  {
+class GUI_Lights : public GUI  {
         public:
         bool show = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
 
-        virtual ~GUI_LightsInspector() {}
+        virtual ~GUI_Lights() {}
 
         virtual void draw(std::vector<LightPoint3D *> &lightPoints)
         {

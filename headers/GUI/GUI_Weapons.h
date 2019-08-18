@@ -3,11 +3,11 @@
 #define SDL2_3D_ENGINE_GUI_WEAPONS_H
 
 
-#include "../../headers/Objects/LightPoint3D.h"
-#include "../../headers/Render/Tools.h"
+#include "../Objects/LightPoint3D.h"
+#include "../Render/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../../headers/2D/WeaponsManager.h"
+#include "../2D/WeaponsManager.h"
 
 class GUI_Weapons : public GUI  {
     public:

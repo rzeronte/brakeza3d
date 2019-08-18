@@ -4,7 +4,7 @@
 
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../../headers/Render/Tools.h"
+#include "../Render/Tools.h"
 
 struct ExampleAppLog
 {

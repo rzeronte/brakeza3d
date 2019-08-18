@@ -1,6 +1,10 @@
-#include "../../headers/Physics/CollisionsManager.h"
+#include "../../headers/Collisions/CollisionsManager.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "../../headers/Render/Engine.h"
+#include "../../headers/Collisions/CollisionResolver.h"
+#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 
 CollisionsManager::CollisionsManager()
 {
@@ -141,7 +145,7 @@ bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btC
     return collides;
 }
 
-void CollisionsManager::checkTriggerCamera()
+void CollisionsManager::checkCollisionsForTriggerCamera()
 {
     for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
         const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
@@ -203,11 +207,11 @@ void CollisionsManager::checkTriggerCamera()
     }
 }
 
-void CollisionsManager::checkAll()
+void CollisionsManager::checkCollisionsForAll()
 {
-// All collisions pairs
-    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+    // All collisions pairs
     if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
+        int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
         for (int i = 0; i < numManifolds; i++) {
             btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
             if (contactManifold->getNumContacts() > 0) {
@@ -217,171 +221,26 @@ void CollisionsManager::checkAll()
                 Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
                 Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
 
-                BSPMap *oMap = dynamic_cast<BSPMap*> (brkObjectB);
-                if (oMap != NULL) {
+                CollisionResolver *collisionResolver = new CollisionResolver(brkObjectA, brkObjectB, getBspMap());
 
-                    if (brkObjectA->getLabel() == "projectile") {
-                        dynamicsWorld->removeCollisionObject((btCollisionObject *) obA);
-                        //this->removeObject3D(brkObjectA);
-                    }
+                if (!collisionResolver->getTypeCollision()) continue;
 
-                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                        Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and BSPMap");
-                    }
+                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY) {
+                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap());
+                    resolver->dispatch();
+                    continue;
                 }
 
-                SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
-                if (oSpriteDirectional != NULL) {
-
-                    Enemy *oSpriteDirectionalEnemyA = dynamic_cast<Enemy*> (brkObjectA);
-                    Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (brkObjectB);
-
-                    if ( ( oSpriteDirectionalEnemyA != NULL || oSpriteDirectionalEnemyB != NULL) &&
-                         ( brkObjectA->getLabel() == "projectile" || brkObjectB->getLabel() == "projectile" )
-                            ) {
-                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between projectile and Enemy");
-                        }
-                        if (oSpriteDirectionalEnemyA != NULL) {
-                            oSpriteDirectionalEnemyA->stamina -= 10; //weapon->getCurrentWeaponType()->getDamage();
-
-                            if (oSpriteDirectionalEnemyA->stamina < 0) {
-                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectA);
-                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
-                            }
-
-                        } else {
-                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
-                            //this->removeObject3D( brkObjectB );
-                        }
-
-                        if (oSpriteDirectionalEnemyB != NULL) {
-                            oSpriteDirectionalEnemyB->stamina--;
-                            if (oSpriteDirectionalEnemyB->stamina < 0) {
-                                //SpriteDirectional3D *tmp = dynamic_cast<SpriteDirectional3D*> (brkObjectB);
-                                //tmp->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
-                                //dynamicsWorld->removeCollisionObject( (btCollisionObject *) obB );
-
-                            }
-
-                        } else {
-                            dynamicsWorld->removeCollisionObject( (btCollisionObject *) obA );
-                            //this->removeObject3D( brkObjectA );
-                        }
-                    }
-
+                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR) {
+                    CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(brkObjectA, brkObjectB, getBspMap());
+                    resolver->dispatch();
+                    continue;
                 }
 
-                Mesh3D *oMesh = dynamic_cast<Mesh3D*> (brkObjectB);
-                if (oMesh != NULL) {
-                    int originalEntityIndex = oMesh->getBspEntityIndex();
-
-                    if (originalEntityIndex > 0) {
-                        char *classname = bspMap->getEntityValue(originalEntityIndex, "classname");
-                        char *currentTargetName = bspMap->getEntityValue(originalEntityIndex, "targetname");
-
-                        if ( !strcmp(classname, "func_door") ) {
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log("[AllPairs] Collision with func_door");
-                            }
-                            if (!bspMap->hasEntityAttribute(originalEntityIndex, "targetname")) {
-                                // No tiene targetname
-                                Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                                if (originalBody != NULL) {
-                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
-                                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                        Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + originalBody->getLabel());
-                                    }
-                                }
-                            } else {
-                                int targetRemoteEntityId = bspMap->getIndexOfFirstEntityByTarget( currentTargetName );
-                                char *classnameRemote = bspMap->getEntityValue(targetRemoteEntityId, "classname");
-
-                                if ( !strcmp(classnameRemote, "trigger_counter") ) {
-                                    for (int k = 0; k < this->gameObjects->size(); k++) {
-                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
-                                        if (oRemoteMesh != NULL) {
-                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-                                                Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
-                                                int currentCounter = oRemoteGhost->currentTriggerCounter;
-
-                                                char *countValue = bspMap->getEntityValue(targetRemoteEntityId, "count");
-                                                int countValueInt = atoi( std::string(countValue).c_str() );
-
-                                                if (countValueInt == currentCounter) {
-                                                    Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-
-                                                    this->moveMesh3DBody(originalBody, originalEntityIndex);
-                                                } else {
-                                                    if (strlen(bspMap->getEntityValue(originalEntityIndex, "message")) > 0) {
-                                                        //Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bspMap->getEntityValue(originalEntityIndex, "message")) );
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        //***************************
-                        if ( !strcmp(classname, "func_button") ) {
-                            char *targetRemote = bspMap->getEntityValue(originalEntityIndex, "target");
-                            int targetRemoteEntityId = bspMap->getIndexOfFirstEntityByTargetname(targetRemote );
-
-                            Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                            this->moveMesh3DBody(originalBody, originalEntityIndex);
-
-                            if (targetRemoteEntityId >= 0) {
-                                char *classnameRemote = bspMap->getEntityValue(targetRemoteEntityId, "classname");
-                                if (!strcmp(classnameRemote, "func_door")) {
-                                    // Buscamos algún objeto cuya BSPEntity coincida
-                                    for (int k = 0; k < this->gameObjects->size(); k++) {
-                                        Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
-                                        if (oRemoteMesh != NULL) {
-                                            if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-
-                                                Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
-                                                this->moveMesh3DBody(oRemoteBody, targetRemoteEntityId);
-
-                                                if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                    Logging::getInstance()->getInstance()->Log("Moving Door: " + oRemoteBody->getLabel());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (!strcmp(classnameRemote, "trigger_counter") ) {
-                                    // Si el objeto original era un botón
-                                    if (!strcmp(classname, "func_button")) {
-                                        Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (brkObjectB);
-                                        if (oButton->active) {
-                                            for (int k = 0; k < this->gameObjects->size(); k++) {
-                                                Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
-                                                if (oRemoteMesh != NULL) {
-                                                    if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-
-                                                        Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
-                                                        oRemoteGhost->currentTriggerCounter++;
-                                                        oButton->active = false;
-                                                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                                            Logging::getInstance()->getInstance()->Log("trigger_counter for BSPEntity: " + std::to_string(targetRemoteEntityId) + "=" + std::to_string(oRemoteGhost->currentTriggerCounter));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                            Logging::getInstance()->getInstance()->Log("[AllPairs] Collision between " + brkObjectA->getLabel() + " and " + brkObjectB->getLabel());
-                        }
-                    }
+                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON) {
+                    CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(brkObjectA, brkObjectB, getBspMap());
+                    resolver->dispatch();
+                    continue;
                 }
             }
         }
@@ -420,12 +279,11 @@ Vertex3D CollisionsManager::stepSimulation(float time)
 {
     // check for collisions
     if (bspMap->isLoaded()) {
-        checkTriggerCamera();
-        checkAll();
+        checkCollisionsForTriggerCamera();
+        checkCollisionsForAll();
     }
 
     Vertex3D vel = getCamera()->velocity.getComponent();
-
     btVector3 bulletVelocity = btVector3(vel.x, vel.y, vel.z);
 
     if (this->camera->kinematicController->onGround()) {

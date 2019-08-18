@@ -7,7 +7,6 @@
 #include "Frustum.h"
 #include "../Objects/Camera3D.h"
 #include "Billboard.h"
-#include "../../src/GUI/GUI.h"
 #include "../Objects/Line2D.h"
 
 class Drawable {

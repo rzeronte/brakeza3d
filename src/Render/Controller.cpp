@@ -5,6 +5,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Physics/Projectile3DBody.h"
 
 Controller::Controller()
 {
@@ -94,7 +95,7 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
         this->firing = true;
         if (weapon->getCurrentWeaponType()->cadenceTimerTest()) {
             if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
-                SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
+                Projectile3DBody *projectile = new Projectile3DBody();
                 projectile->setPosition(*camera->getPosition());
                 projectile->setLabel("projectile");
                 projectile->setEnabled(true);

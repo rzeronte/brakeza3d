@@ -18,6 +18,8 @@ public:
 
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
+    std::string cameraNameIdentifier = "Camera";
+
     Vertex3D CameraPosition = Vertex3D(1, 1, -5);
 
     Vertex3D right   = Vertex3D(1, 0, 0);
@@ -258,6 +260,11 @@ public:
         WEAPON_ACTION_RELOAD = 2,
     };
 
+    enum CollisionResolverTypes {
+        COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY = 1,
+        COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR = 2,
+        COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON = 3,
+    };
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H
