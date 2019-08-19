@@ -42,13 +42,14 @@ public:
 
             // remove object3D for check in stepSimulation
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
+            sprite->setRemoved(true);
         }
 
         // Remove projectile for check in stepSimulation
         dynamicsWorld->removeCollisionObject(getProjectile()->getRigidBody());
 
         // Remove projectile from projectile list
-        removeProjectile(getProjectile(), projectiles);
+        getProjectile()->setRemoved(true);
     }
 
     Projectile3DBody *getProjectile()

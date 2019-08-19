@@ -88,8 +88,8 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
         direction = DIR_NW;
 
     // Frame secuence control
-    float deltatime = this->timer->getTicks() - this->last_ticks;
-    this->last_ticks = this->timer->getTicks();
+    float deltatime = this->timer->getTicks() - this->timerLastTicks;
+    this->timerLastTicks = this->timer->getTicks();
     timerCurrent += (deltatime/1000.f);
 
     float step = (float) 1 / this->fps;

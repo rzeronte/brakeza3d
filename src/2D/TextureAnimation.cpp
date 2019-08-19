@@ -37,9 +37,25 @@ Texture *TextureAnimation::getCurrentFrame()
 
 void TextureAnimation::nextFrame()
 {
+    setEndAnimation(false);
+
     currentFrame++;
 
+    // update frame
     if (currentFrame >= this->getNumFrames()) {
         currentFrame = 0;
     }
+
+    // flag for check if we are in end of animation
+    if (currentFrame == this->getNumFrames() - 1) {
+        setEndAnimation(true);
+    }
+}
+
+bool TextureAnimation::isEndAnimation() const {
+    return endAnimation;
+}
+
+void TextureAnimation::setEndAnimation(bool endAnimation) {
+    TextureAnimation::endAnimation = endAnimation;
 }

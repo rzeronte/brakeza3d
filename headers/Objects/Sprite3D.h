@@ -8,28 +8,29 @@
 #include "../Render/Timer.h"
 #include "Camera3D.h"
 
-
 #define ANIMATEDSPRITE_MAX_ANIMATIONS 5
 
 class TextureAnimation;
 
-class Sprite3D : public Object3D{
+class Sprite3D : public Object3D {
     Billboard *billboard;
 
 public:
 
     float width = EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
     float height = EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
-    int num_animations = 0;
-    int current_animation = 0;
+    int numAnimations = 0;
+    int currentAnimationIndex = 0;
 
     TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
     int fps = 2;
 
     Timer *timer;
-    float last_ticks;
+    float timerLastTicks;
     float timerCurrent = 0;
+
+    bool autoRemoveAfterAnimation = false;
 
     Sprite3D();
 

@@ -206,28 +206,29 @@ void CollisionsManager::checkCollisionsForAll()
 
                 CollisionResolver *collisionResolver = new CollisionResolver(brkObjectA, brkObjectB, getBspMap());
 
-                if (!collisionResolver->getTypeCollision()) continue;
+                int collisionType = collisionResolver->getTypeCollision();
 
+                if (!collisionType) continue;
 
-                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP) {
                     CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
                     resolver->dispatch();
                     continue;
                 }
 
-                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY) {
                     CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
                     resolver->dispatch();
                     continue;
                 }
 
-                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR) {
                     CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
                 }
 
-                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON) {
                     CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
@@ -239,6 +240,7 @@ void CollisionsManager::checkCollisionsForAll()
 
 void CollisionsManager::updatePhysicObjects()
 {
+    // projectiles
     std::vector<SpriteDirectional3DBody *>::iterator it;
     for (it = projectilePhysics->begin(); it != projectilePhysics->end(); it++) {
         (*it)->integrate();

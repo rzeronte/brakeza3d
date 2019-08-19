@@ -779,7 +779,7 @@ void Engine::onUpdate()
         this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
     }
 
-    if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid()) {
+    if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
         this->waterShader();
     }
 }
@@ -869,23 +869,42 @@ void Engine::getLightPointsTriangles()
 
 void Engine::getSpritesTriangles()
 {
-    std::vector<SpriteDirectional3DBody *>::iterator it;
+    std::vector<SpriteDirectional3DBody *>::iterator itProjectile;
+    for (itProjectile = projectilePhysics.begin(); itProjectile != projectilePhysics.end(); ) {
+        SpriteDirectional3DBody *sprite = *(itProjectile);
 
-    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
-        SpriteDirectional3D *oSpriteDirectional = *(it);
+        // Check for delete
+        if (sprite->isRemoved()) {
+            itProjectile = projectilePhysics.erase(itProjectile);
+            continue;
+        } else {
+            itProjectile++;
+        }
 
-        if (!oSpriteDirectional->isEnabled()) {
+        if (!sprite->isEnabled()) {
             continue;
         }
 
-        oSpriteDirectional->updateTrianglesCoordinates(camera);
-        oSpriteDirectional->draw(camera);
+        sprite->updateTrianglesCoordinates(camera);
+        sprite->draw(camera);
     }
 
-    for (int i = 0; i < this->gameObjects.size(); i++) {
+    std::vector<Object3D *>::iterator itObject3D;
+    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); ) {
+        Object3D *object = *(itObject3D);
+
+        // Check for delete
+        if (object->isRemoved()) {
+            gameObjects.erase(itObject3D);
+            continue;
+        } else {
+            itObject3D++;
+        }
+
         // Sprite Directional 3D
-        SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (this->gameObjects[i]);
+        SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
         if (oSpriteDirectional != NULL) {
+
             if (!oSpriteDirectional->isEnabled()) {
                 continue;
             }
@@ -903,7 +922,7 @@ void Engine::getSpritesTriangles()
         }
 
         // Sprite 3D
-        Sprite3D *oSprite = dynamic_cast<Sprite3D*> (this->gameObjects[i]);
+        Sprite3D *oSprite = dynamic_cast<Sprite3D*> (object);
         if (oSprite != NULL) {
             if (!oSprite->isEnabled()) {
                 continue;

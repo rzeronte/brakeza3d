@@ -54,6 +54,10 @@ public:
 
     float getScale() const;
     void  setScale(float scale);
+
+    bool isRemoved() const;
+
+    void setRemoved(bool removed);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

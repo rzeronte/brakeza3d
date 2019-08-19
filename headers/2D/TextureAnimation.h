@@ -15,6 +15,8 @@ public:
     int currentFrame = 0;
     Texture *frames[ANIMATION2D_MAX_FRAMES];
 
+    bool endAnimation = false;
+
     TextureAnimation();
 
     void setup(std::string file, int num_frames);
@@ -24,6 +26,10 @@ public:
 
     Texture *getCurrentFrame();
     void nextFrame();
+
+    bool isEndAnimation() const;
+
+    void setEndAnimation(bool endAnimation);
 };
 
 
