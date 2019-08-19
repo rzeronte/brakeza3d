@@ -19,6 +19,7 @@ public:
     std::string ENGINE_TITLE = "Brakeza3D v0.1";
 
     std::string cameraNameIdentifier = "Camera";
+    std::string cameraTriggerNameIdentifier = "triggerCamera";
 
     Vertex3D CameraPosition = Vertex3D(1, 1, -5);
 
@@ -265,6 +266,7 @@ public:
         COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY = 1,
         COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR = 2,
         COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON = 3,
+        COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP = 4,
     };
 };
 

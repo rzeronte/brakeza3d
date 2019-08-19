@@ -7,6 +7,7 @@
 #include "../Objects/Mesh3D.h"
 #include "../Render/BSPMap.h"
 #include "../Physics/Mesh3DBody.h"
+#include "../Physics/Projectile3DBody.h"
 
 class CollisionResolver {
 
@@ -32,7 +33,7 @@ public:
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
-
+    void removeProjectile(Projectile3DBody *obj, std::vector<SpriteDirectional3DBody *> *projectilePhysics);
 };
 
 

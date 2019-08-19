@@ -13,15 +13,42 @@ public:
     Projectile3DBody *projectile;
     NPCEnemyBody *npcEnemy;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap) : CollisionResolver(objA, objB, bspMap)
+    std::vector<SpriteDirectional3DBody *> *projectiles;
+    btDiscreteDynamicsWorld* dynamicsWorld;
+
+    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectilePhysics, btDiscreteDynamicsWorld* dynamicsWorld) : CollisionResolver(objA, objB, bspMap)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
+
+        this->projectiles = projectilePhysics;
+        this->dynamicsWorld = dynamicsWorld;
     }
 
     void dispatch()
     {
-        Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndNPCEnemy");
+        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndNPCEnemy");
+        }
+
+        Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (getNPCEnemy());
+
+        getNPCEnemy()->setDamage( 5 );
+
+        if (getNPCEnemy()->stamina < 0) {
+            // Set animation NPC to Dead
+            SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
+            sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+
+            // remove object3D for check in stepSimulation
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
+        }
+
+        // Remove projectile for check in stepSimulation
+        dynamicsWorld->removeCollisionObject(getProjectile()->getRigidBody());
+
+        // Remove projectile from projectile list
+        removeProjectile(getProjectile(), projectiles);
     }
 
     Projectile3DBody *getProjectile()
@@ -51,6 +78,5 @@ public:
     }
 
 };
-
 
 #endif //BRAKEDA3D_COLLISIONRESOLVERBETWEENPROJECTILEANDNPCENEMY_H
