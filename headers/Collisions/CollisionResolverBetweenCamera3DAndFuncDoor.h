@@ -20,7 +20,9 @@ public:
 
     void dispatch()
     {
-        Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndFuncDoor");
+        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndFuncDoor");
+        }
 
         int originalEntityIndex = this->mesh->getBspEntityIndex();
         char *currentTargetName = bspMap->getEntityValue(originalEntityIndex, "targetname");

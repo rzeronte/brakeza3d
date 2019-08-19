@@ -5,6 +5,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
+#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 
 CollisionsManager::CollisionsManager()
 {
@@ -47,6 +48,7 @@ void CollisionsManager::initBulletSystem()
     this->dynamicsWorld->setDebugDrawer(debugDraw);
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
+    // Detect collisions without affect physics (used by triggers)
     this->makeGhostForCamera();
 }
 
@@ -110,7 +112,7 @@ void CollisionsManager::setProjectilePhysics(std::vector<SpriteDirectional3DBody
 void CollisionsManager::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
-    triggerCamera->setLabel("triggerCamera");
+    triggerCamera->setLabel(EngineSetup::getInstance()->cameraTriggerNameIdentifier);
     triggerCamera->setEnabled(true);
     triggerCamera->setPosition(*camera->getPosition());
     triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
@@ -206,8 +208,15 @@ void CollisionsManager::checkCollisionsForAll()
 
                 if (!collisionResolver->getTypeCollision()) continue;
 
+
+                if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP) {
+                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
+                    resolver->dispatch();
+                    continue;
+                }
+
                 if (collisionResolver->getTypeCollision() == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY) {
-                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap());
+                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
                     resolver->dispatch();
                     continue;
                 }

@@ -4,6 +4,8 @@
 #include "headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
+Game::Game() {}
+
 void Game::run()
 {
     this->onStart();
@@ -38,7 +40,6 @@ void Game::mainLoop()
         // Check array Uint8 *keyboard
         controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
 
-
         // Checks pre update frame
         this->postUpdate();
 
@@ -47,9 +48,6 @@ void Game::mainLoop()
 
         // Update window
         Engine::windowUpdate();
-
-        // FPS calculation
-        Engine::processFPS();
     }
 }
 
@@ -77,8 +75,6 @@ void Game::onEnd()
 {
     Engine::onEnd();
 }
-
-Game::Game() {}
 
 void Game::loadDemoObjects()
 {
@@ -185,7 +181,6 @@ void Game::loadDemoObjects()
     doomFace->addAnimation("doom_face/face", 3);
     doomFace->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     doomFace->getBillboard()->setDimensions(1, 1);
-
     this->addObject3D(doomFace, "doomFace");
 
     // cubo physics

@@ -12,6 +12,10 @@ CollisionResolver::CollisionResolver(Object3D *objA, Object3D *objB, BSPMap *bsp
 
 int CollisionResolver::getTypeCollision()
 {
+    if (isSomeProjectile() && isSomeBSPMap()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP;
+    }
+
     if (isSomeProjectile() && isSomeNPCEnemy()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY;
     }
@@ -181,6 +185,19 @@ void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntity
 
     if (speedFloat > 0) {
         oRemoteBody->setSpeedMoving(speedFloat);
+    }
+}
+
+void CollisionResolver::removeProjectile(Projectile3DBody *obj, std::vector<SpriteDirectional3DBody *> *projectilePhysics)
+{
+    SpriteDirectional3DBody *body = dynamic_cast<SpriteDirectional3DBody*> (obj);
+
+    std::vector<SpriteDirectional3DBody *>::iterator it;
+    for (it = projectilePhysics->begin(); it != projectilePhysics->end(); it++) {
+        if (body == *(it)) {
+            projectilePhysics->erase(it);
+            return;
+        }
     }
 }
 

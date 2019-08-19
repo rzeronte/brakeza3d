@@ -618,19 +618,10 @@ void Engine::drawGUI()
 
 void Engine::windowUpdate()
 {
+    Engine::processFPS();
+
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         this->drawMenuScreen();
-    } else {
-        // draw weapon
-        if (EngineSetup::getInstance()->SHOW_WEAPON) {
-            this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
-        }
-
-        if (bspMap->isLoaded()) {
-            if (bspMap->isCurrentLeafLiquid()) {
-                this->waterShader();
-            }
-        }
     }
 
     EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
@@ -783,6 +774,14 @@ void Engine::onUpdate()
     if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
     }
+
+    if (EngineSetup::getInstance()->SHOW_WEAPON) {
+        this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
+    }
+
+    if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid()) {
+        this->waterShader();
+    }
 }
 
 void Engine::clearLightPointsShadowMappings()
@@ -878,8 +877,7 @@ void Engine::getSpritesTriangles()
         if (!oSpriteDirectional->isEnabled()) {
             continue;
         }
-        oSpriteDirectional->width = 10;
-        oSpriteDirectional->height = 10;
+
         oSpriteDirectional->updateTrianglesCoordinates(camera);
         oSpriteDirectional->draw(camera);
     }
