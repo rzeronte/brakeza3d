@@ -34,7 +34,7 @@ public:
         dynamicsWorld->removeCollisionObject(getProjectile()->getRigidBody());
 
         // Remove projectile from projectile list
-        removeProjectile(getProjectile(), projectiles);
+        getProjectile()->setRemoved(true);
     }
 
     BSPMap *getBSPMap()

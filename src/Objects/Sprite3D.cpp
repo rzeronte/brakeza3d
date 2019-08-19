@@ -9,7 +9,7 @@ Sprite3D::Sprite3D()
 {
     this->billboard = new Billboard();
 
-    for (int i = 0; i< ANIMATEDSPRITE_MAX_ANIMATIONS; i++) {
+    for (int i = 0; i < ANIMATEDSPRITE_MAX_ANIMATIONS; i++) {
         this->animations[i] = new TextureAnimation();
     }
 }
@@ -18,13 +18,13 @@ void Sprite3D::addAnimation(std::string animation2d, int num_frames)
 {
     Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
 
-    this->animations[this->num_animations]->setup(animation2d, num_frames);
-    this->num_animations++;
+    this->animations[this->numAnimations]->setup(animation2d, num_frames);
+    this->numAnimations++;
 }
 
 void Sprite3D::setAnimation(int index_animation)
 {
-    this->current_animation = index_animation;
+    this->currentAnimationIndex = index_animation;
 }
 
 void Sprite3D::setTimer(Timer *timer)
@@ -44,21 +44,25 @@ Billboard *Sprite3D::getBillboard() const
 
 void Sprite3D::updateTexture()
 {
-    if (num_animations == 0) return;
+    if (numAnimations == 0) return;
 
     // Frame secuence control
-    float deltatime = this->timer->getTicks() - this->last_ticks;
-    this->last_ticks = this->timer->getTicks();
+    float deltatime = this->timer->getTicks() - this->timerLastTicks;
+    this->timerLastTicks = this->timer->getTicks();
     timerCurrent += (deltatime/1000.f);
 
     float step = (float) 1 / this->fps;
 
     if (timerCurrent > step) {
-        this->animations[current_animation]->nextFrame();
         timerCurrent = 0;
+        this->animations[currentAnimationIndex]->nextFrame();
+        if (this->autoRemoveAfterAnimation && this->animations[currentAnimationIndex]->isEndAnimation()) {
+            this->setRemoved(true);
+            return;
+        }
     }
 
-    this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame() );
+    this->getBillboard()->setTrianglesTexture( this->animations[currentAnimationIndex]->getCurrentFrame() );
 }
 
 void Sprite3D::updateTrianglesCoordinatesAndTexture(Camera3D *cam)

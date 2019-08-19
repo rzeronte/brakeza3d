@@ -35,7 +35,7 @@ public:
 
     int fps = 2;
 
-    float last_ticks;
+    float timerLastTicks;
     float timerCurrent = 0;
 
     TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];

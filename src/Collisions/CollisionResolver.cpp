@@ -188,19 +188,6 @@ void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntity
     }
 }
 
-void CollisionResolver::removeProjectile(Projectile3DBody *obj, std::vector<SpriteDirectional3DBody *> *projectilePhysics)
-{
-    SpriteDirectional3DBody *body = dynamic_cast<SpriteDirectional3DBody*> (obj);
-
-    std::vector<SpriteDirectional3DBody *>::iterator it;
-    for (it = projectilePhysics->begin(); it != projectilePhysics->end(); it++) {
-        if (body == *(it)) {
-            projectilePhysics->erase(it);
-            return;
-        }
-    }
-}
-
 CollisionResolver::~CollisionResolver() {
 
 }

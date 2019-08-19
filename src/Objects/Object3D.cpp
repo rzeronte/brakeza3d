@@ -136,3 +136,11 @@ void Object3D::setScale(float scale) {
     Object3D::scale = scale;
 }
 
+bool Object3D::isRemoved() const {
+    return removed;
+}
+
+void Object3D::setRemoved(bool removed) {
+    Object3D::removed = removed;
+}
+
