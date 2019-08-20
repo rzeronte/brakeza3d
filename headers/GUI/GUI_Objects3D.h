@@ -46,6 +46,7 @@ public:
                 std::string rotation_text = "Rotation##" + std::to_string(i);
                 std::string shadow_text = "Shadow##" + std::to_string(i);
                 std::string animation_text = "Animation##" + std::to_string(i);
+                std::string removed_text = "Removed##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
@@ -71,6 +72,8 @@ public:
                                            std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
                         ImGui::TreePop();
                     }
+
+                    ImGui::Checkbox(removed_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->removed);
 
                     // Only for meshes
                     Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);

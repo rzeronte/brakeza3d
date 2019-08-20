@@ -8,6 +8,7 @@
       "speed": 0,
       "projectile_width": 0,
       "projectile_height": 0,
+      "mark": { "path": "melee_magic/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
       "animations": [
         { "subfolder": "walk", "frames": 3, "fps": 14, "offsetX": 50, "offsetY": 185 },
         { "subfolder": "fire", "frames": 6, "fps": 10, "offsetX": 60, "offsetY": 150 },
@@ -22,6 +23,7 @@
       "speed": 700,
       "projectile_width": 0.75,
       "projectile_height": 0.75,
+      "mark": { "path": "gun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "animations": [
         { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 70, "offsetY": 60 },
         { "subfolder": "fire", "frames": 5, "fps": 10, "offsetX": 0, "offsetY": 72 },
@@ -34,11 +36,12 @@
       "hit": 1,
       "damage": 25,
       "speed": 700,
-      "projectile_width": 0.75,
-      "projectile_height": 0.75,
+      "projectile_width": 0.50,
+      "projectile_height": 0.50,
+      "mark": { "path": "machinegun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 50, "offsetY": 120 },
-        { "subfolder": "fire", "frames": 8, "fps": 20, "offsetX": 60, "offsetY": 120 },
+        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 80, "offsetY": 120 },
+        { "subfolder": "fire", "frames": 8, "fps": 20, "offsetX": 80, "offsetY": 120 },
         { "subfolder": "reload", "frames": 4, "fps": 10, "offsetX": 0, "offsetY": 0 }
       ]
     },
@@ -50,6 +53,7 @@
       "speed": 200,
       "projectile_width": 6,
       "projectile_height": 6,
+      "mark": { "path": "rocketlauncher/mark/mark",  "frames": 13,  "fps": 25, "width": 20, "height": 20},
       "animations": [
         { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 0, "offsetY": 75 },
         { "subfolder": "fire", "frames": 21, "fps": 10, "offsetX": 0, "offsetY": 75 },

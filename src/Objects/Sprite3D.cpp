@@ -14,10 +14,10 @@ Sprite3D::Sprite3D()
     }
 }
 
-void Sprite3D::addAnimation(std::string animation2d, int num_frames)
+void Sprite3D::addAnimation(std::string animation2d, int num_frames, int fps)
 {
     Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
-
+    this->fps = fps,
     this->animations[this->numAnimations]->setup(animation2d, num_frames);
     this->numAnimations++;
 }
@@ -49,16 +49,15 @@ void Sprite3D::updateTexture()
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->timerLastTicks;
     this->timerLastTicks = this->timer->getTicks();
-    timerCurrent += (deltatime/1000.f);
+    timerCurrent += (float)(deltatime/1000);
 
     float step = (float) 1 / this->fps;
 
-    if (timerCurrent > step) {
-        timerCurrent = 0;
+    if (timerCurrent >= step) {
+        timerCurrent = 0.0f;
         this->animations[currentAnimationIndex]->nextFrame();
-        if (this->autoRemoveAfterAnimation && this->animations[currentAnimationIndex]->isEndAnimation()) {
+        if (this->isAutoRemoveAfterAnimation() && this->animations[currentAnimationIndex]->isEndAnimation()) {
             this->setRemoved(true);
-            return;
         }
     }
 
@@ -72,4 +71,27 @@ void Sprite3D::updateTrianglesCoordinatesAndTexture(Camera3D *cam)
 
     this->getBillboard()->updateUnconstrainedQuad(this, up, right );
     this->updateTexture();
+}
+
+bool Sprite3D::isAutoRemoveAfterAnimation() const {
+    return autoRemoveAfterAnimation;
+}
+
+void Sprite3D::setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation) {
+    Sprite3D::autoRemoveAfterAnimation = autoRemoveAfterAnimation;
+}
+
+void Sprite3D::linkTextureAnimation(Sprite3D *dst)
+{
+    this->numAnimations = dst->numAnimations;
+    this->fps = dst->fps;
+
+    for (int i = 0; i < dst->numAnimations; i++ ) {
+        this->animations[i]->base_file = dst->animations[i]->base_file;
+        this->animations[i]->numFrames = dst->animations[i]->numFrames;
+
+        for (int j = 0; j < dst->animations[i]->numFrames; j++ ) {
+            this->animations[i]->frames[j] = dst->animations[i]->frames[j];
+        }
+    }
 }

@@ -14,14 +14,16 @@ public:
 
     std::vector<SpriteDirectional3DBody *> *projectiles;
     btDiscreteDynamicsWorld* dynamicsWorld;
+    WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectiles, btDiscreteDynamicsWorld* dynamicsWorld) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectiles, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
     {
         this->projectile = getProjectile();
         this->bspMap = getBSPMap();
 
         this->projectiles = projectiles;
         this->dynamicsWorld = dynamicsWorld;
+        this->weaponManager = weaponManager;
     }
 
     void dispatch()
@@ -35,6 +37,19 @@ public:
 
         // Remove projectile from projectile list
         getProjectile()->setRemoved(true);
+
+        Sprite3D *particle = new Sprite3D();
+        particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
+        particle->setAutoRemoveAfterAnimation(true);
+        particle->setEnabled(true);
+        particle->setPosition(*getProjectile()->getPosition() );
+        particle->setTimer(brakeza3D->getTimer());
+        particle->setAnimation(0);
+        particle->getBillboard()->setDimensions(
+            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
+            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
+        );
+        brakeza3D->addObject3D(particle, "particles");
     }
 
     BSPMap *getBSPMap()

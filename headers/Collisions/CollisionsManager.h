@@ -8,6 +8,7 @@
 #include "../Render/PhysicsDebugDraw.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/SpriteDirectional3DBody.h"
+#include "../2D/WeaponsManager.h"
 
 class CollisionsManager {
 public:
@@ -17,6 +18,7 @@ public:
     std::vector<Object3D*> *gameObjects;
     std::vector<Mesh3DBody *> *meshPhysics;
     std::vector<SpriteDirectional3DBody *> *projectilePhysics;
+    WeaponsManager *weaponManager;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration* collisionConfiguration;
@@ -56,6 +58,10 @@ public:
 
     std::vector<SpriteDirectional3DBody *> *getProjectilePhysics() const;
     void setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics);
+
+    WeaponsManager *getWeaponManager() const;
+
+    void setWeaponManager(WeaponsManager *weaponManager);
 
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 

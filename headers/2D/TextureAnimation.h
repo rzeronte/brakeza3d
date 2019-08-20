@@ -5,7 +5,7 @@
 #include <string>
 #include "../Render/Texture.h"
 
-#define ANIMATION2D_MAX_FRAMES 10
+#define ANIMATION2D_MAX_FRAMES 25
 
 class TextureAnimation {
 public:

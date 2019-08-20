@@ -4,6 +4,7 @@
 
 #include "WeaponAnimation.h"
 #include "../Objects/SpriteDirectional3D.h"
+#include "../Objects/Sprite3D.h"
 
 #define WEAPON_MAX_ANIMATIONSS 10
 
@@ -25,7 +26,8 @@ public:
     float lastTicks;
     float acumulatedTime = 0;
 
-    SpriteDirectional3D *projectile;
+    SpriteDirectional3D *projectileTemplate;
+    Sprite3D *markTemplate;
 
     int speed = 500;
 
@@ -55,6 +57,9 @@ public:
 
     int getDamage();
     void setDamage(int damage);
+
+    Sprite3D *getMarkTemplate();
+    void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
 };
 
 

@@ -39,15 +39,16 @@ Engine::Engine()
 
     this->initTiles();
 
-    this->bspMap = new BSPMap();
+    bspMap = new BSPMap();
+    weaponManager = new WeaponsManager();
 
     // Init Physics System
     this->collisionsManager = new CollisionsManager();
     this->initCollisionsManager();
 
-    weapon = new WeaponsManager();
-
     menu = new MenuManager();
+
+    this->engineTimer.start();
 
 }
 
@@ -610,7 +611,7 @@ void Engine::drawGUI()
             tiles, tilesWidth,
             this->numVisibleTriangles,
             mapsJSONList,
-            weapon
+            weaponManager
     );
 
     ImGui::Render();
@@ -651,8 +652,6 @@ void Engine::windowUpdate()
 
 void Engine::onStart()
 {
-    this->engineTimer.start();
-
     Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
 
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
@@ -776,7 +775,7 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        this->weapon->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
+        this->weaponManager->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
     }
 
     if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
@@ -1303,17 +1302,39 @@ void Engine::getWeaponsJSON()
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
 
         // Weapon Type attributes
-        weapon->addWeaponType(name->valuestring);
-        weapon->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
-        weapon->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
-        weapon->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
-        weapon->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
-        weapon->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
+        weaponManager->addWeaponType(name->valuestring);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
+
+        cJSON *mark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
+        cJSON *markPath = cJSON_GetObjectItemCaseSensitive(mark, "path");
+        cJSON *markFrames = cJSON_GetObjectItemCaseSensitive(mark, "frames");
+        cJSON *markFps = cJSON_GetObjectItemCaseSensitive(mark, "fps");
+        cJSON *markW = cJSON_GetObjectItemCaseSensitive(mark, "width");
+        cJSON *markH = cJSON_GetObjectItemCaseSensitive(mark, "height");
+
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
+                markPath->valuestring,
+                (int) markFrames->valueint,
+                (int) markFps->valueint,
+                (float) markW->valuedouble,
+                (float) markH->valuedouble
+        );
 
         Logging::getInstance()->Log("Weapon JSON detected: name: " + std::string(name->valuestring) +
             ", hitType: " + std::to_string(hit->valueint) +
             ", cadence: " + std::to_string(cadence->valuedouble) +
             ", speed: " + std::to_string(speed->valuedouble)
+        );
+
+        Logging::getInstance()->Log("JSON Weapon mark details for : " + std::string(name->valuestring) +
+            ", path: " + markPath->valuestring +
+            ", frames: " + std::to_string(markFrames->valueint) +
+            ", fps: " + std::to_string(markFps->valueint) +
+            ", w: " + std::to_string(markW->valuedouble) + ", h: " + std::to_string(markH->valuedouble)
         );
 
         // animation's weapon loop
@@ -1330,7 +1351,7 @@ void Engine::getWeaponsJSON()
 
             Logging::getInstance()->Log("Reading JSON Weapon Animation: " + std::string(subfolder->valuestring));
 
-            weapon->getWeaponTypeByLabel(name->valuestring)->addAnimation(
+            weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                 std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
                 frames->valueint,
                 fps->valueint,
@@ -1385,6 +1406,7 @@ void Engine::drawMenuScreen()
 void Engine::initCollisionsManager()
 {
     this->collisionsManager->setBspMap(this->bspMap);
+    this->collisionsManager->setWeaponManager(this->weaponManager);
     this->collisionsManager->setCamera(this->camera);
     this->collisionsManager->setGameObjects(&this->gameObjects);
     this->collisionsManager->setProjectilePhysics(&this->projectilePhysics);
