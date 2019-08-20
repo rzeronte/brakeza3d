@@ -2,12 +2,14 @@
 #ifndef BRAKEDA3D_COLLISIONRESOLVER_H
 #define BRAKEDA3D_COLLISIONRESOLVER_H
 
-
 #include "../Objects/Object3D.h"
 #include "../Objects/Mesh3D.h"
 #include "../Render/BSPMap.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/Projectile3DBody.h"
+#include "../Render/Engine.h"
+
+extern Engine *brakeza3D;
 
 class CollisionResolver {
 

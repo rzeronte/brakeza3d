@@ -192,6 +192,8 @@ void CollisionsManager::checkCollisionsForTriggerCamera()
 
 void CollisionsManager::checkCollisionsForAll()
 {
+    if (!EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) return;
+
     // All collisions pairs
     if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
         int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -210,25 +212,25 @@ void CollisionsManager::checkCollisionsForAll()
 
                 if (!collisionType) continue;
 
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP) {
-                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP ) {
+                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld(), getWeaponManager());
                     resolver->dispatch();
                     continue;
                 }
 
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY) {
-                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld());
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
+                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld(), getWeaponManager());
                     resolver->dispatch();
                     continue;
                 }
 
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR ) {
                     CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
                 }
 
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON) {
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON ) {
                     CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(brkObjectA, brkObjectB, getBspMap(), getGameObjects());
                     resolver->dispatch();
                     continue;
@@ -307,4 +309,12 @@ Vertex3D CollisionsManager::stepSimulation(float time)
     }
 
     return finalVelocity;
+}
+
+WeaponsManager *CollisionsManager::getWeaponManager() const {
+    return weaponManager;
+}
+
+void CollisionsManager::setWeaponManager(WeaponsManager *weaponManager) {
+    CollisionsManager::weaponManager = weaponManager;
 }

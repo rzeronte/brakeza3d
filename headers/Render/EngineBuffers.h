@@ -7,6 +7,7 @@
 #include <SDL_mixer.h>
 #include "Timer.h"
 #include "../Objects/SpriteDirectional3D.h"
+#include "../Objects/Sprite3D.h"
 
 typedef struct {
     int id;

@@ -32,13 +32,13 @@ void Game::mainLoop()
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
             if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-                controller->handleMouse(&this->e, this->camera, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
+                controller->handleMouse(&this->e, this->camera, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
             }
-            controller->handleKeyboard(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
+            controller->handleKeyboard(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
         }
 
         // Check array Uint8 *keyboard
-        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weapon);
+        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
 
         // Checks pre update frame
         this->postUpdate();
@@ -178,7 +178,7 @@ void Game::loadDemoObjects()
     doomFace->setEnabled(false);
     doomFace->setPosition( Vertex3D(2, 1, 15) );
     doomFace->setTimer(Engine::getTimer());
-    doomFace->addAnimation("doom_face/face", 3);
+    doomFace->addAnimation("doom_face/face", 3, 10);
     doomFace->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     doomFace->getBillboard()->setDimensions(1, 1);
     this->addObject3D(doomFace, "doomFace");

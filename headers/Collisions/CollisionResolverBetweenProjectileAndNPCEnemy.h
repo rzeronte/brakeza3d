@@ -15,14 +15,16 @@ public:
 
     std::vector<SpriteDirectional3DBody *> *projectiles;
     btDiscreteDynamicsWorld* dynamicsWorld;
+    WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectilePhysics, btDiscreteDynamicsWorld* dynamicsWorld) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectilePhysics, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
 
         this->projectiles = projectilePhysics;
         this->dynamicsWorld = dynamicsWorld;
+        this->weaponManager = weaponManager;
     }
 
     void dispatch()

@@ -150,7 +150,7 @@ public:
     MenuManager *menu;
 
     // weaponManager
-    WeaponsManager *weapon;
+    WeaponsManager *weaponManager;
 
     Engine();
 

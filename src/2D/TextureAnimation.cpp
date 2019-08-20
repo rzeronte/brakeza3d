@@ -44,10 +44,8 @@ void TextureAnimation::nextFrame()
     // update frame
     if (currentFrame >= this->getNumFrames()) {
         currentFrame = 0;
-    }
 
-    // flag for check if we are in end of animation
-    if (currentFrame == this->getNumFrames() - 1) {
+        // flag for check if we are in end of animation
         setEndAnimation(true);
     }
 }
