@@ -90,7 +90,7 @@ public:
     void updateUVCache();
     void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v);
 
-    bool isBackFaceCulling(Camera3D *cam);
+    bool isBackFaceCulling(Vertex3D *position);
 
     void softwareRasterizer();
     void softwareRasterizerForTile(int minX, int minY, int maxX, int maxY);
@@ -124,10 +124,10 @@ public:
     Texture *getLightmap() const;
     void setLightmap(Texture *texture);
 
-    bool clipping(Camera3D *cam, Triangle*, int&);
+    bool clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle*, int&);
     void setClipped(bool);
     bool isClipped();
-    bool testForClipping(Camera3D *cam);
+    bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
 
     void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
 

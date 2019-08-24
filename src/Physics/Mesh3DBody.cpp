@@ -15,7 +15,7 @@ Mesh3DBody::Mesh3DBody()
 {
     m_isActive = false;
     mass = 1.f;
-    bsp_entity_index = -1;
+    BSPEntityIndex = -1;
     moving = false;
     reverseMoving = false;
     waiting = false;
@@ -27,18 +27,18 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &phy
 {
     btConvexHullShape* me = new btConvexHullShape();
 
-    for (int i=0; i < this->n_triangles; i++) {
-        this->model_triangles[i].updateFullVertexSpaces(cam);
+    for (int i=0; i < this->numTriangles; i++) {
+        this->modelTriangles[i].updateFullVertexSpaces(cam);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {
-            a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
-            b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
-            c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
+            a = btVector3(this->modelTriangles[i].Ao.x, this->modelTriangles[i].Ao.y, this->modelTriangles[i].Ao.z );
+            b = btVector3(this->modelTriangles[i].Bo.x, this->modelTriangles[i].Bo.y, this->modelTriangles[i].Bo.z );
+            c = btVector3(this->modelTriangles[i].Co.x, this->modelTriangles[i].Co.y, this->modelTriangles[i].Co.z );
         } else {
-            a = btVector3( this->model_triangles[i].A.x, this->model_triangles[i].A.y, this->model_triangles[i].A.z );
-            b = btVector3( this->model_triangles[i].B.x, this->model_triangles[i].B.y, this->model_triangles[i].B.z );
-            c = btVector3( this->model_triangles[i].C.x, this->model_triangles[i].C.y, this->model_triangles[i].C.z );
+            a = btVector3(this->modelTriangles[i].A.x, this->modelTriangles[i].A.y, this->modelTriangles[i].A.z );
+            b = btVector3(this->modelTriangles[i].B.x, this->modelTriangles[i].B.y, this->modelTriangles[i].B.z );
+            c = btVector3(this->modelTriangles[i].C.x, this->modelTriangles[i].C.y, this->modelTriangles[i].C.z );
         }
         me->addPoint(a);
         me->addPoint(b);

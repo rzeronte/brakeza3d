@@ -14,6 +14,7 @@
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
+#include "../Decal.h"
 
 extern Engine *brakeza3D;
 
@@ -96,6 +97,29 @@ void Triangle::updateUVCache()
 
         tex_u3 = C.u;
         tex_v3 = C.v;
+
+        if (parent->isDecal()) {
+            Decal *decalParent = dynamic_cast<Decal*> (parent);
+
+            float decal_As = decalParent->getSCoord(Ao);
+            float decal_At = decalParent->getTCoord(Ao);
+            float decal_Bs = decalParent->getSCoord(Bo);
+            float decal_Bt = decalParent->getTCoord(Bo);
+            float decal_Cs = decalParent->getSCoord(Co);
+            float decal_Ct = decalParent->getTCoord(Co);
+
+            this->texture = decalParent->texture;
+
+            tex_u1 = decal_As;
+            tex_v1 = decal_At;
+
+            tex_u2 = decal_Bs;
+            tex_v2 = decal_Bt;
+
+            tex_u3 = decal_Cs;
+            tex_v3 = decal_Ct;
+        }
+
 
         if (is_bsp) {
             tex_u1 = A.u / getTexture()->getSurface(1)->w;
@@ -203,7 +227,7 @@ void Triangle::shadowMapping(LightPoint3D *lp)
 {
     this->updateFullVertexSpaces(lp->cam);
 
-    if (this->isBackFaceCulling(lp->cam))  {
+    if (this->isBackFaceCulling(lp->cam->getPosition()))  {
         return;
     }
 
@@ -244,7 +268,7 @@ void Triangle::draw(Camera3D *cam)
 
 }
 
-bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangles)
+bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle *arrayTriangles, int &numTriangles)
 {
     Vertex3D output_vertices[10] ; int num_outvertices   = 0;
     Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
@@ -253,12 +277,9 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
     input_vertices[1] = this->Bo; num_inputvertices++;
     input_vertices[2] = this->Co; num_inputvertices++;
 
-    const int plane_init = EngineSetup::getInstance()->LEFT_PLANE;
-    const int plane_end  = EngineSetup::getInstance()->BOTTOM_PLANE;
-
     // clip against planes
-    for (int i = plane_init ; i <= plane_end ; i++) {
-        Maths::ClippingPolygon(input_vertices, num_inputvertices, output_vertices, num_outvertices, i, cam);
+    for (int i = startPlaneIndex ; i <= endPlaneIndex ; i++) {
+        Maths::ClippingPolygon(input_vertices, num_inputvertices, output_vertices, num_outvertices, i, planes);
 
         memcpy (&input_vertices, &output_vertices, sizeof(output_vertices));
         /*for (int j = 0; j < num_outvertices; j++) { input_vertices[j] = output_vertices[j]; }*/
@@ -274,7 +295,7 @@ bool Triangle::clipping(Camera3D *cam, Triangle *arrayTriangles, int &numTriangl
                 num_inputvertices, input_vertices,
                 this->getNormal(),
                 arrayTriangles, numTriangles,
-                parent,
+                newTrianglesParent,
                 this->getTexture(),
                 this->getLightmap(),
                 true,
@@ -521,10 +542,10 @@ void Triangle::drawWireframeColor(Uint32 c)
 }
 
 // (v0 - P) . N
-bool Triangle::isBackFaceCulling(Camera3D *cam)
+bool Triangle::isBackFaceCulling(Vertex3D *position)
 {
     // Camera-triangle vector
-    Vertex3D v = this->Ao - *cam->getPosition();
+    Vertex3D v = this->Ao - *position;
 
     return (v * this->getNormal()) >= 0;
 }
@@ -655,6 +676,10 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
             float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
             texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
             texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
+        }
+
+        if ( parent->isDecal() && (texu < 0 || texu > 1) || (texv < 0 || texv > 1) )  {
+            return;
         }
 
         pixelColor = this->processPixelTexture(texu, texv);
@@ -953,7 +978,7 @@ int Triangle::processLOD()
     return lod;
 }
 
-bool Triangle::testForClipping(Camera3D *cam)
+bool Triangle::testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex)
 {
     // clip against planes
     Vector3D edges[3];
@@ -961,9 +986,9 @@ bool Triangle::testForClipping(Camera3D *cam)
     edges[1] = Vector3D(Bo, Co);
     edges[2] = Vector3D(Co, Ao);
 
-    for (int i = EngineSetup::getInstance()->LEFT_PLANE ; i <= EngineSetup::getInstance()->BOTTOM_PLANE ; i++) {
+    for (int i = startPlaneIndex ; i <= endPlaneIndex ; i++) {
         for (int e = 0 ; e < 3 ; e++) {
-            if ( Maths::isVector3DClippingPlane(cam->frustum->planes[i], edges[e]) > 1 ) {
+            if ( Maths::isVector3DClippingPlane(planes[i], edges[e]) > 1 ) {
                 return true;
             }
         }

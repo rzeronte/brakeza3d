@@ -20,6 +20,8 @@ public:
     bool removed;
     float scale;
 
+    bool decal;     // Decals exclude UV Coordinates out of [0, 1]
+
     std::string label;
 
     Object3D();
@@ -56,8 +58,10 @@ public:
     void  setScale(float scale);
 
     bool isRemoved() const;
-
     void setRemoved(bool removed);
+
+    bool isDecal() const;
+    void setDecal(bool decal);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

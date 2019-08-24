@@ -16,6 +16,7 @@ Object3D::Object3D()
     this->removed = false;
     this->position = Vertex3D(1, 1, 1);
     this->scale = 1;
+    this->decal = false;
 
     this->billboard = new Billboard();
     this->setDefaultBillboard();
@@ -142,5 +143,13 @@ bool Object3D::isRemoved() const {
 
 void Object3D::setRemoved(bool removed) {
     Object3D::removed = removed;
+}
+
+bool Object3D::isDecal() const {
+    return decal;
+}
+
+void Object3D::setDecal(bool decal) {
+    Object3D::decal = decal;
 }
 

@@ -6,6 +6,7 @@
 #include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
+#include "../Decal.h"
 
 extern Engine *brakeza3D;
 
@@ -43,6 +44,17 @@ EngineBuffers::EngineBuffers()
     this->makeFireColors();
     this->fireShaderSetup();
 
+    goreTemplate = new Sprite3D();
+    goreTemplate->setAutoRemoveAfterAnimation(true);
+    goreTemplate->setEnabled(true);
+    goreTemplate->addAnimation("gore/gore", 4, 25);
+    goreTemplate->setAnimation(0);
+    goreTemplate->getBillboard()->setDimensions(1, 1);
+
+    /*decal = new Decal();
+    decal->setPosition(Vertex3D(5, 5, 25));
+    decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str(), 1 );
+    */
 }
 
 void EngineBuffers::clearDepthBuffer()

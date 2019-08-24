@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
+//#include "../../src/Decal.h"
 
 typedef struct {
     int id;
@@ -123,6 +124,9 @@ public:
         0xEF, 0xEF, 0xC7,
         0xFF, 0xFF, 0xFF
     };
+
+    Sprite3D *goreTemplate;
+    //Decal *decal;
 
     static EngineBuffers* getInstance();
 

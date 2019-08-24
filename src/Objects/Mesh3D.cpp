@@ -18,21 +18,22 @@ extern Engine *brakeza3D;
 
 Mesh3D::Mesh3D()
 {
-    this->model_triangles = new Triangle[MAX_MODEL_TRIANGLES];
-    this->model_vertex = new Vertex3D[MAX_VERTEX_MODEL];
-    this->model_textures = new Texture[MAX_MESH_TEXTURES];
-    this->obj_uv_list = new vec3_t[MAX_VERTEX_MODEL];
+    this->modelTriangles = new Triangle[MAX_MODEL_TRIANGLES];
+    this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];
+    this->modelTextures = new Texture[MAX_MESH_TEXTURES];
+    this->verticesTextureCoordsList = new vec3_t[MAX_VERTEX_MODEL];
 
-    this->n_triangles = 0;
-    this->n_vertex = 0;
-    this->n_textures = 0;
+    this->numTriangles = 0;
+    this->numVertices = 0;
+    this->numTextures = 0;
 
     for (int i = 0; i < MAX_MESH_TEXTURES; i++) {
-        this->model_textures[i] = Texture();
+        this->modelTextures[i] = Texture();
     }
 
     shadowCaster = false;
-    bsp_entity_index = -1;
+    BSPEntityIndex = -1;
+    decal = false;
 }
 
 bool Mesh3D::loadOBJBlender(const char *name)
@@ -73,14 +74,14 @@ void Mesh3D::loadOBJBlenderVertex()
             y = (float) atof(line_chunks[2].c_str() );
             z = (float) atof(line_chunks[3].c_str() );
 
-            this->model_vertex[i] = Vertex3D(-x, -y, z);
+            this->modelVertices[i] = Vertex3D(-x, -y, z);
             i++;
         }
     }
 
-    this->n_vertex = i;
+    this->numVertices = i;
 
-    Logging::getInstance()->Log("OBJ Mesh vertex: " + std::to_string(this->n_vertex) + "", "INFO");
+    Logging::getInstance()->Log("OBJ Mesh vertex: " + std::to_string(this->numVertices) + "", "INFO");
 
     return;
 }
@@ -108,8 +109,8 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
             u = atof(line_chunks[1].c_str() );
             v = atof(line_chunks[2].c_str() );
 
-            this->obj_uv_list[i][0] = u;
-            this->obj_uv_list[i][1] = v;
+            this->verticesTextureCoordsList[i][0] = u;
+            this->verticesTextureCoordsList[i][1] = v;
             //printf("u %f v%f:\r\n", u, v);
             i++;
         }
@@ -166,46 +167,46 @@ void Mesh3D::loadOBJBlenderTriangles()
             idx1_vertex--; idx2_vertex--;idx3_vertex--;
             idx1_uv--; idx2_uv--;idx3_uv--;
 
-            Vertex3D V1 = this->model_vertex[idx1_vertex];
-            Vertex3D V2 = this->model_vertex[idx2_vertex];
-            Vertex3D V3 = this->model_vertex[idx3_vertex];
+            Vertex3D V1 = this->modelVertices[idx1_vertex];
+            Vertex3D V2 = this->modelVertices[idx2_vertex];
+            Vertex3D V3 = this->modelVertices[idx3_vertex];
 
             if (idx1_uv >= 0) {
-                V1.u = this->obj_uv_list[idx1_uv][0];
-                V1.v = this->obj_uv_list[idx1_uv][1];
+                V1.u = this->verticesTextureCoordsList[idx1_uv][0];
+                V1.v = this->verticesTextureCoordsList[idx1_uv][1];
             }
 
             if (idx2_uv >= 0) {
-                V2.u = this->obj_uv_list[idx2_uv][0];
-                V2.v = this->obj_uv_list[idx2_uv][1];
+                V2.u = this->verticesTextureCoordsList[idx2_uv][0];
+                V2.v = this->verticesTextureCoordsList[idx2_uv][1];
             }
 
             if (idx3_uv >= 0) {
-                V3.u = this->obj_uv_list[idx3_uv][0];
-                V3.v = this->obj_uv_list[idx3_uv][1];
+                V3.u = this->verticesTextureCoordsList[idx3_uv][0];
+                V3.v = this->verticesTextureCoordsList[idx3_uv][1];
             }
 
             // triangle geometry
-            this->model_triangles[i] = Triangle(V1, V2, V3, this);
+            this->modelTriangles[i] = Triangle(V1, V2, V3, this);
 
             // set texture
-            if (this->model_textures[0].loaded) {
-                this->model_triangles[i].setTexture(&this->model_textures[0]);
+            if (this->modelTextures[0].loaded) {
+                this->modelTriangles[i].setTexture(&this->modelTextures[0]);
             }
 
             // set light points
-            this->model_triangles[i].setLightPoints(this->lightPoints);
+            this->modelTriangles[i].setLightPoints(this->lightPoints);
 
             // triangle order in mesh
-            this->model_triangles[i].order = i;
+            this->modelTriangles[i].order = i;
 
             i++;
         }
     }
 
-    this->n_triangles = i;
+    this->numTriangles = i;
 
-    Logging::getInstance()->Log(this->label + ": OBJ Mesh Triangles: " + std::to_string(this->n_triangles) + "", "INFO");
+    Logging::getInstance()->Log(this->label + ": OBJ Mesh Triangles: " + std::to_string(this->numTriangles) + "", "INFO");
 }
 
 void Mesh3D::loadOBJBlenderMaterials() {
@@ -233,22 +234,22 @@ void Mesh3D::loadOBJBlenderMaterials() {
         if (line_chunks[0].compare("map_Kd") == 0) {
             Texture t = Texture();
             t.loadTGA( line_chunks[1].c_str(), 1 );
-            this->model_textures[i] = t;
-            this->n_textures++;
+            this->modelTextures[i] = t;
+            this->numTextures++;
             cont_materials++;
         }
     }
 
-    Logging::getInstance()->Log("OBJ Materials: " + std::to_string(n_textures) + "", "INFO");
+    Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
 }
 
 void Mesh3D::draw(Camera3D *cam)
 {
     // draw triangles of mesh
-    for (int i = 0; i < this->n_triangles ; i++) {
-        this->model_triangles[i].updateTextureAnimated();
-        this->model_triangles[i].updateLightmapFrame();
-        brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
+    for (int i = 0; i < this->numTriangles ; i++) {
+        this->modelTriangles[i].updateTextureAnimated();
+        this->modelTriangles[i].updateLightmapFrame();
+        brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->modelTriangles[i];
         brakeza3D->numFrameTriangles++;
         //this->model_triangles[i].draw(cam);
     }
@@ -262,8 +263,8 @@ void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 
 void Mesh3D::shadowMapping(LightPoint3D *lp)
 {
-    for (int i = 0; i < this->n_triangles; i++) {
-        this->model_triangles[i].shadowMapping(lp);
+    for (int i = 0; i < this->numTriangles; i++) {
+        this->modelTriangles[i].shadowMapping(lp);
     }
 }
 
@@ -276,9 +277,9 @@ void Mesh3D::setShadowCaster(bool shadow_caster) {
 }
 
 int Mesh3D::getBspEntityIndex() const {
-    return bsp_entity_index;
+    return BSPEntityIndex;
 }
 
 void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
-    bsp_entity_index = bspEntityIndex;
+    BSPEntityIndex = bspEntityIndex;
 }
