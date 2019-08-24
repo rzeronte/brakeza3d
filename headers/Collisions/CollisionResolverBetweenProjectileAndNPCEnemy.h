@@ -35,16 +35,25 @@ public:
 
         Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (getNPCEnemy());
 
-        getNPCEnemy()->setDamage( 5 );
+        bool explosionBody = getNPCEnemy()->isHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
+        getNPCEnemy()->damage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina < 0) {
             // Set animation NPC to Dead
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
-            sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+            if (!explosionBody) {
+                sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                Logging::getInstance()->Log("Dead soldier");
+            } else {
+                sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
+                Logging::getInstance()->Log("Exploding soldier");
+            }
 
             // remove object3D for check in stepSimulation
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
-            sprite->setRemoved(true);
+
+            // Remove sprite enemy from world
+            //sprite->setRemoved(true);
         }
 
         // Remove projectile for check in stepSimulation
@@ -62,6 +71,19 @@ public:
         gore->setAnimation(0);
         gore->getBillboard()->setDimensions(3, 3);
         brakeza3D->addObject3D(gore, "gore");
+
+        // particle explosion
+        Sprite3D *particle = new Sprite3D();
+        particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
+        particle->setAutoRemoveAfterAnimation(true);
+        particle->setPosition(*getProjectile()->getPosition() );
+        particle->setTimer(brakeza3D->getTimer());
+        particle->setAnimation(0);
+        particle->getBillboard()->setDimensions(
+                weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
+                weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
+        );
+        brakeza3D->addObject3D(particle, "particles");
     }
 
     Projectile3DBody *getProjectile()

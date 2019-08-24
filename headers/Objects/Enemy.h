@@ -5,10 +5,14 @@
 
 class Enemy {
 public:
-    float stamina = 100;
+    float startStamina = 100;
+    float stamina = 0;
     bool dead = 0;
 
-    void setDamage(float dmg);
+    Enemy();
+
+    void damage(float dmg);
+    bool isHeavyDamage(float dmg);
 };
 
 

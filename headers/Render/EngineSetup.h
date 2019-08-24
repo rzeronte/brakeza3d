@@ -216,7 +216,7 @@ public:
 
     char *LIGHT_PATTERNS[12];
 
-    bool CFG_AUTOLOAD_MAP = false;
+    bool CFG_AUTOLOAD_MAP = true;
 
     bool EVENT_GUI = false;
     int EVENT_LAUNCH = 0;
@@ -230,7 +230,8 @@ public:
         SOLDIER_WALK = 0,
         SOLDIER_FIRE = 1,
         SOLDIER_INJURIED = 2,
-        SOLDIER_DEAD = 3
+        SOLDIER_DEAD = 3,
+        SOLDIER_EXPLODE = 4
     };
 
     enum SpriteDoom2CacodemonAnimations {
