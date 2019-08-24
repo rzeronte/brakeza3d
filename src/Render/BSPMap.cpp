@@ -17,8 +17,8 @@ extern Engine *brakeza3D;
 
 BSPMap::BSPMap()
 {
+    setDecal(false);
 }
-
 
 void BSPMap::init()
 {

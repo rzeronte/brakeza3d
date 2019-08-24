@@ -739,12 +739,6 @@ void Engine::onUpdate()
 
     this->hiddenSurfaceRemoval();
 
-    Decal *decal = (Decal*) getObjectByLabel("decal");
-    if (decal != NULL) {
-        decal->getTriangles(this->visibleTriangles, numVisibleTriangles, camera);
-        Drawable::drawFrustum(decal->frustum, camera, false, true, true);
-    }
-
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
 
