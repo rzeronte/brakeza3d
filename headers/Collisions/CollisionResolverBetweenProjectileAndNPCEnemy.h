@@ -53,6 +53,7 @@ public:
         // Remove projectile from projectile list
         getProjectile()->setRemoved(true);
 
+        // gore sprite "particles"
         Sprite3D *gore = new Sprite3D();
         gore->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         gore->setAutoRemoveAfterAnimation(true);

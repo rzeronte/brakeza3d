@@ -57,6 +57,9 @@ bool Engine::initSound()
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
+    Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
+    Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
+;
     EngineBuffers::getInstance()->loadWAVs();
 }
 
