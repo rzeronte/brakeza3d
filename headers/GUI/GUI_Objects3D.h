@@ -42,7 +42,7 @@ public:
             for (int i = 0; i < gameObjects.size(); i++) {
                 std::string header_text;
                 Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
-                if (pMesh != NULL) {
+                if (pMesh != NULL && !gameObjects[i]->isDecal()) {
                     header_text = gameObjects[i]->getLabel() + " (numTriangles: " + std::to_string(pMesh->numTriangles)+")"+ "##" + std::to_string(i);
                 } else {
                     header_text = gameObjects[i]->getLabel() + "##" + std::to_string(i);

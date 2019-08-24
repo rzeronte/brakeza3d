@@ -20,7 +20,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    this->loadDemoObjects();
+    //this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -151,7 +151,7 @@ void Game::loadDemoObjects()
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setScale(0.05);
+    triangle->setScale(0.1);
     triangle->setDecal(false);
     triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints);

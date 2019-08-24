@@ -678,8 +678,10 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
             texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
         }
 
-        if ( parent->isDecal() && (texu < 0 || texu > 1) || (texv < 0 || texv > 1) )  {
-            return;
+        if ( parent->isDecal() ) {
+            if ((texu < 0 || texu > 1) || (texv < 0 || texv > 1) ) {
+                return;
+            }
         }
 
         pixelColor = this->processPixelTexture(texu, texv);
