@@ -301,6 +301,7 @@ Vertex3D CollisionsManager::stepSimulation(float time)
 
         btVector3 pos = trans.getOrigin();
         float BSP_YOffset = 3;
+
         // El offset es porqué nuestros ojos deberian estar por encima del punto central
         // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.
         finalVelocity = Vertex3D(pos.getX(), pos.getY() - BSP_YOffset, pos.getZ());

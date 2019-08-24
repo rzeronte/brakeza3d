@@ -460,9 +460,9 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 const int num = this->surface_triangles[surface].num;
 
                 for (int i = offset; i < offset+num; i++) {
-                    body->model_triangles[body->n_triangles] = this->model_triangles[i];
-                    body->model_triangles[body->n_triangles].parent = body;
-                    body->n_triangles++;
+                    body->modelTriangles[body->numTriangles] = this->model_triangles[i];
+                    body->modelTriangles[body->numTriangles].parent = body;
+                    body->numTriangles++;
                 }
             }
             body->makeRigidBody(0, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
@@ -485,9 +485,9 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 const int num = this->surface_triangles[surface].num;
 
                 for (int i = offset; i < offset+num; i++) {
-                    ghost->model_triangles[ghost->n_triangles] = this->model_triangles[i];
-                    ghost->model_triangles[ghost->n_triangles].parent = ghost;
-                    ghost->n_triangles++;
+                    ghost->modelTriangles[ghost->numTriangles] = this->model_triangles[i];
+                    ghost->modelTriangles[ghost->numTriangles].parent = ghost;
+                    ghost->numTriangles++;
                 }
             }
             ghost->makeGhostBody(brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);

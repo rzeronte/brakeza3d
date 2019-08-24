@@ -41,7 +41,6 @@ public:
         Sprite3D *particle = new Sprite3D();
         particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
         particle->setAutoRemoveAfterAnimation(true);
-        particle->setEnabled(true);
         particle->setPosition(*getProjectile()->getPosition() );
         particle->setTimer(brakeza3D->getTimer());
         particle->setAnimation(0);

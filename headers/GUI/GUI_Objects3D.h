@@ -40,7 +40,14 @@ public:
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
             for (int i = 0; i < gameObjects.size(); i++) {
-                std::string header_text = gameObjects[i]->getLabel() + "##" + std::to_string(i);
+                std::string header_text;
+                Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
+                if (pMesh != NULL) {
+                    header_text = gameObjects[i]->getLabel() + " (numTriangles: " + std::to_string(pMesh->numTriangles)+")"+ "##" + std::to_string(i);
+                } else {
+                    header_text = gameObjects[i]->getLabel() + "##" + std::to_string(i);
+                }
+
                 std::string enabled_text = "Enabled##" + std::to_string(i);
                 std::string position_text = "Position##" + std::to_string(i);
                 std::string rotation_text = "Rotation##" + std::to_string(i);

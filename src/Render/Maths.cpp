@@ -462,36 +462,36 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
     return (triangleCount);
 }
 
-bool Maths::ClippingPolygon(Vertex3D *input, int ninput, Vertex3D *output, int &noutput, int id_plane, Camera3D *cam)
+bool Maths::ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int id_plane, Plane *planes)
 {
     Vector3D edge;
 
     bool new_vertices = false;
 
-    for (int i = 0; i < ninput; i++) {
-        if ( i + 1 < ninput ) {
+    for (int i = 0; i < numInput; i++) {
+        if ( i + 1 < numInput ) {
             edge = Vector3D(input[i], input[i + 1]);
         } else {
             edge = Vector3D(input[i], input[0]);
         }
         // test clip plane
-        const int testClip = Maths::isVector3DClippingPlane( cam->frustum->planes[ id_plane ], edge );
+        const int testClip = Maths::isVector3DClippingPlane( planes[ id_plane ], edge );
 
         /** 0 = dos vértices dentro | 1 = ningún vértice dentro | 2 = vértice A dentro | 3 = vértice B dentro */
         // Si el primer vértice está dentro, lo añadimos a la salida
         if (testClip == 0 || testClip == 2) {
-            output[noutput] = edge.vertex1;
-            noutput++;
+            output[numOutput] = edge.vertex1;
+            numOutput++;
         }
 
         // Si el primer y el segundo vértice no tienen el mismo estado, añadimos el punto de intersección al plano
         if (testClip > 1) {
             float t = 0;    // [0,1] range point intersección
-            output[noutput]   = cam->frustum->planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
-            output[noutput].u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
-            output[noutput].v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
+            output[numOutput]   = planes[id_plane].getPointIntersection(edge.vertex1, edge.vertex2, t);
+            output[numOutput].u = edge.vertex1.u + t * (edge.vertex2.u - edge.vertex1.u);
+            output[numOutput].v = edge.vertex1.v + t * (edge.vertex2.v - edge.vertex1.v);
 
-            noutput++;
+            numOutput++;
             new_vertices = true;
         }
     }

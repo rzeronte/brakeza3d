@@ -19,26 +19,23 @@ class Mesh3D : public Object3D {
 public:
     std::string mesh_file;
 
-    Texture *model_textures;
-    Triangle *model_triangles;
-    Vertex3D *model_vertex;
+    Texture *modelTextures;
+    Triangle *modelTriangles;
+    Vertex3D *modelVertices;
 
-    vec3_t *obj_uv_list;
+    vec3_t *verticesTextureCoordsList;
 
-    int n_triangles;
-    int n_vertex;
-    int n_textures;
+    int numTriangles;
+    int numVertices;
+    int numTextures;
 
     std::vector<LightPoint3D *>lightPoints;
 
     bool shadowCaster;
-    int bsp_entity_index;
+    int BSPEntityIndex;
 
     Vertex3D aabbMin;
     Vertex3D aabbMax;
-
-    bool isShadowCaster() const;
-    void setShadowCaster(bool shadow_caster);
 
     Mesh3D();
 
@@ -53,8 +50,11 @@ public:
     void shadowMapping(LightPoint3D *);
     void setLightPoints(std::vector<LightPoint3D*> &);
 
-    int getBspEntityIndex() const;
 
+    bool isShadowCaster() const;
+    void setShadowCaster(bool shadow_caster);
+
+    int getBspEntityIndex() const;
     void setBspEntityIndex(int bspEntityIndex);
 };
 

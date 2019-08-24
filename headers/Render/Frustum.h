@@ -24,7 +24,6 @@ public:
     float Hfar;         // the “height” of the far plane
     float Wfar;         // the “width” of the far plane
 
-
     // far plane points
     Vertex3D fc;   // center
     Vertex3D ftl;  // top left

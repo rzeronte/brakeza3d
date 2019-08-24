@@ -3,6 +3,7 @@
 #include "headers/Objects/Sprite3D.h"
 #include "headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "src/Decal.h"
 
 Game::Game() {}
 
@@ -19,7 +20,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //this->loadDemoObjects();
+    this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -62,7 +63,6 @@ void Game::onUpdate()
 
     //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
     //EngineSetup::getInstance()->TESTING_INT+=1;
-
 }
 
 void Game::preUpdate()
@@ -101,11 +101,22 @@ void Game::loadDemoObjects()
 
     // mono
     Mesh3D *monkey = new Mesh3D();
-    monkey->setEnabled(false);
-    monkey->setLightPoints(Engine::lightPoints);
+    monkey->setEnabled(true);
+    monkey->setDecal(false);
+    monkey->setPosition(Vertex3D(1, 1, 28));
+    //monkey->setLightPoints(Engine::lightPoints);
     monkey->loadOBJBlender("../assets/models/mono.obj");
     monkey->setShadowCaster(true);
     this->addObject3D(monkey, "monkey");
+
+    // mono
+    Mesh3D *hammer = new Mesh3D();
+    hammer->setEnabled(false);
+    hammer->setPosition(Vertex3D(5, 5, 30));
+    hammer->setLightPoints(Engine::lightPoints);
+    hammer->loadOBJBlender("../assets/models/hammer.obj");
+    hammer->setShadowCaster(true);
+    this->addObject3D(hammer, "hammer");
 
     // ball
     Mesh3D *wolf = new Mesh3D();
@@ -123,12 +134,28 @@ void Game::loadDemoObjects()
     cube->loadOBJBlender("../assets/models/cubo.obj");
     this->addObject3D(cube, "cube");
 
+    // decal
+    Decal *decal = new Decal(Vertex3D(1, 1, 25));
+    decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "gore1.png").c_str(), 1 );
+    decal->frustum->setup(
+            *decal->getPosition(),
+            Vertex3D(0, 0, 1),
+            EngineSetup::getInstance()->up,
+            EngineSetup::getInstance()->right,
+            1,
+            decal->h, decal->h,
+            decal->w,
+            decal->h, decal->h
+    );
+    this->addObject3D(decal, "decal");
+
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setScale(0.1);
-    triangle->setEnabled(false);
+    triangle->setScale(0.05);
+    triangle->setDecal(false);
+    triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints);
-    triangle->setPosition(Vertex3D(0, 0, 10));
+    triangle->setPosition(Vertex3D(5, 5, 30));
     triangle->setRotation( M3(90, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
@@ -185,7 +212,7 @@ void Game::loadDemoObjects()
 
     // cubo physics
     Mesh3DBody *cuboPhysic = new Mesh3DBody();
-    cuboPhysic->setEnabled(true);
+    cuboPhysic->setEnabled(false);
     cuboPhysic->setLightPoints(Engine::lightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");

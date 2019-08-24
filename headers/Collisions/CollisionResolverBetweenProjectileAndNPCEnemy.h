@@ -52,6 +52,15 @@ public:
 
         // Remove projectile from projectile list
         getProjectile()->setRemoved(true);
+
+        Sprite3D *gore = new Sprite3D();
+        gore->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        gore->setAutoRemoveAfterAnimation(true);
+        gore->setPosition(*getProjectile()->getPosition() );
+        gore->setTimer(brakeza3D->getTimer());
+        gore->setAnimation(0);
+        gore->getBillboard()->setDimensions(3, 3);
+        brakeza3D->addObject3D(gore, "gore");
     }
 
     Projectile3DBody *getProjectile()

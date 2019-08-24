@@ -1,6 +1,5 @@
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Transforms.h"
 #include "../../headers/Objects/BSPEntity3D.h"
 #include <chrono>
 #include <iostream>
@@ -8,7 +7,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../../headers/Collisions/CollisionsManager.h"
+#include "../Decal.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -726,6 +725,8 @@ void Engine::onUpdate()
         this->objects3DShadowMapping();
     }
 
+
+
     this->getMesh3DTriangles();
     this->getQuakeMapTriangles();
     this->getLightPointsTriangles();
@@ -737,6 +738,12 @@ void Engine::onUpdate()
     }
 
     this->hiddenSurfaceRemoval();
+
+    Decal *decal = (Decal*) getObjectByLabel("decal");
+    if (decal != NULL) {
+        decal->getTriangles(this->visibleTriangles, numVisibleTriangles, camera);
+        Drawable::drawFrustum(decal->frustum, camera, false, true, true);
+    }
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
@@ -1001,22 +1008,37 @@ void Engine::hiddenSurfaceRemoval()
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (this->frameTriangles[i].isBackFaceCulling(camera)) {
+            if (this->frameTriangles[i].isBackFaceCulling(camera->getPosition())) {
                 continue;
             }
         }
 
         // Clipping (needs objectSpace)
+        bool needClipping = false;
         if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
             if (this->frameTriangles[i].is_clipped_cl ) {
-                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
-                continue;
+                needClipping = true;
             }
         } else {
-            if (this->frameTriangles[i].testForClipping( camera ) ) {
-                this->frameTriangles[i].clipping(camera, visibleTriangles, numVisibleTriangles);
-                continue;
+            if (this->frameTriangles[i].testForClipping( camera->frustum->planes,
+                                                         EngineSetup::getInstance()->LEFT_PLANE,
+                                                         EngineSetup::getInstance()->BOTTOM_PLANE )
+             ) {
+                needClipping = true;
             }
+        }
+
+        if (needClipping) {
+            this->frameTriangles[i].clipping(
+                    camera,
+                    camera->frustum->planes,
+                    EngineSetup::getInstance()->LEFT_PLANE,
+                    EngineSetup::getInstance()->BOTTOM_PLANE,
+                    this->frameTriangles[i].parent,
+                    visibleTriangles,
+                    numVisibleTriangles
+            );
+            continue;
         }
 
         // Frustum Culling (needs objectSpace)
