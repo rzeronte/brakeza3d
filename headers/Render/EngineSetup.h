@@ -129,6 +129,9 @@ public:
     std::string CFG_MENU = "menu.json";
     std::string CFG_WEAPONS = "weapons.json";
     bool RENDER_BSP_MAP = true;
+    bool SOUND_ENABLED = false;
+
+    float SOUND_VOLUME = 0;
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
@@ -213,7 +216,7 @@ public:
 
     char *LIGHT_PATTERNS[12];
 
-    bool CFG_AUTOLOAD_MAP = true;
+    bool CFG_AUTOLOAD_MAP = false;
 
     bool EVENT_GUI = false;
     int EVENT_LAUNCH = 0;

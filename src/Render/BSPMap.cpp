@@ -557,6 +557,7 @@ void BSPMap::InitializeEntities()
                     o->addAnimationDirectional2D("soldier/fire", 2, false, -1);
                     o->addAnimationDirectional2D("soldier/injuried", 1, false, -1);
                     o->addAnimationDirectional2D("soldier/dead", 5, true, 1);
+                    o->addAnimationDirectional2D("soldier/explosion", 8, true, 1);
                     o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
                     o->setEnabled(true);
                     o->setPosition( pos );

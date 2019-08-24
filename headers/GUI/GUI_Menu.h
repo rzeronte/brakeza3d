@@ -42,6 +42,11 @@ public:
         const float lod_sensibility = 0;
         const float range_test_sensibility = 0.1;
 
+        const float range_sensibility_volume = 1;
+        const float range_min_volume = 1;
+        const float range_max_volume = 128;
+
+
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
                 if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
@@ -94,6 +99,35 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
                 ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Sound")) {
+                ImGui::Checkbox("Enable", &EngineSetup::getInstance()->SOUND_ENABLED);
+                if (ImGui::IsItemDeactivatedAfterEdit()) {
+                    if (!EngineSetup::getInstance()->SOUND_ENABLED) {
+                        Mix_Volume(-1, 0);
+                        Mix_VolumeMusic(0);
+                    } else {
+                        Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
+                        Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
+                    }
+                    Logging::getInstance()->Log("Set volumen: " + std::to_string(EngineSetup::getInstance()->SOUND_VOLUME));
+                }
+
+                ImGui::DragScalar("Volume", ImGuiDataType_Float,  &EngineSetup::getInstance()->SOUND_VOLUME, range_sensibility_volume,  &range_min_volume, &range_max_volume, "%f", 1.0f);
+
+               if (ImGui::IsItemDeactivatedAfterEdit()) {
+                    if (!EngineSetup::getInstance()->SOUND_ENABLED) {
+                        Mix_Volume(-1, 0);
+                        Mix_VolumeMusic(0);
+                    } else {
+                        Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
+                        Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
+                    }
+                   Logging::getInstance()->Log("Set volumen: " + std::to_string(EngineSetup::getInstance()->SOUND_VOLUME));
+                }
+                ImGui::EndMenu();
+
             }
 
             if (ImGui::BeginMenu("Physics")) {

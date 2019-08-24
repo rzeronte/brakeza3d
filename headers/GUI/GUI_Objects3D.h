@@ -93,7 +93,7 @@ public:
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
-                        const char* items[] = { "walk", "fire", "injuried", "dead" };
+                        const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
 
                         switch (pSprite3D->current_animation) {
@@ -108,6 +108,9 @@ public:
                                 break;
                             case 3:
                                 item_current = items[3];
+                                break;
+                            case 4:
+                                item_current = items[4];
                                 break;
                         }
 

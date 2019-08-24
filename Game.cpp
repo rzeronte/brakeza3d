@@ -20,7 +20,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //this->loadDemoObjects();
+    this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -178,6 +178,7 @@ void Game::loadDemoObjects()
     marine->addAnimationDirectional2D("soldier/fire", 2, false, -1);
     marine->addAnimationDirectional2D("soldier/injuried", 1, false, -1);
     marine->addAnimationDirectional2D("soldier/dead", 5, true, 1);
+    marine->addAnimationDirectional2D("soldier/explosion", 8, true, 1);
     marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(marine, "marine");
 
