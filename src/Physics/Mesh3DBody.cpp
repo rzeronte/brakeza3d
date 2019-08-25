@@ -1,11 +1,6 @@
-//
-// Created by darkhead on 2019-05-11.
-//
 
 #include <btBulletDynamicsCommon.h>
 #include "../../headers/Physics/Mesh3DBody.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Transforms.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "../../headers/Render/Engine.h"
 

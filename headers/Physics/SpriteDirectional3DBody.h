@@ -7,13 +7,10 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "../Render/Timer.h"
 #include "../Objects/SpriteDirectional3D.h"
-#include "../Objects/Mesh3D.h"
-#include "Mesh3DBody.h"
+#include "Body.h"
 
 class SpriteDirectional3DBody : public SpriteDirectional3D, public Body {
 public:
-    SpriteDirectional3DBody();
-
     btRigidBody* makeRigidBody(float, std::vector<Object3D*> &, Camera3D *, btDiscreteDynamicsWorld*, bool applyCameraImpulse, int forceImpulse);
     void integrate();
 

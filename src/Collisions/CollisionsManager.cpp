@@ -6,6 +6,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
+#include "../../headers/Physics/Sprite3DBody.h"
 
 CollisionsManager::CollisionsManager()
 {
@@ -225,28 +226,28 @@ void CollisionsManager::checkCollisionsForAll()
 
 void CollisionsManager::updatePhysicObjects()
 {
-    // projectiles
     std::vector<Object3D *>::iterator it;
     for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
+        // projectiles
         Projectile3DBody *projectileBody = dynamic_cast<Projectile3DBody*> ((*it));
         if (projectileBody != NULL) {
             projectileBody->integrate();
         }
-    }
 
-    // mesh physics
-    std::vector<Object3D *>::iterator it2;
-    for (it2 = gameObjects->begin() ; it2 != gameObjects->end() ; it2++) {
-        Mesh3DBody *meshBody = dynamic_cast<Mesh3DBody*> ((*it2));
+        // mesh physics
+        Mesh3DBody *meshBody = dynamic_cast<Mesh3DBody*> ((*it));
         if (meshBody) {
             meshBody->integrate( );
         }
-    }
 
-    // sprite directional
-    std::vector<Object3D *>::iterator it3;
-    for (it3 = gameObjects->begin(); it3 != gameObjects->end(); it3++) {
-        SpriteDirectional3DBody *spriteDirectionalBody = dynamic_cast<SpriteDirectional3DBody*> ((*it3));
+        // sprite3d
+        Sprite3DBody *spriteBody = dynamic_cast<Sprite3DBody*> ((*it));
+        if (spriteBody != NULL) {
+            spriteBody->integrate();
+        }
+
+        // sprite directional
+        SpriteDirectional3DBody *spriteDirectionalBody = dynamic_cast<SpriteDirectional3DBody*> ((*it));
         if (spriteDirectionalBody != NULL) {
             spriteDirectionalBody->integrate();
         }

@@ -4,6 +4,7 @@
 #include "headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "src/Decal.h"
+#include "headers/Physics/Sprite3DBody.h"
 
 Game::Game() {}
 
@@ -20,7 +21,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //this->loadDemoObjects();
+    this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -211,14 +212,27 @@ void Game::loadDemoObjects()
     doomFace->getBillboard()->setDimensions(1, 1);
     this->addObject3D(doomFace, "doomFace");
 
+    // marineBody ( sprite )
+    Sprite3DBody *doomFaceBody = new Sprite3DBody();
+    doomFaceBody->setLabel("doomFaceBody");
+    doomFaceBody->setEnabled(false);
+    doomFaceBody->setPosition( Vertex3D(2, 1, 15) );
+    doomFaceBody->setTimer(Engine::getTimer());
+    doomFaceBody->addAnimation("doom_face/face", 3, 10);
+    doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
+    doomFaceBody->getBillboard()->setDimensions(1, 1);
+    doomFaceBody->makeRigidBody(1.0f, Engine::gameObjects, Engine::camera, collisionsManager->getDynamicsWorld(), false, false);
+    //this->addObject3D(doomFaceBody, "doomFaceBody");
+
     // cubo physics
     Mesh3DBody *cuboPhysic = new Mesh3DBody();
+    cuboPhysic->setLabel("cuboPhysics");
     cuboPhysic->setEnabled(false);
     cuboPhysic->setLightPoints(Engine::lightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
     cuboPhysic->makeRigidBody(1.0f, Engine::gameObjects, Engine::camera, collisionsManager->getDynamicsWorld(), false);
-    this->addObject3D(cuboPhysic, "cuboPhysic");
+    //this->addObject3D(cuboPhysic, "cuboPhysic");
 
     /*Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();
     cuboPhysicGhost->setEnabled(true);

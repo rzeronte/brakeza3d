@@ -5,10 +5,6 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Engine.h"
 
-SpriteDirectional3DBody::SpriteDirectional3DBody()
-{
-}
-
 void SpriteDirectional3DBody::integrate()
 {
     if (this->mass == 0) {
