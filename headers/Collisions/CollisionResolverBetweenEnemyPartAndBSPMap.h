@@ -6,6 +6,7 @@
 #include "../Render/BSPMap.h"
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"
+#include "../PhysicsGame/NPCEnemyPartBody.h"
 
 class CollisionResolverBetweenEnemyPartAndBSPMap : public CollisionResolver {
 public:
@@ -46,16 +47,16 @@ public:
         }
     }
 
-    Sprite3D *getEnemyPart()
+    NPCEnemyPartBody *getEnemyPart()
     {
-        Sprite3D *projectileA = dynamic_cast<Sprite3D*> (this->objA);
-        if (projectileA != NULL) {
-            return projectileA;
+        NPCEnemyPartBody *NPCPartA = dynamic_cast<NPCEnemyPartBody*> (this->objA);
+        if (NPCPartA != NULL) {
+            return NPCPartA;
         }
 
-        Sprite3D *projectileB = dynamic_cast<Sprite3D*> (this->objB);
-        if (projectileB != NULL) {
-            return projectileB;
+        NPCEnemyPartBody *NPCPartB = dynamic_cast<NPCEnemyPartBody*> (this->objB);
+        if (NPCPartB != NULL) {
+            return NPCPartB;
         }
     }
 };

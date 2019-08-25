@@ -7,10 +7,9 @@
 #include "../Render/EngineSetup.h"
 #include "../Render/Timer.h"
 #include "Camera3D.h"
+#include "../2D/TextureAnimation.h"
 
 #define ANIMATEDSPRITE_MAX_ANIMATIONS 5
-
-class TextureAnimation;
 
 class Sprite3D : public Object3D {
     Billboard *billboard;
