@@ -4,8 +4,8 @@
 
 
 #include "CollisionResolver.h"
-#include "../Physics/Projectile3DBody.h"
-#include "../Physics/NPCEnemyBody.h"
+#include "../PhysicsGame/Projectile3DBody.h"
+#include "../PhysicsGame/NPCEnemyBody.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 
@@ -13,16 +13,16 @@ public:
     Projectile3DBody *projectile;
     NPCEnemyBody *npcEnemy;
 
-    std::vector<SpriteDirectional3DBody *> *projectiles;
+    std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectilePhysics, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
 
-        this->projectiles = projectilePhysics;
+        this->gameObjects = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
     }

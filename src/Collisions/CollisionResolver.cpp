@@ -1,13 +1,10 @@
 
 #include "../../headers/Collisions/CollisionResolver.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/BSPMap.h"
-#include "../../headers/Physics/NPCEnemyBody.h"
-#include "../../headers/Physics/Projectile3DBody.h"
+#include "../../headers/PhysicsGame/NPCEnemyBody.h"
+#include "../../headers/PhysicsGame/NPCEnemyPartBody.h"
 
 CollisionResolver::CollisionResolver(Object3D *objA, Object3D *objB, BSPMap *bspMap) : objA(objA), objB(objB), bspMap(bspMap)
 {
-    //this->consoleInfo();
 }
 
 int CollisionResolver::getTypeCollision()
@@ -28,19 +25,11 @@ int CollisionResolver::getTypeCollision()
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON;
     }
 
-    return 0;
-}
+    if (isSomeNPCEnemyPart() && isSomeBSPMap()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP;
+    }
 
-void CollisionResolver::consoleInfo()
-{
-    Logging::getInstance()->Log(
-            "[CollisionResolver] isCamera: " + std::to_string(this->isSomeCamera()) +
-            ", isBSPMap: " + std::to_string(this->isSomeBSPMap()) +
-            ", isEnemy: " + std::to_string(this->isSomeNPCEnemy()) +
-            ", isProjectile:" + std::to_string(this->isSomeProjectile()) +
-            ", isMesh3D:" + std::to_string(this->isSomeMesh3D()) +
-            ", between: objA: '" + objA->getLabel() + "' and objB: '" + objB->getLabel() + "'"
-    );
+    return 0;
 }
 
 bool CollisionResolver::isSomeCamera()
@@ -84,6 +73,21 @@ bool CollisionResolver::isSomeNPCEnemy()
     return false;
 }
 
+bool CollisionResolver::isSomeNPCEnemyPart()
+{
+    NPCEnemyPartBody *objANPC = dynamic_cast<NPCEnemyPartBody*> (objA);
+    if (objANPC != NULL) {
+        return true;
+    }
+
+    NPCEnemyPartBody *objBNPC = dynamic_cast<NPCEnemyPartBody*> (objB);
+    if (objBNPC != NULL) {
+        return true;
+    }
+
+    return false;
+}
+
 bool CollisionResolver::isSomeProjectile()
 {
     Projectile3DBody *objAProjectile = dynamic_cast<Projectile3DBody*> (objA);
@@ -103,13 +107,11 @@ bool CollisionResolver::isSomeMesh3D()
 {
     Mesh3D *objAMesh = dynamic_cast<Mesh3D*> (objA);
     if (objAMesh != NULL) {
-        Logging::getInstance()->Log("objAMesh FuncDoor: " + std::to_string(this->isBSPEntityOfClassName(objAMesh, "func_door")));
         return true;
     }
 
     Mesh3D *objBMesh = dynamic_cast<Mesh3D*> (objB);
     if (objBMesh != NULL) {
-        Logging::getInstance()->Log("objBMesh FuncDoor: " + std::to_string(this->isBSPEntityOfClassName(objBMesh, "func_door")));
         return true;
     }
 

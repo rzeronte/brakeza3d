@@ -92,23 +92,6 @@ void CollisionsManager::setGameObjects(std::vector<Object3D *> *gameObjects) {
     CollisionsManager::gameObjects = gameObjects;
 }
 
-
-std::vector<Mesh3DBody *> *CollisionsManager::getMeshPhysics() const {
-    return meshPhysics;
-}
-
-void CollisionsManager::setMeshPhysics(std::vector<Mesh3DBody *> *meshPhysics) {
-    CollisionsManager::meshPhysics = meshPhysics;
-}
-
-std::vector<SpriteDirectional3DBody *> *CollisionsManager::getProjectilePhysics() const {
-    return projectilePhysics;
-}
-
-void CollisionsManager::setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics) {
-    CollisionsManager::projectilePhysics = projectilePhysics;
-}
-
 void CollisionsManager::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
@@ -213,13 +196,13 @@ void CollisionsManager::checkCollisionsForAll()
                 if (!collisionType) continue;
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP ) {
-                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld(), getWeaponManager());
+                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
-                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getProjectilePhysics(), getDynamicsWorld(), getWeaponManager());
+                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
                     resolver->dispatch();
                     continue;
                 }
@@ -243,15 +226,30 @@ void CollisionsManager::checkCollisionsForAll()
 void CollisionsManager::updatePhysicObjects()
 {
     // projectiles
-    std::vector<SpriteDirectional3DBody *>::iterator it;
-    for (it = projectilePhysics->begin(); it != projectilePhysics->end(); it++) {
-        (*it)->integrate();
+    std::vector<Object3D *>::iterator it;
+    for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
+        Projectile3DBody *projectileBody = dynamic_cast<Projectile3DBody*> ((*it));
+        if (projectileBody != NULL) {
+            projectileBody->integrate();
+        }
     }
 
     // mesh physics
-    std::vector<Mesh3DBody *>::iterator it2;
-    for (it2 = meshPhysics->begin() ; it2 != meshPhysics->end() ; it2++) {
-        (*it2)->integrate( );
+    std::vector<Object3D *>::iterator it2;
+    for (it2 = gameObjects->begin() ; it2 != gameObjects->end() ; it2++) {
+        Mesh3DBody *meshBody = dynamic_cast<Mesh3DBody*> ((*it2));
+        if (meshBody) {
+            meshBody->integrate( );
+        }
+    }
+
+    // sprite directional
+    std::vector<Object3D *>::iterator it3;
+    for (it3 = gameObjects->begin(); it3 != gameObjects->end(); it3++) {
+        SpriteDirectional3DBody *spriteDirectionalBody = dynamic_cast<SpriteDirectional3DBody*> ((*it3));
+        if (spriteDirectionalBody != NULL) {
+            spriteDirectionalBody->integrate();
+        }
     }
 
     // Sync position for triggerCamera

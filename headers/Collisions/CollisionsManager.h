@@ -16,8 +16,6 @@ public:
     Mesh3DGhost *triggerCamera;
     BSPMap *bspMap;
     std::vector<Object3D*> *gameObjects;
-    std::vector<Mesh3DBody *> *meshPhysics;
-    std::vector<SpriteDirectional3DBody *> *projectilePhysics;
     WeaponsManager *weaponManager;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
@@ -52,12 +50,6 @@ public:
 
     std::vector<Object3D *> *getGameObjects() const;
     void setGameObjects(std::vector<Object3D *> *gameObjects);
-
-    std::vector<Mesh3DBody *> *getMeshPhysics() const;
-    void setMeshPhysics(std::vector<Mesh3DBody *> *meshPhysics);
-
-    std::vector<SpriteDirectional3DBody *> *getProjectilePhysics() const;
-    void setProjectilePhysics(std::vector<SpriteDirectional3DBody *> *projectilePhysics);
 
     WeaponsManager *getWeaponManager() const;
 

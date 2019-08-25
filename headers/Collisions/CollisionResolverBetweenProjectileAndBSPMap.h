@@ -2,7 +2,7 @@
 #define BRAKEDA3D_COLLISIONRESOLVERBETWEENPROJECTILEANDBSPMAP_H
 
 
-#include "../Physics/Projectile3DBody.h"
+#include "../PhysicsGame/Projectile3DBody.h"
 #include "../Render/BSPMap.h"
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"
@@ -12,16 +12,16 @@ public:
     BSPMap *bapMap;
     Projectile3DBody *projectile;
 
-    std::vector<SpriteDirectional3DBody *> *projectiles;
+    std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<SpriteDirectional3DBody *> *projectiles, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
     {
         this->projectile = getProjectile();
         this->bspMap = getBSPMap();
 
-        this->projectiles = projectiles;
+        this->gameObjects = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
     }

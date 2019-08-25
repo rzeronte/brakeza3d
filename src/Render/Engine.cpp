@@ -872,26 +872,6 @@ void Engine::getLightPointsTriangles()
 
 void Engine::getSpritesTriangles()
 {
-    std::vector<SpriteDirectional3DBody *>::iterator itProjectile;
-    for (itProjectile = projectilePhysics.begin(); itProjectile != projectilePhysics.end(); ) {
-        SpriteDirectional3DBody *sprite = *(itProjectile);
-
-        // Check for delete
-        if (sprite->isRemoved()) {
-            itProjectile = projectilePhysics.erase(itProjectile);
-            continue;
-        } else {
-            itProjectile++;
-        }
-
-        if (!sprite->isEnabled()) {
-            continue;
-        }
-
-        sprite->updateTrianglesCoordinates(camera);
-        sprite->draw(camera);
-    }
-
     std::vector<Object3D *>::iterator itObject3D;
     for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); ) {
         Object3D *object = *(itObject3D);
@@ -1131,19 +1111,6 @@ void Engine::addObject3D(Object3D *obj, std::string label)
     //gameObjects[numberGameObjects] = obj;
     //gameObjects[numberGameObjects]->setLabel(label);
     //numberGameObjects++;
-}
-
-void Engine::removeObject3D(Object3D *obj)
-{
-    std::vector<SpriteDirectional3DBody *>::iterator it;
-
-    for (it = projectilePhysics.begin(); it != projectilePhysics.end(); it++) {
-        Object3D *oSpriteDirectional = *(it);
-        if (obj == oSpriteDirectional) {
-            projectilePhysics.erase(it);
-            return;
-        }
-    }
 }
 
 void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
@@ -1428,7 +1395,5 @@ void Engine::initCollisionsManager()
     this->collisionsManager->setWeaponManager(this->weaponManager);
     this->collisionsManager->setCamera(this->camera);
     this->collisionsManager->setGameObjects(&this->gameObjects);
-    this->collisionsManager->setProjectilePhysics(&this->projectilePhysics);
-    this->collisionsManager->setMeshPhysics(&this->meshPhysics);
     this->collisionsManager->initBulletSystem();
 }

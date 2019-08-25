@@ -33,13 +33,13 @@ void Game::mainLoop()
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL2_ProcessEvent(&e);
             if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-                controller->handleMouse(&this->e, this->camera, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
+                controller->handleMouse(&this->e, this->camera, collisionsManager->getDynamicsWorld(), Engine::gameObjects, Engine::getTimer(), menu, weaponManager);
             }
-            controller->handleKeyboard(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
+            controller->handleKeyboard(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::gameObjects, Engine::getTimer(), menu, weaponManager);
         }
 
         // Check array Uint8 *keyboard
-        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::projectilePhysics, Engine::getTimer(), menu, weaponManager);
+        controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::gameObjects, Engine::getTimer(), menu, weaponManager);
 
         // Checks pre update frame
         this->postUpdate();
@@ -217,7 +217,7 @@ void Game::loadDemoObjects()
     cuboPhysic->setLightPoints(Engine::lightPoints);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
-    cuboPhysic->makeRigidBody(1.0f, Engine::meshPhysics, Engine::camera, collisionsManager->getDynamicsWorld(), false);
+    cuboPhysic->makeRigidBody(1.0f, Engine::gameObjects, Engine::camera, collisionsManager->getDynamicsWorld(), false);
     this->addObject3D(cuboPhysic, "cuboPhysic");
 
     /*Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();

@@ -13,7 +13,6 @@ extern Engine *brakeza3D;
 
 Mesh3DBody::Mesh3DBody()
 {
-    m_isActive = false;
     mass = 1.f;
     BSPEntityIndex = -1;
     moving = false;
@@ -23,7 +22,7 @@ Mesh3DBody::Mesh3DBody()
     timer = new Timer();
 }
 
-btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &physicsObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
+btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
 {
     btConvexHullShape* me = new btConvexHullShape();
 
@@ -63,7 +62,7 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &phy
     this->m_body->setUserPointer(this);
 
     world->addRigidBody(this->m_body);
-    physicsObjects.push_back(this);
+    gameObjects.push_back(this);
 
 
     return this->m_body;
@@ -71,10 +70,6 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Mesh3DBody*> &phy
 
 void Mesh3DBody::integrate()
 {
-    if (m_isActive) {
-        m_body->activate();
-    }
-
     if (this->mass == 0) {
         //return;
     }

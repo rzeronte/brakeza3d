@@ -62,10 +62,8 @@ public:
     Camera3D *camera;
     Controller *controller;
 
-    // Objetos 3D
+    // Engine 3D objects
     std::vector<Object3D*> gameObjects;
-    std::vector<Mesh3DBody *> meshPhysics;
-    std::vector<SpriteDirectional3DBody *> projectilePhysics;
 
     BSPMap *bspMap;
 
@@ -194,7 +192,6 @@ public:
 
     // Objects3D Managing
     void addObject3D(Object3D *obj, std::string label);
-    void removeObject3D(Object3D *obj);
     Object3D* getObjectByLabel(std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 

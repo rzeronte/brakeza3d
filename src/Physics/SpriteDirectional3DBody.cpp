@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 2019-08-07.
-//
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
@@ -34,7 +31,7 @@ void SpriteDirectional3DBody::integrate()
 
 }
 
-btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<SpriteDirectional3DBody*> &projectilePhysics, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, int forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, int forceImpulse)
 {
     this->mass = mass;
 
@@ -51,8 +48,9 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Spri
     btVector3 localInertia(0, 0, 0);
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
-    //btCollisionShape* shape = new btSphereShape(1.0f);
+
     btCollisionShape* shape;
+
     if (this->mass == 0) {
         shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
     } else {
@@ -71,15 +69,9 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Spri
         this->m_body->applyCentralImpulse(impulse);
     }
 
-    if (this->mass == 0) {
-    } else {
-    }
-
-    //this->m_body->setCollisionFlags( btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
     world->addRigidBody(this->m_body);
 
-    projectilePhysics.push_back(this);
+    gameObjects.push_back(this);
 
     return this->m_body;
 }
