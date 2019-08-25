@@ -6,7 +6,7 @@
 #include "../Objects/Mesh3D.h"
 #include "../Render/BSPMap.h"
 #include "../Physics/Mesh3DBody.h"
-#include "../Physics/Projectile3DBody.h"
+#include "../PhysicsGame/Projectile3DBody.h"
 #include "../Render/Engine.h"
 
 extern Engine *brakeza3D;
@@ -22,12 +22,12 @@ public:
     CollisionResolver(Object3D *objA, Object3D *objB, BSPMap *bspMap);
     virtual ~CollisionResolver();
 
-    void consoleInfo();
     int getTypeCollision();
 
     bool isSomeCamera();
     bool isSomeBSPMap();
     bool isSomeNPCEnemy();
+    bool isSomeNPCEnemyPart();
     bool isSomeProjectile();
     bool isSomeMesh3D();
     bool isSomeMesh3dFuncDoor();

@@ -1,15 +1,13 @@
-//
-// Created by darkhead on 2019-05-11.
-//
 #ifndef BRAKEDA3D_OBJECTPHYSIC_H
 #define BRAKEDA3D_OBJECTPHYSIC_H
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Mesh3D.h"
+#include "Body.h"
 
 
-class Mesh3DBody: public Mesh3D {
+class Mesh3DBody: public Mesh3D, public Body {
 public:
     Mesh3DBody();
 
@@ -29,14 +27,7 @@ public:
     void integrate();
     void integrateMoving();
 
-    btRigidBody* makeRigidBody(float mass, std::vector<Mesh3DBody *> &, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
-
-    btRigidBody* getRigidBody() { return m_body; }
-    btCollisionObject* getCollider() { return m_collider; }
-    btRigidBody* getRigidObject() { return m_body; };
-
-    float mass;
-    btRigidBody* m_body;
+    btRigidBody* makeRigidBody(float mass, std::vector<Object3D *> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
 
     // Quake BSP Moving attributes
     float speedMoving = 100;
@@ -52,11 +43,6 @@ public:
 
     bool active = true;
 
-private:
-
-    bool m_isActive;
-
-    btCollisionObject* m_collider;
 };
 
 

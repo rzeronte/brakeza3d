@@ -11,7 +11,7 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
-#include "../../headers/Physics/NPCEnemyBody.h"
+#include "../../headers/PhysicsGame/NPCEnemyBody.h"
 
 extern Engine *brakeza3D;
 
@@ -465,7 +465,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                     body->numTriangles++;
                 }
             }
-            body->makeRigidBody(0, brakeza3D->meshPhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
+            body->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
             brakeza3D->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
         } else {
@@ -564,7 +564,7 @@ void BSPMap::InitializeEntities()
                     o->setDrawBillboard(true);
                     o->getBillboard()->setDimensions(4, 6);
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    o->makeRigidBody(0, brakeza3D->projectilePhysics, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
+                    o->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
 
                     //brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
                 }

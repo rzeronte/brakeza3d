@@ -3,7 +3,7 @@
 #define BRAKEDA3D_NPCENEMYBODY_H
 
 
-#include "SpriteDirectional3DBody.h"
+#include "../Physics/SpriteDirectional3DBody.h"
 
 class NPCEnemyBody: public SpriteDirectional3DBody, public Enemy {
 

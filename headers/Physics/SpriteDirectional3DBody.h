@@ -10,24 +10,12 @@
 #include "../Objects/Mesh3D.h"
 #include "Mesh3DBody.h"
 
-class SpriteDirectional3DBody : public SpriteDirectional3D {
+class SpriteDirectional3DBody : public SpriteDirectional3D, public Body {
 public:
-
-    float mass = 0;
-
-    btRigidBody* m_body;
-
     SpriteDirectional3DBody();
 
-    btRigidBody* makeRigidBody(float, std::vector<SpriteDirectional3DBody*> &, Camera3D *, btDiscreteDynamicsWorld*, bool applyCameraImpulse, int forceImpulse);
-    btRigidBody* getRigidBody() { return m_body; }
-    btCollisionObject* getCollider() { return m_collider; }
-    btRigidBody* getRigidObject() { return m_body; };
-
+    btRigidBody* makeRigidBody(float, std::vector<Object3D*> &, Camera3D *, btDiscreteDynamicsWorld*, bool applyCameraImpulse, int forceImpulse);
     void integrate();
-
-private:
-    btCollisionObject* m_collider;
 
 };
 

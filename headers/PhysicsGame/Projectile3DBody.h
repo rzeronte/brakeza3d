@@ -3,9 +3,9 @@
 #define BRAKEDA3D_PROJECTILE3DBODY_H
 
 
-#include "SpriteDirectional3DBody.h"
+#include "../Physics/SpriteDirectional3DBody.h"
 
-class Projectile3DBody : public SpriteDirectional3DBody{
+class Projectile3DBody : public SpriteDirectional3DBody {
 
 };
 

@@ -5,13 +5,13 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Physics/Projectile3DBody.h"
+#include "../../headers/PhysicsGame/Projectile3DBody.h"
 
 Controller::Controller()
 {
 }
 
-void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
 
     ImGuiIO& io = ImGui::GetIO();
@@ -40,26 +40,13 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynam
 
     // Firing
     if ( MousePressed ) {
-        /*
-        Logging::getInstance()->Log("Fire");
-        SpriteDirectional3DBody *projectile = new SpriteDirectional3DBody();
-        projectile->setPosition(*camera->getPosition());
-        projectile->setLabel("projectile");
-        projectile->setEnabled(true);
-        projectile->setTimer(timer);
-        projectile->linkTexturesTo(bulletTemplate);
-        projectile->setAnimation(0);
-        projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld);
-        // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
-        // del impulso en el interior del rigidbody
-        projectile->setRotation(camera->getRotation());*/
     }
 
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
 
 }
 
-void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
     if (keyboard[SDL_SCANCODE_W]) {
         camera->MoveForward();
@@ -102,7 +89,7 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
                 projectile->setTimer(timer);
                 projectile->linkTexturesTo(weapon->getCurrentWeaponType()->getProjectileTemplate());
                 projectile->setAnimation(0);
-                projectile->makeRigidBody(1, projectiles, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
+                projectile->makeRigidBody(1, gameObjects, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
                 projectile->getBillboard()->setDimensions(
                     weapon->getCurrentWeaponType()->projectileWidth,
                     weapon->getCurrentWeaponType()->projectileHeight
@@ -119,7 +106,7 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
     }
 }
 
-void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<SpriteDirectional3DBody*> &projectiles, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
 {
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
