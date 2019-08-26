@@ -216,7 +216,7 @@ public:
 
     char *LIGHT_PATTERNS[12];
 
-    bool CFG_AUTOLOAD_MAP = false;
+    bool CFG_AUTOLOAD_MAP = true;
 
     bool EVENT_GUI = false;
     int EVENT_LAUNCH = 0;

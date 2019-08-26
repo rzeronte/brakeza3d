@@ -632,8 +632,8 @@ void BSPMap::bindTrianglesLightmaps()
 
         for (int j = offset ; j < offset+num ; j++) {
 
-            this->model_triangles[j].bsp_surface = surfaceId;
-            this->model_triangles[j].is_bsp = true;
+            this->model_triangles[j].surfaceBSPIndex = surfaceId;
+            this->model_triangles[j].isBSP = true;
 
             if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];

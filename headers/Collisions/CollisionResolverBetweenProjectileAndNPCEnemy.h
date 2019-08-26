@@ -6,6 +6,8 @@
 #include "CollisionResolver.h"
 #include "../PhysicsGame/Projectile3DBody.h"
 #include "../PhysicsGame/NPCEnemyBody.h"
+#include "../Physics/Sprite3DBody.h"
+#include "../PhysicsGame/NPCEnemyPartBody.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 
@@ -47,6 +49,10 @@ public:
             } else {
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
                 Logging::getInstance()->Log("Exploding soldier");
+
+                for (int i = 0 ; i < 4; i++) {
+                    gibsParticles(getNPCEnemy());
+                }
             }
 
             // remove object3D for check in stepSimulation
@@ -112,6 +118,21 @@ public:
         }
     }
 
+    void gibsParticles(NPCEnemyBody *enemy)
+    {
+        Vertex3D position = *enemy->getPosition();
+        position.y-=1.5;
+
+        NPCEnemyPartBody *doomFaceBody = new NPCEnemyPartBody();
+        doomFaceBody->setLabel("NPCPartBody");
+        doomFaceBody->setEnabled(true);
+        doomFaceBody->setPosition( position );
+        doomFaceBody->setTimer(brakeza3D->getTimer());
+        doomFaceBody->addAnimation("doom_face/face", 3, 10);
+        doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
+        doomFaceBody->getBillboard()->setDimensions(1, 1);
+        doomFaceBody->makeRigidBody(1.0f, brakeza3D->gameObjects, brakeza3D->camera, dynamicsWorld, enemy);
+    }
 };
 
 #endif //BRAKEDA3D_COLLISIONRESOLVERBETWEENPROJECTILEANDNPCENEMY_H

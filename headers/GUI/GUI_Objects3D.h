@@ -12,6 +12,7 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Render/Logging.h"
+#include "../../src/Decal.h"
 
 class GUI_Objects3D : public GUI  {
 public:
@@ -25,8 +26,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(2, 215), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 220), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 825), ImGuiSetCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Object Inspector (" + std::to_string(gameObjects.size()) + " objects)";
@@ -86,6 +87,13 @@ public:
                     Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
                     if (pMesh != NULL) {
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(gameObjects[i])->shadowCaster);
+                    }
+
+                    // Only for meshes
+                    Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
+                    if (pDecal != NULL) {
+                        std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->numTriangles);
+                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
                     }
 
                     // Only for SPRITES DIRECTIONALS

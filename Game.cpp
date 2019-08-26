@@ -136,7 +136,7 @@ void Game::loadDemoObjects()
     this->addObject3D(cube, "cube");
 
     // decal
-    Decal *decal = new Decal(Vertex3D(1, 1, 25));
+    Decal *decal = new Decal(Vertex3D(49, -4.5, 61.3));
     decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "gore1.png").c_str(), 1 );
     decal->frustum->setup(
             *decal->getPosition(),
@@ -154,9 +154,9 @@ void Game::loadDemoObjects()
     Mesh3D *triangle = new Mesh3D();
     triangle->setScale(0.1);
     triangle->setDecal(false);
-    triangle->setEnabled(true);
+    triangle->setEnabled(false);
     triangle->setLightPoints(Engine::lightPoints);
-    triangle->setPosition(Vertex3D(5, 5, 30));
+    triangle->setPosition(Vertex3D(49.8, 5, 70.2));
     triangle->setRotation( M3(90, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
@@ -221,7 +221,7 @@ void Game::loadDemoObjects()
     doomFaceBody->addAnimation("doom_face/face", 3, 10);
     doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     doomFaceBody->getBillboard()->setDimensions(1, 1);
-    doomFaceBody->makeRigidBody(1.0f, Engine::gameObjects, Engine::camera, collisionsManager->getDynamicsWorld(), false, false);
+    doomFaceBody->makeRigidBody(1.0f, Engine::gameObjects, Engine::camera, collisionsManager->getDynamicsWorld(), doomFaceBody);
     //this->addObject3D(doomFaceBody, "doomFaceBody");
 
     // cubo physics

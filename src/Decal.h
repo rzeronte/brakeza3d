@@ -13,8 +13,8 @@ public:
     Vertex3D T; // direction of decal (forward)
     Vertex3D B; // N x T (right)
 
-    float w = 10;
-    float h = 10;
+    float w = 20;
+    float h = 20;
 
     Frustum *frustum;
 

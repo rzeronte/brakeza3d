@@ -1,6 +1,7 @@
 
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Physics/Body.h"
+#include "../../headers/Render/Tools.h"
 #include <vector>
 
 void Sprite3DBody::integrate()
@@ -23,7 +24,7 @@ void Sprite3DBody::integrate()
     btVector3 axis = quat.getAxis();
 }
 
-btRigidBody* Sprite3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, int forceImpulse)
+btRigidBody* Sprite3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, Object3D *originForces)
 {
     this->mass = mass;
 
@@ -31,9 +32,6 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gam
     trans.setIdentity();
 
     Vertex3D pos = *this->getPosition();
-
-    Vertex3D dir = cam->getRotation().getTranspose() * AxisForward();
-    pos = pos + dir.getScaled(10);
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 
@@ -52,14 +50,25 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gam
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);
     this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
+    this->m_body->setCcdMotionThreshold(0.001f);
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
-    if (applyCameraImpulse) {
-        dir = dir.getScaled(forceImpulse);
-        btVector3 impulse(dir.x, dir.y, dir.z);
-        this->m_body->applyCentralImpulse(impulse);
+    Vertex3D rand = Vertex3D(Tools::random(1, 5), Tools::random(1, 5), Tools::random(1, 5));
+    rand = rand.getScaled(0.5);
+    int randSigned = Tools::random(0, 10);
+
+    Vertex3D dir = EngineSetup::getInstance()->up;
+
+    if (randSigned % 2) {
+        dir = dir + rand;
+    } else {
+        dir = dir - rand;
     }
+
+    dir = dir.getInverse().getScaled(35);
+
+    btVector3 impulse(dir.x, dir.y, dir.z);
+    this->m_body->applyCentralImpulse(impulse);
 
     world->addRigidBody(this->m_body);
     gameObjects.push_back(this);
