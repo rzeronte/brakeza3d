@@ -6,6 +6,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
+#include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
 #include "../../headers/Physics/Sprite3DBody.h"
 
 CollisionsManager::CollisionsManager()
@@ -219,6 +220,13 @@ void CollisionsManager::checkCollisionsForAll()
                     resolver->dispatch();
                     continue;
                 }
+
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP ) {
+                    CollisionResolverBetweenEnemyPartAndBSPMap *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    resolver->dispatch();
+                    continue;
+                }
+
             }
         }
     }

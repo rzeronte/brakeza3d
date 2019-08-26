@@ -730,8 +730,8 @@ void Engine::onUpdate()
 
 
 
-    this->getMesh3DTriangles();
     this->getQuakeMapTriangles();
+    this->getMesh3DTriangles();
     this->getLightPointsTriangles();
     this->getSpritesTriangles();
     this->getObjectsBillboardTriangles();
@@ -741,6 +741,11 @@ void Engine::onUpdate()
     }
 
     this->hiddenSurfaceRemoval();
+
+    Decal *decal = (Decal*) getObjectByLabel("decal");
+    decal->getTriangles(this->visibleTriangles, numVisibleTriangles, camera);
+    decal->draw(camera);
+    Drawable::drawFrustum(decal->frustum, camera, true, true, true);
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
@@ -840,6 +845,12 @@ void Engine::getMesh3DTriangles()
                 }
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                }
+
+                Decal *decalMesh = dynamic_cast<Decal*> (this->gameObjects[i]);
+
+                if (decalMesh != NULL) {
+                    Drawable::drawFrustum(decalMesh->frustum, camera, false, true, true);
                 }
             }
         }
@@ -1011,9 +1022,10 @@ void Engine::hiddenSurfaceRemoval()
                     camera->frustum->planes,
                     EngineSetup::getInstance()->LEFT_PLANE,
                     EngineSetup::getInstance()->BOTTOM_PLANE,
-                    this->frameTriangles[i].parent,
+                    frameTriangles[i].parent,
                     visibleTriangles,
-                    numVisibleTriangles
+                    numVisibleTriangles,
+                    frameTriangles[i].isBSP
             );
             continue;
         }
@@ -1384,8 +1396,8 @@ void Engine::getMapsJSON()
 
 void Engine::drawMenuScreen()
 {
-    this->menu->drawOptions(screenSurface);
     //this->waterShader();
+    this->menu->drawOptions(screenSurface);
     Drawable::drawFireShader();
 }
 

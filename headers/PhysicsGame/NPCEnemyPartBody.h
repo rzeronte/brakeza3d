@@ -7,7 +7,8 @@
 #include "../Physics/Sprite3DBody.h"
 
 class NPCEnemyPartBody : public Sprite3DBody {
-
+public:
+    bool doneGore = false;
 };
 
 

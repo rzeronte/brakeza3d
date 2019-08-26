@@ -83,7 +83,8 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
                     EngineSetup::getInstance()->BOTTOM_PLANE,
                     this,
                     this->modelTriangles,
-                    this->numTriangles
+                    this->numTriangles,
+                    false
             );
             continue;
         }
@@ -97,15 +98,16 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
 
         modelTriangles[numTriangles] = soupTriangles[i];
         modelTriangles[numTriangles].parent = this;
+        modelTriangles[numTriangles].isBSP = false;
+        modelTriangles[numTriangles].is_clipped = false;
         modelTriangles[numTriangles].A = Transforms::objectToLocal(modelTriangles[numTriangles].Ao, this);
         modelTriangles[numTriangles].B = Transforms::objectToLocal(modelTriangles[numTriangles].Bo, this);
         modelTriangles[numTriangles].C = Transforms::objectToLocal(modelTriangles[numTriangles].Co, this);
-
         numTriangles++;
     }
 
     // Fix separation for avoid Z-fightingba
-    float OffsetSeparation = 0.05;
+    float OffsetSeparation = 0.1;
     for (int i = 0; i < numTriangles ; i++) {
         modelTriangles[i].A = modelTriangles[i].A - N.getScaled(OffsetSeparation);
         modelTriangles[i].B = modelTriangles[i].B - N.getScaled(OffsetSeparation);

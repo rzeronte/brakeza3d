@@ -100,7 +100,6 @@ void Triangle::updateUVCache()
 
         if (parent->isDecal()) {
             Decal *decalParent = dynamic_cast<Decal*> (parent);
-
             float decal_As = decalParent->getSCoord(Ao);
             float decal_At = decalParent->getTCoord(Ao);
             float decal_Bs = decalParent->getSCoord(Bo);
@@ -120,8 +119,7 @@ void Triangle::updateUVCache()
             tex_v3 = decal_Ct;
         }
 
-
-        if (is_bsp) {
+        if (isBSP) {
             tex_u1 = A.u / getTexture()->getSurface(1)->w;
             tex_v1 = A.v / getTexture()->getSurface(1)->h;
 
@@ -268,7 +266,7 @@ void Triangle::draw(Camera3D *cam)
 
 }
 
-bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle *arrayTriangles, int &numTriangles)
+bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle *arrayTriangles, int &numTriangles, bool isBSP)
 {
     Vertex3D output_vertices[10] ; int num_outvertices   = 0;
     Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
@@ -299,7 +297,7 @@ bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
                 this->getTexture(),
                 this->getLightmap(),
                 true,
-                this->is_bsp,
+                isBSP,
                 this->typelight
         );
 
@@ -418,8 +416,6 @@ void Triangle::softwareRasterizer()
     int w2_row = Maths::orient2d(As, Bs, startP);
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
-
-    float ignorablePartInt;
 
     for (int y = minY ; y < maxY ; y++) {
         int w0 = w0_row;
@@ -693,7 +689,7 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
             return;
         }
 
-        if (getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
+        if (!parent->isDecal() && getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
             pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv, texu, texv);
         }
     }

@@ -307,7 +307,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setLightmap(lightmap);
             t.setClipped(clipped);
             t.setId(ntriangles);
-            t.is_bsp = isBsp;
+            t.isBSP = isBsp;
             t.typelight[0] = lightstyle[0];
             t.typelight[1] = lightstyle[1];
             t.typelight[2] = lightstyle[2];
@@ -398,7 +398,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
             t.setId(ntriangles);
-            t.is_bsp = isBsp;
+            t.isBSP = isBsp;
             t.typelight[0] = lightstyle[0];
             t.typelight[1] = lightstyle[1];
             t.typelight[2] = lightstyle[2];
@@ -427,7 +427,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t.setTexture(texture);
             t.setClipped(clipped);
             t.setId(ntriangles);
-            t.is_bsp = isBsp;
+            t.isBSP = isBsp;
             t.typelight[0] = lightstyle[0];
             t.typelight[1] = lightstyle[1];
             t.typelight[2] = lightstyle[2];

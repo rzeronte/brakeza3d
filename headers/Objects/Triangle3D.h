@@ -59,8 +59,8 @@ public:
     bool is_clipped = false;
     bool is_clipped_cl = false;
 
-    bool is_bsp = false;
-    int bsp_surface = -1;
+    bool isBSP = false;
+    int surfaceBSPIndex = -1;
 
     int lod;
 
@@ -124,7 +124,7 @@ public:
     Texture *getLightmap() const;
     void setLightmap(Texture *texture);
 
-    bool clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle*, int&);
+    bool clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, Triangle*, int &numTriangles, bool isBSP);
     void setClipped(bool);
     bool isClipped();
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
