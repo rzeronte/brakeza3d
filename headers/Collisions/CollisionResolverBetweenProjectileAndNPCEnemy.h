@@ -58,6 +58,8 @@ public:
             // remove object3D for check in stepSimulation
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
 
+            makeGoreDecals(-90, 0, 0);
+
             // Remove sprite enemy from world
             //sprite->setRemoved(true);
         }
@@ -132,6 +134,10 @@ public:
         doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
         doomFaceBody->getBillboard()->setDimensions(1, 1);
         doomFaceBody->makeRigidBody(1.0f, brakeza3D->gameObjects, brakeza3D->camera, dynamicsWorld, enemy);
+    }
+
+    void makeGoreDecals(float rotX, float rotY, float rotZ) {
+
     }
 };
 

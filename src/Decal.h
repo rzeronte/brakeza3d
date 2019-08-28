@@ -5,6 +5,7 @@
 
 #include "../headers/Objects/Object3D.h"
 #include "../headers/Objects/Mesh3D.h"
+#include "../headers/Objects/Cube3D.h"
 
 class Decal : public Mesh3D {
 public:
@@ -13,16 +14,15 @@ public:
     Vertex3D T; // direction of decal (forward)
     Vertex3D B; // N x T (right)
 
-    float w = 20;
-    float h = 20;
+    float w = 5;
+    float h = 5;
 
-    Frustum *frustum;
-
+    Cube3D *cube;
     Texture *texture;
 
-    Decal(Vertex3D position);
+    Decal();
 
-    void updateFrustum();
+    void setupCube(float, float, float);
     void setupFromAxis();
     void setDimensions(float w, float h);
 

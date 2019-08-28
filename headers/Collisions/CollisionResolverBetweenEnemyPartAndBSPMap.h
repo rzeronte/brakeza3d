@@ -37,22 +37,12 @@ public:
 
         enemyPart->doneGore = true;
 
-        // decal
-        Decal *decal = new Decal(*enemyPart->getPosition());
-        decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "gore1.png").c_str(), 1 );
-        decal->frustum->setup(
-                *decal->getPosition(),
-                Vertex3D(0, 0, 1),
-                EngineSetup::getInstance()->up,
-                EngineSetup::getInstance()->right,
-                1,
-                decal->h, decal->h,
-                decal->w,
-                decal->h, decal->h
-        );
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera),
-        brakeza3D->addObject3D(decal, "NPCEnemyPartDecal");
-
+        makeGoreDecals(90, 0, 0);
+        makeGoreDecals(-90, 0, 0);
+        makeGoreDecals(0, 0, 0);
+        makeGoreDecals(0, 90, 0);
+        makeGoreDecals(0, 180, 0);
+        makeGoreDecals(0, -90, 0);
     }
 
     BSPMap *getBSPMap()
@@ -79,6 +69,10 @@ public:
         if (NPCPartB != NULL) {
             return NPCPartB;
         }
+    }
+
+    void makeGoreDecals(float rotX, float rotY, float rotZ) {
+
     }
 };
 

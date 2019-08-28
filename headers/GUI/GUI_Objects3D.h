@@ -37,6 +37,10 @@ public:
             const float range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
             const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
 
+            const float range_angle_min = 0;
+            const float range_angle_max = 360;
+            const float range_angle_sensibility = 0.2;
+
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
@@ -59,25 +63,39 @@ public:
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition()->x, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition()->y, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition()->z, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition()->x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition()->y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition()->z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
                     // rotation
                     if (ImGui::TreeNode(rotation_text.c_str())) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
+                        float rotX = gameObjects[i]->getRotation().getPitchDegree();
+                        float rotY = gameObjects[i]->getRotation().getYawDegree();
+                        float rotZ = gameObjects[i]->getRotation().getRollDegree();
+
+                        // position
+                        bool needUpdateRotation = false;
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &rotX, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        if (ImGui::IsItemEdited())
+                            needUpdateRotation = true;
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &rotY, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        if (ImGui::IsItemEdited())
+                            needUpdateRotation = true;
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &rotZ, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        if (ImGui::IsItemEdited())
+                            needUpdateRotation = true;
+
+                        if (needUpdateRotation) {
+                            gameObjects[i]->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
+
+                        }
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
+                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
+                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
                         ImGui::TreePop();
                     }
 

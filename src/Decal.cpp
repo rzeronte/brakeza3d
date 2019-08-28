@@ -3,14 +3,16 @@
 #include "../headers/Render/Logging.h"
 #include "../headers/Render/Transforms.h"
 
-Decal::Decal(Vertex3D position) {
-    frustum = new Frustum();
+Decal::Decal() {
     texture = new Texture();
 
     setDecal(true);
-    setPosition(position);
+}
 
-    setupFromAxis();
+void Decal::setupCube(float sizeX, float sizeY, float sizeZ)
+{
+    cube = new Cube3D(sizeX, sizeY, sizeZ);
+    cube->setDecal(true);
 }
 
 float Decal::getSCoord(Vertex3D Q)
@@ -25,12 +27,10 @@ float Decal::getTCoord(Vertex3D Q)
 
 void Decal::setupFromAxis()
 {
-    frustum->position = *getPosition();
-
-    P = frustum->position;
-    N = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
-    T = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    B = this->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+    P = *getPosition();
+    N = AxisForward();
+    T = AxisUp();
+    B = AxisRight();
 }
 
 void Decal::setDimensions(float w, float h)
@@ -39,21 +39,11 @@ void Decal::setDimensions(float w, float h)
     this->h = h;
 }
 
-void Decal::updateFrustum()
-{
-    frustum->position = *getPosition();
-
-    frustum->updateCenters();
-    frustum->updatePoints();
-    frustum->updatePlanes();
-}
-
 void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D *camera)
 {
     this->numTriangles = 0;
 
     setupFromAxis();
-    updateFrustum();
 
     for (int i = 0; i < numSoupTriangles ; i++ ) {
         if (soupTriangles[i].parent->isDecal())  {
@@ -67,20 +57,16 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
             continue;
         }
 
-        if (soupTriangles[i].isBackFaceCulling(&this->N)) {
-            continue;
-        }
-
         if (soupTriangles[i].testForClipping(
-                frustum->planes,
-                EngineSetup::getInstance()->NEAR_PLANE,
-                EngineSetup::getInstance()->BOTTOM_PLANE
+                cube->planes,
+                0,
+                6
         )) {
             soupTriangles[i].clipping(
                     camera,
-                    frustum->planes,
-                    EngineSetup::getInstance()->NEAR_PLANE,
-                    EngineSetup::getInstance()->BOTTOM_PLANE,
+                    cube->planes,
+                    0,
+                    6,
                     this,
                     this->modelTriangles,
                     this->numTriangles,
@@ -89,9 +75,13 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
             continue;
         }
 
-        if (!frustum->isPointInFrustum(soupTriangles[i].Ao) &&
-            !frustum->isPointInFrustum(soupTriangles[i].Bo) &&
-            !frustum->isPointInFrustum(soupTriangles[i].Co)
+        if (soupTriangles[i].isBackFaceCulling(&this->N)) {
+            continue;
+        }
+
+        if (!cube->isPointInside(soupTriangles[i].Ao) &&
+            !cube->isPointInside(soupTriangles[i].Bo) &&
+            !cube->isPointInside(soupTriangles[i].Co)
         ) {
             continue;
         }

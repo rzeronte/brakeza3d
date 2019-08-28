@@ -24,6 +24,8 @@ public:
 
     std::string label;
 
+    float rotX, rotY, rotZ; // Used for management rotation in GUI
+
     Object3D();
     virtual ~Object3D() = default;
 
