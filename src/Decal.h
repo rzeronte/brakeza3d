@@ -14,6 +14,8 @@ public:
     Vertex3D T; // direction of decal (forward)
     Vertex3D B; // N x T (right)
 
+    bool drawWireframe = false;
+
     float w = 5;
     float h = 5;
 

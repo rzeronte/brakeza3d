@@ -57,6 +57,7 @@ public:
     Cube3D(float scale);
     Cube3D(float scaleX, float scaleY, float scaleZ);
 
+    void update();
     void makeVertices();
     void makeTriangles();
     void makePlanes();
