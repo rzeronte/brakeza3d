@@ -7,7 +7,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../Decal.h"
+#include "../../headers/Objects/Cube3D.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -740,12 +740,24 @@ void Engine::onUpdate()
         this->handleOpenCLTransform();
     }
 
-    this->hiddenSurfaceRemoval();
+    for (int i = 0; i < this->gameObjects.size(); i++) {
+        Decal *dec = dynamic_cast<Decal*> (this->gameObjects[i]);
+        if (dec != NULL) {
+            dec->cube->setPosition(*dec->getPosition());
+            dec->cube->makeVertices();
+            dec->cube->makeTriangles();
+            dec->cube->makePlanes();
+            Drawable::drawPlane(dec->cube->planes[0], camera, Color::red());
+            Drawable::drawPlane(dec->cube->planes[1], camera, Color::green());
+            Drawable::drawPlane(dec->cube->planes[2], camera, Color::pink());
+            Drawable::drawPlane(dec->cube->planes[3], camera, Color::yellow());
+            Drawable::drawPlane(dec->cube->planes[4], camera, Color::blue());
+            Drawable::drawPlane(dec->cube->planes[5], camera, Color::orange());
+            dec->getTriangles(visibleTriangles, numVisibleTriangles, camera);
+        }
+    }
 
-    Decal *decal = (Decal*) getObjectByLabel("decal");
-    decal->getTriangles(this->visibleTriangles, numVisibleTriangles, camera);
-    decal->draw(camera);
-    Drawable::drawFrustum(decal->frustum, camera, true, true, true);
+    this->hiddenSurfaceRemoval();
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
@@ -766,6 +778,7 @@ void Engine::onUpdate()
             this->handleOpenCLTriangles();
         }
     }
+
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
         collisionsManager->getDynamicsWorld()->debugDrawWorld();
@@ -845,12 +858,6 @@ void Engine::getMesh3DTriangles()
                 }
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                }
-
-                Decal *decalMesh = dynamic_cast<Decal*> (this->gameObjects[i]);
-
-                if (decalMesh != NULL) {
-                    Drawable::drawFrustum(decalMesh->frustum, camera, false, true, true);
                 }
             }
         }

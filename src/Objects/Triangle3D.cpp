@@ -253,7 +253,7 @@ void Triangle::draw(Camera3D *cam)
     }
 
     // wireframe
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || parent->isDecal() ) {
         this->drawWireframe();
     }
 

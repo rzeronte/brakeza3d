@@ -3,8 +3,8 @@ project(brakeda3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -169,7 +169,7 @@ add_executable(brakeda3d
         headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
         src/Decal.cpp
         src/Decal.h
-        src/PhysicsGame/NPCEnemyPartBody.cpp headers/PhysicsGame/NPCEnemyPartBody.h src/Physics/Sprite3DBody.cpp headers/Physics/Sprite3DBody.h src/Physics/Body.cpp headers/Physics/Body.h)
+        src/PhysicsGame/NPCEnemyPartBody.cpp headers/PhysicsGame/NPCEnemyPartBody.h src/Physics/Sprite3DBody.cpp headers/Physics/Sprite3DBody.h src/Physics/Body.cpp headers/Physics/Body.h headers/Objects/Cube3D.cpp headers/Objects/Cube3D.h)
 
 target_link_libraries(brakeda3d
         ${SDL2_LIBRARY}

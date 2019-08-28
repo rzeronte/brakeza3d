@@ -5,6 +5,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "src/Decal.h"
 #include "headers/Physics/Sprite3DBody.h"
+#include "headers/Objects/Cube3D.h"
 
 Game::Game() {}
 
@@ -62,8 +63,6 @@ void Game::onUpdate()
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
-    //Mesh3D *triangle = (Mesh3D*) getObjectByLabel("triangle");
-    //EngineSetup::getInstance()->TESTING_INT+=1;
 }
 
 void Game::preUpdate()
@@ -102,8 +101,7 @@ void Game::loadDemoObjects()
 
     // mono
     Mesh3D *monkey = new Mesh3D();
-    monkey->setEnabled(true);
-    monkey->setDecal(false);
+    monkey->setEnabled(false);
     monkey->setPosition(Vertex3D(1, 1, 28));
     //monkey->setLightPoints(Engine::lightPoints);
     monkey->loadOBJBlender("../assets/models/mono.obj");
@@ -136,24 +134,16 @@ void Game::loadDemoObjects()
     this->addObject3D(cube, "cube");
 
     // decal
-    Decal *decal = new Decal(Vertex3D(49, -4.5, 61.3));
+    Decal *decal = new Decal();
+    decal->setPosition(Vertex3D(1, 1, 1));
+    decal->setupCube(1, 1, 1);
     decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "gore1.png").c_str(), 1 );
-    decal->frustum->setup(
-            *decal->getPosition(),
-            Vertex3D(0, 0, 1),
-            EngineSetup::getInstance()->up,
-            EngineSetup::getInstance()->right,
-            1,
-            decal->h, decal->h,
-            decal->w,
-            decal->h, decal->h
-    );
+
     this->addObject3D(decal, "decal");
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setScale(0.1);
-    triangle->setDecal(false);
     triangle->setEnabled(false);
     triangle->setLightPoints(Engine::lightPoints);
     triangle->setPosition(Vertex3D(49.8, 5, 70.2));
@@ -241,4 +231,10 @@ void Game::loadDemoObjects()
     cuboPhysicGhost->loadOBJBlender("../assets/models/cubo.obj");
     cuboPhysicGhost->makeGhostBody(Engine::camera, this->dynamicsWorld, true);
     this->addObject3D(cuboPhysicGhost, "cuboPhysicGhost");*/
+
+    // cube3d
+    Cube3D *oCube = new Cube3D(1,  7, 5);
+    oCube->setEnabled(false);
+    oCube->setPosition(Vertex3D(1, 1, 1));
+    this->addObject3D(oCube, "oCube");
 }
