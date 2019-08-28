@@ -740,19 +740,15 @@ void Engine::onUpdate()
         this->handleOpenCLTransform();
     }
 
+    // temporal
     for (int i = 0; i < this->gameObjects.size(); i++) {
         Decal *dec = dynamic_cast<Decal*> (this->gameObjects[i]);
         if (dec != NULL) {
             dec->cube->setPosition(*dec->getPosition());
-            dec->cube->makeVertices();
-            dec->cube->makeTriangles();
-            dec->cube->makePlanes();
-            Drawable::drawPlane(dec->cube->planes[0], camera, Color::red());
-            Drawable::drawPlane(dec->cube->planes[1], camera, Color::green());
-            Drawable::drawPlane(dec->cube->planes[2], camera, Color::pink());
-            Drawable::drawPlane(dec->cube->planes[3], camera, Color::yellow());
-            Drawable::drawPlane(dec->cube->planes[4], camera, Color::blue());
-            Drawable::drawPlane(dec->cube->planes[5], camera, Color::orange());
+            dec->cube->update();
+            if (dec->drawWireframe) {
+                dec->cube->draw(camera);
+            }
             dec->getTriangles(visibleTriangles, numVisibleTriangles, camera);
         }
     }

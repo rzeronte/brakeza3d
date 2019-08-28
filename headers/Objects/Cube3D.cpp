@@ -24,6 +24,13 @@ Cube3D::Cube3D(float scaleX, float scaleY, float scaleZ)
     makePlanes();
 }
 
+void Cube3D::update()
+{
+    makeVertices();
+    makeTriangles();
+    makePlanes();
+}
+
 void Cube3D::makeVertices()
 {
     for (int i = 0; i < 36 ; i++) {
@@ -32,7 +39,7 @@ void Cube3D::makeVertices()
             (cubeVertexBuffer[i*3+1] * scaleY)/2,
             (cubeVertexBuffer[i*3+2] * scaleZ)/2
         );
-        this->vertices[i] = Transforms::objectSpace(this->vertices[i], this);
+        //this->vertices[i] = Transforms::objectSpace(this->vertices[i], this);
     }
 }
 
@@ -45,7 +52,6 @@ void Cube3D::makeTriangles()
             vertices[i*3+2],
             this
         );
-
     }
 
     this->numTriangles = 12;
@@ -53,12 +59,36 @@ void Cube3D::makeTriangles()
 
 void Cube3D::makePlanes()
 {
-    planes[0] = Plane(modelTriangles[1].A, modelTriangles[1].B, modelTriangles[1].C);
-    planes[1] = Plane(modelTriangles[2].A, modelTriangles[2].B, modelTriangles[2].C);
-    planes[2] = Plane(modelTriangles[4].A, modelTriangles[4].B, modelTriangles[4].C);
-    planes[3] = Plane(modelTriangles[6].A, modelTriangles[6].B, modelTriangles[6].C);
-    planes[4] = Plane(modelTriangles[8].A, modelTriangles[8].B, modelTriangles[8].C);
-    planes[5] = Plane(modelTriangles[10].A, modelTriangles[10].B, modelTriangles[10].C);
+    planes[0] = Plane(
+            Transforms::objectSpace(modelTriangles[1].A, this),
+            Transforms::objectSpace(modelTriangles[1].B, this),
+            Transforms::objectSpace(modelTriangles[1].C, this)
+    );
+    planes[1] = Plane(
+            Transforms::objectSpace(modelTriangles[2].A, this),
+            Transforms::objectSpace(modelTriangles[2].B, this),
+            Transforms::objectSpace(modelTriangles[2].C, this)
+    );
+    planes[2] = Plane(
+            Transforms::objectSpace(modelTriangles[4].A, this),
+            Transforms::objectSpace(modelTriangles[4].B, this),
+            Transforms::objectSpace(modelTriangles[4].C, this)
+    );
+    planes[3] = Plane(
+            Transforms::objectSpace(modelTriangles[6].A, this),
+            Transforms::objectSpace(modelTriangles[6].B, this),
+            Transforms::objectSpace(modelTriangles[6].C, this)
+    );
+    planes[4] = Plane(
+            Transforms::objectSpace(modelTriangles[8].A, this),
+            Transforms::objectSpace(modelTriangles[8].B, this),
+            Transforms::objectSpace(modelTriangles[8].C, this)
+    );
+    planes[5] = Plane(
+            Transforms::objectSpace(modelTriangles[10].A, this),
+            Transforms::objectSpace(modelTriangles[10].B, this),
+            Transforms::objectSpace(modelTriangles[10].C, this)
+    );
 }
 
 bool Cube3D::isPointInside(Vertex3D v)

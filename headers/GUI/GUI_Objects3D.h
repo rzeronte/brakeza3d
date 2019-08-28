@@ -107,9 +107,10 @@ public:
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(gameObjects[i])->shadowCaster);
                     }
 
-                    // Only for meshes
+                    // Only for decals
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
                     if (pDecal != NULL) {
+                        ImGui::Checkbox(std::string("Draw decal wireframe").c_str(), &pDecal->drawWireframe);
                         std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->numTriangles);
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
                     }

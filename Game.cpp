@@ -143,10 +143,10 @@ void Game::loadDemoObjects()
 
     // triangle
     Mesh3D *triangle = new Mesh3D();
-    triangle->setScale(0.1);
+    triangle->setScale(0.01);
     triangle->setEnabled(false);
     triangle->setLightPoints(Engine::lightPoints);
-    triangle->setPosition(Vertex3D(49.8, 5, 70.2));
+    triangle->setPosition(Vertex3D(1, 1, 30));
     triangle->setRotation( M3(90, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
