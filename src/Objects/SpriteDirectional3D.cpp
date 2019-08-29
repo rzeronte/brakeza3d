@@ -44,13 +44,13 @@ void SpriteDirectional3D::setTimer(Timer *timer)
     this->timer = timer;
 }
 
-void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int num_frames, bool zeroDirection, int maxTimes)
+void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection, int maxTimes)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
-    Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
+    Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) + " animations)", "BILLBOARD");
 
-    this->animations[this->num_animations]->setup(full_animation_folder, num_frames, maxTimes);
+    this->animations[this->num_animations]->setup(full_animation_folder, numFrames, fps, maxTimes);
 
     if (!zeroDirection) {
         this->animations[this->num_animations]->loadImages();
@@ -92,17 +92,17 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     this->timerLastTicks = this->timer->getTicks();
     timerCurrent += (deltatime/1000.f);
 
-    float step = (float) 1 / this->fps;
+    float step = (float) 1 / this->getCurrentTextureAnimationDirectional()->fps;
 
     if (timerCurrent > step) {
-        this->animations[current_animation]->nextFrame();
+        getCurrentTextureAnimationDirectional()->nextFrame();
         timerCurrent = 0;
     }
 
-    if (this->animations[current_animation]->isZeroDirection) {
-        this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(0) );
+    if (getCurrentTextureAnimationDirectional()->isZeroDirection) {
+        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0) );
     } else {
-        this->getBillboard()->setTrianglesTexture( this->animations[current_animation]->getCurrentFrame(direction) );
+        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(direction) );
     }
 }
 
@@ -120,4 +120,9 @@ void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone)
         this->animations[i]->numFrames = clone->animations[i]->numFrames;
         this->animations[i]->base_file = clone->animations[i]->base_file;
     }
+}
+
+TextureAnimationDirectional* SpriteDirectional3D::getCurrentTextureAnimationDirectional()
+{
+    return this->animations[current_animation];
 }

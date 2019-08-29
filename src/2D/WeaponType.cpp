@@ -100,7 +100,7 @@ void WeaponType::makeProjectileTemplate()
 
     projectileTemplate->setPosition(Vertex3D(5, 0, -10));
     std::string spritePath = this->label + "/bullet/idle";
-    projectileTemplate->addAnimationDirectional2D(spritePath, 1, false, -1);
+    projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
     projectileTemplate->setAnimation(0);
     projectileTemplate->width = 5;
     projectileTemplate->height = 5;

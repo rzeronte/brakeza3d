@@ -60,6 +60,10 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
             continue;
         }
 
+        if (soupTriangles[i].isBackFaceCulling(&this->N)) {
+            continue;
+        }
+        
         if (soupTriangles[i].testForClipping(
                 cube->planes,
                 0,
@@ -75,10 +79,6 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
                     this->numTriangles,
                     false
             );
-            continue;
-        }
-
-        if (soupTriangles[i].isBackFaceCulling(&this->N)) {
             continue;
         }
 
