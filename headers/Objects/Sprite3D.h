@@ -44,6 +44,8 @@ public:
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
     void linkTextureAnimation(Sprite3D *);
+
+    TextureAnimation* getCurrentTextureAnimation();
 };
 
 

@@ -50,7 +50,7 @@ public:
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
                 Logging::getInstance()->Log("Exploding soldier");
 
-                for (int i = 0 ; i < 4; i++) {
+                for (int i = 0 ; i < 2; i++) {
                     gibsParticles(getNPCEnemy());
                 }
             }
@@ -125,18 +125,26 @@ public:
         Vertex3D position = *enemy->getPosition();
         position.y-=1.5;
 
-        NPCEnemyPartBody *doomFaceBody = new NPCEnemyPartBody();
-        doomFaceBody->setLabel("NPCPartBody");
-        doomFaceBody->setEnabled(true);
-        doomFaceBody->setPosition( position );
-        doomFaceBody->setTimer(brakeza3D->getTimer());
-        doomFaceBody->addAnimation("doom_face/face", 3, 10);
-        doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
-        doomFaceBody->getBillboard()->setDimensions(1, 1);
-        doomFaceBody->makeRigidBody(1.0f, brakeza3D->gameObjects, brakeza3D->camera, dynamicsWorld, enemy);
+        NPCEnemyPartBody *gibsBody = new NPCEnemyPartBody();
+        gibsBody->setLabel("gibsBody");
+        gibsBody->linkTextureAnimation(EngineBuffers::getInstance()->gibsTemplate);
+        gibsBody->setAnimation(Tools::random(0, EngineBuffers::getInstance()->gibsTemplate->numAnimations-1));
+        gibsBody->setPosition(position );
+        gibsBody->setTimer(brakeza3D->getTimer());
+        gibsBody->makeRigidBody(1.0f, brakeza3D->gameObjects, brakeza3D->camera, dynamicsWorld, enemy);
     }
 
     void makeGoreDecals(float rotX, float rotY, float rotZ) {
+        // decal
+        Decal *decal = new Decal();
+        decal->setPosition(*getNPCEnemy()->getPosition());
+        decal->setupCube(5, 5, 5);
+        decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
+        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->update();
+        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        brakeza3D->addObject3D(decal, "decal");
 
     }
 };

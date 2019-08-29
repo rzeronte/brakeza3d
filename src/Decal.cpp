@@ -4,29 +4,32 @@
 #include "../headers/Render/Transforms.h"
 
 Decal::Decal() {
-    texture = new Texture();
-
+    sprite = new Sprite3D();
     setDecal(true);
 }
 
 void Decal::setupCube(float sizeX, float sizeY, float sizeZ)
 {
+    this->w = sizeX;
+    this->h = sizeY;
+
     cube = new Cube3D(sizeX, sizeY, sizeZ);
     cube->setDecal(true);
 }
 
-float Decal::getSCoord(Vertex3D Q)
+float Decal::getTCoord(Vertex3D Q)
 {
     return (T * (Q-P) / w ) + 0.5;
 }
 
-float Decal::getTCoord(Vertex3D Q)
+float Decal::getSCoord(Vertex3D Q)
 {
     return (B * (Q-P) / h ) + 0.5;
 }
 
 void Decal::setupFromAxis()
 {
+    sprite->setPosition(*getPosition());
     P = *getPosition();
     N = AxisForward();
     T = AxisUp();
@@ -97,10 +100,18 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
     }
 
     // Fix separation for avoid Z-fightingba
-    float OffsetSeparation = 0.1;
+    float OffsetSeparation = 0.25;
     for (int i = 0; i < numTriangles ; i++) {
         modelTriangles[i].A = modelTriangles[i].A - N.getScaled(OffsetSeparation);
         modelTriangles[i].B = modelTriangles[i].B - N.getScaled(OffsetSeparation);
         modelTriangles[i].C = modelTriangles[i].C - N.getScaled(OffsetSeparation);
     }
+}
+
+Sprite3D *Decal::getSprite() const {
+    return sprite;
+}
+
+void Decal::setSprite(Sprite3D *sprite) {
+    Decal::sprite = sprite;
 }

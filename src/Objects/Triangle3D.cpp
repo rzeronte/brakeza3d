@@ -100,6 +100,7 @@ void Triangle::updateUVCache()
 
         if (parent->isDecal()) {
             Decal *decalParent = dynamic_cast<Decal*> (parent);
+
             float decal_As = decalParent->getSCoord(Ao);
             float decal_At = decalParent->getTCoord(Ao);
             float decal_Bs = decalParent->getSCoord(Bo);
@@ -107,7 +108,7 @@ void Triangle::updateUVCache()
             float decal_Cs = decalParent->getSCoord(Co);
             float decal_Ct = decalParent->getTCoord(Co);
 
-            this->texture = decalParent->texture;
+            this->texture = decalParent->getSprite()->getCurrentTextureAnimation()->getCurrentFrame();
 
             tex_u1 = decal_As;
             tex_v1 = decal_At;
@@ -253,7 +254,7 @@ void Triangle::draw(Camera3D *cam)
     }
 
     // wireframe
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || parent->isDecal() ) {
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || (parent->isDecal() && EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES)) {
         this->drawWireframe();
     }
 

@@ -46,15 +46,13 @@ EngineBuffers::EngineBuffers()
 
     goreTemplate = new Sprite3D();
     goreTemplate->setAutoRemoveAfterAnimation(true);
-    goreTemplate->setEnabled(true);
     goreTemplate->addAnimation("gore/gore", 4, 25);
-    goreTemplate->setAnimation(0);
-    goreTemplate->getBillboard()->setDimensions(1, 1);
 
-    /*decal = new Decal();
-    decal->setPosition(Vertex3D(5, 5, 25));
-    decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str(), 1 );
-    */
+    gibsTemplate = new Sprite3D();
+    gibsTemplate->addAnimation("gibs/gibs1", 7, 25);
+    gibsTemplate->addAnimation("gibs/gibs2", 7, 25);
+    gibsTemplate->addAnimation("gibs/gibs3", 8, 25);
+
 }
 
 void EngineBuffers::clearDepthBuffer()

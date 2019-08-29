@@ -34,8 +34,9 @@ public:
         }
 
         if (enemyPart->doneGore) return;
-
         enemyPart->doneGore = true;
+
+        getEnemyPart()->getCurrentTextureAnimation()->setPaused(true);
 
         makeGoreDecals(90, 0, 0);
         makeGoreDecals(-90, 0, 0);
@@ -72,7 +73,15 @@ public:
     }
 
     void makeGoreDecals(float rotX, float rotY, float rotZ) {
-
+        Decal *decal = new Decal();
+        decal->setPosition(*getEnemyPart()->getPosition());
+        decal->setupCube(5, 5, 5);
+        decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
+        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->update();
+        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        brakeza3D->addObject3D(decal, "decal");
     }
 };
 

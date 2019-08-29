@@ -1,11 +1,8 @@
 #include "Game.h"
-#include "headers/Render/Drawable.h"
-#include "headers/Objects/Sprite3D.h"
 #include "headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "src/Decal.h"
 #include "headers/Physics/Sprite3DBody.h"
-#include "headers/Objects/Cube3D.h"
 
 Game::Game() {}
 
@@ -135,10 +132,11 @@ void Game::loadDemoObjects()
 
     // decal
     Decal *decal = new Decal();
-    decal->setPosition(Vertex3D(1, 1, 1));
-    decal->setupCube(1, 1, 1);
-    decal->texture->loadTGA( std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "gore1.png").c_str(), 1 );
-
+    decal->setPosition(Vertex3D(52, -12, 76.5));
+    decal->setupCube(10, 10, 5);
+    decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+    decal->cube->setPosition(*decal->getPosition());
+    decal->cube->update();
     this->addObject3D(decal, "decal");
 
     // triangle
@@ -182,15 +180,15 @@ void Game::loadDemoObjects()
     skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(skull, "skull");
 
-    // cacodemon (sprite directional)
-    SpriteDirectional3D *cacodemon = new SpriteDirectional3D();
-    cacodemon->setEnabled(false);
-    cacodemon->setPosition(Vertex3D(20, 0, -10));
-    cacodemon->setTimer(Engine::getTimer());
-    cacodemon->addAnimationDirectional2D("cacodemon/walk", 6, false, -1);
-    cacodemon->addAnimationDirectional2D("cacodemon/dead", 6, false, -1);
-    cacodemon->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
-    this->addObject3D(cacodemon, "cacodemon");
+    // caco (sprite directional)
+    SpriteDirectional3D *caco = new SpriteDirectional3D();
+    caco->setEnabled(false);
+    caco->setPosition(Vertex3D(20, 0, -10));
+    caco->setTimer(Engine::getTimer());
+    caco->addAnimationDirectional2D("cacodemon/walk", 6, false, -1);
+    caco->addAnimationDirectional2D("cacodemon/dead", 6, false, -1);
+    caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
+    this->addObject3D(caco, "caco");
 
     // marine ( sprite )
     Sprite3D *doomFace = new Sprite3D();

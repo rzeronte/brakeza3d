@@ -39,7 +39,9 @@ void TextureAnimation::nextFrame()
 {
     setEndAnimation(false);
 
-    currentFrame++;
+    if (!isPaused()) {
+        currentFrame++;
+    }
 
     // update frame
     if (currentFrame >= this->getNumFrames()) {
@@ -56,4 +58,12 @@ bool TextureAnimation::isEndAnimation() const {
 
 void TextureAnimation::setEndAnimation(bool endAnimation) {
     TextureAnimation::endAnimation = endAnimation;
+}
+
+bool TextureAnimation::isPaused() const {
+    return paused;
+}
+
+void TextureAnimation::setPaused(bool paused) {
+    TextureAnimation::paused = paused;
 }
