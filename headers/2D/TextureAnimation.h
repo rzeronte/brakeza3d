@@ -16,6 +16,7 @@ public:
     Texture *frames[ANIMATION2D_MAX_FRAMES];
 
     bool endAnimation = false;
+    bool paused = false;
 
     TextureAnimation();
 
@@ -23,13 +24,16 @@ public:
     void loadImages();
 
     int getNumFrames() const;
-
-    Texture *getCurrentFrame();
     void nextFrame();
 
-    bool isEndAnimation() const;
+    Texture *getCurrentFrame();
 
+    bool isEndAnimation() const;
     void setEndAnimation(bool endAnimation);
+
+    bool isPaused() const;
+
+    void setPaused(bool paused);
 };
 
 

@@ -72,6 +72,8 @@ public:
     bool TRIANGLE_MODE_COLOR_SOLID = false;
     bool TRIANGLE_MODE_TEXTURIZED = true;
 
+    bool DRAW_DECAL_WIREFRAMES = false;
+
     bool TEXTURES_BILINEAR_INTERPOLATION = false;
     bool LIGHTMAPS_BILINEAR_INTERPOLATION = true;
 
@@ -146,8 +148,8 @@ public:
     int GUI_MAX_SPRITE3D_FRAMERATE = 30;
 
     // SpriteDirectional3D Default size
-    float BILLBOARD_WIDTH_DEFAULT = 3.f;
-    float BILLBOARD_HEIGHT_DEFAULT = 3.f;
+    float BILLBOARD_WIDTH_DEFAULT = 1.f;
+    float BILLBOARD_HEIGHT_DEFAULT = 1.f;
 
     int TEXT_3D_SIZE = 40;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
@@ -216,7 +218,7 @@ public:
 
     char *LIGHT_PATTERNS[12];
 
-    bool CFG_AUTOLOAD_MAP = false;
+    bool CFG_AUTOLOAD_MAP = true;
 
     bool EVENT_GUI = false;
     int EVENT_LAUNCH = 0;

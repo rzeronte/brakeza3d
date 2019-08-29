@@ -744,12 +744,6 @@ void Engine::onUpdate()
     for (int i = 0; i < this->gameObjects.size(); i++) {
         Decal *dec = dynamic_cast<Decal*> (this->gameObjects[i]);
         if (dec != NULL) {
-            dec->cube->setPosition(*dec->getPosition());
-            dec->cube->update();
-            if (dec->drawWireframe) {
-                dec->cube->draw(camera);
-            }
-            dec->getTriangles(visibleTriangles, numVisibleTriangles, camera);
         }
     }
 

@@ -110,7 +110,7 @@ public:
                     // Only for decals
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
                     if (pDecal != NULL) {
-                        ImGui::Checkbox(std::string("Draw decal wireframe").c_str(), &pDecal->drawWireframe);
+                        ImGui::Checkbox(std::string("Draw Decal Planes").c_str(), &pDecal->drawWireframe);
                         std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->numTriangles);
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
                     }

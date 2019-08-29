@@ -20,7 +20,7 @@ public:
     float h = 5;
 
     Cube3D *cube;
-    Texture *texture;
+    Sprite3D *sprite;
 
     Decal();
 
@@ -32,6 +32,10 @@ public:
 
     float getSCoord(Vertex3D v);
     float getTCoord(Vertex3D v);
+
+    Sprite3D *getSprite() const;
+
+    void setSprite(Sprite3D *sprite);
 };
 
 

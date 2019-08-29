@@ -126,6 +126,7 @@ public:
     };
 
     Sprite3D *goreTemplate;
+    Sprite3D *gibsTemplate;
     //Decal *decal;
 
     static EngineBuffers* getInstance();

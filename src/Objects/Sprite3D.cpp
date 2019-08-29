@@ -55,8 +55,10 @@ void Sprite3D::updateTexture()
 
     if (timerCurrent >= step) {
         timerCurrent = 0.0f;
-        this->animations[currentAnimationIndex]->nextFrame();
-        if (this->isAutoRemoveAfterAnimation() && this->animations[currentAnimationIndex]->isEndAnimation()) {
+        //if (!this->isPaused()) {
+            getCurrentTextureAnimation()->nextFrame();
+        //}
+        if (this->isAutoRemoveAfterAnimation() && getCurrentTextureAnimation()->isEndAnimation()) {
             this->setRemoved(true);
         }
     }
@@ -94,4 +96,9 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst)
             this->animations[i]->frames[j] = dst->animations[i]->frames[j];
         }
     }
+}
+
+TextureAnimation* Sprite3D::getCurrentTextureAnimation()
+{
+    return this->animations[currentAnimationIndex];
 }
