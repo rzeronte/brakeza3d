@@ -38,12 +38,14 @@ public:
 
         getEnemyPart()->getCurrentTextureAnimation()->setPaused(true);
 
-        makeGoreDecals(90, 0, 0);
+        //makeGoreDecals(90, 0, 0);
         makeGoreDecals(-90, 0, 0);
         makeGoreDecals(0, 0, 0);
         makeGoreDecals(0, 90, 0);
         makeGoreDecals(0, 180, 0);
         makeGoreDecals(0, -90, 0);
+
+        dynamicsWorld->removeCollisionObject(getEnemyPart()->getRigidBody());
     }
 
     BSPMap *getBSPMap()

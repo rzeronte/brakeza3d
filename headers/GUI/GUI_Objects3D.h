@@ -119,7 +119,7 @@ public:
                     SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(gameObjects[i]);
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                         const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
 

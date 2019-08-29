@@ -163,11 +163,11 @@ void Game::loadDemoObjects()
     marine->setEnabled(false);
     marine->setPosition(Vertex3D(10, 0, -10));
     marine->setTimer(Engine::getTimer());
-    marine->addAnimationDirectional2D("soldier/walk", 4, false, -1);
-    marine->addAnimationDirectional2D("soldier/fire", 2, false, -1);
-    marine->addAnimationDirectional2D("soldier/injuried", 1, false, -1);
-    marine->addAnimationDirectional2D("soldier/dead", 5, true, 1);
-    marine->addAnimationDirectional2D("soldier/explosion", 8, true, 1);
+    marine->addAnimationDirectional2D("soldier/walk", 4, 20,  false, -1);
+    marine->addAnimationDirectional2D("soldier/fire", 2, 20, false, -1);
+    marine->addAnimationDirectional2D("soldier/injuried", 1, 20, false, -1);
+    marine->addAnimationDirectional2D("soldier/dead", 5, 20, true, 1);
+    marine->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
     marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(marine, "marine");
 
@@ -176,7 +176,7 @@ void Game::loadDemoObjects()
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->setTimer(Engine::getTimer());
-    skull->addAnimationDirectional2D("skull/idle", 5, false, -1);
+    skull->addAnimationDirectional2D("skull/idle", 5, 20, false, -1);
     skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
     this->addObject3D(skull, "skull");
 
@@ -185,8 +185,8 @@ void Game::loadDemoObjects()
     caco->setEnabled(false);
     caco->setPosition(Vertex3D(20, 0, -10));
     caco->setTimer(Engine::getTimer());
-    caco->addAnimationDirectional2D("cacodemon/walk", 6, false, -1);
-    caco->addAnimationDirectional2D("cacodemon/dead", 6, false, -1);
+    caco->addAnimationDirectional2D("cacodemon/walk", 6, 20, false, -1);
+    caco->addAnimationDirectional2D("cacodemon/dead", 6, 20, false, -1);
     caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
     this->addObject3D(caco, "caco");
 

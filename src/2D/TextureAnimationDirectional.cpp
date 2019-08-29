@@ -12,10 +12,11 @@ TextureAnimationDirectional::TextureAnimationDirectional()
     }
 }
 
-void TextureAnimationDirectional::setup(std::string file, int num_frames, int maxTimes)
+void TextureAnimationDirectional::setup(std::string file, int numFrames, int fps, int maxTimes)
 {
     this->base_file = file;
-    this->numFrames = num_frames;
+    this->numFrames = numFrames;
+    this->fps = fps;
     this->maxTimes = maxTimes;
 }
 

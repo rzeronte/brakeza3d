@@ -17,11 +17,13 @@ public:
     int times = 0;
     int maxTimes = -1;
 
+    int fps = 20;
+
     bool isZeroDirection = false;
     Texture *frames[9][ANIMATION2D_MAX_FRAMES];
 
     TextureAnimationDirectional();
-    void setup(std::string file, int num_frames, int maxTimes);
+    void setup(std::string file, int numFrames, int fps, int maxTimes);
 
     void loadImages();
     void loadImagesForZeroDirection();

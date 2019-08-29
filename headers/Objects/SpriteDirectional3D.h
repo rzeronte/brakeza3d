@@ -33,8 +33,6 @@ public:
     int num_animations = 0;
     int current_animation = 0;
 
-    int fps = 2;
-
     float timerLastTicks;
     float timerCurrent = 0;
 
@@ -43,7 +41,7 @@ public:
     SpriteDirectional3D();
 
     Billboard *getBillboard() const;
-    void addAnimationDirectional2D(std::string, int frames, bool zeroDirection, int maxTimes);
+    void addAnimationDirectional2D(std::string, int frames, int fps, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
     void setTimer(Timer *);
@@ -51,6 +49,8 @@ public:
     void draw(Camera3D *cam);
     void updateTrianglesCoordinates(Camera3D *cam);
     void linkTexturesTo(SpriteDirectional3D *clone);
+
+    TextureAnimationDirectional* getCurrentTextureAnimationDirectional();
 };
 
 
