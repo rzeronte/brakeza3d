@@ -6,7 +6,7 @@
 #include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
-#include "../Decal.h"
+#include "../../headers/Objects/Decal.h"
 
 extern Engine *brakeza3D;
 

@@ -210,6 +210,8 @@ void Tools::getTextAndRectCenter(SDL_Renderer *renderer, char *text, TTF_Font *f
 
 void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color)
 {
+    int renderer_w, renderer_h;
+    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
     int text_width;
     int text_height;
 
@@ -223,8 +225,9 @@ void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF
     text_height = surface->h;
     SDL_FreeSurface(surface);
 
-    rect->x = x;
-    rect->y = y;
+    rect->x = (x);  ///EngineSetup::getInstance()->screenWidth) * renderer_w;
+    rect->y = (y);  //EngineSetup::getInstance()->screenHeight) * renderer_h;
+
     rect->w = text_width;
     rect->h = text_height;
 }

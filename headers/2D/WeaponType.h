@@ -14,6 +14,8 @@ public:
 
     std::string label;
 
+    int ammo = 50;
+
     float projectileWidth;
     float projectileHeight;
 

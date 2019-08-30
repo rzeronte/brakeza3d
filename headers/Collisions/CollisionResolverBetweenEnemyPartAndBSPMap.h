@@ -6,7 +6,7 @@
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"
 #include "../PhysicsGame/NPCEnemyPartBody.h"
-#include "../../src/Decal.h"
+#include "../Objects/Decal.h"
 
 class CollisionResolverBetweenEnemyPartAndBSPMap : public CollisionResolver {
 public:
@@ -74,7 +74,8 @@ public:
         }
     }
 
-    void makeGoreDecals(float rotX, float rotY, float rotZ) {
+    void makeGoreDecals(float rotX, float rotY, float rotZ)
+    {
         Decal *decal = new Decal();
         decal->setPosition(*getEnemyPart()->getPosition());
         decal->setupCube(5, 5, 5);

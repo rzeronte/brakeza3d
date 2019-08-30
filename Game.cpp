@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "src/Decal.h"
+#include "headers/Objects/Decal.h"
 #include "headers/Physics/Sprite3DBody.h"
 
 Game::Game() {}

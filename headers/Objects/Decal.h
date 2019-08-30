@@ -3,9 +3,9 @@
 #define BRAKEDA3D_DECAL_H
 
 
-#include "../headers/Objects/Object3D.h"
-#include "../headers/Objects/Mesh3D.h"
-#include "../headers/Objects/Cube3D.h"
+#include "Object3D.h"
+#include "Mesh3D.h"
+#include "Cube3D.h"
 
 class Decal : public Mesh3D {
 public:
