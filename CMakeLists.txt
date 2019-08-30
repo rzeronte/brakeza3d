@@ -167,8 +167,8 @@ add_executable(brakeda3d
         headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
         headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
         headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
-        src/Decal.cpp
-        src/Decal.h
+        src/Objects/Decal.cpp
+        headers/Objects/Decal.h
         src/PhysicsGame/NPCEnemyPartBody.cpp headers/PhysicsGame/NPCEnemyPartBody.h src/Physics/Sprite3DBody.cpp headers/Physics/Sprite3DBody.h src/Physics/Body.cpp headers/Physics/Body.h headers/Objects/Cube3D.cpp headers/Objects/Cube3D.h)
 
 target_link_libraries(brakeda3d
