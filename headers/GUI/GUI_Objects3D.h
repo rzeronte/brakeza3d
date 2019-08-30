@@ -12,7 +12,7 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Render/Logging.h"
-#include "../../src/Decal.h"
+#include "../Objects/Decal.h"
 
 class GUI_Objects3D : public GUI  {
 public:

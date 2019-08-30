@@ -14,7 +14,7 @@
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
-#include "../Decal.h"
+#include "../../headers/Objects/Decal.h"
 
 extern Engine *brakeza3D;
 

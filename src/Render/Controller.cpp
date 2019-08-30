@@ -78,8 +78,10 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
      }
 
     if (keyboard[SDL_SCANCODE_Q]) {
+        if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
 
         this->firing = true;
+
         if (weapon->getCurrentWeaponType()->cadenceTimerTest()) {
             if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
                 Projectile3DBody *projectile = new Projectile3DBody();
@@ -94,6 +96,9 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
                     weapon->getCurrentWeaponType()->projectileWidth,
                     weapon->getCurrentWeaponType()->projectileHeight
                 );
+
+                // Reduce ammo for this weapon type
+                weapon->getCurrentWeaponType()->ammo--;
 
                 // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
                 // del impulso en el interior del makeRigidBody

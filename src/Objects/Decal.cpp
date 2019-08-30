@@ -1,7 +1,7 @@
 
-#include "Decal.h"
-#include "../headers/Render/Logging.h"
-#include "../headers/Render/Transforms.h"
+#include "../../headers/Objects/Decal.h"
+#include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Transforms.h"
 
 Decal::Decal() {
     sprite = new Sprite3D();

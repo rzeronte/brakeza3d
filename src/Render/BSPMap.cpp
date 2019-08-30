@@ -513,6 +513,7 @@ void BSPMap::InitializeEntities()
             Logging::getInstance()->Log("Key: '" + (std::string)this->entities[i].attributes[j].key + "' - Value: '" + (std::string)this->entities[i].attributes[j].value + "'", "");
         }
     }
+
     // Create Objects3D from BSP Entities
     for (int i = 0 ; i < brakeza3D->bspMap->n_entities ; i++) {
         if (brakeza3D->bspMap->hasEntityAttribute(i, "classname")) {

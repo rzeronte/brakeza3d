@@ -728,8 +728,6 @@ void Engine::onUpdate()
         this->objects3DShadowMapping();
     }
 
-
-
     this->getQuakeMapTriangles();
     this->getMesh3DTriangles();
     this->getLightPointsTriangles();
@@ -738,13 +736,6 @@ void Engine::onUpdate()
 
     if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
         this->handleOpenCLTransform();
-    }
-
-    // temporal
-    for (int i = 0; i < this->gameObjects.size(); i++) {
-        Decal *dec = dynamic_cast<Decal*> (this->gameObjects[i]);
-        if (dec != NULL) {
-        }
     }
 
     this->hiddenSurfaceRemoval();
@@ -788,6 +779,7 @@ void Engine::onUpdate()
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
         this->weaponManager->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
+        Tools::writeText(renderer, font, 10, 200, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
     }
 
     if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
