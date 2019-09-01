@@ -37,6 +37,8 @@ void Game::mainLoop()
             controller->handleKeyboard(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::gameObjects, Engine::getTimer(), menu, weaponManager);
         }
 
+        if (finish) continue;
+
         // Check array Uint8 *keyboard
         controller->handleKeyboardContinuous(&this->e, this->camera, this->finish, collisionsManager->getDynamicsWorld(), Engine::gameObjects, Engine::getTimer(), menu, weaponManager);
 

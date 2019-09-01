@@ -779,7 +779,7 @@ void Engine::onUpdate()
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
         this->weaponManager->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
-        Tools::writeText(renderer, font, 10, 200, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
+        Tools::writeText(renderer, font, 10, 220, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
     }
 
     if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
