@@ -166,6 +166,7 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
         Logging::getInstance()->Log(menu->options[weapon->currentWeapon]->label);
         if (EngineSetup::getInstance()->MENU_ACTIVE && menu->options[menu->currentOptions]->label == "exit") {
             end = true;
+            return;
         }
     }
 

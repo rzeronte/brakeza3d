@@ -225,8 +225,8 @@ void Tools::getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF
     text_height = surface->h;
     SDL_FreeSurface(surface);
 
-    rect->x = (x);  ///EngineSetup::getInstance()->screenWidth) * renderer_w;
-    rect->y = (y);  //EngineSetup::getInstance()->screenHeight) * renderer_h;
+    rect->x = (float)x / EngineSetup::getInstance()->screenWidth * renderer_w;
+    rect->y = (float)y / EngineSetup::getInstance()->screenHeight * renderer_h;
 
     rect->w = text_width;
     rect->h = text_height;
