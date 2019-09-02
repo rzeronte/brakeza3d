@@ -251,9 +251,7 @@ void Mesh3D::draw(Camera3D *cam)
         this->modelTriangles[i].updateLightmapFrame();
         brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->modelTriangles[i];
         brakeza3D->numFrameTriangles++;
-        //this->model_triangles[i].draw(cam);
     }
-
 }
 
 void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)

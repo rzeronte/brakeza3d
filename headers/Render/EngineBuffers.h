@@ -79,7 +79,7 @@ public:
 
     // sounds
     Mix_Music *snd_base_menu;       // menu
-    Mix_Chunk *snd_weapon_1;    // weapon 1 fire
+    Mix_Chunk *soundEnemyDead;
 
     Mix_Music *snd_base_level_0;     // base sound level 0
 

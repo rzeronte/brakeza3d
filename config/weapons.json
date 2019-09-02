@@ -9,6 +9,8 @@
       "projectile_width": 0,
       "projectile_height": 0,
       "mark": { "path": "melee_magic/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
+      "fire_sound": "gun_fire.wav",
+      "mark_sound": "gun_mark.wav",
       "animations": [
         { "subfolder": "walk", "frames": 3, "fps": 14, "offsetX": 50, "offsetY": 185 },
         { "subfolder": "fire", "frames": 6, "fps": 10, "offsetX": 60, "offsetY": 150 },
@@ -24,10 +26,12 @@
       "projectile_width": 0.75,
       "projectile_height": 0.75,
       "mark": { "path": "gun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "fire_sound": "gun_fire.wav",
+      "mark_sound": "gun_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 70, "offsetY": 60 },
-        { "subfolder": "fire", "frames": 5, "fps": 10, "offsetX": 0, "offsetY": 72 },
-        { "subfolder": "reload", "frames": 17, "fps": 10, "offsetX": 0, "offsetY": 60 }
+        { "subfolder": "walk", "frames": 1, "fps": 25, "offsetX": 70, "offsetY": 60 },
+        { "subfolder": "fire", "frames": 5, "fps": 25, "offsetX": 0, "offsetY": 72 },
+        { "subfolder": "reload", "frames": 17, "fps": 25, "offsetX": 0, "offsetY": 60 }
       ]
     },
     {
@@ -39,25 +43,29 @@
       "projectile_width": 0.50,
       "projectile_height": 0.50,
       "mark": { "path": "machinegun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "fire_sound": "machinegun_fire.wav",
+      "mark_sound": "machinegun_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 80, "offsetY": 120 },
-        { "subfolder": "fire", "frames": 8, "fps": 20, "offsetX": 80, "offsetY": 120 },
-        { "subfolder": "reload", "frames": 4, "fps": 10, "offsetX": 0, "offsetY": 0 }
+        { "subfolder": "walk", "frames": 1, "fps": 15, "offsetX": 80, "offsetY": 120 },
+        { "subfolder": "fire", "frames": 8, "fps": 15, "offsetX": 80, "offsetY": 120 },
+        { "subfolder": "reload", "frames": 4, "fps": 15, "offsetX": 0, "offsetY": 0 }
       ]
     },
     {
       "name": "rocketlauncher",
-      "cadence": 0.9,
+      "cadence": 1,
       "hit": 1,
       "damage": 30,
-      "speed": 200,
+      "speed": 500,
       "projectile_width": 6,
       "projectile_height": 6,
-      "mark": { "path": "rocketlauncher/mark/mark",  "frames": 13,  "fps": 25, "width": 20, "height": 20},
+      "mark": { "path": "rocketlauncher/mark/mark",  "frames": 16,  "fps": 30, "width": 8, "height": 8},
+      "fire_sound": "rocketlauncher_fire.wav",
+      "mark_sound": "rocketlauncher_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "fire", "frames": 21, "fps": 10, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "reload", "frames": 8, "fps": 10, "offsetX": 0, "offsetY": 75 }
+        { "subfolder": "walk", "frames": 1, "fps": 30, "offsetX": 0, "offsetY": 75 },
+        { "subfolder": "fire", "frames": 5, "fps": 4, "offsetX": 0, "offsetY": 75 },
+        { "subfolder": "reload", "frames": 8, "fps": 30, "offsetX": 0, "offsetY": 75 }
       ]
     }
   ]

@@ -7,7 +7,6 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
-#include "../../headers/Objects/Cube3D.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -59,7 +58,7 @@ bool Engine::initSound()
 
     Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
     Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
-;
+
     EngineBuffers::getInstance()->loadWAVs();
 }
 
@@ -466,7 +465,7 @@ void Engine::handleOpenCLTransform()
         frameTriangles[i].normal.y = oclt.normal[1];
         frameTriangles[i].normal.z = oclt.normal[2];
 
-        frameTriangles[i].is_clipped_cl = oclt.is_clipping;
+        frameTriangles[i].clipped_cl = oclt.is_clipping;
     }
 
     EngineBuffers::getInstance()->numOCLTriangles = 0;
@@ -659,19 +658,18 @@ void Engine::onStart()
     Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
     Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
 
+    this->initSound();
+
     this->menu->getOptionsJSON();
     this->getWeaponsJSON();
     this->getMapsJSON();
 
-    this->initSound();
 
     Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
 
 void Engine::preUpdate()
 {
-    this->controller->resetFlags();
-
     // Posición inicial del vector velocidad que llevará la cámara
     camera->velocity.vertex1 = *camera->getPosition();
     camera->velocity.vertex2 = *camera->getPosition();
@@ -740,6 +738,12 @@ void Engine::onUpdate()
 
     this->hiddenSurfaceRemoval();
 
+    Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
+    d->cube->setPosition(*d->getPosition());
+    d->cube->update();
+    d->getTriangles(visibleTriangles, numVisibleTriangles, camera);
+    d->getSprite()->setAnimation((int)EngineSetup::getInstance()->TESTING_INT);
+
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
 
@@ -760,7 +764,6 @@ void Engine::onUpdate()
         }
     }
 
-
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
         collisionsManager->getDynamicsWorld()->debugDrawWorld();
     }
@@ -778,7 +781,7 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        this->weaponManager->onUpdate(this->camera, this->controller->isFiring(), screenSurface, this->camera->velocity);
+        this->weaponManager->onUpdate(this->camera, screenSurface);
         Tools::writeText(renderer, font, 10, 220, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
     }
 
@@ -840,6 +843,12 @@ void Engine::getMesh3DTriangles()
                 }
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                }
+            }
+            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
+                if (oDecal != NULL) {
+                    oDecal->cube->draw(camera);
                 }
             }
         }
@@ -993,7 +1002,7 @@ void Engine::hiddenSurfaceRemoval()
         // Clipping (needs objectSpace)
         bool needClipping = false;
         if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            if (this->frameTriangles[i].is_clipped_cl ) {
+            if (this->frameTriangles[i].clipped_cl ) {
                 needClipping = true;
             }
         } else {
@@ -1287,6 +1296,8 @@ void Engine::getWeaponsJSON()
         cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
+        cJSON *soundFire = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
+        cJSON *soundMark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
 
         // Weapon Type attributes
         weaponManager->addWeaponType(name->valuestring);
@@ -1295,6 +1306,8 @@ void Engine::getWeaponsJSON()
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
 
         cJSON *mark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
         cJSON *markPath = cJSON_GetObjectItemCaseSensitive(mark, "path");

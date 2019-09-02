@@ -36,8 +36,11 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
 
     Vertex3D pos = *this->getPosition();
 
-    Vertex3D dir = cam->getRotation().getTranspose() * AxisForward();
-    pos = pos + dir.getScaled(10);
+    Vertex3D dir;
+    if (applyCameraImpulse) {
+        dir = cam->getRotation().getTranspose() * AxisForward();
+        pos = pos + dir.getScaled(10); // un poquito delante del Player
+    }
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 

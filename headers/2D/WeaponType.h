@@ -2,6 +2,7 @@
 #ifndef BRAKEDA3D_WEAPONTYPE_H
 #define BRAKEDA3D_WEAPONTYPE_H
 
+#include <SDL_mixer.h>
 #include "WeaponAnimation.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
@@ -31,23 +32,31 @@ public:
     SpriteDirectional3D *projectileTemplate;
     Sprite3D *markTemplate;
 
+    Mix_Chunk *soundFire;
+    Mix_Chunk *soundMark;
+
     int speed = 500;
 
     int numAnimations = 0;
     int currentAnimationIndex = 0;
-
     WeaponAnimation *animations[WEAPON_MAX_ANIMATIONSS];
 
     void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY);
 
     WeaponAnimation *getCurrentWeaponAnimation();
 
+    void onUpdate();
+
+    void setWeaponAnimation(int);
+
     void setCadence(float cadence);
     void setSpeed(float cadence);
 
-    void startFireAction();
+    void startAction();
+    void endAction();
+
     void updateCadenceTimer();
-    bool cadenceTimerTest();
+    bool isCadenceInProgress();
 
     int getHitType();
     void setHitType(int hitType);
@@ -62,6 +71,9 @@ public:
 
     Sprite3D *getMarkTemplate();
     void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
+
+    void loadFireSound(std::string file);
+    void loadMarkSound(std::string file);
 };
 
 

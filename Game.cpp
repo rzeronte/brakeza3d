@@ -137,6 +137,7 @@ void Game::loadDemoObjects()
     decal->setPosition(Vertex3D(52, -12, 76.5));
     decal->setupCube(10, 10, 5);
     decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+    decal->getSprite()->setAnimation(Tools::random(0, 10));
     decal->cube->setPosition(*decal->getPosition());
     decal->cube->update();
     this->addObject3D(decal, "decal");

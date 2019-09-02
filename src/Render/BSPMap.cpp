@@ -560,7 +560,6 @@ void BSPMap::InitializeEntities()
                     o->addAnimationDirectional2D("soldier/dead", 5, 20, true, 1);
                     o->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
                     o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
-                    o->setEnabled(true);
                     o->setPosition( pos );
                     o->setDrawBillboard(true);
                     o->getBillboard()->setDimensions(4, 6);

@@ -53,6 +53,12 @@ void WeaponAnimation::nextFrame()
     }
 }
 
+void WeaponAnimation::resetAnimation()
+{
+    this->currentFrame = 0;
+    this->timerCurrent = 0;
+}
+
 void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY)
 {
     SDL_Rect destPos;

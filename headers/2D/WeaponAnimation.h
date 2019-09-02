@@ -35,6 +35,7 @@ public:
     SDL_Surface *getCurrentSurface();
 
     void nextFrame();
+    void resetAnimation();
 
     void draw(SDL_Surface *dst, int globalOffsetX, int headBobOffsetY);
 

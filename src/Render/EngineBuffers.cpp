@@ -46,7 +46,17 @@ EngineBuffers::EngineBuffers()
 
     goreTemplate = new Sprite3D();
     goreTemplate->setAutoRemoveAfterAnimation(true);
-    goreTemplate->addAnimation("gore/gore", 4, 25);
+    goreTemplate->addAnimation("gore/gore1", 1, 25);
+    goreTemplate->addAnimation("gore/gore2", 1, 25);
+    goreTemplate->addAnimation("gore/gore3", 1, 25);
+    goreTemplate->addAnimation("gore/gore4", 1, 25);
+    goreTemplate->addAnimation("gore/gore5", 1, 25);
+    goreTemplate->addAnimation("gore/gore6", 1, 25);
+    goreTemplate->addAnimation("gore/gore7", 1, 25);
+    goreTemplate->addAnimation("gore/gore8", 1, 25);
+    goreTemplate->addAnimation("gore/gore9", 1, 25);
+    goreTemplate->addAnimation("gore/gore10", 1, 25);
+    goreTemplate->addAnimation("gore/gore11", 1, 25);
 
     gibsTemplate = new Sprite3D();
     gibsTemplate->addAnimation("gibs/gibs1", 7, 25);
@@ -149,6 +159,7 @@ void EngineBuffers::fireShaderSetup()
 void EngineBuffers::loadWAVs()
 {
     this->snd_base_menu    = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_MAINMENU).c_str() );
-    this->snd_weapon_1 = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_WEAPON_1).c_str() );
     this->snd_base_level_0 = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_BASE_LEVEL_0).c_str() );
+
+    this->soundEnemyDead = Mix_LoadWAV((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_ENEMY_DEAD).c_str() );
 }
