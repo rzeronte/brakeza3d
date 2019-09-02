@@ -23,8 +23,6 @@ class Controller {
     bool MousePressed = false;
     bool MouseMotion = false;
 
-    bool firing = false;
-
     Uint8* keyboard;
 
 public:
@@ -34,9 +32,6 @@ public:
     void handleKeyboard(SDL_Event *, Camera3D *, bool &, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *, MenuManager *menu, WeaponsManager *weapon);
 
     void handleMouse(SDL_Event *, Camera3D *, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon);
-
-    bool isFiring();
-    void resetFlags();
 };
 
 

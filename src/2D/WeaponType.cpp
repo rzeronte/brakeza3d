@@ -18,11 +18,6 @@ WeaponType::WeaponType(std::string label)
     this->lastTicks = 0;
 
     markTemplate = new Sprite3D();
-    /*markTemplate->setAutoRemoveAfterAnimation(true);
-    markTemplate->setEnabled(true);
-    markTemplate->addAnimation("gun/mark/mark", 10, 25);
-    markTemplate->setAnimation(0);
-    markTemplate->getBillboard()->setDimensions(10, 10);*/
 
 }
 
@@ -30,13 +25,24 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
-    Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" animations)", "BILLBOARD");
+    Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" animations)", "WeaponType");
 
     this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY);
 
     this->animations[this->numAnimations]->loadImages();
 
     this->numAnimations++;
+}
+
+void WeaponType::onUpdate()
+{
+    updateCadenceTimer();
+    getCurrentWeaponAnimation()->updateFrame();
+}
+
+void WeaponType::setWeaponAnimation(int animationIndex)
+{
+    this->currentAnimationIndex = animationIndex;
 }
 
 WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
@@ -54,29 +60,36 @@ void WeaponType::setSpeed(float speed)
     this->speed = speed;
 }
 
-void WeaponType::startFireAction()
+void WeaponType::startAction()
 {
     this->cadenceTimer.start();
+}
+
+void WeaponType::endAction()
+{
+    this->cadenceTimer.stop();
+    this->acumulatedTime = 0;
+    this->lastTicks = 0;
+    this->getCurrentWeaponAnimation()->resetAnimation();
 }
 
 void WeaponType::updateCadenceTimer()
 {
     if (!this->cadenceTimer.isStarted()) return;
+
     float deltatime = this->cadenceTimer.getTicks() - this->lastTicks;
     this->lastTicks = this->cadenceTimer.getTicks();
 
     this->acumulatedTime += deltatime / 1000;
 
     if  (this->acumulatedTime >= this->cadence ) {
-        this->cadenceTimer.stop();
-        this->acumulatedTime = 0;
-        this->lastTicks = 0;
+        this->endAction();
     }
 }
 
-bool WeaponType::cadenceTimerTest()
+bool WeaponType::isCadenceInProgress()
 {
-    return !this->cadenceTimer.isStarted();
+    return this->cadenceTimer.isStarted();
 }
 
 int WeaponType::getHitType()
@@ -139,4 +152,17 @@ void WeaponType::setupMarkTemplate(std::string path, int numFrames, int fps, flo
     markTemplate->addAnimation(path, numFrames, fps);
     markTemplate->setAnimation(0);
     markTemplate->getBillboard()->setDimensions(w, h);
+}
+
+void WeaponType::loadFireSound(std::string file)
+{
+    Logging::getInstance()->Log("loadFireSound: " + EngineSetup::getInstance()->SOUNDS_FOLDER + file, "WeaponType");
+
+    soundFire = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
+}
+
+void WeaponType::loadMarkSound(std::string file)
+{
+    Logging::getInstance()->Log("loadMarkSound: " + EngineSetup::getInstance()->SOUNDS_FOLDER + file, "WeaponType");
+    soundMark = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
 }

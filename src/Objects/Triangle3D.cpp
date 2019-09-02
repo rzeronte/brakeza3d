@@ -932,12 +932,12 @@ void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 
 void Triangle::setClipped(bool value)
 {
-    this->is_clipped = value;
+    this->clipped = value;
 }
 
 bool Triangle::isClipped()
 {
-    return this->is_clipped;
+    return this->clipped;
 }
 
 bool Triangle::isPointInside(Vertex3D v)

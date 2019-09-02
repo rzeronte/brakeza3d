@@ -36,16 +36,18 @@ public:
         if (enemyPart->doneGore) return;
         enemyPart->doneGore = true;
 
+        return;
+
         getEnemyPart()->getCurrentTextureAnimation()->setPaused(true);
 
-        //makeGoreDecals(90, 0, 0);
+        makeGoreDecals(90, 0, 0);
         makeGoreDecals(-90, 0, 0);
         makeGoreDecals(0, 0, 0);
         makeGoreDecals(0, 90, 0);
         makeGoreDecals(0, 180, 0);
         makeGoreDecals(0, -90, 0);
 
-        dynamicsWorld->removeCollisionObject(getEnemyPart()->getRigidBody());
+        //dynamicsWorld->removeCollisionObject(getEnemyPart()->getRigidBody());
     }
 
     BSPMap *getBSPMap()
@@ -81,6 +83,7 @@ public:
         decal->setupCube(5, 5, 5);
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
         decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);

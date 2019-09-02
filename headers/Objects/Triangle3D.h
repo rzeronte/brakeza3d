@@ -56,8 +56,8 @@ public:
     Vertex3D normal;
 
     int order = 0;
-    bool is_clipped = false;
-    bool is_clipped_cl = false;
+    bool clipped = false;
+    bool clipped_cl = false;
 
     bool isBSP = false;
     int surfaceBSPIndex = -1;

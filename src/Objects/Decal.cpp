@@ -56,6 +56,7 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
         SpriteDirectional3D *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (soupTriangles[i].parent);
         Sprite3D *sprite = dynamic_cast<Sprite3D*> (soupTriangles[i].parent);
 
+        // Decals ignoran sprites
         if (spriteDirectional != NULL || sprite != NULL) {
             continue;
         }
@@ -63,7 +64,7 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
         if (soupTriangles[i].isBackFaceCulling(&this->N)) {
             continue;
         }
-        
+
         if (soupTriangles[i].testForClipping(
                 cube->planes,
                 0,
@@ -92,7 +93,7 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
         modelTriangles[numTriangles] = soupTriangles[i];
         modelTriangles[numTriangles].parent = this;
         modelTriangles[numTriangles].isBSP = false;
-        modelTriangles[numTriangles].is_clipped = false;
+        modelTriangles[numTriangles].clipped = true;
         modelTriangles[numTriangles].A = Transforms::objectToLocal(modelTriangles[numTriangles].Ao, this);
         modelTriangles[numTriangles].B = Transforms::objectToLocal(modelTriangles[numTriangles].Bo, this);
         modelTriangles[numTriangles].C = Transforms::objectToLocal(modelTriangles[numTriangles].Co, this);

@@ -103,7 +103,7 @@ public:
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
-    float FRUSTUM_CLIPPING_DISTANCE = 0.001f;
+    float FRUSTUM_CLIPPING_DISTANCE = 0.01f;
 
     // BSP ITEM BILLBOARDS
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/light.tga";
@@ -124,8 +124,9 @@ public:
     std::string SOUNDS_FOLDER = "../assets/sounds/";
 
     std::string SOUND_MAINMENU = "tartani.wav";
-    std::string SOUND_WEAPON_1 = "gun_shot_1.wav";
     std::string SOUND_BASE_LEVEL_0 = "base_level_0.wav";
+
+    std::string SOUND_ENEMY_DEAD = "enemy_dead.wav";
 
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";

@@ -50,7 +50,7 @@ public:
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
                 Logging::getInstance()->Log("Exploding soldier");
 
-                for (int i = 0 ; i < 2; i++) {
+                for (int i = 0 ; i < 3; i++) {
                     gibsParticles(getNPCEnemy());
                 }
             }
@@ -59,6 +59,9 @@ public:
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
 
             makeGoreDecals(-90, 0, 0);
+
+            // Dead sound
+            Tools::playMixedSound(EngineBuffers::getInstance()->soundEnemyDead);
 
             // Remove sprite enemy from world
             //sprite->setRemoved(true);
@@ -88,10 +91,13 @@ public:
         particle->setTimer(brakeza3D->getTimer());
         particle->setAnimation(0);
         particle->getBillboard()->setDimensions(
-                weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
-                weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
+            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
+            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
         );
         brakeza3D->addObject3D(particle, "particles");
+
+        // Mark sound
+        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
     }
 
     Projectile3DBody *getProjectile()
@@ -138,7 +144,7 @@ public:
         // decal
         Decal *decal = new Decal();
         decal->setPosition(*getNPCEnemy()->getPosition());
-        decal->setupCube(5, 5, 5);
+        decal->setupCube(10, 10, 10);
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         decal->cube->setPosition(*decal->getPosition());

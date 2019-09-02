@@ -36,7 +36,7 @@ public:
         const float range_max_lod = 8;
 
         const float range_min_test_int = 0;
-        const float range_max_test_int = 3;
+        const float range_max_test_int = 10;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
         const float lod_sensibility = 0;

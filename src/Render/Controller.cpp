@@ -78,11 +78,10 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
      }
 
     if (keyboard[SDL_SCANCODE_Q]) {
-        if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
+        //if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
 
-        this->firing = true;
 
-        if (weapon->getCurrentWeaponType()->cadenceTimerTest()) {
+        if (!weapon->getCurrentWeaponType()->isCadenceInProgress()) {
             if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
                 Projectile3DBody *projectile = new Projectile3DBody();
                 projectile->setPosition(*camera->getPosition());
@@ -104,8 +103,11 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
                 // del impulso en el interior del makeRigidBody
                 projectile->setRotation(camera->getRotation());
 
-                weapon->getCurrentWeaponType()->startFireAction();
-                Tools::playMixedSound(EngineBuffers::getInstance()->snd_weapon_1);
+                // Si ya estábamos disparando, no interrumpimos la animación
+                weapon->getCurrentWeaponType()->startAction();
+                weapon->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
+
+                Tools::playMixedSound(weapon->getCurrentWeaponType()->soundFire);
             }
         }
     }
@@ -128,22 +130,18 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
 
     if (keyboard[SDL_SCANCODE_1]) {
         weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
-        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_2]) {
         weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
-        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_3]) {
         weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MACHINEGUN;
-        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_4]) {
         weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
-        weapon->getCurrentWeaponType()->getCurrentWeaponAnimation()->timer->start();
     }
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
@@ -163,7 +161,6 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
     }
 
     if (keyboard[SDL_SCANCODE_RETURN]) {
-        Logging::getInstance()->Log(menu->options[weapon->currentWeapon]->label);
         if (EngineSetup::getInstance()->MENU_ACTIVE && menu->options[menu->currentOptions]->label == "exit") {
             end = true;
             return;
@@ -211,15 +208,4 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
                 break;
         }
     }
-}
-
-
-bool Controller::isFiring()
-{
-    return firing;
-}
-
-void Controller::resetFlags()
-{
-    this->firing = false;
 }

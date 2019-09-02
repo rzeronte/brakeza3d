@@ -9,7 +9,7 @@
 #include "Camera3D.h"
 #include "../2D/TextureAnimation.h"
 
-#define ANIMATEDSPRITE_MAX_ANIMATIONS 5
+#define ANIMATEDSPRITE_MAX_ANIMATIONS 25
 
 class Sprite3D : public Object3D {
     Billboard *billboard;

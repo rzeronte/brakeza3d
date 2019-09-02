@@ -49,6 +49,8 @@ public:
             weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
         );
         brakeza3D->addObject3D(particle, "particles");
+
+        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
     }
 
     BSPMap *getBSPMap()
