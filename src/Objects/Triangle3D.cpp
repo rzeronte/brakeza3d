@@ -233,7 +233,7 @@ void Triangle::shadowMapping(LightPoint3D *lp)
     if ( !lp->cam->frustum->isPointInFrustum(Ao) &&
          !lp->cam->frustum->isPointInFrustum(Bo) &&
          !lp->cam->frustum->isPointInFrustum(Co)
-            ) {
+    ) {
         return;
     }
 
@@ -247,9 +247,13 @@ void Triangle::drawForTile(Camera3D *cam, int minX, int minY, int maxX, int maxY
 
 void Triangle::draw(Camera3D *cam)
 {
-    drawed = true;
-    // rasterization
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED || EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+    // degradate
+    if (getTexture() != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
+        this->softwareRasterizer();
+    }
+
+    // texture
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
         this->softwareRasterizer();
     }
 
@@ -264,6 +268,7 @@ void Triangle::draw(Camera3D *cam)
         Drawable::drawVertex(Bo, cam, Color::green());
         Drawable::drawVertex(Co, cam, Color::blue());
     }
+    drawed = true;
 
 }
 
@@ -688,6 +693,11 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
 
         if (alpha == 0) {
             return;
+        } else {
+            if (parent->isDecal()) {
+                Uint32 existingColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
+                pixelColor = Maths::alphaBlend(existingColor, pixelColor, alpha);
+            }
         }
 
         if (!parent->isDecal() && getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {

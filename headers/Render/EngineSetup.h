@@ -103,7 +103,7 @@ public:
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
-    float FRUSTUM_CLIPPING_DISTANCE = 0.01f;
+    float FRUSTUM_CLIPPING_DISTANCE = 0.000001f;
 
     // BSP ITEM BILLBOARDS
     std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/light.tga";

@@ -20,6 +20,15 @@ void Game::onStart()
     Engine::onStart();
 
     this->loadDemoObjects();
+
+    if (bspMap->isLoaded()) {
+        // Put Decal in Front of e1m1
+        Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
+        d->cube->setPosition(*d->getPosition());
+        d->cube->update();
+        d->getTriangles(bspMap->model_triangles, bspMap->n_triangles, camera);
+        d->getSprite()->setAnimation(Tools::random(0, 10));
+    }
 }
 
 void Game::mainLoop()
@@ -107,10 +116,10 @@ void Game::loadDemoObjects()
     monkey->setShadowCaster(true);
     this->addObject3D(monkey, "monkey");
 
-    // mono
+    // hammer
     Mesh3D *hammer = new Mesh3D();
     hammer->setEnabled(false);
-    hammer->setPosition(Vertex3D(5, 5, 30));
+    hammer->setPosition(Vertex3D(5, 7.5, 78.2));
     hammer->setLightPoints(Engine::lightPoints);
     hammer->loadOBJBlender("../assets/models/hammer.obj");
     hammer->setShadowCaster(true);
@@ -134,8 +143,9 @@ void Game::loadDemoObjects()
 
     // decal
     Decal *decal = new Decal();
+    decal->setPosition(Vertex3D(2, -12, 76.5));
     decal->setPosition(Vertex3D(52, -12, 76.5));
-    decal->setupCube(10, 10, 5);
+    decal->setupCube(10, 10, 10);
     decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
     decal->getSprite()->setAnimation(Tools::random(0, 10));
     decal->cube->setPosition(*decal->getPosition());
@@ -145,10 +155,10 @@ void Game::loadDemoObjects()
     // triangle
     Mesh3D *triangle = new Mesh3D();
     triangle->setScale(0.01);
-    triangle->setEnabled(false);
+    triangle->setEnabled(true);
     triangle->setLightPoints(Engine::lightPoints);
     triangle->setPosition(Vertex3D(1, 1, 30));
-    triangle->setRotation( M3(90, 0, 3) );
+    triangle->setRotation( M3(1, 0, 3) );
     triangle->loadOBJBlender("../assets/models/triangle_2uv.obj");
     this->addObject3D(triangle, "triangle");
 

@@ -18,6 +18,7 @@ class Triangle {
 public:
     int id;
     bool drawed = false;
+    bool onlyWireframe = false;
 
     Vertex3D A, B, C;
     Vertex3D Ao, Bo, Co;

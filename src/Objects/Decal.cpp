@@ -48,8 +48,13 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
 
     setupFromAxis();
 
+    int alreadyDecal = 0;
+    int clipped = 0;
+    int out = 0;
+
     for (int i = 0; i < numSoupTriangles ; i++ ) {
         if (soupTriangles[i].parent->isDecal())  {
+            alreadyDecal++;
             continue;
         }
 
@@ -68,18 +73,19 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
         if (soupTriangles[i].testForClipping(
                 cube->planes,
                 0,
-                6
+                5
         )) {
             soupTriangles[i].clipping(
                     camera,
                     cube->planes,
                     0,
-                    6,
+                    5,
                     this,
                     this->modelTriangles,
                     this->numTriangles,
                     false
             );
+            clipped++;
             continue;
         }
 
@@ -87,6 +93,7 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
             !cube->isPointInside(soupTriangles[i].Bo) &&
             !cube->isPointInside(soupTriangles[i].Co)
         ) {
+            out++;
             continue;
         }
 
