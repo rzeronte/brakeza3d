@@ -39,7 +39,6 @@ void Cube3D::makeVertices()
             (cubeVertexBuffer[i*3+1] * scaleY)/2,
             (cubeVertexBuffer[i*3+2] * scaleZ)/2
         );
-        //this->vertices[i] = Transforms::objectSpace(this->vertices[i], this);
     }
 }
 
@@ -52,6 +51,8 @@ void Cube3D::makeTriangles()
             vertices[i*3+2],
             this
         );
+
+        this->modelTriangles[i].drawed = true;
     }
 
     this->numTriangles = 12;
@@ -102,6 +103,7 @@ bool Cube3D::isPointInside(Vertex3D v)
             return false;
         }
     }
+
     return result;
 }
 

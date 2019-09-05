@@ -213,7 +213,15 @@ float Maths::distanteBetweenpoints(Vertex3D v1, Vertex3D v2)
     return sqrtf( (v2.x - v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y) + (v2.z - v1.z)*(v2.z - v1.z) );;
 }
 
-Uint32 Maths::mixColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
+Uint32 Maths::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
+    Uint32 rb = color1 & 0xff00ff;
+    Uint32 g  = color1 & 0x00ff00;
+    rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
+    g  += ((color2 & 0x00ff00) -  g) * alpha >> 8;
+    return (rb & 0xff00ff) | (g & 0xff00);
+}
+
+Uint32 Maths::mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
 {
 
     Vertex3D P = *lp->getPosition();

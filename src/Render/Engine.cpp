@@ -92,6 +92,7 @@ bool Engine::initWindow()
         } else {
             gl_context = SDL_GL_CreateContext(window);
             screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->screenWidth, EngineSetup::getInstance()->screenHeight, 32, 0, 0, 0, 0);
+            SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
             renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -664,7 +665,6 @@ void Engine::onStart()
     this->getWeaponsJSON();
     this->getMapsJSON();
 
-
     Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
 
@@ -736,13 +736,16 @@ void Engine::onUpdate()
         this->handleOpenCLTransform();
     }
 
+
     this->hiddenSurfaceRemoval();
 
-    Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
+    /*Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
     d->cube->setPosition(*d->getPosition());
     d->cube->update();
     d->getTriangles(visibleTriangles, numVisibleTriangles, camera);
     d->getSprite()->setAnimation((int)EngineSetup::getInstance()->TESTING_INT);
+    */
+
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
@@ -837,7 +840,7 @@ void Engine::getMesh3DTriangles()
         Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
-                oMesh->draw(camera);
+                oMesh->draw();
                 if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
                     Drawable::drawObject3DAxis(oMesh, camera, true, true, true);
                 }
@@ -848,7 +851,7 @@ void Engine::getMesh3DTriangles()
             if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
                 Decal *oDecal = dynamic_cast<Decal*> (oMesh);
                 if (oDecal != NULL) {
-                    oDecal->cube->draw(camera);
+                    oDecal->cube->draw();
                 }
             }
         }
@@ -956,7 +959,7 @@ void Engine::getObjectsBillboardTriangles()
 void Engine::drawFrameTriangles()
 {
     for (int i = 0; i < numVisibleTriangles; i++) {
-        this->visibleTriangles[i].draw(camera);
+        visibleTriangles[i].draw(camera);
     }
 }
 
@@ -1055,6 +1058,7 @@ void Engine::hiddenSurfaceRemoval()
 
         // Add triangle to visible list
         visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
+        visibleTriangles[numVisibleTriangles].drawed = false;
         numVisibleTriangles++;
     }
 

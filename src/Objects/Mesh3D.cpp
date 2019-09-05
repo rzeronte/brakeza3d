@@ -243,7 +243,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
     Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
 }
 
-void Mesh3D::draw(Camera3D *cam)
+void Mesh3D::draw()
 {
     // draw triangles of mesh
     for (int i = 0; i < this->numTriangles ; i++) {

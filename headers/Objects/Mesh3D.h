@@ -46,7 +46,7 @@ public:
     void loadOBJBlenderTextureCoordinates();
     void loadOBJBlenderMaterials();
 
-    void draw(Camera3D *);
+    void draw();
     void shadowMapping(LightPoint3D *);
     void setLightPoints(std::vector<LightPoint3D*> &);
 
