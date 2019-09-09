@@ -61,11 +61,6 @@ unsigned long Tools::createRGB(int r, int g, int b)
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-unsigned long Tools::createRGBA(int r, int g, int b, int a)
-{
-    return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff) + (a & 0xff << 24);
-}
-
 uint8_t Tools::getRedValueFromColor(uint32_t c) {
     return ((uint32_t)c >> 16);
 }

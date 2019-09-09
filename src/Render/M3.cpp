@@ -234,3 +234,54 @@ float M3::getRollDegree()
 {
     return Maths::radiansToDegrees( this->getRoll() ) ;
 }
+
+M3 M3::getFromVectors(Vertex3D ZAxis, Vertex3D YAxis)
+{
+    M3 m;
+
+    Vertex3D Xi = (ZAxis % YAxis).getNormalize();
+    Vertex3D Yi = (Xi % ZAxis).getNormalize();
+
+    m.setX(Xi.x, Xi.y, Xi.z);
+    m.setY(Yi.x, Yi.y, Yi.z);
+    m.setZ(ZAxis.x, ZAxis.y, ZAxis.z);
+
+    return m;
+}
+
+
+Vertex3D M3::X()
+{
+    return Vertex3D(m[0], m[1], m[2]);
+}
+
+Vertex3D M3::Y()
+{
+    return Vertex3D(m[3], m[4], m[5]);
+}
+
+Vertex3D M3::Z()
+{
+    return Vertex3D(m[6], m[7], m[8]);
+}
+
+void M3::setX(float x, float y, float z)
+{
+    m[0] = x;
+    m[1] = y;
+    m[2] = z;
+}
+
+void M3::setY(float x, float y, float z)
+{
+    m[3] = x;
+    m[4] = y;
+    m[5] = z;
+}
+
+void M3::setZ(float x, float y, float z)
+{
+    m[6] = x;
+    m[7] = y;
+    m[8] = z;
+}

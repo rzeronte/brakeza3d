@@ -45,6 +45,16 @@ public:
     float getYawDegree();
     float getPitchDegree();
     float getRollDegree();
+
+    Vertex3D X();
+    Vertex3D Y();
+    Vertex3D Z();
+
+    void setX(float, float, float);
+    void setY(float, float, float);
+    void setZ(float, float, float);
+
+    static M3 getFromVectors(Vertex3D ZAxis, Vertex3D YAxis);
 };
 
 

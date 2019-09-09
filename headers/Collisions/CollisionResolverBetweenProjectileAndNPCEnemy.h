@@ -19,7 +19,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndNPCEnemy(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
@@ -150,6 +150,7 @@ public:
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
         decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        decal->getSprite()->setAnimation(Tools::random(0, 10));
         brakeza3D->addObject3D(decal, "decal");
 
     }
