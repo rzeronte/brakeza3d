@@ -27,7 +27,7 @@ void Game::onStart()
         d->cube->setPosition(*d->getPosition());
         d->cube->update();
         d->getTriangles(bspMap->model_triangles, bspMap->n_triangles, camera);
-        d->getSprite()->setAnimation(Tools::random(0, 10));
+        d->getSprite()->setAnimation(0);
     }
 }
 
@@ -144,8 +144,9 @@ void Game::loadDemoObjects()
     // decal
     Decal *decal = new Decal();
     decal->setPosition(Vertex3D(2, -12, 76.5));
-    decal->setPosition(Vertex3D(52, -12, 76.5));
+    decal->setPosition(Vertex3D(52, -12, 75.5));
     decal->setupCube(10, 10, 10);
+    decal->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 0));
     decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
     decal->getSprite()->setAnimation(Tools::random(0, 10));
     decal->cube->setPosition(*decal->getPosition());

@@ -45,7 +45,6 @@ public:
     static void getTextAndRectCenter(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color);
 
     static unsigned long createRGB(int r, int g, int b);
-    static unsigned long createRGBA(int r, int g, int b, int a);
 
     static uint8_t getRedValueFromColor(uint32_t);
     static uint8_t getGreenValueFromColor(uint32_t);

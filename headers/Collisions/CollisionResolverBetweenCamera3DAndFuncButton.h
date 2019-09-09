@@ -10,7 +10,7 @@ public:
     Camera3D *camera;
     std::vector<Object3D*> *gameObjects;
 
-    CollisionResolverBetweenCamera3DAndFuncButton(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D*> *gameObjects) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenCamera3DAndFuncButton(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D*> *gameObjects) : CollisionResolver(contactManifold, objA, objB, bspMap)
     {
         this->mesh   = this->getMesh3D();
         this->camera = this->getCamera();

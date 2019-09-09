@@ -14,12 +14,14 @@ extern Engine *brakeza3D;
 class CollisionResolver {
 
 public:
+    btPersistentManifold *contactManifold;
 
     Object3D *objA;
     Object3D *objB;
     BSPMap *bspMap;
 
-    CollisionResolver(Object3D *objA, Object3D *objB, BSPMap *bspMap);
+    Vertex3D normal;
+    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap);
     virtual ~CollisionResolver();
 
     int getTypeCollision();

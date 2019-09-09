@@ -16,7 +16,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
     {
         this->projectile = getProjectile();
         this->bspMap = getBSPMap();
@@ -30,6 +30,7 @@ public:
     {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
             Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndBSPMap");
+            Logging::getInstance()->Log("contactManifold: numContacts" + std::to_string(contactManifold->getNumContacts()));
         }
 
         // Remove projectile for check in stepSimulation
@@ -51,6 +52,8 @@ public:
         brakeza3D->addObject3D(particle, "particles");
 
         Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
+
+        makeGoreDecals(-90, 0, 0);
     }
 
     BSPMap *getBSPMap()
@@ -77,6 +80,25 @@ public:
         if (projectileB != NULL) {
             return projectileB;
         }
+    }
+
+    void makeGoreDecals(float rotX, float rotY, float rotZ)
+    {
+        Decal *decal = new Decal();
+        decal->setPosition(*getProjectile()->getPosition());
+        decal->setupCube(10, 10, 10);
+
+        btVector3 linearVelocity = projectile->getRigidBody()->getLinearVelocity().normalized();
+        Vertex3D direction = Vertex3D(linearVelocity.x(), linearVelocity.y(), linearVelocity.z());
+        M3 rotDecal = M3::getFromVectors(direction.getNormalize(), EngineSetup::getInstance()->up);
+        decal->setRotation(rotDecal.getTranspose());
+
+        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->getSprite()->setAnimation(Tools::random(0, 10));
+        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->update();
+        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        brakeza3D->addObject3D(decal, "decal");
     }
 };
 

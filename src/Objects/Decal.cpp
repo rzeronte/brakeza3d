@@ -30,6 +30,7 @@ float Decal::getSCoord(Vertex3D Q)
 void Decal::setupFromAxis()
 {
     sprite->setPosition(*getPosition());
+
     P = *getPosition();
     N = AxisForward();
     T = AxisUp();
@@ -66,7 +67,8 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
             continue;
         }
 
-        if (soupTriangles[i].isBackFaceCulling(&this->N)) {
+        soupTriangles[i].updateNormal();
+        if (soupTriangles[i].getNormal().getNormalize() * this->N.getNormalize() >= 0) {
             continue;
         }
 

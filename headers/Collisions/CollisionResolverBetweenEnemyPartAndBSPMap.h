@@ -17,7 +17,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenEnemyPartAndBSPMap(Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(objA, objB, bspMap)
+    CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
     {
         this->enemyPart = getEnemyPart();
         this->bspMap = getBSPMap();
@@ -38,7 +38,7 @@ public:
 
         getEnemyPart()->getCurrentTextureAnimation()->setPaused(true);
 
-        makeGoreDecals(90, 0, 0);
+        makeGoreDecals(-90, 0, 0);
         makeGoreDecals(-90, 0, 0);
         makeGoreDecals(0, 0, 0);
         makeGoreDecals(0, 90, 0);
@@ -78,7 +78,7 @@ public:
     {
         Decal *decal = new Decal();
         decal->setPosition(*getEnemyPart()->getPosition());
-        decal->setupCube(5, 5, 5);
+        decal->setupCube(10, 10, 10);
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         decal->getSprite()->setAnimation(Tools::random(0, 10));

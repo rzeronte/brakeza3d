@@ -440,6 +440,9 @@ void Triangle::softwareRasterizer()
 
                     int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
 
+                    if (parent->isDecal()) {
+                        depth-=1;
+                    }
                     if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                         affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
                         texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
@@ -694,10 +697,8 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
         if (alpha == 0) {
             return;
         } else {
-            if (parent->isDecal()) {
                 Uint32 existingColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
                 pixelColor = Maths::alphaBlend(existingColor, pixelColor, alpha);
-            }
         }
 
         if (!parent->isDecal() && getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
