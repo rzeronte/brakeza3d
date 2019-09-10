@@ -50,7 +50,7 @@ public:
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
                 Logging::getInstance()->Log("Exploding soldier");
 
-                for (int i = 0 ; i < 3; i++) {
+                for (int i = 0 ; i < 5; i++) {
                     gibsParticles(getNPCEnemy());
                 }
             }
@@ -84,7 +84,7 @@ public:
         brakeza3D->addObject3D(gore, "gore");
 
         // particle explosion
-        Sprite3D *particle = new Sprite3D();
+        /*Sprite3D *particle = new Sprite3D();
         particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
         particle->setAutoRemoveAfterAnimation(true);
         particle->setPosition(*getProjectile()->getPosition() );
@@ -94,7 +94,7 @@ public:
             weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
             weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
         );
-        brakeza3D->addObject3D(particle, "particles");
+        brakeza3D->addObject3D(particle, "particles");*/
 
         // Mark sound
         Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
@@ -129,7 +129,7 @@ public:
     void gibsParticles(NPCEnemyBody *enemy)
     {
         Vertex3D position = *enemy->getPosition();
-        position.y-=1.5;
+        position.y-=0.5;
 
         NPCEnemyPartBody *gibsBody = new NPCEnemyPartBody();
         gibsBody->setLabel("gibsBody");

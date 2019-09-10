@@ -20,7 +20,6 @@ public:
     Object3D *objB;
     BSPMap *bspMap;
 
-    Vertex3D normal;
     CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap);
     virtual ~CollisionResolver();
 

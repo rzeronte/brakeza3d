@@ -53,19 +53,26 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gam
     this->m_body->setCcdMotionThreshold(0.001f);
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
-    Vertex3D rand = Vertex3D(Tools::random(1, 5), Tools::random(1, 5), Tools::random(1, 5));
-    rand = rand.getScaled(0.5);
-    int randSigned = Tools::random(0, 10);
 
-    Vertex3D dir = EngineSetup::getInstance()->up;
+    Vertex3D up = EngineSetup::getInstance()->up.getInverse();
 
-    if (randSigned % 2) {
-        dir = dir + rand;
+    double r1 = ((double) rand() / (RAND_MAX)) + 1;
+    double r2 = ((double) rand() / (RAND_MAX)) + 1;
+    double r3 = ((double) rand() / (RAND_MAX)) + 1;
+    Vertex3D randomNoise = Vertex3D(r1, 0, r3);
+    randomNoise.consoleInfo("randomNose", false);
+
+    int rand = Tools::random(0, 100);
+
+    Vertex3D dir;
+    if (rand > 50) {
+        dir = up + randomNoise;
     } else {
-        dir = dir - rand;
+        dir = up - randomNoise;
     }
+    dir = dir.getNormalize().getScaled(100);
 
-    dir = dir.getInverse().getScaled(35);
+    dir.consoleInfo("gib:", false);
 
     btVector3 impulse(dir.x, dir.y, dir.z);
     this->m_body->applyCentralImpulse(impulse);
