@@ -38,12 +38,7 @@ public:
 
         getEnemyPart()->getCurrentTextureAnimation()->setPaused(true);
 
-        makeGoreDecals(-90, 0, 0);
-        makeGoreDecals(-90, 0, 0);
-        makeGoreDecals(0, 0, 0);
-        makeGoreDecals(0, 90, 0);
-        makeGoreDecals(0, 180, 0);
-        makeGoreDecals(0, -90, 0);
+        makeGoreDecals();
 
         dynamicsWorld->removeCollisionObject(getEnemyPart()->getRigidBody());
     }
@@ -74,12 +69,26 @@ public:
         }
     }
 
-    void makeGoreDecals(float rotX, float rotY, float rotZ)
+    void makeGoreDecals()
     {
         Decal *decal = new Decal();
         decal->setPosition(*getEnemyPart()->getPosition());
         decal->setupCube(10, 10, 10);
-        decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
+
+        btVector3 linearVelocity;
+        btVector3 ptA, ptB;
+        for (int x = 0; x < contactManifold->getNumContacts(); x++) {
+            btManifoldPoint manifoldPoint = contactManifold->getContactPoint(x);
+            linearVelocity = manifoldPoint.m_normalWorldOnB;
+        }
+
+        //linearVelocity = projectile->getRigidBody()->getLinearVelocity().normalized();
+        Vertex3D direction = Vertex3D(linearVelocity.x(), linearVelocity.y(), linearVelocity.z());
+        direction = direction.getInverse();
+
+        M3 rotDecal = M3::getFromVectors(direction.getNormalize(), EngineSetup::getInstance()->up);
+        decal->setRotation(rotDecal.getTranspose());
+
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());

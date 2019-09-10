@@ -53,7 +53,7 @@ public:
 
         Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
 
-        makeGoreDecals(-90, 0, 0);
+        makeGoreDecals();
     }
 
     BSPMap *getBSPMap()
@@ -82,14 +82,23 @@ public:
         }
     }
 
-    void makeGoreDecals(float rotX, float rotY, float rotZ)
+    void makeGoreDecals()
     {
         Decal *decal = new Decal();
         decal->setPosition(*getProjectile()->getPosition());
         decal->setupCube(10, 10, 10);
 
-        btVector3 linearVelocity = projectile->getRigidBody()->getLinearVelocity().normalized();
+        btVector3 linearVelocity;
+        btVector3 ptA, ptB;
+        for (int x = 0; x < contactManifold->getNumContacts(); x++) {
+            btManifoldPoint manifoldPoint = contactManifold->getContactPoint(x);
+            linearVelocity = manifoldPoint.m_normalWorldOnB;
+        }
+
+        //linearVelocity = projectile->getRigidBody()->getLinearVelocity().normalized();
         Vertex3D direction = Vertex3D(linearVelocity.x(), linearVelocity.y(), linearVelocity.z());
+        direction = direction.getInverse();
+
         M3 rotDecal = M3::getFromVectors(direction.getNormalize(), EngineSetup::getInstance()->up);
         decal->setRotation(rotDecal.getTranspose());
 
