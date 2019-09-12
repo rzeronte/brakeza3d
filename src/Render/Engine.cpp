@@ -136,7 +136,7 @@ void Engine::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = "../fonts/1467_pannartz_latin.ttf";
+        std::string pathFont = "../fonts/doom.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
         font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );

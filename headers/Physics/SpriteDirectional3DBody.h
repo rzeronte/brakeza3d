@@ -12,6 +12,8 @@
 class SpriteDirectional3DBody : public SpriteDirectional3D, public Body {
 public:
     btRigidBody* makeRigidBody(float, std::vector<Object3D*> &, Camera3D *, btDiscreteDynamicsWorld*, bool applyCameraImpulse, int forceImpulse);
+    btRigidBody* makeProjectileRigidBody(float, std::vector<Object3D*> &, Camera3D *, btDiscreteDynamicsWorld*, bool applyCameraImpulse, int forceImpulse);
+
     void integrate();
 
 };

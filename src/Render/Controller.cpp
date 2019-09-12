@@ -90,7 +90,7 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
                 projectile->setTimer(timer);
                 projectile->linkTexturesTo(weapon->getCurrentWeaponType()->getProjectileTemplate());
                 projectile->setAnimation(0);
-                projectile->makeRigidBody(1, gameObjects, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
+                projectile->makeProjectileRigidBody(1, gameObjects, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
                 projectile->getBillboard()->setDimensions(
                     weapon->getCurrentWeaponType()->projectileWidth,
                     weapon->getCurrentWeaponType()->projectileHeight
