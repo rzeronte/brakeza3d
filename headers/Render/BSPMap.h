@@ -4,6 +4,12 @@
 #include "../Objects/Camera3D.h"
 #include "../Objects/Triangle3D.h"
 #include "btBulletDynamicsCommon.h";
+#include "Recast.h"
+#include "RecastDebugDraw.h"
+#include "RecastDump.h"
+#include "DetourNavMesh.h"
+#include "DetourNavMeshBuilder.h"
+#include "DetourDebugDraw.h"
 
 #define BSP_VERSION		29
 #define MAXLIGHTMAPS	4

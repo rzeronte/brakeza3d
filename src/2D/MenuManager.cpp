@@ -1,7 +1,7 @@
 
 #include <SDL_image.h>
 #include "../../headers/2D/MenuManager.h"
-#include "../../headers/cJSON.h"
+#include "../../headers/Misc/cJSON.h"
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Logging.h"
 

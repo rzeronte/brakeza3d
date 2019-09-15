@@ -27,7 +27,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
-#include "../cJSON.h"
+#include "../Misc/cJSON.h"
 #include "../2D/WeaponsManager.h"
 #include "../2D/MenuManager.h"
 #include "../Collisions/CollisionsManager.h"

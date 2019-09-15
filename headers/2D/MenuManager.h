@@ -4,7 +4,7 @@
 
 #include <string>
 #include "MenuOption.h"
-#include "../cJSON.h"
+#include "../Misc/cJSON.h"
 
 #define MAX_MENU_OPTIONS 10
 
