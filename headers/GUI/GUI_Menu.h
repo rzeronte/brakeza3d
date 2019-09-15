@@ -5,7 +5,7 @@
 
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../cJSON.h"
+#include "../Misc/cJSON.h"
 #include "../Render/Logging.h"
 
 class GUI_Menu : public GUI  {

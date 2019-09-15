@@ -1,0 +1,4 @@
+/usr/local/lib/libDetourTileCache.VERSION.dylib
+/usr/local/lib/libDetourTileCache.dylib
+/usr/local/include/DetourTileCache.h
+/usr/local/include/DetourTileCacheBuilder.h
