@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(brakeda3d)
+project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -32,9 +32,9 @@ include_directories(
         ${OPENGL_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
         ${OpenCL_INCLUDE_DIRS}
-        )
+)
 
-add_executable(brakeda3d
+add_executable(brakeza3d
         main.cpp
         src/Objects/Camera3D.cpp
         headers/Objects/Camera3D.h
@@ -136,8 +136,8 @@ add_executable(brakeda3d
         headers/Render/PhysicsDebugDraw.h
         src/Physics/Mesh3DGhost.cpp
         headers/Physics/Mesh3DGhost.h
-        headers/cJSON.h
-        src/cJSON.c
+        headers/Misc/cJSON.h
+        src/Misc/cJSON.c
         src/Physics/SpriteDirectional3DBody.cpp
         headers/Physics/SpriteDirectional3DBody.h
         src/2D/WeaponsManager.cpp
@@ -169,9 +169,24 @@ add_executable(brakeda3d
         headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
         src/Objects/Decal.cpp
         headers/Objects/Decal.h
-        src/PhysicsGame/NPCEnemyPartBody.cpp headers/PhysicsGame/NPCEnemyPartBody.h src/Physics/Sprite3DBody.cpp headers/Physics/Sprite3DBody.h src/Physics/Body.cpp headers/Physics/Body.h headers/Objects/Cube3D.cpp headers/Objects/Cube3D.h)
+        src/PhysicsGame/NPCEnemyPartBody.cpp
+        headers/PhysicsGame/NPCEnemyPartBody.h
+        src/Physics/Sprite3DBody.cpp
+        headers/Physics/Sprite3DBody.h
+        src/Physics/Body.cpp
+        headers/Physics/Body.h
+        headers/Objects/Cube3D.cpp
+        headers/Objects/Cube3D.h
+        headers/RecastWrapper.cpp
+        headers/RecastWrapper.h
+        headers/InputGeom.cpp
+        headers/InputGeom.h
+        headers/rcMeshLoaderObj.cpp
+        headers/rcMeshLoaderObj.h
+)
 
-target_link_libraries(brakeda3d
+
+target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
         ${SDLTTF_LIBRARY}
@@ -179,4 +194,5 @@ target_link_libraries(brakeda3d
         ${OPENGL_LIBRARIES}
         ${BULLET_LIBRARIES}
         ${OpenCL_LIBRARY}
+        DebugUtils Detour DetourCrowd DetourTileCache Recast
 )
