@@ -6,6 +6,7 @@
 #include "RecastWrapper.h"
 #include "InputGeom.h"
 #include "rcMeshLoaderObj.h"
+#include "Objects/Mesh3D.h"
 
 
 struct BuildSettings
@@ -48,10 +49,14 @@ struct BuildSettings
 
 class InputGeom {
 public:
+    InputGeom();
+
     rcMeshLoaderObj* m_mesh;
     float m_meshBMin[3], m_meshBMax[3];
     BuildSettings m_buildSettings;
     bool m_hasBuildSettings;
+
+    void loadFromMesh3D(Triangle *model_triangles, int n_triangles = 0);
 
     /// @name Off-Mesh connections.
     ///@{
