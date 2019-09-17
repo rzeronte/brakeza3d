@@ -3,8 +3,8 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -183,7 +183,7 @@ add_executable(brakeza3d
         headers/InputGeom.h
         headers/rcMeshLoaderObj.cpp
         headers/rcMeshLoaderObj.h
-)
+        headers/BuildContext.cpp headers/BuildContext.h)
 
 
 target_link_libraries(brakeza3d

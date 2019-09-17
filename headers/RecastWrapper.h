@@ -9,6 +9,11 @@
 #include <Recast.h>
 #include "InputGeom.h"
 #include "DetourPathQueue.h"
+#include <sys/time.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include "BuildContext.h"
 
 static const int MAX_CONVEXVOL_PTS = 12;
 //static const int DT_VERTS_PER_POLYGON = 6;
@@ -50,6 +55,7 @@ enum SamplePolyFlags
 
 class RecastWrapper {
 public:
+    RecastWrapper();
 
     unsigned char* m_triareas;
     rcHeightfield* m_solid;
@@ -79,8 +85,7 @@ public:
     float m_detailSampleMaxError;
     int m_partitionType;
 
-    rcContext* m_ctx;
-
+    BuildContext* m_ctx;
 
     bool m_keepInterResults;
 
@@ -90,8 +95,11 @@ public:
 
     bool handleBuild();
 
+    void cleanup();
+    void resetCommonSettings();
+
+    void drawPoints();
 
 };
-
 
 #endif //BRAKEDA3D_RECASTWRAPPER_H

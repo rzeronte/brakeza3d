@@ -1,6 +1,9 @@
 #ifndef BRAKEDA3D_RCMESHLOADEROBJ_H
 #define BRAKEDA3D_RCMESHLOADEROBJ_H
 
+#include <stdio.h>
+#include <string.h>
+
 class rcMeshLoaderObj {
 public:
     rcMeshLoaderObj();
@@ -18,6 +21,9 @@ public:
     const int* getTris() const { return m_tris; }
     int getVertCount() const { return m_vertCount; }
     int getTriCount() const { return m_triCount; }
+
+    void addVertex(float x, float y, float z, int& cap);
+    void addTriangle(int a, int b, int c, int& cap);
 };
 
 

@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 15/9/19.
-//
 
 #include <cstring>
 #include <math.h>
@@ -8,17 +5,41 @@
 #include <DetourStatus.h>
 #include <DetourNavMesh.h>
 #include "RecastWrapper.h"
-#include "rcMeshLoaderObj.h"
+#include "Render/Logging.h"
+#include "Render/Drawable.h"
+#include "Render/Engine.h"
+#include "Render/Transforms.h"
+
+extern Engine *brakeza3D;
+
+RecastWrapper::RecastWrapper():
+        m_keepInterResults(true),
+        m_triareas(0),
+        m_solid(0),
+        m_chf(0),
+        m_cset(0),
+        m_pmesh(0),
+        m_dmesh(0)
+{
+    this->m_geom = new InputGeom();
+    this->m_ctx = new BuildContext();
+
+    m_partitionType = SAMPLE_PARTITION_WATERSHED;
+}
 
 bool RecastWrapper::handleBuild()
 {
+    this->cleanup();
+    this->resetCommonSettings();
+
+    m_ctx->enableLog(true);
+
     const float* bmin = m_geom->getNavMeshBoundsMin();
     const float* bmax = m_geom->getNavMeshBoundsMax();
     const float* verts = m_geom->getMesh()->getVerts();
     const int nverts = m_geom->getMesh()->getVertCount();
     const int* tris = m_geom->getMesh()->getTris();
     const int ntris = m_geom->getMesh()->getTriCount();
-
     //
     // Step 1. Initialize build config.
     //
@@ -140,6 +161,7 @@ bool RecastWrapper::handleBuild()
         m_solid = 0;
     }
 
+
     // Erode the walkable area by agent radius.
     if (!rcErodeWalkableArea(m_ctx, m_cfg.walkableRadius, *m_chf))
     {
@@ -179,8 +201,8 @@ bool RecastWrapper::handleBuild()
     //     if you have large open areas with small obstacles (not a problem if you use tiles)
     //   * good choice to use for tiled navmesh with medium and small sized tiles
 
-    if (m_partitionType == SAMPLE_PARTITION_WATERSHED)
-    {
+    //if (m_partitionType == SAMPLE_PARTITION_WATERSHED)
+    //{
         // Prepare for region partitioning, by calculating distance field along the walkable surface.
         if (!rcBuildDistanceField(m_ctx, *m_chf))
         {
@@ -194,8 +216,8 @@ bool RecastWrapper::handleBuild()
             m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build watershed regions.");
             return false;
         }
-    }
-    else if (m_partitionType == SAMPLE_PARTITION_MONOTONE)
+    //}
+    /*else if (m_partitionType == SAMPLE_PARTITION_MONOTONE)
     {
         // Partition the walkable surface into simple regions without holes.
         // Monotone partitioning does not need distancefield.
@@ -213,7 +235,7 @@ bool RecastWrapper::handleBuild()
             m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build layer regions.");
             return false;
         }
-    }
+    }*/
 
     //
     // Step 5. Trace and simplify region contours.
@@ -274,6 +296,11 @@ bool RecastWrapper::handleBuild()
         m_cset = 0;
     }
 
+
+    //for (int e = 0; e < m_navMesh->getMaxTiles() ; e++) {
+
+    //}
+
     // At this point the navigation mesh data is ready, you can access it from m_pmesh.
     // See duDebugDrawPolyMesh or dtCreateNavMeshData as examples how to access the data.
 
@@ -288,10 +315,11 @@ bool RecastWrapper::handleBuild()
         unsigned char* navData = 0;
         int navDataSize = 0;
 
+        Logging::getInstance()->Log("navmesh npolys: " + std::to_string(m_pmesh->npolys));
         // Update poly flags from areas.
         for (int i = 0; i < m_pmesh->npolys; ++i)
         {
-            if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
+            /*if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
                 m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
 
             if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
@@ -307,9 +335,10 @@ bool RecastWrapper::handleBuild()
             else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
             {
                 m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
-            }
+            }*/
         }
 
+        return false;
 
         dtNavMeshCreateParams params;
         memset(&params, 0, sizeof(params));
@@ -374,4 +403,62 @@ bool RecastWrapper::handleBuild()
     }
 
     m_ctx->stopTimer(RC_TIMER_TOTAL);
+}
+
+
+
+void RecastWrapper::cleanup()
+{
+    delete [] m_triareas;
+    m_triareas = 0;
+    rcFreeHeightField(m_solid);
+    m_solid = 0;
+    rcFreeCompactHeightfield(m_chf);
+    m_chf = 0;
+    rcFreeContourSet(m_cset);
+    m_cset = 0;
+    rcFreePolyMesh(m_pmesh);
+    m_pmesh = 0;
+    rcFreePolyMeshDetail(m_dmesh);
+    m_dmesh = 0;
+    dtFreeNavMesh(m_navMesh);
+    m_navMesh = 0;
+}
+
+
+void RecastWrapper::resetCommonSettings()
+{
+    m_cellSize = 0.5f;
+    m_cellHeight = 0.5f;
+    m_agentHeight = 2.0f;
+    m_agentRadius = 0.6f;
+    m_agentMaxClimb = 0.9f;
+    m_agentMaxSlope = 45.0f;
+    m_regionMinSize = 8;
+    m_regionMergeSize = 20;
+    m_edgeMaxLen = 12.0f;
+    m_edgeMaxError = 1.3f;
+    m_vertsPerPoly = 6.0f;
+    m_detailSampleDist = 6.0f;
+    m_detailSampleMaxError = 1.0f;
+    m_partitionType = SAMPLE_PARTITION_WATERSHED;
+}
+
+void RecastWrapper::drawPoints()
+{
+    const int nvp = m_pmesh->nvp;
+    const float cs = m_pmesh->cs;
+    const float ch = m_pmesh->ch;
+    const float* orig = m_pmesh->bmin;
+
+    for (int i = 0; i < m_pmesh->nverts; ++i) {
+        const unsigned short* v = &m_pmesh->verts[i*3];
+        const float x = (orig[0] + v[0]*cs);
+        const float y = (orig[1] + (v[1])*ch + 0.1f);
+        const float z = (orig[2] + v[2]*cs);
+        Vertex3D tmpV = Vertex3D(x, y, z);
+        tmpV = Transforms::objectSpace(tmpV, brakeza3D->bspMap);
+
+        Drawable::drawVertex(tmpV, brakeza3D->camera, Color::red());
+    }
 }

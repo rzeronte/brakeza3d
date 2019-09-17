@@ -10,6 +10,7 @@
 #include "DetourNavMesh.h"
 #include "DetourNavMeshBuilder.h"
 #include "DetourDebugDraw.h"
+#include "../InputGeom.h"
 
 #define BSP_VERSION		29
 #define MAXLIGHTMAPS	4
@@ -365,6 +366,8 @@ public:
     // Get texture info of a surface
     texinfo_t *getTextureInfo(int id) { return &getTextureInfo()[getSurface(id)->texinfoid]; }
 
+    RecastWrapper *recastWrapper;
+
     bool InitializeSurfaces(void);
     bool InitializeTextures(void);
     bool InitializeTriangles();
@@ -372,6 +375,7 @@ public:
     void bindTrianglesLightmaps();
     void InitializeEntities();
     void createMesh3DAndGhostsFromHulls();
+    void InitializeRecast();
 
     float CalculateDistance(vec3_t a, vec3_t b);
     void CalcSurfaceExtents (int surface, lightmap_t* l);

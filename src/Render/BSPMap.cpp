@@ -49,6 +49,8 @@ void BSPMap::init()
     this->n_entities = 0;
     this->setLabel("BSPMap");
     this->setLoaded(true);
+
+    this->recastWrapper = new RecastWrapper();
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
@@ -72,6 +74,9 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename)
     this->InitializeTextures();
     this->InitializeLightmaps();
     this->InitializeTriangles();
+
+    this->InitializeRecast();
+
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
     this->createMesh3DAndGhostsFromHulls();
@@ -494,6 +499,13 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             brakeza3D->addObject3D(ghost, "hull_" + std::to_string(m) + " (ghost)") ;
         }
     }
+}
+
+void BSPMap::InitializeRecast()
+{
+    Logging::getInstance()->Log("InitializeRecast");
+    recastWrapper->m_geom->loadFromMesh3D(this->model_triangles, this->n_triangles);
+    recastWrapper->handleBuild();
 }
 
 void BSPMap::InitializeEntities()
