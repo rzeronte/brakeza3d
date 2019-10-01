@@ -506,6 +506,7 @@ void BSPMap::InitializeRecast()
     Logging::getInstance()->Log("InitializeRecast");
     recastWrapper->m_geom->loadFromMesh3D(this->model_triangles, this->n_triangles);
     recastWrapper->handleBuild();
+    recastWrapper->recalc();
 }
 
 void BSPMap::InitializeEntities()

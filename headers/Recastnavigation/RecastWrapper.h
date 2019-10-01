@@ -14,9 +14,15 @@
 #include <string.h>
 #include <stdarg.h>
 #include "BuildContext.h"
+#include <stdlib.h>
 
 static const int MAX_CONVEXVOL_PTS = 12;
 //static const int DT_VERTS_PER_POLYGON = 6;
+
+static float frandRecast()
+{
+    return (float)rand()/(float)RAND_MAX;
+}
 
 struct ConvexVolume
 {
@@ -56,6 +62,7 @@ enum SamplePolyFlags
 class RecastWrapper {
 public:
     RecastWrapper();
+    static const int MAX_POLYS = 256;
 
     unsigned char* m_triareas;
     rcHeightfield* m_solid;
@@ -93,12 +100,28 @@ public:
     bool m_filterLedgeSpans;
     bool m_filterWalkableLowHeightSpans;
 
+    dtPolyRef m_startRef;
+    dtPolyRef m_endRef;
+    float m_spos[3];
+    float m_epos[3];
+
+    float m_polyPickExt[3];
+
+    dtQueryFilter m_filter;
+    dtPolyRef m_polys[MAX_POLYS];
+
+    int m_npolys = 0;
+
+    float m_randomRadius = 0.6 * 30;
+
+
     bool handleBuild();
+    void recalc();
 
     void cleanup();
     void resetCommonSettings();
 
-    void drawPoints();
+    void drawNavMeshPoints();
 
 };
 

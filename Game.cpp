@@ -70,7 +70,7 @@ void Game::onUpdate()
     /*Vertex3D startPoint = Vertex3D(45, -2, 40);
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
-    this->bspMap->recastWrapper->drawPoints();
+    this->bspMap->recastWrapper->drawNavMeshPoints();
 
 }
 

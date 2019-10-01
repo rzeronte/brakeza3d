@@ -2,8 +2,8 @@
 // Created by darkhead on 16/9/19.
 //
 
-#include "BuildContext.h"
-#include "Render/Logging.h"
+#include "../../headers/Recastnavigation/BuildContext.h"
+#include "../../headers/Render/Logging.h"
 #include <stdio.h>
 #include <string.h>
 

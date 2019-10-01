@@ -1,12 +1,13 @@
-#include "InputGeom.h"
+#include "../../headers/Recastnavigation/InputGeom.h"
+#include "../../headers/Render/Logging.h"
 
 InputGeom::InputGeom() {
+    m_mesh = new rcMeshLoaderObj;
 
 }
 
 void InputGeom::loadFromMesh3D( Triangle *model_triangles, int n_triangles )
 {
-    m_mesh = new rcMeshLoaderObj;
 
     int cap = 0;
     int tcap = 0;
@@ -21,4 +22,5 @@ void InputGeom::loadFromMesh3D( Triangle *model_triangles, int n_triangles )
 
     rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
 
+    Logging::getInstance()->Log("loadFromMesh3D: getVerts: " + std::to_string(m_mesh->getVertCount()) + ", getVerts: " + std::to_string(m_mesh->getTriCount()));
 }
