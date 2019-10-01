@@ -177,13 +177,13 @@ add_executable(brakeza3d
         headers/Physics/Body.h
         headers/Objects/Cube3D.cpp
         headers/Objects/Cube3D.h
-        headers/RecastWrapper.cpp
-        headers/RecastWrapper.h
-        headers/InputGeom.cpp
-        headers/InputGeom.h
-        headers/rcMeshLoaderObj.cpp
-        headers/rcMeshLoaderObj.h
-        headers/BuildContext.cpp headers/BuildContext.h)
+        src/Recastnavigation/RecastWrapper.cpp
+        headers/Recastnavigation/RecastWrapper.h
+        src/Recastnavigation/InputGeom.cpp
+        headers/Recastnavigation/InputGeom.h
+        src/Recastnavigation/rcMeshLoaderObj.cpp
+        headers/Recastnavigation/rcMeshLoaderObj.h
+        src/Recastnavigation/BuildContext.cpp headers/Recastnavigation/BuildContext.h)
 
 
 target_link_libraries(brakeza3d

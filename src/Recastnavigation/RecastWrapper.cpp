@@ -4,11 +4,11 @@
 #include <DetourNavMeshBuilder.h>
 #include <DetourStatus.h>
 #include <DetourNavMesh.h>
-#include "RecastWrapper.h"
-#include "Render/Logging.h"
-#include "Render/Drawable.h"
-#include "Render/Engine.h"
-#include "Render/Transforms.h"
+#include "../../headers/Recastnavigation/RecastWrapper.h"
+#include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Render/Engine.h"
+#include "../../headers/Render/Transforms.h"
 
 extern Engine *brakeza3D;
 
@@ -19,12 +19,17 @@ RecastWrapper::RecastWrapper():
         m_chf(0),
         m_cset(0),
         m_pmesh(0),
-        m_dmesh(0)
+        m_dmesh(0),
+        m_startRef(0),
+        m_endRef(0)
 {
     this->m_geom = new InputGeom();
     this->m_ctx = new BuildContext();
 
     m_partitionType = SAMPLE_PARTITION_WATERSHED;
+
+    m_navQuery = dtAllocNavMeshQuery();
+
 }
 
 bool RecastWrapper::handleBuild()
@@ -62,7 +67,7 @@ bool RecastWrapper::handleBuild()
 
     // Set the area where the navigation will be build.
     // Here the bounds of the input mesh are used, but the
-    // area could be specified by an user defined box, etc.
+    // area could be spexcified by an user defined box, etc.
     rcVcopy(m_cfg.bmin, bmin);
     rcVcopy(m_cfg.bmax, bmax);
     rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
@@ -297,10 +302,6 @@ bool RecastWrapper::handleBuild()
     }
 
 
-    //for (int e = 0; e < m_navMesh->getMaxTiles() ; e++) {
-
-    //}
-
     // At this point the navigation mesh data is ready, you can access it from m_pmesh.
     // See duDebugDrawPolyMesh or dtCreateNavMeshData as examples how to access the data.
 
@@ -319,7 +320,7 @@ bool RecastWrapper::handleBuild()
         // Update poly flags from areas.
         for (int i = 0; i < m_pmesh->npolys; ++i)
         {
-            /*if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
+            if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
                 m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
 
             if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
@@ -335,12 +336,10 @@ bool RecastWrapper::handleBuild()
             else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
             {
                 m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
-            }*/
+            }
         }
 
-        return false;
-
-        dtNavMeshCreateParams params;
+        dtNavMeshCreateParams params = dtNavMeshCreateParams();
         memset(&params, 0, sizeof(params));
         params.verts = m_pmesh->verts;
         params.vertCount = m_pmesh->nverts;
@@ -354,13 +353,13 @@ bool RecastWrapper::handleBuild()
         params.detailVertsCount = m_dmesh->nverts;
         params.detailTris = m_dmesh->tris;
         params.detailTriCount = m_dmesh->ntris;
-        params.offMeshConVerts = m_geom->getOffMeshConnectionVerts();
-        params.offMeshConRad = m_geom->getOffMeshConnectionRads();
-        params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
-        params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
-        params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
-        params.offMeshConUserID = m_geom->getOffMeshConnectionId();
-        params.offMeshConCount = m_geom->getOffMeshConnectionCount();
+        //params.offMeshConVerts = m_geom->getOffMeshConnectionVerts();
+        //params.offMeshConRad = m_geom->getOffMeshConnectionRads();
+        //params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
+        //params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
+        //params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
+        //params.offMeshConUserID = m_geom->getOffMeshConnectionId();
+        //params.offMeshConCount = m_geom->getOffMeshConnectionCount();
         params.walkableHeight = m_agentHeight;
         params.walkableRadius = m_agentRadius;
         params.walkableClimb = m_agentMaxClimb;
@@ -369,6 +368,7 @@ bool RecastWrapper::handleBuild()
         params.cs = m_cfg.cs;
         params.ch = m_cfg.ch;
         params.buildBvTree = true;
+
 
         if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
         {
@@ -405,7 +405,82 @@ bool RecastWrapper::handleBuild()
     m_ctx->stopTimer(RC_TIMER_TOTAL);
 }
 
+void RecastWrapper::recalc()
+{
+    Vertex3D startV(48.0, -4.5, 3.5);
+    Vertex3D endV(33.0, -4.5, 56.0);
 
+    startV = Transforms::objectToLocal(startV, brakeza3D->bspMap);
+    endV = Transforms::objectToLocal(endV, brakeza3D->bspMap);
+
+    m_spos[0] = startV.x;
+    m_spos[1] = startV.y;
+    m_spos[2] = startV.z;
+
+    m_epos[0] = endV.x;
+    m_epos[1] = endV.y;
+    m_epos[2] = endV.z;
+
+    m_polyPickExt[0] = 2;
+    m_polyPickExt[1] = 4;
+    m_polyPickExt[2] = 2;
+
+    m_filter.setIncludeFlags(0xFFFF) ;
+    m_filter.setExcludeFlags(0) ;
+    m_filter.setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f) ;
+
+    dtStatus status;
+    // calc m_startRef and m_endRef
+
+    m_navQuery->findNearestPoly(m_spos, m_polyPickExt, &m_filter, &m_startRef, 0);
+    m_navQuery->findNearestPoly(m_epos, m_polyPickExt, &m_filter, &m_endRef, 0);
+
+    printf("pi  %f %f %f  %f %f %f  0x%x 0x%x\n",
+           m_spos[0],m_spos[1],m_spos[2], m_epos[0],m_epos[1],m_epos[2],
+           m_filter.getIncludeFlags(), m_filter.getExcludeFlags());
+
+
+    status = m_navQuery->findPath(m_startRef, m_endRef, m_spos, m_epos, &m_filter, m_polys, &m_npolys, MAX_POLYS);
+    if (dtStatusSucceed(status)) {
+        printf("findPath: DT_SUCCESS\r\n");
+    } else if (dtStatusFailed(status)) {
+        printf("findPath: DT FAILURE\r\n");
+    } else if (dtStatusInProgress(status)) {
+        printf("findPath: DT_INPROGRESS\r\n");
+    }
+    int p = 0;
+    dtStatusDetail(status, p);
+    printf("detail: %d\r\n", p);
+
+    Logging::getInstance()->Log("Num npolys: " + std::to_string(m_npolys));
+    if (m_npolys) {
+        // Iterate over the path to find smooth path on the detail mesh surface.
+        dtPolyRef polys[MAX_POLYS];
+        memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
+        int npolys = m_npolys;
+
+        float targetPos[3];
+        m_navQuery->closestPointOnPoly(polys[npolys-1], m_epos, targetPos, 0);
+
+        float curP[3];
+        curP[0] = m_epos[0];
+        curP[1] = m_epos[1];
+        curP[2] = m_epos[2];
+
+        while (npolys)
+        {
+            m_navQuery->closestPointOnPoly(polys[npolys-1], curP, targetPos, 0);
+            curP[0] = targetPos[0];
+            curP[1] = targetPos[1];
+            curP[2] = targetPos[2];
+
+            Vertex3D nV = Vertex3D(curP[0], curP[1], curP[2]);
+            nV = Transforms::objectSpace(nV, brakeza3D->bspMap);
+
+            npolys--;
+        }
+    }
+}
 
 void RecastWrapper::cleanup()
 {
@@ -438,13 +513,13 @@ void RecastWrapper::resetCommonSettings()
     m_regionMergeSize = 20;
     m_edgeMaxLen = 12.0f;
     m_edgeMaxError = 1.3f;
-    m_vertsPerPoly = 6.0f;
+    m_vertsPerPoly = 3.0f;
     m_detailSampleDist = 6.0f;
     m_detailSampleMaxError = 1.0f;
     m_partitionType = SAMPLE_PARTITION_WATERSHED;
 }
 
-void RecastWrapper::drawPoints()
+void RecastWrapper::drawNavMeshPoints()
 {
     const int nvp = m_pmesh->nvp;
     const float cs = m_pmesh->cs;
@@ -456,9 +531,38 @@ void RecastWrapper::drawPoints()
         const float x = (orig[0] + v[0]*cs);
         const float y = (orig[1] + (v[1])*ch + 0.1f);
         const float z = (orig[2] + v[2]*cs);
+
         Vertex3D tmpV = Vertex3D(x, y, z);
         tmpV = Transforms::objectSpace(tmpV, brakeza3D->bspMap);
 
         Drawable::drawVertex(tmpV, brakeza3D->camera, Color::red());
+    }
+
+    if (m_npolys) {
+        dtPolyRef polys[MAX_POLYS];
+        memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
+        int npolys = m_npolys;
+
+        float targetPos[3];
+        m_navQuery->closestPointOnPoly(polys[npolys-1], m_epos, targetPos, 0);
+
+        float curP[3];
+        curP[0] = m_epos[0];
+        curP[1] = m_epos[1];
+        curP[2] = m_epos[2];
+
+        while (npolys)
+        {
+            m_navQuery->closestPointOnPoly(polys[npolys-1], curP, targetPos, 0);
+            curP[0] = targetPos[0];
+            curP[1] = targetPos[1];
+            curP[2] = targetPos[2];
+
+            Vertex3D nV = Vertex3D(curP[0], curP[1], curP[2]);
+            nV = Transforms::objectSpace(nV, brakeza3D->bspMap);
+            Drawable::drawVertex(nV, brakeza3D->camera, Color::green());
+
+            npolys--;
+        }
     }
 }

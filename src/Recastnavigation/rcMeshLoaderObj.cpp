@@ -2,7 +2,7 @@
 // Created by darkhead on 15/9/19.
 //
 
-#include "rcMeshLoaderObj.h"
+#include "../../headers/Recastnavigation/rcMeshLoaderObj.h"
 
 rcMeshLoaderObj::rcMeshLoaderObj() :
         m_scale(1.0f),
@@ -20,11 +20,14 @@ void rcMeshLoaderObj::addVertex(float x, float y, float z, int& cap)
     {
         cap = !cap ? 8 : cap*2;
         float* nv = new float[cap*3];
-        if (m_vertCount)
-            memcpy(nv, m_verts, m_vertCount*3*sizeof(float));
+        if (m_vertCount) {
+            int t = m_vertCount*3;
+            memcpy(nv, m_verts, t*sizeof(float));
+        }
         delete [] m_verts;
         m_verts = nv;
     }
+
     float* dst = &m_verts[m_vertCount*3];
     *dst++ = x*m_scale;
     *dst++ = y*m_scale;
@@ -43,6 +46,7 @@ void rcMeshLoaderObj::addTriangle(int a, int b, int c, int& cap)
         delete [] m_tris;
         m_tris = nv;
     }
+
     int* dst = &m_tris[m_triCount*3];
     *dst++ = a;
     *dst++ = b;
