@@ -1,6 +1,6 @@
 
-#ifndef BRAKEZA3D_BUILDCONTEXT_H
-#define BRAKEZA3D_BUILDCONTEXT_H
+#ifndef BRAKEZA3D_RECASTBUILDCONTEXT_H
+#define BRAKEZA3D_RECASTBUILDCONTEXT_H
 
 
 #include <Recast.h>
@@ -12,7 +12,7 @@ typedef int64_t TimeVal;
 
 
 
-class BuildContext : public rcContext
+class RecastBuildContext : public rcContext
 {
     TimeVal m_startTime[RC_MAX_TIMERS];
     TimeVal m_accTime[RC_MAX_TIMERS];
@@ -25,7 +25,7 @@ class BuildContext : public rcContext
     int m_textPoolSize;
 
 public:
-    BuildContext();
+    RecastBuildContext();
     TimeVal getPerfTime()
     {
         timeval now;
@@ -57,4 +57,4 @@ protected:
 };
 
 
-#endif //BRAKEZA3D_BUILDCONTEXT_H
+#endif //BRAKEZA3D_RECASTBUILDCONTEXT_H

@@ -504,9 +504,10 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 void BSPMap::InitializeRecast()
 {
     Logging::getInstance()->Log("InitializeRecast");
-    recastWrapper->m_geom->loadFromMesh3D(this->model_triangles, this->n_triangles);
-    recastWrapper->handleBuild();
-    recastWrapper->recalc();
+    recastWrapper->m_geom->loadBSPMapTriangles(this->model_triangles, this->n_triangles);
+    recastWrapper->initNavhMesh();
+    recastWrapper->initNavQuery();
+
 }
 
 void BSPMap::InitializeEntities()
