@@ -3,8 +3,8 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 11)
 
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -179,11 +179,11 @@ add_executable(brakeza3d
         headers/Objects/Cube3D.h
         src/Recastnavigation/RecastWrapper.cpp
         headers/Recastnavigation/RecastWrapper.h
-        src/Recastnavigation/InputGeom.cpp
-        headers/Recastnavigation/InputGeom.h
-        src/Recastnavigation/rcMeshLoaderObj.cpp
-        headers/Recastnavigation/rcMeshLoaderObj.h
-        src/Recastnavigation/BuildContext.cpp headers/Recastnavigation/BuildContext.h)
+        src/Recastnavigation/RecastGeometry.cpp
+        headers/Recastnavigation/RecastGeometry.h
+        src/Recastnavigation/RecastGeometryLoader.cpp
+        headers/Recastnavigation/RecastGeometryLoader.h
+        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h)
 
 
 target_link_libraries(brakeza3d
