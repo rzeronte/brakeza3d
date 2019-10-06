@@ -521,3 +521,21 @@ void RecastWrapper::drawNavMeshPoints()
         Drawable::drawVertex(tmpV, brakeza3D->camera, Color::red());
     }
 }
+
+void RecastWrapper::drawPathSegments(std::vector<Vertex3D> &points)
+{
+    Vertex3D startV;
+    int count = 0;
+    for(std::vector<Vertex3D>::iterator it = points.begin(); it != points.end(); ++it) {
+        Vertex3D v = *(it);
+
+        if (count > 0 ) {
+            Vector3D line = Vector3D(startV, v);
+            Drawable::drawVector3D(line, brakeza3D->camera, Color::blue());
+        }
+
+        startV = v;
+        count++;
+        Drawable::drawVertex(v, brakeza3D->camera, Color::green());
+    }
+}

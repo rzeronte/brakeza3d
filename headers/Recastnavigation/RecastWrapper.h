@@ -108,6 +108,7 @@ public:
     void resetCommonSettings();
 
     void drawNavMeshPoints();
+    void drawPathSegments(std::vector<Vertex3D> &points);
 
 };
 
