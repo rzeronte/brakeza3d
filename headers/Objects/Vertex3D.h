@@ -27,6 +27,7 @@ public:
 
     Vertex3D();
     Vertex3D(float, float, float);
+    Vertex3D(float[3]);
 
     Vertex3D getNormalize();
     Vertex3D getInverse();
@@ -44,6 +45,8 @@ public:
     float distance(Vertex3D);
 
     static Vertex3D zero();
+    void saveToFloat3(float *v);
+
     void consoleInfo(std::string label, bool);
 
 };

@@ -2,9 +2,9 @@
 // Created by darkhead on 15/9/19.
 //
 
-#include "../../headers/Recastnavigation/rcMeshLoaderObj.h"
+#include "../../headers/Recastnavigation/RecastGeometryLoader.h"
 
-rcMeshLoaderObj::rcMeshLoaderObj() :
+RecastGeometryLoader::RecastGeometryLoader() :
         m_scale(1.0f),
         m_verts(0),
         m_tris(0),
@@ -14,7 +14,7 @@ rcMeshLoaderObj::rcMeshLoaderObj() :
 {
 }
 
-void rcMeshLoaderObj::addVertex(float x, float y, float z, int& cap)
+void RecastGeometryLoader::addVertex(float x, float y, float z, int& cap)
 {
     if (m_vertCount+1 > cap)
     {
@@ -35,7 +35,7 @@ void rcMeshLoaderObj::addVertex(float x, float y, float z, int& cap)
     m_vertCount++;
 }
 
-void rcMeshLoaderObj::addTriangle(int a, int b, int c, int& cap)
+void RecastGeometryLoader::addTriangle(int a, int b, int c, int& cap)
 {
     if (m_triCount+1 > cap)
     {

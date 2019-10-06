@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
-class rcMeshLoaderObj {
+class RecastGeometryLoader {
 public:
-    rcMeshLoaderObj();
-    ~rcMeshLoaderObj();
+    RecastGeometryLoader();
+    ~RecastGeometryLoader();
 
     float m_scale;
     float* m_verts;

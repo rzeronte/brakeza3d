@@ -10,7 +10,7 @@
 #include "DetourNavMesh.h"
 #include "DetourNavMeshBuilder.h"
 #include "DetourDebugDraw.h"
-#include "../Recastnavigation/InputGeom.h"
+#include "../Recastnavigation/RecastGeometry.h"
 
 #define BSP_VERSION		29
 #define MAXLIGHTMAPS	4

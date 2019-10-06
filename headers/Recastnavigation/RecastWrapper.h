@@ -7,30 +7,15 @@
 
 
 #include <Recast.h>
-#include "InputGeom.h"
+#include "RecastGeometry.h"
 #include "DetourPathQueue.h"
 #include <sys/time.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include "BuildContext.h"
+#include "RecastBuildContext.h"
 #include <stdlib.h>
-
-static const int MAX_CONVEXVOL_PTS = 12;
-//static const int DT_VERTS_PER_POLYGON = 6;
-
-static float frandRecast()
-{
-    return (float)rand()/(float)RAND_MAX;
-}
-
-struct ConvexVolume
-{
-    float verts[MAX_CONVEXVOL_PTS*3];
-    float hmin, hmax;
-    int nverts;
-    int area;
-};
+#include "../Objects/Vertex3D.h"
 
 enum SamplePartitionType
 {
@@ -72,7 +57,7 @@ public:
     rcConfig m_cfg;
     rcPolyMeshDetail* m_dmesh;
 
-    class InputGeom* m_geom;
+    class RecastGeometry* m_geom;
 
     class dtNavMesh* m_navMesh;
     class dtNavMeshQuery* m_navQuery;
@@ -92,7 +77,7 @@ public:
     float m_detailSampleMaxError;
     int m_partitionType;
 
-    BuildContext* m_ctx;
+    RecastBuildContext* m_ctx;
 
     bool m_keepInterResults;
 
@@ -114,9 +99,10 @@ public:
 
     float m_randomRadius = 0.6 * 30;
 
+    bool initNavhMesh();
+    bool initNavQuery();
 
-    bool handleBuild();
-    void recalc();
+    void getPathBetween(Vertex3D a, Vertex3D b, std::vector<Vertex3D> &points);
 
     void cleanup();
     void resetCommonSettings();

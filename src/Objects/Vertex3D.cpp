@@ -18,6 +18,13 @@ Vertex3D::Vertex3D(float x, float y, float z)
     this->z = z;
 }
 
+Vertex3D::Vertex3D(float v[3])
+{
+    this->x = v[0];
+    this->y = v[1];
+    this->z = v[2];
+}
+
 Vertex3D Vertex3D::operator +(const Vertex3D &v)
 {
     return Vertex3D(
@@ -182,4 +189,12 @@ float Vertex3D::distance(Vertex3D to)
     Vector3D tmpV(*this, to);
 
     return tmpV.getComponent().getModule();
+}
+
+
+void Vertex3D::saveToFloat3(float *v)
+{
+    v[0] = this->x;
+    v[1] = this->y;
+    v[2] = this->z;
 }

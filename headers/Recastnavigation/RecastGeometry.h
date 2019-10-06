@@ -4,20 +4,19 @@
 
 
 #include "RecastWrapper.h"
-#include "InputGeom.h"
-#include "rcMeshLoaderObj.h"
+#include "RecastGeometry.h"
+#include "RecastGeometryLoader.h"
 #include "../Objects/Mesh3D.h"
 
 
-class InputGeom {
+class RecastGeometry {
 public:
-    InputGeom();
+    RecastGeometry();
 
-    rcMeshLoaderObj* m_mesh;
+    RecastGeometryLoader* m_mesh;
     float m_meshBMin[3], m_meshBMax[3];
-    bool m_hasBuildSettings;
 
-    void loadFromMesh3D(Triangle *model_triangles, int n_triangles = 0);
+    void loadBSPMapTriangles(Triangle *model_triangles, int n_triangles = 0);
 
     /// @name Off-Mesh connections.
     static const int MAX_OFFMESH_CONNECTIONS = 256;
@@ -30,7 +29,7 @@ public:
     int m_offMeshConCount;
 
     /// Method to return static mesh data.
-    const rcMeshLoaderObj* getMesh() const { return m_mesh; }
+    const RecastGeometryLoader* getMesh() const { return m_mesh; }
     const float* getMeshBoundsMin() const { return m_meshBMin; }
     const float* getMeshBoundsMax() const { return m_meshBMax; }
     const float* getNavMeshBoundsMin() const { return m_meshBMin; }

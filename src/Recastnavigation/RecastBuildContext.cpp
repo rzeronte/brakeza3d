@@ -2,13 +2,13 @@
 // Created by darkhead on 16/9/19.
 //
 
-#include "../../headers/Recastnavigation/BuildContext.h"
+#include "../../headers/Recastnavigation/RecastBuildContext.h"
 #include "../../headers/Render/Logging.h"
 #include <stdio.h>
 #include <string.h>
 
 
-BuildContext::BuildContext() :
+RecastBuildContext::RecastBuildContext() :
         m_messageCount(0),
         m_textPoolSize(0)
 {
@@ -18,13 +18,13 @@ BuildContext::BuildContext() :
 }
 
 // Virtual functions for custom implementations.
-void BuildContext::doResetLog()
+void RecastBuildContext::doResetLog()
 {
     m_messageCount = 0;
     m_textPoolSize = 0;
 }
 
-void BuildContext::doLog(const rcLogCategory category, const char* msg, const int len)
+void RecastBuildContext::doLog(const rcLogCategory category, const char* msg, const int len)
 {
     if (!len) return;
     if (m_messageCount >= MAX_MESSAGES)
@@ -48,18 +48,18 @@ void BuildContext::doLog(const rcLogCategory category, const char* msg, const in
     Logging::getInstance()->Log(msg);
 }
 
-void BuildContext::doResetTimers()
+void RecastBuildContext::doResetTimers()
 {
     for (int i = 0; i < RC_MAX_TIMERS; ++i)
         m_accTime[i] = -1;
 }
 
-void BuildContext::doStartTimer(const rcTimerLabel label)
+void RecastBuildContext::doStartTimer(const rcTimerLabel label)
 {
     m_startTime[label] = getPerfTime();
 }
 
-void BuildContext::doStopTimer(const rcTimerLabel label)
+void RecastBuildContext::doStopTimer(const rcTimerLabel label)
 {
     const TimeVal endTime = getPerfTime();
     const TimeVal deltaTime = endTime - m_startTime[label];
@@ -69,11 +69,11 @@ void BuildContext::doStopTimer(const rcTimerLabel label)
         m_accTime[label] += deltaTime;
 }
 
-int BuildContext::doGetAccumulatedTime( rcTimerLabel label) {
+int RecastBuildContext::doGetAccumulatedTime(rcTimerLabel label) {
     return getPerfTimeUsec(m_accTime[label]);
 }
 
-void BuildContext::dumpLog(const char* format, ...)
+void RecastBuildContext::dumpLog(const char* format, ...)
 {
     // Print header.
     va_list ap;
@@ -118,12 +118,12 @@ void BuildContext::dumpLog(const char* format, ...)
     }
 }
 
-int BuildContext::getLogCount() const
+int RecastBuildContext::getLogCount() const
 {
     return m_messageCount;
 }
 
-const char* BuildContext::getLogText(const int i) const
+const char* RecastBuildContext::getLogText(const int i) const
 {
     return m_messages[i]+1;
 }
