@@ -68,35 +68,18 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
+    // Lighting example
     /*Vertex3D startPoint = Vertex3D(45, -2, 40);
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
-    Vertex3D A(-13, 16, 191);
+    // Calc Pathfinding example
+    /*Vertex3D A(-13, 16, 191);
     Vertex3D B(*camera->getPosition());
-
     std::vector<Vertex3D> points;
+    this->bspMap->recastWrapper->drawNavMeshPoints();
     this->bspMap->recastWrapper->getPathBetween(A, B, points);
-
-    Vertex3D startV;
-    int count = 0;
-    for(std::vector<Vertex3D>::iterator it = points.begin(); it != points.end(); ++it) {
-        Vertex3D v = *(it);
-
-        if (count > 0 ) {
-            startV.consoleInfo("startV", false);
-            v.consoleInfo("v", false);
-            Vector3D line = Vector3D(startV, v);
-
-            Drawable::drawVector3D(line, camera, Color::blue());
-        }
-        startV = v;
-
-        count++;
-        Drawable::drawVertex(v, camera, Color::green());
-    }
-
-    //this->bspMap->recastWrapper->drawNavMeshPoints();
+    this->bspMap->recastWrapper->drawPathSegments(points);*/
 }
 
 void Game::preUpdate()
