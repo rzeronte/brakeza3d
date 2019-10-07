@@ -736,16 +736,7 @@ void Engine::onUpdate()
         this->handleOpenCLTransform();
     }
 
-
     this->hiddenSurfaceRemoval();
-
-    /*Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
-    d->cube->setPosition(*d->getPosition());
-    d->cube->update();
-    d->getTriangles(visibleTriangles, numVisibleTriangles, camera);
-    d->getSprite()->setAnimation((int)EngineSetup::getInstance()->TESTING_INT);
-    */
-
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles();
@@ -901,6 +892,10 @@ void Engine::getSpritesTriangles()
         if (oSpriteDirectional != NULL) {
 
             if (!oSpriteDirectional->isEnabled()) {
+                continue;
+            }
+
+            if (!camera->frustum->isPointInFrustum(*oSpriteDirectional->getPosition())) {
                 continue;
             }
 
