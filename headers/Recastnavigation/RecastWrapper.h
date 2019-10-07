@@ -97,12 +97,13 @@ public:
 
     int m_npolys = 0;
 
-    float m_randomRadius = 0.6 * 30;
+    float m_hitNormal[3];
 
     bool initNavhMesh();
     bool initNavQuery();
 
     void getPathBetween(Vertex3D a, Vertex3D b, std::vector<Vertex3D> &points);
+    bool rayCasting(Vertex3D A, Vertex3D B);
 
     void cleanup();
     void resetCommonSettings();

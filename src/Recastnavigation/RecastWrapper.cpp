@@ -467,6 +467,32 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
     }
 }
 
+bool RecastWrapper::rayCasting(Vertex3D A, Vertex3D B)
+{
+    Vertex3D startV = Transforms::objectToLocal(A, brakeza3D->bspMap);
+    Vertex3D endV   = Transforms::objectToLocal(B, brakeza3D->bspMap);
+
+    startV.saveToFloat3(m_spos);
+    endV.saveToFloat3(m_epos);
+
+    m_polyPickExt[0] = 2;
+    m_polyPickExt[1] = 4;
+    m_polyPickExt[2] = 2;
+
+    m_filter.setIncludeFlags(0xFFFF) ;
+    m_filter.setExcludeFlags(0) ;
+    m_filter.setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f) ;
+
+    // calc m_startRef and m_endRef
+    m_navQuery->findNearestPoly(m_spos, m_polyPickExt, &m_filter, &m_startRef, 0);
+    m_navQuery->findNearestPoly(m_epos, m_polyPickExt, &m_filter, &m_endRef, 0);
+
+    float t = 0;
+    m_navQuery->raycast(m_startRef, m_spos, m_epos, &m_filter, &t, m_hitNormal, m_polys, &m_npolys, MAX_POLYS);
+
+    return t > 1;
+}
+
 void RecastWrapper::cleanup()
 {
     delete [] m_triareas;

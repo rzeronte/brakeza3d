@@ -80,6 +80,11 @@ void Game::onUpdate()
     this->bspMap->recastWrapper->drawNavMeshPoints();
     this->bspMap->recastWrapper->getPathBetween(A, B, points);
     this->bspMap->recastWrapper->drawPathSegments(points);*/
+
+    // Raycasting example
+    /*Vertex3D A(-13, 16, 191);
+    Vertex3D B(*camera->getPosition());
+    bool hitResult = this->bspMap->recastWrapper->rayCasting(A, B);*/
 }
 
 void Game::preUpdate()
