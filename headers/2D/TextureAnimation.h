@@ -12,11 +12,11 @@ public:
     std::string base_file;
 
     int numFrames;
-    int currentFrame = 0;
+    int currentFrame;
     Texture *frames[ANIMATION2D_MAX_FRAMES];
 
-    bool endAnimation = false;
-    bool paused = false;
+    bool endAnimation;
+    bool paused;
 
     TextureAnimation();
 

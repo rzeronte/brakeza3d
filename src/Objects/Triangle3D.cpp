@@ -3,21 +3,14 @@
 #include <cmath>
 #include <list>
 #include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Render/Color.h"
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Objects/Line2D.h"
-#include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/M3.h"
 #include "../../headers/Render/Engine.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Objects/Decal.h"
 
 extern Engine *brakeza3D;
-
 
 Triangle::Triangle()
 {
@@ -493,6 +486,7 @@ int Triangle::updateLightmapFrame()
         float timeIncrement = brakeza3D->deltaTime / 100.0f;
         if ( style > 10) continue;
         switch(nl) {
+            default:
             case 0:
                 lightmapIndexPattern += timeIncrement;
                 length = strlen(EngineSetup::getInstance()->LIGHT_PATTERNS[style]);
@@ -636,8 +630,8 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 
 void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
-    float invslope1 = (float) (pc.x - pa.x) / (pc.y - pa.y);
-    float invslope2 = (float) (pc.x - pb.x) / (pc.y - pb.y);
+    float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
+    float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
 
     float curx1 = pc.x;
     float curx2 = pc.x;
@@ -651,8 +645,8 @@ void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D 
 
 void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
-    float invslope1 = (float) (pb.x - pa.x) / (pb.y - pa.y);
-    float invslope2 = (float) (pc.x - pa.x) / (pc.y - pa.y);
+    float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
+    float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
 
     float curx1 = pa.x;
     float curx2 = pa.x;
@@ -667,7 +661,7 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
 
 void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
-    Uint32 pixelColor;
+    Uint32 pixelColor = NULL;
 
     // Gradient
     if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
@@ -702,7 +696,7 @@ void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, 
         }
 
         if (!parent->isDecal() && getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
-            pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv, texu, texv);
+            pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv);
         }
     }
 
@@ -779,7 +773,7 @@ Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
     /**/
 }
 
-Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v, float tex_u, float tex_v)
+Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v)
 {
     float intpart;
     // Check for inversion U
@@ -864,7 +858,6 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
     );
 
     if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
-        Uint8 pred, pgreen, pblue, palpha;
         SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
         pixelColor = (Uint32) Tools::createRGB(

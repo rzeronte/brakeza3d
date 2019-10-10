@@ -49,7 +49,7 @@ void Sprite3D::updateTexture()
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->timerLastTicks;
     this->timerLastTicks = this->timer->getTicks();
-    timerCurrent += (float)(deltatime/1000);
+    timerCurrent += (deltatime/1000);
 
     float step = (float) 1 / this->fps;
 

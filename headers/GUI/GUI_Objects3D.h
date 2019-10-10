@@ -102,8 +102,8 @@ public:
                     ImGui::Checkbox(removed_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->removed);
 
                     // Only for meshes
-                    Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
-                    if (pMesh != NULL) {
+                    Mesh3D *objMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
+                    if (objMesh != NULL) {
                         ImGui::Checkbox(shadow_text.c_str(), &dynamic_cast<Mesh3D *>(gameObjects[i])->shadowCaster);
                     }
 
@@ -124,6 +124,7 @@ public:
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
 
                         switch (pSprite3D->current_animation) {
+                            default:
                             case 0:
                                 item_current = items[0];
                                 break;

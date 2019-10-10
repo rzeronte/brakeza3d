@@ -2,7 +2,7 @@
 #include <SDL_image.h>
 #include "../../headers/2D/MenuOption.h"
 
-MenuOption::MenuOption(std::string label, std::string fileOn, std::string fileOff)
+MenuOption::MenuOption(const std::string label, const std::string fileOn, const std::string fileOff)
 {
     this->label = label;
     this->image_on = IMG_Load(fileOn.c_str());

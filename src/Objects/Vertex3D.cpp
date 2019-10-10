@@ -54,7 +54,7 @@ Vertex3D Vertex3D::operator %(const Vertex3D &v)
 
 float Vertex3D::operator *(const Vertex3D &v)
 {
-    return (this->x * v.x) + (this->y * v.y) + (this->z * v.z);;
+    return (this->x * v.x) + (this->y * v.y) + (this->z * v.z);
 }
 
 bool Vertex3D::operator ==(const Vertex3D &v)
@@ -191,10 +191,16 @@ float Vertex3D::distance(Vertex3D to)
     return tmpV.getComponent().getModule();
 }
 
-
 void Vertex3D::saveToFloat3(float *v)
 {
     v[0] = this->x;
     v[1] = this->y;
     v[2] = this->z;
+}
+
+void Vertex3D::saveToBtVector3(btVector3 *v)
+{
+    v->setX(this->x);
+    v->setY(this->y);
+    v->setZ(this->z);
 }

@@ -432,14 +432,14 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
     m_navQuery->findNearestPoly(m_epos, m_polyPickExt, &m_filter, &m_endRef, 0);
 
     status = m_navQuery->findPath(m_startRef, m_endRef, m_spos, m_epos, &m_filter, m_polys, &m_npolys, MAX_POLYS);
-    if (!dtStatusSucceed(status)) {
-        Logging::getInstance()->Log("findPath Failure");
-    } else {
+    if (dtStatusSucceed(status)) {
         Logging::getInstance()->Log("findPath Success: Num npolys: " + std::to_string(m_npolys));
     }
 
     // Iterate over the path to find smooth path on the detail mesh surface.
     if (m_npolys) {
+        points.push_back(startV);
+
         dtPolyRef polys[MAX_POLYS];
         memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
         int npolys = m_npolys;
@@ -514,10 +514,10 @@ void RecastWrapper::cleanup()
 
 void RecastWrapper::resetCommonSettings()
 {
-    m_cellSize = 0.5f;
-    m_cellHeight = 0.5f;
+    m_cellSize = 0.25f;
+    m_cellHeight = 0.25f;
     m_agentHeight = 2.0f;
-    m_agentRadius = 0.6f;
+    m_agentRadius = 0.2f;
     m_agentMaxClimb = 2.f;
     m_agentMaxSlope = 45.0f;
     m_regionMinSize = 8;
@@ -540,7 +540,7 @@ void RecastWrapper::drawNavMeshPoints()
     for (int i = 0; i < m_pmesh->nverts; ++i) {
         const unsigned short* v = &m_pmesh->verts[i*3];
         const float x = (orig[0] + v[0]*cs);
-        const float y = (orig[1] + (v[1])*ch + 0.1f);
+        const float y = (orig[1] + (v[1])*ch - 0.1f);
         const float z = (orig[2] + v[2]*cs);
 
         Vertex3D tmpV = Transforms::objectSpace(Vertex3D(x, y, z), brakeza3D->bspMap);
@@ -557,7 +557,8 @@ void RecastWrapper::drawPathSegments(std::vector<Vertex3D> &points)
 
         if (count > 0 ) {
             Vector3D line = Vector3D(startV, v);
-            Drawable::drawVector3D(line, brakeza3D->camera, Color::blue());
+            //Drawable::drawVector3D(line, brakeza3D->camera, Color::yellow());
+            Drawable::drawVector3DZBuffer(line, brakeza3D->camera, Color::blue());
         }
 
         startV = v;

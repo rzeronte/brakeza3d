@@ -7,7 +7,6 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
-#include "../../headers/Physics/Sprite3DBody.h"
 
 CollisionsManager::CollisionsManager()
 {

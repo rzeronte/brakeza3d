@@ -17,7 +17,7 @@
 #define ANIM_TEX_FRAMES	32
 
 #define MAX_MAP_TEXTURES 500
-#define MAX_BSP_TRIANGLES 128000
+#define MAX_BSP_TRIANGLES 50000
 #define MAX_BSP_ENTITIES 5000
 
 // BSP entries
@@ -188,7 +188,7 @@ class BSPMap: public Object3D
 {
 private:
 
-    int LoadFile(const char *filename, void **bufferptr);
+    static static int LoadFile(const char *filename, void **bufferptr);
     bool LoadPalette(const char *filename);
     bool LoadBSP(const char *filename);
 
@@ -377,7 +377,7 @@ public:
     void createMesh3DAndGhostsFromHulls();
     void InitializeRecast();
 
-    float CalculateDistance(vec3_t a, vec3_t b);
+    static float CalculateDistance(vec3_t a, vec3_t b);
     void CalcSurfaceExtents (int surface, lightmap_t* l);
 
     void DrawSurface(int surface, Camera3D *camera);

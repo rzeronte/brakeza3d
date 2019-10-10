@@ -1,17 +1,9 @@
 
-#include <iostream>
 #include "../../headers/Objects/Camera3D.h"
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Objects/Line2D.h"
-#include "../../headers/Render/Color.h"
-#include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Objects/Vector3D.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/M3.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/EngineBuffers.h"
 
 #include <btBulletDynamicsCommon.h>
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"

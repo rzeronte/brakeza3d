@@ -70,7 +70,7 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color)
 
     Point2D P1 = Transforms::screenSpace(A, cam);
 
-    if (Tools::isPixelInWindow(P1.x, P1.y)) {
+    if (Tools::isPixelInWindow((int)P1.x, (int)P1.y)) {
         EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color);
     }
 }
@@ -351,9 +351,9 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
         for (auto ir = tmpList.begin(); ir != tmpList.end(); ++j) {
             Vertex3D midPoint = ir.base()->middlePoint();
 
-            midPoint.x += Tools::random(-offsetAmount, offsetAmount) * multiplier;
-            midPoint.y += Tools::random(-offsetAmount, offsetAmount) * multiplier;
-            midPoint.z += Tools::random(-offsetAmount, offsetAmount) * multiplier;
+            midPoint.x += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
+            midPoint.y += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
+            midPoint.z += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
 
             if ( Tools::random(1, 10) > 10-probabilityBranch) {
 

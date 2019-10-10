@@ -779,7 +779,7 @@ void BSPMap::CalcSurfaceExtents (int surface, lightmap_t* l)
         l->maxv[1] = max_v;
 
         for (int k=0 ;  k < 2 ; k++) {
-            float val;
+            float val = 0;
             if (k == 0)  {
                 val = CalculateDistance(textureInfo->snrm, vertex_fixed);
             }
@@ -1038,7 +1038,7 @@ char *BSPMap::parseEntities (char *s)
     int entityId = 0;
     int attributeId = 0;
 
-    int t;
+    int t = 0;
     while (s[i] != '\0') {
         char c = s[i];
         if (s[i] == '{') {

@@ -31,6 +31,7 @@ SDL_Surface *Texture::getSurface(int mip_mapping)
     }
 
     switch(mip_mapping) {
+        default:
         case 1:
             return this->mip_mapping_1;
         case 2:
@@ -48,6 +49,7 @@ void Texture::loadBMP(const char *file, int mip_mapping )
     this->loaded = true;
 
     switch(mip_mapping) {
+        default:
         case 1:
             mip_mapping_1 = SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"),1);
             break;
@@ -69,6 +71,7 @@ void Texture::loadJPG(const char *file, int mip_mapping )
     this->filename = file;
     this->loaded = true;
     switch(mip_mapping) {
+        default:
         case 1:
             mip_mapping_1 = IMG_Load(file);
             break;
@@ -91,6 +94,7 @@ void Texture::loadTGA(const char *file, int mip_mapping )
         this->filename = file;
         this->loaded = true;
         switch(mip_mapping) {
+            default:
             case 1:
                 mip_mapping_1 = IMG_Load(file);
                 break;
@@ -147,6 +151,7 @@ void Texture::loadLightmapFromRaw(int frame, unsigned int *texture, int w, int h
 {
     SDL_Surface *surf;
     switch(frame) {
+        default:
         case 0:
             this->lightmap = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
             surf = this->lightmap;
@@ -181,6 +186,7 @@ void Texture::loadFromRaw(unsigned int *texture, int w, int h, int mip_mapping)
     int height;
 
     switch(mip_mapping) {
+        default:
         case 1:
             this->mip_mapping_1 = SDL_CreateRGBSurface(0, h, w, 32, 0, 0, 0, 0);
 
