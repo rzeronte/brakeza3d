@@ -2,12 +2,13 @@
 #include "../../headers/2D/TextureAnimation.h"
 #include "../../headers/Render/EngineSetup.h"
 
-TextureAnimation::TextureAnimation()
+TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false)
 {
     for (int j = 0; j < ANIMATION2D_MAX_FRAMES ; j++) {
         this->frames[j] = new Texture();
     }
 }
+
 
 void TextureAnimation::setup(std::string file, int num_frames)
 {
@@ -67,3 +68,5 @@ bool TextureAnimation::isPaused() const {
 void TextureAnimation::setPaused(bool paused) {
     TextureAnimation::paused = paused;
 }
+
+

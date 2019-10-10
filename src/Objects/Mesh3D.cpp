@@ -2,17 +2,10 @@
 #include <fstream>
 #include <vector>
 #include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/Timer.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Objects/LightPoint3D.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
-#include <iostream>
 #include <string>
-#include <math.h>       /* modf */
-#include <cstdio>
 
 extern Engine *brakeza3D;
 

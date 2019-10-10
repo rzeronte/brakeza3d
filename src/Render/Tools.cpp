@@ -6,21 +6,13 @@
 #include <vector>
 #include <SDL_system.h>
 #include <SDL_ttf.h>
-#include <iostream>
 #include <algorithm>
 #include <math.h>
-#include <cmath>
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Objects/Line2D.h"
 #include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Objects/Vector3D.h"
 #include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Render/M3.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 
 #define MAX_SOURCE_SIZE (0x100000)

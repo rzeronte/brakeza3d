@@ -2,7 +2,6 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <LinearMath/btDefaultMotionState.h>
 #include "../../headers/Render/Controller.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/PhysicsGame/Projectile3DBody.h"

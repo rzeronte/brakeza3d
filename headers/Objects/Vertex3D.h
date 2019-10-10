@@ -6,6 +6,7 @@
 
 #include <SDL_surface.h>
 #include <string>
+#include <LinearMath/btVector3.h>
 
 class Vertex3D {
 public:
@@ -46,6 +47,7 @@ public:
 
     static Vertex3D zero();
     void saveToFloat3(float *v);
+    void saveToBtVector3(btVector3 *v);
 
     void consoleInfo(std::string label, bool);
 

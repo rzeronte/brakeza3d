@@ -11,7 +11,7 @@
 
 float Maths::degreesToRadians(float angleDegrees)
 {
-    return angleDegrees * (float) M_PI / (float) 180.0;;
+    return angleDegrees * (float) M_PI / (float) 180.0;
 }
 
 float Maths::radiansToDegrees(float angleRadians)
@@ -210,7 +210,7 @@ void Maths::sortVerticesByY(Vertex3D *vertexes, int N)
 
 float Maths::distanteBetweenpoints(Vertex3D v1, Vertex3D v2)
 {
-    return sqrtf( (v2.x - v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y) + (v2.z - v1.z)*(v2.z - v1.z) );;
+    return sqrtf( (v2.x - v1.x)*(v2.x - v1.x) + (v2.y - v1.y)*(v2.y - v1.y) + (v2.z - v1.z)*(v2.z - v1.z) );
 }
 
 Uint32 Maths::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {

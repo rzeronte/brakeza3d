@@ -177,6 +177,8 @@ public:
     void getSpritesTriangles();
     void getObjectsBillboardTriangles();
 
+    void drawDebugIA();
+
     // Triangles filter
     void hiddenSurfaceRemoval();
     void handleTrianglesToTiles();

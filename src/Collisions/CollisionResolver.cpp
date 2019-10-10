@@ -180,8 +180,8 @@ void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntity
     char *angle = bspMap->getEntityValue(targetEntityId, "angle");
     char *speed = bspMap->getEntityValue(targetEntityId, "speed");
 
-    float angleFloat = atof( std::string(angle).c_str() );
-    float speedFloat = atof( std::string(speed).c_str() );
+    float angleFloat = (float) atof( std::string(angle).c_str() );
+    float speedFloat = (float) atof( std::string(speed).c_str() );
 
     oRemoteBody->setMoving(true);
     oRemoteBody->setAngleMoving(angleFloat);

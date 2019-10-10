@@ -20,16 +20,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    this->loadDemoObjects();
-
-    if (bspMap->isLoaded()) {
-        // Put Decal in Front of e1m1
-        Decal *d = dynamic_cast<Decal*> (this->getObjectByLabel("decal"));
-        d->cube->setPosition(*d->getPosition());
-        d->cube->update();
-        d->getTriangles(bspMap->model_triangles, bspMap->n_triangles, camera);
-        d->getSprite()->setAnimation(0);
-    }
+    //this->loadDemoObjects();
 }
 
 void Game::mainLoop()
