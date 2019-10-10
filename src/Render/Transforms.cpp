@@ -2,10 +2,6 @@
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Objects/Triangle3D.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/M3.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Maths.h"
 
 Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {

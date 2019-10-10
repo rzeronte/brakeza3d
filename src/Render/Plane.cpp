@@ -122,7 +122,7 @@ bool Plane::isFrontFacingTo(Vertex3D direction)
 bool Plane::intersect(Vector3D ray, float &t)
 {
     if (Maths::isVector3DClippingPlane(*this, ray)) {
-        Vertex3D intersectionPoint = this->getPointIntersection(ray.origin(), ray.end(), t);
+        this->getPointIntersection(ray.origin(), ray.end(), t);
 
         return true;
     }
