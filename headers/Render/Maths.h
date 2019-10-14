@@ -45,7 +45,7 @@ public:
     static Uint32 mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q);
     static Uint32 alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);
 
-    static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam);
+    static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam);
 
     static long GetNextActive(long x, long vertexCount, const bool *active);
     static long GetPrevActive(long x, long vertexCount, const bool *active);

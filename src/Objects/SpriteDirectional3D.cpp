@@ -32,10 +32,6 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
 
 void SpriteDirectional3D::draw(Camera3D *cam)
 {
-    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(this, cam, true, true, true);
-    }
-
     Drawable::drawBillboard(this->billboard, cam );
 }
 
@@ -66,26 +62,27 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
 {
     if (num_animations == 0) return;
 
-    float angle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
+    float enemyAngle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
+    float direction;
 
-    int direction;
+    if (enemyAngle >= 292.5f && enemyAngle < 337.5f)
+        direction= 8;
+    else if (enemyAngle >= 22.5f && enemyAngle < 67.5f)
+        direction= 2;
+    else if (enemyAngle >= 67.5f && enemyAngle < 112.5f)
+        direction= 3;
+    else if (enemyAngle >= 112.5f && enemyAngle < 157.5f)
+        direction= 4;
+    else if (enemyAngle >= 157.5f && enemyAngle < 202.5f)
+        direction= 5;
+    else if (enemyAngle >= 202.5f && enemyAngle < 247.5f)
+        direction= 6;
+    else if (enemyAngle >= 247.5f && enemyAngle < 292.5f)
+        direction= 7;
+    else if (enemyAngle >= 337.5f || enemyAngle < 22.5f)
+        direction= 1;
+    else direction= 0;
 
-    if (angle >= 337.5f || angle < 22.5f)
-        direction = DIR_N;
-    else if (angle >= 22.5f && angle < 67.5f)
-        direction = DIR_NE;
-    else if (angle >= 67.5f && angle < 112.5f)
-        direction = DIR_E;
-    else if (angle >= 112.5f && angle < 157.5f)
-        direction = DIR_SE;
-    else if (angle >= 157.5f && angle < 202.5f)
-        direction = DIR_S;
-    else if (angle >= 202.5f && angle < 247.5f)
-        direction = DIR_SW;
-    else if (angle >= 247.5f && angle < 292.5f)
-        direction = DIR_W;
-    else if (angle >= 292.5f && angle < 337.5f)
-        direction = DIR_NW;
 
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->timerLastTicks;

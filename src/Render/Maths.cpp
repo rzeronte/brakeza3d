@@ -255,21 +255,21 @@ Uint32 Maths::mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vert
     return c;
 }
 
-float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *o1, Camera3D *cam)
+float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam)
 {
-    Vertex3D a = cam->AxisForward();
-    Vertex3D b = o1->AxisForward();
+    Vertex3D a = *cam->getPosition() - *object->getPosition();
+    Vertex3D b = object->getRotation() * EngineSetup::getInstance()->forward;
 
-    float angle = acos( (a * b) / (a.getModule() * b.getModule()) );
-    angle = Maths::radiansToDegrees(angle);
+    a = a.getNormalize();
 
-    float dotP = a.getNormalize() * EngineSetup::getInstance()->right;
+    float theta = acos(a * b);
+    theta = Maths::radiansToDegrees(theta);
 
-    if(signbit(dotP)) {
-        angle = abs(360 - angle);
+    if (a.x * a.z < 0) {
+        theta = 360.0f - theta;
     }
 
-    return angle;
+    return theta;
 }
 
 long Maths::GetNextActive(long x, long vertexCount, const bool *active)

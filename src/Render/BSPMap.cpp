@@ -530,6 +530,7 @@ void BSPMap::InitializeEntities()
 
     // Create Objects3D from BSP Entities
     for (int i = 0 ; i < brakeza3D->bspMap->n_entities ; i++) {
+
         if (brakeza3D->bspMap->hasEntityAttribute(i, "classname")) {
             char *classname = brakeza3D->bspMap->getEntityValue(i, "classname");
             if (brakeza3D->bspMap->hasEntityAttribute(i, "origin")) {
@@ -565,6 +566,15 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
+                    int angle = 0;
+                    if (this->hasEntityAttribute(i, "angle")) {
+                        char *s_angle = this->getEntityValue(i, "angle");
+                        Logging::getInstance()->Log("Angle: " + std::string(s_angle));
+                        angle = std::stoi(s_angle);
+                    }
+
+                    M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
+
                     NPCEnemyBody *o = new NPCEnemyBody();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
@@ -575,6 +585,7 @@ void BSPMap::InitializeEntities()
                     o->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
                     o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
                     o->setPosition( pos );
+                    o->setRotation(rotMonster);
                     o->setDrawBillboard(true);
                     o->getBillboard()->setDimensions(4, 6);
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
