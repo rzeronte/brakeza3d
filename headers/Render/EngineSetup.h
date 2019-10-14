@@ -162,7 +162,7 @@ public:
     float WALKING_SPEED     = 0.9f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 0.9f;
+    float STRAFE_SPEED      = 0.3f;
 
     float WALKING_SPEED_LIQUID_DIVISOR = 2.0;
 

@@ -178,6 +178,7 @@ public:
     void getObjectsBillboardTriangles();
 
     void drawDebugIA();
+    void drawSceneObjectsAxis();
 
     // Triangles filter
     void hiddenSurfaceRemoval();

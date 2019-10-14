@@ -762,6 +762,10 @@ void Engine::onUpdate()
         collisionsManager->getDynamicsWorld()->debugDrawWorld();
     }
 
+    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+        this->drawSceneObjectsAxis();
+    }
+
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
         Drawable::drawFrustum(camera->frustum, camera, true, true, true);
     }
@@ -834,9 +838,6 @@ void Engine::getMesh3DTriangles()
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
                 oMesh->draw();
-                if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-                    Drawable::drawObject3DAxis(oMesh, camera, true, true, true);
-                }
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                     Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
                 }
@@ -901,10 +902,6 @@ void Engine::getSpritesTriangles()
             oSpriteDirectional->updateTrianglesCoordinates(camera);
             oSpriteDirectional->draw(camera);
 
-            if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-                Drawable::drawObject3DAxis(oSpriteDirectional, camera, true, true, true);
-            }
-
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
@@ -919,10 +916,6 @@ void Engine::getSpritesTriangles()
 
             oSprite->updateTrianglesCoordinatesAndTexture(camera);
             oSprite->draw(camera);
-
-            if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
-                Drawable::drawObject3DAxis(oSprite, camera, true, true, true);
-            }
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
@@ -1410,20 +1403,21 @@ void Engine::initCollisionsManager()
     this->collisionsManager->initBulletSystem();
 }
 
+void Engine::drawSceneObjectsAxis()
+{
+    // draw meshes
+    for (int i = 0; i < this->gameObjects.size(); i++) {
+        if (this->gameObjects[i]->isEnabled()) {
+            Drawable::drawObject3DAxis(this->gameObjects[i], camera, true, true, true);
+        }
+    }
+}
+
 void Engine::drawDebugIA()
 {
     std::vector<Object3D *>::iterator itObject3D;
-    int cont = 0;
-    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); ) {
+    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); itObject3D++) {
         Object3D *object = *(itObject3D);
-
-        // Check for delete
-        if (object->isRemoved()) {
-            gameObjects.erase(itObject3D);
-            continue;
-        } else {
-            itObject3D++;
-        }
 
         // Sprite Directional 3D
         SpriteDirectional3DBody *oSpriteDirectional = dynamic_cast<SpriteDirectional3DBody*> (object);
@@ -1435,30 +1429,30 @@ void Engine::drawDebugIA()
                 Vertex3D B = *camera->getPosition();
 
                 if (this->bspMap->recastWrapper->rayCasting(A, B)) {
-                    Logging::getInstance()->Log("Calculating pathfinding for " + oSpriteDirectional->getLabel());
                     enemy->points.clear();
                     this->bspMap->recastWrapper->getPathBetween(A, B, enemy->points );
                     if (enemy->points.size() > 0) {
-                        cont++;
                         btTransform t = oSpriteDirectional->getRigidBody()->getWorldTransform();
                         btMotionState *mMotionState = oSpriteDirectional->getRigidBody()->getMotionState();
 
                         btVector3 dest;
-                        Vertex3D tmp = Vertex3D(enemy->points[1]);
-                        tmp.y-=0.9;
-                        Vector3D way = Vector3D(A, tmp);
-                        Vertex3D pos = A + way.getComponent().getNormalize().getScaled(0.3);
+                        Vector3D way = Vector3D(enemy->points[0], enemy->points[1]);
+
+                        Vertex3D p = way.getComponent().getNormalize().getScaled(0.3f);
+                        Vertex3D pos = A + p;
+
+                        if (!Tools::isValidVector(pos)) {
+                            continue;
+                        }
+
+                        way.getComponent().getNormalize().consoleInfo("dir:", false);
                         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-                        oSpriteDirectional->setRotation(newRot);
-                        Drawable::drawVertex(pos, camera, Color::cyan());
+                        oSpriteDirectional->setRotation(newRot.getTranspose());
                         pos.saveToBtVector3(&dest);
 
                         t.setOrigin(dest);
-                        oSpriteDirectional->getRigidBody()->setWorldTransform(t);
                         mMotionState->setWorldTransform(t);
-
-                        //this->bspMap->recastWrapper->drawPathSegments(enemy->points);
-                        //oSpriteDirectional->setPosition(enemy->points[1]);
+                        oSpriteDirectional->getRigidBody()->setWorldTransform(t);
                     }
                 } else {
                     enemy->points.clear();
@@ -1466,6 +1460,5 @@ void Engine::drawDebugIA()
             }
         }
     }
-    Logging::getInstance()->Log("drawDebugIA -  Num paths to you: " + std::to_string(cont));
 
 }

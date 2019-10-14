@@ -20,7 +20,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    //this->loadDemoObjects();
+    this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -64,13 +64,16 @@ void Game::onUpdate()
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
     Drawable::drawLightning(camera, startPoint, endPoint);*/
 
+    //this->bspMap->recastWrapper->drawNavMeshPoints();
+
     // Calc Pathfinding example
-    /*Vertex3D A(-13, 16, 191);
-    Vertex3D B(*camera->getPosition());
-    std::vector<Vertex3D> points;
-    this->bspMap->recastWrapper->drawNavMeshPoints();
-    this->bspMap->recastWrapper->getPathBetween(A, B, points);
-    this->bspMap->recastWrapper->drawPathSegments(points);*/
+    //Vertex3D A(*this->getObjectByLabel("BSPEntity_21 (monster)")->getPosition());
+    //Vertex3D B(*this->getObjectByLabel("BSPEntity_245 (monster)")->getPosition());
+    //Vector3D t(A, B);
+    //std::vector<Vertex3D> points;
+    //this->bspMap->recastWrapper->getPathBetween(A, B, points);
+    //this->bspMap->recastWrapper->drawPathSegments(points);
+    //Drawable::drawVector3D(t, camera, Color::magenta());
 
     // Raycasting example
     /*Vertex3D A(-13, 16, 191);
@@ -179,8 +182,9 @@ void Game::loadDemoObjects()
 
     // marine (sprite directional)
     SpriteDirectional3D *marine = new SpriteDirectional3D();
-    marine->setEnabled(false);
-    marine->setPosition(Vertex3D(10, 0, -10));
+    marine->setEnabled(true);
+    marine->setPosition(Vertex3D(2, 0, 10));
+    marine->setRotation( M3(0, -90, 0) );
     marine->setTimer(Engine::getTimer());
     marine->addAnimationDirectional2D("soldier/walk", 4, 20,  false, -1);
     marine->addAnimationDirectional2D("soldier/fire", 2, 20, false, -1);
