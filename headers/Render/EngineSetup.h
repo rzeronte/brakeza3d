@@ -131,6 +131,8 @@ public:
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";
     std::string CFG_WEAPONS = "weapons.json";
+    std::string CFG_ENEMIES = "enemies.json";
+
     bool RENDER_BSP_MAP = true;
     bool SOUND_ENABLED = false;
 
@@ -162,7 +164,7 @@ public:
     float WALKING_SPEED     = 0.9f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 0.3f;
+    float STRAFE_SPEED      = 0.75f;
 
     float WALKING_SPEED_LIQUID_DIVISOR = 2.0;
 
