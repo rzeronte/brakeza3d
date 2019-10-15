@@ -140,6 +140,7 @@ public:
     // JSON for maps and weapons
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
+    cJSON *enemiesJSONList;
 
     // collision Manager
     CollisionsManager *collisionsManager;
@@ -221,6 +222,7 @@ public:
 
     void getMapsJSON();
     void getWeaponsJSON();
+    void getEnemiesJSON();
 
     void drawMenuScreen();
 

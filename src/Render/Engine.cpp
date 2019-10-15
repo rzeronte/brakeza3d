@@ -665,6 +665,14 @@ void Engine::onStart()
     this->getWeaponsJSON();
     this->getMapsJSON();
 
+    cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
+    cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
+    if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
+        this->loadBSP(nameMap->valuestring, "palette.lmp");
+    }
+
+    this->getEnemiesJSON();
+
     Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
 
@@ -1109,9 +1117,6 @@ void Engine::addObject3D(Object3D *obj, std::string label)
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
     obj->setLabel(label);
     gameObjects.push_back(obj);
-    //gameObjects[numberGameObjects] = obj;
-    //gameObjects[numberGameObjects]->setLabel(label);
-    //numberGameObjects++;
 }
 
 void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
@@ -1353,6 +1358,58 @@ void Engine::getWeaponsJSON()
     }
 }
 
+void Engine::getEnemiesJSON()
+{
+    size_t file_size;
+    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_ENEMIES;
+    const char* enemiesFile = Tools::readFile(filePath, file_size);
+    cJSON *myDataJSON = cJSON_Parse(enemiesFile);
+
+    if (myDataJSON == NULL) {
+        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        return;
+    }
+
+    enemiesJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies" );
+    int sizeWeaponsList = cJSON_GetArraySize(enemiesJSONList);
+
+    if (sizeWeaponsList > 0) {
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
+    } else {
+        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
+    }
+
+    // weapons loop
+    cJSON *currentEnemy;
+    cJSON_ArrayForEach(currentEnemy, enemiesJSONList) {
+        cJSON *name = cJSON_GetObjectItemCaseSensitive(currentEnemy, "name");
+        cJSON *classname = cJSON_GetObjectItemCaseSensitive(currentEnemy, "classname");
+        cJSON *range = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
+        cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
+        cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
+        cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
+        cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
+        cJSON *soundFire = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
+        cJSON *soundMark = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
+        cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
+
+        // animation's enemy loop
+        cJSON *enemyAnimationsJSONList;
+        enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
+
+        cJSON *currentEnemyAnimation;
+        cJSON_ArrayForEach(currentEnemyAnimation, enemyAnimationsJSONList) {
+            cJSON *path = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
+            cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "frames");
+            cJSON *fps       = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "fps");
+            cJSON *zeroDirection   = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "zeroDirection");
+            cJSON *maxTimes   = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "maxTimes");
+
+            Logging::getInstance()->Log("Reading JSON Enemy Animation: " + std::string(path->valuestring));
+        }
+    }
+}
+
 void Engine::getMapsJSON()
 {
     size_t file_size;
@@ -1367,14 +1424,7 @@ void Engine::getMapsJSON()
     mapsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "maps" );
     int sizeMaps = cJSON_GetArraySize(mapsJSONList);
 
-    if (sizeMaps > 0) {
-        cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
-        cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
-        Logging::getInstance()->Log("maps.json have " + std::to_string(sizeMaps) + " maps");
-        if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
-            this->loadBSP(nameMap->valuestring, "palette.lmp");
-        }
-    } else {
+    if (sizeMaps <= 0) {
         Logging::getInstance()->Log("maps.json is empty", "ERROR");
     }
 

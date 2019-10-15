@@ -566,6 +566,7 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
+                    // Angle Monster
                     int angle = 0;
                     if (this->hasEntityAttribute(i, "angle")) {
                         char *s_angle = this->getEntityValue(i, "angle");
