@@ -62,6 +62,7 @@ public:
 
     bool isDecal() const;
     void setDecal(bool decal);
+
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

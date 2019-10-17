@@ -37,10 +37,10 @@ public:
 
         Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (getNPCEnemy());
 
-        bool explosionBody = getNPCEnemy()->isHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
-        getNPCEnemy()->damage(weaponManager->getCurrentWeaponType()->getDamage());
+        bool explosionBody = getNPCEnemy()->isTakeHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
+        getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
-        if (getNPCEnemy()->stamina < 0) {
+        if (getNPCEnemy()->stamina <= 0) {
             // Set animation NPC to Dead
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
             if (!explosionBody) {

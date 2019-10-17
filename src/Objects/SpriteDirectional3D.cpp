@@ -116,6 +116,7 @@ void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone)
         this->animations[i]->isZeroDirection = clone->animations[i]->isZeroDirection;
         this->animations[i]->numFrames = clone->animations[i]->numFrames;
         this->animations[i]->base_file = clone->animations[i]->base_file;
+        this->animations[i]->maxTimes = clone->animations[i]->maxTimes;
     }
 }
 
