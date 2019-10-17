@@ -127,4 +127,3 @@ bool Object3D::isDecal() const {
 void Object3D::setDecal(bool decal) {
     Object3D::decal = decal;
 }
-

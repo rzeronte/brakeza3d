@@ -12,7 +12,6 @@
 
 #define MAX_SOURCE_SIZE (0x100000)
 
-
 Engine::Engine()
 {
     // GUI engine
@@ -661,9 +660,11 @@ void Engine::onStart()
 
     this->initSound();
 
+    // Load JSON Config
     this->menu->getOptionsJSON();
     this->getWeaponsJSON();
     this->getMapsJSON();
+    this->getEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
@@ -671,7 +672,6 @@ void Engine::onStart()
         this->loadBSP(nameMap->valuestring, "palette.lmp");
     }
 
-    this->getEnemiesJSON();
 
     Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
@@ -1387,26 +1387,61 @@ void Engine::getEnemiesJSON()
         cJSON *range = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
         cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
         cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
+        cJSON *width = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
+        cJSON *height = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
         cJSON *soundFire = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
         cJSON *soundMark = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
         cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
 
+        NPCEnemyBody *newEnemy = new NPCEnemyBody();
+        newEnemy->setDamage( (float) damage->valuedouble );
+        newEnemy->setRange( (float) range->valuedouble );
+        newEnemy->setSpeed( (float) speed->valuedouble );
+        newEnemy->getBillboard()->loadTexture( EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN );
+        newEnemy->setTimer( this->getTimer() );
+        newEnemy->setPosition(Vertex3D(0, 0, 0) );
+        newEnemy->setRotation(M3() );
+        newEnemy->setDrawBillboard(true );
+        newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );
+        newEnemy->setLabel( name->valuestring);
+        newEnemy->setClassname( classname->valuestring );
+        newEnemy->setAnimation( defaultAnimation->valueint );
+
+
+        Logging::getInstance()->Log("Enemy JSON detected: name: " + std::string(name->valuestring) +
+                                    ", classname: " + classname->valuestring +
+                                    ", speed: " + std::to_string(speed->valuedouble) +
+                                    ", w: " + std::to_string(width->valuedouble) +
+                                    ", h: " + std::to_string(height->valuedouble)
+        );
+
         // animation's enemy loop
-        cJSON *enemyAnimationsJSONList;
-        enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
+        cJSON *enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
 
         cJSON *currentEnemyAnimation;
         cJSON_ArrayForEach(currentEnemyAnimation, enemyAnimationsJSONList) {
-            cJSON *path = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
-            cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "frames");
-            cJSON *fps       = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "fps");
-            cJSON *zeroDirection   = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "zeroDirection");
-            cJSON *maxTimes   = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "maxTimes");
+            cJSON *path           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
+            cJSON *frames         = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "frames");
+            cJSON *fps            = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "fps");
+            cJSON *zeroDirection  = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "zeroDirection");
+            cJSON *maxTimes       = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "maxTimes");
 
-            Logging::getInstance()->Log("Reading JSON Enemy Animation: " + std::string(path->valuestring));
+            Logging::getInstance()->Log("Reading JSON Enemy Animation: " + std::string(path->valuestring)
+                + ", maxTimes: " + std::to_string(maxTimes->valueint)
+            );
+
+            newEnemy->addAnimationDirectional2D(
+                path->valuestring,
+                frames->valueint,
+                fps->valueint,
+                zeroDirection->valueint,
+                maxTimes->valueint
+            );
         }
+
+        EngineBuffers::getInstance()->enemyTemplates.push_back(newEnemy);
     }
 }
 
@@ -1469,46 +1504,22 @@ void Engine::drawDebugIA()
     for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); itObject3D++) {
         Object3D *object = *(itObject3D);
 
-        // Sprite Directional 3D
-        SpriteDirectional3DBody *oSpriteDirectional = dynamic_cast<SpriteDirectional3DBody*> (object);
-        if (oSpriteDirectional != NULL) {
+        if (!camera->frustum->isPointInFrustum(*object->getPosition())) {
+            continue;
+        }
 
-            Enemy *enemy = dynamic_cast<Enemy*> (oSpriteDirectional);
-            if (enemy != NULL) {
-                Vertex3D A = *object->getPosition();
-                Vertex3D B = *camera->getPosition();
+        Enemy *enemy = dynamic_cast<Enemy*> (object);
+        if (enemy != NULL) {
+            if (enemy->isDead()) continue;
 
-                if (this->bspMap->recastWrapper->rayCasting(A, B)) {
-                    enemy->points.clear();
-                    this->bspMap->recastWrapper->getPathBetween(A, B, enemy->points );
-                    if (enemy->points.size() > 0) {
-                        btTransform t = oSpriteDirectional->getRigidBody()->getWorldTransform();
-                        btMotionState *mMotionState = oSpriteDirectional->getRigidBody()->getMotionState();
+            Body *enemyBody = dynamic_cast<Body*> (object);
 
-                        btVector3 dest;
-                        Vector3D way = Vector3D(enemy->points[0], enemy->points[1]);
+            Vertex3D A = *object->getPosition();
+            Vertex3D B = *camera->getPosition();
 
-                        Vertex3D p = way.getComponent().getNormalize().getScaled(0.3f);
-                        Vertex3D pos = A + p;
-
-                        if (!Tools::isValidVector(pos)) {
-                            continue;
-                        }
-
-                        way.getComponent().getNormalize().consoleInfo("dir:", false);
-                        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-                        oSpriteDirectional->setRotation(newRot.getTranspose());
-                        pos.saveToBtVector3(&dest);
-
-                        t.setOrigin(dest);
-                        mMotionState->setWorldTransform(t);
-                        oSpriteDirectional->getRigidBody()->setWorldTransform(t);
-                    }
-                } else {
-                    enemy->points.clear();
-                }
-            }
+            enemy->points.clear();
+            this->bspMap->recastWrapper->getPathBetween(A, B, enemy->points );
+            enemy->evalStatusMachine(object,this->bspMap->recastWrapper->rayCasting(A, B), enemyBody);
         }
     }
-
 }

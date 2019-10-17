@@ -17,8 +17,6 @@ public:
     btCollisionObject* m_collider;
 
     btCollisionObject* getCollider() { return m_collider; }
-    btRigidBody* getRigidObject() { return m_body; };
-
     btRigidBody* getRigidBody() { return m_body; }
 };
 

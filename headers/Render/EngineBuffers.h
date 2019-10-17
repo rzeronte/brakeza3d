@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
+#include "../PhysicsGame/NPCEnemyBody.h"
 //#include "../../src/Decal.h"
 
 typedef struct {
@@ -129,7 +130,11 @@ public:
     Sprite3D *gibsTemplate;
     //Decal *decal;
 
+    std::vector<NPCEnemyBody*> enemyTemplates;
+
     static EngineBuffers* getInstance();
+
+    NPCEnemyBody* getEnemyTemplateForClassname(std::string classname);
 
     void clearDepthBuffer();
     float getDepthBuffer(int x, int y);

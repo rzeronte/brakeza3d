@@ -163,3 +163,14 @@ void EngineBuffers::loadWAVs()
 
     this->soundEnemyDead = Mix_LoadWAV((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_ENEMY_DEAD).c_str() );
 }
+
+NPCEnemyBody* EngineBuffers::getEnemyTemplateForClassname(std::string classname)
+{
+    for ( NPCEnemyBody *e : this->enemyTemplates) {
+        if (e->getClassname() == classname) {
+            return e;
+        }
+    }
+
+    return nullptr;
+}

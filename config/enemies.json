@@ -1,41 +1,42 @@
 {
   "enemies": [
     {
-      "name": "Grunt",
+      "name": "Calvin",
       "classname": "monster_army",
       "range": 10,
       "damage": 10,
-      "speed": 0,
+      "speed": 0.3,
+      "width": 5,
+      "height": 5,
       "projectile_width": 0,
       "projectile_height": 0,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "soldier/walk", "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/fire", "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/injuried", "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/dead", "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
+        { "path": "soldier/walk",      "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
+        { "path": "soldier/fire",      "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
+        { "path": "soldier/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
+        { "path": "soldier/dead",      "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
         { "path": "soldier/explosion", "frames": 8, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
       ]
     },
     {
-      "name": "Dog",
+      "name": "Nazy",
       "classname": "monster_dog",
       "range": 1,
       "damage": 10,
-      "speed": 0,
+      "speed": 0.75,
+      "width": 3,
+      "height": 3,
       "projectile_width": 0,
       "projectile_height": 0,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "soldier/walk", "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/fire", "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/injuried", "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "soldier/dead", "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
-        { "path": "soldier/explosion", "frames": 8, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
+        { "path": "nazi/walk", "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
+        { "path": "nazi/dead", "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
       ]
     }
   ]

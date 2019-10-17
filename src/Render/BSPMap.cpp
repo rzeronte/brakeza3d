@@ -570,7 +570,6 @@ void BSPMap::InitializeEntities()
                     int angle = 0;
                     if (this->hasEntityAttribute(i, "angle")) {
                         char *s_angle = this->getEntityValue(i, "angle");
-                        Logging::getInstance()->Log("Angle: " + std::string(s_angle));
                         angle = std::stoi(s_angle);
                     }
 
@@ -579,20 +578,20 @@ void BSPMap::InitializeEntities()
                     NPCEnemyBody *o = new NPCEnemyBody();
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
-                    o->addAnimationDirectional2D("soldier/walk", 4, 20, false, -1);
-                    o->addAnimationDirectional2D("soldier/fire", 2, 20, false, -1);
-                    o->addAnimationDirectional2D("soldier/injuried", 1, 20, false, -1);
-                    o->addAnimationDirectional2D("soldier/dead", 5, 20, true, 1);
-                    o->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
-                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
                     o->setPosition( pos );
                     o->setRotation(rotMonster);
                     o->setDrawBillboard(true);
-                    o->getBillboard()->setDimensions(4, 6);
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    o->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
 
-                    //brakeza3D->addObject3D( o, "BSPEntity_" +  std::to_string(i) + " (monster)" );
+                    NPCEnemyBody *enemyTempate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname );
+                    o->linkTexturesTo( enemyTempate );
+
+                    o->getBillboard()->setDimensions( enemyTempate->getBillboard()->width, enemyTempate->getBillboard()->height );
+
+                    o->setSpeed(enemyTempate->getSpeed() );
+
+                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
+                    o->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
                 }
 
                 // armor wildcard
