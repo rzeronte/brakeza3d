@@ -41,13 +41,16 @@ public:
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina <= 0) {
+            getNPCEnemy()->setDead( true );
+            getNPCEnemy()->state = EnemyState::ENEMY_STATE_DIE;
+
             // Set animation NPC to Dead
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
             if (!explosionBody) {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_DEAD);
+                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
                 Logging::getInstance()->Log("Dead soldier");
             } else {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_EXPLODE);
+                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
                 Logging::getInstance()->Log("Exploding soldier");
 
                 for (int i = 0 ; i < 5; i++) {

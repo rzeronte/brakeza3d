@@ -82,6 +82,8 @@ void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bo
 
         if (!weapon->getCurrentWeaponType()->isCadenceInProgress()) {
             if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
+                if (weapon->getCurrentWeaponType()->ammo <= 0) return;
+
                 Projectile3DBody *projectile = new Projectile3DBody();
                 projectile->setPosition(*camera->getPosition());
                 projectile->setLabel("projectile");

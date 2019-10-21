@@ -53,7 +53,7 @@ public:
 
         Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
 
-        makeGoreDecals();
+        //makeGoreDecals();
     }
 
     BSPMap *getBSPMap()

@@ -507,7 +507,6 @@ void BSPMap::InitializeRecast()
     recastWrapper->m_geom->loadBSPMapTriangles(this->model_triangles, this->n_triangles);
     recastWrapper->initNavhMesh();
     recastWrapper->initNavQuery();
-
 }
 
 void BSPMap::InitializeEntities()
@@ -566,6 +565,8 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
+                    NPCEnemyBody *enemyTempate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname );
+
                     // Angle Monster
                     int angle = 0;
                     if (this->hasEntityAttribute(i, "angle")) {
@@ -576,21 +577,18 @@ void BSPMap::InitializeEntities()
                     M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
 
                     NPCEnemyBody *o = new NPCEnemyBody();
+                    o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
                     o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setTimer(brakeza3D->getTimer());
                     o->setPosition( pos );
-                    o->setRotation(rotMonster);
+                    o->setRotation( rotMonster );
                     o->setDrawBillboard(true);
-                    o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-
-                    NPCEnemyBody *enemyTempate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname );
                     o->linkTexturesTo( enemyTempate );
-
+                    o->setRange( enemyTempate->getRange() );
                     o->getBillboard()->setDimensions( enemyTempate->getBillboard()->width, enemyTempate->getBillboard()->height );
-
-                    o->setSpeed(enemyTempate->getSpeed() );
-
-                    o->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
+                    o->setSpeed( enemyTempate->getSpeed() );
+                    o->setCadence( enemyTempate->getCadence() );
+                    o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
                     o->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), false, 0);
                 }
 

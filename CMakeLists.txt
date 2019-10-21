@@ -167,6 +167,7 @@ add_executable(brakeza3d
         headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
         headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
         headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
+        headers/Collisions/CollisionResolverBetweenProjectileAndCamera3D.h
         src/Objects/Decal.cpp
         headers/Objects/Decal.h
         src/PhysicsGame/NPCEnemyPartBody.cpp
