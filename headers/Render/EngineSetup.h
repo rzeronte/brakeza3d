@@ -231,7 +231,7 @@ public:
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;
 
-    enum SpriteDoom2SoldierAnimations {
+    enum SpriteSoldierAnimations {
         SOLDIER_WALK = 0,
         SOLDIER_FIRE = 1,
         SOLDIER_INJURIED = 2,
@@ -277,6 +277,7 @@ public:
         COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON = 3,
         COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP = 4,
         COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
+        COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
     };
 };
 

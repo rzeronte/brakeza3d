@@ -618,7 +618,7 @@ void Engine::drawGUI()
     ImGui::Render();
 }
 
-void Engine::windowUpdate()
+void Engine::onUpdateWindow()
 {
     Engine::processFPS();
 
@@ -791,7 +791,7 @@ void Engine::onUpdate()
         Tools::writeText(renderer, font, 10, 220, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
     }
 
-    this->drawDebugIA();
+    this->onUpdateIA();
 
     if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
         this->waterShader();
@@ -1386,6 +1386,7 @@ void Engine::getEnemiesJSON()
         cJSON *classname = cJSON_GetObjectItemCaseSensitive(currentEnemy, "classname");
         cJSON *range = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
         cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
+        cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
         cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
         cJSON *width = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
         cJSON *height = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
@@ -1397,6 +1398,7 @@ void Engine::getEnemiesJSON()
 
         NPCEnemyBody *newEnemy = new NPCEnemyBody();
         newEnemy->setDamage( (float) damage->valuedouble );
+        newEnemy->setCadence( (float) cadence->valuedouble );
         newEnemy->setRange( (float) range->valuedouble );
         newEnemy->setSpeed( (float) speed->valuedouble );
         newEnemy->getBillboard()->loadTexture( EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN );
@@ -1498,7 +1500,7 @@ void Engine::drawSceneObjectsAxis()
     }
 }
 
-void Engine::drawDebugIA()
+void Engine::onUpdateIA()
 {
     std::vector<Object3D *>::iterator itObject3D;
     for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); itObject3D++) {
@@ -1508,18 +1510,22 @@ void Engine::drawDebugIA()
             continue;
         }
 
-        Enemy *enemy = dynamic_cast<Enemy*> (object);
+        NPCEnemyBody *enemy = dynamic_cast<NPCEnemyBody*> (object);
         if (enemy != NULL) {
             if (enemy->isDead()) continue;
-
-            Body *enemyBody = dynamic_cast<Body*> (object);
 
             Vertex3D A = *object->getPosition();
             Vertex3D B = *camera->getPosition();
 
             enemy->points.clear();
-            this->bspMap->recastWrapper->getPathBetween(A, B, enemy->points );
-            enemy->evalStatusMachine(object,this->bspMap->recastWrapper->rayCasting(A, B), enemyBody);
+            this->bspMap->recastWrapper->getPathBetween( A, B, enemy->points );
+            enemy->evalStatusMachine(
+                    this->bspMap->recastWrapper->rayCasting(A, B),
+                    Vector3D(A, B).getComponent().getModule(),
+                    camera,
+                    this->collisionsManager->getDynamicsWorld(),
+                    this->gameObjects
+            );
         }
     }
 }

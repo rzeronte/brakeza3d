@@ -7,15 +7,9 @@
 #include "Vertex3D.h"
 #include "../Physics/Body.h"
 
-typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_DIE} EnemyState;
-typedef enum {NONE, PATHFOUND, FIRE} EnemyStateCommands;
 
 class Enemy {
 public:
-
-    EnemyState state;
-    static EnemyStateCommands stateCommands;
-
     std::string classname;  // For BSP classname match
 
     float startStamina;
@@ -24,10 +18,14 @@ public:
     bool dead;
 
     float damage;   // Damage from enemy to others
+
+    float cadence;  // cadence management
+    Timer cadenceTimer;
+    float lastTicks;
+    float acumulatedTime = 0;
+
     float range;
     float speed;
-
-    std::vector<Vertex3D> points;
 
     Enemy();
 
@@ -43,15 +41,20 @@ public:
     float getSpeed() const;
     void setSpeed(float speed);
 
+    float getCadence() const;
+    void setCadence(float cadence);
+
     const std::string &getClassname() const;
     void setClassname(const std::string &classname);
 
     bool isDead() const;
     void setDead(bool dead);
 
-    void evalStatusMachine(Object3D *object, bool raycastResult, Body *);
+    void startFire();
+    void endFire();
+    void updateCadenceTimer();
+    bool isCadenceInProgress();
 
-    void doFollowPathfinding(Object3D *object, Body *body, bool raycastResult);
 };
 
 

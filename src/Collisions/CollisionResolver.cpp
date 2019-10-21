@@ -30,6 +30,10 @@ int CollisionResolver::getTypeCollision()
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP;
     }
 
+    if (isSomeProjectile() && isSomeCamera()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA;
+    }
+
     return 0;
 }
 

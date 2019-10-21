@@ -4,10 +4,10 @@
 
 extern Engine *brakeza3D;
 
-Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0)
+Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0), acumulatedTime(0), lastTicks(0)
 {
-    this->state = EnemyState::ENEMY_STATE_STOP;
     this->stamina = this->startStamina;
+    this->cadenceTimer.stop();
 }
 
 void Enemy::takeDamage(float damageTaken)
@@ -64,47 +64,41 @@ void Enemy::setDead(bool dead) {
     Enemy::dead = dead;
 }
 
-void Enemy::evalStatusMachine(Object3D *object, bool raycastResult, Body *body)
+float Enemy::getCadence() const {
+    return cadence;
+}
+
+void Enemy::setCadence(float cadence) {
+    Enemy::cadence = cadence;
+}
+
+void Enemy::startFire()
 {
-    switch(state) {
-        case EnemyState::ENEMY_STATE_ATTACK:
-            break;
-        case EnemyState::ENEMY_STATE_DIE:
-            break;
-        case EnemyState::ENEMY_STATE_FOLLOW:
-            break;
-        case EnemyState::ENEMY_STATE_STOP:
-            this->doFollowPathfinding(object, body, raycastResult);
-            break;
-        default:
-            assert(0);
+    this->cadenceTimer.start();
+}
+
+void Enemy::endFire()
+{
+    this->cadenceTimer.stop();
+    this->acumulatedTime = 0;
+    this->lastTicks = 0;
+}
+
+void Enemy::updateCadenceTimer()
+{
+    if (!this->cadenceTimer.isStarted()) return;
+
+    float deltatime = this->cadenceTimer.getTicks() - this->lastTicks;
+    this->lastTicks = this->cadenceTimer.getTicks();
+
+    this->acumulatedTime += deltatime / 1000;
+
+    if  (this->acumulatedTime >= this->cadence ) {
+        this->endFire();
     }
 }
 
-void Enemy::doFollowPathfinding(Object3D *object, Body *body, bool raycastResult)
+bool Enemy::isCadenceInProgress()
 {
-    if (!raycastResult) return;
-
-    if (this->points.size() > 0) {
-        btTransform t = body->getRigidBody()->getWorldTransform();
-        btMotionState *mMotionState = body->getRigidBody()->getMotionState();
-
-        btVector3 dest;
-        Vector3D way = Vector3D(this->points[0], this->points[1]);
-
-        Vertex3D p = way.getComponent().getNormalize().getScaled(this->getSpeed());
-        Vertex3D pos = *object->getPosition() + p;
-
-        if (!Tools::isValidVector(pos)) {
-            return;
-        }
-
-        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-        object->setRotation(newRot.getTranspose());
-        pos.saveToBtVector3(&dest);
-
-        t.setOrigin(dest);
-        mMotionState->setWorldTransform(t);
-        body->getRigidBody()->setWorldTransform(t);
-    }
+    return this->cadenceTimer.isStarted();
 }

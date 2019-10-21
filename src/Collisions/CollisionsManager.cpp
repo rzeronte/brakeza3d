@@ -7,6 +7,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
+#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndCamera3D.h"
 
 CollisionsManager::CollisionsManager()
 {
@@ -222,6 +223,12 @@ void CollisionsManager::checkCollisionsForAll()
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP ) {
                     CollisionResolverBetweenEnemyPartAndBSPMap *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    resolver->dispatch();
+                    continue;
+                }
+
+                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA ) {
+                    CollisionResolverBetweenProjectileAndCamera3D *resolver = new CollisionResolverBetweenProjectileAndCamera3D(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
                     resolver->dispatch();
                     continue;
                 }

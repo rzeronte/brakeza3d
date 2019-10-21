@@ -162,14 +162,16 @@ public:
     void initTiles();
     void initCollisionsManager();
 
-    void OpenCLInfo();
-
     // Cycle of life
     void onStart();
     void onUpdate();
     void preUpdate();
     void postUpdate();
     void onEnd();
+
+    // Window update
+    void onUpdateWindow();
+    void onUpdateIA();
 
     // Triangle recollector
     void getMesh3DTriangles();
@@ -178,7 +180,7 @@ public:
     void getSpritesTriangles();
     void getObjectsBillboardTriangles();
 
-    void drawDebugIA();
+    // Object's axis
     void drawSceneObjectsAxis();
 
     // Triangles filter
@@ -199,27 +201,27 @@ public:
     Object3D* getObjectByLabel(std::string label);
     void addLightPoint(LightPoint3D *lightPoint, std::string label);
 
-    // Window update
-    void windowUpdate();
-
     void drawGUI();
     void processFPS();
 
     void loadBSP(const char *bspFilename, const char *paletteFilename);
 
+    // Global timer
     Timer* getTimer();
-
     void  updateTimer();
     float getDeltaTime();
 
+    // OpenCL Rasterization
+    void OpenCLInfo();
     void handleOpenCLTriangles();
     void handleOpenCLTrianglesForTiles();
     void dumpTileToFrameBuffer(Tile *t);
-
     void handleOpenCLTransform();
 
+    // Water shader effect
     void waterShader();
 
+    // JSON setup Parsers
     void getMapsJSON();
     void getWeaponsJSON();
     void getEnemiesJSON();

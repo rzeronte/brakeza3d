@@ -50,7 +50,7 @@ void Game::mainLoop()
         this->onUpdate();
 
         // Update window
-        Engine::windowUpdate();
+        Engine::onUpdateWindow();
     }
 }
 
@@ -191,7 +191,7 @@ void Game::loadDemoObjects()
     marine->addAnimationDirectional2D("soldier/injuried", 1, 20, false, -1);
     marine->addAnimationDirectional2D("soldier/dead", 5, 20, true, 1);
     marine->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
-    marine->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
+    marine->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     this->addObject3D(marine, "marine");
 
     // skull (sprite directional)
@@ -200,7 +200,7 @@ void Game::loadDemoObjects()
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->setTimer(Engine::getTimer());
     skull->addAnimationDirectional2D("skull/idle", 5, 20, false, -1);
-    skull->setAnimation(EngineSetup::getInstance()->SpriteDoom2SoldierAnimations::SOLDIER_WALK);
+    skull->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     this->addObject3D(skull, "skull");
 
     // caco (sprite directional)
