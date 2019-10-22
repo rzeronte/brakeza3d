@@ -150,7 +150,7 @@ add_executable(brakeza3d
         headers/2D/MenuManager.h
         src/2D/MenuOption.cpp
         headers/2D/MenuOption.h
-        src/Enemy.cpp
+        src/Objects/Enemy.cpp
         headers/Objects/Enemy.h
         src/Brakeza3D.cpp
         headers/Brakeza3D.h
@@ -184,7 +184,7 @@ add_executable(brakeza3d
         headers/Recastnavigation/RecastGeometry.h
         src/Recastnavigation/RecastGeometryLoader.cpp
         headers/Recastnavigation/RecastGeometryLoader.h
-        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h)
+        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h src/Objects/Player3D.cpp src/Objects/Player3D.h)
 
 
 target_link_libraries(brakeza3d
