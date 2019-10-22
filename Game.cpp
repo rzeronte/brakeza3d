@@ -5,7 +5,10 @@
 #include "headers/Physics/Sprite3DBody.h"
 #include "headers/Render/Drawable.h"
 
-Game::Game() {}
+Game::Game()
+{
+    this->player = dynamic_cast<Player3D*> (camera);
+}
 
 void Game::run()
 {
@@ -20,7 +23,7 @@ void Game::onStart()
 {
     Engine::onStart();
 
-    this->loadDemoObjects();
+    //this->loadDemoObjects();
 }
 
 void Game::mainLoop()
@@ -58,6 +61,8 @@ void Game::onUpdate()
 {
     // Core onUpdate
     Engine::onUpdate();
+
+    onUpdateIA();
 
     // Lighting example
     /*Vertex3D startPoint = Vertex3D(45, -2, 40);
@@ -258,4 +263,34 @@ void Game::loadDemoObjects()
     oCube->setEnabled(false);
     oCube->setPosition(Vertex3D(1, 1, 1));
     this->addObject3D(oCube, "oCube");
+}
+
+void Game::onUpdateIA()
+{
+    std::vector<Object3D *>::iterator itObject3D;
+    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); itObject3D++) {
+        Object3D *object = *(itObject3D);
+
+        if (!camera->frustum->isPointInFrustum(*object->getPosition())) {
+            continue;
+        }
+
+        NPCEnemyBody *enemy = dynamic_cast<NPCEnemyBody*> (object);
+        if (enemy != NULL) {
+            if (enemy->isDead()) continue;
+
+            Vertex3D A = *object->getPosition();
+            Vertex3D B = *camera->getPosition();
+
+            enemy->points.clear();
+            this->bspMap->recastWrapper->getPathBetween( A, B, enemy->points );
+            enemy->evalStatusMachine(
+                    this->bspMap->recastWrapper->rayCasting(A, B),
+                    Vector3D(A, B).getComponent().getModule(),
+                    camera,
+                    this->collisionsManager->getDynamicsWorld(),
+                    this->gameObjects
+            );
+        }
+    }
 }
