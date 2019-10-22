@@ -6,6 +6,7 @@
 CollisionResolver::CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap) :
                                                 contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap)
 {
+    this->type = -1;
 }
 
 int CollisionResolver::getTypeCollision()
@@ -197,4 +198,12 @@ void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntity
 
 CollisionResolver::~CollisionResolver() {
 
+}
+
+int CollisionResolver::getType() const {
+    return type;
+}
+
+void CollisionResolver::setType(int type) {
+    CollisionResolver::type = type;
 }

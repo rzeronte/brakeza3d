@@ -171,7 +171,6 @@ public:
 
     // Window update
     void onUpdateWindow();
-    void onUpdateIA();
 
     // Triangle recollector
     void getMesh3DTriangles();

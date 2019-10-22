@@ -20,6 +20,8 @@ public:
     Object3D *objB;
     BSPMap *bspMap;
 
+    int type;
+
     CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap);
     virtual ~CollisionResolver();
 
@@ -36,6 +38,9 @@ public:
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
+
+    int  getType() const;
+    void setType(int type);
 };
 
 

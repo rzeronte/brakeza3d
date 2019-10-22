@@ -791,8 +791,6 @@ void Engine::onUpdate()
         Tools::writeText(renderer, font, 10, 220, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
     }
 
-    this->onUpdateIA();
-
     if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
         this->waterShader();
     }
@@ -1500,32 +1498,3 @@ void Engine::drawSceneObjectsAxis()
     }
 }
 
-void Engine::onUpdateIA()
-{
-    std::vector<Object3D *>::iterator itObject3D;
-    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); itObject3D++) {
-        Object3D *object = *(itObject3D);
-
-        if (!camera->frustum->isPointInFrustum(*object->getPosition())) {
-            continue;
-        }
-
-        NPCEnemyBody *enemy = dynamic_cast<NPCEnemyBody*> (object);
-        if (enemy != NULL) {
-            if (enemy->isDead()) continue;
-
-            Vertex3D A = *object->getPosition();
-            Vertex3D B = *camera->getPosition();
-
-            enemy->points.clear();
-            this->bspMap->recastWrapper->getPathBetween( A, B, enemy->points );
-            enemy->evalStatusMachine(
-                    this->bspMap->recastWrapper->rayCasting(A, B),
-                    Vector3D(A, B).getComponent().getModule(),
-                    camera,
-                    this->collisionsManager->getDynamicsWorld(),
-                    this->gameObjects
-            );
-        }
-    }
-}

@@ -1,6 +1,6 @@
 
-#include "../headers/Objects/Enemy.h"
-#include "../headers/Render/Engine.h"
+#include "../../headers/Objects/Enemy.h"
+#include "../../headers/Render/Engine.h"
 
 extern Engine *brakeza3D;
 
