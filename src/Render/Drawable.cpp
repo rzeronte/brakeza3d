@@ -323,12 +323,8 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
 {
     //B->T1.draw( cam );
-    brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = B->T1;
-    brakeza3D->numFrameTriangles++;
-
-    //B->T2.draw( cam );
-    brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = B->T2;
-    brakeza3D->numFrameTriangles++;
+    brakeza3D->frameTriangles.push_back(&B->T1);
+    brakeza3D->frameTriangles.push_back(&B->T2);
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         B->T1.drawWireframe();
