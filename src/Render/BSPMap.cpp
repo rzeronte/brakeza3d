@@ -31,9 +31,6 @@ void BSPMap::init()
     if (textureObjNames) delete[] textureObjNames;
     if (visibleSurfaces) delete[] visibleSurfaces;
 
-    this->n_triangles = 0;
-    this->model_triangles = new Triangle[MAX_BSP_TRIANGLES];
-
     this->textures  = new Texture[MAX_MAP_TEXTURES];
     this->lightmaps = new Texture[MAX_BSP_TRIANGLES];
 
@@ -299,11 +296,11 @@ bool BSPMap::InitializeTriangles()
         surface_t *s = this->getSurface(i);
         texinfo_t *tInfo =  this->getTextureInfo( i );
 
-        int start_number_triangle = this->n_triangles;
+        int start_number_triangle = this->model_triangles.size();
         this->createTrianglesForSurface(i);
 
         // Hayamos el número de triángulos creados para esta superficie
-        int end_number_triangle = this->n_triangles;
+        int end_number_triangle = this->model_triangles.size();
         int surface_num_triangles = end_number_triangle - start_number_triangle ;
         Logging::getInstance()->Log("Surface: " + std::to_string(i) + ", NumTriangles: " + std::to_string(surface_num_triangles) +", startOffset: " + std::to_string(start_number_triangle) + ", endOffset: " + std::to_string(end_number_triangle), "");
 
@@ -314,7 +311,7 @@ bool BSPMap::InitializeTriangles()
 
     }
 
-    Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->n_triangles), "");
+    Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
     Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
 }
 
@@ -423,7 +420,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         if (entityIndex >= 1 ) {
             Logging::getInstance()->Log("Hull_"+ std::to_string(m) + " associated with BSPEntity: " + std::to_string(entityIndex));
 
-            char *classname = brakeza3D->bspMap->getEntityValue(entityIndex, "classname");
+            char *classname = this->getEntityValue(entityIndex, "classname");
 
             if (
                  //!strcmp(classname, "func_episodegate") ||
@@ -465,11 +462,13 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 const int num = this->surface_triangles[surface].num;
 
                 for (int i = offset; i < offset+num; i++) {
-                    body->modelTriangles[body->numTriangles] = this->model_triangles[i];
-                    body->modelTriangles[body->numTriangles].parent = body;
-                    body->numTriangles++;
+                    Triangle *t = this->model_triangles[i];
+                    t->parent = body;
+
+                    body->modelTriangles.push_back( t );
                 }
             }
+
             body->makeRigidBody(0, brakeza3D->gameObjects, brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
             brakeza3D->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
@@ -490,9 +489,9 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 const int num = this->surface_triangles[surface].num;
 
                 for (int i = offset; i < offset+num; i++) {
-                    ghost->modelTriangles[ghost->numTriangles] = this->model_triangles[i];
-                    ghost->modelTriangles[ghost->numTriangles].parent = ghost;
-                    ghost->numTriangles++;
+                    Triangle *t = this->model_triangles[i];
+                    t->parent = ghost;
+                    ghost->modelTriangles.push_back( t );
                 }
             }
             ghost->makeGhostBody(brakeza3D->camera, brakeza3D->collisionsManager->getDynamicsWorld(), true);
@@ -504,7 +503,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 void BSPMap::InitializeRecast()
 {
     Logging::getInstance()->Log("InitializeRecast");
-    recastWrapper->m_geom->loadBSPMapTriangles(this->model_triangles, this->n_triangles);
+    recastWrapper->m_geom->loadBSPMapTriangles(this->model_triangles);
     recastWrapper->initNavhMesh();
     recastWrapper->initNavQuery();
 }
@@ -528,13 +527,13 @@ void BSPMap::InitializeEntities()
     }
 
     // Create Objects3D from BSP Entities
-    for (int i = 0 ; i < brakeza3D->bspMap->n_entities ; i++) {
+    for (int i = 0 ; i < this->n_entities ; i++) {
 
-        if (brakeza3D->bspMap->hasEntityAttribute(i, "classname")) {
-            char *classname = brakeza3D->bspMap->getEntityValue(i, "classname");
-            if (brakeza3D->bspMap->hasEntityAttribute(i, "origin")) {
-                char *value = brakeza3D->bspMap->getEntityValue(i, "origin");
-                Vertex3D pos = brakeza3D->bspMap->parsePositionFromEntityAttribute(value);
+        if (this->hasEntityAttribute(i, "classname")) {
+            char *classname = this->getEntityValue(i, "classname");
+            if (this->hasEntityAttribute(i, "origin")) {
+                char *value = this->getEntityValue(i, "origin");
+                Vertex3D pos = this->parsePositionFromEntityAttribute(value);
 
                 // light
                 if (!strcmp(classname, "light")) {
@@ -655,26 +654,26 @@ void BSPMap::bindTrianglesLightmaps()
 
         for (int j = offset ; j < offset+num ; j++) {
 
-            this->model_triangles[j].surfaceBSPIndex = surfaceId;
-            this->model_triangles[j].isBSP = true;
+            this->model_triangles[j]->surfaceBSPIndex = surfaceId;
+            this->model_triangles[j]->isBSP = true;
 
             if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];
 
-                this->model_triangles[j].getLightmap()->mins[0] = lt->mins[0];
-                this->model_triangles[j].getLightmap()->mins[1] = lt->mins[1];
-                this->model_triangles[j].getLightmap()->maxs[0] = lt->maxs[0];
-                this->model_triangles[j].getLightmap()->maxs[1] = lt->maxs[1];
+                this->model_triangles[j]->getLightmap()->mins[0] = lt->mins[0];
+                this->model_triangles[j]->getLightmap()->mins[1] = lt->mins[1];
+                this->model_triangles[j]->getLightmap()->maxs[0] = lt->maxs[0];
+                this->model_triangles[j]->getLightmap()->maxs[1] = lt->maxs[1];
 
-                this->model_triangles[j].getLightmap()->minu[0] = lt->minu[0];
-                this->model_triangles[j].getLightmap()->minu[1] = lt->minu[1];
-                this->model_triangles[j].getLightmap()->maxv[0] = lt->maxv[0];
-                this->model_triangles[j].getLightmap()->maxv[1] = lt->maxv[1];
+                this->model_triangles[j]->getLightmap()->minu[0] = lt->minu[0];
+                this->model_triangles[j]->getLightmap()->minu[1] = lt->minu[1];
+                this->model_triangles[j]->getLightmap()->maxv[0] = lt->maxv[0];
+                this->model_triangles[j]->getLightmap()->maxv[1] = lt->maxv[1];
 
-                this->model_triangles[j].getLightmap()->extents[1] = abs(lt->maxs[1] - lt->mins[1]);
-                this->model_triangles[j].getLightmap()->extents[0] = abs(lt->maxs[0] - lt->mins[0]);
+                this->model_triangles[j]->getLightmap()->extents[1] = abs(lt->maxs[1] - lt->mins[1]);
+                this->model_triangles[j]->getLightmap()->extents[0] = abs(lt->maxs[0] - lt->mins[0]);
 
-                this->model_triangles[j].setLightmap(&lightmaps[surfaceId]);
+                this->model_triangles[j]->setLightmap(&lightmaps[surfaceId]);
             }
         }
     }
@@ -725,8 +724,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
         num_vertices,
         vertices,
         normal,
-        this->model_triangles,
-        this->n_triangles,
+        model_triangles,
         this,
         &textures[this->getTextureInfo(surface)->texid],
         &lightmaps[surface],
@@ -835,16 +833,16 @@ float BSPMap::CalculateDistance(vec3_t a, vec3_t b)
     return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
 }
 
-void BSPMap::DrawSurfaceTriangles(int surface, Camera3D *cam)
+void BSPMap::DrawSurfaceTriangles(int surface)
 {
     const int offset = this->surface_triangles[surface].offset;
     const int num = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++) {
-        this->model_triangles[i].updateTextureAnimated();
-        this->model_triangles[i].updateLightmapFrame();
-        brakeza3D->frameTriangles[brakeza3D->numFrameTriangles] = this->model_triangles[i];
-        brakeza3D->numFrameTriangles++;
+        this->model_triangles[i]->updateTextureAnimated();
+        this->model_triangles[i]->updateLightmapFrame();
+        Triangle *t = this->model_triangles[i];
+        brakeza3D->frameTriangles.push_back( t );
     }
 }
 
@@ -871,10 +869,10 @@ void BSPMap::createBulletPhysicsShape()
 
         for (int i = offset; i < offset+num; i++){
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i].updateFullVertexSpaces(brakeza3D->camera);
-            btVector3 a = btVector3( this->model_triangles[i].Ao.x, this->model_triangles[i].Ao.y, this->model_triangles[i].Ao.z );
-            btVector3 b = btVector3( this->model_triangles[i].Bo.x, this->model_triangles[i].Bo.y, this->model_triangles[i].Bo.z );
-            btVector3 c = btVector3( this->model_triangles[i].Co.x, this->model_triangles[i].Co.y, this->model_triangles[i].Co.z );
+            this->model_triangles[i]->updateFullVertexSpaces(brakeza3D->camera);
+            btVector3 a = btVector3( this->model_triangles[i]->Ao.x, this->model_triangles[i]->Ao.y, this->model_triangles[i]->Ao.z );
+            btVector3 b = btVector3( this->model_triangles[i]->Bo.x, this->model_triangles[i]->Bo.y, this->model_triangles[i]->Bo.z );
+            btVector3 c = btVector3( this->model_triangles[i]->Co.x, this->model_triangles[i]->Co.y, this->model_triangles[i]->Co.z );
 
             this->bspBtMesh.addTriangle(a, b, c, false);
         }
@@ -970,7 +968,7 @@ void BSPMap::DrawHulls(Camera3D *cam)
         bsphull_t *h = this->getHull(m);
 
         for (int i = h->firstsurf; i < h->firstsurf + h->numsurf ; i++) {
-            this->DrawSurfaceTriangles(i, cam);
+            this->DrawSurfaceTriangles( i );
         }
     }
 }
@@ -980,7 +978,7 @@ void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camer
 {
     // Loop through all the visible surfaces and activate the texture objects
     for (int i = 0; i < numVisibleSurfaces; i++) {
-        DrawSurfaceTriangles(visibleSurfaces[i], cam);
+        DrawSurfaceTriangles( visibleSurfaces[i] );
     }
 }
 

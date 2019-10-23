@@ -48,7 +48,7 @@ public:
                 std::string header_text;
                 Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
                 if (pMesh != NULL && !gameObjects[i]->isDecal()) {
-                    header_text = gameObjects[i]->getLabel() + " (numTriangles: " + std::to_string(pMesh->numTriangles)+")"+ "##" + std::to_string(i);
+                    header_text = gameObjects[i]->getLabel() + " (numTriangles: " + std::to_string(pMesh->modelTriangles.size())+")"+ "##" + std::to_string(i);
                 } else {
                     header_text = gameObjects[i]->getLabel() + "##" + std::to_string(i);
                 }
@@ -111,7 +111,7 @@ public:
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
                     if (pDecal != NULL) {
                         ImGui::Checkbox(std::string("Draw Decal Planes").c_str(), &pDecal->drawWireframe);
-                        std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->numTriangles);
+                        std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->modelTriangles.size());
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
                     }
 

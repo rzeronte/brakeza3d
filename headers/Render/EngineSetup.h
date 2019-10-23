@@ -231,6 +231,20 @@ public:
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;
 
+    enum collisionGroups
+    {
+        DefaultFilter = 1,
+        StaticFilter = 2,
+        KinematicFilter = 4,
+        DebrisFilter = 8,
+        SensorTrigger = 16,
+        CharacterFilter = 32,
+        CameraTrigger = 64,
+        BSPHullTrigger = 128,
+        BillboardsTrigger = 256,
+        AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
+    };
+
     enum SpriteSoldierAnimations {
         SOLDIER_WALK = 0,
         SOLDIER_FIRE = 1,

@@ -10,17 +10,17 @@ RecastGeometry::RecastGeometry() {
 
 }
 
-void RecastGeometry::loadBSPMapTriangles(Triangle *model_triangles, int n_triangles )
+void RecastGeometry::loadBSPMapTriangles(std::vector<Triangle*> &triangles )
 {
     int cap = 0;
     int tcap = 0;
 
-    for (int i = 0; i < n_triangles; i++) {
+    for (int i = 0; i < triangles.size(); i++) {
         int baseIndex = i*3;
 
-        Vertex3D A = model_triangles[i].A;
-        Vertex3D B = model_triangles[i].B;
-        Vertex3D C = model_triangles[i].C;
+        Vertex3D A = triangles[i]->A;
+        Vertex3D B = triangles[i]->B;
+        Vertex3D C = triangles[i]->C;
 
         m_mesh->addVertex(A.x, A.y, A.z, cap);
         m_mesh->addVertex(B.x, B.y, B.z, cap);

@@ -45,50 +45,50 @@ void Cube3D::makeVertices()
 void Cube3D::makeTriangles()
 {
     for (int i = 0; i < 12 ; i++) {
-        this->modelTriangles[i] = Triangle(
-            vertices[i*3+0],
-            vertices[i*3+1],
-            vertices[i*3+2],
-            this
+
+        Triangle *t = new Triangle(
+                vertices[i*3+0],
+                vertices[i*3+1],
+                vertices[i*3+2],
+                this
         );
+        t->drawed = true;
 
-        this->modelTriangles[i].drawed = true;
+        modelTriangles.push_back( t );
     }
-
-    this->numTriangles = 12;
 }
 
 void Cube3D::makePlanes()
 {
     planes[0] = Plane(
-            Transforms::objectSpace(modelTriangles[1].A, this),
-            Transforms::objectSpace(modelTriangles[1].B, this),
-            Transforms::objectSpace(modelTriangles[1].C, this)
+            Transforms::objectSpace(modelTriangles[1]->A, this),
+            Transforms::objectSpace(modelTriangles[1]->B, this),
+            Transforms::objectSpace(modelTriangles[1]->C, this)
     );
     planes[1] = Plane(
-            Transforms::objectSpace(modelTriangles[2].A, this),
-            Transforms::objectSpace(modelTriangles[2].B, this),
-            Transforms::objectSpace(modelTriangles[2].C, this)
+            Transforms::objectSpace(modelTriangles[2]->A, this),
+            Transforms::objectSpace(modelTriangles[2]->B, this),
+            Transforms::objectSpace(modelTriangles[2]->C, this)
     );
     planes[2] = Plane(
-            Transforms::objectSpace(modelTriangles[4].A, this),
-            Transforms::objectSpace(modelTriangles[4].B, this),
-            Transforms::objectSpace(modelTriangles[4].C, this)
+            Transforms::objectSpace(modelTriangles[4]->A, this),
+            Transforms::objectSpace(modelTriangles[4]->B, this),
+            Transforms::objectSpace(modelTriangles[4]->C, this)
     );
     planes[3] = Plane(
-            Transforms::objectSpace(modelTriangles[6].A, this),
-            Transforms::objectSpace(modelTriangles[6].B, this),
-            Transforms::objectSpace(modelTriangles[6].C, this)
+            Transforms::objectSpace(modelTriangles[6]->A, this),
+            Transforms::objectSpace(modelTriangles[6]->B, this),
+            Transforms::objectSpace(modelTriangles[6]->C, this)
     );
     planes[4] = Plane(
-            Transforms::objectSpace(modelTriangles[8].A, this),
-            Transforms::objectSpace(modelTriangles[8].B, this),
-            Transforms::objectSpace(modelTriangles[8].C, this)
+            Transforms::objectSpace(modelTriangles[8]->A, this),
+            Transforms::objectSpace(modelTriangles[8]->B, this),
+            Transforms::objectSpace(modelTriangles[8]->C, this)
     );
     planes[5] = Plane(
-            Transforms::objectSpace(modelTriangles[10].A, this),
-            Transforms::objectSpace(modelTriangles[10].B, this),
-            Transforms::objectSpace(modelTriangles[10].C, this)
+            Transforms::objectSpace(modelTriangles[10]->A, this),
+            Transforms::objectSpace(modelTriangles[10]->B, this),
+            Transforms::objectSpace(modelTriangles[10]->C, this)
     );
 }
 

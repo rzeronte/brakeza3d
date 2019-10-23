@@ -10,7 +10,6 @@
 #include "Object3D.h"
 #include "LightPoint3D.h"
 
-#define MAX_MODEL_TRIANGLES 10000
 #define MAX_VERTEX_MODEL 10000
 #define MAX_MESH_TEXTURES 100
 
@@ -19,13 +18,13 @@ class Mesh3D : public Object3D {
 public:
     std::string mesh_file;
 
+    std::vector<Triangle*> modelTriangles;
+
     Texture *modelTextures;
-    Triangle *modelTriangles;
     Vertex3D *modelVertices;
 
     vec3_t *verticesTextureCoordsList;
 
-    int numTriangles;
     int numVertices;
     int numTextures;
 
@@ -49,7 +48,6 @@ public:
     void draw();
     void shadowMapping(LightPoint3D *);
     void setLightPoints(std::vector<LightPoint3D*> &);
-
 
     bool isShadowCaster() const;
     void setShadowCaster(bool shadow_caster);

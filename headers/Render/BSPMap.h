@@ -210,8 +210,7 @@ public:
     dheader_t *header;
 
     surface_triangles_t *surface_triangles;
-    Triangle *model_triangles;
-    int n_triangles = 0;
+    std::vector<Triangle*> model_triangles;
 
     Texture *textures;
 
@@ -381,7 +380,7 @@ public:
     void CalcSurfaceExtents (int surface, lightmap_t* l);
 
     void DrawSurface(int surface, Camera3D *camera);
-    void DrawSurfaceTriangles(int surface, Camera3D *camera);
+    void DrawSurfaceTriangles(int surface);
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
 

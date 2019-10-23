@@ -26,9 +26,6 @@ Engine::Engine()
     // input controller
     controller = new Controller();
 
-    this->frameTriangles = new Triangle[250000];
-    this->visibleTriangles = new Triangle[250000];
-
     IMGUI_CHECKVERSION();
     imgui_context = ImGui::CreateContext();
 
@@ -316,10 +313,10 @@ void Engine::dumpTileToFrameBuffer(Tile *t)
 void Engine::handleOpenCLTransform()
 {
     EngineBuffers::getInstance()->numOCLTriangles = 0;
-    if (this->numFrameTriangles == 0) return;
+    if (this->frameTriangles.size() == 0) return;
 
-    for (int i = 0; i < this->numFrameTriangles ; i++) {
-        EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
+    for (int i = 0; i < this->frameTriangles.size() ; i++) {
+        EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
     }
 
     OCLPlane planesOCL[4];
@@ -417,55 +414,55 @@ void Engine::handleOpenCLTransform()
     }
 
     // Recover transform Data
-    for (int i = 0; i < this->numFrameTriangles ; i++) {
+    for (int i = 0; i < this->frameTriangles.size() ; i++) {
         OCLTriangle oclt = EngineBuffers::getInstance()->OCLTrianglesBuffer[i];
-        frameTriangles[i].Ao.x = oclt.Ao_x;
-        frameTriangles[i].Ao.y = oclt.Ao_y;
-        frameTriangles[i].Ao.z = oclt.Ao_z;
-        frameTriangles[i].Bo.x = oclt.Bo_x;
-        frameTriangles[i].Bo.y = oclt.Bo_y;
-        frameTriangles[i].Bo.z = oclt.Bo_z;
-        frameTriangles[i].Co.x = oclt.Co_x;
-        frameTriangles[i].Co.y = oclt.Co_y;
-        frameTriangles[i].Co.z = oclt.Co_z;
+        frameTriangles[i]->Ao.x = oclt.Ao_x;
+        frameTriangles[i]->Ao.y = oclt.Ao_y;
+        frameTriangles[i]->Ao.z = oclt.Ao_z;
+        frameTriangles[i]->Bo.x = oclt.Bo_x;
+        frameTriangles[i]->Bo.y = oclt.Bo_y;
+        frameTriangles[i]->Bo.z = oclt.Bo_z;
+        frameTriangles[i]->Co.x = oclt.Co_x;
+        frameTriangles[i]->Co.y = oclt.Co_y;
+        frameTriangles[i]->Co.z = oclt.Co_z;
 
-        frameTriangles[i].Ac.x = oclt.Ac_x;
-        frameTriangles[i].Ac.y = oclt.Ac_y;
-        frameTriangles[i].Ac.z = oclt.Ac_z;
-        frameTriangles[i].Bc.x = oclt.Bc_x;
-        frameTriangles[i].Bc.y = oclt.Bc_y;
-        frameTriangles[i].Bc.z = oclt.Bc_z;
-        frameTriangles[i].Cc.x = oclt.Cc_x;
-        frameTriangles[i].Cc.y = oclt.Cc_y;
-        frameTriangles[i].Cc.z = oclt.Cc_z;
+        frameTriangles[i]->Ac.x = oclt.Ac_x;
+        frameTriangles[i]->Ac.y = oclt.Ac_y;
+        frameTriangles[i]->Ac.z = oclt.Ac_z;
+        frameTriangles[i]->Bc.x = oclt.Bc_x;
+        frameTriangles[i]->Bc.y = oclt.Bc_y;
+        frameTriangles[i]->Bc.z = oclt.Bc_z;
+        frameTriangles[i]->Cc.x = oclt.Cc_x;
+        frameTriangles[i]->Cc.y = oclt.Cc_y;
+        frameTriangles[i]->Cc.z = oclt.Cc_z;
 
-        frameTriangles[i].An.x = oclt.An_x;
-        frameTriangles[i].An.y = oclt.An_y;
-        frameTriangles[i].An.z = oclt.An_z;
-        frameTriangles[i].Bn.x = oclt.Bn_x;
-        frameTriangles[i].Bn.y = oclt.Bn_y;
-        frameTriangles[i].Bn.z = oclt.Bn_z;
-        frameTriangles[i].Cn.x = oclt.Cn_x;
-        frameTriangles[i].Cn.y = oclt.Cn_y;
-        frameTriangles[i].Cn.z = oclt.Cn_z;
+        frameTriangles[i]->An.x = oclt.An_x;
+        frameTriangles[i]->An.y = oclt.An_y;
+        frameTriangles[i]->An.z = oclt.An_z;
+        frameTriangles[i]->Bn.x = oclt.Bn_x;
+        frameTriangles[i]->Bn.y = oclt.Bn_y;
+        frameTriangles[i]->Bn.z = oclt.Bn_z;
+        frameTriangles[i]->Cn.x = oclt.Cn_x;
+        frameTriangles[i]->Cn.y = oclt.Cn_y;
+        frameTriangles[i]->Cn.z = oclt.Cn_z;
 
-        frameTriangles[i].As.x = oclt.As_x;
-        frameTriangles[i].As.y = oclt.As_y;
-        frameTriangles[i].Bs.x = oclt.Bs_x;
-        frameTriangles[i].Bs.y = oclt.Bs_y;
-        frameTriangles[i].Cs.x = oclt.Cs_x;
-        frameTriangles[i].Cs.y = oclt.Cs_y;
+        frameTriangles[i]->As.x = oclt.As_x;
+        frameTriangles[i]->As.y = oclt.As_y;
+        frameTriangles[i]->Bs.x = oclt.Bs_x;
+        frameTriangles[i]->Bs.y = oclt.Bs_y;
+        frameTriangles[i]->Cs.x = oclt.Cs_x;
+        frameTriangles[i]->Cs.y = oclt.Cs_y;
 
-        frameTriangles[i].minX = oclt.minX;
-        frameTriangles[i].maxX = oclt.maxX;
-        frameTriangles[i].minY = oclt.minY;
-        frameTriangles[i].maxY = oclt.maxY;
+        frameTriangles[i]->minX = oclt.minX;
+        frameTriangles[i]->maxX = oclt.maxX;
+        frameTriangles[i]->minY = oclt.minY;
+        frameTriangles[i]->maxY = oclt.maxY;
 
-        frameTriangles[i].normal.x = oclt.normal[0];
-        frameTriangles[i].normal.y = oclt.normal[1];
-        frameTriangles[i].normal.z = oclt.normal[2];
+        frameTriangles[i]->normal.x = oclt.normal[0];
+        frameTriangles[i]->normal.y = oclt.normal[1];
+        frameTriangles[i]->normal.z = oclt.normal[2];
 
-        frameTriangles[i].clipped_cl = oclt.is_clipping;
+        frameTriangles[i]->clipped_cl = oclt.is_clipping;
     }
 
     EngineBuffers::getInstance()->numOCLTriangles = 0;
@@ -610,7 +607,7 @@ void Engine::drawGUI()
             lightPoints,
             camera,
             tiles, tilesWidth,
-            this->numVisibleTriangles,
+            visibleTriangles.size(),
             mapsJSONList,
             weaponManager
     );
@@ -951,8 +948,10 @@ void Engine::getObjectsBillboardTriangles()
 
 void Engine::drawFrameTriangles()
 {
-    for (int i = 0; i < numVisibleTriangles; i++) {
-        visibleTriangles[i].draw(camera);
+    std::vector<Triangle *>::iterator it;
+    for ( it = visibleTriangles.begin(); it != this->visibleTriangles.end(); it++) {
+        Triangle *triangle = *(it);
+        triangle->draw( camera );
     }
 }
 
@@ -975,22 +974,22 @@ void Engine::drawTilesGrid()
 
 void Engine::hiddenSurfaceRemoval()
 {
-    numVisibleTriangles = 0;
+    visibleTriangles.clear();
 
-    for (int i = 0; i < this->numFrameTriangles ; i++) {
+    for (int i = 0; i < this->frameTriangles.size() ; i++) {
 
         // Si la transformación es mediante openCL ya están todas hechas
         // pero si vamos por software actualizamos ObjectSpace y su normal
         // ya que es el mínimo necesario para el clipping y el faceculling
 
         if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            this->frameTriangles[i].updateObjectSpace();
-            this->frameTriangles[i].updateNormal();
+            this->frameTriangles[i]->updateObjectSpace();
+            this->frameTriangles[i]->updateNormal();
         }
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (this->frameTriangles[i].isBackFaceCulling(camera->getPosition())) {
+            if (this->frameTriangles[i]->isBackFaceCulling(camera->getPosition())) {
                 continue;
             }
         }
@@ -998,11 +997,11 @@ void Engine::hiddenSurfaceRemoval()
         // Clipping (needs objectSpace)
         bool needClipping = false;
         if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            if (this->frameTriangles[i].clipped_cl ) {
+            if (this->frameTriangles[i]->clipped_cl ) {
                 needClipping = true;
             }
         } else {
-            if (this->frameTriangles[i].testForClipping( camera->frustum->planes,
+            if (this->frameTriangles[i]->testForClipping( camera->frustum->planes,
                                                          EngineSetup::getInstance()->LEFT_PLANE,
                                                          EngineSetup::getInstance()->BOTTOM_PLANE )
              ) {
@@ -1011,23 +1010,22 @@ void Engine::hiddenSurfaceRemoval()
         }
 
         if (needClipping) {
-            this->frameTriangles[i].clipping(
+            this->frameTriangles[i]->clipping(
                     camera,
                     camera->frustum->planes,
                     EngineSetup::getInstance()->LEFT_PLANE,
                     EngineSetup::getInstance()->BOTTOM_PLANE,
-                    frameTriangles[i].parent,
+                    frameTriangles[i]->parent,
                     visibleTriangles,
-                    numVisibleTriangles,
-                    frameTriangles[i].isBSP
+                    frameTriangles[i]->isBSP
             );
             continue;
         }
 
         // Frustum Culling (needs objectSpace)
-        if (!camera->frustum->isPointInFrustum(this->frameTriangles[i].Ao) &&
-            !camera->frustum->isPointInFrustum(this->frameTriangles[i].Bo) &&
-            !camera->frustum->isPointInFrustum(this->frameTriangles[i].Co)
+        if (!camera->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
+            !camera->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
+            !camera->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
         ) {
             continue;
         }
@@ -1036,31 +1034,28 @@ void Engine::hiddenSurfaceRemoval()
         // Estas operaciones las hacemos después de descartar triángulos
         // para optimización en el rasterizador por software
         if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            this->frameTriangles[i].updateCameraSpace(camera);
-            this->frameTriangles[i].updateNDCSpace(camera);
-            this->frameTriangles[i].updateScreenSpace(camera);
-            this->frameTriangles[i].updateBoundingBox();
+            this->frameTriangles[i]->updateCameraSpace(camera);
+            this->frameTriangles[i]->updateNDCSpace(camera);
+            this->frameTriangles[i]->updateScreenSpace(camera);
+            this->frameTriangles[i]->updateBoundingBox();
         }
 
         if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-            this->frameTriangles[i].updateFullArea();
-            this->frameTriangles[i].updateUVCache();
+            this->frameTriangles[i]->updateFullArea();
+            this->frameTriangles[i]->updateUVCache();
         } else {
-            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i].getOpenCL());
+            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
         }
 
-        // Add triangle to visible list
-        visibleTriangles[numVisibleTriangles] = this->frameTriangles[i];
-        visibleTriangles[numVisibleTriangles].drawed = false;
-        numVisibleTriangles++;
+        this->frameTriangles[i]->drawed = false;
+        this->visibleTriangles.push_back(this->frameTriangles[i]);
     }
 
     if (EngineSetup::getInstance()->DEBUG_RENDER_INFO) {
-        Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(numFrameTriangles) + ", numVisibleTriangles: " + std::to_string(numVisibleTriangles));
+        Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) + ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()));
     }
 
-    this->numFrameTriangles = 0;
-
+    frameTriangles.clear();
 }
 
 void Engine::drawTilesTriangles()
@@ -1071,7 +1066,7 @@ void Engine::drawTilesTriangles()
         for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
             int triangleId = this->tiles[i].triangleIds[j];
             Tile *t = &this->tiles[i];
-            this->visibleTriangles[triangleId].drawForTile(
+            this->visibleTriangles[triangleId]->drawForTile(
                 camera,
                 t->start_x,
                 t->start_y,
@@ -1088,12 +1083,12 @@ void Engine::handleTrianglesToTiles()
         this->tiles[i].numTriangles = 0;
     }
 
-    for (int i = 0 ; i < numVisibleTriangles ; i++) {
-        int tileStartX =  std::max((float)(this->visibleTriangles[i].minX/this->sizeTileWidth), 0.0f);
-        int tileEndX   =  std::min((float)(this->visibleTriangles[i].maxX/this->sizeTileWidth), (float)this->tilesWidth-1);
+    for (int i = 0 ; i < visibleTriangles.size() ; i++) {
+        int tileStartX =  std::max((float)(this->visibleTriangles[i]->minX/this->sizeTileWidth), 0.0f);
+        int tileEndX   =  std::min((float)(this->visibleTriangles[i]->maxX/this->sizeTileWidth), (float)this->tilesWidth-1);
 
-        int tileStartY =  std::max((float)(this->visibleTriangles[i].minY/this->sizeTileHeight), 0.0f);
-        int tileEndY   =  std::min((float)(this->visibleTriangles[i].maxY/this->sizeTileHeight), (float)this->tilesHeight-1);
+        int tileStartY =  std::max((float)(this->visibleTriangles[i]->minY/this->sizeTileHeight), 0.0f);
+        int tileEndY   =  std::min((float)(this->visibleTriangles[i]->maxY/this->sizeTileHeight), (float)this->tilesHeight-1);
 
         for (int y = tileStartY; y <= tileEndY ; y++) {
             for (int x = tileStartX; x <= tileEndX ; x++) {
