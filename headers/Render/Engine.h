@@ -32,38 +32,28 @@
 #include "../2D/MenuManager.h"
 #include "../Collisions/CollisionsManager.h"
 
-enum collisionGroups
-{
-    DefaultFilter = 1,
-    StaticFilter = 2,
-    KinematicFilter = 4,
-    DebrisFilter = 8,
-    SensorTrigger = 16,
-    CharacterFilter = 32,
-    CameraTrigger = 64,
-    BSPHullTrigger = 128,
-    BillboardsTrigger = 256,
-    AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
-} ;
-
 class Engine {
 public:
-    // Window y Renderer principal
+    // Window and Renderer
     SDL_Window *window = NULL;
     SDL_Renderer *renderer;
 
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
-    // Eventos SDL
+    // Events SDL
     SDL_Event e;
 
-    // Camera y Controlador (Input)
+    // Camera and Input Controller
     Camera3D *camera;
     Controller *controller;
 
-    // Engine 3D objects
+    // Scene 3D objects
     std::vector<Object3D*> gameObjects;
+
+    // Scene triangles
+    std::vector<Triangle*> frameTriangles;
+    std::vector<Triangle*> visibleTriangles;
 
     BSPMap *bspMap;
 
@@ -78,12 +68,6 @@ public:
     // Fps counter
     int fps = 0;
     int fpsFrameCounter = 0;
-
-    Triangle *frameTriangles;
-    int numFrameTriangles = 0;
-
-    Triangle *visibleTriangles;
-    int numVisibleTriangles = 0;
 
     // GUI
     GUI_Engine *gui_engine;

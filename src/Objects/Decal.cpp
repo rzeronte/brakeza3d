@@ -43,9 +43,9 @@ void Decal::setDimensions(float w, float h)
     this->h = h;
 }
 
-void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D *camera)
+void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
 {
-    this->numTriangles = 0;
+    this->modelTriangles.clear();
 
     setupFromAxis();
 
@@ -53,68 +53,68 @@ void Decal::getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D
     int clipped = 0;
     int out = 0;
 
-    for (int i = 0; i < numSoupTriangles ; i++ ) {
-        if (soupTriangles[i].parent->isDecal())  {
+    for (int i = 0; i < triangles.size() ; i++ ) {
+        if (triangles[i]->parent->isDecal())  {
             alreadyDecal++;
             continue;
         }
 
-        SpriteDirectional3D *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (soupTriangles[i].parent);
-        Sprite3D *sprite = dynamic_cast<Sprite3D*> (soupTriangles[i].parent);
+        SpriteDirectional3D *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (triangles[i]->parent);
+        Sprite3D *sprite = dynamic_cast<Sprite3D*> (triangles[i]->parent);
 
         // Decals ignoran sprites
         if (spriteDirectional != NULL || sprite != NULL) {
             continue;
         }
 
-        soupTriangles[i].updateNormal();
-        if (soupTriangles[i].getNormal().getNormalize() * this->N.getNormalize() >= 0) {
+        triangles[i]->updateNormal();
+        if (triangles[i]->getNormal().getNormalize() * this->N.getNormalize() >= 0) {
             continue;
         }
 
-        if (soupTriangles[i].testForClipping(
+        if (triangles[i]->testForClipping(
                 cube->planes,
                 0,
                 5
         )) {
-            soupTriangles[i].clipping(
+            triangles[i]->clipping(
                     camera,
                     cube->planes,
                     0,
                     5,
                     this,
                     this->modelTriangles,
-                    this->numTriangles,
                     false
             );
             clipped++;
             continue;
         }
 
-        if (!cube->isPointInside(soupTriangles[i].Ao) &&
-            !cube->isPointInside(soupTriangles[i].Bo) &&
-            !cube->isPointInside(soupTriangles[i].Co)
+        if (!cube->isPointInside(triangles[i]->Ao) &&
+            !cube->isPointInside(triangles[i]->Bo) &&
+            !cube->isPointInside(triangles[i]->Co)
         ) {
             out++;
             continue;
         }
 
-        modelTriangles[numTriangles] = soupTriangles[i];
-        modelTriangles[numTriangles].parent = this;
-        modelTriangles[numTriangles].isBSP = false;
-        modelTriangles[numTriangles].clipped = true;
-        modelTriangles[numTriangles].A = Transforms::objectToLocal(modelTriangles[numTriangles].Ao, this);
-        modelTriangles[numTriangles].B = Transforms::objectToLocal(modelTriangles[numTriangles].Bo, this);
-        modelTriangles[numTriangles].C = Transforms::objectToLocal(modelTriangles[numTriangles].Co, this);
-        numTriangles++;
+        Triangle *t = triangles[i];
+        t->parent = this;
+        t->isBSP = false;
+        t->clipped = true;
+        t->A = Transforms::objectToLocal(t->Ao, this);
+        t->B = Transforms::objectToLocal(t->Bo, this);
+        t->C = Transforms::objectToLocal(t->Co, this);
+
+        modelTriangles.push_back( t );
     }
 
     // Fix separation for avoid Z-fightingba
     float OffsetSeparation = 0.25;
-    for (int i = 0; i < numTriangles ; i++) {
-        modelTriangles[i].A = modelTriangles[i].A - N.getScaled(OffsetSeparation);
-        modelTriangles[i].B = modelTriangles[i].B - N.getScaled(OffsetSeparation);
-        modelTriangles[i].C = modelTriangles[i].C - N.getScaled(OffsetSeparation);
+    for (int i = 0; i < modelTriangles.size() ; i++) {
+        modelTriangles[i]->A = modelTriangles[i]->A - N.getScaled(OffsetSeparation);
+        modelTriangles[i]->B = modelTriangles[i]->B - N.getScaled(OffsetSeparation);
+        modelTriangles[i]->C = modelTriangles[i]->C - N.getScaled(OffsetSeparation);
     }
 }
 

@@ -106,7 +106,7 @@ public:
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->camera);
         brakeza3D->addObject3D(decal, "decal");
     }
 };

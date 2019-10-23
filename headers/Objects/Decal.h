@@ -28,7 +28,7 @@ public:
     void setupFromAxis();
     void setDimensions(float w, float h);
 
-    void getTriangles(Triangle *soupTriangles, int numSoupTriangles, Camera3D *camera );
+    void getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera );
 
     float getSCoord(Vertex3D v);
     float getTCoord(Vertex3D v);

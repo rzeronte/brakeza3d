@@ -16,7 +16,7 @@ public:
     RecastGeometryLoader* m_mesh;
     float m_meshBMin[3], m_meshBMax[3];
 
-    void loadBSPMapTriangles(Triangle *model_triangles, int n_triangles = 0);
+    void loadBSPMapTriangles(std::vector<Triangle*> &triangles );
 
     /// @name Off-Mesh connections.
     static const int MAX_OFFMESH_CONNECTIONS = 256;

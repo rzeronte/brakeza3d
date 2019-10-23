@@ -21,18 +21,18 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameO
 {
     btConvexHullShape* me = new btConvexHullShape();
 
-    for (int i=0; i < this->numTriangles; i++) {
-        this->modelTriangles[i].updateFullVertexSpaces(cam);
+    for (int i=0; i < this->modelTriangles.size(); i++) {
+        this->modelTriangles[i]->updateFullVertexSpaces(cam);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {
-            a = btVector3(this->modelTriangles[i].Ao.x, this->modelTriangles[i].Ao.y, this->modelTriangles[i].Ao.z );
-            b = btVector3(this->modelTriangles[i].Bo.x, this->modelTriangles[i].Bo.y, this->modelTriangles[i].Bo.z );
-            c = btVector3(this->modelTriangles[i].Co.x, this->modelTriangles[i].Co.y, this->modelTriangles[i].Co.z );
+            a = btVector3(this->modelTriangles[i]->Ao.x, this->modelTriangles[i]->Ao.y, this->modelTriangles[i]->Ao.z );
+            b = btVector3(this->modelTriangles[i]->Bo.x, this->modelTriangles[i]->Bo.y, this->modelTriangles[i]->Bo.z );
+            c = btVector3(this->modelTriangles[i]->Co.x, this->modelTriangles[i]->Co.y, this->modelTriangles[i]->Co.z );
         } else {
-            a = btVector3(this->modelTriangles[i].A.x, this->modelTriangles[i].A.y, this->modelTriangles[i].A.z );
-            b = btVector3(this->modelTriangles[i].B.x, this->modelTriangles[i].B.y, this->modelTriangles[i].B.z );
-            c = btVector3(this->modelTriangles[i].C.x, this->modelTriangles[i].C.y, this->modelTriangles[i].C.z );
+            a = btVector3(this->modelTriangles[i]->A.x, this->modelTriangles[i]->A.y, this->modelTriangles[i]->A.z );
+            b = btVector3(this->modelTriangles[i]->B.x, this->modelTriangles[i]->B.y, this->modelTriangles[i]->B.z );
+            c = btVector3(this->modelTriangles[i]->C.x, this->modelTriangles[i]->C.y, this->modelTriangles[i]->C.z );
         }
         me->addPoint(a);
         me->addPoint(b);

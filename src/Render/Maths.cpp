@@ -291,7 +291,7 @@ long Maths::GetPrevActive( long x, long vertexCount, const bool *active)
     }
 }
 
-int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, Triangle *triangles, int &ntriangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped, bool isBsp, unsigned char lightstyle[4])
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle*> &triangles, Object3D *parent, Texture *texture, Texture *lightmap, bool clipped, bool isBsp, unsigned char lightstyle[4])
 {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
@@ -310,19 +310,18 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv2 = Transforms::objectToLocal(vertices[p1], parent);
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
 
-            Triangle t = Triangle(tv1, tv2, tv3, parent);
-            t.setTexture(texture);
-            t.setLightmap(lightmap);
-            t.setClipped(clipped);
-            t.setId(ntriangles);
-            t.isBSP = isBsp;
-            t.typelight[0] = lightstyle[0];
-            t.typelight[1] = lightstyle[1];
-            t.typelight[2] = lightstyle[2];
-            t.typelight[3] = lightstyle[3];
+            Triangle *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setTexture(texture);
+            t->setLightmap(lightmap);
+            t->setClipped(clipped);
+            t->setId(triangles.size());
+            t->isBSP = isBsp;
+            t->typelight[0] = lightstyle[0];
+            t->typelight[1] = lightstyle[1];
+            t->typelight[2] = lightstyle[2];
+            t->typelight[3] = lightstyle[3];
 
-            triangles[ntriangles] = t;
-            ntriangles++;
+            triangles.push_back(t);
 
             triangleCount++;
             break;
@@ -401,20 +400,18 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv2 = Transforms::objectToLocal(vertices[p1], parent);
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
 
-            Triangle t = Triangle(tv1, tv2, tv3, parent);
-            t.setLightmap(lightmap);
-            t.setTexture(texture);
-            t.setClipped(clipped);
-            t.setId(ntriangles);
-            t.isBSP = isBsp;
-            t.typelight[0] = lightstyle[0];
-            t.typelight[1] = lightstyle[1];
-            t.typelight[2] = lightstyle[2];
-            t.typelight[3] = lightstyle[3];
+            Triangle *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setLightmap(lightmap);
+            t->setTexture(texture);
+            t->setClipped(clipped);
+            t->setId(triangles.size());
+            t->isBSP = isBsp;
+            t->typelight[0] = lightstyle[0];
+            t->typelight[1] = lightstyle[1];
+            t->typelight[2] = lightstyle[2];
+            t->typelight[3] = lightstyle[3];
 
-
-            triangles[ntriangles] = t;
-            ntriangles++;
+            triangles.push_back(t);
 
             triangleCount++;
             //triangles++;
@@ -430,19 +427,18 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv2 = Transforms::objectToLocal(vertices[m1], parent);
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p1], parent);
 
-            Triangle t = Triangle(tv1, tv2, tv3, parent);
-            t.setLightmap(lightmap);
-            t.setTexture(texture);
-            t.setClipped(clipped);
-            t.setId(ntriangles);
-            t.isBSP = isBsp;
-            t.typelight[0] = lightstyle[0];
-            t.typelight[1] = lightstyle[1];
-            t.typelight[2] = lightstyle[2];
-            t.typelight[3] = lightstyle[3];
+            Triangle *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setLightmap(lightmap);
+            t->setTexture(texture);
+            t->setClipped(clipped);
+            t->setId(triangles.size());
+            t->isBSP = isBsp;
+            t->typelight[0] = lightstyle[0];
+            t->typelight[1] = lightstyle[1];
+            t->typelight[2] = lightstyle[2];
+            t->typelight[3] = lightstyle[3];
 
-            triangles[ntriangles] = t;
-            ntriangles++;
+            triangles.push_back(t);
 
             triangleCount++;
             //triangles++;

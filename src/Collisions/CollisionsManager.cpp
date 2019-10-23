@@ -102,7 +102,7 @@ void CollisionsManager::makeGhostForCamera()
     triggerCamera->setPosition(*camera->getPosition());
     triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
-    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), collisionGroups::CameraTrigger, collisionGroups::DefaultFilter|collisionGroups::BSPHullTrigger);
+    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
 }
 
 bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)

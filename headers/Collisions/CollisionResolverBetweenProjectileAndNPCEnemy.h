@@ -152,7 +152,7 @@ public:
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->numVisibleTriangles, brakeza3D->camera);
+        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->camera);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         brakeza3D->addObject3D(decal, "decal");
 
