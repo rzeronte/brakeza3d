@@ -2,8 +2,6 @@
 #include "../../headers/Objects/Enemy.h"
 #include "../../headers/Render/Engine.h"
 
-extern Engine *brakeza3D;
-
 Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0), acumulatedTime(0), lastTicks(0)
 {
     this->stamina = this->startStamina;

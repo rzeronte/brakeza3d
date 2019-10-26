@@ -16,7 +16,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->projectile = getProjectile();
         this->bspMap = getBSPMap();
@@ -43,13 +43,13 @@ public:
         particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
         particle->setAutoRemoveAfterAnimation(true);
         particle->setPosition(*getProjectile()->getPosition() );
-        particle->setTimer(brakeza3D->getTimer());
+        particle->setTimer(Brakeza3D::get()->getTimer());
         particle->setAnimation(0);
         particle->getBillboard()->setDimensions(
             weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
             weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
         );
-        brakeza3D->addObject3D(particle, "particles");
+        Brakeza3D::get()->addObject3D(particle, "particles");
 
         Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
 
@@ -106,8 +106,8 @@ public:
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->camera);
-        brakeza3D->addObject3D(decal, "decal");
+        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getCamera());
+        Brakeza3D::get()->addObject3D(decal, "decal");
     }
 };
 

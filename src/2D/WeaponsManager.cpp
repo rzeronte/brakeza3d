@@ -36,7 +36,7 @@ void WeaponsManager::updateAnimation(Camera3D *cam)
 {
 
     /*Logging::getInstance()->Log("setAction isFiring");
-    this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
+    this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::get()->WeaponsActions::WEAPON_ACTION_FIRE);
     return;*/
 
     if (cam->kinematicController->onGround()) {

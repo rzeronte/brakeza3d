@@ -8,6 +8,8 @@
 #include "../PhysicsGame/NPCEnemyBody.h"
 #include "../Physics/Sprite3DBody.h"
 #include "../PhysicsGame/NPCEnemyPartBody.h"
+#include "../Brakeza3D.h"
+#include "../Render/EngineBuffers.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 
@@ -19,7 +21,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
+    CollisionResolverBetweenProjectileAndNPCEnemy(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
@@ -81,10 +83,10 @@ public:
         gore->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         gore->setAutoRemoveAfterAnimation(true);
         gore->setPosition(*getProjectile()->getPosition() );
-        gore->setTimer(brakeza3D->getTimer());
+        gore->setTimer(Brakeza3D::get()->getTimer());
         gore->setAnimation(0);
         gore->getBillboard()->setDimensions(3, 3);
-        brakeza3D->addObject3D(gore, "gore");
+        Brakeza3D::get()->addObject3D(gore, "gore");
 
         // particle explosion
         /*Sprite3D *particle = new Sprite3D();
@@ -139,8 +141,8 @@ public:
         gibsBody->linkTextureAnimation(EngineBuffers::getInstance()->gibsTemplate);
         gibsBody->setAnimation(Tools::random(0, EngineBuffers::getInstance()->gibsTemplate->numAnimations-1));
         gibsBody->setPosition(position );
-        gibsBody->setTimer(brakeza3D->getTimer());
-        gibsBody->makeRigidBody(1.0f, brakeza3D->gameObjects, brakeza3D->camera, dynamicsWorld, enemy);
+        gibsBody->setTimer(Brakeza3D::get()->getTimer());
+        gibsBody->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), dynamicsWorld, enemy);
     }
 
     void makeGoreDecals(float rotX, float rotY, float rotZ) {
@@ -152,9 +154,9 @@ public:
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->camera);
+        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getCamera());
         decal->getSprite()->setAnimation(Tools::random(0, 10));
-        brakeza3D->addObject3D(decal, "decal");
+        Brakeza3D::get()->addObject3D(decal, "decal");
 
     }
 };

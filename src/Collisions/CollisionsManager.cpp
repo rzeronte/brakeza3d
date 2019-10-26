@@ -191,44 +191,44 @@ void CollisionsManager::checkCollisionsForAll()
                 Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
                 Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
 
-                CollisionResolver *collisionResolver = new CollisionResolver(contactManifold, brkObjectA, brkObjectB, getBspMap());
+                CollisionResolver *collisionResolver = new CollisionResolver(contactManifold, brkObjectA, brkObjectB, getBspMap(), getVisibleTriangles());
 
                 int collisionType = collisionResolver->getTypeCollision();
 
                 if (!collisionType) continue;
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP ) {
-                    CollisionResolverBetweenProjectileAndBSPMap *resolver = new CollisionResolverBetweenProjectileAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    auto *resolver = new CollisionResolverBetweenProjectileAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
-                    CollisionResolverBetweenProjectileAndNPCEnemy *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    auto *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR ) {
-                    CollisionResolverBetweenCamera3DAndFuncDoor *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects());
+                    auto *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON ) {
-                    CollisionResolverBetweenCamera3DAndFuncButton *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects());
+                    auto *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP ) {
-                    CollisionResolverBetweenEnemyPartAndBSPMap *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    auto *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
 
                 if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA ) {
-                    CollisionResolverBetweenProjectileAndCamera3D *resolver = new CollisionResolverBetweenProjectileAndCamera3D(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager());
+                    auto *resolver = new CollisionResolverBetweenProjectileAndCamera3D(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
                     resolver->dispatch();
                     continue;
                 }
@@ -282,8 +282,10 @@ void CollisionsManager::updatePhysicObjects()
     getTriggerCamera()->getGhostObject()->setWorldTransform(t);
 }
 
-Vertex3D CollisionsManager::stepSimulation(float time)
+Vertex3D CollisionsManager::stepSimulation()
 {
+    float time = Brakeza3D::get()->getDeltaTime();
+
     // check for collisions
     if (bspMap->isLoaded()) {
         checkCollisionsForTriggerCamera();
@@ -332,3 +334,12 @@ WeaponsManager *CollisionsManager::getWeaponManager() const {
 void CollisionsManager::setWeaponManager(WeaponsManager *weaponManager) {
     CollisionsManager::weaponManager = weaponManager;
 }
+
+std::vector<Triangle *> &CollisionsManager::getVisibleTriangles() {
+    return *visibleTriangles;
+}
+
+void CollisionsManager::setVisibleTriangles(std::vector<Triangle *> &visibleTriangles) {
+    CollisionsManager::visibleTriangles = &visibleTriangles;
+}
+

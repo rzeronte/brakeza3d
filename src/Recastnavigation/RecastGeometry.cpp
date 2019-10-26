@@ -3,8 +3,6 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Engine.h"
 
-extern Engine *brakeza3D;
-
 RecastGeometry::RecastGeometry() {
     m_mesh = new RecastGeometryLoader;
 

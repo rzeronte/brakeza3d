@@ -3,7 +3,7 @@
 
 #include "../Objects/Camera3D.h"
 #include "../Objects/Triangle3D.h"
-#include "btBulletDynamicsCommon.h";
+#include "btBulletDynamicsCommon.h"
 #include "Recast.h"
 #include "RecastDebugDraw.h"
 #include "RecastDump.h"
@@ -196,12 +196,13 @@ private:
     unsigned int *textureObjNames;	// Array of available texture object names, the name is a number
     int *visibleSurfaces;			// Array of visible surfaces, contains an index to the surfaces
 
-
     int numMaxEdgesPerSurface;      // Max edges per surface
     int numVisibleSurfacesFrame = 0;
 
 public:
     bool loaded = false;
+
+    std::vector<Triangle*> *frameTriangles;
 
     int *allSurfaces;			    // Array of full surfaces, contains an index to the surfaces
     int numAllSurfaces = 0;
@@ -238,7 +239,7 @@ public:
 
     void setLoaded(bool loaded);
 
-    bool Initialize(const char *bspFilename, const char *paletteFilename);
+    bool Initialize(const char *bspFilename, const char *paletteFilename, std::vector<Triangle*> *frameTriangles);
 
     // Get number of edges for surface
     int getNumEdges(int surfaceId) { return getSurface(surfaceId)->numedge; }

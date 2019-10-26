@@ -9,8 +9,6 @@
 #include "../PhysicsGame/Projectile3DBody.h"
 #include "../Render/Engine.h"
 
-extern Engine *brakeza3D;
-
 class CollisionResolver {
 
 public:
@@ -20,9 +18,11 @@ public:
     Object3D *objB;
     BSPMap *bspMap;
 
+    std::vector<Triangle *> *visibleTriangles;
+
     int type;
 
-    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap);
+    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles);
     virtual ~CollisionResolver();
 
     int getTypeCollision();

@@ -6,9 +6,9 @@
 #include "GUI.h"
 #include "../Objects/Camera3D.h"
 #include "../../imgui/imgui.h"
-#include "GUI_Engine.h"
+#include "GUIManager.h"
 #include "../Render/Engine.h"
-#include "../../src/Objects/Tile.h"
+#include "../Objects/Tile.h"
 
 class GUI_Tiles : public GUI  {
 public:

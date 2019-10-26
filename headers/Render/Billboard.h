@@ -3,8 +3,8 @@
 #define SDL2_3D_ENGINE_BILLBOARD_H
 
 #include "../Objects/Object3D.h"
-#include "../Objects/Triangle3D.h"
 #include "Texture.h"
+#include "../Objects/Triangle3D.h"
 
 class Billboard {
 public:

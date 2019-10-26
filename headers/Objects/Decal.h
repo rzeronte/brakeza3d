@@ -6,6 +6,7 @@
 #include "Object3D.h"
 #include "Mesh3D.h"
 #include "Cube3D.h"
+#include "Sprite3D.h"
 
 class Decal : public Mesh3D {
 public:

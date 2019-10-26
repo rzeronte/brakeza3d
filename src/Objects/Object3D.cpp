@@ -10,10 +10,7 @@
 #include "../../headers/Render/Billboard.h"
 
 
-Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false),
-                       billboard(new Billboard()) {
-    this->setDefaultBillboard();
-    this->drawBillboard = false;
+Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
 }
 
 Vertex3D *Object3D::getPosition() {
@@ -82,26 +79,6 @@ Vertex3D Object3D::AxisLeft() {
     Vertex3D v = getRotation() * EngineSetup::getInstance()->left;
 
     return v.getNormalize();
-}
-
-void Object3D::setDefaultBillboard() {
-    this->billboard->loadTexture(EngineSetup::getInstance()->ICON_OBJECT3D_DEFAULT);
-}
-
-Billboard *Object3D::getBillboard() const {
-    return billboard;
-}
-
-void Object3D::setBillboard(Billboard *billboard) {
-    Object3D::billboard = billboard;
-}
-
-bool Object3D::isDrawBillboard() const {
-    return drawBillboard;
-}
-
-void Object3D::setDrawBillboard(bool drawBillboard) {
-    Object3D::drawBillboard = drawBillboard;
 }
 
 float Object3D::getScale() const {

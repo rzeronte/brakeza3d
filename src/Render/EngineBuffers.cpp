@@ -8,8 +8,6 @@
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Objects/Decal.h"
 
-extern Engine *brakeza3D;
-
 EngineBuffers* EngineBuffers::instance = 0;
 
 EngineBuffers* EngineBuffers::getInstance()
@@ -25,8 +23,6 @@ EngineBuffers::EngineBuffers()
 {
     sizeBuffers = EngineSetup::getInstance()->screenWidth * EngineSetup::getInstance()->screenHeight;
 
-    Logging::getInstance()->Log("EngineBuffers size: " + std::to_string(sizeBuffers), "INFO");
-
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
 
@@ -34,11 +30,8 @@ EngineBuffers::EngineBuffers()
     int firePixelsBufferSize = EngineSetup::getInstance()->FIRE_WIDTH * EngineSetup::getInstance()->FIRE_HEIGHT;
     firePixelsBuffer = new int[firePixelsBufferSize];
 
-    //fragmentsBuffer = new pixelFragment[EngineSetup::getInstance()->ENGINE_MAX_FRAGMENTS];
+    //fragmentsBuffer = new pixelFragment[EngineSetup::get()->ENGINE_MAX_FRAGMENTS];
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
-
-    // sounds
-    Logging::getInstance()->Log("Inicializando EngineBuffer");
 
     // 37 colores * 3 (rgb channels)
     this->makeFireColors();
@@ -62,7 +55,6 @@ EngineBuffers::EngineBuffers()
     gibsTemplate->addAnimation("gibs/gibs1", 7, 25);
     gibsTemplate->addAnimation("gibs/gibs2", 7, 25);
     gibsTemplate->addAnimation("gibs/gibs3", 8, 25);
-
 }
 
 void EngineBuffers::clearDepthBuffer()
@@ -123,8 +115,6 @@ void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
 
 void EngineBuffers::makeFireColors()
 {
-    Logging::getInstance()->Log("Making fire colors palette", "INFO");
-
     // Populate pallete
     for (int i = 0; i < 111 / 3; i++) {
         fireColors[i] = Tools::createRGB(
@@ -139,8 +129,6 @@ void EngineBuffers::makeFireColors()
 
 void EngineBuffers::fireShaderSetup()
 {
-    Logging::getInstance()->Log("fireShaderSetup", "INFO");
-
     // Set whole screen to 0 (color: 0x07,0x07,0x07)
     int FIRE_WIDTH  = EngineSetup::getInstance()->FIRE_WIDTH;
     int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;

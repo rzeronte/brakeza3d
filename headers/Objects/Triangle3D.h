@@ -6,12 +6,11 @@
 #include "Vector3D.h"
 #include "Camera3D.h"
 #include "Point2D.h"
-#include "../Render/Texture.h"
 #include "Object3D.h"
-#include "LightPoint3D.h"
+#include "../Render/Texture.h"
 #include <list>
 #include <vector>
-#include "../Render/EngineBuffers.h"
+#include "../OCLTriangle.h"
 
 class Triangle {
 
@@ -65,7 +64,7 @@ public:
 
     int lod;
 
-    std::vector<LightPoint3D *> lightPoints;
+    //std::vector<LightPoint3D *> lightPoints;
 
     int currentBSPTextureAnimatedFrame = 0;
     float timerTextureAnimatedFrameControl = 0;
@@ -93,8 +92,6 @@ public:
 
     bool isBackFaceCulling(Vertex3D *position);
 
-    void softwareRasterizer();
-    void softwareRasterizerForTile(int minX, int minY, int maxX, int maxY);
 
     Vertex3D getNormal();
     void     updateNormal();
@@ -104,20 +101,19 @@ public:
     void drawWireframeColor(Uint32 c);
 
     void draw(Camera3D *);
-    void drawForTile(Camera3D *cam, int minX, int minY, int maxX, int maxY);
 
     void drawNormal(Camera3D *cam, Uint32 color);
 
-    void shadowMapping(LightPoint3D *lp);
+    //void shadowMapping(LightPoint3D *lp);
 
     void processPixel(int, int, int, float, float, float, float, float, float, float, float);
     Uint32 processPixelTexture(float, float);
     Uint32 processPixelLightmap(Uint32, float, float);
 
-    void scanVerticesForShadowMapping(LightPoint3D *lp);
-    void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
-    void scanShadowMappingTopFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
-    void scanShadowMappingLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
+    //void scanVerticesForShadowMapping(LightPoint3D *lp);
+    //void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
+    //void scanShadowMappingTopFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
+    //void scanShadowMappingLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
 
     Texture *getTexture() const;
     void setTexture(Texture *texture);
@@ -130,7 +126,7 @@ public:
     bool isClipped();
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
 
-    void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
+    //void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
 
     bool isPointInside(Vertex3D);
 

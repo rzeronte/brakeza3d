@@ -8,8 +8,8 @@ SpriteDirectional3D::SpriteDirectional3D()
 {
     this->billboard = new Billboard();
 
-    this->width = 10; //EngineSetup::getInstance()->BILLBOARD_WIDTH_DEFAULT;
-    this->height = 10; //EngineSetup::getInstance()->BILLBOARD_HEIGHT_DEFAULT;
+    this->width = 10; //EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT;
+    this->height = 10; //EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT;
 
     for (int i = 0; i< BILLBOARD3D_MAX_ANIMATIONS; i++) {
         this->animations[i] = new TextureAnimationDirectional();
@@ -28,11 +28,6 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
 
     this->getBillboard()->updateUnconstrainedQuad( this, up, right );
     this->updateTextureFromCameraAngle(this, cam);
-}
-
-void SpriteDirectional3D::draw(Camera3D *cam)
-{
-    Drawable::drawBillboard(this->billboard, cam );
 }
 
 void SpriteDirectional3D::setTimer(Timer *timer)

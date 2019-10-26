@@ -7,8 +7,6 @@
 #include "../../headers/Render/Engine.h"
 #include <string>
 
-extern Engine *brakeza3D;
-
 Mesh3D::Mesh3D()
 {
     this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];
@@ -186,7 +184,7 @@ void Mesh3D::loadOBJBlenderTriangles()
             }
 
             // set light points
-            this->modelTriangles[i]->setLightPoints(this->lightPoints);
+            //this->modelTriangles[i]->setLightPoints(this->lightPoints);
 
             // triangle order in mesh
             this->modelTriangles[i]->order = i;
@@ -232,28 +230,28 @@ void Mesh3D::loadOBJBlenderMaterials() {
     Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
 }
 
-void Mesh3D::draw()
+void Mesh3D::draw(std::vector<Triangle*> *frameTriangles)
 {
     // draw triangles of mesh
     for (int i = 0; i < this->modelTriangles.size() ; i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
         Triangle *t = this->modelTriangles[i];
-        brakeza3D->frameTriangles.push_back( t );
+        frameTriangles->push_back( t );
     }
 }
 
-void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
+/*void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 {
     this->lightPoints = lightPoints;
-}
+}*/
 
-void Mesh3D::shadowMapping(LightPoint3D *lp)
+/*void Mesh3D::shadowMapping(LightPoint3D *lp)
 {
     for (int i = 0; i < this->modelTriangles.size(); i++) {
         this->modelTriangles[i]->shadowMapping(lp);
     }
-}
+}*/
 
 bool Mesh3D::isShadowCaster() const {
     return shadowCaster;

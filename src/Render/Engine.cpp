@@ -3,10 +3,11 @@
 #include "../../headers/Objects/BSPEntity3D.h"
 #include <chrono>
 #include <iostream>
-
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
+#include "../../headers/Brakeza3D.h"
+#include "../../headers/Render/Maths.h"
+#include "../../headers/Render/EngineBuffers.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -14,132 +15,10 @@
 
 Engine::Engine()
 {
-    // GUI engine
-    gui_engine = new GUI_Engine();
-
-    // cam
-    camera = new Camera3D();
-
-    // Link GUI_log with Logging singleton
-    Logging::getInstance()->setGUILog(gui_engine->gui_log);
-
-    // input controller
-    controller = new Controller();
-
     IMGUI_CHECKVERSION();
-    imgui_context = ImGui::CreateContext();
-
     this->initOpenCL();
-
     this->initTiles();
-
-    bspMap = new BSPMap();
-    weaponManager = new WeaponsManager();
-
-    // Init Physics System
-    this->collisionsManager = new CollisionsManager();
-    this->initCollisionsManager();
-
-    menu = new MenuManager();
-
-    this->engineTimer.start();
-
-}
-
-bool Engine::initSound()
-{
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
-        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
-    }
-
-    Mix_Volume(-1, (int) EngineSetup::getInstance()->SOUND_VOLUME);
-    Mix_VolumeMusic((int) EngineSetup::getInstance()->SOUND_VOLUME);
-
-    EngineBuffers::getInstance()->loadWAVs();
-}
-
-bool Engine::initWindow()
-{
-    //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-        return false;
-    } else {
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
-        //Create window
-        window = SDL_CreateWindow(
-            EngineSetup::getInstance()->ENGINE_TITLE.c_str(),
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
-            EngineSetup::getInstance()->screenWidth,
-            EngineSetup::getInstance()->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
-        );
-        // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
-
-        if (window == NULL) {
-            printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-            return false;
-        } else {
-            gl_context = SDL_GL_CreateContext(window);
-            screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->screenWidth, EngineSetup::getInstance()->screenHeight, 32, 0, 0, 0, 0);
-            SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
-            renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-
-            SDL_GL_SetSwapInterval(1); // Enable vsync
-
-            ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-            ImGui_ImplOpenGL2_Init();
-
-            ImGuiIO& io = ImGui::GetIO();
-            io.WantCaptureMouse = false;
-            io.WantCaptureKeyboard = false;
-
-            // Setup style
-            ImGui::StyleColorsDark();
-            ImGuiStyle& style = ImGui::GetStyle();
-            style.FrameBorderSize = 1.0f;
-
-            ImGui_ImplOpenGL2_NewFrame();
-            ImGui_ImplSDL2_NewFrame(window);
-
-            drawGUI();
-
-            Logging::getInstance()->Log(
-                    "Window size: " + std::to_string(EngineSetup::getInstance()->screenWidth) + " x " + std::to_string(EngineSetup::getInstance()->screenHeight), "INFO"
-            );
-
-            SDL_GL_SwapWindow(window);
-
-            // Init TTF
-            initFontsTTF();
-        }
-    }
-
-    return true;
-}
-
-void Engine::initFontsTTF()
-{
-    Logging::getInstance()->Log("Initializating TTF...", "INFO");
-
-    // global font
-    if (TTF_Init() < 0) {
-        Logging::getInstance()->Log(TTF_GetError(), "INFO");
-    } else {
-        std::string pathFont = "../fonts/doom.ttf";
-        Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
-
-        font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
-        if(!font) {
-            Logging::getInstance()->Log(TTF_GetError(), "INFO");
-        }
-    }
+    this->initCollisionManager();
 }
 
 void Engine::initOpenCL()
@@ -163,9 +42,9 @@ void Engine::initOpenCL()
     }
 
     cl_context_properties properties[3];
-    properties[0]= CL_CONTEXT_PLATFORM;
-    properties[1]= (cl_context_properties) platform_id;
-    properties[2]= 0;
+    properties[0] = CL_CONTEXT_PLATFORM;
+    properties[1] = (cl_context_properties) platform_id;
+    properties[2] = 0;
 
     // Create an OpenCL context
     contextCPU = clCreateContext(properties, 1, &device_cpu_id, NULL, NULL, &ret);
@@ -232,14 +111,12 @@ void Engine::handleOpenCLTrianglesForTiles()
     // Create OCLTiles
     OCLTile tilesOCL[numTiles];
     for (int i = 0 ; i < numTiles ; i++) {
-
         tilesOCL[i].draw    = this->tiles[i].draw;
         tilesOCL[i].start_x = this->tiles[i].start_x;
         tilesOCL[i].start_y = this->tiles[i].start_y;
         tilesOCL[i].id      = this->tiles[i].id;
         tilesOCL[i].id_x    = this->tiles[i].id_x;
         tilesOCL[i].id_y    = this->tiles[i].id_y;
-
     }
 
     opencl_buffer_tiles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
@@ -291,7 +168,6 @@ void Engine::handleOpenCLTrianglesForTiles()
 
     clReleaseMemObject(opencl_buffer_tiles);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
-
 }
 
 void Engine::dumpTileToFrameBuffer(Tile *t)
@@ -322,21 +198,21 @@ void Engine::handleOpenCLTransform()
     OCLPlane planesOCL[4];
     int cont = 0;
     for (int i = EngineSetup::getInstance()->LEFT_PLANE ; i <= EngineSetup::getInstance()->BOTTOM_PLANE ; i++) {
-        planesOCL[cont].A[0] = camera->frustum->planes[i].A.x;
-        planesOCL[cont].A[1] = camera->frustum->planes[i].A.y;
-        planesOCL[cont].A[2] = camera->frustum->planes[i].A.z;
+        planesOCL[cont].A[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.x;
+        planesOCL[cont].A[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.y;
+        planesOCL[cont].A[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.z;
 
-        planesOCL[cont].B[0] = camera->frustum->planes[i].B.x;
-        planesOCL[cont].B[1] = camera->frustum->planes[i].B.y;
-        planesOCL[cont].B[2] = camera->frustum->planes[i].B.z;
+        planesOCL[cont].B[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.x;
+        planesOCL[cont].B[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.y;
+        planesOCL[cont].B[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.z;
 
-        planesOCL[cont].C[0] = camera->frustum->planes[i].C.x;
-        planesOCL[cont].C[1] = camera->frustum->planes[i].C.y;
-        planesOCL[cont].C[2] = camera->frustum->planes[i].C.z;
+        planesOCL[cont].C[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.x;
+        planesOCL[cont].C[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.y;
+        planesOCL[cont].C[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.z;
 
-        planesOCL[cont].normal[0] = camera->frustum->planes[i].normal.x;
-        planesOCL[cont].normal[1] = camera->frustum->planes[i].normal.y;
-        planesOCL[cont].normal[2] = camera->frustum->planes[i].normal.z;
+        planesOCL[cont].normal[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.x;
+        planesOCL[cont].normal[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.y;
+        planesOCL[cont].normal[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.z;
 
         cont++;
     }
@@ -344,8 +220,8 @@ void Engine::handleOpenCLTransform()
     opencl_buffer_frustum   = clCreateBuffer(contextGPU, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, 4 * sizeof(OCLPlane), planesOCL, &ret);
     opencl_buffer_triangles = clCreateBuffer(contextGPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
 
-    Vertex3D camPos = *camera->getPosition();
-    M3 camRot = camera->getRotation();
+    Vertex3D camPos = *Brakeza3D::get()->getCamera()->getPosition();
+    M3 camRot = Brakeza3D::get()->getCamera()->getRotation();
     float pitch = camRot.getPitch();
     float yaw   = camRot.getYaw();
     float roll  = camRot.getRoll();
@@ -360,21 +236,21 @@ void Engine::handleOpenCLTransform()
     clSetKernelArg(processTransformTriangles, 5, sizeof(float), &yaw);
     clSetKernelArg(processTransformTriangles, 6, sizeof(float), &roll);
 
-    clSetKernelArg(processTransformTriangles, 7, sizeof(float), &camera->frustum->vNLpers.x);
-    clSetKernelArg(processTransformTriangles, 8, sizeof(float), &camera->frustum->vNLpers.y);
-    clSetKernelArg(processTransformTriangles, 9, sizeof(float), &camera->frustum->vNLpers.z);
+    clSetKernelArg(processTransformTriangles, 7, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.x);
+    clSetKernelArg(processTransformTriangles, 8, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.y);
+    clSetKernelArg(processTransformTriangles, 9, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.z);
 
-    clSetKernelArg(processTransformTriangles, 10, sizeof(float), &camera->frustum->vNRpers.x);
-    clSetKernelArg(processTransformTriangles, 11, sizeof(float), &camera->frustum->vNRpers.y);
-    clSetKernelArg(processTransformTriangles, 12, sizeof(float), &camera->frustum->vNRpers.z);
+    clSetKernelArg(processTransformTriangles, 10, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.x);
+    clSetKernelArg(processTransformTriangles, 11, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.y);
+    clSetKernelArg(processTransformTriangles, 12, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.z);
 
-    clSetKernelArg(processTransformTriangles, 13, sizeof(float), &camera->frustum->vNTpers.x);
-    clSetKernelArg(processTransformTriangles, 14, sizeof(float), &camera->frustum->vNTpers.y);
-    clSetKernelArg(processTransformTriangles, 15, sizeof(float), &camera->frustum->vNTpers.z);
+    clSetKernelArg(processTransformTriangles, 13, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.x);
+    clSetKernelArg(processTransformTriangles, 14, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.y);
+    clSetKernelArg(processTransformTriangles, 15, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.z);
 
-    clSetKernelArg(processTransformTriangles, 16, sizeof(float), &camera->frustum->vNBpers.x);
-    clSetKernelArg(processTransformTriangles, 17, sizeof(float), &camera->frustum->vNBpers.y);
-    clSetKernelArg(processTransformTriangles, 18, sizeof(float), &camera->frustum->vNBpers.z);
+    clSetKernelArg(processTransformTriangles, 16, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.x);
+    clSetKernelArg(processTransformTriangles, 17, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.y);
+    clSetKernelArg(processTransformTriangles, 18, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.z);
 
     clSetKernelArg(processTransformTriangles, 19, sizeof(int), &EngineSetup::getInstance()->screenWidth);
     clSetKernelArg(processTransformTriangles, 20, sizeof(int), &EngineSetup::getInstance()->screenHeight);
@@ -526,6 +402,16 @@ void Engine::initTiles()
     }
 }
 
+void Engine::initCollisionManager()
+{
+    Brakeza3D::get()->getCollisionManager()->setBspMap( Brakeza3D::get()->getBSP() );
+    Brakeza3D::get()->getCollisionManager()->setWeaponManager( Brakeza3D::get()->getWeaponsManager() );
+    Brakeza3D::get()->getCollisionManager()->setCamera( Brakeza3D::get()->getCamera() );
+    Brakeza3D::get()->getCollisionManager()->setGameObjects( &Brakeza3D::get()->getSceneObjects() );
+    Brakeza3D::get()->getCollisionManager()->initBulletSystem();
+    Brakeza3D::get()->getCollisionManager()->setVisibleTriangles(visibleTriangles);
+}
+
 void Engine::OpenCLInfo()
 {
     int i, j;
@@ -585,9 +471,7 @@ void Engine::OpenCLInfo()
                             sizeof(maxComputeUnits), &maxComputeUnits, NULL);
             printf(" %d.%d Parallel compute units: %d\n", j+1, 4, maxComputeUnits);
         }
-
         free(devices);
-
     }
 
     free(platforms);
@@ -600,16 +484,16 @@ void Engine::drawGUI()
     //bool open = true;
     //ImGui::ShowDemoWindow(&open);
 
-    gui_engine->draw(
-            getDeltaTime(),
+    Brakeza3D::get()->getGUIManager()->draw(
+            Brakeza3D::get()->getDeltaTime(),
             finish,
-            gameObjects,
-            lightPoints,
-            camera,
+            Brakeza3D::get()->getSceneObjects(),
+            Brakeza3D::get()->getLightPoints(),
+            Brakeza3D::get()->getCamera(),
             tiles, tilesWidth,
             visibleTriangles.size(),
             mapsJSONList,
-            weaponManager
+            Brakeza3D::get()->getWeaponsManager()
     );
 
     ImGui::Render();
@@ -617,48 +501,49 @@ void Engine::drawGUI()
 
 void Engine::onUpdateWindow()
 {
-    Engine::processFPS();
+    Brakeza3D::get()->processFPS();
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
-        this->drawMenuScreen();
+        Brakeza3D::get()->drawMenuScreen();
     }
 
-    EngineBuffers::getInstance()->flipVideoBuffer( screenSurface );
+    EngineBuffers::getInstance()->flipVideoBuffer(Brakeza3D::get()->screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
-    ImGui_ImplSDL2_NewFrame(window);
+    ImGui_ImplSDL2_NewFrame(Brakeza3D::get()->window);
 
     EngineSetup::getInstance()->EVENT_GUI = false;
+
     drawGUI();
+
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
     if (EngineSetup::getInstance()->EVENT_GUI) {
         if (EngineSetup::getInstance()->EVENT_LAUNCH == EngineSetup::getInstance()->EVENT_GUI_CHANGE_MAP) {
-            this->loadBSP(std::string(EngineSetup::getInstance()->EVENT_DATA).c_str(), "palette.lmp");
+            Brakeza3D::get()->initBSP(std::string(EngineSetup::getInstance()->EVENT_DATA).c_str(), &this->frameTriangles);
         }
 
         Logging::getInstance()->Log("Event from GUI (" + std::to_string(EngineSetup::getInstance()->EVENT_LAUNCH) + ", " + EngineSetup::getInstance()->EVENT_DATA + ")");
     }
 
-    SDL_GL_SwapWindow(window);
+    SDL_GL_SwapWindow(Brakeza3D::get()->window);
 
-    screenTexture = SDL_CreateTextureFromSurface(renderer, screenSurface);
-    SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
+    Brakeza3D::get()->screenTexture = SDL_CreateTextureFromSurface(Brakeza3D::get()->renderer,
+                                                                   Brakeza3D::get()->screenSurface);
+    SDL_RenderCopy(Brakeza3D::get()->renderer, Brakeza3D::get()->screenTexture, NULL, NULL);
 
-    SDL_DestroyTexture(screenTexture);
+    SDL_DestroyTexture(Brakeza3D::get()->screenTexture);
 }
 
 void Engine::onStart()
 {
-    Engine::camera->setPosition( EngineSetup::getInstance()->CameraPosition );
+    Brakeza3D::get()->getCamera()->setPosition(EngineSetup::getInstance()->CameraPosition );
 
-    Engine::camera->velocity.vertex1 = *Engine::camera->getPosition();
-    Engine::camera->velocity.vertex2 = *Engine::camera->getPosition();
-
-    this->initSound();
+    Brakeza3D::get()->getCamera()->velocity.vertex1 = *Brakeza3D::get()->getCamera()->getPosition();
+    Brakeza3D::get()->getCamera()->velocity.vertex2 = *Brakeza3D::get()->getCamera()->getPosition();
 
     // Load JSON Config
-    this->menu->getOptionsJSON();
+    Brakeza3D::get()->getMenuManager()->getOptionsJSON();
     this->getWeaponsJSON();
     this->getMapsJSON();
     this->getEnemiesJSON();
@@ -666,9 +551,8 @@ void Engine::onStart()
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
     if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
-        this->loadBSP(nameMap->valuestring, "palette.lmp");
+        Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
     }
-
 
     Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
 }
@@ -676,26 +560,26 @@ void Engine::onStart()
 void Engine::preUpdate()
 {
     // Posición inicial del vector velocidad que llevará la cámara
-    camera->velocity.vertex1 = *camera->getPosition();
-    camera->velocity.vertex2 = *camera->getPosition();
+    Brakeza3D::get()->getCamera()->velocity.vertex1 = *Brakeza3D::get()->getCamera()->getPosition();
+    Brakeza3D::get()->getCamera()->velocity.vertex2 = *Brakeza3D::get()->getCamera()->getPosition();
 
     // Determinamos VPS
-    if (bspMap->isLoaded()) {
+    if (Brakeza3D::get()->getBSP()->isLoaded()) {
 
         int leafType = NULL;
 
-        if (this->bspMap->currentLeaf != NULL) {
-            leafType = this->bspMap->currentLeaf->type;
+        if (Brakeza3D::get()->getBSP()->currentLeaf != NULL) {
+            leafType = Brakeza3D::get()->getBSP()->currentLeaf->type;
         }
 
-        bspleaf_t *leaf = bspMap->FindLeaf(camera );
-        bspMap->setVisibleSet(leaf);
+        bspleaf_t *leaf = Brakeza3D::get()->getBSP()->FindLeaf(Brakeza3D::get()->getCamera() );
+        Brakeza3D::get()->getBSP()->setVisibleSet(leaf);
 
-        if (leafType != bspMap->currentLeaf->type) {
-            if (bspMap->isCurrentLeafLiquid()) {
-                this->camera->kinematicController->setFallSpeed(5);
+        if (leafType != Brakeza3D::get()->getBSP()->currentLeaf->type) {
+            if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+                Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(5);
             } else {
-                this->camera->kinematicController->setFallSpeed(256);
+                Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(256);
             }
         }
     }
@@ -704,18 +588,18 @@ void Engine::preUpdate()
 void Engine::postUpdate()
 {
     // update collider forces
-    camera->UpdateVelocity();
+    Brakeza3D::get()->getCamera()->UpdateVelocity();
 
     // update deltaTime
-    this->updateTimer();
+    Brakeza3D::get()->updateTimer();
 
     // step simulation
-    Vertex3D finalVelocity = collisionsManager->stepSimulation(getDeltaTime());
+    Vertex3D finalVelocity = Brakeza3D::get()->getCollisionManager()->stepSimulation( );
 
     // update camera position/rotation/frustum
-    this->camera->setPosition(finalVelocity);
-    this->camera->UpdateRotation();
-    this->camera->UpdateFrustum();
+    Brakeza3D::get()->getCamera()->setPosition(finalVelocity);
+    Brakeza3D::get()->getCamera()->UpdateRotation();
+    Brakeza3D::get()->getCamera()->UpdateFrustum();
 }
 
 void Engine::onUpdate()
@@ -723,19 +607,18 @@ void Engine::onUpdate()
     EngineBuffers::getInstance()->clearDepthBuffer();
     EngineBuffers::getInstance()->clearVideoBuffer();
 
-    if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
+    /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
         // Clear every light's shadow mapping
         this->clearLightPointsShadowMappings();
 
         // Fill ShadowMapping FOR every object (mesh)
         this->objects3DShadowMapping();
-    }
+    }*/
 
+    // recollect triangles
     this->getQuakeMapTriangles();
     this->getMesh3DTriangles();
-    this->getLightPointsTriangles();
     this->getSpritesTriangles();
-    this->getObjectsBillboardTriangles();
 
     if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
         this->handleOpenCLTransform();
@@ -764,7 +647,7 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
-        collisionsManager->getDynamicsWorld()->debugDrawWorld();
+        Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->debugDrawWorld();
     }
 
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
@@ -772,11 +655,11 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(camera->frustum, camera, true, true, true);
+        Drawable::drawFrustum(Brakeza3D::get()->getCamera()->frustum, Brakeza3D::get()->getCamera(), true, true, true);
     }
 
     if (EngineSetup::getInstance()->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis( camera );
+        Drawable::drawMainAxis(Brakeza3D::get()->getCamera() );
     }
 
     if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
@@ -784,51 +667,52 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        this->weaponManager->onUpdate(this->camera, screenSurface);
-        Tools::writeText(renderer, font, 10, 220, Color::red(), std::to_string(this->weaponManager->getCurrentWeaponType()->ammo));
+        Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
+        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 10, 220, Color::red(), std::to_string(
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
     }
 
-    if (bspMap->isLoaded() && bspMap->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
-        this->waterShader();
-    }
-}
-
-void Engine::clearLightPointsShadowMappings()
-{
-    for (int i = 0; i < this->lightPoints.size(); i++) {
-        if (!this->lightPoints[i]->isEnabled()) {
-            continue;
-        }
-
-        this->lightPoints[i]->clearShadowMappingBuffer();
+    if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
+        Brakeza3D::get()->waterShader();
     }
 }
 
-void Engine::objects3DShadowMapping()
+/*void Engine::clearLightPointsShadowMappings()
 {
-    for (int i = 0; i < this->gameObjects.size(); i++) {
-        if (!this->gameObjects[i]->isEnabled()) {
+    for (int i = 0; i < Brakeza3D::get()->getLightPoints().size(); i++) {
+        if (!Brakeza3D::get()->getLightPoints()[i]->isEnabled()) {
             continue;
         }
 
-        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
+        Brakeza3D::get()->getLightPoints()[i]->clearShadowMappingBuffer();
+    }
+}*/
+
+/*void Engine::objects3DShadowMapping()
+{
+    for (int i = 0; i < Brakeza3D::get()->getSceneObjects().size() ; i++) {
+        if (!Brakeza3D::get()->getSceneObjects()[i]->isEnabled()) {
+            continue;
+        }
+
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (Brakeza3D::get()->getSceneObjects()[i]);
         if (oMesh != NULL) {
-            for (int j = 0; j < this->lightPoints.size(); j++) {
+            for (int j = 0; j < Brakeza3D::get()->getLightPoints().size(); j++) {
                 if (oMesh->isShadowCaster()) {
-                    oMesh->shadowMapping(this->lightPoints[j]);
+                    oMesh->shadowMapping(Brakeza3D::get()->getLightPoints()[j]);
                 }
             }
         }
     }
-}
+}*/
 
 
 void Engine::getQuakeMapTriangles()
 {
-    if (bspMap->isLoaded() && EngineSetup::getInstance()->RENDER_BSP_MAP) {
-        bspMap->DrawVisibleLeaf(camera);
+    if (Brakeza3D::get()->getBSP()->isLoaded() && EngineSetup::getInstance()->RENDER_BSP_MAP) {
+        Brakeza3D::get()->getBSP()->DrawVisibleLeaf(Brakeza3D::get()->getCamera() );
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
-            bspMap->DrawHulls(camera );
+            Brakeza3D::get()->getBSP()->DrawHulls(Brakeza3D::get()->getCamera()  );
         }
     }
 }
@@ -836,40 +720,19 @@ void Engine::getQuakeMapTriangles()
 void Engine::getMesh3DTriangles()
 {
     // draw meshes
-    for (int i = 0; i < this->gameObjects.size(); i++) {
-        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (this->gameObjects[i]);
+    for (int i = 0; i < Brakeza3D::get()->getSceneObjects().size(); i++) {
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (Brakeza3D::get()->getSceneObjects()[i]);
         if (oMesh != NULL) {
             if (oMesh->isEnabled()) {
-                oMesh->draw();
+                oMesh->draw( &this->frameTriangles) ;
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                    Tools::writeText3D(Engine::renderer, camera, Engine::font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
                 }
             }
             if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
                 Decal *oDecal = dynamic_cast<Decal*> (oMesh);
                 if (oDecal != NULL) {
-                    oDecal->cube->draw();
-                }
-            }
-        }
-    }
-}
-
-void Engine::getLightPointsTriangles()
-{
-    for (int i = 0; i < this->lightPoints.size(); i++) {
-        LightPoint3D *oLight= this->lightPoints[i];
-        if (oLight != NULL) {
-            if (oLight->isEnabled()) {
-                oLight->getBillboard()->updateUnconstrainedQuad( oLight, camera->AxisUp(), camera->AxisRight() );
-
-                oLight->getBillboard()->reassignTexture();
-                if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD) {
-                    Drawable::drawBillboard(oLight->getBillboard(), Engine::camera);
-                }
-
-                if (EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS) {
-                    Drawable::drawObject3DAxis(oLight, camera, true, true, true);
+                    oDecal->cube->draw( &this->frameTriangles );
                 }
             }
         }
@@ -879,12 +742,13 @@ void Engine::getLightPointsTriangles()
 void Engine::getSpritesTriangles()
 {
     std::vector<Object3D *>::iterator itObject3D;
-    for ( itObject3D = gameObjects.begin(); itObject3D != gameObjects.end(); ) {
+    for ( itObject3D = Brakeza3D::get()->getSceneObjects().begin(); itObject3D !=
+                                                                    Brakeza3D::get()->getSceneObjects().end(); ) {
         Object3D *object = *(itObject3D);
 
         // Check for delete
         if (object->isRemoved()) {
-            gameObjects.erase(itObject3D);
+            Brakeza3D::get()->getSceneObjects().erase(itObject3D);
             continue;
         } else {
             itObject3D++;
@@ -898,15 +762,15 @@ void Engine::getSpritesTriangles()
                 continue;
             }
 
-            if (!camera->frustum->isPointInFrustum(*oSpriteDirectional->getPosition())) {
+            if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*oSpriteDirectional->getPosition())) {
                 continue;
             }
 
-            oSpriteDirectional->updateTrianglesCoordinates(camera);
-            oSpriteDirectional->draw(camera);
+            oSpriteDirectional->updateTrianglesCoordinates(Brakeza3D::get()->getCamera() );
+            Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
         }
 
@@ -917,30 +781,11 @@ void Engine::getSpritesTriangles()
                 continue;
             }
 
-            oSprite->updateTrianglesCoordinatesAndTexture(camera);
-            oSprite->draw(camera);
+            oSprite->updateTrianglesCoordinatesAndTexture(Brakeza3D::get()->getCamera() );
+            Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Engine::renderer, camera, Engine::font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
-            }
-        }
-    }
-}
-
-void Engine::getObjectsBillboardTriangles()
-{
-    if (EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD) {
-
-        Vertex3D u = camera->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-        Vertex3D r = camera->getRotation().getTranspose() * EngineSetup::getInstance()->right;
-
-        // draw meshes
-        for (int i = 0; i < this->gameObjects.size(); i++) {
-            if (this->gameObjects[i]->isDrawBillboard()) {
-
-                this->gameObjects[i]->getBillboard()->updateUnconstrainedQuad(this->gameObjects[i], u, r );
-                this->gameObjects[i]->getBillboard()->reassignTexture();
-                Drawable::drawBillboard(this->gameObjects[i]->getBillboard(), Engine::camera);
+                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
         }
     }
@@ -951,7 +796,7 @@ void Engine::drawFrameTriangles()
     std::vector<Triangle *>::iterator it;
     for ( it = visibleTriangles.begin(); it != this->visibleTriangles.end(); it++) {
         Triangle *triangle = *(it);
-        triangle->draw( camera );
+        triangle->draw(Brakeza3D::get()->getCamera() );
     }
 }
 
@@ -989,7 +834,7 @@ void Engine::hiddenSurfaceRemoval()
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (this->frameTriangles[i]->isBackFaceCulling(camera->getPosition())) {
+            if (this->frameTriangles[i]->isBackFaceCulling(Brakeza3D::get()->getCamera()->getPosition() )) {
                 continue;
             }
         }
@@ -1001,18 +846,19 @@ void Engine::hiddenSurfaceRemoval()
                 needClipping = true;
             }
         } else {
-            if (this->frameTriangles[i]->testForClipping( camera->frustum->planes,
-                                                         EngineSetup::getInstance()->LEFT_PLANE,
-                                                         EngineSetup::getInstance()->BOTTOM_PLANE )
-             ) {
+            if (this->frameTriangles[i]->testForClipping(
+                    Brakeza3D::get()->getCamera()->frustum->planes,
+                    EngineSetup::getInstance()->LEFT_PLANE,
+                    EngineSetup::getInstance()->BOTTOM_PLANE
+            )) {
                 needClipping = true;
             }
         }
 
         if (needClipping) {
             this->frameTriangles[i]->clipping(
-                    camera,
-                    camera->frustum->planes,
+                    Brakeza3D::get()->getCamera(),
+                    Brakeza3D::get()->getCamera()->frustum->planes,
                     EngineSetup::getInstance()->LEFT_PLANE,
                     EngineSetup::getInstance()->BOTTOM_PLANE,
                     frameTriangles[i]->parent,
@@ -1023,9 +869,9 @@ void Engine::hiddenSurfaceRemoval()
         }
 
         // Frustum Culling (needs objectSpace)
-        if (!camera->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
-            !camera->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
-            !camera->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
+        if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
+            !Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
+            !Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
         ) {
             continue;
         }
@@ -1034,9 +880,9 @@ void Engine::hiddenSurfaceRemoval()
         // Estas operaciones las hacemos después de descartar triángulos
         // para optimización en el rasterizador por software
         if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            this->frameTriangles[i]->updateCameraSpace(camera);
-            this->frameTriangles[i]->updateNDCSpace(camera);
-            this->frameTriangles[i]->updateScreenSpace(camera);
+            this->frameTriangles[i]->updateCameraSpace(Brakeza3D::get()->getCamera() );
+            this->frameTriangles[i]->updateNDCSpace(Brakeza3D::get()->getCamera() );
+            this->frameTriangles[i]->updateScreenSpace(Brakeza3D::get()->getCamera() );
             this->frameTriangles[i]->updateBoundingBox();
         }
 
@@ -1066,13 +912,14 @@ void Engine::drawTilesTriangles()
         for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
             int triangleId = this->tiles[i].triangleIds[j];
             Tile *t = &this->tiles[i];
-            this->visibleTriangles[triangleId]->drawForTile(
-                camera,
+            Triangle *tr = this->visibleTriangles[triangleId];
+            Brakeza3D::get()->softwareRasterizerForTile(
+                tr,
                 t->start_x,
                 t->start_y,
                 t->start_x+sizeTileWidth,
                 t->start_y+sizeTileHeight
-            );
+           );
         }
     }
 }
@@ -1102,156 +949,14 @@ void Engine::handleTrianglesToTiles()
 
 void Engine::onEnd()
 {
-    this->engineTimer.stop();
-}
-
-void Engine::addObject3D(Object3D *obj, std::string label)
-{
-    Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
-    obj->setLabel(label);
-    gameObjects.push_back(obj);
-}
-
-void Engine::addLightPoint(LightPoint3D *lightPoint, std::string label)
-{
-    Logging::getInstance()->Log("Adding LightPoint: '" + label + "'", "INFO");
-
-    lightPoints.push_back(lightPoint);
-}
-
-Object3D* Engine::getObjectByLabel(std::string label)
-{
-    for (int i = 0; i < this->gameObjects.size(); i++ ) {
-        if (!gameObjects[i]->getLabel().compare(label)) {
-            return gameObjects[i];
-        }
-    }
+    Brakeza3D::get()->getTimer()->stop();
 }
 
 void Engine::Close()
 {
-    TTF_CloseFont( font );
-    SDL_DestroyWindow( window );
+    TTF_CloseFont( Brakeza3D::get()->font );
+    SDL_DestroyWindow(Brakeza3D::get()->window );
     SDL_Quit();
-}
-
-Timer* Engine::getTimer()
-{
-    return &this->engineTimer;
-}
-
-void Engine::loadBSP(const char *bspFilename, const char *paletteFilename)
-{
-    Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
-
-    EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
-
-    this->bspMap->Initialize(bspFilename, paletteFilename);
-
-    // Load start position from BSP
-    Vertex3D bspOriginalPosition = this->bspMap->getStartMapPosition();
-
-    int entityID = this->bspMap->getIndexOfFirstEntityByClassname("info_player_start");
-    btTransform initialTransform;
-    initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
-    char *angle = bspMap->getEntityValue(entityID, "angle");
-    int angleInt = atoi( std::string(angle).c_str() );
-    camera->yaw   = 90-angleInt;
-    camera->pitch = 0;
-    camera->roll  = 0;
-
-    this->camera->setPosition(bspOriginalPosition);
-    this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
-}
-
-void Engine::processFPS()
-{
-    if (!EngineSetup::getInstance()->DRAW_FPS) return;
-
-    ++fpsFrameCounter;
-    if (this->frameTime > 1000) {
-        fps = fpsFrameCounter;
-        frameTime = 0;
-        fpsFrameCounter = 0;
-    }
-
-    int renderer_w, renderer_h;
-    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
-    Tools::writeText(Engine::renderer, Engine::font, renderer_w-150, 14, Color::yellow(), std::to_string(fps) +"fps");
-}
-
-void Engine::updateTimer()
-{
-    this->current_ticks = this->engineTimer.getTicks();
-    this->deltaTime = this->current_ticks - this->last_ticks;
-    this->last_ticks = this->current_ticks;
-
-    this->frameTime += this->deltaTime;
-    this->executionTime += this->deltaTime / 1000.f;
-}
-
-float Engine::getDeltaTime()
-{
-    return this->deltaTime/1000;
-}
-
-void Engine::waterShader()
-{
-    //BSP LAVA EFFECT
-    float LAVA_CLOSENESS = 2.35;
-    float LAVA_INTENSITY = 0.45;
-    float LAVA_SPEED = 2.55;
-    float LAVA_SCALE = 2.35;
-
-    // Default config is used in menu mode
-    float intensity_r = 1;
-    float intensity_g = 1;
-    float intensity_b = 1;
-
-    //water = -3 |mud = -4 | lava = -5
-    switch(bspMap->currentLeaf->type) {
-        default:
-        case -3:
-            break;
-        case -4:
-            intensity_r = 0.5;
-            intensity_g = 1;
-            intensity_b = 0.5;
-            break;
-        case -5:
-            intensity_r = 1;
-            intensity_g = 0.5;
-            intensity_b = 0.5;
-            break;
-    }
-
-    Uint32 *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
-
-    for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
-        for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
-            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
-
-            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor)   * intensity_r);
-            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
-            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor)  * intensity_b);
-
-            currentPixelColor = Tools::createRGB( r_light, g_light, b_light );
-
-            float cache1 = x / LAVA_CLOSENESS;
-            float cache2 = y / LAVA_CLOSENESS;
-
-            int nx = (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * this->executionTime + cache2) ) * LAVA_SCALE;
-            int ny = (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * this->executionTime + cache1) ) * LAVA_SCALE;
-
-            int bufferIndex = nx + ny * EngineSetup::getInstance()->screenWidth;
-
-            if(Tools::isPixelInWindow(nx, ny)) {
-                newVideoBuffer[bufferIndex] = currentPixelColor;
-            }
-        }
-    }
-
-    memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
 void Engine::getWeaponsJSON()
@@ -1278,25 +983,25 @@ void Engine::getWeaponsJSON()
     // weapons loop
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, weaponsJSONList) {
-        cJSON *name = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
-        cJSON *hit = cJSON_GetObjectItemCaseSensitive(currentWeapon, "hit");
-        cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
-        cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
-        cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
+        cJSON *name        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
+        cJSON *hit         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "hit");
+        cJSON *cadence     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
+        cJSON *damage      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
+        cJSON *speed       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
-        cJSON *soundFire = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
-        cJSON *soundMark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
+        cJSON *soundFire   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
+        cJSON *soundMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
 
         // Weapon Type attributes
-        weaponManager->addWeaponType(name->valuestring);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
 
         cJSON *mark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
         cJSON *markPath = cJSON_GetObjectItemCaseSensitive(mark, "path");
@@ -1305,7 +1010,7 @@ void Engine::getWeaponsJSON()
         cJSON *markW = cJSON_GetObjectItemCaseSensitive(mark, "width");
         cJSON *markH = cJSON_GetObjectItemCaseSensitive(mark, "height");
 
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
                 markPath->valuestring,
                 markFrames->valueint,
                 markFps->valueint,
@@ -1340,7 +1045,7 @@ void Engine::getWeaponsJSON()
 
             Logging::getInstance()->Log("Reading JSON Weapon Animation: " + std::string(subfolder->valuestring));
 
-            weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
+            Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                 std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
                 frames->valueint,
                 fps->valueint,
@@ -1375,18 +1080,18 @@ void Engine::getEnemiesJSON()
     // weapons loop
     cJSON *currentEnemy;
     cJSON_ArrayForEach(currentEnemy, enemiesJSONList) {
-        cJSON *name = cJSON_GetObjectItemCaseSensitive(currentEnemy, "name");
-        cJSON *classname = cJSON_GetObjectItemCaseSensitive(currentEnemy, "classname");
-        cJSON *range = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
-        cJSON *damage = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
-        cJSON *cadence = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
-        cJSON *speed = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
-        cJSON *width = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
-        cJSON *height = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
-        cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
-        cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
-        cJSON *soundFire = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
-        cJSON *soundMark = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
+        cJSON *name             = cJSON_GetObjectItemCaseSensitive(currentEnemy, "name");
+        cJSON *classname        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "classname");
+        cJSON *range            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
+        cJSON *damage           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
+        cJSON *cadence          = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
+        cJSON *speed            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
+        cJSON *width            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
+        cJSON *height           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
+        cJSON *projectileW      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
+        cJSON *projectileH      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
+        cJSON *soundFire        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
+        cJSON *soundMark        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
         cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
 
         NPCEnemyBody *newEnemy = new NPCEnemyBody();
@@ -1395,10 +1100,9 @@ void Engine::getEnemiesJSON()
         newEnemy->setRange( (float) range->valuedouble );
         newEnemy->setSpeed( (float) speed->valuedouble );
         newEnemy->getBillboard()->loadTexture( EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN );
-        newEnemy->setTimer( this->getTimer() );
+        newEnemy->setTimer(Brakeza3D::get()->getTimer() );
         newEnemy->setPosition(Vertex3D(0, 0, 0) );
         newEnemy->setRotation(M3() );
-        newEnemy->setDrawBillboard(true );
         newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );
         newEnemy->setLabel( name->valuestring);
         newEnemy->setClassname( classname->valuestring );
@@ -1467,29 +1171,12 @@ void Engine::getMapsJSON()
     }
 }
 
-void Engine::drawMenuScreen()
-{
-    //this->waterShader();
-    this->menu->drawOptions(screenSurface);
-    Drawable::drawFireShader();
-}
-
-void Engine::initCollisionsManager()
-{
-    this->collisionsManager->setBspMap(this->bspMap);
-    this->collisionsManager->setWeaponManager(this->weaponManager);
-    this->collisionsManager->setCamera(this->camera);
-    this->collisionsManager->setGameObjects(&this->gameObjects);
-    this->collisionsManager->initBulletSystem();
-}
-
 void Engine::drawSceneObjectsAxis()
 {
     // draw meshes
-    for (int i = 0; i < this->gameObjects.size(); i++) {
-        if (this->gameObjects[i]->isEnabled()) {
-            Drawable::drawObject3DAxis(this->gameObjects[i], camera, true, true, true);
+    for (int i = 0; i < Brakeza3D::get()->getSceneObjects().size(); i++) {
+        if (Brakeza3D::get()->getSceneObjects()[i]->isEnabled()) {
+            Drawable::drawObject3DAxis(Brakeza3D::get()->getSceneObjects()[i], Brakeza3D::get()->getCamera(), true, true, true);
         }
     }
 }
-

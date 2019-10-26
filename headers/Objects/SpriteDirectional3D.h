@@ -8,6 +8,8 @@
 #include "../2D/TextureAnimationDirectional.h"
 #include "Camera3D.h"
 #include "Enemy.h"
+#include "Triangle3D.h"
+#include "../Render/Billboard.h"
 
 #define DIR_C 0
 #define DIR_S 1
@@ -46,7 +48,6 @@ public:
     void setAnimation(int);
     void setTimer(Timer *);
 
-    void draw(Camera3D *cam);
     void updateTrianglesCoordinates(Camera3D *cam);
     void linkTexturesTo(SpriteDirectional3D *clone);
 
