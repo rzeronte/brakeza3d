@@ -1,15 +1,6 @@
 
-
 #include <SDL_quit.h>
-#include <SDL_surface.h>
 #include "../../headers/Objects/Vector3D.h"
-#include "../../headers/Objects/Point2D.h"
-#include "../../headers/Render/Tools.h"
-#include "../../headers/Objects/Line2D.h"
-#include "../../headers/Render/Color.h"
-#include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Render/EngineBuffers.h"
-#include <stdio.h>
 
 class string;
 

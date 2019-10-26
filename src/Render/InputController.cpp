@@ -1,20 +1,20 @@
 
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <LinearMath/btDefaultMotionState.h>
-#include "../../headers/Render/Controller.h"
+#include "../../headers/Render/InputController.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/PhysicsGame/Projectile3DBody.h"
 #include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Brakeza3D.h"
 
-Controller::Controller()
+InputController::InputController()
 {
-    printf("Controller...\r\n");
+    printf("InputController...\r\n");
 }
 
-void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void InputController::handleMouse(SDL_Event *event)
 {
-
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
@@ -34,8 +34,8 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynam
     if (MouseMotion && MousePressed) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
-            camera->Yaw(event->motion.xrel);
-            camera->Pitch(event->motion.yrel);
+            Brakeza3D::get()->getCamera()->Yaw(event->motion.xrel);
+            Brakeza3D::get()->getCamera()->Pitch(event->motion.yrel);
         }
     }
 
@@ -47,76 +47,76 @@ void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynam
 
 }
 
-void Controller::handleKeyboardContinuous(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
 {
     if (keyboard[SDL_SCANCODE_W]) {
-        camera->MoveForward();
+        Brakeza3D::get()->getCamera()->MoveForward();
     }
     if (keyboard[SDL_SCANCODE_S]) {
-        camera->MoveBackward();
+        Brakeza3D::get()->getCamera()->MoveBackward();
     }
     if (keyboard[SDL_SCANCODE_A]) {
-        camera->StrafeLeft();
+        Brakeza3D::get()->getCamera()->StrafeLeft();
     }
     if (keyboard[SDL_SCANCODE_D]) {
-        camera->StrafeRight();
+        Brakeza3D::get()->getCamera()->StrafeRight();
     }
     if (keyboard[SDL_SCANCODE_RIGHT]) {
-        camera->TurnRight();
+        Brakeza3D::get()->getCamera()->TurnRight();
     }
     if (keyboard[SDL_SCANCODE_LEFT]) {
-        camera->TurnLeft();
+        Brakeza3D::get()->getCamera()->TurnLeft();
     }
     if (keyboard[SDL_SCANCODE_DOWN]) {
-        camera->PitchUp();
+        Brakeza3D::get()->getCamera()->PitchUp();
     }
     if (keyboard[SDL_SCANCODE_UP]) {
-        camera->PitchDown();
+        Brakeza3D::get()->getCamera()->PitchDown();
     }
 
     if (keyboard[SDL_SCANCODE_SPACE]) {
-        camera->Jump();
+        Brakeza3D::get()->getCamera()->Jump();
      }
 
     if (keyboard[SDL_SCANCODE_Q]) {
         //if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
 
 
-        if (!weapon->getCurrentWeaponType()->isCadenceInProgress()) {
-            if (weapon->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
-                if (weapon->getCurrentWeaponType()->ammo <= 0) return;
+        if (!Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isCadenceInProgress()) {
+            if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
+                if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo <= 0) return;
 
                 Projectile3DBody *projectile = new Projectile3DBody();
-                projectile->setPosition(*camera->getPosition());
+                projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
                 projectile->setLabel("projectile");
                 projectile->setEnabled(true);
-                projectile->setTimer(timer);
-                projectile->linkTexturesTo(weapon->getCurrentWeaponType()->getProjectileTemplate());
+                projectile->setTimer(Brakeza3D::get()->getTimer());
+                projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
                 projectile->setAnimation(0);
-                projectile->makeProjectileRigidBody(1, gameObjects, camera, dynamicsWorld, true, weapon->getCurrentWeaponType()->speed);
+                projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);
                 projectile->getBillboard()->setDimensions(
-                    weapon->getCurrentWeaponType()->projectileWidth,
-                    weapon->getCurrentWeaponType()->projectileHeight
+                    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
+                    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
                 );
 
                 // Reduce ammo for this weapon type
-                weapon->getCurrentWeaponType()->ammo--;
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
 
                 // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
                 // del impulso en el interior del makeRigidBody
-                projectile->setRotation(camera->getRotation());
+                projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
 
                 // Si ya estábamos disparando, no interrumpimos la animación
-                weapon->getCurrentWeaponType()->startAction();
-                weapon->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
 
-                Tools::playMixedSound(weapon->getCurrentWeaponType()->soundFire);
+                Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire);
             }
         }
     }
 }
 
-void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
+void InputController::handleKeyboard(SDL_Event *event, bool &end)
 {
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
@@ -132,39 +132,39 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
     }
 
     if (keyboard[SDL_SCANCODE_1]) {
-        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
     }
 
     if (keyboard[SDL_SCANCODE_2]) {
-        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
     }
 
     if (keyboard[SDL_SCANCODE_3]) {
-        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MACHINEGUN;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MACHINEGUN;
     }
 
     if (keyboard[SDL_SCANCODE_4]) {
-        weapon->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
     }
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (menu->currentOptions+1 < menu->numOptions) {
-                menu->currentOptions++;
+            if (Brakeza3D::get()->getMenuManager()->currentOptions+1 < Brakeza3D::get()->getMenuManager()->numOptions) {
+                Brakeza3D::get()->getMenuManager()->currentOptions++;
             }
         }
     }
 
     if (keyboard[SDL_SCANCODE_UP]) {
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (menu->currentOptions > 0) {
-                menu->currentOptions--;
+            if (Brakeza3D::get()->getMenuManager()->currentOptions > 0) {
+                Brakeza3D::get()->getMenuManager()->currentOptions--;
             }
         }
     }
 
     if (keyboard[SDL_SCANCODE_RETURN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE && menu->options[menu->currentOptions]->label == "exit") {
+        if (EngineSetup::getInstance()->MENU_ACTIVE && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOptions]->label == "exit") {
             end = true;
             return;
         }

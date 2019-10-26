@@ -7,16 +7,17 @@
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
 #include "Collisions/CollisionsManager.h"
-#include "Render/Controller.h"
+#include "Render/InputController.h"
 #include "GUI/GUIManager.h"
 
 class Brakeza3D {
 private:
     // GUI
     GUIManager *guiManager;
-    // Camera and Input Controller
+    // Camera and Input InputController
     Camera3D *camera;
-    Controller *controllerManager;
+    // Input InputController
+    InputController *controllerManager;
     // BSP map
     BSPMap *bsp;
     // Scene 3D objects
@@ -31,7 +32,6 @@ private:
     MenuManager *menuManager;
     // Timer
     Timer engineTimer;
-
 public:
     Brakeza3D();
     ~Brakeza3D();
@@ -81,7 +81,7 @@ public:
     std::vector<Object3D*> &getSceneObjects();
     std::vector<LightPoint3D*> &getLightPoints();
 
-    Controller        *getController();
+    InputController        *getController();
     CollisionsManager *getCollisionManager();
     GUIManager        *getGUIManager();
     MenuManager       *getMenuManager();

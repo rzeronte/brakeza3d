@@ -1,14 +1,8 @@
 
 #include <iostream>
 #include "../../headers/Objects/Object3D.h"
-#include "../../headers/Objects/Point2D.h"
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Objects/Line2D.h"
-#include "../../headers/Render/Color.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/M3.h"
-#include "../../headers/Render/Billboard.h"
-
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
 }

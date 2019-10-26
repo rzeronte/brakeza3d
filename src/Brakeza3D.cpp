@@ -1,6 +1,5 @@
 
 #include "../headers/Brakeza3D.h"
-#include "../headers/Render/Logging.h"
 #include "../headers/Render/Drawable.h"
 #include "../headers/Render/Maths.h"
 #include "../headers/Render/EngineBuffers.h"
@@ -9,6 +8,15 @@ Brakeza3D* Brakeza3D::instance = 0;
 
 Brakeza3D::Brakeza3D()
 {
+}
+
+Brakeza3D* Brakeza3D::get()
+{
+    if (instance == 0) {
+        instance = new Brakeza3D();
+    }
+
+    return instance;
 }
 
 void Brakeza3D::start()
@@ -21,7 +29,7 @@ void Brakeza3D::start()
     initSound();
     initFontsTTF();
 
-    controllerManager = new Controller();
+    controllerManager = new InputController();
     weaponManager     = new WeaponsManager();
     collisionsManager = new CollisionsManager();
     bsp               = new BSPMap();
@@ -119,15 +127,6 @@ bool Brakeza3D::initSound()
     EngineBuffers::getInstance()->loadWAVs();
 }
 
-Brakeza3D* Brakeza3D::get()
-{
-    if (instance == 0) {
-        instance = new Brakeza3D();
-    }
-
-    return instance;
-}
-
 Camera3D *Brakeza3D::getCamera()
 {
     return camera;
@@ -167,7 +166,7 @@ void Brakeza3D::addLightPoint(LightPoint3D *lightPoint, std::string label)
     lightPoints.push_back(lightPoint);
 }
 
-Controller *Brakeza3D::getController()
+InputController *Brakeza3D::getController()
 {
     return controllerManager;
 }

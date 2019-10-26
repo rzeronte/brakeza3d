@@ -33,9 +33,6 @@ void MenuManager::getOptionsJSON()
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
     if (sizeOptions > 0) {
-        cJSON *firstMapOption = cJSON_GetArrayItem(optionsJSON, 0);
-        cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(firstMapOption, "name");
-
         Logging::getInstance()->Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON");
     } else {
         Logging::getInstance()->Log("menu.json is empty", "ERROR");

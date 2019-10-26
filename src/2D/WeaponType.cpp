@@ -1,8 +1,6 @@
 
 #include "../../headers/2D/WeaponType.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Billboard.h"
-
 
 WeaponType::WeaponType(std::string label)
 {

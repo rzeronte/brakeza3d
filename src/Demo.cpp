@@ -1,118 +1,10 @@
-#include "Game.h"
-#include "headers/Render/Maths.h"
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "headers/Objects/Decal.h"
-#include "headers/Physics/Sprite3DBody.h"
-#include "headers/Brakeza3D.h"
-#include "headers/Render/EngineBuffers.h"
+#include "../headers/Demo.h"
+#include "../headers/Objects/LightPoint3D.h"
+#include "../headers/Brakeza3D.h"
+#include "../headers/Render/EngineBuffers.h"
+#include "../headers/Physics/Sprite3DBody.h"
 
-Game::Game()
-{
-}
-
-void Game::run()
-{
-    this->onStart();
-    this->mainLoop();
-    this->onEnd();
-
-    Close();
-}
-
-void Game::onStart()
-{
-    Engine::onStart();
-
-    //this->loadDemoObjects();
-}
-
-void Game::mainLoop()
-{
-    ImGuiIO& io = ImGui::GetIO();
-    while(!finish) {
-
-        this->preUpdate();
-
-        while (SDL_PollEvent(&e)) {
-            ImGui_ImplSDL2_ProcessEvent(&e);
-            if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-                Brakeza3D::get()->getController()->handleMouse(&this->e, Brakeza3D::get()->getCamera(),
-                                                               Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
-                                                               Brakeza3D::get()->getSceneObjects(),
-                                                               Brakeza3D::get()->getTimer(),
-                                                               Brakeza3D::get()->getMenuManager(),
-                                                               Brakeza3D::get()->getWeaponsManager());
-            }
-            Brakeza3D::get()->getController()->handleKeyboard(&this->e, Brakeza3D::get()->getCamera(), this->finish,
-                                                              Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
-                                                              Brakeza3D::get()->getSceneObjects(),
-                                                              Brakeza3D::get()->getTimer(),
-                                                              Brakeza3D::get()->getMenuManager(),
-                                                              Brakeza3D::get()->getWeaponsManager());
-        }
-
-        if (finish) continue;
-
-        // Check array Uint8 *keyboard
-        Brakeza3D::get()->getController()->handleKeyboardContinuous(&this->e, Brakeza3D::get()->getCamera(), this->finish,
-                                                                    Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
-                                                                    Brakeza3D::get()->getSceneObjects(),
-                                                                    Brakeza3D::get()->getTimer(),
-                                                                    Brakeza3D::get()->getMenuManager(),
-                                                                    Brakeza3D::get()->getWeaponsManager());
-
-        // Checks pre update frame
-        this->postUpdate();
-
-        // game level update
-        this->onUpdate();
-
-        // Update window
-        Engine::onUpdateWindow();
-    }
-}
-
-void Game::onUpdate()
-{
-    // Core onUpdate
-    Engine::onUpdate();
-
-    onUpdateIA();
-
-    // Lighting example
-    /*Vertex3D startPoint = Vertex3D(45, -2, 40);
-    Vertex3D endPoint   = Vertex3D(70, -2, 40);
-    Drawable::drawLightning(camera, startPoint, endPoint);*/
-
-    //this->bspMap->recastWrapper->drawNavMeshPoints();
-
-    // Calc Pathfinding example
-    //Vertex3D A(*this->getObjectByLabel("BSPEntity_21 (monster)")->getPosition());
-    //Vertex3D B(*this->getObjectByLabel("BSPEntity_245 (monster)")->getPosition());
-    //Vector3D t(A, B);
-    //std::vector<Vertex3D> points;
-    //this->bspMap->recastWrapper->getPathBetween(A, B, points);
-    //this->bspMap->recastWrapper->drawPathSegments(points);
-    //Drawable::drawVector3D(t, camera, Color::magenta());
-
-    // Raycasting example
-    /*Vertex3D A(-13, 16, 191);
-    Vertex3D B(*camera->getPosition());
-    bool hitResult = this->bspMap->recastWrapper->rayCasting(A, B);*/
-}
-
-void Game::preUpdate()
-{
-    // Core preUpdate
-    Engine::preUpdate();
-}
-
-void Game::onEnd()
-{
-    Engine::onEnd();
-}
-
-void Game::loadDemoObjects()
+Demo::Demo()
 {
     LightPoint3D *lp1 = new LightPoint3D();
     lp1->setEnabled(false);
@@ -274,35 +166,26 @@ void Game::loadDemoObjects()
     oCube->setEnabled(false);
     oCube->setPosition(Vertex3D(1, 1, 1));
     Brakeza3D::get()->addObject3D(oCube, "oCube");
-}
 
-void Game::onUpdateIA()
-{
-    std::vector<Object3D *>::iterator itObject3D;
-    for ( itObject3D = Brakeza3D::get()->getSceneObjects().begin(); itObject3D !=
-                                                                    Brakeza3D::get()->getSceneObjects().end(); itObject3D++) {
-        Object3D *object = *(itObject3D);
+    // Lighting example
+    /*Vertex3D startPoint = Vertex3D(45, -2, 40);
+    Vertex3D endPoint   = Vertex3D(70, -2, 40);
+    Drawable::drawLightning(camera, startPoint, endPoint);*/
 
-        if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
-            continue;
-        }
+    //this->bspMap->recastWrapper->drawNavMeshPoints();
 
-        NPCEnemyBody *enemy = dynamic_cast<NPCEnemyBody*> (object);
-        if (enemy != NULL) {
-            if (enemy->isDead()) continue;
+    // Calc Pathfinding example
+    //Vertex3D A(*this->getObjectByLabel("BSPEntity_21 (monster)")->getPosition());
+    //Vertex3D B(*this->getObjectByLabel("BSPEntity_245 (monster)")->getPosition());
+    //Vector3D t(A, B);
+    //std::vector<Vertex3D> points;
+    //this->bspMap->recastWrapper->getPathBetween(A, B, points);
+    //this->bspMap->recastWrapper->drawPathSegments(points);
+    //Drawable::drawVector3D(t, camera, Color::magenta());
 
-            Vertex3D A = *object->getPosition();
-            Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition();
+    // Raycasting example
+    /*Vertex3D A(-13, 16, 191);
+    Vertex3D B(*camera->getPosition());
+    bool hitResult = this->bspMap->recastWrapper->rayCasting(A, B);*/
 
-            enemy->points.clear();
-            Brakeza3D::get()->getBSP()->recastWrapper->getPathBetween(A, B, enemy->points );
-            enemy->evalStatusMachine(
-                    Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B),
-                    Vector3D(A, B).getComponent().getModule(),
-                    Brakeza3D::get()->getCamera(),
-                    Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
-                    Brakeza3D::get()->getSceneObjects()
-            );
-        }
-    }
 }

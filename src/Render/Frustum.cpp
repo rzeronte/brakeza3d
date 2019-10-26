@@ -4,10 +4,7 @@
 
 #include <iostream>
 #include "../../headers/Render/Frustum.h"
-#include "../../headers/Objects/Line2D.h"
 #include "../../headers/Render/Color.h"
-#include "../../headers/Render/Tools.h"
-#include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Transforms.h"
 
 Frustum::Frustum() {}

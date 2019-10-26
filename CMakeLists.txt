@@ -38,8 +38,8 @@ add_executable(brakeza3d
         main.cpp
         src/Objects/Camera3D.cpp
         headers/Objects/Camera3D.h
-        src/Render/Controller.cpp
-        headers/Render/Controller.h
+        src/Render/InputController.cpp
+        headers/Render/InputController.h
         src/Objects/Mesh3D.cpp
         headers/Objects/Mesh3D.h
         src/Objects/Triangle3D.cpp
@@ -57,7 +57,7 @@ add_executable(brakeza3d
         src/Render/Color.cpp
         headers/Render/Color.h
         src/Render/Engine.cpp
-        headers/OCLTriangle.h
+        headers/OpenCL/OCLTriangle.h
         headers/Render/Engine.h
         headers/Render/EngineSetup.h
         src/Render/EngineSetup.cpp
@@ -82,7 +82,7 @@ add_executable(brakeza3d
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
 
-        Game.cpp Game.h
+        src/Game.cpp headers/Game.h
         src/Render/Billboard.cpp
         headers/Render/Billboard.h
         src/Render/M3.cpp
@@ -185,7 +185,7 @@ add_executable(brakeza3d
         headers/Recastnavigation/RecastGeometry.h
         src/Recastnavigation/RecastGeometryLoader.cpp
         headers/Recastnavigation/RecastGeometryLoader.h
-        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h src/Objects/Player3D.cpp src/Objects/Player3D.h)
+        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h src/Objects/Player3D.cpp src/Objects/Player3D.h src/Demo.cpp headers/Demo.h)
 
 
 target_link_libraries(brakeza3d
