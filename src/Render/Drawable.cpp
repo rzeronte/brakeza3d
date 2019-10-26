@@ -1,12 +1,7 @@
 
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Objects/Line2D.h"
-#include "../../headers/Objects/Point2D.h"
-#include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/Billboard.h"
-#include "../../headers/Render/Engine.h"
 
 void Drawable::drawBox2D(SDL_Rect r)
 {

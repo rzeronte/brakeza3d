@@ -1,7 +1,5 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Render/Drawable.h"
 
 Vertex3D Transforms::objectSpace(Vertex3D A, Object3D *o)
 {
