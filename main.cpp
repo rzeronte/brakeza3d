@@ -4,14 +4,9 @@
 #include <SDL.h>
 #include <cstdio>
 
-#include "headers/Objects/Camera3D.h"
-#include "headers/Render/Controller.h"
-#include "headers/Objects/Mesh3D.h"
-#include "headers/Render/Color.h"
-#include "headers/Render/Engine.h"
-#include "headers/Render/EngineBuffers.h"
 
 #include "Game.h"
+#include "headers/Brakeza3D.h"
 
 #pragma pack(push, MAIN)
 #include <cstdlib>
@@ -19,14 +14,12 @@
 
 typedef float vec3_t[3];
 
-Engine *brakeza3D;
-
 int main( int argc, const char* args[] ) {
 
+    Brakeza3D::get()->start();
     Game *engine = new Game();
-    brakeza3D = engine;
 
-    if (engine->initWindow() ) {
+    if (Brakeza3D::get()->initWindow() ) {
         engine->run();
     } else {
         std::cout << "Error iniciando el game" << std::endl;
