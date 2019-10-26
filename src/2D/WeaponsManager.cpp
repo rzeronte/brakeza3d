@@ -1,7 +1,6 @@
 
 #include <SDL_image.h>
 #include "../../headers/2D/WeaponsManager.h"
-#include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 

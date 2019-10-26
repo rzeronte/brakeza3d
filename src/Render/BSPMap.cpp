@@ -257,24 +257,24 @@ bool BSPMap::InitializeTextures(void)
         // Guardamos la textura, con sus mip mappings
         for (int mip_m = 1; mip_m <= 8; mip_m = 2*mip_m) { // 1, 2, 4, 8
 
-            int width = mipTexture->width/mip_m;
-            int height = mipTexture->height/mip_m;
+            int width_t = mipTexture->width / mip_m;
+            int height_t = mipTexture->height / mip_m;
 
             // Allocate memory for the texture which will be created
-            unsigned int *texture = new unsigned int [width * height];
+            unsigned int *texture = new unsigned int [width_t * height_t];
 
             // Point to the raw 8-bit texture data
             unsigned char *rawTexture = this->getRawTexture(i, mip_m);
 
             // Create a texture to assign with the texture object
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    unsigned int color = this->palette[rawTexture[x + y * width]];
-                    texture[x + y * width] = color;
+            for (int x = 0; x < width_t; x++) {
+                for (int y = 0; y < height_t; y++) {
+                    unsigned int color = this->palette[rawTexture[x + y * width_t]];
+                    texture[x + y * width_t] = color;
                 }
             }
 
-            textures[i].loadFromRaw(texture, width, height, mip_m);
+            textures[i].loadFromRaw(texture, width_t, height_t, mip_m);
             delete texture;
         }
     }

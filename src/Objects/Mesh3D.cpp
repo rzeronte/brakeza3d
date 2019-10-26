@@ -117,7 +117,7 @@ void Mesh3D::loadOBJBlenderTriangles()
     std::vector<std::string> vertex_chunks;
 
     int i = 0;
-    int idx1_vertex = -1, idx2_vertex = -1, idx3_vertex = -1;
+    int idx1_vertex = -1, idx2_vertex = -1, idx3_vertex;
     int idx1_uv = -1, idx2_uv = -1, idx3_uv = -1;
 
     if (!Tools::fileExists(mesh_file)) {

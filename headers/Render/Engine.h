@@ -93,14 +93,13 @@ public:
     void initCollisionManager();
 
     // Cycle of life
-    void onStart();
-    void onUpdate();
-    void preUpdate();
-    void postUpdate();
-    void onEnd();
+    virtual void onStart();
+    virtual void preUpdate();
+    virtual void onUpdate();
+    virtual void onEnd();
 
     // Window update
-    void onUpdateWindow();
+    void updateWindow();
 
     // Triangle recollector
     void getMesh3DTriangles();
@@ -123,7 +122,8 @@ public:
     //void objects3DShadowMapping();
     //void clearLightPointsShadowMappings();
 
-    void drawGUI();
+    // update GUI data
+    void updateGUI();
 
     // OpenCL Rasterization
     void OpenCLInfo();
@@ -136,7 +136,6 @@ public:
     void getMapsJSON();
     void getWeaponsJSON();
     void getEnemiesJSON();
-
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

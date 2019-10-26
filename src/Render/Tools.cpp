@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 28/4/18.
-//
 
 #include <string>
 #include <vector>
@@ -9,8 +6,6 @@
 #include <algorithm>
 #include <math.h>
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Objects/Triangle3D.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
@@ -28,7 +23,6 @@ std::vector<std::string> Tools::split(const std::string &text, char sep) {
 
     return tokens;
 }
-
 
 void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {

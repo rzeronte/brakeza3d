@@ -477,7 +477,7 @@ void Engine::OpenCLInfo()
     free(platforms);
 }
 
-void Engine::drawGUI()
+void Engine::updateGUI()
 {
     ImGui::NewFrame();
 
@@ -499,7 +499,7 @@ void Engine::drawGUI()
     ImGui::Render();
 }
 
-void Engine::onUpdateWindow()
+void Engine::updateWindow()
 {
     Brakeza3D::get()->processFPS();
 
@@ -514,7 +514,7 @@ void Engine::onUpdateWindow()
 
     EngineSetup::getInstance()->EVENT_GUI = false;
 
-    drawGUI();
+    updateGUI();
 
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
@@ -585,7 +585,7 @@ void Engine::preUpdate()
     }
 }
 
-void Engine::postUpdate()
+void Engine::onUpdate()
 {
     // update collider forces
     Brakeza3D::get()->getCamera()->UpdateVelocity();
@@ -600,10 +600,8 @@ void Engine::postUpdate()
     Brakeza3D::get()->getCamera()->setPosition(finalVelocity);
     Brakeza3D::get()->getCamera()->UpdateRotation();
     Brakeza3D::get()->getCamera()->UpdateFrustum();
-}
 
-void Engine::onUpdate()
-{
+    // Clear buffers
     EngineBuffers::getInstance()->clearDepthBuffer();
     EngineBuffers::getInstance()->clearVideoBuffer();
 
@@ -957,6 +955,8 @@ void Engine::Close()
     TTF_CloseFont( Brakeza3D::get()->font );
     SDL_DestroyWindow(Brakeza3D::get()->window );
     SDL_Quit();
+
+    printf("\r\nBrakeza3D exit, good bye ;)");
 }
 
 void Engine::getWeaponsJSON()

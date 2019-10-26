@@ -1,9 +1,5 @@
-//
-// Created by darkhead on 30/5/18.
-//
 
 #include "../../headers/Render/Plane.h"
-#include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Maths.h"
 
 Plane::Plane() {}

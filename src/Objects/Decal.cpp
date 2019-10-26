@@ -1,11 +1,10 @@
 
 #include "../../headers/Objects/Decal.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Objects/SpriteDirectional3D.h"
 
-Decal::Decal() {
-    sprite = new Sprite3D();
+Decal::Decal() : sprite(new Sprite3D())
+{
     setDecal(true);
 }
 

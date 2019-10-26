@@ -74,7 +74,7 @@ public:
     }
 
     ExampleAppLog log;
-    bool show = true;
+    bool show = false;
 
     virtual void draw(float deltaTime, Camera3D *cam, int numVisibleTriangles)
     {
