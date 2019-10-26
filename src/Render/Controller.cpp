@@ -5,9 +5,11 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/PhysicsGame/Projectile3DBody.h"
+#include "../../headers/Render/EngineBuffers.h"
 
 Controller::Controller()
 {
+    printf("Controller...\r\n");
 }
 
 void Controller::handleMouse(SDL_Event *event, Camera3D *camera, btDiscreteDynamicsWorld* dynamicsWorld, std::vector<Object3D*> &gameObjects, Timer *timer, MenuManager *menu, WeaponsManager *weapon)
@@ -124,7 +126,7 @@ void Controller::handleKeyboard(SDL_Event *event, Camera3D *camera, bool &end, b
             EngineSetup::getInstance()->SHOW_WEAPON = true;
         } else {
             Mix_HaltMusic();
-            Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
+            Mix_PlayMusic( EngineBuffers::getInstance()->snd_base_menu, -1 );
             EngineSetup::getInstance()->SHOW_WEAPON = false;
         }
     }

@@ -3,12 +3,12 @@
 #define SDL2_3D_ENGINE_CAMERA_H
 
 #include <SDL_surface.h>
-#include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include "Vertex3D.h"
-#include "../Render/Frustum.h"
 #include "Object3D.h"
+#include "../Render/Frustum.h"
 #include "../Render/EngineSetup.h"
 #include "../Render/M3.h"
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 typedef float vec3_t[3];
 

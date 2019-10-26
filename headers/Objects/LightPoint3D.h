@@ -6,8 +6,6 @@
 #include "Camera3D.h"
 #include "../../imgui/imgui.h"
 
-class Tools;
-
 class LightPoint3D : public Object3D {
 public:
 

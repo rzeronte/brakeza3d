@@ -13,13 +13,11 @@ Logging* Logging::getInstance()
 }
 
 Logging::Logging() {
-
 }
 
 void Logging::setGUILog(GUI_Log *gui_log) {
     Logging::gui_log = gui_log;
 }
-
 
 void Logging::Log(std::string message, std::string type)
 {

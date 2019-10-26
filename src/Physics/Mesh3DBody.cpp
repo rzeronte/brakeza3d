@@ -3,8 +3,7 @@
 #include "../../headers/Physics/Mesh3DBody.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "../../headers/Render/Engine.h"
-
-extern Engine *brakeza3D;
+#include "../../headers/Brakeza3D.h"
 
 Mesh3DBody::Mesh3DBody()
 {
@@ -149,7 +148,7 @@ void Mesh3DBody::integrateMoving()
             return;
         }
 
-        Vertex3D move = right.getScaled( brakeza3D->getDeltaTime() * speed );
+        Vertex3D move = right.getScaled(Brakeza3D::get()->getDeltaTime() * speed );
         offsetMoving+=move.getModule();
 
         posBody[0] += move.x;
@@ -179,7 +178,7 @@ void Mesh3DBody::integrateMoving()
             return;
         }
 
-        Vertex3D move = down.getScaled(brakeza3D->getDeltaTime() * speed);
+        Vertex3D move = down.getScaled(Brakeza3D::get()->getDeltaTime() * speed );
         offsetMoving+=move.getModule();
 
         posBody[0] -= move.x;

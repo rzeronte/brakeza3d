@@ -1,7 +1,7 @@
 #ifndef SDL2_3D_ENGINE_TILE_H
 #define SDL2_3D_ENGINE_TILE_H
 
-#include "../../headers/Objects/Triangle3D.h"
+#include "Triangle3D.h"
 #include <vector>
 #include <OpenCL/opencl.h>
 

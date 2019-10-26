@@ -3,7 +3,6 @@
 #define SDL2_3D_ENGINE_ENGINE_H
 
 #include <SDL.h>
-#include "Controller.h"
 #include "EngineSetup.h"
 #include "Timer.h"
 #include "../Objects/LightPoint3D.h"
@@ -15,7 +14,7 @@
 
 #include "../../headers/GUI/GUI_Menu.h"
 #include "../GUI/GUI_Objects3D.h"
-#include "../../headers/GUI/GUI_Engine.h"
+#include "../GUI/GUIManager.h"
 #include "../../headers/GUI/GUI_Weapons.h"
 
 #include "BSPMap.h"
@@ -31,60 +30,19 @@
 #include "../2D/WeaponsManager.h"
 #include "../2D/MenuManager.h"
 #include "../Collisions/CollisionsManager.h"
+#include "../Objects/Tile.h"
 
 class Engine {
 public:
-    // Window and Renderer
-    SDL_Window *window = NULL;
-    SDL_Renderer *renderer;
-
-    SDL_Surface *screenSurface;
-    SDL_Texture *screenTexture;
-
     // Events SDL
     SDL_Event e;
-
-    // Camera and Input Controller
-    Camera3D *camera;
-    Controller *controller;
-
-    // Scene 3D objects
-    std::vector<Object3D*> gameObjects;
 
     // Scene triangles
     std::vector<Triangle*> frameTriangles;
     std::vector<Triangle*> visibleTriangles;
 
-    BSPMap *bspMap;
-
-    // Luces
-    std::vector<LightPoint3D *> lightPoints;
-
     // Exit
     bool finish = false;
-
-    TTF_Font *font = NULL;
-
-    // Fps counter
-    int fps = 0;
-    int fpsFrameCounter = 0;
-
-    // GUI
-    GUI_Engine *gui_engine;
-
-    // SDL GL_Context for GUI
-    SDL_GLContext gl_context;
-
-    // Dear ImGUI
-    ImGuiContext* imgui_context;
-
-    // Timer
-    Timer engineTimer;
-    float deltaTime = 0;
-    float last_ticks = 0;
-    float current_ticks = 0;
-    float executionTime = 0;
-    float frameTime = 0;
 
     // OpenCL Rasterizer
     cl_platform_id platform_id;
@@ -126,25 +84,13 @@ public:
     cJSON *weaponsJSONList;
     cJSON *enemiesJSONList;
 
-    // collision Manager
-    CollisionsManager *collisionsManager;
-
-    // menuManager
-    MenuManager *menu;
-
-    // weaponManager
-    WeaponsManager *weaponManager;
-
     Engine();
-
     void Close();
 
-    bool initWindow();
-    bool initSound();
-    void initFontsTTF();
+    // init systems
     void initOpenCL();
     void initTiles();
-    void initCollisionsManager();
+    void initCollisionManager();
 
     // Cycle of life
     void onStart();
@@ -159,9 +105,7 @@ public:
     // Triangle recollector
     void getMesh3DTriangles();
     void getQuakeMapTriangles();
-    void getLightPointsTriangles();
     void getSpritesTriangles();
-    void getObjectsBillboardTriangles();
 
     // Object's axis
     void drawSceneObjectsAxis();
@@ -176,23 +120,10 @@ public:
     void drawFrameTriangles();
 
     // TODO: erase
-    void objects3DShadowMapping();
-    void clearLightPointsShadowMappings();
-
-    // Objects3D Managing
-    void addObject3D(Object3D *obj, std::string label);
-    Object3D* getObjectByLabel(std::string label);
-    void addLightPoint(LightPoint3D *lightPoint, std::string label);
+    //void objects3DShadowMapping();
+    //void clearLightPointsShadowMappings();
 
     void drawGUI();
-    void processFPS();
-
-    void loadBSP(const char *bspFilename, const char *paletteFilename);
-
-    // Global timer
-    Timer* getTimer();
-    void  updateTimer();
-    float getDeltaTime();
 
     // OpenCL Rasterization
     void OpenCLInfo();
@@ -201,15 +132,10 @@ public:
     void dumpTileToFrameBuffer(Tile *t);
     void handleOpenCLTransform();
 
-    // Water shader effect
-    void waterShader();
-
     // JSON setup Parsers
     void getMapsJSON();
     void getWeaponsJSON();
     void getEnemiesJSON();
-
-    void drawMenuScreen();
 
 };
 

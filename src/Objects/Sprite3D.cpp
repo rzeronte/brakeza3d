@@ -32,11 +32,6 @@ void Sprite3D::setTimer(Timer *timer)
     this->timer = timer;
 }
 
-void Sprite3D::draw(Camera3D *cam)
-{
-    Drawable::drawBillboard( this->billboard, cam );
-}
-
 Billboard *Sprite3D::getBillboard() const
 {
     return billboard;

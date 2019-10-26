@@ -17,7 +17,7 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager) : CollisionResolver(contactManifold, objA, objB, bspMap)
+    CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->enemyPart = getEnemyPart();
         this->bspMap = getBSPMap();
@@ -93,8 +93,8 @@ public:
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(brakeza3D->visibleTriangles, brakeza3D->camera);
-        brakeza3D->addObject3D(decal, "decal");
+        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getCamera());
+        Brakeza3D::get()->addObject3D(decal, "decal");
     }
 };
 

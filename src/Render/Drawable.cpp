@@ -8,8 +8,6 @@
 #include "../../headers/Render/Billboard.h"
 #include "../../headers/Render/Engine.h"
 
-extern Engine *brakeza3D;
-
 void Drawable::drawBox2D(SDL_Rect r)
 {
     int x = r.x;
@@ -320,11 +318,11 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
     if (drawForward) Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisForward().getScaled(3)), cam, Color::blue() );
 }
 
-void Drawable::drawBillboard(Billboard *B, Camera3D *cam)
+void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangles)
 {
     //B->T1.draw( cam );
-    brakeza3D->frameTriangles.push_back(&B->T1);
-    brakeza3D->frameTriangles.push_back(&B->T2);
+    frameTriangles->push_back(&B->T1);
+    frameTriangles->push_back(&B->T2);
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         B->T1.drawWireframe();

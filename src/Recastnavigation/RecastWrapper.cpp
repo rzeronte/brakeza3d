@@ -10,8 +10,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
-
-extern Engine *brakeza3D;
+#include "../../headers/Brakeza3D.h"
 
 RecastWrapper::RecastWrapper():
         m_keepInterResults(true),
@@ -412,8 +411,8 @@ bool RecastWrapper::initNavQuery()
 
 void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<Vertex3D> &points)
 {
-    startV = Transforms::objectToLocal(startV, brakeza3D->bspMap);
-    endV   = Transforms::objectToLocal(endV, brakeza3D->bspMap);
+    startV = Transforms::objectToLocal(startV, Brakeza3D::get()->getBSP());
+    endV   = Transforms::objectToLocal(endV, Brakeza3D::get()->getBSP());
 
     startV.saveToFloat3(m_spos);
     endV.saveToFloat3(m_epos);
@@ -434,7 +433,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
 
     status = m_navQuery->findPath(m_startRef, m_endRef, m_spos, m_epos, &m_filter, m_polys, &m_npolys, MAX_POLYS);
     if (dtStatusSucceed(status)) {
-        //Logging::getInstance()->Log("findPath Success: Num npolys: " + std::to_string(m_npolys));
+        //Logging::get()->Log("findPath Success: Num npolys: " + std::to_string(m_npolys));
     }
 
     // Iterate over the path to find smooth path on the detail mesh surface.
@@ -556,7 +555,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
             // Store results.
             if (m_nsmoothPath < MAX_SMOOTH)
             {
-                Vertex3D nV = Transforms::objectSpace( Vertex3D(iterPos), brakeza3D->bspMap);
+                Vertex3D nV = Transforms::objectSpace( Vertex3D(iterPos), Brakeza3D::get()->getBSP() );
                 points.push_back(nV);
 
                 dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
@@ -568,8 +567,8 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
 
 bool RecastWrapper::rayCasting(Vertex3D A, Vertex3D B)
 {
-    Vertex3D startV = Transforms::objectToLocal(A, brakeza3D->bspMap);
-    Vertex3D endV   = Transforms::objectToLocal(B, brakeza3D->bspMap);
+    Vertex3D startV = Transforms::objectToLocal(A, Brakeza3D::get()->getBSP());
+    Vertex3D endV   = Transforms::objectToLocal(B, Brakeza3D::get()->getBSP());
 
     startV.saveToFloat3(m_spos);
     endV.saveToFloat3(m_epos);
@@ -642,8 +641,8 @@ void RecastWrapper::drawNavMeshPoints()
         const float y = (orig[1] + v[1]*ch);
         const float z = (orig[2] + v[2]*cs);
 
-        Vertex3D tmpV = Transforms::objectSpace(Vertex3D(x, y, z), brakeza3D->bspMap);
-        Drawable::drawVertex(tmpV, brakeza3D->camera, Color::red());
+        Vertex3D tmpV = Transforms::objectSpace(Vertex3D(x, y, z), Brakeza3D::get()->getBSP());
+        Drawable::drawVertex(tmpV, Brakeza3D::get()->getCamera(), Color::red());
     }
 }
 
@@ -656,13 +655,13 @@ void RecastWrapper::drawPathSegments(std::vector<Vertex3D> &points)
         v.consoleInfo("v", false);
         if (count > 0 ) {
             Vector3D line = Vector3D(startV, v);
-            Drawable::drawVector3D(line, brakeza3D->camera, Color::yellow());
+            Drawable::drawVector3D(line, Brakeza3D::get()->getCamera(), Color::yellow());
             //Drawable::drawVector3DZBuffer(line, brakeza3D->camera, Color::blue());
         }
 
         startV = v;
         count++;
-        Drawable::drawVertex(v, brakeza3D->camera, Color::green());
+        Drawable::drawVertex(v, Brakeza3D::get()->getCamera(), Color::green());
     }
 }
 

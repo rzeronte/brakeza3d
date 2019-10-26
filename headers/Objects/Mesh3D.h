@@ -8,7 +8,7 @@
 #include "../Render/Tools.h"
 #include "../Render/EngineSetup.h"
 #include "Object3D.h"
-#include "LightPoint3D.h"
+//#include "LightPoint3D.h"
 
 #define MAX_VERTEX_MODEL 10000
 #define MAX_MESH_TEXTURES 100
@@ -28,7 +28,7 @@ public:
     int numVertices;
     int numTextures;
 
-    std::vector<LightPoint3D *>lightPoints;
+    //std::vector<LightPoint3D *>lightPoints;
 
     bool shadowCaster;
     int BSPEntityIndex;
@@ -45,9 +45,9 @@ public:
     void loadOBJBlenderTextureCoordinates();
     void loadOBJBlenderMaterials();
 
-    void draw();
-    void shadowMapping(LightPoint3D *);
-    void setLightPoints(std::vector<LightPoint3D*> &);
+    void draw(std::vector<Triangle*> *frameTriangles);
+    //void shadowMapping(LightPoint3D *);
+    //void setLightPoints(std::vector<LightPoint3D*> &);
 
     bool isShadowCaster() const;
     void setShadowCaster(bool shadow_caster);

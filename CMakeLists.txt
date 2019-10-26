@@ -57,6 +57,7 @@ add_executable(brakeza3d
         src/Render/Color.cpp
         headers/Render/Color.h
         src/Render/Engine.cpp
+        headers/OCLTriangle.h
         headers/Render/Engine.h
         headers/Render/EngineSetup.h
         src/Render/EngineSetup.cpp
@@ -106,14 +107,14 @@ add_executable(brakeza3d
         headers/GUI/GUI.h
         headers/GUI/GUI_Menu.h
         headers/GUI/GUI_Objects3D.h
-        headers/GUI/GUI_Engine.h
+        headers/GUI/GUIManager.h
         headers/GUI/GUI_Lights.h
         headers/GUI/GUI_Log.h
         headers/GUI/GUI_Tiles.h
         headers/GUI/GUI_Weapons.h
         src/Render/Logging.cpp
 
-        src/Objects/Tile.h
+        headers/Objects/Tile.h
 
         headers/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp

@@ -4,10 +4,12 @@
 
 
 #include "Object3D.h"
+#include "Camera3D.h"
 #include "../Render/EngineSetup.h"
 #include "../Render/Timer.h"
-#include "Camera3D.h"
 #include "../2D/TextureAnimation.h"
+#include "../Render/Billboard.h"
+#include <vector>
 
 #define ANIMATEDSPRITE_MAX_ANIMATIONS 25
 
@@ -38,7 +40,6 @@ public:
     void setTimer(Timer *);
     void updateTexture();
     void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
-    void draw(Camera3D *cam);
 
     bool isAutoRemoveAfterAnimation() const;
 

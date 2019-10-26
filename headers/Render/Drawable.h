@@ -6,9 +6,9 @@
 #include <SDL_surface.h>
 #include "Frustum.h"
 #include "../Objects/Camera3D.h"
-#include "Billboard.h"
 #include "../Objects/Line2D.h"
 #include "../Objects/Cube3D.h"
+#include "Billboard.h"
 
 class Drawable {
 public:
@@ -24,7 +24,7 @@ public:
     static void drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides);
     static void drawPlane(Plane P, Camera3D *cam, Uint32 color);
     static void drawMainAxis(Camera3D *cam);
-    static void drawBillboard(Billboard *B, Camera3D *cam);
+    static void drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangles);
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
     static void drawLightning(Camera3D *cam, Vertex3D, Vertex3D);
     static void drawCrossHair();

@@ -6,14 +6,9 @@
 #include "Vector3D.h"
 #include "../../headers/Render/M3.h"
 
-class Billboard;
-
 class Object3D {
     Vertex3D position;
     M3 rotation;
-
-    Billboard *billboard;
-    bool drawBillboard;
 
 public:
     bool enabled;
@@ -47,12 +42,6 @@ public:
 
     Vertex3D AxisRight();
     Vertex3D AxisLeft();
-
-    void setDefaultBillboard();
-    Billboard *getBillboard() const;
-    void setBillboard(Billboard *billboard);
-    bool isDrawBillboard() const;
-    void setDrawBillboard(bool drawBillboard);
 
     float getScale() const;
     void  setScale(float scale);

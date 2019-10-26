@@ -2,6 +2,7 @@
 #define SDL2_3D_ENGINE_LIGHTPOINT_H
 
 #include "Object3D.h"
+#include "../Render/Billboard.h"
 
 
 class BSPEntity3D : public Object3D {

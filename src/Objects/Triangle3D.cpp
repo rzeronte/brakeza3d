@@ -9,8 +9,8 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Maths.h"
-
-extern Engine *brakeza3D;
+#include "../../headers/Brakeza3D.h"
+#include "../../headers/Render/EngineBuffers.h"
 
 Triangle::Triangle()
 {
@@ -178,7 +178,7 @@ void Triangle::updateTextureAnimated()
     if (this->getTexture() == NULL) return;
 
     if (this->getTexture()->animated) {
-        this->timerTextureAnimatedFrameControl += brakeza3D->deltaTime / 1000;
+        this->timerTextureAnimatedFrameControl += Brakeza3D::get()->deltaTime / 1000;
 
         int maxFrames = this->getTexture()->numAnimatedFrames;
 
@@ -190,7 +190,7 @@ void Triangle::updateTextureAnimated()
             float stepTime = (float) 1 / (float) maxFrames;
 
             if (this->timerTextureAnimatedFrameControl >= stepTime) {
-                this->setTexture(brakeza3D->bspMap->getTexture(n));
+                this->setTexture(Brakeza3D::get()->getBSP()->getTexture(n));
                 this->currentBSPTextureAnimatedFrame++;
                 this->timerTextureAnimatedFrameControl = 0;
             }
@@ -215,7 +215,7 @@ Vertex3D Triangle::getNormal()
     return this->normal;
 }
 
-void Triangle::shadowMapping(LightPoint3D *lp)
+/*void Triangle::shadowMapping(LightPoint3D *lp)
 {
     this->updateFullVertexSpaces(lp->cam);
 
@@ -231,23 +231,19 @@ void Triangle::shadowMapping(LightPoint3D *lp)
     }
 
     this->scanVerticesForShadowMapping(lp);
-}
+}*/
 
-void Triangle::drawForTile(Camera3D *cam, int minX, int minY, int maxX, int maxY)
-{
-    softwareRasterizerForTile( minX,  minY,  maxX,  maxY);
-}
 
 void Triangle::draw(Camera3D *cam)
 {
     // degradate
     if (getTexture() != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-        this->softwareRasterizer();
+        Brakeza3D::get()->triangleRasterizer(this);
     }
 
     // texture
     if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        this->softwareRasterizer();
+        Brakeza3D::get()->triangleRasterizer(this);
     }
 
     // wireframe
@@ -323,152 +319,6 @@ bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
     return false;
 }
 
-void Triangle::softwareRasterizerForTile(int minTileX, int minTileY, int maxTileX, int maxTileY)
-{
-    // LOD determination
-    this->lod = processLOD();
-
-    // Triangle setup
-    int A01 = (int) -(As.y - Bs.y);
-    int A12 = (int) -(Bs.y - Cs.y);
-    int A20 = (int) -(Cs.y - As.y);
-
-    int B01 = (int) -(Bs.x - As.x);
-    int B12 = (int) -(Cs.x - Bs.x);
-    int B20 = (int) -(As.x - Cs.x);
-
-    Point2D startP(minX, minY);
-    int w0_row = Maths::orient2d(Bs, Cs, startP);
-    int w1_row = Maths::orient2d(Cs, As, startP);
-    int w2_row = Maths::orient2d(As, Bs, startP);
-
-    float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
-
-    for (int y = minY ; y < maxY ; y++) {
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = minX ; x < maxX ; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-
-                alpha = w0 * reciprocalFullArea;
-                theta = w1 * reciprocalFullArea;
-                gamma = 1 - alpha - theta;
-
-                depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
-
-                const int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
-
-                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
-                    affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
-                    texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
-                    texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
-
-                    lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
-                    lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
-
-                    if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
-                        processPixel(
-                                bufferIndex,
-                                x, y,
-                                alpha, theta, gamma,
-                                depth,
-                                texu, texv,
-                                lightu, lightv
-                        );
-                    }
-                }
-            }
-
-            // edge function increments
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-
-}
-
-void Triangle::softwareRasterizer()
-{
-    // LOD determination
-    this->lod = processLOD();
-
-    // Triangle setup
-    int A01 = (int) -(As.y - Bs.y);
-    int A12 = (int) -(Bs.y - Cs.y);
-    int A20 = (int) -(Cs.y - As.y);
-
-    int B01 = (int) -(Bs.x - As.x);
-    int B12 = (int) -(Cs.x - Bs.x);
-    int B20 = (int) -(As.x - Cs.x);
-
-    Point2D startP(minX, minY);
-    int w0_row = Maths::orient2d(Bs, Cs, startP);
-    int w1_row = Maths::orient2d(Cs, As, startP);
-    int w2_row = Maths::orient2d(As, Bs, startP);
-
-    float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
-
-    for (int y = minY ; y < maxY ; y++) {
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = minX ; x < maxX ; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-                if (Tools::isPixelInWindow(x, y))  {
-                    alpha = w0 * reciprocalFullArea;
-                    theta = w1 * reciprocalFullArea;
-                    gamma = 1 - alpha - theta;
-
-                    depth = alpha * (An.z) + theta * (Bn.z) + gamma * (Cn.z);
-
-                    int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
-
-                    if (parent->isDecal()) {
-                        depth-=1;
-                    }
-                    if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
-                        affine_uv = 1 / ( alpha * (persp_correct_Az) + theta * (persp_correct_Bz) + gamma * (persp_correct_Cz) );
-                        texu   = ( alpha * (tex_u1_Ac_z)   + theta * (tex_u2_Bc_z)   + gamma * (tex_u3_Cc_z) )   * affine_uv;
-                        texv   = ( alpha * (tex_v1_Ac_z)   + theta * (tex_v2_Bc_z)   + gamma * (tex_v3_Cc_z) )   * affine_uv;
-
-                        lightu = ( alpha * (light_u1_Ac_z) + theta * (light_u2_Bc_z) + gamma * (light_u3_Cc_z) ) * affine_uv;
-                        lightv = ( alpha * (light_v1_Ac_z) + theta * (light_v2_Bc_z) + gamma * (light_v3_Cc_z) ) * affine_uv;
-
-                        processPixel(
-                                bufferIndex,
-                                x, y,
-                                alpha, theta, gamma,
-                                depth,
-                                texu, texv,
-                                lightu, lightv
-                        );
-                    }
-                }
-            }
-
-            // edge function increments
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-
-}
-
 void Triangle::updateBoundingBox()
 {
     maxX = std::max(As.x, std::max(Bs.x, Cs.x));
@@ -483,7 +333,7 @@ int Triangle::updateLightmapFrame()
     int length;
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         style = typelight[nl];
-        float timeIncrement = brakeza3D->deltaTime / 100.0f;
+        float timeIncrement = Brakeza3D::get()->deltaTime / 100.0f;
         if ( style > 10) continue;
         switch(nl) {
             default:
@@ -569,7 +419,7 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
     Drawable::drawVector3D( Vector3D( this->Ao, this->getNormal() ), cam, color );
 }
 
-void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
+/*void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
 {
     Vertex3D Aos = this->Ao;
     Vertex3D Bos = this->Bo;
@@ -626,9 +476,9 @@ void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
         this->scanShadowMappingBottomFlatTriangle(v1, v2, v4, A, B, D, lp);
         this->scanShadowMappingTopFlatTriangle(v2, v4, v3, B, D, C, lp);
     }
-}
+}*/
 
-void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
+/*void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
     float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
     float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
@@ -641,9 +491,9 @@ void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D 
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
-}
+}*/
 
-void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
+/*void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
     float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
     float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
@@ -656,95 +506,7 @@ void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point
         curx1 += invslope1;
         curx2 += invslope2;
     }
-}
-
-
-void Triangle::processPixel(int buffer_index, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
-{
-    Uint32 pixelColor = NULL;
-
-    // Gradient
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        pixelColor = (Uint32) Tools::createRGB(w0 * 255, w1 * 255, w2 * 255);
-    }
-
-    // Texture
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && this->getTexture() != NULL) {
-        if (getTexture()->liquid && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED ) {
-            float cache1 = texu / EngineSetup::getInstance()->LAVA_CLOSENESS;
-            float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
-            texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
-            texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
-        }
-
-        if ( parent->isDecal() ) {
-            if ((texu < 0 || texu > 1) || (texv < 0 || texv > 1) ) {
-                return;
-            }
-        }
-
-        pixelColor = this->processPixelTexture(texu, texv);
-
-        Uint8 red, green, blue, alpha;
-        SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &red, &green, &blue, &alpha);
-
-        if (alpha == 0) {
-            return;
-        } else {
-                Uint32 existingColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
-                pixelColor = Maths::alphaBlend(existingColor, pixelColor, alpha);
-        }
-
-        if (!parent->isDecal() && getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
-            pixelColor = this->processPixelLightmap(pixelColor, lightu, lightv);
-        }
-    }
-
-
-    /*if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
-        Vertex3D D;
-
-        if (this->numberLightPoints > 0) {
-            // Coordenadas del punto que estamos procesando en el mundo (object space)
-            float x3d = w0 * Ao.x + w1 * Bo.x + w2 * Co.x;
-            float y3d = w0 * Ao.y + w1 * Bo.y + w2 * Co.y;
-            float z3d = w0 * Ao.z + w1 * Bo.z + w2 * Co.z;
-
-            D = Vertex3D( x3d, y3d, z3d ); // Object space
-        }
-
-        for (int i = 0; i < this->numberLightPoints; i++) {
-            if (!this->lightPoints[i]->isEnabled()) {
-                continue;
-            }
-
-            // Color light apply
-            float d = Maths::distanteBetweenpoints( *this->lightPoints[i]->getPosition(), D );
-            pixelColor = Maths::mixColor(pixelColor, d, this->lightPoints[i], D);
-
-            if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
-                Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
-
-                if (isMesh != NULL && isMesh->isShadowCaster()) {
-                    // Shadow test
-                    Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
-                    Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
-                    const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
-
-                    if (Tools::isPixelInWindow(DP.x, DP.y)) {
-                        float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
-                        if ( Dl.z > buffer_shadowmapping_z) {
-                            pixelColor = Color::red();
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-
-    EngineBuffers::getInstance()->setDepthBuffer(buffer_index, z);
-    EngineBuffers::getInstance()->setVideoBuffer(buffer_index, pixelColor);
-}
+}*/
 
 Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
 {
@@ -870,7 +632,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
     return pixelColor;
 }
 
-void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
+/*void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
                                      Point2D pa, Point2D pb, Point2D pc,
                                      Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
 {
@@ -907,7 +669,7 @@ void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
             }
         }
     }
-}
+}*/
 
 Texture *Triangle::getTexture() const
 {
@@ -929,10 +691,10 @@ void Triangle::setLightmap(Texture *t)
     lightmap = t;
 }
 
-void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
+/*void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 {
     this->lightPoints = lightPoints;
-}
+}*/
 
 void Triangle::setClipped(bool value)
 {

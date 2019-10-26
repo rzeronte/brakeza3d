@@ -109,7 +109,7 @@ void Texture::loadTGA(const char *file, int mip_mapping )
                 break;
         }
     }
-    //Logging::getInstance()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
+    //Logging::get()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
 }
 
 void Texture::drawFlatLightMap(int pos_x, int pos_y)
@@ -117,7 +117,7 @@ void Texture::drawFlatLightMap(int pos_x, int pos_y)
     int width = lightmap->w;
     int height = lightmap->h;
 
-    //Logging::getInstance()->Log("Draw drawFlatLightMap: Width: " + std::to_string(width) + ", Height: " + std::to_string(height), "");
+    //Logging::get()->Log("Draw drawFlatLightMap: Width: " + std::to_string(width) + ", Height: " + std::to_string(height), "");
 
     for (int i = 0 ; i < height ; i++) {
         for (int j = 0 ; j < width ; j++) {
@@ -132,7 +132,7 @@ void Texture::drawFlat(int pos_x, int pos_y)
     int width = mip_mapping_1->w;
     int height = mip_mapping_1->h;
 
-    //Logging::getInstance()->Log("Draw Texture: Width: " + std::to_string(width) + ", Height: " + std::to_string(height), "");
+    //Logging::get()->Log("Draw Texture: Width: " + std::to_string(width) + ", Height: " + std::to_string(height), "");
 
     for (int i = 0 ; i < height ; i++) {
         for (int j = 0 ; j < width ; j++) {
