@@ -9,19 +9,20 @@
 #include "Collisions/CollisionsManager.h"
 #include "Render/InputController.h"
 #include "GUI/GUIManager.h"
+#include "Collisions/CollisionResolver.h"
 
 class Brakeza3D {
 private:
-    // GUI
-    GUIManager *guiManager;
-    // Camera and Input InputController
+    // Scene 3D objects
+    std::vector<Object3D*> sceneObjects;
+    // Camera
     Camera3D *camera;
     // Input InputController
     InputController *controllerManager;
+    // GUI
+    GUIManager *guiManager;
     // BSP map
     BSPMap *bsp;
-    // Scene 3D objects
-    std::vector<Object3D*> sceneObjects;
     // Lights
     std::vector<LightPoint3D *> lightPoints;
     // collision Manager
@@ -78,10 +79,10 @@ public:
 
     Camera3D *getCamera();
 
-    std::vector<Object3D*> &getSceneObjects();
+    std::vector<Object3D*>     &getSceneObjects();
     std::vector<LightPoint3D*> &getLightPoints();
 
-    InputController        *getController();
+    InputController   *getController();
     CollisionsManager *getCollisionManager();
     GUIManager        *getGUIManager();
     MenuManager       *getMenuManager();
@@ -94,7 +95,7 @@ public:
     void   updateTimer();
     float  getDeltaTime();
 
-    void processFPS();
+    void updateFPS();
 
     void drawMenuScreen();
 

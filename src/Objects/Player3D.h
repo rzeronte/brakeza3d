@@ -9,8 +9,12 @@ class Player3D : public Camera3D {
 public:
     Player3D();
 
+    bool dead;
+
     int stamina;
     int lives;
+
+    void takeDamage(float dmg);
 };
 
 

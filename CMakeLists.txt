@@ -168,7 +168,7 @@ add_executable(brakeza3d
         headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
         headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
         headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
-        headers/Collisions/CollisionResolverBetweenProjectileAndCamera3D.h
+        headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h
         src/Objects/Decal.cpp
         headers/Objects/Decal.h
         src/PhysicsGame/NPCEnemyPartBody.cpp
@@ -185,7 +185,11 @@ add_executable(brakeza3d
         headers/Recastnavigation/RecastGeometry.h
         src/Recastnavigation/RecastGeometryLoader.cpp
         headers/Recastnavigation/RecastGeometryLoader.h
-        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h src/Objects/Player3D.cpp src/Objects/Player3D.h src/Demo.cpp headers/Demo.h)
+        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h
+
+        src/Objects/Player3D.cpp src/Objects/Player3D.h
+        src/Demo.cpp headers/Demo.h
+        )
 
 
 target_link_libraries(brakeza3d

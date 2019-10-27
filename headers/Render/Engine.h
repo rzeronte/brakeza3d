@@ -29,7 +29,6 @@
 #include "../Misc/cJSON.h"
 #include "../2D/WeaponsManager.h"
 #include "../2D/MenuManager.h"
-#include "../Collisions/CollisionsManager.h"
 #include "../Objects/Tile.h"
 
 class Engine {
@@ -97,6 +96,9 @@ public:
     virtual void preUpdate();
     virtual void onUpdate();
     virtual void onEnd();
+
+    // resolve collision
+    virtual void resolveCollisions();
 
     // Window update
     void updateWindow();

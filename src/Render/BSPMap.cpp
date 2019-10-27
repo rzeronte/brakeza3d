@@ -564,6 +564,7 @@ void BSPMap::InitializeEntities()
                 if (s2.find("monster") != std::string::npos) {
                     NPCEnemyBody *enemyTempate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname );
 
+                    if (enemyTempate == NULL) continue;
                     // Angle Monster
                     int angle = 0;
                     if (this->hasEntityAttribute(i, "angle")) {

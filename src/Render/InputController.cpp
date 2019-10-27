@@ -3,14 +3,12 @@
 #include <LinearMath/btDefaultMotionState.h>
 #include "../../headers/Render/InputController.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Maths.h"
 #include "../../headers/PhysicsGame/Projectile3DBody.h"
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Brakeza3D.h"
 
 InputController::InputController()
 {
-    printf("InputController...\r\n");
 }
 
 void InputController::handleMouse(SDL_Event *event)
