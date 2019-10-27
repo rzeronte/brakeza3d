@@ -8,21 +8,22 @@
 #include "../PhysicsGame/NPCEnemyBody.h"
 #include "../Physics/Sprite3DBody.h"
 #include "../PhysicsGame/NPCEnemyPartBody.h"
+#include "../../src/Objects/Player3D.h"
 
-class CollisionResolverBetweenProjectileAndCamera3D : public CollisionResolver {
+class CollisionResolverBetweenProjectileAndPlayer : public CollisionResolver {
 
 public:
     Projectile3DBody *projectile;
-    Camera3D *camera;
+    Player3D *player;
 
     std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
     WeaponsManager *weaponManager;
 
-    CollisionResolverBetweenProjectileAndCamera3D(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
+    CollisionResolverBetweenProjectileAndPlayer(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->projectile = this->getProjectile();
-        this->camera     = this->getCamera();
+        this->player     = this->getPlayer3D();
 
         this->gameObjects   = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
@@ -32,7 +33,7 @@ public:
     void dispatch()
     {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndCamera3D");
+            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndPlayer");
         }
 
         // Remove projectile for check in stepSimulation
@@ -56,15 +57,15 @@ public:
         }
     }
 
-    Camera3D *getCamera()
+    Player3D *getPlayer3D()
     {
         if (objA->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objA);
+            Player3D *camera = dynamic_cast<Player3D*> (this->objA);
             return camera;
         }
 
         if (objB->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objB);
+            Player3D *camera = dynamic_cast<Player3D*> (this->objB);
             return camera;
         }
     }

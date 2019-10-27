@@ -218,7 +218,7 @@ float Brakeza3D::getDeltaTime()
 }
 
 
-void Brakeza3D::processFPS()
+void Brakeza3D::updateFPS()
 {
     if (!EngineSetup::getInstance()->DRAW_FPS) return;
 

@@ -30,7 +30,6 @@ EngineBuffers::EngineBuffers()
     int firePixelsBufferSize = EngineSetup::getInstance()->FIRE_WIDTH * EngineSetup::getInstance()->FIRE_HEIGHT;
     firePixelsBuffer = new int[firePixelsBufferSize];
 
-    //fragmentsBuffer = new pixelFragment[EngineSetup::get()->ENGINE_MAX_FRAGMENTS];
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
 
     // 37 colores * 3 (rgb channels)

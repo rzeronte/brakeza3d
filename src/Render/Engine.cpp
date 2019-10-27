@@ -501,7 +501,7 @@ void Engine::updateGUI()
 
 void Engine::updateWindow()
 {
-    Brakeza3D::get()->processFPS();
+    Brakeza3D::get()->updateFPS();
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         Brakeza3D::get()->drawMenuScreen();
@@ -596,6 +596,8 @@ void Engine::onUpdate()
     // step simulation
     Vertex3D finalVelocity = Brakeza3D::get()->getCollisionManager()->stepSimulation( );
 
+    this->resolveCollisions();
+
     // update camera position/rotation/frustum
     Brakeza3D::get()->getCamera()->setPosition(finalVelocity);
     Brakeza3D::get()->getCamera()->UpdateRotation();
@@ -673,6 +675,11 @@ void Engine::onUpdate()
     if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
         Brakeza3D::get()->waterShader();
     }
+}
+
+void Engine::resolveCollisions()
+{
+
 }
 
 /*void Engine::clearLightPointsShadowMappings()

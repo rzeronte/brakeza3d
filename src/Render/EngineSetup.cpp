@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include "../../headers/Render/EngineSetup.h"
 
 EngineSetup* EngineSetup::instance = 0;
@@ -15,7 +14,6 @@ EngineSetup* EngineSetup::getInstance()
 
 EngineSetup::EngineSetup()
 {
-    printf("EngineSetup");
     LIGHT_PATTERNS[0]  = "m"; // 0 normal
     LIGHT_PATTERNS[1]  = "mmnmmommommnonmmonqnmmo"; // 1 FLICKER (first variety)
     LIGHT_PATTERNS[2]  = "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba"; // 2 SLOW STRONG PULSE

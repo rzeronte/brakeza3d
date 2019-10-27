@@ -20,9 +20,9 @@ private:
 
 public:
 
-    float *depthBuffer;
+    float  *depthBuffer;
     Uint32 *videoBuffer;
-    int sizeBuffers;
+    int    sizeBuffers;
 
     int *firePixelsBuffer;
 
@@ -77,10 +77,8 @@ public:
         0xFF, 0xFF, 0xFF
     };
 
-    Sprite3D *goreTemplate;
-    Sprite3D *gibsTemplate;
-    //Decal *decal;
-
+    Sprite3D                   *goreTemplate;
+    Sprite3D                   *gibsTemplate;
     std::vector<NPCEnemyBody*> enemyTemplates;
 
     static EngineBuffers* getInstance();

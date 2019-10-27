@@ -9,8 +9,11 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/SpriteDirectional3DBody.h"
 #include "../2D/WeaponsManager.h"
+#include "CollisionResolver.h"
 
 class CollisionsManager {
+private:
+    std::vector<CollisionResolver*> collisions;
 public:
     Camera3D *camera;
     Mesh3DGhost *triggerCamera;
@@ -64,6 +67,11 @@ public:
     void updatePhysicObjects();
 
     Vertex3D stepSimulation();
+
+    std::vector<CollisionResolver *> &getCollisions();
+
+    void setCollisions(const std::vector<CollisionResolver *> &collisions);
+
 };
 
 

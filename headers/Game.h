@@ -22,6 +22,9 @@ public:
 
     void onUpdateInputController();
     void onUpdateIA();
+
+    void resolveCollisions();
+
 };
 
 

@@ -7,7 +7,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndCamera3D.h"
+#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 
 CollisionsManager::CollisionsManager()
 {
@@ -191,47 +191,8 @@ void CollisionsManager::checkCollisionsForAll()
                 Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
                 Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
 
-                CollisionResolver *collisionResolver = new CollisionResolver(contactManifold, brkObjectA, brkObjectB, getBspMap(), getVisibleTriangles());
-
-                int collisionType = collisionResolver->getTypeCollision();
-
-                if (!collisionType) continue;
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP ) {
-                    auto *resolver = new CollisionResolverBetweenProjectileAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
-                    auto *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR ) {
-                    auto *resolver = new CollisionResolverBetweenCamera3DAndFuncDoor(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON ) {
-                    auto *resolver = new CollisionResolverBetweenCamera3DAndFuncButton(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP ) {
-                    auto *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
-
-                if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA ) {
-                    auto *resolver = new CollisionResolverBetweenProjectileAndCamera3D(contactManifold, brkObjectA, brkObjectB, getBspMap(), getGameObjects(), getDynamicsWorld(), getWeaponManager(), getVisibleTriangles());
-                    resolver->dispatch();
-                    continue;
-                }
+                auto *collisionResolver = new CollisionResolver(contactManifold, brkObjectA, brkObjectB, getBspMap(), getVisibleTriangles());
+                Brakeza3D::get()->getCollisionManager()->getCollisions().push_back( collisionResolver );
 
             }
         }
@@ -343,3 +304,10 @@ void CollisionsManager::setVisibleTriangles(std::vector<Triangle *> &visibleTria
     CollisionsManager::visibleTriangles = &visibleTriangles;
 }
 
+std::vector<CollisionResolver *> &CollisionsManager::getCollisions() {
+    return collisions;
+}
+
+void CollisionsManager::setCollisions(const std::vector<CollisionResolver *> &collisions) {
+    CollisionsManager::collisions = collisions;
+}
