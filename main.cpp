@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "headers/Game.h"
+#include "headers/Game/Game.h"
 #include "headers/Brakeza3D.h"
 #include "headers/Demo.h"
 

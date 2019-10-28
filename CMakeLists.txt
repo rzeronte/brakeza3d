@@ -82,7 +82,7 @@ add_executable(brakeza3d
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
 
-        src/Game.cpp headers/Game.h
+        src/Game/Game.cpp headers/Game/Game.h
         src/Render/Billboard.cpp
         headers/Render/Billboard.h
         src/Render/M3.cpp
@@ -187,7 +187,7 @@ add_executable(brakeza3d
         headers/Recastnavigation/RecastGeometryLoader.h
         src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h
 
-        src/Objects/Player.cpp src/Objects/Player.h
+        headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
         src/Game/GameInputController.cpp headers/Game/GameInputController.h)
 
