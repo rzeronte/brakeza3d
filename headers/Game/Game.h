@@ -1,9 +1,9 @@
 #ifndef SDL2_3D_ENGINE_GAME_H
 #define SDL2_3D_ENGINE_GAME_H
 
-#include "Render/Engine.h"
-#include "../src/Objects/Player.h"
-#include "Game/GameInputController.h"
+#include "../Render/Engine.h"
+#include "../../src/Game/Player.h"
+#include "GameInputController.h"
 
 class Game: public Engine {
 public:
@@ -11,7 +11,9 @@ public:
     GameInputController *controller;
     std::vector<Texture*> HUDTextures;
     Game();
+
 public:
+
     static Game* get();
     static Game* instance;
 

@@ -8,7 +8,7 @@
 #include "../PhysicsGame/NPCEnemyBody.h"
 #include "../Physics/Sprite3DBody.h"
 #include "../PhysicsGame/NPCEnemyPartBody.h"
-#include "../../src/Objects/Player.h"
+#include "../../src/Game/Player.h"
 
 class CollisionResolverBetweenProjectileAndPlayer : public CollisionResolver {
 

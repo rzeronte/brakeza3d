@@ -3,7 +3,7 @@
 #define BRAKEZA3D_GAMEINPUTCONTROLLER_H
 
 #include "../Input/InputController.h"
-#include "../../src/Objects/Player.h"
+#include "../../src/Game/Player.h"
 
 class GameInputController : public InputController
 {

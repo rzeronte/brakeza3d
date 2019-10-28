@@ -1,8 +1,8 @@
 
 #include <BulletCollision/CollisionShapes/btConvexShape.h>
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
-#include "Player.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../src/Game/Player.h"
+#include "../Brakeza3D.h"
 
 Player::Player() : state(PlayerState::LIVE), dead(false), stamina(100), lives(4) {
 
