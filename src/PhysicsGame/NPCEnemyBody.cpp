@@ -7,7 +7,7 @@
 NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP)
 {
     this->projectileTemplate = new SpriteDirectional3D();
-    std::string spritePath =  "machinegun/bullet/idle";
+    std::string spritePath =  "weapons/machinegun/bullet/idle";
     projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
     projectileTemplate->setAnimation(0);
     projectileTemplate->width = 0.5;

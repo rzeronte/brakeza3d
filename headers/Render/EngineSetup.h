@@ -122,6 +122,8 @@ public:
     std::string ASSETS_FOLDER = "../assets/";
     std::string CONFIG_FOLDER = "../config/";
     std::string SOUNDS_FOLDER = "../assets/sounds/";
+    std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
+    std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
 
     std::string SOUND_MAINMENU = "tartani.wav";
     std::string SOUND_BASE_LEVEL_0 = "base_level_0.wav";

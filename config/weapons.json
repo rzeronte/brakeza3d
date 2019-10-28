@@ -1,14 +1,14 @@
 {
   "weapons": [
     {
-      "name": "melee_magic",
+      "name": "weapons/melee_magic",
       "cadence": 0.1,
       "hit": 0,
       "damage": 10,
       "speed": 0,
       "projectile_width": 0,
       "projectile_height": 0,
-      "mark": { "path": "melee_magic/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
+      "mark": { "path": "weapons/melee_magic/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "animations": [
@@ -18,14 +18,14 @@
       ]
     },
     {
-      "name": "gun",
+      "name": "weapons/gun",
       "cadence": 0.1,
       "hit": 1,
       "damage": 1,
       "speed": 700,
       "projectile_width": 0.75,
       "projectile_height": 0.75,
-      "mark": { "path": "gun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "mark": { "path": "weapons/gun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "animations": [
@@ -35,14 +35,14 @@
       ]
     },
     {
-      "name": "machinegun",
+      "name": "weapons/machinegun",
       "cadence": 0.05,
       "hit": 1,
       "damage": 5,
       "speed": 700,
       "projectile_width": 0.50,
       "projectile_height": 0.50,
-      "mark": { "path": "machinegun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "mark": { "path": "weapons/machinegun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "fire_sound": "machinegun_fire.wav",
       "mark_sound": "machinegun_mark.wav",
       "animations": [
@@ -52,14 +52,14 @@
       ]
     },
     {
-      "name": "rocketlauncher",
+      "name": "weapons/rocketlauncher",
       "cadence": 1,
       "hit": 1,
       "damage": 30,
       "speed": 500,
       "projectile_width": 6,
       "projectile_height": 6,
-      "mark": { "path": "rocketlauncher/mark/mark",  "frames": 16,  "fps": 30, "width": 8, "height": 8},
+      "mark": { "path": "weapons/rocketlauncher/mark/mark",  "frames": 16,  "fps": 30, "width": 8, "height": 8},
       "fire_sound": "rocketlauncher_fire.wav",
       "mark_sound": "rocketlauncher_mark.wav",
       "animations": [

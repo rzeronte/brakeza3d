@@ -38,8 +38,8 @@ add_executable(brakeza3d
         main.cpp
         src/Objects/Camera3D.cpp
         headers/Objects/Camera3D.h
-        src/Render/InputController.cpp
-        headers/Render/InputController.h
+        src/Input/InputController.cpp
+        headers/Input/InputController.h
         src/Objects/Mesh3D.cpp
         headers/Objects/Mesh3D.h
         src/Objects/Triangle3D.cpp
@@ -187,9 +187,9 @@ add_executable(brakeza3d
         headers/Recastnavigation/RecastGeometryLoader.h
         src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h
 
-        src/Objects/Player3D.cpp src/Objects/Player3D.h
+        src/Objects/Player.cpp src/Objects/Player.h
         src/Demo.cpp headers/Demo.h
-        )
+        src/Game/GameInputController.cpp headers/Game/GameInputController.h)
 
 
 target_link_libraries(brakeza3d

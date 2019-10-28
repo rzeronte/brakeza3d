@@ -6,13 +6,11 @@
 #include "../Physics/SpriteDirectional3DBody.h"
 
 typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_DIE} EnemyState;
-typedef enum {NONE, PATHFOUND, FIRE} EnemyStateCommands;
 
 class NPCEnemyBody: public SpriteDirectional3DBody, public Enemy {
 
 public:
     EnemyState state;
-    static EnemyStateCommands stateCommands;
 
     std::vector<Vertex3D> points;
     SpriteDirectional3D *projectileTemplate;

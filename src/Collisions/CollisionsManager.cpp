@@ -191,7 +191,13 @@ void CollisionsManager::checkCollisionsForAll()
                 Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
                 Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
 
-                auto *collisionResolver = new CollisionResolver(contactManifold, brkObjectA, brkObjectB, getBspMap(), getVisibleTriangles());
+                auto *collisionResolver = new CollisionResolver(
+                        contactManifold,
+                        brkObjectA,
+                        brkObjectB,
+                        getBspMap(),
+                        getVisibleTriangles()
+                );
                 Brakeza3D::get()->getCollisionManager()->getCollisions().push_back( collisionResolver );
 
             }

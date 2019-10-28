@@ -93,11 +93,11 @@ Demo::Demo()
     marine->setPosition(Vertex3D(2, 0, 10));
     marine->setRotation( M3(0, -90, 0) );
     marine->setTimer(Brakeza3D::get()->getTimer());
-    marine->addAnimationDirectional2D("soldier/walk", 4, 20,  false, -1);
-    marine->addAnimationDirectional2D("soldier/fire", 2, 20, false, -1);
-    marine->addAnimationDirectional2D("soldier/injuried", 1, 20, false, -1);
-    marine->addAnimationDirectional2D("soldier/dead", 5, 20, true, 1);
-    marine->addAnimationDirectional2D("soldier/explosion", 8, 20, true, 1);
+    marine->addAnimationDirectional2D("enemies/soldier/walk", 4, 20,  false, -1);
+    marine->addAnimationDirectional2D("enemies/soldier/fire", 2, 20, false, -1);
+    marine->addAnimationDirectional2D("enemies/soldier/injuried", 1, 20, false, -1);
+    marine->addAnimationDirectional2D("enemies/soldier/dead", 5, 20, true, 1);
+    marine->addAnimationDirectional2D("enemies/soldier/explosion", 8, 20, true, 1);
     marine->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(marine, "marine");
 
@@ -106,7 +106,7 @@ Demo::Demo()
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->setTimer(Brakeza3D::get()->getTimer());
-    skull->addAnimationDirectional2D("skull/idle", 5, 20, false, -1);
+    skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
     skull->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(skull, "skull");
 
@@ -115,8 +115,8 @@ Demo::Demo()
     caco->setEnabled(false);
     caco->setPosition(Vertex3D(20, 0, -10));
     caco->setTimer(Brakeza3D::get()->getTimer());
-    caco->addAnimationDirectional2D("cacodemon/walk", 6, 20, false, -1);
-    caco->addAnimationDirectional2D("cacodemon/dead", 6, 20, false, -1);
+    caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);
+    caco->addAnimationDirectional2D("enemies/cacodemon/dead", 6, 20, false, -1);
     caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
     Brakeza3D::get()->addObject3D(caco, "caco");
 

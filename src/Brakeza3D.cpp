@@ -105,7 +105,7 @@ void Brakeza3D::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = "../fonts/doom.ttf";
+        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "doom.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
         font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
@@ -301,7 +301,6 @@ void Brakeza3D::waterShader()
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
-
 void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
     const char *paletteFilename = "palette.lmp";
@@ -310,6 +309,11 @@ void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTr
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
     Brakeza3D::get()->getBSP()->Initialize(bspFilename, paletteFilename, frameTriangles);
+    setCameraInBSPStartPosition();
+}
+
+void Brakeza3D::setCameraInBSPStartPosition()
+{
 
     // Load start position from BSP
     Vertex3D bspOriginalPosition = Brakeza3D::get()->getBSP()->getStartMapPosition();
@@ -330,7 +334,6 @@ void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTr
     btPairCachingGhostObject *kinematicGhost = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject();
     kinematicGhost->setWorldTransform(initialTransform);
 }
-
 
 void Brakeza3D::triangleRasterizer(Triangle *t)
 {
@@ -567,4 +570,9 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
         w1_row += B20;
         w2_row += B01;
     }
+}
+
+void Brakeza3D::setController(InputController *ic)
+{
+    this->controllerManager = ic;
 }
