@@ -7,7 +7,7 @@
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
 #include "Collisions/CollisionsManager.h"
-#include "Render/InputController.h"
+#include "Input/InputController.h"
 #include "GUI/GUIManager.h"
 #include "Collisions/CollisionResolver.h"
 
@@ -71,6 +71,7 @@ public:
 
     // loader for BSP maps
     void initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
+    void setCameraInBSPStartPosition();
 
     // Objects3D Managing
     void      addObject3D(Object3D *obj, std::string label);
@@ -87,6 +88,8 @@ public:
     GUIManager        *getGUIManager();
     MenuManager       *getMenuManager();
     WeaponsManager    *getWeaponsManager();
+
+    void setController(InputController *);
 
     BSPMap *getBSP();
 

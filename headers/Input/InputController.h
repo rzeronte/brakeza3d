@@ -17,21 +17,23 @@
 
 class InputController {
 
+public:
+
     bool debug = true;
     bool click = false;
 
     bool MousePressed = false;
     bool MouseMotion = false;
 
-    Uint8* keyboard;
-
-public:
     InputController();
 
-    void handleKeyboardContinuous(SDL_Event *, bool &);
-    void handleKeyboard(SDL_Event *e, bool &);
+    virtual void handleKeyboardContinuous(SDL_Event *, bool &);
+    virtual void handleKeyboard(SDL_Event *e, bool &);
+    virtual void handleMouse(SDL_Event *);
+    void updateKeyboardMapping();
+    void updateMouseStates(SDL_Event *event);
 
-    void handleMouse(SDL_Event *);
+    Uint8* keyboard;
 };
 
 

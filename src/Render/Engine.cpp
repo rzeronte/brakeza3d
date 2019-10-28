@@ -528,8 +528,7 @@ void Engine::updateWindow()
 
     SDL_GL_SwapWindow(Brakeza3D::get()->window);
 
-    Brakeza3D::get()->screenTexture = SDL_CreateTextureFromSurface(Brakeza3D::get()->renderer,
-                                                                   Brakeza3D::get()->screenSurface);
+    Brakeza3D::get()->screenTexture = SDL_CreateTextureFromSurface(Brakeza3D::get()->renderer, Brakeza3D::get()->screenSurface);
     SDL_RenderCopy(Brakeza3D::get()->renderer, Brakeza3D::get()->screenTexture, NULL, NULL);
 
     SDL_DestroyTexture(Brakeza3D::get()->screenTexture);
@@ -549,7 +548,8 @@ void Engine::onStart()
     this->getEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
-    cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
+    cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
+
     if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
         Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
     }
@@ -662,16 +662,6 @@ void Engine::onUpdate()
         Drawable::drawMainAxis(Brakeza3D::get()->getCamera() );
     }
 
-    if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
-    }
-
-    if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
-        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 10, 220, Color::red(), std::to_string(
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
-    }
-
     if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
         Brakeza3D::get()->waterShader();
     }
@@ -746,17 +736,16 @@ void Engine::getMesh3DTriangles()
 
 void Engine::getSpritesTriangles()
 {
-    std::vector<Object3D *>::iterator itObject3D;
-    for ( itObject3D = Brakeza3D::get()->getSceneObjects().begin(); itObject3D !=
-                                                                    Brakeza3D::get()->getSceneObjects().end(); ) {
-        Object3D *object = *(itObject3D);
+    std::vector<Object3D *>::iterator it;
+    for ( it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); ) {
+        Object3D *object = *(it);
 
         // Check for delete
         if (object->isRemoved()) {
-            Brakeza3D::get()->getSceneObjects().erase(itObject3D);
+            Brakeza3D::get()->getSceneObjects().erase(it);
             continue;
         } else {
-            itObject3D++;
+            it++;
         }
 
         // Sprite Directional 3D
@@ -1010,12 +999,12 @@ void Engine::getWeaponsJSON()
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
 
-        cJSON *mark = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
-        cJSON *markPath = cJSON_GetObjectItemCaseSensitive(mark, "path");
+        cJSON *mark =       cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
+        cJSON *markPath =   cJSON_GetObjectItemCaseSensitive(mark, "path");
         cJSON *markFrames = cJSON_GetObjectItemCaseSensitive(mark, "frames");
-        cJSON *markFps = cJSON_GetObjectItemCaseSensitive(mark, "fps");
-        cJSON *markW = cJSON_GetObjectItemCaseSensitive(mark, "width");
-        cJSON *markH = cJSON_GetObjectItemCaseSensitive(mark, "height");
+        cJSON *markFps =    cJSON_GetObjectItemCaseSensitive(mark, "fps");
+        cJSON *markW =      cJSON_GetObjectItemCaseSensitive(mark, "width");
+        cJSON *markH =      cJSON_GetObjectItemCaseSensitive(mark, "height");
 
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
                 markPath->valuestring,

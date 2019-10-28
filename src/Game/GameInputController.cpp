@@ -1,80 +1,31 @@
-
-#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <LinearMath/btDefaultMotionState.h>
-#include "../../headers/Render/InputController.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/PhysicsGame/Projectile3DBody.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Game/GameInputController.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Render/EngineBuffers.h"
 
-InputController::InputController()
+GameInputController::GameInputController(Player *player) : player(player)
 {
 }
-
-void InputController::handleMouse(SDL_Event *event)
+void GameInputController::handleMouse(SDL_Event *event)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    if (io.WantCaptureMouse) return;
-
-    if (event->type == SDL_MOUSEBUTTONDOWN) {
-        MousePressed = true;
-    }
-
-    if (event->type == SDL_MOUSEBUTTONUP) {
-        MousePressed = false;
-    }
-
-    if (event->type == SDL_MOUSEMOTION) {
-        MouseMotion = true;
-    }
-
-    // Camera rotation
-    if (MouseMotion && MousePressed) {
-        MouseMotion = false;
-        if (event->type == SDL_MOUSEMOTION) {
-            Brakeza3D::get()->getCamera()->Yaw(event->motion.xrel);
-            Brakeza3D::get()->getCamera()->Pitch(event->motion.yrel);
+    if (player->isDead()) {
+        if (this->MousePressed) {
+            Brakeza3D::get()->setCameraInBSPStartPosition();
+            player->setDead(false);
+            player->state = PlayerState::LIVE;
+            player->setStamina(100);
         }
+        return;
     }
 
-    // Firing
-    if ( MousePressed ) {
-    }
-
-    this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
+    InputController::handleMouse(event);
 
 }
 
-void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
+void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
 {
-    if (keyboard[SDL_SCANCODE_W]) {
-        Brakeza3D::get()->getCamera()->MoveForward();
-    }
-    if (keyboard[SDL_SCANCODE_S]) {
-        Brakeza3D::get()->getCamera()->MoveBackward();
-    }
-    if (keyboard[SDL_SCANCODE_A]) {
-        Brakeza3D::get()->getCamera()->StrafeLeft();
-    }
-    if (keyboard[SDL_SCANCODE_D]) {
-        Brakeza3D::get()->getCamera()->StrafeRight();
-    }
-    if (keyboard[SDL_SCANCODE_RIGHT]) {
-        Brakeza3D::get()->getCamera()->TurnRight();
-    }
-    if (keyboard[SDL_SCANCODE_LEFT]) {
-        Brakeza3D::get()->getCamera()->TurnLeft();
-    }
-    if (keyboard[SDL_SCANCODE_DOWN]) {
-        Brakeza3D::get()->getCamera()->PitchUp();
-    }
-    if (keyboard[SDL_SCANCODE_UP]) {
-        Brakeza3D::get()->getCamera()->PitchDown();
-    }
+    if (player->isDead()) return;
 
-    if (keyboard[SDL_SCANCODE_SPACE]) {
-        Brakeza3D::get()->getCamera()->Jump();
-     }
+    InputController::handleKeyboardContinuous(event, end);
 
     if (keyboard[SDL_SCANCODE_Q]) {
         //if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
@@ -93,8 +44,8 @@ void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
                 projectile->setAnimation(0);
                 projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);
                 projectile->getBillboard()->setDimensions(
-                    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
-                    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
+                        Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
+                        Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
                 );
 
                 // Reduce ammo for this weapon type
@@ -114,8 +65,10 @@ void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     }
 }
 
-void InputController::handleKeyboard(SDL_Event *event, bool &end)
+void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 {
+    InputController::handleKeyboard(event, end);
+
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
         if (!EngineSetup::getInstance()->MENU_ACTIVE) {
@@ -128,6 +81,8 @@ void InputController::handleKeyboard(SDL_Event *event, bool &end)
             EngineSetup::getInstance()->SHOW_WEAPON = false;
         }
     }
+
+    if (player->isDead()) return;
 
     if (keyboard[SDL_SCANCODE_1]) {
         Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
@@ -199,12 +154,12 @@ void InputController::handleKeyboard(SDL_Event *event, bool &end)
             case SDL_WINDOWEVENT_CLOSE:
                 end = true;
                 break;
-            #if SDL_VERSION_ATLEAST(2, 0, 5)
+#if SDL_VERSION_ATLEAST(2, 0, 5)
             case SDL_WINDOWEVENT_TAKE_FOCUS:
                 break;
             case SDL_WINDOWEVENT_HIT_TEST:
                 break;
-            #endif
+#endif
             default:
                 break;
         }

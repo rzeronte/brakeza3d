@@ -2,11 +2,14 @@
 #define SDL2_3D_ENGINE_GAME_H
 
 #include "Render/Engine.h"
-#include "../src/Objects/Player3D.h"
+#include "../src/Objects/Player.h"
+#include "Game/GameInputController.h"
 
 class Game: public Engine {
 public:
-    Player3D *player;
+    Player *player;
+    GameInputController *controller;
+    std::vector<Texture*> HUDTextures;
     Game();
 public:
     static Game* get();
@@ -24,7 +27,8 @@ public:
     void onUpdateIA();
 
     void resolveCollisions();
-
+    void drawHUD();
+    void redScreen();
 };
 
 
