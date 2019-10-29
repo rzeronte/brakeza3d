@@ -1,37 +1,9 @@
 
-#include <BulletCollision/CollisionShapes/btConvexShape.h>
-#include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 
-Player::Player() : state(PlayerState::LIVE), dead(false), stamina(100), lives(4) {
+Player::Player() : defaultLives(4), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives) {
 
-}
-
-void Player::evalStatusMachine() {
-    switch (state) {
-        case PlayerState::LIVE:
-            break;
-        case PlayerState::DEAD:
-            break;
-    }
-}
-
-void Player::takeDamage(float dmg)
-{
-    if (dead) return;
-
-    this->stamina -= dmg;
-
-    if (stamina <= 0) {
-        state = PlayerState::DEAD;
-        dead  = true;
-        lives--;
-
-        if (lives <= 0) {
-            state = PlayerState::GAMEOVER;
-        }
-    }
 }
 
 int Player::getStamina() const {
@@ -56,4 +28,80 @@ bool Player::isDead() const {
 
 void Player::setDead(bool dead) {
     Player::dead = dead;
+}
+
+void Player::evalStatusMachine()
+{
+    switch (state) {
+        case PlayerState::LIVE:
+            break;
+        case PlayerState::DEAD:
+            break;
+    }
+}
+
+void Player::takeDamage(float dmg)
+{
+    if (dead) return;
+
+    this->stamina -= dmg;
+
+    if (stamina <= 0) {
+        state = PlayerState::DEAD;
+        dead  = true;
+        lives--;
+
+        if (lives <= 0) {
+            state = PlayerState::GAMEOVER;
+            EngineSetup::getInstance()->MENU_ACTIVE = true;
+        }
+    }
+}
+
+void Player::newGame()
+{
+    state = PlayerState::LIVE;
+    setDead(false);
+    setLives(defaultLives);
+    setStamina(100);
+    EngineSetup::getInstance()->MENU_ACTIVE = false;
+    EngineSetup::getInstance()->SHOW_WEAPON = true;
+    Brakeza3D::get()->setCameraInBSPStartPosition();
+}
+
+void Player::respawn()
+{
+    Brakeza3D::get()->setCameraInBSPStartPosition();
+    setDead(false);
+    state = PlayerState::LIVE;
+    setStamina(100);
+}
+
+void Player::shoot()
+{
+    Projectile3DBody *projectile = new Projectile3DBody();
+    projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
+    projectile->setLabel("projectile");
+    projectile->setEnabled(true);
+    projectile->setTimer(Brakeza3D::get()->getTimer());
+    projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
+    projectile->setAnimation(0);
+    projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);
+    projectile->getBillboard()->setDimensions(
+            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
+            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
+    );
+
+    // Reduce ammo for this weapon type
+    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
+
+    // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
+    // del impulso en el interior del makeRigidBody
+    projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
+
+    // Si ya estábamos disparando, no interrumpimos la animación
+    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
+    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
+
+    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire);
 }

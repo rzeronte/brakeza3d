@@ -100,8 +100,6 @@ public:
 
     void updateFPS();
 
-    void drawMenuScreen();
-
     void waterShader();
 
     void triangleRasterizer(Triangle *t);

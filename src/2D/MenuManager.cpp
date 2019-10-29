@@ -8,7 +8,7 @@
 
 MenuManager::MenuManager()
 {
-    this->currentOptions = 0;
+    this->currentOption = 0;
     this->numOptions = 0;
 
     // Load MENU Background
@@ -74,7 +74,7 @@ void MenuManager::drawOptions(SDL_Surface *dst)
         r.x = offsetX;
         r.y = offsetY;
 
-        if (i == currentOptions) {
+        if (i == currentOption) {
             SDL_BlitSurface(this->options[i]->image_on, NULL, dst, &r);
         } else {
             SDL_BlitSurface(this->options[i]->image_off, NULL, dst, &r);

@@ -17,7 +17,7 @@ public:
     MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
 
-    int currentOptions;
+    int currentOption;
 
     // menu.json
     cJSON *optionsJSON;

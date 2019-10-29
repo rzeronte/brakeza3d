@@ -10,12 +10,18 @@ private:
 
     float stamina;
     int lives;
+    int defaultLives;
     bool dead;
 
 public:
     PlayerState state;
 
     Player();
+
+    void newGame();
+    void respawn();
+
+    void shoot();
 
     void takeDamage(float dmg);
 

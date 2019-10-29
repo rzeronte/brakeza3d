@@ -29,8 +29,11 @@ public:
     void onUpdateIA();
 
     void resolveCollisions();
+
     void drawHUD();
     void redScreen();
+    void drawMenuScreen();
+
 };
 
 

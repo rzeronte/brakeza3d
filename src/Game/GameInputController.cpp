@@ -9,16 +9,12 @@ void GameInputController::handleMouse(SDL_Event *event)
 {
     if (player->isDead()) {
         if (this->MousePressed) {
-            Brakeza3D::get()->setCameraInBSPStartPosition();
-            player->setDead(false);
-            player->state = PlayerState::LIVE;
-            player->setStamina(100);
+            player->respawn();
         }
         return;
     }
 
     InputController::handleMouse(event);
-
 }
 
 void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
@@ -28,38 +24,11 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     InputController::handleKeyboardContinuous(event, end);
 
     if (keyboard[SDL_SCANCODE_Q]) {
-        //if ( weapon->getCurrentWeaponType()->ammo <= 0) return;
-
 
         if (!Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isCadenceInProgress()) {
             if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getHitType() != EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE) {
                 if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo <= 0) return;
-
-                Projectile3DBody *projectile = new Projectile3DBody();
-                projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
-                projectile->setLabel("projectile");
-                projectile->setEnabled(true);
-                projectile->setTimer(Brakeza3D::get()->getTimer());
-                projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
-                projectile->setAnimation(0);
-                projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);
-                projectile->getBillboard()->setDimensions(
-                        Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
-                        Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
-                );
-
-                // Reduce ammo for this weapon type
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
-
-                // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
-                // del impulso en el interior del makeRigidBody
-                projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
-
-                // Si ya estábamos disparando, no interrumpimos la animación
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
-
-                Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire);
+                player->shoot();
             }
         }
     }
@@ -69,7 +38,7 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 {
     InputController::handleKeyboard(event, end);
 
-    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
+    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
         if (!EngineSetup::getInstance()->MENU_ACTIVE) {
             Mix_HaltMusic();
@@ -81,6 +50,8 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
             EngineSetup::getInstance()->SHOW_WEAPON = false;
         }
     }
+
+    handleMenuKeyboard(end);
 
     if (player->isDead()) return;
 
@@ -100,28 +71,6 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
         Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
     }
 
-    if (keyboard[SDL_SCANCODE_DOWN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (Brakeza3D::get()->getMenuManager()->currentOptions+1 < Brakeza3D::get()->getMenuManager()->numOptions) {
-                Brakeza3D::get()->getMenuManager()->currentOptions++;
-            }
-        }
-    }
-
-    if (keyboard[SDL_SCANCODE_UP]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (Brakeza3D::get()->getMenuManager()->currentOptions > 0) {
-                Brakeza3D::get()->getMenuManager()->currentOptions--;
-            }
-        }
-    }
-
-    if (keyboard[SDL_SCANCODE_RETURN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOptions]->label == "exit") {
-            end = true;
-            return;
-        }
-    }
 
     if (event->type == SDL_WINDOWEVENT) {
         switch (event->window.event) {
@@ -162,6 +111,36 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 #endif
             default:
                 break;
+        }
+    }
+}
+
+void GameInputController::handleMenuKeyboard(bool &end)
+{
+    if (keyboard[SDL_SCANCODE_DOWN]) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE) {
+            if (Brakeza3D::get()->getMenuManager()->currentOption + 1 < Brakeza3D::get()->getMenuManager()->numOptions) {
+                Brakeza3D::get()->getMenuManager()->currentOption++;
+            }
+        }
+    }
+
+    if (keyboard[SDL_SCANCODE_UP]) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE) {
+            if (Brakeza3D::get()->getMenuManager()->currentOption > 0) {
+                Brakeza3D::get()->getMenuManager()->currentOption--;
+            }
+        }
+    }
+
+    if (keyboard[SDL_SCANCODE_RETURN]) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->label == "exit") {
+            end = true;
+            return;
+        }
+
+        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state == PlayerState::GAMEOVER && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->label == "new game") {
+            player->newGame();
         }
     }
 }

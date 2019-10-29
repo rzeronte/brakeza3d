@@ -68,6 +68,7 @@ void Game::mainLoop()
             // game level update
             this->onUpdate();
 
+
             // Update window
             Engine::updateWindow();
         }
@@ -82,6 +83,10 @@ void Game::onUpdate()
     onUpdateIA();
 
     drawHUD();
+
+    if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        drawMenuScreen();
+    }
 }
 
 void Game::preUpdate()
@@ -131,7 +136,6 @@ void Game::drawHUD()
 
         r3.x = 7; r3.y = 7;
         for (int i = 0; i < this->player->getLives(); i++) {
-            Logging::getInstance()->Log(std::to_string(i));
             SDL_BlitSurface(this->HUDTextures[2]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
             r3.x+=10;
         }
@@ -298,4 +302,11 @@ void Game::redScreen()
             EngineBuffers::getInstance()->setVideoBuffer( x, y, currentPixelColor );
         }
     }
+}
+
+void Game::drawMenuScreen()
+{
+    //this->waterShader();
+    Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
+    Drawable::drawFireShader();
 }

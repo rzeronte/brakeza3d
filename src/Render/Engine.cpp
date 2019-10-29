@@ -503,10 +503,6 @@ void Engine::updateWindow()
 {
     Brakeza3D::get()->updateFPS();
 
-    if (EngineSetup::getInstance()->MENU_ACTIVE) {
-        Brakeza3D::get()->drawMenuScreen();
-    }
-
     EngineBuffers::getInstance()->flipVideoBuffer(Brakeza3D::get()->screenSurface );
 
     ImGui_ImplOpenGL2_NewFrame();
