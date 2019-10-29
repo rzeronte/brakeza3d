@@ -15,6 +15,8 @@ public:
     void handleKeyboardContinuous(SDL_Event *, bool &);
     void handleKeyboard(SDL_Event *event, bool &end);
     void handleMouse(SDL_Event *);
+
+    void handleMenuKeyboard(bool &end);
 };
 
 

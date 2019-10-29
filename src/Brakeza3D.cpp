@@ -229,18 +229,10 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    //int renderer_w, renderer_h;
-    //SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
-    //Tools::writeText(Engine::renderer, Engine::font, renderer_w-150, 14, Color::yellow(), std::to_string(fps) +"fps");
+    int renderer_w, renderer_h;
+    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
+    Tools::writeText(renderer, font, 280, 14, Color::yellow(), std::to_string(fps) +"fps");
 }
-
-void Brakeza3D::drawMenuScreen()
-{
-    //this->waterShader();
-    Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
-    Drawable::drawFireShader();
-}
-
 
 void Brakeza3D::waterShader()
 {
