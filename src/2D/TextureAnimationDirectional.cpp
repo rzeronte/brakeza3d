@@ -15,8 +15,8 @@ void TextureAnimationDirectional::setup(std::string file, int numFrames, int fps
 {
     this->base_file = file;
     this->numFrames = numFrames;
-    this->fps = fps;
-    this->maxTimes = maxTimes;
+    this->fps       = fps;
+    this->maxTimes  = maxTimes;
 }
 
 void TextureAnimationDirectional::loadImages()

@@ -10,6 +10,7 @@
 #include "../Game/Enemy.h"
 #include "Triangle3D.h"
 #include "../Render/Billboard.h"
+#include "../Misc/Counter.h"
 
 #define DIR_C 0
 #define DIR_S 1
@@ -30,13 +31,12 @@ public:
     float width;
     float height;
 
-    Timer *timer;
+    Timer   *timerAnimations;
+    Counter *counterAnimations;
+    float step = 0;
 
-    int num_animations = 0;
-    int current_animation = 0;
-
-    float timerLastTicks;
-    float timerCurrent = 0;
+    int numAnimations = 0;
+    int currentAnimation = 0;
 
     TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];
 
@@ -46,8 +46,10 @@ public:
     void addAnimationDirectional2D(std::string, int frames, int fps, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
-    void setTimer(Timer *);
+    void setTimerAnimation(Timer *);
 
+    int getDirectionForAngle(float enemyAngle);
+    void updateStep();
     void updateTrianglesCoordinates(Camera3D *cam);
     void linkTexturesTo(SpriteDirectional3D *clone);
 

@@ -6,6 +6,7 @@
 #include <vector>
 #include "../Objects/Vertex3D.h"
 #include "../Physics/Body.h"
+#include "../Misc/Counter.h"
 
 class Enemy {
 public:
@@ -19,9 +20,8 @@ public:
     float damage;   // Damage from enemy to others
 
     float cadence;  // cadence management
-    Timer cadenceTimer;
-    float lastTicks;
-    float acumulatedTime = 0;
+    Timer   *timerCadence;
+    Counter *counterCadence;
 
     float range;
     float speed;
@@ -49,10 +49,7 @@ public:
     bool isDead() const;
     void setDead(bool dead);
 
-    void startFire();
-    void endFire();
-    void updateCadenceTimer();
-    bool isCadenceInProgress();
+    void setTimerCadence(Timer *);
 
 };
 

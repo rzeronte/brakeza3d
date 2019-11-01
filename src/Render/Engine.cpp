@@ -758,7 +758,7 @@ void Engine::getSpritesTriangles()
                 continue;
             }
 
-            oSpriteDirectional->updateTrianglesCoordinates(Brakeza3D::get()->getCamera() );
+            oSpriteDirectional->updateTrianglesCoordinates( Brakeza3D::get()->getCamera() );
             Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
@@ -1094,7 +1094,7 @@ void Engine::getEnemiesJSON()
         newEnemy->setRange( (float) range->valuedouble );
         newEnemy->setSpeed( (float) speed->valuedouble );
         newEnemy->getBillboard()->loadTexture( EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN );
-        newEnemy->setTimer(Brakeza3D::get()->getTimer() );
+        newEnemy->setTimerAnimation(Brakeza3D::get()->getTimer());
         newEnemy->setPosition(Vertex3D(0, 0, 0) );
         newEnemy->setRotation(M3() );
         newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );

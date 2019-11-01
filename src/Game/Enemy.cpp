@@ -2,10 +2,10 @@
 #include "../../headers/Game/Enemy.h"
 #include "../../headers/Render/Engine.h"
 
-Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0), acumulatedTime(0), lastTicks(0)
+Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0)
 {
     this->stamina = this->startStamina;
-    this->cadenceTimer.stop();
+    this->counterCadence = new Counter();
 }
 
 void Enemy::takeDamage(float damageTaken)
@@ -68,35 +68,11 @@ float Enemy::getCadence() const {
 
 void Enemy::setCadence(float cadence) {
     Enemy::cadence = cadence;
+    this->counterCadence->setStep( cadence );
 }
 
-void Enemy::startFire()
+void Enemy::setTimerCadence(Timer *timer)
 {
-    this->cadenceTimer.start();
-}
-
-void Enemy::endFire()
-{
-    this->cadenceTimer.stop();
-    this->acumulatedTime = 0;
-    this->lastTicks = 0;
-}
-
-void Enemy::updateCadenceTimer()
-{
-    if (!this->cadenceTimer.isStarted()) return;
-
-    float deltatime = this->cadenceTimer.getTicks() - this->lastTicks;
-    this->lastTicks = this->cadenceTimer.getTicks();
-
-    this->acumulatedTime += deltatime / 1000;
-
-    if  (this->acumulatedTime >= this->cadence ) {
-        this->endFire();
-    }
-}
-
-bool Enemy::isCadenceInProgress()
-{
-    return this->cadenceTimer.isStarted();
+    this->timerCadence = timer;
+    this->counterCadence->setTimer( this->timerCadence );
 }

@@ -1,5 +1,6 @@
 
 #include "../../headers/Misc/Counter.h"
+#include "../../headers/Render/Logging.h"
 
 Counter::Counter() {
 
@@ -7,6 +8,7 @@ Counter::Counter() {
 
 void Counter::update()
 {
+
     if (this->timer == NULL) return;
 
     float ticks     = this->timer->getTicks();
@@ -18,6 +20,7 @@ void Counter::update()
     if (acumulatedTime >= step) {
         resetAcumulated();
         finished = true;
+        return;
     }
 
     finished = false;
@@ -38,6 +41,5 @@ void Counter::setStep(float step) {
 
 void Counter::resetAcumulated() {
     this->acumulatedTime = 0;
-
 }
 
