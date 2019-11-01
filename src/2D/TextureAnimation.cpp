@@ -10,10 +10,11 @@ TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimati
 }
 
 
-void TextureAnimation::setup(std::string file, int num_frames)
+void TextureAnimation::setup(std::string file, int num_frames, int fps)
 {
     this->base_file = file;
     this->numFrames = num_frames;
+    this->fps = fps;
 
     this->loadImages();
 }
@@ -67,6 +68,14 @@ bool TextureAnimation::isPaused() const {
 
 void TextureAnimation::setPaused(bool paused) {
     TextureAnimation::paused = paused;
+}
+
+int TextureAnimation::getFps() const {
+    return fps;
+}
+
+void TextureAnimation::setFps(int fps) {
+    TextureAnimation::fps = fps;
 }
 
 

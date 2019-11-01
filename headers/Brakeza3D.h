@@ -102,9 +102,13 @@ public:
 
     void waterShader();
 
+    void processTriangle(Triangle *t);
     void triangleRasterizer(Triangle *t);
     void processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv);
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
+    void drawWireframe(Triangle *t);
+    void drawWireframeColor(Triangle *t, Uint32 c);
+
 };
 
 

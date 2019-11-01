@@ -8,6 +8,7 @@
 Sprite3D::Sprite3D()
 {
     this->billboard = new Billboard();
+    this->counter   = new Counter();
 
     for (int i = 0; i < ANIMATEDSPRITE_MAX_ANIMATIONS; i++) {
         this->animations[i] = new TextureAnimation();
@@ -17,19 +18,22 @@ Sprite3D::Sprite3D()
 void Sprite3D::addAnimation(std::string animation2d, int num_frames, int fps)
 {
     Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
-    this->fps = fps,
-    this->animations[this->numAnimations]->setup(animation2d, num_frames);
+
+    this->animations[this->numAnimations]->setup(animation2d, num_frames, fps);
     this->numAnimations++;
 }
 
 void Sprite3D::setAnimation(int index_animation)
 {
     this->currentAnimationIndex = index_animation;
+    this->step = (float) 1 / (float) this->getCurrentTextureAnimation()->getFps();
+    this->counter->setStep( step );
 }
 
 void Sprite3D::setTimer(Timer *timer)
 {
     this->timer = timer;
+    this->counter->setTimer( this->timer );
 }
 
 Billboard *Sprite3D::getBillboard() const
@@ -41,18 +45,10 @@ void Sprite3D::updateTexture()
 {
     if (numAnimations == 0) return;
 
-    // Frame secuence control
-    float deltatime = this->timer->getTicks() - this->timerLastTicks;
-    this->timerLastTicks = this->timer->getTicks();
-    timerCurrent += (deltatime/1000);
+    counter->update();
 
-    float step = (float) 1 / this->fps;
-
-    if (timerCurrent >= step) {
-        timerCurrent = 0.0f;
-        //if (!this->isPaused()) {
-            getCurrentTextureAnimation()->nextFrame();
-        //}
+    if ( counter->isFinished() ) {
+        getCurrentTextureAnimation()->nextFrame();
         if (this->isAutoRemoveAfterAnimation() && getCurrentTextureAnimation()->isEndAnimation()) {
             this->setRemoved(true);
         }
@@ -81,11 +77,11 @@ void Sprite3D::setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation) {
 void Sprite3D::linkTextureAnimation(Sprite3D *dst)
 {
     this->numAnimations = dst->numAnimations;
-    this->fps = dst->fps;
 
     for (int i = 0; i < dst->numAnimations; i++ ) {
         this->animations[i]->base_file = dst->animations[i]->base_file;
         this->animations[i]->numFrames = dst->animations[i]->numFrames;
+        this->animations[i]->fps       = dst->animations[i]->fps;
 
         for (int j = 0; j < dst->animations[i]->numFrames; j++ ) {
             this->animations[i]->frames[j] = dst->animations[i]->frames[j];

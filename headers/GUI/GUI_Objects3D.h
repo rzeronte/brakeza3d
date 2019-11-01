@@ -165,7 +165,7 @@ public:
                     // Only for SPRITES
                     Sprite3D *pSprite = dynamic_cast<Sprite3D *>(gameObjects[i]);
                     if (pSprite != NULL) {
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->getCurrentTextureAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
 
                     // All Objects setup

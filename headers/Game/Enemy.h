@@ -4,9 +4,8 @@
 
 
 #include <vector>
-#include "Vertex3D.h"
+#include "../Objects/Vertex3D.h"
 #include "../Physics/Body.h"
-
 
 class Enemy {
 public:
@@ -33,19 +32,19 @@ public:
     bool isTakeHeavyDamage(float damageTaken);
 
     float getDamage() const;
-    void setDamage(float damage);
+    void  setDamage(float damage);
 
     float getRange() const;
-    void setRange(float range);
+    void  setRange(float range);
 
     float getSpeed() const;
-    void setSpeed(float speed);
+    void  setSpeed(float speed);
 
     float getCadence() const;
-    void setCadence(float cadence);
+    void  setCadence(float cadence);
 
     const std::string &getClassname() const;
-    void setClassname(const std::string &classname);
+    void  setClassname(const std::string &classname);
 
     bool isDead() const;
     void setDead(bool dead);

@@ -732,6 +732,8 @@ void Engine::getMesh3DTriangles()
 
 void Engine::getSpritesTriangles()
 {
+    if (!EngineSetup::getInstance()->DRAW_SPRITES) return;
+
     std::vector<Object3D *>::iterator it;
     for ( it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); ) {
         Object3D *object = *(it);
@@ -786,7 +788,7 @@ void Engine::drawFrameTriangles()
     std::vector<Triangle *>::iterator it;
     for ( it = visibleTriangles.begin(); it != this->visibleTriangles.end(); it++) {
         Triangle *triangle = *(it);
-        triangle->draw(Brakeza3D::get()->getCamera() );
+        Brakeza3D::get()->processTriangle( triangle );
     }
 }
 

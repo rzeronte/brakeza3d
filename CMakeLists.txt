@@ -151,8 +151,8 @@ add_executable(brakeza3d
         headers/2D/MenuManager.h
         src/2D/MenuOption.cpp
         headers/2D/MenuOption.h
-        src/Objects/Enemy.cpp
-        headers/Objects/Enemy.h
+        src/Game/Enemy.cpp
+        headers/Game/Enemy.h
         src/Brakeza3D.cpp
         headers/Brakeza3D.h
         src/Collisions/CollisionsManager.cpp
@@ -189,7 +189,7 @@ add_executable(brakeza3d
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp headers/Game/GameInputController.h)
+        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h)
 
 
 target_link_libraries(brakeza3d

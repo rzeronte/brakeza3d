@@ -92,7 +92,7 @@ public:
     bool ENABLE_LIGHTS = true;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = false;
+    bool DRAW_FPS = true;
 
     // FRUSTUM PLANES
     int NEAR_PLANE   = 0;
@@ -199,6 +199,9 @@ public:
     float TEXTURE_INTENSITY = 0.1f;
 
     bool DRAW_BSP_HULLS = false;
+    bool DRAW_SPRITES = true;
+    bool DRAW_WEAPON = false;
+    bool DRAW_HUD = false;
 
     // BSP TEXTURES ANIMATED
     bool TRIANGLE_TEXTURES_ANIMATED = true;
@@ -215,9 +218,6 @@ public:
     float LIGHTNING_PROBABILITY_BRANCH = 1.5;
     float LIGHTNING_SEGMENT_SHIFT = 0.7;
 
-    //WEAPON
-    bool SHOW_WEAPON = false;
-
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_LEAF_TYPE = false;
 
@@ -226,12 +226,14 @@ public:
     bool CFG_AUTOLOAD_MAP = true;
 
     bool EVENT_GUI = false;
-    int EVENT_LAUNCH = 0;
-    int EVENT_GUI_CHANGE_MAP = 1000;
+    int  EVENT_LAUNCH = 0;
+    int  EVENT_GUI_CHANGE_MAP = 1000;
     std::string EVENT_DATA = "";
 
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;
+
+    bool ENABLE_IA = true;
 
     enum collisionGroups
     {

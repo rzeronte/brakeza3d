@@ -65,7 +65,8 @@ void Player::newGame()
     setLives(defaultLives);
     setStamina(100);
     EngineSetup::getInstance()->MENU_ACTIVE = false;
-    EngineSetup::getInstance()->SHOW_WEAPON = true;
+    EngineSetup::getInstance()->DRAW_WEAPON = true;
+    EngineSetup::getInstance()->DRAW_HUD = true;
     Brakeza3D::get()->setCameraInBSPStartPosition();
 }
 

@@ -225,14 +225,20 @@ public:
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
-                ImGui::Separator();
-                ImGui::Checkbox("Show weapon", &EngineSetup::getInstance()->SHOW_WEAPON);
+                ImGui::Checkbox("Sprites", &EngineSetup::getInstance()->DRAW_SPRITES);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);
                 ImGui::Separator();
                 ImGui::Checkbox("Show Menu Screen", &EngineSetup::getInstance()->MENU_ACTIVE);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Game")) {
+                ImGui::Checkbox("Enable IA", &EngineSetup::getInstance()->ENABLE_IA);
                 ImGui::Separator();
+                ImGui::Checkbox("Show HUD", &EngineSetup::getInstance()->DRAW_HUD);
                 ImGui::Checkbox("Show CrossHair", &EngineSetup::getInstance()->DRAW_CROSSHAIR);
+                ImGui::Checkbox("Show weapon", &EngineSetup::getInstance()->DRAW_WEAPON);
                 ImGui::EndMenu();
             }
 
