@@ -92,7 +92,7 @@ Demo::Demo()
     marine->setEnabled(true);
     marine->setPosition(Vertex3D(2, 0, 10));
     marine->setRotation( M3(0, -90, 0) );
-    marine->setTimer(Brakeza3D::get()->getTimer());
+    marine->setTimerAnimation(Brakeza3D::get()->getTimer());
     marine->addAnimationDirectional2D("enemies/soldier/walk", 4, 20,  false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/fire", 2, 20, false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/injuried", 1, 20, false, -1);
@@ -105,7 +105,7 @@ Demo::Demo()
     SpriteDirectional3D *skull = new SpriteDirectional3D();
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
-    skull->setTimer(Brakeza3D::get()->getTimer());
+    skull->setTimerAnimation(Brakeza3D::get()->getTimer());
     skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
     skull->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(skull, "skull");
@@ -114,7 +114,7 @@ Demo::Demo()
     SpriteDirectional3D *caco = new SpriteDirectional3D();
     caco->setEnabled(false);
     caco->setPosition(Vertex3D(20, 0, -10));
-    caco->setTimer(Brakeza3D::get()->getTimer());
+    caco->setTimerAnimation(Brakeza3D::get()->getTimer());
     caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);
     caco->addAnimationDirectional2D("enemies/cacodemon/dead", 6, 20, false, -1);
     caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);

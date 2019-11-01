@@ -120,10 +120,14 @@ public:
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        if (ImGui::IsItemDeactivatedAfterEdit()) {
+                            pSprite3D->updateStep();
+                        }
+
                         const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
 
-                        switch (pSprite3D->current_animation) {
+                        switch (pSprite3D->currentAnimation) {
                             default:
                             case 0:
                                 item_current = items[0];
@@ -154,7 +158,7 @@ public:
                                 }
 
                                 if (ImGui::IsItemDeactivatedAfterEdit()) {
-                                    pSprite3D->current_animation = n;
+                                    pSprite3D->currentAnimation = n;
                                     Logging::getInstance()->Log(("Changing animation frame to: " + std::to_string(n)));
                                 }
                             }

@@ -17,15 +17,13 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), timeForCheck
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
-
-    this->updateCadenceTimer();
+    this->counterCadence->update();
 
     switch(state) {
         case EnemyState::ENEMY_STATE_ATTACK:
             this->syncPathFindingRotation();
 
-            if (!this->isCadenceInProgress()) {
-                this->startFire();
+            if  (this->counterCadence->isFinished() ) {
                 this->shoot(cam, dynamicsWorld, gameObjects);
             }
 
@@ -106,7 +104,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     projectile->setPosition( *this->getPosition() );
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
-    projectile->setTimer(timer);
+    projectile->setTimerAnimation(timerAnimations);
     projectile->linkTexturesTo( this->projectileTemplate );
     projectile->setAnimation(0);
     Vector3D dir = Vector3D(*this->getPosition(), *cam->getPosition());

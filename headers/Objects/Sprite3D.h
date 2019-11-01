@@ -24,10 +24,10 @@ public:
 
     TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
-    float step = 0;
-
     Timer *timer;
     Counter *counter;
+    float step = 0;
+
     bool autoRemoveAfterAnimation = false;
 
     Sprite3D();

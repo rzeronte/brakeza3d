@@ -84,7 +84,7 @@ void Player::shoot()
     projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
-    projectile->setTimer(Brakeza3D::get()->getTimer());
+    projectile->setTimerAnimation(Brakeza3D::get()->getTimer());
     projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
     projectile->setAnimation(0);
     projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);

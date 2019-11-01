@@ -15,7 +15,7 @@
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "enemies/soldier/walk",      "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
+        { "path": "enemies/soldier/walk",      "frames": 4, "fps": 2, "zeroDirection": false, "maxTimes": -1 },
         { "path": "enemies/soldier/fire",      "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
         { "path": "enemies/soldier/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
         { "path": "enemies/soldier/dead",      "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
