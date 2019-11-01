@@ -7,7 +7,7 @@
 #include "../Render/Timer.h"
 #include "../2D/TextureAnimationDirectional.h"
 #include "Camera3D.h"
-#include "Enemy.h"
+#include "../Game/Enemy.h"
 #include "Triangle3D.h"
 #include "../Render/Billboard.h"
 

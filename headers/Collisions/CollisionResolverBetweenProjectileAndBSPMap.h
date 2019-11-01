@@ -39,21 +39,23 @@ public:
         // Remove projectile from projectile list
         getProjectile()->setRemoved(true);
 
-        Sprite3D *particle = new Sprite3D();
-        particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
-        particle->setAutoRemoveAfterAnimation(true);
-        particle->setPosition(*getProjectile()->getPosition() );
-        particle->setTimer(Brakeza3D::get()->getTimer());
-        particle->setAnimation(0);
-        particle->getBillboard()->setDimensions(
-            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
-            weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
-        );
-        Brakeza3D::get()->addObject3D(particle, "particles");
+        if (!getProjectile()->isFromEnemy()) {
+            Sprite3D *particle = new Sprite3D();
+            particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
+            particle->setAutoRemoveAfterAnimation(true);
+            particle->setPosition(*getProjectile()->getPosition() );
+            particle->setTimer(Brakeza3D::get()->getTimer());
+            particle->setAnimation(0);
+            particle->getBillboard()->setDimensions(
+                    weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
+                    weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
+            );
+            Brakeza3D::get()->addObject3D(particle, "particles");
 
-        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
+            Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
 
-        //makeGoreDecals();
+            //makeGoreDecals();
+        }
     }
 
     BSPMap *getBSPMap()

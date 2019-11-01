@@ -2,6 +2,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Brakeza3D.h"
 
 void Drawable::drawBox2D(SDL_Rect r)
 {
@@ -320,8 +321,8 @@ void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangle
     frameTriangles->push_back(&B->T2);
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        B->T1.drawWireframe();
-        B->T2.drawWireframe();
+        Brakeza3D::get()->drawWireframe(&B->T1);
+        Brakeza3D::get()->drawWireframe(&B->T2);
     }
 }
 

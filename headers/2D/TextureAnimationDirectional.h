@@ -28,9 +28,9 @@ public:
     void loadImages();
     void loadImagesForZeroDirection();
 
-    int getNumFrames() const;
-
     Texture *getCurrentFrame(int direction);
+
+    int  getNumFrames() const;
     void nextFrame();
     void importTextures(TextureAnimationDirectional *origin, int numFrames);
 };

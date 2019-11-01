@@ -3,7 +3,7 @@
 #define BRAKEDA3D_NPCENEMYPARTBODY_H
 
 
-#include "../Objects/Enemy.h"
+#include "../Game/Enemy.h"
 #include "../Physics/Sprite3DBody.h"
 
 class NPCEnemyPartBody : public Sprite3DBody {

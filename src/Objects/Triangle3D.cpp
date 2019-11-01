@@ -233,34 +233,6 @@ Vertex3D Triangle::getNormal()
     this->scanVerticesForShadowMapping(lp);
 }*/
 
-
-void Triangle::draw(Camera3D *cam)
-{
-    // degradate
-    if (getTexture() != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
-        Brakeza3D::get()->triangleRasterizer(this);
-    }
-
-    // texture
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
-        Brakeza3D::get()->triangleRasterizer(this);
-    }
-
-    // wireframe
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || (parent->isDecal() && EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES)) {
-        this->drawWireframe();
-    }
-
-    // Pixels
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
-        Drawable::drawVertex(Co, cam, Color::red());
-        Drawable::drawVertex(Bo, cam, Color::green());
-        Drawable::drawVertex(Co, cam, Color::blue());
-    }
-    drawed = true;
-
-}
-
 bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP)
 {
     Vertex3D output_vertices[10] ; int num_outvertices   = 0;
@@ -374,20 +346,6 @@ float Triangle::updateFullArea()
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;
 
-}
-
-void Triangle::drawWireframe()
-{
-    Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), Color::red());
-    Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), Color::green());
-    Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), Color::blue());
-}
-
-void Triangle::drawWireframeColor(Uint32 c)
-{
-    Drawable::drawLine2D(Line2D(As.x, As.y, Bs.x, Bs.y), c);
-    Drawable::drawLine2D(Line2D(Bs.x, Bs.y, Cs.x, Cs.y), c);
-    Drawable::drawLine2D(Line2D(Cs.x, Cs.y, As.x, As.y), c);
 }
 
 // (v0 - P) . N

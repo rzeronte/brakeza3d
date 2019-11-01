@@ -80,9 +80,21 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
-    onUpdateIA();
+    if (EngineSetup::getInstance()->ENABLE_IA) {
+        onUpdateIA();
+    }
 
-    drawHUD();
+    if (EngineSetup::getInstance()->DRAW_WEAPON) {
+        Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
+    }
+
+    if (EngineSetup::getInstance()->DRAW_HUD) {
+        drawHUD();
+    }
+
+    if (player->isDead()) {
+        redScreen();
+    }
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         drawMenuScreen();
@@ -121,32 +133,24 @@ void Game::onUpdateInputController()
 
 void Game::drawHUD()
 {
-    if (EngineSetup::getInstance()->SHOW_WEAPON) {
-        Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
+    SDL_Rect r1, r2, r3;
 
-        SDL_Rect r1, r2, r3;
+    r1.x = 10; r1.y = 225;
+    SDL_BlitSurface(this->HUDTextures[0]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r1);
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 30, 223, Color::green(), std::to_string(this->player->getStamina()));
 
-        r1.x = 10; r1.y = 225;
-        SDL_BlitSurface(this->HUDTextures[0]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r1);
-        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 30, 223, Color::green(), std::to_string(this->player->getStamina()));
+    r2.x = 60; r2.y = 225;
+    SDL_BlitSurface(this->HUDTextures[1]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r2);
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 80, 223, Color::green(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
 
-        r2.x = 60; r2.y = 225;
-        SDL_BlitSurface(this->HUDTextures[1]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r2);
-        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 80, 223, Color::green(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
-
-        r3.x = 7; r3.y = 7;
-        for (int i = 0; i < this->player->getLives(); i++) {
-            SDL_BlitSurface(this->HUDTextures[2]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
-            r3.x+=10;
-        }
+    r3.x = 7; r3.y = 7;
+    for (int i = 0; i < this->player->getLives(); i++) {
+        SDL_BlitSurface(this->HUDTextures[2]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
+        r3.x+=10;
     }
 
     if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
-    }
-
-    if (player->isDead()) {
-        redScreen();
     }
 }
 
@@ -158,22 +162,29 @@ void Game::onUpdateIA()
     for ( itObject3D = Brakeza3D::get()->getSceneObjects().begin(); itObject3D != Brakeza3D::get()->getSceneObjects().end(); itObject3D++) {
         Object3D *object = *(itObject3D);
 
-        if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
-            continue;
-        }
+        auto *enemy = dynamic_cast<NPCEnemyBody*> (object);
 
-        NPCEnemyBody *enemy = dynamic_cast<NPCEnemyBody*> (object);
         if (enemy != NULL) {
-            if (enemy->isDead()) continue;
+
+            if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
+                continue;
+            }
+
+            if (enemy->isDead())  {
+                continue;
+            }
 
             Vertex3D A = *object->getPosition();
             Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition();
 
-            enemy->points.clear();
+            bool rayCastResult = Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B);
+
+            Vector3D ray = Vector3D(A, B);
+
             Brakeza3D::get()->getBSP()->recastWrapper->getPathBetween(A, B, enemy->points );
             enemy->evalStatusMachine(
-                    Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B),
-                    Vector3D(A, B).getComponent().getModule(),
+                    rayCastResult,
+                    ray.getComponent().getModule(),
                     Brakeza3D::get()->getCamera(),
                     Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
                     Brakeza3D::get()->getSceneObjects()

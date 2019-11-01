@@ -411,6 +411,8 @@ bool RecastWrapper::initNavQuery()
 
 void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<Vertex3D> &points)
 {
+    points.clear();
+
     startV = Transforms::objectToLocal(startV, Brakeza3D::get()->getBSP());
     endV   = Transforms::objectToLocal(endV, Brakeza3D::get()->getBSP());
 
@@ -421,8 +423,8 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
     m_polyPickExt[1] = 8;
     m_polyPickExt[2] = 4;
 
-    m_filter.setIncludeFlags(0xFFFF) ;
-    m_filter.setExcludeFlags(0) ;
+    //m_filter.setIncludeFlags(0xFFFF) ;
+    //m_filter.setExcludeFlags(0) ;
     m_filter.setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f) ;
 
     dtStatus status;
@@ -437,8 +439,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
     }
 
     // Iterate over the path to find smooth path on the detail mesh surface.
-    if (m_npolys)
-    {
+    if (m_npolys) {
         // Iterate over the path to find smooth path on the detail mesh surface.
         dtPolyRef polys[MAX_POLYS];
         memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
@@ -458,8 +459,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
 
         // Move towards target a small advancement at a time until target reached or
         // when ran out of memory to store the path.
-        while (npolys && m_nsmoothPath < MAX_SMOOTH)
-        {
+        while (npolys && m_nsmoothPath < MAX_SMOOTH) {
             // Find location to steer towards.
             float steerPos[3];
             unsigned char steerPosFlag;

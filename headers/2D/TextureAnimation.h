@@ -13,6 +13,7 @@ public:
 
     int numFrames;
     int currentFrame;
+    int fps;
     Texture *frames[ANIMATION2D_MAX_FRAMES];
 
     bool endAnimation;
@@ -20,7 +21,7 @@ public:
 
     TextureAnimation();
 
-    void setup(std::string file, int num_frames);
+    void setup(std::string file, int num_frames, int fps);
     void loadImages();
 
     int getNumFrames() const;
@@ -34,6 +35,10 @@ public:
     bool isPaused() const;
 
     void setPaused(bool paused);
+
+    int getFps() const;
+
+    void setFps(int fps);
 };
 
 

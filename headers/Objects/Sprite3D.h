@@ -9,6 +9,7 @@
 #include "../Render/Timer.h"
 #include "../2D/TextureAnimation.h"
 #include "../Render/Billboard.h"
+#include "../Misc/Counter.h"
 #include <vector>
 
 #define ANIMATEDSPRITE_MAX_ANIMATIONS 25
@@ -23,12 +24,10 @@ public:
 
     TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
-    int fps = 2;
+    float step = 0;
 
     Timer *timer;
-    float timerLastTicks = 0;
-    float timerCurrent = 0;
-
+    Counter *counter;
     bool autoRemoveAfterAnimation = false;
 
     Sprite3D();

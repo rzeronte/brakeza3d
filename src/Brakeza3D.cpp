@@ -19,6 +19,11 @@ Brakeza3D* Brakeza3D::get()
     return instance;
 }
 
+void Brakeza3D::setController(InputController *ic)
+{
+    this->controllerManager = ic;
+}
+
 void Brakeza3D::start()
 {
     ImGui::CreateContext();
@@ -564,7 +569,44 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
     }
 }
 
-void Brakeza3D::setController(InputController *ic)
+void Brakeza3D::processTriangle(Triangle *t)
 {
-    this->controllerManager = ic;
+    // degradate
+    if (t->getTexture() != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
+        triangleRasterizer(t);
+    }
+
+    // texture
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+        triangleRasterizer(t);
+    }
+
+    // wireframe
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES)) {
+        drawWireframe(t);
+    }
+
+    // Pixels
+    if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
+        Drawable::drawVertex(t->Co, getCamera(), Color::red());
+        Drawable::drawVertex(t->Bo, getCamera(), Color::green());
+        Drawable::drawVertex(t->Co, getCamera(), Color::blue());
+    }
+
+    t->drawed = true;
+}
+
+
+void Brakeza3D::drawWireframe(Triangle *t)
+{
+    Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), Color::red());
+    Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), Color::green());
+    Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::blue());
+}
+
+void Brakeza3D::drawWireframeColor(Triangle *t, Uint32 c)
+{
+    Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), c);
+    Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), c);
+    Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), c);
 }

@@ -3,19 +3,21 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/PhysicsGame/Projectile3DBody.h"
 #include "../../headers/Render/Billboard.h"
+#include "../../headers/Brakeza3D.h"
 
-NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP)
+NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), timeForCheckIA(1)
 {
     this->projectileTemplate = new SpriteDirectional3D();
     std::string spritePath =  "weapons/machinegun/bullet/idle";
     projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
     projectileTemplate->setAnimation(0);
-    projectileTemplate->width = 0.5;
+    projectileTemplate->width  = 0.5;
     projectileTemplate->height = 0.5;
 }
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
+
     this->updateCadenceTimer();
 
     switch(state) {
@@ -24,7 +26,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
 
             if (!this->isCadenceInProgress()) {
                 this->startFire();
-                this->launchProjectile( cam, dynamicsWorld, gameObjects );
+                this->shoot(cam, dynamicsWorld, gameObjects);
             }
 
             if ( raycastlength >= this->getRange() ) {
@@ -33,6 +35,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             }
             break;
         case EnemyState::ENEMY_STATE_FOLLOW:
+
             this->doFollowPathfinding( raycastResult );
 
             if (!raycastResult) {
@@ -96,9 +99,10 @@ void NPCEnemyBody::syncPathFindingRotation()
     }
 }
 
-void NPCEnemyBody::launchProjectile( Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
+void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
     Projectile3DBody *projectile = new Projectile3DBody();
+    projectile->setFromEnemy( true );
     projectile->setPosition( *this->getPosition() );
     projectile->setLabel("projectile");
     projectile->setEnabled(true);

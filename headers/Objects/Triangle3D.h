@@ -97,11 +97,6 @@ public:
     void     updateNormal();
     Vertex3D getCenterOfMass();
 
-    void drawWireframe();
-    void drawWireframeColor(Uint32 c);
-
-    void draw(Camera3D *);
-
     void drawNormal(Camera3D *cam, Uint32 color);
 
     //void shadowMapping(LightPoint3D *lp);

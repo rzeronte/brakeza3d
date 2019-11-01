@@ -63,7 +63,7 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, int forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse)
 {
     this->mass = mass;
 
@@ -111,7 +111,7 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, std::vector<Object3D*> &gameObjects, Vertex3D dir, btDiscreteDynamicsWorld* world, int forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, std::vector<Object3D*> &gameObjects, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse)
 {
     this->mass = mass;
 
