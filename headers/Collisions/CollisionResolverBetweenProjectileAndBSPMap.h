@@ -2,7 +2,7 @@
 #define BRAKEDA3D_COLLISIONRESOLVERBETWEENPROJECTILEANDBSPMAP_H
 
 
-#include "../PhysicsGame/Projectile3DBody.h"
+#include "../Game/Projectile3DBody.h"
 #include "../Render/BSPMap.h"
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"

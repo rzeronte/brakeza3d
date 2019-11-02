@@ -1,12 +1,15 @@
 
-#include "../../headers/PhysicsGame/NPCEnemyBody.h"
+#include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/PhysicsGame/Projectile3DBody.h"
+#include "../../headers/Game/Projectile3DBody.h"
 #include "../../headers/Render/Billboard.h"
 #include "../../headers/Brakeza3D.h"
 
-NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), timeForCheckIA(1)
+NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(EngineSetup::getInstance()->TIME_STEP_IA_ENEMIES)
 {
+    this->counterIA = new Counter();
+    this->counterIA->setStep( stepIA );
+
     this->projectileTemplate = new SpriteDirectional3D();
     std::string spritePath =  "weapons/machinegun/bullet/idle";
     projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
@@ -17,7 +20,6 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), timeForCheck
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
-    this->counterCadence->update();
 
     switch(state) {
         case EnemyState::ENEMY_STATE_ATTACK:
@@ -42,7 +44,6 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             } else {
                 if ( raycastlength <= this->getRange() ) {
                     this->state = EnemyState::ENEMY_STATE_ATTACK;
-                    Logging::getInstance()->Log("Attack!");
                     this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_FIRE );
                 }
             }
@@ -116,4 +117,10 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
         projectile->setRotation(newRot.getTranspose());
     }
+}
+
+void NPCEnemyBody::updateCounters()
+{
+    this->counterCadence->update();
+    this->counterIA->update();
 }

@@ -15,9 +15,8 @@ public:
     std::vector<Vertex3D> points;
     SpriteDirectional3D *projectileTemplate;
 
-    float timeForCheckIA = 0.5;
-    float timeLastCheckIATicks = 0;
-    float acumulatedCheckIATime = 0;
+    float stepIA;
+    Counter *counterIA;
 
     NPCEnemyBody();
 
@@ -26,6 +25,8 @@ public:
     void doFollowPathfinding(bool raycastResult);
     void syncPathFindingRotation();
     void shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects);
+
+    void updateCounters();
 };
 
 

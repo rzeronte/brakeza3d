@@ -1,7 +1,7 @@
 
 #include "../../headers/Collisions/CollisionResolver.h"
-#include "../../headers/PhysicsGame/NPCEnemyBody.h"
-#include "../../headers/PhysicsGame/NPCEnemyPartBody.h"
+#include "../../headers/Game/NPCEnemyBody.h"
+#include "../../headers/Game/NPCEnemyPartBody.h"
 
 CollisionResolver::CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles) :
                                                 contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles)

@@ -234,6 +234,7 @@ public:
     int FIRE_HEIGHT = 240;
 
     bool ENABLE_IA = true;
+    float TIME_STEP_IA_ENEMIES = 0.50f;
 
     enum collisionGroups
     {

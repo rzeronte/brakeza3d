@@ -1,5 +1,5 @@
 
-#include "../../headers/PhysicsGame/Projectile3DBody.h"
+#include "../../headers/Game/Projectile3DBody.h"
 
 Projectile3DBody::Projectile3DBody() : fromEnemy(false) {
 

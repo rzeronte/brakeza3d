@@ -12,7 +12,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/PhysicsGame/NPCEnemyBody.h"
+#include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/Render/EngineBuffers.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)

@@ -5,7 +5,7 @@
 #include "../Render/BSPMap.h"
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"
-#include "../PhysicsGame/NPCEnemyPartBody.h"
+#include "../Game/NPCEnemyPartBody.h"
 #include "../Objects/Decal.h"
 
 class CollisionResolverBetweenEnemyPartAndBSPMap : public CollisionResolver {
