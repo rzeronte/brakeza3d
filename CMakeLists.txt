@@ -157,12 +157,12 @@ add_executable(brakeza3d
         headers/Brakeza3D.h
         src/Collisions/CollisionsManager.cpp
         headers/Collisions/CollisionsManager.h
-        src/PhysicsGame/NPCEnemyBody.cpp
-        headers/PhysicsGame/NPCEnemyBody.h
+        src/Game/NPCEnemyBody.cpp
+        headers/Game/NPCEnemyBody.h
         src/Collisions/CollisionResolver.cpp
         headers/Collisions/CollisionResolver.h
-        src/PhysicsGame/Projectile3DBody.cpp
-        headers/PhysicsGame/Projectile3DBody.h
+        src/Game/Projectile3DBody.cpp
+        headers/Game/Projectile3DBody.h
         headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h
         headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h
         headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
@@ -171,8 +171,8 @@ add_executable(brakeza3d
         headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h
         src/Objects/Decal.cpp
         headers/Objects/Decal.h
-        src/PhysicsGame/NPCEnemyPartBody.cpp
-        headers/PhysicsGame/NPCEnemyPartBody.h
+        src/Game/NPCEnemyPartBody.cpp
+        headers/Game/NPCEnemyPartBody.h
         src/Physics/Sprite3DBody.cpp
         headers/Physics/Sprite3DBody.h
         src/Physics/Body.cpp
@@ -189,7 +189,7 @@ add_executable(brakeza3d
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h)
+        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h headers/2D/TexturePackage.cpp headers/2D/TexturePackage.h)
 
 
 target_link_libraries(brakeza3d

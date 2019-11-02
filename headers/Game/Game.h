@@ -4,12 +4,13 @@
 #include "../Render/Engine.h"
 #include "../../src/Game/Player.h"
 #include "GameInputController.h"
+#include "../2D/TexturePackage.h"
 
 class Game: public Engine {
 public:
     Player *player;
     GameInputController *controller;
-    std::vector<Texture*> HUDTextures;
+    TexturePackage *HUDTextures;
     Game();
 
 public:
@@ -18,6 +19,8 @@ public:
     static Game* instance;
 
     void start();
+
+    void loadHUDImages();
 
     void mainLoop();
     void onStart();

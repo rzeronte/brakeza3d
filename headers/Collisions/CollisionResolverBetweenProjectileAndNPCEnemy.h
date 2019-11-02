@@ -4,10 +4,10 @@
 
 
 #include "CollisionResolver.h"
-#include "../PhysicsGame/Projectile3DBody.h"
-#include "../PhysicsGame/NPCEnemyBody.h"
+#include "../Game/Projectile3DBody.h"
+#include "../Game/NPCEnemyBody.h"
 #include "../Physics/Sprite3DBody.h"
-#include "../PhysicsGame/NPCEnemyPartBody.h"
+#include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
 #include "../Render/EngineBuffers.h"
 

@@ -16,21 +16,13 @@ Game* Game::instance = 0;
 
 Game::Game()
 {
-    player     = new Player();
-    controller = new GameInputController( player );
+    player      = new Player();
+    controller  = new GameInputController( player );
+    HUDTextures = new TexturePackage();
+
+    loadHUDImages();
 
     Brakeza3D::get()->setController( controller );
-
-    Texture *t1 = new Texture();
-    t1->loadTGA(std::string(EngineSetup::getInstance()->HUD_FOLDER + "hud_health.png").c_str(), 1);
-    Texture *t2 = new Texture();
-    t2->loadTGA(std::string(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png").c_str(), 1);
-    Texture *t3 = new Texture();
-    t3->loadTGA(std::string(EngineSetup::getInstance()->HUD_FOLDER + "hud_lives.png").c_str(), 1);
-
-    HUDTextures.push_back(t1);
-    HUDTextures.push_back(t2);
-    HUDTextures.push_back(t3);
 }
 
 Game* Game::get()
@@ -44,7 +36,6 @@ Game* Game::get()
 
 void Game::start()
 {
-    // Start Engine cycle
     onStart();
     mainLoop();
     onEnd();
@@ -67,7 +58,6 @@ void Game::mainLoop()
         if (!finish) {
             // game level update
             this->onUpdate();
-
 
             // Update window
             Engine::updateWindow();
@@ -103,7 +93,6 @@ void Game::onUpdate()
 
 void Game::preUpdate()
 {
-    // Core preUpdate
     Engine::preUpdate();
 }
 
@@ -135,17 +124,20 @@ void Game::drawHUD()
 {
     SDL_Rect r1, r2, r3;
 
+    // Stamina
     r1.x = 10; r1.y = 225;
-    SDL_BlitSurface(this->HUDTextures[0]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r1);
+    SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r1);
     Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 30, 223, Color::green(), std::to_string(this->player->getStamina()));
 
+    // Ammo
     r2.x = 60; r2.y = 225;
-    SDL_BlitSurface(this->HUDTextures[1]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r2);
+    SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r2);
     Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->font, 80, 223, Color::green(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
 
+    // Lives
     r3.x = 7; r3.y = 7;
     for (int i = 0; i < this->player->getLives(); i++) {
-        SDL_BlitSurface(this->HUDTextures[2]->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
+        SDL_BlitSurface(this->HUDTextures->getTextureByLabel("lives")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
         r3.x+=10;
     }
 
@@ -165,23 +157,28 @@ void Game::onUpdateIA()
         auto *enemy = dynamic_cast<NPCEnemyBody*> (object);
 
         if (enemy != NULL) {
+            enemy->updateCounters();
 
             if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
                 continue;
             }
 
-            if (enemy->isDead())  {
+            if (enemy->isDead()) {
                 continue;
             }
 
             Vertex3D A = *object->getPosition();
             Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition();
 
-            bool rayCastResult = Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B);
-
             Vector3D ray = Vector3D(A, B);
 
-            Brakeza3D::get()->getBSP()->recastWrapper->getPathBetween(A, B, enemy->points );
+
+            bool rayCastResult = Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B);
+
+            if (enemy->counterIA->isFinished()) {
+                Brakeza3D::get()->getBSP()->recastWrapper->getPathBetween(A, B, enemy->points);
+            }
+
             enemy->evalStatusMachine(
                     rayCastResult,
                     ray.getComponent().getModule(),
@@ -320,4 +317,12 @@ void Game::drawMenuScreen()
     //this->waterShader();
     Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
     Drawable::drawFireShader();
+}
+
+void Game::loadHUDImages()
+{
+    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_health.png", "health");
+    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png", "ammo");
+    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_lives.png", "lives");
+
 }

@@ -7,7 +7,7 @@
 #include <SDL_mixer.h>
 #include "Timer.h"
 #include "../Objects/Sprite3D.h"
-#include "../PhysicsGame/NPCEnemyBody.h"
+#include "../Game/NPCEnemyBody.h"
 
 // Singleton
 class EngineBuffers {
