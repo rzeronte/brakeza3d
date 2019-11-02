@@ -31,7 +31,6 @@ public:
     float width;
     float height;
 
-    Timer   *timerAnimations;
     Counter *counterAnimations;
     float step = 0;
 
@@ -46,7 +45,6 @@ public:
     void addAnimationDirectional2D(std::string, int frames, int fps, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
-    void setTimerAnimation(Timer *);
 
     int getDirectionForAngle(float enemyAngle);
     void updateStep();

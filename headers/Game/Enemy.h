@@ -20,7 +20,6 @@ public:
     float damage;   // Damage from enemy to others
 
     float cadence;  // cadence management
-    Timer   *timerCadence;
     Counter *counterCadence;
 
     float range;
@@ -48,9 +47,6 @@ public:
 
     bool isDead() const;
     void setDead(bool dead);
-
-    void setTimerCadence(Timer *);
-
 };
 
 

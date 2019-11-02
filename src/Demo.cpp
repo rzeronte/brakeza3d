@@ -92,7 +92,6 @@ Demo::Demo()
     marine->setEnabled(true);
     marine->setPosition(Vertex3D(2, 0, 10));
     marine->setRotation( M3(0, -90, 0) );
-    marine->setTimerAnimation(Brakeza3D::get()->getTimer());
     marine->addAnimationDirectional2D("enemies/soldier/walk", 4, 20,  false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/fire", 2, 20, false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/injuried", 1, 20, false, -1);
@@ -105,7 +104,6 @@ Demo::Demo()
     SpriteDirectional3D *skull = new SpriteDirectional3D();
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
-    skull->setTimerAnimation(Brakeza3D::get()->getTimer());
     skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
     skull->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(skull, "skull");
@@ -114,7 +112,6 @@ Demo::Demo()
     SpriteDirectional3D *caco = new SpriteDirectional3D();
     caco->setEnabled(false);
     caco->setPosition(Vertex3D(20, 0, -10));
-    caco->setTimerAnimation(Brakeza3D::get()->getTimer());
     caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);
     caco->addAnimationDirectional2D("enemies/cacodemon/dead", 6, 20, false, -1);
     caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
@@ -124,7 +121,6 @@ Demo::Demo()
     Sprite3D *doomFace = new Sprite3D();
     doomFace->setEnabled(false);
     doomFace->setPosition( Vertex3D(2, 1, 15) );
-    doomFace->setTimer(Brakeza3D::get()->getTimer());
     doomFace->addAnimation("doom_face/face", 3, 10);
     doomFace->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     doomFace->getBillboard()->setDimensions(1, 1);
@@ -135,7 +131,6 @@ Demo::Demo()
     doomFaceBody->setLabel("doomFaceBody");
     doomFaceBody->setEnabled(false);
     doomFaceBody->setPosition( Vertex3D(2, 1, 15) );
-    doomFaceBody->setTimer(Brakeza3D::get()->getTimer());
     doomFaceBody->addAnimation("doom_face/face", 3, 10);
     doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
     doomFaceBody->getBillboard()->setDimensions(1, 1);

@@ -104,7 +104,6 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     projectile->setPosition( *this->getPosition() );
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
-    projectile->setTimerAnimation(timerAnimations);
     projectile->linkTexturesTo( this->projectileTemplate );
     projectile->setAnimation(0);
     Vector3D dir = Vector3D(*this->getPosition(), *cam->getPosition());

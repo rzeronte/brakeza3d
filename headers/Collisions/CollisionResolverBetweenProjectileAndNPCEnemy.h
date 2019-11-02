@@ -83,7 +83,6 @@ public:
         gore->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
         gore->setAutoRemoveAfterAnimation(true);
         gore->setPosition(*getProjectile()->getPosition() );
-        gore->setTimer(Brakeza3D::get()->getTimer());
         gore->setAnimation(0);
         gore->getBillboard()->setDimensions(3, 3);
         Brakeza3D::get()->addObject3D(gore, "gore");
@@ -140,8 +139,7 @@ public:
         gibsBody->setLabel("gibsBody");
         gibsBody->linkTextureAnimation(EngineBuffers::getInstance()->gibsTemplate);
         gibsBody->setAnimation(Tools::random(0, EngineBuffers::getInstance()->gibsTemplate->numAnimations-1));
-        gibsBody->setPosition(position );
-        gibsBody->setTimer(Brakeza3D::get()->getTimer());
+        gibsBody->setPosition( position );
         gibsBody->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), dynamicsWorld, enemy);
     }
 
