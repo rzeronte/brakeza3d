@@ -54,8 +54,8 @@ add_executable(brakeza3d
         headers/Render/Tools.h
         src/Objects/Line2D.cpp
         headers/Objects/Line2D.h
-        src/Render/Color.cpp
-        headers/Render/Color.h
+        src/Misc/Color.cpp
+        headers/Misc/Color.h
         src/Render/Engine.cpp
         headers/OpenCL/OCLTriangle.h
         headers/Render/Engine.h

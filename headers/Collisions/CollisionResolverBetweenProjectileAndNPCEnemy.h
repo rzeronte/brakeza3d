@@ -66,7 +66,7 @@ public:
             makeGoreDecals(-90, 0, 0);
 
             // Dead sound
-            Tools::playMixedSound(EngineBuffers::getInstance()->soundEnemyDead);
+            Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundEnemyDead"));
 
             // Remove sprite enemy from world
             //sprite->setRemoved(true);

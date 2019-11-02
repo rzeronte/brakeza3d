@@ -6,16 +6,21 @@
 #include <string>
 #include <SDL_mixer.h>
 
+typedef enum { SOUND, MUSIC } SoundPackageItemType;
+
 struct SoundPackageItem {
-    Mix_Chunk  *sound;
-    std::string label;
+    std::string          label;
+    Mix_Music            *music;
+    Mix_Chunk            *sound;
+    SoundPackageItemType type;
 };
 
 class SoundPackage {
     std::vector<SoundPackageItem *> items;
 public:
-    void addItem(const std::string& srcTexture, std::string label);
+    void addItem(const std::string& srcSound, std::string label, SoundPackageItemType type);
     Mix_Chunk *getSoundByLabel(const std::string &label);
+    Mix_Music *getMusicByLabel(const std::string &label);
 };
 
 

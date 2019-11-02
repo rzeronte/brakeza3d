@@ -550,7 +550,7 @@ void Engine::onStart()
         Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
     }
 
-    Mix_PlayMusic(EngineBuffers::getInstance()->snd_base_menu, -1 );
+    Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 }
 
 void Engine::preUpdate()
@@ -696,7 +696,6 @@ void Engine::resolveCollisions()
         }
     }
 }*/
-
 
 void Engine::getQuakeMapTriangles()
 {

@@ -1,6 +1,6 @@
 #include <string>
 #include "../../headers/Objects/Line2D.h"
-#include "../../headers/Render/Color.h"
+#include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/EngineBuffers.h"
 

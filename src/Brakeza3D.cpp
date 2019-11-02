@@ -128,8 +128,6 @@ bool Brakeza3D::initSound()
 
     Mix_Volume(-1, (int) EngineSetup::getInstance()->SOUND_VOLUME);
     Mix_VolumeMusic((int) EngineSetup::getInstance()->SOUND_VOLUME);
-
-    EngineBuffers::getInstance()->loadWAVs();
 }
 
 Camera3D *Brakeza3D::getCamera()
