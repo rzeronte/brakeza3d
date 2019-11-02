@@ -24,7 +24,6 @@ public:
 
     TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
-    Timer *timer;
     Counter *counter;
     float step = 0;
 
@@ -36,7 +35,6 @@ public:
 
     void addAnimation(std::string, int, int);
     void setAnimation(int);
-    void setTimer(Timer *);
     void updateTexture();
     void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
 

@@ -1,14 +1,13 @@
 
 #include "../../headers/Misc/Counter.h"
-#include "../../headers/Render/Logging.h"
+#include "../../headers/Brakeza3D.h"
 
 Counter::Counter() {
-
+    this->timer = Brakeza3D::get()->getTimer();
 }
 
 void Counter::update()
 {
-
     if (this->timer == NULL) return;
 
     float ticks     = this->timer->getTicks();

@@ -30,12 +30,6 @@ void Sprite3D::setAnimation(int index_animation)
     this->counter->setStep( step );
 }
 
-void Sprite3D::setTimer(Timer *timer)
-{
-    this->timer = timer;
-    this->counter->setTimer( this->timer );
-}
-
 Billboard *Sprite3D::getBillboard() const
 {
     return billboard;

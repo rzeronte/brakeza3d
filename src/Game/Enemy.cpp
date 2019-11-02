@@ -70,9 +70,3 @@ void Enemy::setCadence(float cadence) {
     Enemy::cadence = cadence;
     this->counterCadence->setStep( cadence );
 }
-
-void Enemy::setTimerCadence(Timer *timer)
-{
-    this->timerCadence = timer;
-    this->counterCadence->setTimer( this->timerCadence );
-}

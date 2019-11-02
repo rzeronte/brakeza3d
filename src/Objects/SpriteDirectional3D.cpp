@@ -31,12 +31,6 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
     this->updateTextureFromCameraAngle(this, cam);
 }
 
-void SpriteDirectional3D::setTimerAnimation(Timer *timer)
-{
-    this->timerAnimations = timer;
-    this->counterAnimations->setTimer(this->timerAnimations );
-}
-
 void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection, int maxTimes)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;

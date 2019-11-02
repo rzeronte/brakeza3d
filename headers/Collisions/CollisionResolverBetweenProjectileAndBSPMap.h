@@ -44,7 +44,6 @@ public:
             particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
             particle->setAutoRemoveAfterAnimation(true);
             particle->setPosition(*getProjectile()->getPosition() );
-            particle->setTimer(Brakeza3D::get()->getTimer());
             particle->setAnimation(0);
             particle->getBillboard()->setDimensions(
                     weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
