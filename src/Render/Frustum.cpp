@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "../../headers/Render/Frustum.h"
-#include "../../headers/Render/Color.h"
+#include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Transforms.h"
 
 Frustum::Frustum() {}

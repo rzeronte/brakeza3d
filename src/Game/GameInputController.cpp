@@ -42,12 +42,12 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
         if (!EngineSetup::getInstance()->MENU_ACTIVE) {
             Mix_HaltMusic();
-            Mix_PlayMusic( EngineBuffers::getInstance()->snd_base_level_0, -1 );
+            Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
             EngineSetup::getInstance()->DRAW_WEAPON = true;
             EngineSetup::getInstance()->DRAW_HUD = true;
         } else {
             Mix_HaltMusic();
-            Mix_PlayMusic( EngineBuffers::getInstance()->snd_base_menu, -1 );
+            Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
             EngineSetup::getInstance()->DRAW_WEAPON = false;
             EngineSetup::getInstance()->DRAW_HUD = false;
         }

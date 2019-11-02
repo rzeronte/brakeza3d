@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "../Objects/Sprite3D.h"
 #include "../Game/NPCEnemyBody.h"
+#include "../Misc/SoundPackage.h"
 
 // Singleton
 class EngineBuffers {
@@ -19,6 +20,7 @@ private:
     ~EngineBuffers();
 
 public:
+    static EngineBuffers* getInstance();
 
     float  *depthBuffer;
     Uint32 *videoBuffer;
@@ -30,10 +32,12 @@ public:
     int numOCLTriangles = 0;
 
     // sounds
-    Mix_Music *snd_base_menu;       // menu
-    Mix_Chunk *soundEnemyDead;
+    SoundPackage *soundPackage;
 
-    Mix_Music *snd_base_level_0;     // base sound level 0
+    // sprite templates
+    Sprite3D                   *goreTemplate;
+    Sprite3D                   *gibsTemplate;
+    std::vector<NPCEnemyBody*> enemyTemplates;
 
     // Fire colors for menu fire effect
     Uint32 fireColors[37];
@@ -77,15 +81,9 @@ public:
         0xFF, 0xFF, 0xFF
     };
 
-    Sprite3D                   *goreTemplate;
-    Sprite3D                   *gibsTemplate;
-    std::vector<NPCEnemyBody*> enemyTemplates;
-
-    static EngineBuffers* getInstance();
-
     NPCEnemyBody* getEnemyTemplateForClassname(std::string classname);
 
-    void clearDepthBuffer();
+    void  clearDepthBuffer();
     float getDepthBuffer(int x, int y);
     float getDepthBuffer(int i);
 
@@ -93,10 +91,10 @@ public:
     void setDepthBuffer(const int i, const float value);
 
     float getVideoBuffer(int x, int y);
-    void clearVideoBuffer();
-    void setVideoBuffer(const int x, const int y, Uint32 value);
-    void setVideoBuffer(const int i, Uint32 value);
-    void flipVideoBuffer(SDL_Surface *);
+    void  clearVideoBuffer();
+    void  setVideoBuffer(const int x, const int y, Uint32 value);
+    void  setVideoBuffer(const int i, Uint32 value);
+    void  flipVideoBuffer(SDL_Surface *);
 
     void setNumOCLTriangles(int num);
     void addOCLTriangle(OCLTriangle);
@@ -104,7 +102,7 @@ public:
     void makeFireColors();
     void fireShaderSetup();
 
-    void loadWAVs();
+    void loadSounds();
 };
 
 #endif

@@ -26,11 +26,16 @@ EngineBuffers::EngineBuffers()
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
 
+    soundPackage = new SoundPackage();
+
     // buffer for fire shader
     int firePixelsBufferSize = EngineSetup::getInstance()->FIRE_WIDTH * EngineSetup::getInstance()->FIRE_HEIGHT;
     firePixelsBuffer = new int[firePixelsBufferSize];
 
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
+
+    // Load WAVs
+    this->loadSounds();
 
     // 37 colores * 3 (rgb channels)
     this->makeFireColors();
@@ -143,12 +148,11 @@ void EngineBuffers::fireShaderSetup()
     }
 }
 
-void EngineBuffers::loadWAVs()
+void EngineBuffers::loadSounds()
 {
-    this->snd_base_menu    = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_MAINMENU).c_str() );
-    this->snd_base_level_0 = Mix_LoadMUS((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_BASE_LEVEL_0).c_str() );
-
-    this->soundEnemyDead = Mix_LoadWAV((EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_ENEMY_DEAD).c_str() );
+    soundPackage->addItem(EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_MAINMENU, "musicMainMenu", SoundPackageItemType::MUSIC);
+    soundPackage->addItem(EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_BASE_LEVEL_0, "musicBaseLevel0", SoundPackageItemType::MUSIC);
+    soundPackage->addItem(EngineSetup::getInstance()->SOUNDS_FOLDER + EngineSetup::getInstance()->SOUND_ENEMY_DEAD, "soundEnemyDead", SoundPackageItemType::SOUND);
 }
 
 NPCEnemyBody* EngineBuffers::getEnemyTemplateForClassname(std::string classname)
