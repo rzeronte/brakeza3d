@@ -324,5 +324,4 @@ void Game::loadHUDImages()
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_health.png", "health");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png", "ammo");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_lives.png", "lives");
-
 }

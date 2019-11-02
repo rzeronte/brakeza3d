@@ -189,7 +189,7 @@ add_executable(brakeza3d
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h headers/2D/TexturePackage.cpp headers/2D/TexturePackage.h)
+        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h headers/2D/TexturePackage.cpp headers/2D/TexturePackage.h headers/Misc/SoundPackage.cpp headers/Misc/SoundPackage.h)
 
 
 target_link_libraries(brakeza3d
