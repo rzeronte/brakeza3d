@@ -26,6 +26,8 @@ void Brakeza3D::setController(InputController *ic)
 
 void Brakeza3D::start()
 {
+    EngineSetup::getInstance()->setResolution(320, 240);
+
     ImGui::CreateContext();
     guiManager = new GUIManager();
     Logging::getInstance()->setGUILog(guiManager->guiLog);
@@ -110,7 +112,7 @@ void Brakeza3D::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "doom.ttf";
+        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "october_crow.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
         font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
@@ -126,8 +128,11 @@ bool Brakeza3D::initSound()
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
-    Mix_Volume(-1, (int) EngineSetup::getInstance()->SOUND_VOLUME);
-    Mix_VolumeMusic((int) EngineSetup::getInstance()->SOUND_VOLUME);
+    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU);
+    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
+    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
+    Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC);
+
 }
 
 Camera3D *Brakeza3D::getCamera()
@@ -232,8 +237,6 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    int renderer_w, renderer_h;
-    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
     Tools::writeText(renderer, font, 280, 14, Color::yellow(), std::to_string(fps) +"fps");
 }
 

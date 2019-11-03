@@ -368,7 +368,7 @@ std::string Tools::floatTruncate(float val, int numDigits)
     return output;
 }
 
-void Tools::playMixedSound(Mix_Chunk *chunk)
+void Tools::playMixedSound(Mix_Chunk *chunk, int channel)
 {
-    Mix_PlayChannel(-1, chunk, 0 );
+    Mix_PlayChannel(channel, chunk, 0 );
 }

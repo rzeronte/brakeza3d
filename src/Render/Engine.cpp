@@ -1092,7 +1092,6 @@ void Engine::getEnemiesJSON()
         newEnemy->setCadence( (float) cadence->valuedouble );
         newEnemy->setRange( (float) range->valuedouble );
         newEnemy->setSpeed( (float) speed->valuedouble );
-        newEnemy->getBillboard()->loadTexture( EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN );
         newEnemy->setPosition(Vertex3D(0, 0, 0) );
         newEnemy->setRotation(M3() );
         newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );

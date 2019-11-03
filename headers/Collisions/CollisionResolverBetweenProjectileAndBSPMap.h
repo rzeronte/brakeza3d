@@ -51,7 +51,7 @@ public:
             );
             Brakeza3D::get()->addObject3D(particle, "particles");
 
-            Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark);
+            Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark, EngineSetup::SoundChannels::SND_ENVIRONMENT);
 
             //makeGoreDecals();
         }

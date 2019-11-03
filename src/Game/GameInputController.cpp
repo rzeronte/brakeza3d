@@ -31,7 +31,7 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
         if (player->counterStep->isFinished()) {
             int rndStep = Tools::random(1, 6);
-            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)));
+            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER);
         }
     }
 
@@ -64,7 +64,7 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
             EngineSetup::getInstance()->DRAW_HUD    = false;
         }
 
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"));
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU);
     }
 
     handleMenuKeyboard(end);
@@ -136,7 +136,7 @@ void GameInputController::handleMenuKeyboard(bool &end)
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
             if (Brakeza3D::get()->getMenuManager()->currentOption + 1 < Brakeza3D::get()->getMenuManager()->numOptions) {
                 Brakeza3D::get()->getMenuManager()->currentOption++;
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"));
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU);
             }
         }
     }
@@ -145,7 +145,7 @@ void GameInputController::handleMenuKeyboard(bool &end)
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
             if (Brakeza3D::get()->getMenuManager()->currentOption > 0) {
                 Brakeza3D::get()->getMenuManager()->currentOption--;
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"));
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU);
             }
         }
     }
@@ -159,7 +159,7 @@ void GameInputController::handleMenuKeyboard(bool &end)
         if (EngineSetup::getInstance()->MENU_ACTIVE && player->state == PlayerState::GAMEOVER && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->label == "new game") {
             Mix_HaltMusic();
             Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
-            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"));
+            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU);
 
             player->newGame();
         }
@@ -170,7 +170,7 @@ void GameInputController::jump()
 {
     if( Brakeza3D::get()->getCamera()->kinematicController->onGround() ) {
         int rndJump = Tools::random(1, 4);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)));
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER);
 
         Brakeza3D::get()->getCamera()->kinematicController->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
     }

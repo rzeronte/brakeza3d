@@ -4,6 +4,7 @@
 #include "../../headers/Misc/cJSON.h"
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Brakeza3D.h"
 
 
 MenuManager::MenuManager()
@@ -65,7 +66,7 @@ void MenuManager::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 20;
+    int offsetY = 120;
     int offsetX = 50;
 
     int stepY = 30;
@@ -75,9 +76,9 @@ void MenuManager::drawOptions(SDL_Surface *dst)
         r.y = offsetY;
 
         if (i == currentOption) {
-            SDL_BlitSurface(this->options[i]->image_on, NULL, dst, &r);
+            Tools::writeText( Brakeza3D::get()->renderer, Brakeza3D::get()->font, r.x, r.y, Color::green(), this->options[i]->label);
         } else {
-            SDL_BlitSurface(this->options[i]->image_off, NULL, dst, &r);
+            Tools::writeText( Brakeza3D::get()->renderer, Brakeza3D::get()->font, r.x, r.y, Color::red(), this->options[i]->label);
         }
 
         offsetY += stepY;
