@@ -102,32 +102,34 @@ public:
             }
 
             if (ImGui::BeginMenu("Sound")) {
-                ImGui::Checkbox("Enable", &EngineSetup::getInstance()->SOUND_ENABLED);
+                ImGui::Checkbox("Global enable", &EngineSetup::getInstance()->SOUND_ENABLED);
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                     if (!EngineSetup::getInstance()->SOUND_ENABLED) {
-                        Mix_Volume(-1, 0);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_MENU, 0 );
+                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, 0 );
+                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, 0 );
                         Mix_VolumeMusic(0);
                     } else {
-                        Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
-                        Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
+                        Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC);
                     }
-                    Logging::getInstance()->Log("Set volumen: " + std::to_string(EngineSetup::getInstance()->SOUND_VOLUME));
                 }
 
-                ImGui::DragScalar("Volume", ImGuiDataType_Float,  &EngineSetup::getInstance()->SOUND_VOLUME, range_sensibility_volume,  &range_min_volume, &range_max_volume, "%f", 1.0f);
+                ImGui::DragScalar("Music vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) { Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC); }
 
-               if (ImGui::IsItemDeactivatedAfterEdit()) {
-                    if (!EngineSetup::getInstance()->SOUND_ENABLED) {
-                        Mix_Volume(-1, 0);
-                        Mix_VolumeMusic(0);
-                    } else {
-                        Mix_Volume(-1, EngineSetup::getInstance()->SOUND_VOLUME);
-                        Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME);
-                    }
-                   Logging::getInstance()->Log("Set volumen: " + std::to_string(EngineSetup::getInstance()->SOUND_VOLUME));
-                }
+                ImGui::DragScalar("Menu vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MENU, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU); }
+
+                ImGui::DragScalar("Player vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_PLAYER, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER); }
+
+                ImGui::DragScalar("Environment vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT); }
+
                 ImGui::EndMenu();
-
             }
 
             if (ImGui::BeginMenu("Physics")) {
@@ -169,10 +171,10 @@ public:
                 if (ImGui::BeginMenu("Liquid Shader")) {
                     ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
                     //if (EngineSetup::get()->TRIANGLE_TEXTURES_ANIMATED) {
-                        ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                        ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                        ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                        ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
                     //}
                     ImGui::EndMenu();
                 }

@@ -36,7 +36,7 @@ void Player::setDead(bool dead)
 {
     if (this->dead != dead && dead) {
         int rndPlayerDead = Tools::random(1, 6);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)));
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER);
     }
 
     this->dead = dead;
@@ -60,7 +60,7 @@ void Player::takeDamage(float dmg)
 
     if (counterTakeDamage->isFinished()) {
         int rndPlayerPain = Tools::random(1, 4);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)));
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER);
     }
 
     if (stamina <= 0) {
@@ -92,7 +92,7 @@ void Player::respawn()
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"));
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
 }
 
 void Player::shoot()
@@ -120,5 +120,5 @@ void Player::shoot()
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
 
-    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire);
+    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_PLAYER);
 }

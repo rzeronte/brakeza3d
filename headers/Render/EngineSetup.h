@@ -34,17 +34,15 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int screenWidth = 320;
+    int screenWidth  = 320;
     int screenHeight = 240;
 
-    const int RESOLUTION = screenWidth * screenHeight;
+    int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = false;
 
     bool CAMERA_MOUSE_ROTATION = true;
 
-    const int ENGINE_MAX_GAMEOBJECTS  = 1500;
-    const int ENGINE_MAX_FRAGMENTS    = 256000;
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
 
     const float EPSILON = 0.00001f;
@@ -106,16 +104,6 @@ public:
     float FRUSTUM_CLIPPING_DISTANCE = 0.000001f;
 
     // BSP ITEM BILLBOARDS
-    std::string ICON_LIGHTPOINTS_DEFAULT = "../assets/icons/light.tga";
-    std::string ICON_OBJECT3D_DEFAULT = "../assets/icons/object3d.tga";
-    std::string ICON_WEAPON_SHOTGUN = "../assets/icons/weapon_shotgun.tga";
-    std::string ICON_ITEM_HEALTH = "../assets/icons/item_health.tga";
-    std::string ICON_FUNC_BUTTON = "../assets/icons/func_button.tga";
-    std::string ICON_MONSTER_GENERIC = "../assets/icons/monster.tga";
-    std::string ICON_SHIELD_GENERIC = "../assets/icons/shield.tga";
-    std::string ICON_INFO_PLAYER_START = "../assets/icons/info_player_start.tga";
-    std::string ICON_INFO_TELEPORT_DESTINATION = "../assets/icons/info_teleport_destination.tga";
-    std::string ICON_LIGHT_FLAME = "../assets/icons/light_flame.tga";
     std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string MAPS_FOLDER = "../assets/maps/";
     std::string IMAGES_FOLDER = "../assets/images/";
@@ -133,7 +121,11 @@ public:
     bool RENDER_BSP_MAP = true;
 
     bool  SOUND_ENABLED = true;
-    float SOUND_VOLUME = 75;
+    float SOUND_VOLUME_GLOBAL = 75;
+    float SOUND_VOLUME_MUSIC = 60;
+    float SOUND_VOLUME_PLAYER = 128;
+    float SOUND_VOLUME_ENVIRONMENT = 75;
+    float SOUND_VOLUME_MENU = 75;
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
@@ -151,7 +143,7 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 1.f;
     float BILLBOARD_HEIGHT_DEFAULT = 1.f;
 
-    int TEXT_3D_SIZE = 40;
+    int TEXT_3D_SIZE = 50;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
     bool DRAW_CROSSHAIR = true;
@@ -188,8 +180,8 @@ public:
     int  LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
-    bool ENABLE_LIGHTMAPPING = true;
-    bool SHOW_LIGHTMAPPING = false;
+    bool  ENABLE_LIGHTMAPPING = true;
+    bool  SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_INTENSITY = 0.08f;
     float TEXTURE_INTENSITY = 0.1f;
 
@@ -292,6 +284,13 @@ public:
         COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP = 4,
         COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
         COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
+    };
+
+    enum SoundChannels {
+        SND_GLOBAL = -1,
+        SND_MENU = 0,
+        SND_PLAYER = 1,
+        SND_ENVIRONMENT = 2
     };
 };
 

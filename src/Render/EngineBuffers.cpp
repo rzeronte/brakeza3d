@@ -163,8 +163,8 @@ void EngineBuffers::loadSounds()
 {
     std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
 
-    soundPackage->addItem(sndPath + "tartani.wav", "musicMainMenu", SoundPackageItemType::MUSIC);
-    soundPackage->addItem(sndPath + "base_level_0.wav", "musicBaseLevel0", SoundPackageItemType::MUSIC);
+    soundPackage->addItem(sndPath + "menuMusic.wav", "musicMainMenu", SoundPackageItemType::MUSIC);
+    soundPackage->addItem(sndPath + "menuMusic.wav", "musicBaseLevel0", SoundPackageItemType::MUSIC);
 
     soundPackage->addItem(sndPath + "start_game.wav", "startGame", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "option-click.wav", "soundMenuClick", SoundPackageItemType::SOUND);

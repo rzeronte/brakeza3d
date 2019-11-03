@@ -576,7 +576,6 @@ void BSPMap::InitializeEntities()
 
                     NPCEnemyBody *o = new NPCEnemyBody();
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    o->getBillboard()->loadTexture(EngineSetup::getInstance()->ICON_WEAPON_SHOTGUN);
                     o->setPosition( pos );
                     o->setRotation( rotMonster );
                     o->linkTexturesTo( enemyTempate );
