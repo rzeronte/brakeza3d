@@ -3,13 +3,10 @@
 #include "../Brakeza3D.h"
 #include "../Render/EngineBuffers.h"
 
-Player::Player() : defaultLives(2), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives)
+Player::Player() : defaultLives(1), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false)
 {
-    this->counterStep = new Counter();
-    this->counterStep->setStep(0.40);
-
-    this->counterTakeDamage = new Counter();
-    this->counterTakeDamage->setStep(0.75);
+    this->counterStep       = new Counter(0.40);
+    this->counterTakeDamage = new Counter(0.10);
 }
 
 int Player::getStamina() const {
@@ -44,6 +41,11 @@ void Player::setDead(bool dead)
 
 void Player::evalStatusMachine()
 {
+    this->tookDamage = false;
+
+    this->counterStep->update();
+    this->counterTakeDamage->update();
+
     switch (state) {
         case PlayerState::LIVE:
             break;
@@ -57,10 +59,12 @@ void Player::takeDamage(float dmg)
     if (dead) return;
 
     this->stamina -= dmg;
+    this->tookDamage = true;
 
     if (counterTakeDamage->isFinished()) {
         int rndPlayerPain = Tools::random(1, 4);
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER);
+        Logging::getInstance()->Log("Sound player damage");
     }
 
     if (stamina <= 0) {
@@ -80,10 +84,11 @@ void Player::newGame()
     setLives(defaultLives);
 
     this->respawn();
+    this->respawnNPCS();
 
     EngineSetup::getInstance()->MENU_ACTIVE = false;
     EngineSetup::getInstance()->DRAW_WEAPON = true;
-    EngineSetup::getInstance()->DRAW_HUD = true;
+    EngineSetup::getInstance()->DRAW_HUD    = true;
 }
 
 void Player::respawn()
@@ -121,4 +126,18 @@ void Player::shoot()
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
 
     Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_PLAYER);
+}
+
+
+void Player::respawnNPCS()
+{
+    std::vector<Object3D *>::iterator it;
+    for (it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); it++) {
+        Object3D *object = *(it);
+        auto *enemy = dynamic_cast<NPCEnemyBody *> (object);
+
+        if (enemy != NULL) {
+            enemy->respawn();
+        }
+    }
 }

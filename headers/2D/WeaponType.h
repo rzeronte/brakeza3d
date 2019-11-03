@@ -74,6 +74,9 @@ public:
 
     void loadFireSound(std::string file);
     void loadMarkSound(std::string file);
+
+    int  getAmmo() const;
+    void setAmmo(int ammo);
 };
 
 

@@ -981,6 +981,7 @@ void Engine::getWeaponsJSON()
         cJSON *cadence     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
         cJSON *damage      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
         cJSON *speed       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
+        cJSON *startAmmo   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "startAmmo");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
         cJSON *soundFire   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
@@ -988,6 +989,7 @@ void Engine::getWeaponsJSON()
 
         // Weapon Type attributes
         Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAmmo( startAmmo->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);

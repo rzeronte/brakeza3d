@@ -70,3 +70,19 @@ void Enemy::setCadence(float cadence) {
     Enemy::cadence = cadence;
     this->counterCadence->setStep( cadence );
 }
+
+const Vertex3D &Enemy::getRespawnPosition() const {
+    return respawnPosition;
+}
+
+void Enemy::setRespawnPosition(const Vertex3D &respawnPosition) {
+    Enemy::respawnPosition = respawnPosition;
+}
+
+const M3 &Enemy::getRespawnRotation() const {
+    return respawnRotation;
+}
+
+void Enemy::setRespawnRotation(const M3 &respawnRotation) {
+    Enemy::respawnRotation = respawnRotation;
+}

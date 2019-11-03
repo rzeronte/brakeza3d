@@ -4,6 +4,7 @@
 #include "../../headers/Game/Projectile3DBody.h"
 #include "../../headers/Render/Billboard.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Render/EngineBuffers.h"
 
 NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(EngineSetup::getInstance()->TIME_STEP_IA_ENEMIES)
 {
@@ -20,7 +21,6 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(Engin
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
-
     switch(state) {
         case EnemyState::ENEMY_STATE_ATTACK:
             this->syncPathFindingRotation();
@@ -51,6 +51,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
         case EnemyState::ENEMY_STATE_STOP:
             if ( raycastResult ) {
                 this->state = EnemyState::ENEMY_STATE_FOLLOW;
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT);
             }
             break;
         case EnemyState::ENEMY_STATE_DIE:
@@ -117,10 +118,33 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
         projectile->setRotation(newRot.getTranspose());
     }
+
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+
 }
 
 void NPCEnemyBody::updateCounters()
 {
     this->counterCadence->update();
     this->counterIA->update();
+}
+
+void NPCEnemyBody::respawn()
+{
+    this->stamina = this->startStamina;
+    this->dead    = false;
+
+    btMotionState *mMotionState = this->getRigidBody()->getMotionState();
+
+    btTransform trans;
+    trans.setIdentity();
+
+    Vertex3D pos = this->getRespawnPosition();
+    this->setPosition( this->getRespawnPosition() );
+
+    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+
+    mMotionState->setWorldTransform( trans );
+    this->getRigidBody()->setWorldTransform( trans );
+    this->setRotation( this->getRespawnRotation() );
 }

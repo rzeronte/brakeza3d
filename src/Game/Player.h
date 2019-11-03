@@ -21,6 +21,8 @@ public:
     Counter *counterStep;
     Counter *counterTakeDamage;
 
+    bool tookDamage;
+
     Player();
 
     void newGame();
@@ -40,6 +42,8 @@ public:
     void setDead(bool dead);
 
     void evalStatusMachine();
+    void respawnNPCS();
+
 };
 
 

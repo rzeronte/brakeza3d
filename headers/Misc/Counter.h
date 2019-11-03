@@ -17,6 +17,7 @@ private:
 public:
 
     Counter();
+    Counter(float step);
 
     void setTimer(Timer *timer);
     void setStep(float step);
