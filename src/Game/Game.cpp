@@ -93,6 +93,9 @@ void Game::onUpdate()
 
 void Game::preUpdate()
 {
+    player->counterStep->update();
+    player->counterTakeDamage->update();
+
     Engine::preUpdate();
 }
 
@@ -316,7 +319,7 @@ void Game::drawMenuScreen()
 {
     //this->waterShader();
     Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
-    Drawable::drawFireShader();
+    //Drawable::drawFireShader();
 }
 
 void Game::loadHUDImages()

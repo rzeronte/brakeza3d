@@ -61,7 +61,6 @@ public:
 
     void Jump();
     void limitPitch();
-    void Fire();
 
     void consoleInfo();
 

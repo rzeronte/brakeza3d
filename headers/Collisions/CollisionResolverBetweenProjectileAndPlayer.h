@@ -43,7 +43,6 @@ public:
         getProjectile()->setRemoved(true);
 
         player->takeDamage(1);
-
     }
 
     Projectile3DBody *getProjectile()

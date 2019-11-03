@@ -54,9 +54,6 @@ void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
         Brakeza3D::get()->getCamera()->PitchDown();
     }
 
-    if (keyboard[SDL_SCANCODE_SPACE]) {
-        Brakeza3D::get()->getCamera()->Jump();
-    }
 }
 
 void InputController::handleKeyboard(SDL_Event *event, bool &end)
