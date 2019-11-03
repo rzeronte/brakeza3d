@@ -21,7 +21,7 @@ EngineBuffers* EngineBuffers::getInstance()
 
 EngineBuffers::EngineBuffers()
 {
-    sizeBuffers = EngineSetup::getInstance()->screenWidth * EngineSetup::getInstance()->screenHeight;
+    sizeBuffers = EngineSetup::getInstance()->RESOLUTION;
 
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
@@ -122,9 +122,9 @@ void EngineBuffers::makeFireColors()
     // Populate pallete
     for (int i = 0; i < 111 / 3; i++) {
         fireColors[i] = Tools::createRGB(
-            rgbs[i * 3 + 0],
-            rgbs[i * 3 + 1],
-            rgbs[i * 3 + 2]
+                rgbs[i * 3 + 0],
+                rgbs[i * 3 + 1],
+                rgbs[i * 3 + 2]
         );
 
         videoBuffer[100 * 320 +i] = fireColors[i];
@@ -201,4 +201,16 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "playerLand2.wav", "playerLand2", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "playerLand3.wav", "playerLand3", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "playerLand4.wav", "playerLand4", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "change_weapon.wav", "changeWeapon", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "teleporting.wav", "teleporting", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "enemyRage1.wav", "enemyRage1", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "enemyRage2.wav", "enemyRage2", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "enemyRage3.wav", "enemyRage3", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "enemyRage4.wav", "enemyRage4", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "enemyRage5.wav", "enemyRage5", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "bulletWhisper.wav", "bulletWhisper", SoundPackageItemType::SOUND);
 }

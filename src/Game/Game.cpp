@@ -1,3 +1,4 @@
+#include <vector>
 #include "../../headers/Game/Game.h"
 #include "../../headers/Render/Maths.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
@@ -86,6 +87,10 @@ void Game::onUpdate()
         redScreen();
     }
 
+    if (player->tookDamage) {
+        redScreen();
+    }
+
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         drawMenuScreen();
     }
@@ -93,8 +98,7 @@ void Game::onUpdate()
 
 void Game::preUpdate()
 {
-    player->counterStep->update();
-    player->counterTakeDamage->update();
+    player->evalStatusMachine();
 
     Engine::preUpdate();
 }

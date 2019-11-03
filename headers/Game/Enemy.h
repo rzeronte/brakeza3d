@@ -12,6 +12,9 @@ class Enemy {
 public:
     std::string classname;  // For BSP classname match
 
+    Vertex3D respawnPosition;
+    M3       respawnRotation;
+
     float startStamina;
     float stamina;
 
@@ -47,6 +50,12 @@ public:
 
     bool isDead() const;
     void setDead(bool dead);
+
+    const Vertex3D &getRespawnPosition() const;
+    void setRespawnPosition(const Vertex3D &respawnPosition);
+
+    const M3 &getRespawnRotation() const;
+    void setRespawnRotation(const M3 &respawnRotation);
 };
 
 

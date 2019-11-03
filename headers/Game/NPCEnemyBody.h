@@ -26,6 +26,8 @@ public:
     void syncPathFindingRotation();
     void shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects);
 
+    void respawn();
+
     void updateCounters();
 };
 

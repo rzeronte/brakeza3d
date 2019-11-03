@@ -164,3 +164,11 @@ void WeaponType::loadMarkSound(std::string file)
     Logging::getInstance()->Log("loadMarkSound: " + EngineSetup::getInstance()->SOUNDS_FOLDER + file, "WeaponType");
     soundMark = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
 }
+
+int WeaponType::getAmmo() const {
+    return ammo;
+}
+
+void WeaponType::setAmmo(int ammo) {
+    WeaponType::ammo = ammo;
+}

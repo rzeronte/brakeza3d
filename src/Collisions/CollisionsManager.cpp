@@ -157,13 +157,13 @@ void CollisionsManager::checkCollisionsForTriggerCamera()
                 }
 
                 if (!strcmp(classname, "func_door")) {
-                    //Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string("func_door") );
+                    Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->font, Color::white(), std::string("func_door") );
                 }
 
                 if (!strcmp(classname, "trigger_multiple")) {
                     // check for message response
                     if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
-                        //Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
+                        Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->font, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
                     }
                 }
             }

@@ -14,7 +14,6 @@ public:
     Game();
 
 public:
-
     static Game* get();
     static Game* instance;
 

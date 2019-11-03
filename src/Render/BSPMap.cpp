@@ -245,13 +245,13 @@ bool BSPMap::InitializeTextures(void)
         textures[i].setMipMapped(true);
 
         Logging::getInstance()->Log(
-            "InitializeTextures: "+ std::string(mipTexture->name) +
-            " | animated: " + std::to_string(textures[i].animated) +
-            " | liquid: " + std::to_string(textures[i].liquid) +
-            " | textureId: " + std::to_string(i) + " '" +
-            " | w: " + std::to_string(textures[i].getSurface(1)->w) +
-            " | h: " + std::to_string(textures[i].getSurface(1)->h),
-            "Q1MAP"
+                "InitializeTextures: "+ std::string(mipTexture->name) +
+                " | animated: " + std::to_string(textures[i].animated) +
+                " | liquid: " + std::to_string(textures[i].liquid) +
+                " | textureId: " + std::to_string(i) + " '" +
+                " | w: " + std::to_string(textures[i].getSurface(1)->w) +
+                " | h: " + std::to_string(textures[i].getSurface(1)->h),
+                "Q1MAP"
         );
 
         // Guardamos la textura, con sus mip mappings
@@ -425,12 +425,12 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             char *classname = this->getEntityValue(entityIndex, "classname");
 
             if (
-                 //!strcmp(classname, "func_episodegate") ||
-                !strcmp(classname, "func_door") ||
-                !strcmp(classname, "func_button") ||
-                !strcmp(classname, "func_bossgate") ||
-                !strcmp(classname, "func_wall")
-            ) {
+                //!strcmp(classname, "func_episodegate") ||
+                    !strcmp(classname, "func_door") ||
+                    !strcmp(classname, "func_button") ||
+                    !strcmp(classname, "func_bossgate") ||
+                    !strcmp(classname, "func_wall")
+                    ) {
                 rigid = true;
             }
         }
@@ -577,7 +577,9 @@ void BSPMap::InitializeEntities()
                     NPCEnemyBody *o = new NPCEnemyBody();
                     o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
                     o->setPosition( pos );
+                    o->setRespawnPosition( pos );
                     o->setRotation( rotMonster );
+                    o->setRespawnRotation( rotMonster );
                     o->linkTexturesTo( enemyTempate );
                     o->setRange( enemyTempate->getRange() );
                     o->getBillboard()->setDimensions( enemyTempate->getBillboard()->width, enemyTempate->getBillboard()->height );
@@ -600,7 +602,7 @@ void BSPMap::InitializeEntities()
                 if (!strcmp(classname, "info_player_start") ||
                     !strcmp(classname, "info_player_coop") ||
                     !strcmp(classname, "info_player_deathmatch")
-                ) {
+                        ) {
                     Object3D *o = new Object3D();
                     o->setPosition( pos );
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)" );
@@ -615,7 +617,7 @@ void BSPMap::InitializeEntities()
 
                 // light_flame_large_yellow
                 if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch")
-                ) {
+                        ) {
                     Object3D *o = new Object3D();
                     o->setPosition( pos );
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
@@ -708,16 +710,16 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     surface_t *surf = this->getSurface(surface);
 
     Maths::TriangulatePolygon(
-        num_vertices,
-        vertices,
-        normal,
-        model_triangles,
-        this,
-        &textures[this->getTextureInfo(surface)->texid],
-        &lightmaps[surface],
-        false,
-        true,
-        surf->lightstyle
+            num_vertices,
+            vertices,
+            normal,
+            model_triangles,
+            this,
+            &textures[this->getTextureInfo(surface)->texid],
+            &lightmaps[surface],
+            false,
+            true,
+            surf->lightstyle
     );
 
     return true;
