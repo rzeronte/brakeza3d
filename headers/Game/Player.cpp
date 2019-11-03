@@ -1,9 +1,15 @@
 
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
+#include "../Render/EngineBuffers.h"
 
-Player::Player() : defaultLives(4), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives) {
+Player::Player() : defaultLives(2), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives)
+{
+    this->counterStep = new Counter();
+    this->counterStep->setStep(0.40);
 
+    this->counterTakeDamage = new Counter();
+    this->counterTakeDamage->setStep(0.75);
 }
 
 int Player::getStamina() const {
@@ -26,8 +32,14 @@ bool Player::isDead() const {
     return dead;
 }
 
-void Player::setDead(bool dead) {
-    Player::dead = dead;
+void Player::setDead(bool dead)
+{
+    if (this->dead != dead && dead) {
+        int rndPlayerDead = Tools::random(1, 6);
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)));
+    }
+
+    this->dead = dead;
 }
 
 void Player::evalStatusMachine()
@@ -46,9 +58,14 @@ void Player::takeDamage(float dmg)
 
     this->stamina -= dmg;
 
+    if (counterTakeDamage->isFinished()) {
+        int rndPlayerPain = Tools::random(1, 4);
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)));
+    }
+
     if (stamina <= 0) {
         state = PlayerState::DEAD;
-        dead  = true;
+        setDead( true );
         lives--;
 
         if (lives <= 0) {
@@ -60,14 +77,13 @@ void Player::takeDamage(float dmg)
 
 void Player::newGame()
 {
-    state = PlayerState::LIVE;
-    setDead(false);
     setLives(defaultLives);
-    setStamina(100);
+
+    this->respawn();
+
     EngineSetup::getInstance()->MENU_ACTIVE = false;
     EngineSetup::getInstance()->DRAW_WEAPON = true;
     EngineSetup::getInstance()->DRAW_HUD = true;
-    Brakeza3D::get()->setCameraInBSPStartPosition();
 }
 
 void Player::respawn()
@@ -76,6 +92,7 @@ void Player::respawn()
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"));
 }
 
 void Player::shoot()

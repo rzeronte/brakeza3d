@@ -236,15 +236,3 @@ void Camera3D::limitPitch()
         this->pitch = -89;
     }
 }
-
-void Camera3D::Jump()
-{
-    if( kinematicController->onGround() ) {
-        kinematicController->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
-    }
-}
-
-void Camera3D::Fire()
-{
-
-}

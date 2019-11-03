@@ -16,7 +16,7 @@ public:
 
     static void setResolution(int, int);
 
-    std::string ENGINE_TITLE = "Brakeza3D v0.1";
+    std::string ENGINE_TITLE = "Brakeza3D v0.6";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -125,20 +125,15 @@ public:
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
 
-    std::string SOUND_MAINMENU = "tartani.wav";
-    std::string SOUND_BASE_LEVEL_0 = "base_level_0.wav";
-
-    std::string SOUND_ENEMY_DEAD = "enemy_dead.wav";
-
-    std::string CFG_MAPS = "maps.json";
-    std::string CFG_MENU = "menu.json";
+    std::string CFG_MAPS    = "maps.json";
+    std::string CFG_MENU    = "menu.json";
     std::string CFG_WEAPONS = "weapons.json";
     std::string CFG_ENEMIES = "enemies.json";
 
     bool RENDER_BSP_MAP = true;
-    bool SOUND_ENABLED = false;
 
-    float SOUND_VOLUME = 0;
+    bool  SOUND_ENABLED = true;
+    float SOUND_VOLUME = 75;
 
     // Show Extra Line Demo when triangle stripped in two when rasterizing
     bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
@@ -182,15 +177,15 @@ public:
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -60, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -50, 0);
 
     const float AIR_RESISTANCE = 1.1f;
 
     float TESTING = 0;
     float TESTING_INT = 0;
-    bool TESTING_BOOL = false;
+    bool  TESTING_BOOL = false;
 
-    int LOAD_OF_DETAIL = 1;
+    int  LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
     bool ENABLE_LIGHTMAPPING = true;

@@ -50,10 +50,9 @@ public:
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
             if (!explosionBody) {
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
-                Logging::getInstance()->Log("Dead soldier");
             } else {
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
-                Logging::getInstance()->Log("Exploding soldier");
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"));
 
                 for (int i = 0 ; i < 5; i++) {
                     gibsParticles(getNPCEnemy());

@@ -3,18 +3,23 @@
 #define BRAKEZA3D_PLAYER_H
 
 #include "../../headers/Objects/Object3D.h"
+#include "../../headers/Misc/Counter.h"
+
 typedef enum {LIVE, DEAD, GAMEOVER} PlayerState;
 
 class Player {
 private:
 
     float stamina;
-    int lives;
-    int defaultLives;
-    bool dead;
+    bool  dead;
+    int   lives;
+    int   defaultLives;
 
 public:
     PlayerState state;
+
+    Counter *counterStep;
+    Counter *counterTakeDamage;
 
     Player();
 

@@ -17,6 +17,9 @@ public:
     void handleMouse(SDL_Event *);
 
     void handleMenuKeyboard(bool &end);
+
+    void jump();
+
 };
 
 
