@@ -62,7 +62,7 @@ void WeaponAnimation::resetAnimation()
 void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY)
 {
     SDL_Rect destPos;
-    destPos.x = offsetX + globalOffsetX;
+    destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w/2);
     destPos.y = offsetY + globalOffsetY;
 
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);

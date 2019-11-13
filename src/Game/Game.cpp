@@ -323,7 +323,7 @@ void Game::drawMenuScreen()
 {
     //this->waterShader();
     Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
-    //Drawable::drawFireShader();
+    Drawable::drawFireShader();
 }
 
 void Game::loadHUDImages()

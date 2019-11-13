@@ -26,8 +26,6 @@ void Brakeza3D::setController(InputController *ic)
 
 void Brakeza3D::start()
 {
-    EngineSetup::getInstance()->setResolution(320, 240);
-
     ImGui::CreateContext();
     guiManager = new GUIManager();
     Logging::getInstance()->setGUILog(guiManager->guiLog);
@@ -237,7 +235,7 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    Tools::writeText(renderer, font, 280, 14, Color::yellow(), std::to_string(fps) +"fps");
+    Tools::writeText(renderer, font, 10, 200, Color::yellow(), std::to_string(fps) +"fps");
 }
 
 void Brakeza3D::waterShader()

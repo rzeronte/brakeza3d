@@ -3,7 +3,7 @@
 #include "../Brakeza3D.h"
 #include "../Render/EngineBuffers.h"
 
-Player::Player() : defaultLives(1), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false)
+Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false)
 {
     this->counterStep       = new Counter(0.40);
     this->counterTakeDamage = new Counter(0.10);

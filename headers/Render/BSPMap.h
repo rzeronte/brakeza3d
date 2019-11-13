@@ -339,6 +339,13 @@ public:
 
     // Get mip texture
     miptex_t *getMipTexture(int id) { return (miptex_t *)(getMipHeader() + ((mipheader_t *)getMipHeader())->offset[id]); }
+    bool hasMipTexture(int id) {
+        if (getMipTexture(id)->offset1 != -1) {
+            return true;
+        }
+
+        return false;
+    }
 
     // Get raw texture
     unsigned char *getRawTexture(int id, int numMipMap) {

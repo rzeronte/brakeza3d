@@ -619,7 +619,6 @@ void Engine::onUpdate()
     if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
         this->handleOpenCLTransform();
     }
-
     this->hiddenSurfaceRemoval();
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
