@@ -360,36 +360,34 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
         for (int x = t->minX ; x < t->maxX ; x++) {
 
             if ((w0 | w1 | w2) > 0) {
-                if (Tools::isPixelInWindow(x, y))  {
-                    alpha = w0 * t->reciprocalFullArea;
-                    theta = w1 * t->reciprocalFullArea;
-                    gamma = 1 - alpha - theta;
+                alpha = w0 * t->reciprocalFullArea;
+                theta = w1 * t->reciprocalFullArea;
+                gamma = 1 - alpha - theta;
 
-                    depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
+                depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
 
-                    int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
+                int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
 
-                    if (t->parent->isDecal()) {
-                        depth-=1;
-                    }
-                    if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
-                        affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
-                        texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
-                        texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
+                if (t->parent->isDecal()) {
+                    depth-=1;
+                }
+                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                    affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
+                    texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
+                    texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
 
-                        lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
-                        lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
+                    lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
+                    lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
 
-                        this->processPixel(
-                                t,
-                                bufferIndex,
-                                x, y,
-                                alpha, theta, gamma,
-                                depth,
-                                texu, texv,
-                                lightu, lightv
-                        );
-                    }
+                    this->processPixel(
+                            t,
+                            bufferIndex,
+                            x, y,
+                            alpha, theta, gamma,
+                            depth,
+                            texu, texv,
+                            lightu, lightv
+                    );
                 }
             }
 
