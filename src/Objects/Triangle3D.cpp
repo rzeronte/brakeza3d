@@ -514,7 +514,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
     light_v = modf(light_v , &intpart);
 
     Uint32 lightmap_color;
-    Uint8 lightmap_intensity = 0;
+    Uint8  lightmap_intensity = 0;
     char c = 10;
     lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
 
@@ -529,7 +529,7 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap, light_v, light_u);
                 }
-                indexPattern = (int)(lightmapIndexPattern);
+                indexPattern = (int) lightmapIndexPattern;
                 c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 1:
