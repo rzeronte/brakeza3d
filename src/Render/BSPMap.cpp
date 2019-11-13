@@ -133,8 +133,8 @@ bool BSPMap::LoadBSP(const char *filename)
 
     header = (dheader_t *)bsp;
     if (header->version != BSP_VERSION) {
-        printf("[ERROR] Map::LoadBSP() BSP file version mismatch!\n");
-        return false;
+        printf("[ERROR] Map::LoadBSP() BSP file version mismatch!: %h\n", header->version);
+        //return false;
     }
 
     return true;
@@ -257,7 +257,7 @@ bool BSPMap::InitializeTextures(void)
         // Guardamos la textura, con sus mip mappings
         for (int mip_m = 1; mip_m <= 8; mip_m = 2*mip_m) { // 1, 2, 4, 8
 
-            int width_t = mipTexture->width / mip_m;
+            int width_t  = mipTexture->width / mip_m;
             int height_t = mipTexture->height / mip_m;
 
             // Allocate memory for the texture which will be created
@@ -313,6 +313,7 @@ bool BSPMap::InitializeTriangles()
 
     }
 
+    this->model_triangles[0]->A.consoleInfo("A", false);
     Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
     Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
 }
@@ -1178,6 +1179,7 @@ Vertex3D BSPMap::getStartMapPosition()
 
     if (entityID != -1) {
         char *value = getEntityValue(entityID, "origin");
+        parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
     } else {
         Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");

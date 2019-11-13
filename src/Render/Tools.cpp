@@ -372,3 +372,37 @@ void Tools::playMixedSound(Mix_Chunk *chunk, int channel)
 {
     Mix_PlayChannel(channel, chunk, 0 );
 }
+
+void Tools::writeTextCenterHorizontal(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string text, int ypos)
+{
+    SDL_Texture *textTexture;
+    SDL_Rect textRect;
+    Tools::getTextAndRectCenterHorizontal(renderer, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color, ypos);
+
+    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+}
+
+void Tools::getTextAndRectCenterHorizontal(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color, int ypos)
+{
+    int renderer_w, renderer_h;
+    SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
+
+    int text_width;
+    int text_height;
+
+    SDL_Surface *surface;
+    SDL_Color textColor = {(Uint8) Tools::getRedValueFromColor(color), (Uint8) Tools::getGreenValueFromColor(color), (Uint8) Tools::getBlueValueFromColor(color), 0};
+
+    surface = TTF_RenderText_Solid(font, text, textColor);
+    *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    text_width = surface->w;
+    text_height = surface->h;
+    SDL_FreeSurface(surface);
+
+    rect->x = renderer_w/2 - text_width/2;
+    rect->y = ypos;
+
+    rect->w = text_width;
+    rect->h = text_height;
+}
