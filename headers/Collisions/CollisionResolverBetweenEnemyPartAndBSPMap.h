@@ -20,9 +20,9 @@ public:
     CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->enemyPart = getEnemyPart();
-        this->bspMap = getBSPMap();
+        this->bspMap    = getBSPMap();
 
-        this->gameObjects = gameObjects;
+        this->gameObjects   = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
     }

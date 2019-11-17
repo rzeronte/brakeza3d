@@ -406,3 +406,65 @@ void Tools::getTextAndRectCenterHorizontal(SDL_Renderer *renderer, char *text, T
     rect->w = text_width;
     rect->h = text_height;
 }
+
+
+Uint32 Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
+    Uint32 rb = color1 & 0xff00ff;
+    Uint32 g  = color1 & 0x00ff00;
+    rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
+    g  += ((color2 & 0x00ff00) -  g) * alpha >> 8;
+
+    return (rb & 0xff00ff) | (g & 0xff00);
+}
+
+Uint32 Tools::mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
+{
+
+    Vertex3D P = *lp->getPosition();
+    Vertex3D R = lp->AxisForward();
+
+    Vector3D L = Vector3D(P, Q);
+    Vertex3D Lv = L.normal();
+
+    const float min = R * Lv;
+
+    float p = 100;
+    float max = fmaxf(min, 0);
+    float pow = powf(max, p);
+
+    float intensity = pow / (lp->kc + lp->kl*distance + lp->kq * (distance * distance));
+
+    int r_light = (int) (Tools::getRedValueFromColor(lp->color)   * intensity);
+    int g_light = (int) (Tools::getGreenValueFromColor(lp->color) * intensity);
+    int b_light = (int) (Tools::getBlueValueFromColor(lp->color)  * intensity);
+
+    int r_original = (int) (Tools::getRedValueFromColor(color) * ( 1 - intensity) );
+    int g_original = (int) (Tools::getGreenValueFromColor(color) * ( 1 - intensity) );
+    int b_original = (int) (Tools::getBlueValueFromColor(color) * ( 1 - intensity) );
+
+    Uint32 c = Tools::createRGB(
+            r_light + r_original,
+            g_light + g_original,
+            b_light + b_original
+    );
+
+    return c;
+}
+
+Uint32 Tools::mixColor(Uint32 color1, Uint32 color2, float color2Intensity)
+{
+
+    int r_light = Tools::getRedValueFromColor(color2)   * color2Intensity;
+    int g_light = Tools::getGreenValueFromColor(color2) * color2Intensity;
+    int b_light = Tools::getBlueValueFromColor(color2)  * color2Intensity;
+
+    int r_original = Tools::getRedValueFromColor(color1)   * (1 - color2Intensity);
+    int g_original = Tools::getGreenValueFromColor(color1) * (1 - color2Intensity);
+    int b_original = Tools::getBlueValueFromColor(color1)  * (1 - color2Intensity);
+
+    return Tools::createRGB(
+    r_light + r_original,
+    g_light + g_original,
+    b_light + b_original
+    );
+}

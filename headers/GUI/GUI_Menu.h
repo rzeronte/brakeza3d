@@ -13,7 +13,7 @@ public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, cJSON *maps) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, cJSON *maps, Camera3D *cam) {
 
         bool show_about_window = false;
 
@@ -23,6 +23,14 @@ public:
         const float range_min_lightmap_intensity = 0;
         const float range_max_lightmap_intensity = 1;
         const float range_sensibility_lightmap_intensity = 0.0001;
+
+        const float range_min_fog_intensity = 0;
+        const float range_max_fog_intensity = 1;
+        const float range_sensibility_fog_intensity = 0.01;
+
+        const float range_min_fog_distance = 0;
+        const float range_max_fog_distance = 99;
+        const float range_sensibility_fog_distance = 0.5;
 
         const float range_sensibility_lava = 0.05;
         const float range_sensibility_lava_min = -5;
@@ -47,6 +55,10 @@ public:
         const float range_max_volume = 128;
 
 
+        const float range_frustum_fardistance_sensibility = 1;
+        const float range_min_frustum_fardistance = 1;
+        const float range_max_frustum_fardistance = 1000;
+
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
                 if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
@@ -60,6 +72,30 @@ public:
                 if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
                 }
+                ImGui::Separator();
+                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE, range_frustum_fardistance_sensibility, &range_min_frustum_fardistance, &range_max_frustum_fardistance, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    cam->farDistance = (float) EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
+                    cam->frustum->setup(
+                            *cam->getPosition(),
+                            Vertex3D(0, 0, 1),
+                            EngineSetup::getInstance()->up,
+                            EngineSetup::getInstance()->right,
+                            cam->getNearDistance(),
+                            cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
+                            cam->farDistance,
+                            cam->calcCanvasFarHeight(), cam->calcCanvasFarWidth()
+                    );
+                    cam->UpdateFrustum();
+                }
+
+                ImGui::Separator();
+                ImGui::Checkbox("Enable FOG", &EngineSetup::getInstance()->ENABLE_FOG);
+                ImGui::Separator();
+
+                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_INTENSITY, range_sensibility_fog_intensity,  &range_min_fog_intensity, &range_max_fog_intensity, "%f", 1.0f);
+                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_DISTANCE, range_sensibility_fog_distance,  &range_min_fog_distance, &range_max_fog_distance, "%f", 1.0f);
+
                 ImGui::Separator();
                 ImGui::Checkbox("OpenCL Rasterizer", &EngineSetup::getInstance()->RASTERIZER_OPENCL);
                 ImGui::Checkbox("OpenCL Transforms", &EngineSetup::getInstance()->TRANSFORMS_OPENCL);
@@ -197,12 +233,6 @@ public:
                     cJSON *name = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
                     if (cJSON_IsString(name)) {
                         ImGui::MenuItem(std::string(name->valuestring).c_str(), "", false);
-                        if (ImGui::IsItemClicked()) {
-                            EngineSetup::getInstance()->EVENT_GUI = true;
-                            EngineSetup::getInstance()->EVENT_LAUNCH = EngineSetup::getInstance()->EVENT_GUI_CHANGE_MAP;
-                            EngineSetup::getInstance()->EVENT_DATA = name->valuestring;
-                        }
-
                         ImGui::Separator();
                     }
                 }

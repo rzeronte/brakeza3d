@@ -36,7 +36,7 @@ public:
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
 
-        guiMenu->draw(finish, guiInspector->show, guiLightpoints->show, guiLog->show, guiCamera->show, guiTiles->show, guiWeapons->show, maps);
+        guiMenu->draw(finish, guiInspector->show, guiLightpoints->show, guiLog->show, guiCamera->show, guiTiles->show, guiWeapons->show, maps, cam);
         guiInspector->draw(gameObjects);
         guiLightpoints->draw(lightPoints);
         guiLog->draw(timedelta, cam, numVisibleTriangles);

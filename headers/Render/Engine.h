@@ -71,8 +71,8 @@ public:
     std::vector<Tile> tiles;
     OCLTriangle *trianglesTile;
 
-    int sizeTileWidth = 80;
-    int sizeTileHeight = 80;
+    int sizeTileWidth = 32;
+    int sizeTileHeight = 32;
     int tilesWidth;
     int tilesHeight;
     int numTiles;

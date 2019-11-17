@@ -34,8 +34,8 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int screenWidth  = 320;
-    int screenHeight = 240;
+    int screenWidth  = 256;
+    int screenHeight = 256;
 
     int RESOLUTION = screenWidth * screenHeight;
 
@@ -46,6 +46,12 @@ public:
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
 
     const float EPSILON = 0.00001f;
+
+    bool  ENABLE_FOG    = true;
+    float FOG_DISTANCE  = 75;
+    float FOG_INTENSITY = 1;
+    float FOG_COLOR = Color::gray();
+    float FRUSTUM_FARPLANE_DISTANCE = 75;
 
     bool RASTERIZER_OPENCL = false;
     bool TRANSFORMS_OPENCL = false;
@@ -211,11 +217,6 @@ public:
     char *LIGHT_PATTERNS[12];
 
     bool CFG_AUTOLOAD_MAP = true;
-
-    bool EVENT_GUI = false;
-    int  EVENT_LAUNCH = 0;
-    int  EVENT_GUI_CHANGE_MAP = 1000;
-    std::string EVENT_DATA = "";
 
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;

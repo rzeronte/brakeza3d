@@ -2,7 +2,7 @@
   "enemies": [
     {
       "name": "CalvinRed",
-      "classname": "monster_dog",
+      "classname": "monster_dfgdgdog",
       "range": 15,
       "damage": 10,
       "cadence": 0.25,
@@ -24,7 +24,7 @@
     },
     {
       "name": "Troll",
-      "classname": "monster_asd",
+      "classname": "monster_knight",
       "range": 1,
       "damage": 10,
       "cadence": 0.15,
@@ -46,7 +46,7 @@
     },
     {
       "name": "Chiclin",
-      "classname": "monster_armsdfsdfy",
+      "classname": "monster_army",
       "range": 10,
       "damage": 10,
       "cadence": 0.25,
@@ -68,7 +68,7 @@
     },
     {
       "name": "MrGreen",
-      "classname": "monster_army",
+      "classname": "monster_dog",
       "range": 15,
       "damage": 10,
       "cadence": 0.15,
