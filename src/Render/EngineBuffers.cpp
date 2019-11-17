@@ -109,6 +109,11 @@ float EngineBuffers::getVideoBuffer(int x, int y)
 
 void EngineBuffers::clearVideoBuffer()
 {
+    if (EngineSetup::getInstance()->ENABLE_FOG) {
+        std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::getInstance()->FOG_COLOR);
+        return;
+    }
+
     std::fill(videoBuffer, videoBuffer + sizeBuffers, NULL);
 }
 

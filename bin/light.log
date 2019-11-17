@@ -1,0 +1,33 @@
+---- light / ericw-tools v0.18.1 ----
+Raytracing backend: Embree
+running with 4 threads
+LoadBSPFile: 'test.bsp'
+BSP is version 29
+--- LoadEntities ---
+41 entities read, 29 are lights.
+--- OptionsSummary ---
+Embree_TraceInit: Embree version: 2.15.0
+Embree_TraceInit:
+	0 sky faces
+	5338 solid faces
+	0 filtered faces
+	0 shadow-casting skip faces
+SetupLights: 29 initial lights
+SetupLights: 29 after surface lights
+SetupLights: 29 after jittering
+--- EstimateLightVisibility ---
+0....1....2....3....4....5....6....7....8....9...
+Final count: 29 lights 0 suns in use.
+--- LightWorld ---
+0....1....2....3....4....5....6....7....8....9....
+Lighting Completed.
+
+lightdatasize: 267050
+0 switchable light styles (32 max)
+Writing test.bsp as BSP version 29
+0.584 seconds elapsed
+
+stats:
+1.378083 lights tested, 0.839364 hits per sample point
+0.000000 bounce lights tested, 0.000000 hits per sample point
+0 empty lightmaps

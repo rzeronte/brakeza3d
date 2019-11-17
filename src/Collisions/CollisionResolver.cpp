@@ -40,11 +40,12 @@ int CollisionResolver::getTypeCollision()
 
 bool CollisionResolver::isSomeCamera()
 {
-    if (!strcmp(objA->getLabel().c_str(), EngineSetup::getInstance()->cameraNameIdentifier.c_str())) {
+    std::string cameraIdentifier = EngineSetup::getInstance()->cameraNameIdentifier;
+    if (!strcmp(objA->getLabel().c_str(), cameraIdentifier.c_str())) {
         return true;
     }
 
-    if (!strcmp(objB->getLabel().c_str(), EngineSetup::getInstance()->cameraNameIdentifier.c_str())) {
+    if (!strcmp(objB->getLabel().c_str(), cameraIdentifier.c_str())) {
         return true;
     }
 }

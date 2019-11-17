@@ -10,6 +10,7 @@
 int main( int argc, const char* args[] ) {
 
     Brakeza3D::get()->start();
+
     Game::get()->start();
     //Demo *demo = new Demo();
 

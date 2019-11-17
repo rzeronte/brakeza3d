@@ -22,6 +22,7 @@ public:
     static Uint32 cyan(){return 0x00FFFF;}
     static Uint32 orange(){return 0xFF8000;}
     static Uint32 magenta(){return 0xFF00FF;}
+    static Uint32 gray(){return 0x323232;}
 
 
 };

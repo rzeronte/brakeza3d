@@ -79,12 +79,13 @@ public:
 
     Camera3D* getCamera()
     {
-        if (objA->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
+        std::string cameraIdentifier = EngineSetup::getInstance()->cameraNameIdentifier;
+        if ( objA->getLabel() == cameraIdentifier ) {
             Camera3D *camera = dynamic_cast<Camera3D*> (this->objA);
             return camera;
         }
 
-        if (objB->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
+        if ( objB->getLabel() == cameraIdentifier ) {
             Camera3D *camera = dynamic_cast<Camera3D*> (this->objB);
             return camera;
         }

@@ -508,19 +508,9 @@ void Engine::updateWindow()
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame(Brakeza3D::get()->window);
 
-    EngineSetup::getInstance()->EVENT_GUI = false;
-
     updateGUI();
 
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-
-    if (EngineSetup::getInstance()->EVENT_GUI) {
-        if (EngineSetup::getInstance()->EVENT_LAUNCH == EngineSetup::getInstance()->EVENT_GUI_CHANGE_MAP) {
-            Brakeza3D::get()->initBSP(std::string(EngineSetup::getInstance()->EVENT_DATA).c_str(), &this->frameTriangles);
-        }
-
-        Logging::getInstance()->Log("Event from GUI (" + std::to_string(EngineSetup::getInstance()->EVENT_LAUNCH) + ", " + EngineSetup::getInstance()->EVENT_DATA + ")");
-    }
 
     SDL_GL_SwapWindow(Brakeza3D::get()->window);
 

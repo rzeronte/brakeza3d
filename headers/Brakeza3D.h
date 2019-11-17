@@ -95,8 +95,8 @@ public:
 
     // Global timer
     Timer* getTimer();
-    void   updateTimer();
-    float  getDeltaTime();
+    void  updateTimer();
+    float getDeltaTime();
 
     void updateFPS();
 

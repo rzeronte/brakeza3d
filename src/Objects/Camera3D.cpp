@@ -17,7 +17,7 @@ Camera3D::Camera3D()
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
     horizontal_fov = 90;
     aspectRatio = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
-    farDistance = 200;
+    farDistance = EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
 
     this->consoleInfo();
 
@@ -189,11 +189,12 @@ void Camera3D::StrafeLeft(void)
 
 void Camera3D::UpdateVelocity(void)
 {
+    float liquidSpeedDivisor = EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
     // Move the camera forward
     if (Brakeza3D::get()->getBSP()->isLoaded()) {
         if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
-            speed  /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
-            strafe /= EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+            speed  /= liquidSpeedDivisor;
+            strafe /= liquidSpeedDivisor;
         }
     }
 

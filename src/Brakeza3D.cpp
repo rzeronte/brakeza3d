@@ -3,6 +3,7 @@
 #include "../headers/Render/Drawable.h"
 #include "../headers/Render/Maths.h"
 #include "../headers/Render/EngineBuffers.h"
+#include "../headers/Render/Transforms.h"
 
 Brakeza3D* Brakeza3D::instance = 0;
 
@@ -352,6 +353,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
+    int screenWidth = EngineSetup::getInstance()->screenWidth;
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
         int w1 = w1_row;
@@ -366,7 +368,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
 
                 depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
 
-                int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
+                int bufferIndex = ( y * screenWidth ) + x;
 
                 if (t->parent->isDecal()) {
                     depth-=1;
@@ -403,25 +405,24 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
     }
 }
 
-
 void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
-    Uint32 pixelColor = NULL;
+    Uint32 pixelColor       = NULL;
+    EngineSetup *setup      = EngineSetup::getInstance();
+    EngineBuffers *buffer   = EngineBuffers::getInstance();
 
     // Gradient
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+    if (setup->TRIANGLE_MODE_COLOR_SOLID) {
         pixelColor = (Uint32) Tools::createRGB(w0 * 255, w1 * 255, w2 * 255);
     }
 
     // Texture
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
-        if (t->getTexture()->liquid && EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED ) {
-            float cache1 = texu / EngineSetup::getInstance()->LAVA_CLOSENESS;
-            float cache2 = texv / EngineSetup::getInstance()->LAVA_CLOSENESS;
-            texu = (cache1 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED *
-                                                                              Brakeza3D::get()->executionTime + cache2) ) * EngineSetup::getInstance()->LAVA_SCALE;
-            texv = (cache2 + EngineSetup::getInstance()->LAVA_INTENSITY * sin(EngineSetup::getInstance()->LAVA_SPEED *
-                                                                              Brakeza3D::get()->executionTime + cache1) ) * EngineSetup::getInstance()->LAVA_SCALE;
+    if (setup->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
+        if (t->getTexture()->liquid && setup->TRIANGLE_TEXTURES_ANIMATED ) {
+            float cache1 = texu / setup->LAVA_CLOSENESS;
+            float cache2 = texv / setup->LAVA_CLOSENESS;
+            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * setup->LAVA_SCALE;
+            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * setup->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
@@ -438,15 +439,26 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         if (alpha == 0) {
             return;
         } else {
-            Uint32 existingColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
-            pixelColor = Maths::alphaBlend(existingColor, pixelColor, alpha);
+            Uint32 existingColor = buffer->getVideoBuffer(x, y);
+            pixelColor = Tools::alphaBlend(existingColor, pixelColor, alpha);
         }
 
-        if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
+        if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && setup->ENABLE_LIGHTMAPPING) {
             pixelColor = t->processPixelLightmap(pixelColor, lightu, lightv);
         }
     }
 
+    if (EngineSetup::getInstance()->ENABLE_FOG) {
+
+        float nZ = Maths::normalizeToRange(z, 0, EngineSetup::getInstance()->FOG_DISTANCE);
+
+        if (nZ >= 1) {
+            pixelColor = EngineSetup::getInstance()->FOG_COLOR;
+        } else {
+            pixelColor = Tools::mixColor(pixelColor, EngineSetup::getInstance()->FOG_COLOR, nZ * EngineSetup::getInstance()->FOG_INTENSITY);
+        }
+
+    }
 
     /*if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
         Vertex3D D;
@@ -489,8 +501,8 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         }
     }*/
 
-    EngineBuffers::getInstance()->setDepthBuffer(bufferIndex, z);
-    EngineBuffers::getInstance()->setVideoBuffer(bufferIndex, pixelColor);
+    buffer->setDepthBuffer(bufferIndex, z);
+    buffer->setVideoBuffer(bufferIndex, pixelColor);
 }
 
 
