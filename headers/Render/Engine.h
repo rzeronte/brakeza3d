@@ -71,17 +71,12 @@ public:
     std::vector<Tile> tiles;
     OCLTriangle *trianglesTile;
 
-    int sizeTileWidth = 32;
-    int sizeTileHeight = 32;
+    int sizeTileWidth = 8;
+    int sizeTileHeight = 8;
     int tilesWidth;
     int tilesHeight;
     int numTiles;
     int tilePixelsBufferSize;
-
-    // JSON for maps and weapons
-    cJSON *mapsJSONList;
-    cJSON *weaponsJSONList;
-    cJSON *enemiesJSONList;
 
     Engine();
     void Close();
@@ -134,10 +129,6 @@ public:
     void dumpTileToFrameBuffer(Tile *t);
     void handleOpenCLTransform();
 
-    // JSON setup Parsers
-    void getMapsJSON();
-    void getWeaponsJSON();
-    void getEnemiesJSON();
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

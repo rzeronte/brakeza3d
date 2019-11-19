@@ -62,6 +62,12 @@ public:
             // remove object3D for check in stepSimulation
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
 
+            // Offset down for draw sprite
+            Vertex3D pos = *getNPCEnemy()->getPosition();
+            pos.y += 0.85f;
+            getNPCEnemy()->setPosition(pos);
+            getNPCEnemy()->bodyEnabled = false;
+
             makeGoreDecals(-90, 0, 0);
 
             // Dead sound

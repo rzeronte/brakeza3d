@@ -492,7 +492,6 @@ void Engine::updateGUI()
             Brakeza3D::get()->getCamera(),
             tiles, tilesWidth,
             visibleTriangles.size(),
-            mapsJSONList,
             Brakeza3D::get()->getWeaponsManager()
     );
 
@@ -526,21 +525,6 @@ void Engine::onStart()
 
     Brakeza3D::get()->getCamera()->velocity.vertex1 = *Brakeza3D::get()->getCamera()->getPosition();
     Brakeza3D::get()->getCamera()->velocity.vertex2 = *Brakeza3D::get()->getCamera()->getPosition();
-
-    // Load JSON Config
-    Brakeza3D::get()->getMenuManager()->getOptionsJSON();
-    this->getWeaponsJSON();
-    this->getMapsJSON();
-    this->getEnemiesJSON();
-
-    cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
-    cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
-
-    if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
-        Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
-    }
-
-    Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 }
 
 void Engine::preUpdate()
@@ -705,7 +689,7 @@ void Engine::getMesh3DTriangles()
             if (oMesh->isEnabled()) {
                 oMesh->draw( &this->frameTriangles) ;
                 if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
                 }
             }
             if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
@@ -750,7 +734,7 @@ void Engine::getSpritesTriangles()
             Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
         }
 
@@ -765,7 +749,7 @@ void Engine::getSpritesTriangles()
             Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->font, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
+                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
         }
     }
@@ -934,224 +918,17 @@ void Engine::onEnd()
 
 void Engine::Close()
 {
-    TTF_CloseFont( Brakeza3D::get()->font );
+    TTF_CloseFont( Brakeza3D::get()->fontDefault );
+    TTF_CloseFont( Brakeza3D::get()->fontSmall );
+    TTF_CloseFont( Brakeza3D::get()->fontBig );
+    TTF_CloseFont( Brakeza3D::get()->fontMedium );
+
     SDL_DestroyWindow(Brakeza3D::get()->window );
     SDL_Quit();
 
     printf("\r\nBrakeza3D exit, good bye ;)");
 }
 
-void Engine::getWeaponsJSON()
-{
-    size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_WEAPONS;
-    const char* mapsFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(mapsFile);
-
-    if (myDataJSON == NULL) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
-        return;
-    }
-
-    weaponsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons" );
-    int sizeWeaponsList = cJSON_GetArraySize(weaponsJSONList);
-
-    if (sizeWeaponsList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
-    } else {
-        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
-    }
-
-    // weapons loop
-    cJSON *currentWeapon;
-    cJSON_ArrayForEach(currentWeapon, weaponsJSONList) {
-        cJSON *name        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
-        cJSON *hit         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "hit");
-        cJSON *cadence     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
-        cJSON *damage      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
-        cJSON *speed       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
-        cJSON *startAmmo   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "startAmmo");
-        cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
-        cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
-        cJSON *soundFire   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
-        cJSON *soundMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
-
-        // Weapon Type attributes
-        Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAmmo( startAmmo->valueint );
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setHitType(hit->valueint);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setCadence((float)cadence->valuedouble);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
-
-        cJSON *mark =       cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
-        cJSON *markPath =   cJSON_GetObjectItemCaseSensitive(mark, "path");
-        cJSON *markFrames = cJSON_GetObjectItemCaseSensitive(mark, "frames");
-        cJSON *markFps =    cJSON_GetObjectItemCaseSensitive(mark, "fps");
-        cJSON *markW =      cJSON_GetObjectItemCaseSensitive(mark, "width");
-        cJSON *markH =      cJSON_GetObjectItemCaseSensitive(mark, "height");
-
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
-                markPath->valuestring,
-                markFrames->valueint,
-                markFps->valueint,
-                (float) markW->valuedouble,
-                (float) markH->valuedouble
-        );
-
-        Logging::getInstance()->Log("Weapon JSON detected: name: " + std::string(name->valuestring) +
-            ", hitType: " + std::to_string(hit->valueint) +
-            ", cadence: " + std::to_string(cadence->valuedouble) +
-            ", speed: " + std::to_string(speed->valuedouble)
-        );
-
-        Logging::getInstance()->Log("JSON Weapon mark details for : " + std::string(name->valuestring) +
-            ", path: " + markPath->valuestring +
-            ", frames: " + std::to_string(markFrames->valueint) +
-            ", fps: " + std::to_string(markFps->valueint) +
-            ", w: " + std::to_string(markW->valuedouble) + ", h: " + std::to_string(markH->valuedouble)
-        );
-
-        // animation's weapon loop
-        cJSON *weaponAnimationsJSONList;
-        weaponAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentWeapon, "animations" );
-
-        cJSON *currentWeaponAnimation;
-        cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
-            cJSON *subfolder = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
-            cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
-            cJSON *fps       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "fps");
-            cJSON *offsetX   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
-            cJSON *offsetY   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
-
-            Logging::getInstance()->Log("Reading JSON Weapon Animation: " + std::string(subfolder->valuestring));
-
-            Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->addAnimation(
-                std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
-                frames->valueint,
-                fps->valueint,
-                offsetX->valueint,
-                offsetY->valueint
-            );
-        }
-    }
-}
-
-void Engine::getEnemiesJSON()
-{
-    size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_ENEMIES;
-    const char* enemiesFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(enemiesFile);
-
-    if (myDataJSON == NULL) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
-        return;
-    }
-
-    enemiesJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies" );
-    int sizeWeaponsList = cJSON_GetArraySize(enemiesJSONList);
-
-    if (sizeWeaponsList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
-    } else {
-        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
-    }
-
-    // weapons loop
-    cJSON *currentEnemy;
-    cJSON_ArrayForEach(currentEnemy, enemiesJSONList) {
-        cJSON *name             = cJSON_GetObjectItemCaseSensitive(currentEnemy, "name");
-        cJSON *classname        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "classname");
-        cJSON *range            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "range");
-        cJSON *damage           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
-        cJSON *cadence          = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
-        cJSON *speed            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
-        cJSON *width            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
-        cJSON *height           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
-        cJSON *projectileW      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
-        cJSON *projectileH      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
-        cJSON *soundFire        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
-        cJSON *soundMark        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
-        cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
-
-        NPCEnemyBody *newEnemy = new NPCEnemyBody();
-        newEnemy->setDamage( (float) damage->valuedouble );
-        newEnemy->setCadence( (float) cadence->valuedouble );
-        newEnemy->setRange( (float) range->valuedouble );
-        newEnemy->setSpeed( (float) speed->valuedouble );
-        newEnemy->setPosition(Vertex3D(0, 0, 0) );
-        newEnemy->setRotation(M3() );
-        newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );
-        newEnemy->setLabel( name->valuestring);
-        newEnemy->setClassname( classname->valuestring );
-        newEnemy->setAnimation( defaultAnimation->valueint );
-
-
-        Logging::getInstance()->Log("Enemy JSON detected: name: " + std::string(name->valuestring) +
-                                    ", classname: " + classname->valuestring +
-                                    ", speed: " + std::to_string(speed->valuedouble) +
-                                    ", w: " + std::to_string(width->valuedouble) +
-                                    ", h: " + std::to_string(height->valuedouble)
-        );
-
-        // animation's enemy loop
-        cJSON *enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
-
-        cJSON *currentEnemyAnimation;
-        cJSON_ArrayForEach(currentEnemyAnimation, enemyAnimationsJSONList) {
-            cJSON *path           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
-            cJSON *frames         = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "frames");
-            cJSON *fps            = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "fps");
-            cJSON *zeroDirection  = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "zeroDirection");
-            cJSON *maxTimes       = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "maxTimes");
-
-            Logging::getInstance()->Log("Reading JSON Enemy Animation: " + std::string(path->valuestring)
-                + ", maxTimes: " + std::to_string(maxTimes->valueint)
-            );
-
-            newEnemy->addAnimationDirectional2D(
-                path->valuestring,
-                frames->valueint,
-                fps->valueint,
-                zeroDirection->valueint,
-                maxTimes->valueint
-            );
-        }
-
-        EngineBuffers::getInstance()->enemyTemplates.push_back(newEnemy);
-    }
-}
-
-void Engine::getMapsJSON()
-{
-    size_t file_size;
-    const char* mapsFile = Tools::readFile(EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_MAPS, file_size);
-    cJSON *myDataJSON = cJSON_Parse(mapsFile);
-    if (myDataJSON == NULL) {
-        Logging::getInstance()->Log("maps.json can't be loaded", "ERROR");
-        return;
-    }
-
-    cJSON *currentMap = NULL;
-    mapsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "maps" );
-    int sizeMaps = cJSON_GetArraySize(mapsJSONList);
-
-    if (sizeMaps <= 0) {
-        Logging::getInstance()->Log("maps.json is empty", "ERROR");
-    }
-
-    cJSON_ArrayForEach(currentMap, mapsJSONList) {
-        cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
-
-        if (cJSON_IsString(nameMap)) {
-            Logging::getInstance()->Log("Map JSON detected: " + std::string(nameMap->valuestring));
-        }
-    }
-}
 
 void Engine::drawSceneObjectsAxis()
 {

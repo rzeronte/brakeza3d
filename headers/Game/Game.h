@@ -11,6 +11,12 @@ public:
     Player *player;
     GameInputController *controller;
     TexturePackage *HUDTextures;
+
+    // JSON for maps and weapons
+    cJSON *mapsJSONList;
+    cJSON *weaponsJSONList;
+    cJSON *enemiesJSONList;
+
     Game();
 
 public:
@@ -35,6 +41,11 @@ public:
     void drawHUD();
     void redScreen();
     void drawMenuScreen();
+
+    // JSON setup Parsers
+    void getMapsJSON();
+    void getWeaponsJSON();
+    void getEnemiesJSON();
 
 };
 

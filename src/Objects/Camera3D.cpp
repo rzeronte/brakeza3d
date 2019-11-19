@@ -15,9 +15,9 @@
 Camera3D::Camera3D()
 {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
-    horizontal_fov = 90;
-    aspectRatio = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
-    farDistance = EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
+    horizontal_fov = EngineSetup::getInstance()->HORIZONTAL_FOV;
+    aspectRatio    = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
+    farDistance    = EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
 
     this->consoleInfo();
 

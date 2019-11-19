@@ -157,13 +157,13 @@ void CollisionsManager::checkCollisionsForTriggerCamera()
                 }
 
                 if (!strcmp(classname, "func_door")) {
-                    Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->font, Color::white(), std::string("func_door") );
+                    Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), std::string("func_door") );
                 }
 
                 if (!strcmp(classname, "trigger_multiple")) {
                     // check for message response
                     if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->font, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
+                        Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
                     }
                 }
             }
@@ -209,6 +209,11 @@ void CollisionsManager::updatePhysicObjects()
 {
     std::vector<Object3D *>::iterator it;
     for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
+        Body *body = dynamic_cast<Body*> ((*it));
+        if (body != NULL) {
+            if ( !body->bodyEnabled ) continue;
+        }
+
         // projectiles
         Projectile3DBody *projectileBody = dynamic_cast<Projectile3DBody*> ((*it));
         if (projectileBody != NULL) {

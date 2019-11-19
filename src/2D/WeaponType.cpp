@@ -19,13 +19,13 @@ WeaponType::WeaponType(std::string label)
 
 }
 
-void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY)
+void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
     Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" animations)", "WeaponType");
 
-    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY);
+    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right);
 
     this->animations[this->numAnimations]->loadImages();
 

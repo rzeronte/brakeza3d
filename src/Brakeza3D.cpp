@@ -111,13 +111,18 @@ void Brakeza3D::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "october_crow.ttf";
+        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "pixel.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
-        font = TTF_OpenFont( pathFont.c_str(), EngineSetup::getInstance()->TEXT_3D_SIZE );
-        if(!font) {
-            Logging::getInstance()->Log(TTF_GetError(), "INFO");
-        }
+        fontDefault = TTF_OpenFont( pathFont.c_str(), 50 );
+        fontSmall   = TTF_OpenFont( pathFont.c_str(), 25 );
+        fontMedium  = TTF_OpenFont( pathFont.c_str(), 70 );
+        fontBig     = TTF_OpenFont( pathFont.c_str(), 100 );
+
+        if (!fontDefault) Logging::getInstance()->Log(TTF_GetError(), "INFO");
+        if (!fontSmall) Logging::getInstance()->Log(TTF_GetError(), "INFO");
+        if (!fontMedium) Logging::getInstance()->Log(TTF_GetError(), "INFO");
+        if (!fontBig) Logging::getInstance()->Log(TTF_GetError(), "INFO");
     }
 }
 
@@ -236,7 +241,7 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    Tools::writeText(renderer, font, 10, 200, Color::yellow(), std::to_string(fps) +"fps");
+    Tools::writeText(renderer, fontDefault, 10, 190, Color::yellow(), std::to_string(fps) +"fps");
 }
 
 void Brakeza3D::waterShader()
