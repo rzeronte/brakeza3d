@@ -34,8 +34,8 @@ public:
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
 
     // Screen dimension constants
-    int screenWidth  = 256;
-    int screenHeight = 256;
+    int screenWidth  = 320;
+    int screenHeight = 240;
 
     int RESOLUTION = screenWidth * screenHeight;
 
@@ -52,6 +52,7 @@ public:
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::gray();
     float FRUSTUM_FARPLANE_DISTANCE = 75;
+    float HORIZONTAL_FOV = 90;
 
     bool RASTERIZER_OPENCL = false;
     bool TRANSFORMS_OPENCL = false;
@@ -128,7 +129,7 @@ public:
 
     bool  SOUND_ENABLED = true;
     float SOUND_VOLUME_GLOBAL = 75;
-    float SOUND_VOLUME_MUSIC = 60;
+    float SOUND_VOLUME_MUSIC = 25;
     float SOUND_VOLUME_PLAYER = 128;
     float SOUND_VOLUME_ENVIRONMENT = 75;
     float SOUND_VOLUME_MENU = 75;
@@ -149,7 +150,6 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 1.f;
     float BILLBOARD_HEIGHT_DEFAULT = 1.f;
 
-    int TEXT_3D_SIZE = 50;
     Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
     bool DRAW_CROSSHAIR = true;
@@ -261,10 +261,13 @@ public:
     };
 
     enum WeaponsTypes {
-        WEAPON_TYPE_MELEE = 0,
-        WEAPON_TYPE_GUN = 1,
+        WEAPON_TYPE_GUN = 0,
+        WEAPON_TYPE_SHOTGUN = 1,
         WEAPON_TYPE_MACHINEGUN = 2,
         WEAPON_TYPE_ROCKETLAUNCHER = 3,
+        WEAPON_TYPE_LIGHTING = 4,
+        WEAPON_TYPE_FREEZER = 5,
+
     };
 
     enum WeaponsHitTypes {

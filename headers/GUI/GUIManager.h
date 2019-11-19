@@ -31,12 +31,12 @@ public:
         guiWeapons     = new GUI_Weapons();
     }
 
-    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, std::vector<LightPoint3D*> &lightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles, cJSON *maps, WeaponsManager *weapon)
+    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, std::vector<LightPoint3D*> &lightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles, WeaponsManager *weapon)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
 
-        guiMenu->draw(finish, guiInspector->show, guiLightpoints->show, guiLog->show, guiCamera->show, guiTiles->show, guiWeapons->show, maps, cam);
+        guiMenu->draw(finish, guiInspector->show, guiLightpoints->show, guiLog->show, guiCamera->show, guiTiles->show, guiWeapons->show, cam);
         guiInspector->draw(gameObjects);
         guiLightpoints->draw(lightPoints);
         guiLog->draw(timedelta, cam, numVisibleTriangles);

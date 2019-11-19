@@ -50,7 +50,10 @@ public:
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
-    TTF_Font *font = NULL;
+    TTF_Font *fontSmall   = NULL;
+    TTF_Font *fontDefault = NULL;
+    TTF_Font *fontMedium  = NULL;
+    TTF_Font *fontBig     = NULL;
 
     float deltaTime = 0;
     float last_ticks = 0;

@@ -15,7 +15,7 @@ WeaponAnimation::WeaponAnimation()
     currentFrame = 0;
 }
 
-void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY)
+void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right)
 {
     this->baseFile = file;
     this->fps = fps;
@@ -23,6 +23,7 @@ void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offse
     this->currentFrame = 0;
     this->offsetX = offsetX;
     this->offsetY = offsetY;
+    this->right = right;
 }
 
 void WeaponAnimation::loadImages()
@@ -62,8 +63,14 @@ void WeaponAnimation::resetAnimation()
 void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY)
 {
     SDL_Rect destPos;
-    destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w/2);
-    destPos.y = offsetY + globalOffsetY;
+
+    if (this->right) {
+        destPos.x = EngineSetup::getInstance()->screenWidth - this->getCurrentSurface()->w;
+    } else {
+        destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w/2);
+    }
+
+    destPos.y = EngineSetup::getInstance()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
 
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }

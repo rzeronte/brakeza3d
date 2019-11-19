@@ -41,7 +41,7 @@ public:
     int currentAnimationIndex = 0;
     WeaponAnimation *animations[WEAPON_MAX_ANIMATIONSS];
 
-    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY);
+    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right);
 
     WeaponAnimation *getCurrentWeaponAnimation();
 

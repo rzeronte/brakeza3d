@@ -1,39 +1,39 @@
 {
   "weapons": [
     {
-      "name": "weapons/melee_magic",
-      "cadence": 0.1,
-      "hit": 0,
-      "damage": 10,
-      "speed": 0,
-      "startAmmo": 500,
-      "projectile_width": 0,
-      "projectile_height": 0,
-      "mark": { "path": "weapons/melee_magic/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
-      "fire_sound": "gun_fire.wav",
-      "mark_sound": "gun_mark.wav",
-      "animations": [
-        { "subfolder": "walk", "frames": 3, "fps": 14, "offsetX": 50, "offsetY": 185 },
-        { "subfolder": "fire", "frames": 6, "fps": 10, "offsetX": 60, "offsetY": 150 },
-        { "subfolder": "reload", "frames": 5, "fps": 10, "offsetX": 0, "offsetY": 150 }
-      ]
-    },
-    {
       "name": "weapons/gun",
-      "cadence": 0.1,
+      "cadence": 0.25,
       "hit": 1,
-      "damage": 1,
+      "damage": 2,
       "speed": 700,
       "startAmmo": 500,
       "projectile_width": 0.75,
       "projectile_height": 0.75,
-      "mark": { "path": "weapons/gun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "mark": { "path": "weapons/gun/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 25, "offsetX": 70, "offsetY": 60 },
-        { "subfolder": "fire", "frames": 5, "fps": 25, "offsetX": 0, "offsetY": 72 },
-        { "subfolder": "reload", "frames": 17, "fps": 25, "offsetX": 0, "offsetY": 60 }
+        { "subfolder": "walk", "frames": 1, "fps": 10, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "fire", "frames": 3, "fps": 10, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "reload", "frames": 3, "fps": 10, "offsetX": 0, "offsetY": 0, "right": 0 }
+      ]
+    },
+    {
+      "name": "weapons/shotgun",
+      "cadence": 0.9,
+      "hit": 1,
+      "damage": 5,
+      "speed": 700,
+      "startAmmo": 500,
+      "projectile_width": 0.75,
+      "projectile_height": 0.75,
+      "mark": { "path": "weapons/shotgun/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "fire_sound": "gun_fire.wav",
+      "mark_sound": "gun_mark.wav",
+      "animations": [
+        { "subfolder": "walk", "frames": 1, "fps": 25, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "fire", "frames": 5, "fps": 14, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "reload", "frames": 17, "fps": 25, "offsetX": 0, "offsetY": 0, "right": 0 }
       ]
     },
     {
@@ -49,16 +49,16 @@
       "fire_sound": "machinegun_fire.wav",
       "mark_sound": "machinegun_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 15, "offsetX": 80, "offsetY": 120 },
-        { "subfolder": "fire", "frames": 8, "fps": 15, "offsetX": 80, "offsetY": 120 },
-        { "subfolder": "reload", "frames": 4, "fps": 15, "offsetX": 0, "offsetY": 0 }
+        { "subfolder": "walk", "frames": 1, "fps": 15, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "fire", "frames": 3, "fps": 15, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "reload", "frames": 4, "fps": 15, "offsetX": 0, "offsetY": 0, "right": 0  }
       ]
     },
     {
       "name": "weapons/rocketlauncher",
       "cadence": 1,
       "hit": 1,
-      "damage": 30,
+      "damage": 25,
       "speed": 500,
       "startAmmo": 500,
       "projectile_width": 6,
@@ -67,9 +67,45 @@
       "fire_sound": "rocketlauncher_fire.wav",
       "mark_sound": "rocketlauncher_mark.wav",
       "animations": [
-        { "subfolder": "walk", "frames": 1, "fps": 30, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "fire", "frames": 5, "fps": 4, "offsetX": 0, "offsetY": 75 },
-        { "subfolder": "reload", "frames": 8, "fps": 30, "offsetX": 0, "offsetY": 75 }
+        { "subfolder": "walk", "frames": 1, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 1 },
+        { "subfolder": "fire", "frames": 3, "fps": 4, "offsetX": 0, "offsetY": 0, "right": 1 },
+        { "subfolder": "reload", "frames": 8, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 1 }
+      ]
+    },
+    {
+      "name": "weapons/lighting",
+      "cadence": 1,
+      "hit": 1,
+      "damage": 25,
+      "speed": 500,
+      "startAmmo": 500,
+      "projectile_width": 6,
+      "projectile_height": 6,
+      "mark": { "path": "weapons/lighting/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_sound": "rocketlauncher_fire.wav",
+      "mark_sound": "rocketlauncher_mark.wav",
+      "animations": [
+        { "subfolder": "walk", "frames": 1, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "fire", "frames": 3, "fps": 4, "offsetX": 0, "offsetY": 0, "right": 0 },
+        { "subfolder": "reload", "frames": 8, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 0 }
+      ]
+    },
+    {
+      "name": "weapons/freezer",
+      "cadence": 1,
+      "hit": 1,
+      "damage": 25,
+      "speed": 500,
+      "startAmmo": 500,
+      "projectile_width": 6,
+      "projectile_height": 6,
+      "mark": { "path": "weapons/lighting/mark/mark",  "frames": 9,  "fps": 30, "width": 8, "height": 8},
+      "fire_sound": "rocketlauncher_fire.wav",
+      "mark_sound": "rocketlauncher_mark.wav",
+      "animations": [
+        { "subfolder": "walk", "frames": 1, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 1 },
+        { "subfolder": "fire", "frames": 2, "fps": 4, "offsetX": 0, "offsetY": 0, "right": 1 },
+        { "subfolder": "reload", "frames": 8, "fps": 30, "offsetX": 0, "offsetY": 0, "right": 1 }
       ]
     }
   ]

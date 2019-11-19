@@ -72,11 +72,11 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
     if (player->isDead()) return;
 
     if (keyboard[SDL_SCANCODE_1]) {
-        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_MELEE;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
     }
 
     if (keyboard[SDL_SCANCODE_2]) {
-        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_SHOTGUN;
     }
 
     if (keyboard[SDL_SCANCODE_3]) {
@@ -85,6 +85,14 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 
     if (keyboard[SDL_SCANCODE_4]) {
         Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_ROCKETLAUNCHER;
+    }
+
+    if (keyboard[SDL_SCANCODE_5]) {
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_LIGHTING;
+    }
+
+    if (keyboard[SDL_SCANCODE_6]) {
+        Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_FREEZER;
     }
 
     if (event->type == SDL_WINDOWEVENT) {

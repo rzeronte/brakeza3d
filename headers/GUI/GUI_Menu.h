@@ -13,7 +13,7 @@ public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, cJSON *maps, Camera3D *cam) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
 
         bool show_about_window = false;
 
@@ -53,11 +53,14 @@ public:
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
         const float range_max_volume = 128;
-
-
+        
         const float range_frustum_fardistance_sensibility = 1;
         const float range_min_frustum_fardistance = 1;
         const float range_max_frustum_fardistance = 1000;
+
+        const float range_fov_sensibility = 1;
+        const float range_min_fov = 20;
+        const float range_max_fov = 160;
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
@@ -68,6 +71,23 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::getInstance()->HORIZONTAL_FOV, range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
+                    cam->frustum->setup(
+                            *cam->getPosition(),
+                            Vertex3D(0, 0, 1),
+                            EngineSetup::getInstance()->up,
+                            EngineSetup::getInstance()->right,
+                            cam->getNearDistance(),
+                            cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
+                            cam->farDistance,
+                            cam->calcCanvasFarHeight(), cam->calcCanvasFarWidth()
+                    );
+                    cam->UpdateFrustum();
+                }
+                ImGui::Separator();
+
                 ImGui::Checkbox("Tiled Based", &EngineSetup::getInstance()->BASED_TILE_RENDER);
                 if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
@@ -222,20 +242,6 @@ public:
                     ImGui::EndMenu();
                 }
 
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Maps")) {
-                ImGui::Checkbox("Render map", &EngineSetup::getInstance()->RENDER_BSP_MAP);
-
-                cJSON *currentMap = NULL;
-                cJSON_ArrayForEach(currentMap, maps) {
-                    cJSON *name = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
-                    if (cJSON_IsString(name)) {
-                        ImGui::MenuItem(std::string(name->valuestring).c_str(), "", false);
-                        ImGui::Separator();
-                    }
-                }
                 ImGui::EndMenu();
             }
 

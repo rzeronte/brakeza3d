@@ -13,6 +13,8 @@ public:
 
     float mass;
 
+    bool bodyEnabled = true;
+
     btRigidBody* m_body;
     btCollisionObject* m_collider;
 
