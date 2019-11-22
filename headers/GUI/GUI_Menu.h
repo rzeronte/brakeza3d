@@ -53,7 +53,7 @@ public:
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
         const float range_max_volume = 128;
-        
+
         const float range_frustum_fardistance_sensibility = 1;
         const float range_min_frustum_fardistance = 1;
         const float range_max_frustum_fardistance = 1000;

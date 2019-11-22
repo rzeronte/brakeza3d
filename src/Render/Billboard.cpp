@@ -44,14 +44,13 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D U, Vertex3D R)
     Q3 = Transforms::objectToLocal(Q3, o);
     Q4 = Transforms::objectToLocal(Q4, o);
 
-    Q1.u = 1.0f; Q1.v = 1.0f;
+    Q1.u = 1.0f;   Q1.v = 1.0f;
     Q2.u = 0.0001; Q2.v = 1.0f;
     Q3.u = 0.0001; Q3.v = 0.0001;
-    Q4.u = 1.0f; Q4.v = 0.0001;
+    Q4.u = 1.0f;   Q4.v = 0.0001;
 
     T1 = Triangle(Q3, Q2, Q1, o);
     T2 = Triangle(Q4, Q3, Q1, o);
-
 }
 
 void Billboard::loadTexture(std::string fileName)

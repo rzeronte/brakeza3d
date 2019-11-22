@@ -345,7 +345,6 @@ float Triangle::updateFullArea()
 {
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;
-
 }
 
 // (v0 - P) . N

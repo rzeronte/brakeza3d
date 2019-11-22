@@ -112,6 +112,15 @@ void InputController::updateMouseStates(SDL_Event *event)
     if (event->type == SDL_MOUSEBUTTONDOWN) {
         MousePressed = true;
     }
+    if (event->button.button == SDL_BUTTON_LEFT) {
+        leftButton = true;
+        rightButton = false;
+    }
+
+    if (event->button.button == SDL_BUTTON_RIGHT) {
+        rightButton = true;
+        leftButton = false;
+    }
 
     if (event->type == SDL_MOUSEBUTTONUP) {
         MousePressed = false;
