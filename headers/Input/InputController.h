@@ -25,6 +25,9 @@ public:
     bool MousePressed = false;
     bool MouseMotion = false;
 
+    bool leftButton  = false;
+    bool rightButton = false;
+
     InputController();
 
     virtual void handleKeyboardContinuous(SDL_Event *, bool &);

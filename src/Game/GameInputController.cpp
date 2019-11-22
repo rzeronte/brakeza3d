@@ -16,6 +16,9 @@ void GameInputController::handleMouse(SDL_Event *event)
     }
 
     InputController::handleMouse(event);
+
+
+
 }
 
 void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
@@ -70,6 +73,29 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
     handleMenuKeyboard(end);
 
     if (player->isDead()) return;
+
+    if (event->key.keysym.sym == SDLK_z ) {
+        if (event->type == SDL_KEYDOWN) {
+            Brakeza3D::get()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->ZOOM_FOV;
+        }
+
+        if (event->type == SDL_KEYUP) {
+            Brakeza3D::get()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
+        }
+
+        Brakeza3D::get()->getCamera()->frustum->setup(
+                *Brakeza3D::get()->getCamera()->getPosition(),
+                Vertex3D(0, 0, 1),
+                EngineSetup::getInstance()->up,
+                EngineSetup::getInstance()->right,
+                Brakeza3D::get()->getCamera()->getNearDistance(),
+                Brakeza3D::get()->getCamera()->calcCanvasNearHeight(), Brakeza3D::get()->getCamera()->calcCanvasNearWidth(),
+                Brakeza3D::get()->getCamera()->farDistance,
+                Brakeza3D::get()->getCamera()->calcCanvasFarHeight(), Brakeza3D::get()->getCamera()->calcCanvasFarWidth()
+        );
+
+        Brakeza3D::get()->getCamera()->UpdateFrustum();
+    }
 
     if (keyboard[SDL_SCANCODE_1]) {
         Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;

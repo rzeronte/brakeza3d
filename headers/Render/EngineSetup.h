@@ -18,7 +18,7 @@ public:
 
     std::string ENGINE_TITLE = "Brakeza3D v0.6";
 
-    std::string cameraNameIdentifier = "Camera";
+    std::string cameraNameIdentifier        = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
 
     Vertex3D CameraPosition = Vertex3D(1, 1, -5);
@@ -221,8 +221,9 @@ public:
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;
 
-    bool ENABLE_IA = true;
+    bool  ENABLE_IA = true;
     float TIME_STEP_IA_ENEMIES = 0.50f;
+    float ZOOM_FOV = 50;
 
     enum collisionGroups
     {
