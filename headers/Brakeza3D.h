@@ -69,12 +69,22 @@ public:
     int fps = 0;
     int fpsFrameCounter = 0;
 
+    std::vector<Tile> tiles;
+    OCLTriangle *trianglesTile;
+    int sizeTileWidth  = EngineSetup::getInstance()->screenWidth/2;
+    int sizeTileHeight = EngineSetup::getInstance()->screenHeight/2;
+    int tilesWidth;
+    int tilesHeight;
+    int numTiles;
+    int tilePixelsBufferSize;
+
     // start Brakeza3D
     void start();
 
     bool initSound();
     bool initWindow();
     void initFontsTTF();
+    void initTiles();
 
     // loader for BSP maps
     void initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
@@ -109,6 +119,10 @@ public:
 
     void waterShader();
 
+    // Draw triangles
+    void drawTilesTriangles(std::vector<Triangle*> *visibleTriangles);
+    void drawFrameTriangles(std::vector<Triangle*> &visibleTriangles);
+
     void processTriangle(Triangle *t);
     void triangleRasterizer(Triangle *t);
     void processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv);
@@ -116,6 +130,9 @@ public:
     void drawWireframe(Triangle *t);
     void drawWireframeColor(Triangle *t, Uint32 c);
 
+    void drawTileTriangles(int i, std::vector<Triangle*> &);
+    void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);
+    void drawTilesGrid();
 };
 
 

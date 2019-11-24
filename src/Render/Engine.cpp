@@ -17,7 +17,7 @@ Engine::Engine()
 {
     IMGUI_CHECKVERSION();
     this->initOpenCL();
-    this->initTiles();
+    Brakeza3D::get()->initTiles();
     this->initCollisionManager();
 }
 
@@ -104,86 +104,6 @@ void Engine::handleOpenCLTriangles()
     }
     clFinish(command_queue_rasterizer);
     EngineBuffers::getInstance()->numOCLTriangles = 0;
-}
-
-void Engine::handleOpenCLTrianglesForTiles()
-{
-    // Create OCLTiles
-    OCLTile tilesOCL[numTiles];
-    for (int i = 0 ; i < numTiles ; i++) {
-        tilesOCL[i].draw    = this->tiles[i].draw;
-        tilesOCL[i].start_x = this->tiles[i].start_x;
-        tilesOCL[i].start_y = this->tiles[i].start_y;
-        tilesOCL[i].id      = this->tiles[i].id;
-        tilesOCL[i].id_x    = this->tiles[i].id_x;
-        tilesOCL[i].id_y    = this->tiles[i].id_y;
-    }
-
-    opencl_buffer_tiles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTiles * sizeof(OCLTile), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_tiles, CL_TRUE, 0, numTiles * sizeof(OCLTile), &tilesOCL, 0, NULL, NULL);
-
-    for (int i = 0 ; i < numTiles ; i++) {
-        if (!this->tiles[i].draw) continue;
-
-        int numTrianglesTile = this->tiles[i].numTriangles;
-        trianglesTile = new OCLTriangle[this->tiles[i].numTriangles];
-        for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
-            int triangleId = this->tiles[i].triangleIds[j];
-            trianglesTile[j] = EngineBuffers::getInstance()->OCLTrianglesBuffer[ triangleId ];
-        }
-
-        opencl_buffer_triangles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->tiles[i].numTriangles * sizeof(OCLTriangle), trianglesTile, &ret);
-
-        clSetKernelArg(processTileTriangles, 0, sizeof(int), &this->tiles[i].id);
-        clSetKernelArg(processTileTriangles, 1, sizeof(int), &EngineSetup::getInstance()->screenWidth);
-        clSetKernelArg(processTileTriangles, 2, sizeof(int), &this->sizeTileWidth);
-        clSetKernelArg(processTileTriangles, 3, sizeof(int), &this->sizeTileHeight);
-        clSetKernelArg(processTileTriangles, 4, sizeof(cl_mem), (void *)&this->tiles[i].clBuffer);
-        clSetKernelArg(processTileTriangles, 5, sizeof(cl_mem), (void *)&this->tiles[i].clBufferDepth);
-        clSetKernelArg(processTileTriangles, 6, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-        clSetKernelArg(processTileTriangles, 7, sizeof(cl_mem), (void *)&opencl_buffer_tiles);
-
-        size_t global_item_size = numTrianglesTile; // Process the entire lists
-        size_t local_item_size = 1;                 // Divide work items into groups of 64
-
-        ret = clEnqueueNDRangeKernel(command_queue_rasterizer, processTileTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
-
-        if (ret != CL_SUCCESS) {
-            Logging::getInstance()->getInstance()->Log( "Error processTileTriangles: " + std::to_string(ret) );
-
-            char buffer[1024];
-            clGetProgramBuildInfo(programCPU, device_cpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
-            if (strlen(buffer) > 0 ) {
-                Logging::getInstance()->getInstance()->Log( buffer );
-            }
-        }
-        clReleaseMemObject(opencl_buffer_triangles);
-    }
-
-    clFinish(command_queue_rasterizer);
-    for (int i = 0 ; i < numTiles ; i++) {
-        if (!this->tiles[i].draw) continue;
-        this->dumpTileToFrameBuffer(&this->tiles[i]);
-    }
-
-    clReleaseMemObject(opencl_buffer_tiles);
-    EngineBuffers::getInstance()->numOCLTriangles = 0;
-}
-
-void Engine::dumpTileToFrameBuffer(Tile *t)
-{
-    int start_x = t->start_x;
-    int start_y = t->start_y;
-
-    for (int buffer_y = 0; buffer_y < sizeTileHeight; buffer_y++) {
-        for (int buffer_x = 0; buffer_x < sizeTileWidth; buffer_x++) {
-            int index = (buffer_y * sizeTileWidth) + buffer_x;
-            EngineBuffers::getInstance()->setVideoBuffer(start_x + buffer_x, start_y + buffer_y, t->buffer[index]);
-        }
-    }
-
-    std::fill(t->buffer, t->buffer + (sizeTileWidth*sizeTileHeight), 0);
-    std::fill(t->bufferDepth, t->bufferDepth + (sizeTileWidth*sizeTileHeight), 10000);
 }
 
 void Engine::handleOpenCLTransform()
@@ -345,62 +265,6 @@ void Engine::handleOpenCLTransform()
 
 }
 
-void Engine::initTiles()
-{
-    if (EngineSetup::getInstance()->screenWidth % this->sizeTileWidth != 0) {
-        printf("Bad sizetileWidth\r\n");
-        exit(-1);
-    }
-    if (EngineSetup::getInstance()->screenHeight % this->sizeTileHeight != 0) {
-        printf("Bad sizeTileHeight\r\n");
-        exit(-1);
-    }
-
-    // Tiles Raster setup
-    this->tilesWidth  = EngineSetup::getInstance()->screenWidth / this->sizeTileWidth;
-    this->tilesHeight = EngineSetup::getInstance()->screenHeight / this->sizeTileHeight;
-    this->numTiles = tilesWidth * tilesHeight;
-    this->tilePixelsBufferSize = this->sizeTileWidth*this->sizeTileHeight;
-
-    Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+") - bufferTileSize: " + std::to_string(sizeTileWidth*sizeTileHeight));
-
-    for (int y = 0 ; y < EngineSetup::getInstance()->screenHeight; y+=this->sizeTileHeight) {
-        for (int x = 0 ; x < EngineSetup::getInstance()->screenWidth; x+=this->sizeTileWidth) {
-
-            Tile t;
-
-            t.draw    = true;
-            t.id_x    = (x/this->sizeTileWidth);
-            t.id_y    = (y/this->sizeTileHeight);
-            t.id      = t.id_y * this->tilesWidth + t.id_x;
-            t.start_x = x;
-            t.start_y = y;
-
-            this->tiles.push_back(t);
-            // Load up the vector with MyClass objects
-
-
-            Logging::getInstance()->Log("Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x)+", offset_y: " + std::to_string(y) + ")");
-        }
-    }
-
-    // Create local buffers and openCL buffer pointers
-    for (int i = 0; i < numTiles; i++) {
-
-        this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
-        for (int j = 0; j < tilePixelsBufferSize ; j++) {
-            this->tiles[i].buffer[j] = Color::red();
-        }
-
-        this->tiles[i].bufferDepth = new float[tilePixelsBufferSize];
-        for (int j = 0; j < tilePixelsBufferSize ; j++) {
-            this->tiles[i].bufferDepth[j] = 0;
-        }
-
-        this->tiles[i].clBuffer = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(unsigned int), this->tiles[i].buffer, &ret);
-        this->tiles[i].clBufferDepth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, tilePixelsBufferSize * sizeof(float), this->tiles[i].bufferDepth, &ret);
-    }
-}
 
 void Engine::initCollisionManager()
 {
@@ -490,7 +354,7 @@ void Engine::updateGUI()
             Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getLightPoints(),
             Brakeza3D::get()->getCamera(),
-            tiles, tilesWidth,
+            Brakeza3D::get()->tiles, Brakeza3D::get()->tilesWidth,
             visibleTriangles.size(),
             Brakeza3D::get()->getWeaponsManager()
     );
@@ -593,23 +457,20 @@ void Engine::onUpdate()
     if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
         this->handleOpenCLTransform();
     }
+
     this->hiddenSurfaceRemoval();
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
-        this->handleTrianglesToTiles();
+        Brakeza3D::get()->handleTrianglesToTiles(visibleTriangles);
 
-        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-            this->drawTilesTriangles();
-        } else {
-            this->handleOpenCLTrianglesForTiles();
-        }
+        Brakeza3D::get()->drawTilesTriangles(&visibleTriangles);
 
         if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
-            this->drawTilesGrid();
+            Brakeza3D::get()->drawTilesGrid();
         }
     } else {
         if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-            this->drawFrameTriangles();
+            Brakeza3D::get()->drawFrameTriangles(visibleTriangles);
         } else {
             this->handleOpenCLTriangles();
         }
@@ -755,31 +616,6 @@ void Engine::getSpritesTriangles()
     }
 }
 
-void Engine::drawFrameTriangles()
-{
-    std::vector<Triangle *>::iterator it;
-    for ( it = visibleTriangles.begin(); it != this->visibleTriangles.end(); it++) {
-        Triangle *triangle = *(it);
-        Brakeza3D::get()->processTriangle( triangle );
-    }
-}
-
-void Engine::drawTilesGrid()
-{
-    for (int j = 0 ; j < (this->tilesWidth*this->tilesHeight) ; j++) {
-        Tile *t = &this->tiles[j];
-        Uint32 color = Color::white();
-
-        if (t->numTriangles > 0) {
-            color = Color::red();
-        }
-
-        Line2D top = Line2D(t->start_x, t->start_y, t->start_x+sizeTileWidth, t->start_y);
-        Line2D left = Line2D(t->start_x, t->start_y, t->start_x, t->start_y+sizeTileHeight);
-        Drawable::drawLine2D(top, color);
-        Drawable::drawLine2D(left, color);
-    }
-}
 
 void Engine::hiddenSurfaceRemoval()
 {
@@ -866,49 +702,6 @@ void Engine::hiddenSurfaceRemoval()
     }
 
     frameTriangles.clear();
-}
-
-void Engine::drawTilesTriangles()
-{
-    for (int i = 0 ; i < this->numTiles ; i++) {
-        if (!this->tiles[i].draw) continue;
-
-        for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
-            int triangleId = this->tiles[i].triangleIds[j];
-            Tile *t = &this->tiles[i];
-            Triangle *tr = this->visibleTriangles[triangleId];
-            Brakeza3D::get()->softwareRasterizerForTile(
-                tr,
-                t->start_x,
-                t->start_y,
-                t->start_x+sizeTileWidth,
-                t->start_y+sizeTileHeight
-           );
-        }
-    }
-}
-
-void Engine::handleTrianglesToTiles()
-{
-    for (int i = 0 ; i < this->numTiles ; i++) {
-        this->tiles[i].numTriangles = 0;
-    }
-
-    for (int i = 0 ; i < visibleTriangles.size() ; i++) {
-        int tileStartX =  std::max((float)(this->visibleTriangles[i]->minX/this->sizeTileWidth), 0.0f);
-        int tileEndX   =  std::min((float)(this->visibleTriangles[i]->maxX/this->sizeTileWidth), (float)this->tilesWidth-1);
-
-        int tileStartY =  std::max((float)(this->visibleTriangles[i]->minY/this->sizeTileHeight), 0.0f);
-        int tileEndY   =  std::min((float)(this->visibleTriangles[i]->maxY/this->sizeTileHeight), (float)this->tilesHeight-1);
-
-        for (int y = tileStartY; y <= tileEndY ; y++) {
-            for (int x = tileStartX; x <= tileEndX ; x++) {
-                int tileOffset = y * tilesWidth + x;
-                this->tiles[tileOffset].triangleIds[ this->tiles[tileOffset].numTriangles ] = i;
-                this->tiles[tileOffset].numTriangles++;
-            }
-        }
-    }
 }
 
 void Engine::onEnd()

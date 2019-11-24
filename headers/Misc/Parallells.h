@@ -4,18 +4,6 @@
 #include "../Brakeza3D.h"
 #include "../Game/Game.h"
 
-void *ParalellProcessPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
-{
-    Brakeza3D::get()->processPixel(
-            t,
-            bufferIndex,
-            x, y,
-            w0, w1, w2,
-            z,
-            texu, texv,
-            lightu, lightv
-    );
-}
 
 void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
@@ -33,5 +21,9 @@ void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTri
     EngineSetup::getInstance()->LOADING     = false;
 }
 
+void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
+{
+    Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
+}
 
 #endif //BRAKEDA3D_PARALLELLS_H

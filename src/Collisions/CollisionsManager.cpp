@@ -281,7 +281,7 @@ Vertex3D CollisionsManager::stepSimulation()
 
     if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation(time, 1);
+        getDynamicsWorld()->stepSimulation(time);
 
         // Physics for meshes
         updatePhysicObjects();

@@ -89,7 +89,9 @@ public:
                 ImGui::Separator();
 
                 ImGui::Checkbox("Tiled Based", &EngineSetup::getInstance()->BASED_TILE_RENDER);
+
                 if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
+                    ImGui::Checkbox("Tiled Based Threaded", &EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED);
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
                 }
                 ImGui::Separator();

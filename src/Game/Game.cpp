@@ -581,5 +581,8 @@ void Game::initBSP()
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
 
+    EngineSetup::getInstance()->LOADING     = true;
+    EngineSetup::getInstance()->MENU_ACTIVE = false;
+
     Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
 }
