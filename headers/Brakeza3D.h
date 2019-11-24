@@ -70,9 +70,8 @@ public:
     int fpsFrameCounter = 0;
 
     std::vector<Tile> tiles;
-    OCLTriangle *trianglesTile;
     int sizeTileWidth  = EngineSetup::getInstance()->screenWidth/2;
-    int sizeTileHeight = EngineSetup::getInstance()->screenHeight/2;
+    int sizeTileHeight = EngineSetup::getInstance()->screenHeight;
     int tilesWidth;
     int tilesHeight;
     int numTiles;

@@ -23,7 +23,7 @@ void M3::setup (float m0, float m1, float m2, float m3, float m4, float m5, floa
     m[6] = m6  ;  m[7] = m7  ;  m[8] = m8;
 }
 
-M3 M3::operator *(const M3 v)
+M3 M3::operator *(const M3 &v)
 {
     M3 M = M3();
     M.m[0] = m[0]*v.m[0] + m[1]*v.m[3] + m[2]*v.m[6];

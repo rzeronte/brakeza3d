@@ -101,9 +101,8 @@ public:
 
     //void shadowMapping(LightPoint3D *lp);
 
-    void processPixel(int, int, int, float, float, float, float, float, float, float, float);
-    Uint32 processPixelTexture(float, float);
-    Uint32 processPixelLightmap(Uint32, float, float);
+    void processPixelTexture(Uint32 &, float, float);
+    void processPixelLightmap(Uint32 &, float, float);
 
     //void scanVerticesForShadowMapping(LightPoint3D *lp);
     //void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
