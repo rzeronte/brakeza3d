@@ -59,6 +59,7 @@ void Game::onStart()
 void Game::mainLoop()
 {
     ImGuiIO& io = ImGui::GetIO();
+
     while(!finish) {
 
         this->preUpdate();
@@ -66,11 +67,13 @@ void Game::mainLoop()
         this->onUpdateInputController();
 
         if (!finish) {
+
             // game level update
             this->onUpdate();
 
             // Update window
             Engine::updateWindow();
+
         }
     }
 }
@@ -112,7 +115,6 @@ void Game::onUpdate()
         SDL_BlitSurface(this->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, NULL);
         Drawable::drawFireShader();
     }
-
 }
 
 void Game::preUpdate()
@@ -346,7 +348,6 @@ void Game::redScreen()
 
 void Game::drawMenuScreen()
 {
-    //this->waterShader();
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
     }

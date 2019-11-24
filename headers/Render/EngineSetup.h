@@ -56,7 +56,6 @@ public:
     float HORIZONTAL_FOV = 90;
 
     bool RASTERIZER_OPENCL = false;
-    bool TRANSFORMS_OPENCL = false;
 
     bool DRAW_TILES_GRID = false;
 
@@ -127,8 +126,6 @@ public:
     std::string CFG_WEAPONS = "weapons.json";
     std::string CFG_ENEMIES = "enemies.json";
 
-    bool RENDER_BSP_MAP = true;
-
     bool  SOUND_ENABLED = true;
     float SOUND_VOLUME_GLOBAL = 75;
     float SOUND_VOLUME_MUSIC = 25;
@@ -166,7 +163,7 @@ public:
     float WALKING_SPEED_LIQUID_DIVISOR = 2.0;
 
     // MOUSE
-    float MOUSE_SENSITIVITY	= 0.50;
+    float MOUSE_SENSITIVITY	= 0.250;
 
     bool HEAD_BOB = false;
 

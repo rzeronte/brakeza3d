@@ -513,7 +513,7 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
             }
         }
 
-        pixelColor = t->processPixelTexture(texu, texv);
+        t->processPixelTexture(pixelColor, texu, texv);
 
         Uint8 red, green, blue, alpha;
         SDL_GetRGBA(pixelColor, t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
@@ -526,7 +526,7 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         }
 
         if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && setup->ENABLE_LIGHTMAPPING) {
-            pixelColor = t->processPixelLightmap(pixelColor, lightu, lightv);
+            t->processPixelLightmap(pixelColor, lightu, lightv);
         }
     }
 
@@ -590,9 +590,6 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
 
 void Brakeza3D::drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles)
 {
-
-    std::vector<std::thread> threads;
-
     for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
         int triangleId = this->tiles[i].triangleIds[j];
         Tile *t = &this->tiles[i];
@@ -638,12 +635,10 @@ void Brakeza3D::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
 
     for (int i = 0; i < visibleTriangles.size(); i++) {
         int tileStartX = std::max((float) (visibleTriangles[i]->minX / this->sizeTileWidth), 0.0f);
-        int tileEndX = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth),
-                                (float) this->tilesWidth - 1);
+        int tileEndX = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth), (float) this->tilesWidth - 1);
 
         int tileStartY = std::max((float) (visibleTriangles[i]->minY / this->sizeTileHeight), 0.0f);
-        int tileEndY = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight),
-                                (float) this->tilesHeight - 1);
+        int tileEndY = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight), (float) this->tilesHeight - 1);
 
         for (int y = tileStartY; y <= tileEndY; y++) {
             for (int x = tileStartX; x <= tileEndX; x++) {

@@ -465,7 +465,7 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
     }
 }*/
 
-Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
+void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v)
 {
     float ignorablePartInt;
 
@@ -484,15 +484,14 @@ Uint32 Triangle::processPixelTexture(float tex_u, float tex_v)
     }
 
     if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
-        return Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
+        pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
+        return;
     }
 
-    return Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
-
-    /**/
+    pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
 }
 
-Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float light_v)
+void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v)
 {
     float intpart;
     // Check for inversion U
@@ -585,8 +584,6 @@ Uint32 Triangle::processPixelLightmap(Uint32 pixelColor, float light_u, float li
                 std::min(int((pblue) * t), c*1)
         );
     }
-
-    return pixelColor;
 }
 
 /*void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,

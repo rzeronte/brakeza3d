@@ -106,166 +106,6 @@ void Engine::handleOpenCLTriangles()
     EngineBuffers::getInstance()->numOCLTriangles = 0;
 }
 
-void Engine::handleOpenCLTransform()
-{
-    EngineBuffers::getInstance()->numOCLTriangles = 0;
-    if (this->frameTriangles.size() == 0) return;
-
-    for (int i = 0; i < this->frameTriangles.size() ; i++) {
-        EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
-    }
-
-    OCLPlane planesOCL[4];
-    int cont = 0;
-    for (int i = EngineSetup::getInstance()->LEFT_PLANE ; i <= EngineSetup::getInstance()->BOTTOM_PLANE ; i++) {
-        planesOCL[cont].A[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.x;
-        planesOCL[cont].A[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.y;
-        planesOCL[cont].A[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].A.z;
-
-        planesOCL[cont].B[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.x;
-        planesOCL[cont].B[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.y;
-        planesOCL[cont].B[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].B.z;
-
-        planesOCL[cont].C[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.x;
-        planesOCL[cont].C[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.y;
-        planesOCL[cont].C[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].C.z;
-
-        planesOCL[cont].normal[0] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.x;
-        planesOCL[cont].normal[1] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.y;
-        planesOCL[cont].normal[2] = Brakeza3D::get()->getCamera()->frustum->planes[i].normal.z;
-
-        cont++;
-    }
-
-    opencl_buffer_frustum   = clCreateBuffer(contextGPU, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, 4 * sizeof(OCLPlane), planesOCL, &ret);
-    opencl_buffer_triangles = clCreateBuffer(contextGPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->numOCLTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, &ret);
-
-    Vertex3D camPos = *Brakeza3D::get()->getCamera()->getPosition();
-    M3 camRot = Brakeza3D::get()->getCamera()->getRotation();
-    float pitch = camRot.getPitch();
-    float yaw   = camRot.getYaw();
-    float roll  = camRot.getRoll();
-
-    clSetKernelArg(processTransformTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-
-    clSetKernelArg(processTransformTriangles, 1, sizeof(float), &camPos.x);
-    clSetKernelArg(processTransformTriangles, 2, sizeof(float), &camPos.y);
-    clSetKernelArg(processTransformTriangles, 3, sizeof(float), &camPos.z);
-
-    clSetKernelArg(processTransformTriangles, 4, sizeof(float), &pitch);
-    clSetKernelArg(processTransformTriangles, 5, sizeof(float), &yaw);
-    clSetKernelArg(processTransformTriangles, 6, sizeof(float), &roll);
-
-    clSetKernelArg(processTransformTriangles, 7, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.x);
-    clSetKernelArg(processTransformTriangles, 8, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.y);
-    clSetKernelArg(processTransformTriangles, 9, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNLpers.z);
-
-    clSetKernelArg(processTransformTriangles, 10, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.x);
-    clSetKernelArg(processTransformTriangles, 11, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.y);
-    clSetKernelArg(processTransformTriangles, 12, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNRpers.z);
-
-    clSetKernelArg(processTransformTriangles, 13, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.x);
-    clSetKernelArg(processTransformTriangles, 14, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.y);
-    clSetKernelArg(processTransformTriangles, 15, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNTpers.z);
-
-    clSetKernelArg(processTransformTriangles, 16, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.x);
-    clSetKernelArg(processTransformTriangles, 17, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.y);
-    clSetKernelArg(processTransformTriangles, 18, sizeof(float), &Brakeza3D::get()->getCamera()->frustum->vNBpers.z);
-
-    clSetKernelArg(processTransformTriangles, 19, sizeof(int), &EngineSetup::getInstance()->screenWidth);
-    clSetKernelArg(processTransformTriangles, 20, sizeof(int), &EngineSetup::getInstance()->screenHeight);
-
-    clSetKernelArg(processTransformTriangles, 21, sizeof(cl_mem), (void *)&opencl_buffer_frustum);
-
-    size_t global_item_size = EngineBuffers::getInstance()->numOCLTriangles;
-    size_t local_item_size = 1;
-
-    cl_event event;
-    ret = clEnqueueNDRangeKernel(command_queue_transforms, processTransformTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
-
-    if (ret != CL_SUCCESS) {
-        Logging::getInstance()->getInstance()->Log( "Error processTransformTriangles: " + std::to_string(ret) );
-
-        char buffer[1024];
-        clGetProgramBuildInfo(programGPU, device_gpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
-        if (strlen(buffer) > 0 ) {
-            Logging::getInstance()->getInstance()->Log( buffer );
-        }
-    }
-
-    if (EngineSetup::getInstance()->OPENCL_SHOW_TIME_KERNELS) {
-        clWaitForEvents(1, &event);
-        clFinish(command_queue_transforms);
-
-        cl_ulong time_start;
-        cl_ulong time_end;
-
-        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
-        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
-        double nanoSeconds = time_end-time_start;
-
-        Logging::getInstance()->Log("OpenCL processTransformTriangles kernel time is: "+ std::to_string(nanoSeconds / 1000000.0) + " milliseconds");
-    } else {
-        clFinish(command_queue_transforms);
-    }
-
-    // Recover transform Data
-    for (int i = 0; i < this->frameTriangles.size() ; i++) {
-        OCLTriangle oclt = EngineBuffers::getInstance()->OCLTrianglesBuffer[i];
-        frameTriangles[i]->Ao.x = oclt.Ao_x;
-        frameTriangles[i]->Ao.y = oclt.Ao_y;
-        frameTriangles[i]->Ao.z = oclt.Ao_z;
-        frameTriangles[i]->Bo.x = oclt.Bo_x;
-        frameTriangles[i]->Bo.y = oclt.Bo_y;
-        frameTriangles[i]->Bo.z = oclt.Bo_z;
-        frameTriangles[i]->Co.x = oclt.Co_x;
-        frameTriangles[i]->Co.y = oclt.Co_y;
-        frameTriangles[i]->Co.z = oclt.Co_z;
-
-        frameTriangles[i]->Ac.x = oclt.Ac_x;
-        frameTriangles[i]->Ac.y = oclt.Ac_y;
-        frameTriangles[i]->Ac.z = oclt.Ac_z;
-        frameTriangles[i]->Bc.x = oclt.Bc_x;
-        frameTriangles[i]->Bc.y = oclt.Bc_y;
-        frameTriangles[i]->Bc.z = oclt.Bc_z;
-        frameTriangles[i]->Cc.x = oclt.Cc_x;
-        frameTriangles[i]->Cc.y = oclt.Cc_y;
-        frameTriangles[i]->Cc.z = oclt.Cc_z;
-
-        frameTriangles[i]->An.x = oclt.An_x;
-        frameTriangles[i]->An.y = oclt.An_y;
-        frameTriangles[i]->An.z = oclt.An_z;
-        frameTriangles[i]->Bn.x = oclt.Bn_x;
-        frameTriangles[i]->Bn.y = oclt.Bn_y;
-        frameTriangles[i]->Bn.z = oclt.Bn_z;
-        frameTriangles[i]->Cn.x = oclt.Cn_x;
-        frameTriangles[i]->Cn.y = oclt.Cn_y;
-        frameTriangles[i]->Cn.z = oclt.Cn_z;
-
-        frameTriangles[i]->As.x = oclt.As_x;
-        frameTriangles[i]->As.y = oclt.As_y;
-        frameTriangles[i]->Bs.x = oclt.Bs_x;
-        frameTriangles[i]->Bs.y = oclt.Bs_y;
-        frameTriangles[i]->Cs.x = oclt.Cs_x;
-        frameTriangles[i]->Cs.y = oclt.Cs_y;
-
-        frameTriangles[i]->minX = oclt.minX;
-        frameTriangles[i]->maxX = oclt.maxX;
-        frameTriangles[i]->minY = oclt.minY;
-        frameTriangles[i]->maxY = oclt.maxY;
-
-        frameTriangles[i]->normal.x = oclt.normal[0];
-        frameTriangles[i]->normal.y = oclt.normal[1];
-        frameTriangles[i]->normal.z = oclt.normal[2];
-
-        frameTriangles[i]->clipped_cl = oclt.is_clipping;
-    }
-
-    EngineBuffers::getInstance()->numOCLTriangles = 0;
-
-}
-
-
 void Engine::initCollisionManager()
 {
     Brakeza3D::get()->getCollisionManager()->setBspMap( Brakeza3D::get()->getBSP() );
@@ -394,8 +234,10 @@ void Engine::onStart()
 void Engine::preUpdate()
 {
     // Posición inicial del vector velocidad que llevará la cámara
-    Brakeza3D::get()->getCamera()->velocity.vertex1 = *Brakeza3D::get()->getCamera()->getPosition();
-    Brakeza3D::get()->getCamera()->velocity.vertex2 = *Brakeza3D::get()->getCamera()->getPosition();
+    Camera3D *cam = Brakeza3D::get()->getCamera();
+
+    cam->velocity.vertex1 = *cam->getPosition();
+    cam->velocity.vertex2 = *cam->getPosition();
 
     // Determinamos VPS
     if (Brakeza3D::get()->getBSP()->isLoaded()) {
@@ -406,14 +248,14 @@ void Engine::preUpdate()
             leafType = Brakeza3D::get()->getBSP()->currentLeaf->type;
         }
 
-        bspleaf_t *leaf = Brakeza3D::get()->getBSP()->FindLeaf(Brakeza3D::get()->getCamera() );
+        bspleaf_t *leaf = Brakeza3D::get()->getBSP()->FindLeaf( cam );
         Brakeza3D::get()->getBSP()->setVisibleSet(leaf);
 
         if (leafType != Brakeza3D::get()->getBSP()->currentLeaf->type) {
             if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
-                Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(5);
+                cam->kinematicController->setFallSpeed(5);
             } else {
-                Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(256);
+                cam->kinematicController->setFallSpeed(256);
             }
         }
     }
@@ -453,10 +295,6 @@ void Engine::onUpdate()
     this->getQuakeMapTriangles();
     this->getMesh3DTriangles();
     this->getSpritesTriangles();
-
-    if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-        this->handleOpenCLTransform();
-    }
 
     this->hiddenSurfaceRemoval();
 
@@ -533,7 +371,7 @@ void Engine::resolveCollisions()
 
 void Engine::getQuakeMapTriangles()
 {
-    if (Brakeza3D::get()->getBSP()->isLoaded() && EngineSetup::getInstance()->RENDER_BSP_MAP) {
+    if ( Brakeza3D::get()->getBSP()->isLoaded() ) {
         Brakeza3D::get()->getBSP()->DrawVisibleLeaf(Brakeza3D::get()->getCamera() );
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
             Brakeza3D::get()->getBSP()->DrawHulls(Brakeza3D::get()->getCamera()  );
@@ -616,7 +454,6 @@ void Engine::getSpritesTriangles()
     }
 }
 
-
 void Engine::hiddenSurfaceRemoval()
 {
     visibleTriangles.clear();
@@ -627,10 +464,8 @@ void Engine::hiddenSurfaceRemoval()
         // pero si vamos por software actualizamos ObjectSpace y su normal
         // ya que es el mínimo necesario para el clipping y el faceculling
 
-        if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            this->frameTriangles[i]->updateObjectSpace();
-            this->frameTriangles[i]->updateNormal();
-        }
+        this->frameTriangles[i]->updateObjectSpace();
+        this->frameTriangles[i]->updateNormal();
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
@@ -641,18 +476,12 @@ void Engine::hiddenSurfaceRemoval()
 
         // Clipping (needs objectSpace)
         bool needClipping = false;
-        if (EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            if (this->frameTriangles[i]->clipped_cl ) {
-                needClipping = true;
-            }
-        } else {
-            if (this->frameTriangles[i]->testForClipping(
-                    Brakeza3D::get()->getCamera()->frustum->planes,
-                    EngineSetup::getInstance()->LEFT_PLANE,
-                    EngineSetup::getInstance()->BOTTOM_PLANE
-            )) {
-                needClipping = true;
-            }
+        if (this->frameTriangles[i]->testForClipping(
+                Brakeza3D::get()->getCamera()->frustum->planes,
+                EngineSetup::getInstance()->LEFT_PLANE,
+                EngineSetup::getInstance()->BOTTOM_PLANE
+        )) {
+            needClipping = true;
         }
 
         if (needClipping) {
@@ -679,12 +508,10 @@ void Engine::hiddenSurfaceRemoval()
         // Triangle precached data
         // Estas operaciones las hacemos después de descartar triángulos
         // para optimización en el rasterizador por software
-        if (!EngineSetup::getInstance()->TRANSFORMS_OPENCL) {
-            this->frameTriangles[i]->updateCameraSpace(Brakeza3D::get()->getCamera() );
-            this->frameTriangles[i]->updateNDCSpace(Brakeza3D::get()->getCamera() );
-            this->frameTriangles[i]->updateScreenSpace(Brakeza3D::get()->getCamera() );
-            this->frameTriangles[i]->updateBoundingBox();
-        }
+        this->frameTriangles[i]->updateCameraSpace(Brakeza3D::get()->getCamera() );
+        this->frameTriangles[i]->updateNDCSpace(Brakeza3D::get()->getCamera() );
+        this->frameTriangles[i]->updateScreenSpace(Brakeza3D::get()->getCamera() );
+        this->frameTriangles[i]->updateBoundingBox();
 
         if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
             this->frameTriangles[i]->updateFullArea();

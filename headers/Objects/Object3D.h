@@ -11,8 +11,9 @@ class Object3D {
     M3 rotation;
 
 public:
-    bool enabled;
-    bool removed;
+    bool  enabled;
+    bool  removed;
+
     float scale;
 
     bool decal;     // Decals exclude UV Coordinates out of [0, 1]

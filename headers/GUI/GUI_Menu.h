@@ -120,7 +120,6 @@ public:
 
                 ImGui::Separator();
                 ImGui::Checkbox("OpenCL Rasterizer", &EngineSetup::getInstance()->RASTERIZER_OPENCL);
-                ImGui::Checkbox("OpenCL Transforms", &EngineSetup::getInstance()->TRANSFORMS_OPENCL);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);

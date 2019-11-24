@@ -108,7 +108,6 @@ public:
     // OpenCL Rasterization
     void OpenCLInfo();
     void handleOpenCLTriangles();
-    void handleOpenCLTransform();
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

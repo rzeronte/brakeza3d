@@ -11,7 +11,7 @@ public:
     M3(float, float, float, float, float, float, float, float, float);
     M3(float, float, float);
 
-    M3 operator *(const M3 pm);
+    M3 operator *(const M3 &pm);
     M3 operator *(const float scalar);
     Vertex3D operator *(const Vertex3D);
     M3 operator +(const M3 &pm);
