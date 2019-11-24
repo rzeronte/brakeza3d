@@ -2,6 +2,7 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 #include "../Render/EngineBuffers.h"
+#include "Game.h"
 
 Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false)
 {
@@ -83,12 +84,8 @@ void Player::newGame()
 {
     setLives(defaultLives);
 
-    this->respawn();
-    this->respawnNPCS();
+    Game::get()->initBSP();
 
-    EngineSetup::getInstance()->MENU_ACTIVE = false;
-    EngineSetup::getInstance()->DRAW_WEAPON = true;
-    EngineSetup::getInstance()->DRAW_HUD    = true;
 }
 
 void Player::respawn()

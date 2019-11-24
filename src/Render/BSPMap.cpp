@@ -45,7 +45,6 @@ void BSPMap::init()
     this->entities = new entity_t[MAX_BSP_ENTITIES];
     this->n_entities = 0;
     this->setLabel("BSPMap");
-    this->setLoaded(true);
 
     this->recastWrapper = new RecastWrapper();
 }
@@ -80,6 +79,8 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, st
     this->InitializeEntities();                // necesario para getStartMapPosition
     this->createMesh3DAndGhostsFromHulls();
     this->createBulletPhysicsShape();
+
+    this->setLoaded(true);
 
     return true;
 }
@@ -1188,8 +1189,12 @@ Vertex3D BSPMap::getStartMapPosition()
 
 bool BSPMap::isCurrentLeafLiquid()
 {
-    // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
-    return (this->currentLeaf->type < -2);
+    if (currentLeaf != NULL) {
+        // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
+        return (this->currentLeaf->type < -2);
+    }
+
+    return false;
 }
 
 bool BSPMap::hasTexture(std::string name)

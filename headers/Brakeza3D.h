@@ -10,6 +10,7 @@
 #include "Input/InputController.h"
 #include "GUI/GUIManager.h"
 #include "Collisions/CollisionResolver.h"
+#include <thread>
 
 class Brakeza3D {
 private:
@@ -33,6 +34,9 @@ private:
     MenuManager *menuManager;
     // Timer
     Timer engineTimer;
+
+    std::thread *loadingBSP;
+
 public:
     Brakeza3D();
     ~Brakeza3D();
@@ -113,6 +117,7 @@ public:
     void drawWireframeColor(Triangle *t, Uint32 c);
 
 };
+
 
 
 #endif //BRAKEDA3D_BRAKEZA3D_H

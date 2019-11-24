@@ -4,6 +4,8 @@
 #include "../headers/Render/Maths.h"
 #include "../headers/Render/EngineBuffers.h"
 #include "../headers/Render/Transforms.h"
+#include "../headers/Misc/Parallells.h"
+#include <thread>
 
 Brakeza3D* Brakeza3D::instance = 0;
 
@@ -305,13 +307,9 @@ void Brakeza3D::waterShader()
 
 void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
-    const char *paletteFilename = "palette.lmp";
-    Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
-
-    EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
-
-    Brakeza3D::get()->getBSP()->Initialize(bspFilename, paletteFilename, frameTriangles);
-    setCameraInBSPStartPosition();
+    EngineSetup::getInstance()->LOADING = true;
+    EngineSetup::getInstance()->MENU_ACTIVE = false;
+    this->loadingBSP = new std::thread(ParallellInitBSP, bspFilename, frameTriangles);
 }
 
 void Brakeza3D::setCameraInBSPStartPosition()
@@ -359,6 +357,8 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
     int screenWidth = EngineSetup::getInstance()->screenWidth;
+    std::vector<std::thread> hilos;
+
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
         int w1 = w1_row;
@@ -386,7 +386,8 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                     lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
                     lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
 
-                    this->processPixel(
+
+                    ParalellProcessPixel(
                             t,
                             bufferIndex,
                             x, y,
@@ -395,6 +396,8 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                             texu, texv,
                             lightu, lightv
                     );
+
+                    //hilos.push_back(std::move(th1));
                 }
             }
 
@@ -408,6 +411,12 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
         w1_row += B20;
         w2_row += B01;
     }
+
+    /*for (std::thread & th : hilos) {
+        if (th.joinable())
+            th.join();
+    }*/
+
 }
 
 void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)

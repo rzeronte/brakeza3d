@@ -17,8 +17,6 @@ void GameInputController::handleMouse(SDL_Event *event)
 
     InputController::handleMouse(event);
 
-
-
 }
 
 void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)

@@ -70,6 +70,7 @@ public:
     bool TRIANGLE_BACK_FACECULLING = true;
 
     bool MENU_ACTIVE = true;
+    bool LOADING = false;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;

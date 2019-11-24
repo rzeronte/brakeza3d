@@ -227,7 +227,6 @@ void Camera3D::UpdateRotation()
     this->setRotation(im);
 }
 
-
 void Camera3D::limitPitch()
 {
     if (this->pitch >= 89) {
