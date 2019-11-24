@@ -47,6 +47,8 @@ public:
     void getWeaponsJSON();
     void getEnemiesJSON();
 
+    void initBSP();
+
 };
 
 

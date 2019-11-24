@@ -12,6 +12,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 #include "../../headers/Render/Drawable.h"
+#include <thread>
 
 Game* Game::instance = 0;
 
@@ -52,13 +53,6 @@ void Game::onStart()
     this->getMapsJSON();
     this->getEnemiesJSON();
 
-    cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
-    cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
-
-    if (EngineSetup::getInstance()->CFG_AUTOLOAD_MAP) {
-        Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
-    }
-
     Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 }
 
@@ -86,29 +80,39 @@ void Game::onUpdate()
     // Core onUpdate
     Engine::onUpdate();
 
-    if (EngineSetup::getInstance()->ENABLE_IA) {
-        onUpdateIA();
-    }
+    if (player->state != PlayerState::GAMEOVER) {
 
-    if (EngineSetup::getInstance()->DRAW_WEAPON) {
-        Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
-    }
+        if (EngineSetup::getInstance()->ENABLE_IA) {
+            onUpdateIA();
+        }
 
-    if (EngineSetup::getInstance()->DRAW_HUD) {
-        drawHUD();
-    }
+        if (EngineSetup::getInstance()->DRAW_WEAPON) {
+            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
+        }
 
-    if (player->isDead()) {
-        redScreen();
-    }
+        if (EngineSetup::getInstance()->DRAW_HUD) {
+            drawHUD();
+        }
 
-    if (player->tookDamage) {
-        redScreen();
+        if (player->isDead()) {
+            redScreen();
+        }
+
+        if (player->tookDamage) {
+            redScreen();
+        }
     }
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         drawMenuScreen();
+        Drawable::drawFireShader();
     }
+
+    if ( EngineSetup::getInstance()->LOADING ) {
+        SDL_BlitSurface(this->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, NULL);
+        Drawable::drawFireShader();
+    }
+
 }
 
 void Game::preUpdate()
@@ -343,8 +347,9 @@ void Game::redScreen()
 void Game::drawMenuScreen()
 {
     //this->waterShader();
-    Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
-    Drawable::drawFireShader();
+    if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
+    }
 }
 
 void Game::loadHUDImages()
@@ -353,6 +358,7 @@ void Game::loadHUDImages()
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png", "ammo");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_lives.png", "lives");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud.png", "hud");
+    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "loading.png", "loading");
 }
 
 
@@ -568,4 +574,12 @@ void Game::getMapsJSON()
             Logging::getInstance()->Log("Map JSON detected: " + std::string(nameMap->valuestring));
         }
     }
+}
+
+void Game::initBSP()
+{
+    cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
+    cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
+
+    Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
 }
