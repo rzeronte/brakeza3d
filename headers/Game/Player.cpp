@@ -85,7 +85,6 @@ void Player::newGame()
     setLives(defaultLives);
 
     Game::get()->initBSP();
-
 }
 
 void Player::respawn()

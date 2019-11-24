@@ -59,7 +59,6 @@ public:
     cl_kernel processTransformTriangles;
 
     cl_mem opencl_buffer_triangles;
-    cl_mem opencl_buffer_tiles;
     cl_mem opencl_buffer_video;
     cl_mem opencl_buffer_depth;
     cl_mem opencl_buffer_frustum;
@@ -68,22 +67,12 @@ public:
     cl_command_queue command_queue_transforms;
 
     // Tiled rasterizer
-    std::vector<Tile> tiles;
-    OCLTriangle *trianglesTile;
-
-    int sizeTileWidth = 8;
-    int sizeTileHeight = 8;
-    int tilesWidth;
-    int tilesHeight;
-    int numTiles;
-    int tilePixelsBufferSize;
 
     Engine();
     void Close();
 
     // init systems
     void initOpenCL();
-    void initTiles();
     void initCollisionManager();
 
     // Cycle of life
@@ -108,12 +97,6 @@ public:
 
     // Triangles filter
     void hiddenSurfaceRemoval();
-    void handleTrianglesToTiles();
-
-    // Draw triangles
-    void drawTilesGrid();
-    void drawTilesTriangles();
-    void drawFrameTriangles();
 
     // TODO: erase
     //void objects3DShadowMapping();
@@ -125,10 +108,7 @@ public:
     // OpenCL Rasterization
     void OpenCLInfo();
     void handleOpenCLTriangles();
-    void handleOpenCLTrianglesForTiles();
-    void dumpTileToFrameBuffer(Tile *t);
     void handleOpenCLTransform();
-
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

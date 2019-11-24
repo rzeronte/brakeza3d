@@ -141,6 +141,77 @@ bool Brakeza3D::initSound()
 
 }
 
+void Brakeza3D::initTiles()
+{
+    if (EngineSetup::getInstance()->screenWidth % this->sizeTileWidth != 0) {
+        printf("Bad sizetileWidth\r\n");
+        exit(-1);
+    }
+    if (EngineSetup::getInstance()->screenHeight % this->sizeTileHeight != 0) {
+        printf("Bad sizeTileHeight\r\n");
+        exit(-1);
+    }
+
+    // Tiles Raster setup
+    this->tilesWidth  = EngineSetup::getInstance()->screenWidth / this->sizeTileWidth;
+    this->tilesHeight = EngineSetup::getInstance()->screenHeight / this->sizeTileHeight;
+    this->numTiles = tilesWidth * tilesHeight;
+    this->tilePixelsBufferSize = this->sizeTileWidth*this->sizeTileHeight;
+
+    Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+") - bufferTileSize: " + std::to_string(sizeTileWidth*sizeTileHeight));
+
+    for (int y = 0 ; y < EngineSetup::getInstance()->screenHeight; y+=this->sizeTileHeight) {
+        for (int x = 0 ; x < EngineSetup::getInstance()->screenWidth; x+=this->sizeTileWidth) {
+
+            Tile t;
+
+            t.draw    = true;
+            t.id_x    = (x/this->sizeTileWidth);
+            t.id_y    = (y/this->sizeTileHeight);
+            t.id      = t.id_y * this->tilesWidth + t.id_x;
+            t.start_x = x;
+            t.start_y = y;
+
+            this->tiles.push_back(t);
+            // Load up the vector with MyClass objects
+
+
+            Logging::getInstance()->Log("Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x)+", offset_y: " + std::to_string(y) + ")");
+        }
+    }
+
+    // Create local buffers and openCL buffer pointers
+    for (int i = 0; i < numTiles; i++) {
+
+        this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
+        for (int j = 0; j < tilePixelsBufferSize ; j++) {
+            this->tiles[i].buffer[j] = Color::red();
+        }
+
+        this->tiles[i].bufferDepth = new float[tilePixelsBufferSize];
+        for (int j = 0; j < tilePixelsBufferSize ; j++) {
+            this->tiles[i].bufferDepth[j] = 0;
+        }
+    }
+}
+
+void Brakeza3D::drawTilesGrid()
+{
+    for (int j = 0 ; j < (this->tilesWidth*this->tilesHeight) ; j++) {
+        Tile *t = &this->tiles[j];
+        Uint32 color = Color::white();
+
+        if (t->numTriangles > 0) {
+            color = Color::red();
+        }
+
+        Line2D top = Line2D(t->start_x, t->start_y, t->start_x+sizeTileWidth, t->start_y);
+        Line2D left = Line2D(t->start_x, t->start_y, t->start_x, t->start_y+sizeTileHeight);
+        Drawable::drawLine2D(top, color);
+        Drawable::drawLine2D(left, color);
+    }
+}
+
 Camera3D *Brakeza3D::getCamera()
 {
     return camera;
@@ -307,14 +378,11 @@ void Brakeza3D::waterShader()
 
 void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
-    EngineSetup::getInstance()->LOADING = true;
-    EngineSetup::getInstance()->MENU_ACTIVE = false;
     this->loadingBSP = new std::thread(ParallellInitBSP, bspFilename, frameTriangles);
 }
 
 void Brakeza3D::setCameraInBSPStartPosition()
 {
-
     // Load start position from BSP
     Vertex3D bspOriginalPosition = Brakeza3D::get()->getBSP()->getStartMapPosition();
 
@@ -387,7 +455,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                     lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
 
 
-                    ParalellProcessPixel(
+                    this->processPixel(
                             t,
                             bufferIndex,
                             x, y,
@@ -520,6 +588,73 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
 }
 
 
+void Brakeza3D::drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles)
+{
+
+    std::vector<std::thread> threads;
+
+    for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
+        int triangleId = this->tiles[i].triangleIds[j];
+        Tile *t = &this->tiles[i];
+        Triangle *tr = visibleTriangles[triangleId];
+
+        this->softwareRasterizerForTile(
+                tr,
+                t->start_x,
+                t->start_y,
+                t->start_x+sizeTileWidth,
+                t->start_y+sizeTileHeight
+        );
+    }
+}
+
+
+void Brakeza3D::drawTilesTriangles(std::vector<Triangle*> *visibleTriangles)
+{
+    std::vector<std::thread> threads;
+    for (int i = 0 ; i < Brakeza3D::get()->numTiles ; i++) {
+        if (!Brakeza3D::get()->tiles[i].draw) continue;
+
+        if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
+            threads.push_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
+        } else {
+            Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
+        }
+    }
+
+    if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
+        for (std::thread & th : threads) {
+            if (th.joinable()) {
+                th.join();
+            }
+        }
+    }
+}
+
+void Brakeza3D::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles) {
+    for (int i = 0; i < this->numTiles; i++) {
+        this->tiles[i].numTriangles = 0;
+    }
+
+    for (int i = 0; i < visibleTriangles.size(); i++) {
+        int tileStartX = std::max((float) (visibleTriangles[i]->minX / this->sizeTileWidth), 0.0f);
+        int tileEndX = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth),
+                                (float) this->tilesWidth - 1);
+
+        int tileStartY = std::max((float) (visibleTriangles[i]->minY / this->sizeTileHeight), 0.0f);
+        int tileEndY = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight),
+                                (float) this->tilesHeight - 1);
+
+        for (int y = tileStartY; y <= tileEndY; y++) {
+            for (int x = tileStartX; x <= tileEndX; x++) {
+                int tileOffset = y * tilesWidth + x;
+                this->tiles[tileOffset].triangleIds[this->tiles[tileOffset].numTriangles] = i;
+                this->tiles[tileOffset].numTriangles++;
+            }
+        }
+    }
+}
+
 void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
 {
     // LOD determination
@@ -632,4 +767,14 @@ void Brakeza3D::drawWireframeColor(Triangle *t, Uint32 c)
     Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), c);
     Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), c);
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), c);
+}
+
+
+void Brakeza3D::drawFrameTriangles(std::vector<Triangle*> &visibleTriangles)
+{
+    std::vector<Triangle *>::iterator it;
+    for ( it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
+        Triangle *triangle = *(it);
+        Brakeza3D::get()->processTriangle( triangle );
+    }
 }
