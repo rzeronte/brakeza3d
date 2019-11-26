@@ -71,7 +71,7 @@ public:
 
     std::vector<Tile> tiles;
     int sizeTileWidth  = EngineSetup::getInstance()->screenWidth/2;
-    int sizeTileHeight = EngineSetup::getInstance()->screenHeight;
+    int sizeTileHeight = EngineSetup::getInstance()->screenHeight/2;
     int tilesWidth;
     int tilesHeight;
     int numTiles;

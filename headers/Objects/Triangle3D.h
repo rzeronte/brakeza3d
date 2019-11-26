@@ -115,7 +115,7 @@ public:
     Texture *getLightmap() const;
     void setLightmap(Texture *texture);
 
-    bool clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP);
+    void clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP);
     void setClipped(bool);
     bool isClipped();
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);

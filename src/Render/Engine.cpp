@@ -23,7 +23,7 @@ Engine::Engine()
 
 void Engine::initOpenCL()
 {
-    platform_id = NULL;
+    platform_id   = NULL;
     device_cpu_id = NULL;
 
     ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms) ;
@@ -51,7 +51,6 @@ void Engine::initOpenCL()
     contextGPU = clCreateContext(properties, 1, &device_gpu_id, NULL, NULL, &ret);
 
     command_queue_rasterizer = clCreateCommandQueue(contextCPU, device_cpu_id, NULL, &ret);
-    command_queue_transforms = clCreateCommandQueue(contextGPU, device_gpu_id, CL_QUEUE_PROFILING_ENABLE, &ret);
 
     // Load the kernel source code into the array source_str
     size_t source_size;
@@ -67,8 +66,6 @@ void Engine::initOpenCL()
 
     // Create the OpenCL kernel
     processAllTriangles       = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
-    processTileTriangles      = clCreateKernel(programCPU, "rasterizerFrameTileTrianglesKernel", &ret);
-    processTransformTriangles = clCreateKernel(programGPU, "transformTrianglesKernel", &ret);
 
     opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
     opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
@@ -206,8 +203,6 @@ void Engine::updateWindow()
 {
     Brakeza3D::get()->updateFPS();
 
-    EngineBuffers::getInstance()->flipVideoBuffer(Brakeza3D::get()->screenSurface );
-
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame(Brakeza3D::get()->window);
 
@@ -263,21 +258,22 @@ void Engine::preUpdate()
 
 void Engine::onUpdate()
 {
+    Brakeza3D *brakeza3D = Brakeza3D::get();
     // update collider forces
-    Brakeza3D::get()->getCamera()->UpdateVelocity();
+    brakeza3D->getCamera()->UpdateVelocity();
 
     // update deltaTime
-    Brakeza3D::get()->updateTimer();
+    brakeza3D->updateTimer();
 
     // step simulation
-    Vertex3D finalVelocity = Brakeza3D::get()->getCollisionManager()->stepSimulation( );
+    Vertex3D finalVelocity = brakeza3D->getCollisionManager()->stepSimulation( );
 
     this->resolveCollisions();
 
     // update camera position/rotation/frustum
-    Brakeza3D::get()->getCamera()->setPosition(finalVelocity);
-    Brakeza3D::get()->getCamera()->UpdateRotation();
-    Brakeza3D::get()->getCamera()->UpdateFrustum();
+    brakeza3D->getCamera()->setPosition(finalVelocity);
+    brakeza3D->getCamera()->UpdateRotation();
+    brakeza3D->getCamera()->UpdateFrustum();
 
     // Clear buffers
     EngineBuffers::getInstance()->clearDepthBuffer();
@@ -299,23 +295,23 @@ void Engine::onUpdate()
     this->hiddenSurfaceRemoval();
 
     if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
-        Brakeza3D::get()->handleTrianglesToTiles(visibleTriangles);
+        brakeza3D->handleTrianglesToTiles(visibleTriangles);
 
-        Brakeza3D::get()->drawTilesTriangles(&visibleTriangles);
+        brakeza3D->drawTilesTriangles(&visibleTriangles);
 
         if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
-            Brakeza3D::get()->drawTilesGrid();
+            brakeza3D->drawTilesGrid();
         }
     } else {
         if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-            Brakeza3D::get()->drawFrameTriangles(visibleTriangles);
+            brakeza3D->drawFrameTriangles(visibleTriangles);
         } else {
             this->handleOpenCLTriangles();
         }
     }
 
     if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
-        Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->debugDrawWorld();
+        brakeza3D->getCollisionManager()->getDynamicsWorld()->debugDrawWorld();
     }
 
     if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
@@ -323,16 +319,18 @@ void Engine::onUpdate()
     }
 
     if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(Brakeza3D::get()->getCamera()->frustum, Brakeza3D::get()->getCamera(), true, true, true);
+        Drawable::drawFrustum(brakeza3D->getCamera()->frustum, brakeza3D->getCamera(), true, true, true);
     }
 
     if (EngineSetup::getInstance()->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(Brakeza3D::get()->getCamera() );
+        Drawable::drawMainAxis(brakeza3D->getCamera() );
     }
 
-    if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
-        Brakeza3D::get()->waterShader();
+    if (brakeza3D->getBSP()->isLoaded() && brakeza3D->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
+        brakeza3D->waterShader();
     }
+
+    EngineBuffers::getInstance()->flipVideoBuffer( Brakeza3D::get()->screenSurface );
 }
 
 void Engine::resolveCollisions()
@@ -458,6 +456,9 @@ void Engine::hiddenSurfaceRemoval()
 {
     visibleTriangles.clear();
 
+    Camera3D    *cam   = Brakeza3D::get()->getCamera();
+    EngineSetup *setup = EngineSetup::getInstance();
+
     for (int i = 0; i < this->frameTriangles.size() ; i++) {
 
         // Si la transformación es mediante openCL ya están todas hechas
@@ -469,7 +470,7 @@ void Engine::hiddenSurfaceRemoval()
 
         // back face culling (needs objectSpace)
         if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (this->frameTriangles[i]->isBackFaceCulling(Brakeza3D::get()->getCamera()->getPosition() )) {
+            if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() ) ) {
                 continue;
             }
         }
@@ -477,19 +478,19 @@ void Engine::hiddenSurfaceRemoval()
         // Clipping (needs objectSpace)
         bool needClipping = false;
         if (this->frameTriangles[i]->testForClipping(
-                Brakeza3D::get()->getCamera()->frustum->planes,
-                EngineSetup::getInstance()->LEFT_PLANE,
-                EngineSetup::getInstance()->BOTTOM_PLANE
+                cam->frustum->planes,
+                setup->LEFT_PLANE,
+                setup->BOTTOM_PLANE
         )) {
             needClipping = true;
         }
 
         if (needClipping) {
             this->frameTriangles[i]->clipping(
-                    Brakeza3D::get()->getCamera(),
-                    Brakeza3D::get()->getCamera()->frustum->planes,
-                    EngineSetup::getInstance()->LEFT_PLANE,
-                    EngineSetup::getInstance()->BOTTOM_PLANE,
+                    cam,
+                    cam->frustum->planes,
+                    setup->LEFT_PLANE,
+                    setup->BOTTOM_PLANE,
                     frameTriangles[i]->parent,
                     visibleTriangles,
                     frameTriangles[i]->isBSP
@@ -498,9 +499,9 @@ void Engine::hiddenSurfaceRemoval()
         }
 
         // Frustum Culling (needs objectSpace)
-        if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
-            !Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
-            !Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
+        if (!cam->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
+            !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
+            !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
         ) {
             continue;
         }
@@ -508,16 +509,19 @@ void Engine::hiddenSurfaceRemoval()
         // Triangle precached data
         // Estas operaciones las hacemos después de descartar triángulos
         // para optimización en el rasterizador por software
-        this->frameTriangles[i]->updateCameraSpace(Brakeza3D::get()->getCamera() );
-        this->frameTriangles[i]->updateNDCSpace(Brakeza3D::get()->getCamera() );
-        this->frameTriangles[i]->updateScreenSpace(Brakeza3D::get()->getCamera() );
+        this->frameTriangles[i]->updateCameraSpace( cam );
+        this->frameTriangles[i]->updateNDCSpace( cam );
+        this->frameTriangles[i]->updateScreenSpace( cam );
         this->frameTriangles[i]->updateBoundingBox();
+        this->frameTriangles[i]->updateFullArea();
+        this->frameTriangles[i]->updateUVCache();
 
-        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-            this->frameTriangles[i]->updateFullArea();
-            this->frameTriangles[i]->updateUVCache();
-        } else {
+        if (EngineSetup::getInstance()->RASTERIZER_OPENCL) {
             EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
+        }
+
+        if (this->frameTriangles[i]->fullArea < setup->MIN_TRIANGLE_AREA) {
+            continue;
         }
 
         this->frameTriangles[i]->drawed = false;

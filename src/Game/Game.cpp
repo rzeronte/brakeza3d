@@ -73,13 +73,13 @@ void Game::mainLoop()
 
             // Update window
             Engine::updateWindow();
-
         }
     }
 }
 
 void Game::onUpdate()
 {
+
     // Core onUpdate
     Engine::onUpdate();
 

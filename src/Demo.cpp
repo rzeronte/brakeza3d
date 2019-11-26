@@ -117,27 +117,6 @@ Demo::Demo()
     caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
     Brakeza3D::get()->addObject3D(caco, "caco");
 
-    // marine ( sprite )
-    Sprite3D *doomFace = new Sprite3D();
-    doomFace->setEnabled(false);
-    doomFace->setPosition( Vertex3D(2, 1, 15) );
-    doomFace->addAnimation("doom_face/face", 3, 10);
-    doomFace->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
-    doomFace->getBillboard()->setDimensions(1, 1);
-    Brakeza3D::get()->addObject3D(doomFace, "doomFace");
-
-    // marineBody ( sprite )
-    Sprite3DBody *doomFaceBody = new Sprite3DBody();
-    doomFaceBody->setLabel("doomFaceBody");
-    doomFaceBody->setEnabled(false);
-    doomFaceBody->setPosition( Vertex3D(2, 1, 15) );
-    doomFaceBody->addAnimation("doom_face/face", 3, 10);
-    doomFaceBody->setAnimation(EngineSetup::getInstance()->SpriteGuyAnimations::NORMAL);
-    doomFaceBody->getBillboard()->setDimensions(1, 1);
-    doomFaceBody->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(),
-                                Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), doomFaceBody);
-    //this->addObject3D(doomFaceBody, "doomFaceBody");
-
     // cubo physics
     Mesh3DBody *cuboPhysic = new Mesh3DBody();
     cuboPhysic->setLabel("cuboPhysics");

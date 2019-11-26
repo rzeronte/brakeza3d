@@ -30,6 +30,7 @@
 #include "../2D/WeaponsManager.h"
 #include "../2D/MenuManager.h"
 #include "../Objects/Tile.h"
+#include <thread>
 
 class Engine {
 public:
@@ -54,19 +55,15 @@ public:
     cl_context contextGPU;
     cl_program programCPU;
     cl_program programGPU;
-    cl_kernel processTileTriangles;
     cl_kernel processAllTriangles;
-    cl_kernel processTransformTriangles;
 
     cl_mem opencl_buffer_triangles;
     cl_mem opencl_buffer_video;
     cl_mem opencl_buffer_depth;
-    cl_mem opencl_buffer_frustum;
 
     cl_command_queue command_queue_rasterizer;
-    cl_command_queue command_queue_transforms;
 
-    // Tiled rasterizer
+    std::thread preUpdateThread;
 
     Engine();
     void Close();

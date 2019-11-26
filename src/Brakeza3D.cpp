@@ -77,12 +77,12 @@ bool Brakeza3D::initWindow()
         } else {
             gl_context = SDL_GL_CreateContext(window);
             screenSurface = SDL_CreateRGBSurface(0, EngineSetup::getInstance()->screenWidth, EngineSetup::getInstance()->screenHeight, 32, 0, 0, 0, 0);
-            SDL_SetSurfaceBlendMode(Brakeza3D::get()->screenSurface, SDL_BLENDMODE_NONE);
-            renderer = SDL_CreateRenderer(Brakeza3D::get()->window, -1, SDL_RENDERER_ACCELERATED );
+            SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
 
-            ImGui_ImplSDL2_InitForOpenGL(Brakeza3D::get()->window, gl_context);
+            ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
             ImGui_ImplOpenGL2_Init();
 
             ImGuiIO& io = ImGui::GetIO();
@@ -98,7 +98,7 @@ bool Brakeza3D::initWindow()
                     "Window size: " + std::to_string(EngineSetup::getInstance()->screenWidth) + " x " + std::to_string(EngineSetup::getInstance()->screenHeight), "INFO"
             );
 
-            SDL_GL_SwapWindow(Brakeza3D::get()->window);
+            SDL_GL_SwapWindow(window);
         }
     }
 
@@ -397,7 +397,7 @@ void Brakeza3D::setCameraInBSPStartPosition()
     Brakeza3D::get()->getCamera()->pitch = 0;
     Brakeza3D::get()->getCamera()->roll  = 0;
 
-    Brakeza3D::get()->getCamera()->setPosition(bspOriginalPosition);
+    Brakeza3D::get()->getCamera()->setPosition( bspOriginalPosition );
 
     btPairCachingGhostObject *kinematicGhost = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject();
     kinematicGhost->setWorldTransform(initialTransform);
@@ -425,7 +425,6 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
     int screenWidth = EngineSetup::getInstance()->screenWidth;
-    std::vector<std::thread> hilos;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -446,6 +445,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                 if (t->parent->isDecal()) {
                     depth-=1;
                 }
+
                 if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
                     texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
@@ -465,7 +465,6 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                             lightu, lightv
                     );
 
-                    //hilos.push_back(std::move(th1));
                 }
             }
 
@@ -479,19 +478,14 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
         w1_row += B20;
         w2_row += B01;
     }
-
-    /*for (std::thread & th : hilos) {
-        if (th.joinable())
-            th.join();
-    }*/
-
 }
 
 void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
-    Uint32 pixelColor       = NULL;
-    EngineSetup *setup      = EngineSetup::getInstance();
-    EngineBuffers *buffer   = EngineBuffers::getInstance();
+    Uint32        pixelColor = NULL;
+    EngineSetup   *setup     = EngineSetup::getInstance();
+    EngineBuffers *buffer    = EngineBuffers::getInstance();
+    Brakeza3D*    brakeza3D  = Brakeza3D::get();
 
     // Gradient
     if (setup->TRIANGLE_MODE_COLOR_SOLID) {
@@ -503,8 +497,8 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         if (t->getTexture()->liquid && setup->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = texu / setup->LAVA_CLOSENESS;
             float cache2 = texv / setup->LAVA_CLOSENESS;
-            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * setup->LAVA_SCALE;
-            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * setup->LAVA_SCALE;
+            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * setup->LAVA_SCALE;
+            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * setup->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
@@ -532,12 +526,12 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
 
     if (EngineSetup::getInstance()->ENABLE_FOG) {
 
-        float nZ = Maths::normalizeToRange(z, 0, EngineSetup::getInstance()->FOG_DISTANCE);
+        float nZ = Maths::normalizeToRange(z, 0, setup->FOG_DISTANCE);
 
         if (nZ >= 1) {
-            pixelColor = EngineSetup::getInstance()->FOG_COLOR;
+            pixelColor = setup->FOG_COLOR;
         } else {
-            pixelColor = Tools::mixColor(pixelColor, EngineSetup::getInstance()->FOG_COLOR, nZ * EngineSetup::getInstance()->FOG_INTENSITY);
+            pixelColor = Tools::mixColor(pixelColor, setup->FOG_COLOR, nZ * setup->FOG_INTENSITY);
         }
 
     }
@@ -724,23 +718,25 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
 
 void Brakeza3D::processTriangle(Triangle *t)
 {
+    EngineSetup *setup = EngineSetup::getInstance();
+
     // degradate
-    if (t->getTexture() != NULL && EngineSetup::getInstance()->TRIANGLE_MODE_TEXTURIZED) {
+    if (t->getTexture() != NULL && setup->TRIANGLE_MODE_TEXTURIZED) {
         triangleRasterizer(t);
     }
 
     // texture
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_COLOR_SOLID) {
+    if (setup->TRIANGLE_MODE_COLOR_SOLID) {
         triangleRasterizer(t);
     }
 
     // wireframe
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES)) {
+    if (setup->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && setup->DRAW_DECAL_WIREFRAMES)) {
         drawWireframe(t);
     }
 
     // Pixels
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS ) {
+    if (setup->TRIANGLE_MODE_PIXELS ) {
         Drawable::drawVertex(t->Co, getCamera(), Color::red());
         Drawable::drawVertex(t->Bo, getCamera(), Color::green());
         Drawable::drawVertex(t->Co, getCamera(), Color::blue());
@@ -770,6 +766,6 @@ void Brakeza3D::drawFrameTriangles(std::vector<Triangle*> &visibleTriangles)
     std::vector<Triangle *>::iterator it;
     for ( it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
         Triangle *triangle = *(it);
-        Brakeza3D::get()->processTriangle( triangle );
+        processTriangle( triangle );
     }
 }
