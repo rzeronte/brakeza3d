@@ -5,7 +5,7 @@
 
 #include "../Physics/SpriteDirectional3DBody.h"
 
-typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_DIE} EnemyState;
+typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_INJURIED, ENEMY_STATE_DIE} EnemyState;
 
 class NPCEnemyBody: public SpriteDirectional3DBody, public Enemy {
 
@@ -17,6 +17,7 @@ public:
 
     float stepIA;
     Counter *counterIA;
+    Counter *counterInjuried;
 
     NPCEnemyBody();
 

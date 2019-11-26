@@ -75,6 +75,8 @@ public:
 
             // Remove sprite enemy from world
             //sprite->setRemoved(true);
+        } else {
+            getNPCEnemy()->state = EnemyState::ENEMY_STATE_INJURIED;
         }
 
         // Remove projectile for check in stepSimulation

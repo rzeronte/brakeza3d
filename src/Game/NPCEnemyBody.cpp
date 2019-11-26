@@ -11,6 +11,9 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(Engin
     this->counterIA = new Counter();
     this->counterIA->setStep( stepIA );
 
+    this->counterInjuried = new Counter();
+    this->counterInjuried->setStep( 0.25 );
+
     this->projectileTemplate = new SpriteDirectional3D();
     std::string spritePath =  "weapons/machinegun/bullet/idle";
     projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
@@ -46,6 +49,14 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
                     this->state = EnemyState::ENEMY_STATE_ATTACK;
                     this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_FIRE );
                 }
+            }
+            break;
+        case EnemyState::ENEMY_STATE_INJURIED:
+            this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_INJURIED );
+            if  (this->counterInjuried->isFinished() ) {
+                this->state = EnemyState::ENEMY_STATE_STOP;
+                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
+
             }
             break;
         case EnemyState::ENEMY_STATE_STOP:
@@ -127,6 +138,7 @@ void NPCEnemyBody::updateCounters()
 {
     this->counterCadence->update();
     this->counterIA->update();
+    this->counterInjuried->update();
 }
 
 void NPCEnemyBody::respawn()

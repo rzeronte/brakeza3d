@@ -54,6 +54,7 @@ public:
     float FOG_COLOR = Color::gray();
     float FRUSTUM_FARPLANE_DISTANCE = 75;
     float HORIZONTAL_FOV = 90;
+    float MIN_TRIANGLE_AREA = 2.5;
 
     bool RASTERIZER_OPENCL = false;
 
@@ -249,15 +250,6 @@ public:
     enum SpriteDoom2CacodemonAnimations {
         FLY = 0,
         DEAD = 1
-    };
-    enum SpriteShotgunAnimations {
-        READY,
-        RELOAD,
-        SHOT
-    };
-
-    enum SpriteGuyAnimations {
-        NORMAL,
     };
 
     enum WeaponsTypes {

@@ -233,7 +233,7 @@ Vertex3D Triangle::getNormal()
     this->scanVerticesForShadowMapping(lp);
 }*/
 
-bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP)
+void Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP)
 {
     Vertex3D output_vertices[10] ; int num_outvertices   = 0;
     Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
@@ -270,7 +270,6 @@ bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < triangles.size(); i++) {
-            //arrayTriangles[i].updateLightmapFrame();
             triangles[i]->lightmapIndexPattern  = this->lightmapIndexPattern;
             triangles[i]->lightmapIndexPattern2 = this->lightmapIndexPattern2;
             triangles[i]->lightmapIndexPattern3 = this->lightmapIndexPattern3;
@@ -284,11 +283,7 @@ bool Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
                 EngineBuffers::getInstance()->addOCLTriangle(triangles[i]->getOpenCL());
             }
         }
-
-        return true;
     }
-
-    return false;
 }
 
 void Triangle::updateBoundingBox()

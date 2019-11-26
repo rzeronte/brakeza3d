@@ -4,15 +4,14 @@
 #include "../Brakeza3D.h"
 #include "../Game/Game.h"
 
-
 void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
-    const char *paletteFilename = "palette.lmp";
     Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
 
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 
-    Brakeza3D::get()->getBSP()->Initialize(bspFilename, paletteFilename, frameTriangles);
+    Brakeza3D::get()->getBSP()->Initialize(bspFilename, "palette.lmp", frameTriangles);
+
     Game::get()->player->respawn();
     Game::get()->player->respawnNPCS();
 
@@ -24,6 +23,11 @@ void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTri
 void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
 {
     Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
+}
+
+void ParallellGamePreUpdate()
+{
+    Game::get()->preUpdate();
 }
 
 #endif //BRAKEDA3D_PARALLELLS_H
