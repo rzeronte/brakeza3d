@@ -51,7 +51,7 @@ public:
     bool  ENABLE_FOG    = true;
     float FOG_DISTANCE  = 75;
     float FOG_INTENSITY = 1;
-    float FOG_COLOR = Color::gray();
+    float FOG_COLOR = Color::red();
     float FRUSTUM_FARPLANE_DISTANCE = 75;
     float HORIZONTAL_FOV = 90;
     float MIN_TRIANGLE_AREA = 2.5;
@@ -70,8 +70,11 @@ public:
     // FaceCulling
     bool TRIANGLE_BACK_FACECULLING = true;
 
-    bool MENU_ACTIVE = true;
+    bool MENU_ACTIVE = false;
     bool LOADING = false;
+    bool SPLASHING = true;
+    bool FADEIN = false;
+    bool FADEOUT = false;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
@@ -286,7 +289,8 @@ public:
         SND_GLOBAL = -1,
         SND_MENU = 0,
         SND_PLAYER = 1,
-        SND_ENVIRONMENT = 2
+        SND_ENVIRONMENT = 2,
+        SND_WEAPON = 3
     };
 };
 

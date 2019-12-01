@@ -3,7 +3,6 @@
 #include "../headers/Render/Drawable.h"
 #include "../headers/Render/Maths.h"
 #include "../headers/Render/EngineBuffers.h"
-#include "../headers/Render/Transforms.h"
 #include "../headers/Misc/Parallells.h"
 #include <thread>
 
@@ -44,7 +43,11 @@ void Brakeza3D::start()
     camera            = new Camera3D();
     menuManager       = new MenuManager();
 
+    splashCounter = new Counter(5);
+
     engineTimer.start();
+
+    this->drawSplash(screenSurface);
 }
 
 bool Brakeza3D::initWindow()
@@ -294,6 +297,8 @@ void Brakeza3D::updateTimer()
 
     frameTime += deltaTime;
     executionTime += deltaTime / 1000.f;
+
+    splashCounter->update();
 }
 
 
@@ -446,7 +451,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                     depth-=1;
                 }
 
-                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                if ( depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
                     texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
                     texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
@@ -607,7 +612,7 @@ void Brakeza3D::drawTilesTriangles(std::vector<Triangle*> *visibleTriangles)
         if (!Brakeza3D::get()->tiles[i].draw) continue;
 
         if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
-            threads.push_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
+            threads.emplace_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
         } else {
             Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
         }
@@ -682,7 +687,7 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
 
                 const int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
 
-                if (EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER && depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                if ( depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
                     texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
                     texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
@@ -768,4 +773,10 @@ void Brakeza3D::drawFrameTriangles(std::vector<Triangle*> &visibleTriangles)
         Triangle *triangle = *(it);
         processTriangle( triangle );
     }
+}
+
+void Brakeza3D::drawSplash(SDL_Surface *surface)
+{
+    EngineSetup::getInstance()->FADEIN = true;
+    SDL_BlitSurface(surface, NULL, Brakeza3D::get()->screenSurface, NULL);
 }

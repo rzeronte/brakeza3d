@@ -157,10 +157,9 @@ public:
                         ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
                     }
                 }
-                ImGui::Separator();
-                ImGui::Checkbox("Triangle Face-culling", &EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING);
-                ImGui::Separator();
-                ImGui::Checkbox("Depth Buffer", &EngineSetup::getInstance()->TRIANGLE_RENDER_DEPTH_BUFFER);
+                ImGui::Checkbox("Fade Out", &EngineSetup::getInstance()->FADEOUT);
+                ImGui::Checkbox("Fade In", &EngineSetup::getInstance()->FADEIN);
+
                 ImGui::EndMenu();
             }
 

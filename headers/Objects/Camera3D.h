@@ -9,6 +9,7 @@
 #include "../Render/EngineSetup.h"
 #include "../Render/M3.h"
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
+#include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 
 typedef float vec3_t[3];
 
@@ -58,6 +59,8 @@ public:
     void TurnLeft(void);
     void StrafeRight(void);
     void StrafeLeft(void);
+
+    void makeKineticCharacter(btTransform transform, btConvexShape *capsule);
 
     void Jump();
     void limitPitch();

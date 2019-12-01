@@ -69,7 +69,7 @@ public:
     void updatePlanes();
     void updatePoints();
 
-    bool isPointInFrustum(Vertex3D v);
+    bool isPointInFrustum(Vertex3D &v);
     void consoleInfo();
 };
 

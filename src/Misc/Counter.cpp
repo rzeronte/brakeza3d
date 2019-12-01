@@ -47,3 +47,11 @@ void Counter::resetAcumulated() {
     this->acumulatedTime = 0;
 }
 
+float Counter::getAcumulatedTime() const {
+    return acumulatedTime;
+}
+
+float Counter::getStep() const {
+    return step;
+}
+

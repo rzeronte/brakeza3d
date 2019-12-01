@@ -35,7 +35,7 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
 void WeaponType::onUpdate()
 {
     updateCadenceTimer();
-    getCurrentWeaponAnimation()->updateFrame();
+    getCurrentWeaponAnimation()->updateFrame( status );
 }
 
 void WeaponType::setWeaponAnimation(int animationIndex)
@@ -171,4 +171,24 @@ int WeaponType::getAmmo() const {
 
 void WeaponType::setAmmo(int ammo) {
     WeaponType::ammo = ammo;
+}
+
+float WeaponType::getAccuracy() const {
+    return accuracy;
+}
+
+void WeaponType::setAccuracy(float accuracy) {
+    WeaponType::accuracy = accuracy;
+}
+
+int WeaponType::getDispersion() const {
+    return dispersion;
+}
+
+void WeaponType::setDispersion(float dispersion) {
+    WeaponType::dispersion = dispersion;
+}
+
+int WeaponType::getSpeed() const {
+    return speed;
 }

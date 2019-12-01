@@ -45,15 +45,6 @@ SDL_Surface *WeaponAnimation::getCurrentSurface()
     return this->frames[currentFrame];
 }
 
-void WeaponAnimation::nextFrame()
-{
-    currentFrame++;
-
-    if (currentFrame >= this->getNumFrames()) {
-        currentFrame = 0;
-    }
-}
-
 void WeaponAnimation::resetAnimation()
 {
     this->currentFrame = 0;
@@ -75,7 +66,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }
 
-void WeaponAnimation::updateFrame()
+void WeaponAnimation::updateFrame(int status)
 {
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->last_ticks;
@@ -86,6 +77,15 @@ void WeaponAnimation::updateFrame()
 
     if (timerCurrent > step) {
         timerCurrent = 0;
-        this->nextFrame();
+        currentFrame++;
+
+        if (currentFrame >= this->getNumFrames()) {
+            if (status == EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE) {
+                currentFrame--;
+                return;
+            }
+
+            currentFrame = 0;
+        }
     }
 }

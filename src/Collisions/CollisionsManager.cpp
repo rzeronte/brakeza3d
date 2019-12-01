@@ -289,7 +289,7 @@ Vertex3D CollisionsManager::stepSimulation()
         btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
 
         btVector3 pos = trans.getOrigin();
-        float BSP_YOffset = 3;
+        float BSP_YOffset = 0;
 
         // El offset es porqué nuestros ojos deberian estar por encima del punto central
         // de la cápsula que hemos utilizando. De lo contrario lo colocaríamos en el centro del mismo la cámara.

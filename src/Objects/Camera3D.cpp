@@ -36,19 +36,13 @@ Camera3D::Camera3D()
 
     this->velocity = Vector3D( Vertex3D::zero(), Vertex3D::zero() );
 
-    // Bullet Physics
+    btConvexShape* capsule = new btCapsuleShapeZ(1.50f, 4.5f);
     btTransform startTransform;
     startTransform.setIdentity();
     startTransform.setOrigin (btVector3(0, 0, 0));
 
-    m_ghostObject = new btPairCachingGhostObject();
-    m_ghostObject->setWorldTransform(startTransform);
+    this->makeKineticCharacter(startTransform, capsule);
 
-    btConvexShape* capsule = new btCapsuleShape(1.55f, 3.5f);
-    m_ghostObject->setCollisionShape(capsule);
-    m_ghostObject->setUserPointer(this);
-
-    kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
     setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
 }
 
@@ -235,4 +229,16 @@ void Camera3D::limitPitch()
     if (this->pitch <= -89) {
         this->pitch = -89;
     }
+}
+
+void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule)
+{
+    m_ghostObject = new btPairCachingGhostObject();
+    m_ghostObject->setWorldTransform( transform );
+
+    m_ghostObject->setCollisionShape( capsule );
+    m_ghostObject->setUserPointer(this);
+
+    kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
+
 }

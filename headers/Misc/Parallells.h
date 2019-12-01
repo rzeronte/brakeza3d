@@ -18,6 +18,7 @@ void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTri
     EngineSetup::getInstance()->DRAW_WEAPON = true;
     EngineSetup::getInstance()->DRAW_HUD    = true;
     EngineSetup::getInstance()->LOADING     = false;
+
 }
 
 void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)

@@ -79,22 +79,34 @@ void Game::mainLoop()
 
 void Game::onUpdate()
 {
-
     // Core onUpdate
     Engine::onUpdate();
 
     if (player->state != PlayerState::GAMEOVER) {
+        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+            player->setAir( player->getAir()-0.5);
+        } else {
+            player->setAir( 100 );
+        }
+
+        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && Brakeza3D::get()->getBSP()->currentLeaf->type == -5) {
+            player->takeDamage( 5 );
+        }
 
         if (EngineSetup::getInstance()->ENABLE_IA) {
             onUpdateIA();
         }
 
         if (EngineSetup::getInstance()->DRAW_WEAPON) {
-            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface );
+            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface);
         }
 
         if (EngineSetup::getInstance()->DRAW_HUD) {
             drawHUD();
+        }
+
+        if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
+            Drawable::drawCrossHair();
         }
 
         if (player->isDead()) {
@@ -104,6 +116,7 @@ void Game::onUpdate()
         if (player->tookDamage) {
             redScreen();
         }
+
     }
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
@@ -111,9 +124,33 @@ void Game::onUpdate()
         Drawable::drawFireShader();
     }
 
-    if ( EngineSetup::getInstance()->LOADING ) {
+    if (EngineSetup::getInstance()->LOADING) {
         SDL_BlitSurface(this->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, NULL);
         Drawable::drawFireShader();
+    }
+
+    if (EngineSetup::getInstance()->SPLASHING) {
+        SDL_BlitSurface(this->HUDTextures->getTextureByLabel("splash")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, NULL);
+        Drawable::drawFireShader();
+
+        if (Brakeza3D::get()->splashCounter->isFinished()) {
+            EngineSetup::getInstance()->SPLASHING = false;
+            EngineSetup::getInstance()->MENU_ACTIVE = true;
+            EngineSetup::getInstance()->FADEIN = true;
+            EngineSetup::getInstance()->FADEOUT = false;
+        }
+        if (Brakeza3D::get()->splashCounter->getAcumulatedTime() > Brakeza3D::get()->splashCounter->getStep() * 0.75) {
+            EngineSetup::getInstance()->FADEOUT = true;
+            EngineSetup::getInstance()->FADEIN = false;
+        }
+    }
+
+    if ( EngineSetup::getInstance()->FADEOUT ) {
+        Drawable::drawFadeOut();
+    }
+
+    if ( EngineSetup::getInstance()->FADEIN ) {
+        Drawable::drawFadeIn();
     }
 }
 
@@ -173,10 +210,6 @@ void Game::drawHUD()
     for (int i = 0; i < this->player->getLives(); i++) {
         SDL_BlitSurface(this->HUDTextures->getTextureByLabel("lives")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r3);
         r3.x+=10;
-    }
-
-    if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
     }
 }
 
@@ -355,13 +388,13 @@ void Game::drawMenuScreen()
 
 void Game::loadHUDImages()
 {
+    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "splash.png", "splash");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_health.png", "health");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png", "ammo");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_lives.png", "lives");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud.png", "hud");
     HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "loading.png", "loading");
 }
-
 
 void Game::getWeaponsJSON()
 {
@@ -397,6 +430,8 @@ void Game::getWeaponsJSON()
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
         cJSON *soundFire   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
         cJSON *soundMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
+        cJSON *accuracy    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "accuracy");
+        cJSON *dispersion  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
 
         // Weapon Type attributes
         Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
@@ -408,6 +443,8 @@ void Game::getWeaponsJSON()
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAccuracy(accuracy->valuedouble);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDispersion(dispersion->valueint);
 
         cJSON *mark =       cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark");
         cJSON *markPath =   cJSON_GetObjectItemCaseSensitive(mark, "path");

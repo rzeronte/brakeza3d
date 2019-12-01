@@ -12,8 +12,10 @@ private:
 
     float stamina;
     bool  dead;
+    bool  stooped;
     int   lives;
     int   defaultLives;
+    float air;
 
 public:
     PlayerState state;
@@ -44,6 +46,12 @@ public:
     void evalStatusMachine();
     void respawnNPCS();
 
+    bool isStooped() const;
+
+    void setStooped(bool stooped);
+
+    float getAir() const;
+    void  setAir(float air);
 };
 
 

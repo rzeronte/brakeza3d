@@ -424,8 +424,35 @@ void Drawable::drawFireShader()
 
             if (fireIndex != 0) {
                 Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[ index ] = fireColor; //::black();
+                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black(); //fireColor; //::black();
             }
         }
+    }
+}
+
+void Drawable::drawFadeIn()
+{
+    Brakeza3D::get()->currentFadePercent -= 0.0075;
+    if (Brakeza3D::get()->currentFadePercent < 0) {
+        Brakeza3D::get()->currentFadePercent = 0;
+        EngineSetup::getInstance()->FADEIN = false;
+    }
+    Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
+}
+
+void Drawable::drawFadeOut()
+{
+    Brakeza3D::get()->currentFadePercent += 0.0075;
+    if (Brakeza3D::get()->currentFadePercent > 1) {
+        Brakeza3D::get()->currentFadePercent = 1;
+    }
+    Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
+}
+
+void Drawable::drawFacePercent(float percent) {
+
+    EngineBuffers *buffers = EngineBuffers::getInstance();
+    for (int i = 0 ; i < buffers->sizeBuffers; i++) {
+        buffers->videoBuffer[i] = Tools::mixColor(buffers->videoBuffer[i], Color::black(), percent);
     }
 }
