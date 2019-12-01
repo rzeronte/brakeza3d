@@ -102,9 +102,9 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
-        dir.x += Tools::random(0, 100 - accuracy);
-        dir.y += Tools::random(0, 100 - accuracy);
-        dir.z += Tools::random(0, 100 - accuracy);
+        dir.x += Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.y += Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.z += Tools::random(-100 + accuracy, 100 - accuracy);
 
         btVector3 impulse(dir.x, dir.y, dir.z);
         this->m_body->applyCentralImpulse(impulse);
