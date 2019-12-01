@@ -4,7 +4,7 @@
 #include "../Render/EngineBuffers.h"
 #include "Game.h"
 
-Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false)
+Player::Player() : defaultLives(5), air(100), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false), stooped(false)
 {
     this->counterStep       = new Counter(0.40);
     this->counterTakeDamage = new Counter(0.10);
@@ -93,35 +93,49 @@ void Player::respawn()
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
+    air = 100;
     Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
 }
 
 void Player::shoot()
 {
-    Projectile3DBody *projectile = new Projectile3DBody();
-    projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
-    projectile->setLabel("projectile");
-    projectile->setEnabled(true);
-    projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
-    projectile->setAnimation(0);
-    projectile->makeProjectileRigidBody(1, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true, Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->speed);
-    projectile->getBillboard()->setDimensions(
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
-    );
+    for (int i = 0; i < Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getDispersion(); i++) {
+
+        Projectile3DBody *projectile = new Projectile3DBody();
+        projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
+        projectile->getPosition()->x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
+        projectile->getPosition()->y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
+        projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
+        projectile->setLabel("projectile");
+        projectile->setEnabled(true);
+        projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
+        projectile->setAnimation(0);
+        projectile->makeProjectileRigidBody(
+            1,
+            Brakeza3D::get()->getSceneObjects(),
+            Brakeza3D::get()->getCamera(),
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
+            true,
+            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getSpeed(),
+            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAccuracy()
+        );
+        projectile->getBillboard()->setDimensions(
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
+                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
+        );
+
+        projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
+    }
 
     // Reduce ammo for this weapon type
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
 
-    // Giramos antes de hacer el rigidbody, para no alterar los cálculos en la dirección
-    // del impulso en el interior del makeRigidBody
-    projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
-
-    // Si ya estábamos disparando, no interrumpimos la animación
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
+    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->status = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE;
+
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
 
-    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_PLAYER);
+    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_WEAPON);
 }
 
 
@@ -136,4 +150,24 @@ void Player::respawnNPCS()
             enemy->respawn();
         }
     }
+}
+
+bool Player::isStooped() const {
+    return stooped;
+}
+
+void Player::setStooped(bool stooped) {
+    Player::stooped = stooped;
+}
+
+float Player::getAir() const {
+    return air;
+}
+
+void Player::setAir(float air) {
+    if (air < 0) {
+        this->takeDamage(this->stamina);
+        return;
+    }
+    Player::air = air;
 }

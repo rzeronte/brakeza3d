@@ -63,7 +63,7 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
 {
     this->mass = mass;
 
@@ -75,7 +75,7 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
     Vertex3D dir;
     if (applyCameraImpulse) {
         dir = cam->getRotation().getTranspose() * AxisForward();
-        pos = pos + dir.getScaled(10); // un poquito delante del Player
+        pos = pos + dir.getScaled(5); // un poquito delante del Player
     }
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
@@ -89,22 +89,28 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
     if (this->mass == 0) {
         shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
     } else {
-        shape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+        shape = new btBoxShape(btVector3(0.06, 0.06, 0.06));
     }
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
+
     this->m_body = new btRigidBody(cInfo);
     this->m_body->setUserPointer(this);
+
     this->m_body->setCcdMotionThreshold(0.01f);
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
+        dir.x += Tools::random(0, 100 - accuracy);
+        dir.y += Tools::random(0, 100 - accuracy);
+        dir.z += Tools::random(0, 100 - accuracy);
+
         btVector3 impulse(dir.x, dir.y, dir.z);
         this->m_body->applyCentralImpulse(impulse);
     }
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->m_body, 1, 2);
 
     gameObjects.push_back(this);
 

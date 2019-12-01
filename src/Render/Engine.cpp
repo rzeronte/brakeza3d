@@ -3,7 +3,6 @@
 #include "../../headers/Objects/BSPEntity3D.h"
 #include <chrono>
 #include <iostream>
-#include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "LinearMath/btTransform.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Render/Maths.h"
@@ -182,18 +181,20 @@ void Engine::updateGUI()
 {
     ImGui::NewFrame();
 
+    Brakeza3D *brakeza3D = Brakeza3D::get();
+
     //bool open = true;
     //ImGui::ShowDemoWindow(&open);
 
-    Brakeza3D::get()->getGUIManager()->draw(
-            Brakeza3D::get()->getDeltaTime(),
+    brakeza3D->getGUIManager()->draw(
+            brakeza3D->getDeltaTime(),
             finish,
-            Brakeza3D::get()->getSceneObjects(),
-            Brakeza3D::get()->getLightPoints(),
-            Brakeza3D::get()->getCamera(),
-            Brakeza3D::get()->tiles, Brakeza3D::get()->tilesWidth,
+            brakeza3D->getSceneObjects(),
+            brakeza3D->getLightPoints(),
+            brakeza3D->getCamera(),
+            brakeza3D->tiles, brakeza3D->tilesWidth,
             visibleTriangles.size(),
-            Brakeza3D::get()->getWeaponsManager()
+            brakeza3D->getWeaponsManager()
     );
 
     ImGui::Render();
@@ -201,21 +202,23 @@ void Engine::updateGUI()
 
 void Engine::updateWindow()
 {
-    Brakeza3D::get()->updateFPS();
+    Brakeza3D *brakeza3D = Brakeza3D::get();
+
+    brakeza3D->updateFPS();
 
     ImGui_ImplOpenGL2_NewFrame();
-    ImGui_ImplSDL2_NewFrame(Brakeza3D::get()->window);
+    ImGui_ImplSDL2_NewFrame( brakeza3D->window );
 
     updateGUI();
 
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
-    SDL_GL_SwapWindow(Brakeza3D::get()->window);
+    SDL_GL_SwapWindow(brakeza3D->window);
 
-    Brakeza3D::get()->screenTexture = SDL_CreateTextureFromSurface(Brakeza3D::get()->renderer, Brakeza3D::get()->screenSurface);
-    SDL_RenderCopy(Brakeza3D::get()->renderer, Brakeza3D::get()->screenTexture, NULL, NULL);
+    brakeza3D->screenTexture = SDL_CreateTextureFromSurface( brakeza3D->renderer, brakeza3D->screenSurface);
+    SDL_RenderCopy( brakeza3D->renderer, brakeza3D->screenTexture, NULL, NULL);
 
-    SDL_DestroyTexture(Brakeza3D::get()->screenTexture);
+    SDL_DestroyTexture( brakeza3D->screenTexture);
 }
 
 void Engine::onStart()
@@ -228,26 +231,28 @@ void Engine::onStart()
 
 void Engine::preUpdate()
 {
+    Brakeza3D *brakeza3D = Brakeza3D::get();
+
     // Posición inicial del vector velocidad que llevará la cámara
-    Camera3D *cam = Brakeza3D::get()->getCamera();
+    Camera3D *cam = brakeza3D->getCamera();
 
     cam->velocity.vertex1 = *cam->getPosition();
     cam->velocity.vertex2 = *cam->getPosition();
 
     // Determinamos VPS
-    if (Brakeza3D::get()->getBSP()->isLoaded()) {
+    if (brakeza3D->getBSP()->isLoaded()) {
 
         int leafType = NULL;
 
-        if (Brakeza3D::get()->getBSP()->currentLeaf != NULL) {
-            leafType = Brakeza3D::get()->getBSP()->currentLeaf->type;
+        if (brakeza3D->getBSP()->currentLeaf != NULL) {
+            leafType = brakeza3D->getBSP()->currentLeaf->type;
         }
 
-        bspleaf_t *leaf = Brakeza3D::get()->getBSP()->FindLeaf( cam );
-        Brakeza3D::get()->getBSP()->setVisibleSet(leaf);
+        bspleaf_t *leaf = brakeza3D->getBSP()->FindLeaf( cam );
+        brakeza3D->getBSP()->setVisibleSet(leaf);
 
-        if (leafType != Brakeza3D::get()->getBSP()->currentLeaf->type) {
-            if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+        if (leafType != brakeza3D->getBSP()->currentLeaf->type) {
+            if ( brakeza3D->getBSP()->isCurrentLeafLiquid()) {
                 cam->kinematicController->setFallSpeed(5);
             } else {
                 cam->kinematicController->setFallSpeed(256);
@@ -258,7 +263,10 @@ void Engine::preUpdate()
 
 void Engine::onUpdate()
 {
-    Brakeza3D *brakeza3D = Brakeza3D::get();
+    Brakeza3D     *brakeza3D = Brakeza3D::get();
+    EngineSetup   *setup     = EngineSetup::getInstance();
+    EngineBuffers *buffers   = EngineBuffers::getInstance();
+
     // update collider forces
     brakeza3D->getCamera()->UpdateVelocity();
 
@@ -276,8 +284,8 @@ void Engine::onUpdate()
     brakeza3D->getCamera()->UpdateFrustum();
 
     // Clear buffers
-    EngineBuffers::getInstance()->clearDepthBuffer();
-    EngineBuffers::getInstance()->clearVideoBuffer();
+    buffers->clearDepthBuffer();
+    buffers->clearVideoBuffer();
 
     /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
         // Clear every light's shadow mapping
@@ -294,43 +302,43 @@ void Engine::onUpdate()
 
     this->hiddenSurfaceRemoval();
 
-    if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
+    if (setup->BASED_TILE_RENDER) {
         brakeza3D->handleTrianglesToTiles(visibleTriangles);
 
         brakeza3D->drawTilesTriangles(&visibleTriangles);
 
-        if (EngineSetup::getInstance()->DRAW_TILES_GRID) {
+        if (setup->DRAW_TILES_GRID) {
             brakeza3D->drawTilesGrid();
         }
     } else {
-        if (!EngineSetup::getInstance()->RASTERIZER_OPENCL) {
+        if (!setup->RASTERIZER_OPENCL) {
             brakeza3D->drawFrameTriangles(visibleTriangles);
         } else {
             this->handleOpenCLTriangles();
         }
     }
 
-    if (EngineSetup::getInstance()->BULLET_DEBUG_MODE) {
+    if (setup->BULLET_DEBUG_MODE) {
         brakeza3D->getCollisionManager()->getDynamicsWorld()->debugDrawWorld();
     }
 
-    if (EngineSetup::getInstance()->RENDER_OBJECTS_AXIS) {
+    if (setup->RENDER_OBJECTS_AXIS) {
         this->drawSceneObjectsAxis();
     }
 
-    if (EngineSetup::getInstance()->DRAW_FRUSTUM) {
+    if (setup->DRAW_FRUSTUM) {
         Drawable::drawFrustum(brakeza3D->getCamera()->frustum, brakeza3D->getCamera(), true, true, true);
     }
 
-    if (EngineSetup::getInstance()->RENDER_MAIN_AXIS) {
+    if (setup->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(brakeza3D->getCamera() );
     }
 
-    if (brakeza3D->getBSP()->isLoaded() && brakeza3D->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
+    if (brakeza3D->getBSP()->isLoaded() && brakeza3D->getBSP()->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
         brakeza3D->waterShader();
     }
 
-    EngineBuffers::getInstance()->flipVideoBuffer( Brakeza3D::get()->screenSurface );
+    buffers->flipVideoBuffer( Brakeza3D::get()->screenSurface );
 }
 
 void Engine::resolveCollisions()
@@ -370,9 +378,10 @@ void Engine::resolveCollisions()
 void Engine::getQuakeMapTriangles()
 {
     if ( Brakeza3D::get()->getBSP()->isLoaded() ) {
-        Brakeza3D::get()->getBSP()->DrawVisibleLeaf(Brakeza3D::get()->getCamera() );
+        Brakeza3D::get()->getBSP()->DrawVisibleLeaf( Brakeza3D::get()->getCamera() );
+
         if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
-            Brakeza3D::get()->getBSP()->DrawHulls(Brakeza3D::get()->getCamera()  );
+            Brakeza3D::get()->getBSP()->DrawHulls( Brakeza3D::get()->getCamera()  );
         }
     }
 }
@@ -469,10 +478,8 @@ void Engine::hiddenSurfaceRemoval()
         this->frameTriangles[i]->updateNormal();
 
         // back face culling (needs objectSpace)
-        if (EngineSetup::getInstance()->TRIANGLE_BACK_FACECULLING) {
-            if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() ) ) {
-                continue;
-            }
+        if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() ) ) {
+            continue;
         }
 
         // Clipping (needs objectSpace)

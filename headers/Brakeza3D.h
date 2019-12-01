@@ -77,6 +77,8 @@ public:
     int numTiles;
     int tilePixelsBufferSize;
 
+    float currentFadePercent = 1;
+
     // start Brakeza3D
     void start();
 
@@ -132,6 +134,10 @@ public:
     void drawTileTriangles(int i, std::vector<Triangle*> &);
     void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);
     void drawTilesGrid();
+
+    void drawSplash(SDL_Surface *surface);
+
+    Counter *splashCounter;
 };
 
 

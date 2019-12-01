@@ -13,6 +13,8 @@ class WeaponType {
 public:
     WeaponType(std::string label);
 
+    int status = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
+
     std::string label;
 
     int ammo = 50;
@@ -24,10 +26,14 @@ public:
 
     int damage;
 
+    float accuracy;
+
     float cadence = 1;
     Timer cadenceTimer;
     float lastTicks;
     float acumulatedTime = 0;
+
+    int dispersion = 0;
 
     SpriteDirectional3D *projectileTemplate;
     Sprite3D *markTemplate;
@@ -51,6 +57,7 @@ public:
 
     void setCadence(float cadence);
     void setSpeed(float cadence);
+    int  getSpeed() const;
 
     void startAction();
     void endAction();
@@ -77,6 +84,12 @@ public:
 
     int  getAmmo() const;
     void setAmmo(int ammo);
+
+    float getAccuracy() const;
+    void  setAccuracy(float accuracy);
+
+    int  getDispersion() const;
+    void setDispersion(float dispersion);
 };
 
 

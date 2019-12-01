@@ -134,17 +134,17 @@ void Frustum::updatePlanes() {
     this->far_right = Vector3D(right1f, right2f);
 }
 
-bool Frustum::isPointInFrustum(Vertex3D v) {
+bool Frustum::isPointInFrustum(Vertex3D &v)
+{
+    EngineSetup *setup = EngineSetup::getInstance();
 
-    bool result = true;
-    int plane_init = EngineSetup::getInstance()->FAR_PLANE; int plane_end = EngineSetup::getInstance()->BOTTOM_PLANE;
-
-    for(int i = plane_init; i <= plane_end; i++) {
+    for(int i = setup->FAR_PLANE; i <= setup->BOTTOM_PLANE; i++) {
         if (planes[i].distance(v) >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }
-    return result;
+
+    return true;
 }
 
 

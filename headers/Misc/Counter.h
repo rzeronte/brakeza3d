@@ -22,10 +22,14 @@ public:
     void setTimer(Timer *timer);
     void setStep(float step);
 
+    float getStep() const;
+
     void resetAcumulated();
 
     void update();
     bool isFinished() const;
+
+    float getAcumulatedTime() const;
 
 };
 

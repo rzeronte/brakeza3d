@@ -95,6 +95,8 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
         Brakeza3D::get()->getCamera()->UpdateFrustum();
     }
 
+    this->handleCrouch( event );
+
     if (keyboard[SDL_SCANCODE_1]) {
         Brakeza3D::get()->getWeaponsManager()->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
     }
@@ -203,5 +205,65 @@ void GameInputController::jump()
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER);
 
         Brakeza3D::get()->getCamera()->kinematicController->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
+    }
+}
+
+void GameInputController::handleCrouch(SDL_Event *event)
+{
+    if (event->key.keysym.sym == SDLK_TAB ) {
+
+        btTransform trans;
+        btConvexShape *capsule;
+        float radius, height;
+        bool flag = false;
+        float offsetCrouch = 2.25;
+
+        if (event->type == SDL_KEYDOWN && !player->isStooped()) {
+            height = 1.0f;
+            radius = 1.0f;
+
+            btVector3 pos = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
+            pos.setY(pos.y() + offsetCrouch);
+            trans.setIdentity();
+            trans.setOrigin(pos);
+
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeCollisionObject(Brakeza3D::get()->getCamera()->m_ghostObject);
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeAction(Brakeza3D::get()->getCamera()->kinematicController);
+
+
+            capsule = new btCapsuleShapeZ( radius, height );
+
+            player->setStooped( true );
+            flag = true;
+        }
+
+        if (event->type == SDL_KEYUP && player->isStooped()) {
+            height = 4.5f;
+            radius = 1.5f;
+
+            btVector3 pos = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
+            pos.setY(pos.y() - offsetCrouch);
+            trans.setIdentity();
+            trans.setOrigin(pos);
+
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeCollisionObject(Brakeza3D::get()->getCamera()->m_ghostObject);
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeAction(Brakeza3D::get()->getCamera()->kinematicController);
+
+            capsule = new btCapsuleShapeZ( radius, height );
+
+            player->setStooped( false );
+            flag = true;
+        }
+
+        if ((event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ) && flag) {
+
+            Brakeza3D::get()->getCamera()->makeKineticCharacter( trans, capsule );
+
+            Brakeza3D::get()->getCamera()->kinematicController->setGravity( Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->getGravity() );
+            Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(256);
+
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->addCollisionObject( Brakeza3D::get()->getCamera()->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
+            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->addAction(Brakeza3D::get()->getCamera()->kinematicController);
+        }
     }
 }
