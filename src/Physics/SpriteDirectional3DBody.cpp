@@ -45,7 +45,7 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
     btCollisionShape* shape;
 
     if (this->mass == 0) {
-        shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
+        shape = new btBoxShape(btVector3(1.5, 1.5, 1.5));
     } else {
         shape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
     }
