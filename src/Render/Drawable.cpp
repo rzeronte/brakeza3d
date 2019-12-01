@@ -432,7 +432,7 @@ void Drawable::drawFireShader()
 
 void Drawable::drawFadeIn()
 {
-    Brakeza3D::get()->currentFadePercent -= 0.0075;
+    Brakeza3D::get()->currentFadePercent -= 0.01;
     if (Brakeza3D::get()->currentFadePercent < 0) {
         Brakeza3D::get()->currentFadePercent = 0;
         EngineSetup::getInstance()->FADEIN = false;
@@ -442,7 +442,7 @@ void Drawable::drawFadeIn()
 
 void Drawable::drawFadeOut()
 {
-    Brakeza3D::get()->currentFadePercent += 0.0075;
+    Brakeza3D::get()->currentFadePercent += 0.01;
     if (Brakeza3D::get()->currentFadePercent > 1) {
         Brakeza3D::get()->currentFadePercent = 1;
     }
