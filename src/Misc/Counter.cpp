@@ -13,7 +13,7 @@ Counter::Counter(float step) {
 
 void Counter::update()
 {
-    if (this->timer == NULL) return;
+    if (!isEnabled()) return;
 
     float ticks     = this->timer->getTicks();
     float deltatime = ticks - this->lastTicks;
@@ -22,7 +22,6 @@ void Counter::update()
     acumulatedTime += (deltatime / 1000);
 
     if (acumulatedTime >= step) {
-        resetAcumulated();
         finished = true;
         return;
     }
@@ -34,17 +33,15 @@ bool Counter::isFinished() const {
     return finished;
 }
 
-void Counter::setTimer(Timer *timer) {
-    Counter::timer = timer;
-}
-
 void Counter::setStep(float step) {
     this->step = step;
-    resetAcumulated();
+    reset();
 }
 
-void Counter::resetAcumulated() {
+void Counter::reset() {
     this->acumulatedTime = 0;
+    this->finished = false;
+    this->lastTicks = 0;
 }
 
 float Counter::getAcumulatedTime() const {
@@ -53,5 +50,16 @@ float Counter::getAcumulatedTime() const {
 
 float Counter::getStep() const {
     return step;
+}
+
+bool Counter::isEnabled() const {
+    return enabled;
+}
+
+void Counter::setEnabled(bool enabled) {
+    Counter::enabled = enabled;
+    if (enabled) {
+        this->lastTicks = timer->getTicks();
+    }
 }
 
