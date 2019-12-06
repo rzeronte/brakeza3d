@@ -199,7 +199,6 @@ public:
                     if (oEnemy != NULL) {
                         std::string staminaText = "Stamina :" + std::to_string(oEnemy->stamina);
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
-                        Logging::getInstance()->Log(staminaText);
                     }
                 }
             }

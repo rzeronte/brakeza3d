@@ -4,6 +4,7 @@
 #include "../Misc/Color.h"
 #include "../Objects/Vertex3D.h"
 #include "Timer.h"
+#include "../../imgui/imgui.h"
 
 class EngineSetup {
 
@@ -52,6 +53,7 @@ public:
     float FOG_DISTANCE  = 75;
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::red();
+    ImVec4 FOG_IMGUI_COLOR;
     float FRUSTUM_FARPLANE_DISTANCE = 75;
     float HORIZONTAL_FOV = 90;
     float MIN_TRIANGLE_AREA = 2.5;
@@ -102,7 +104,7 @@ public:
     bool ENABLE_LIGHTS = true;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = true;
+    bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
     int NEAR_PLANE   = 0;
@@ -124,6 +126,7 @@ public:
     std::string SOUNDS_FOLDER = "../assets/sounds/";
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
+    std::string WEAPONS_FOLDER = ASSETS_FOLDER + "sprites/weapons/";
 
     std::string CFG_MAPS    = "maps.json";
     std::string CFG_MENU    = "menu.json";
@@ -256,13 +259,14 @@ public:
     };
 
     enum WeaponsTypes {
-        WEAPON_TYPE_GUN = 0,
-        WEAPON_TYPE_SHOTGUN = 1,
-        WEAPON_TYPE_MACHINEGUN = 2,
-        WEAPON_TYPE_ROCKETLAUNCHER = 3,
-        WEAPON_TYPE_LIGHTING = 4,
-        WEAPON_TYPE_FREEZER = 5,
-
+        PISTOL = 0,
+        REPEATER = 1,
+        STATIC_RIFLE = 2,
+        HAR = 3,
+        CHAINGUN = 4,
+        GAUSS_CANNON = 5,
+        RAILGUN = 6,
+        ROCKETLAUNCHER = 7,
     };
 
     enum WeaponsHitTypes {
@@ -271,9 +275,12 @@ public:
     };
 
     enum WeaponsActions {
-        WEAPON_ACTION_WALK = 0,
-        WEAPON_ACTION_FIRE = 1,
-        WEAPON_ACTION_RELOAD = 2,
+        WALKING = 0,
+        GETTING_READY_TO_FIRE = 1,
+        STARTING_FIRE = 2,
+        LOOPING_FIRE = 3,
+        ENDING_FIRE = 4,
+        RELOADING = 5
     };
 
     enum CollisionResolverTypes {
@@ -289,8 +296,10 @@ public:
         SND_GLOBAL = -1,
         SND_MENU = 0,
         SND_PLAYER = 1,
-        SND_ENVIRONMENT = 2,
-        SND_WEAPON = 3
+        SND_PLAYER_STEPS = 2,
+        SND_ENVIRONMENT = 3,
+        SND_WEAPON = 4,
+        SND_WEAPON_LOOP = 5
     };
 };
 

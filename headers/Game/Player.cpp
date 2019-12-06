@@ -6,7 +6,7 @@
 
 Player::Player() : defaultLives(5), air(100), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false), stooped(false)
 {
-    this->counterStep       = new Counter(0.40);
+    this->counterStep       = new Counter(0.30);
     this->counterTakeDamage = new Counter(0.10);
 }
 
@@ -34,7 +34,7 @@ void Player::setDead(bool dead)
 {
     if (this->dead != dead && dead) {
         int rndPlayerDead = Tools::random(1, 6);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER);
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     this->dead = dead;
@@ -63,8 +63,10 @@ void Player::takeDamage(float dmg)
     this->tookDamage = true;
 
     if (counterTakeDamage->isFinished()) {
+        counterTakeDamage->reset();
+        counterTakeDamage->setEnabled(true);
         int rndPlayerPain = Tools::random(1, 4);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER);
+        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
         Logging::getInstance()->Log("Sound player damage");
     }
 
@@ -94,7 +96,7 @@ void Player::respawn()
     state = PlayerState::LIVE;
     setStamina(100);
     air = 100;
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 }
 
 void Player::shoot()
@@ -130,12 +132,10 @@ void Player::shoot()
     // Reduce ammo for this weapon type
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
 
-    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->startAction();
-    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->status = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE;
+    //Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->status = EngineSetup::getInstance()->WeaponsActions::GETTING_READY_TO_FIRE;
+    //Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::GETTING_READY_TO_FIRE);
 
-    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE);
-
-    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_WEAPON);
+    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_WEAPON, 0);
 }
 
 

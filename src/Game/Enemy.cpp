@@ -52,6 +52,7 @@ const std::string &Enemy::getClassname() const {
 
 void Enemy::setClassname(const std::string &classname) {
     Enemy::classname = classname;
+    Enemy::classname = classname;
 }
 
 bool Enemy::isDead() const {

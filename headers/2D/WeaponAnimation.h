@@ -18,17 +18,23 @@ public:
     int numFrames;
     int currentFrame = 0;
 
+    int nextAnimationIndex;
+
     SDL_Surface *frames[WEAPON_ANIMATION_MAX_FRAMES];
 
     Timer *timer;
     float last_ticks;
     float timerCurrent = 0;
 
+    bool stopEnd = false;
+    bool looping = false;
+
     int  offsetX = 0;
     int  offsetY = 0;
+
     bool right   = false;
 
-    void setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right);
+    void setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping);
     void loadImages();
 
     int getNumFrames() const;
@@ -39,8 +45,16 @@ public:
 
     void draw(SDL_Surface *dst, int globalOffsetX, int headBobOffsetY);
 
-    void updateFrame(int status);
+    void updateFrame();
 
+    bool isStopEnd() const;
+    void setStopEnd(bool stopEnd);
+
+    int  getNextAnimationIndex() const;
+    void setNextAnimationIndex(int nextAnimationIndex);
+
+    bool isLooping() const;
+    void setLooping(bool looping);
 };
 
 

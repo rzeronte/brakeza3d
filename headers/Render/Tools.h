@@ -65,7 +65,7 @@ public:
     static bool isValidVector(Vertex3D& v);
     static bool checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2);
     static std::string floatTruncate(float val, int numDigits);
-    static void playMixedSound(Mix_Chunk *chunk, int channel);
+    static void playMixedSound(Mix_Chunk *chunk, int channel, int times);
 
     static Uint32 mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q);
     static Uint32 alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);

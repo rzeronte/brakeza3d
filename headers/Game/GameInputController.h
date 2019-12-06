@@ -17,6 +17,8 @@ public:
     void handleMouse(SDL_Event *);
 
     void handleCrouch(SDL_Event *event);
+    void handleFire(SDL_Event *event);
+
     void handleMenuKeyboard(bool &end);
 
     void jump();

@@ -54,11 +54,13 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     if (numAnimations == 0) return;
 
     float enemyAngle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
-    int direction    = getDirectionForAngle( enemyAngle );
+    int   direction  = getDirectionForAngle( enemyAngle );
 
     counterAnimations->update();
 
     if (counterAnimations->isFinished()) {
+        counterAnimations->reset();
+        counterAnimations->setEnabled(true);
         getCurrentTextureAnimationDirectional()->nextFrame();
     }
 
