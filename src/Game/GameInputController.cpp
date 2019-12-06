@@ -32,7 +32,7 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
         if (player->counterStep->isFinished()) {
 
-            player->counterStep->reset();
+            //player->counterStep->reset();
             player->counterStep->setEnabled(true);
 
             if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
@@ -299,7 +299,6 @@ void GameInputController::handleFire(SDL_Event *event)
 
                 weaponType->setWeaponAnimation( keyDownAnimationStatus );
                 weaponType->setFiring( true );
-                weaponType->fireCounters[ keyDownAnimationStatus ].reset();
                 weaponType->fireCounters[ keyDownAnimationStatus ].setEnabled( true );
                 weaponType->status = keyDownAnimationStatus;
 
@@ -321,7 +320,6 @@ void GameInputController::handleFire(SDL_Event *event)
                 Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
                 Tools::playMixedSound( weaponType->fireSounds[ keyUpAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON, 0);
                 weaponType->setWeaponAnimation( keyUpAnimationStatus );
-                weaponType->fireCounters[ keyUpAnimationStatus ].reset();
                 weaponType->fireCounters[ keyUpAnimationStatus ].setEnabled( true );
                 weaponType->status = keyUpAnimationStatus;
 

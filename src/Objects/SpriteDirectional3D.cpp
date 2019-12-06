@@ -59,7 +59,6 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     counterAnimations->update();
 
     if (counterAnimations->isFinished()) {
-        counterAnimations->reset();
         counterAnimations->setEnabled(true);
         getCurrentTextureAnimationDirectional()->nextFrame();
     }

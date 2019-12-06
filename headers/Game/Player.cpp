@@ -63,7 +63,6 @@ void Player::takeDamage(float dmg)
     this->tookDamage = true;
 
     if (counterTakeDamage->isFinished()) {
-        counterTakeDamage->reset();
         counterTakeDamage->setEnabled(true);
         int rndPlayerPain = Tools::random(1, 4);
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
