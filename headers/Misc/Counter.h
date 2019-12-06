@@ -24,8 +24,6 @@ public:
 
     float getStep() const;
 
-    void reset();
-
     void update();
     bool isFinished() const;
 

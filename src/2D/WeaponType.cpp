@@ -41,7 +41,7 @@ void WeaponType::onUpdate()
 
             Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
 
-            fireCounters[nextAnimationIndex].reset();
+            //fireCounters[nextAnimationIndex].reset();
             fireCounters[nextAnimationIndex].setEnabled( true );
             status = nextAnimationIndex;
 
@@ -212,7 +212,6 @@ void WeaponType::setFiring(bool firing)
         std::vector<Counter>::iterator it;
         for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
             (it)->setEnabled(false);
-            (it)->reset();
         }
     }
 }

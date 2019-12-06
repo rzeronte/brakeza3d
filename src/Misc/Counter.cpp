@@ -35,10 +35,6 @@ bool Counter::isFinished() const {
 
 void Counter::setStep(float step) {
     this->step = step;
-    reset();
-}
-
-void Counter::reset() {
     this->acumulatedTime = 0;
     this->finished = false;
     this->lastTicks = 0;
@@ -58,6 +54,11 @@ bool Counter::isEnabled() const {
 
 void Counter::setEnabled(bool enabled) {
     Counter::enabled = enabled;
+
+    this->acumulatedTime = 0;
+    this->finished = false;
+    this->lastTicks = 0;
+
     if (enabled) {
         this->lastTicks = timer->getTicks();
     }

@@ -135,7 +135,6 @@ void Game::onUpdate()
         Drawable::drawFireShader();
 
         if (Brakeza3D::get()->splashCounter->isFinished()) {
-            Brakeza3D::get()->splashCounter->reset();
             Brakeza3D::get()->splashCounter->setEnabled(true);
 
             EngineSetup::getInstance()->SPLASHING = false;
