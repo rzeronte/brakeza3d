@@ -43,7 +43,7 @@ void Brakeza3D::start()
     camera            = new Camera3D();
     menuManager       = new MenuManager();
 
-    splashCounter = new Counter(5);
+    splashCounter = new Counter(10);
 
     engineTimer.start();
 
@@ -116,7 +116,7 @@ void Brakeza3D::initFontsTTF()
     if (TTF_Init() < 0) {
         Logging::getInstance()->Log(TTF_GetError(), "INFO");
     } else {
-        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "pixel.ttf";
+        std::string pathFont = EngineSetup::getInstance()->FONTS_FOLDER + "octin.ttf";
         Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
 
         fontDefault = TTF_OpenFont( pathFont.c_str(), 50 );
@@ -319,7 +319,7 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    Tools::writeText(renderer, fontDefault, 10, 190, Color::yellow(), std::to_string(fps) +"fps");
+    Tools::writeTextCenterHorizontal(renderer, fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
 }
 
 void Brakeza3D::waterShader()

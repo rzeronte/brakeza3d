@@ -218,4 +218,6 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "enemyRage5.wav", "enemyRage5", SoundPackageItemType::SOUND);
 
     soundPackage->addItem(sndPath + "bulletWhisper.wav", "bulletWhisper", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "switch_weapon.wav", "switchWeapon", SoundPackageItemType::SOUND);
+
 }

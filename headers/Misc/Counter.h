@@ -7,29 +7,33 @@
 
 class Counter {
 private:
+    bool enabled = true;
     float step;
 
     Timer *timer;
     float lastTicks = 0;
     float acumulatedTime = 0;
 
-    bool finished;
+    bool finished = false;
 public:
 
     Counter();
     Counter(float step);
 
-    void setTimer(Timer *timer);
     void setStep(float step);
 
     float getStep() const;
 
-    void resetAcumulated();
+    void reset();
 
     void update();
     bool isFinished() const;
 
     float getAcumulatedTime() const;
+
+    bool isEnabled() const;
+
+    void setEnabled(bool enabled);
 
 };
 

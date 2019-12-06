@@ -7,13 +7,13 @@
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
 
-#define WEAPON_MAX_ANIMATIONSS 10
+#define WEAPON_MAX_ANIMATIONS 10
 
 class WeaponType {
 public:
     WeaponType(std::string label);
 
-    int status = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
+    int status = EngineSetup::getInstance()->WeaponsActions::WALKING;
 
     std::string label;
 
@@ -22,16 +22,19 @@ public:
     float projectileWidth;
     float projectileHeight;
 
-    int hitType;
-
     int damage;
 
     float accuracy;
 
-    float cadence = 1;
-    Timer cadenceTimer;
-    float lastTicks;
-    float acumulatedTime = 0;
+    bool firing = false;
+    std::vector<Counter>    fireCounters;
+    std::vector<Mix_Chunk*> fireSounds;
+
+    bool keyDownHandle;
+    bool keyUpHandle;
+
+    int keyDownAnimationStatus;
+    int keyUpAnimationStatus;
 
     int dispersion = 0;
 
@@ -45,35 +48,31 @@ public:
 
     int numAnimations = 0;
     int currentAnimationIndex = 0;
-    WeaponAnimation *animations[WEAPON_MAX_ANIMATIONSS];
+    WeaponAnimation *animations[WEAPON_MAX_ANIMATIONS];
 
-    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right);
+    SDL_Surface *iconHUD;
+
+    bool sniper;
+
+    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping);
 
     WeaponAnimation *getCurrentWeaponAnimation();
+
+    WeaponType();
 
     void onUpdate();
 
     void setWeaponAnimation(int);
 
-    void setCadence(float cadence);
-    void setSpeed(float cadence);
+    void setSpeed(float speed);
     int  getSpeed() const;
-
-    void startAction();
-    void endAction();
-
-    void updateCadenceTimer();
-    bool isCadenceInProgress();
-
-    int getHitType();
-    void setHitType(int hitType);
 
     void makeProjectileTemplate();
     SpriteDirectional3D* getProjectileTemplate();
 
     void setProjectileSize(float w, float h);
 
-    int getDamage();
+    int  getDamage();
     void setDamage(int damage);
 
     Sprite3D *getMarkTemplate();
@@ -81,6 +80,7 @@ public:
 
     void loadFireSound(std::string file);
     void loadMarkSound(std::string file);
+    void loadIconHUD(std::string file);
 
     int  getAmmo() const;
     void setAmmo(int ammo);
@@ -90,6 +90,24 @@ public:
 
     int  getDispersion() const;
     void setDispersion(float dispersion);
+
+    bool isFiring() const;
+    void setFiring(bool firing);
+
+    bool isKeyDownHandle() const;
+    void setKeyDownHandle(bool keyDownHandle);
+
+    bool isKeyUpHandle() const;
+    void setKeyUpHandle(bool keyUpHandle);
+
+    int  getKeyDownAnimationStatus() const;
+    void setKeyDownAnimationStatus(int keyDownAnimationStatus);
+
+    int  getKeyUpAnimationStatus() const;
+    void setKeyUpAnimationStatus(int keyUpAnimationStatus);
+
+    bool isSniper() const;
+    void setSniper(bool sniper);
 };
 
 

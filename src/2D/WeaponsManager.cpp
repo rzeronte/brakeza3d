@@ -6,7 +6,7 @@
 
 WeaponsManager::WeaponsManager()
 {
-    this->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::WEAPON_TYPE_GUN;
+    this->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
 }
 
 void WeaponsManager::addWeaponType(std::string label)
@@ -39,7 +39,7 @@ void WeaponsManager::updateAnimation(Camera3D *cam)
     return;*/
 
     if (cam->kinematicController->onGround()) {
-        this->getCurrentWeaponType()->setWeaponAnimation( EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK );
+        this->getCurrentWeaponType()->setWeaponAnimation( EngineSetup::getInstance()->WeaponsActions::WALKING );
         return;
     }
 
@@ -47,14 +47,6 @@ void WeaponsManager::updateAnimation(Camera3D *cam)
 
 void WeaponsManager::onUpdate(Camera3D *cam, SDL_Surface *dst)
 {
-    // Si el actual tipo de arma no tiene ninguna action en curso, activamos su animación de caminar
-    if ( getCurrentWeaponType()->status == EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE &&
-         !getCurrentWeaponType()->isCadenceInProgress()
-    ) {
-        this->getCurrentWeaponType()->status = EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK;
-        this->getCurrentWeaponType()->setWeaponAnimation( EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_WALK );
-    }
-
     this->getCurrentWeaponType()->onUpdate();
 
     this->headBob(cam->velocity);

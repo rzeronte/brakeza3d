@@ -368,9 +368,11 @@ std::string Tools::floatTruncate(float val, int numDigits)
     return output;
 }
 
-void Tools::playMixedSound(Mix_Chunk *chunk, int channel)
+void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times)
 {
-    Mix_PlayChannel(channel, chunk, 0 );
+    if (chunk == NULL) return;
+
+    Mix_PlayChannel(channel, chunk, times );
 }
 
 void Tools::writeTextCenterHorizontal(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string text, int ypos)

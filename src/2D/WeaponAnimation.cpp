@@ -15,7 +15,7 @@ WeaponAnimation::WeaponAnimation()
     currentFrame = 0;
 }
 
-void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right)
+void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping)
 {
     this->baseFile = file;
     this->fps = fps;
@@ -24,6 +24,9 @@ void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offse
     this->offsetX = offsetX;
     this->offsetY = offsetY;
     this->right = right;
+    this->stopEnd = stopEnd;
+    this->nextAnimationIndex = nextAnimationIndex;
+    this->looping = looping;
 }
 
 void WeaponAnimation::loadImages()
@@ -66,7 +69,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }
 
-void WeaponAnimation::updateFrame(int status)
+void WeaponAnimation::updateFrame()
 {
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->last_ticks;
@@ -80,7 +83,7 @@ void WeaponAnimation::updateFrame(int status)
         currentFrame++;
 
         if (currentFrame >= this->getNumFrames()) {
-            if (status == EngineSetup::getInstance()->WeaponsActions::WEAPON_ACTION_FIRE) {
+            if ( isStopEnd() ) {
                 currentFrame--;
                 return;
             }
@@ -88,4 +91,28 @@ void WeaponAnimation::updateFrame(int status)
             currentFrame = 0;
         }
     }
+}
+
+bool WeaponAnimation::isStopEnd() const {
+    return stopEnd;
+}
+
+void WeaponAnimation::setStopEnd(bool stopEnd) {
+    WeaponAnimation::stopEnd = stopEnd;
+}
+
+int WeaponAnimation::getNextAnimationIndex() const {
+    return nextAnimationIndex;
+}
+
+void WeaponAnimation::setNextAnimationIndex(int nextAnimationIndex) {
+    WeaponAnimation::nextAnimationIndex = nextAnimationIndex;
+}
+
+bool WeaponAnimation::isLooping() const {
+    return looping;
+}
+
+void WeaponAnimation::setLooping(bool looping) {
+    WeaponAnimation::looping = looping;
 }

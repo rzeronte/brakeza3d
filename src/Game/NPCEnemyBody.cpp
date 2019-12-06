@@ -62,7 +62,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
         case EnemyState::ENEMY_STATE_STOP:
             if ( raycastResult ) {
                 this->state = EnemyState::ENEMY_STATE_FOLLOW;
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
             }
             break;
         case EnemyState::ENEMY_STATE_DIE:
@@ -130,7 +130,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
         projectile->setRotation(newRot.getTranspose());
     }
 
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
 }
 

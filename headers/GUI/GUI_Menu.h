@@ -44,14 +44,10 @@ public:
         const float range_sensibility_lightnin_min = -10;
         const float range_sensibility_lightnin_max = 10;
 
-        const float range_min_lod = 1;
-        const float range_max_lod = 8;
-
         const float range_min_test_int = 0;
         const float range_max_test_int = 10;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
-        const float lod_sensibility = 0;
         const float range_test_sensibility = 0.1;
 
         const float range_sensibility_volume = 1;
@@ -65,6 +61,9 @@ public:
         const float range_fov_sensibility = 1;
         const float range_min_fov = 20;
         const float range_max_fov = 160;
+
+        bool changedFOGcolor = false;
+        int misc_flags = ImGuiColorEditFlags_NoOptions;
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
@@ -116,9 +115,20 @@ public:
                 }
 
                 ImGui::Separator();
-                ImGui::Checkbox("Enable FOG", &EngineSetup::getInstance()->ENABLE_FOG);
-                ImGui::Separator();
                 ImGui::DragScalar("Min area for raster", ImGuiDataType_Float,  &EngineSetup::getInstance()->MIN_TRIANGLE_AREA, range_sensibility_area,  &range_min_area, &range_max_area, "%f", 1.0f);
+                ImGui::Separator();
+
+                ImGui::Checkbox("Enable FOG", &EngineSetup::getInstance()->ENABLE_FOG);
+                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float*)&EngineSetup::getInstance()->FOG_IMGUI_COLOR, misc_flags);
+
+                if (changedFOGcolor) {
+                    EngineSetup::getInstance()->FOG_COLOR = Tools::createRGB(
+                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.x*256,
+                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.y*256,
+                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.z*256
+                    );
+                }
+
                 ImGui::Separator();
 
                 ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_INTENSITY, range_sensibility_fog_intensity,  &range_min_fog_intensity, &range_max_fog_intensity, "%f", 1.0f);

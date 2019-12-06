@@ -52,7 +52,7 @@ public:
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
             } else {
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
                 for (int i = 0 ; i < 5; i++) {
                     gibsParticles(getNPCEnemy());
@@ -71,7 +71,7 @@ public:
             makeGoreDecals(-90, 0, 0);
 
             // Dead sound
-            Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundEnemyDead"), EngineSetup::SoundChannels::SND_ENVIRONMENT);
+            Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundEnemyDead"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
             // Remove sprite enemy from world
             //sprite->setRemoved(true);
@@ -108,7 +108,7 @@ public:
         brakeza3D->addObject3D(particle, "particles");*/
 
         // Mark sound
-        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark, EngineSetup::SoundChannels::SND_ENVIRONMENT);
+        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark, EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 
     Projectile3DBody *getProjectile()

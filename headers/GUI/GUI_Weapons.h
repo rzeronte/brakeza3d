@@ -59,14 +59,10 @@ class GUI_Weapons : public GUI  {
             }
 
             ImGui::DragScalar("Framerate", ImGuiDataType_S32, &weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("status: ") + std::to_string((int) weapon->weaponsType[weapon->currentWeapon]->status)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("isFiring: ") + std::to_string((int) weapon->weaponsType[weapon->currentWeapon]->isFiring())).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Current Frame: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->currentFrame)).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("NumFrames: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->getNumFrames())).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("AnimationTimer: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->timer->getTicks())).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadence: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->cadence)).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimerTest: ") + std::to_string(
-                    weapon->weaponsType[weapon->currentWeapon]->isCadenceInProgress())).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimer acumulatedTime: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->acumulatedTime)).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("cadenceTimer isStarted: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->cadenceTimer.isStarted())).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("weapon global offsetY: ") + std::to_string(weapon->offsetY)).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("weapon currentAnimationIndex: ") + std::to_string(weapon->getCurrentWeaponType()->currentAnimationIndex)).c_str());
 

@@ -66,15 +66,15 @@ void MenuManager::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 270;
+    int offsetY = 230;
     int stepY   = 80;
 
     for( int i = 0 ; i < numOptions ; i++) {
 
         if (i == currentOption) {
-            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, Color::red(), this->options[i]->label, offsetY);
+            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), this->options[i]->label, offsetY);
         } else {
-            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, Color::gray(), this->options[i]->label, offsetY);
+            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::gray(), this->options[i]->label, offsetY);
         }
 
         offsetY += stepY;

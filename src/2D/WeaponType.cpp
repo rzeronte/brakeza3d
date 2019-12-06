@@ -1,31 +1,30 @@
 
+#include <SDL_image.h>
 #include "../../headers/2D/WeaponType.h"
 #include "../../headers/Render/Logging.h"
+
+WeaponType::WeaponType() {
+}
 
 WeaponType::WeaponType(std::string label)
 {
     this->label = label;
+    this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
-    for (int i = 0; i< WEAPON_MAX_ANIMATIONSS; i++) {
+    for (int i = 0; i < WEAPON_MAX_ANIMATIONS; i++) {
         this->animations[i] = new WeaponAnimation();
     }
 
-    this->hitType = EngineSetup::getInstance()->WeaponsHitTypes::WEAPON_HIT_MELEE;
-    this->cadenceTimer.stop();
-    this->acumulatedTime = 0;
-    this->lastTicks = 0;
-
     markTemplate = new Sprite3D();
-
 }
 
-void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right)
+void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
-    Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" animations)", "WeaponType");
+    Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" frames)", "WeaponType");
 
-    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right);
+    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right, stopEnd, next, looping);
 
     this->animations[this->numAnimations]->loadImages();
 
@@ -34,13 +33,57 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
 
 void WeaponType::onUpdate()
 {
-    updateCadenceTimer();
-    getCurrentWeaponAnimation()->updateFrame( status );
+    if (status != 0) {
+        Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
+
+        if (fireCounters[status].isFinished()) {
+            int nextAnimationIndex = getCurrentWeaponAnimation()->getNextAnimationIndex();
+
+            Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
+
+            fireCounters[nextAnimationIndex].reset();
+            fireCounters[nextAnimationIndex].setEnabled( true );
+            status = nextAnimationIndex;
+
+            if (this->animations[ nextAnimationIndex ]->isLooping()) {
+                if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
+                    Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
+                    Logging::getInstance()->Log("Init sound looping mode");
+                }
+            } else {
+                Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
+                Logging::getInstance()->Log("Init sound fire phase");
+                Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON, 0);
+            }
+
+            setWeaponAnimation(nextAnimationIndex );
+
+            if (status == EngineSetup::WeaponsActions::WALKING) {
+                setFiring( false );
+            }
+        }
+
+        std::vector<Counter>::iterator it;
+        for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
+            (it)->update();
+        }
+    }
+
+    getCurrentWeaponAnimation()->updateFrame();
 }
 
 void WeaponType::setWeaponAnimation(int animationIndex)
 {
+    if (this->animations[animationIndex]->getNumFrames() == 0) {
+        printf("Error animation with 0 frames");
+        exit(-1);
+    }
+
+    this->animations[animationIndex]->currentFrame = 0;
+
     this->currentAnimationIndex = animationIndex;
+
+    Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
 }
 
 WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
@@ -48,61 +91,9 @@ WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
     return this->animations[currentAnimationIndex];
 }
 
-void WeaponType::setCadence(float cadence)
-{
-    this->cadence = cadence;
-}
-
 void WeaponType::setSpeed(float speed)
 {
     this->speed = speed;
-}
-
-void WeaponType::startAction()
-{
-    this->cadenceTimer.start();
-}
-
-void WeaponType::endAction()
-{
-    this->cadenceTimer.stop();
-    this->acumulatedTime = 0;
-    this->lastTicks = 0;
-    this->getCurrentWeaponAnimation()->resetAnimation();
-}
-
-void WeaponType::updateCadenceTimer()
-{
-    if (!this->cadenceTimer.isStarted()) return;
-
-    float deltatime = this->cadenceTimer.getTicks() - this->lastTicks;
-    this->lastTicks = this->cadenceTimer.getTicks();
-
-    this->acumulatedTime += deltatime / 1000;
-
-    if  (this->acumulatedTime >= this->cadence ) {
-        this->endAction();
-    }
-}
-
-bool WeaponType::isCadenceInProgress()
-{
-    return this->cadenceTimer.isStarted();
-}
-
-int WeaponType::getHitType()
-{
-    return this->hitType;
-}
-
-void WeaponType::setHitType(int hitType)
-{
-    this->hitType = hitType;
-    if (this->hitType != EngineSetup::WeaponsHitTypes::WEAPON_HIT_MELEE) {
-        this->makeProjectileTemplate();
-    } else {
-        this->projectileTemplate = NULL;
-    }
 }
 
 void WeaponType::makeProjectileTemplate()
@@ -192,3 +183,77 @@ void WeaponType::setDispersion(float dispersion) {
 int WeaponType::getSpeed() const {
     return speed;
 }
+
+void WeaponType::loadIconHUD(std::string file)
+{
+    std::string path = EngineSetup::getInstance()->SPRITES_FOLDER + file;
+
+    Logging::getInstance()->Log("Loading weapon icon:" + path);
+
+    this->iconHUD = IMG_Load(path.c_str());
+
+    if (this->iconHUD == NULL) {
+        Logging::getInstance()->Log("Error loading weapon icon:" + path);
+    }
+}
+
+bool WeaponType::isFiring() const
+{
+    return firing;
+}
+
+void WeaponType::setFiring(bool firing)
+{
+    Logging::getInstance()->Log("setFiring: " + std::to_string((int) firing));
+
+    WeaponType::firing = firing;
+
+    if ( !firing ) {
+        std::vector<Counter>::iterator it;
+        for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
+            (it)->setEnabled(false);
+            (it)->reset();
+        }
+    }
+}
+
+bool WeaponType::isKeyDownHandle() const {
+    return keyDownHandle;
+}
+
+void WeaponType::setKeyDownHandle(bool keyDownHandle) {
+    WeaponType::keyDownHandle = keyDownHandle;
+}
+
+bool WeaponType::isKeyUpHandle() const {
+    return keyUpHandle;
+}
+
+void WeaponType::setKeyUpHandle(bool keyUpHandle) {
+    WeaponType::keyUpHandle = keyUpHandle;
+}
+
+int WeaponType::getKeyDownAnimationStatus() const {
+    return keyDownAnimationStatus;
+}
+
+void WeaponType::setKeyDownAnimationStatus(int keyDownAnimationStatus) {
+    WeaponType::keyDownAnimationStatus = keyDownAnimationStatus;
+}
+
+int WeaponType::getKeyUpAnimationStatus() const {
+    return keyUpAnimationStatus;
+}
+
+void WeaponType::setKeyUpAnimationStatus(int keyUpAnimationStatus) {
+    WeaponType::keyUpAnimationStatus = keyUpAnimationStatus;
+}
+
+bool WeaponType::isSniper() const {
+    return sniper;
+}
+
+void WeaponType::setSniper(bool sniper) {
+    WeaponType::sniper = sniper;
+}
+
