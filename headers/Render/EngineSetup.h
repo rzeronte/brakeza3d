@@ -276,11 +276,6 @@ public:
 
     enum WeaponsActions {
         WALKING = 0,
-        GETTING_READY_TO_FIRE = 1,
-        STARTING_FIRE = 2,
-        LOOPING_FIRE = 3,
-        ENDING_FIRE = 4,
-        RELOADING = 5
     };
 
     enum CollisionResolverTypes {

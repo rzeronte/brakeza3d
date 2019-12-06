@@ -1,12 +1,9 @@
-//
-// Created by darkhead on 2019-08-09.
-//
 
 #include <SDL_image.h>
 #include "../../headers/2D/WeaponAnimation.h"
 #include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
-
+#include "../../headers/Game/Game.h"
 
 WeaponAnimation::WeaponAnimation()
 {
@@ -15,7 +12,7 @@ WeaponAnimation::WeaponAnimation()
     currentFrame = 0;
 }
 
-void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping)
+void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping, bool projectile)
 {
     this->baseFile = file;
     this->fps = fps;
@@ -27,6 +24,7 @@ void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offse
     this->stopEnd = stopEnd;
     this->nextAnimationIndex = nextAnimationIndex;
     this->looping = looping;
+    this->projectile = projectile;
 }
 
 void WeaponAnimation::loadImages()
@@ -65,6 +63,10 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     }
 
     destPos.y = EngineSetup::getInstance()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
+
+    if (EngineSetup::getInstance()->DRAW_HUD) {
+        destPos.y -= Game::get()->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
+    }
 
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }
@@ -115,4 +117,12 @@ bool WeaponAnimation::isLooping() const {
 
 void WeaponAnimation::setLooping(bool looping) {
     WeaponAnimation::looping = looping;
+}
+
+bool WeaponAnimation::isProjectile() const {
+    return projectile;
+}
+
+void WeaponAnimation::setProjectile(bool projectile) {
+    WeaponAnimation::projectile = projectile;
 }

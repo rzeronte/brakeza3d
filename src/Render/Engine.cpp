@@ -204,6 +204,8 @@ void Engine::updateWindow()
 {
     Brakeza3D *brakeza3D = Brakeza3D::get();
 
+    EngineBuffers::getInstance()->flipVideoBufferToSurface(Brakeza3D::get()->screenSurface);
+
     brakeza3D->updateFPS();
 
     ImGui_ImplOpenGL2_NewFrame();
@@ -217,8 +219,7 @@ void Engine::updateWindow()
 
     brakeza3D->screenTexture = SDL_CreateTextureFromSurface( brakeza3D->renderer, brakeza3D->screenSurface);
     SDL_RenderCopy( brakeza3D->renderer, brakeza3D->screenTexture, NULL, NULL);
-
-    SDL_DestroyTexture( brakeza3D->screenTexture);
+    //SDL_FillRect( brakeza3D->screenSurface, NULL, Color::green() );
 }
 
 void Engine::onStart()
@@ -334,11 +335,6 @@ void Engine::onUpdate()
         Drawable::drawMainAxis(brakeza3D->getCamera() );
     }
 
-    if (brakeza3D->getBSP()->isLoaded() && brakeza3D->getBSP()->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
-        brakeza3D->waterShader();
-    }
-
-    buffers->flipVideoBuffer( Brakeza3D::get()->screenSurface );
 }
 
 void Engine::resolveCollisions()

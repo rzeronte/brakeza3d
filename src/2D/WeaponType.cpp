@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include "../../headers/2D/WeaponType.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Game/Game.h"
 
 WeaponType::WeaponType() {
 }
@@ -14,17 +15,17 @@ WeaponType::WeaponType(std::string label)
     for (int i = 0; i < WEAPON_MAX_ANIMATIONS; i++) {
         this->animations[i] = new WeaponAnimation();
     }
-
+    makeProjectileTemplate();
     markTemplate = new Sprite3D();
 }
 
-void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping)
+void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile)
 {
     std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
 
     Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" frames)", "WeaponType");
 
-    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right, stopEnd, next, looping);
+    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right, stopEnd, next, looping, projectile);
 
     this->animations[this->numAnimations]->loadImages();
 
@@ -41,9 +42,12 @@ void WeaponType::onUpdate()
 
             Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
 
-            //fireCounters[nextAnimationIndex].reset();
             fireCounters[nextAnimationIndex].setEnabled( true );
             status = nextAnimationIndex;
+
+            if (this->animations[ nextAnimationIndex ]->isProjectile()) {
+                Game::get()->player->shoot();
+            }
 
             if (this->animations[ nextAnimationIndex ]->isLooping()) {
                 if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
@@ -141,13 +145,6 @@ void WeaponType::setupMarkTemplate(std::string path, int numFrames, int fps, flo
     markTemplate->addAnimation(path, numFrames, fps);
     markTemplate->setAnimation(0);
     markTemplate->getBillboard()->setDimensions(w, h);
-}
-
-void WeaponType::loadFireSound(std::string file)
-{
-    Logging::getInstance()->Log("loadFireSound: " + EngineSetup::getInstance()->SOUNDS_FOLDER + file, "WeaponType");
-
-    soundFire = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
 }
 
 void WeaponType::loadMarkSound(std::string file)
@@ -254,5 +251,25 @@ bool WeaponType::isSniper() const {
 
 void WeaponType::setSniper(bool sniper) {
     WeaponType::sniper = sniper;
+}
+
+void WeaponType::loadSniperHUD(std::string file) {
+    std::string path = EngineSetup::getInstance()->SPRITES_FOLDER + this->label + "/" + file;
+
+    Logging::getInstance()->Log("Loading weapon Sniper HUD img:" + path);
+
+    this->sniperHUD = IMG_Load(path.c_str());
+
+    if (this->sniperHUD == NULL) {
+        Logging::getInstance()->Log("Error loading Sniper HUD img:" + path);
+    }
+}
+
+bool WeaponType::isSniperEnabled() const {
+    return sniperEnabled;
+}
+
+void WeaponType::setSniperEnabled(bool sniperEnabled) {
+    WeaponType::sniperEnabled = sniperEnabled;
 }
 

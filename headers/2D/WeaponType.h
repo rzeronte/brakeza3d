@@ -41,7 +41,6 @@ public:
     SpriteDirectional3D *projectileTemplate;
     Sprite3D *markTemplate;
 
-    Mix_Chunk *soundFire;
     Mix_Chunk *soundMark;
 
     int speed = 500;
@@ -53,8 +52,10 @@ public:
     SDL_Surface *iconHUD;
 
     bool sniper;
+    bool sniperEnabled = false;
+    SDL_Surface *sniperHUD;
 
-    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping);
+    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile);
 
     WeaponAnimation *getCurrentWeaponAnimation();
 
@@ -78,9 +79,9 @@ public:
     Sprite3D *getMarkTemplate();
     void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
 
-    void loadFireSound(std::string file);
     void loadMarkSound(std::string file);
     void loadIconHUD(std::string file);
+    void loadSniperHUD(std::string file);
 
     int  getAmmo() const;
     void setAmmo(int ammo);
@@ -108,6 +109,11 @@ public:
 
     bool isSniper() const;
     void setSniper(bool sniper);
+
+    bool isSniperEnabled() const;
+
+    void setSniperEnabled(bool sniperEnabled);
+
 };
 
 

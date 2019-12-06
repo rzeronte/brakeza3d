@@ -1,12 +1,7 @@
 
 #include <SDL_surface.h>
 #include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/EngineSetup.h"
 #include "../../headers/Render/Tools.h"
-#include "../../headers/Render/Timer.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Engine.h"
-#include "../../headers/Objects/Decal.h"
 
 EngineBuffers* EngineBuffers::instance = 0;
 
@@ -117,8 +112,9 @@ void EngineBuffers::clearVideoBuffer()
     std::fill(videoBuffer, videoBuffer + sizeBuffers, NULL);
 }
 
-void EngineBuffers::flipVideoBuffer(SDL_Surface *surface)
+void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface)
 {
+    // buffer -> surface
     memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
@@ -207,8 +203,6 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "playerLand3.wav", "playerLand3", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "playerLand4.wav", "playerLand4", SoundPackageItemType::SOUND);
 
-    soundPackage->addItem(sndPath + "change_weapon.wav", "changeWeapon", SoundPackageItemType::SOUND);
-
     soundPackage->addItem(sndPath + "teleporting.wav", "teleporting", SoundPackageItemType::SOUND);
 
     soundPackage->addItem(sndPath + "enemyRage1.wav", "enemyRage1", SoundPackageItemType::SOUND);
@@ -220,4 +214,5 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "bulletWhisper.wav", "bulletWhisper", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "switch_weapon.wav", "switchWeapon", SoundPackageItemType::SOUND);
 
+    soundPackage->addItem(sndPath + "sniperOn.wav", "sniperOn", SoundPackageItemType::SOUND);
 }

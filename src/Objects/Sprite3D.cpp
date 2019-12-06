@@ -17,7 +17,7 @@ Sprite3D::Sprite3D()
 
 void Sprite3D::addAnimation(std::string animation2d, int num_frames, int fps)
 {
-    Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" animations)", "BILLBOARD");
+    Logging::getInstance()->Log("Loading TextureAnimation: " + animation2d + " ("+ std::to_string(num_frames)+" frames)", "BILLBOARD");
 
     this->animations[this->numAnimations]->setup(animation2d, num_frames, fps);
     this->numAnimations++;

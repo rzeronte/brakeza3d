@@ -122,7 +122,7 @@ void Brakeza3D::initFontsTTF()
         fontDefault = TTF_OpenFont( pathFont.c_str(), 50 );
         fontSmall   = TTF_OpenFont( pathFont.c_str(), 25 );
         fontMedium  = TTF_OpenFont( pathFont.c_str(), 70 );
-        fontBig     = TTF_OpenFont( pathFont.c_str(), 100 );
+        fontBig     = TTF_OpenFont( pathFont.c_str(), 200 );
 
         if (!fontDefault) Logging::getInstance()->Log(TTF_GetError(), "INFO");
         if (!fontSmall) Logging::getInstance()->Log(TTF_GetError(), "INFO");
@@ -320,65 +320,6 @@ void Brakeza3D::updateFPS()
     }
 
     Tools::writeTextCenterHorizontal(renderer, fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
-}
-
-void Brakeza3D::waterShader()
-{
-    //BSP LAVA EFFECT
-    float LAVA_CLOSENESS = 2.35;
-    float LAVA_INTENSITY = 0.45;
-    float LAVA_SPEED = 2.55;
-    float LAVA_SCALE = 2.35;
-
-    // Default config is used in menu mode
-    float intensity_r = 1;
-    float intensity_g = 1;
-    float intensity_b = 1;
-
-    //water = -3 |mud = -4 | lava = -5
-    switch(Brakeza3D::get()->getBSP()->currentLeaf->type) {
-        default:
-        case -3:
-            break;
-        case -4:
-            intensity_r = 0.5;
-            intensity_g = 1;
-            intensity_b = 0.5;
-            break;
-        case -5:
-            intensity_r = 1;
-            intensity_g = 0.5;
-            intensity_b = 0.5;
-            break;
-    }
-
-    Uint32 *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
-
-    for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
-        for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
-            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
-
-            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor)   * intensity_r);
-            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
-            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor)  * intensity_b);
-
-            currentPixelColor = Tools::createRGB( r_light, g_light, b_light );
-
-            float cache1 = x / LAVA_CLOSENESS;
-            float cache2 = y / LAVA_CLOSENESS;
-
-            int nx = (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * LAVA_SCALE;
-            int ny = (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * LAVA_SCALE;
-
-            int bufferIndex = nx + ny * EngineSetup::getInstance()->screenWidth;
-
-            if(Tools::isPixelInWindow(nx, ny)) {
-                newVideoBuffer[bufferIndex] = currentPixelColor;
-            }
-        }
-    }
-
-    memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
 void Brakeza3D::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
