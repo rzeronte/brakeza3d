@@ -4,7 +4,7 @@
 #include "../Render/EngineBuffers.h"
 #include "Game.h"
 
-Player::Player() : defaultLives(5), air(100), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false), stooped(false)
+Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false), stooped(false)
 {
     this->counterStep       = new Counter(0.30);
     this->counterTakeDamage = new Counter(0.10);
@@ -94,7 +94,7 @@ void Player::respawn()
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
-    air = 100;
+    oxygen = 100;
     Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 }
 
@@ -128,13 +128,7 @@ void Player::shoot()
         projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
     }
 
-    // Reduce ammo for this weapon type
     Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
-
-    //Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->status = EngineSetup::getInstance()->WeaponsActions::GETTING_READY_TO_FIRE;
-    //Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::getInstance()->WeaponsActions::GETTING_READY_TO_FIRE);
-
-    Tools::playMixedSound(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundFire, EngineSetup::SoundChannels::SND_WEAPON, 0);
 }
 
 
@@ -151,22 +145,22 @@ void Player::respawnNPCS()
     }
 }
 
-bool Player::isStooped() const {
+bool Player::isCrouch() const {
     return stooped;
 }
 
-void Player::setStooped(bool stooped) {
+void Player::setCrouch(bool stooped) {
     Player::stooped = stooped;
 }
 
-float Player::getAir() const {
-    return air;
+float Player::getOxygen() const {
+    return oxygen;
 }
 
-void Player::setAir(float air) {
+void Player::setOxygen(float air) {
     if (air < 0) {
         this->takeDamage(this->stamina);
         return;
     }
-    Player::air = air;
+    Player::oxygen = air;
 }

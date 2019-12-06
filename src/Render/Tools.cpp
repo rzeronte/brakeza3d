@@ -235,7 +235,7 @@ void Tools::writeTextCenter(SDL_Renderer *renderer, TTF_Font *font, Uint32 color
     Tools::getTextAndRectCenter(renderer, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color);
 
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
-
+    SDL_DestroyTexture( textTexture );
 }
 
 void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, Vertex3D v, Uint32 color, std::string text)
@@ -382,6 +382,8 @@ void Tools::writeTextCenterHorizontal(SDL_Renderer *renderer, TTF_Font *font, Ui
     Tools::getTextAndRectCenterHorizontal(renderer, const_cast<char *>(text.c_str()), font, &textTexture, &textRect, color, ypos);
 
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+    SDL_DestroyTexture( textTexture );
+
 }
 
 void Tools::getTextAndRectCenterHorizontal(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color, int ypos)

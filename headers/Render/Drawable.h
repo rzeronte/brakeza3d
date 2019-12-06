@@ -30,6 +30,8 @@ public:
     static void drawCrossHair();
 
     static void drawFireShader();
+    static void waterShader(int type);
+
     static void drawFadeIn();
     static void drawFadeOut();
     static void drawFacePercent(float percent);

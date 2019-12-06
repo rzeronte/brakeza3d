@@ -456,3 +456,62 @@ void Drawable::drawFacePercent(float percent) {
         buffers->videoBuffer[i] = Tools::mixColor(buffers->videoBuffer[i], Color::black(), percent);
     }
 }
+
+void Drawable::waterShader(int type)
+{
+    //BSP LAVA EFFECT
+    float LAVA_CLOSENESS = 2.35;
+    float LAVA_INTENSITY = 0.45;
+    float LAVA_SPEED = 2.55;
+    float LAVA_SCALE = 2.35;
+
+    // Default config is used in menu mode
+    float intensity_r = 1;
+    float intensity_g = 1;
+    float intensity_b = 1;
+
+    //water = -3 |mud = -4 | lava = -5
+    switch( type ) {
+        default:
+        case -3:
+            break;
+        case -4:
+            intensity_r = 0.5;
+            intensity_g = 1;
+            intensity_b = 0.5;
+            break;
+        case -5:
+            intensity_r = 1;
+            intensity_g = 0.5;
+            intensity_b = 0.5;
+            break;
+    }
+
+    Uint32 *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
+
+    for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
+        for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
+            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
+
+            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor)   * intensity_r);
+            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
+            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor)  * intensity_b);
+
+            currentPixelColor = Tools::createRGB( r_light, g_light, b_light );
+
+            float cache1 = x / LAVA_CLOSENESS;
+            float cache2 = y / LAVA_CLOSENESS;
+
+            int nx = (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * LAVA_SCALE;
+            int ny = (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * LAVA_SCALE;
+
+            int bufferIndex = nx + ny * EngineSetup::getInstance()->screenWidth;
+
+            if(Tools::isPixelInWindow(nx, ny)) {
+                newVideoBuffer[bufferIndex] = currentPixelColor;
+            }
+        }
+    }
+
+    memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
+}

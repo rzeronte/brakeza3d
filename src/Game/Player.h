@@ -15,7 +15,7 @@ private:
     bool  stooped;
     int   lives;
     int   defaultLives;
-    float air;
+    float oxygen;
 
 public:
     PlayerState state;
@@ -46,12 +46,11 @@ public:
     void evalStatusMachine();
     void respawnNPCS();
 
-    bool isStooped() const;
+    bool isCrouch() const;
+    void setCrouch(bool stooped);
 
-    void setStooped(bool stooped);
-
-    float getAir() const;
-    void  setAir(float air);
+    float getOxygen() const;
+    void  setOxygen(float air);
 };
 
 

@@ -31,25 +31,16 @@ WeaponType* WeaponsManager::getCurrentWeaponType()
     return this->weaponsType[currentWeapon];
 }
 
-void WeaponsManager::updateAnimation(Camera3D *cam)
-{
-
-    /*Logging::getInstance()->Log("setAction isFiring");
-    this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::get()->WeaponsActions::WEAPON_ACTION_FIRE);
-    return;*/
-
-    if (cam->kinematicController->onGround()) {
-        this->getCurrentWeaponType()->setWeaponAnimation( EngineSetup::getInstance()->WeaponsActions::WALKING );
-        return;
-    }
-
-}
-
 void WeaponsManager::onUpdate(Camera3D *cam, SDL_Surface *dst)
 {
     this->getCurrentWeaponType()->onUpdate();
 
     this->headBob(cam->velocity);
+
+    if (getCurrentWeaponType()->isSniperEnabled()) {
+        SDL_BlitSurface(getCurrentWeaponType()->sniperHUD, NULL, dst, NULL);
+        return;
+    }
 
     this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
 }

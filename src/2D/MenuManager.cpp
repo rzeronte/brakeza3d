@@ -74,7 +74,7 @@ void MenuManager::drawOptions(SDL_Surface *dst)
         if (i == currentOption) {
             Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), this->options[i]->label, offsetY);
         } else {
-            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::gray(), this->options[i]->label, offsetY);
+            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::yellow(), this->options[i]->label, offsetY);
         }
 
         offsetY += stepY;

@@ -16,8 +16,11 @@ public:
     void handleKeyboard(SDL_Event *event, bool &end);
     void handleMouse(SDL_Event *);
 
+    void handleSniper(SDL_Event *event);
     void handleCrouch(SDL_Event *event);
     void handleFire(SDL_Event *event);
+    void handleWeaponSelector(SDL_Event *event);
+    void handleZoom(SDL_Event *event);
 
     void handleMenuKeyboard(bool &end);
 

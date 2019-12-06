@@ -118,8 +118,6 @@ public:
 
     void updateFPS();
 
-    void waterShader();
-
     // Draw triangles
     void drawTilesTriangles(std::vector<Triangle*> *visibleTriangles);
     void drawFrameTriangles(std::vector<Triangle*> &visibleTriangles);

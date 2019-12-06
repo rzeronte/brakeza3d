@@ -83,10 +83,22 @@ void Game::onUpdate()
     Engine::onUpdate();
 
     if (player->state != PlayerState::GAMEOVER) {
+        if (EngineSetup::getInstance()->DRAW_WEAPON) {
+            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface);
+        }
+
+        if (EngineSetup::getInstance()->DRAW_HUD) {
+            drawHUD();
+        }
+
+        if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
+            Drawable::waterShader( Brakeza3D::get()->getBSP()->currentLeaf->type );
+        }
+
         if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
-            player->setAir( player->getAir()-0.5);
+            player->setOxygen(player->getOxygen() - 0.5);
         } else {
-            player->setAir( 100 );
+            player->setOxygen(100);
         }
 
         if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && Brakeza3D::get()->getBSP()->currentLeaf->type == -5) {
@@ -95,14 +107,6 @@ void Game::onUpdate()
 
         if (EngineSetup::getInstance()->ENABLE_IA) {
             onUpdateIA();
-        }
-
-        if (EngineSetup::getInstance()->DRAW_WEAPON) {
-            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface);
-        }
-
-        if (EngineSetup::getInstance()->DRAW_HUD) {
-            drawHUD();
         }
 
         if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
@@ -382,6 +386,8 @@ void Game::redScreen()
 void Game::drawMenuScreen()
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, 20, 0, Color::white(), "DarkHeaZ");
+
         Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
     }
 }
@@ -425,7 +431,6 @@ void Game::getWeaponsJSON()
         cJSON *startAmmo   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "startAmmo");
         cJSON *projectileW = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
-        cJSON *soundFire   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_sound");
         cJSON *soundMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
         cJSON *accuracy    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "accuracy");
         cJSON *dispersion  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
@@ -434,37 +439,42 @@ void Game::getWeaponsJSON()
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
-        cJSON *keyDownHandle  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_handle");
-        cJSON *keyUpHandle    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_handle");
+        cJSON *keyDownHandle = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_handle");
+        cJSON *keyUpHandle   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_handle");
 
         cJSON *keyDownAnimationStatus = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_animation_status");
         cJSON *keyUpAnimationStatus   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_animation_status");
 
-        // Weapon Type attributes
+        // WeaponType attributes
         Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAmmo( startAmmo->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
-        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadFireSound(soundFire->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAccuracy(accuracy->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDispersion(dispersion->valueint);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
 
+        // WeaponType Keyboard Events
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setKeyDownHandle(keyDownHandle->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setKeyUpHandle(keyUpHandle->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setKeyDownAnimationStatus( keyDownAnimationStatus->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setKeyUpAnimationStatus( keyUpAnimationStatus->valueint) ;
 
+        // WeaponType SniperHUD
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setSniper( sniper->valueint );
+        if (sniper->valueint) {
+            cJSON *sniperHUD = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sniper_hud");
+            Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadSniperHUD( sniperHUD->valuestring );
+        }
 
-        cJSON *fireMark =   cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_mark");
-        cJSON *markPath =   cJSON_GetObjectItemCaseSensitive(fireMark, "path");
+        cJSON *fireMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_mark");
+        cJSON *markPath   = cJSON_GetObjectItemCaseSensitive(fireMark, "path");
         cJSON *markFrames = cJSON_GetObjectItemCaseSensitive(fireMark, "frames");
-        cJSON *markFps =    cJSON_GetObjectItemCaseSensitive(fireMark, "fps");
-        cJSON *markW =      cJSON_GetObjectItemCaseSensitive(fireMark, "width");
-        cJSON *markH =      cJSON_GetObjectItemCaseSensitive(fireMark, "height");
+        cJSON *markFps    = cJSON_GetObjectItemCaseSensitive(fireMark, "fps");
+        cJSON *markW      = cJSON_GetObjectItemCaseSensitive(fireMark, "width");
+        cJSON *markH      = cJSON_GetObjectItemCaseSensitive(fireMark, "height");
 
         Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
 
@@ -489,18 +499,19 @@ void Game::getWeaponsJSON()
 
         cJSON *currentWeaponAnimation;
         cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
-            cJSON *status    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "status");
-            cJSON *subfolder = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
-            cJSON *frames    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
-            cJSON *fps       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "fps");
-            cJSON *offsetX   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
-            cJSON *offsetY   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
-            cJSON *right     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "right");
-            cJSON *stopEnd   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
-            cJSON *time      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "time");
-            cJSON *sound     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "sound");
-            cJSON *looping   = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
-            cJSON *next      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "next");
+            cJSON *status     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "status");
+            cJSON *subfolder  = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
+            cJSON *frames     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
+            cJSON *fps        = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "fps");
+            cJSON *offsetX    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
+            cJSON *offsetY    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
+            cJSON *right      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "right");
+            cJSON *stopEnd    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
+            cJSON *time       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "time");
+            cJSON *sound      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "sound");
+            cJSON *looping    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
+            cJSON *next       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "next");
+            cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
 
             Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(subfolder->valuestring) + ", status:" + std::to_string(status->valueint) +", next: " + std::to_string(next->valueint));
 
@@ -513,7 +524,8 @@ void Game::getWeaponsJSON()
                     right->valueint,
                     stopEnd->valueint,
                     next->valueint,
-                    looping->valueint
+                    looping->valueint,
+                    projectile->valueint
             );
 
             Counter animationCounter = Counter();
