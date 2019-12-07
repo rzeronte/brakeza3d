@@ -89,7 +89,7 @@ public:
         M3 rotDecal = M3::getFromVectors(direction.getNormalize(), EngineSetup::getInstance()->up);
         decal->setRotation(rotDecal.getTranspose());
 
-        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();

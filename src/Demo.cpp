@@ -64,7 +64,7 @@ Demo::Demo()
     decal->setPosition(Vertex3D(52, -12, 75.5));
     decal->setupCube(10, 10, 10);
     decal->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 0));
-    decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+    decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
     decal->getSprite()->setAnimation(Tools::random(0, 10));
     decal->cube->setPosition(*decal->getPosition());
     decal->cube->update();

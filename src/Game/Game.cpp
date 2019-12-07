@@ -125,7 +125,6 @@ void Game::onUpdate()
 
     if (EngineSetup::getInstance()->MENU_ACTIVE) {
         drawMenuScreen();
-        Drawable::drawFireShader();
     }
 
     if (EngineSetup::getInstance()->LOADING) {
@@ -211,10 +210,12 @@ void Game::drawHUD()
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
     Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 78, textY, Color::gray(), std::to_string(this->player->getStamina()));
 
-    // Weapon Icon
-    r.x = 183   ; r.y = iconsY-2;
-    SDL_BlitSurface(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->iconHUD, NULL, Brakeza3D::get()->screenSurface, &r);
+    // kills
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
 
+    // Weapon Icon
+    r.x = 183  ; r.y = iconsY-2;
+    SDL_BlitSurface(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->iconHUD, NULL, Brakeza3D::get()->screenSurface, &r);
 }
 
 void Game::onUpdateIA()
@@ -385,11 +386,14 @@ void Game::redScreen()
 
 void Game::drawMenuScreen()
 {
-    if (EngineSetup::getInstance()->MENU_ACTIVE) {
-        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, 20, 0, Color::white(), "DarkHeaZ");
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, 20, 0, Color::white(), "DarkHeaZ");
 
-        Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
-    }
+    Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
+    Drawable::drawFireShader();
+    Drawable::waterShader( -2 );
+
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontSmall, 5, 225, Color::white(), "Powered By Brakeza3D - https://brakeza.com");
+
 }
 
 void Game::loadHUDImages()
@@ -479,7 +483,7 @@ void Game::getWeaponsJSON()
         Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
 
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
-                markPath->valuestring,
+                EngineSetup::getInstance()->WEAPONS_FOLDER + name->valuestring + "/" + markPath->valuestring,
                 markFrames->valueint,
                 markFps->valueint,
                 (float) markW->valuedouble,
@@ -536,7 +540,7 @@ void Game::getWeaponsJSON()
 
             Mix_Chunk *animationSound = new Mix_Chunk();
 
-            std::string pathSound = EngineSetup::getInstance()->SPRITES_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
+            std::string pathSound = EngineSetup::getInstance()->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
 
             if (strlen(sound->valuestring) > 0) {
                 Logging::getInstance()->Log("Loading Fire Phases sound: " + pathSound);
@@ -624,7 +628,7 @@ void Game::getEnemiesJSON()
             );
 
             newEnemy->addAnimationDirectional2D(
-                    path->valuestring,
+                    EngineSetup::getInstance()->SPRITES_FOLDER + path->valuestring,
                     frames->valueint,
                     fps->valueint,
                     zeroDirection->valueint,

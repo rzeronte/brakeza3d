@@ -10,6 +10,7 @@
 #include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
 #include "../Render/EngineBuffers.h"
+#include "../Game/Game.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 
@@ -43,6 +44,7 @@ public:
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina <= 0) {
+            Game::get()->kills++;
             getNPCEnemy()->setDead( true );
             getNPCEnemy()->state = EnemyState::ENEMY_STATE_DIE;
 
@@ -87,11 +89,11 @@ public:
 
         // gore sprite "particles"
         Sprite3D *gore = new Sprite3D();
-        gore->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        gore->linkTextureAnimation(EngineBuffers::getInstance()->bloodTemplates);
         gore->setAutoRemoveAfterAnimation(true);
         gore->setPosition(*getProjectile()->getPosition() );
-        gore->setAnimation(0);
-        gore->getBillboard()->setDimensions(3, 3);
+        gore->setAnimation(Tools::random(0, gore->numAnimations - 1));
+        gore->getBillboard()->setDimensions(5, 5);
         Brakeza3D::get()->addObject3D(gore, "gore");
 
         // particle explosion
@@ -107,8 +109,8 @@ public:
         );
         brakeza3D->addObject3D(particle, "particles");*/
 
-        // Mark sound
-        Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark, EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        // BloodHit sound
+        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bloodHit" + std::to_string(Tools::random(1, 3))), EngineSetup::SoundChannels::SND_BLOOD_HIT, 0);
     }
 
     Projectile3DBody *getProjectile()
@@ -156,7 +158,7 @@ public:
         decal->setPosition(*getNPCEnemy()->getPosition());
         decal->setupCube(10, 10, 10);
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
-        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreTemplate);
+        decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
         decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getCamera());

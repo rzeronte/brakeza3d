@@ -9,6 +9,9 @@
 class Game: public Engine {
 public:
     Player *player;
+
+    int kills = 0;
+
     GameInputController *controller;
     TexturePackage *HUDTextures;
 

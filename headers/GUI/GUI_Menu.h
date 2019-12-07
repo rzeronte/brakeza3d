@@ -48,7 +48,9 @@ public:
         const float range_max_test_int = 10;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
-        const float range_test_sensibility = 0.1;
+        const float range_test_sensibility = 0.0001;
+        const float range_max_sensibility = 1;
+        const float range_min_sensibility = 0;
 
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
@@ -297,7 +299,7 @@ public:
             }
 
             if (ImGui::BeginMenu("Developers")) {
-                ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+                ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("TESTING INT", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
                 ImGui::Checkbox("Boolean TEST", &EngineSetup::getInstance()->TESTING_BOOL);
                 ImGui::EndMenu();

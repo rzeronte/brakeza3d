@@ -5,6 +5,7 @@
 #include "../../headers/Render/Tools.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Game/Game.h"
 
 
 MenuManager::MenuManager()
@@ -33,32 +34,20 @@ void MenuManager::getOptionsJSON()
     optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options" );
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
-    if (sizeOptions > 0) {
-        Logging::getInstance()->Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON");
-    } else {
-        Logging::getInstance()->Log("menu.json is empty", "ERROR");
-    }
+    Logging::getInstance()->Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON");
 
     cJSON_ArrayForEach(currentOption, optionsJSON) {
-        cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
-        cJSON *imageOnOption = cJSON_GetObjectItemCaseSensitive(currentOption, "image_on");
-        cJSON *imageOffOption = cJSON_GetObjectItemCaseSensitive(currentOption, "image_off");
-
-        std::string fullPathImageOn = EngineSetup::getInstance()->IMAGES_FOLDER + imageOnOption->valuestring;
-        std::string fullPathImageOff = EngineSetup::getInstance()->IMAGES_FOLDER + imageOffOption->valuestring;
+        cJSON *nameOption   = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
+        cJSON *actionOption = cJSON_GetObjectItemCaseSensitive(currentOption, "action");
+        cJSON *altOption    = cJSON_GetObjectItemCaseSensitive(currentOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
-            this->addOption(nameOption->valuestring, fullPathImageOn, fullPathImageOff);
-            Logging::getInstance()->Log("Menu option JSON detected: " + std::string(nameOption->valuestring));
+            Logging::getInstance()->Log("Adding menu option " + std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint));
+            this->options[numOptions] = new MenuOption( nameOption->valuestring, actionOption->valueint );
+            this->options[numOptions]->setAlt(altOption->valuestring);
+            numOptions++;
         }
     }
-}
-
-void MenuManager::addOption(std::string label, std::string image_on, std::string image_off )
-{
-    Logging::getInstance()->Log("Adding menu option '" + label + "'");
-    this->options[numOptions] = new MenuOption(label, image_on, image_off);
-    numOptions++;
 }
 
 void MenuManager::drawOptions(SDL_Surface *dst)
@@ -71,11 +60,18 @@ void MenuManager::drawOptions(SDL_Surface *dst)
 
     for( int i = 0 ; i < numOptions ; i++) {
 
-        if (i == currentOption) {
-            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), this->options[i]->label, offsetY);
-        } else {
-            Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::yellow(), this->options[i]->label, offsetY);
+        std::string text = this->options[ i ]->getLabel();
+        Uint32 color = Color::orange();
+
+        if (i == MenuManager::MNU_NEW_GAME && Game::get()->player->state != PlayerState::GAMEOVER ) {
+            text = this->options[ MenuManager::MNU_NEW_GAME ]->getAlt();
         }
+
+        if (i == currentOption) {
+            color = Color::white();
+        }
+
+        Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, color, text, offsetY);
 
         offsetY += stepY;
     }

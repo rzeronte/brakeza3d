@@ -126,7 +126,7 @@ public:
     std::string SOUNDS_FOLDER = "../assets/sounds/";
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
-    std::string WEAPONS_FOLDER = ASSETS_FOLDER + "sprites/weapons/";
+    std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
 
     std::string CFG_MAPS    = "maps.json";
     std::string CFG_MENU    = "menu.json";
@@ -185,7 +185,7 @@ public:
 
     const float AIR_RESISTANCE = 1.1f;
 
-    float TESTING = 0;
+    float TESTING = 1.0;
     float TESTING_INT = 0;
     bool  TESTING_BOOL = false;
 
@@ -294,8 +294,10 @@ public:
         SND_PLAYER_STEPS = 2,
         SND_ENVIRONMENT = 3,
         SND_WEAPON = 4,
-        SND_WEAPON_LOOP = 5
+        SND_WEAPON_LOOP = 5,
+        SND_BLOOD_HIT = 6
     };
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

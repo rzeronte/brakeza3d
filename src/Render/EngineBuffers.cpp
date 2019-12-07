@@ -16,7 +16,9 @@ EngineBuffers* EngineBuffers::getInstance()
 
 EngineBuffers::EngineBuffers()
 {
-    sizeBuffers = EngineSetup::getInstance()->RESOLUTION;
+    EngineSetup *setup = EngineSetup::getInstance();
+
+    sizeBuffers = setup->RESOLUTION;
 
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
@@ -24,7 +26,7 @@ EngineBuffers::EngineBuffers()
     soundPackage = new SoundPackage();
 
     // buffer for fire shader
-    int firePixelsBufferSize = EngineSetup::getInstance()->FIRE_WIDTH * EngineSetup::getInstance()->FIRE_HEIGHT;
+    int firePixelsBufferSize = setup->FIRE_WIDTH * setup->FIRE_HEIGHT;
     firePixelsBuffer = new int[firePixelsBufferSize];
 
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
@@ -36,24 +38,29 @@ EngineBuffers::EngineBuffers()
     this->makeFireColors();
     this->fireShaderSetup();
 
-    goreTemplate = new Sprite3D();
-    goreTemplate->setAutoRemoveAfterAnimation(true);
-    goreTemplate->addAnimation("gore/gore1", 1, 25);
-    goreTemplate->addAnimation("gore/gore2", 1, 25);
-    goreTemplate->addAnimation("gore/gore3", 1, 25);
-    goreTemplate->addAnimation("gore/gore4", 1, 25);
-    goreTemplate->addAnimation("gore/gore5", 1, 25);
-    goreTemplate->addAnimation("gore/gore6", 1, 25);
-    goreTemplate->addAnimation("gore/gore7", 1, 25);
-    goreTemplate->addAnimation("gore/gore8", 1, 25);
-    goreTemplate->addAnimation("gore/gore9", 1, 25);
-    goreTemplate->addAnimation("gore/gore10", 1, 25);
-    goreTemplate->addAnimation("gore/gore11", 1, 25);
+    goreDecalTemplates = new Sprite3D();
+    goreDecalTemplates->setAutoRemoveAfterAnimation(true);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore1", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore2", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore3", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore4", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore5", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore6", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore7", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore8", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore9", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore10", 1, 25);
+    goreDecalTemplates->addAnimation(setup->SPRITES_FOLDER + "gore/gore11", 1, 25);
+
+    bloodTemplates = new Sprite3D();
+    bloodTemplates->addAnimation(setup->SPRITES_FOLDER + "blood1/blood", 19, 25);
+    bloodTemplates->addAnimation(setup->SPRITES_FOLDER + "blood2/blood", 18, 25);
+    bloodTemplates->addAnimation(setup->SPRITES_FOLDER + "blood2/blood", 13, 25);
 
     gibsTemplate = new Sprite3D();
-    gibsTemplate->addAnimation("gibs/gibs1", 7, 25);
-    gibsTemplate->addAnimation("gibs/gibs2", 7, 25);
-    gibsTemplate->addAnimation("gibs/gibs3", 8, 25);
+    gibsTemplate->addAnimation(setup->SPRITES_FOLDER + "gibs/gibs1", 7, 25);
+    gibsTemplate->addAnimation(setup->SPRITES_FOLDER + "gibs/gibs2", 7, 25);
+    gibsTemplate->addAnimation(setup->SPRITES_FOLDER + "gibs/gibs3", 8, 25);
 }
 
 void EngineBuffers::clearDepthBuffer()
@@ -215,4 +222,8 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "switch_weapon.wav", "switchWeapon", SoundPackageItemType::SOUND);
 
     soundPackage->addItem(sndPath + "sniperOn.wav", "sniperOn", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "bloodhit1.wav", "bloodHit1", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "bloodhit2.wav", "bloodHit2", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "bloodhit3.wav", "bloodHit3", SoundPackageItemType::SOUND);
 }
