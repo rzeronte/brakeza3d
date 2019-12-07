@@ -8,12 +8,23 @@
 
 class MenuOption {
 
-public:
-    MenuOption(std::string label, std::string fileOn, std::string fileOff);
-
+private:
     std::string label;
-    SDL_Surface *image_on;
-    SDL_Surface *image_off;
+    std::string alt;
+    int action;
+
+public:
+
+    MenuOption(std::string label, int action);
+
+    const std::string &getLabel() const;
+    void  setLabel(const std::string &label);
+
+    int  getAction() const;
+    void setAction(int action);
+
+    const std::string &getAlt() const;
+    void  setAlt(const std::string &alt);
 };
 
 

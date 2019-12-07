@@ -15,13 +15,14 @@ WeaponType::WeaponType(std::string label)
     for (int i = 0; i < WEAPON_MAX_ANIMATIONS; i++) {
         this->animations[i] = new WeaponAnimation();
     }
+
     makeProjectileTemplate();
     markTemplate = new Sprite3D();
 }
 
 void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile)
 {
-    std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
+    std::string full_animation_folder = EngineSetup::getInstance()->WEAPONS_FOLDER + animation_folder;
 
     Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" frames)", "WeaponType");
 
@@ -105,10 +106,10 @@ void WeaponType::makeProjectileTemplate()
     projectileTemplate = new SpriteDirectional3D();
 
     projectileTemplate->setPosition(Vertex3D(5, 0, -10));
-    std::string spritePath = this->label + "/bullet/idle";
+    std::string spritePath = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/bullet/idle";
     projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
     projectileTemplate->setAnimation(0);
-    projectileTemplate->width = 5;
+    projectileTemplate->width  = 5;
     projectileTemplate->height = 5;
 }
 
@@ -140,6 +141,7 @@ Sprite3D *WeaponType::getMarkTemplate()
 
 void WeaponType::setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h)
 {
+    Logging::getInstance()->Log("setup Mark Template: " + std::string(path));
     markTemplate->setAutoRemoveAfterAnimation(true);
     markTemplate->setEnabled(true);
     markTemplate->addAnimation(path, numFrames, fps);
@@ -183,7 +185,7 @@ int WeaponType::getSpeed() const {
 
 void WeaponType::loadIconHUD(std::string file)
 {
-    std::string path = EngineSetup::getInstance()->SPRITES_FOLDER + file;
+    std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + file;
 
     Logging::getInstance()->Log("Loading weapon icon:" + path);
 
@@ -254,7 +256,7 @@ void WeaponType::setSniper(bool sniper) {
 }
 
 void WeaponType::loadSniperHUD(std::string file) {
-    std::string path = EngineSetup::getInstance()->SPRITES_FOLDER + this->label + "/" + file;
+    std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/" + file;
 
     Logging::getInstance()->Log("Loading weapon Sniper HUD img:" + path);
 

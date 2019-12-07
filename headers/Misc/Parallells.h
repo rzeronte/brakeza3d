@@ -26,9 +26,5 @@ void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
     Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
 }
 
-void ParallellGamePreUpdate()
-{
-    Game::get()->preUpdate();
-}
 
 #endif //BRAKEDA3D_PARALLELLS_H

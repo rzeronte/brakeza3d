@@ -15,8 +15,7 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(Engin
     this->counterInjuried->setStep( 0.25 );
 
     this->projectileTemplate = new SpriteDirectional3D();
-    std::string spritePath =  "weapons/machinegun/bullet/idle";
-    projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
+    projectileTemplate->addAnimationDirectional2D(EngineSetup::getInstance()->SPRITES_FOLDER + "bullet/idle", 1, 20, false, -1);
     projectileTemplate->setAnimation(0);
     projectileTemplate->width  = 0.5;
     projectileTemplate->height = 0.5;

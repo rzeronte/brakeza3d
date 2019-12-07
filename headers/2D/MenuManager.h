@@ -19,13 +19,18 @@ public:
 
     int currentOption;
 
+    enum MenuActions {
+        MNU_NEW_GAME = 0,
+        MNU_CREDITS  = 1,
+        MNU_OPTIONS  = 2,
+        MNU_EXIT     = 3,
+    };
+
     // menu.json
     cJSON *optionsJSON;
 
     void drawOptions(SDL_Surface *dst);
     void getOptionsJSON();
-
-    void addOption(std::string label, std::string imageOn, std::string imageOff);
 };
 
 

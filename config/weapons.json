@@ -1,7 +1,7 @@
 {
   "weapons": [
     {
-      "name": "weapons/pistol",
+      "name": "pistol",
       "accuracy": 90,
       "dispersion": 1,
       "damage": 10,
@@ -10,7 +10,7 @@
       "sniper": false,
       "projectile_width": 0.25,
       "projectile_height": 0.25,
-      "fire_mark": { "path": "weapons/pistol/mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
       "mark_sound": "gun_mark.wav",
       "icon_hud": "pistol.png",
       "key_down_handle": true,
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "name": "weapons/repeater",
+      "name": "repeater",
       "accuracy": 70,
       "dispersion": 1,
       "damage": 5,
@@ -32,7 +32,7 @@
       "sniper": false,
       "projectile_width": 1.15,
       "projectile_height": 1.15,
-      "fire_mark": { "path": "weapons/repeater/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "mark_sound": "gun_mark.wav",
       "icon_hud": "repeater.png",
       "key_down_handle": true,
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "name": "weapons/static_rifle",
+      "name": "static_rifle",
       "accuracy": 65,
       "dispersion": 1,
       "damage": 5,
@@ -54,7 +54,7 @@
       "sniper": false,
       "projectile_width": 1.0,
       "projectile_height": 1.0,
-      "fire_mark": { "path": "weapons/static_rifle/mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "mark_sound": "machinegun_mark.wav",
       "icon_hud": "static_rifle.png",
       "key_down_handle": true,
@@ -67,7 +67,7 @@
       ]
     },
     {
-      "name": "weapons/har",
+      "name": "har",
       "cadence": 0.1,
       "accuracy": 100,
       "dispersion": 1,
@@ -77,7 +77,7 @@
       "sniper": false,
       "projectile_width": 0.25,
       "projectile_height": 0.25,
-      "fire_mark": { "path": "weapons/har/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
       "icon_hud": "har.png",
       "key_down_handle": true,
@@ -90,7 +90,7 @@
       ]
     },
     {
-      "name": "weapons/chaingun",
+      "name": "chaingun",
       "accuracy": 70,
       "dispersion": 1,
       "damage": 25,
@@ -99,7 +99,7 @@
       "sniper": false,
       "projectile_width": 0.15,
       "projectile_height": 0.15,
-      "fire_mark": { "path": "weapons/chaingun/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
       "icon_hud": "chaingun.png",
       "key_down_handle": true,
@@ -115,7 +115,7 @@
       ]
     },
     {
-      "name": "weapons/gauss",
+      "name": "gauss",
       "accuracy": 100,
       "dispersion": 1,
       "damage": 25,
@@ -124,7 +124,7 @@
       "sniper": false,
       "projectile_width": 6,
       "projectile_height": 6,
-      "fire_mark": { "path": "weapons/gauss/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
       "icon_hud": "gauss.png",
       "key_down_handle": 1,
@@ -138,7 +138,7 @@
       ]
     },
     {
-      "name": "weapons/vortex",
+      "name": "vortex",
       "accuracy": 100,
       "dispersion": 1,
       "damage": 25,
@@ -148,7 +148,7 @@
       "sniper_hud": "sniperHUD.png",
       "projectile_width": 6,
       "projectile_height": 6,
-      "fire_mark": { "path": "weapons/vortex/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
       "icon_hud": "vortex.png",
       "key_down_handle": 1,
@@ -162,7 +162,7 @@
       ]
     },
     {
-      "name": "weapons/rocket",
+      "name": "rocket",
       "accuracy": 100,
       "dispersion": 1,
       "damage": 25,
@@ -171,7 +171,7 @@
       "sniper": false,
       "projectile_width": 6,
       "projectile_height": 6,
-      "fire_mark": { "path": "weapons/rocket/mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
+      "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
       "icon_hud": "rocket.png",
       "key_down_handle": 1,

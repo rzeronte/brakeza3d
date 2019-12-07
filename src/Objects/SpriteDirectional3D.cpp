@@ -33,11 +33,9 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
 
 void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection, int maxTimes)
 {
-    std::string full_animation_folder = EngineSetup::getInstance()->SPRITES_FOLDER + animation_folder;
-
     Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) + " animations)", "BILLBOARD");
 
-    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, maxTimes );
+    this->animations[this->numAnimations]->setup(animation_folder, numFrames, fps, maxTimes );
 
     if (!zeroDirection) {
         this->animations[this->numAnimations]->loadImages();

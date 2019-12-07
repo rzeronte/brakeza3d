@@ -35,7 +35,8 @@ public:
     SoundPackage *soundPackage;
 
     // sprite templates
-    Sprite3D                   *goreTemplate;
+    Sprite3D                   *goreDecalTemplates;
+    Sprite3D                   *bloodTemplates;
     Sprite3D                   *gibsTemplate;
     std::vector<NPCEnemyBody*> enemyTemplates;
 
