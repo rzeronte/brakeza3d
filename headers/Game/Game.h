@@ -11,6 +11,9 @@ public:
     Player *player;
 
     int kills = 0;
+    Counter counterWalkOnWater;
+    int gameLeafType = 0;
+    bool changeLeafType;
 
     GameInputController *controller;
     TexturePackage *HUDTextures;

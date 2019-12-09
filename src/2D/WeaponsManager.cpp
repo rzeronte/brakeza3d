@@ -54,7 +54,7 @@ void WeaponsManager::headBob(Vector3D velocity)
         this->offsetY = sin( Maths::degreesToRadians(this->headBobOffsetY) );
         this->offsetY = abs(this->offsetY) * 7;
 
-        this->headBobOffsetY += 20;
+        this->headBobOffsetY += 10;
         if (this->headBobOffsetY > 360) {
             this->headBobOffsetY = 0;
         }

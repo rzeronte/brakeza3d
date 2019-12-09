@@ -184,6 +184,7 @@ void Camera3D::StrafeLeft(void)
 void Camera3D::UpdateVelocity(void)
 {
     float liquidSpeedDivisor = EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+
     // Move the camera forward
     if (Brakeza3D::get()->getBSP()->isLoaded()) {
         if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {

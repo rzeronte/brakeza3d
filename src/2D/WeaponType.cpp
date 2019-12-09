@@ -3,6 +3,8 @@
 #include "../../headers/2D/WeaponType.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Game/Game.h"
+#include "../../headers/Render/Drawable.h"
+#include "../../headers/Brakeza3D.h"
 
 WeaponType::WeaponType() {
 }
@@ -37,6 +39,17 @@ void WeaponType::onUpdate()
 {
     if (status != 0) {
         Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
+
+        // Light FX for Repeater
+        if (Brakeza3D::get()->getWeaponsManager()->currentWeapon == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
+            Vertex3D dir = Brakeza3D::get()->getCamera()->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+            dir.getNormalize();
+
+            Vertex3D A = *Brakeza3D::get()->getCamera()->getPosition() + dir.getScaled(1);
+            Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition() + dir.getScaled(50);
+
+            Drawable::drawLightning(Brakeza3D::get()->getCamera(), A, B);
+        }
 
         if (fireCounters[status].isFinished()) {
             int nextAnimationIndex = getCurrentWeaponAnimation()->getNextAnimationIndex();
@@ -155,6 +168,24 @@ void WeaponType::loadMarkSound(std::string file)
     soundMark = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
 }
 
+void WeaponType::loadCasingSound(std::string file, int num)
+{
+    switch (num) {
+        case 1:
+            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
+            soundCasing1 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
+            break;
+        case 2:
+            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
+            soundCasing2 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
+            break;
+        case 3:
+            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
+            soundCasing3 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
+            break;
+    }
+}
+
 int WeaponType::getAmmo() const {
     return ammo;
 }
@@ -211,6 +242,23 @@ void WeaponType::setFiring(bool firing)
         std::vector<Counter>::iterator it;
         for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
             (it)->setEnabled(false);
+        }
+
+        int rndCasingSnd = Tools::random(1, 3);
+
+        switch (rndCasingSnd) {
+            case 1:
+                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing1, EngineSetup::SoundChannels::SND_MENU, 0);
+                Logging::getInstance()->Log("casing");
+                break;
+            case 2:
+                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing2, EngineSetup::SoundChannels::SND_MENU, 0);
+                Logging::getInstance()->Log("casing");
+                break;
+            case 3:
+                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing3, EngineSetup::SoundChannels::SND_MENU, 0);
+                Logging::getInstance()->Log("casing");
+                break;
         }
     }
 }

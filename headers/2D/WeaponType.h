@@ -43,6 +43,10 @@ public:
 
     Mix_Chunk *soundMark;
 
+    Mix_Chunk *soundCasing1;
+    Mix_Chunk *soundCasing2;
+    Mix_Chunk *soundCasing3;
+
     int speed = 500;
 
     int numAnimations = 0;
@@ -80,6 +84,8 @@ public:
     void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
 
     void loadMarkSound(std::string file);
+    void loadCasingSound(std::string file, int num);
+
     void loadIconHUD(std::string file);
     void loadSniperHUD(std::string file);
 

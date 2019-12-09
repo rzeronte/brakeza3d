@@ -26,7 +26,11 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     InputController::handleKeyboardContinuous(event, end);
 
     if (keyboard[SDL_SCANCODE_SPACE]) {
-        this->jump();
+        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+            this->jump( false, -10, false);
+        } else {
+            this->jump( true, EngineSetup::getInstance()->JUMP_FORCE.y, true );
+        }
     }
 
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
@@ -111,8 +115,6 @@ void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 
     if (EngineSetup::getInstance()->MENU_ACTIVE || EngineSetup::getInstance()->SPLASHING || EngineSetup::getInstance()->LOADING) return;
 
-
-
     this->handleZoom( event );
     this->handleCrouch( event );
     this->handleFire( event );
@@ -167,14 +169,18 @@ void GameInputController::handleMenuKeyboard(bool &end)
     }
 }
 
-void GameInputController::jump()
+void GameInputController::jump(bool checkOnGrount, float YForce, bool soundJump)
 {
-    if( Brakeza3D::get()->getCamera()->kinematicController->onGround() ) {
+    if (checkOnGrount && !Brakeza3D::get()->getCamera()->kinematicController->onGround()) {
+        return;
+    }
+
+    if (soundJump) {
         int rndJump = Tools::random(1, 4);
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
-
-        Brakeza3D::get()->getCamera()->kinematicController->jump(btVector3(0, EngineSetup::getInstance()->JUMP_FORCE.y, 0));
     }
+
+    Brakeza3D::get()->getCamera()->kinematicController->jump(btVector3(0, YForce, 0));
 }
 
 void GameInputController::handleCrouch(SDL_Event *event)
@@ -198,7 +204,6 @@ void GameInputController::handleCrouch(SDL_Event *event)
 
             Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeCollisionObject(Brakeza3D::get()->getCamera()->m_ghostObject);
             Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeAction(Brakeza3D::get()->getCamera()->kinematicController);
-
 
             capsule = new btCapsuleShapeZ( radius, height );
 

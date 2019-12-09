@@ -242,23 +242,8 @@ void Engine::preUpdate()
 
     // Determinamos VPS
     if (brakeza3D->getBSP()->isLoaded()) {
-
-        int leafType = NULL;
-
-        if (brakeza3D->getBSP()->currentLeaf != NULL) {
-            leafType = brakeza3D->getBSP()->currentLeaf->type;
-        }
-
-        bspleaf_t *leaf = brakeza3D->getBSP()->FindLeaf( cam );
+        bspleaf_t *leaf = brakeza3D->getBSP()->FindLeaf( *cam->getPosition(), true );
         brakeza3D->getBSP()->setVisibleSet(leaf);
-
-        if (leafType != brakeza3D->getBSP()->currentLeaf->type) {
-            if ( brakeza3D->getBSP()->isCurrentLeafLiquid()) {
-                cam->kinematicController->setFallSpeed(5);
-            } else {
-                cam->kinematicController->setFallSpeed(256);
-            }
-        }
     }
 }
 

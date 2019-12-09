@@ -1,5 +1,5 @@
 
-#include "SoundPackage.h"
+#include "../../headers/Misc/SoundPackage.h"
 
 void SoundPackage::addItem(const std::string &srcSound, std::string label, SoundPackageItemType type)
 {
