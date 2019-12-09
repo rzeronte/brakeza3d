@@ -12,6 +12,9 @@
       "projectile_height": 0.25,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 1, "height": 1 },
       "mark_sound": "gun_mark.wav",
+      "casing1_sound": "BulletCasing1.wav",
+      "casing2_sound": "BulletCasing2.wav",
+      "casing3_sound": "BulletCasing3.wav",
       "icon_hud": "pistol.png",
       "key_down_handle": true,
       "key_up_handle": false,
@@ -19,7 +22,7 @@
       "key_up_animation_status": 0,
       "animations": [
         { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",         "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 0, "subfolder": "fire", "frames": 3, "fps": 20, "time": 0.30, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true, "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 1, "next": 0, "subfolder": "fire", "frames": 3, "fps": 20, "time": 0.3, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 0, "offsetY": 0, "right": true }
       ]
     },
     {
@@ -34,14 +37,17 @@
       "projectile_height": 1.15,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "mark_sound": "gun_mark.wav",
+      "casing1_sound": "",
+      "casing2_sound": "",
+      "casing3_sound": "",
       "icon_hud": "repeater.png",
       "key_down_handle": true,
       "key_up_handle": true,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",            "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.00, "sound": "",            "projectile": false, "looping": false, "stop_end": false, "offsetX": 20, "offsetY": 0, "right": true },
+        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 20, "offsetY": 0, "right": true }
       ]
     },
     {
@@ -56,14 +62,17 @@
       "projectile_height": 1.0,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 25, "width": 3, "height": 3 },
       "mark_sound": "machinegun_mark.wav",
+      "casing1_sound": "",
+      "casing2_sound": "",
+      "casing3_sound": "",
       "icon_hud": "static_rifle.png",
       "key_down_handle": true,
       "key_up_handle": false,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0,  "sound": "",         "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 0, "subfolder": "fire", "frames": 4, "fps": 20, "time": 0.30, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true, "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0,  "sound": "",         "projectile": false, "looping": false, "stop_end": false, "offsetX": 50, "offsetY": 0, "right": true },
+        { "status": 1, "next": 0, "subfolder": "fire", "frames": 4, "fps": 20, "time": 0.30, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 50, "offsetY": 0, "right": true }
       ]
     },
     {
@@ -75,43 +84,49 @@
       "speed": 500,
       "startAmmo": 500,
       "sniper": false,
-      "projectile_width": 0.25,
-      "projectile_height": 0.25,
+      "projectile_width": 0.5,
+      "projectile_height": 0.5,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
+      "casing1_sound": "BulletCasing1.wav",
+      "casing2_sound": "BulletCasing2.wav",
+      "casing3_sound": "BulletCasing3.wav",
       "icon_hud": "har.png",
       "key_down_handle": true,
       "key_up_handle": true,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 70, "offsetY": 0, "right": true },
+        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 70, "offsetY": 0, "right": true }
       ]
     },
     {
       "name": "chaingun",
-      "accuracy": 70,
+      "accuracy": 60,
       "dispersion": 1,
       "damage": 25,
       "speed": 500,
       "startAmmo": 500,
       "sniper": false,
-      "projectile_width": 0.15,
-      "projectile_height": 0.15,
+      "projectile_width": 0.5,
+      "projectile_height": 0.5,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
+      "casing1_sound": "BulletCasing1.wav",
+      "casing2_sound": "BulletCasing2.wav",
+      "casing3_sound": "BulletCasing3.wav",
       "icon_hud": "chaingun.png",
       "key_down_handle": true,
       "key_up_handle": true,
       "key_down_animation_status": 1,
       "key_up_animation_status": 3,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",                       "frames": 1, "fps": 1,  "time": 0,    "sound": "",                          "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/GETTING_READY_TO_FIRE", "frames": 4, "fps": 15, "time": 0.95, "sound": "GETTING_READY_TO_FIRE.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 2, "next": 2, "subfolder": "fire/LOOPING_FIRE",          "frames": 4, "fps": 25, "time": 0.10, "sound": "LOOPING_FIRE.wav",          "projectile": true, "looping": true,  "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 3, "next": 4, "subfolder": "fire/ENDING_FIRE",           "frames": 4, "fps": 15, "time": 0.75, "sound": "ENDING_FIRE.wav",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 4, "next": 0, "subfolder": "fire/RELOADING",             "frames": 8, "fps": 15, "time": 0.5,  "sound": "RELOADING.wav",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk",                       "frames": 1, "fps": 1,  "time": 0,    "sound": "",                          "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 1, "next": 2, "subfolder": "fire/GETTING_READY_TO_FIRE", "frames": 4, "fps": 15, "time": 0.95, "sound": "GETTING_READY_TO_FIRE.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 2, "next": 2, "subfolder": "fire/LOOPING_FIRE",          "frames": 4, "fps": 25, "time": 0.10, "sound": "LOOPING_FIRE.wav",          "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 3, "next": 4, "subfolder": "fire/ENDING_FIRE",           "frames": 4, "fps": 15, "time": 0.75, "sound": "ENDING_FIRE.wav",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 4, "next": 0, "subfolder": "fire/RELOADING",             "frames": 8, "fps": 15, "time": 0.5,  "sound": "RELOADING.wav",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true }
       ]
     },
     {
@@ -126,15 +141,18 @@
       "projectile_height": 6,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
+      "casing1_sound": "",
+      "casing2_sound": "",
+      "casing3_sound": "",
       "icon_hud": "gauss.png",
       "key_down_handle": 1,
       "key_up_handle": false,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",          "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/starting", "frames": 12, "fps": 13, "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/shoot",    "frames": 4,  "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk",          "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 1, "next": 2, "subfolder": "fire/starting", "frames": 12, "fps": 13, "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
+        { "status": 2, "next": 0, "subfolder": "fire/shoot",    "frames": 4,  "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 60, "offsetY": 0, "right": true }
       ]
     },
     {
@@ -150,22 +168,25 @@
       "projectile_height": 6,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
+      "casing1_sound": "",
+      "casing2_sound": "",
+      "casing3_sound": "",
       "icon_hud": "vortex.png",
       "key_down_handle": 1,
       "key_up_handle": false,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1, "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 1, "fps": 1,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/shot",  "frames": 3, "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1, "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 10, "offsetY": 0, "right": true },
+        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 1, "fps": 1,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 10, "offsetY": 0, "right": true },
+        { "status": 2, "next": 0, "subfolder": "fire/shot",  "frames": 3, "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 10, "offsetY": 0, "right": true }
       ]
     },
     {
       "name": "rocket",
       "accuracy": 100,
       "dispersion": 1,
-      "damage": 25,
+      "damage": 110,
       "speed": 500,
       "startAmmo": 500,
       "sniper": false,
@@ -173,15 +194,18 @@
       "projectile_height": 6,
       "fire_mark": { "path": "mark/mark",  "frames": 10,  "fps": 30, "width": 8, "height": 8},
       "mark_sound": "rocketlauncher_mark.wav",
+      "casing1_sound": "",
+      "casing2_sound": "",
+      "casing3_sound": "",
       "icon_hud": "rocket.png",
       "key_down_handle": 1,
       "key_up_handle": false,
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 21, "fps": 21,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/fire",  "frames": 7,  "fps": 25, "time": 0.25, "sound": "fire.wav",   "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 90, "offsetY": 0, "right": true },
+        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 21, "fps": 21,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 90, "offsetY": 0, "right": true },
+        { "status": 2, "next": 0, "subfolder": "fire/fire",  "frames": 7,  "fps": 25, "time": 0.25, "sound": "fire.wav",   "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 90, "offsetY": 0, "right": true }
       ]
     }
   ]

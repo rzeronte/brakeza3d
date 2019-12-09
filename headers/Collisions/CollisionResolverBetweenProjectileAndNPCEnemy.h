@@ -54,7 +54,7 @@ public:
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
             } else {
                 sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_EXPLODE_ENEMY, 0);
 
                 for (int i = 0 ; i < 5; i++) {
                     gibsParticles(getNPCEnemy());

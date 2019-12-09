@@ -974,7 +974,7 @@ void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camer
 }
 
 // Traverse the BSP tree to find the leaf containing visible surfaces from a specific position
-bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
+bspleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
 {
     bspleaf_t *leaf = NULL;
 
@@ -990,7 +990,7 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
         plane->normal[2] = plane->normal[2];
 
         // Calculate distance to the intersecting plane
-        Vertex3D cp = *camera->getPosition();
+        Vertex3D cp = camPosition;
         cp = M3(-90, 0, 0) * cp;
 
         vec3_t cam_pos;
@@ -1012,7 +1012,10 @@ bspleaf_t *BSPMap::FindLeaf(Camera3D *camera)
             node = this->getNode(nextNodeId);
         } else {
             leaf = this->getLeaf(~nextNodeId);
-            this->currentLeaf = this->getLeaf(~nextNodeId);
+            if (updateCurrentLeaft) {
+                this->currentLeaf = this->getLeaf(~nextNodeId);
+            }
+
             if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
                 Logging::getInstance()->Log("[LOG_LEAF_TYPE] leafType: " + std::to_string(leaf->type) + " [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]");
             }
@@ -1189,12 +1192,13 @@ Vertex3D BSPMap::getStartMapPosition()
 
 bool BSPMap::isCurrentLeafLiquid()
 {
-    if (currentLeaf != NULL) {
-        // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
-        return (this->currentLeaf->type < -2);
-    }
+    return BSPMap::isLeafLiquid( this->currentLeaf->type );
+}
 
-    return false;
+bool BSPMap::isLeafLiquid(int type)
+{
+    // [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]
+    return (type < -2);
 }
 
 bool BSPMap::hasTexture(std::string name)

@@ -55,7 +55,7 @@ void MenuManager::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 230;
+    int offsetY = 250;
     int stepY   = 80;
 
     for( int i = 0 ; i < numOptions ; i++) {

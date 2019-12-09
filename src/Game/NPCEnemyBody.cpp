@@ -28,6 +28,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             this->syncPathFindingRotation();
 
             if  (this->counterCadence->isFinished() ) {
+                this->counterCadence->setEnabled(true);
                 this->shoot(cam, dynamicsWorld, gameObjects);
             }
 

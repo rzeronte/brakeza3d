@@ -159,7 +159,7 @@ float Player::getOxygen() const {
 
 void Player::setOxygen(float air) {
     if (air < 0) {
-        this->takeDamage(this->stamina);
+        //this->takeDamage(this->stamina);
         return;
     }
     Player::oxygen = air;

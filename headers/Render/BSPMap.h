@@ -395,7 +395,7 @@ public:
     void DrawVisibleLeaf(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);
 
-    bspleaf_t *FindLeaf(Camera3D *camera);
+    bspleaf_t *FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft);
     void setVisibleSet(bspleaf_t *pLeaf);
     void createBulletPhysicsShape();
 
@@ -419,6 +419,7 @@ public:
     unsigned char *getLightmap(int id) {  return (unsigned char *)(&bsp[header->lightmaps.offset+id]); }
 
     bool isCurrentLeafLiquid();
+    static bool isLeafLiquid(int type);
     bool hasTexture(std::string);
     int getTextureAnimatedFrames(std::string name);
 

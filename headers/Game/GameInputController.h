@@ -24,7 +24,7 @@ public:
 
     void handleMenuKeyboard(bool &end);
 
-    void jump();
+    void jump(bool checkOnGround, float YForce, bool soundJump);
 
 };
 

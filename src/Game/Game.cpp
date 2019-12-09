@@ -25,6 +25,8 @@ Game::Game()
     loadHUDImages();
 
     Brakeza3D::get()->setController( controller );
+
+    counterWalkOnWater.setStep(2);
 }
 
 Game* Game::get()
@@ -162,9 +164,37 @@ void Game::onUpdate()
 
 void Game::preUpdate()
 {
+    Brakeza3D* brakeza3D = Brakeza3D::get();
+
     player->evalStatusMachine();
 
     Engine::preUpdate();
+
+    changeLeafType = false;
+    bool liquidToEarth = false;
+
+    if (brakeza3D->getBSP()->isLoaded()) {
+        if (brakeza3D->getBSP()->currentLeaf->type != gameLeafType) {
+            if ( BSPMap::isLeafLiquid( gameLeafType ) && !BSPMap::isLeafLiquid( brakeza3D->getBSP()->currentLeaf->type )) {
+                liquidToEarth = true;
+            }
+
+            gameLeafType = brakeza3D->getBSP()->currentLeaf->type;
+            changeLeafType = true;
+        }
+
+        if (changeLeafType) {
+            if ( brakeza3D->getBSP()->isCurrentLeafLiquid() ) {
+                brakeza3D->getCamera()->kinematicController->setFallSpeed(5);
+            } else {
+                brakeza3D->getCamera()->kinematicController->setFallSpeed(256);
+            }
+
+            if (liquidToEarth && !Brakeza3D::get()->getCamera()->kinematicController->onGround()) {
+                controller->jump( false, EngineSetup::getInstance()->JUMP_FORCE.y, false);
+            }
+        }
+    }
 }
 
 void Game::onEnd()
@@ -440,6 +470,9 @@ void Game::getWeaponsJSON()
         cJSON *dispersion  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
         cJSON *iconHUD     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "icon_hud");
         cJSON *sniper      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sniper");
+        cJSON *casingTemp1 = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing1_sound");
+        cJSON *casingTemp2 = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing2_sound");
+        cJSON *casingTemp3 = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing3_sound");
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
@@ -456,6 +489,9 @@ void Game::getWeaponsJSON()
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setSpeed((float)speed->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setProjectileSize(projectileW->valuedouble, projectileH->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadMarkSound(soundMark->valuestring);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadCasingSound(casingTemp1->valuestring, 1);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadCasingSound(casingTemp2->valuestring, 2);
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadCasingSound(casingTemp3->valuestring, 3);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAccuracy(accuracy->valuedouble);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDispersion(dispersion->valueint);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));

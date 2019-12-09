@@ -52,7 +52,7 @@ public:
     bool  ENABLE_FOG    = true;
     float FOG_DISTANCE  = 75;
     float FOG_INTENSITY = 1;
-    float FOG_COLOR = Color::red();
+    float FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
     float FRUSTUM_FARPLANE_DISTANCE = 75;
     float HORIZONTAL_FOV = 90;
@@ -162,12 +162,12 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 0.9f;
+    float WALKING_SPEED     = 0.6f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
     float STRAFE_SPEED      = 0.75f;
 
-    float WALKING_SPEED_LIQUID_DIVISOR = 2.0;
+    float WALKING_SPEED_LIQUID_DIVISOR = 1.5;
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.250;
@@ -229,7 +229,7 @@ public:
 
     bool  ENABLE_IA = true;
     float TIME_STEP_IA_ENEMIES = 0.50f;
-    float ZOOM_FOV = 50;
+    float ZOOM_FOV = 40;
 
     enum collisionGroups
     {
@@ -293,9 +293,11 @@ public:
         SND_PLAYER = 1,
         SND_PLAYER_STEPS = 2,
         SND_ENVIRONMENT = 3,
-        SND_WEAPON = 4,
-        SND_WEAPON_LOOP = 5,
-        SND_BLOOD_HIT = 6
+        SND_EXPLODE_ENEMY = 4,
+        SND_WEAPON = 5,
+        SND_WEAPON_LOOP = 6,
+        SND_BLOOD_HIT = 7,
+        SND_CASINGS = 8
     };
 
 };

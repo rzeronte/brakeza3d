@@ -43,7 +43,7 @@ void Brakeza3D::start()
     camera            = new Camera3D();
     menuManager       = new MenuManager();
 
-    splashCounter = new Counter(8);
+    splashCounter = new Counter(1);
 
     engineTimer.start();
 

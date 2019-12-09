@@ -25,7 +25,7 @@
     {
       "name": "Troll",
       "classname": "monster_knight",
-      "range": 1,
+      "range": 5,
       "damage": 10,
       "cadence": 0.15,
       "speed": 0.5,
@@ -50,7 +50,7 @@
       "range": 10,
       "damage": 10,
       "cadence": 0.25,
-      "speed": 0.75,
+      "speed": 0.25,
       "width": 6,
       "height": 6,
       "projectile_width": 0,
