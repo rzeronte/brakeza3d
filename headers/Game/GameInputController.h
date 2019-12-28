@@ -21,6 +21,7 @@ public:
     void handleFire(SDL_Event *event);
     void handleWeaponSelector(SDL_Event *event);
     void handleZoom(SDL_Event *event);
+    void handleMovingCharacter(SDL_Event *event);
 
     void handleMenuKeyboard(bool &end);
 

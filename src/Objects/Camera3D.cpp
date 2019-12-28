@@ -209,6 +209,8 @@ void Camera3D::UpdateVelocity(void)
         this->velocity.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
+    this->oldVelocity = this->velocity;
+
     // Reset speed
     speed  = 0;
     strafe = 0;
@@ -241,5 +243,5 @@ void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsul
     m_ghostObject->setUserPointer(this);
 
     kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
-
+    kinematicController->setLinearDamping(0.99999);
 }

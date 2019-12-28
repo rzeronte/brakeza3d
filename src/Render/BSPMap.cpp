@@ -564,9 +564,10 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    NPCEnemyBody *enemyTempate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname );
+                    NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
 
-                    if (enemyTempate == NULL) continue;
+                    if (enemyTemplate == NULL) continue;
+
                     // Angle Monster
                     int angle = 0;
                     if (this->hasEntityAttribute(i, "angle")) {
@@ -582,11 +583,11 @@ void BSPMap::InitializeEntities()
                     o->setRespawnPosition( pos );
                     o->setRotation( rotMonster );
                     o->setRespawnRotation( rotMonster );
-                    o->linkTexturesTo( enemyTempate );
-                    o->setRange( enemyTempate->getRange() );
-                    o->getBillboard()->setDimensions( enemyTempate->getBillboard()->width, enemyTempate->getBillboard()->height );
-                    o->setSpeed( enemyTempate->getSpeed() );
-                    o->setCadence( enemyTempate->getCadence() );
+                    o->linkTexturesTo(enemyTemplate );
+                    o->setRange(enemyTemplate->getRange() );
+                    o->getBillboard()->setDimensions( enemyTemplate->getBillboard()->width, enemyTemplate->getBillboard()->height );
+                    o->setSpeed(enemyTemplate->getSpeed() );
+                    o->setCadence(enemyTemplate->getCadence() );
                     o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
                     o->makeRigidBody(0, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(),
                                      Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), false, 0);

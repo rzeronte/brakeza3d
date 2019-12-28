@@ -273,9 +273,9 @@ Vertex3D CollisionsManager::stepSimulation()
         bulletVelocity = btVector3(vel.x, vel.y, vel.z) / EngineSetup::getInstance()->AIR_RESISTANCE;
     }
 
-    this->camera->kinematicController->setWalkDirection(bulletVelocity);
-    //this->camera->kinematicController->setVelocityForTimeInterval(bulletVelocity, Brakeza3D::get()->getDeltaTime());
-    //this->camera->kinematicController->applyImpulse(btVector3(0, 0, 10));
+    if (!Tools::isZeroVector(vel)) {
+        this->camera->kinematicController->setLinearVelocity(bulletVelocity);
+    }
 
     Vertex3D finalVelocity;
 

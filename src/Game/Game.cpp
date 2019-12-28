@@ -416,14 +416,13 @@ void Game::redScreen()
 
 void Game::drawMenuScreen()
 {
-    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontBig, 20, 0, Color::white(), "DarkHeaZ");
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontMedium, 20, 10, Color::white(), "Code Project: DarkHeaZ");
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontMedium, 20, 30, Color::white(), "Alpha Version");
 
     Brakeza3D::get()->getMenuManager()->drawOptions(Brakeza3D::get()->screenSurface);
     Drawable::drawFireShader();
-    Drawable::waterShader( -2 );
 
     Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontSmall, 5, 225, Color::white(), "Powered By Brakeza3D - https://brakeza.com");
-
 }
 
 void Game::loadHUDImages()

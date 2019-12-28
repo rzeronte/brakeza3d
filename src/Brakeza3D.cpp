@@ -46,7 +46,6 @@ void Brakeza3D::start()
     splashCounter = new Counter(1);
 
     engineTimer.start();
-
     this->drawSplash(screenSurface);
 }
 

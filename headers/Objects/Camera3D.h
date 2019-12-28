@@ -31,6 +31,7 @@ public:
     Frustum *frustum;
 
     Vector3D velocity;
+    Vector3D oldVelocity;
 
     btPairCachingGhostObject *m_ghostObject;
     btKinematicCharacterController* kinematicController;

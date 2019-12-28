@@ -48,7 +48,7 @@ public:
         const float range_max_test_int = 999;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
-        const float range_test_sensibility = 0.0001;
+        const float range_test_sensibility = 0.01;
         const float range_max_sensibility = 1;
         const float range_min_sensibility = 0;
 

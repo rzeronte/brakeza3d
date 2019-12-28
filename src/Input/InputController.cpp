@@ -14,7 +14,7 @@ void InputController::handleMouse(SDL_Event *event)
     if (io.WantCaptureMouse) return;
 
     // Camera rotation
-    if (MouseMotion && MousePressed) {
+    if (MouseMotion) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
             Brakeza3D::get()->getCamera()->Yaw(event->motion.xrel);

@@ -84,7 +84,7 @@ void Player::takeDamage(float dmg)
 void Player::newGame()
 {
     setLives(defaultLives);
-
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     Game::get()->initBSP();
 }
 
