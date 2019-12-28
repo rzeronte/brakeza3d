@@ -23,6 +23,8 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) return;
 
+    this->handleMovingCharacter(event);
+
     InputController::handleKeyboardContinuous(event, end);
 
     if (keyboard[SDL_SCANCODE_SPACE]) {
@@ -33,75 +35,24 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
         }
     }
 
-    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
-        if (player->counterStep->isFinished()) {
-
-            //player->counterStep->reset();
-            player->counterStep->setEnabled(true);
-
-            if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
-                int rndStep = Tools::random(1, 6);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
-            }
-        }
-    }
-
 }
 
 void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
 {
     InputController::handleKeyboard(event, end);
 
-    if (event->type == SDL_WINDOWEVENT) {
-        switch (event->window.event) {
-            case SDL_WINDOWEVENT_SHOWN:
-                break;
-            case SDL_WINDOWEVENT_HIDDEN:
-                break;
-            case SDL_WINDOWEVENT_EXPOSED:
-                break;
-            case SDL_WINDOWEVENT_MOVED:
-                break;
-            case SDL_WINDOWEVENT_RESIZED:
-                break;
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
-                break;
-            case SDL_WINDOWEVENT_MINIMIZED:
-                break;
-            case SDL_WINDOWEVENT_MAXIMIZED:
-                break;
-            case SDL_WINDOWEVENT_RESTORED:
-                break;
-            case SDL_WINDOWEVENT_ENTER:
-                break;
-            case SDL_WINDOWEVENT_LEAVE:
-                break;
-            case SDL_WINDOWEVENT_FOCUS_GAINED:
-                break;
-            case SDL_WINDOWEVENT_FOCUS_LOST:
-                break;
-            case SDL_WINDOWEVENT_CLOSE:
-                end = true;
-                break;
-#if SDL_VERSION_ATLEAST(2, 0, 5)
-            case SDL_WINDOWEVENT_TAKE_FOCUS:
-                break;
-            case SDL_WINDOWEVENT_HIT_TEST:
-                break;
-#endif
-            default:
-                break;
-        }
-    }
-
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
+
         if (!EngineSetup::getInstance()->MENU_ACTIVE) {
+            SDL_SetRelativeMouseMode(SDL_TRUE);
             Mix_HaltMusic();
             Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
             EngineSetup::getInstance()->DRAW_WEAPON = true;
             EngineSetup::getInstance()->DRAW_HUD    = true;
         } else {
+            SDL_SetRelativeMouseMode(SDL_FALSE);
+            SDL_WarpMouseInWindow(Brakeza3D::get()->window, EngineSetup::getInstance()->screenWidth/2, EngineSetup::getInstance()->screenHeight/2);
             Mix_HaltMusic();
             Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
             EngineSetup::getInstance()->DRAW_WEAPON = false;
@@ -427,4 +378,24 @@ void GameInputController::handleZoom(SDL_Event *event)
 
         Brakeza3D::get()->getCamera()->UpdateFrustum();
     }
+}
+
+
+void GameInputController::handleMovingCharacter(SDL_Event *event)
+{
+
+    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
+        if (player->counterStep->isFinished()) {
+
+            //player->counterStep->reset();
+            player->counterStep->setEnabled(true);
+
+            if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
+                int rndStep = Tools::random(1, 6);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
+            }
+        }
+    }
+
+
 }

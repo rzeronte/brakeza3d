@@ -5,6 +5,8 @@
 #include "../Objects/Vertex3D.h"
 #include "Timer.h"
 #include "../../imgui/imgui.h"
+#include <any>
+#include <map>
 
 class EngineSetup {
 
@@ -16,6 +18,9 @@ public:
     static EngineSetup* instance;
 
     static void setResolution(int, int);
+
+
+    std::map<std::string, std::any> setup;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.6";
 
@@ -181,7 +186,7 @@ public:
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -50, 0);
+    Vertex3D JUMP_FORCE = Vertex3D(0, -80, 0);
 
     const float AIR_RESISTANCE = 1.1f;
 
