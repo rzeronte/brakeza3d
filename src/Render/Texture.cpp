@@ -108,8 +108,10 @@ void Texture::loadTGA(const char *file, int mip_mapping )
                 mip_mapping_8 = IMG_Load(file);
                 break;
         }
+    } else {
+        Logging::getInstance()->Log("Error loading TGA texture '" + std::string(file), "TEXTURES");
     }
-    //Logging::get()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
+    Logging::getInstance()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
 }
 
 void Texture::drawFlatLightMap(int pos_x, int pos_y)

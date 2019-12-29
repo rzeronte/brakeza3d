@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(brakeza3d)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
@@ -189,7 +189,7 @@ add_executable(brakeza3d
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h headers/2D/TexturePackage.cpp headers/2D/TexturePackage.h src/Misc/SoundPackage.cpp headers/Misc/SoundPackage.h headers/Misc/Parallells.h)
+        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h src/Misc/TexturePackage.cpp headers/Misc/TexturePackage.h src/Misc/SoundPackage.cpp headers/Misc/SoundPackage.h headers/Misc/Parallells.h headers/Misc/VariablePackage.cpp headers/Misc/VariablePackage.h src/Physics/BillboardBody.cpp headers/Physics/BillboardBody.h)
 
 
 target_link_libraries(brakeza3d

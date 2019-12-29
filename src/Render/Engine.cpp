@@ -7,6 +7,7 @@
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Physics/BillboardBody.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>
 
@@ -438,6 +439,17 @@ void Engine::getSpritesTriangles()
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
+        }
+
+        BillboardBody *oBillboardBody = dynamic_cast<BillboardBody*> (object);
+        if (oBillboardBody != NULL) {
+            if (!oBillboardBody->isEnabled()) {
+                continue;
+            }
+
+            oBillboardBody->updateTrianglesCoordinatesAndTexture(Brakeza3D::get()->getCamera() );
+            Drawable::drawBillboard(oBillboardBody, &frameTriangles);
+
         }
     }
 }

@@ -4,7 +4,7 @@
 #include "../Render/Engine.h"
 #include "../../src/Game/Player.h"
 #include "GameInputController.h"
-#include "../2D/TexturePackage.h"
+#include "../Misc/TexturePackage.h"
 
 class Game: public Engine {
 public:
