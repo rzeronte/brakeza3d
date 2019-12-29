@@ -32,3 +32,5 @@ Main features:
 [![Liquid volumes](http://i3.ytimg.com/vi/JdtLIGsecaQ/hqdefault.jpg)](https://youtu.be/JdtLIGsecaQ "Liquid volumes")
 
 [![OBJ/Billboards](http://i3.ytimg.com/vi/Txr7tlYJNVQ/hqdefault.jpg)](https://youtu.be/Txr7tlYJNVQ "OBJ/Billboards")
+
+[![OBJ/Billboards](http://i3.ytimg.com/vi/dpvQxOO04F4/hqdefault.jpg)](https://youtu.be/dpvQxOO04F4 "FPS features")
