@@ -14,6 +14,8 @@
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Physics/Sprite3DBody.h"
+#include "../../headers/Physics/BillboardBody.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)
 {
@@ -517,6 +519,10 @@ void BSPMap::InitializeEntities()
 {
     char *e = getEntities();
     this->parseEntities(e);
+
+    EngineSetup *engineSetup = EngineSetup::getInstance();
+    Brakeza3D   *brakeza3D   = Brakeza3D::get();
+
     Logging::getInstance()->Log("BSP Num Entities: "+ std::to_string(this->n_entities), "");
 
     if (this->n_entities > MAX_BSP_ENTITIES) {
@@ -550,15 +556,31 @@ void BSPMap::InitializeEntities()
                     Object3D *o = new Object3D();
                     o->setEnabled(true);
                     o->setPosition( pos );
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (health)");
+                    brakeza3D->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (health)");
                 }
 
                 // weapon wildcard
                 std::string s1(classname);
                 if (s1.find("weapon") != std::string::npos) {
-                    Object3D *o = new Object3D();
+                    BillboardBody *o = new BillboardBody();
+
+                    if (!strcmp(classname, "weapon_rocketlauncher")) {
+                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                    }
+                    if (!strcmp(classname, "weapon_grenadelauncher")) {
+                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                    }
+                    if (!strcmp(classname, "weapon_nailgun")) {
+                        Logging::getInstance()->Log("weapon_nailgun ese:" + engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                    }
+                    if (!strcmp(classname, "weapon_supershotgun")) {
+                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                    }
+                    o->setDimensions(2, 2);
                     o->setPosition( pos );
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (weapon)" );
+                    o->setEnabled( true );
+                    o->makeRigidBody(0.0f, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());
                 }
 
                 // monster wildcard
@@ -589,8 +611,14 @@ void BSPMap::InitializeEntities()
                     o->setSpeed(enemyTemplate->getSpeed() );
                     o->setCadence(enemyTemplate->getCadence() );
                     o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
-                    o->makeRigidBody(0, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(),
-                                     Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), false, 0);
+                    o->makeRigidBody(
+                            0,
+                            brakeza3D->getSceneObjects(),
+                            brakeza3D->getCamera(),
+                            brakeza3D->getCollisionManager()->getDynamicsWorld(),
+                           false,
+                           0
+                     );
                 }
 
                 // armor wildcard
@@ -619,8 +647,7 @@ void BSPMap::InitializeEntities()
                 }
 
                 // light_flame_large_yellow
-                if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch")
-                        ) {
+                if (!strcmp(classname, "light_flame_large_yellow") || !strcmp(classname, "light_torch_small_walltorch") ) {
                     Object3D *o = new Object3D();
                     o->setPosition( pos );
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
