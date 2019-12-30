@@ -198,7 +198,7 @@ void CollisionsManager::checkCollisionsForAll()
                         getBspMap(),
                         getVisibleTriangles()
                 );
-                Brakeza3D::get()->getCollisionManager()->getCollisions().push_back( collisionResolver );
+                Brakeza3D::get()->getCollisionManager()->getCollisions().emplace_back( collisionResolver );
 
             }
         }

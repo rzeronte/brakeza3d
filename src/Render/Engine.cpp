@@ -283,9 +283,8 @@ void Engine::onUpdate()
     }*/
 
     // recollect triangles
-    this->getQuakeMapTriangles();
-    this->getMesh3DTriangles();
-    this->getSpritesTriangles();
+    this->getBSPTriangles();
+    this->getObjectsTriangles();
 
     this->hiddenSurfaceRemoval();
 
@@ -357,7 +356,7 @@ void Engine::resolveCollisions()
     }
 }*/
 
-void Engine::getQuakeMapTriangles()
+void Engine::getBSPTriangles()
 {
     if ( Brakeza3D::get()->getBSP()->isLoaded() ) {
         Brakeza3D::get()->getBSP()->DrawVisibleLeaf( Brakeza3D::get()->getCamera() );
@@ -368,29 +367,7 @@ void Engine::getQuakeMapTriangles()
     }
 }
 
-void Engine::getMesh3DTriangles()
-{
-    // draw meshes
-    for (int i = 0; i < Brakeza3D::get()->getSceneObjects().size(); i++) {
-        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (Brakeza3D::get()->getSceneObjects()[i]);
-        if (oMesh != NULL) {
-            if (oMesh->isEnabled()) {
-                oMesh->draw( &this->frameTriangles) ;
-                if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                }
-            }
-            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
-                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
-                if (oDecal != NULL) {
-                    oDecal->cube->draw( &this->frameTriangles );
-                }
-            }
-        }
-    }
-}
-
-void Engine::getSpritesTriangles()
+void Engine::getObjectsTriangles()
 {
     if (!EngineSetup::getInstance()->DRAW_SPRITES) return;
 
@@ -404,6 +381,22 @@ void Engine::getSpritesTriangles()
             continue;
         } else {
             it++;
+        }
+
+        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (object);
+        if (oMesh != NULL) {
+            if (oMesh->isEnabled()) {
+                oMesh->draw( &this->frameTriangles) ;
+                if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
+                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+                }
+            }
+            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
+                if (oDecal != NULL) {
+                    oDecal->cube->draw( &this->frameTriangles );
+                }
+            }
         }
 
         // Sprite Directional 3D
@@ -511,7 +504,7 @@ void Engine::hiddenSurfaceRemoval()
         // para optimización en el rasterizador por software
         this->frameTriangles[i]->updateCameraSpace( cam );
         this->frameTriangles[i]->updateNDCSpace( cam );
-        this->frameTriangles[i]->updateScreenSpace( cam );
+        this->frameTriangles[i]->updateScreenSpace();
         this->frameTriangles[i]->updateBoundingBox();
         this->frameTriangles[i]->updateFullArea();
         this->frameTriangles[i]->updateUVCache();
@@ -525,7 +518,7 @@ void Engine::hiddenSurfaceRemoval()
         }
 
         this->frameTriangles[i]->drawed = false;
-        this->visibleTriangles.push_back(this->frameTriangles[i]);
+        this->visibleTriangles.emplace_back(this->frameTriangles[i]);
     }
 
     if (EngineSetup::getInstance()->DEBUG_RENDER_INFO) {

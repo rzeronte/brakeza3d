@@ -21,7 +21,7 @@ public:
     static Vertex3D cameraSpace(Vertex3D &V, Camera3D *cam);
 
     static Vertex3D perspectiveDivision(Vertex3D &V, Camera3D *cam);
-    static Point2D  screenSpace(Vertex3D &V, Camera3D *cam);
+    static Point2D  screenSpace(Vertex3D &V);
 
 };
 

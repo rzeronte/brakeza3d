@@ -564,16 +564,16 @@ void BSPMap::InitializeEntities()
                 if (s1.find("weapon") != std::string::npos) {
                     BillboardBody *o = new BillboardBody();
 
-                    WeaponType *wp = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname( classname );
-                    if (wp == NULL) {
+                    WeaponType *weapon = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname(classname );
+                    if (weapon == NULL) {
                         Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
                         continue;
                     }
 
                     o->setPosition( pos );
-                    o->loadTexture( EngineSetup::getInstance()->WEAPONS_FOLDER + wp->label + "/" + wp->getBillboardTextureFile() );
-                    o->setDimensions( wp->billboardWidth, wp->billboardHeight );
-                    o->makeRigidBody(0.0f, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());
+                    o->loadTexture(EngineSetup::getInstance()->WEAPONS_FOLDER + weapon->label + "/" + weapon->getBillboardTextureFile() );
+                    o->setDimensions(weapon->billboardWidth, weapon->billboardHeight );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());
                 }
 
                 // monster wildcard
@@ -606,7 +606,7 @@ void BSPMap::InitializeEntities()
                     o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
                     o->makeRigidBody(
                             0,
-                            Vertex3D(3, 3, 3),
+                            Vertex3D(2, 2, 2),
                             brakeza3D->getSceneObjects(),
                             brakeza3D->getCollisionManager()->getDynamicsWorld()
                      );
@@ -852,7 +852,7 @@ void BSPMap::DrawSurfaceTriangles(int surface)
         this->model_triangles[i]->updateTextureAnimated();
         this->model_triangles[i]->updateLightmapFrame();
         Triangle *t = this->model_triangles[i];
-        this->frameTriangles->push_back( t );
+        this->frameTriangles->emplace_back( t );
     }
 }
 

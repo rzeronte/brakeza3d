@@ -33,7 +33,7 @@
       "name": "repeater",
       "classname": "weapon_nailgun",
       "billboard_texture": "repeater_hd.png",
-      "billboard_width": 3,
+      "billboard_width": 5,
       "billboard_height": 3,
       "accuracy": 70,
       "dispersion": 1,
