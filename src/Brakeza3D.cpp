@@ -174,7 +174,7 @@ void Brakeza3D::initTiles()
             t.start_x = x;
             t.start_y = y;
 
-            this->tiles.push_back(t);
+            this->tiles.emplace_back(t);
             // Load up the vector with MyClass objects
 
 
@@ -233,7 +233,7 @@ void Brakeza3D::addObject3D(Object3D *obj, std::string label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
     obj->setLabel(label);
-    sceneObjects.push_back(obj);
+    sceneObjects.emplace_back(obj);
 }
 
 
@@ -591,6 +591,9 @@ void Brakeza3D::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
 
 void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
 {
+    EngineSetup*   engineSetup   = EngineSetup::getInstance();
+    EngineBuffers* engineBuffers = EngineBuffers::getInstance();
+
     // LOD determination
     t->lod = t->processLOD();
 
@@ -625,9 +628,9 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
 
                 depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
 
-                const int bufferIndex = ( y * EngineSetup::getInstance()->screenWidth ) + x;
+                const int bufferIndex = ( y * engineSetup->screenWidth ) + x;
 
-                if ( depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                if ( depth < engineBuffers->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
                     texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
                     texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;

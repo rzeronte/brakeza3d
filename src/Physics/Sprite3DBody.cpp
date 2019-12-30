@@ -49,7 +49,7 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, std::vector<
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
     world->addRigidBody(this->m_body);
-    gameObjects.push_back(this);
+    gameObjects.emplace_back(this);
 
     return this->m_body;
 }

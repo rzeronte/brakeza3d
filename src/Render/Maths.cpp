@@ -274,7 +274,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->typelight[2] = lightstyle[2];
             t->typelight[3] = lightstyle[3];
 
-            triangles.push_back(t);
+            triangles.emplace_back(t);
 
             triangleCount++;
             break;
@@ -364,7 +364,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->typelight[2] = lightstyle[2];
             t->typelight[3] = lightstyle[3];
 
-            triangles.push_back(t);
+            triangles.emplace_back(t);
 
             triangleCount++;
             //triangles++;
@@ -391,7 +391,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->typelight[2] = lightstyle[2];
             t->typelight[3] = lightstyle[3];
 
-            triangles.push_back(t);
+            triangles.emplace_back(t);
 
             triangleCount++;
             //triangles++;

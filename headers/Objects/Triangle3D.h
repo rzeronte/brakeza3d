@@ -83,7 +83,7 @@ public:
     void updateObjectSpace();
     void updateCameraSpace(Camera3D *cam);
     void updateNDCSpace(Camera3D *cam);
-    void updateScreenSpace(Camera3D *cam);
+    void updateScreenSpace();
 
     void updateTextureAnimated();
 

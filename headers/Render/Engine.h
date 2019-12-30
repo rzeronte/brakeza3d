@@ -85,9 +85,8 @@ public:
     void updateWindow();
 
     // Triangle recollector
-    void getMesh3DTriangles();
-    void getQuakeMapTriangles();
-    void getSpritesTriangles();
+    void getBSPTriangles();
+    void getObjectsTriangles();
 
     // Object's axis
     void drawSceneObjectsAxis();

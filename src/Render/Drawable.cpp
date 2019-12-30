@@ -62,7 +62,7 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color)
     Vertex3D A = Transforms::cameraSpace(V, cam);
     A = Transforms::NDCSpace(A, cam);
 
-    Point2D P1 = Transforms::screenSpace(A, cam);
+    Point2D P1 = Transforms::screenSpace(A);
 
     if (Tools::isPixelInWindow((int)P1.x, (int)P1.y)) {
         EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color);
@@ -225,8 +225,8 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
     V2 = Transforms::NDCSpace(V2, cam);
 
     // get 2d coordinates
-    Point2D P1 = Transforms::screenSpace(V1, cam);
-    Point2D P2 = Transforms::screenSpace(V2, cam);
+    Point2D P1 = Transforms::screenSpace(V1);
+    Point2D P2 = Transforms::screenSpace(V2);
 
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 
@@ -247,8 +247,8 @@ void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color)
     V2 = Transforms::NDCSpace(V2, cam);
 
     // get 2d coordinates
-    Point2D P1 = Transforms::screenSpace(V1, cam);
-    Point2D P2 = Transforms::screenSpace(V2, cam);
+    Point2D P1 = Transforms::screenSpace(V1);
+    Point2D P2 = Transforms::screenSpace(V2);
 
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 
@@ -317,8 +317,8 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangles)
 {
     //B->T1.draw( cam );
-    frameTriangles->push_back(&B->T1);
-    frameTriangles->push_back(&B->T2);
+    frameTriangles->emplace_back(&B->T1);
+    frameTriangles->emplace_back(&B->T2);
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
         Brakeza3D::get()->drawWireframe(&B->T1);
@@ -337,7 +337,7 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B)
     float multiplier = EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT;
     float probabilityBranch = EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH;
 
-    segmentList.push_back(Vector3D(A, B));
+    segmentList.emplace_back(Vector3D(A, B));
 
     for (int i = 0; i < generations; i++) {
         tmpList = segmentList;

@@ -106,7 +106,7 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
         t->B = Transforms::objectToLocal(t->Bo, this);
         t->C = Transforms::objectToLocal(t->Co, this);
 
-        modelTriangles.push_back( t );
+        modelTriangles.emplace_back( t );
     }
 
     // Fix separation for avoid Z-fightingba

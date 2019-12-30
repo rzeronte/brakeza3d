@@ -57,7 +57,7 @@ btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, std::vector<Object3D*> 
     this->m_body->applyCentralImpulse(impulse);
 
     world->addRigidBody(this->m_body);
-    gameObjects.push_back(this);
+    gameObjects.emplace_back(this);
 
     return this->m_body;
 }

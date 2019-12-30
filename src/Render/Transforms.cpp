@@ -62,15 +62,12 @@ Vertex3D Transforms::NDCSpace(Vertex3D &V, Camera3D *cam)
     return A;
 }
 
-Point2D Transforms::screenSpace(Vertex3D &V, Camera3D *cam)
+Point2D Transforms::screenSpace(Vertex3D &V)
 {
     Point2D A;
 
-    A.x = (1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2);
-    A.y = (1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2);
-
-    A.x = (int) A.x;
-    A.y = (int) A.y;
+    A.x =  (int) ( (1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2) );
+    A.y =  (int) ( (1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2) );
 
     return A;
 }

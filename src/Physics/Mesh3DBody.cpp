@@ -56,7 +56,7 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameO
     this->m_body->setUserPointer(this);
 
     world->addRigidBody(this->m_body);
-    gameObjects.push_back(this);
+    gameObjects.emplace_back(this);
 
 
     return this->m_body;

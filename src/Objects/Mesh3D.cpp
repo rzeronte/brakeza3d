@@ -176,7 +176,7 @@ void Mesh3D::loadOBJBlenderTriangles()
             }
 
             // triangle geometry
-            this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
+            this->modelTriangles.emplace_back( new Triangle(V1, V2, V3, this) );
 
             // set texture
             if (this->modelTextures[0].loaded) {
@@ -237,7 +237,7 @@ void Mesh3D::draw(std::vector<Triangle*> *frameTriangles)
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
         Triangle *t = this->modelTriangles[i];
-        frameTriangles->push_back( t );
+        frameTriangles->emplace_back( t );
     }
 }
 

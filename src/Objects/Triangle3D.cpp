@@ -55,11 +55,11 @@ void Triangle::updateNDCSpace(Camera3D *cam)
     Cn = Transforms::NDCSpace(Cc, cam);
 }
 
-void Triangle::updateScreenSpace(Camera3D *cam)
+void Triangle::updateScreenSpace()
 {
-    As = Transforms::screenSpace(An, cam);
-    Bs = Transforms::screenSpace(Bn, cam);
-    Cs = Transforms::screenSpace(Cn, cam);
+    As = Transforms::screenSpace(An);
+    Bs = Transforms::screenSpace(Bn);
+    Cs = Transforms::screenSpace(Cn);
 }
 
 void Triangle::updateFullVertexSpaces(Camera3D *cam)
@@ -67,7 +67,7 @@ void Triangle::updateFullVertexSpaces(Camera3D *cam)
     this->updateObjectSpace();
     this->updateCameraSpace(cam);
     this->updateNDCSpace(cam);
-    this->updateScreenSpace(cam);
+    this->updateScreenSpace();
     this->updateNormal();
 }
 
