@@ -28,6 +28,7 @@ public:
     void addWeaponType(std::string);
 
     WeaponType *getWeaponTypeByLabel(std::string label);
+    WeaponType *getWeaponTypeByClassname(std::string label);
     WeaponType *getCurrentWeaponType();
 
     void onUpdate(Camera3D *cam, SDL_Surface *dst);

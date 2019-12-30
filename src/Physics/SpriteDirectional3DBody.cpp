@@ -27,7 +27,7 @@ void SpriteDirectional3DBody::integrate()
 
 }
 
-btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, int forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, btDiscreteDynamicsWorld *world)
 {
     this->mass = mass;
 
@@ -42,13 +42,8 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
 
-    btCollisionShape* shape;
-
-    if (this->mass == 0) {
-        shape = new btBoxShape(btVector3(1.5, 1.5, 1.5));
-    } else {
-        shape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
-    }
+    btVector3 btSize; size.saveToBtVector3(&btSize);
+    btCollisionShape* shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);
@@ -63,7 +58,7 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, std::vector<Obje
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
 {
     this->mass = mass;
 
@@ -84,13 +79,8 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
 
-    btCollisionShape* shape;
-
-    if (this->mass == 0) {
-        shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
-    } else {
-        shape = new btBoxShape(btVector3(0.06, 0.06, 0.06));
-    }
+    btVector3 btSize; size.saveToBtVector3(&btSize);
+    btCollisionShape* shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
 
@@ -117,7 +107,7 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, std::v
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, std::vector<Object3D*> &gameObjects, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse)
 {
     this->mass = mass;
 
@@ -134,13 +124,8 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
 
-    btCollisionShape* shape;
-
-    if (this->mass == 0) {
-        shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));
-    } else {
-        shape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
-    }
+    btVector3 btSize; size.saveToBtVector3(&btSize);
+    btCollisionShape* shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);

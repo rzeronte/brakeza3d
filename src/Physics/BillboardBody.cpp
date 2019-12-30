@@ -45,7 +45,6 @@ btRigidBody* BillboardBody::makeRigidBody(float mass, Vertex3D size, std::vector
     btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize; size.saveToBtVector3(&btSize);
-
     btCollisionShape* shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);

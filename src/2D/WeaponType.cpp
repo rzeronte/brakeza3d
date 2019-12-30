@@ -323,3 +323,25 @@ void WeaponType::setSniperEnabled(bool sniperEnabled) {
     WeaponType::sniperEnabled = sniperEnabled;
 }
 
+const std::string &WeaponType::getClassname() const {
+    return classname;
+}
+
+void WeaponType::setClassname(const std::string &classname) {
+    WeaponType::classname = classname;
+}
+
+void WeaponType::setBillboardDimensions(int w, int h)
+{
+    this->billboardWidth  = w;
+    this->billboardHeight = h;
+}
+
+const std::string &WeaponType::getBillboardTextureFile() const {
+    return billboardTextureFile;
+}
+
+void WeaponType::setBillboardTextureFile(const std::string &billboardTexturePath) {
+    WeaponType::billboardTextureFile = billboardTexturePath;
+}
+
