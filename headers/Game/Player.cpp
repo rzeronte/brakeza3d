@@ -113,6 +113,7 @@ void Player::shoot()
         projectile->setAnimation(0);
         projectile->makeProjectileRigidBody(
             1,
+            Vertex3D(0.5, 0.5, 0.5),
             Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getCamera(),
             Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
@@ -159,7 +160,7 @@ float Player::getOxygen() const {
 
 void Player::setOxygen(float air) {
     if (air < 0) {
-        //this->takeDamage(this->stamina);
+        this->takeDamage(this->stamina);
         return;
     }
     Player::oxygen = air;

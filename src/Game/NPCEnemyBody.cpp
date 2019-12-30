@@ -120,7 +120,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     projectile->linkTexturesTo( this->projectileTemplate );
     projectile->setAnimation(0);
     Vector3D dir = Vector3D(*this->getPosition(), *cam->getPosition());
-    projectile->makeProjectileRigidBodyToPlayer(1, gameObjects, dir.getComponent().getNormalize(), dynamicsWorld, 700);
+    projectile->makeProjectileRigidBodyToPlayer(1, Vertex3D(0.5, 0.5, 0.5),gameObjects, dir.getComponent().getNormalize(), dynamicsWorld, 700);
     projectile->getBillboard()->setDimensions(0.5, 0.5);
 
     if (this->points.size() > 0) {

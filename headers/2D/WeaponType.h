@@ -16,6 +16,11 @@ public:
     int status = EngineSetup::getInstance()->WeaponsActions::WALKING;
 
     std::string label;
+    std::string classname;
+
+    std::string billboardTextureFile;
+    float billboardWidth;
+    float billboardHeight;
 
     int ammo = 50;
 
@@ -119,6 +124,14 @@ public:
     bool isSniperEnabled() const;
 
     void setSniperEnabled(bool sniperEnabled);
+
+    const std::string &getClassname() const;
+    void  setClassname(const std::string &classname);
+
+    const std::string &getBillboardTextureFile() const;
+    void  setBillboardTextureFile(const std::string &billboardTexturePath);
+
+    void setBillboardDimensions(int w, int h);
 
 };
 

@@ -26,6 +26,17 @@ WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
     return NULL;
 }
 
+WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
+{
+    for (int i = 0; i < numWeaponsType; i++) {
+        if (this->weaponsType[i]->classname == classname) {
+            return this->weaponsType[i];
+        }
+    }
+
+    return NULL;
+}
+
 WeaponType* WeaponsManager::getCurrentWeaponType()
 {
     return this->weaponsType[currentWeapon];

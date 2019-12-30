@@ -564,22 +564,15 @@ void BSPMap::InitializeEntities()
                 if (s1.find("weapon") != std::string::npos) {
                     BillboardBody *o = new BillboardBody();
 
-                    if (!strcmp(classname, "weapon_rocketlauncher")) {
-                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
+                    WeaponType *wp = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname( classname );
+                    if (wp == NULL) {
+                        Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
+                        continue;
                     }
-                    if (!strcmp(classname, "weapon_grenadelauncher")) {
-                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
-                    }
-                    if (!strcmp(classname, "weapon_nailgun")) {
-                        Logging::getInstance()->Log("weapon_nailgun ese:" + engineSetup->ASSETS_FOLDER + "icons/shield.tga");
-                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
-                    }
-                    if (!strcmp(classname, "weapon_supershotgun")) {
-                        o->loadTexture(engineSetup->ASSETS_FOLDER + "icons/shield.tga");
-                    }
-                    o->setDimensions(2, 2);
+
                     o->setPosition( pos );
-                    o->setEnabled( true );
+                    o->loadTexture( EngineSetup::getInstance()->WEAPONS_FOLDER + wp->label + "/" + wp->getBillboardTextureFile() );
+                    o->setDimensions( wp->billboardWidth, wp->billboardHeight );
                     o->makeRigidBody(0.0f, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());
                 }
 
@@ -605,19 +598,17 @@ void BSPMap::InitializeEntities()
                     o->setRespawnPosition( pos );
                     o->setRotation( rotMonster );
                     o->setRespawnRotation( rotMonster );
-                    o->linkTexturesTo(enemyTemplate );
-                    o->setRange(enemyTemplate->getRange() );
+                    o->linkTexturesTo( enemyTemplate );
+                    o->setRange( enemyTemplate->getRange() );
                     o->getBillboard()->setDimensions( enemyTemplate->getBillboard()->width, enemyTemplate->getBillboard()->height );
-                    o->setSpeed(enemyTemplate->getSpeed() );
-                    o->setCadence(enemyTemplate->getCadence() );
+                    o->setSpeed( enemyTemplate->getSpeed() );
+                    o->setCadence( enemyTemplate->getCadence() );
                     o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
                     o->makeRigidBody(
                             0,
+                            Vertex3D(3, 3, 3),
                             brakeza3D->getSceneObjects(),
-                            brakeza3D->getCamera(),
-                            brakeza3D->getCollisionManager()->getDynamicsWorld(),
-                           false,
-                           0
+                            brakeza3D->getCollisionManager()->getDynamicsWorld()
                      );
                 }
 
