@@ -236,6 +236,8 @@ public:
     float TIME_STEP_IA_ENEMIES = 0.50f;
     float ZOOM_FOV = 40;
 
+    bool WEAPON_AUTOSWICH = true;
+
     enum collisionGroups
     {
         DefaultFilter = 1,
@@ -290,6 +292,7 @@ public:
         COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP = 4,
         COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
         COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
+        COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
     };
 
     enum SoundChannels {

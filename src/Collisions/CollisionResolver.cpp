@@ -2,6 +2,7 @@
 #include "../../headers/Collisions/CollisionResolver.h"
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/Game/NPCEnemyPartBody.h"
+#include "../../headers/Game/ItemWeaponBody.h"
 
 CollisionResolver::CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles) :
                                                 contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles)
@@ -19,11 +20,11 @@ int CollisionResolver::getTypeCollision()
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY;
     }
 
-    if (isSomeCamera() && isSomeMesh3dFuncDoor()) {
+    if (isSomeCamera() && isSomeMesh3DFuncDoor()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR;
     }
 
-    if (isSomeCamera() && isSomeMesh3dFuncButton()) {
+    if (isSomeCamera() && isSomeMesh3DFuncButton()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON;
     }
 
@@ -33,6 +34,10 @@ int CollisionResolver::getTypeCollision()
 
     if (isSomeProjectile() && isSomeCamera()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA;
+    }
+
+    if (isSomeItemWeapon() && isSomeCamera()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA;
     }
 
     return 0;
@@ -125,7 +130,7 @@ bool CollisionResolver::isSomeMesh3D()
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3dFuncDoor()
+bool CollisionResolver::isSomeMesh3DFuncDoor()
 {
     Mesh3D *objAMesh = dynamic_cast<Mesh3D*> (objA);
     if (objAMesh != NULL) {
@@ -144,7 +149,7 @@ bool CollisionResolver::isSomeMesh3dFuncDoor()
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3dFuncButton()
+bool CollisionResolver::isSomeMesh3DFuncButton()
 {
     Mesh3D *objAMesh = dynamic_cast<Mesh3D*> (objA);
     if (objAMesh != NULL) {
@@ -158,6 +163,21 @@ bool CollisionResolver::isSomeMesh3dFuncButton()
         if (this->isBSPEntityOfClassName(objBMesh, "func_button")) {
             return true;
         }
+    }
+
+    return false;
+}
+
+bool CollisionResolver::isSomeItemWeapon()
+{
+    auto *objAItemWeapon = dynamic_cast<ItemWeaponBody*> (objA);
+    if (objAItemWeapon != NULL) {
+        return true;
+    }
+
+    auto *objBItemWeapon = dynamic_cast<ItemWeaponBody*> (objB);
+    if (objBItemWeapon != NULL) {
+        return true;
     }
 
     return false;

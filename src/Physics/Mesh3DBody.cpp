@@ -99,6 +99,7 @@ void Mesh3DBody::integrateMoving()
             timer->stop();
             this->setWaiting(false);
             this->setReverseMoving(true);
+            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
         }
 
         return;

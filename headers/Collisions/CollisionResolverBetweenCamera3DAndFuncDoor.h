@@ -30,8 +30,12 @@ public:
         if (!bspMap->hasEntityAttribute(originalEntityIndex, "targetname")) {
             // No tiene targetname
             Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (getMesh3D());
-            if (originalBody != NULL) {
+
+            if (originalBody != nullptr) {
+                if (originalBody->isMoving()) return;
+
                 this->moveMesh3DBody(originalBody, originalEntityIndex);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
                 if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
                     Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + originalBody->getLabel());
                 }
@@ -43,7 +47,7 @@ public:
             if ( !strcmp(classnameRemote, "trigger_counter") ) {
                 for (int k = 0; k < this->gameObjects->size(); k++) {
                     Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
-                    if (oRemoteMesh != NULL) {
+                    if (oRemoteMesh != nullptr) {
                         if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
                             Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
                             int currentCounter = oRemoteGhost->currentTriggerCounter;
@@ -65,7 +69,6 @@ public:
                 }
             }
         }
-
     }
 
     Camera3D* getCamera()

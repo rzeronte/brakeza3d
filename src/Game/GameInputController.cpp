@@ -197,6 +197,8 @@ void GameInputController::handleFire(SDL_Event *event)
 {
     WeaponType *weaponType = Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType();
 
+    if (!weaponType->isAvailable()) return;
+
     if (event->key.keysym.sym == SDLK_q ) {
         // First keydown
         if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {

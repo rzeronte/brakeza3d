@@ -6,7 +6,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
-WeaponType::WeaponType() {
+WeaponType::WeaponType(): available(false) {
 }
 
 WeaponType::WeaponType(std::string label)
@@ -343,5 +343,21 @@ const std::string &WeaponType::getBillboardTextureFile() const {
 
 void WeaponType::setBillboardTextureFile(const std::string &billboardTexturePath) {
     WeaponType::billboardTextureFile = billboardTexturePath;
+}
+
+bool WeaponType::isAvailable() const {
+    return available;
+}
+
+void WeaponType::setAvailable(bool available) {
+    WeaponType::available = available;
+}
+
+int WeaponType::getIndex() const {
+    return index;
+}
+
+void WeaponType::setIndex(int index) {
+    WeaponType::index = index;
 }
 

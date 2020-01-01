@@ -8,3 +8,7 @@
 Body::Body() {
 
 }
+
+void Body::integrate() {
+
+}

@@ -20,6 +20,7 @@ public:
 
     btCollisionObject* getCollider() { return m_collider; }
     btRigidBody* getRigidBody() { return m_body; }
+    virtual void integrate();
 };
 
 

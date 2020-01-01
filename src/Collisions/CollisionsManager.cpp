@@ -188,8 +188,8 @@ void CollisionsManager::checkCollisionsForAll()
                 const btCollisionObject *obA = contactManifold->getBody0();
                 const btCollisionObject *obB = contactManifold->getBody1();
 
-                Object3D *brkObjectA = (Object3D *) obA->getUserPointer();
-                Object3D *brkObjectB = (Object3D *) obB->getUserPointer();
+                auto *brkObjectA = (Object3D *) obA->getUserPointer();
+                auto *brkObjectB = (Object3D *) obB->getUserPointer();
 
                 auto *collisionResolver = new CollisionResolver(
                         contactManifold,
@@ -209,37 +209,18 @@ void CollisionsManager::updatePhysicObjects()
 {
     std::vector<Object3D *>::iterator it;
     for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
-        Body *body = dynamic_cast<Body*> ((*it));
-        if (body != NULL) {
+        Body *body = dynamic_cast<Body*> (*it);
+        if ( body != nullptr ) {
             if ( !body->bodyEnabled ) continue;
-        }
-
-        // projectiles
-        Projectile3DBody *projectileBody = dynamic_cast<Projectile3DBody*> ((*it));
-        if (projectileBody != NULL) {
-            projectileBody->integrate();
-        }
-
-        // mesh physics
-        Mesh3DBody *meshBody = dynamic_cast<Mesh3DBody*> ((*it));
-        if (meshBody) {
-            meshBody->integrate( );
-        }
-
-        // sprite3d
-        Sprite3DBody *spriteBody = dynamic_cast<Sprite3DBody*> ((*it));
-        if (spriteBody != NULL) {
-            spriteBody->integrate();
-        }
-
-        // sprite directional
-        SpriteDirectional3DBody *spriteDirectionalBody = dynamic_cast<SpriteDirectional3DBody*> ((*it));
-        if (spriteDirectionalBody != NULL) {
-            spriteDirectionalBody->integrate();
+            body->integrate();
         }
     }
 
-    // Sync position for triggerCamera
+    this->syncTriggerGhostCamera();
+}
+
+void CollisionsManager::syncTriggerGhostCamera()
+{
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     Vertex3D p = *camera->getPosition();
 
