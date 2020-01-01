@@ -189,8 +189,20 @@ add_executable(brakeza3d
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp headers/Game/GameInputController.h src/Misc/Counter.cpp headers/Misc/Counter.h src/Misc/TexturePackage.cpp headers/Misc/TexturePackage.h src/Misc/SoundPackage.cpp headers/Misc/SoundPackage.h headers/Misc/Parallells.h headers/Misc/VariablePackage.cpp headers/Misc/VariablePackage.h src/Physics/BillboardBody.cpp headers/Physics/BillboardBody.h)
-
+        src/Game/GameInputController.cpp
+        headers/Game/GameInputController.h
+        src/Misc/Counter.cpp
+        headers/Misc/Counter.h
+        src/Misc/TexturePackage.cpp
+        headers/Misc/TexturePackage.h
+        src/Misc/SoundPackage.cpp
+        headers/Misc/SoundPackage.h
+        headers/Misc/Parallells.h
+        headers/Misc/VariablePackage.cpp
+        headers/Misc/VariablePackage.h
+        src/Physics/BillboardBody.cpp
+        headers/Physics/BillboardBody.h
+)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
