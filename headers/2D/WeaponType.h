@@ -13,7 +13,10 @@ class WeaponType {
 public:
     WeaponType(std::string label);
 
+    bool available;
     int status = EngineSetup::getInstance()->WeaponsActions::WALKING;
+
+    int index; // For related with Enum in Setup
 
     std::string label;
     std::string classname;
@@ -64,15 +67,17 @@ public:
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
+    WeaponType();
+
     void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile);
 
     WeaponAnimation *getCurrentWeaponAnimation();
-
-    WeaponType();
-
     void onUpdate();
 
     void setWeaponAnimation(int);
+
+    bool isAvailable() const;
+    void setAvailable(bool available);
 
     void setSpeed(float speed);
     int  getSpeed() const;
@@ -133,6 +138,8 @@ public:
 
     void setBillboardDimensions(int w, int h);
 
+    int  getIndex() const;
+    void setIndex(int index);
 };
 
 

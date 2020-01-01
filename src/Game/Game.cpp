@@ -12,6 +12,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 #include "../../headers/Render/Drawable.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h"
 #include <thread>
 
 Game* Game::instance = 0;
@@ -81,45 +82,48 @@ void Game::mainLoop()
 
 void Game::onUpdate()
 {
+    Brakeza3D *brakeza = Brakeza3D::get();
+    EngineSetup *setup = EngineSetup::getInstance();
+
     // Core onUpdate
     Engine::onUpdate();
 
     if (player->state != PlayerState::GAMEOVER) {
-        if (EngineSetup::getInstance()->DRAW_WEAPON) {
-            Brakeza3D::get()->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface);
+        if (setup->DRAW_WEAPON && brakeza->getWeaponsManager()->getCurrentWeaponType()->isAvailable() ) {
+            brakeza->getWeaponsManager()->onUpdate(Brakeza3D::get()->getCamera(), Brakeza3D::get()->screenSurface);
         }
 
         if (EngineSetup::getInstance()->DRAW_HUD) {
             drawHUD();
         }
 
-        if (Brakeza3D::get()->getBSP()->isLoaded() && Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && !EngineSetup::getInstance()->MENU_ACTIVE) {
+        if (brakeza->getBSP()->isLoaded() && brakeza->getBSP()->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
             Drawable::waterShader( Brakeza3D::get()->getBSP()->currentLeaf->type );
         }
 
-        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+        if (brakeza->getBSP()->isCurrentLeafLiquid()) {
             player->setOxygen(player->getOxygen() - 0.5);
         } else {
             player->setOxygen(100);
         }
 
-        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid() && Brakeza3D::get()->getBSP()->currentLeaf->type == -5) {
+        if (brakeza->getBSP()->isCurrentLeafLiquid() && brakeza->getBSP()->currentLeaf->type == -5) {
             player->takeDamage( 5 );
         }
 
-        if (EngineSetup::getInstance()->ENABLE_IA) {
+        if ( setup->ENABLE_IA ) {
             onUpdateIA();
         }
 
-        if (EngineSetup::getInstance()->DRAW_CROSSHAIR) {
+        if ( setup->DRAW_CROSSHAIR ) {
             Drawable::drawCrossHair();
         }
 
-        if (player->isDead()) {
+        if ( player->isDead() ) {
             redScreen();
         }
 
-        if (player->tookDamage) {
+        if ( player->tookDamage ) {
             redScreen();
         }
 
@@ -244,8 +248,10 @@ void Game::drawHUD()
     //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
 
     // Weapon Icon
-    r.x = 183  ; r.y = iconsY-2;
-    SDL_BlitSurface(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->iconHUD, NULL, Brakeza3D::get()->screenSurface, &r);
+    if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isAvailable()) {
+        r.x = 183  ; r.y = iconsY-2;
+        SDL_BlitSurface(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->iconHUD, NULL, Brakeza3D::get()->screenSurface, &r);
+    }
 }
 
 void Game::onUpdateIA()
@@ -389,6 +395,21 @@ void Game::resolveCollisions()
             resolver->dispatch();
             continue;
         }
+
+        if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA ) {
+            auto *resolver = new CollisionResolverBetweenCamera3DAndItemWeapon(
+                    collision->contactManifold,
+                    collision->objA,
+                    collision->objB,
+                    cm->getBspMap(),
+                    cm->getGameObjects(),
+                    cm->getDynamicsWorld(),
+                    cm->getWeaponManager(),
+                    cm->getVisibleTriangles()
+            );
+            resolver->dispatch();
+            continue;
+        }
     }
 
     cm->getCollisions().clear();
@@ -476,6 +497,7 @@ void Game::getWeaponsJSON()
         cJSON *casingTemp1  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing1_sound");
         cJSON *casingTemp2  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing2_sound");
         cJSON *casingTemp3  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing3_sound");
+        cJSON *index        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "index");
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
@@ -489,6 +511,7 @@ void Game::getWeaponsJSON()
         Brakeza3D::get()->getWeaponsManager()->addWeaponType(name->valuestring);
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setAmmo( startAmmo->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setClassname( classname->valuestring );
+        Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setIndex( index->valueint );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setBillboardTextureFile( billboardTex->valuestring );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setBillboardDimensions( billboardW->valuedouble, billboardH->valuedouble );
         Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint );

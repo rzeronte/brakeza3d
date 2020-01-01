@@ -65,6 +65,7 @@ public:
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 
     void updatePhysicObjects();
+    void syncTriggerGhostCamera();
 
     Vertex3D stepSimulation();
 

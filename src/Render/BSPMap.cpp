@@ -16,6 +16,7 @@
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Physics/BillboardBody.h"
+#include "../../headers/Game/ItemWeaponBody.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)
 {
@@ -562,7 +563,7 @@ void BSPMap::InitializeEntities()
                 // weapon wildcard
                 std::string s1(classname);
                 if (s1.find("weapon") != std::string::npos) {
-                    BillboardBody *o = new BillboardBody();
+                    ItemWeaponBody *o = new ItemWeaponBody();
 
                     WeaponType *weapon = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname(classname );
                     if (weapon == NULL) {
@@ -571,6 +572,7 @@ void BSPMap::InitializeEntities()
                     }
 
                     o->setPosition( pos );
+                    o->setWeaponClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->WEAPONS_FOLDER + weapon->label + "/" + weapon->getBillboardTextureFile() );
                     o->setDimensions(weapon->billboardWidth, weapon->billboardHeight );
                     o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());

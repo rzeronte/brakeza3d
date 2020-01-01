@@ -33,8 +33,9 @@ public:
     bool isSomeNPCEnemyPart();
     bool isSomeProjectile();
     bool isSomeMesh3D();
-    bool isSomeMesh3dFuncDoor();
-    bool isSomeMesh3dFuncButton();
+    bool isSomeMesh3DFuncDoor();
+    bool isSomeMesh3DFuncButton();
+    bool isSomeItemWeapon();
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);

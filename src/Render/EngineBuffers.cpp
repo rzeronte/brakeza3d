@@ -226,4 +226,7 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "bloodhit1.wav", "bloodHit1", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "bloodhit2.wav", "bloodHit2", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "bloodhit3.wav", "bloodHit3", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "open_door.wav", "openDoor", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "get_weapon.wav", "getWeapon", SoundPackageItemType::SOUND);
 }
