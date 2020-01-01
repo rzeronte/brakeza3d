@@ -104,10 +104,10 @@ void Camera3D::UpdateFrustum()
     frustum->updatePlanes();
 
     // Cacheamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
-    frustum->vNLs = Transforms::cameraSpace(frustum->near_left.vertex1, this);
-    frustum->vNRs = Transforms::cameraSpace(frustum->near_right.vertex1, this);
-    frustum->vNTs = Transforms::cameraSpace(frustum->near_top.vertex1, this);
-    frustum->vNBs = Transforms::cameraSpace(frustum->near_bottom.vertex1, this);
+     Transforms::cameraSpace(frustum->vNLs, frustum->near_left.vertex1, this);
+     Transforms::cameraSpace(frustum->vNRs, frustum->near_right.vertex1, this);
+     Transforms::cameraSpace(frustum->vNTs, frustum->near_top.vertex1, this);
+     Transforms::cameraSpace(frustum->vNBs, frustum->near_bottom.vertex1, this);
 
     // cacheamos las coordenadas 2D de los marcos del near plane
     frustum->vNLpers = Transforms::perspectiveDivision(frustum->vNLs, this);

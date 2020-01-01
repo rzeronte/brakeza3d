@@ -369,8 +369,6 @@ void Engine::getBSPTriangles()
 
 void Engine::getObjectsTriangles()
 {
-    if (!EngineSetup::getInstance()->DRAW_SPRITES) return;
-
     std::vector<Object3D *>::iterator it;
     for ( it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); ) {
         Object3D *object = *(it);
@@ -383,30 +381,13 @@ void Engine::getObjectsTriangles()
             it++;
         }
 
-        Mesh3D *oMesh = dynamic_cast<Mesh3D*> (object);
-        if (oMesh != NULL) {
-            if (oMesh->isEnabled()) {
-                oMesh->draw( &this->frameTriangles) ;
-                if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                    Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
-                }
-            }
-            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
-                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
-                if (oDecal != NULL) {
-                    oDecal->cube->draw( &this->frameTriangles );
-                }
-            }
+        if (!object->isEnabled()) {
+            continue;
         }
 
         // Sprite Directional 3D
-        SpriteDirectional3D *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
-        if (oSpriteDirectional != NULL) {
-
-            if (!oSpriteDirectional->isEnabled()) {
-                continue;
-            }
-
+        auto *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
+        if (oSpriteDirectional != nullptr) {
             if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*oSpriteDirectional->getPosition())) {
                 continue;
             }
@@ -417,32 +398,42 @@ void Engine::getObjectsTriangles()
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
+            continue;
         }
 
         // Sprite 3D
-        Sprite3D *oSprite = dynamic_cast<Sprite3D*> (object);
-        if (oSprite != NULL) {
-            if (!oSprite->isEnabled()) {
-                continue;
-            }
-
+        auto *oSprite = dynamic_cast<Sprite3D*> (object);
+        if (oSprite != nullptr) {
             oSprite->updateTrianglesCoordinatesAndTexture(Brakeza3D::get()->getCamera() );
             Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
 
             if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
             }
+            continue;
         }
 
-        BillboardBody *oBillboardBody = dynamic_cast<BillboardBody*> (object);
-        if (oBillboardBody != NULL) {
-            if (!oBillboardBody->isEnabled()) {
-                continue;
-            }
-
+        auto *oBillboardBody = dynamic_cast<BillboardBody*> (object);
+        if (oBillboardBody != nullptr) {
             oBillboardBody->updateTrianglesCoordinatesAndTexture(Brakeza3D::get()->getCamera() );
             Drawable::drawBillboard(oBillboardBody, &frameTriangles);
+            continue;
+        }
 
+        auto *oMesh = dynamic_cast<Mesh3D*> (object);
+        if (oMesh != nullptr) {
+            oMesh->draw( &this->frameTriangles) ;
+            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(Brakeza3D::get()->renderer, Brakeza3D::get()->getCamera(), Brakeza3D::get()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+            }
+
+            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
+                if (oDecal != NULL) {
+                    oDecal->cube->draw( &this->frameTriangles );
+                }
+            }
+            continue;
         }
     }
 }
@@ -455,10 +446,6 @@ void Engine::hiddenSurfaceRemoval()
     EngineSetup *setup = EngineSetup::getInstance();
 
     for (int i = 0; i < this->frameTriangles.size() ; i++) {
-
-        // Si la transformación es mediante openCL ya están todas hechas
-        // pero si vamos por software actualizamos ObjectSpace y su normal
-        // ya que es el mínimo necesario para el clipping y el faceculling
 
         this->frameTriangles[i]->updateObjectSpace();
         this->frameTriangles[i]->updateNormal();

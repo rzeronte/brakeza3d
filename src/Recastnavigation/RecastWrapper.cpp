@@ -556,7 +556,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
             if (m_nsmoothPath < MAX_SMOOTH)
             {
                 Vertex3D nV = Vertex3D(iterPos);
-                nV = Transforms::objectSpace( nV, Brakeza3D::get()->getBSP() );
+                Transforms::objectSpace( nV, nV, Brakeza3D::get()->getBSP() );
                 points.push_back(nV);
 
                 dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
@@ -643,7 +643,7 @@ void RecastWrapper::drawNavMeshPoints()
         const float z = (orig[2] + v[2]*cs);
 
         Vertex3D tmpV = Vertex3D(x, y, z);
-        tmpV = Transforms::objectSpace(tmpV, Brakeza3D::get()->getBSP());
+        Transforms::objectSpace(tmpV, tmpV, Brakeza3D::get()->getBSP());
         Drawable::drawVertex(tmpV, Brakeza3D::get()->getCamera(), Color::red());
     }
 }

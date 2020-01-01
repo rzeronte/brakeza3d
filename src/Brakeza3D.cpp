@@ -45,6 +45,10 @@ void Brakeza3D::start()
 
     splashCounter = new Counter(1);
 
+    setup  = EngineSetup::getInstance();
+    buffer = EngineBuffers::getInstance();
+
+
     engineTimer.start();
     this->drawSplash(screenSurface);
 }
@@ -309,7 +313,7 @@ float Brakeza3D::getDeltaTime()
 
 void Brakeza3D::updateFPS()
 {
-    if (!EngineSetup::getInstance()->DRAW_FPS) return;
+    if (!this->setup->DRAW_FPS) return;
 
     ++fpsFrameCounter;
     if (Brakeza3D::get()->frameTime > 1000) {
@@ -369,7 +373,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
-    int screenWidth = EngineSetup::getInstance()->screenWidth;
+    int screenWidth = setup->screenWidth;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -391,7 +395,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
                     depth-=1;
                 }
 
-                if ( depth < EngineBuffers::getInstance()->getDepthBuffer( bufferIndex )) {
+                if ( depth < buffer->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
                     texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
                     texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
@@ -427,10 +431,7 @@ void Brakeza3D::triangleRasterizer(Triangle *t)
 
 void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
-    Uint32        pixelColor = NULL;
-    EngineSetup   *setup     = EngineSetup::getInstance();
-    EngineBuffers *buffer    = EngineBuffers::getInstance();
-    Brakeza3D*    brakeza3D  = Brakeza3D::get();
+    Uint32 pixelColor = NULL;
 
     // Gradient
     if (setup->TRIANGLE_MODE_COLOR_SOLID) {
@@ -442,8 +443,8 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         if (t->getTexture()->liquid && setup->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = texu / setup->LAVA_CLOSENESS;
             float cache2 = texv / setup->LAVA_CLOSENESS;
-            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * brakeza3D->executionTime + cache2) ) * setup->LAVA_SCALE;
-            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * brakeza3D->executionTime + cache1) ) * setup->LAVA_SCALE;
+            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * this->executionTime + cache2) ) * setup->LAVA_SCALE;
+            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * this->executionTime + cache1) ) * setup->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
@@ -452,7 +453,7 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
             }
         }
 
-        t->processPixelTexture(pixelColor, texu, texv);
+        t->processPixelTexture(pixelColor, texu, texv );
 
         Uint8 red, green, blue, alpha;
         SDL_GetRGBA(pixelColor, t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
@@ -460,8 +461,7 @@ void Brakeza3D::processPixel(Triangle *t, int bufferIndex, int x, int y, float w
         if (alpha == 0) {
             return;
         } else {
-            Uint32 existingColor = buffer->getVideoBuffer(x, y);
-            pixelColor = Tools::alphaBlend(existingColor, pixelColor, alpha);
+            pixelColor = Tools::alphaBlend( buffer->getVideoBuffer( x, y ), pixelColor, alpha );
         }
 
         if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && setup->ENABLE_LIGHTMAPPING) {
@@ -632,11 +632,11 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
 
                 if ( depth < engineBuffers->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
-                    texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
-                    texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
+                    texu   = ( (alpha * t->tex_u1_Ac_z)   + (theta * t->tex_u2_Bc_z)   + (gamma * t->tex_u3_Cc_z) )   * affine_uv;
+                    texv   = ( (alpha * t->tex_v1_Ac_z)   + (theta * t->tex_v2_Bc_z)   + (gamma * t->tex_v3_Cc_z) )   * affine_uv;
 
-                    lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
-                    lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
+                    lightu = ( (alpha * t->light_u1_Ac_z) + (theta * t->light_u2_Bc_z) + (gamma * t->light_u3_Cc_z) ) * affine_uv;
+                    lightv = ( (alpha * t->light_v1_Ac_z) + (theta * t->light_v2_Bc_z) + (gamma * t->light_v3_Cc_z) ) * affine_uv;
 
                     if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
                         this->processPixel(

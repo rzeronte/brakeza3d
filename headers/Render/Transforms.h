@@ -16,12 +16,12 @@ public:
     static Vertex3D cameraToWorld(Vertex3D &V,  Camera3D *cam);
     static Vertex3D Point2DToWorld(Point2D &p, Camera3D *cam);
 
-    static Vertex3D objectSpace(Vertex3D &A, Object3D *o);
+    static void     objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o);
     static Vertex3D NDCSpace(Vertex3D &V, Camera3D *cam);
-    static Vertex3D cameraSpace(Vertex3D &V, Camera3D *cam);
+    static void     cameraSpace(Vertex3D &dst, Vertex3D &src, Camera3D *cam);
 
     static Vertex3D perspectiveDivision(Vertex3D &V, Camera3D *cam);
-    static Point2D  screenSpace(Vertex3D &V);
+    static void     screenSpace(Point2D &P, Vertex3D &V);
 
 };
 

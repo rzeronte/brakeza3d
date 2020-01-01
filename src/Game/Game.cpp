@@ -233,15 +233,15 @@ void Game::drawHUD()
     // Ammo
     r.x = 7; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
-    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
+    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
 
     // Stamina
     r.x = 57; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
-    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 78, textY, Color::gray(), std::to_string(this->player->getStamina()));
+    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 78, textY, Color::gray(), std::to_string(this->player->getStamina()));
 
     // kills
-    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
+    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
 
     // Weapon Icon
     r.x = 183  ; r.y = iconsY-2;
