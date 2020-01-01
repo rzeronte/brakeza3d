@@ -1,31 +1,27 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Tools.h"
 
-Vertex3D Transforms::objectSpace(Vertex3D &A, Object3D *o)
+void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
 {
-    Vertex3D V = A;
-    V.setScaled(o->scale);
+    dst = src;
+    dst.setScaled(o->scale);
 
-    V = o->getRotation() * V;
-    V = V + *o->getPosition();
+    dst = o->getRotation() * dst;
+    dst = dst + *o->getPosition();
 
-    V.u = A.u;
-    V.v = A.v;
-
-    return V;
+    dst.u = src.u;
+    dst.v = src.v;
 }
 
-Vertex3D Transforms::cameraSpace(Vertex3D &V, Camera3D *cam)
+void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Camera3D *cam)
 {
-    Vertex3D A = V;
+    dst = src;
 
-    A = A - *cam->getPosition();
-    A = cam->getRotation() * A;
+    dst = dst - *cam->getPosition();
+    dst = cam->getRotation() * dst;
 
-    A.u = V.u;
-    A.v = V.v;
-
-    return A;
+    dst.u = src.u;
+    dst.v = src.v;
 }
 
 Vertex3D Transforms::NDCSpace(Vertex3D &V, Camera3D *cam)
@@ -62,14 +58,10 @@ Vertex3D Transforms::NDCSpace(Vertex3D &V, Camera3D *cam)
     return A;
 }
 
-Point2D Transforms::screenSpace(Vertex3D &V)
+void Transforms::screenSpace(Point2D &P, Vertex3D &V)
 {
-    Point2D A;
-
-    A.x =  (int) ( (1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2) );
-    A.y =  (int) ( (1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2) );
-
-    return A;
+    P.x =  (int) ( (1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2) );
+    P.y =  (int) ( (1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2) );
 }
 
 Vertex3D Transforms::perspectiveDivision(Vertex3D &V, Camera3D *cam)

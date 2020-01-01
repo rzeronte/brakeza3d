@@ -1,8 +1,6 @@
 
-
 #ifndef SDL2_3D_ENGINE_VERTEX_H
 #define SDL2_3D_ENGINE_VERTEX_H
-
 
 #include <SDL_surface.h>
 #include <string>
@@ -50,7 +48,6 @@ public:
     void saveToBtVector3(btVector3 *v);
 
     void consoleInfo(std::string label, bool);
-
 };
 
 

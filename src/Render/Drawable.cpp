@@ -58,11 +58,13 @@ void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, 
 
 void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color)
 {
+    Vertex3D A;
 
-    Vertex3D A = Transforms::cameraSpace(V, cam);
+    Transforms::cameraSpace(A, V, cam);
     A = Transforms::NDCSpace(A, cam);
 
-    Point2D P1 = Transforms::screenSpace(A);
+    Point2D P1;
+    Transforms::screenSpace(P1, A);
 
     if (Tools::isPixelInWindow((int)P1.x, (int)P1.y)) {
         EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color);
@@ -218,15 +220,16 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
 void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color)
 {
     // apply view matrix
-    Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
-    Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
+    Vertex3D V1, V2;
+    Transforms::cameraSpace(V1, V.vertex1, cam);
+    Transforms::cameraSpace(V2, V.vertex2, cam);
 
     V1 = Transforms::NDCSpace(V1, cam);
     V2 = Transforms::NDCSpace(V2, cam);
 
     // get 2d coordinates
-    Point2D P1 = Transforms::screenSpace(V1);
-    Point2D P2 = Transforms::screenSpace(V2);
+    Point2D P1; Transforms::screenSpace(P1, V1);
+    Point2D P2; Transforms::screenSpace(P2, V2);
 
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 
@@ -240,15 +243,16 @@ void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color)
     }
 
     // apply view matrix
-    Vertex3D V1 = Transforms::cameraSpace(V.vertex1, cam);
-    Vertex3D V2 = Transforms::cameraSpace(V.vertex2, cam);
+    Vertex3D V1, V2;
+    Transforms::cameraSpace(V1, V.vertex1, cam);
+    Transforms::cameraSpace(V2, V.vertex2, cam);
 
     V1 = Transforms::NDCSpace(V1, cam);
     V2 = Transforms::NDCSpace(V2, cam);
 
     // get 2d coordinates
-    Point2D P1 = Transforms::screenSpace(V1);
-    Point2D P2 = Transforms::screenSpace(V2);
+    Point2D P1; Transforms::screenSpace(P1, V1);
+    Point2D P2; Transforms::screenSpace(P2, V2);
 
     Line2D line(P1.x,P1.y, P2.x, P2.y);
 

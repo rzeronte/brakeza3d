@@ -72,8 +72,8 @@ Uint32 Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, floa
     float x = Tools::getXTextureFromUV(surface, u);
     float y = Tools::getYTextureFromUV(surface, v);
 
-    int x1 = (int) floor(x);    // current pixel
-    int y1 = (int) floor(y);
+    int x1 = Tools::int_floor(x);    // current pixel
+    int y1 = Tools::int_floor(y);
 
     if (x1+1 == surface->w || y1+1 == surface->h) {
         return Tools::readSurfacePixel(surface, x, y);
@@ -241,9 +241,10 @@ void Tools::writeTextCenter(SDL_Renderer *renderer, TTF_Font *font, Uint32 color
 void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, Vertex3D v, Uint32 color, std::string text)
 {
     Vertex3D tmpV;
-    tmpV = Transforms::cameraSpace( v, cam );
+
+    Transforms::cameraSpace( tmpV, v, cam );
     tmpV = Transforms::NDCSpace(tmpV, cam);
-    Point2D text_point = Transforms::screenSpace(tmpV);
+    Point2D pointText; Transforms::screenSpace(pointText, tmpV);
 
     // Las coordenadas que debemos darle, dependen del tamaño de la ventana, ya que el renderer
     // se encuentra sampleado desde el tamaño configurado en EngineSetup.
@@ -251,8 +252,8 @@ void Tools::writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, V
     int renderer_w, renderer_h;
     SDL_GetRendererOutputSize(renderer, &renderer_w, &renderer_h);
 
-    int real_x = (int) (text_point.x * renderer_w / EngineSetup::getInstance()->screenWidth);
-    int real_y = (int) (text_point.y * renderer_h / EngineSetup::getInstance()->screenHeight) ;
+    int real_x = (int) (pointText.x * renderer_w / EngineSetup::getInstance()->screenWidth);
+    int real_y = (int) (pointText.y * renderer_h / EngineSetup::getInstance()->screenHeight) ;
 
     real_x += 5; // Offset estético
 
@@ -471,4 +472,10 @@ Uint32 Tools::mixColor(Uint32 color1, Uint32 color2, float color2Intensity)
     g_light + g_original,
     b_light + b_original
     );
+}
+
+int Tools::int_floor(float x)
+{
+    int i = (int)x; /* truncate */
+    return i - ( i > x ); /* convert trunc to floor */
 }

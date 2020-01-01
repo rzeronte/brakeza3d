@@ -70,6 +70,7 @@ public:
     static Uint32 mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q);
     static Uint32 alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);
     static Uint32 mixColor(Uint32 color1, Uint32 color2, float color2Intensity);
+    static int int_floor(float x);
 
 };
 

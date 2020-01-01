@@ -36,16 +36,16 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
 
 void Triangle::updateObjectSpace()
 {
-    Ao = Transforms::objectSpace(A, parent);
-    Bo = Transforms::objectSpace(B, parent);
-    Co = Transforms::objectSpace(C, parent);
+    Transforms::objectSpace(Ao, A, parent);
+    Transforms::objectSpace(Bo, B, parent);
+    Transforms::objectSpace(Co, C, parent);
 }
 
 void Triangle::updateCameraSpace(Camera3D *cam)
 {
-    Ac = Transforms::cameraSpace(Ao, cam);
-    Bc = Transforms::cameraSpace(Bo, cam);
-    Cc = Transforms::cameraSpace(Co, cam);
+    Transforms::cameraSpace(Ac, Ao, cam);
+    Transforms::cameraSpace(Bc, Bo, cam);
+    Transforms::cameraSpace(Cc, Co, cam);
 }
 
 void Triangle::updateNDCSpace(Camera3D *cam)
@@ -57,9 +57,9 @@ void Triangle::updateNDCSpace(Camera3D *cam)
 
 void Triangle::updateScreenSpace()
 {
-    As = Transforms::screenSpace(An);
-    Bs = Transforms::screenSpace(Bn);
-    Cs = Transforms::screenSpace(Cn);
+    Transforms::screenSpace(As, An);
+    Transforms::screenSpace(Bs, Bn);
+    Transforms::screenSpace(Cs, Cn);
 }
 
 void Triangle::updateFullVertexSpaces(Camera3D *cam)
@@ -152,21 +152,20 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
     float cv = tex_v;
 
     float intpart;
-    /* Por alguna razón, la superficie 1749 de start.bsp, mapea erróneamente el lightmap si no hago este trick */
     if (
         modf( getLightmap()->minu[0], &intpart) == 0 &&
         modf( getLightmap()->maxv[0], &intpart) == 0 &&
         modf( getLightmap()->minu[1], &intpart) == 0 &&
         modf( getLightmap()->maxv[1], &intpart) == 0
     ) {
-        cu /= getLightmap()->extents[1];
-        cv /= getLightmap()->extents[0];
+        cu = cu / getLightmap()->extents[1];
+        cv = cv / getLightmap()->extents[0];
     } else {
-        cu -= getLightmap()->mins[1];
-        cu /= getLightmap()->extents[1];
+        cu = cu - getLightmap()->mins[1];
+        cu = cu / getLightmap()->extents[1];
 
-        cv -= getLightmap()->mins[0];
-        cv /= getLightmap()->extents[0];
+        cv = cv - getLightmap()->mins[0];
+        cv = cv / getLightmap()->extents[0];
     }
 
     lu = cu;
@@ -204,10 +203,8 @@ void Triangle::updateTextureAnimated()
 
 void Triangle::updateNormal()
 {
-    Vector3D v1 = Vector3D(this->Ao, this->Bo);
-    Vector3D v2 = Vector3D(this->Ao, this->Co);
 
-    this->normal = v1.getComponent() % v2.getComponent();
+    this->normal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();
 }
 
 Vertex3D Triangle::getNormal()
@@ -488,6 +485,8 @@ void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v)
 
 void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v)
 {
+    EngineSetup *engineSetup = EngineSetup::getInstance();
+
     float intpart;
     // Check for inversion U
     if (!std::signbit(light_u)) {
@@ -503,13 +502,13 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
         light_v = 1 - modf(abs(light_v) , &intpart);
     }
 
-    light_u = modf(light_u , &intpart);
-    light_v = modf(light_v , &intpart);
-
     Uint32 lightmap_color;
     Uint8  lightmap_intensity = 0;
     char c = 10;
-    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
+
+    //light_u = modf(light_u , &intpart);
+    //light_v = modf(light_v , &intpart);
+    //lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
 
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         int indexPattern;
@@ -517,13 +516,13 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
         if (style > 11) continue;
         switch(nl) {
             case 0:
-                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
                     lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap, light_v, light_u);
                 }
                 indexPattern = (int) lightmapIndexPattern;
-                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
+                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 1:
                 if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
@@ -532,51 +531,49 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap2, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern2);
-                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
+                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 2:
-                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
                     lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap3, light_v, light_u);
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap3, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern3);
-                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
+                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 3:
-                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
                     lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap4, light_v, light_u);
                 }
                 indexPattern = (int)(lightmapIndexPattern4);
-                c = EngineSetup::getInstance()->LIGHT_PATTERNS[style][indexPattern];
+                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             default:
                 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
 
         }
-        lightmap_intensity += Tools::getRedValueFromColor(lightmap_color)  * (c/10  * EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
+        lightmap_intensity = lightmap_intensity + Tools::getRedValueFromColor(lightmap_color)  * (c/10  * engineSetup->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
     }
 
     Uint8 pred, pgreen, pblue, palpha;
     SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
-    float t = ( lightmap_intensity);
-
     pixelColor = (Uint32) Tools::createRGB(
-        std::min(int((pred * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c),
-        std::min(int((pgreen * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c),
-        std::min(int((pblue * EngineSetup::getInstance()->TEXTURE_INTENSITY) * t), (int)c)
+        std::min(int((pred * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c),
+        std::min(int((pgreen * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c),
+        std::min(int((pblue * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c)
     );
 
     if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
         SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
         pixelColor = (Uint32) Tools::createRGB(
-                std::min(int((pred) * t ), c*1),
-                std::min(int((pgreen) * t), c*1),
-                std::min(int((pblue) * t), c*1)
+                std::min(int((pred) * lightmap_intensity ), (int) c),
+                std::min(int((pgreen) * lightmap_intensity), (int) c),
+                std::min(int((pblue) * lightmap_intensity), (int) c)
         );
     }
 }
@@ -672,7 +669,7 @@ int Triangle::processLOD()
 
         float r = area_texture / area_screen;
 
-        int triangle_lod = (int) floor(r);
+        int triangle_lod = Tools::int_floor(r);
         int clamped_lod = 1;
 
         // Range LOD selection
