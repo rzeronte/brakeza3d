@@ -17,6 +17,7 @@
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Physics/BillboardBody.h"
 #include "../../headers/Game/ItemWeaponBody.h"
+#include "../../headers/Game/ItemHealthBody.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)
 {
@@ -554,10 +555,14 @@ void BSPMap::InitializeEntities()
 
                 // item_health
                 if (!strcmp(classname, "item_health")) {
-                    Object3D *o = new Object3D();
-                    o->setEnabled(true);
+                    ItemHealthBody *o = new ItemHealthBody();
+                    o->setEnabled( true );
                     o->setPosition( pos );
-                    brakeza3D->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (health)");
+
+                    o->setPosition( pos );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
                 }
 
                 // weapon wildcard
@@ -565,7 +570,7 @@ void BSPMap::InitializeEntities()
                 if (s1.find("weapon") != std::string::npos) {
                     ItemWeaponBody *o = new ItemWeaponBody();
 
-                    WeaponType *weapon = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname(classname );
+                    WeaponType *weapon = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname( classname );
                     if (weapon == NULL) {
                         Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
                         continue;

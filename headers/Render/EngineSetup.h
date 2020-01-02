@@ -132,6 +132,9 @@ public:
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
     std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
+    std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
+
+    std::string ITEM_FIRSTAID_ICON = "first_aid.png";
 
     std::string CFG_MAPS    = "maps.json";
     std::string CFG_MENU    = "menu.json";
@@ -238,6 +241,7 @@ public:
 
     bool WEAPON_AUTOSWICH = true;
 
+    int GAME_PLAYER_STAMINA_INITIAL = 100;
     enum collisionGroups
     {
         DefaultFilter = 1,
@@ -293,6 +297,7 @@ public:
         COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
         COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
         COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
+        COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8
     };
 
     enum SoundChannels {

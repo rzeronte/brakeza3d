@@ -202,7 +202,7 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h)
+        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}

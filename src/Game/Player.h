@@ -33,6 +33,7 @@ public:
     void shoot();
 
     void takeDamage(float dmg);
+    void getAid(float aid);
 
     int getStamina() const;
     void setStamina(int stamina);
