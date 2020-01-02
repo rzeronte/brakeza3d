@@ -4,7 +4,7 @@
 #include "../Render/EngineBuffers.h"
 #include "Game.h"
 
-Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(100), lives(defaultLives), tookDamage(false), stooped(false)
+Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)
 {
     this->counterStep       = new Counter(0.30);
     this->counterTakeDamage = new Counter(0.10);
@@ -164,4 +164,13 @@ void Player::setOxygen(float air) {
         return;
     }
     Player::oxygen = air;
+}
+
+void Player::getAid(float aid)
+{
+    this->stamina = stamina + aid;
+
+    if (stamina > EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {
+        this->stamina = EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL;
+    }
 }

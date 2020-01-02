@@ -13,6 +13,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h"
 #include <thread>
 
 Game* Game::instance = 0;
@@ -237,12 +238,12 @@ void Game::drawHUD()
     // Ammo
     r.x = 7; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
-    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo));
 
     // Stamina
     r.x = 57; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
-    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 78, textY, Color::gray(), std::to_string(this->player->getStamina()));
+    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 78, textY, Color::gray(), std::to_string(this->player->getStamina()));
 
     // kills
     //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
@@ -406,6 +407,22 @@ void Game::resolveCollisions()
                     cm->getDynamicsWorld(),
                     cm->getWeaponManager(),
                     cm->getVisibleTriangles()
+            );
+            resolver->dispatch();
+            continue;
+        }
+
+        if ( collisionType == EngineSetup::getInstance()->CollisionResolverTypes::COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA ) {
+            auto *resolver = new CollisionResolverBetweenCamera3DAndItemHealth(
+                    collision->contactManifold,
+                    collision->objA,
+                    collision->objB,
+                    cm->getBspMap(),
+                    cm->getGameObjects(),
+                    cm->getDynamicsWorld(),
+                    cm->getWeaponManager(),
+                    cm->getVisibleTriangles(),
+                    player
             );
             resolver->dispatch();
             continue;

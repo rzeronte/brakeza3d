@@ -36,6 +36,7 @@ public:
     bool isSomeMesh3DFuncDoor();
     bool isSomeMesh3DFuncButton();
     bool isSomeItemWeapon();
+    bool isSomeItemHealth();
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
     void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);

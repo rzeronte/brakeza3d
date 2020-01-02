@@ -229,4 +229,6 @@ void EngineBuffers::loadSounds()
 
     soundPackage->addItem(sndPath + "open_door.wav", "openDoor", SoundPackageItemType::SOUND);
     soundPackage->addItem(sndPath + "get_weapon.wav", "getWeapon", SoundPackageItemType::SOUND);
+
+    soundPackage->addItem(sndPath + "first_aid.wav", "firstAid", SoundPackageItemType::SOUND);
 }
