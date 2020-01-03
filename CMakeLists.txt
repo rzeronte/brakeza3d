@@ -145,8 +145,8 @@ add_executable(brakeza3d
         headers/2D/WeaponsManager.h
         src/2D/WeaponAnimation.cpp
         headers/2D/WeaponAnimation.h
-        src/2D/WeaponType.cpp
-        headers/2D/WeaponType.h
+        src/Game/WeaponType.cpp
+        headers/Game/WeaponType.h
         src/2D/MenuManager.cpp
         headers/2D/MenuManager.h
         src/2D/MenuOption.cpp
@@ -202,7 +202,7 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h)
+        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}

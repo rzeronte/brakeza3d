@@ -1,9 +1,16 @@
 {
+  "ammo": [
+    { "index": 0, "name" : "cells",   "classname": "item_cells",   "start_ammo": 100 },
+    { "index": 1, "name" : "rockets", "classname": "item_rockets", "start_ammo": 200 },
+    { "index": 2, "name" : "shells",  "classname": "item_shells",  "start_ammo": 300 },
+    { "index": 3, "name" : "spikes",  "classname": "item_spikes",  "start_ammo": 400 }
+  ],
   "weapons": [
     {
+      "index": 0,
       "name": "pistol",
       "classname": "weapon_supershotgun",
-      "index": 0,
+      "ammo_index": 0,
       "billboard_texture": "pistol_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -31,9 +38,10 @@
       ]
     },
     {
+      "index": 1,
       "name": "repeater",
       "classname": "weapon_nailgun",
-      "index": 1,
+      "ammo_index": 1,
       "billboard_texture": "repeater_hd.png",
       "billboard_width": 5,
       "billboard_height": 3,
@@ -61,9 +69,10 @@
       ]
     },
     {
+      "index": 2,
       "name": "static_rifle",
       "classname": "weapon_supernailgun",
-      "index": 2,
+      "ammo_index": 0,
       "billboard_texture": "static_rifle_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -91,9 +100,10 @@
       ]
     },
     {
+      "index": 3,
       "name": "har",
       "classname": "weapon_grenadelauncher",
-      "index": 3,
+      "ammo_index": 0,
       "billboard_texture": "har_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -122,9 +132,10 @@
       ]
     },
     {
+      "index": 4,
       "name": "chaingun",
       "classname": "weapon_rocketlauncher",
-      "index": 4,
+      "ammo_index": 0,
       "billboard_texture": "chaingun_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -155,9 +166,10 @@
       ]
     },
     {
+      "index": 5,
       "name": "gauss",
       "classname": "weapon_lightning",
-      "index": 5,
+      "ammo_index": 0,
       "billboard_texture": "gauss_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -186,9 +198,10 @@
       ]
     },
     {
+      "index": 6,
       "name": "vortex",
       "classname": "impossible_classname",
-      "index": 6,
+      "ammo_index": 0,
       "billboard_texture": "vortex_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,
@@ -218,9 +231,10 @@
       ]
     },
     {
+      "index": 7,
       "name": "rocket",
       "classname": "impossible_classname2",
-      "index": 7,
+      "ammo_index": 0,
       "billboard_texture": "rocket_hd.png",
       "billboard_width": 2,
       "billboard_height": 2,

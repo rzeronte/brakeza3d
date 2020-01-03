@@ -6,8 +6,9 @@
 #include <SDL.h>
 #include "../Render/Timer.h"
 #include "WeaponAnimation.h"
-#include "WeaponType.h"
+#include "../Game/WeaponType.h"
 #include "../Objects/Camera3D.h"
+#include "../Game/AmmoType.h"
 
 #define WEAPON_MAX_ANIMATIONS 10
 
@@ -15,10 +16,12 @@ class WeaponsManager {
 public:
     WeaponsManager();
 
-    int numWeaponsType = 0;
+    int numWeapons = 0;
     int currentWeapon = 0;
 
     float headBobOffsetY = 0;
+
+    std::vector<AmmoType*> ammoTypes;
 
     // Global Offset When drawing
     float offsetX = 0;

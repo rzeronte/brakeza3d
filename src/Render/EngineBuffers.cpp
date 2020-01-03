@@ -231,4 +231,5 @@ void EngineBuffers::loadSounds()
     soundPackage->addItem(sndPath + "get_weapon.wav", "getWeapon", SoundPackageItemType::SOUND);
 
     soundPackage->addItem(sndPath + "first_aid.wav", "firstAid", SoundPackageItemType::SOUND);
+    soundPackage->addItem(sndPath + "get_ammo.wav", "getAmmo", SoundPackageItemType::SOUND);
 }

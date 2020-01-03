@@ -129,7 +129,8 @@ void Player::shoot()
         projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
     }
 
-    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->ammo--;
+    int currentWeaponAmmo = Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmo()->getAmount();
+    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmo()->setAmount(currentWeaponAmmo - 1);
 }
 
 

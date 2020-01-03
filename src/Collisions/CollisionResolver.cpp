@@ -4,6 +4,7 @@
 #include "../../headers/Game/NPCEnemyPartBody.h"
 #include "../../headers/Game/ItemWeaponBody.h"
 #include "../../headers/Game/ItemHealthBody.h"
+#include "../../headers/Game/ItemAmmoBody.h"
 
 CollisionResolver::CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles) :
                                                 contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles)
@@ -43,6 +44,10 @@ int CollisionResolver::getTypeCollision()
 
     if (isSomeItemHealth() && isSomeCamera()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA;
+    }
+
+    if (isSomeItemAmmo() && isSomeCamera()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_ITEMAMMO_AND_CAMERA;
     }
 
     return 0;
@@ -196,6 +201,21 @@ bool CollisionResolver::isSomeItemHealth()
     }
 
     auto *tmpObjB = dynamic_cast<ItemHealthBody*> (objB);
+    if (tmpObjB != nullptr) {
+        return true;
+    }
+
+    return false;
+}
+
+bool CollisionResolver::isSomeItemAmmo()
+{
+    auto *tmpObjA = dynamic_cast<ItemAmmoBody*> (objA);
+    if (tmpObjA != nullptr) {
+        return true;
+    }
+
+    auto *tmpObjB = dynamic_cast<ItemAmmoBody*> (objB);
     if (tmpObjB != nullptr) {
         return true;
     }
