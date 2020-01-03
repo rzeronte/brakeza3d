@@ -24,7 +24,7 @@ class GUI_Weapons : public GUI  {
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;
 
-            std::string title = "Weapons Inspector (" + std::to_string(weapon->numWeaponsType) + " types)";
+            std::string title = "Weapons Inspector (" + std::to_string(weapon->numWeapons) + " types)";
 
             ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
             ImGui::SetNextWindowSize(ImVec2(250, 250), ImGuiSetCond_Once);

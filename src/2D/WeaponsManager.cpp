@@ -11,13 +11,13 @@ WeaponsManager::WeaponsManager()
 
 void WeaponsManager::addWeaponType(std::string label)
 {
-    this->weaponsType[numWeaponsType] = new WeaponType(label);
-    numWeaponsType++;
+    this->weaponsType[numWeapons] = new WeaponType(label);
+    numWeapons++;
 }
 
 WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
 {
-    for (int i = 0; i < numWeaponsType; i++) {
+    for (int i = 0; i < numWeapons; i++) {
         if (this->weaponsType[i]->label == label) {
             return this->weaponsType[i];
         }
@@ -28,7 +28,7 @@ WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
 
 WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
 {
-    for (int i = 0; i < numWeaponsType; i++) {
+    for (int i = 0; i < numWeapons; i++) {
         if (this->weaponsType[i]->classname == classname) {
             return this->weaponsType[i];
         }

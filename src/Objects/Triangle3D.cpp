@@ -506,10 +506,6 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
     Uint8  lightmap_intensity = 0;
     char c = 10;
 
-    //light_u = modf(light_u , &intpart);
-    //light_v = modf(light_v , &intpart);
-    //lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
-
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         int indexPattern;
         int style = typelight[nl];

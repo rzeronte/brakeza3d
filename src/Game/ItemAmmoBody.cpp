@@ -11,3 +11,11 @@ const std::string &ItemAmmoBody::getWeaponClassname() const {
 void ItemAmmoBody::setWeaponClassname(const std::string &weaponClassname) {
     ItemAmmoBody::weaponClassname = weaponClassname;
 }
+
+int ItemAmmoBody::getAmmo() const {
+    return ammo;
+}
+
+void ItemAmmoBody::setAmmo(int ammo) {
+    ItemAmmoBody::ammo = ammo;
+}

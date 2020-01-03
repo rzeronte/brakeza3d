@@ -18,6 +18,7 @@
 #include "../../headers/Physics/BillboardBody.h"
 #include "../../headers/Game/ItemWeaponBody.h"
 #include "../../headers/Game/ItemHealthBody.h"
+#include "../../headers/Game/ItemAmmoBody.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)
 {
@@ -553,12 +554,49 @@ void BSPMap::InitializeEntities()
                     Object3D *o = new Object3D();
                 }
 
+                // item cells
+                if (!strcmp(classname, "item_cells")) {
+                    ItemAmmoBody *o = new ItemAmmoBody();
+                    o->setWeaponClassname( classname );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_cells.png" );
+                    o->setPosition( pos );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                }
+
+                // item rockets
+                if (!strcmp(classname, "item_rockets")) {
+                    ItemAmmoBody *o = new ItemAmmoBody();
+                    o->setWeaponClassname( classname );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_rockets.png" );
+                    o->setPosition( pos );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                }
+
+                // item shells
+                if (!strcmp(classname, "item_shells")) {
+                    ItemAmmoBody *o = new ItemAmmoBody();
+                    o->setWeaponClassname( classname );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_shells.png" );
+                    o->setPosition( pos );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                }
+
+                // item spikes
+                if (!strcmp(classname, "item_spikes")) {
+                    ItemAmmoBody *o = new ItemAmmoBody();
+                    o->setWeaponClassname( classname );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_spikes.png" );
+                    o->setPosition( pos );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                }
+
                 // item_health
                 if (!strcmp(classname, "item_health")) {
                     ItemHealthBody *o = new ItemHealthBody();
-                    o->setEnabled( true );
-                    o->setPosition( pos );
-
                     o->setPosition( pos );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
                     o->setDimensions( 3, 3 );

@@ -21,6 +21,7 @@ public:
     // JSON for maps and weapons
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
+    cJSON *ammoTypesJSONList;
     cJSON *enemiesJSONList;
 
     Game();

@@ -280,11 +280,6 @@ public:
         ROCKETLAUNCHER = 7,
     };
 
-    enum WeaponsHitTypes {
-        WEAPON_HIT_MELEE = 0,
-        WEAPON_HIT_PROJECTILE = 1,
-    };
-
     enum WeaponsActions {
         WALKING = 0,
     };
@@ -297,7 +292,9 @@ public:
         COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
         COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
         COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
-        COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8
+        COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8,
+        COLLISION_RESOLVER_ITEMAMMO_AND_CAMERA = 9
+
     };
 
     enum SoundChannels {

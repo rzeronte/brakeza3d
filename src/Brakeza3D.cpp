@@ -626,7 +626,7 @@ void Brakeza3D::softwareRasterizerForTile(Triangle *t, int minTileX, int minTile
                 theta = w1 * t->reciprocalFullArea;
                 gamma = 1 - alpha - theta;
 
-                depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
+                depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
 
                 const int bufferIndex = ( y * engineSetup->screenWidth ) + x;
 

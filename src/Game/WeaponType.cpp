@@ -1,6 +1,6 @@
 
 #include <SDL_image.h>
-#include "../../headers/2D/WeaponType.h"
+#include "../../headers/Game/WeaponType.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Game/Game.h"
 #include "../../headers/Render/Drawable.h"
@@ -186,14 +186,6 @@ void WeaponType::loadCasingSound(std::string file, int num)
     }
 }
 
-int WeaponType::getAmmo() const {
-    return ammo;
-}
-
-void WeaponType::setAmmo(int ammo) {
-    WeaponType::ammo = ammo;
-}
-
 float WeaponType::getAccuracy() const {
     return accuracy;
 }
@@ -359,5 +351,13 @@ int WeaponType::getIndex() const {
 
 void WeaponType::setIndex(int index) {
     WeaponType::index = index;
+}
+
+AmmoType *WeaponType::getAmmo() const {
+    return ammo;
+}
+
+void WeaponType::setAmmo(AmmoType *ammo) {
+    WeaponType::ammo = ammo;
 }
 

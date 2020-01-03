@@ -3,9 +3,10 @@
 #define BRAKEDA3D_WEAPONTYPE_H
 
 #include <SDL_mixer.h>
-#include "WeaponAnimation.h"
+#include "../2D/WeaponAnimation.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
+#include "AmmoType.h"
 
 #define WEAPON_MAX_ANIMATIONS 10
 
@@ -21,11 +22,11 @@ public:
     std::string label;
     std::string classname;
 
+    AmmoType *ammo;
+
     std::string billboardTextureFile;
     float billboardWidth;
     float billboardHeight;
-
-    int ammo = 50;
 
     float projectileWidth;
     float projectileHeight;
@@ -99,9 +100,6 @@ public:
     void loadIconHUD(std::string file);
     void loadSniperHUD(std::string file);
 
-    int  getAmmo() const;
-    void setAmmo(int ammo);
-
     float getAccuracy() const;
     void  setAccuracy(float accuracy);
 
@@ -140,6 +138,9 @@ public:
 
     int  getIndex() const;
     void setIndex(int index);
+
+    AmmoType *getAmmo() const;
+    void     setAmmo(AmmoType *ammo);
 };
 
 
