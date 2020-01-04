@@ -240,7 +240,7 @@ void Game::drawHUD()
     r.x = 7; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
     Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmo()->getAmount()));
+            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmoType()->getAmount()));
 
     // Stamina
     r.x = 57; r.y = iconsY;
@@ -573,7 +573,7 @@ void Game::getWeaponsJSON()
         // WeaponType attributes
         weaponManager->addWeaponType(name->valuestring);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setClassname( classname->valuestring );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAmmo( weaponManager->ammoTypes[ammoIndex->valueint] );
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setIndex( index->valueint );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardTextureFile( billboardTex->valuestring );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardDimensions( billboardW->valuedouble, billboardH->valuedouble );

@@ -4,18 +4,18 @@
 
 #include "../../headers/Game/ItemAmmoBody.h"
 
-const std::string &ItemAmmoBody::getWeaponClassname() const {
-    return weaponClassname;
+int ItemAmmoBody::getAmount() const {
+    return amount;
 }
 
-void ItemAmmoBody::setWeaponClassname(const std::string &weaponClassname) {
-    ItemAmmoBody::weaponClassname = weaponClassname;
+void ItemAmmoBody::setAmount(int amount) {
+    ItemAmmoBody::amount = amount;
 }
 
-int ItemAmmoBody::getAmmo() const {
-    return ammo;
+const std::string &ItemAmmoBody::getAmmoTypeClassname() const {
+    return ammoTypeClassname;
 }
 
-void ItemAmmoBody::setAmmo(int ammo) {
-    ItemAmmoBody::ammo = ammo;
+void ItemAmmoBody::setAmmoTypeClassname(const std::string &ammoTypeClassname) {
+    ItemAmmoBody::ammoTypeClassname = ammoTypeClassname;
 }

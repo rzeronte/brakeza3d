@@ -139,8 +139,8 @@ public:
     int  getIndex() const;
     void setIndex(int index);
 
-    AmmoType *getAmmo() const;
-    void     setAmmo(AmmoType *ammo);
+    AmmoType *getAmmoType() const;
+    void      setAmmoType(AmmoType *ammo);
 };
 
 

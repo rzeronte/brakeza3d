@@ -557,7 +557,7 @@ void BSPMap::InitializeEntities()
                 // item cells
                 if (!strcmp(classname, "item_cells")) {
                     ItemAmmoBody *o = new ItemAmmoBody();
-                    o->setWeaponClassname( classname );
+                    o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_cells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
@@ -567,7 +567,7 @@ void BSPMap::InitializeEntities()
                 // item rockets
                 if (!strcmp(classname, "item_rockets")) {
                     ItemAmmoBody *o = new ItemAmmoBody();
-                    o->setWeaponClassname( classname );
+                    o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_rockets.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
@@ -577,7 +577,7 @@ void BSPMap::InitializeEntities()
                 // item shells
                 if (!strcmp(classname, "item_shells")) {
                     ItemAmmoBody *o = new ItemAmmoBody();
-                    o->setWeaponClassname( classname );
+                    o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_shells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
@@ -587,7 +587,7 @@ void BSPMap::InitializeEntities()
                 // item spikes
                 if (!strcmp(classname, "item_spikes")) {
                     ItemAmmoBody *o = new ItemAmmoBody();
-                    o->setWeaponClassname( classname );
+                    o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_spikes.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );

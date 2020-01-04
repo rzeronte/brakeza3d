@@ -34,12 +34,23 @@ WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 WeaponType* WeaponsManager::getCurrentWeaponType()
 {
     return this->weaponsType[currentWeapon];
+}
+
+AmmoType *WeaponsManager::getAmmoTypeByClassname(std::string classname)
+{
+    for (int i = 0; i < ammoTypes.size(); i++) {
+        if (this->ammoTypes[i]->getClassname() == classname) {
+            return this->ammoTypes[i];
+        }
+    }
+
+    return nullptr;
 }
 
 void WeaponsManager::onUpdate(Camera3D *cam, SDL_Surface *dst)
