@@ -12,16 +12,15 @@ public:
 
     GameInputController(Player *player);
 
-    void handleKeyboardContinuous(SDL_Event *, bool &);
-    void handleKeyboard(SDL_Event *event, bool &end);
+    void handleMovingCamera(SDL_Event *, bool &);
     void handleMouse(SDL_Event *);
 
+    void handleInGameInput(SDL_Event *event, bool &end);
     void handleSniper(SDL_Event *event);
     void handleCrouch(SDL_Event *event);
     void handleFire(SDL_Event *event);
     void handleWeaponSelector(SDL_Event *event);
     void handleZoom(SDL_Event *event);
-    void handleMovingCharacter(SDL_Event *event);
 
     void handleMenuKeyboard(bool &end);
 
