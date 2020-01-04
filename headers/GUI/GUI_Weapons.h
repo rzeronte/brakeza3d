@@ -37,7 +37,7 @@ class GUI_Weapons : public GUI  {
             const float  range_sensibility = 1;
 
             const char *items[] = {"melee", "gun", "machinegun", "rocketlauncher"};
-            static const char *item_current = items[weapon->currentWeapon]; // Here our selection is a single pointer stored outside the object.
+            static const char *item_current = items[weapon->currentWeaponIndex]; // Here our selection is a single pointer stored outside the object.
             static ImGuiComboFlags flags = 0;
 
             if (ImGui::BeginCombo("weapon", item_current, flags)) { // The second parameter is the label previewed before opening the combo.
@@ -52,17 +52,17 @@ class GUI_Weapons : public GUI  {
                     }
 
                     if (ImGui::IsItemDeactivatedAfterEdit()) {
-                        weapon->currentWeapon = n;
+                        weapon->currentWeaponIndex = n;
                     }
                 }
                 ImGui::EndCombo();
             }
 
-            ImGui::DragScalar("Framerate", ImGuiDataType_S32, &weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("status: ") + std::to_string((int) weapon->weaponsType[weapon->currentWeapon]->status)).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("isFiring: ") + std::to_string((int) weapon->weaponsType[weapon->currentWeapon]->isFiring())).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Current Frame: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->currentFrame)).c_str());
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("NumFrames: ") + std::to_string(weapon->weaponsType[weapon->currentWeapon]->getCurrentWeaponAnimation()->getNumFrames())).c_str());
+            ImGui::DragScalar("Framerate", ImGuiDataType_S32, &weapon->weaponTypes[weapon->currentWeaponIndex]->getCurrentWeaponAnimation()->fps, 1.f, &range_framerate_min, &range_framerate_max, "%d fps", 1);
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("status: ") + std::to_string((int) weapon->weaponTypes[weapon->currentWeaponIndex]->status)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("isFiring: ") + std::to_string((int) weapon->weaponTypes[weapon->currentWeaponIndex]->isFiring())).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("Current Frame: ") + std::to_string(weapon->weaponTypes[weapon->currentWeaponIndex]->getCurrentWeaponAnimation()->currentFrame)).c_str());
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("NumFrames: ") + std::to_string(weapon->weaponTypes[weapon->currentWeaponIndex]->getCurrentWeaponAnimation()->getNumFrames())).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("weapon global offsetY: ") + std::to_string(weapon->offsetY)).c_str());
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("weapon currentAnimationIndex: ") + std::to_string(weapon->getCurrentWeaponType()->currentAnimationIndex)).c_str());
 

@@ -10,24 +10,22 @@
 #include "../Objects/Camera3D.h"
 #include "../Game/AmmoType.h"
 
-#define WEAPON_MAX_ANIMATIONS 10
-
 class WeaponsManager {
 public:
     WeaponsManager();
 
     int numWeapons = 0;
-    int currentWeapon = 0;
+    int currentWeaponIndex = 0;
 
     float headBobOffsetY = 0;
 
-    std::vector<AmmoType*> ammoTypes;
+    std::vector<WeaponType*> weaponTypes;
+    std::vector<AmmoType*>   ammoTypes;
 
     // Global Offset When drawing
     float offsetX = 0;
     float offsetY = 0;
 
-    WeaponType *weaponsType[WEAPON_MAX_ANIMATIONS];
     void addWeaponType(std::string);
 
     WeaponType *getWeaponTypeByLabel(std::string label);
