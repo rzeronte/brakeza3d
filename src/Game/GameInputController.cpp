@@ -19,14 +19,15 @@ void GameInputController::handleMouse(SDL_Event *event)
 
 }
 
-void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
+void GameInputController::handleMovingCamera(SDL_Event *event, bool &end)
 {
     if (EngineSetup::getInstance()->MENU_ACTIVE) return;
 
-    this->handleMovingCharacter(event);
+    if ( !player->isDead() ) {
+        InputController::handleMovingCamera(event, end);
+    }
 
-    InputController::handleKeyboardContinuous(event, end);
-
+    // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
         if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
             this->jump( false, -10, false);
@@ -35,12 +36,24 @@ void GameInputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
         }
     }
 
+    // step sounds
+    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
+        if (player->counterStep->isFinished()) {
+
+            //player->counterStep->reset();
+            player->counterStep->setEnabled(true);
+
+            if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
+                int rndStep = Tools::random(1, 6);
+                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
+            }
+        }
+    }
+
 }
 
-void GameInputController::handleKeyboard(SDL_Event *event, bool &end)
+void GameInputController::handleInGameInput(SDL_Event *event, bool &end)
 {
-    InputController::handleKeyboard(event, end);
-
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
 
@@ -314,7 +327,6 @@ void GameInputController::handleSniper(SDL_Event *event)
 
 void GameInputController::handleWeaponSelector(SDL_Event *event)
 {
-
     if (keyboard[SDL_SCANCODE_1]) {
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
         Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
@@ -380,24 +392,4 @@ void GameInputController::handleZoom(SDL_Event *event)
 
         Brakeza3D::get()->getCamera()->UpdateFrustum();
     }
-}
-
-
-void GameInputController::handleMovingCharacter(SDL_Event *event)
-{
-
-    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
-        if (player->counterStep->isFinished()) {
-
-            //player->counterStep->reset();
-            player->counterStep->setEnabled(true);
-
-            if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
-                int rndStep = Tools::random(1, 6);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
-            }
-        }
-    }
-
-
 }

@@ -30,11 +30,12 @@ public:
 
     InputController();
 
-    virtual void handleKeyboardContinuous(SDL_Event *, bool &);
-    virtual void handleKeyboard(SDL_Event *e, bool &);
-    virtual void handleMouse(SDL_Event *);
+    void handleWindowEvents(SDL_Event *e, bool &);
     void updateKeyboardMapping();
     void updateMouseStates(SDL_Event *event);
+
+    virtual void handleMovingCamera(SDL_Event *e, bool &);
+    virtual void handleMouse(SDL_Event *);
 
     Uint8* keyboard;
 };

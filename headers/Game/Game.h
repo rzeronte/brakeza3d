@@ -32,6 +32,8 @@ public:
 
     void start();
 
+    GameInputController *getController() const;
+
     void loadHUDImages();
 
     void mainLoop();

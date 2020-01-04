@@ -27,7 +27,7 @@ void InputController::handleMouse(SDL_Event *event)
     }
 }
 
-void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
+void InputController::handleMovingCamera(SDL_Event *, bool &)
 {
     if (keyboard[SDL_SCANCODE_W]) {
         Brakeza3D::get()->getCamera()->MoveForward();
@@ -53,13 +53,12 @@ void InputController::handleKeyboardContinuous(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_UP]) {
         Brakeza3D::get()->getCamera()->PitchDown();
     }
-
 }
 
-void InputController::handleKeyboard(SDL_Event *event, bool &end)
+void InputController::handleWindowEvents(SDL_Event *e, bool &end)
 {
-    if (event->type == SDL_WINDOWEVENT) {
-        switch (event->window.event) {
+    if (e->type == SDL_WINDOWEVENT) {
+        switch (e->window.event) {
             case SDL_WINDOWEVENT_SHOWN:
                 break;
             case SDL_WINDOWEVENT_HIDDEN:
@@ -104,7 +103,6 @@ void InputController::handleKeyboard(SDL_Event *event, bool &end)
 void InputController::updateKeyboardMapping()
 {
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
-
 }
 
 void InputController::updateMouseStates(SDL_Event *event)

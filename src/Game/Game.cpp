@@ -214,17 +214,15 @@ void Game::onUpdateInputController()
     while (SDL_PollEvent(&e)) {
         ImGui_ImplSDL2_ProcessEvent(&e);
 
-        Brakeza3D::get()->getController()->updateKeyboardMapping();
-        Brakeza3D::get()->getController()->updateMouseStates(&this->e);
-
-        if (EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION) {
-            Brakeza3D::get()->getController()->handleMouse(&this->e);
-        }
-        Brakeza3D::get()->getController()->handleKeyboard(&this->e, this->finish);
+        getController()->updateKeyboardMapping();
+        getController()->updateMouseStates(&this->e);
+        getController()->handleMouse(&this->e);
+        getController()->handleWindowEvents(&this->e, this->finish);
+        getController()->handleInGameInput(&this->e, this->finish);
     }
 
     // Check array Uint8 *keyboard
-    Brakeza3D::get()->getController()->handleKeyboardContinuous(&this->e, this->finish);
+    getController()->handleMovingCamera(&this->e, this->finish);
 }
 
 void Game::drawHUD()
@@ -804,4 +802,8 @@ void Game::initBSP()
     EngineSetup::getInstance()->MENU_ACTIVE = false;
 
     Brakeza3D::get()->initBSP(nameMap->valuestring, &this->frameTriangles);
+}
+
+GameInputController *Game::getController() const {
+    return controller;
 }
