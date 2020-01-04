@@ -353,11 +353,11 @@ void WeaponType::setIndex(int index) {
     WeaponType::index = index;
 }
 
-AmmoType *WeaponType::getAmmo() const {
+AmmoType *WeaponType::getAmmoType() const {
     return ammo;
 }
 
-void WeaponType::setAmmo(AmmoType *ammo) {
+void WeaponType::setAmmoType(AmmoType *ammo) {
     WeaponType::ammo = ammo;
 }
 

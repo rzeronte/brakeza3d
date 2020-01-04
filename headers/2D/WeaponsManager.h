@@ -34,6 +34,8 @@ public:
     WeaponType *getWeaponTypeByClassname(std::string label);
     WeaponType *getCurrentWeaponType();
 
+    AmmoType *getAmmoTypeByClassname(std::string label);
+
     void onUpdate(Camera3D *cam, SDL_Surface *dst);
 
     void headBob(Vector3D velocity);

@@ -38,13 +38,13 @@ public:
             Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndItemAmmo");
         }
 
-        WeaponType * weaponType = weaponManager->getWeaponTypeByClassname(itemAmmo->getWeaponClassname() );
+        AmmoType *ammoType = weaponManager->getAmmoTypeByClassname( itemAmmo->getAmmoTypeClassname() );
 
-        if (weaponType != nullptr) {
+        if (ammoType != nullptr) {
 
             // Remove item for physics engine
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemAmmo->getRigidBody() );
-            weaponType->setAmmo(weaponType->getAmmo() + itemAmmo->getAmmo() );
+            ammoType->setAmount( ammoType->getAmount() + itemAmmo->getAmount() );
 
             this->itemAmmo->setRemoved( true );
             Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("getAmmo"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);

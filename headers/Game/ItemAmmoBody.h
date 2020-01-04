@@ -9,16 +9,15 @@
 #include "../Physics/BillboardBody.h"
 
 class ItemAmmoBody : public BillboardBody {
-    std::string weaponClassname;  // Related with weapon by classname
 public:
-    int ammo = 50;
-    const std::string &getWeaponClassname() const;
+    int amount = 50;
+    std::string ammoTypeClassname;
 
-    void setWeaponClassname(const std::string &weaponClassname);
+    const std::string &getAmmoTypeClassname() const;
+    void setAmmoTypeClassname(const std::string &ammoTypeClassname);
 
-    int getAmmo() const;
-
-    void setAmmo(int ammo);
+    int  getAmount() const;
+    void setAmount(int amount);
 };
 
 
