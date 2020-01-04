@@ -41,7 +41,7 @@ void WeaponType::onUpdate()
         Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
 
         // Light FX for Repeater
-        if (Brakeza3D::get()->getWeaponsManager()->currentWeapon == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
+        if (Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
             Vertex3D dir = Brakeza3D::get()->getCamera()->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
             dir.getNormalize();
 

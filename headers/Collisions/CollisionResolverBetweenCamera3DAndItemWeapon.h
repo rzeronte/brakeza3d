@@ -48,7 +48,7 @@ public:
             Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("getWeapon"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
             if (EngineSetup::getInstance()->WEAPON_AUTOSWICH) {
-                weaponManager->currentWeapon = wt->getIndex();
+                weaponManager->currentWeaponIndex = wt->getIndex();
             }
         }
     }

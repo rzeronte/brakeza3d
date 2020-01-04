@@ -6,20 +6,19 @@
 
 WeaponsManager::WeaponsManager()
 {
-    this->currentWeapon = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
+    this->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
 }
 
 void WeaponsManager::addWeaponType(std::string label)
 {
-    this->weaponsType[numWeapons] = new WeaponType(label);
-    numWeapons++;
+    this->weaponTypes.emplace_back( new WeaponType(label) );
 }
 
 WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
 {
-    for (int i = 0; i < numWeapons; i++) {
-        if (this->weaponsType[i]->label == label) {
-            return this->weaponsType[i];
+    for (int i = 0; i < this->weaponTypes.size() ; i++) {
+        if (this->weaponTypes[i]->label == label) {
+            return this->weaponTypes[i];
         }
     }
 
@@ -28,9 +27,9 @@ WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
 
 WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
 {
-    for (int i = 0; i < numWeapons; i++) {
-        if (this->weaponsType[i]->classname == classname) {
-            return this->weaponsType[i];
+    for (int i = 0; i < weaponTypes.size() ; i++) {
+        if (this->weaponTypes[i]->classname == classname) {
+            return this->weaponTypes[i];
         }
     }
 
@@ -39,7 +38,7 @@ WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
 
 WeaponType* WeaponsManager::getCurrentWeaponType()
 {
-    return this->weaponsType[currentWeapon];
+    return this->weaponTypes[currentWeaponIndex];
 }
 
 AmmoType *WeaponsManager::getAmmoTypeByClassname(std::string classname)
