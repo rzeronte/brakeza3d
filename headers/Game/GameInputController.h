@@ -19,7 +19,7 @@ public:
     void handleSniper(SDL_Event *event);
     void handleCrouch(SDL_Event *event);
     void handleFire(SDL_Event *event);
-    void handleWeaponSelector(SDL_Event *event);
+    void handleWeaponSelector();
     void handleZoom(SDL_Event *event);
 
     void handleMenuKeyboard(bool &end);
