@@ -2,6 +2,8 @@
 #include <SDL_surface.h>
 #include "../../headers/Render/EngineBuffers.h"
 #include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/cJSON.h"
+#include "../../headers/Render/Logging.h"
 
 EngineBuffers* EngineBuffers::instance = 0;
 
@@ -32,7 +34,7 @@ EngineBuffers::EngineBuffers()
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
 
     // Load WAVs
-    this->loadSounds();
+    this->getSoundsJSON();
 
     // 37 colores * 3 (rgb channels)
     this->makeFireColors();
@@ -167,69 +169,39 @@ NPCEnemyBody* EngineBuffers::getEnemyTemplateForClassname(std::string classname)
     return nullptr;
 }
 
-void EngineBuffers::loadSounds()
+void EngineBuffers::getSoundsJSON()
 {
     std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
+    size_t file_size;
+    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_SOUNDS;
+    const char* mapsFile = Tools::readFile(filePath, file_size);
+    cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
-    soundPackage->addItem(sndPath + "menuMusic.wav", "musicMainMenu", SoundPackageItemType::MUSIC);
-    soundPackage->addItem(sndPath + "menuMusic.wav", "musicBaseLevel0", SoundPackageItemType::MUSIC);
+    if (myDataJSON == NULL) {
+        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        return;
+    }
 
-    soundPackage->addItem(sndPath + "start_game.wav", "startGame", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "option-click.wav", "soundMenuClick", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "option-accept.wav", "soundMenuAccept", SoundPackageItemType::SOUND);
+    // Sounds
+    cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds" );
+    int sizeSoundsList = cJSON_GetArraySize(soundsJSONList);
 
-    soundPackage->addItem(sndPath + "enemy_dead.wav", "soundEnemyDead", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "body_explode.wav", "bodyExplode", SoundPackageItemType::SOUND);
+    if (sizeSoundsList > 0) {
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeSoundsList) + " sounds", "SOUNDS");
+    } else {
+        Logging::getInstance()->Log(filePath + " is empty for ammoTypes", "ERROR");
+    }
 
-    soundPackage->addItem(sndPath + "step1.wav", "playerStep1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "step2.wav", "playerStep2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "step3.wav", "playerStep3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "step4.wav", "playerStep4", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "step5.wav", "playerStep5", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "step6.wav", "playerStep6", SoundPackageItemType::SOUND);
+    cJSON *currentSound;
+    cJSON_ArrayForEach(currentSound, soundsJSONList) {
+        cJSON *file = cJSON_GetObjectItemCaseSensitive(currentSound, "file");
+        cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
+        cJSON *type = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
 
-    soundPackage->addItem(sndPath + "playerDead1.wav", "playerDead1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerDead2.wav", "playerDead2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerDead3.wav", "playerDead3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerDead4.wav", "playerDead4", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerDead5.wav", "playerDead5", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerDead6.wav", "playerDead6", SoundPackageItemType::SOUND);
+        SoundPackageItemType selectedType;
+        if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
+        if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
 
-    soundPackage->addItem(sndPath + "playerPain1.wav", "playerPain1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerPain2.wav", "playerPain2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerPain3.wav", "playerPain3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerPain4.wav", "playerPain4", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "playerJump1.wav", "playerJump1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerJump2.wav", "playerJump2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerJump3.wav", "playerJump3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerJump4.wav", "playerJump4", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "playerLand1.wav", "playerLand1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerLand2.wav", "playerLand2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerLand3.wav", "playerLand3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "playerLand4.wav", "playerLand4", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "teleporting.wav", "teleporting", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "enemyRage1.wav", "enemyRage1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "enemyRage2.wav", "enemyRage2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "enemyRage3.wav", "enemyRage3", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "enemyRage4.wav", "enemyRage4", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "enemyRage5.wav", "enemyRage5", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "bulletWhisper.wav", "bulletWhisper", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "switch_weapon.wav", "switchWeapon", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "sniperOn.wav", "sniperOn", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "bloodhit1.wav", "bloodHit1", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "bloodhit2.wav", "bloodHit2", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "bloodhit3.wav", "bloodHit3", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "open_door.wav", "openDoor", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "get_weapon.wav", "getWeapon", SoundPackageItemType::SOUND);
-
-    soundPackage->addItem(sndPath + "first_aid.wav", "firstAid", SoundPackageItemType::SOUND);
-    soundPackage->addItem(sndPath + "get_ammo.wav", "getAmmo", SoundPackageItemType::SOUND);
+        soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
+    }
 }

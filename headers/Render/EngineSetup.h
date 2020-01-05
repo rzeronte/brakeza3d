@@ -48,8 +48,6 @@ public:
     bool BASED_TILE_RENDER = true;
     bool BASED_TILE_RENDER_THREADED = true;
 
-    bool CAMERA_MOUSE_ROTATION = true;
-
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
 
     const float EPSILON = 0.00001f;
@@ -98,13 +96,7 @@ public:
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
-    bool DEBUG_BSP_MODE = false;
-    bool DEBUG_MESH_MODE = false;
-
     // Z BUFFER
-    bool TRIANGLE_RENDER_DEPTH_BUFFER = true;
-
-    bool SHOW_SHADOWMAPPING_BUFFER = false;
     bool ENABLE_SHADOW_CASTING = false;
     bool ENABLE_LIGHTS = true;
 
@@ -140,6 +132,7 @@ public:
     std::string CFG_MENU    = "menu.json";
     std::string CFG_WEAPONS = "weapons.json";
     std::string CFG_ENEMIES = "enemies.json";
+    std::string CFG_SOUNDS  = "sounds.json";
 
     bool  SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 25;
@@ -237,6 +230,10 @@ public:
     bool WEAPON_AUTOSWICH = true;
 
     int GAME_PLAYER_STAMINA_INITIAL = 100;
+
+    float PLAYER_CAPSULE_RADIUS = 1.50f;
+    float PLAYER_CAPSULE_HEIGHT = 4.5f;
+
     enum collisionGroups
     {
         DefaultFilter = 1,
