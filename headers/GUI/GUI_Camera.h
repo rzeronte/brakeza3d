@@ -84,7 +84,6 @@ public:
             ImGui::Separator();
 
             if (ImGui::TreeNode( mouse_text.c_str() )) {
-                ImGui::Checkbox("Free look", &EngineSetup::getInstance()->CAMERA_MOUSE_ROTATION);
                 ImGui::DragScalar("Sens.", ImGuiDataType_Float,  &EngineSetup::getInstance()->MOUSE_SENSITIVITY, range_sensibility,  &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f", 1.0f);
                 ImGui::TreePop();
             }

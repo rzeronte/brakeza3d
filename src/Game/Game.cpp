@@ -230,15 +230,17 @@ void Game::drawHUD()
     SDL_Rect r;
     float iconsY = 215;
     float textY  = 212;
+
     // HUD Base
     r.x = 0; r.y = EngineSetup::getInstance()->screenHeight - this->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("hud")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
 
     // Ammo
-    r.x = 7; r.y = iconsY;
-    SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
-    Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmoType()->getAmount()));
+    if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isAvailable()) {
+        r.x = 7; r.y = iconsY;
+        SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, Brakeza3D::get()->screenSurface, &r);
+        Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 25, textY, Color::gray(), std::to_string(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmoType()->getAmount()));
+    }
 
     // Stamina
     r.x = 57; r.y = iconsY;

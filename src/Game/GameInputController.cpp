@@ -83,7 +83,7 @@ void GameInputController::handleInGameInput(SDL_Event *event, bool &end)
     this->handleCrouch( event );
     this->handleFire( event );
     this->handleSniper( event );
-    this->handleWeaponSelector( event );
+    this->handleWeaponSelector();
 
 }
 
@@ -325,46 +325,49 @@ void GameInputController::handleSniper(SDL_Event *event)
     }
 }
 
-void GameInputController::handleWeaponSelector(SDL_Event *event)
+void GameInputController::handleWeaponSelector()
 {
-    if (keyboard[SDL_SCANCODE_1]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
+    WeaponsManager *weaponManager = Brakeza3D::get()->getWeaponsManager();
+    SoundPackage *soundPackage    = EngineBuffers::getInstance()->soundPackage;
+
+    if (keyboard[SDL_SCANCODE_1] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::PISTOL]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::PISTOL;
     }
 
-    if (keyboard[SDL_SCANCODE_2]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::REPEATER;
+    if (keyboard[SDL_SCANCODE_2] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::REPEATER]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::REPEATER;
     }
 
-    if (keyboard[SDL_SCANCODE_3]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::STATIC_RIFLE;
+    if (keyboard[SDL_SCANCODE_3] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::STATIC_RIFLE]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::STATIC_RIFLE;
     }
 
-    if (keyboard[SDL_SCANCODE_4]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::HAR;
+    if (keyboard[SDL_SCANCODE_4] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::HAR]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::HAR;
     }
 
-    if (keyboard[SDL_SCANCODE_5]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::CHAINGUN;
+    if (keyboard[SDL_SCANCODE_5] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::CHAINGUN]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::CHAINGUN;
     }
 
-    if (keyboard[SDL_SCANCODE_6]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::GAUSS_CANNON;
+    if (keyboard[SDL_SCANCODE_6] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::GAUSS_CANNON]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::GAUSS_CANNON;
     }
 
-    if (keyboard[SDL_SCANCODE_7]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::RAILGUN;
+    if (keyboard[SDL_SCANCODE_7] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::RAILGUN]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::RAILGUN;
     }
 
-    if (keyboard[SDL_SCANCODE_8]) {
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::ROCKETLAUNCHER;
+    if (keyboard[SDL_SCANCODE_8] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::ROCKETLAUNCHER]->isAvailable()) {
+        Tools::playMixedSound( soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::ROCKETLAUNCHER;
     }
 }
 

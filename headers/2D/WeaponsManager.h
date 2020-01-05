@@ -34,6 +34,8 @@ public:
 
     AmmoType *getAmmoTypeByClassname(std::string label);
 
+    bool isEmptyWeapon();
+
     void onUpdate(Camera3D *cam, SDL_Surface *dst);
 
     void headBob(Vector3D velocity);

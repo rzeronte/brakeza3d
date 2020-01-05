@@ -142,7 +142,6 @@ public:
     std::string CFG_ENEMIES = "enemies.json";
 
     bool  SOUND_ENABLED = true;
-    float SOUND_VOLUME_GLOBAL = 75;
     float SOUND_VOLUME_MUSIC = 25;
     float SOUND_VOLUME_PLAYER = 128;
     float SOUND_VOLUME_ENVIRONMENT = 75;
@@ -179,8 +178,6 @@ public:
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.250;
-
-    bool HEAD_BOB = false;
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = false;
@@ -229,8 +226,6 @@ public:
     bool LOG_LEAF_TYPE = false;
 
     char *LIGHT_PATTERNS[12];
-
-    bool CFG_AUTOLOAD_MAP = true;
 
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;

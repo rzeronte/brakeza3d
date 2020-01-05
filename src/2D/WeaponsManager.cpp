@@ -84,3 +84,9 @@ void WeaponsManager::headBob(Vector3D velocity)
     }
 }
 
+bool WeaponsManager::isEmptyWeapon() {
+    if (this->currentWeaponIndex != 0) {
+        return false;
+    }
+}
+
