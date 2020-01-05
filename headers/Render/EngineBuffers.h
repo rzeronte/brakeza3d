@@ -103,7 +103,7 @@ public:
     void makeFireColors();
     void fireShaderSetup();
 
-    void loadSounds();
+    void getSoundsJSON();
 };
 
 #endif

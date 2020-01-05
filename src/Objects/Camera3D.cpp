@@ -36,7 +36,11 @@ Camera3D::Camera3D()
 
     this->velocity = Vector3D( Vertex3D::zero(), Vertex3D::zero() );
 
-    btConvexShape* capsule = new btCapsuleShapeZ(1.50f, 4.5f);
+    btConvexShape* capsule = new btCapsuleShapeZ(
+        EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
+        EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
+    );
+
     btTransform startTransform;
     startTransform.setIdentity();
     startTransform.setOrigin (btVector3(0, 0, 0));
