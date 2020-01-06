@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../../headers/Render/M3.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Maths.h"
 
 M3::M3()

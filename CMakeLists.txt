@@ -50,8 +50,8 @@ add_executable(brakeza3d
         headers/Objects/Vector3D.h
         src/Objects/Point2D.cpp
         headers/Objects/Point2D.h
-        src/Render/Tools.cpp
-        headers/Render/Tools.h
+        src/Misc/Tools.cpp
+        headers/Misc/Tools.h
         src/Objects/Line2D.cpp
         headers/Objects/Line2D.h
         src/Misc/Color.cpp
@@ -59,12 +59,12 @@ add_executable(brakeza3d
         src/Render/Engine.cpp
         headers/OpenCL/OCLTriangle.h
         headers/Render/Engine.h
-        headers/Render/EngineSetup.h
-        src/Render/EngineSetup.cpp
+        headers/EngineSetup.h
+        src/EngineSetup.cpp
         src/Render/Texture.cpp
         headers/Render/Texture.h
-        headers/Render/EngineBuffers.h
-        src/Render/EngineBuffers.cpp
+        headers/EngineBuffers.h
+        src/EngineBuffers.cpp
         src/Render/Frustum.cpp
         headers/Render/Frustum.h
         src/Render/Plane.cpp
