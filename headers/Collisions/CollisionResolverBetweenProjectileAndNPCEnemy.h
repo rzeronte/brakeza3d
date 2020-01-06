@@ -9,7 +9,7 @@
 #include "../Physics/Sprite3DBody.h"
 #include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
-#include "../Render/EngineBuffers.h"
+#include "../EngineBuffers.h"
 #include "../Game/Game.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {

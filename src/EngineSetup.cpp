@@ -1,6 +1,6 @@
 
-#include "../../headers/Render/EngineSetup.h"
-#include "../../headers/Render/Tools.h"
+#include "../headers/EngineSetup.h"
+#include "../headers/Misc/Tools.h"
 
 EngineSetup* EngineSetup::instance = 0;
 

@@ -1,8 +1,8 @@
 #include <string>
 #include "../../headers/Objects/Line2D.h"
 #include "../../headers/Misc/Color.h"
-#include "../../headers/Render/Tools.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/Misc/Tools.h"
+#include "../../headers/EngineBuffers.h"
 
 Line2D::Line2D()
 {

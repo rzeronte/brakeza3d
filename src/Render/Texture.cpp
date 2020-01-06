@@ -1,8 +1,8 @@
 #include "../../headers/Render/Texture.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 #include "../../headers/Render/Maths.h"
 #include <SDL_image.h>
 

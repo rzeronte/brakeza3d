@@ -10,7 +10,7 @@
 #include "Input/InputController.h"
 #include "GUI/GUIManager.h"
 #include "Collisions/CollisionResolver.h"
-#include "Render/EngineBuffers.h"
+#include "EngineBuffers.h"
 #include <thread>
 
 class Brakeza3D {

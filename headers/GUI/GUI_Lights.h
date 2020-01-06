@@ -4,7 +4,7 @@
 
 
 #include "../Objects/LightPoint3D.h"
-#include "../Render/Tools.h"
+#include "../Misc/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
 

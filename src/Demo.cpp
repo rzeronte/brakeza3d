@@ -1,7 +1,7 @@
 #include "../headers/Demo.h"
 #include "../headers/Objects/LightPoint3D.h"
 #include "../headers/Brakeza3D.h"
-#include "../headers/Render/EngineBuffers.h"
+#include "../headers/EngineBuffers.h"
 #include "../headers/Physics/Sprite3DBody.h"
 
 Demo::Demo()

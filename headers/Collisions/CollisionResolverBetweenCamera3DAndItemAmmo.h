@@ -8,7 +8,7 @@
 
 #include "CollisionResolver.h"
 #include "../Game/ItemAmmoBody.h"
-#include "../Render/EngineBuffers.h"
+#include "../EngineBuffers.h"
 #include "../../src/Game/Player.h"
 
 class CollisionResolverBetweenCamera3DAndItemAmmo : public CollisionResolver {

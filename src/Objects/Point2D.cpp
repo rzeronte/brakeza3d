@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "../../headers/Objects/Point2D.h"
-#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/EngineSetup.h"
 
 
 Point2D::Point2D()

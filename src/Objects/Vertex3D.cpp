@@ -1,7 +1,7 @@
 
 #include <cmath>
 #include "../../headers/Objects/Vertex3D.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
 
 Vertex3D::Vertex3D()

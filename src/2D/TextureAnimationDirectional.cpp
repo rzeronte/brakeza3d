@@ -1,6 +1,6 @@
 
 #include "../../headers/2D/TextureAnimationDirectional.h"
-#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/EngineSetup.h"
 
 TextureAnimationDirectional::TextureAnimationDirectional()
 {

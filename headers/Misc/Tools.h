@@ -4,12 +4,12 @@
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Point2D.h"
 #include "../Objects/Camera3D.h"
-#include "Frustum.h"
+#include "../Render/Frustum.h"
 #include "../Objects/Object3D.h"
 #include "../Objects/Vector3D.h"
-#include "Texture.h"
+#include "../Render/Texture.h"
 #include "../Objects/LightPoint3D.h"
-#include "M3.h"
+#include "../Render/M3.h"
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>

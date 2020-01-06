@@ -5,8 +5,8 @@
 #include <string>
 #include "Vertex3D.h"
 #include "Triangle3D.h"
-#include "../Render/Tools.h"
-#include "../Render/EngineSetup.h"
+#include "../Misc/Tools.h"
+#include "../EngineSetup.h"
 #include "Object3D.h"
 //#include "LightPoint3D.h"
 

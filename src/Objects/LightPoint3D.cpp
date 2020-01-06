@@ -1,7 +1,7 @@
 
 #include "../../headers/Objects/LightPoint3D.h"
 #include "../../headers/Render/Billboard.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 
 LightPoint3D::LightPoint3D()
 {

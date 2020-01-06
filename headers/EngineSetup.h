@@ -1,10 +1,10 @@
 #ifndef SDL2_3D_ENGINE_ENGINESETUP_H
 #define SDL2_3D_ENGINE_ENGINESETUP_H
 
-#include "../Misc/Color.h"
-#include "../Objects/Vertex3D.h"
-#include "Timer.h"
-#include "../../imgui/imgui.h"
+#include "Misc/Color.h"
+#include "Objects/Vertex3D.h"
+#include "Render/Timer.h"
+#include "../imgui/imgui.h"
 #include <any>
 #include <map>
 

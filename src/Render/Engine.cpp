@@ -6,7 +6,7 @@
 #include "LinearMath/btTransform.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 #include "../../headers/Physics/BillboardBody.h"
 #include <OpenCL/opencl.h>
 #include <SDL_image.h>

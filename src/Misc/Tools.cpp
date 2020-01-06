@@ -5,7 +5,7 @@
 #include <SDL_ttf.h>
 #include <algorithm>
 #include <math.h>
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"

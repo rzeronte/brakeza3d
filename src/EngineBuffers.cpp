@@ -1,9 +1,9 @@
 
 #include <SDL_surface.h>
-#include "../../headers/Render/EngineBuffers.h"
-#include "../../headers/Render/Tools.h"
-#include "../../headers/Misc/cJSON.h"
-#include "../../headers/Render/Logging.h"
+#include "../headers/EngineBuffers.h"
+#include "../headers/Misc/Tools.h"
+#include "../headers/Misc/cJSON.h"
+#include "../headers/Render/Logging.h"
 
 EngineBuffers* EngineBuffers::instance = 0;
 

@@ -6,7 +6,7 @@
 #include "Vertex3D.h"
 #include "Object3D.h"
 #include "../Render/Frustum.h"
-#include "../Render/EngineSetup.h"
+#include "../EngineSetup.h"
 #include "../Render/M3.h"
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>

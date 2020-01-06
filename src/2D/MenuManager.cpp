@@ -2,7 +2,7 @@
 #include <SDL_image.h>
 #include "../../headers/2D/MenuManager.h"
 #include "../../headers/Misc/cJSON.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Game/Game.h"

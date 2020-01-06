@@ -13,7 +13,7 @@
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Game/NPCEnemyBody.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Physics/BillboardBody.h"
 #include "../../headers/Game/ItemWeaponBody.h"
@@ -512,8 +512,36 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
 
 void BSPMap::InitializeRecast()
 {
+    std::vector<Triangle*> trianglesRecast;
+
     Logging::getInstance()->Log("InitializeRecast");
-    recastWrapper->m_geom->loadBSPMapTriangles(this->model_triangles);
+    int numVisibleSurfaces = 0;
+
+    bsphull_t *bspHull = getHull(0);
+    int firstSurface = bspHull->firstsurf;
+    int lastSurface = firstSurface + bspHull->numsurf;
+    for (int k = firstSurface; k < lastSurface; k++) {
+        allSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
+    }
+
+    this->numAllSurfaces = numVisibleSurfaces;
+    this->bspBtMesh = new btTriangleMesh();
+
+    for (int surface = 0; surface < numAllSurfaces; surface++) {
+
+        if (surface_triangles[surface].flags) continue; // Ignore physics for water/lava
+
+        const int offset = surface_triangles[surface].offset;
+        const int num = surface_triangles[surface].num;
+
+        for (int i = offset; i < offset+num; i++){
+            this->model_triangles[i]->updateFullVertexSpaces(Brakeza3D::get()->getCamera());
+            trianglesRecast.push_back(this->model_triangles[i]);
+        }
+    }
+
+    recastWrapper->m_geom->loadBSPMapTriangles(trianglesRecast );
+
     recastWrapper->initNavhMesh();
     recastWrapper->initNavQuery();
 }

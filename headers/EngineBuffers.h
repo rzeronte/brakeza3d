@@ -5,10 +5,10 @@
 #include <SDL_surface.h>
 #include <SDL_audio.h>
 #include <SDL_mixer.h>
-#include "Timer.h"
-#include "../Objects/Sprite3D.h"
-#include "../Game/NPCEnemyBody.h"
-#include "../Misc/SoundPackage.h"
+#include "Render/Timer.h"
+#include "Objects/Sprite3D.h"
+#include "Game/NPCEnemyBody.h"
+#include "Misc/SoundPackage.h"
 
 // Singleton
 class EngineBuffers {

@@ -2,7 +2,7 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 
 float Maths::degreesToRadians(float angleDegrees)
 {

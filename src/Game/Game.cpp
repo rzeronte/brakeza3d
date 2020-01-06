@@ -5,7 +5,7 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
@@ -267,7 +267,8 @@ void Game::onUpdateIA()
 
         auto *enemy = dynamic_cast<NPCEnemyBody*> (object);
 
-        if (enemy != NULL) {
+        if (enemy != nullptr) {
+
             enemy->updateCounters();
 
             if (!Brakeza3D::get()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
@@ -282,7 +283,6 @@ void Game::onUpdateIA()
             Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition();
 
             Vector3D ray = Vector3D(A, B);
-
 
             bool rayCastResult = Brakeza3D::get()->getBSP()->recastWrapper->rayCasting(A, B);
 

@@ -4,9 +4,9 @@
 #include "../../headers/Game/Projectile3DBody.h"
 #include "../../headers/Render/Billboard.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 
-NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(EngineSetup::getInstance()->TIME_STEP_IA_ENEMIES)
+NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25)
 {
     this->counterIA = new Counter();
     this->counterIA->setStep( stepIA );
@@ -23,6 +23,7 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(Engin
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
+    Logging::getInstance()->Log("raycastResult: " + std::to_string(raycastResult));
     switch(state) {
         case EnemyState::ENEMY_STATE_ATTACK:
             this->syncPathFindingRotation();
@@ -80,7 +81,6 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
         btTransform t = this->getRigidBody()->getWorldTransform();
         btMotionState *mMotionState = this->getRigidBody()->getMotionState();
 
-        btVector3 dest;
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
         Vertex3D p = way.getComponent().getNormalize().getScaled(this->getSpeed());
@@ -91,7 +91,8 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
         }
 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-        this->setRotation(newRot.getTranspose());
+        this->setRotation( newRot.getTranspose() );
+        btVector3 dest;
         pos.saveToBtVector3(&dest);
 
         t.setOrigin(dest);

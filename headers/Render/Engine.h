@@ -3,7 +3,7 @@
 #define SDL2_3D_ENGINE_ENGINE_H
 
 #include <SDL.h>
-#include "EngineSetup.h"
+#include "../EngineSetup.h"
 #include "Timer.h"
 #include "../Objects/LightPoint3D.h"
 #include <SDL_ttf.h>

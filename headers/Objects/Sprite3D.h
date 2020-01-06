@@ -5,7 +5,7 @@
 
 #include "Object3D.h"
 #include "Camera3D.h"
-#include "../Render/EngineSetup.h"
+#include "../EngineSetup.h"
 #include "../Render/Timer.h"
 #include "../2D/TextureAnimation.h"
 #include "../Render/Billboard.h"

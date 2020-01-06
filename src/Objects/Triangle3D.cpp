@@ -3,14 +3,14 @@
 #include <cmath>
 #include <list>
 #include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 #include "../../headers/Objects/Line2D.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 
 Triangle::Triangle()
 {

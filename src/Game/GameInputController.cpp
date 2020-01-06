@@ -1,6 +1,6 @@
 #include "../../headers/Game/GameInputController.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 
 GameInputController::GameInputController(Player *player) : player(player)
 {

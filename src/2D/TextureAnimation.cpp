@@ -1,6 +1,6 @@
 
 #include "../../headers/2D/TextureAnimation.h"
-#include "../../headers/Render/EngineSetup.h"
+#include "../../headers/EngineSetup.h"
 
 TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false)
 {

@@ -3,7 +3,7 @@
 //
 
 #include "../../headers/Game/NPCEnemyPartBody.h"
-#include "../../headers/Render/Tools.h"
+#include "../../headers/Misc/Tools.h"
 
 btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, btDiscreteDynamicsWorld *world)
 {

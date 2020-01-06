@@ -2,7 +2,7 @@
 #include "../headers/Brakeza3D.h"
 #include "../headers/Render/Drawable.h"
 #include "../headers/Render/Maths.h"
-#include "../headers/Render/EngineBuffers.h"
+#include "../headers/EngineBuffers.h"
 #include "../headers/Misc/Parallells.h"
 #include <thread>
 

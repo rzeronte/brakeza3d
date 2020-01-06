@@ -1,7 +1,7 @@
 
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
-#include "../Render/EngineBuffers.h"
+#include "../EngineBuffers.h"
 #include "Game.h"
 
 Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)

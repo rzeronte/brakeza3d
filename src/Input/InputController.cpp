@@ -1,7 +1,7 @@
 
 #include "../../headers/Input/InputController.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/EngineBuffers.h"
+#include "../../headers/EngineBuffers.h"
 #include "../../headers/Brakeza3D.h"
 
 InputController::InputController()

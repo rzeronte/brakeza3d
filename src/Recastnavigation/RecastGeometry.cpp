@@ -10,6 +10,8 @@ RecastGeometry::RecastGeometry() {
 
 void RecastGeometry::loadBSPMapTriangles(std::vector<Triangle*> &triangles )
 {
+
+
     int cap = 0;
     int tcap = 0;
 
