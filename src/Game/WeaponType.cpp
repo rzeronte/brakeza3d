@@ -6,7 +6,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
-WeaponType::WeaponType(): available(false) {
+WeaponType::WeaponType(): available(true) {
 }
 
 WeaponType::WeaponType(std::string label)
@@ -38,7 +38,9 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
 void WeaponType::onUpdate()
 {
     if (status != 0) {
-        Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
+        if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+            Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
+        }
 
         // Light FX for Repeater
         if (Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
@@ -54,7 +56,9 @@ void WeaponType::onUpdate()
         if (fireCounters[status].isFinished()) {
             int nextAnimationIndex = getCurrentWeaponAnimation()->getNextAnimationIndex();
 
-            Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
+            if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
+            }
 
             fireCounters[nextAnimationIndex].setEnabled( true );
             status = nextAnimationIndex;
@@ -66,11 +70,15 @@ void WeaponType::onUpdate()
             if (this->animations[ nextAnimationIndex ]->isLooping()) {
                 if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
                     Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
-                    Logging::getInstance()->Log("Init sound looping mode");
+                    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                        Logging::getInstance()->Log("Init sound looping mode");
+                    }
                 }
             } else {
                 Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                Logging::getInstance()->Log("Init sound fire phase");
+                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                    Logging::getInstance()->Log("Init sound fire phase");
+                }
                 Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON, 0);
             }
 
@@ -101,7 +109,9 @@ void WeaponType::setWeaponAnimation(int animationIndex)
 
     this->currentAnimationIndex = animationIndex;
 
-    Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
+    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+        Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
+    }
 }
 
 WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
@@ -137,12 +147,12 @@ void WeaponType::setProjectileSize(float w, float h)
     this->projectileHeight = h;
 }
 
-int WeaponType::getDamage()
+float WeaponType::getDamage()
 {
     return this->damage;
 }
 
-void WeaponType::setDamage(int damage)
+void WeaponType::setDamage(float damage)
 {
     this->damage = damage;
 }
@@ -226,7 +236,9 @@ bool WeaponType::isFiring() const
 
 void WeaponType::setFiring(bool firing)
 {
-    Logging::getInstance()->Log("setFiring: " + std::to_string((int) firing));
+    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+        Logging::getInstance()->Log("setFiring: " + std::to_string((int) firing));
+    }
 
     WeaponType::firing = firing;
 
@@ -241,15 +253,12 @@ void WeaponType::setFiring(bool firing)
         switch (rndCasingSnd) {
             case 1:
                 Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing1, EngineSetup::SoundChannels::SND_MENU, 0);
-                Logging::getInstance()->Log("casing");
                 break;
             case 2:
                 Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing2, EngineSetup::SoundChannels::SND_MENU, 0);
-                Logging::getInstance()->Log("casing");
                 break;
             case 3:
                 Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing3, EngineSetup::SoundChannels::SND_MENU, 0);
-                Logging::getInstance()->Log("casing");
                 break;
         }
     }
@@ -359,5 +368,13 @@ AmmoType *WeaponType::getAmmoType() const {
 
 void WeaponType::setAmmoType(AmmoType *ammo) {
     WeaponType::ammo = ammo;
+}
+
+float WeaponType::getDamageRadius() const {
+    return damageRadius;
+}
+
+void WeaponType::setDamageRadius(float damageRadius) {
+    WeaponType::damageRadius = damageRadius;
 }
 

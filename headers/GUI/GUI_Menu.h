@@ -224,6 +224,8 @@ public:
                 ImGui::Checkbox("BSP type Leaf", &EngineSetup::getInstance()->LOG_LEAF_TYPE);
                 ImGui::Separator();
                 ImGui::Checkbox("OpenCL kernel time", &EngineSetup::getInstance()->OPENCL_SHOW_TIME_KERNELS);
+                ImGui::Separator();
+                ImGui::Checkbox("Weapon System", &EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM);
                 ImGui::EndMenu();
             }
 

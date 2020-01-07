@@ -30,6 +30,7 @@ public:
     void respawn();
 
     void updateCounters();
+    void makeDamage();
 };
 
 

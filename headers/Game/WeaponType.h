@@ -31,7 +31,8 @@ public:
     float projectileWidth;
     float projectileHeight;
 
-    int damage;
+    float damage;
+    float damageRadius;
 
     float accuracy;
 
@@ -88,8 +89,10 @@ public:
 
     void setProjectileSize(float w, float h);
 
-    int  getDamage();
-    void setDamage(int damage);
+    float getDamage();
+    void  setDamage(float damage);
+    float getDamageRadius() const;
+    void  setDamageRadius(float damageRadius);
 
     Sprite3D *getMarkTemplate();
     void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);

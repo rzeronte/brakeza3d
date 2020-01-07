@@ -216,17 +216,23 @@ void GameInputController::handleFire(SDL_Event *event)
         // First keydown
         if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {
             if (weaponType->isKeyDownHandle()) {
-                Logging::getInstance()->Log("Fire KeyDown");
+                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                    Logging::getInstance()->Log("Fire KeyDown");
+                }
                 int keyDownAnimationStatus = weaponType->getKeyDownAnimationStatus();
 
                 if (weaponType->animations[ keyDownAnimationStatus ]->isLooping()) {
                     if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
                         Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
-                        Logging::getInstance()->Log("Init sound looping mode in first");
+                        if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                            Logging::getInstance()->Log("Init sound looping mode in first");
+                        }
                     }
                 } else {
                     Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                    Logging::getInstance()->Log("Init sound fire phase in first ");
+                    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                        Logging::getInstance()->Log("Init sound fire phase in first ");
+                    }
                     Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON, 0);
                 }
 
@@ -248,7 +254,9 @@ void GameInputController::handleFire(SDL_Event *event)
         // keyup
         if (event->type == SDL_KEYUP) {
             if (weaponType->isKeyUpHandle()) {
-                Logging::getInstance()->Log("Fire KeyUp");
+                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                    Logging::getInstance()->Log("Fire KeyUp");
+                }
                 int keyUpAnimationStatus = weaponType->getKeyUpAnimationStatus();
 
                 Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);

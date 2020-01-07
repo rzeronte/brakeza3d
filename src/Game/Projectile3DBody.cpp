@@ -13,3 +13,19 @@ void Projectile3DBody::setFromEnemy(bool isFromEnemy){
     fromEnemy = isFromEnemy;
 }
 
+float Projectile3DBody::getDamage() const {
+    return damage;
+}
+
+void Projectile3DBody::setDamage(float damage) {
+    Projectile3DBody::damage = damage;
+}
+
+float Projectile3DBody::getDamageRadius() const {
+    return damageRadius;
+}
+
+void Projectile3DBody::setDamageRadius(float damageRadius) {
+    Projectile3DBody::damageRadius = damageRadius;
+}
+

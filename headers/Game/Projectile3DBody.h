@@ -8,12 +8,20 @@
 class Projectile3DBody : public SpriteDirectional3DBody {
 private:
     bool fromEnemy;
+    float damage;
+    float damageRadius;
 
 public:
     Projectile3DBody();
 
     bool isFromEnemy();
     void setFromEnemy(bool isFromEnemy);
+
+    float getDamage() const;
+    void  setDamage(float damage);
+
+    float getDamageRadius() const;
+    void  setDamageRadius(float damageRadius);
 };
 
 

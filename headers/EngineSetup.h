@@ -216,6 +216,7 @@ public:
     float LIGHTNING_SEGMENT_SHIFT = 0.7;
 
     bool LOG_COLLISION_OBJECTS = false;
+    bool LOG_WEAPONS_SYSTEM = false;
     bool LOG_LEAF_TYPE = false;
 
     char *LIGHT_PATTERNS[12];

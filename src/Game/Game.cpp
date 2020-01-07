@@ -548,8 +548,8 @@ void Game::getWeaponsJSON()
         cJSON *billboardW    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "billboard_width");
         cJSON *billboardH    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "billboard_height");
         cJSON *damage        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
+        cJSON *damageRadius  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage_radius");
         cJSON *speed         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
-        cJSON *startAmmo     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "startAmmo");
         cJSON *projectileW   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
         cJSON *projectileH   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
         cJSON *soundMark     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
@@ -572,12 +572,14 @@ void Game::getWeaponsJSON()
 
         // WeaponType attributes
         weaponManager->addWeaponType(name->valuestring);
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAvailable( true );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setClassname( classname->valuestring );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setIndex( index->valueint );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardTextureFile( billboardTex->valuestring );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardDimensions( billboardW->valuedouble, billboardH->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage(damage->valueint );
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage( damage->valuedouble );
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamageRadius( damageRadius->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed( (float) speed->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setProjectileSize( projectileW->valuedouble, projectileH->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->loadMarkSound( soundMark->valuestring );

@@ -100,16 +100,20 @@ void Player::respawn()
 
 void Player::shoot()
 {
-    for (int i = 0; i < Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getDispersion(); i++) {
+    WeaponsManager* weaponsManager = Brakeza3D::get()->getWeaponsManager();
+    for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
-        Projectile3DBody *projectile = new Projectile3DBody();
-        projectile->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
+        auto *projectile = new Projectile3DBody();
+        projectile->setFromEnemy( false );
+        projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
+        projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
+        projectile->setPosition( *Brakeza3D::get()->getCamera()->getPosition() );
         projectile->getPosition()->x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->getPosition()->y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
         projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->setLabel("projectile");
         projectile->setEnabled(true);
-        projectile->linkTexturesTo(Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getProjectileTemplate());
+        projectile->linkTexturesTo( weaponsManager->getCurrentWeaponType()->getProjectileTemplate() );
         projectile->setAnimation(0);
         projectile->makeProjectileRigidBody(
             1,
@@ -118,19 +122,19 @@ void Player::shoot()
             Brakeza3D::get()->getCamera(),
             Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
             true,
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getSpeed(),
-            Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAccuracy()
+            weaponsManager->getCurrentWeaponType()->getSpeed(),
+            weaponsManager->getCurrentWeaponType()->getAccuracy()
         );
         projectile->getBillboard()->setDimensions(
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileWidth,
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->projectileHeight
+                weaponsManager->getCurrentWeaponType()->projectileWidth,
+                weaponsManager->getCurrentWeaponType()->projectileHeight
         );
 
-        projectile->setRotation(Brakeza3D::get()->getCamera()->getRotation());
+        projectile->setRotation( Brakeza3D::get()->getCamera()->getRotation() );
     }
 
-    int currentWeaponAmmo = Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmoType()->getAmount();
-    Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->getAmmoType()->setAmount(currentWeaponAmmo - 1);
+    int currentWeaponAmmo = weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount();
+    weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(currentWeaponAmmo - 1);
 }
 
 
