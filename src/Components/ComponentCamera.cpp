@@ -1,6 +1,6 @@
 
 #include "../../headers/Components/ComponentCamera.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
 
 ComponentCamera::ComponentCamera()
 {

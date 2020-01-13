@@ -6,13 +6,16 @@
 #include "../../headers/Components/ComponentWindow.h"
 #include "../../headers/Objects/Decal.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
+#include "../../headers/Misc/Parallells.h"
 
-ComponentRender::ComponentRender() {
+ComponentRender::ComponentRender()
+{
     this->buffer = EngineBuffers::getInstance();
 }
 
-void ComponentRender::onStart() {
+void ComponentRender::onStart()
+{
     std::cout << "ComponentRender onStart" << std::endl;
     this->initTiles();
     this->initOpenCL();
@@ -69,8 +72,8 @@ void ComponentRender::postUpdate() {
 
 }
 
-void ComponentRender::onEnd() {
-
+void ComponentRender::onEnd()
+{
 }
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
@@ -494,26 +497,23 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle*> *visibleTriangle
         if (!tiles[i].draw) continue;
 
         if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
-            //threads.emplace_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
-            this->drawTileTriangles(i, *visibleTriangles);
+            threads.emplace_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
         } else {
             this->drawTileTriangles(i, *visibleTriangles);
         }
     }
 
-    /*if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
+    if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
         for (std::thread & th : threads) {
             if (th.joinable()) {
                 th.join();
             }
         }
-    }*/
+    }
 }
 
 void ComponentRender::drawSceneObjectsAxis()
 {
-    // draw meshes
-
     for (int i = 0; i < getSceneObjects()->size(); i++) {
         if ( getSceneObjects()->operator[](i)->isEnabled() ) {
             Drawable::drawObject3DAxis(getSceneObjects()->operator[](i), ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
@@ -565,7 +565,7 @@ void ComponentRender::initOpenCL()
     clBuildProgram(programGPU, 1, &device_gpu_id, NULL, NULL, NULL);
 
     // Create the OpenCL kernel
-    processAllTriangles       = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
+    processAllTriangles = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
 
     opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
     opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
