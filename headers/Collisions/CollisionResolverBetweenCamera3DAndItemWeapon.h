@@ -11,14 +11,14 @@
 
 class CollisionResolverBetweenCamera3DAndItemWeapon : public CollisionResolver {
 public:
-    Camera3D *camera;
+    ComponentCamera *camera;
     ItemWeaponBody *itemWeaponBody;
 
     std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
-    WeaponsManager *weaponManager;
+    ComponentWeapons *weaponManager;
 
-    CollisionResolverBetweenCamera3DAndItemWeapon(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
+    CollisionResolverBetweenCamera3DAndItemWeapon(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->camera = getCamera();
         this->itemWeaponBody = getItemWeaponBody();
@@ -53,15 +53,15 @@ public:
         }
     }
 
-    Camera3D* getCamera()
+    ComponentCamera* getCamera()
     {
         if (objA->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objA);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objA);
             return camera;
         }
 
         if (objB->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objB);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objB);
             return camera;
         }
     }

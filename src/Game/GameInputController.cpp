@@ -29,7 +29,7 @@ void GameInputController::handleMovingCamera(SDL_Event *event, bool &end)
 
     // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
-        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
+        if (Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp()->isCurrentLeafLiquid()) {
             this->jump( false, -10, false);
         } else {
             this->jump( true, EngineSetup::getInstance()->JUMP_FORCE.y, true );
@@ -91,8 +91,8 @@ void GameInputController::handleMenuKeyboard(bool &end)
 {
     if (keyboard[SDL_SCANCODE_DOWN]) {
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (Brakeza3D::get()->getMenuManager()->currentOption + 1 < Brakeza3D::get()->getMenuManager()->numOptions) {
-                Brakeza3D::get()->getMenuManager()->currentOption++;
+            if (Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption + 1 < Brakeza3D::get()->getComponentsManager()->getComponentMenu()->numOptions) {
+                Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption++;
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
             }
         }
@@ -100,26 +100,28 @@ void GameInputController::handleMenuKeyboard(bool &end)
 
     if (keyboard[SDL_SCANCODE_UP]) {
         if (EngineSetup::getInstance()->MENU_ACTIVE) {
-            if (Brakeza3D::get()->getMenuManager()->currentOption > 0) {
-                Brakeza3D::get()->getMenuManager()->currentOption--;
+            if (Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption > 0) {
+                Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption--;
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
             }
         }
     }
 
     if (keyboard[SDL_SCANCODE_RETURN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->getAction() == MenuManager::MNU_EXIT) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE && Brakeza3D::get()->getComponentsManager()->getComponentMenu()->options[Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
         }
 
-        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state == PlayerState::GAMEOVER && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->getAction() == MenuManager::MNU_NEW_GAME) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state == PlayerState::GAMEOVER &&
+                Brakeza3D::get()->getComponentsManager()->getComponentMenu()->options[Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
             Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
             player->newGame();
         }
 
-        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state != PlayerState::GAMEOVER && Brakeza3D::get()->getMenuManager()->options[Brakeza3D::get()->getMenuManager()->currentOption]->getAction() == MenuManager::MNU_NEW_GAME) {
+        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state != PlayerState::GAMEOVER &&
+                Brakeza3D::get()->getComponentsManager()->getComponentMenu()->options[Brakeza3D::get()->getComponentsManager()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
 
             Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
@@ -135,7 +137,7 @@ void GameInputController::handleMenuKeyboard(bool &end)
 
 void GameInputController::jump(bool checkOnGrount, float YForce, bool soundJump)
 {
-    if (checkOnGrount && !Brakeza3D::get()->getCamera()->kinematicController->onGround()) {
+    if (checkOnGrount && !Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->onGround()) {
         return;
     }
 
@@ -144,7 +146,7 @@ void GameInputController::jump(bool checkOnGrount, float YForce, bool soundJump)
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
-    Brakeza3D::get()->getCamera()->kinematicController->jump(btVector3(0, YForce, 0));
+    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->jump(btVector3(0, YForce, 0));
 }
 
 void GameInputController::handleCrouch(SDL_Event *event)
@@ -161,13 +163,15 @@ void GameInputController::handleCrouch(SDL_Event *event)
             height = 1.0f;
             radius = 1.0f;
 
-            btVector3 pos = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
+            btVector3 pos = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
             pos.setY(pos.y() + offsetCrouch);
             trans.setIdentity();
             trans.setOrigin(pos);
 
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeCollisionObject(Brakeza3D::get()->getCamera()->m_ghostObject);
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeAction(Brakeza3D::get()->getCamera()->kinematicController);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->m_ghostObject);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->removeAction(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController);
 
             capsule = new btCapsuleShapeZ( radius, height );
 
@@ -179,13 +183,15 @@ void GameInputController::handleCrouch(SDL_Event *event)
             height = 4.5f;
             radius = 1.5f;
 
-            btVector3 pos = Brakeza3D::get()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
+            btVector3 pos = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
             pos.setY(pos.y() - offsetCrouch);
             trans.setIdentity();
             trans.setOrigin(pos);
 
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeCollisionObject(Brakeza3D::get()->getCamera()->m_ghostObject);
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->removeAction(Brakeza3D::get()->getCamera()->kinematicController);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->m_ghostObject);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->removeAction(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController);
 
             capsule = new btCapsuleShapeZ( radius, height );
 
@@ -195,20 +201,22 @@ void GameInputController::handleCrouch(SDL_Event *event)
 
         if ((event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ) && flag) {
 
-            Brakeza3D::get()->getCamera()->makeKineticCharacter( trans, capsule );
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->makeKineticCharacter(trans, capsule );
 
-            Brakeza3D::get()->getCamera()->kinematicController->setGravity( Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->getGravity() );
-            Brakeza3D::get()->getCamera()->kinematicController->setFallSpeed(256);
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->setGravity(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->getGravity() );
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController->setFallSpeed(256);
 
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->addCollisionObject( Brakeza3D::get()->getCamera()->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->addAction(Brakeza3D::get()->getCamera()->kinematicController);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addAction(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->kinematicController);
         }
     }
 }
 
 void GameInputController::handleFire(SDL_Event *event)
 {
-    WeaponType *weaponType = Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType();
+    WeaponType *weaponType = Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType();
 
     if (!weaponType->isAvailable()) return;
 
@@ -282,12 +290,12 @@ void GameInputController::handleSniper(SDL_Event *event)
 {
     if (event->key.keysym.sym == SDLK_LSHIFT ) {
 
-        Camera3D *cam = Brakeza3D::get()->getCamera();
+        Camera3D *cam = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera();
 
         if (event->type == SDL_KEYDOWN) {
-            if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isSniper()) {
+            if (Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
                 Logging::getInstance()->Log("Start Snipper");
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setSniperEnabled( true );
+                Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(true );
 
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("sniperOn"), EngineSetup::SoundChannels::SND_WEAPON, 0);
 
@@ -307,10 +315,10 @@ void GameInputController::handleSniper(SDL_Event *event)
         }
 
         if (event->type == SDL_KEYUP) {
-            if (Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->isSniper()) {
+            if (Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
                 Logging::getInstance()->Log("Down Snipper");
 
-                Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->setSniperEnabled( false );
+                Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false );
 
                 cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
                 cam->frustum->setup(
@@ -335,7 +343,7 @@ void GameInputController::handleSniper(SDL_Event *event)
 
 void GameInputController::handleWeaponSelector()
 {
-    WeaponsManager *weaponManager = Brakeza3D::get()->getWeaponsManager();
+    ComponentWeapons *weaponManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
     SoundPackage *soundPackage    = EngineBuffers::getInstance()->soundPackage;
 
     if (keyboard[SDL_SCANCODE_1] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::PISTOL]->isAvailable()) {
@@ -383,24 +391,24 @@ void GameInputController::handleZoom(SDL_Event *event)
 {
     if (event->key.keysym.sym == SDLK_z ) {
         if (event->type == SDL_KEYDOWN) {
-            Brakeza3D::get()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->ZOOM_FOV;
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->ZOOM_FOV;
         }
 
         if (event->type == SDL_KEYUP) {
-            Brakeza3D::get()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
         }
 
-        Brakeza3D::get()->getCamera()->frustum->setup(
-                *Brakeza3D::get()->getCamera()->getPosition(),
+        Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->setup(
+                *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition(),
                 Vertex3D(0, 0, 1),
                 EngineSetup::getInstance()->up,
                 EngineSetup::getInstance()->right,
-                Brakeza3D::get()->getCamera()->getNearDistance(),
-                Brakeza3D::get()->getCamera()->calcCanvasNearHeight(), Brakeza3D::get()->getCamera()->calcCanvasNearWidth(),
-                Brakeza3D::get()->getCamera()->farDistance,
-                Brakeza3D::get()->getCamera()->calcCanvasFarHeight(), Brakeza3D::get()->getCamera()->calcCanvasFarWidth()
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getNearDistance(),
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->calcCanvasNearHeight(), Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->calcCanvasNearWidth(),
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->farDistance,
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->calcCanvasFarHeight(), Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->calcCanvasFarWidth()
         );
 
-        Brakeza3D::get()->getCamera()->UpdateFrustum();
+        Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->UpdateFrustum();
     }
 }

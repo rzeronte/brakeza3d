@@ -4,7 +4,7 @@
 
 #include "Vertex3D.h"
 #include "Vector3D.h"
-#include "Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "Point2D.h"
 #include "Object3D.h"
 #include "../Render/Texture.h"
@@ -91,8 +91,7 @@ public:
     void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v);
 
     bool isBackFaceCulling(Vertex3D *position);
-
-
+    
     Vertex3D getNormal();
     void     updateNormal();
     Vertex3D getCenterOfMass();

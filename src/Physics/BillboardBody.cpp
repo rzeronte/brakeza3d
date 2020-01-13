@@ -3,6 +3,7 @@
 //
 
 #include "../../headers/Physics/BillboardBody.h"
+#include "../../headers/EngineSetup.h"
 
 BillboardBody::BillboardBody()
 {

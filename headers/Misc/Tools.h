@@ -3,7 +3,7 @@
 
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Point2D.h"
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../Render/Frustum.h"
 #include "../Objects/Object3D.h"
 #include "../Objects/Vector3D.h"

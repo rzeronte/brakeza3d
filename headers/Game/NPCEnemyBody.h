@@ -21,7 +21,7 @@ public:
 
     NPCEnemyBody();
 
-    void evalStatusMachine( bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects);
+    void evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects);
 
     void doFollowPathfinding(bool raycastResult);
     void syncPathFindingRotation();

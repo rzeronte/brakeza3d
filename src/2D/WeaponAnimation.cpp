@@ -4,6 +4,7 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Game/Game.h"
+#include "../../headers/Brakeza3D.h"
 
 WeaponAnimation::WeaponAnimation()
 {
@@ -67,7 +68,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     destPos.y = EngineSetup::getInstance()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
 
     if (EngineSetup::getInstance()->DRAW_HUD) {
-        destPos.y -= Game::get()->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
+        destPos.y -= Brakeza3D::get()->getComponentsManager()->getComponentHUD()->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
     }
 
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);

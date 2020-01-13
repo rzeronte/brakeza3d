@@ -3,6 +3,7 @@
 #include "../../headers/Objects/Object3D.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Transforms.h"
+#include "../../headers/EngineSetup.h"
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
 }

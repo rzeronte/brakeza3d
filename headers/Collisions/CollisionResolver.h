@@ -7,7 +7,6 @@
 #include "../Render/BSPMap.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Game/Projectile3DBody.h"
-#include "../Render/Engine.h"
 
 class CollisionResolver {
 

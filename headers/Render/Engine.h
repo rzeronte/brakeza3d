@@ -27,8 +27,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <OpenCL/opencl.h>
 #include "../Misc/cJSON.h"
-#include "../2D/WeaponsManager.h"
-#include "../2D/MenuManager.h"
+#include "../Components/ComponentWeapons.h"
+#include "../Components/ComponentMenu.h"
 #include "../Objects/Tile.h"
 #include <thread>
 
@@ -44,39 +44,10 @@ public:
     // Exit
     bool finish = false;
 
-    // OpenCL Rasterizer
-    cl_platform_id platform_id;
-    cl_device_id device_cpu_id;
-    cl_device_id device_gpu_id;
-    cl_uint ret_num_devices;
-    cl_uint ret_num_platforms;
-    cl_int ret;
-    cl_context contextCPU;
-    cl_context contextGPU;
-    cl_program programCPU;
-    cl_program programGPU;
-    cl_kernel processAllTriangles;
-
-    cl_mem opencl_buffer_triangles;
-    cl_mem opencl_buffer_video;
-    cl_mem opencl_buffer_depth;
-
-    cl_command_queue command_queue_rasterizer;
-
-    std::thread preUpdateThread;
 
     Engine();
     void Close();
 
-    // init systems
-    void initOpenCL();
-    void initCollisionManager();
-
-    // Cycle of life
-    virtual void onStart();
-    virtual void preUpdate();
-    virtual void onUpdate();
-    virtual void onEnd();
 
     // resolve collision
     virtual void resolveCollisions();

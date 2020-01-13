@@ -25,9 +25,10 @@ BSPMap::BSPMap(): frameTriangles(nullptr)
     setDecal(false);
 }
 
-void BSPMap::init()
+void BSPMap::init(Camera3D *cam)
 {
     bsp = NULL;
+    this->camera = cam;
     surfacePrimitives = NULL;
     textureObjNames = NULL;
     visibleSurfaces = NULL;
@@ -54,11 +55,9 @@ void BSPMap::init()
     this->recastWrapper = new RecastWrapper();
 }
 
-bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, std::vector<Triangle*> *frameTriangles)
+bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam)
 {
-    this->init();
-
-    this->frameTriangles = frameTriangles;
+    this->init( cam );
 
     std::string bspFilename_str     = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename).c_str();
     std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename).c_str();
@@ -478,8 +477,8 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 }
             }
 
-            body->makeRigidBody(0, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(),
-                                Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true);
+            body->makeRigidBody(0, Brakeza3D::get()->getSceneObjects(), this->camera,
+                                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
             Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
         } else {
@@ -504,7 +503,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                     ghost->modelTriangles.push_back( t );
                 }
             }
-            ghost->makeGhostBody(Brakeza3D::get()->getCamera(), Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), true);
+            ghost->makeGhostBody(this->camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
             Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(m) + " (ghost)") ;
         }
     }
@@ -535,7 +534,7 @@ void BSPMap::InitializeRecast()
         const int num = surface_triangles[surface].num;
 
         for (int i = offset; i < offset+num; i++){
-            this->model_triangles[i]->updateFullVertexSpaces(Brakeza3D::get()->getCamera());
+            this->model_triangles[i]->updateFullVertexSpaces(this->camera);
             trianglesRecast.push_back(this->model_triangles[i]);
         }
     }
@@ -584,59 +583,64 @@ void BSPMap::InitializeEntities()
 
                 // item cells
                 if (!strcmp(classname, "item_cells")) {
-                    ItemAmmoBody *o = new ItemAmmoBody();
+                    auto *o = new ItemAmmoBody();
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_cells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
+                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                 }
 
                 // item rockets
                 if (!strcmp(classname, "item_rockets")) {
-                    ItemAmmoBody *o = new ItemAmmoBody();
+                    auto *o = new ItemAmmoBody();
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_rockets.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
+                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                 }
 
                 // item shells
                 if (!strcmp(classname, "item_shells")) {
-                    ItemAmmoBody *o = new ItemAmmoBody();
+                    auto *o = new ItemAmmoBody();
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_shells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
+                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                 }
 
                 // item spikes
                 if (!strcmp(classname, "item_spikes")) {
-                    ItemAmmoBody *o = new ItemAmmoBody();
+                    auto *o = new ItemAmmoBody();
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_spikes.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
+                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                 }
 
                 // item_health
                 if (!strcmp(classname, "item_health")) {
-                    ItemHealthBody *o = new ItemHealthBody();
+                    auto *o = new ItemHealthBody();
                     o->setPosition( pos );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
+                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                 }
 
                 // weapon wildcard
                 std::string s1(classname);
                 if (s1.find("weapon") != std::string::npos) {
-                    ItemWeaponBody *o = new ItemWeaponBody();
+                    auto *o = new ItemWeaponBody();
 
-                    WeaponType *weapon = Brakeza3D::get()->getWeaponsManager()->getWeaponTypeByClassname( classname );
+                    WeaponType *weapon = brakeza3D->getComponentsManager()->getComponentWeapons()->getWeaponTypeByClassname( classname );
                     if (weapon == NULL) {
                         Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
                         continue;
@@ -646,14 +650,13 @@ void BSPMap::InitializeEntities()
                     o->setWeaponClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->WEAPONS_FOLDER + weapon->label + "/" + weapon->getBillboardTextureFile() );
                     o->setDimensions(weapon->billboardWidth, weapon->billboardHeight );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getCollisionManager()->getDynamicsWorld());
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld());
                 }
 
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
                     NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
-
                     if (enemyTemplate == NULL) continue;
 
                     // Angle Monster
@@ -681,7 +684,7 @@ void BSPMap::InitializeEntities()
                             0,
                             Vertex3D(2, 2, 2),
                             brakeza3D->getSceneObjects(),
-                            brakeza3D->getCollisionManager()->getDynamicsWorld()
+                            brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
                      );
                 }
 
@@ -952,7 +955,7 @@ void BSPMap::createBulletPhysicsShape()
 
         for (int i = offset; i < offset+num; i++){
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i]->updateFullVertexSpaces(Brakeza3D::get()->getCamera());
+            this->model_triangles[i]->updateFullVertexSpaces(this->camera);
             btVector3 a = btVector3( this->model_triangles[i]->Ao.x, this->model_triangles[i]->Ao.y, this->model_triangles[i]->Ao.z );
             btVector3 b = btVector3( this->model_triangles[i]->Bo.x, this->model_triangles[i]->Bo.y, this->model_triangles[i]->Bo.z );
             btVector3 c = btVector3( this->model_triangles[i]->Co.x, this->model_triangles[i]->Co.y, this->model_triangles[i]->Co.z );
@@ -979,7 +982,7 @@ void BSPMap::createBulletPhysicsShape()
     this->bspRigidBody->setCcdMotionThreshold(.5);
     this->bspRigidBody->setCcdSweptSphereRadius(.5);
     this->bspRigidBody->setUserPointer(this);
-    Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->addRigidBody(this->bspRigidBody);
+    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addRigidBody(this->bspRigidBody);
 }
 
 void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
@@ -1040,6 +1043,8 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
 void BSPMap::DrawVisibleLeaf(Camera3D *Cam)
 {
+    if (this->currentLeaf == nullptr) return;
+
     DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, Cam);
 }
 
@@ -1284,6 +1289,10 @@ Vertex3D BSPMap::getStartMapPosition()
 
 bool BSPMap::isCurrentLeafLiquid()
 {
+    if (currentLeaf == nullptr) {
+        return false;
+    }
+
     return BSPMap::isLeafLiquid( this->currentLeaf->type );
 }
 
@@ -1338,4 +1347,8 @@ bool BSPMap::isLoaded() const {
 
 void BSPMap::setLoaded(bool loaded) {
     BSPMap::loaded = loaded;
+}
+
+void BSPMap::setFrameTriangles(std::vector<Triangle *> *frameTriangles) {
+    BSPMap::frameTriangles = frameTriangles;
 }

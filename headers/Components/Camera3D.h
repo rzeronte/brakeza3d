@@ -1,20 +1,17 @@
+//
+// Created by darkhead on 11/1/20.
+//
 
-#ifndef SDL2_3D_ENGINE_CAMERA_H
-#define SDL2_3D_ENGINE_CAMERA_H
+#ifndef BRAKEDA3D_CAMERA3D_H
+#define BRAKEDA3D_CAMERA3D_H
 
-#include <SDL_surface.h>
-#include "Vertex3D.h"
-#include "Object3D.h"
-#include "../Render/Frustum.h"
-#include "../EngineSetup.h"
-#include "../Render/M3.h"
+
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
-#include <BulletCollision/CollisionShapes/btCapsuleShape.h>
-
-typedef float vec3_t[3];
+#include "../Render/Frustum.h"
+#include "../Objects/Vector3D.h"
 
 class Camera3D : public Object3D {
-private:
 public:
     float yaw   = 0;			// Direction of travel
     float pitch = 0;		// Neck angle
@@ -47,7 +44,7 @@ public:
     float getVerticalFOV();
 
     void UpdateFrustum();
-    void UpdateVelocity(void);
+    void UpdateVelocity(float reduction, bool allowVertical);
     void UpdateRotation(void);
 
     void Pitch(float pitch);
@@ -67,8 +64,7 @@ public:
     void limitPitch();
 
     void consoleInfo();
-
 };
 
 
-#endif //SDL2_3D_ENGINE_CAMERA_H
+#endif //BRAKEDA3D_CAMERA3D_H

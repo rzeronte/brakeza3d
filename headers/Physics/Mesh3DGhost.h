@@ -15,7 +15,7 @@ class Mesh3DGhost: public Mesh3D {
 public:
     Mesh3DGhost();
 
-    void makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld*,  bool useObjectSpace);
+    void makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     static bool CheckGhost(btPairCachingGhostObject* Ghost);
 
     btPairCachingGhostObject* getGhostObject() { return m_ghostObject; };

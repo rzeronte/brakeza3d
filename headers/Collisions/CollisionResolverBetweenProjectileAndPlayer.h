@@ -18,9 +18,9 @@ public:
 
     std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
-    WeaponsManager *weaponManager;
+    ComponentWeapons *weaponManager;
 
-    CollisionResolverBetweenProjectileAndPlayer(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles, Player *player) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
+    CollisionResolverBetweenProjectileAndPlayer(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles, Player *player) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->projectile = this->getProjectile();
         this->player     = player;

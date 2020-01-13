@@ -3,7 +3,7 @@
 
 #include "Object3D.h"
 #include "../Render/Frustum.h"
-#include "Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../../imgui/imgui.h"
 
 class LightPoint3D : public Object3D {

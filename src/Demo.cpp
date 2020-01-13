@@ -11,21 +11,18 @@ Demo::Demo()
     lp1->setLabel("LightPoint1");
     lp1->setPosition(Vertex3D(1, 1.5f, -1));
     lp1->setColor( 255, 0, 0 );
-    Brakeza3D::get()->addLightPoint(lp1, "l1");
 
     LightPoint3D *lp2 = new LightPoint3D();
     lp2->setEnabled(false);
     lp2->setLabel("LightPoint2");
     lp2->setPosition(Vertex3D(-0.4, 1, -1));
     lp2->setColor( 0, 255, 0 );
-    Brakeza3D::get()->addLightPoint(lp2, "l2");
 
     LightPoint3D *lp3 = new LightPoint3D();
     lp3->setEnabled(false);
     lp3->setLabel("LightPoint3");
     lp3->setPosition(Vertex3D(2, 1, -1));
     lp3->setColor( 0, 0, 255 );
-    Brakeza3D::get()->addLightPoint(lp3, "l3");
 
     // mono
     Mesh3D *monkey = new Mesh3D();
@@ -54,7 +51,7 @@ Demo::Demo()
     // cubo
     Mesh3D *cube = new Mesh3D();
     cube->setEnabled(false);
-    cube->setPosition(*Brakeza3D::get()->getCamera()->getPosition());
+    cube->setPosition(*Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition());
     cube->loadOBJBlender("../assets/models/cubo.obj");
     Brakeza3D::get()->addObject3D(cube, "cube");
 
@@ -123,8 +120,8 @@ Demo::Demo()
     cuboPhysic->setEnabled(false);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
-    cuboPhysic->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getCamera(),
-                              Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(), false);
+    cuboPhysic->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
+                              Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), false);
     //this->addObject3D(cuboPhysic, "cuboPhysic");
 
     /*Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();

@@ -1,6 +1,7 @@
 
 #include "../../headers/Render/Billboard.h"
 #include "../../headers/Render/Transforms.h"
+#include "../../headers/EngineSetup.h"
 
 Billboard::Billboard()
 {

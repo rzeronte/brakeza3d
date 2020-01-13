@@ -1,19 +1,14 @@
+//
+// Created by darkhead on 11/1/20.
+//
 
-#include "../../headers/Objects/Camera3D.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Transforms.h"
+#include <BulletCollision/CollisionShapes/btCapsuleShape.h>
+#include "../../headers/Components/Camera3D.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Render/Transforms.h"
+#include "../../headers/EngineSetup.h"
 
-#include <btBulletDynamicsCommon.h>
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "BulletDynamics/Character/btKinematicCharacterController.h"
-#include "LinearMath/btTransform.h"
-#include "../../headers/Render/Engine.h"
-#include "../../headers/Brakeza3D.h"
-
-Camera3D::Camera3D()
-{
+Camera3D::Camera3D() {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
     horizontal_fov = EngineSetup::getInstance()->HORIZONTAL_FOV;
     aspectRatio    = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
@@ -24,21 +19,21 @@ Camera3D::Camera3D()
     // Inicializamos el frustum que acompañará a la cámara
     frustum = new Frustum();
     frustum->setup(
-        *getPosition(),
-        Vertex3D(0, 0, 1),
-        EngineSetup::getInstance()->up,
-        EngineSetup::getInstance()->right,
-        getNearDistance(),
-        calcCanvasNearHeight(), calcCanvasNearWidth(),
-        farDistance,
-        calcCanvasFarHeight(), calcCanvasFarWidth()
+            *this->getPosition(),
+            Vertex3D(0, 0, 1),
+            EngineSetup::getInstance()->up,
+            EngineSetup::getInstance()->right,
+            getNearDistance(),
+            calcCanvasNearHeight(), calcCanvasNearWidth(),
+            farDistance,
+            calcCanvasFarHeight(), calcCanvasFarWidth()
     );
 
     this->velocity = Vector3D( Vertex3D::zero(), Vertex3D::zero() );
 
     btConvexShape* capsule = new btCapsuleShapeZ(
-        EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
-        EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
+            EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
+            EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
     );
 
     btTransform startTransform;
@@ -47,7 +42,7 @@ Camera3D::Camera3D()
 
     this->makeKineticCharacter(startTransform, capsule);
 
-    setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
+    this->setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
 }
 
 float Camera3D::getNearDistance()
@@ -97,7 +92,7 @@ float Camera3D::getScreenAspectRatio()
 
 void Camera3D::UpdateFrustum()
 {
-    frustum->position  = *getPosition();
+    frustum->position  = *this->getPosition();
 
     frustum->direction = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     frustum->up        = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
@@ -108,10 +103,10 @@ void Camera3D::UpdateFrustum()
     frustum->updatePlanes();
 
     // Cacheamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
-     Transforms::cameraSpace(frustum->vNLs, frustum->near_left.vertex1, this);
-     Transforms::cameraSpace(frustum->vNRs, frustum->near_right.vertex1, this);
-     Transforms::cameraSpace(frustum->vNTs, frustum->near_top.vertex1, this);
-     Transforms::cameraSpace(frustum->vNBs, frustum->near_bottom.vertex1, this);
+    Transforms::cameraSpace(frustum->vNLs, frustum->near_left.vertex1, this);
+    Transforms::cameraSpace(frustum->vNRs, frustum->near_right.vertex1, this);
+    Transforms::cameraSpace(frustum->vNTs, frustum->near_top.vertex1, this);
+    Transforms::cameraSpace(frustum->vNBs, frustum->near_bottom.vertex1, this);
 
     // cacheamos las coordenadas 2D de los marcos del near plane
     frustum->vNLpers = Transforms::perspectiveDivision(frustum->vNLs, this);
@@ -123,11 +118,11 @@ void Camera3D::UpdateFrustum()
 void Camera3D::consoleInfo()
 {
     printf("Camera Aspect Ratio: %f | HFOV: %f | VFOV: %f | NearDistance: %f | Canvas W: %f | Canvas H: %f\r\n",
-        aspectRatio,
-        horizontal_fov,
-        getVerticalFOV(),
-        getNearDistance(),
-        calcCanvasNearWidth(), calcCanvasNearHeight()
+           aspectRatio,
+           horizontal_fov,
+           getVerticalFOV(),
+           getNearDistance(),
+           calcCanvasNearWidth(), calcCanvasNearHeight()
     );
 }
 
@@ -185,25 +180,19 @@ void Camera3D::StrafeLeft(void)
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
-void Camera3D::UpdateVelocity(void)
+void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
 {
-    float liquidSpeedDivisor = EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
-
     // Move the camera forward
-    if (Brakeza3D::get()->getBSP()->isLoaded()) {
-        if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
-            speed  /= liquidSpeedDivisor;
-            strafe /= liquidSpeedDivisor;
-        }
+    if (reduction > 0) {
+        speed  /= reduction;
+        strafe /= reduction;
     }
 
     if ((fabs(speed) > 0)) {
-        this->velocity.vertex2.z = getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
-        this->velocity.vertex2.x = getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
-        if (Brakeza3D::get()->getBSP()->isLoaded()) {
-            if (Brakeza3D::get()->getBSP()->isCurrentLeafLiquid()) {
-                this->velocity.vertex2.y = getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
-            }
+        this->velocity.vertex2.z = this->getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.x = this->getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
+        if ( allowVertical ) {
+            this->velocity.vertex2.y = this->getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
         }
     }
 

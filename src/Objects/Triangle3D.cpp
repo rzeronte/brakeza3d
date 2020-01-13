@@ -9,8 +9,8 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Components/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/EngineBuffers.h"
 
 Triangle::Triangle()
 {
@@ -189,7 +189,7 @@ void Triangle::updateTextureAnimated()
             float stepTime = (float) 1 / (float) maxFrames;
 
             if (this->timerTextureAnimatedFrameControl >= stepTime) {
-                this->setTexture(Brakeza3D::get()->getBSP()->getTexture(n));
+                this->setTexture(ComponentsManager::get()->getComponentBSP()->getBsp()->getTexture(n));
                 this->currentBSPTextureAnimatedFrame++;
                 this->timerTextureAnimatedFrameControl = 0;
             }

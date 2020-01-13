@@ -1,6 +1,6 @@
 
 #include <SDL_image.h>
-#include "../../headers/2D/MenuManager.h"
+#include "../../headers/Components/ComponentMenu.h"
 #include "../../headers/Misc/cJSON.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
@@ -8,7 +8,7 @@
 #include "../../headers/Game/Game.h"
 
 
-MenuManager::MenuManager()
+ComponentMenu::ComponentMenu()
 {
     this->currentOption = 0;
     this->numOptions = 0;
@@ -19,7 +19,31 @@ MenuManager::MenuManager()
 
 }
 
-void MenuManager::getOptionsJSON()
+void ComponentMenu::onStart() {
+
+}
+
+void ComponentMenu::preUpdate() {
+
+}
+
+void ComponentMenu::onUpdate() {
+
+}
+
+void ComponentMenu::postUpdate() {
+
+}
+
+void ComponentMenu::onEnd() {
+
+}
+
+void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
+
+}
+
+void ComponentMenu::getOptionsJSON()
 {
     size_t file_size;
     const char *mapsFile;
@@ -50,7 +74,7 @@ void MenuManager::getOptionsJSON()
     }
 }
 
-void MenuManager::drawOptions(SDL_Surface *dst)
+void ComponentMenu::drawOptions(SDL_Surface *dst)
 {
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
@@ -63,16 +87,19 @@ void MenuManager::drawOptions(SDL_Surface *dst)
         std::string text = this->options[ i ]->getLabel();
         Uint32 color = Color::orange();
 
-        if (i == MenuManager::MNU_NEW_GAME && Game::get()->player->state != PlayerState::GAMEOVER ) {
-            text = this->options[ MenuManager::MNU_NEW_GAME ]->getAlt();
+        if (i == ComponentMenu::MNU_NEW_GAME && Game::get()->player->state != PlayerState::GAMEOVER ) {
+            text = this->options[ ComponentMenu::MNU_NEW_GAME ]->getAlt();
         }
 
         if (i == currentOption) {
             color = Color::white();
         }
 
-        Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, color, text, offsetY);
+        auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
+
+        Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, CW->fontSmall, color, text, offsetY);
 
         offsetY += stepY;
     }
 }
+

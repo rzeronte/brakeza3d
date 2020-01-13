@@ -1,18 +1,27 @@
 
-#ifndef BRAKEDA3D_WEAPONSMANAGER_H
-#define BRAKEDA3D_WEAPONSMANAGER_H
+#ifndef BRAKEDA3D_COMPONENTWEAPONS_H
+#define BRAKEDA3D_COMPONENTWEAPONS_H
 
 #include <string>
 #include <SDL.h>
 #include "../Render/Timer.h"
-#include "WeaponAnimation.h"
+#include "../2D/WeaponAnimation.h"
 #include "../Game/WeaponType.h"
-#include "../Objects/Camera3D.h"
+#include "Camera3D.h"
 #include "../Game/AmmoType.h"
+#include "Component.h"
+#include "ComponentCamera.h"
 
-class WeaponsManager {
+class ComponentWeapons : public Component {
 public:
-    WeaponsManager();
+    ComponentWeapons();
+
+    void onStart();
+    void preUpdate();
+    void onUpdate();
+    void postUpdate();
+    void onEnd();
+    void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     int numWeapons = 0;
     int currentWeaponIndex = 0;
@@ -42,4 +51,4 @@ public:
 };
 
 
-#endif //BRAKEDA3D_WEAPONSMANAGER_H
+#endif //BRAKEDA3D_COMPONENTWEAPONS_H

@@ -1,19 +1,27 @@
 
-#ifndef BRAKEDA3D_MENUMANAGER_H
-#define BRAKEDA3D_MENUMANAGER_H
+#ifndef BRAKEDA3D_COMPONENTMENU_H
+#define BRAKEDA3D_COMPONENTMENU_H
 
 #include <string>
-#include "MenuOption.h"
+#include "../2D/MenuOption.h"
 #include "../Misc/cJSON.h"
+#include "Component.h"
 
 #define MAX_MENU_OPTIONS 10
 
-class MenuManager {
+class ComponentMenu : public Component {
 public:
+    void onStart();
+    void preUpdate();
+    void onUpdate();
+    void postUpdate();
+    void onEnd();
+    void onSDLPollEvent(SDL_Event *event, bool &finish);
+
     // menu background surface
     SDL_Surface *menu_background;
 
-    MenuManager();
+    ComponentMenu();
     MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
 
@@ -34,4 +42,4 @@ public:
 };
 
 
-#endif //BRAKEDA3D_MENUMANAGER_H
+#endif //BRAKEDA3D_COMPONENTMENU_H

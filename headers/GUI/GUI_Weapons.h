@@ -7,7 +7,6 @@
 #include "../Misc/Tools.h"
 #include "GUI.h"
 #include "../../imgui/imgui.h"
-#include "../2D/WeaponsManager.h"
 
 class GUI_Weapons : public GUI  {
     public:
@@ -16,9 +15,9 @@ class GUI_Weapons : public GUI  {
 
     virtual ~GUI_Weapons() {}
 
-    virtual void draw(WeaponsManager *weapon)
+    virtual void draw()
     {
-        ImGuiWindowFlags window_flags = 0;
+        /*ImGuiWindowFlags window_flags = 0;
 
         if (show) {
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
@@ -67,7 +66,7 @@ class GUI_Weapons : public GUI  {
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), (std::string("weapon currentAnimationIndex: ") + std::to_string(weapon->getCurrentWeaponType()->currentAnimationIndex)).c_str());
 
             ImGui::End();
-        }
+        }*/
     }
 };
 

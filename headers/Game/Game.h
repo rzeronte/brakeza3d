@@ -16,13 +16,7 @@ public:
     bool changeLeafType;
 
     GameInputController *controller;
-    TexturePackage *HUDTextures;
 
-    // JSON for maps and weapons
-    cJSON *mapsJSONList;
-    cJSON *weaponsJSONList;
-    cJSON *ammoTypesJSONList;
-    cJSON *enemiesJSONList;
 
     Game();
 
@@ -34,9 +28,6 @@ public:
 
     GameInputController *getController() const;
 
-    void loadHUDImages();
-
-    void mainLoop();
     void onStart();
     void preUpdate();
     void onUpdate();
@@ -50,11 +41,6 @@ public:
     void drawHUD();
     void redScreen();
     void drawMenuScreen();
-
-    // JSON setup Parsers
-    void getMapsJSON();
-    void getWeaponsJSON();
-    void getEnemiesJSON();
 
     void initBSP();
 

@@ -325,8 +325,8 @@ void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangle
     frameTriangles->emplace_back(&B->T2);
 
     if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
-        Brakeza3D::get()->drawWireframe(&B->T1);
-        Brakeza3D::get()->drawWireframe(&B->T2);
+        //Brakeza3D::get()->drawWireframe(&B->T1);
+        //Brakeza3D::get()->drawWireframe(&B->T2);
     }
 }
 

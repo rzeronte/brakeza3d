@@ -1,20 +1,46 @@
 
 #include <SDL_image.h>
-#include "../../headers/2D/WeaponsManager.h"
+#include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Components/ComponentsManager.h"
 
-WeaponsManager::WeaponsManager()
+ComponentWeapons::ComponentWeapons()
 {
     this->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
 }
 
-void WeaponsManager::addWeaponType(std::string label)
+
+void ComponentWeapons::onStart() {
+
+}
+
+void ComponentWeapons::preUpdate() {
+
+}
+
+void ComponentWeapons::onUpdate()
+{
+    this->onUpdate( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
+}
+
+void ComponentWeapons::postUpdate() {
+
+}
+
+void ComponentWeapons::onEnd() {
+
+}
+
+void ComponentWeapons::onSDLPollEvent(SDL_Event *e, bool &finish) {
+}
+
+void ComponentWeapons::addWeaponType(std::string label)
 {
     this->weaponTypes.emplace_back( new WeaponType(label) );
 }
 
-WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
+WeaponType* ComponentWeapons::getWeaponTypeByLabel(std::string label)
 {
     for (int i = 0; i < this->weaponTypes.size() ; i++) {
         if (this->weaponTypes[i]->label == label) {
@@ -25,7 +51,7 @@ WeaponType* WeaponsManager::getWeaponTypeByLabel(std::string label)
     return NULL;
 }
 
-WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
+WeaponType* ComponentWeapons::getWeaponTypeByClassname(std::string classname)
 {
     for (int i = 0; i < weaponTypes.size() ; i++) {
         if (this->weaponTypes[i]->classname == classname) {
@@ -36,12 +62,12 @@ WeaponType* WeaponsManager::getWeaponTypeByClassname(std::string classname)
     return nullptr;
 }
 
-WeaponType* WeaponsManager::getCurrentWeaponType()
+WeaponType* ComponentWeapons::getCurrentWeaponType()
 {
     return this->weaponTypes[currentWeaponIndex];
 }
 
-AmmoType *WeaponsManager::getAmmoTypeByClassname(std::string classname)
+AmmoType *ComponentWeapons::getAmmoTypeByClassname(std::string classname)
 {
     for (int i = 0; i < ammoTypes.size(); i++) {
         if (this->ammoTypes[i]->getClassname() == classname) {
@@ -52,9 +78,9 @@ AmmoType *WeaponsManager::getAmmoTypeByClassname(std::string classname)
     return nullptr;
 }
 
-void WeaponsManager::onUpdate(Camera3D *cam, SDL_Surface *dst)
+void ComponentWeapons::onUpdate(Camera3D *cam, SDL_Surface *dst)
 {
-    this->getCurrentWeaponType()->onUpdate();
+    this->getCurrentWeaponType()->onUpdate( cam );
 
     this->headBob(cam->velocity);
 
@@ -66,7 +92,7 @@ void WeaponsManager::onUpdate(Camera3D *cam, SDL_Surface *dst)
     this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
 }
 
-void WeaponsManager::headBob(Vector3D velocity)
+void ComponentWeapons::headBob(Vector3D velocity)
 {
     Vertex3D v = velocity.getComponent();
 
@@ -84,9 +110,10 @@ void WeaponsManager::headBob(Vector3D velocity)
     }
 }
 
-bool WeaponsManager::isEmptyWeapon() {
+bool ComponentWeapons::isEmptyWeapon() {
     if (this->currentWeaponIndex != 0) {
         return false;
     }
 }
+
 

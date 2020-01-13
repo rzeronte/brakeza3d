@@ -17,8 +17,8 @@ void InputController::handleMouse(SDL_Event *event)
     if (MouseMotion) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
-            Brakeza3D::get()->getCamera()->Yaw(event->motion.xrel);
-            Brakeza3D::get()->getCamera()->Pitch(event->motion.yrel);
+            //Brakeza3D::get()->getCamera3D()->Yaw(event->motion.xrel);
+            //Brakeza3D::get()->getCamera3D()->Pitch(event->motion.yrel);
         }
     }
 
@@ -29,30 +29,30 @@ void InputController::handleMouse(SDL_Event *event)
 
 void InputController::handleMovingCamera(SDL_Event *, bool &)
 {
-    if (keyboard[SDL_SCANCODE_W]) {
-        Brakeza3D::get()->getCamera()->MoveForward();
+    /*if (keyboard[SDL_SCANCODE_W]) {
+        Brakeza3D::get()->getCamera3D()->MoveForward();
     }
     if (keyboard[SDL_SCANCODE_S]) {
-        Brakeza3D::get()->getCamera()->MoveBackward();
+        Brakeza3D::get()->getCamera3D()->MoveBackward();
     }
     if (keyboard[SDL_SCANCODE_A]) {
-        Brakeza3D::get()->getCamera()->StrafeLeft();
+        Brakeza3D::get()->getCamera3D()->StrafeLeft();
     }
     if (keyboard[SDL_SCANCODE_D]) {
-        Brakeza3D::get()->getCamera()->StrafeRight();
+        Brakeza3D::get()->getCamera3D()->StrafeRight();
     }
     if (keyboard[SDL_SCANCODE_RIGHT]) {
-        Brakeza3D::get()->getCamera()->TurnRight();
+        Brakeza3D::get()->getCamera3D()->TurnRight();
     }
     if (keyboard[SDL_SCANCODE_LEFT]) {
-        Brakeza3D::get()->getCamera()->TurnLeft();
+        Brakeza3D::get()->getCamera3D()->TurnLeft();
     }
     if (keyboard[SDL_SCANCODE_DOWN]) {
-        Brakeza3D::get()->getCamera()->PitchUp();
+        Brakeza3D::get()->getCamera3D()->PitchUp();
     }
     if (keyboard[SDL_SCANCODE_UP]) {
-        Brakeza3D::get()->getCamera()->PitchDown();
-    }
+        Brakeza3D::get()->getCamera3D()->PitchDown();
+    }*/
 }
 
 void InputController::handleWindowEvents(SDL_Event *e, bool &end)

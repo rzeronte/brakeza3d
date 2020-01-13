@@ -74,7 +74,7 @@ public:
     void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile);
 
     WeaponAnimation *getCurrentWeaponAnimation();
-    void onUpdate();
+    void onUpdate(Camera3D *cam);
 
     void setWeaponAnimation(int);
 

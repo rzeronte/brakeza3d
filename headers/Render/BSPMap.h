@@ -1,7 +1,7 @@
 #ifndef _MAP_H_
 #define _MAP_H_
 
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../Objects/Triangle3D.h"
 #include "btBulletDynamicsCommon.h"
 #include "Recast.h"
@@ -201,7 +201,7 @@ private:
 
 public:
     bool loaded = false;
-
+    Camera3D *camera;
     std::vector<Triangle*> *frameTriangles;
 
     int *allSurfaces;			    // Array of full surfaces, contains an index to the surfaces
@@ -228,7 +228,7 @@ public:
     btDefaultMotionState* motionState;
     btRigidBody* bspRigidBody;
 
-    bspleaf_t *currentLeaf = NULL;
+    bspleaf_t *currentLeaf;
     char *bsp;
 
     BSPMap();
@@ -239,7 +239,7 @@ public:
 
     void setLoaded(bool loaded);
 
-    bool Initialize(const char *bspFilename, const char *paletteFilename, std::vector<Triangle*> *frameTriangles);
+    bool Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam);
 
     // Get number of edges for surface
     int getNumEdges(int surfaceId) { return getSurface(surfaceId)->numedge; }
@@ -425,7 +425,9 @@ public:
 
     Texture *getTexture(std::string name);
 
-    void init();
+    void init(Camera3D *cam);
+
+    void setFrameTriangles(std::vector<Triangle *> *frameTriangles);
 };
 
 #endif

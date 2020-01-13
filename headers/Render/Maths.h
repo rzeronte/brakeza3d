@@ -7,7 +7,7 @@
 #include "../Objects/Vector3D.h"
 #include "../Objects/Object3D.h"
 #include "../Objects/Point2D.h"
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "Texture.h"
 #include "../Objects/LightPoint3D.h"
 #include "../Objects/Triangle3D.h"

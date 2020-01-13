@@ -1,20 +1,40 @@
-#include "../../headers/Collisions/CollisionsManager.h"
+#include "../../headers/Components/ComponentCollisions.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "../../headers/Render/Engine.h"
-#include "../../headers/Collisions/CollisionResolver.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 
-CollisionsManager::CollisionsManager()
+ComponentCollisions::ComponentCollisions()
 {
 
 }
 
-void CollisionsManager::initBulletSystem()
+void ComponentCollisions::onStart() {
+    std::cout << "ComponentCollisions onStart" << std::endl;
+
+    this->initBulletSystem();
+}
+
+void ComponentCollisions::preUpdate()
+{
+}
+
+void ComponentCollisions::onUpdate()
+{
+    this->stepSimulation();
+}
+
+void ComponentCollisions::postUpdate() {
+
+}
+
+void ComponentCollisions::onEnd() {
+
+}
+
+void ComponentCollisions::onSDLPollEvent(SDL_Event *e, bool &finish) {
+}
+
+void ComponentCollisions::initBulletSystem()
 {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     this->collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -42,7 +62,7 @@ void CollisionsManager::initBulletSystem()
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
-    this->camera->kinematicController->setFallSpeed(00);
+    this->camera->kinematicController->setFallSpeed(256);
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
     this->dynamicsWorld->addAction(this->camera->kinematicController);
@@ -54,47 +74,47 @@ void CollisionsManager::initBulletSystem()
     this->makeGhostForCamera();
 }
 
-btDiscreteDynamicsWorld *CollisionsManager::getDynamicsWorld() const {
+btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
     return dynamicsWorld;
 }
 
-void CollisionsManager::setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld) {
-    CollisionsManager::dynamicsWorld = dynamicsWorld;
+void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld) {
+    ComponentCollisions::dynamicsWorld = dynamicsWorld;
 }
 
-Camera3D *CollisionsManager::getCamera() const {
+Camera3D *ComponentCollisions::getCamera() const {
     return camera;
 }
 
-void CollisionsManager::setCamera(Camera3D *camera) {
-    CollisionsManager::camera = camera;
+void ComponentCollisions::setCamera(Camera3D *camera) {
+    ComponentCollisions::camera = camera;
 }
 
-Mesh3DGhost *CollisionsManager::getTriggerCamera() const {
+Mesh3DGhost *ComponentCollisions::getTriggerCamera() const {
     return triggerCamera;
 }
 
-void CollisionsManager::setTriggerCamera(Mesh3DGhost *triggerCamera) {
-    CollisionsManager::triggerCamera = triggerCamera;
+void ComponentCollisions::setTriggerCamera(Mesh3DGhost *triggerCamera) {
+    ComponentCollisions::triggerCamera = triggerCamera;
 }
 
-BSPMap *CollisionsManager::getBspMap() const {
+BSPMap *ComponentCollisions::getBspMap() const {
     return bspMap;
 }
 
-void CollisionsManager::setBspMap(BSPMap *bspMap) {
-    CollisionsManager::bspMap = bspMap;
+void ComponentCollisions::setBspMap(BSPMap *bspMap) {
+    ComponentCollisions::bspMap = bspMap;
 }
 
-std::vector<Object3D *> *CollisionsManager::getGameObjects() const {
+std::vector<Object3D *> *ComponentCollisions::getGameObjects() const {
     return gameObjects;
 }
 
-void CollisionsManager::setGameObjects(std::vector<Object3D *> *gameObjects) {
-    CollisionsManager::gameObjects = gameObjects;
+void ComponentCollisions::setGameObjects(std::vector<Object3D *> *gameObjects) {
+    ComponentCollisions::gameObjects = gameObjects;
 }
 
-void CollisionsManager::makeGhostForCamera()
+void ComponentCollisions::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel(EngineSetup::getInstance()->cameraTriggerNameIdentifier);
@@ -105,7 +125,7 @@ void CollisionsManager::makeGhostForCamera()
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
 }
 
-bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
+bool ComponentCollisions::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
 {
     bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
     collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup & body0->getBroadphaseHandle()->m_collisionFilterMask);
@@ -113,7 +133,7 @@ bool CollisionsManager::needsCollision(const btCollisionObject* body0, const btC
     return collides;
 }
 
-void CollisionsManager::checkCollisionsForTriggerCamera()
+void ComponentCollisions::checkCollisionsForTriggerCamera()
 {
     for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
         const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
@@ -157,13 +177,15 @@ void CollisionsManager::checkCollisionsForTriggerCamera()
                 }
 
                 if (!strcmp(classname, "func_door")) {
-                    Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), std::string("func_door") );
+                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
+                    Tools::writeTextCenter( Brakeza3D::get()->renderer, CW->fontDefault, Color::white(), std::string("func_door") );
                 }
 
                 if (!strcmp(classname, "trigger_multiple")) {
+                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
                     // check for message response
                     if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter( Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
+                        Tools::writeTextCenter( Brakeza3D::get()->renderer, CW->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
                     }
                 }
             }
@@ -175,7 +197,7 @@ void CollisionsManager::checkCollisionsForTriggerCamera()
     }
 }
 
-void CollisionsManager::checkCollisionsForAll()
+void ComponentCollisions::checkCollisionsForAll()
 {
     if (!EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) return;
 
@@ -198,14 +220,14 @@ void CollisionsManager::checkCollisionsForAll()
                         getBspMap(),
                         getVisibleTriangles()
                 );
-                Brakeza3D::get()->getCollisionManager()->getCollisions().emplace_back( collisionResolver );
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back(collisionResolver );
 
             }
         }
     }
 }
 
-void CollisionsManager::updatePhysicObjects()
+void ComponentCollisions::updatePhysicObjects()
 {
     std::vector<Object3D *>::iterator it;
     for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
@@ -219,7 +241,7 @@ void CollisionsManager::updatePhysicObjects()
     this->syncTriggerGhostCamera();
 }
 
-void CollisionsManager::syncTriggerGhostCamera()
+void ComponentCollisions::syncTriggerGhostCamera()
 {
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     Vertex3D p = *camera->getPosition();
@@ -235,7 +257,7 @@ void CollisionsManager::syncTriggerGhostCamera()
     getTriggerCamera()->getGhostObject()->setWorldTransform(t);
 }
 
-Vertex3D CollisionsManager::stepSimulation()
+Vertex3D ComponentCollisions::stepSimulation()
 {
     float time = Brakeza3D::get()->getDeltaTime();
 
@@ -262,7 +284,7 @@ Vertex3D CollisionsManager::stepSimulation()
 
     if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation(time * EngineSetup::getInstance()->TESTING);
+        getDynamicsWorld()->stepSimulation(time );
 
         // Physics for meshes
         updatePhysicObjects();
@@ -279,29 +301,22 @@ Vertex3D CollisionsManager::stepSimulation()
         finalVelocity = this->camera->velocity.vertex2;
     }
 
-    return finalVelocity;
+    this->finalVelocity = finalVelocity;
 }
 
-WeaponsManager *CollisionsManager::getWeaponManager() const {
-    return weaponManager;
-}
-
-void CollisionsManager::setWeaponManager(WeaponsManager *weaponManager) {
-    CollisionsManager::weaponManager = weaponManager;
-}
-
-std::vector<Triangle *> &CollisionsManager::getVisibleTriangles() {
+std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() {
     return *visibleTriangles;
 }
 
-void CollisionsManager::setVisibleTriangles(std::vector<Triangle *> &visibleTriangles) {
-    CollisionsManager::visibleTriangles = &visibleTriangles;
+void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &visibleTriangles) {
+    ComponentCollisions::visibleTriangles = &visibleTriangles;
 }
 
-std::vector<CollisionResolver *> &CollisionsManager::getCollisions() {
+std::vector<CollisionResolver *> &ComponentCollisions::getCollisions() {
     return collisions;
 }
 
-void CollisionsManager::setCollisions(const std::vector<CollisionResolver *> &collisions) {
-    CollisionsManager::collisions = collisions;
+void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &collisions) {
+    ComponentCollisions::collisions = collisions;
 }
+

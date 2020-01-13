@@ -7,6 +7,7 @@
 #include "../Objects/Vertex3D.h"
 #include "../Physics/Body.h"
 #include "../Misc/Counter.h"
+#include "../Render/M3.h"
 
 class Enemy {
 public:

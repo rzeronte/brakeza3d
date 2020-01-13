@@ -20,9 +20,9 @@ public:
 
     std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
-    WeaponsManager *weaponManager;
+    ComponentWeapons *weaponManager;
 
-    CollisionResolverBetweenProjectileAndNPCEnemy(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, WeaponsManager *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
+    CollisionResolverBetweenProjectileAndNPCEnemy(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
         this->projectile = this->getProjectile();
         this->npcEnemy   = this->getNPCEnemy();
@@ -161,7 +161,7 @@ public:
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->cube->setPosition(*decal->getPosition());
         decal->cube->update();
-        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getCamera());
+        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         Brakeza3D::get()->addObject3D(decal, "decal");
 

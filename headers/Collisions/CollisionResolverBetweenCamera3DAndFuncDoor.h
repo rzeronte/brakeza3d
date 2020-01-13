@@ -8,7 +8,7 @@
 class CollisionResolverBetweenCamera3DAndFuncDoor : public CollisionResolver {
 public:
     Mesh3DBody *mesh;
-    Camera3D *camera;
+    ComponentCamera *camera;
     std::vector<Object3D*> *gameObjects;
 
     CollisionResolverBetweenCamera3DAndFuncDoor(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D*> *gameObjects, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
@@ -71,15 +71,15 @@ public:
         }
     }
 
-    Camera3D* getCamera()
+    ComponentCamera* getCamera()
     {
         if (objA->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objA);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objA);
             return camera;
         }
 
         if (objB->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            Camera3D *camera = dynamic_cast<Camera3D*> (this->objB);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objB);
             return camera;
         }
     }

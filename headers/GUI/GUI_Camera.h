@@ -4,7 +4,7 @@
 
 
 #include "GUI.h"
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../../imgui/imgui.h"
 
 class GUI_Camera : public GUI  {

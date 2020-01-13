@@ -90,7 +90,7 @@ void Player::newGame()
 
 void Player::respawn()
 {
-    Brakeza3D::get()->setCameraInBSPStartPosition();
+    //Brakeza3D::get()->setCameraInBSPStartPosition();
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
@@ -100,14 +100,14 @@ void Player::respawn()
 
 void Player::shoot()
 {
-    WeaponsManager* weaponsManager = Brakeza3D::get()->getWeaponsManager();
+    ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
         auto *projectile = new Projectile3DBody();
         projectile->setFromEnemy( false );
         projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
         projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
-        projectile->setPosition( *Brakeza3D::get()->getCamera()->getPosition() );
+        projectile->setPosition( *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
         projectile->getPosition()->x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->getPosition()->y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
         projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
@@ -119,8 +119,8 @@ void Player::shoot()
             1,
             Vertex3D(0.5, 0.5, 0.5),
             Brakeza3D::get()->getSceneObjects(),
-            Brakeza3D::get()->getCamera(),
-            Brakeza3D::get()->getCollisionManager()->getDynamicsWorld(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             true,
             weaponsManager->getCurrentWeaponType()->getSpeed(),
             weaponsManager->getCurrentWeaponType()->getAccuracy()
@@ -130,7 +130,7 @@ void Player::shoot()
                 weaponsManager->getCurrentWeaponType()->projectileHeight
         );
 
-        projectile->setRotation( Brakeza3D::get()->getCamera()->getRotation() );
+        projectile->setRotation(Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation() );
     }
 
     int currentWeaponAmmo = weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount();

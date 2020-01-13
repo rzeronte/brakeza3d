@@ -173,7 +173,7 @@ public:
     float MOUSE_SENSITIVITY	= 0.250;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = false;
+    bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
@@ -198,7 +198,7 @@ public:
     bool DRAW_BSP_HULLS = false;
     bool DRAW_SPRITES = true;
     bool DRAW_WEAPON = false;
-    bool DRAW_HUD = false;
+    bool DRAW_HUD = true;
 
     // BSP TEXTURES ANIMATED
     bool TRIANGLE_TEXTURES_ANIMATED = true;
@@ -301,6 +301,20 @@ public:
         SND_WEAPON_LOOP = 6,
         SND_BLOOD_HIT = 7,
         SND_CASINGS = 8
+    };
+    
+    enum ComponentID {
+        COMPONENT_WINDOW = 0,
+        COMPONENT_CAMERA = 1,
+        COMPONENT_COLLISIONS = 2,
+        COMPONENT_INPUT = 3,
+        COMPONENT_BSP = 4,
+        COMPONENT_SOUND = 5,
+        COMPONENT_RENDER = 6,
+        COMPONENT_WEAPONS = 7,
+        COMPONENT_HUD = 8,
+        COMPONENT_MENU = 9,
+        COMPONENT_GUI = 10
     };
 
 };

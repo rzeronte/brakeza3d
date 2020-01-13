@@ -3,7 +3,6 @@
 #define BRAKEDA3D_BODY_H
 
 #include <btBulletDynamicsCommon.h>
-#include "../Objects/Camera3D.h"
 
 class Body {
 

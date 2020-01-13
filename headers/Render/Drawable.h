@@ -5,7 +5,7 @@
 
 #include <SDL_surface.h>
 #include "Frustum.h"
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../Objects/Line2D.h"
 #include "../Objects/Cube3D.h"
 #include "Billboard.h"

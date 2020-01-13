@@ -62,7 +62,7 @@ bool Mesh3DGhost::CheckGhost(btPairCachingGhostObject* Ghost)
     for (int i = 0; i < PairArray.size(); i++) {
         ManifoldArray.clear();
 
-        btBroadphasePair* CollisionPair = Brakeza3D::get()->getCollisionManager()->getDynamicsWorld()->getPairCache()->findPair(PairArray[i].m_pProxy0, PairArray[i].m_pProxy1);
+        btBroadphasePair* CollisionPair = Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->getPairCache()->findPair(PairArray[i].m_pProxy0, PairArray[i].m_pProxy1);
 
         if (!CollisionPair) {
             continue;

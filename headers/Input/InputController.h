@@ -5,15 +5,15 @@
 #ifndef SDL2_3D_ENGINE_CONTROLLER_H
 #define SDL2_3D_ENGINE_CONTROLLER_H
 
-#include "../Objects/Camera3D.h"
+#include "../Components/Camera3D.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Object3D.h"
 #include "btBulletDynamicsCommon.h"
 #include "../Physics/SpriteDirectional3DBody.h"
-#include "../2D/MenuManager.h"
+#include "../Components/ComponentMenu.h"
 #include <SDL.h>
 #include "../Render/Billboard.h"
-#include "../2D/WeaponsManager.h"
+#include "../Components/ComponentWeapons.h"
 
 class InputController {
 

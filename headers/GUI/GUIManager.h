@@ -11,7 +11,7 @@
 #include "GUI_Tiles.h"
 #include "GUI_Weapons.h"
 
-class GUIManager : GUI {
+class GUIManager : public GUI {
 public:
     GUI_Menu      *guiMenu;
     GUI_Objects3D *guiInspector;
@@ -31,18 +31,17 @@ public:
         guiWeapons     = new GUI_Weapons();
     }
 
-    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, std::vector<LightPoint3D*> &lightPoints, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles, WeaponsManager *weapon)
+    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
 
         guiMenu->draw(finish, guiInspector->show, guiLightpoints->show, guiLog->show, guiCamera->show, guiTiles->show, guiWeapons->show, cam);
         guiInspector->draw(gameObjects);
-        guiLightpoints->draw(lightPoints);
         guiLog->draw(timedelta, cam, numVisibleTriangles);
         guiCamera->draw(cam);
         guiTiles->draw(cam, tiles, numTilesColumns);
-        guiWeapons->draw(weapon);
+        guiWeapons->draw();
     }
 };
 

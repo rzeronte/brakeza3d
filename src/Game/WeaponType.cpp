@@ -35,7 +35,7 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
     this->numAnimations++;
 }
 
-void WeaponType::onUpdate()
+void WeaponType::onUpdate(Camera3D *cam)
 {
     if (status != 0) {
         if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
@@ -43,14 +43,14 @@ void WeaponType::onUpdate()
         }
 
         // Light FX for Repeater
-        if (Brakeza3D::get()->getWeaponsManager()->currentWeaponIndex == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
-            Vertex3D dir = Brakeza3D::get()->getCamera()->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+        if (Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->currentWeaponIndex == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
+            Vertex3D dir = cam->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
             dir.getNormalize();
 
-            Vertex3D A = *Brakeza3D::get()->getCamera()->getPosition() + dir.getScaled(1);
-            Vertex3D B = *Brakeza3D::get()->getCamera()->getPosition() + dir.getScaled(50);
+            Vertex3D A = *cam->getPosition() + dir.getScaled(1);
+            Vertex3D B = *cam->getPosition() + dir.getScaled(50);
 
-            Drawable::drawLightning(Brakeza3D::get()->getCamera(), A, B);
+            Drawable::drawLightning( cam, A, B);
         }
 
         if (fireCounters[status].isFinished()) {
@@ -252,13 +252,13 @@ void WeaponType::setFiring(bool firing)
 
         switch (rndCasingSnd) {
             case 1:
-                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing1, EngineSetup::SoundChannels::SND_MENU, 0);
+                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing1, EngineSetup::SoundChannels::SND_MENU, 0);
                 break;
             case 2:
-                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing2, EngineSetup::SoundChannels::SND_MENU, 0);
+                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing2, EngineSetup::SoundChannels::SND_MENU, 0);
                 break;
             case 3:
-                Tools::playMixedSound( Brakeza3D::get()->getWeaponsManager()->getCurrentWeaponType()->soundCasing3, EngineSetup::SoundChannels::SND_MENU, 0);
+                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing3, EngineSetup::SoundChannels::SND_MENU, 0);
                 break;
         }
     }

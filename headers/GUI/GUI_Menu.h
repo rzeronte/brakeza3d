@@ -7,6 +7,7 @@
 #include "../../imgui/imgui.h"
 #include "../Misc/cJSON.h"
 #include "../Render/Logging.h"
+#include "../EngineSetup.h"
 
 class GUI_Menu : public GUI  {
 public:
