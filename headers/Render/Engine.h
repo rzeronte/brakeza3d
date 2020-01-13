@@ -43,38 +43,11 @@ public:
 
     // Exit
     bool finish = false;
-
-
     Engine();
-    void Close();
-
 
     // resolve collision
     virtual void resolveCollisions();
 
-    // Window update
-    void updateWindow();
-
-    // Triangle recollector
-    void getBSPTriangles();
-    void getObjectsTriangles();
-
-    // Object's axis
-    void drawSceneObjectsAxis();
-
-    // Triangles filter
-    void hiddenSurfaceRemoval();
-
-    // TODO: erase
-    //void objects3DShadowMapping();
-    //void clearLightPointsShadowMappings();
-
-    // update GUI data
-    void updateGUI();
-
-    // OpenCL Rasterization
-    void OpenCLInfo();
-    void handleOpenCLTriangles();
 };
 
 #endif //SDL2_3D_ENGINE_ENGINE_H

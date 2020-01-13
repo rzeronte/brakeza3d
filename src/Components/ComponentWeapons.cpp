@@ -3,7 +3,7 @@
 #include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
 
 ComponentWeapons::ComponentWeapons()
 {
@@ -12,6 +12,7 @@ ComponentWeapons::ComponentWeapons()
 
 
 void ComponentWeapons::onStart() {
+    std::cout << "ComponentWeapons onStart" << std::endl;
 
 }
 

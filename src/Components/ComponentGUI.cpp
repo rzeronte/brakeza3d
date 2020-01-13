@@ -2,20 +2,23 @@
 // Created by darkhead on 13/1/20.
 //
 
-#include "ComponentGUI.h"
+#include "../../headers/Components/ComponentGUI.h"
 #include "../../imgui/imgui.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"
-#include "../Brakeza3D.h"
+#include "../../headers/Brakeza3D.h"
 
-ComponentGUI::ComponentGUI()
+ComponentGUI::ComponentGUI(bool &finish): finish(finish)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    this->managerGUI = new GUIManager();
 }
 
 void ComponentGUI::onStart()
 {
+    std::cout << "ComponentGUI onStart" << std::endl;
+
     ImGui_ImplSDL2_InitForOpenGL(window, contextOpenGL);
     ImGui_ImplOpenGL2_Init();
 
@@ -35,15 +38,13 @@ void ComponentGUI::preUpdate()
 
 void ComponentGUI::onUpdate()
 {
-    return;
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame( window );
 
     ImGui::NewFrame();
-    bool f = false;
-    getManagerGui()->draw(
+    getManagerGUI()->draw(
             Brakeza3D::get()->getDeltaTime(),
-            f,
+            finish,
             Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles, Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth,
@@ -61,8 +62,9 @@ void ComponentGUI::onEnd() {
 
 }
 
-void ComponentGUI::onSDLPollEvent(SDL_Event *event, bool &finish) {
-
+void ComponentGUI::onSDLPollEvent(SDL_Event *event, bool &finish)
+{
+    ImGui_ImplSDL2_ProcessEvent(event);
 }
 
 SDL_Window *ComponentGUI::getWindow() const {
@@ -89,11 +91,11 @@ void ComponentGUI::setContextOpenGl(SDL_GLContext *contextOpenGl) {
     contextOpenGL = contextOpenGl;
 }
 
-GUIManager *ComponentGUI::getManagerGui() const {
+GUIManager *ComponentGUI::getManagerGUI() const {
     return managerGUI;
 }
 
-void ComponentGUI::setManagerGui(GUIManager *managerGui) {
-    managerGUI = managerGui;
+void ComponentGUI::setFinish(bool &finish) {
+    ComponentGUI::finish = finish;
 }
 

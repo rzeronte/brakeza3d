@@ -3,7 +3,7 @@
 //
 
 #include "../../headers/Components/ComponentHUD.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
 
 ComponentHUD::ComponentHUD()
 {
@@ -12,6 +12,8 @@ ComponentHUD::ComponentHUD()
 
 void ComponentHUD::onStart()
 {
+    std::cout << "ComponentHUD onStart" << std::endl;
+
     this->loadImages();
 }
 

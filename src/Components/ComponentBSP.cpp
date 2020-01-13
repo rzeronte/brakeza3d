@@ -6,7 +6,7 @@
 #include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/EngineBuffers.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
 
 ComponentBSP::ComponentBSP(Camera3D *cam)
 {

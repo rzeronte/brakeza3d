@@ -9,15 +9,16 @@
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"
 
-ComponentWindow::ComponentWindow() {
+ComponentWindow::ComponentWindow()
+{
+    this->initWindow();
+    this->initFontsTTF();
 
 }
 
 void ComponentWindow::onStart() {
     std::cout << "ComponentWindow onStart" << std::endl;
 
-    this->initWindow();
-    this->initFontsTTF();
 }
 
 void ComponentWindow::preUpdate() {
@@ -42,8 +43,16 @@ void ComponentWindow::postUpdate()
 
 }
 
-void ComponentWindow::onEnd() {
+void ComponentWindow::onEnd()
+{
+    TTF_CloseFont( fontDefault );
+    TTF_CloseFont( fontSmall );
+    TTF_CloseFont( fontBig );
+    TTF_CloseFont( fontMedium );
+    SDL_DestroyWindow( window );
+    SDL_Quit();
 
+    std::cout << std::endl << "Brakeza3D exit, good bye ;)" << std::endl;
 }
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {

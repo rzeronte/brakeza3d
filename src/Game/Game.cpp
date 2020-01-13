@@ -178,8 +178,6 @@ void Game::preUpdate()
 
 void Game::onEnd()
 {
-    //Engine::onEnd();
-    Close();
 }
 
 void Game::onUpdateInputController()
@@ -259,7 +257,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles()
@@ -274,7 +272,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles()
@@ -289,7 +287,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getVisibleTriangles()
             );
             resolver->dispatch();
@@ -302,7 +300,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getVisibleTriangles()
             );
             resolver->dispatch();
@@ -315,7 +313,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles()
@@ -330,7 +328,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles(),
@@ -346,7 +344,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles()
@@ -361,7 +359,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles(),
@@ -377,7 +375,7 @@ void Game::resolveCollisions()
                     collision->objA,
                     collision->objB,
                     cm->getBspMap(),
-                    cm->getGameObjects(),
+                    cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles(),

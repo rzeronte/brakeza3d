@@ -2,14 +2,14 @@
 #define BRAKEDA3D_COMPONENTSMANAGER_H
 
 #include <iostream>
-#include "Component.h"
-#include "ComponentCamera.h"
-#include "ComponentCollisions.h"
-#include "../GUI/GUIManager.h"
-#include "ComponentBSP.h"
-#include "ComponentHUD.h"
-#include "ComponentGUI.h"
-#include "ComponentRender.h"
+#include "Components/Component.h"
+#include "Components/ComponentCamera.h"
+#include "Components/ComponentCollisions.h"
+#include "GUI/GUIManager.h"
+#include "Components/ComponentBSP.h"
+#include "Components/ComponentHUD.h"
+#include "Components/ComponentGUI.h"
+#include "Components/ComponentRender.h"
 
 class ComponentsManager {
 public:

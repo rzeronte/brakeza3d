@@ -1,6 +1,7 @@
 #ifndef BRAKEDA3D_PARALLELLS_H
 #define BRAKEDA3D_PARALLELLS_H
 
+
 void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
     //Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
@@ -20,7 +21,7 @@ void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTri
 
 void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
 {
-    //Brakeza3D::get()->drawTileTriangles(i, *visibleTriangles);
+    ComponentsManager::get()->getComponentRender()->drawTileTriangles(i, *visibleTriangles);
 }
 
 

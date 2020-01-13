@@ -106,14 +106,6 @@ void ComponentCollisions::setBspMap(BSPMap *bspMap) {
     ComponentCollisions::bspMap = bspMap;
 }
 
-std::vector<Object3D *> *ComponentCollisions::getGameObjects() const {
-    return gameObjects;
-}
-
-void ComponentCollisions::setGameObjects(std::vector<Object3D *> *gameObjects) {
-    ComponentCollisions::gameObjects = gameObjects;
-}
-
 void ComponentCollisions::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
@@ -178,14 +170,14 @@ void ComponentCollisions::checkCollisionsForTriggerCamera()
 
                 if (!strcmp(classname, "func_door")) {
                     auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
-                    Tools::writeTextCenter( Brakeza3D::get()->renderer, CW->fontDefault, Color::white(), std::string("func_door") );
+                    Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string("func_door") );
                 }
 
                 if (!strcmp(classname, "trigger_multiple")) {
                     auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
                     // check for message response
                     if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter( Brakeza3D::get()->renderer, CW->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
+                        Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
                     }
                 }
             }
@@ -230,7 +222,7 @@ void ComponentCollisions::checkCollisionsForAll()
 void ComponentCollisions::updatePhysicObjects()
 {
     std::vector<Object3D *>::iterator it;
-    for (it = gameObjects->begin(); it != gameObjects->end(); it++) {
+    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
         Body *body = dynamic_cast<Body*> (*it);
         if ( body != nullptr ) {
             if ( !body->bodyEnabled ) continue;

@@ -9,7 +9,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Maths.h"
-#include "../../headers/Components/ComponentsManager.h"
+#include "../../headers/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
 
 Triangle::Triangle()

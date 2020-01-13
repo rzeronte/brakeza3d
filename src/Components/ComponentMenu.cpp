@@ -97,7 +97,7 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
 
         auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
 
-        Tools::writeTextCenterHorizontal( Brakeza3D::get()->renderer, CW->fontSmall, color, text, offsetY);
+        Tools::writeTextCenterHorizontal( CW->renderer, CW->fontSmall, color, text, offsetY);
 
         offsetY += stepY;
     }

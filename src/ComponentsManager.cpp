@@ -2,7 +2,7 @@
 // Created by darkhead on 12/1/20.
 //
 
-#include "../../headers/Components/ComponentsManager.h"
+#include "../headers/ComponentsManager.h"
 
 ComponentsManager* ComponentsManager::instance = 0;
 

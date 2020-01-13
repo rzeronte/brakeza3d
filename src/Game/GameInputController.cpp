@@ -54,7 +54,7 @@ void GameInputController::handleMovingCamera(SDL_Event *event, bool &end)
 
 void GameInputController::handleInGameInput(SDL_Event *event, bool &end)
 {
-    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
+    /*if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
         EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
 
         if (!EngineSetup::getInstance()->MENU_ACTIVE) {
@@ -73,7 +73,7 @@ void GameInputController::handleInGameInput(SDL_Event *event, bool &end)
         }
 
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
-    }
+    }*/
 
     handleMenuKeyboard(end);
 

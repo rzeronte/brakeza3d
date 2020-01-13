@@ -33,11 +33,10 @@ void Brakeza3D::start()
     componentRender     = new ComponentRender();
     componentMenu       = new ComponentMenu();
     componentHUD        = new ComponentHUD();
-    componentGUI        = new ComponentGUI();
+    componentGUI        = new ComponentGUI(finish );
 
     componentCollisions->setBspMap( componentBSP->getBsp() );
     componentCollisions->setCamera( componentCamera->getCamera() );
-    componentCollisions->setGameObjects( &Brakeza3D::get()->getSceneObjects() );
     componentCollisions->setVisibleTriangles( componentRender->getVisibleTriangles() );
 
     componentBSP->getBsp()->setFrameTriangles( &componentRender->getFrameTriangles() );
@@ -58,15 +57,7 @@ void Brakeza3D::start()
     componentsManager->registerComponent( componentMenu, &getSceneObjects() );
     componentsManager->registerComponent( componentGUI, &getSceneObjects() );
 
-
-    guiManager = new GUIManager();
-    Logging::getInstance()->setGUILog(guiManager->guiLog );
-
-    onStartComponents();
-
-    setup = EngineSetup::getInstance();
-
-    engineTimer.start();
+    Logging::getInstance()->setGUILog(componentGUI->getManagerGUI()->guiLog );
 
     mainLoop();
 }
@@ -76,10 +67,12 @@ void Brakeza3D::mainLoop()
     ImGuiIO& io = ImGui::GetIO();
     SDL_Event e;
 
-    while ( !finish )
-    {
+    engineTimer.start();
+
+    onStartComponents();
+
+    while ( !finish ) {
         this->updateTimer();
-        this->updateFPS();
 
         preUpdateComponents();
 
@@ -114,11 +107,6 @@ Object3D* Brakeza3D::getObjectByLabel(std::string label)
     }
 }
 
-GUIManager *Brakeza3D::getGUIManager()
-{
-    return guiManager;
-}
-
 Timer* Brakeza3D::getTimer()
 {
     return &this->engineTimer;
@@ -132,6 +120,8 @@ void Brakeza3D::updateTimer()
 
     frameTime += deltaTime;
     executionTime += deltaTime / 1000.f;
+
+    updateFPS();
 }
 
 float Brakeza3D::getDeltaTime()
@@ -141,16 +131,16 @@ float Brakeza3D::getDeltaTime()
 
 void Brakeza3D::updateFPS()
 {
-    if (!this->setup->DRAW_FPS) return;
+    if (!EngineSetup::getInstance()->DRAW_FPS) return;
 
     ++fpsFrameCounter;
-    if (Brakeza3D::get()->frameTime > 1000) {
+    if (frameTime > 1000) {
         fps = fpsFrameCounter;
         frameTime = 0;
         fpsFrameCounter = 0;
     }
 
-    //Tools::writeTextCenterHorizontal(renderer, fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
+    Tools::writeTextCenterHorizontal(getComponentsManager()->getComponentWindow()->renderer, getComponentsManager()->getComponentWindow()->fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
 }
 
 void Brakeza3D::onStartComponents() {

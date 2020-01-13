@@ -27,7 +27,6 @@ public:
     Camera3D *camera;
     Mesh3DGhost *triggerCamera;
     BSPMap *bspMap;
-    std::vector<Object3D*> *gameObjects;
     std::vector<Triangle *> *visibleTriangles;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
@@ -61,9 +60,6 @@ public:
 
     BSPMap *getBspMap() const;
     void setBspMap(BSPMap *bspMap);
-
-    std::vector<Object3D *> *getGameObjects() const;
-    void setGameObjects(std::vector<Object3D *> *gameObjects);
 
     std::vector<Triangle *> &getVisibleTriangles();
     void setVisibleTriangles(std::vector<Triangle *> &visibleTriangles);

@@ -11,7 +11,7 @@
 
 class ComponentGUI : public Component {
 public:
-    ComponentGUI();
+    ComponentGUI(bool &finish);
 
     void onStart();
     void preUpdate();
@@ -25,6 +25,8 @@ public:
     SDL_GLContext *contextOpenGL;
     GUIManager    *managerGUI;
 
+    bool& finish;
+
     SDL_Window   *getWindow() const;
     void         setWindow(SDL_Window *window);
 
@@ -34,9 +36,9 @@ public:
     SDL_GLContext *getContextOpenGl() const;
     void           setContextOpenGl(SDL_GLContext *contextOpenGl);
 
-    GUIManager *getManagerGui() const;
+    GUIManager *getManagerGUI() const;
 
-    void setManagerGui(GUIManager *managerGui);
+    void setFinish(bool &finish);
 };
 
 
