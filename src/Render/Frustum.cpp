@@ -6,6 +6,7 @@
 #include "../../headers/Render/Frustum.h"
 #include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Transforms.h"
+#include "../../headers/EngineSetup.h"
 
 Frustum::Frustum() {}
 

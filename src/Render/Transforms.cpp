@@ -1,5 +1,6 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Misc/Tools.h"
+#include "../../headers/EngineSetup.h"
 
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
 {
@@ -92,7 +93,7 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
     return T;
 }
 
-Vertex3D Transforms::cameraToWorld(Vertex3D &V,  Camera3D *cam)
+Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam)
 {
     Vertex3D A;
 

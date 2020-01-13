@@ -36,8 +36,8 @@ include_directories(
 
 add_executable(brakeza3d
         main.cpp
-        src/Objects/Camera3D.cpp
-        headers/Objects/Camera3D.h
+        src/Components/ComponentCamera.cpp
+        headers/Components/ComponentCamera.h
         src/Input/InputController.cpp
         headers/Input/InputController.h
         src/Objects/Mesh3D.cpp
@@ -141,22 +141,22 @@ add_executable(brakeza3d
         src/Misc/cJSON.c
         src/Physics/SpriteDirectional3DBody.cpp
         headers/Physics/SpriteDirectional3DBody.h
-        src/2D/WeaponsManager.cpp
-        headers/2D/WeaponsManager.h
+        src/Components/ComponentWeapons.cpp
+        headers/Components/ComponentWeapons.h
         src/2D/WeaponAnimation.cpp
         headers/2D/WeaponAnimation.h
         src/Game/WeaponType.cpp
         headers/Game/WeaponType.h
-        src/2D/MenuManager.cpp
-        headers/2D/MenuManager.h
+        src/Components/ComponentMenu.cpp
+        headers/Components/ComponentMenu.h
         src/2D/MenuOption.cpp
         headers/2D/MenuOption.h
         src/Game/Enemy.cpp
         headers/Game/Enemy.h
         src/Brakeza3D.cpp
         headers/Brakeza3D.h
-        src/Collisions/CollisionsManager.cpp
-        headers/Collisions/CollisionsManager.h
+        src/Components/ComponentCollisions.cpp
+        headers/Components/ComponentCollisions.h
         src/Game/NPCEnemyBody.cpp
         headers/Game/NPCEnemyBody.h
         src/Collisions/CollisionResolver.cpp
@@ -202,7 +202,7 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h)
+        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h src/Components/Component.cpp headers/Components/Component.h src/Components/ComponentRender.cpp headers/Components/ComponentRender.h src/Components/ComponentWindow.cpp headers/Components/ComponentWindow.h src/Components/ComponentInput.cpp headers/Components/ComponentInput.h src/Components/ComponentSound.cpp headers/Components/ComponentSound.h src/Components/ComponentBSP.cpp headers/Components/ComponentBSP.h src/Components/Camera3D.cpp headers/Components/Camera3D.h src/Components/ComponentHUD.cpp headers/Components/ComponentHUD.h src/Components/ComponentsManager.cpp headers/Components/ComponentsManager.h headers/Components/ComponentGUI.cpp headers/Components/ComponentGUI.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
