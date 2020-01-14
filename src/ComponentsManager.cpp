@@ -33,4 +33,19 @@ void ComponentsManager::registerComponent(Component *component, std::vector<Obje
     std::cout << "Register component ("<< components.size()  << ")" << std::endl;
 }
 
+void ComponentsManager::configureComponents()
+{
+    getComponentBSP()->setCamera( getComponentCamera()->getCamera() );
+
+    getComponentCollisions()->setBspMap( getComponentBSP()->getBSP() );
+    getComponentCollisions()->setCamera( getComponentCamera()->getCamera() );
+    getComponentCollisions()->setVisibleTriangles( getComponentRender()->getVisibleTriangles() );
+
+    getComponentBSP()->getBSP()->setFrameTriangles(&getComponentRender()->getFrameTriangles() );
+
+    getComponentGUI()->setRenderer( getComponentWindow()->renderer );
+    getComponentGUI()->setWindow( getComponentWindow()->window );
+    getComponentGUI()->setContextOpenGl( &getComponentWindow()->contextOpenGL );
+}
+
 

@@ -3,7 +3,7 @@
 
 #include <string>
 #include <SDL.h>
-#include "../Render/Timer.h"
+#include "../Misc/Timer.h"
 
 #define WEAPON_ANIMATION_MAX_FRAMES 30
 

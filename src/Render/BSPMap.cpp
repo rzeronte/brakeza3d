@@ -10,7 +10,6 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Engine.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/EngineBuffers.h"

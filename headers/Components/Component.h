@@ -8,12 +8,16 @@
 #include <SDL.h>
 #include <vector>
 #include "../Objects/Object3D.h"
+#include "../EngineSetup.h"
 
 class Component {
 private:
-    std::vector<Object3D*>   *sceneObjects;
-
+    std::vector<Object3D*> *sceneObjects;
+protected:
+    EngineSetup   *SETUP;
 public:
+    Component();
+
     virtual void onStart() = 0;
     virtual void preUpdate() = 0;
     virtual void onUpdate() = 0;

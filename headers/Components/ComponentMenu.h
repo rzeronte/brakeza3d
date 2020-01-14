@@ -38,7 +38,7 @@ public:
     cJSON *optionsJSON;
 
     void drawOptions(SDL_Surface *dst);
-    void getOptionsJSON();
+    void loadMenuOptions();
 };
 
 

@@ -5,7 +5,7 @@
 #include <SDL_surface.h>
 #include <SDL_audio.h>
 #include <SDL_mixer.h>
-#include "Render/Timer.h"
+#include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Game/NPCEnemyBody.h"
 #include "Misc/SoundPackage.h"
@@ -38,7 +38,7 @@ public:
     Sprite3D                   *goreDecalTemplates;
     Sprite3D                   *bloodTemplates;
     Sprite3D                   *gibsTemplate;
-    std::vector<NPCEnemyBody*> enemyTemplates;
+    std::vector<NPCEnemyBody*>  enemyTemplates;
 
     // Fire colors for menu fire effect
     Uint32 fireColors[37];

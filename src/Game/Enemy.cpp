@@ -1,6 +1,5 @@
 
 #include "../../headers/Game/Enemy.h"
-#include "../../headers/Render/Engine.h"
 
 Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0)
 {

@@ -7,7 +7,6 @@
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
 #include "Components/ComponentCollisions.h"
-#include "Input/InputController.h"
 #include "GUI/GUIManager.h"
 #include "Collisions/CollisionResolver.h"
 #include "EngineBuffers.h"
@@ -20,13 +19,15 @@
 #include "Components/ComponentHUD.h"
 #include "ComponentsManager.h"
 #include "Components/ComponentGUI.h"
+#include "Components/ComponentGame.h"
+#include "Components/ComponentGameInput.h"
 #include <thread>
 
 class Brakeza3D {
 private:
     std::vector<Object3D*> sceneObjects;
 
-    ComponentsManager *componentsManager;
+    ComponentsManager   *componentsManager;
 
     ComponentCamera     *componentCamera;
     ComponentCollisions *componentCollisions;
@@ -39,6 +40,8 @@ private:
     ComponentRender     *componentRender;
     ComponentHUD        *componentHUD;
     ComponentGUI        *componentGUI;
+    ComponentGame       *componentGame;
+    ComponentGameInput  *componentGameInput;
 
     Timer engineTimer;
 
@@ -63,10 +66,10 @@ public:
 
     float currentFadePercent = 1;
 
+    void                    start();
     void                    addObject3D(Object3D *obj, std::string label);
     std::vector<Object3D*> &getSceneObjects();
     Object3D*               getObjectByLabel(std::string label);
-    void                    start();
 
     Timer* getTimer();
     void   updateTimer();

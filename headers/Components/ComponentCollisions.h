@@ -13,16 +13,17 @@
 #include "Component.h"
 
 class ComponentCollisions : public Component {
-private:
-    std::vector<CollisionResolver*> collisions;
-
 public:
+    ComponentCollisions();
+
     void onStart();
     void preUpdate();
     void onUpdate();
     void postUpdate();
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
+
+    std::vector<CollisionResolver*> collisions;
 
     Camera3D *camera;
     Mesh3DGhost *triggerCamera;
@@ -41,8 +42,6 @@ public:
     PhysicsDebugDraw* debugDraw;
 
     Vertex3D finalVelocity;
-
-    ComponentCollisions();
 
     void initBulletSystem();
     void makeGhostForCamera();

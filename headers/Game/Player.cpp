@@ -1,8 +1,6 @@
 
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
-#include "../EngineBuffers.h"
-#include "Game.h"
 
 Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)
 {
@@ -85,7 +83,10 @@ void Player::newGame()
 {
     setLives(defaultLives);
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    Game::get()->initBSP();
+    EngineSetup::getInstance()->MENU_ACTIVE = false;
+    EngineSetup::getInstance()->DRAW_WEAPON = true;
+    EngineSetup::getInstance()->DRAW_HUD = true;
+    this->state = PlayerState::LIVE;
 }
 
 void Player::respawn()
@@ -163,7 +164,8 @@ float Player::getOxygen() const {
     return oxygen;
 }
 
-void Player::setOxygen(float air) {
+void Player::setOxygen(float air)
+{
     if (air < 0) {
         this->takeDamage(this->stamina);
         return;

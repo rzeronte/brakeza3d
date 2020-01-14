@@ -5,7 +5,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "../Render/Timer.h"
+#include "../Misc/Timer.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "Body.h"
 

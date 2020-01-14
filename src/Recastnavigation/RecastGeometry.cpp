@@ -1,7 +1,5 @@
 #include "../../headers/Recastnavigation/RecastGeometry.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Engine.h"
 
 RecastGeometry::RecastGeometry() {
     m_mesh = new RecastGeometryLoader;

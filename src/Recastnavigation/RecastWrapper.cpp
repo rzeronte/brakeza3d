@@ -8,7 +8,6 @@
 #include "../../headers/Recastnavigation/RecastWrapper.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Brakeza3D.h"
 
@@ -413,8 +412,8 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
 {
     points.clear();
 
-    startV = Transforms::objectToLocal(startV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp());
-    endV   = Transforms::objectToLocal(endV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp());
+    startV = Transforms::objectToLocal(startV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP());
+    endV   = Transforms::objectToLocal(endV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP());
 
     startV.saveToFloat3(m_spos);
     endV.saveToFloat3(m_epos);
@@ -556,7 +555,7 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
             if (m_nsmoothPath < MAX_SMOOTH)
             {
                 Vertex3D nV = Vertex3D(iterPos);
-                Transforms::objectSpace( nV, nV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp() );
+                Transforms::objectSpace( nV, nV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP() );
                 points.push_back(nV);
 
                 dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
@@ -568,8 +567,8 @@ void RecastWrapper::getPathBetween(Vertex3D startV, Vertex3D endV, std::vector<V
 
 bool RecastWrapper::rayCasting(Vertex3D A, Vertex3D B)
 {
-    Vertex3D startV = Transforms::objectToLocal(A, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp());
-    Vertex3D endV   = Transforms::objectToLocal(B, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp());
+    Vertex3D startV = Transforms::objectToLocal(A, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP());
+    Vertex3D endV   = Transforms::objectToLocal(B, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP());
 
     startV.saveToFloat3(m_spos);
     endV.saveToFloat3(m_epos);
@@ -643,7 +642,7 @@ void RecastWrapper::drawNavMeshPoints()
         const float z = (orig[2] + v[2]*cs);
 
         Vertex3D tmpV = Vertex3D(x, y, z);
-        Transforms::objectSpace(tmpV, tmpV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBsp());
+        Transforms::objectSpace(tmpV, tmpV, Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSP());
         Drawable::drawVertex(tmpV, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color::red());
     }
 }

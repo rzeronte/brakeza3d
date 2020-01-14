@@ -3,7 +3,7 @@
 #define BRAKEDA3D_TEXTUREANIMATIONDIRECTIONAL_H
 
 #include "../Render/Texture.h"
-#include "../Render/Timer.h"
+#include "../Misc/Timer.h"
 
 #define ANIMATION2D_MAX_FRAMES 10
 

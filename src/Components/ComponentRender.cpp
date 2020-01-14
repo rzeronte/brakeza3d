@@ -31,39 +31,37 @@ void ComponentRender::onUpdate()
     this->getObjectsTriangles();
     this->hiddenSurfaceRemoval();
 
-    EngineSetup *setup = EngineSetup::getInstance();
-
-    if (setup->BASED_TILE_RENDER) {
+    if (SETUP->BASED_TILE_RENDER) {
         this->handleTrianglesToTiles(visibleTriangles);
 
         this->drawTilesTriangles(&visibleTriangles);
 
-        if (setup->DRAW_TILES_GRID) {
+        if (SETUP->DRAW_TILES_GRID) {
             this->drawTilesGrid();
         }
     } else {
-        if (!setup->RASTERIZER_OPENCL) {
+        if (!SETUP->RASTERIZER_OPENCL) {
             this->drawFrameTriangles(visibleTriangles);
         } else {
             this->handleOpenCLTriangles();
         }
     }
 
-    if (setup->BULLET_DEBUG_MODE) {
+    if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
     }
 
-    if (setup->RENDER_OBJECTS_AXIS) {
+    if (SETUP->RENDER_OBJECTS_AXIS) {
         this->drawSceneObjectsAxis();
     }
 
     auto *componentCamera = dynamic_cast<ComponentCamera*>(getComponentId(EngineSetup::ComponentID::COMPONENT_CAMERA));
 
-    if (setup->DRAW_FRUSTUM) {
+    if (SETUP->DRAW_FRUSTUM) {
         Drawable::drawFrustum(componentCamera->getCamera()->frustum, componentCamera->getCamera(), true, true, true);
     }
 
-    if (setup->RENDER_MAIN_AXIS) {
+    if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(componentCamera->getCamera() );
     }
 }
@@ -90,12 +88,11 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
 
 void ComponentRender::getBSPTriangles()
 {
+    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded() ) {
+        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf(ComponentsManager::get()->getComponentCamera()->getCamera() );
 
-    if ( ComponentsManager::get()->getComponentBSP()->getBsp()->isLoaded() ) {
-        ComponentsManager::get()->getComponentBSP()->getBsp()->DrawVisibleLeaf( ComponentsManager::get()->getComponentCamera()->getCamera() );
-
-        if (EngineSetup::getInstance()->DRAW_BSP_HULLS) {
-            ComponentsManager::get()->getComponentBSP()->getBsp()->DrawHulls( ComponentsManager::get()->getComponentCamera()->getCamera() );
+        if (SETUP->DRAW_BSP_HULLS) {
+            ComponentsManager::get()->getComponentBSP()->getBSP()->DrawHulls(ComponentsManager::get()->getComponentCamera()->getCamera() );
         }
     }
 }
@@ -128,8 +125,8 @@ void ComponentRender::getObjectsTriangles()
             oSpriteDirectional->updateTrianglesCoordinates( ComponentsManager::get()->getComponentCamera()->getCamera() );
             Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
 
-            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSpriteDirectional->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+            if (SETUP->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSpriteDirectional->getPosition(), SETUP->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
             continue;
         }
@@ -140,8 +137,8 @@ void ComponentRender::getObjectsTriangles()
             oSprite->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
             Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
 
-            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSprite->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oSprite->getLabel());
+            if (SETUP->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSprite->getPosition(), SETUP->TEXT_3D_COLOR, oSprite->getLabel());
             }
             continue;
         }
@@ -156,11 +153,11 @@ void ComponentRender::getObjectsTriangles()
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
         if (oMesh != nullptr) {
             oMesh->draw( &this->frameTriangles) ;
-            if (EngineSetup::getInstance()->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oMesh->getPosition(), EngineSetup::getInstance()->TEXT_3D_COLOR, oMesh->getLabel());
+            if (SETUP->TEXT_ON_OBJECT3D) {
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oMesh->getPosition(), SETUP->TEXT_3D_COLOR, oMesh->getLabel());
             }
 
-            if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+            if (SETUP->DRAW_DECAL_WIREFRAMES) {
                 Decal *oDecal = dynamic_cast<Decal*> (oMesh);
                 if (oDecal != NULL) {
                     oDecal->cube->draw( &this->frameTriangles );
@@ -175,8 +172,7 @@ void ComponentRender::hiddenSurfaceRemoval()
 {
     visibleTriangles.clear();
 
-    Camera3D     *cam   = ComponentsManager::get()->getComponentCamera()->getCamera();
-    EngineSetup  *setup = EngineSetup::getInstance();
+    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     for (int i = 0; i < this->frameTriangles.size() ; i++) {
 
@@ -192,8 +188,8 @@ void ComponentRender::hiddenSurfaceRemoval()
         bool needClipping = false;
         if (this->frameTriangles[i]->testForClipping(
                 cam->frustum->planes,
-                setup->LEFT_PLANE,
-                setup->BOTTOM_PLANE
+                SETUP->LEFT_PLANE,
+                SETUP->BOTTOM_PLANE
         )) {
             needClipping = true;
         }
@@ -202,8 +198,8 @@ void ComponentRender::hiddenSurfaceRemoval()
             this->frameTriangles[i]->clipping(
                     cam,
                     cam->frustum->planes,
-                    setup->LEFT_PLANE,
-                    setup->BOTTOM_PLANE,
+                    SETUP->LEFT_PLANE,
+                    SETUP->BOTTOM_PLANE,
                     frameTriangles[i]->parent,
                     visibleTriangles,
                     frameTriangles[i]->isBSP
@@ -229,11 +225,11 @@ void ComponentRender::hiddenSurfaceRemoval()
         this->frameTriangles[i]->updateFullArea();
         this->frameTriangles[i]->updateUVCache();
 
-        if (EngineSetup::getInstance()->RASTERIZER_OPENCL) {
+        if (SETUP->RASTERIZER_OPENCL) {
             EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
         }
 
-        if (this->frameTriangles[i]->fullArea < setup->MIN_TRIANGLE_AREA) {
+        if (this->frameTriangles[i]->fullArea < SETUP->MIN_TRIANGLE_AREA) {
             continue;
         }
 
@@ -241,7 +237,7 @@ void ComponentRender::hiddenSurfaceRemoval()
         this->visibleTriangles.emplace_back(this->frameTriangles[i]);
     }
 
-    if (EngineSetup::getInstance()->DEBUG_RENDER_INFO) {
+    if (SETUP->DEBUG_RENDER_INFO) {
         Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) + ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()));
     }
 
@@ -278,7 +274,7 @@ void ComponentRender::handleOpenCLTriangles()
     clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
 
     clSetKernelArg(processAllTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(processAllTriangles, 1, sizeof(int), &EngineSetup::getInstance()->screenWidth);
+    clSetKernelArg(processAllTriangles, 1, sizeof(int), &SETUP->screenWidth);
     clSetKernelArg(processAllTriangles, 2, sizeof(cl_mem), (void *)&opencl_buffer_video);
     clSetKernelArg(processAllTriangles, 3, sizeof(cl_mem), (void *)&opencl_buffer_depth);
 
@@ -328,25 +324,23 @@ void ComponentRender::drawFrameTriangles(std::vector<Triangle*> &visibleTriangle
 
 void ComponentRender::processTriangle(Triangle *t)
 {
-    EngineSetup *setup = EngineSetup::getInstance();
-
     // degradate
-    if (t->getTexture() != NULL && setup->TRIANGLE_MODE_TEXTURIZED) {
+    if (t->getTexture() != NULL && SETUP->TRIANGLE_MODE_TEXTURIZED) {
         triangleRasterizer(t);
     }
 
     // texture
-    if (setup->TRIANGLE_MODE_COLOR_SOLID) {
+    if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
         triangleRasterizer(t);
     }
 
     // wireframe
-    if (setup->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && setup->DRAW_DECAL_WIREFRAMES)) {
+    if (SETUP->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && SETUP->DRAW_DECAL_WIREFRAMES)) {
         drawWireframe(t);
     }
 
     // Pixels
-    if (setup->TRIANGLE_MODE_PIXELS ) {
+    if (SETUP->TRIANGLE_MODE_PIXELS ) {
         Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
         Drawable::drawVertex(t->Co, CC, Color::red());
         Drawable::drawVertex(t->Bo, CC, Color::green());
@@ -377,7 +371,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
 
     float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
 
-    int screenWidth = EngineSetup::getInstance()->screenWidth;
+    int screenWidth = SETUP->screenWidth;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -406,8 +400,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
 
                     lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
                     lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
-
-
+                    
                     this->processPixel(
                             t,
                             bufferIndex,
@@ -437,19 +430,18 @@ void ComponentRender::triangleRasterizer(Triangle *t)
 void ComponentRender::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
 {
     Uint32 pixelColor = NULL;
-    EngineSetup* setup = EngineSetup::getInstance();
 
-    if (setup->TRIANGLE_MODE_COLOR_SOLID) {
+    if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
         pixelColor = (Uint32) Tools::createRGB(w0 * 255, w1 * 255, w2 * 255);
     }
 
     // Texture
-    if (setup->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
-        if (t->getTexture()->liquid && setup->TRIANGLE_TEXTURES_ANIMATED ) {
-            float cache1 = texu / setup->LAVA_CLOSENESS;
-            float cache2 = texv / setup->LAVA_CLOSENESS;
-            texu = (cache1 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * 1 + cache2) ) * setup->LAVA_SCALE;
-            texv = (cache2 + setup->LAVA_INTENSITY * sin(setup->LAVA_SPEED * 1 + cache1) ) * setup->LAVA_SCALE;
+    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
+        if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
+            float cache1 = texu / SETUP->LAVA_CLOSENESS;
+            float cache2 = texv / SETUP->LAVA_CLOSENESS;
+            texu = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache2) ) * SETUP->LAVA_SCALE;
+            texv = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache1) ) * SETUP->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
@@ -469,19 +461,19 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, int x, int y, f
             pixelColor = Tools::alphaBlend( buffer->getVideoBuffer( x, y ), pixelColor, alpha );
         }
 
-        if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && setup->ENABLE_LIGHTMAPPING) {
+        if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && SETUP->ENABLE_LIGHTMAPPING) {
             t->processPixelLightmap(pixelColor, lightu, lightv);
         }
     }
 
-    if (EngineSetup::getInstance()->ENABLE_FOG) {
+    if (SETUP->ENABLE_FOG) {
 
-        float nZ = Maths::normalizeToRange(z, 0, setup->FOG_DISTANCE);
+        float nZ = Maths::normalizeToRange(z, 0, SETUP->FOG_DISTANCE);
 
         if (nZ >= 1) {
-            pixelColor = setup->FOG_COLOR;
+            pixelColor = SETUP->FOG_COLOR;
         } else {
-            pixelColor = Tools::mixColor(pixelColor, setup->FOG_COLOR, nZ * setup->FOG_INTENSITY);
+            pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
         }
 
     }
@@ -496,14 +488,14 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle*> *visibleTriangle
     for (int i = 0 ; i < numTiles ; i++) {
         if (!tiles[i].draw) continue;
 
-        if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
+        if (SETUP->BASED_TILE_RENDER_THREADED) {
             threads.emplace_back( std::thread(ParallellDrawTileTriangles, i, visibleTriangles) );
         } else {
             this->drawTileTriangles(i, *visibleTriangles);
         }
     }
 
-    if (EngineSetup::getInstance()->BASED_TILE_RENDER_THREADED) {
+    if (SETUP->BASED_TILE_RENDER_THREADED) {
         for (std::thread & th : threads) {
             if (th.joinable()) {
                 th.join();
@@ -574,25 +566,25 @@ void ComponentRender::initOpenCL()
 
 void ComponentRender::initTiles()
 {
-    if (EngineSetup::getInstance()->screenWidth % this->sizeTileWidth != 0) {
+    if (SETUP->screenWidth % this->sizeTileWidth != 0) {
         printf("Bad sizetileWidth\r\n");
         exit(-1);
     }
-    if (EngineSetup::getInstance()->screenHeight % this->sizeTileHeight != 0) {
+    if (SETUP->screenHeight % this->sizeTileHeight != 0) {
         printf("Bad sizeTileHeight\r\n");
         exit(-1);
     }
 
     // Tiles Raster setup
-    this->tilesWidth  = EngineSetup::getInstance()->screenWidth / this->sizeTileWidth;
-    this->tilesHeight = EngineSetup::getInstance()->screenHeight / this->sizeTileHeight;
+    this->tilesWidth  = SETUP->screenWidth / this->sizeTileWidth;
+    this->tilesHeight = SETUP->screenHeight / this->sizeTileHeight;
     this->numTiles = tilesWidth * tilesHeight;
     this->tilePixelsBufferSize = this->sizeTileWidth*this->sizeTileHeight;
 
     Logging::getInstance()->Log("Tiles: ("+std::to_string(tilesWidth)+"x"+std::to_string(tilesHeight)+"), Size: ("+std::to_string(sizeTileWidth)+"x"+std::to_string(sizeTileHeight)+") - bufferTileSize: " + std::to_string(sizeTileWidth*sizeTileHeight));
 
-    for (int y = 0 ; y < EngineSetup::getInstance()->screenHeight; y+=this->sizeTileHeight) {
-        for (int x = 0 ; x < EngineSetup::getInstance()->screenWidth; x+=this->sizeTileWidth) {
+    for (int y = 0 ; y < SETUP->screenHeight; y+=this->sizeTileHeight) {
+        for (int x = 0 ; x < SETUP->screenWidth; x+=this->sizeTileWidth) {
 
             Tile t;
 
@@ -645,7 +637,6 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTr
 
 void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
 {
-    EngineSetup*   engineSetup   = EngineSetup::getInstance();
     EngineBuffers* engineBuffers = EngineBuffers::getInstance();
 
     // LOD determination
@@ -682,7 +673,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
 
                 depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
 
-                const int bufferIndex = ( y * engineSetup->screenWidth ) + x;
+                const int bufferIndex = ( y * SETUP->screenWidth ) + x;
 
                 if ( depth < engineBuffers->getDepthBuffer( bufferIndex )) {
                     affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );

@@ -23,7 +23,11 @@ void ComponentHUD::preUpdate() {
 
 void ComponentHUD::onUpdate()
 {
-    if (EngineSetup::getInstance()->DRAW_HUD) {
+    if ( SETUP->DRAW_CROSSHAIR ) {
+        Drawable::drawCrossHair();
+    }
+
+    if (SETUP->DRAW_HUD && !SETUP->MENU_ACTIVE) {
         drawHUD();
     }
 }
@@ -42,11 +46,11 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 void ComponentHUD::loadImages()
 {
-    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "splash.png", "splash");
-    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_health.png", "health");
-    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud_ammo.png", "ammo");
-    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "hud.png", "hud");
-    HUDTextures->addItem(EngineSetup::getInstance()->HUD_FOLDER + "loading.png", "loading");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_health.png", "health");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_ammo.png", "ammo");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud.png", "hud");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
 }
 
 
@@ -57,7 +61,7 @@ void ComponentHUD::drawHUD()
     float textY  = 212;
 
     // HUD Base
-    r.x = 0; r.y = EngineSetup::getInstance()->screenHeight - this->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
+    r.x = 0; r.y = SETUP->screenHeight - this->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("hud")->getSurface(1), NULL, ComponentsManager::get()->getComponentWindow()->screenSurface, &r);
 
     // Ammo

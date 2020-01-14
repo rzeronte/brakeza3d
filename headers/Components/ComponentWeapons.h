@@ -4,7 +4,7 @@
 
 #include <string>
 #include <SDL.h>
-#include "../Render/Timer.h"
+#include "../Misc/Timer.h"
 #include "../2D/WeaponAnimation.h"
 #include "../Game/WeaponType.h"
 #include "Camera3D.h"

@@ -13,7 +13,7 @@
 
 class ComponentBSP : public Component {
 public:
-    ComponentBSP(Camera3D *cam);
+    ComponentBSP();
 
     void onStart();
     void preUpdate();
@@ -23,22 +23,22 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     BSPMap      *bsp;
-    std::thread *loadingBSP;
     Camera3D    *camera;
+    std::thread *BSPLoading;
 
     cJSON *mapsJSONList;
     cJSON *weaponsJSONList;
     cJSON *ammoTypesJSONList;
     cJSON *enemiesJSONList;
 
-
-    BSPMap *getBsp() const;
-    void initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
+    BSPMap *getBSP() const;
+    void initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
     void setCameraInBSPStartPosition();
     void loadMapsFromJSON();
     void loadWeaponsJSON();
     void loadEnemiesJSON();
 
+    void setCamera(Camera3D *camera);
 };
 
 

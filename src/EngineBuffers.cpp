@@ -186,12 +186,6 @@ void EngineBuffers::getSoundsJSON()
     cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds" );
     int sizeSoundsList = cJSON_GetArraySize(soundsJSONList);
 
-    if (sizeSoundsList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeSoundsList) + " sounds", "SOUNDS");
-    } else {
-        Logging::getInstance()->Log(filePath + " is empty for ammoTypes", "ERROR");
-    }
-
     cJSON *currentSound;
     cJSON_ArrayForEach(currentSound, soundsJSONList) {
         cJSON *file = cJSON_GetObjectItemCaseSensitive(currentSound, "file");

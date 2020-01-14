@@ -10,7 +10,6 @@
 #include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
 #include "../EngineBuffers.h"
-#include "../Game/Game.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 
@@ -44,7 +43,7 @@ public:
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina <= 0) {
-            Game::get()->kills++;
+            ComponentsManager::get()->getComponentGame()->kills++;
             getNPCEnemy()->setDead( true );
             getNPCEnemy()->state = EnemyState::ENEMY_STATE_DIE;
 

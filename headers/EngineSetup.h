@@ -3,7 +3,7 @@
 
 #include "Misc/Color.h"
 #include "Objects/Vertex3D.h"
-#include "Render/Timer.h"
+#include "Misc/Timer.h"
 #include "../imgui/imgui.h"
 #include <any>
 #include <map>
@@ -18,7 +18,6 @@ public:
     static EngineSetup* instance;
 
     static void setResolution(int, int);
-
 
     std::map<std::string, std::any> setup;
 
@@ -71,9 +70,6 @@ public:
 
     bool DEBUG_RENDER_INFO = false;
     bool OPENCL_SHOW_TIME_KERNELS = false;
-
-    // FaceCulling
-    bool TRIANGLE_BACK_FACECULLING = true;
 
     bool MENU_ACTIVE = false;
     bool LOADING = false;
@@ -139,9 +135,6 @@ public:
     float SOUND_VOLUME_PLAYER = 128;
     float SOUND_VOLUME_ENVIRONMENT = 75;
     float SOUND_VOLUME_MENU = 75;
-
-    // Show Extra Line Demo when triangle stripped in two when rasterizing
-    bool TRIANGLE_DEMO_EXTRALINE_ENABLED = false;
 
     // GUI Setup values
     float GUI_BAR_DEFAULT_MIN_VALUE = -999999999.f;
@@ -287,7 +280,6 @@ public:
         COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
         COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8,
         COLLISION_RESOLVER_ITEMAMMO_AND_CAMERA = 9
-
     };
 
     enum SoundChannels {
@@ -311,10 +303,12 @@ public:
         COMPONENT_BSP = 4,
         COMPONENT_SOUND = 5,
         COMPONENT_RENDER = 6,
-        COMPONENT_WEAPONS = 7,
+        COMPONENT_GUI = 7,
         COMPONENT_HUD = 8,
         COMPONENT_MENU = 9,
-        COMPONENT_GUI = 10
+        COMPONENT_WEAPONS = 10,
+        COMPONENT_GAME = 11,
+        COMPONENT_GAMEI_NPUT = 12
     };
 
 };

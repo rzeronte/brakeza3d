@@ -1,34 +1,33 @@
 
 #include <SDL_image.h>
 #include "../../headers/Components/ComponentMenu.h"
-#include "../../headers/Misc/cJSON.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Game/Game.h"
-
 
 ComponentMenu::ComponentMenu()
 {
     this->currentOption = 0;
     this->numOptions = 0;
 
-    // Load MENU Background
-    const char *file = std::string(EngineSetup::getInstance()->IMAGES_FOLDER + "menu_background.png").c_str();
+    const char *file = std::string(SETUP->IMAGES_FOLDER + "menu_background.png").c_str();
     menu_background = IMG_Load(file);
-
 }
 
-void ComponentMenu::onStart() {
-
+void ComponentMenu::onStart()
+{
+    loadMenuOptions();
 }
 
 void ComponentMenu::preUpdate() {
 
 }
 
-void ComponentMenu::onUpdate() {
-
+void ComponentMenu::onUpdate()
+{
+    if (SETUP->MENU_ACTIVE) {
+        drawOptions( ComponentsManager::get()->getComponentWindow()->screenSurface);
+    }
 }
 
 void ComponentMenu::postUpdate() {
@@ -43,11 +42,11 @@ void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
-void ComponentMenu::getOptionsJSON()
+void ComponentMenu::loadMenuOptions()
 {
     size_t file_size;
     const char *mapsFile;
-    mapsFile = Tools::readFile(EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_MENU, file_size);
+    mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
     if (myDataJSON == NULL) {
         Logging::getInstance()->Log("menu.json can't be loaded", "ERROR");
@@ -79,15 +78,15 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 250;
-    int stepY   = 80;
+    int offsetY = 50;
+    int stepY   = 170;
 
     for( int i = 0 ; i < numOptions ; i++) {
 
         std::string text = this->options[ i ]->getLabel();
         Uint32 color = Color::orange();
 
-        if (i == ComponentMenu::MNU_NEW_GAME && Game::get()->player->state != PlayerState::GAMEOVER ) {
+        if (i == ComponentMenu::MNU_NEW_GAME && ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::GAMEOVER ) {
             text = this->options[ ComponentMenu::MNU_NEW_GAME ]->getAlt();
         }
 
@@ -95,11 +94,8 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
             color = Color::white();
         }
 
-        auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
-
-        Tools::writeTextCenterHorizontal( CW->renderer, CW->fontSmall, color, text, offsetY);
+        Tools::writeTextCenterHorizontal( ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontBig, color, text, offsetY);
 
         offsetY += stepY;
     }
 }
-

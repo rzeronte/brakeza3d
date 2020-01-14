@@ -7,13 +7,13 @@
 
 ComponentWeapons::ComponentWeapons()
 {
-    this->currentWeaponIndex = EngineSetup::getInstance()->WeaponsTypes::PISTOL;
+    this->currentWeaponIndex = SETUP->WeaponsTypes::PISTOL;
 }
 
 
-void ComponentWeapons::onStart() {
+void ComponentWeapons::onStart()
+{
     std::cout << "ComponentWeapons onStart" << std::endl;
-
 }
 
 void ComponentWeapons::preUpdate() {
@@ -22,7 +22,9 @@ void ComponentWeapons::preUpdate() {
 
 void ComponentWeapons::onUpdate()
 {
-    this->onUpdate( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
+    if (!SETUP->MENU_ACTIVE && SETUP->DRAW_WEAPON) {
+        this->onUpdate( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
+    }
 }
 
 void ComponentWeapons::postUpdate() {

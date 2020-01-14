@@ -7,7 +7,6 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "../../headers/Render/Engine.h"
 #include "../../headers/Brakeza3D.h"
 
 Mesh3DGhost::Mesh3DGhost()

@@ -3,7 +3,6 @@
 #include "../../headers/2D/WeaponAnimation.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Game/Game.h"
 #include "../../headers/Brakeza3D.h"
 
 WeaponAnimation::WeaponAnimation()

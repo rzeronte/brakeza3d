@@ -2,7 +2,6 @@
 #include <SDL_image.h>
 #include "../../headers/Game/WeaponType.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Game/Game.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
@@ -64,7 +63,7 @@ void WeaponType::onUpdate(Camera3D *cam)
             status = nextAnimationIndex;
 
             if (this->animations[ nextAnimationIndex ]->isProjectile()) {
-                Game::get()->player->shoot();
+                Brakeza3D::get()->getComponentsManager()->getComponentGame()->getPlayer()->shoot();
             }
 
             if (this->animations[ nextAnimationIndex ]->isLooping()) {

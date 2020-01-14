@@ -8,13 +8,15 @@
 #include "../Misc/cJSON.h"
 #include "../Render/Logging.h"
 #include "../EngineSetup.h"
+#include "../Components/Camera3D.h"
+#include "../Misc/Tools.h"
 
 class GUI_Menu : public GUI  {
 public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_window_log, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
+    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
 
         bool show_about_window = false;
 
@@ -270,7 +272,6 @@ public:
                 ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
                 ImGui::Checkbox("Ligths Inspector", &show_window_lights_inspector);
-                ImGui::Checkbox("Log", &show_window_log);
                 ImGui::Checkbox("Tiles", &show_window_physics);
                 ImGui::Checkbox("Weapons", &show_window_weapons);
                 ImGui::Separator();

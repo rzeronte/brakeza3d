@@ -6,9 +6,10 @@
 #include <algorithm>
 #include <math.h>
 #include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Engine.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/EngineSetup.h"
+#include "../../headers/Render/Logging.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 

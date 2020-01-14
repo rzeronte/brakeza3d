@@ -8,10 +8,9 @@
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/ComponentsManager.h"
 
-ComponentBSP::ComponentBSP(Camera3D *cam)
+ComponentBSP::ComponentBSP()
 {
-    camera = cam;
-    bsp    = new BSPMap();
+    bsp = new BSPMap();
 }
 
 void ComponentBSP::onStart()
@@ -57,14 +56,14 @@ void ComponentBSP::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 }
 
-BSPMap *ComponentBSP::getBsp() const {
+BSPMap *ComponentBSP::getBSP() const {
     return bsp;
 }
 
 void ComponentBSP::loadMapsFromJSON()
 {
     size_t file_size;
-    const char* mapsFile = Tools::readFile(EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_MAPS, file_size);
+    const char* mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MAPS, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
     if (myDataJSON == NULL) {
         //Logging::getInstance()->Log("maps.json can't be loaded", "ERROR");
@@ -88,7 +87,7 @@ void ComponentBSP::loadMapsFromJSON()
     }
 }
 
-void ComponentBSP::initBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
+void ComponentBSP::initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
 {
     //this->loadingBSP = new std::thread(ParallellInitBSP, bspFilename, frameTriangles);
 }
@@ -97,13 +96,13 @@ void ComponentBSP::initBSP(const char *bspFilename, std::vector<Triangle*> *fram
 void ComponentBSP::setCameraInBSPStartPosition()
 {
     // Load start position from BSP
-    Vertex3D bspOriginalPosition = getBsp()->getStartMapPosition();
+    Vertex3D bspOriginalPosition = getBSP()->getStartMapPosition();
 
-    int entityID = getBsp()->getIndexOfFirstEntityByClassname("info_player_start");
+    int entityID = getBSP()->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
     initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
 
-    char *angle = getBsp()->getEntityValue(entityID, "angle");
+    char *angle = getBSP()->getEntityValue(entityID, "angle");
     int angleInt = atoi( std::string(angle).c_str() );
 
     camera->yaw   = 90 - angleInt;
@@ -122,7 +121,7 @@ void ComponentBSP::loadWeaponsJSON()
     ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
 
     size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_WEAPONS;
+    std::string filePath = SETUP->CONFIG_FOLDER + SETUP->CFG_WEAPONS;
     const char* mapsFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
@@ -240,7 +239,7 @@ void ComponentBSP::loadWeaponsJSON()
         //Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
 
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
-                EngineSetup::getInstance()->WEAPONS_FOLDER + name->valuestring + "/" + markPath->valuestring,
+                SETUP->WEAPONS_FOLDER + name->valuestring + "/" + markPath->valuestring,
                 markFrames->valueint,
                 markFps->valueint,
                 (float) markW->valuedouble,
@@ -298,7 +297,7 @@ void ComponentBSP::loadWeaponsJSON()
 
             Mix_Chunk *animationSound = new Mix_Chunk();
 
-            std::string pathSound = EngineSetup::getInstance()->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
+            std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
 
             if (strlen(sound->valuestring) > 0) {
                 //Logging::getInstance()->Log("Loading Fire Phases sound: " + pathSound);
@@ -315,7 +314,7 @@ void ComponentBSP::loadWeaponsJSON()
 void ComponentBSP::loadEnemiesJSON()
 {
     size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_ENEMIES;
+    std::string filePath = SETUP->CONFIG_FOLDER + SETUP->CFG_ENEMIES;
     const char* enemiesFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(enemiesFile);
 
@@ -386,7 +385,7 @@ void ComponentBSP::loadEnemiesJSON()
             );*/
 
             newEnemy->addAnimationDirectional2D(
-                    EngineSetup::getInstance()->SPRITES_FOLDER + path->valuestring,
+                    SETUP->SPRITES_FOLDER + path->valuestring,
                     frames->valueint,
                     fps->valueint,
                     zeroDirection->valueint,
@@ -396,4 +395,8 @@ void ComponentBSP::loadEnemiesJSON()
 
         EngineBuffers::getInstance()->enemyTemplates.push_back(newEnemy);
     }
+}
+
+void ComponentBSP::setCamera(Camera3D *camera) {
+    ComponentBSP::camera = camera;
 }

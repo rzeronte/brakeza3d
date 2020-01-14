@@ -38,8 +38,6 @@ add_executable(brakeza3d
         main.cpp
         src/Components/ComponentCamera.cpp
         headers/Components/ComponentCamera.h
-        src/Input/InputController.cpp
-        headers/Input/InputController.h
         src/Objects/Mesh3D.cpp
         headers/Objects/Mesh3D.h
         src/Objects/Triangle3D.cpp
@@ -56,9 +54,7 @@ add_executable(brakeza3d
         headers/Objects/Line2D.h
         src/Misc/Color.cpp
         headers/Misc/Color.h
-        src/Render/Engine.cpp
         headers/OpenCL/OCLTriangle.h
-        headers/Render/Engine.h
         headers/EngineSetup.h
         src/EngineSetup.cpp
         src/Render/Texture.cpp
@@ -71,8 +67,8 @@ add_executable(brakeza3d
         headers/Render/Plane.h
         src/Objects/Object3D.cpp
         headers/Objects/Object3D.h
-        src/Render/Timer.cpp
-        headers/Render/Timer.h
+        src/Misc/Timer.cpp
+        headers/Misc/Timer.h
         headers/Render/Transforms.h
         src/Render/Transforms.cpp
         src/Render/Drawable.cpp
@@ -82,7 +78,6 @@ add_executable(brakeza3d
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
 
-        src/Game/Game.cpp headers/Game/Game.h
         src/Render/Billboard.cpp
         headers/Render/Billboard.h
         src/Render/M3.cpp
@@ -109,12 +104,11 @@ add_executable(brakeza3d
         headers/GUI/GUI_Objects3D.h
         headers/GUI/GUIManager.h
         headers/GUI/GUI_Lights.h
-        headers/GUI/GUI_Log.h
         headers/GUI/GUI_Tiles.h
         headers/GUI/GUI_Weapons.h
         src/Render/Logging.cpp
 
-        headers/Objects/Tile.h
+        headers/Render/Tile.h
 
         headers/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp
@@ -188,9 +182,7 @@ add_executable(brakeza3d
         src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h
 
         headers/Game/Player.cpp src/Game/Player.h
-        src/Demo.cpp headers/Demo.h
-        src/Game/GameInputController.cpp
-        headers/Game/GameInputController.h
+        src/Demo/Demo.cpp headers/Demo/Demo.h
         src/Misc/Counter.cpp
         headers/Misc/Counter.h
         src/Misc/TexturePackage.cpp
@@ -202,7 +194,7 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h src/Components/Component.cpp headers/Components/Component.h src/Components/ComponentRender.cpp headers/Components/ComponentRender.h src/Components/ComponentWindow.cpp headers/Components/ComponentWindow.h src/Components/ComponentInput.cpp headers/Components/ComponentInput.h src/Components/ComponentSound.cpp headers/Components/ComponentSound.h src/Components/ComponentBSP.cpp headers/Components/ComponentBSP.h src/Components/Camera3D.cpp headers/Components/Camera3D.h src/Components/ComponentHUD.cpp headers/Components/ComponentHUD.h src/ComponentsManager.cpp headers/ComponentsManager.h src/Components/ComponentGUI.cpp headers/Components/ComponentGUI.h)
+        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h src/Components/Component.cpp headers/Components/Component.h src/Components/ComponentRender.cpp headers/Components/ComponentRender.h src/Components/ComponentWindow.cpp headers/Components/ComponentWindow.h src/Components/ComponentInput.cpp headers/Components/ComponentInput.h src/Components/ComponentSound.cpp headers/Components/ComponentSound.h src/Components/ComponentBSP.cpp headers/Components/ComponentBSP.h src/Components/Camera3D.cpp headers/Components/Camera3D.h src/Components/ComponentHUD.cpp headers/Components/ComponentHUD.h src/ComponentsManager.cpp headers/ComponentsManager.h src/Components/ComponentGUI.cpp headers/Components/ComponentGUI.h src/Components/ComponentGame.cpp headers/Components/ComponentGame.h src/Components/ComponentGameInput.cpp headers/Components/ComponentGameInput.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}

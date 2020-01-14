@@ -7,6 +7,7 @@
 #include "CollisionResolver.h"
 #include "../Render/Logging.h"
 #include "../Game/NPCEnemyPartBody.h"
+#include "../Brakeza3D.h"
 
 class CollisionResolverBetweenProjectileAndBSPMap : public CollisionResolver {
 public:
@@ -131,7 +132,7 @@ public:
         enemyBody->takeDamage(projectile->getDamage() );
 
         if ( enemyBody->stamina <= 0 ) {
-            Game::get()->kills++;
+            ComponentsManager::get()->getComponentGame()->kills++;
             enemyBody->setDead( true );
             enemyBody->state = EnemyState::ENEMY_STATE_DIE;
 

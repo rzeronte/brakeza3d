@@ -28,22 +28,15 @@ void Brakeza3D::start()
     componentWeapons    = new ComponentWeapons();
     componentCollisions = new ComponentCollisions();
     componentWindow     = new ComponentWindow();
-    componentBSP        = new ComponentBSP( componentCamera->getCamera() );
+    componentBSP        = new ComponentBSP();
     componentSound      = new ComponentSound();
     componentRender     = new ComponentRender();
     componentMenu       = new ComponentMenu();
     componentHUD        = new ComponentHUD();
-    componentGUI        = new ComponentGUI(finish );
+    componentGUI        = new ComponentGUI( finish );
+    componentGame       = new ComponentGame();
+    componentGameInput  = new ComponentGameInput( componentGame->getPlayer());
 
-    componentCollisions->setBspMap( componentBSP->getBsp() );
-    componentCollisions->setCamera( componentCamera->getCamera() );
-    componentCollisions->setVisibleTriangles( componentRender->getVisibleTriangles() );
-
-    componentBSP->getBsp()->setFrameTriangles( &componentRender->getFrameTriangles() );
-
-    componentGUI->setRenderer( componentWindow->renderer );
-    componentGUI->setWindow( componentWindow->window );
-    componentGUI->setContextOpenGl( &componentWindow->contextOpenGL );
 
     componentsManager->registerComponent( componentWindow , &getSceneObjects() );
     componentsManager->registerComponent( componentCamera, &getSceneObjects() );
@@ -52,12 +45,14 @@ void Brakeza3D::start()
     componentsManager->registerComponent( componentBSP, &getSceneObjects() );
     componentsManager->registerComponent( componentSound, &getSceneObjects() );
     componentsManager->registerComponent( componentRender, &getSceneObjects() );
-    componentsManager->registerComponent( componentWeapons, &getSceneObjects() );
+    componentsManager->registerComponent( componentGUI, &getSceneObjects() );
     componentsManager->registerComponent( componentHUD, &getSceneObjects() );
     componentsManager->registerComponent( componentMenu, &getSceneObjects() );
-    componentsManager->registerComponent( componentGUI, &getSceneObjects() );
+    componentsManager->registerComponent( componentWeapons, &getSceneObjects() );
+    componentsManager->registerComponent( componentGame, &getSceneObjects() );
+    componentsManager->registerComponent( componentGameInput, &getSceneObjects() );
 
-    Logging::getInstance()->setGUILog(componentGUI->getManagerGUI()->guiLog );
+    ComponentsManager::get()->configureComponents();
 
     mainLoop();
 }

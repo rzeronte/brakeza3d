@@ -3,7 +3,7 @@
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 #include "../../headers/Physics/SpriteDirectional3DBody.h"
 #include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Engine.h"
+#include "../../headers/Misc/Tools.h"
 
 void SpriteDirectional3DBody::integrate()
 {

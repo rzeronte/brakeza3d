@@ -3,7 +3,7 @@
 #define BRAKEZA3D_COUNTER_H
 
 
-#include "../Render/Timer.h"
+#include "Timer.h"
 
 class Counter {
 private:

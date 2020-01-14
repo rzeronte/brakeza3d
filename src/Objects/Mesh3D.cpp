@@ -2,9 +2,7 @@
 #include <fstream>
 #include <vector>
 #include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Engine.h"
 #include <string>
 
 Mesh3D::Mesh3D()

@@ -22,9 +22,9 @@ void ComponentCamera::onUpdate() {
     float reduction = 0;
     bool  allowVertical = false;
 
-    if (ComponentsManager::get()->getComponentBSP()->getBsp()->isLoaded()) {
-        if (ComponentsManager::get()->getComponentBSP()->getBsp()->isCurrentLeafLiquid()) {
-            reduction = EngineSetup::getInstance()->WALKING_SPEED_LIQUID_DIVISOR;
+    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
+        if (ComponentsManager::get()->getComponentBSP()->getBSP()->isCurrentLeafLiquid()) {
+            reduction = SETUP->WALKING_SPEED_LIQUID_DIVISOR;
             allowVertical = true;
         }
     }

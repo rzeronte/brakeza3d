@@ -9,7 +9,7 @@
 #include <vector>
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
-#include "../Objects/Tile.h"
+#include "../Render/Tile.h"
 #include "../EngineBuffers.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Physics/BillboardBody.h"
