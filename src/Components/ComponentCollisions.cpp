@@ -57,7 +57,7 @@ void ComponentCollisions::initBulletSystem()
     this->debugDraw = new PhysicsDebugDraw(this->camera);
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::getInstance()->gravity.y, 0));
+    this->dynamicsWorld->setGravity(btVector3(0, SETUP->gravity.y, 0));
 
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
@@ -109,7 +109,7 @@ void ComponentCollisions::setBspMap(BSPMap *bspMap) {
 void ComponentCollisions::makeGhostForCamera()
 {
     triggerCamera = new Mesh3DGhost();
-    triggerCamera->setLabel(EngineSetup::getInstance()->cameraTriggerNameIdentifier);
+    triggerCamera->setLabel(SETUP->cameraTriggerNameIdentifier);
     triggerCamera->setEnabled(true);
     triggerCamera->setPosition(*camera->getPosition());
     triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
@@ -161,7 +161,7 @@ void ComponentCollisions::checkCollisionsForTriggerCamera()
 
                             this->camera->kinematicController->getGhostObject()->setWorldTransform(initialTransform);
 
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+                            if (SETUP->LOG_COLLISION_OBJECTS) {
                                 Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bspMap->getEntityValue(entityIndex, "target")));
                             }
                         }
@@ -183,7 +183,7 @@ void ComponentCollisions::checkCollisionsForTriggerCamera()
             }
         }
 
-        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+        if (SETUP->LOG_COLLISION_OBJECTS) {
             Logging::getInstance()->getInstance()->Log("[LOG_COLLISION_OBJECTS] Collision between triggerCamera and " + brkObjectB->getLabel());
         }
     }
@@ -191,10 +191,10 @@ void ComponentCollisions::checkCollisionsForTriggerCamera()
 
 void ComponentCollisions::checkCollisionsForAll()
 {
-    if (!EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) return;
+    if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
     // All collisions pairs
-    if (EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS) {
+    if (SETUP->BULLET_CHECK_ALL_PAIRS) {
         int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
         for (int i = 0; i < numManifolds; i++) {
             btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
@@ -235,7 +235,7 @@ void ComponentCollisions::updatePhysicObjects()
 
 void ComponentCollisions::syncTriggerGhostCamera()
 {
-    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
+    Vertex3D direction = camera->getRotation().getTranspose() * SETUP->forward;
     Vertex3D p = *camera->getPosition();
 
     float farDist = 1;
@@ -265,7 +265,7 @@ Vertex3D ComponentCollisions::stepSimulation()
     if (this->camera->kinematicController->onGround()) {
         bulletVelocity = btVector3(vel.x, vel.y, vel.z);
     } else {
-        bulletVelocity = btVector3(vel.x, vel.y, vel.z) / EngineSetup::getInstance()->AIR_RESISTANCE;
+        bulletVelocity = btVector3(vel.x, vel.y, vel.z) / SETUP->AIR_RESISTANCE;
     }
 
     if (!Tools::isZeroVector(vel)) {
@@ -274,7 +274,7 @@ Vertex3D ComponentCollisions::stepSimulation()
 
     Vertex3D finalVelocity;
 
-    if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
+    if (SETUP->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
         getDynamicsWorld()->stepSimulation(time );
 

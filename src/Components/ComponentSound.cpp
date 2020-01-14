@@ -40,10 +40,10 @@ void ComponentSound::initSoundSystem() {
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
-    //Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU);
-    //Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
-    //Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
-    //Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC);
+    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, SETUP->SOUND_VOLUME_MENU);
+    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, SETUP->SOUND_VOLUME_PLAYER);
+    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, SETUP->SOUND_VOLUME_ENVIRONMENT);
+    Mix_VolumeMusic(SETUP->SOUND_VOLUME_MUSIC);
 }
 
 

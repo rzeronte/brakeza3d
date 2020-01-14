@@ -4,6 +4,9 @@
 
 #include "../../headers/Components/Component.h"
 
+Component::Component(): SETUP(EngineSetup::getInstance()) {
+}
+
 std::vector<Component *> *Component::getComponents() const {
     return components;
 }
@@ -23,4 +26,3 @@ void Component::setSceneObjects(std::vector<Object3D *> *sceneObjects) {
 std::vector<Object3D *> *Component::getSceneObjects() const {
     return sceneObjects;
 }
-
