@@ -4,7 +4,7 @@
 
 #include "../../headers/Components/Component.h"
 
-Component::Component(): SETUP(EngineSetup::getInstance()) {
+Component::Component(): SETUP(EngineSetup::getInstance()), BUFFERS(EngineBuffers::getInstance()) {
 }
 
 std::vector<Component *> *Component::getComponents() const {
