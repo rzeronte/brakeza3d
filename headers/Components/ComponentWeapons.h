@@ -45,7 +45,7 @@ public:
 
     bool isEmptyWeapon();
 
-    void onUpdate(Camera3D *cam, SDL_Surface *dst);
+    void onUpdateWeapon(Camera3D *cam, SDL_Surface *dst);
 
     void headBob(Vector3D velocity);
 };

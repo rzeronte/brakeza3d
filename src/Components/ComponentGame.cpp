@@ -42,10 +42,6 @@ void ComponentGame::onUpdate()
     ComponentHUD     *componentHUD     = ComponentsManager::get()->getComponentHUD();
 
     if (player->state != PlayerState::GAMEOVER) {
-        if (setup->DRAW_WEAPON && componentWeapons->getCurrentWeaponType()->isAvailable() ) {
-            componentWeapons->onUpdate(camera, componentWindow->screenSurface);
-        }
-
         if (mapBSP->isLoaded() && mapBSP->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
             Drawable::waterShader( mapBSP->currentLeaf->type );
         }
@@ -73,10 +69,6 @@ void ComponentGame::onUpdate()
         }
     }
 
-    if (SETUP->MENU_ACTIVE) {
-        //drawMenuScreen();
-    }
-
     if (SETUP->LOADING) {
         SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, componentWindow->screenSurface, NULL);
         Tools::writeTextCenterHorizontal( componentWindow->renderer, componentWindow->fontDefault, Color::red(), "Loading...", 100);
@@ -92,7 +84,6 @@ void ComponentGame::onUpdate()
     }
 
     this->resolveCollisions();
-
 }
 
 void ComponentGame::postUpdate() {

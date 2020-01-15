@@ -305,11 +305,11 @@ public:
         COMPONENT_SOUND = 5,
         COMPONENT_RENDER = 6,
         COMPONENT_GUI = 7,
-        COMPONENT_HUD = 8,
-        COMPONENT_MENU = 9,
-        COMPONENT_WEAPONS = 10,
+        COMPONENT_MENU = 8,
+        COMPONENT_WEAPONS = 9,
+        COMPONENT_HUD = 10,
         COMPONENT_GAME = 11,
-        COMPONENT_GAMEI_NPUT = 12
+        COMPONENT_GAME_INPUT = 12
     };
 
 };

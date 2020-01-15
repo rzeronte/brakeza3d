@@ -23,7 +23,7 @@ void ComponentWeapons::preUpdate() {
 void ComponentWeapons::onUpdate()
 {
     if (!SETUP->MENU_ACTIVE && SETUP->DRAW_WEAPON) {
-        this->onUpdate( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
+        this->onUpdateWeapon( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
     }
 }
 
@@ -81,7 +81,7 @@ AmmoType *ComponentWeapons::getAmmoTypeByClassname(std::string classname)
     return nullptr;
 }
 
-void ComponentWeapons::onUpdate(Camera3D *cam, SDL_Surface *dst)
+void ComponentWeapons::onUpdateWeapon(Camera3D *cam, SDL_Surface *dst)
 {
     this->getCurrentWeaponType()->onUpdate( cam );
 

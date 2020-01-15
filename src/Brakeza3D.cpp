@@ -35,7 +35,7 @@ void Brakeza3D::start()
     componentHUD        = new ComponentHUD();
     componentGUI        = new ComponentGUI( finish );
     componentGame       = new ComponentGame();
-    componentGameInput  = new ComponentGameInput( componentGame->getPlayer());
+    componentGameInput  = new ComponentGameInput( componentGame->getPlayer() );
 
     componentsManager->registerComponent( componentWindow , &getSceneObjects() );
     componentsManager->registerComponent( componentCamera, &getSceneObjects() );
@@ -45,9 +45,9 @@ void Brakeza3D::start()
     componentsManager->registerComponent( componentSound, &getSceneObjects() );
     componentsManager->registerComponent( componentRender, &getSceneObjects() );
     componentsManager->registerComponent( componentGUI, &getSceneObjects() );
-    componentsManager->registerComponent( componentHUD, &getSceneObjects() );
     componentsManager->registerComponent( componentMenu, &getSceneObjects() );
     componentsManager->registerComponent( componentWeapons, &getSceneObjects() );
+    componentsManager->registerComponent( componentHUD, &getSceneObjects() );
     componentsManager->registerComponent( componentGame, &getSceneObjects() );
     componentsManager->registerComponent( componentGameInput, &getSceneObjects() );
 

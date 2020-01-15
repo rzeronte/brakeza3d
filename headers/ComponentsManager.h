@@ -38,7 +38,7 @@ public:
     ComponentRender     *getComponentRender() { return static_cast<ComponentRender *>(components.at(EngineSetup::ComponentID::COMPONENT_RENDER)); };
     ComponentInput      *getComponentInput() { return static_cast<ComponentInput *>(components.at(EngineSetup::ComponentID::COMPONENT_INPUT)); };
     ComponentGame       *getComponentGame() { return static_cast<ComponentGame *>(components.at(EngineSetup::ComponentID::COMPONENT_GAME)); };
-    ComponentGameInput  *getComponentGameInput() { return static_cast<ComponentGameInput *>(components.at(EngineSetup::ComponentID::COMPONENT_GAMEI_NPUT)); };
+    ComponentGameInput  *getComponentGameInput() { return static_cast<ComponentGameInput *>(components.at(EngineSetup::ComponentID::COMPONENT_GAME_INPUT)); };
 };
 
 
