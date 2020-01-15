@@ -23,10 +23,8 @@ void ComponentWindow::onStart()
 
 void ComponentWindow::preUpdate()
 {
-    EngineBuffers *buffers = EngineBuffers::getInstance();
-
-    buffers->clearDepthBuffer();
-    buffers->clearVideoBuffer();
+    BUFFERS->clearDepthBuffer();
+    BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::onUpdate()
@@ -35,7 +33,7 @@ void ComponentWindow::onUpdate()
 
 void ComponentWindow::postUpdate()
 {
-    EngineBuffers::getInstance()->flipVideoBufferToSurface( this->screenSurface );
+    BUFFERS->flipVideoBufferToSurface( this->screenSurface );
 
     SDL_GL_SwapWindow( this->window );
 

@@ -37,6 +37,7 @@ public:
     Vertex3D backward = forward.getInverse();
 
     Vertex3D gravity = Vertex3D(0, 300.f, 0);
+    float    BULLET_FALL_SPEED = 256;
 
     // Screen dimension constants
     int screenWidth  = 320;

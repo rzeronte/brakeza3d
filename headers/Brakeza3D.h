@@ -6,11 +6,12 @@
 #include <vector>
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
+#include "Components/Component.h"
+#include "ComponentsManager.h"
 #include "Components/ComponentCollisions.h"
 #include "GUI/GUIManager.h"
 #include "Collisions/CollisionResolver.h"
 #include "EngineBuffers.h"
-#include "Components/Component.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentWindow.h"
 #include "Components/ComponentBSP.h"

@@ -62,7 +62,7 @@ void ComponentCollisions::initBulletSystem()
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     this->camera->kinematicController->setGravity( dynamicsWorld->getGravity() );
-    this->camera->kinematicController->setFallSpeed(256);
+    this->camera->kinematicController->setFallSpeed( EngineSetup::getInstance()->BULLET_FALL_SPEED);
 
     this->dynamicsWorld->addCollisionObject(this->camera->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
     this->dynamicsWorld->addAction(this->camera->kinematicController);

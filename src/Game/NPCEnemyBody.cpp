@@ -23,7 +23,6 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25)
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
-    Logging::getInstance()->Log("raycastResult: " + std::to_string(raycastResult));
     switch(state) {
         case EnemyState::ENEMY_STATE_ATTACK:
             this->syncPathFindingRotation();

@@ -11,14 +11,13 @@
 
 ComponentRender::ComponentRender()
 {
-    this->buffer = EngineBuffers::getInstance();
 }
 
 void ComponentRender::onStart()
 {
     std::cout << "ComponentRender onStart" << std::endl;
-    this->initTiles();
-    this->initOpenCL();
+    initTiles();
+    initOpenCL();
 }
 
 void ComponentRender::preUpdate()
@@ -55,14 +54,12 @@ void ComponentRender::onUpdate()
         this->drawSceneObjectsAxis();
     }
 
-    auto *componentCamera = dynamic_cast<ComponentCamera*>(getComponentId(EngineSetup::ComponentID::COMPONENT_CAMERA));
-
     if (SETUP->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(componentCamera->getCamera()->frustum, componentCamera->getCamera(), true, true, true);
+        Drawable::drawFrustum(ComponentsManager::get()->getComponentCamera()->getCamera()->frustum, ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
     }
 
     if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(componentCamera->getCamera() );
+        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera() );
     }
 }
 
@@ -180,21 +177,12 @@ void ComponentRender::hiddenSurfaceRemoval()
         this->frameTriangles[i]->updateNormal();
 
         // back face culling (needs objectSpace)
-        if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() ) ) {
+        if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() )) {
             continue;
         }
 
         // Clipping (needs objectSpace)
-        bool needClipping = false;
-        if (this->frameTriangles[i]->testForClipping(
-                cam->frustum->planes,
-                SETUP->LEFT_PLANE,
-                SETUP->BOTTOM_PLANE
-        )) {
-            needClipping = true;
-        }
-
-        if (needClipping) {
+        if (this->frameTriangles[i]->testForClipping( cam->frustum->planes,SETUP->LEFT_PLANE,SETUP->BOTTOM_PLANE )) {
             this->frameTriangles[i]->clipping(
                     cam,
                     cam->frustum->planes,
@@ -211,7 +199,7 @@ void ComponentRender::hiddenSurfaceRemoval()
         if (!cam->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
             !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
             !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
-                ) {
+        ) {
             continue;
         }
 
@@ -226,7 +214,7 @@ void ComponentRender::hiddenSurfaceRemoval()
         this->frameTriangles[i]->updateUVCache();
 
         if (SETUP->RASTERIZER_OPENCL) {
-            EngineBuffers::getInstance()->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
+            BUFFERS->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
         }
 
         if (this->frameTriangles[i]->fullArea < SETUP->MIN_TRIANGLE_AREA) {
@@ -268,10 +256,10 @@ void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTria
 
 void ComponentRender::handleOpenCLTriangles()
 {
-    int numTriangles = EngineBuffers::getInstance()->numOCLTriangles;
+    int numTriangles = BUFFERS->numOCLTriangles;
 
     opencl_buffer_triangles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTriangles * sizeof(OCLTriangle), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), EngineBuffers::getInstance()->OCLTrianglesBuffer, 0, NULL, NULL);
+    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), BUFFERS->OCLTrianglesBuffer, 0, NULL, NULL);
 
     clSetKernelArg(processAllTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
     clSetKernelArg(processAllTriangles, 1, sizeof(int), &SETUP->screenWidth);
@@ -293,7 +281,7 @@ void ComponentRender::handleOpenCLTriangles()
         }
     }
     clFinish(command_queue_rasterizer);
-    EngineBuffers::getInstance()->numOCLTriangles = 0;
+    BUFFERS->numOCLTriangles = 0;
 }
 
 void ComponentRender::drawTilesGrid()
@@ -356,22 +344,20 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     t->lod = t->processLOD();
 
     // Triangle setup
-    int A01 = (int) -(t->As.y - t->Bs.y);
-    int A12 = (int) -(t->Bs.y - t->Cs.y);
-    int A20 = (int) -(t->Cs.y - t->As.y);
+    int A01 = (int) (-t->As.y + t->Bs.y);
+    int A12 = (int) (-t->Bs.y + t->Cs.y);
+    int A20 = (int) (-t->Cs.y + t->As.y);
 
-    int B01 = (int) -(t->Bs.x - t->As.x);
-    int B12 = (int) -(t->Cs.x - t->Bs.x);
-    int B20 = (int) -(t->As.x - t->Cs.x);
+    int B01 = (int) (-t->Bs.x + t->As.x);
+    int B12 = (int) (-t->Cs.x + t->Bs.x);
+    int B20 = (int) (-t->As.x + t->Cs.x);
 
     Point2D startP(t->minX, t->minY);
     int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
-
-    int screenWidth = SETUP->screenWidth;
+    Fragment *fragment = new Fragment();
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -381,36 +367,31 @@ void ComponentRender::triangleRasterizer(Triangle *t)
         for (int x = t->minX ; x < t->maxX ; x++) {
 
             if ((w0 | w1 | w2) > 0) {
-                alpha = w0 * t->reciprocalFullArea;
-                theta = w1 * t->reciprocalFullArea;
-                gamma = 1 - alpha - theta;
+                fragment->alpha = (int) w0 * t->reciprocalFullArea;
+                fragment->theta = (int) w1 * t->reciprocalFullArea;
+                fragment->gamma = 1 - fragment->alpha - fragment->theta;
 
-                depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
+                fragment->depth = (fragment->alpha * t->An.z) + (fragment->theta * t->Bn.z) + (fragment->gamma * t->Cn.z);
 
-                int bufferIndex = ( y * screenWidth ) + x;
+                int bufferIndex = ( y * SETUP->screenWidth ) + x;
 
                 if (t->parent->isDecal()) {
-                    depth-=1;
+                    fragment->depth-=1;
                 }
 
-                if ( depth < buffer->getDepthBuffer( bufferIndex )) {
-                    affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
-                    texu   = ( alpha * (t->tex_u1_Ac_z)   + theta * (t->tex_u2_Bc_z)   + gamma * (t->tex_u3_Cc_z) )   * affine_uv;
-                    texv   = ( alpha * (t->tex_v1_Ac_z)   + theta * (t->tex_v2_Bc_z)   + gamma * (t->tex_v3_Cc_z) )   * affine_uv;
+                if ( fragment->depth < BUFFERS->getDepthBuffer( bufferIndex )) {
+                    fragment->affineUV = 1 / (fragment->alpha * (t->persp_correct_Az) + fragment->theta * (t->persp_correct_Bz) + fragment->gamma * (t->persp_correct_Cz) );
+                    fragment->texU   = (fragment->alpha * (t->tex_u1_Ac_z) + fragment->theta * (t->tex_u2_Bc_z) + fragment->gamma * (t->tex_u3_Cc_z) ) * fragment->affineUV;
+                    fragment->texV   = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) + fragment->gamma * (t->tex_v3_Cc_z) ) * fragment->affineUV;
 
-                    lightu = ( alpha * (t->light_u1_Ac_z) + theta * (t->light_u2_Bc_z) + gamma * (t->light_u3_Cc_z) ) * affine_uv;
-                    lightv = ( alpha * (t->light_v1_Ac_z) + theta * (t->light_v2_Bc_z) + gamma * (t->light_v3_Cc_z) ) * affine_uv;
+                    fragment->lightU = (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) + fragment->gamma * (t->light_u3_Cc_z) ) * fragment->affineUV;
+                    fragment->lightV = (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) + fragment->gamma * (t->light_v3_Cc_z) ) * fragment->affineUV;
                     
                     this->processPixel(
                             t,
                             bufferIndex,
-                            x, y,
-                            alpha, theta, gamma,
-                            depth,
-                            texu, texv,
-                            lightu, lightv
+                            x, y, fragment
                     );
-
                 }
             }
 
@@ -426,31 +407,30 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     }
 }
 
-
-void ComponentRender::processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv)
+void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment)
 {
-    Uint32 pixelColor = NULL;
+    Uint32 pixelColor(NULL);
 
     if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
-        pixelColor = (Uint32) Tools::createRGB(w0 * 255, w1 * 255, w2 * 255);
+        pixelColor = (Uint32) Tools::createRGB(fragment->alpha * 255, fragment->theta * 255, fragment->gamma * 255);
     }
 
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
-            float cache1 = texu / SETUP->LAVA_CLOSENESS;
-            float cache2 = texv / SETUP->LAVA_CLOSENESS;
-            texu = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache2) ) * SETUP->LAVA_SCALE;
-            texv = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache1) ) * SETUP->LAVA_SCALE;
+            float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
+            float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
+            fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache2) ) * SETUP->LAVA_SCALE;
+            fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache1) ) * SETUP->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
-            if ((texu < 0 || texu > 1) || (texv < 0 || texv > 1) ) {
+            if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1) ) {
                 return;
             }
         }
 
-        t->processPixelTexture(pixelColor, texu, texv );
+        t->processPixelTexture(pixelColor, fragment->texU, fragment->texV );
 
         Uint8 red, green, blue, alpha;
         SDL_GetRGBA(pixelColor, t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
@@ -458,28 +438,26 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, int x, int y, f
         if (alpha == 0) {
             return;
         } else {
-            pixelColor = Tools::alphaBlend( buffer->getVideoBuffer( x, y ), pixelColor, alpha );
+            pixelColor = Tools::alphaBlend( BUFFERS->getVideoBuffer( x, y ), pixelColor, alpha );
         }
 
         if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && SETUP->ENABLE_LIGHTMAPPING) {
-            t->processPixelLightmap(pixelColor, lightu, lightv);
+            t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV);
         }
     }
 
     if (SETUP->ENABLE_FOG) {
-
-        float nZ = Maths::normalizeToRange(z, 0, SETUP->FOG_DISTANCE);
+        float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE);
 
         if (nZ >= 1) {
             pixelColor = SETUP->FOG_COLOR;
         } else {
             pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
         }
-
     }
 
-    buffer->setDepthBuffer(bufferIndex, z);
-    buffer->setVideoBuffer(bufferIndex, pixelColor);
+    BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
+    BUFFERS->setVideoBuffer(bufferIndex, pixelColor);
 }
 
 void ComponentRender::drawTilesTriangles(std::vector<Triangle*> *visibleTriangles)
@@ -559,8 +537,8 @@ void ComponentRender::initOpenCL()
     // Create the OpenCL kernel
     processAllTriangles = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
 
-    opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(float), EngineBuffers::getInstance()->depthBuffer, &ret);
-    opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, EngineBuffers::getInstance()->sizeBuffers * sizeof(unsigned int), EngineBuffers::getInstance()->videoBuffer, &ret);
+    opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, BUFFERS->sizeBuffers * sizeof(float), BUFFERS->depthBuffer, &ret);
+    opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, BUFFERS->sizeBuffers * sizeof(unsigned int), BUFFERS->videoBuffer, &ret);
 
 }
 
@@ -637,26 +615,24 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTr
 
 void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
 {
-    EngineBuffers* engineBuffers = EngineBuffers::getInstance();
-
     // LOD determination
     t->lod = t->processLOD();
 
     // Triangle setup
-    int A01 = (int) -(t->As.y - t->Bs.y);
-    int A12 = (int) -(t->Bs.y - t->Cs.y);
-    int A20 = (int) -(t->Cs.y - t->As.y);
+    int A01 = (int) (-t->As.y + t->Bs.y);
+    int A12 = (int) (-t->Bs.y + t->Cs.y);
+    int A20 = (int) (-t->Cs.y + t->As.y);
 
-    int B01 = (int) -(t->Bs.x - t->As.x);
-    int B12 = (int) -(t->Cs.x - t->Bs.x);
-    int B20 = (int) -(t->As.x - t->Cs.x);
+    int B01 = (int) (-t->Bs.x + t->As.x);
+    int B12 = (int) (-t->Cs.x + t->Bs.x);
+    int B20 = (int) (-t->As.x + t->Cs.x);
 
     Point2D startP(t->minX, t->minY);
     int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    float alpha, theta, gamma, depth, affine_uv, texu, texv, lightu, lightv;
+    Fragment *fragment = new Fragment();
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -667,32 +643,24 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
 
             if ((w0 | w1 | w2) > 0) {
 
-                alpha = w0 * t->reciprocalFullArea;
-                theta = w1 * t->reciprocalFullArea;
-                gamma = 1 - alpha - theta;
+                fragment->alpha = (int) w0 * t->reciprocalFullArea;
+                fragment->theta = (int) w1 * t->reciprocalFullArea;
+                fragment->gamma = 1 - fragment->alpha - fragment->theta;
 
-                depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
+                fragment->depth = (fragment->alpha * t->An.z) + (fragment->theta * t->Bn.z) + (fragment->gamma * t->Cn.z);
 
                 const int bufferIndex = ( y * SETUP->screenWidth ) + x;
 
-                if ( depth < engineBuffers->getDepthBuffer( bufferIndex )) {
-                    affine_uv = 1 / ( alpha * (t->persp_correct_Az) + theta * (t->persp_correct_Bz) + gamma * (t->persp_correct_Cz) );
-                    texu   = ( (alpha * t->tex_u1_Ac_z)   + (theta * t->tex_u2_Bc_z)   + (gamma * t->tex_u3_Cc_z) )   * affine_uv;
-                    texv   = ( (alpha * t->tex_v1_Ac_z)   + (theta * t->tex_v2_Bc_z)   + (gamma * t->tex_v3_Cc_z) )   * affine_uv;
+                if ( fragment->depth < BUFFERS->getDepthBuffer( bufferIndex )) {
+                    fragment->affineUV = 1 / ((fragment->alpha * t->persp_correct_Az) + (fragment->theta * t->persp_correct_Bz) + (fragment->gamma * t->persp_correct_Cz) );
+                    fragment->texU   = ((fragment->alpha * t->tex_u1_Ac_z) + (fragment->theta * t->tex_u2_Bc_z) + (fragment->gamma * t->tex_u3_Cc_z) ) * fragment->affineUV;
+                    fragment->texV   = ((fragment->alpha * t->tex_v1_Ac_z) + (fragment->theta * t->tex_v2_Bc_z) + (fragment->gamma * t->tex_v3_Cc_z) ) * fragment->affineUV;
 
-                    lightu = ( (alpha * t->light_u1_Ac_z) + (theta * t->light_u2_Bc_z) + (gamma * t->light_u3_Cc_z) ) * affine_uv;
-                    lightv = ( (alpha * t->light_v1_Ac_z) + (theta * t->light_v2_Bc_z) + (gamma * t->light_v3_Cc_z) ) * affine_uv;
+                    fragment->lightU = ((fragment->alpha * t->light_u1_Ac_z) + (fragment->theta * t->light_u2_Bc_z) + (fragment->gamma * t->light_u3_Cc_z) ) * fragment->affineUV;
+                    fragment->lightV = ((fragment->alpha * t->light_v1_Ac_z) + (fragment->theta * t->light_v2_Bc_z) + (fragment->gamma * t->light_v3_Cc_z) ) * fragment->affineUV;
 
                     if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
-                        this->processPixel(
-                                t,
-                                bufferIndex,
-                                x, y,
-                                alpha, theta, gamma,
-                                depth,
-                                texu, texv,
-                                lightu, lightv
-                        );
+                        processPixel( t, bufferIndex, x, y, fragment);
                     }
                 }
             }

@@ -28,7 +28,7 @@ public:
         guiWeapons     = new GUI_Weapons();
     }
 
-    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns, int numVisibleTriangles)
+    virtual void draw(float timedelta, bool &finish, std::vector<Object3D*> &gameObjects, Camera3D *cam, std::vector<Tile> &tiles, int numTilesColumns)
     {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);

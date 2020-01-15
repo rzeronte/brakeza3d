@@ -520,12 +520,12 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 1:
-                if (!EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION) {
+                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
                     lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap2, light_v, light_u);
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap2, light_v, light_u);
                 }
-                indexPattern = (int)(lightmapIndexPattern2);
+                indexPattern = (int) lightmapIndexPattern2;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 2:
@@ -534,7 +534,7 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap3, light_v, light_u);
                 }
-                indexPattern = (int)(lightmapIndexPattern3);
+                indexPattern = (int) lightmapIndexPattern3;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 3:
@@ -543,7 +543,7 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
                 } else {
                     lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap4, light_v, light_u);
                 }
-                indexPattern = (int)(lightmapIndexPattern4);
+                indexPattern = (int) lightmapIndexPattern4;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             default:
@@ -659,7 +659,7 @@ int Triangle::processLOD()
     if (getTexture() == NULL) return 0;
 
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
-        float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
+        float area_screen  = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
         float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
 
         float r = area_texture / area_screen;
@@ -678,7 +678,7 @@ int Triangle::processLOD()
             clamped_lod = 8;
         }
 
-        lod =  clamped_lod;
+        lod = clamped_lod;
     }
 
     return lod;
@@ -715,7 +715,6 @@ Plane Triangle::plane()
 {
     return Plane(this->Ao, this->Bo, this->Co);
 }
-
 
 OCLTriangle Triangle::getOpenCL()
 {

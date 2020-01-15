@@ -24,7 +24,7 @@ ComponentGame::ComponentGame()
 void ComponentGame::onStart()
 {
     SETUP->MENU_ACTIVE = true;
-    Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
+    Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 }
 
 void ComponentGame::preUpdate()
@@ -321,14 +321,14 @@ void ComponentGame::redScreen()
 
     for (int y = 0; y < SETUP->screenHeight; y++) {
         for (int x = 0; x < SETUP->screenWidth; x++) {
-            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
+            Uint32 currentPixelColor = BUFFERS->getVideoBuffer(x, y);
 
             int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
             int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
             int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor) * intensity_b);
 
             currentPixelColor = Tools::createRGB(r_light, g_light, b_light);
-            EngineBuffers::getInstance()->setVideoBuffer( x, y, currentPixelColor );
+            BUFFERS->setVideoBuffer( x, y, currentPixelColor );
         }
     }
 }

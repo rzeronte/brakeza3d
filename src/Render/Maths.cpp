@@ -42,18 +42,20 @@ void Maths::getBarycentricCoordinatesPrecalc(float &alpha, float &theta, float &
  */
 int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V)
 {
-    if (P.distance(V.vertex1) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex2) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+    EngineSetup *SETUP = EngineSetup::getInstance();
+
+    if (P.distance(V.vertex1) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex2) > SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
     }
 
-    if (P.distance(V.vertex2) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex1) < EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+    if (P.distance(V.vertex2) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex1) < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 2;
     }
 
-    if (P.distance(V.vertex1) > EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex2) < EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+    if (P.distance(V.vertex1) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
+        P.distance(V.vertex2) < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 3;
     }
 

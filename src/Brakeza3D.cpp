@@ -37,7 +37,6 @@ void Brakeza3D::start()
     componentGame       = new ComponentGame();
     componentGameInput  = new ComponentGameInput( componentGame->getPlayer());
 
-
     componentsManager->registerComponent( componentWindow , &getSceneObjects() );
     componentsManager->registerComponent( componentCamera, &getSceneObjects() );
     componentsManager->registerComponent( componentCollisions, &getSceneObjects() );
@@ -135,7 +134,8 @@ void Brakeza3D::updateFPS()
         fpsFrameCounter = 0;
     }
 
-    Tools::writeTextCenterHorizontal(getComponentsManager()->getComponentWindow()->renderer, getComponentsManager()->getComponentWindow()->fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
+    std::cout << "FPS: " <<fps << " fps" << std::endl;
+    //Tools::writeTextCenterHorizontal(getComponentsManager()->getComponentWindow()->renderer, getComponentsManager()->getComponentWindow()->fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
 }
 
 void Brakeza3D::onStartComponents() {

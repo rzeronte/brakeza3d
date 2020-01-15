@@ -41,24 +41,18 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentGameInput::handleMouse(SDL_Event *event)
 {
-    if ( player->isDead() && !EngineSetup::getInstance()->MENU_ACTIVE ) {
+    if ( player->isDead() && !SETUP->MENU_ACTIVE ) {
         if ( ComponentsManager::get()->getComponentInput()->MousePressed ) {
             player->respawn();
         }
 
         return;
     }
-
-    //InputController::handleMouse(event);
 }
 
 void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
 {
-    if (EngineSetup::getInstance()->MENU_ACTIVE) return;
-
-    if ( !player->isDead() ) {
-        //InputController::handleMovingCamera(event, end);
-    }
+    if (SETUP->MENU_ACTIVE) return;
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
@@ -67,7 +61,7 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
         if (ComponentsManager::get()->getComponentBSP()->getBSP()->isCurrentLeafLiquid()) {
             this->jump( false, -10, false);
         } else {
-            this->jump( true, EngineSetup::getInstance()->JUMP_FORCE.y, true );
+            this->jump( true, SETUP->JUMP_FORCE.y, true );
         }
     }
 
@@ -79,11 +73,10 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
 
             if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
                 int rndStep = Tools::random(1, 6);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
+                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
             }
         }
     }
-
 }
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
@@ -91,29 +84,29 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
     if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
-        EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
+        SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
 
-        if (!EngineSetup::getInstance()->MENU_ACTIVE) {
+        if (!SETUP->MENU_ACTIVE) {
             SDL_SetRelativeMouseMode(SDL_TRUE);
             Mix_HaltMusic();
-            Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
-            EngineSetup::getInstance()->DRAW_WEAPON = true;
-            EngineSetup::getInstance()->DRAW_HUD    = true;
+            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
+            SETUP->DRAW_WEAPON = true;
+            SETUP->DRAW_HUD    = true;
         } else {
             SDL_SetRelativeMouseMode(SDL_FALSE);
-            SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, EngineSetup::getInstance()->screenWidth/2, EngineSetup::getInstance()->screenHeight/2);
+            SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, SETUP->screenWidth/2, SETUP->screenHeight/2);
             Mix_HaltMusic();
-            Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
-            EngineSetup::getInstance()->DRAW_WEAPON = false;
-            EngineSetup::getInstance()->DRAW_HUD    = false;
+            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
+            SETUP->DRAW_WEAPON = false;
+            SETUP->DRAW_HUD    = false;
         }
 
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
+        Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
     }
 
     handleMenuKeyboard(end);
 
-    if (EngineSetup::getInstance()->MENU_ACTIVE || EngineSetup::getInstance()->LOADING) return;
+    if (SETUP->MENU_ACTIVE || SETUP->LOADING) return;
 
     this->handleZoom( event );
     this->handleCrouch( event );
@@ -128,47 +121,47 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        if (SETUP->MENU_ACTIVE) {
             if (ComponentsManager::get()->getComponentMenu()->currentOption + 1 < ComponentsManager::get()->getComponentMenu()->numOptions) {
                 ComponentsManager::get()->getComponentMenu()->currentOption++;
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
+                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
             }
         }
     }
 
     if (keyboard[SDL_SCANCODE_UP]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE) {
+        if (SETUP->MENU_ACTIVE) {
             if (ComponentsManager::get()->getComponentMenu()->currentOption > 0) {
                 ComponentsManager::get()->getComponentMenu()->currentOption--;
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
+                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_MENU, 0);
             }
         }
     }
 
     if (keyboard[SDL_SCANCODE_RETURN]) {
-        if (EngineSetup::getInstance()->MENU_ACTIVE && ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
+        if (SETUP->MENU_ACTIVE && ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
         }
 
-        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state == PlayerState::GAMEOVER &&
+        if (SETUP->MENU_ACTIVE && player->state == PlayerState::GAMEOVER &&
             ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
-            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
+            Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
             player->newGame();
         }
 
-        if (EngineSetup::getInstance()->MENU_ACTIVE && player->state != PlayerState::GAMEOVER &&
+        if (SETUP->MENU_ACTIVE && player->state != PlayerState::GAMEOVER &&
             ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
 
-            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
+            Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
             Mix_HaltMusic();
-            Mix_PlayMusic( EngineBuffers::getInstance()->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
-            EngineSetup::getInstance()->DRAW_WEAPON = true;
-            EngineSetup::getInstance()->DRAW_HUD    = true;
+            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
+            SETUP->DRAW_WEAPON = true;
+            SETUP->DRAW_HUD    = true;
 
-            EngineSetup::getInstance()->MENU_ACTIVE = !EngineSetup::getInstance()->MENU_ACTIVE;
+            SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
         }
     }
 }
@@ -181,7 +174,7 @@ void ComponentGameInput::jump(bool checkOnGrount, float YForce, bool soundJump)
 
     if (soundJump) {
         int rndJump = Tools::random(1, 4);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->jump(btVector3(0, YForce, 0));
@@ -242,7 +235,7 @@ void ComponentGameInput::handleCrouch(SDL_Event *event)
             ComponentsManager::get()->getComponentCamera()->getCamera()->makeKineticCharacter(trans, capsule );
 
             ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->setGravity(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->getGravity() );
-            ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->setFallSpeed(256);
+            ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->setFallSpeed(EngineSetup::getInstance()->BULLET_FALL_SPEED);
 
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
                     ComponentsManager::get()->getComponentCamera()->getCamera()->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
@@ -262,7 +255,7 @@ void ComponentGameInput::handleFire(SDL_Event *event)
         // First keydown
         if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {
             if (weaponType->isKeyDownHandle()) {
-                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                if (SETUP->LOG_WEAPONS_SYSTEM)  {
                     Logging::getInstance()->Log("Fire KeyDown");
                 }
                 int keyDownAnimationStatus = weaponType->getKeyDownAnimationStatus();
@@ -270,13 +263,13 @@ void ComponentGameInput::handleFire(SDL_Event *event)
                 if (weaponType->animations[ keyDownAnimationStatus ]->isLooping()) {
                     if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
                         Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
-                        if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                        if (SETUP->LOG_WEAPONS_SYSTEM)  {
                             Logging::getInstance()->Log("Init sound looping mode in first");
                         }
                     }
                 } else {
                     Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                    if (SETUP->LOG_WEAPONS_SYSTEM)  {
                         Logging::getInstance()->Log("Init sound fire phase in first ");
                     }
                     Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON, 0);
@@ -300,7 +293,7 @@ void ComponentGameInput::handleFire(SDL_Event *event)
         // keyup
         if (event->type == SDL_KEYUP) {
             if (weaponType->isKeyUpHandle()) {
-                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+                if (SETUP->LOG_WEAPONS_SYSTEM)  {
                     Logging::getInstance()->Log("Fire KeyUp");
                 }
                 int keyUpAnimationStatus = weaponType->getKeyUpAnimationStatus();
@@ -335,14 +328,14 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
                 Logging::getInstance()->Log("Start Snipper");
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(true );
 
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("sniperOn"), EngineSetup::SoundChannels::SND_WEAPON, 0);
+                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("sniperOn"), EngineSetup::SoundChannels::SND_WEAPON, 0);
 
-                cam->horizontal_fov = (float) EngineSetup::getInstance()->ZOOM_FOV;
+                cam->horizontal_fov = (float) SETUP->ZOOM_FOV;
                 cam->frustum->setup(
                         *cam->getPosition(),
                         Vertex3D(0, 0, 1),
-                        EngineSetup::getInstance()->up,
-                        EngineSetup::getInstance()->right,
+                        SETUP->up,
+                        SETUP->right,
                         cam->getNearDistance(),
                         cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
                         cam->farDistance,
@@ -358,12 +351,12 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
 
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false );
 
-                cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
+                cam->horizontal_fov = (float) SETUP->HORIZONTAL_FOV;
                 cam->frustum->setup(
                         *cam->getPosition(),
                         Vertex3D(0, 0, 1),
-                        EngineSetup::getInstance()->up,
-                        EngineSetup::getInstance()->right,
+                        SETUP->up,
+                        SETUP->right,
                         cam->getNearDistance(),
                         cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
                         cam->farDistance,
@@ -382,7 +375,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
 void ComponentGameInput::handleWeaponSelector()
 {
     ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
-    SoundPackage *soundPackage = EngineBuffers::getInstance()->soundPackage;
+    SoundPackage *soundPackage = BUFFERS->soundPackage;
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
     if (keyboard[SDL_SCANCODE_1] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::PISTOL]->isAvailable()) {
@@ -430,18 +423,18 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
 {
     if (event->key.keysym.sym == SDLK_z ) {
         if (event->type == SDL_KEYDOWN) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->ZOOM_FOV;
+            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) SETUP->ZOOM_FOV;
         }
 
         if (event->type == SDL_KEYUP) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
+            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) SETUP->HORIZONTAL_FOV;
         }
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(
                 *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
                 Vertex3D(0, 0, 1),
-                EngineSetup::getInstance()->up,
-                EngineSetup::getInstance()->right,
+                SETUP->up,
+                SETUP->right,
                 ComponentsManager::get()->getComponentCamera()->getCamera()->getNearDistance(),
                 ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasNearHeight(), ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasNearWidth(),
                 ComponentsManager::get()->getComponentCamera()->getCamera()->farDistance,

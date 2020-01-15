@@ -78,8 +78,8 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 50;
-    int stepY   = 170;
+    int offsetY = 150;
+    int stepY   = 100;
 
     for( int i = 0 ; i < numOptions ; i++) {
 
@@ -94,7 +94,7 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
             color = Color::white();
         }
 
-        Tools::writeTextCenterHorizontal( ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontBig, color, text, offsetY);
+        Tools::writeTextCenterHorizontal( ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontMedium, color, text, offsetY);
 
         offsetY += stepY;
     }

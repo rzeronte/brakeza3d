@@ -19,6 +19,10 @@
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
 
+struct Fragment {
+    float alpha, theta, gamma, depth, affineUV, texU, texV, lightU, lightV;
+};
+
 class ComponentRender : public Component {
 public:
 
@@ -40,7 +44,7 @@ public:
     void drawFrameTriangles(std::vector<Triangle*> &visibleTriangles);
     void processTriangle(Triangle *t);
     void triangleRasterizer(Triangle *t);
-    void processPixel(Triangle *t, int bufferIndex, int x, int y, float w0, float w1, float w2, float z, float texu, float texv, float lightu, float lightv);
+    void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *);
     void drawTilesTriangles(std::vector<Triangle*> *visibleTriangles);
     void drawSceneObjectsAxis();
     void initOpenCL();
@@ -49,9 +53,11 @@ public:
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
     void drawWireframe(Triangle *t);
 
+    std::vector<Triangle *> &getFrameTriangles();
+    std::vector<Triangle *> &getVisibleTriangles();
+
     std::vector<Triangle*> frameTriangles;
     std::vector<Triangle*> visibleTriangles;
-    EngineBuffers *buffer;
 
     std::vector<Tile> tiles;
     int sizeTileWidth  = EngineSetup::getInstance()->screenWidth/2;
@@ -79,9 +85,6 @@ public:
     cl_mem opencl_buffer_depth;
 
     cl_command_queue command_queue_rasterizer;
-
-    std::vector<Triangle *> &getFrameTriangles();
-    std::vector<Triangle *> &getVisibleTriangles();
 };
 
 

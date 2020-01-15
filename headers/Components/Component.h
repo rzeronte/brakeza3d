@@ -9,13 +9,15 @@
 #include <vector>
 #include "../Objects/Object3D.h"
 #include "../EngineSetup.h"
+#include "../EngineBuffers.h"
+
+class ComponentsManager;
 
 class Component {
 private:
     std::vector<Object3D*> *sceneObjects;
-protected:
-    EngineSetup   *SETUP;
 public:
+
     Component();
 
     virtual void onStart() = 0;
@@ -26,13 +28,16 @@ public:
     virtual void onSDLPollEvent(SDL_Event *event, bool &finish) = 0;
 
     std::vector<Component *> *getComponents() const;
-    void setComponents(std::vector<Component *> *components);
-    Component *getComponentId(int id);
+    Component                *getComponentId(int id);
+    void                      setComponents(std::vector<Component *> *components);
 
     std::vector<Object3D *> *getSceneObjects() const;
     void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
     std::vector<Component *> *components;
+    EngineBuffers *BUFFERS;
+    EngineSetup   *SETUP;
+
 };
 
 

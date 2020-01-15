@@ -319,7 +319,7 @@ void ComponentBSP::loadEnemiesJSON()
     cJSON *myDataJSON = cJSON_Parse(enemiesFile);
 
     if (myDataJSON == NULL) {
-        //Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
@@ -327,9 +327,9 @@ void ComponentBSP::loadEnemiesJSON()
     int sizeWeaponsList = cJSON_GetArraySize(enemiesJSONList);
 
     if (sizeWeaponsList > 0) {
-        //Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
     } else {
-        //Logging::getInstance()->Log(filePath + " is empty", "ERROR");
+        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
     }
 
     // weapons loop
@@ -393,7 +393,7 @@ void ComponentBSP::loadEnemiesJSON()
             );
         }
 
-        EngineBuffers::getInstance()->enemyTemplates.push_back(newEnemy);
+        BUFFERS->enemyTemplates.push_back(newEnemy);
     }
 }
 

@@ -11,6 +11,7 @@
 #include <SDL_ttf.h>
 #include "Component.h"
 
+
 class ComponentWindow : public Component {
 
 public:
