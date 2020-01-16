@@ -97,13 +97,10 @@ public:
     void  setVideoBuffer(const int i, Uint32 value);
     void  flipVideoBufferToSurface(SDL_Surface *);
 
-    void setNumOCLTriangles(int num);
     void addOCLTriangle(OCLTriangle);
 
     void makeFireColors();
     void fireShaderSetup();
-
-    void getSoundsJSON();
 };
 
 #endif

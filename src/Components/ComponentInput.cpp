@@ -8,6 +8,10 @@
 #include "../../headers/ComponentsManager.h"
 #include <iostream>
 
+ComponentInput::ComponentInput() {
+    setEnabled( true );
+}
+
 void ComponentInput::onStart() {
     std::cout << "ComponentInput onStart" << std::endl;
 }
@@ -16,8 +20,10 @@ void ComponentInput::preUpdate() {
 
 }
 
-void ComponentInput::onUpdate() {
-    handleMovingCamera();
+void ComponentInput::onUpdate()
+{
+    if ( !isEnabled() ) return;
+    handleKeyboardMovingCamera();
 }
 
 void ComponentInput::postUpdate() {
@@ -28,8 +34,11 @@ void ComponentInput::onEnd() {
 
 }
 
-void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
+void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
+{
     ImGui_ImplSDL2_ProcessEvent(e);
+
+    if ( !isEnabled() ) return;
 
     updateKeyboardMapping();
     updateMouseStates(e);
@@ -37,9 +46,6 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
     handleWindowEvents(e, finish);
 }
 
-ComponentInput::ComponentInput() {
-
-}
 
 void ComponentInput::handleMouse(SDL_Event *event)
 {
@@ -60,7 +66,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
     }
 }
 
-void ComponentInput::handleMovingCamera()
+void ComponentInput::handleKeyboardMovingCamera()
 {
     if (keyboard[SDL_SCANCODE_W]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
@@ -160,5 +166,13 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
     if (event->type == SDL_MOUSEMOTION) {
         MouseMotion = true;
     }
+}
+
+bool ComponentInput::isEnabled() const {
+    return enabled;
+}
+
+void ComponentInput::setEnabled(bool enabled) {
+    ComponentInput::enabled = enabled;
 }
 

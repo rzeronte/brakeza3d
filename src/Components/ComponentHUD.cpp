@@ -23,12 +23,12 @@ void ComponentHUD::preUpdate() {
 
 void ComponentHUD::onUpdate()
 {
-    if ( SETUP->DRAW_CROSSHAIR ) {
-        Drawable::drawCrossHair();
-    }
-
     if (SETUP->DRAW_HUD && !SETUP->MENU_ACTIVE) {
         drawHUD();
+
+        if ( SETUP->DRAW_CROSSHAIR ) {
+            Drawable::drawCrossHair();
+        }
     }
 }
 
@@ -75,10 +75,10 @@ void ComponentHUD::drawHUD()
     // Stamina
     r.x = 57; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, ComponentsManager::get()->getComponentWindow()->screenSurface, &r);
-    Tools::writeText(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontDefault, 78, textY, Color::gray(), std::to_string(69 ));
+    Tools::writeText(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontDefault, 78, textY, Color::gray(), std::to_string(ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
 
     // kills
-    //Tools::writeText(Brakeza3D::get()->renderer, Brakeza3D::get()->fontDefault, 122, textY, Color::gray(), std::to_string(this->kills));
+    Tools::writeText(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontDefault, 122, textY, Color::gray(), std::to_string(ComponentsManager::get()->getComponentGame()->getKills()));
 
     // Weapon Icon
     if (ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->isAvailable()) {

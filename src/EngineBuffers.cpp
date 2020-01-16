@@ -33,9 +33,6 @@ EngineBuffers::EngineBuffers()
 
     OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
 
-    // Load WAVs
-    this->getSoundsJSON();
-
     // 37 colores * 3 (rgb channels)
     this->makeFireColors();
     this->fireShaderSetup();
@@ -167,35 +164,4 @@ NPCEnemyBody* EngineBuffers::getEnemyTemplateForClassname(std::string classname)
     }
 
     return nullptr;
-}
-
-void EngineBuffers::getSoundsJSON()
-{
-    std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
-    size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_SOUNDS;
-    const char* mapsFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(mapsFile);
-
-    if (myDataJSON == NULL) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
-        return;
-    }
-
-    // Sounds
-    cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds" );
-    int sizeSoundsList = cJSON_GetArraySize(soundsJSONList);
-
-    cJSON *currentSound;
-    cJSON_ArrayForEach(currentSound, soundsJSONList) {
-        cJSON *file = cJSON_GetObjectItemCaseSensitive(currentSound, "file");
-        cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
-        cJSON *type = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
-
-        SoundPackageItemType selectedType;
-        if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
-        if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
-
-        soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
-    }
 }

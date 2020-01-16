@@ -31,6 +31,7 @@ bool Player::isDead() const {
 void Player::setDead(bool dead)
 {
     if (this->dead != dead && dead) {
+        ComponentsManager::get()->getComponentInput()->setEnabled( false);
         int rndPlayerDead = Tools::random(1, 6);
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
@@ -91,7 +92,8 @@ void Player::newGame()
 
 void Player::respawn()
 {
-    //Brakeza3D::get()->setCameraInBSPStartPosition();
+    ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
+    ComponentsManager::get()->getComponentInput()->setEnabled( true );
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);

@@ -29,7 +29,6 @@ void ComponentGame::onStart()
 
 void ComponentGame::preUpdate()
 {
-    player->evalStatusMachine();
 }
 
 void ComponentGame::onUpdate() 
@@ -41,7 +40,11 @@ void ComponentGame::onUpdate()
     ComponentWindow  *componentWindow  = ComponentsManager::get()->getComponentWindow();
     ComponentHUD     *componentHUD     = ComponentsManager::get()->getComponentHUD();
 
+
     if (player->state != PlayerState::GAMEOVER) {
+
+        this->resolveCollisions();
+
         if (mapBSP->isLoaded() && mapBSP->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
             Drawable::waterShader( mapBSP->currentLeaf->type );
         }
@@ -60,18 +63,15 @@ void ComponentGame::onUpdate()
             onUpdateIA();
         }
 
-        if ( player->isDead() ) {
-            redScreen();
-        }
-
-        if ( player->tookDamage ) {
+        if ( player->isDead() || player->tookDamage ) {
             redScreen();
         }
     }
 
     if (SETUP->LOADING) {
         SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, componentWindow->screenSurface, NULL);
-        Tools::writeTextCenterHorizontal( componentWindow->renderer, componentWindow->fontDefault, Color::red(), "Loading...", 100);
+        std::string text = "Loading";
+        Tools::writeTextCenterHorizontal( componentWindow->renderer, componentWindow->fontDefault, Color::red(), text, 100);
         Drawable::drawFireShader();
     }
 
@@ -82,12 +82,11 @@ void ComponentGame::onUpdate()
     if ( SETUP->FADEIN ) {
         Drawable::drawFadeIn();
     }
-
-    this->resolveCollisions();
 }
 
-void ComponentGame::postUpdate() {
-
+void ComponentGame::postUpdate()
+{
+    player->evalStatusMachine();
 }
 
 void ComponentGame::onEnd() {

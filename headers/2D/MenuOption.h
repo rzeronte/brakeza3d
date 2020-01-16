@@ -17,13 +17,13 @@ public:
 
     MenuOption(std::string label, int action);
 
-    const std::string &getLabel() const;
+    std::string &getLabel();
     void  setLabel(const std::string &label);
 
     int  getAction() const;
     void setAction(int action);
 
-    const std::string &getAlt() const;
+    std::string &getAlt();
     void  setAlt(const std::string &alt);
 };
 

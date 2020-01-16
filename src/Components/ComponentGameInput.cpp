@@ -10,6 +10,7 @@
 ComponentGameInput::ComponentGameInput(Player *player)
 {
     this->player = player;
+    setEnabled( true );
 }
 
 void ComponentGameInput::onStart() {
@@ -41,13 +42,7 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentGameInput::handleMouse(SDL_Event *event)
 {
-    if ( player->isDead() && !SETUP->MENU_ACTIVE ) {
-        if ( ComponentsManager::get()->getComponentInput()->MousePressed ) {
-            player->respawn();
-        }
 
-        return;
-    }
 }
 
 void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
@@ -103,6 +98,8 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
         Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
     }
+
+    handleRespawnAfterDead(event);
 
     handleMenuKeyboard(end);
 
@@ -443,5 +440,25 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->UpdateFrustum();
     }
+}
+
+
+void ComponentGameInput::handleRespawnAfterDead(SDL_Event *event)
+{
+    if ( player->isDead() && !SETUP->MENU_ACTIVE ) {
+        if ( event->type == SDL_KEYDOWN ) {
+            player->respawn();
+        }
+
+        return;
+    }
+}
+
+bool ComponentGameInput::isEnabled() const {
+    return enabled;
+}
+
+void ComponentGameInput::setEnabled(bool enabled) {
+    ComponentGameInput::enabled = enabled;
 }
 

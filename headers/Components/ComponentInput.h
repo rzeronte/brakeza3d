@@ -21,6 +21,8 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
+    bool enabled;
+
     bool debug = true;
     bool click = false;
 
@@ -30,10 +32,13 @@ public:
     bool leftButton  = false;
     bool rightButton = false;
 
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
     void handleWindowEvents(SDL_Event *e, bool &);
     void updateKeyboardMapping();
     void updateMouseStates(SDL_Event *e);
-    void handleMovingCamera();
+    void handleKeyboardMovingCamera();
     void handleMouse(SDL_Event *);
 
     Uint8* keyboard;

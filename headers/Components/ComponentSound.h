@@ -20,6 +20,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     void initSoundSystem();
+    void loadSoundsJSON();
 };
 
 

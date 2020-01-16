@@ -20,7 +20,11 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
+    bool   enabled;
     Player *player;
+
+    bool isEnabled() const;
+    void setEnabled(bool enable);
 
     void handleMovingCamera(SDL_Event *, bool &);
     void handleMouse(SDL_Event *);
@@ -31,8 +35,8 @@ public:
     void handleFire(SDL_Event *event);
     void handleWeaponSelector();
     void handleZoom(SDL_Event *event);
-
     void handleMenuKeyboard(bool &end);
+    void handleRespawnAfterDead(SDL_Event *event);
 
     void jump(bool checkOnGround, float YForce, bool soundJump);
 };

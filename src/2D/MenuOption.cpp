@@ -7,7 +7,7 @@ MenuOption::MenuOption(const std::string label, int action)
     this->action = action;
 }
 
-const std::string &MenuOption::getLabel() const {
+std::string &MenuOption::getLabel() {
     return label;
 }
 
@@ -23,7 +23,7 @@ void MenuOption::setAction(int action) {
     MenuOption::action = action;
 }
 
-const std::string &MenuOption::getAlt() const {
+std::string &MenuOption::getAlt() {
     return alt;
 }
 
