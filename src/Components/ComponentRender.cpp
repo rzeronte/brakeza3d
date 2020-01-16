@@ -8,6 +8,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
+#include "../../headers/Brakeza3D.h"
 
 ComponentRender::ComponentRender()
 {
@@ -171,19 +172,19 @@ void ComponentRender::hiddenSurfaceRemoval()
 
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    for (int i = 0; i < this->frameTriangles.size() ; i++) {
+    for (int i = 0; i < frameTriangles.size() ; i++) {
 
-        this->frameTriangles[i]->updateObjectSpace();
-        this->frameTriangles[i]->updateNormal();
+        frameTriangles[i]->updateObjectSpace();
+        frameTriangles[i]->updateNormal();
 
         // back face culling (needs objectSpace)
-        if (this->frameTriangles[i]->isBackFaceCulling( cam->getPosition() )) {
+        if (frameTriangles[i]->isBackFaceCulling( cam->getPosition() )) {
             continue;
         }
 
         // Clipping (needs objectSpace)
-        if (this->frameTriangles[i]->testForClipping( cam->frustum->planes,SETUP->LEFT_PLANE,SETUP->BOTTOM_PLANE )) {
-            this->frameTriangles[i]->clipping(
+        if (frameTriangles[i]->testForClipping( cam->frustum->planes,SETUP->LEFT_PLANE,SETUP->BOTTOM_PLANE )) {
+            frameTriangles[i]->clipping(
                     cam,
                     cam->frustum->planes,
                     SETUP->LEFT_PLANE,
@@ -196,9 +197,9 @@ void ComponentRender::hiddenSurfaceRemoval()
         }
 
         // Frustum Culling (needs objectSpace)
-        if (!cam->frustum->isPointInFrustum(this->frameTriangles[i]->Ao) &&
-            !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Bo) &&
-            !cam->frustum->isPointInFrustum(this->frameTriangles[i]->Co)
+        if (!cam->frustum->isPointInFrustum(frameTriangles[i]->Ao) &&
+            !cam->frustum->isPointInFrustum(frameTriangles[i]->Bo) &&
+            !cam->frustum->isPointInFrustum(frameTriangles[i]->Co)
         ) {
             continue;
         }
@@ -206,15 +207,15 @@ void ComponentRender::hiddenSurfaceRemoval()
         // Triangle precached data
         // Estas operaciones las hacemos después de descartar triángulos
         // para optimización en el rasterizador por software
-        this->frameTriangles[i]->updateCameraSpace( cam );
-        this->frameTriangles[i]->updateNDCSpace( cam );
-        this->frameTriangles[i]->updateScreenSpace();
-        this->frameTriangles[i]->updateBoundingBox();
-        this->frameTriangles[i]->updateFullArea();
-        this->frameTriangles[i]->updateUVCache();
+        frameTriangles[i]->updateCameraSpace( cam );
+        frameTriangles[i]->updateNDCSpace( cam );
+        frameTriangles[i]->updateScreenSpace();
+        frameTriangles[i]->updateBoundingBox();
+        frameTriangles[i]->updateFullArea();
+        frameTriangles[i]->updateUVCache();
 
         if (SETUP->RASTERIZER_OPENCL) {
-            BUFFERS->addOCLTriangle(this->frameTriangles[i]->getOpenCL());
+            BUFFERS->addOCLTriangle(frameTriangles[i]->getOpenCL());
         }
 
         if (this->frameTriangles[i]->fullArea < SETUP->MIN_TRIANGLE_AREA) {
@@ -222,7 +223,7 @@ void ComponentRender::hiddenSurfaceRemoval()
         }
 
         this->frameTriangles[i]->drawed = false;
-        this->visibleTriangles.emplace_back(this->frameTriangles[i]);
+        this->visibleTriangles.emplace_back(frameTriangles[i]);
     }
 
     if (SETUP->DEBUG_RENDER_INFO) {
@@ -232,7 +233,8 @@ void ComponentRender::hiddenSurfaceRemoval()
     frameTriangles.clear();
 }
 
-void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles) {
+void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
+{
     for (int i = 0; i < this->numTiles; i++) {
         this->tiles[i].numTriangles = 0;
     }
@@ -420,8 +422,8 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
             float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
-            fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache2) ) * SETUP->LAVA_SCALE;
-            fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * 1 + cache1) ) * SETUP->LAVA_SCALE;
+            fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * SETUP->LAVA_SCALE;
+            fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * SETUP->LAVA_SCALE;
         }
 
         if ( t->parent->isDecal() ) {
