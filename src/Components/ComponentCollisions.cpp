@@ -169,12 +169,12 @@ void ComponentCollisions::checkCollisionsForTriggerCamera()
                 }
 
                 if (!strcmp(classname, "func_door")) {
-                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
+                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[ComponentID::COMPONENT_WINDOW]);
                     Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string("func_door") );
                 }
 
                 if (!strcmp(classname, "trigger_multiple")) {
-                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[EngineSetup::ComponentID::COMPONENT_WINDOW]);
+                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[ComponentID::COMPONENT_WINDOW]);
                     // check for message response
                     if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
                         Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
