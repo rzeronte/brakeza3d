@@ -104,6 +104,9 @@ void Player::respawn()
 void Player::shoot()
 {
     ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
+
+    if (weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount() <= 0) return;
+
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
         auto *projectile = new Projectile3DBody();

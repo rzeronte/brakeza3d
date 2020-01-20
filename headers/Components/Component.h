@@ -16,10 +16,20 @@ class ComponentsManager;
 class Component {
 private:
     std::vector<Object3D*> *sceneObjects;
+    int id;
+    std::string label;
 public:
 
     Component();
 
+    // Identification functions
+    int  getId() const;
+    void setId(int id);
+
+    const std::string &getLabel() const;
+    void               setLabel(const std::string &label);
+
+    // Life cycle functions
     virtual void onStart() = 0;
     virtual void preUpdate() = 0;
     virtual void onUpdate() = 0;
@@ -27,16 +37,21 @@ public:
     virtual void onEnd() = 0;
     virtual void onSDLPollEvent(SDL_Event *event, bool &finish) = 0;
 
+    // get another components functions
     std::vector<Component *> *getComponents() const;
-    Component                *getComponentId(int id);
+    Component                *getComponentById(int id);
     void                      setComponents(std::vector<Component *> *components);
 
+    // Accesor to scene objects
     std::vector<Object3D *> *getSceneObjects() const;
     void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
     std::vector<Component *> *components;
+
+    // Accessors to Setup and Buffers
     EngineBuffers *BUFFERS;
     EngineSetup   *SETUP;
+
 
 };
 

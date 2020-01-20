@@ -244,11 +244,20 @@ void ComponentGameInput::handleCrouch(SDL_Event *event)
 
 void ComponentGameInput::handleFire(SDL_Event *event)
 {
-    WeaponType *weaponType = ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType();
-
-    if (!weaponType->isAvailable()) return;
-
     if (event->key.keysym.sym == SDLK_q ) {
+        WeaponType *weaponType = ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType();
+
+        if (!weaponType->isAvailable() or player->state == PlayerState::GAMEOVER) return;
+
+        // no ammo
+        if (weaponType->getAmmoType()->getAmount() <= 0) {
+            weaponType->status = EngineSetup::WeaponsActions::WALKING;
+            weaponType->setWeaponAnimation( weaponType->getKeyUpAnimationStatus() );
+            weaponType->firing = false; // Avoid casings and end animations
+            Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
+            return;
+        }
+
         // First keydown
         if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {
             if (weaponType->isKeyDownHandle()) {

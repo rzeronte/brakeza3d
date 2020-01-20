@@ -377,7 +377,10 @@ std::string Tools::floatTruncate(float val, int numDigits)
 
 void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times)
 {
-    if (chunk == NULL) return;
+    if (chunk == NULL)  {
+        Logging::getInstance()->Log("Error loading chunk sound");
+        return;
+    }
 
     Mix_PlayChannel(channel, chunk, times );
 }

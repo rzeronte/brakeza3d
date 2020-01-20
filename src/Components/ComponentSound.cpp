@@ -9,14 +9,14 @@
 #include "../../headers/Misc/Tools.h"
 #include <iostream>
 
-ComponentSound::ComponentSound() {
-
+ComponentSound::ComponentSound()
+{
+    initSoundSystem();
 }
 
 void ComponentSound::onStart()
 {
     std::cout << "ComponentSound onStart" << std::endl;
-    initSoundSystem();
     loadSoundsJSON();
 }
 

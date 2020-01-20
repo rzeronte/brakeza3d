@@ -21,6 +21,10 @@ public:
 
     std::map<std::string, std::any> setup;
 
+    std::string LOG_FILE = "brakeza.log";
+    bool LOGGING = true;
+    bool LOGGING_TO_FILE = false;
+
     std::string ENGINE_TITLE = "Brakeza3D v0.6";
 
     std::string cameraNameIdentifier        = "Camera";
@@ -295,22 +299,7 @@ public:
         SND_BLOOD_HIT = 7,
         SND_CASINGS = 8
     };
-    
-    enum ComponentID {
-        COMPONENT_WINDOW = 0,
-        COMPONENT_CAMERA = 1,
-        COMPONENT_COLLISIONS = 2,
-        COMPONENT_INPUT = 3,
-        COMPONENT_BSP = 4,
-        COMPONENT_SOUND = 5,
-        COMPONENT_RENDER = 6,
-        COMPONENT_GUI = 7,
-        COMPONENT_MENU = 8,
-        COMPONENT_WEAPONS = 9,
-        COMPONENT_HUD = 10,
-        COMPONENT_GAME = 11,
-        COMPONENT_GAME_INPUT = 12
-    };
+
 
 };
 

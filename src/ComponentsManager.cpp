@@ -19,13 +19,16 @@ ComponentsManager* ComponentsManager::get()
     return instance;
 }
 
-void ComponentsManager::registerComponent(Component *component, std::vector<Object3D *> *sceneObjects)
+void ComponentsManager::registerComponent(Component *component, std::string label)
 {
     component->setComponents( &components );
+    component->setId( components.size() );
+    component->setLabel( label );
     component->setSceneObjects( sceneObjects );
+
     components.push_back( component );
 
-    std::cout << "Register component ("<< components.size()  << ")" << std::endl;
+    std::cout << "Register component (" << component->getId() << ")" << std::endl;
 }
 
 void ComponentsManager::configureComponents()
@@ -41,6 +44,14 @@ void ComponentsManager::configureComponents()
     getComponentGUI()->setRenderer( getComponentWindow()->renderer );
     getComponentGUI()->setWindow( getComponentWindow()->window );
     getComponentGUI()->setContextOpenGl( &getComponentWindow()->contextOpenGL );
+}
+
+std::vector<Object3D *> *ComponentsManager::getSceneObjects() const {
+    return sceneObjects;
+}
+
+void ComponentsManager::setSceneObjects(std::vector<Object3D *> *sceneObjects) {
+    ComponentsManager::sceneObjects = sceneObjects;
 }
 
 

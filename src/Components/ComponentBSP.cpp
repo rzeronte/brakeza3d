@@ -126,7 +126,7 @@ void ComponentBSP::loadWeaponsJSON()
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
     if (myDataJSON == NULL) {
-        //Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
@@ -135,10 +135,11 @@ void ComponentBSP::loadWeaponsJSON()
     int sizeAmmoTypesList = cJSON_GetArraySize(ammoTypesJSONList);
 
     if (sizeAmmoTypesList > 0) {
-        //Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeAmmoTypesList) + " ammoTypes", "WEAPONS");
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeAmmoTypesList) + " ammoTypes", "WEAPONS");
     } else {
-        //Logging::getInstance()->Log(filePath + " is empty for ammoTypes", "ERROR");
+        Logging::getInstance()->Log(filePath + " is empty for ammoTypes", "ERROR");
     }
+
     cJSON *currentAmmoType;
     cJSON_ArrayForEach(currentAmmoType, ammoTypesJSONList) {
         cJSON *name       = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "name");
@@ -150,7 +151,7 @@ void ComponentBSP::loadWeaponsJSON()
         ammoType->setName(name->valuestring);
         ammoType->setClassname(classname->valuestring);
         weaponManager->ammoTypes.push_back(ammoType);
-        //Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
+        Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
 
     }
 
@@ -159,9 +160,9 @@ void ComponentBSP::loadWeaponsJSON()
     int sizeWeaponsList = cJSON_GetArraySize(weaponsJSONList);
 
     if (sizeWeaponsList > 0) {
-        //Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList) + " weapons", "WEAPONS");
+        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList) + " weapons", "WEAPONS");
     } else {
-        //Logging::getInstance()->Log(filePath + " is empty for weapons", "ERROR");
+        Logging::getInstance()->Log(filePath + " is empty for weapons", "ERROR");
     }
 
     // weapons loop
@@ -188,7 +189,7 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *casingTemp3   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing3_sound");
         cJSON *index         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "index");
 
-        //Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
+        Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
         cJSON *keyDownHandle = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_handle");
         cJSON *keyUpHandle   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_handle");
@@ -236,7 +237,7 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *markW      = cJSON_GetObjectItemCaseSensitive(fireMark, "width");
         cJSON *markH      = cJSON_GetObjectItemCaseSensitive(fireMark, "height");
 
-        //Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
+        Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
 
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
                 SETUP->WEAPONS_FOLDER + name->valuestring + "/" + markPath->valuestring,
@@ -245,13 +246,6 @@ void ComponentBSP::loadWeaponsJSON()
                 (float) markW->valuedouble,
                 (float) markH->valuedouble
         );
-
-        /*Logging::getInstance()->Log("JSON Weapon mark details for : " + std::string(name->valuestring) +
-                                    ", path: " + markPath->valuestring +
-                                    ", frames: " + std::to_string(markFrames->valueint) +
-                                    ", fps: " + std::to_string(markFps->valueint) +
-                                    ", w: " + std::to_string(markW->valuedouble) + ", h: " + std::to_string(markH->valuedouble)
-        );*/
 
         // animation's weapon loop
         cJSON *weaponAnimationsJSONList;
@@ -273,7 +267,7 @@ void ComponentBSP::loadWeaponsJSON()
             cJSON *next       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "next");
             cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
 
-            //Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(subfolder->valuestring) + ", status:" + std::to_string(status->valueint) +", next: " + std::to_string(next->valueint));
+            Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(subfolder->valuestring) + ", status:" + std::to_string(status->valueint) +", next: " + std::to_string(next->valueint));
 
             weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                     std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
@@ -293,17 +287,17 @@ void ComponentBSP::loadWeaponsJSON()
             animationCounter.setEnabled( false );
             weaponManager->getWeaponTypeByLabel(name->valuestring)->fireCounters.push_back(animationCounter);
 
-            //Logging::getInstance()->Log("Adding fire animation timer with step: " + std::to_string(time->valuedouble));
+            Logging::getInstance()->Log("Adding fire animation timer with step: " + std::to_string(time->valuedouble));
 
             Mix_Chunk *animationSound = new Mix_Chunk();
 
             std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
 
             if (strlen(sound->valuestring) > 0) {
-                //Logging::getInstance()->Log("Loading Fire Phases sound: " + pathSound);
+                Logging::getInstance()->Log("Loading Fire Phases sound: " + pathSound);
                 animationSound = Mix_LoadWAV( (pathSound).c_str() );
             } else {
-                //Logging::getInstance()->Log("Loading Fire Phases sound: Empty");
+                Logging::getInstance()->Log("Loading Fire Phases sound: Empty");
             }
 
             weaponManager->getWeaponTypeByLabel(name->valuestring)->fireSounds.push_back(animationSound);

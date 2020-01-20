@@ -10,6 +10,7 @@ Brakeza3D* Brakeza3D::instance = 0;
 Brakeza3D::Brakeza3D()
 {
     componentsManager = ComponentsManager::get();
+    componentsManager->setSceneObjects( &sceneObjects );
 }
 
 Brakeza3D* Brakeza3D::get()
@@ -37,19 +38,19 @@ void Brakeza3D::start()
     componentGame       = new ComponentGame();
     componentGameInput  = new ComponentGameInput( componentGame->getPlayer() );
 
-    componentsManager->registerComponent( componentWindow , &getSceneObjects() );
-    componentsManager->registerComponent( componentCamera, &getSceneObjects() );
-    componentsManager->registerComponent( componentCollisions, &getSceneObjects() );
-    componentsManager->registerComponent( componentInput, &getSceneObjects() );
-    componentsManager->registerComponent( componentBSP, &getSceneObjects() );
-    componentsManager->registerComponent( componentSound, &getSceneObjects() );
-    componentsManager->registerComponent( componentRender, &getSceneObjects() );
-    componentsManager->registerComponent( componentGUI, &getSceneObjects() );
-    componentsManager->registerComponent( componentMenu, &getSceneObjects() );
-    componentsManager->registerComponent( componentWeapons, &getSceneObjects() );
-    componentsManager->registerComponent( componentHUD, &getSceneObjects() );
-    componentsManager->registerComponent( componentGame, &getSceneObjects() );
-    componentsManager->registerComponent( componentGameInput, &getSceneObjects() );
+    componentsManager->registerComponent( componentWindow, "ComponentWindow" );
+    componentsManager->registerComponent( componentCamera, "ComponentCamera" );
+    componentsManager->registerComponent( componentCollisions, "ComponentCollisions" );
+    componentsManager->registerComponent( componentInput, "ComponentInput" );
+    componentsManager->registerComponent( componentBSP, "ComponentBSP" );
+    componentsManager->registerComponent( componentSound, "ComponentSound" );
+    componentsManager->registerComponent( componentRender, "ComponentRender" );
+    componentsManager->registerComponent( componentGUI, "ComponentGUI" );
+    componentsManager->registerComponent( componentMenu, "ComponentMenu" );
+    componentsManager->registerComponent( componentWeapons,  "ComponentWeapons" );
+    componentsManager->registerComponent( componentHUD,  "ComponentHUD" );
+    componentsManager->registerComponent( componentGame,  "ComponentGame" );
+    componentsManager->registerComponent( componentGameInput,  "ComponentGameInput" );
 
     ComponentsManager::get()->configureComponents();
 

@@ -1,9 +1,9 @@
 {
   "ammo": [
-    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "start_ammo": 400 },
-    { "index": 1, "name" : "shells",  "classname": "item_shells",  "start_ammo": 300 },
-    { "index": 2, "name" : "cells",   "classname": "item_cells",   "start_ammo": 100 },
-    { "index": 3, "name" : "rockets", "classname": "item_rockets", "start_ammo": 200 }
+    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "start_ammo": 50 },
+    { "index": 1, "name" : "shells",  "classname": "item_shells",  "start_ammo": 50 },
+    { "index": 2, "name" : "cells",   "classname": "item_cells",   "start_ammo": 50 },
+    { "index": 3, "name" : "rockets", "classname": "item_rockets", "start_ammo": 50 }
   ],
   "weapons": [
     {
