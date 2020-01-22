@@ -24,9 +24,23 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
+    Counter *counterFaceAnimation;
+    Counter *counterMinReactionTime;
+    int currentFaceAnimationIndex = 0;
+    std::vector<TextureAnimation *> faceAnimations;
 
     void loadImages();
+    void loadStatusFaceImages();
+    void setStatusFaceAnimation(int id);
     void drawHUD();
+
+    enum StatusFace {
+        EVIL = 0,
+        KILL = 1,
+        OUCH = 2,
+        STAND = 3,
+        DEAD = 4
+    };
 
 };
 

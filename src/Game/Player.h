@@ -21,7 +21,7 @@ public:
     PlayerState state;
 
     Counter *counterStep;
-    Counter *counterTakeDamage;
+    Counter *counterSoundTakeDamage;
 
     bool tookDamage;
 

@@ -5,7 +5,7 @@
 Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)
 {
     this->counterStep       = new Counter(0.30);
-    this->counterTakeDamage = new Counter(0.10);
+    this->counterSoundTakeDamage = new Counter(0.30);
 }
 
 int Player::getStamina() const {
@@ -36,15 +36,16 @@ void Player::setDead(bool dead)
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
+    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::DEAD);
+
     this->dead = dead;
 }
 
 void Player::evalStatusMachine()
 {
-    this->tookDamage = false;
 
     this->counterStep->update();
-    this->counterTakeDamage->update();
+    this->counterSoundTakeDamage->update();
 
     switch (state) {
         case PlayerState::LIVE:
@@ -61,11 +62,12 @@ void Player::takeDamage(float dmg)
     this->stamina -= dmg;
     this->tookDamage = true;
 
-    if (counterTakeDamage->isFinished()) {
-        counterTakeDamage->setEnabled(true);
+    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::OUCH);
+
+    if (counterSoundTakeDamage->isFinished()) {
+        counterSoundTakeDamage->setEnabled(true);
         int rndPlayerPain = Tools::random(1, 4);
         Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        Logging::getInstance()->Log("Sound player damage");
     }
 
     if (stamina <= 0) {
@@ -94,6 +96,7 @@ void Player::respawn()
 {
     ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
     ComponentsManager::get()->getComponentInput()->setEnabled( true );
+    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::STAND);
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
@@ -104,6 +107,10 @@ void Player::respawn()
 void Player::shoot()
 {
     ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
+
+    if (ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex != ComponentHUD::StatusFace::EVIL) {
+        ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::EVIL);
+    }
 
     if (weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount() <= 0) return;
 

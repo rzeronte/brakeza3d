@@ -29,6 +29,10 @@ void ComponentGame::onStart()
 
 void ComponentGame::preUpdate()
 {
+    ComponentsManager::get()->getComponentGame()->getPlayer()->tookDamage = false;
+    if (player->state != PlayerState::GAMEOVER) {
+        this->resolveCollisions();
+    }
 }
 
 void ComponentGame::onUpdate() 
@@ -42,8 +46,6 @@ void ComponentGame::onUpdate()
 
 
     if (player->state != PlayerState::GAMEOVER) {
-
-        this->resolveCollisions();
 
         if (mapBSP->isLoaded() && mapBSP->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
             Drawable::waterShader( mapBSP->currentLeaf->type );
