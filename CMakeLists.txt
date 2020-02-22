@@ -3,8 +3,10 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+
+add_definitions( -DCOLLADA_DOM_SUPPORT141 -DCOLLADA_DOM_SUPPORT150 -DCOLLADA_DOM_DAEFLOAT_IS64 -DCOLLADA_DOM_USING_141 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -23,6 +25,7 @@ find_package(SDL2_mixer REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Bullet REQUIRED)
 find_package(OpenCL REQUIRED)
+find_package(COLLADA REQUIRED)
 
 include_directories(
         ${SDL2_dir}
@@ -32,6 +35,8 @@ include_directories(
         ${OPENGL_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
         ${OpenCL_INCLUDE_DIRS}
+        ${COLLADA_INCLUDE_DIR}
+        ${ASSIMP_INCLUDE_DIR}
 )
 
 add_executable(brakeza3d
@@ -194,7 +199,7 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h src/Components/Component.cpp headers/Components/Component.h src/Components/ComponentRender.cpp headers/Components/ComponentRender.h src/Components/ComponentWindow.cpp headers/Components/ComponentWindow.h src/Components/ComponentInput.cpp headers/Components/ComponentInput.h src/Components/ComponentSound.cpp headers/Components/ComponentSound.h src/Components/ComponentBSP.cpp headers/Components/ComponentBSP.h src/Objects/Camera3D.cpp headers/Components/Camera3D.h src/Components/ComponentHUD.cpp headers/Components/ComponentHUD.h src/ComponentsManager.cpp headers/ComponentsManager.h src/Components/ComponentGUI.cpp headers/Components/ComponentGUI.h src/Components/ComponentGame.cpp headers/Components/ComponentGame.h src/Components/ComponentGameInput.cpp headers/Components/ComponentGameInput.h)
+        src/Game/ItemWeaponBody.cpp headers/Game/ItemWeaponBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h src/Game/ItemAmmoBody.cpp headers/Game/ItemAmmoBody.h src/Game/ItemHealthBody.cpp headers/Game/ItemHealthBody.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h src/Game/AmmoType.cpp headers/Game/AmmoType.h src/Components/Component.cpp headers/Components/Component.h src/Components/ComponentRender.cpp headers/Components/ComponentRender.h src/Components/ComponentWindow.cpp headers/Components/ComponentWindow.h src/Components/ComponentInput.cpp headers/Components/ComponentInput.h src/Components/ComponentSound.cpp headers/Components/ComponentSound.h src/Components/ComponentBSP.cpp headers/Components/ComponentBSP.h src/Objects/Camera3D.cpp headers/Components/Camera3D.h src/Components/ComponentHUD.cpp headers/Components/ComponentHUD.h src/ComponentsManager.cpp headers/ComponentsManager.h src/Components/ComponentGUI.cpp headers/Components/ComponentGUI.h src/Components/ComponentGame.cpp headers/Components/ComponentGame.h src/Components/ComponentGameInput.cpp headers/Components/ComponentGameInput.h headers/Objects/Mesh3DAnimated.cpp headers/Objects/Mesh3DAnimated.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
@@ -204,5 +209,7 @@ target_link_libraries(brakeza3d
         ${OPENGL_LIBRARIES}
         ${BULLET_LIBRARIES}
         ${OpenCL_LIBRARY}
+        ${COLLADA_DYNAMIC_LIBRARY}
+        assimp
         DebugUtils Detour DetourCrowd DetourTileCache Recast
 )
