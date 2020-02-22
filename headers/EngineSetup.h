@@ -7,6 +7,7 @@
 #include "../imgui/imgui.h"
 #include <any>
 #include <map>
+#include <collada-dom2.5/dae.h>
 
 class EngineSetup {
 
@@ -40,11 +41,11 @@ public:
     Vertex3D down     = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 300.f, 0);
+    Vertex3D gravity = Vertex3D(0, 196.0f, 0);
     float    BULLET_FALL_SPEED = 256;
 
     // Screen dimension constants
-    int screenWidth  = 320;
+    int screenWidth  = 240;
     int screenHeight = 240;
 
     int RESOLUTION = screenWidth * screenHeight;
@@ -171,7 +172,7 @@ public:
     float MOUSE_SENSITIVITY	= 0.250;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
@@ -231,7 +232,7 @@ public:
     int GAME_PLAYER_STAMINA_INITIAL = 100;
 
     float PLAYER_CAPSULE_RADIUS = 1.50f;
-    float PLAYER_CAPSULE_HEIGHT = 4.5f;
+    float PLAYER_CAPSULE_HEIGHT = 4.00f;
 
     enum collisionGroups
     {

@@ -3,6 +3,7 @@
 #include "../headers/Components/ComponentRender.h"
 #include "../headers/Components/ComponentInput.h"
 #include "../headers/Components/ComponentSound.h"
+#include "../headers/Objects/Mesh3DAnimated.h"
 #include <thread>
 
 Brakeza3D* Brakeza3D::instance = 0;
@@ -53,6 +54,17 @@ void Brakeza3D::start()
     componentsManager->registerComponent( componentGameInput,  "ComponentGameInput" );
 
     ComponentsManager::get()->configureComponents();
+
+
+    Mesh3DAnimated* mesh = new Mesh3DAnimated();
+    this->addObject3D(mesh, "collada");
+
+    mesh->AssimpLoad("../tijeras.dae");
+    mesh->setScale(5);
+    Vertex3D p = *componentCamera->getCamera()->getPosition();
+
+    p.y+= 15;
+    mesh->setPosition( p );
 
     mainLoop();
 }

@@ -102,7 +102,7 @@ void ComponentHUD::loadStatusFaceImages()
 void ComponentHUD::setStatusFaceAnimation(int id)
 {
     currentFaceAnimationIndex = id;
-
+    counterMinReactionTime->setEnabled( true ) ;
     float step = (float) 1 / (float) this->faceAnimations[currentFaceAnimationIndex]->getFps();
     counterFaceAnimation->setStep( step );
 }

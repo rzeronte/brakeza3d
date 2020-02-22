@@ -266,3 +266,4 @@ int Mesh3D::getBspEntityIndex() const {
 void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
     BSPEntityIndex = bspEntityIndex;
 }
+

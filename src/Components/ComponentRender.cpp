@@ -9,6 +9,7 @@
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Objects/Mesh3DAnimated.h"
 
 ComponentRender::ComponentRender()
 {
@@ -27,7 +28,7 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::onUpdate()
 {
-    this->getBSPTriangles();
+    //this->getBSPTriangles();
     this->getObjectsTriangles();
     this->hiddenSurfaceRemoval();
 
@@ -61,6 +62,46 @@ void ComponentRender::onUpdate()
 
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera() );
+    }
+
+    auto *mesh = dynamic_cast<Mesh3DAnimated*> ( Brakeza3D::get()->getObjectByLabel("collada") );
+    if (mesh != NULL) {
+
+        EngineSetup::getInstance()->TESTING+=Brakeza3D::get()->getDeltaTime();
+        float RunningTime = EngineSetup::getInstance()->TESTING;
+
+        if (RunningTime >= mesh->scene->mAnimations[0]->mDuration) EngineSetup::getInstance()->TESTING = 0.1;
+
+        // Update Transforms (one per bone)
+        std::vector<aiMatrix4x4> Transforms;
+        mesh->BoneTransform(RunningTime, Transforms);
+        for (uint i = 0 ; i < Transforms.size() ; i++) {
+            std::cout << "-> Data Transform for Bone ID: " << i << std::endl;
+            aiVector3t<float> scaling;
+            aiVector3t<float> position;
+            aiQuaterniont<float> rotation;
+
+            Transforms[i].Decompose(scaling, rotation, position);
+            std::cout << "Scaling: " << scaling.x << ", " << scaling.y << ", " << scaling.z << std::endl;
+            std::cout << "Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+        }
+
+        // Apply bone transforms and create triangle
+        mesh->modelTriangles.clear();
+        for (unsigned int k = 0 ; k < mesh->scene->mMeshes[0]->mNumFaces ; k++) {
+            const aiFace& Face = mesh->scene->mMeshes[0]->mFaces[k];
+            Vertex3D V1 = mesh->vertices.at(Face.mIndices[0]);
+            Vertex3D V2 = mesh->vertices.at(Face.mIndices[1]);
+            Vertex3D V3 = mesh->vertices.at(Face.mIndices[2]);
+
+            mesh->updateForBone(V1, Face.mIndices[0], Transforms);
+            mesh->updateForBone(V2, Face.mIndices[1], Transforms);
+            mesh->updateForBone(V3, Face.mIndices[2], Transforms);
+
+            //std::cout << "Assimp: Triangle: " << scene->mMeshes[i]->mNumBones << " " << Face.mIndices[0] << " " << Face.mIndices[1] << " " << Face.mIndices[2] << std::endl;
+
+            mesh->modelTriangles.emplace_back( new Triangle(V1, V2, V3, mesh) );
+        }
     }
 }
 

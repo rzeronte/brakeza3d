@@ -8,7 +8,9 @@
 #include "../Misc/Tools.h"
 #include "../EngineSetup.h"
 #include "Object3D.h"
-//#include "LightPoint3D.h"
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
 #define MAX_VERTEX_MODEL 10000
 #define MAX_MESH_TEXTURES 100
@@ -56,6 +58,8 @@ public:
 
     int getBspEntityIndex() const;
     void setBspEntityIndex(int bspEntityIndex);
+
+    bool LoadMesh(const std::string& Filename);
 };
 
 
