@@ -123,6 +123,7 @@ public:
     std::string ASSETS_FOLDER = "../assets/";
     std::string CONFIG_FOLDER = "../config/";
     std::string SOUNDS_FOLDER = "../assets/sounds/";
+    std::string MODELS_FOLDER = "../assets/models/";
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
     std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
