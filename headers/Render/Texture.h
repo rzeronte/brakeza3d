@@ -57,7 +57,7 @@ public:
 
     void loadBMP(const char *file, int);
     void loadJPG(const char *file, int);
-    void loadTGA(const char *file, int);
+    bool loadTGA(const char *file, int);
     void loadFromRaw(unsigned int *texture, int, int, int);
     void loadLightmapFromRaw(int frame, unsigned int *texture, int, int);
 

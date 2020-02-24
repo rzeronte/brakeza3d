@@ -55,16 +55,16 @@ void Brakeza3D::start()
 
     ComponentsManager::get()->configureComponents();
 
-
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     this->addObject3D(mesh, "collada");
 
-    mesh->AssimpLoad("../tijeras.dae");
-    mesh->setScale(5);
-    Vertex3D p = *componentCamera->getCamera()->getPosition();
+    if ( mesh->AssimpLoad("../weaving.dae") ) {
+        mesh->setScale(5);
+        Vertex3D p = *componentCamera->getCamera()->getPosition();
 
-    p.y+= 15;
-    mesh->setPosition( p );
+        p.y+= 10;
+        mesh->setPosition( p );
+    }
 
     mainLoop();
 }

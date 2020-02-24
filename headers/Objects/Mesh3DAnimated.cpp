@@ -12,10 +12,12 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
                                      aiProcess_CalcTangentSpace       |
                                      aiProcess_Triangulate            |
                                      aiProcess_JoinIdenticalVertices  |
-                                     aiProcess_SortByPType);
+                                     aiProcess_SortByPType
+     );
+
     if( !scene ) {
         //DoTheErrorLogging( importer.GetErrorString());
-        printf("mal");
+        Logging::getInstance()->Log("Error import 3D file for ASSIMP");
         exit(-1);
         return false;
     }
@@ -23,51 +25,63 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
 
-    m_Entries.resize(scene->mNumMeshes);
+    meshInfo.resize(scene->mNumMeshes);
 
     // Count the number of vertices and indices
     uint NumVertices = 0;
     uint NumIndices = 0;
-    for (uint i = 0 ; i < m_Entries.size() ; i++) {
-        m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
-        m_Entries[i].NumIndices    = scene->mMeshes[i]->mNumFaces * 3;
-        m_Entries[i].BaseVertex    = NumVertices;
-        m_Entries[i].BaseIndex     = NumIndices;
+
+    for (uint i = 0 ; i < meshInfo.size() ; i++) {
+        meshInfo[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
+        meshInfo[i].NumIndices    = scene->mMeshes[i]->mNumFaces * 3;
+        meshInfo[i].BaseVertex    = NumVertices;
+        meshInfo[i].BaseIndex     = NumIndices;
 
         NumVertices += scene->mMeshes[i]->mNumVertices;
-        NumIndices  += m_Entries[i].NumIndices;
+        NumIndices  += meshInfo[i].NumIndices;
     }
 
-    std::cout <<  "Load ASSIMP: mNumMeshes: " << scene->mNumMeshes << std::endl;
+    this->InitMaterials(scene, Filename);
+    std::cout << "Load ASSIMP: mNumMeshes: " << scene->mNumMeshes << std::endl;
+    const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
     for (int i = 0; i < scene->mNumMeshes; i++) {
-        Bones.resize(scene->mMeshes[i]->mNumVertices);
+        std::vector<VertexBoneData> localMeshBones;
+        std::vector<Vertex3D> localMeshVertices;
 
-        this->LoadBones(i, scene->mMeshes[i], this->Bones);
+        localMeshBones.resize(scene->mMeshes[i]->mNumVertices );
+
+        this->LoadBones(i, scene->mMeshes[i], localMeshBones);
 
         for (unsigned int j = 0 ; j < scene->mMeshes[i]->mNumVertices ; j++) {
             Vertex3D v = Vertex3D();
             v.x = scene->mMeshes[i]->mVertices[j].x;
             v.y = scene->mMeshes[i]->mVertices[j].y;
             v.z = scene->mMeshes[i]->mVertices[j].z;
-            vertices.push_back(v);
+
+            const aiVector3D* pTexCoord = scene->mMeshes[i]->HasTextureCoords(0) ? &(scene->mMeshes[i]->mTextureCoords[0][j]) : &Zero3D;
+            v.u = pTexCoord->x;
+            v.v = pTexCoord->y;
+
+            localMeshVertices.push_back(v);
         }
 
-        std::cout << "Assimp: Mesh with " << vertices.size() << " vertices and " << scene->mMeshes[i]->mNumFaces << " faces" << std::endl;
+        this->meshVertices.push_back(localMeshVertices );
+        this->meshVerticesBoneData.push_back(localMeshBones );
+
+        std::cout << "Assimp: Mesh id: "<< i <<" with " << scene->mMeshes[i]->mNumVertices << " vertices / " << scene->mMeshes[i]->mNumBones << " bones / " << scene->mMeshes[i]->mNumFaces << " faces" << std::endl;
         for (unsigned int k = 0 ; k < scene->mMeshes[i]->mNumFaces ; k++) {
             const aiFace& Face = scene->mMeshes[i]->mFaces[k];
-            Vertex3D V1 = vertices.at(Face.mIndices[0]);
-            Vertex3D V2 = vertices.at(Face.mIndices[1]);
-            Vertex3D V3 = vertices.at(Face.mIndices[2]);
-            std::cout << "Assimp: Triangle: " << scene->mMeshes[i]->mNumBones << " " << Face.mIndices[0] << " " << Face.mIndices[1] << " " << Face.mIndices[2] << std::endl;
+            Vertex3D V1 = localMeshVertices.at(Face.mIndices[0]);
+            Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
+            Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-            this->modelTriangles.emplace_back( new Triangle(V1, V2, V3, this) );
+            this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
+            if (this->numTextures > 0) {
+                this->modelTriangles[k]->setTexture( &this->modelTextures[ scene->mMeshes[i]->mMaterialIndex ] );
+            }
         }
-
     }
 
-    // Now we can access the file's contents.
-    // DoTheSceneProcessing( scene);
-    // We're done. Everything will be cleaned up by the importer destructor
     return true;
 }
 
@@ -77,20 +91,20 @@ void Mesh3DAnimated::LoadBones(uint MeshIndex, const aiMesh *pMesh, std::vector<
         uint BoneIndex = 0;
         std::string BoneName(pMesh->mBones[i]->mName.data);
 
-        if (m_BoneMapping.find(BoneName) == m_BoneMapping.end()) {
-            BoneIndex = m_NumBones;
-            m_NumBones++;
+        if (boneMapping.find(BoneName) == boneMapping.end()) {
+            BoneIndex = numBones;
+            numBones++;
             BoneInfo bi;
-            m_BoneInfo.push_back(bi);
+            boneInfo.push_back(bi);
         } else {
-            BoneIndex = m_BoneMapping[BoneName];
+            BoneIndex = boneMapping[BoneName];
         }
 
-        m_BoneMapping[BoneName] = BoneIndex;
-        m_BoneInfo[BoneIndex].BoneOffset = pMesh->mBones[i]->mOffsetMatrix;
+        boneMapping[BoneName] = BoneIndex;
+        boneInfo[BoneIndex].BoneOffset = pMesh->mBones[i]->mOffsetMatrix;
 
         for (uint j = 0 ; j < pMesh->mBones[i]->mNumWeights ; j++) {
-            uint VertexID = m_Entries[MeshIndex].BaseVertex + pMesh->mBones[i]->mWeights[j].mVertexId;
+            uint VertexID = meshInfo[MeshIndex].BaseVertex + pMesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = pMesh->mBones[i]->mWeights[j].mWeight;
             Bones[VertexID].AddBoneData(BoneIndex, Weight);
         }
@@ -108,10 +122,10 @@ aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMat
 
     ReadNodeHeirarchy(AnimationTime, scene->mRootNode, Identity);
 
-    Transforms.resize(m_NumBones);
+    Transforms.resize(numBones);
 
-    for (uint i = 0 ; i < m_NumBones ; i++) {
-        Transforms[i] = m_BoneInfo[i].FinalTransformation;
+    for (uint i = 0 ; i < numBones ; i++) {
+        Transforms[i] = boneInfo[i].FinalTransformation;
     }
 }
 
@@ -151,9 +165,9 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
     aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
 
-    if (m_BoneMapping.find(NodeName) != m_BoneMapping.end()) {
-        uint BoneIndex = m_BoneMapping[NodeName];
-        m_BoneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * m_BoneInfo[BoneIndex].BoneOffset;
+    if (boneMapping.find(NodeName) != boneMapping.end()) {
+        uint BoneIndex = boneMapping[NodeName];
+        boneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
     }
 
     for (uint i = 0 ; i < pNode->mNumChildren ; i++) {
@@ -274,12 +288,16 @@ uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAni
     return 0;
 }
 
-void Mesh3DAnimated::updateForBone(Vertex3D &V, int vertexID, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
 {
+    float u; float v;
+    u = V.u;
+    v = V.v;
+
     int BoneIDs[4]; float Weights[4];
     for (int n = 0 ; n < NUM_BONES_PER_VEREX ; n++) {
-        BoneIDs[n] = this->Bones[vertexID].IDs[n]; // boneID
-        Weights[n] = this->Bones[vertexID].Weights[n]; // WeightID
+        BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n]; // boneID
+        Weights[n] = this->meshVerticesBoneData[meshID][vertexID].Weights[n]; // WeightID
         //std::cout << "VertexID: " << vertexID << "n: " << n << ", BoneID: " << BoneIDs[n] << std::endl;
     }
 
@@ -294,8 +312,11 @@ void Mesh3DAnimated::updateForBone(Vertex3D &V, int vertexID, std::vector<aiMatr
 
     BoneTransform.Decompose(scaling, rotation, position);
     V.getScaled(scaling.x, scaling.y, scaling.z);
+
     V = this->convertAssimpM3(rotation.GetMatrix()) * V;
     V = V + Vertex3D(position.x, position.y, position.z);
+    V.u = u;
+    V.v = v;
 }
 
 M3 Mesh3DAnimated::convertAssimpM3(aiMatrix3x3 s)
@@ -307,4 +328,50 @@ M3 Mesh3DAnimated::convertAssimpM3(aiMatrix3x3 s)
     );
 
     return r;
+}
+
+bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Filename)
+{
+    // Extract the directory part from the file name
+    std::string::size_type SlashIndex = Filename.find_last_of("/");
+    std::string Dir;
+
+    if (SlashIndex == std::string::npos) {
+        Dir = ".";
+    } else if (SlashIndex == 0) {
+        Dir = "/";
+    } else {
+        Dir = Filename.substr(0, SlashIndex);
+    }
+
+    bool Ret = true;
+
+    // Initialize the materials
+    std::cout << "Load ASSIMP: mNumMaterials: " << pScene->mNumMaterials << std::endl;
+    for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
+        const aiMaterial* pMaterial = pScene->mMaterials[i];
+
+        if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+            aiString Path;
+
+            if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+                std::string p(Path.data);
+
+                if (p.substr(0, 2) == ".\\") {
+                    p = p.substr(2, p.size() - 2);
+                }
+
+                std::string FullPath = Dir + "/" + p;
+
+                std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
+                Texture *t = new Texture();
+                if (t->loadTGA(FullPath.c_str(), 1) ) {
+                    this->modelTextures[ this->numTextures ] = *t;
+                    this->numTextures++;
+                }
+            }
+        }
+    }
+
+    return Ret;
 }

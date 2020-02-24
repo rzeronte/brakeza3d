@@ -59,13 +59,14 @@ public:
     Assimp::Importer importer;
     const aiScene* scene;
 
-    std::vector<VertexBoneData> Bones;
-    std::vector<Vertex3D> vertices;
-    std::map<std::string,uint> m_BoneMapping; // maps a bone name to its index
-    uint m_NumBones;
-    std::vector<BoneInfo> m_BoneInfo;
+    std::vector< std::vector<VertexBoneData> > meshVerticesBoneData;
+    std::vector< std::vector<Vertex3D> > meshVertices;
+
+    uint numBones;
+    std::map<std::string,uint> boneMapping; // maps a bone name to its index
+    std::vector<BoneInfo> boneInfo;
     aiMatrix4x4 m_GlobalInverseTransform;
-    std::vector<BasicMeshEntry> m_Entries;
+    std::vector<BasicMeshEntry> meshInfo;
 
     bool AssimpLoad(const std::string &Filename);
     void LoadBones(uint, const aiMesh*, std::vector<VertexBoneData>&);
@@ -81,8 +82,9 @@ public:
     uint FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
     uint FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
-    void updateForBone(Vertex3D &dest, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
+    void updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     M3 convertAssimpM3(aiMatrix3x3);
+    bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 };
 
 

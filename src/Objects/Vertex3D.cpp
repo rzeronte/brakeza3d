@@ -95,7 +95,7 @@ Vertex3D Vertex3D::zero()
 
 void Vertex3D::consoleInfo(std::string label, bool returnLine)
 {
-    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z:" + std::to_string(z) + ")", "VERTEX");
+    Logging::getInstance()->Log(label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z: " + std::to_string(z) + " |uv: " + std::to_string(u) + "," + std::to_string(v) + ")", "VERTEX");
     if (returnLine) {
         Logging::getInstance()->Log("", "VERTEX");
     }

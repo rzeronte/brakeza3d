@@ -88,7 +88,7 @@ void Texture::loadJPG(const char *file, int mip_mapping )
     //printf("Loading JPG texture '%s' (w: %d, h: %d)\r\n", file, texture_surface->w, texture_surface->h);
 }
 
-void Texture::loadTGA(const char *file, int mip_mapping )
+bool Texture::loadTGA(const char *file, int mip_mapping )
 {
     if (Tools::fileExists(file)) {
         this->filename = file;
@@ -110,8 +110,11 @@ void Texture::loadTGA(const char *file, int mip_mapping )
         }
     } else {
         Logging::getInstance()->Log("Error loading TGA texture '" + std::string(file), "TEXTURES");
+        return false;
     }
-    Logging::getInstance()->Log("Loading TGA texture '" + std::string(file), "TEXTURES");
+
+    Logging::getInstance()->Log("Loading TGA texture '" + std::string(file) + "'", "TEXTURES");
+    return true;
 }
 
 void Texture::drawFlatLightMap(int pos_x, int pos_y)
