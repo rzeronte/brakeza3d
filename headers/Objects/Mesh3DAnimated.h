@@ -8,7 +8,6 @@
 #include "Mesh3D.h"
 
 #define NUM_BONES_PER_VEREX 4
-
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
@@ -62,7 +61,9 @@ public:
     std::vector< std::vector<VertexBoneData> > meshVerticesBoneData;
     std::vector< std::vector<Vertex3D> > meshVertices;
 
-    uint numBones;
+    int   indexCurrentAnimation = 0;
+    float runningTime = 0;
+
     std::map<std::string,uint> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo> boneInfo;
     aiMatrix4x4 m_GlobalInverseTransform;
@@ -70,7 +71,7 @@ public:
 
     bool AssimpLoad(const std::string &Filename);
     void LoadBones(uint, const aiMesh*, std::vector<VertexBoneData>&);
-    aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
+    aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms, int numBones);
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
     const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);
 
@@ -85,6 +86,8 @@ public:
     void updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     M3 convertAssimpM3(aiMatrix3x3);
     bool InitMaterials(const aiScene* pScene, const std::string& Filename);
+
+    void onUpdate();
 };
 
 

@@ -58,7 +58,7 @@ void Brakeza3D::start()
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     this->addObject3D(mesh, "collada");
 
-    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "weaving.dae") ) {
+    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "soldado.dae") ) {
         mesh->setScale(5);
         Vertex3D p = *componentCamera->getCamera()->getPosition();
 

@@ -87,6 +87,7 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 
 void Mesh3DAnimated::LoadBones(uint MeshIndex, const aiMesh *pMesh, std::vector<VertexBoneData> &Bones)
 {
+    int numBones = 0;
     for (uint i = 0 ; i < pMesh->mNumBones ; i++) {
         uint BoneIndex = 0;
         std::string BoneName(pMesh->mBones[i]->mName.data);
@@ -111,14 +112,13 @@ void Mesh3DAnimated::LoadBones(uint MeshIndex, const aiMesh *pMesh, std::vector<
     }
 }
 
-aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms)
+aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms, int numBones)
 {
     aiMatrix4x4 Identity;
-    //Identity.InitIdentity();
 
-    float TicksPerSecond = scene->mAnimations[0]->mTicksPerSecond != 0 ? scene->mAnimations[0]->mTicksPerSecond : 25.0f;
+    float TicksPerSecond = scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond != 0 ? scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond : 25.0f;
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
-    float AnimationTime = fmod(TimeInTicks, scene->mAnimations[0]->mDuration);
+    float AnimationTime = fmod(TimeInTicks, scene->mAnimations[ indexCurrentAnimation ]->mDuration);
 
     ReadNodeHeirarchy(AnimationTime, scene->mRootNode, Identity);
 
@@ -374,4 +374,40 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
     }
 
     return Ret;
+}
+
+void Mesh3DAnimated::onUpdate()
+{
+    if (this->scene->mNumAnimations <= 0) return;
+
+    // Update running time
+    this->runningTime += Brakeza3D::get()->getDeltaTime();
+    if (runningTime >= this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration) {
+        runningTime = 0.001;
+    }
+
+    // update geometry
+    this->modelTriangles.clear();
+    for (int i = 0; i < this->scene->mNumMeshes; i++) {
+        // Update Transforms (one per bone)
+        std::vector<aiMatrix4x4> Transforms;
+        this->BoneTransform(runningTime, Transforms, this->scene->mMeshes[i]->mNumBones);
+
+        // Apply bone transforms and create triangle
+        for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
+            const aiFace& Face = this->scene->mMeshes[i]->mFaces[k];
+            Vertex3D V1 = this->meshVertices[i].at(Face.mIndices[0]);
+            Vertex3D V2 = this->meshVertices[i].at(Face.mIndices[1]);
+            Vertex3D V3 = this->meshVertices[i].at(Face.mIndices[2]);
+
+            this->updateForBone(V1, i, Face.mIndices[0], Transforms);
+            this->updateForBone(V2, i, Face.mIndices[1], Transforms);
+            this->updateForBone(V3, i, Face.mIndices[2], Transforms);
+
+            this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
+            if (this->numTextures > 0) {
+                this->modelTriangles[k]->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
+            }
+        }
+    }
 }
