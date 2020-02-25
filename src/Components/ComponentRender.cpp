@@ -28,40 +28,6 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::onUpdate()
 {
-    auto *mesh = dynamic_cast<Mesh3DAnimated*> ( Brakeza3D::get()->getObjectByLabel("collada") );
-    auto *triangle = dynamic_cast<Mesh3D*> ( Brakeza3D::get()->getObjectByLabel("triangle") );
-    if (mesh != NULL) {
-        if (mesh->scene->mNumAnimations > 0) {
-            EngineSetup::getInstance()->TESTING+=Brakeza3D::get()->getDeltaTime();
-            float RunningTime = EngineSetup::getInstance()->TESTING;
-
-            if (RunningTime >= mesh->scene->mAnimations[0]->mDuration) EngineSetup::getInstance()->TESTING = 0.001;
-            mesh->modelTriangles.clear();
-            for (int i = 0; i < mesh->scene->mNumMeshes; i++) {
-                // Update Transforms (one per bone)
-                std::vector<aiMatrix4x4> Transforms;
-                mesh->BoneTransform(RunningTime, Transforms);
-
-                // Apply bone transforms and create triangle
-                for (unsigned int k = 0 ; k < mesh->scene->mMeshes[0]->mNumFaces ; k++) {
-                    const aiFace& Face = mesh->scene->mMeshes[i]->mFaces[k];
-                    Vertex3D V1 = mesh->meshVertices[i].at(Face.mIndices[0]);
-                    Vertex3D V2 = mesh->meshVertices[i].at(Face.mIndices[1]);
-                    Vertex3D V3 = mesh->meshVertices[i].at(Face.mIndices[2]);
-
-                    mesh->updateForBone(V1, i, Face.mIndices[0], Transforms);
-                    mesh->updateForBone(V2, i, Face.mIndices[1], Transforms);
-                    mesh->updateForBone(V3, i, Face.mIndices[2], Transforms);
-
-                    mesh->modelTriangles.push_back( new Triangle(V1, V2, V3, mesh) );
-                    if (mesh->numTextures > 0) {
-                        mesh->modelTriangles[k]->setTexture( &mesh->modelTextures[ mesh->scene->mMeshes[i]->mMaterialIndex ] );
-                    }
-                }
-            }
-        }
-    }
-
     this->getBSPTriangles();
     this->getObjectsTriangles();
     this->hiddenSurfaceRemoval();
@@ -182,6 +148,11 @@ void ComponentRender::getObjectsTriangles()
             oBillboardBody->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
             Drawable::drawBillboard(oBillboardBody, &frameTriangles);
             continue;
+        }
+
+        auto *oMeshAnimated = dynamic_cast<Mesh3DAnimated*> (object);
+        if (oMeshAnimated != nullptr) {
+            oMeshAnimated->onUpdate();
         }
 
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
