@@ -51,8 +51,8 @@ public:
         const float range_max_test_int = 999;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
-        const float range_test_sensibility = 0.01;
-        const float range_max_sensibility = 1;
+        const float range_test_sensibility = 0.1;
+        const float range_max_sensibility = 999;
         const float range_min_sensibility = 0;
 
         const float range_sensibility_volume = 1;
@@ -165,6 +165,7 @@ public:
                             ImGui::TreePop();
                         }
                     }
+
                     ImGui::Separator();
                     ImGui::Checkbox("Lightmaps", &EngineSetup::getInstance()->ENABLE_LIGHTMAPPING);
                     if (EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
@@ -172,6 +173,13 @@ public:
                         ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
                     }
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("Draw Bones", &EngineSetup::getInstance()->DRAW_ANIMATION_BONES);
+                if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
+                    ImGui::Checkbox("Animate bones", &EngineSetup::getInstance()->ANIMATE_MESH_BONES);
+                    ImGui::Checkbox("Vertex Weights", &EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT);
+                }
+                ImGui::Separator();
                 ImGui::Checkbox("Fade Out", &EngineSetup::getInstance()->FADEOUT);
                 ImGui::Checkbox("Fade In", &EngineSetup::getInstance()->FADEIN);
 

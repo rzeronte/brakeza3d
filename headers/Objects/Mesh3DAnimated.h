@@ -6,23 +6,41 @@
 #define BRAKEDA3D_MESH3DANIMATED_H
 
 #include "Mesh3D.h"
+#include <cstring>
 
-#define NUM_BONES_PER_VEREX 4
+#define NUM_BONES_PER_VERTEX 4
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
 {
-    uint IDs[NUM_BONES_PER_VEREX];
-    float Weights[NUM_BONES_PER_VEREX];
+    int IDs[NUM_BONES_PER_VERTEX];
+    float Weights[NUM_BONES_PER_VERTEX];
 
-    void AddBoneData(uint BoneID, float Weight) {
-        for (uint i = 0 ; i < ARRAY_SIZE_IN_ELEMENTS(IDs) ; i++) {
-            if (Weights[i] == 0.0) {
+    VertexBoneData()
+    {
+        Reset();
+    };
+
+    void Reset()
+    {
+        for (int i = 0; i < NUM_BONES_PER_VERTEX  ; i++) {
+            IDs[i]     = -1;
+            Weights[i] = 0.0f;
+        }
+    }
+
+    void AddBoneData(uint BoneID, float Weight)
+    {
+        int end = ARRAY_SIZE_IN_ELEMENTS(IDs);
+        for (uint i = 0 ; i < end ; i++) {
+            if (Weights[i] == 0.0f) {
                 IDs[i]     = BoneID;
                 Weights[i] = Weight;
                 return;
             }
         }
+        // should never get here - more bones than we have space for
+        //assert(0);
     }
 };
 
@@ -30,11 +48,13 @@ struct BoneInfo
 {
     aiMatrix4x4 BoneOffset;
     aiMatrix4x4 FinalTransformation;
+    std::string name;
+    Vertex3D position;
 
     BoneInfo()
     {
-        //BoneOffset.SetZero();
-        //FinalTransformation.SetZero();
+        BoneOffset = aiMatrix4x4();
+        FinalTransformation = aiMatrix4x4();
     }
 };
 
@@ -50,13 +70,16 @@ struct BasicMeshEntry {
     unsigned int BaseVertex;
     unsigned int BaseIndex;
     unsigned int MaterialIndex;
+    aiMatrix4x4  transform;
 };
 
 class Mesh3DAnimated : public Mesh3D
 {
 public:
+    int temp = 0;
     Assimp::Importer importer;
     const aiScene* scene;
+    int m_NumBones = 0;
 
     std::vector< std::vector<VertexBoneData> > meshVerticesBoneData;
     std::vector< std::vector<Vertex3D> > meshVertices;
@@ -70,24 +93,32 @@ public:
     std::vector<BasicMeshEntry> meshInfo;
 
     bool AssimpLoad(const std::string &Filename);
-    void LoadBones(uint, const aiMesh*, std::vector<VertexBoneData>&);
-    aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms, int numBones);
+    aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
     const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);
-
-    void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
-    void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
-    void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
 
     uint FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
     uint FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
     uint FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
-    void updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
-    M3 convertAssimpM3(aiMatrix3x3);
+    int updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     bool InitMaterials(const aiScene* pScene, const std::string& Filename);
+    void processNode(aiNode *node);
+    void processMesh(int i, aiMesh *mesh);
+
+    void drawVertexWeights();
+    Uint32 processWeigthColor(int weight);
+
+    M3 convertAssimpM3(aiMatrix3x3);
+    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
+
+    void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
+    void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
+    void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
 
     void onUpdate();
+
+    void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m, bool inverse);
 };
 
 

@@ -82,13 +82,13 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
 
         if (!SETUP->MENU_ACTIVE) {
-            SDL_SetRelativeMouseMode(SDL_TRUE);
+            //SDL_SetRelativeMouseMode(SDL_TRUE);
             Mix_HaltMusic();
             Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
             SETUP->DRAW_WEAPON = true;
             SETUP->DRAW_HUD    = true;
         } else {
-            SDL_SetRelativeMouseMode(SDL_FALSE);
+            //SDL_SetRelativeMouseMode(SDL_FALSE);
             SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, SETUP->screenWidth/2, SETUP->screenHeight/2);
             Mix_HaltMusic();
             Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );

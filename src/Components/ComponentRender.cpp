@@ -30,6 +30,7 @@ void ComponentRender::onUpdate()
 {
     this->getBSPTriangles();
     this->getObjectsTriangles();
+
     this->hiddenSurfaceRemoval();
 
     if (SETUP->BASED_TILE_RENDER) {
@@ -63,7 +64,6 @@ void ComponentRender::onUpdate()
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera() );
     }
-
 }
 
 void ComponentRender::postUpdate() {

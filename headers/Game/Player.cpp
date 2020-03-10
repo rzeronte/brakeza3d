@@ -85,7 +85,7 @@ void Player::takeDamage(float dmg)
 void Player::newGame()
 {
     setLives(defaultLives);
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_SetRelativeMouseMode(SDL_TRUE);
     EngineSetup::getInstance()->MENU_ACTIVE = false;
     EngineSetup::getInstance()->DRAW_WEAPON = true;
     EngineSetup::getInstance()->DRAW_HUD = true;

@@ -45,12 +45,12 @@ public:
     float    BULLET_FALL_SPEED = 256;
 
     // Screen dimension constants
-    int screenWidth  = 240;
+    int screenWidth  = 320;
     int screenHeight = 240;
 
     int RESOLUTION = screenWidth * screenHeight;
 
-    bool BASED_TILE_RENDER = true;
+    bool BASED_TILE_RENDER = false;
     bool BASED_TILE_RENDER_THREADED = true;
 
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
@@ -84,11 +84,14 @@ public:
     bool FADEOUT = false;
 
     // Fill Triangle modes
-    bool TRIANGLE_MODE_PIXELS = false;
+    bool TRIANGLE_MODE_PIXELS = true;
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = true;
+    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool TRIANGLE_MODE_VERTEX_WEIGHT= true;
 
+    bool DRAW_ANIMATION_BONES = true;
+    bool ANIMATE_MESH_BONES = true;
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;

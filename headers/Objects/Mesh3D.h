@@ -12,7 +12,7 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-#define MAX_VERTEX_MODEL 10000
+#define MAX_VERTEX_MODEL 15000
 #define MAX_MESH_TEXTURES 100
 
 typedef float vec3_t[3];

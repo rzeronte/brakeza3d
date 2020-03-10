@@ -78,8 +78,8 @@ bool RecastWrapper::initNavhMesh()
     m_ctx->startTimer(RC_TIMER_TOTAL);
 
     m_ctx->log(RC_LOG_PROGRESS, "Building navMesh navigation:");
-    m_ctx->log(RC_LOG_PROGRESS, " - %d x %d cells", m_cfg.width, m_cfg.height);
-    m_ctx->log(RC_LOG_PROGRESS, " - %.1fK verts, %.1fK tris", nverts/1000.0f, ntris/1000.0f);
+    m_ctx->log(RC_LOG_PROGRESS, " -> %d x %d cells", m_cfg.width, m_cfg.height);
+    m_ctx->log(RC_LOG_PROGRESS, " -> %.1fK verts, %.1fK tris", nverts/1000.0f, ntris/1000.0f);
 
     //
     // Step 2. Rasterize input polygon soup.
