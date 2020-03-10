@@ -53,7 +53,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
     if (io.WantCaptureMouse) return;
 
     // Camera rotation
-    if (MouseMotion) {
+    if (MouseMotion && MousePressed) {
         MouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
             ComponentsManager::get()->getComponentCamera()->getCamera()->Yaw(event->motion.xrel);
