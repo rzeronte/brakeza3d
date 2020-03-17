@@ -9,12 +9,9 @@
 bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 {
     this->scene = importer.ReadFile( Filename,
-                                     aiProcess_CalcTangentSpace       |
-                                     aiProcess_Triangulate            |
-                                     aiProcess_JoinIdenticalVertices  |
-                                     aiProcess_OptimizeMeshes |
-                                     aiProcess_SortByPType
-     );
+
+                                             aiProcessPreset_TargetRealtime_MaxQuality
+    );
 
     if( !scene ) {
         Logging::getInstance()->Log("Error import 3D file for ASSIMP");
@@ -25,7 +22,6 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
 
-    this->meshInfo.resize(scene->mNumMeshes);
     this->meshVertices.resize(scene->mNumMeshes);
     this->meshVerticesBoneData.resize(scene->mNumMeshes);
 
@@ -50,23 +46,59 @@ void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
 
     std::cout << std::endl;
 
-    // LoadBones
+    this->loadMeshBones(mesh, localMeshBones);
+
+    for (unsigned int j = 0 ; j < mesh->mNumVertices ; j++) {
+
+        aiVector3t vf = mesh->mVertices[j];
+
+        Vertex3D v( vf.x, vf.y, vf.z );
+
+        const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
+        v.u = pTexCoord->x;
+        v.v = pTexCoord->y;
+
+        localMeshVertices[j] = v;
+    }
+
+    this->meshVertices[ idMesh ] = localMeshVertices;
+    this->meshVerticesBoneData[ idMesh ] = localMeshBones;
+
+    std::cout << "Assimp: Mesh (" << mesh->mName.C_Str() << ") | id: "<< idMesh <<" with " << mesh->mNumVertices << " vertices / " << mesh->mNumBones << " bones / " << mesh->mNumFaces << " faces";
+
+    for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
+        const aiFace& Face = mesh->mFaces[k];
+
+        if (Face.mNumIndices < 3) continue;
+
+        Vertex3D V1 = localMeshVertices.at(Face.mIndices[0]);
+        Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
+        Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
+
+        this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
+
+        if (this->numTextures > 0) {
+            this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
+        }
+    }
+}
+
+void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+{
     for (int i = 0 ; i < mesh->mNumBones ; i++) {
         uint BoneIndex = 0;
         std::string BoneName(mesh->mBones[i]->mName.data);
+
         if (boneMapping.find(BoneName) == boneMapping.end()) {
             BoneIndex = m_NumBones;
             m_NumBones++;
             BoneInfo bi;
             boneInfo.push_back(bi);
 
-            aiMatrix4x4 mOffset = mesh->mBones[i]->mOffsetMatrix;
-            Vertex3D bonePosition = Vertex3D();
-            this->AIMatrixToVertex(bonePosition, mOffset, true);
 
             boneMapping[BoneName] = BoneIndex;
+
             boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
-            boneInfo[BoneIndex].position = bonePosition;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
 
         } else {
@@ -79,60 +111,37 @@ void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 
-            //Logging::getInstance()->Log("AddBoneData for VertexID: " + std::to_string(VertexID) + " in idMesh: " + std::to_string(idMesh) + ", BoneIndex: " + std::to_string(BoneIndex) + ", Weight: " + std::to_string(Weight));
-
-            localMeshBones[ VertexID ].AddBoneData(BoneIndex, Weight);
+            //Logging::getInstance()->Log(std::to_string(j) + " - AddBoneData for VertexID: " + std::to_string(VertexID) + " in idMesh: " + std::string(mesh->mName.C_Str()) + ", BoneIndex: " + std::to_string(BoneIndex) + ", Weight: " + std::to_string(Weight));
+            meshVertexBoneData[ VertexID ].AddBoneData(BoneIndex, Weight);
         }
     }
-
-    //*****
-    for (unsigned int j = 0 ; j < mesh->mNumVertices  ; j++) {
-        Vertex3D v = Vertex3D();
-
-        aiVector3t vf = mesh->mVertices[j];
-
-        v.x = vf.x;
-        v.y = vf.y;
-        v.z = vf.z;
-
-        const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
-        v.u = pTexCoord->x;
-        v.v = pTexCoord->y;
-
-        localMeshVertices[j] = (v);
-    }
-
-    this->meshVertices[ idMesh ] = ( localMeshVertices );
-    this->meshVerticesBoneData[ idMesh ] = ( localMeshBones );
-
-    std::cout << "Assimp: Mesh (" << mesh->mName.C_Str() << ") | id: "<< idMesh <<" with " << mesh->mNumVertices << " vertices / " << mesh->mNumBones << " bones / " << mesh->mNumFaces << " faces";
-    for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
-        const aiFace& Face = mesh->mFaces[k];
-        if (Face.mNumIndices < 3) continue;
-        Vertex3D V1 = localMeshVertices.at(Face.mIndices[0]);
-        Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
-        Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
-
-        this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
-        if (this->numTextures > 0) {
-            this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
-        }
-    }
-
 }
 
 aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms)
 {
     aiMatrix4x4 Identity = aiMatrix4x4();
 
-    float TicksPerSecond = scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond != 0 ? scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond : 0.0f;
+    float TicksPerSecond = scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond != 0 ? scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond : 0.25f;
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
     float AnimationTime = fmod(TimeInTicks, scene->mAnimations[ indexCurrentAnimation ]->mDuration);
-    ReadNodeHeirarchy(TimeInSeconds, scene->mRootNode, Identity);
+    ReadNodeHeirarchy(AnimationTime, scene->mRootNode, Identity);
 
-    Transforms.resize(this->m_NumBones);
+    Transforms.resize( this->m_NumBones );
+
     for (uint i = 0 ; i < this->m_NumBones ; i++) {
         Transforms[i] = boneInfo[i].FinalTransformation;
+
+        if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
+            aiMatrix4x4 mOffset = boneInfo[i].BoneOffset;
+
+            Vertex3D bonePosition;
+            this->AIMatrixToVertex(bonePosition, mOffset.Inverse());
+            this->AIMatrixToVertex(bonePosition, Transforms[i] );
+
+            Transforms::objectSpace(bonePosition, bonePosition, this);
+
+            Drawable::drawVertex(bonePosition, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color::red());
+        }
     }
 }
 
@@ -141,7 +150,8 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     std::string NodeName(pNode->mName.data);
     const aiAnimation* pAnimation = scene->mAnimations[ this->indexCurrentAnimation ];
 
-    aiMatrix4x4 NodeTransformation(pNode->mTransformation);
+    aiMatrix4x4 NodeTransformation;
+    NodeTransformation = pNode->mTransformation;
 
     const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
@@ -149,8 +159,8 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
         // Interpolate scaling and generate scaling transformation matrix
         aiVector3D Scaling;
         CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
-        aiMatrix4x4 ScalingM;
-        ScalingM.Scaling(aiVector3D(Scaling.x, Scaling.y, Scaling.z), ScalingM);
+        aiMatrix4x4 ScalingM = aiMatrix4x4();
+        aiMatrix4x4::Scaling(Scaling, ScalingM);
 
         // Interpolate rotation and generate rotation transformation matrix
         aiQuaternion RotationQ;
@@ -161,7 +171,7 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
         aiVector3D Translation;
         CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
         aiMatrix4x4 TranslationM;
-        TranslationM.Translation(aiVector3D(Translation.x, Translation.y, Translation.z), TranslationM);
+        aiMatrix4x4::Translation(Translation, TranslationM);
 
         // Combine the above transformations
         NodeTransformation = TranslationM * RotationM * ScalingM;
@@ -169,13 +179,13 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
     aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
 
-    if (boneMapping.find(NodeName) != boneMapping.end()) {
+    if ( boneMapping.find(NodeName) != boneMapping.end() ) {
         uint BoneIndex = boneMapping[NodeName];
         boneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
     }
 
     for (unsigned int i = 0 ; i < pNode->mNumChildren ; i++) {
-        ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation);
+        ReadNodeHeirarchy( AnimationTime, pNode->mChildren[i], GlobalTransformation );
     }
 }
 
@@ -202,7 +212,7 @@ uint Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim* pNodeAn
         }
     }
 
-    //assert(0);
+//    assert(0);
 }
 
 uint Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -216,6 +226,38 @@ uint Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAn
     //assert(0);
 
     return 0;
+}
+
+int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
+{
+    float u = V.u;
+    float v = V.v;
+
+    int   BoneIDs[NUM_BONES_PER_VERTEX] = {0};
+    float Weights[NUM_BONES_PER_VERTEX] = {0};
+
+    int numBonesApplied = 0;
+    for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
+        BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n];     // boneID
+        Weights[n] = this->meshVerticesBoneData[meshID][vertexID].Weights[n]; // WeightID
+
+        if (Weights[n] != 0.0f) {
+            numBonesApplied++;
+        }
+    }
+
+    aiMatrix4x4 BoneTransform;
+    BoneTransform = BoneTransform * 0;
+    for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
+        int   boneId = BoneIDs[n];
+        float weight = Weights[n];
+
+        BoneTransform = BoneTransform + Transforms[boneId] * weight;
+    }
+
+    this->AIMatrixToVertex(V, BoneTransform);
+
+    return numBonesApplied;
 }
 
 uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -233,48 +275,65 @@ uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAni
     return 0;
 }
 
-int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimated::onUpdate()
 {
-    float u = V.u;
-    float v = V.v;
+    if (this->scene->mNumAnimations <= 0) return;
 
-    int   BoneIDs[NUM_BONES_PER_VERTEX];
-    float Weights[NUM_BONES_PER_VERTEX];
-
-    int numBonesApplied = 0;
-    for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
-        BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n];     // boneID
-        Weights[n] = this->meshVerticesBoneData[meshID][vertexID].Weights[n]; // WeightID
-
-        if (Weights[n] != 0.0f) {
-            numBonesApplied++;
-        }
+    // Update running time
+    this->runningTime += Brakeza3D::get()->getDeltaTime();
+    if (runningTime >= this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration) {
+        runningTime = 0.000;
     }
 
-    aiMatrix4x4 BoneTransform;
-    for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
-        int   boneId = BoneIDs[n];
-        float weight = Weights[n];
-        if (boneId == -1 ) continue;
+    // update geometry
+    this->modelTriangles.clear();
 
-        if (n == 0) {
-            BoneTransform = Transforms.at(boneId) * weight;
-        } else {
-            BoneTransform = BoneTransform + Transforms.at( boneId ) * weight;
+    std::vector<aiMatrix4x4> Transforms;
+    this->BoneTransform(runningTime, Transforms);
+
+    for (int i = 0; i < this->scene->mNumMeshes; i++) {
+
+        // Apply bone transforms and create triangle
+        for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
+
+            if (this->meshVertices[i].size() == 0) continue;
+
+            const aiFace& Face = this->scene->mMeshes[i]->mFaces[k];
+
+            Vertex3D V1 = this->meshVertices[i].at(Face.mIndices[0]);
+            Vertex3D V2 = this->meshVertices[i].at(Face.mIndices[1]);
+            Vertex3D V3 = this->meshVertices[i].at(Face.mIndices[2]);
+
+            this->updateForBone(V1, i, Face.mIndices[0], Transforms);
+            this->updateForBone(V2, i, Face.mIndices[1], Transforms);
+            this->updateForBone(V3, i, Face.mIndices[2], Transforms);
+
+            this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
+            if (this->numTextures > 0) {
+                this->modelTriangles[k]->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
+            }
         }
     }
+}
 
-    this->AIMatrixToVertex(V, BoneTransform, false);
+void Mesh3DAnimated::processNode(aiNode *node)
+{
+    for (int x = 0; x < node->mNumMeshes; x++) {
+        int idMesh = node->mMeshes[x];
+        this->processMesh( idMesh, scene->mMeshes[ idMesh ] );
+    }
 
-    return numBonesApplied;
+    for (int j = 0; j < node->mNumChildren; j++) {
+        processNode( node->mChildren[j] );
+    }
 }
 
 M3 Mesh3DAnimated::convertAssimpM3(aiMatrix3x3 s)
 {
     M3 r(
-        s.a1, s.a2, s.a3,
-        s.b1, s.b2, s.b3,
-        s.c1, s.c2, s.c3
+            s.a1, s.a2, s.a3,
+            s.b1, s.b2, s.b3,
+            s.c1, s.c2, s.c3
     );
 
     return r;
@@ -296,8 +355,8 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
 
     bool Ret = true;
 
-    // Initialize the materials
     std::cout << "Load ASSIMP: mNumMaterials: " << pScene->mNumMaterials << std::endl;
+
     for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
         const aiMaterial* pMaterial = pScene->mMaterials[i];
 
@@ -326,151 +385,7 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
     return Ret;
 }
 
-void Mesh3DAnimated::onUpdate()
-{
-    if (this->scene->mNumAnimations <= 0) return;
-
-    // Update running time
-    this->runningTime += Brakeza3D::get()->getDeltaTime();
-    if (runningTime >= this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration) {
-        runningTime = 0.000;
-    }
-
-    // update geometry
-    this->modelTriangles.clear();
-
-    std::vector<aiMatrix4x4> Transforms;
-    this->BoneTransform(runningTime, Transforms);
-
-    for (int i = 0; i < this->scene->mNumMeshes; i++) {
-
-        // Apply bone transforms and create triangle
-        for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
-
-            if (this->meshVertices[i].size() == 0) continue;
-
-            const aiFace& Face = this->scene->mMeshes[i]->mFaces[k];
-
-            if (Face.mNumIndices < 3) continue;
-
-            Vertex3D V1 = this->meshVertices[i].at(Face.mIndices[0]);
-            Vertex3D V2 = this->meshVertices[i].at(Face.mIndices[1]);
-            Vertex3D V3 = this->meshVertices[i].at(Face.mIndices[2]);
-
-            this->updateForBone(V1, i, Face.mIndices[0], Transforms);
-            this->updateForBone(V2, i, Face.mIndices[1], Transforms);
-            this->updateForBone(V3, i, Face.mIndices[2], Transforms);
-
-            this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
-            if (this->numTextures > 0) {
-                this->modelTriangles[k]->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
-            }
-        }
-    }
-
-    if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
-
-        if (EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT) {
-            this->drawVertexWeights();
-        }
-
-        std::cout << "Transforms size: " << Transforms.size() << std::endl;
-
-        this->drawBones(this->scene->mRootNode, Transforms);
-    }
-}
-
-void Mesh3DAnimated::processNode(aiNode *node)
-{
-    for (int x = 0; x < node->mNumMeshes; x++) {
-        int idMesh = node->mMeshes[x];
-        this->processMesh( idMesh, scene->mMeshes[ idMesh ] );
-    }
-
-    for (int j = 0; j < node->mNumChildren; j++) {
-        processNode( node->mChildren[j] );
-    }
-}
-
-void Mesh3DAnimated::drawVertexWeights()
-{
-    std::vector<aiMatrix4x4> Transforms;
-    this->BoneTransform(runningTime, Transforms);
-
-    for (int i = 0; i < this->scene->mNumMeshes; i++) {
-
-        if (i != 0) {
-            continue;
-        }
-        // Apply bone transforms and create triangle
-        for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
-
-            if (this->meshVertices[i].size() == 0) continue;
-
-            const aiFace& Face = this->scene->mMeshes[i]->mFaces[k];
-
-            if (Face.mNumIndices < 3) continue;
-
-            Vertex3D V1 = this->meshVertices[i].at(Face.mIndices[0]);
-            Vertex3D V2 = this->meshVertices[i].at(Face.mIndices[1]);
-            Vertex3D V3 = this->meshVertices[i].at(Face.mIndices[2]);
-
-            int weight1 = this->updateForBone(V1, i, Face.mIndices[0], Transforms);
-            int weight2 = this->updateForBone(V2, i, Face.mIndices[1], Transforms);
-            int weight3 = this->updateForBone(V3, i, Face.mIndices[2], Transforms);
-
-            Uint32 c1 = this->processWeigthColor(weight1);
-            Uint32 c2 = this->processWeigthColor(weight2);
-            Uint32 c3 = this->processWeigthColor(weight3);
-
-            Transforms::objectSpace(V1, V1, this);
-            Transforms::objectSpace(V2, V2, this);
-            Transforms::objectSpace(V3, V3, this);
-
-            Drawable::drawVertex(V1, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), c1);
-            Drawable::drawVertex(V2, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), c2);
-            Drawable::drawVertex(V3, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), c3);
-        }
-    }
-}
-
-void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
-{
-    Uint32 colorLine = Color::white();
-    Uint32 colorPoints = Color::red();
-    Uint32 colorTest = Color::green();
-    Uint32 colorLeafBone = Color::orange();
-
-    int idCurrentNode = boneMapping[ node->mName.C_Str()];
-    Vertex3D currentNodePosition = boneInfo[ idCurrentNode ].position;
-
-    if (EngineSetup::getInstance()->ANIMATE_MESH_BONES) {
-        this->AIMatrixToVertex(currentNodePosition, Transforms[idCurrentNode], false);
-    }
-
-    Transforms::objectSpace(currentNodePosition, currentNodePosition, this);
-
-    for (int j = 0; j < node->mNumChildren; j++) {
-        int idChildrenNode = boneMapping[ node->mChildren[j]->mName.C_Str()];
-        Vertex3D nodePosition = boneInfo[ idChildrenNode ].position;
-
-        if (EngineSetup::getInstance()->ANIMATE_MESH_BONES) {
-            this->AIMatrixToVertex(nodePosition, Transforms[idChildrenNode], false);
-        }
-
-        Transforms::objectSpace(nodePosition, nodePosition, this);
-
-        Drawable::drawVertex(nodePosition, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), colorPoints);
-
-        Vector3D vec = Vector3D(currentNodePosition, nodePosition);
-        Drawable::drawVector3D(vec, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), colorLine);
-
-        // resursive
-        drawBones(node->mChildren[j], Transforms);
-    }
-}
-
-void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m, bool inverse)
+void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m)
 {
     float u = V.u;
     float v = V.v;
@@ -478,10 +393,6 @@ void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m, bool inverse)
     aiVector3t<float> scaling;
     aiVector3t<float> position;
     aiQuaterniont<float> rotation;
-
-    if (inverse) {
-        m.Inverse();
-    }
 
     m.Decompose(scaling, rotation, position);
 
@@ -491,33 +402,6 @@ void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m, bool inverse)
 
     V.u = u;
     V.v = v;
-}
-
-Uint32 Mesh3DAnimated::processWeigthColor(int weight)
-{
-    Uint32 c;
-    switch(weight) {
-        case 0:
-            c = Color::white();
-            break;
-        case 1:
-            c = Color::yellow();
-            break;
-        case 2:
-            c = Color::green();
-            break;
-        case 3:
-            c = Color::blue();
-            break;
-        case 4:
-            c = Color::red();
-            break;
-        case 5:
-            c = Color::FOGDefault();
-            break;
-    }
-
-    return c;
 }
 
 void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
@@ -530,7 +414,7 @@ void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float Animation
 
     uint RotationIndex = FindRotation(AnimationTime, pNodeAnim);
     uint NextRotationIndex = (RotationIndex + 1);
-    assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
+    //assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
     float DeltaTime = pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime;
     float Factor = (AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
@@ -549,7 +433,7 @@ void Mesh3DAnimated::CalcInterpolatedPosition(aiVector3D& Out, float AnimationTi
 
     uint PositionIndex = FindPosition(AnimationTime, pNodeAnim);
     uint NextPositionIndex = (PositionIndex + 1);
-    assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
+    //assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
     float DeltaTime = (float)(pNodeAnim->mPositionKeys[NextPositionIndex].mTime - pNodeAnim->mPositionKeys[PositionIndex].mTime);
     float Factor = (AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
@@ -569,7 +453,7 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D& Out, float AnimationTim
 
     uint ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
     uint NextScalingIndex = (ScalingIndex + 1);
-    assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
+    //assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
     float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
     float Factor = (AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);

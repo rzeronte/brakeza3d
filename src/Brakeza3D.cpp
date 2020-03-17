@@ -1,8 +1,5 @@
 
 #include "../headers/Brakeza3D.h"
-#include "../headers/Components/ComponentRender.h"
-#include "../headers/Components/ComponentInput.h"
-#include "../headers/Components/ComponentSound.h"
 #include "../headers/Objects/Mesh3DAnimated.h"
 #include <thread>
 
@@ -58,8 +55,8 @@ void Brakeza3D::start()
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     this->addObject3D(mesh, "collada");
 
-    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "bob_lamp_update.dae") ) {
-        mesh->setScale(1);
+    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "model.dae") ) {
+        mesh->setScale(0.5    );
         Vertex3D p = *componentCamera->getCamera()->getPosition();
         p.y-= -1;
         p.z-= -10;

@@ -8,75 +8,42 @@
 #include "Mesh3D.h"
 #include <cstring>
 
-#define NUM_BONES_PER_VERTEX 4
+#define NUM_BONES_PER_VERTEX 8
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
 {
-    int IDs[NUM_BONES_PER_VERTEX];
-    float Weights[NUM_BONES_PER_VERTEX];
-
-    VertexBoneData()
-    {
-        Reset();
-    };
-
-    void Reset()
-    {
-        for (int i = 0; i < NUM_BONES_PER_VERTEX  ; i++) {
-            IDs[i]     = -1;
-            Weights[i] = 0.0f;
-        }
-    }
+    int IDs[NUM_BONES_PER_VERTEX] = {0};
+    float Weights[NUM_BONES_PER_VERTEX] = {0};
 
     void AddBoneData(uint BoneID, float Weight)
     {
         int end = ARRAY_SIZE_IN_ELEMENTS(IDs);
         for (uint i = 0 ; i < end ; i++) {
-            if (Weights[i] == 0.0f) {
+            if (Weights[i] == 0.0) {
                 IDs[i]     = BoneID;
                 Weights[i] = Weight;
                 return;
             }
         }
+
         // should never get here - more bones than we have space for
-        //assert(0);
+        assert(0);
     }
 };
 
 struct BoneInfo
 {
-    aiMatrix4x4 BoneOffset;
-    aiMatrix4x4 FinalTransformation;
     std::string name;
     Vertex3D position;
 
-    BoneInfo()
-    {
-        BoneOffset = aiMatrix4x4();
-        FinalTransformation = aiMatrix4x4();
-    }
-};
-
-struct BasicMeshEntry {
-    BasicMeshEntry()
-    {
-        NumIndices = 0;
-        BaseVertex = 0;
-        BaseIndex = 0;
-    }
-
-    unsigned int NumIndices;
-    unsigned int BaseVertex;
-    unsigned int BaseIndex;
-    unsigned int MaterialIndex;
-    aiMatrix4x4  transform;
+    aiMatrix4x4 BoneOffset;
+    aiMatrix4x4 FinalTransformation;
 };
 
 class Mesh3DAnimated : public Mesh3D
 {
 public:
-    int temp = 0;
     Assimp::Importer importer;
     const aiScene* scene;
     int m_NumBones = 0;
@@ -90,7 +57,6 @@ public:
     std::map<std::string,uint> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo> boneInfo;
     aiMatrix4x4 m_GlobalInverseTransform;
-    std::vector<BasicMeshEntry> meshInfo;
 
     bool AssimpLoad(const std::string &Filename);
     aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
@@ -101,16 +67,14 @@ public:
     uint FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
     uint FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
-    int updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     bool InitMaterials(const aiScene* pScene, const std::string& Filename);
+
+    int  updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     void processNode(aiNode *node);
     void processMesh(int i, aiMesh *mesh);
-
-    void drawVertexWeights();
-    Uint32 processWeigthColor(int weight);
+    void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
 
     M3 convertAssimpM3(aiMatrix3x3);
-    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
 
     void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
     void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
@@ -118,7 +82,7 @@ public:
 
     void onUpdate();
 
-    void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m, bool inverse);
+    void AIMatrixToVertex( Vertex3D &V, aiMatrix4x4 &m );
 };
 
 
