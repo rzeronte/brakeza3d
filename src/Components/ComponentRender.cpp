@@ -339,9 +339,9 @@ void ComponentRender::processTriangle(Triangle *t)
     // Pixels
     if (SETUP->TRIANGLE_MODE_PIXELS ) {
         Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
-        Drawable::drawVertex(t->Co, CC, Color::red());
+        Drawable::drawVertex(t->Co, CC, Color::green());
         Drawable::drawVertex(t->Bo, CC, Color::green());
-        Drawable::drawVertex(t->Co, CC, Color::blue());
+        Drawable::drawVertex(t->Co, CC, Color::green());
     }
 
     t->drawed = true;
