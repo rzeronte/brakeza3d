@@ -12,7 +12,7 @@ Main features:
 - BSP Quake Lightmaps
 - Bullet Physics Integration for collisions
 - Triangle rasterization (software / OpenCL)
-- OBJ Models loader
+- Load models & animations with ASSIMP library
 - 3D Billboard
 - Billboard 3D 8 - directions
 - UV Mapping
