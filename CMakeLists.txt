@@ -37,6 +37,7 @@ include_directories(
         ${OpenCL_INCLUDE_DIRS}
         ${COLLADA_INCLUDE_DIR}
         ${ASSIMP_INCLUDE_DIR}
+        ${GLM_INCLUDE_DIRS}
 )
 
 add_executable(brakeza3d
