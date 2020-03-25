@@ -175,10 +175,6 @@ public:
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::getInstance()->DRAW_ANIMATION_BONES);
-                if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
-                    ImGui::Checkbox("Animate bones", &EngineSetup::getInstance()->ANIMATE_MESH_BONES);
-                    ImGui::Checkbox("Vertex Weights", &EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT);
-                }
                 ImGui::Separator();
                 ImGui::Checkbox("Fade Out", &EngineSetup::getInstance()->FADEOUT);
                 ImGui::Checkbox("Fade In", &EngineSetup::getInstance()->FADEIN);

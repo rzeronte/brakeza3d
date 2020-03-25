@@ -8,10 +8,10 @@
 
 bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 {
-    this->scene = importer.ReadFile( Filename,
-
-                                             aiProcessPreset_TargetRealtime_MaxQuality
-    );
+    this->scene = importer.ReadFile( Filename,aiProcess_CalcTangentSpace       |
+                                              aiProcess_Triangulate            |
+                                              aiProcess_JoinIdenticalVertices  |
+                                              aiProcess_SortByPType );
 
     if( !scene ) {
         Logging::getInstance()->Log("Error import 3D file for ASSIMP");
@@ -95,7 +95,6 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
             BoneInfo bi;
             boneInfo.push_back(bi);
 
-
             boneMapping[BoneName] = BoneIndex;
 
             boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
@@ -124,6 +123,7 @@ aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMat
     float TicksPerSecond = scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond != 0 ? scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond : 0.25f;
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
     float AnimationTime = fmod(TimeInTicks, scene->mAnimations[ indexCurrentAnimation ]->mDuration);
+
     ReadNodeHeirarchy(AnimationTime, scene->mRootNode, Identity);
 
     Transforms.resize( this->m_NumBones );
@@ -179,9 +179,10 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
     aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
 
+
     if ( boneMapping.find(NodeName) != boneMapping.end() ) {
         uint BoneIndex = boneMapping[NodeName];
-        boneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
+        boneInfo[ BoneIndex ].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
     }
 
     for (unsigned int i = 0 ; i < pNode->mNumChildren ; i++) {
@@ -228,22 +229,17 @@ uint Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAn
     return 0;
 }
 
-int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
 {
     float u = V.u;
     float v = V.v;
 
-    int   BoneIDs[NUM_BONES_PER_VERTEX] = {0};
-    float Weights[NUM_BONES_PER_VERTEX] = {0};
+    int   BoneIDs[NUM_BONES_PER_VERTEX] = {-1};
+    float Weights[NUM_BONES_PER_VERTEX] = {-1};
 
-    int numBonesApplied = 0;
     for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
         BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n];     // boneID
         Weights[n] = this->meshVerticesBoneData[meshID][vertexID].Weights[n]; // WeightID
-
-        if (Weights[n] != 0.0f) {
-            numBonesApplied++;
-        }
     }
 
     aiMatrix4x4 BoneTransform;
@@ -252,12 +248,12 @@ int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::ve
         int   boneId = BoneIDs[n];
         float weight = Weights[n];
 
-        BoneTransform = BoneTransform + Transforms[boneId] * weight;
+        if (boneId != -1) {
+            BoneTransform = BoneTransform + Transforms[boneId] * weight;
+        }
     }
 
     this->AIMatrixToVertex(V, BoneTransform);
-
-    return numBonesApplied;
 }
 
 uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -331,9 +327,9 @@ void Mesh3DAnimated::processNode(aiNode *node)
 M3 Mesh3DAnimated::convertAssimpM3(aiMatrix3x3 s)
 {
     M3 r(
-            s.a1, s.a2, s.a3,
-            s.b1, s.b2, s.b3,
-            s.c1, s.c2, s.c3
+    s.a1, s.a2, s.a3,
+    s.b1, s.b2, s.b3,
+    s.c1, s.c2, s.c3
     );
 
     return r;
@@ -420,7 +416,9 @@ void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float Animation
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
     const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
+
     aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
+
     Out = Out.Normalize();
 }
 

@@ -88,10 +88,8 @@ public:
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
     bool TRIANGLE_MODE_TEXTURIZED = false;
-    bool TRIANGLE_MODE_VERTEX_WEIGHT= true;
 
     bool DRAW_ANIMATION_BONES = true;
-    bool ANIMATE_MESH_BONES = true;
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;

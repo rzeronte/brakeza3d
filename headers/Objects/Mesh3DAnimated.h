@@ -69,7 +69,7 @@ public:
 
     bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 
-    int  updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
+    void updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     void processNode(aiNode *node);
     void processMesh(int i, aiMesh *mesh);
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);

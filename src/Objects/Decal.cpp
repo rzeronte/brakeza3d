@@ -109,7 +109,7 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
         modelTriangles.emplace_back( t );
     }
 
-    // Fix separation for avoid Z-fightingba
+    // Fix separation for avoid Z-fighting
     float OffsetSeparation = 0.25;
     for (int i = 0; i < modelTriangles.size() ; i++) {
         modelTriangles[i]->A = modelTriangles[i]->A - N.getScaled(OffsetSeparation);
