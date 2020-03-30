@@ -56,8 +56,8 @@ void Brakeza3D::start()
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     this->addObject3D(mesh, "collada");
 
-    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "astroBoy_walk_Maya.dae") ) {
-        mesh->setScale(0.5 );
+    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "bob_lamp_update.dae") ) {
+        mesh->setScale(1 );
         Vertex3D p = *componentCamera->getCamera()->getPosition();
         p.y-= -1;
         p.z-= -10;

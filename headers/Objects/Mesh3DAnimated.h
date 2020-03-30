@@ -8,7 +8,7 @@
 #include "Mesh3D.h"
 #include <cstring>
 
-#define NUM_BONES_PER_VERTEX 8
+#define NUM_BONES_PER_VERTEX 4
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
@@ -26,8 +26,6 @@ struct VertexBoneData
                 return;
             }
         }
-
-        // should never get here - more bones than we have space for
         assert(0);
     }
 };
@@ -73,8 +71,6 @@ public:
     void processNode(aiNode *node);
     void processMesh(int i, aiMesh *mesh);
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
-
-    M3 convertAssimpM3(aiMatrix3x3);
 
     void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
     void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
