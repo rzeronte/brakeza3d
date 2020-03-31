@@ -8,7 +8,7 @@
 #include "Mesh3D.h"
 #include <cstring>
 
-#define NUM_BONES_PER_VERTEX 4
+#define NUM_BONES_PER_VERTEX 14
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
@@ -56,8 +56,12 @@ public:
     std::vector<BoneInfo> boneInfo;
     aiMatrix4x4 m_GlobalInverseTransform;
 
+    void onUpdate();
+
     bool AssimpLoad(const std::string &Filename);
+
     aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
+
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
     const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);
 
@@ -67,7 +71,7 @@ public:
 
     bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 
-    void updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
+    int updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
     void processNode(aiNode *node);
     void processMesh(int i, aiMesh *mesh);
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
@@ -76,9 +80,11 @@ public:
     void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
     void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
 
-    void onUpdate();
-
     void AIMatrixToVertex( Vertex3D &V, aiMatrix4x4 &m );
+
+    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
+    void drawVertexWeights();
+    Uint32 processWeigthColor(int weight);
 };
 
 

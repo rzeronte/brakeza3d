@@ -84,12 +84,13 @@ public:
     bool FADEOUT = false;
 
     // Fill Triangle modes
-    bool TRIANGLE_MODE_PIXELS = true;
+    bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool TRIANGLE_MODE_TEXTURIZED = true;
 
-    bool DRAW_ANIMATION_BONES = true;
+    bool DRAW_ANIMATION_BONES = false;
+    bool TRIANGLE_MODE_VERTEX_WEIGHT = false;
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;
@@ -174,7 +175,7 @@ public:
     float MOUSE_SENSITIVITY	= 0.250;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = false;
+    bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 

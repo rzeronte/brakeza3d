@@ -53,19 +53,6 @@ void Brakeza3D::start()
 
     ComponentsManager::get()->configureComponents();
 
-    Mesh3DAnimated* mesh = new Mesh3DAnimated();
-    this->addObject3D(mesh, "collada");
-
-    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "bob_lamp_update.dae") ) {
-        mesh->setScale(1 );
-        Vertex3D p = *componentCamera->getCamera()->getPosition();
-        p.y-= -1;
-        p.z-= -10;
-        M3 r = M3::getMatrixRotationForEulerAngles(90, 0, 0);
-        mesh->setRotation( r );
-        mesh->setPosition( p );
-    }
-
     mainLoop();
 }
 

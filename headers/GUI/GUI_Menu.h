@@ -175,6 +175,7 @@ public:
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::getInstance()->DRAW_ANIMATION_BONES);
+                ImGui::Checkbox("Draw Vertices Weights", &EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT);
                 ImGui::Separator();
                 ImGui::Checkbox("Fade Out", &EngineSetup::getInstance()->FADEOUT);
                 ImGui::Checkbox("Fade In", &EngineSetup::getInstance()->FADEIN);
