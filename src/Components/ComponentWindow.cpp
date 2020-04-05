@@ -37,8 +37,7 @@ void ComponentWindow::postUpdate()
 
     SDL_GL_SwapWindow( this->window );
 
-    screenTexture = SDL_CreateTextureFromSurface( renderer, screenSurface );
-    SDL_RenderCopy( renderer, screenTexture, NULL, NULL);
+    SDL_RenderCopy( renderer, SDL_CreateTextureFromSurface( renderer, screenSurface ), NULL, NULL);
 
 }
 
