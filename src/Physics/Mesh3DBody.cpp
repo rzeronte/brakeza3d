@@ -15,7 +15,7 @@ Mesh3DBody::Mesh3DBody()
     timer = new Timer();
 }
 
-btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
+btRigidBody* Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
 {
     btConvexHullShape* me = new btConvexHullShape();
 
@@ -55,8 +55,30 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, std::vector<Object3D*> &gameO
     this->m_body->setUserPointer(this);
 
     world->addRigidBody(this->m_body);
-    gameObjects.emplace_back(this);
 
+    return this->m_body;
+}
+
+btRigidBody* Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D dimensions, btDiscreteDynamicsWorld* world)
+{
+    this->mass = mass;
+
+    btTransform trans;
+    trans.setIdentity();
+
+    Vertex3D pos = *this->getPosition();
+    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+
+    btVector3 localInertia(0, 0, 0);
+    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
+    btCollisionShape* shape = new btBoxShape(btVector3( dimensions.x, dimensions.y, dimensions.z) );
+    btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
+    this->m_body = new btRigidBody(cInfo);
+    //m_body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+
+    this->m_body->setUserPointer(this);
+
+    world->addRigidBody(this->m_body);
 
     return this->m_body;
 }

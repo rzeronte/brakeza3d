@@ -6,6 +6,7 @@
 #define BRAKEDA3D_MESH3DANIMATED_H
 
 #include "Mesh3D.h"
+#include "../Physics/Mesh3DBody.h"
 #include <cstring>
 
 #define NUM_BONES_PER_VERTEX 14
@@ -39,7 +40,7 @@ struct BoneInfo
     aiMatrix4x4 FinalTransformation;
 };
 
-class Mesh3DAnimated : public Mesh3D
+class Mesh3DAnimated : public Mesh3DBody
 {
 public:
     Assimp::Importer importer;

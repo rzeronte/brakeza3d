@@ -476,8 +476,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 }
             }
 
-            body->makeRigidBody(0, Brakeza3D::get()->getSceneObjects(), this->camera,
-                                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
+            body->makeRigidBody(0, this->camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
             Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
         } else {
@@ -583,55 +582,62 @@ void BSPMap::InitializeEntities()
                 // item cells
                 if (!strcmp(classname, "item_cells")) {
                     auto *o = new ItemAmmoBody();
+                    o->setLabel("ammo_cells");
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_cells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
-                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
                 // item rockets
                 if (!strcmp(classname, "item_rockets")) {
                     auto *o = new ItemAmmoBody();
+                    o->setLabel("ammo_rockets");
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_rockets.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
-                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
                 // item shells
                 if (!strcmp(classname, "item_shells")) {
                     auto *o = new ItemAmmoBody();
+                    o->setLabel("ammo_shells");
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_shells.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
-                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
                 // item spikes
                 if (!strcmp(classname, "item_spikes")) {
                     auto *o = new ItemAmmoBody();
+                    o->setLabel("ammo_spikes");
                     o->setAmmoTypeClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "item_spikes.png" );
                     o->setPosition( pos );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
-                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
+
                 }
 
                 // item_health
                 if (!strcmp(classname, "item_health")) {
                     auto *o = new ItemHealthBody();
+                    o->setLabel("health");
                     o->setPosition( pos );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(),
-                                     brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
+
                 }
 
                 // weapon wildcard
@@ -646,10 +652,12 @@ void BSPMap::InitializeEntities()
                     }
 
                     o->setPosition( pos );
+                    o->setLabel(weapon->label );
                     o->setWeaponClassname( classname );
                     o->loadTexture(EngineSetup::getInstance()->WEAPONS_FOLDER + weapon->label + "/" + weapon->getBillboardTextureFile() );
                     o->setDimensions(weapon->billboardWidth, weapon->billboardHeight );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getSceneObjects(), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld());
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld());
+                    brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
                 // monster wildcard
@@ -682,9 +690,9 @@ void BSPMap::InitializeEntities()
                     o->makeRigidBody(
                             0,
                             Vertex3D(2, 2, 2),
-                            brakeza3D->getSceneObjects(),
                             brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
                      );
+                    brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
                 // armor wildcard

@@ -7,7 +7,6 @@
 #include "../imgui/imgui.h"
 #include <any>
 #include <map>
-#include <collada-dom2.5/dae.h>
 
 class EngineSetup {
 
@@ -50,7 +49,7 @@ public:
 
     int RESOLUTION = screenWidth * screenHeight;
 
-    bool BASED_TILE_RENDER = false;
+    bool BASED_TILE_RENDER = true;
     bool BASED_TILE_RENDER_THREADED = true;
 
     const int ENGINE_MAX_OCLTRIANGLES = 10240;

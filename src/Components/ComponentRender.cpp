@@ -10,6 +10,7 @@
 #include "../../headers/Misc/Parallells.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Objects/Mesh3DAnimated.h"
+#include "../../headers/Objects/Mesh3DAnimatedCollection.h"
 
 ComponentRender::ComponentRender()
 {
@@ -150,9 +151,10 @@ void ComponentRender::getObjectsTriangles()
             continue;
         }
 
-        auto *oMeshAnimated = dynamic_cast<Mesh3DAnimated*> (object);
-        if (oMeshAnimated != nullptr) {
-            oMeshAnimated->onUpdate();
+        auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
+        if (oMeshAnimatedCollection != nullptr) {
+            oMeshAnimatedCollection->onUpdate();
+            oMeshAnimatedCollection->getCurrentMesh3DAnimated()->draw( &this->frameTriangles );
         }
 
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
@@ -225,10 +227,6 @@ void ComponentRender::hiddenSurfaceRemoval()
             BUFFERS->addOCLTriangle(frameTriangles[i]->getOpenCL());
         }
 
-        if (this->frameTriangles[i]->fullArea < SETUP->MIN_TRIANGLE_AREA) {
-            continue;
-        }
-
         this->frameTriangles[i]->drawed = false;
         this->visibleTriangles.emplace_back(frameTriangles[i]);
     }
@@ -243,7 +241,7 @@ void ComponentRender::hiddenSurfaceRemoval()
 void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
 {
     for (int i = 0; i < this->numTiles; i++) {
-        this->tiles[i].numTriangles = 0;
+        this->tiles[i].triangleIds.clear();
     }
 
     for (int i = 0; i < visibleTriangles.size(); i++) {
@@ -256,8 +254,7 @@ void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTria
         for (int y = tileStartY; y <= tileEndY; y++) {
             for (int x = tileStartX; x <= tileEndX; x++) {
                 int tileOffset = y * tilesWidth + x;
-                this->tiles[tileOffset].triangleIds[this->tiles[tileOffset].numTriangles] = i;
-                this->tiles[tileOffset].numTriangles++;
+                this->tiles[tileOffset].triangleIds.push_back( i );
             }
         }
     }
@@ -299,7 +296,7 @@ void ComponentRender::drawTilesGrid()
         Tile *t = &this->tiles[j];
         Uint32 color = Color::white();
 
-        if (t->numTriangles > 0) {
+        if (t->triangleIds.size() > 0) {
             color = Color::red();
         }
 
@@ -607,7 +604,7 @@ void ComponentRender::initTiles()
 
 void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles)
 {
-    for (int j = 0 ; j < this->tiles[i].numTriangles ; j++) {
+    for (int j = 0 ; j < this->tiles[i].triangleIds.size() ; j++) {
         int triangleId = this->tiles[i].triangleIds[j];
         Tile *t = &this->tiles[i];
         Triangle *tr = visibleTriangles[triangleId];

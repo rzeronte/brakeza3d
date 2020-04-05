@@ -12,3 +12,8 @@ Body::Body() {
 void Body::integrate() {
 
 }
+
+void Body::setBodyEnabled(bool state)
+{
+    this->bodyEnabled = state;
+}

@@ -148,7 +148,8 @@ public:
         gibsBody->linkTextureAnimation(EngineBuffers::getInstance()->gibsTemplate);
         gibsBody->setAnimation(Tools::random(0, EngineBuffers::getInstance()->gibsTemplate->numAnimations-1));
         gibsBody->setPosition( position );
-        gibsBody->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), dynamicsWorld);
+        gibsBody->makeRigidBody(1.0f, dynamicsWorld);
+        Brakeza3D::get()->addObject3D(gibsBody, gibsBody->getLabel());
     }
 
     void makeGoreDecals(float rotX, float rotY, float rotZ) {

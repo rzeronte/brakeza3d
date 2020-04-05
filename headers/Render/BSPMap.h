@@ -228,7 +228,7 @@ public:
     btDefaultMotionState* motionState;
     btRigidBody* bspRigidBody;
 
-    bspleaf_t *currentLeaf;
+    bspleaf_t *currentLeaf = nullptr;
     char *bsp;
 
     BSPMap();

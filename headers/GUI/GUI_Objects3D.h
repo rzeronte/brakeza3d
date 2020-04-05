@@ -13,6 +13,7 @@
 #include "../Physics/Mesh3DGhost.h"
 #include "../Render/Logging.h"
 #include "../Objects/Decal.h"
+#include "../Objects/Mesh3DAnimatedCollection.h"
 
 class GUI_Objects3D : public GUI  {
 public:
@@ -58,6 +59,7 @@ public:
                 std::string rotation_text = "Rotation##" + std::to_string(i);
                 std::string shadow_text = "Shadow##" + std::to_string(i);
                 std::string animation_text = "Animation##" + std::to_string(i);
+                std::string collection = "Collection##" + std::to_string(i);
                 std::string removed_text = "Removed##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
@@ -199,6 +201,39 @@ public:
                     if (oEnemy != NULL) {
                         std::string staminaText = "Stamina :" + std::to_string(oEnemy->stamina);
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
+                    }
+
+                    // Only for Mesh3DAnimatedCollection
+                    auto *oMesh3DAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection *>(gameObjects[i]);
+                    if (oMesh3DAnimatedCollection != NULL) {
+                        std::string staminaText = "CurrentAnimation: " + std::to_string(oMesh3DAnimatedCollection->currentAnimation);
+                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
+
+                        const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
+                        static const char* item_current; // Here our selection is a single pointer stored outside the object.
+                        static ImGuiComboFlags flags = 0;
+                        if (oMesh3DAnimatedCollection->currentAnimation >= 0) {
+                            item_current = items[oMesh3DAnimatedCollection->currentAnimation];
+                        }
+
+                        if ( ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) { // The second parameter is the label previewed before opening the combo.
+                            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+                                bool is_selected = (item_current == items[n]);
+                                if (ImGui::Selectable(items[n], is_selected)) {
+                                    item_current = items[n];
+                                }
+
+                                if (is_selected) {
+                                    ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+                                }
+
+                                if (ImGui::IsItemDeactivatedAfterEdit()) {
+                                    oMesh3DAnimatedCollection->currentAnimation = n;
+                                    Logging::getInstance()->Log(("Changing collection animation frame to: " + std::to_string(n)));
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
                     }
                 }
             }

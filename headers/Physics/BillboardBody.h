@@ -15,7 +15,7 @@ public:
     BillboardBody();
     void integrate();
     void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
-    btRigidBody* makeRigidBody(float, Vertex3D size, std::vector<Object3D*> &, btDiscreteDynamicsWorld*);
+    btRigidBody* makeRigidBody(float, Vertex3D size, btDiscreteDynamicsWorld*);
 
 };
 

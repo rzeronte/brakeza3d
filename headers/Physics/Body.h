@@ -19,7 +19,10 @@ public:
 
     btCollisionObject* getCollider() { return m_collider; }
     btRigidBody* getRigidBody() { return m_body; }
+    void setBodyEnabled(bool state);
     virtual void integrate();
+
+    void addBodyToWorld();
 };
 
 

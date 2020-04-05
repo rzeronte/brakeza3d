@@ -10,7 +10,7 @@ class NPCEnemyPartBody : public Sprite3DBody {
 public:
     bool doneGore = false;
 
-    btRigidBody* makeRigidBody(float, std::vector<Object3D*> &, btDiscreteDynamicsWorld*);
+    btRigidBody* makeRigidBody(float, btDiscreteDynamicsWorld*);
 
 };
 

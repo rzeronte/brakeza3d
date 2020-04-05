@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
-add_definitions( -DCOLLADA_DOM_SUPPORT141 -DCOLLADA_DOM_SUPPORT150 -DCOLLADA_DOM_DAEFLOAT_IS64 -DCOLLADA_DOM_USING_141 )
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
 set(SDL2_dir /Library/Frameworks/SDL2.framework/Headers)
@@ -25,7 +23,6 @@ find_package(SDL2_mixer REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Bullet REQUIRED)
 find_package(OpenCL REQUIRED)
-find_package(COLLADA REQUIRED)
 
 include_directories(
         ${SDL2_dir}
@@ -35,7 +32,6 @@ include_directories(
         ${OPENGL_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
         ${OpenCL_INCLUDE_DIRS}
-        ${COLLADA_INCLUDE_DIR}
         ${ASSIMP_INCLUDE_DIR}
         ${GLM_INCLUDE_DIRS}
 )
@@ -237,7 +233,7 @@ add_executable(brakeza3d
         headers/Components/ComponentGameInput.h
         src/Objects/Mesh3DAnimated.cpp
         headers/Objects/Mesh3DAnimated.h
-        )
+        src/Objects/Mesh3DAnimatedCollection.cpp headers/Objects/Mesh3DAnimatedCollection.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
@@ -247,7 +243,6 @@ target_link_libraries(brakeza3d
         ${OPENGL_LIBRARIES}
         ${BULLET_LIBRARIES}
         ${OpenCL_LIBRARY}
-        ${COLLADA_DYNAMIC_LIBRARY}
         assimp
         DebugUtils Detour DetourCrowd DetourTileCache Recast
 )

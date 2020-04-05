@@ -31,10 +31,6 @@ public:
         const float range_max_fog_intensity = 1;
         const float range_sensibility_fog_intensity = 0.01;
 
-        const float range_min_area = 0;
-        const float range_max_area = 100;
-        const float range_sensibility_area = 0.1;
-
         const float range_min_fog_distance = 0;
         const float range_max_fog_distance = 99;
         const float range_sensibility_fog_distance = 0.5;
@@ -119,8 +115,6 @@ public:
                     cam->UpdateFrustum();
                 }
 
-                ImGui::Separator();
-                ImGui::DragScalar("Min area for raster", ImGuiDataType_Float,  &EngineSetup::getInstance()->MIN_TRIANGLE_AREA, range_sensibility_area,  &range_min_area, &range_max_area, "%f", 1.0f);
                 ImGui::Separator();
 
                 ImGui::Checkbox("Enable FOG", &EngineSetup::getInstance()->ENABLE_FOG);

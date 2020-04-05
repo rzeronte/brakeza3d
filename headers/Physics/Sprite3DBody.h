@@ -8,7 +8,7 @@
 
 class Sprite3DBody : public Sprite3D, public Body {
 public:
-    btRigidBody* makeRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &, btDiscreteDynamicsWorld*);
+    btRigidBody* makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld*);
     void integrate();
 
 };

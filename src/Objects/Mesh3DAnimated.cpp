@@ -9,7 +9,7 @@
 
 void Mesh3DAnimated::onUpdate()
 {
-    if (this->scene->mNumAnimations <= 0) return;
+    if (!this->scene->HasAnimations()) return;
 
     // Update running time
     this->runningTime += Brakeza3D::get()->getDeltaTime();
@@ -17,7 +17,6 @@ void Mesh3DAnimated::onUpdate()
         runningTime = 0.000;
     }
 
-    // update geometry
     this->modelTriangles.clear();
 
     std::vector<aiMatrix4x4> Transforms;
@@ -85,7 +84,6 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
     return true;
 }
 
-
 void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
@@ -97,8 +95,6 @@ void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
         Logging::getInstance()->Log("Skip mesh non triangle");
         return;
     }
-
-    std::cout << std::endl;
 
     this->loadMeshBones(mesh, localMeshBones);
 
@@ -117,8 +113,6 @@ void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
 
     this->meshVertices[ idMesh ] = localMeshVertices;
     this->meshVerticesBoneData[ idMesh ] = localMeshBones;
-
-    std::cout << "Assimp: Mesh (" << mesh->mName.C_Str() << ") | id: "<< idMesh <<" with " << mesh->mNumVertices << " vertices / " << mesh->mNumBones << " bones / " << mesh->mNumFaces << " faces";
 
     for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
         const aiFace& Face = mesh->mFaces[k];
@@ -354,11 +348,13 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
             if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
                 std::string p(Path.data);
 
+                std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
+
                 if (p.substr(0, 2) == ".\\") {
                     p = p.substr(2, p.size() - 2);
                 }
 
-                std::string FullPath = Dir + "/" + p;
+                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
 
                 std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
                 Texture *t = new Texture();

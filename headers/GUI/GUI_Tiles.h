@@ -31,7 +31,7 @@ public:
 
             if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
                 for (int i = 0 ; i < tiles.size(); i++) {
-                    ImGui::Checkbox(std::string(std::to_string(i) + " ("+ std::to_string(tiles[i].numTriangles)+")").c_str(), &tiles[i].draw);
+                    ImGui::Checkbox(std::string(std::to_string(i) + " ("+ std::to_string(tiles[i].triangleIds.size())+")").c_str(), &tiles[i].draw);
                     ImGui::NextColumn();
                 }
             }

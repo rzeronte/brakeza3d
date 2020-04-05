@@ -23,11 +23,9 @@ void SpriteDirectional3DBody::integrate()
     btQuaternion  quat = t.getRotation();
     float angle = quat.getAngle();
     btVector3 axis = quat.getAxis();
-
-
 }
 
-btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, btDiscreteDynamicsWorld *world)
+btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world)
 {
     this->mass = mass;
 
@@ -53,12 +51,10 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, s
 
     world->addRigidBody(this->m_body);
 
-    gameObjects.emplace_back(this);
-
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
 {
     this->mass = mass;
 
@@ -102,12 +98,10 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
 
     world->addRigidBody(this->m_body, 1, 2);
 
-    gameObjects.emplace_back(this);
-
     return this->m_body;
 }
 
-btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse)
+btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse)
 {
     this->mass = mass;
 
@@ -138,8 +132,6 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass
     this->m_body->applyCentralImpulse(impulse);
 
     world->addRigidBody(this->m_body);
-
-    gameObjects.emplace_back(this);
 
     return this->m_body;
 }

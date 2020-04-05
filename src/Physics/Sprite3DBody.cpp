@@ -24,7 +24,7 @@ void Sprite3DBody::integrate()
     btVector3 axis = quat.getAxis();
 }
 
-btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, std::vector<Object3D*> &gameObjects, btDiscreteDynamicsWorld *world)
+btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world)
 {
     this->mass = mass;
 
@@ -49,7 +49,6 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, std::vector<
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
     world->addRigidBody(this->m_body);
-    gameObjects.emplace_back(this);
 
     return this->m_body;
 }

@@ -131,7 +131,6 @@ void Player::shoot()
         projectile->makeProjectileRigidBody(
             1,
             Vertex3D(0.5, 0.5, 0.5),
-            Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             true,
@@ -144,6 +143,7 @@ void Player::shoot()
         );
 
         projectile->setRotation(Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation() );
+        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 
     int currentWeaponAmmo = weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount();

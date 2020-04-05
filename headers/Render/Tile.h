@@ -5,6 +5,8 @@
 #include <vector>
 #include <OpenCL/opencl.h>
 
+#define MAX_TILE_TRIANGLES 3000
+
 struct Tile {
     bool draw;
     int id;
@@ -12,12 +14,9 @@ struct Tile {
     int id_y;
     int start_x;
     int start_y;
-    int numTriangles;
-    int triangleIds[1500];
+    std::vector <int> triangleIds;
     unsigned int *buffer;
     float *bufferDepth;
-    cl_mem clBuffer;
-    cl_mem clBufferDepth;
 };
 
 struct OCLTile {

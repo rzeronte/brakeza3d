@@ -5,7 +5,7 @@
 #include "../../headers/Game/NPCEnemyPartBody.h"
 #include "../../headers/Misc/Tools.h"
 
-btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, std::vector<Object3D*> &gameObjects, btDiscreteDynamicsWorld *world)
+btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world)
 {
     this->mass = mass;
 
@@ -57,7 +57,6 @@ btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, std::vector<Object3D*> 
     this->m_body->applyCentralImpulse(impulse);
 
     world->addRigidBody(this->m_body);
-    gameObjects.emplace_back(this);
 
     return this->m_body;
 }

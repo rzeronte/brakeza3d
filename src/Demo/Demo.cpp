@@ -121,7 +121,7 @@ Demo::Demo()
     cuboPhysic->setEnabled(false);
     cuboPhysic->setPosition(Vertex3D(54, -16, 87));
     cuboPhysic->loadOBJBlender("../assets/models/cubo.obj");
-    cuboPhysic->makeRigidBody(1.0f, Brakeza3D::get()->getSceneObjects(), Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
+    cuboPhysic->makeRigidBody(1.0f, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
                               Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), false);
     //this->addObject3D(cuboPhysic, "cuboPhysic");
 

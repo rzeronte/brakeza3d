@@ -27,7 +27,8 @@ public:
     void integrate();
     void integrateMoving();
 
-    btRigidBody* makeRigidBody(float mass, std::vector<Object3D *> &gameObjects, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
+    btRigidBody* makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
+    btRigidBody* makeSimpleRigidBody(float mass, Vertex3D dimensions,  btDiscreteDynamicsWorld*);
 
     // Quake BSP Moving attributes
     float speedMoving = 100;
