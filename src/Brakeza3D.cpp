@@ -68,6 +68,7 @@ void Brakeza3D::mainLoop()
 
     auto *collection = new Mesh3DAnimatedCollection();
     collection->addAnimation("swat_idle", "swat/idle.fbx");
+    collection->addAnimation("swat_walk", "swat/walking.fbx");
     collection->addAnimation("swat_fire", "swat/fire.fbx");
     collection->addAnimation("swat_injuried", "swat/injuried.fbx");
     collection->addAnimation("swat_dead", "swat/death.fbx");

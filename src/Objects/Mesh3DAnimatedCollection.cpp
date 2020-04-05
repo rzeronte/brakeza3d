@@ -12,7 +12,7 @@ void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string model
 
     if ( meshObject->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
 
-        meshObject->setScale(1 );
+        meshObject->setScale( 0.1);
         meshObject->setPosition( *this->getPosition() );
         meshObject->setRotation( M3::getMatrixRotationForEulerAngles(180, 0, 0) );
 
@@ -32,6 +32,7 @@ void Mesh3DAnimatedCollection::onUpdate()
 {
     if (this->currentAnimation < 0) return;
 
+    this->getCurrentMesh3DAnimated()->setPosition( *this->getPosition() );
     this->getCurrentMesh3DAnimated()->onUpdate();
 }
 
@@ -43,7 +44,6 @@ void Mesh3DAnimatedCollection::setCurrentAnimation(int index)
 
     this->currentAnimation = index;
 
-    this->mesh3Danimated[currentAnimation]->setPosition( *this->getPosition() );
     this->mesh3Danimated[currentAnimation]->setBodyEnabled(true );
 }
 

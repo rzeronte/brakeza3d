@@ -251,11 +251,11 @@ public:
     };
 
     enum SpriteSoldierAnimations {
-        SOLDIER_WALK = 0,
-        SOLDIER_FIRE = 1,
-        SOLDIER_INJURIED = 2,
-        SOLDIER_DEAD = 3,
-        SOLDIER_EXPLODE = 4
+        SOLDIER_IDLE = 0,
+        SOLDIER_WALK = 1,
+        SOLDIER_FIRE = 2,
+        SOLDIER_INJURIED = 3,
+        SOLDIER_DEAD = 4
     };
 
     enum SpriteDoom2CacodemonAnimations {

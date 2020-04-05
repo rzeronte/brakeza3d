@@ -138,10 +138,9 @@ public:
 
             // Set animation NPC to Dead
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (enemyBody);
-            if ( !explosionBody ) {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
-            } else {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
+            sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
+
+            if ( explosionBody ) {
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_EXPLODE_ENEMY, 0);
 
                 for (int i = 0 ; i < 5; i++) {

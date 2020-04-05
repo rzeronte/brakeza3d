@@ -209,7 +209,7 @@ public:
                         std::string staminaText = "CurrentAnimation: " + std::to_string(oMesh3DAnimatedCollection->currentAnimation);
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
 
-                        const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
+                        const char* items[] = { "idle", "walk", "fire", "injuried", "dead" };
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
                         static ImGuiComboFlags flags = 0;
                         if (oMesh3DAnimatedCollection->currentAnimation >= 0) {

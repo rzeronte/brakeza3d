@@ -39,7 +39,6 @@ public:
 
         Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (getNPCEnemy());
 
-        bool explosionBody = getNPCEnemy()->isTakeHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina <= 0) {
@@ -49,10 +48,10 @@ public:
 
             // Set animation NPC to Dead
             SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
-            if (!explosionBody) {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
-            } else {
-                sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_EXPLODE);
+            sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
+
+            bool explosionBody = getNPCEnemy()->isTakeHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
+            if (explosionBody) {
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bodyExplode"), EngineSetup::SoundChannels::SND_EXPLODE_ENEMY, 0);
 
                 for (int i = 0 ; i < 5; i++) {

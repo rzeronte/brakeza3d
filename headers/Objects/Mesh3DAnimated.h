@@ -83,7 +83,7 @@ public:
 
     void AIMatrixToVertex( Vertex3D &V, aiMatrix4x4 &m );
 
-    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
+    void drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms);
     void drawVertexWeights();
     Uint32 processWeigthColor(int weight);
 };

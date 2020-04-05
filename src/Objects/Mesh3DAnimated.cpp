@@ -59,8 +59,7 @@ void Mesh3DAnimated::onUpdate()
 
 bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 {
-    this->scene = importer.ReadFile( Filename,aiProcess_CalcTangentSpace       |
-                                              aiProcess_Triangulate            |
+    this->scene = importer.ReadFile( Filename, aiProcess_Triangulate            |
                                               aiProcess_JoinIdenticalVertices  |
                                               aiProcess_SortByPType |
                                               aiProcess_FlipUVs
@@ -440,7 +439,7 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D& Out, float AnimationTim
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms)
 {
     if (this->m_NumBones == 0) return;
         
