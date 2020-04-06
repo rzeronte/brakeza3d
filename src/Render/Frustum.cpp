@@ -157,3 +157,21 @@ void Frustum::consoleInfo() {
 
     printf("\r\n");
 }
+
+bool Frustum::isAABBInFrustum(AABB3D *aabb)
+{
+    if (
+    !this->isPointInFrustum( aabb->vertices[0] ) &&
+    !this->isPointInFrustum( aabb->vertices[1] ) &&
+    !this->isPointInFrustum( aabb->vertices[2] ) &&
+    !this->isPointInFrustum( aabb->vertices[3] ) &&
+    !this->isPointInFrustum( aabb->vertices[4] ) &&
+    !this->isPointInFrustum( aabb->vertices[5] ) &&
+    !this->isPointInFrustum( aabb->vertices[6] ) &&
+    !this->isPointInFrustum( aabb->vertices[7] )
+    ) {
+        return false;
+    }
+
+    return true;
+}
