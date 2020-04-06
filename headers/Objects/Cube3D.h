@@ -19,7 +19,7 @@ static const float cubeVertexBuffer[] = {
         1.0f,-1.0f, 1.0f,  // triángulo 3 : comienza
         -1.0f,-1.0f,-1.0f,
         1.0f,-1.0f,-1.0f,  // triángulo 3 : termina
-        1.0f, 1.0f,-1.0f,
+        1.0f, 1.0f,-1.0f,  // ...
         1.0f,-1.0f,-1.0f,
         -1.0f,-1.0f,-1.0f,
         -1.0f,-1.0f,-1.0f,

@@ -70,6 +70,8 @@ public:
     void updatePoints();
 
     bool isPointInFrustum(Vertex3D &v);
+    bool isAABBInFrustum(AABB3D *aabb);
+
     void consoleInfo();
 };
 

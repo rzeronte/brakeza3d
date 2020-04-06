@@ -48,6 +48,13 @@ void Mesh3DAnimated::onUpdate()
         }
     }
 
+
+    this->updateBoundingBox();
+
+    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+        Drawable::drawAABB(&this->aabb, this);
+    }
+
     if (EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT) {
         this->drawVertexWeights();
     }
@@ -476,7 +483,6 @@ void Mesh3DAnimated::drawVertexWeights()
     this->BoneTransform(runningTime, Transforms);
 
     for (int i = 0; i < this->scene->mNumMeshes; i++) {
-
         // Apply bone transforms and create triangle
         for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
 
@@ -534,4 +540,46 @@ Uint32 Mesh3DAnimated::processWeigthColor(int weight)
     }
 
     return c;
+}
+
+void Mesh3DAnimated::updateBoundingBox()
+{
+    float maxX, minX, maxY, minY, maxZ, minZ;
+
+    for (int i = 0; i < this->modelTriangles.size(); i++) {
+        maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);
+        minX = std::fmin(minX, this->modelTriangles[i]->A.x);
+
+        maxY = std::fmax(maxY, this->modelTriangles[i]->A.y);
+        minY = std::fmin(minY, this->modelTriangles[i]->A.y);
+
+        maxZ = std::fmax(maxZ, this->modelTriangles[i]->A.z);
+        minZ = std::fmin(minZ, this->modelTriangles[i]->A.z);
+    }
+
+    this->aabb.max.x = maxX;
+    this->aabb.max.y = maxY;
+    this->aabb.max.z = maxZ;
+
+    this->aabb.min.x = minX;
+    this->aabb.min.y = minY;
+    this->aabb.min.z = minZ;
+
+    this->aabb.vertices[0] = this->aabb.max;
+    this->aabb.vertices[1] = this->aabb.min;
+    this->aabb.vertices[2] = Vertex3D(this->aabb.max.x, this->aabb.max.y, this->aabb.min.z);
+    this->aabb.vertices[3] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.max.z);
+    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
+    this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
+    this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
+    this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
+
+    Transforms::objectSpace(this->aabb.vertices[0], this->aabb.vertices[0], this);
+    Transforms::objectSpace(this->aabb.vertices[1], this->aabb.vertices[1], this);
+    Transforms::objectSpace(this->aabb.vertices[2], this->aabb.vertices[2], this);
+    Transforms::objectSpace(this->aabb.vertices[3], this->aabb.vertices[3], this);
+    Transforms::objectSpace(this->aabb.vertices[4], this->aabb.vertices[4], this);
+    Transforms::objectSpace(this->aabb.vertices[5], this->aabb.vertices[5], this);
+    Transforms::objectSpace(this->aabb.vertices[6], this->aabb.vertices[6], this);
+    Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
 }

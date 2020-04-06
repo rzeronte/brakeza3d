@@ -23,6 +23,7 @@ public:
     std::string mesh_file;
 
     std::vector<Triangle*> modelTriangles;
+    AABB3D aabb;
 
     Texture *modelTextures;
     Vertex3D *modelVertices;

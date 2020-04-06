@@ -35,6 +35,7 @@ public:
     static void drawFadeIn();
     static void drawFadeOut();
     static void drawFacePercent(float percent);
+    static void drawAABB(AABB3D *, Object3D *);
 };
 
 

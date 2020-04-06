@@ -21,8 +21,6 @@ void ComponentBSP::onStart()
     loadEnemiesJSON();
     loadWeaponsJSON();
 
-    return;
-
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
     bsp->Initialize(nameMap->valuestring, "palette.lmp", camera);

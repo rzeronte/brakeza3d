@@ -519,3 +519,15 @@ void Drawable::waterShader(int type)
 
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
+
+void Drawable::drawAABB(AABB3D *aabb, Object3D *o)
+{
+    Drawable::drawVertex(aabb->vertices[0], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[1], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[2], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[3], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[4], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[5], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[6], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[7], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+}

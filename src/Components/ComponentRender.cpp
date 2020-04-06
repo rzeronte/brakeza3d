@@ -153,12 +153,17 @@ void ComponentRender::getObjectsTriangles()
 
         auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
         if (oMeshAnimatedCollection != nullptr) {
+            if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
+                continue;
+            }
+
             oMeshAnimatedCollection->onUpdate();
             oMeshAnimatedCollection->getCurrentMesh3DAnimated()->draw( &this->frameTriangles );
         }
 
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
         if (oMesh != nullptr) {
+
             oMesh->draw( &this->frameTriangles) ;
             if (SETUP->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oMesh->getPosition(), SETUP->TEXT_3D_COLOR, oMesh->getLabel());

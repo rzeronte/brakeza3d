@@ -57,7 +57,7 @@ public:
     static bool getBit(unsigned char byte, int position);
 
     static float clamp(float n, float lower, float upper);
-    static int random(int min, int max); //range : [min, max)
+    static int   random(int min, int max); //range : [min, max)
     static Vertex3D wedge(Vertex3D v1, Vertex3D v2);
     static int classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN);
 

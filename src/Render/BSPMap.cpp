@@ -663,8 +663,8 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
-                    if (enemyTemplate == NULL) continue;
+                    //NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
+                    //if (enemyTemplate == NULL) continue;
 
                     // Angle Monster
                     int angle = 0;
@@ -674,25 +674,21 @@ void BSPMap::InitializeEntities()
                     }
 
                     M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
+                    float scale = 0.0005;
 
-                    NPCEnemyBody *o = new NPCEnemyBody();
-                    o->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    o->setPosition( pos );
-                    o->setRespawnPosition( pos );
-                    o->setRotation( rotMonster );
-                    o->setRespawnRotation( rotMonster );
-                    o->linkTexturesTo( enemyTemplate );
-                    o->setRange( enemyTemplate->getRange() );
-                    o->getBillboard()->setDimensions( enemyTemplate->getBillboard()->width, enemyTemplate->getBillboard()->height );
-                    o->setSpeed( enemyTemplate->getSpeed() );
-                    o->setCadence( enemyTemplate->getCadence() );
-                    o->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
-                    o->makeRigidBody(
-                            0,
-                            Vertex3D(2, 2, 2),
-                            brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
-                     );
-                    brakeza3D->addObject3D( o, o->getLabel() );
+                    auto *enemyAnimCollection = new Mesh3DAnimatedCollection();
+
+                    enemyAnimCollection->setPosition( pos );
+                    enemyAnimCollection->setRotation( rotMonster );
+                    enemyAnimCollection->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
+                    enemyAnimCollection->addAnimation("swat_idle", "gangster/idle.fbx", scale);
+                    enemyAnimCollection->addAnimation("swat_walk", "gangster/walking.fbx", scale);
+                    enemyAnimCollection->addAnimation("swat_fire", "gangster/fire.fbx", scale);
+                    enemyAnimCollection->addAnimation("swat_injuried", "gangster/injuried.fbx", scale);
+                    enemyAnimCollection->addAnimation("swat_dead", "gangster/death.fbx", scale);
+
+                    enemyAnimCollection->setCurrentAnimation(EngineSetup::SOLDIER_WALK);
+                    brakeza3D->addObject3D( enemyAnimCollection, enemyAnimCollection->getLabel() );
                 }
 
                 // armor wildcard
@@ -707,7 +703,7 @@ void BSPMap::InitializeEntities()
                 if (!strcmp(classname, "info_player_start") ||
                     !strcmp(classname, "info_player_coop") ||
                     !strcmp(classname, "info_player_deathmatch")
-                        ) {
+                ) {
                     Object3D *o = new Object3D();
                     o->setPosition( pos );
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)" );

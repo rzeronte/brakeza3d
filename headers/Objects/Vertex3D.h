@@ -6,6 +6,7 @@
 #include <string>
 #include <LinearMath/btVector3.h>
 
+
 class Vertex3D {
 public:
     Vertex3D operator +(const Vertex3D &pm);
@@ -50,5 +51,11 @@ public:
     void consoleInfo(std::string label, bool);
 };
 
+struct AABB3D
+{
+    Vertex3D min;		// Minimum values of X,Y,Z
+    Vertex3D max;		// Maximum values of X,Y,Z
+    Vertex3D vertices[8];
+};
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

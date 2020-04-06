@@ -86,6 +86,8 @@ public:
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms);
     void drawVertexWeights();
     Uint32 processWeigthColor(int weight);
+
+    void updateBoundingBox();
 };
 
 

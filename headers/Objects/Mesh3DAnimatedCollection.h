@@ -18,7 +18,7 @@ public:
 
     Mesh3DAnimated *getCurrentMesh3DAnimated() const;
     void setCurrentAnimation(int index);
-    void addAnimation(std::string, std::string modelFilename);
+    void addAnimation(std::string, std::string modelFilename, float scale);
 
     void onUpdate();
 };

@@ -99,6 +99,8 @@ public:
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
+    bool DRAW_MESH3D_AABB = false;
+
     // Z BUFFER
     bool ENABLE_SHADOW_CASTING = false;
     bool ENABLE_LIGHTS = true;
@@ -174,7 +176,7 @@ public:
     float MOUSE_SENSITIVITY	= 0.250;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 

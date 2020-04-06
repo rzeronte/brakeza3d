@@ -5,14 +5,14 @@
 #include "../../headers/Objects/Mesh3DAnimatedCollection.h"
 #include "../../headers/Brakeza3D.h"
 
-void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string modelFilename)
+void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string modelFilename, float scale)
 {
     auto* meshObject = new Mesh3DAnimated();
     meshObject->setLabel(label);
 
     if ( meshObject->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
 
-        meshObject->setScale( 0.1);
+        meshObject->setScale( scale );
         meshObject->setPosition( *this->getPosition() );
         meshObject->setRotation( M3::getMatrixRotationForEulerAngles(180, 0, 0) );
 
