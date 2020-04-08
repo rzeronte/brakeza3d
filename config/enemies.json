@@ -15,18 +15,17 @@
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "enemies/soldier/walk",      "frames": 4, "fps": 2, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/soldier/fire",      "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/soldier/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/soldier/dead",      "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
-        { "path": "enemies/soldier/explosion", "frames": 8, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
+        { "path": "gangster/walking.fbx", "label":  "anim_walk" },
+        { "path": "gangster/fire.fbx", "label":  "anim_fire"  },
+        { "path": "gangster/injuried.fbx", "label":  "anim_injuried" },
+        { "path": "gangster/death.fbx", "label":  "anim_dead" }
       ]
     },
     {
       "name": "Troll",
       "classname": "monster_knight",
       "range": 5,
-      "damage": 10,
+      "damage": 20,
       "cadence": 0.15,
       "speed": 0.5,
       "width": 5,
@@ -37,17 +36,16 @@
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "enemies/troll/walk",      "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/troll/fire",      "frames": 3, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/troll/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/troll/dead",      "frames": 5, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
-        { "path": "enemies/troll/explosion", "frames": 8, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
+        { "path": "gangster/walking.fbx", "label":  "anim_walk" },
+        { "path": "gangster/fire.fbx", "label":  "anim_fire"  },
+        { "path": "gangster/injuried.fbx", "label":  "anim_injuried" },
+        { "path": "gangster/death.fbx", "label":  "anim_dead" }
       ]
     },
     {
       "name": "Chiclin",
       "classname": "monster_army",
-      "range": 10,
+      "range": 20,
       "damage": 10,
       "cadence": 0.25,
       "speed": 0.25,
@@ -59,17 +57,16 @@
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "enemies/chiclin/walk",      "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/chiclin/fire",      "frames": 3, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/chiclin/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/chiclin/dead",      "frames": 6, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
-        { "path": "enemies/chiclin/explosion", "frames": 6, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
+        { "path": "gangster/walking.fbx", "label":  "anim_walk" },
+        { "path": "gangster/fire.fbx", "label":  "anim_fire"  },
+        { "path": "gangster/injuried.fbx", "label":  "anim_injuried" },
+        { "path": "gangster/death.fbx", "label":  "anim_dead" }
       ]
     },
     {
       "name": "MrGreen",
       "classname": "monster_dog",
-      "range": 15,
+      "range": 20,
       "damage": 10,
       "cadence": 0.15,
       "speed": 0.5,
@@ -81,11 +78,10 @@
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "enemies/mrgreen/walk",      "frames": 4, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/mrgreen/fire",      "frames": 2, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/mrgreen/injuried",  "frames": 1, "fps": 20, "zeroDirection": false, "maxTimes": -1 },
-        { "path": "enemies/mrgreen/dead",      "frames": 8, "fps": 20, "zeroDirection": true, "maxTimes": 1 },
-        { "path": "enemies/mrgreen/explosion", "frames": 9, "fps": 20, "zeroDirection": true, "maxTimes": 1 }
+        { "path": "gangster/walking.fbx", "label":  "anim_walk" },
+        { "path": "gangster/fire.fbx", "label":  "anim_fire"  },
+        { "path": "gangster/injuried.fbx", "label":  "anim_injuried" },
+        { "path": "gangster/death.fbx", "label":  "anim_dead" }
       ]
     }
   ]

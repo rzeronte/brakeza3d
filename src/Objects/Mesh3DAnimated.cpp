@@ -17,14 +17,13 @@ void Mesh3DAnimated::onUpdate()
         runningTime = 0.000;
     }
 
-    this->modelTriangles.clear();
-
     std::vector<aiMatrix4x4> Transforms;
     this->BoneTransform(runningTime, Transforms);
 
+    this->modelTriangles.clear();
     for (int i = 0; i < this->scene->mNumMeshes; i++) {
 
-        if (this->meshVertices[i].size() == 0) continue;
+        //if (this->meshVertices[i].size() == 0) continue;
 
         // Apply bone transforms and create triangle
         for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
@@ -39,7 +38,7 @@ void Mesh3DAnimated::onUpdate()
             this->updateForBone(V2, i, Face.mIndices[1], Transforms);
             this->updateForBone(V3, i, Face.mIndices[2], Transforms);
 
-            Triangle *T = new Triangle(V1, V2, V3, this);
+            auto *T = new Triangle(V1, V2, V3, this);
             if (this->numTextures > 0) {
                 T->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
             }
@@ -47,9 +46,6 @@ void Mesh3DAnimated::onUpdate()
             this->modelTriangles.emplace_back( T );
         }
     }
-
-
-    this->updateBoundingBox();
 
     if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
         Drawable::drawAABB(&this->aabb, this);
@@ -78,6 +74,14 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
         return false;
     }
 
+    this->Init();
+    this->InitMaterials(scene, Filename);
+
+    return true;
+}
+
+bool Mesh3DAnimated::Init()
+{
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
 
@@ -85,9 +89,7 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
     this->meshVerticesBoneData.resize(scene->mNumMeshes);
 
     this->processNode(scene->mRootNode);
-    this->InitMaterials(scene, Filename);
-
-    return true;
+    this->updateBoundingBox();
 }
 
 void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
@@ -540,46 +542,4 @@ Uint32 Mesh3DAnimated::processWeigthColor(int weight)
     }
 
     return c;
-}
-
-void Mesh3DAnimated::updateBoundingBox()
-{
-    float maxX, minX, maxY, minY, maxZ, minZ;
-
-    for (int i = 0; i < this->modelTriangles.size(); i++) {
-        maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);
-        minX = std::fmin(minX, this->modelTriangles[i]->A.x);
-
-        maxY = std::fmax(maxY, this->modelTriangles[i]->A.y);
-        minY = std::fmin(minY, this->modelTriangles[i]->A.y);
-
-        maxZ = std::fmax(maxZ, this->modelTriangles[i]->A.z);
-        minZ = std::fmin(minZ, this->modelTriangles[i]->A.z);
-    }
-
-    this->aabb.max.x = maxX;
-    this->aabb.max.y = maxY;
-    this->aabb.max.z = maxZ;
-
-    this->aabb.min.x = minX;
-    this->aabb.min.y = minY;
-    this->aabb.min.z = minZ;
-
-    this->aabb.vertices[0] = this->aabb.max;
-    this->aabb.vertices[1] = this->aabb.min;
-    this->aabb.vertices[2] = Vertex3D(this->aabb.max.x, this->aabb.max.y, this->aabb.min.z);
-    this->aabb.vertices[3] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.max.z);
-    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
-    this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
-    this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
-    this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
-
-    Transforms::objectSpace(this->aabb.vertices[0], this->aabb.vertices[0], this);
-    Transforms::objectSpace(this->aabb.vertices[1], this->aabb.vertices[1], this);
-    Transforms::objectSpace(this->aabb.vertices[2], this->aabb.vertices[2], this);
-    Transforms::objectSpace(this->aabb.vertices[3], this->aabb.vertices[3], this);
-    Transforms::objectSpace(this->aabb.vertices[4], this->aabb.vertices[4], this);
-    Transforms::objectSpace(this->aabb.vertices[5], this->aabb.vertices[5], this);
-    Transforms::objectSpace(this->aabb.vertices[6], this->aabb.vertices[6], this);
-    Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
 }

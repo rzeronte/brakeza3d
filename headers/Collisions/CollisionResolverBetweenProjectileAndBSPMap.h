@@ -149,13 +149,13 @@ public:
             }
 
             // remove object3D for check in stepSimulation
-            dynamicsWorld->removeCollisionObject( (btCollisionObject *) enemyBody->getRigidBody() );
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) enemyBody->getCurrentMesh3DAnimated()->getRigidBody() );
 
             // Offset down for draw sprite
             Vertex3D pos = *enemyBody->getPosition();
             pos.y += 0.85f;
             enemyBody->setPosition(pos);
-            enemyBody->bodyEnabled = false;
+            enemyBody->getCurrentMesh3DAnimated()->setBodyEnabled( false );
 
             // Dead sound
             Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("soundEnemyDead"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);

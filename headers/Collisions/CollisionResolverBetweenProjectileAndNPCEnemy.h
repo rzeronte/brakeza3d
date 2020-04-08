@@ -60,13 +60,13 @@ public:
             }
 
             // remove object3D for check in stepSimulation
-            dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getCurrentMesh3DAnimated()->getRigidBody() );
 
             // Offset down for draw sprite
             Vertex3D pos = *getNPCEnemy()->getPosition();
             pos.y += 0.85f;
             getNPCEnemy()->setPosition(pos);
-            getNPCEnemy()->bodyEnabled = false;
+            getNPCEnemy()->getCurrentMesh3DAnimated()->setBodyEnabled( false);
 
             makeGoreDecals(-90, 0, 0);
 

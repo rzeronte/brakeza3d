@@ -349,43 +349,20 @@ void ComponentBSP::loadEnemiesJSON()
         newEnemy->setSpeed( (float) speed->valuedouble );
         newEnemy->setPosition(Vertex3D(0, 0, 0) );
         newEnemy->setRotation(M3() );
-        newEnemy->getBillboard()->setDimensions( (float) width->valuedouble, (float) height->valuedouble );
         newEnemy->setLabel( name->valuestring);
         newEnemy->setClassname( classname->valuestring );
-        newEnemy->setAnimation( defaultAnimation->valueint );
 
-
-        /*Logging::getInstance()->Log("Enemy JSON detected: name: " + std::string(name->valuestring) +
-                                    ", classname: " + classname->valuestring +
-                                    ", speed: " + std::to_string(speed->valuedouble) +
-                                    ", w: " + std::to_string(width->valuedouble) +
-                                    ", h: " + std::to_string(height->valuedouble)
-        );*/
+        float scale = 1;
 
         // animation's enemy loop
         cJSON *enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
-
         cJSON *currentEnemyAnimation;
         cJSON_ArrayForEach(currentEnemyAnimation, enemyAnimationsJSONList) {
             cJSON *path           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
-            cJSON *frames         = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "frames");
-            cJSON *fps            = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "fps");
-            cJSON *zeroDirection  = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "zeroDirection");
-            cJSON *maxTimes       = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "maxTimes");
-
-            /*Logging::getInstance()->Log("Reading JSON Enemy Animation: " + std::string(path->valuestring)
-                                        + ", maxTimes: " + std::to_string(maxTimes->valueint)
-            );*/
-
-            newEnemy->addAnimationDirectional2D(
-                    SETUP->SPRITES_FOLDER + path->valuestring,
-                    frames->valueint,
-                    fps->valueint,
-                    zeroDirection->valueint,
-                    maxTimes->valueint
-            );
+            cJSON *label           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "label");
+            newEnemy->addAnimation(label->valuestring, path->valuestring, scale);
         }
-
+        newEnemy->setAnimation( defaultAnimation->valueint );
         BUFFERS->enemyTemplates.push_back(newEnemy);
     }
 }

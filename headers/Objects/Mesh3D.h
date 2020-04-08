@@ -61,6 +61,7 @@ public:
     void setBspEntityIndex(int bspEntityIndex);
 
     bool LoadMesh(const std::string& Filename);
+    void updateBoundingBox();
 };
 
 

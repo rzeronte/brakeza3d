@@ -663,8 +663,8 @@ void BSPMap::InitializeEntities()
                 // monster wildcard
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
-                    //NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
-                    //if (enemyTemplate == NULL) continue;
+                    NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname( classname );
+                    if (enemyTemplate == NULL) continue;
 
                     // Angle Monster
                     int angle = 0;
@@ -676,18 +676,21 @@ void BSPMap::InitializeEntities()
                     M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
                     float scale = 0.0005;
 
-                    auto *enemyAnimCollection = new Mesh3DAnimatedCollection();
+                    auto *enemyAnimCollection = new NPCEnemyBody();
 
                     enemyAnimCollection->setPosition( pos );
                     enemyAnimCollection->setRotation( rotMonster );
+                    enemyAnimCollection->setRespawnRotation( rotMonster );
+                    enemyAnimCollection->setSpeed( enemyTemplate->getSpeed() );
+                    enemyAnimCollection->setRange( enemyTemplate->getRange() );
+                    enemyAnimCollection->setCadence( enemyTemplate->getCadence() );
                     enemyAnimCollection->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
                     enemyAnimCollection->addAnimation("swat_idle", "gangster/idle.fbx", scale);
                     enemyAnimCollection->addAnimation("swat_walk", "gangster/walking.fbx", scale);
                     enemyAnimCollection->addAnimation("swat_fire", "gangster/fire.fbx", scale);
                     enemyAnimCollection->addAnimation("swat_injuried", "gangster/injuried.fbx", scale);
                     enemyAnimCollection->addAnimation("swat_dead", "gangster/death.fbx", scale);
-
-                    enemyAnimCollection->setCurrentAnimation(EngineSetup::SOLDIER_WALK);
+                    enemyAnimCollection->setAnimation(EngineSetup::SOLDIER_IDLE);
                     brakeza3D->addObject3D( enemyAnimCollection, enemyAnimCollection->getLabel() );
                 }
 

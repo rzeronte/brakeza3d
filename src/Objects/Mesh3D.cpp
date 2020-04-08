@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Transforms.h"
 #include <string>
 
 Mesh3D::Mesh3D()
@@ -267,3 +268,45 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
     BSPEntityIndex = bspEntityIndex;
 }
 
+
+void Mesh3D::updateBoundingBox()
+{
+    float maxX, minX, maxY, minY, maxZ, minZ;
+
+    for (int i = 0; i < this->modelTriangles.size(); i++) {
+        maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);
+        minX = std::fmin(minX, this->modelTriangles[i]->A.x);
+
+        maxY = std::fmax(maxY, this->modelTriangles[i]->A.y);
+        minY = std::fmin(minY, this->modelTriangles[i]->A.y);
+
+        maxZ = std::fmax(maxZ, this->modelTriangles[i]->A.z);
+        minZ = std::fmin(minZ, this->modelTriangles[i]->A.z);
+    }
+
+    this->aabb.max.x = maxX;
+    this->aabb.max.y = maxY;
+    this->aabb.max.z = maxZ;
+
+    this->aabb.min.x = minX;
+    this->aabb.min.y = minY;
+    this->aabb.min.z = minZ;
+
+    this->aabb.vertices[0] = this->aabb.max;
+    this->aabb.vertices[1] = this->aabb.min;
+    this->aabb.vertices[2] = Vertex3D(this->aabb.max.x, this->aabb.max.y, this->aabb.min.z);
+    this->aabb.vertices[3] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.max.z);
+    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
+    this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
+    this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
+    this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
+
+    Transforms::objectSpace(this->aabb.vertices[0], this->aabb.vertices[0], this);
+    Transforms::objectSpace(this->aabb.vertices[1], this->aabb.vertices[1], this);
+    Transforms::objectSpace(this->aabb.vertices[2], this->aabb.vertices[2], this);
+    Transforms::objectSpace(this->aabb.vertices[3], this->aabb.vertices[3], this);
+    Transforms::objectSpace(this->aabb.vertices[4], this->aabb.vertices[4], this);
+    Transforms::objectSpace(this->aabb.vertices[5], this->aabb.vertices[5], this);
+    Transforms::objectSpace(this->aabb.vertices[6], this->aabb.vertices[6], this);
+    Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
+}

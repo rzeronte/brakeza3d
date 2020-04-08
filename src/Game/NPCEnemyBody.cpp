@@ -42,7 +42,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             this->doFollowPathfinding( raycastResult );
 
             if (!raycastResult) {
-                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
+                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_IDLE );
                 this->state = EnemyState::ENEMY_STATE_STOP;
             } else {
                 if ( raycastlength <= this->getRange() ) {
@@ -62,6 +62,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
         case EnemyState::ENEMY_STATE_STOP:
             if ( raycastResult ) {
                 this->state = EnemyState::ENEMY_STATE_FOLLOW;
+                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
             }
             break;
@@ -77,11 +78,13 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
     if (!raycastResult) return;
 
     if (this->points.size() > 0) {
-        btTransform t = this->getRigidBody()->getWorldTransform();
-        btMotionState *mMotionState = this->getRigidBody()->getMotionState();
+        btTransform t = this->getCurrentMesh3DAnimated()->getRigidBody()->getWorldTransform();
+        btMotionState *mMotionState = this->getCurrentMesh3DAnimated()->getRigidBody()->getMotionState();
 
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
+        Drawable::drawVector3D(way, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color::red());
+        
         Vertex3D p = way.getComponent().getNormalize().getScaled(this->getSpeed());
         Vertex3D pos = *this->getPosition() + p;
 
@@ -90,13 +93,14 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
         }
 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-        this->setRotation( newRot.getTranspose() );
+        this->setRotation( newRot );
+        this->setPosition( pos );
         btVector3 dest;
         pos.saveToBtVector3(&dest);
 
         t.setOrigin(dest);
         mMotionState->setWorldTransform(t);
-        this->getRigidBody()->setWorldTransform(t);
+        this->getCurrentMesh3DAnimated()->getRigidBody()->setWorldTransform(t);
     }
 }
 
@@ -147,7 +151,7 @@ void NPCEnemyBody::respawn()
     this->stamina = this->startStamina;
     this->dead    = false;
 
-    btMotionState *mMotionState = this->getRigidBody()->getMotionState();
+    btMotionState *mMotionState = this->getCurrentMesh3DAnimated()->getRigidBody()->getMotionState();
 
     btTransform trans;
     trans.setIdentity();
@@ -158,6 +162,6 @@ void NPCEnemyBody::respawn()
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 
     mMotionState->setWorldTransform( trans );
-    this->getRigidBody()->setWorldTransform( trans );
+    this->getCurrentMesh3DAnimated()->getRigidBody()->setWorldTransform( trans );
     this->setRotation( this->getRespawnRotation() );
 }

@@ -11,16 +11,17 @@
 
 class Mesh3DAnimatedCollection: public Object3D
 {
-
 public:
     int currentAnimation = -1;
     std::vector<Mesh3DAnimated*> mesh3Danimated;
+    M3 rotationFixed = M3::getMatrixRotationForEulerAngles(180, 0, 0);
 
     Mesh3DAnimated *getCurrentMesh3DAnimated() const;
-    void setCurrentAnimation(int index);
+    void setAnimation(int index);
     void addAnimation(std::string, std::string modelFilename, float scale);
 
     void onUpdate();
+    std::vector<Mesh3DAnimated *> copyFrom(Mesh3DAnimatedCollection *);
 };
 
 

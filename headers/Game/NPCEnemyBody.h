@@ -4,10 +4,11 @@
 
 
 #include "../Physics/SpriteDirectional3DBody.h"
+#include "../Objects/Mesh3DAnimatedCollection.h"
 
 typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_INJURIED, ENEMY_STATE_DIE} EnemyState;
 
-class NPCEnemyBody: public SpriteDirectional3DBody, public Enemy {
+class NPCEnemyBody: public Mesh3DAnimatedCollection, public Enemy {
 
 public:
     EnemyState state;

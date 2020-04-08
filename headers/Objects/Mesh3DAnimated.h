@@ -43,6 +43,7 @@ struct BoneInfo
 class Mesh3DAnimated : public Mesh3DBody
 {
 public:
+
     Assimp::Importer importer;
     const aiScene* scene;
     int m_NumBones = 0;
@@ -60,6 +61,7 @@ public:
     void onUpdate();
 
     bool AssimpLoad(const std::string &Filename);
+    bool Init();
 
     aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
 
@@ -86,8 +88,6 @@ public:
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms);
     void drawVertexWeights();
     Uint32 processWeigthColor(int weight);
-
-    void updateBoundingBox();
 };
 
 

@@ -153,6 +153,7 @@ void ComponentRender::getObjectsTriangles()
 
         auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
         if (oMeshAnimatedCollection != nullptr) {
+            oMeshAnimatedCollection->getCurrentMesh3DAnimated()->updateBoundingBox();
             if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
                 continue;
             }
@@ -163,6 +164,7 @@ void ComponentRender::getObjectsTriangles()
 
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
         if (oMesh != nullptr) {
+
 
             oMesh->draw( &this->frameTriangles) ;
             if (SETUP->TEXT_ON_OBJECT3D) {

@@ -33,10 +33,11 @@ void Mesh3DAnimatedCollection::onUpdate()
     if (this->currentAnimation < 0) return;
 
     this->getCurrentMesh3DAnimated()->setPosition( *this->getPosition() );
+    this->getCurrentMesh3DAnimated()->setRotation( this->getRotation() * rotationFixed);
     this->getCurrentMesh3DAnimated()->onUpdate();
 }
 
-void Mesh3DAnimatedCollection::setCurrentAnimation(int index)
+void Mesh3DAnimatedCollection::setAnimation(int index)
 {
     if (this->currentAnimation >= 0) {
         this->mesh3Danimated[currentAnimation]->setBodyEnabled(false );
@@ -49,4 +50,14 @@ void Mesh3DAnimatedCollection::setCurrentAnimation(int index)
 
 Mesh3DAnimated *Mesh3DAnimatedCollection::getCurrentMesh3DAnimated() const {
     return this->mesh3Danimated[currentAnimation];
+}
+
+std::vector<Mesh3DAnimated *> Mesh3DAnimatedCollection::copyFrom(Mesh3DAnimatedCollection *from)
+{
+    for (int i = 0; i < from->mesh3Danimated.size(); i++) {
+        Mesh3DAnimated *copy = new Mesh3DAnimated();
+        copy->scene = from->mesh3Danimated[i]->scene;
+        copy->Init();
+        this->mesh3Danimated.push_back( copy );
+    }
 }
