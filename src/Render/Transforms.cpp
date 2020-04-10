@@ -10,6 +10,8 @@ void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
     dst = o->getRotation() * dst;
     dst = dst + *o->getPosition();
 
+    dst = dst + o->drawOffset;
+
     dst.u = src.u;
     dst.v = src.v;
 }
@@ -80,7 +82,9 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 {
     Vertex3D T;
 
-    T = V - *o->getPosition();
+    T = V - o->drawOffset;
+
+    T = T - *o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
     T.x/=o->scale;
