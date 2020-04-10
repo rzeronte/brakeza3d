@@ -62,6 +62,8 @@ public:
 
     bool LoadMesh(const std::string& Filename);
     void updateBoundingBox();
+
+    bool isAABBVisibleInBSP(Vertex3D &from);
 };
 
 

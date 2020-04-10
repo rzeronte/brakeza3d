@@ -9,7 +9,7 @@
 #include "../Physics/Mesh3DBody.h"
 #include <cstring>
 
-#define NUM_BONES_PER_VERTEX 14
+#define NUM_BONES_PER_VERTEX 6
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
@@ -40,7 +40,7 @@ struct BoneInfo
     aiMatrix4x4 FinalTransformation;
 };
 
-class Mesh3DAnimated : public Mesh3DBody
+class Mesh3DAnimated : public Mesh3D
 {
 public:
 

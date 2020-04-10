@@ -522,8 +522,8 @@ void Drawable::waterShader(int type)
 
 void Drawable::drawAABB(AABB3D *aabb, Object3D *o)
 {
-    Drawable::drawVertex(aabb->vertices[0], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[1], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Drawable::drawVertex(aabb->vertices[0], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red() );
+    Drawable::drawVertex(aabb->vertices[1], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::green() );
     Drawable::drawVertex(aabb->vertices[2], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
     Drawable::drawVertex(aabb->vertices[3], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
     Drawable::drawVertex(aabb->vertices[4], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );

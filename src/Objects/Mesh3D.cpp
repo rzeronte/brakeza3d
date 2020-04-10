@@ -4,6 +4,7 @@
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Transforms.h"
+#include "../../headers/Brakeza3D.h"
 #include <string>
 
 Mesh3D::Mesh3D()
@@ -235,8 +236,7 @@ void Mesh3D::draw(std::vector<Triangle*> *frameTriangles)
     for (int i = 0; i < this->modelTriangles.size() ; i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
-        Triangle *t = this->modelTriangles[i];
-        frameTriangles->emplace_back( t );
+        frameTriangles->emplace_back( this->modelTriangles[i] );
     }
 }
 
@@ -309,4 +309,22 @@ void Mesh3D::updateBoundingBox()
     Transforms::objectSpace(this->aabb.vertices[5], this->aabb.vertices[5], this);
     Transforms::objectSpace(this->aabb.vertices[6], this->aabb.vertices[6], this);
     Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
+}
+
+bool Mesh3D::isAABBVisibleInBSP( Vertex3D &from )
+{
+    for (int i = 0; i < 8; i++) {
+        bool rayCastResult = Brakeza3D::get()->getComponentsManager()
+                ->getComponentBSP()
+                ->getBSP()
+                ->recastWrapper->
+                rayCasting(from, aabb.vertices[ i ] )
+        ;
+
+        if (rayCastResult) {
+            return true;
+        }
+    }
+
+    return false;
 }

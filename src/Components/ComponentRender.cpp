@@ -154,8 +154,18 @@ void ComponentRender::getObjectsTriangles()
         auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
         if (oMeshAnimatedCollection != nullptr) {
             oMeshAnimatedCollection->getCurrentMesh3DAnimated()->updateBoundingBox();
+
+            Vertex3D p = *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
             if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
                 continue;
+            }
+
+            /*if (!oMeshAnimatedCollection->getCurrentMesh3DAnimated()->isAABBVisibleInBSP( p )) {
+                continue;
+            }*/
+
+            if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+                Drawable::drawAABB( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb, oMeshAnimatedCollection );
             }
 
             oMeshAnimatedCollection->onUpdate();
@@ -164,7 +174,6 @@ void ComponentRender::getObjectsTriangles()
 
         auto *oMesh = dynamic_cast<Mesh3D*> (object);
         if (oMesh != nullptr) {
-
 
             oMesh->draw( &this->frameTriangles) ;
             if (SETUP->TEXT_ON_OBJECT3D) {

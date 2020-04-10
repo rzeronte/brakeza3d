@@ -8,7 +8,7 @@
 
 typedef enum {ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_INJURIED, ENEMY_STATE_DIE} EnemyState;
 
-class NPCEnemyBody: public Mesh3DAnimatedCollection, public Enemy {
+class NPCEnemyBody: public Mesh3DAnimatedCollection, public Enemy, public Body {
 
 public:
     EnemyState state;
@@ -31,7 +31,8 @@ public:
     void respawn();
 
     void updateCounters();
-    void makeDamage();
+    btRigidBody *makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world);
+
 };
 
 

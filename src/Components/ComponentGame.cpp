@@ -183,6 +183,7 @@ void ComponentGame::resolveCollisions()
         }
 
         if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
+            Logging::getInstance()->Log("entro");
             auto *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(
                     collision->contactManifold,
                     collision->objA,

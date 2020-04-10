@@ -3,6 +3,7 @@
 //
 
 #include "../../headers/Physics/Body.h"
+#include "../../headers/Objects/Vertex3D.h"
 
 
 Body::Body() {
@@ -17,3 +18,4 @@ void Body::setBodyEnabled(bool state)
 {
     this->bodyEnabled = state;
 }
+

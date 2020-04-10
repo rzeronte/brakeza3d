@@ -475,7 +475,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                     body->modelTriangles.push_back( t );
                 }
             }
-
+            body->updateBoundingBox();
             body->makeRigidBody(0, this->camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
             Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
@@ -676,22 +676,28 @@ void BSPMap::InitializeEntities()
                     M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
                     float scale = 0.0005;
 
-                    auto *enemyAnimCollection = new NPCEnemyBody();
-
-                    enemyAnimCollection->setPosition( pos );
-                    enemyAnimCollection->setRotation( rotMonster );
-                    enemyAnimCollection->setRespawnRotation( rotMonster );
-                    enemyAnimCollection->setSpeed( enemyTemplate->getSpeed() );
-                    enemyAnimCollection->setRange( enemyTemplate->getRange() );
-                    enemyAnimCollection->setCadence( enemyTemplate->getCadence() );
-                    enemyAnimCollection->setLabel("BSPEntity_" +  std::to_string(i) + " (monster)");
-                    enemyAnimCollection->addAnimation("swat_idle", "gangster/idle.fbx", scale);
-                    enemyAnimCollection->addAnimation("swat_walk", "gangster/walking.fbx", scale);
-                    enemyAnimCollection->addAnimation("swat_fire", "gangster/fire.fbx", scale);
-                    enemyAnimCollection->addAnimation("swat_injuried", "gangster/injuried.fbx", scale);
-                    enemyAnimCollection->addAnimation("swat_dead", "gangster/death.fbx", scale);
-                    enemyAnimCollection->setAnimation(EngineSetup::SOLDIER_IDLE);
-                    brakeza3D->addObject3D( enemyAnimCollection, enemyAnimCollection->getLabel() );
+                    auto *enemyBody = new NPCEnemyBody();
+                    enemyBody->setPosition( pos );
+                    enemyBody->setRotation( rotMonster );
+                    enemyBody->setRespawnRotation( rotMonster );
+                    enemyBody->setSpeed( enemyTemplate->getSpeed() );
+                    enemyBody->setRange( enemyTemplate->getRange() );
+                    enemyBody->setCadence( enemyTemplate->getCadence() );
+                    enemyBody->setLabel("BSPEntity_" + std::to_string(i) + " (monster)");
+                    enemyBody->addAnimation("swat_idle", "gangster/idle.fbx", scale);
+                    enemyBody->addAnimation("swat_walk", "gangster/walking.fbx", scale);
+                    enemyBody->addAnimation("swat_fire", "gangster/fire.fbx", scale);
+                    enemyBody->addAnimation("swat_injuried", "gangster/injuried.fbx", scale);
+                    enemyBody->addAnimation("swat_dead", "gangster/death.fbx", scale);
+                    enemyBody->setAnimation(EngineSetup::SOLDIER_IDLE);
+                    Vertex3D size = Vertex3D(2, 4, 2);
+                    enemyBody->makeSimpleRigidBody(
+                            0,
+                            pos,
+                            size,
+                            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
+                    );
+                    brakeza3D->addObject3D(enemyBody, enemyBody->getLabel() );
                 }
 
                 // armor wildcard

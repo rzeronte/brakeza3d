@@ -15,14 +15,6 @@ void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string model
         meshObject->setScale( scale );
         meshObject->setPosition( *this->getPosition() );
         meshObject->setRotation( M3::getMatrixRotationForEulerAngles(180, 0, 0) );
-
-        meshObject->makeSimpleRigidBody(
-                0,
-                Vertex3D(1, 1, 1),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
-        );
-
-        meshObject->setBodyEnabled(false);
     }
 
     mesh3Danimated.push_back( meshObject );
@@ -39,13 +31,7 @@ void Mesh3DAnimatedCollection::onUpdate()
 
 void Mesh3DAnimatedCollection::setAnimation(int index)
 {
-    if (this->currentAnimation >= 0) {
-        this->mesh3Danimated[currentAnimation]->setBodyEnabled(false );
-    }
-
     this->currentAnimation = index;
-
-    this->mesh3Danimated[currentAnimation]->setBodyEnabled(true );
 }
 
 Mesh3DAnimated *Mesh3DAnimatedCollection::getCurrentMesh3DAnimated() const {

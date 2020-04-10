@@ -95,6 +95,10 @@ void Player::newGame()
 void Player::respawn()
 {
     ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
+    if ( Tools::isValidVector( *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() )) {
+        Logging::getInstance()->Log("error position start");
+    }
+
     ComponentsManager::get()->getComponentInput()->setEnabled( true );
     ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::STAND);
     setDead(false);

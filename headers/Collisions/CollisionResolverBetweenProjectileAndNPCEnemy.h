@@ -37,8 +37,6 @@ public:
             Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndNPCEnemy");
         }
 
-        Enemy *oSpriteDirectionalEnemyB = dynamic_cast<Enemy*> (getNPCEnemy());
-
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());
 
         if (getNPCEnemy()->stamina <= 0) {
@@ -47,8 +45,7 @@ public:
             getNPCEnemy()->state = EnemyState::ENEMY_STATE_DIE;
 
             // Set animation NPC to Dead
-            SpriteDirectional3D *sprite = dynamic_cast<SpriteDirectional3D*> (getNPCEnemy());
-            sprite->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
+            getNPCEnemy()->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
 
             bool explosionBody = getNPCEnemy()->isTakeHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
             if (explosionBody) {
@@ -60,13 +57,13 @@ public:
             }
 
             // remove object3D for check in stepSimulation
-            dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getCurrentMesh3DAnimated()->getRigidBody() );
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
 
             // Offset down for draw sprite
             Vertex3D pos = *getNPCEnemy()->getPosition();
             pos.y += 0.85f;
             getNPCEnemy()->setPosition(pos);
-            getNPCEnemy()->getCurrentMesh3DAnimated()->setBodyEnabled( false);
+            getNPCEnemy()->setBodyEnabled( false);
 
             makeGoreDecals(-90, 0, 0);
 

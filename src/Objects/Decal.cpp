@@ -54,13 +54,15 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
     int out = 0;
 
     for (int i = 0; i < triangles.size() ; i++ ) {
+        if (!triangles[i]->isBSP) continue;
+
         if (triangles[i]->parent->isDecal())  {
             alreadyDecal++;
             continue;
         }
 
-        SpriteDirectional3D *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (triangles[i]->parent);
-        Sprite3D *sprite = dynamic_cast<Sprite3D*> (triangles[i]->parent);
+        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (triangles[i]->parent);
+        auto *sprite = dynamic_cast<Sprite3D*> (triangles[i]->parent);
 
         // Decals ignoran sprites
         if (spriteDirectional != NULL || sprite != NULL) {
