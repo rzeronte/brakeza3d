@@ -674,27 +674,28 @@ void BSPMap::InitializeEntities()
                     }
 
                     M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90-angle, 0);
-                    float scale = 0.0005;
 
                     auto *enemyBody = new NPCEnemyBody();
+                    enemyBody->setScale( enemyTemplate->getScale() );
                     enemyBody->setPosition( pos );
                     enemyBody->setRotation( rotMonster );
                     enemyBody->setRespawnRotation( rotMonster );
+                    enemyBody->setDrawOffset( enemyTemplate->getDrawOffset() );
+                    enemyBody->setBoxShapeSize( enemyTemplate->getBoxShapeSize() );
                     enemyBody->setSpeed( enemyTemplate->getSpeed() );
                     enemyBody->setRange( enemyTemplate->getRange() );
                     enemyBody->setCadence( enemyTemplate->getCadence() );
                     enemyBody->setLabel("BSPEntity_" + std::to_string(i) + " (monster)");
-                    enemyBody->addAnimation("swat_idle", "gangster/idle.fbx", scale);
-                    enemyBody->addAnimation("swat_walk", "gangster/walking.fbx", scale);
-                    enemyBody->addAnimation("swat_fire", "gangster/fire.fbx", scale);
-                    enemyBody->addAnimation("swat_injuried", "gangster/injuried.fbx", scale);
-                    enemyBody->addAnimation("swat_dead", "gangster/death.fbx", scale);
+                    enemyBody->addAnimation("swat_idle", "gangster/idle.fbx", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_walk", "gangster/walking.fbx", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_fire", "gangster/fire.fbx", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_injuried", "gangster/injuried.fbx", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_dead", "gangster/death.fbx", enemyTemplate->getScale(), true );
                     enemyBody->setAnimation(EngineSetup::SOLDIER_IDLE);
-                    Vertex3D size = Vertex3D(2, 4, 2);
                     enemyBody->makeSimpleRigidBody(
                             0,
-                            pos,
-                            size,
+                            pos - enemyBody->getDrawOffset(),
+                            enemyBody->getBoxShapeSize(),
                             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
                     );
                     brakeza3D->addObject3D(enemyBody, enemyBody->getLabel() );

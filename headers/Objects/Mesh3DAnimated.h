@@ -51,8 +51,9 @@ public:
     std::vector< std::vector<VertexBoneData> > meshVerticesBoneData;
     std::vector< std::vector<Vertex3D> > meshVertices;
 
-    int   indexCurrentAnimation = 0;
+    int indexCurrentAnimation = 0;
     float runningTime = 0;
+    bool remove_at_end_animation = false;
 
     std::map<std::string,uint> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo> boneInfo;
@@ -88,6 +89,9 @@ public:
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms);
     void drawVertexWeights();
     Uint32 processWeigthColor(int weight);
+
+    bool isRemoveAtEndAnimation() const;
+    void setRemoveAtEndAnimation(bool removeAtEnds);
 };
 
 

@@ -83,8 +83,6 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
 
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
-        Drawable::drawVector3D(way, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color::red());
-        
         Vertex3D p = way.getComponent().getNormalize().getScaled(this->getSpeed());
         Vertex3D pos = *this->getPosition() + p;
 

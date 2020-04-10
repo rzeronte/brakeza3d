@@ -3,18 +3,19 @@
 //
 
 #include "../../headers/Objects/Mesh3DAnimatedCollection.h"
-#include "../../headers/Brakeza3D.h"
 
-void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string modelFilename, float scale)
+void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string modelFilename, float scale, bool remove_at_end)
 {
     auto* meshObject = new Mesh3DAnimated();
     meshObject->setLabel(label);
+    meshObject->setParent( this );
 
     if ( meshObject->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
-
         meshObject->setScale( scale );
+        meshObject->setDrawOffset( this-> drawOffset );
         meshObject->setPosition( *this->getPosition() );
-        meshObject->setRotation( M3::getMatrixRotationForEulerAngles(180, 0, 0) );
+        meshObject->setRotation( this->rotationFixed );
+        meshObject->setRemoveAtEndAnimation( remove_at_end );
     }
 
     mesh3Danimated.push_back( meshObject );

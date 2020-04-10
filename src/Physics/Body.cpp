@@ -19,3 +19,12 @@ void Body::setBodyEnabled(bool state)
     this->bodyEnabled = state;
 }
 
+void Body::setBoxShapeSize(Vertex3D size)
+{
+    this->boxShapeSize = size;
+}
+
+Vertex3D Body::getBoxShapeSize() {
+    return this->boxShapeSize;
+}
+

@@ -11,8 +11,16 @@ class Object3D {
     M3 rotation;
 
 public:
+    Object3D * parent;
+
+    Object3D *getParent() const;
+
+    void setParent(Object3D *parent);
+
     bool  enabled;
     bool  removed;
+
+    Vertex3D drawOffset = Vertex3D::zero();
 
     float scale;
 
@@ -52,6 +60,10 @@ public:
 
     bool isDecal() const;
     void setDecal(bool decal);
+
+    void setDrawOffset(Vertex3D v);
+    Vertex3D getDrawOffset();
+
 
 };
 

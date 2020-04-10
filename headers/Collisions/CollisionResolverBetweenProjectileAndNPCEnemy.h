@@ -43,9 +43,7 @@ public:
             ComponentsManager::get()->getComponentGame()->kills++;
             getNPCEnemy()->setDead( true );
             getNPCEnemy()->state = EnemyState::ENEMY_STATE_DIE;
-
-            // Set animation NPC to Dead
-            getNPCEnemy()->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_DEAD);
+            getNPCEnemy()->setAnimation(EngineSetup::SpriteSoldierAnimations::SOLDIER_DEAD);
 
             bool explosionBody = getNPCEnemy()->isTakeHeavyDamage(weaponManager->getCurrentWeaponType()->getDamage());
             if (explosionBody) {
@@ -59,10 +57,6 @@ public:
             // remove object3D for check in stepSimulation
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) getNPCEnemy()->getRigidBody() );
 
-            // Offset down for draw sprite
-            Vertex3D pos = *getNPCEnemy()->getPosition();
-            pos.y += 0.85f;
-            getNPCEnemy()->setPosition(pos);
             getNPCEnemy()->setBodyEnabled( false);
 
             makeGoreDecals(-90, 0, 0);

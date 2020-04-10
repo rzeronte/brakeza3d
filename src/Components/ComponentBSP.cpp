@@ -334,13 +334,10 @@ void ComponentBSP::loadEnemiesJSON()
         cJSON *damage           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "damage");
         cJSON *cadence          = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
         cJSON *speed            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
-        cJSON *width            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "width");
-        cJSON *height           = cJSON_GetObjectItemCaseSensitive(currentEnemy, "height");
-        cJSON *projectileW      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_width");
-        cJSON *projectileH      = cJSON_GetObjectItemCaseSensitive(currentEnemy, "projectile_height");
         cJSON *soundFire        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
         cJSON *soundMark        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
         cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
+        cJSON *scale            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "scale_mesh");
 
         NPCEnemyBody *newEnemy = new NPCEnemyBody();
         newEnemy->setDamage( (float) damage->valuedouble );
@@ -351,16 +348,37 @@ void ComponentBSP::loadEnemiesJSON()
         newEnemy->setRotation(M3() );
         newEnemy->setLabel( name->valuestring);
         newEnemy->setClassname( classname->valuestring );
+        newEnemy->setScale( scale->valuedouble );
 
-        float scale = 1;
+        cJSON *draw_offset   = cJSON_GetObjectItemCaseSensitive(currentEnemy, "draw_offset" );
+        cJSON *draw_offset_x = cJSON_GetObjectItemCaseSensitive(draw_offset, "x" );
+        cJSON *draw_offset_y = cJSON_GetObjectItemCaseSensitive(draw_offset, "y" );
+        cJSON *draw_offset_z = cJSON_GetObjectItemCaseSensitive(draw_offset, "z" );
+        newEnemy->setDrawOffset( Vertex3D(
+                draw_offset_x->valuedouble,
+                draw_offset_y->valuedouble,
+                draw_offset_z->valuedouble
+        ));
+
+        cJSON *box_shape_size   = cJSON_GetObjectItemCaseSensitive(currentEnemy, "box_shape_size");
+        cJSON *box_shape_size_x = cJSON_GetObjectItemCaseSensitive(box_shape_size, "x" );
+        cJSON *box_shape_size_y = cJSON_GetObjectItemCaseSensitive(box_shape_size, "y" );
+        cJSON *box_shape_size_z = cJSON_GetObjectItemCaseSensitive(box_shape_size, "z" );
+        newEnemy->setBoxShapeSize( Vertex3D(
+                box_shape_size_x->valuedouble,
+                box_shape_size_y->valuedouble,
+                box_shape_size_z->valuedouble
+        ));
 
         // animation's enemy loop
         cJSON *enemyAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentEnemy, "animations" );
         cJSON *currentEnemyAnimation;
         cJSON_ArrayForEach(currentEnemyAnimation, enemyAnimationsJSONList) {
             cJSON *path           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "path");
-            cJSON *label           = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "label");
-            newEnemy->addAnimation(label->valuestring, path->valuestring, scale);
+            cJSON *label          = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "label");
+            cJSON *remove_at_end  = cJSON_GetObjectItemCaseSensitive(currentEnemyAnimation, "remove_at_end");
+
+            newEnemy->addAnimation( label->valuestring, path->valuestring, newEnemy->getScale(), remove_at_end->valueint );
         }
         newEnemy->setAnimation( defaultAnimation->valueint );
         BUFFERS->enemyTemplates.push_back(newEnemy);

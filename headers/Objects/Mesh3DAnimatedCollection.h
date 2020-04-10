@@ -18,7 +18,7 @@ public:
 
     Mesh3DAnimated *getCurrentMesh3DAnimated() const;
     void setAnimation(int index);
-    void addAnimation(std::string, std::string modelFilename, float scale);
+    void addAnimation(std::string, std::string modelFilename, float scale, bool remove_at_end);
 
     void onUpdate();
     std::vector<Mesh3DAnimated *> copyFrom(Mesh3DAnimatedCollection *);

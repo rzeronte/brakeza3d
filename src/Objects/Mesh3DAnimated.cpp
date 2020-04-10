@@ -13,7 +13,12 @@ void Mesh3DAnimated::onUpdate()
 
     // Update running time
     this->runningTime += Brakeza3D::get()->getDeltaTime();
-    if (runningTime >= this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration) {
+    float maxTime = this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration / scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond;
+    if ( runningTime >= maxTime )  {
+        if ( this->isRemoveAtEndAnimation() ) {
+            this->getParent()->setRemoved( true );
+            return;
+        }
         runningTime = 0.000;
     }
 
@@ -542,4 +547,12 @@ Uint32 Mesh3DAnimated::processWeigthColor(int weight)
     }
 
     return c;
+}
+
+bool Mesh3DAnimated::isRemoveAtEndAnimation() const {
+    return remove_at_end_animation;
+}
+
+void Mesh3DAnimated::setRemoveAtEndAnimation(bool removeAtEnds) {
+    remove_at_end_animation = removeAtEnds;
 }
