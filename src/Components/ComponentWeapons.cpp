@@ -4,16 +4,29 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"
+#include "../../headers/Brakeza3D.h"
 
 ComponentWeapons::ComponentWeapons()
 {
     this->currentWeaponIndex = SETUP->WeaponsTypes::PISTOL;
 }
 
-
 void ComponentWeapons::onStart()
 {
     std::cout << "ComponentWeapons onStart" << std::endl;
+
+    this->handsCollection = new Mesh3DAnimatedCollection();
+    handsCollection->setFollowCamera(true );
+    handsCollection->setScale(0.05);
+    handsCollection->setPosition(Vertex3D(0, 0, 0));
+    handsCollection->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
+    handsCollection->setLabel("handsCollection");
+    handsCollection->addAnimation("hands_idle", "hands.fbx", 0.05, false);
+    handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
+    handsCollection->setAnimation(0);
+    Brakeza3D::get()->addObject3D(handsCollection, handsCollection->getLabel());
+
+    this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
 }
 
 void ComponentWeapons::preUpdate() {
@@ -83,16 +96,16 @@ AmmoType *ComponentWeapons::getAmmoTypeByClassname(std::string classname)
 
 void ComponentWeapons::onUpdateWeapon(Camera3D *cam, SDL_Surface *dst)
 {
-    this->getCurrentWeaponType()->onUpdate( cam );
+    //this->getCurrentWeaponType()->onUpdate( cam );
 
-    this->headBob(cam->velocity);
+    //this->headBob(cam->velocity);
 
-    if (getCurrentWeaponType()->isSniperEnabled()) {
+    /*if (getCurrentWeaponType()->isSniperEnabled()) {
         SDL_BlitSurface(getCurrentWeaponType()->sniperHUD, NULL, dst, NULL);
         return;
-    }
+    }*/
 
-    this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
+    //this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
 }
 
 void ComponentWeapons::headBob(Vector3D velocity)

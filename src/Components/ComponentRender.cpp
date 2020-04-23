@@ -5,12 +5,9 @@
 #include "../../headers/Components/ComponentRender.h"
 #include "../../headers/Components/ComponentWindow.h"
 #include "../../headers/Objects/Decal.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Objects/Mesh3DAnimated.h"
-#include "../../headers/Objects/Mesh3DAnimatedCollection.h"
 
 ComponentRender::ComponentRender()
 {
@@ -31,7 +28,6 @@ void ComponentRender::onUpdate()
 {
     this->getBSPTriangles();
     this->getObjectsTriangles();
-
     this->hiddenSurfaceRemoval();
 
     if (SETUP->BASED_TILE_RENDER) {
@@ -116,6 +112,11 @@ void ComponentRender::getObjectsTriangles()
             continue;
         }
 
+        if (object->isFollowCamera()) {
+            object->setPosition( *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+            object->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
+        }
+
         // Sprite Directional 3D
         auto *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
         if (oSpriteDirectional != nullptr) {
@@ -151,22 +152,27 @@ void ComponentRender::getObjectsTriangles()
             continue;
         }
 
+        auto *oMeshAnimated = dynamic_cast<Mesh3DAnimated*> (object);
+        if (oMeshAnimated != nullptr) {
+            oMeshAnimated->onUpdate();
+        }
+
         auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
         if (oMeshAnimatedCollection != nullptr) {
             oMeshAnimatedCollection->getCurrentMesh3DAnimated()->updateBoundingBox();
 
             Vertex3D p = *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-            if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
-                continue;
-            }
-
-            /*if (!oMeshAnimatedCollection->getCurrentMesh3DAnimated()->isAABBVisibleInBSP( p )) {
+            /*if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
                 continue;
             }*/
 
-            if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+            //if (!oMeshAnimatedCollection->getCurrentMesh3DAnimated()->isAABBVisibleInBSP( p )) {
+                //continue;
+            //}
+
+            /*if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
                 Drawable::drawAABB( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb, oMeshAnimatedCollection );
-            }
+            }*/
 
             oMeshAnimatedCollection->onUpdate();
             oMeshAnimatedCollection->getCurrentMesh3DAnimated()->draw( &this->frameTriangles );
@@ -193,6 +199,11 @@ void ComponentRender::getObjectsTriangles()
 
 void ComponentRender::hiddenSurfaceRemoval()
 {
+    for (int i ; i < clippedTriangles.size(); i++) {
+        delete clippedTriangles[i];
+    }
+
+    clippedTriangles.clear();
     visibleTriangles.clear();
 
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
@@ -208,16 +219,17 @@ void ComponentRender::hiddenSurfaceRemoval()
         }
 
         // Clipping (needs objectSpace)
-        if (frameTriangles[i]->testForClipping( cam->frustum->planes,SETUP->LEFT_PLANE,SETUP->BOTTOM_PLANE )) {
+        if (frameTriangles[i]->testForClipping( cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE )) {
             frameTriangles[i]->clipping(
                     cam,
                     cam->frustum->planes,
                     SETUP->LEFT_PLANE,
                     SETUP->BOTTOM_PLANE,
                     frameTriangles[i]->parent,
-                    visibleTriangles,
+                    clippedTriangles,
                     frameTriangles[i]->isBSP
             );
+
             continue;
         }
 
@@ -247,6 +259,12 @@ void ComponentRender::hiddenSurfaceRemoval()
         this->visibleTriangles.emplace_back(frameTriangles[i]);
     }
 
+    visibleTriangles.insert(
+            visibleTriangles.end(),
+            std::make_move_iterator(clippedTriangles.begin()),
+            std::make_move_iterator(clippedTriangles.end())
+    );
+
     if (SETUP->DEBUG_RENDER_INFO) {
         Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) + ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()));
     }
@@ -262,15 +280,14 @@ void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTria
 
     for (int i = 0; i < visibleTriangles.size(); i++) {
         int tileStartX = std::max((float) (visibleTriangles[i]->minX / this->sizeTileWidth), 0.0f);
-        int tileEndX = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth), (float) this->tilesWidth - 1);
+        int tileEndX   = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth), (float) this->tilesWidth - 1);
 
         int tileStartY = std::max((float) (visibleTriangles[i]->minY / this->sizeTileHeight), 0.0f);
-        int tileEndY = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight), (float) this->tilesHeight - 1);
+        int tileEndY   = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight), (float) this->tilesHeight - 1);
 
         for (int y = tileStartY; y <= tileEndY; y++) {
             for (int x = tileStartX; x <= tileEndX; x++) {
-                int tileOffset = y * tilesWidth + x;
-                this->tiles[tileOffset].triangleIds.push_back( i );
+                this->tiles[ y * tilesWidth + x ].triangleIds.emplace_back( i );
             }
         }
     }
@@ -427,6 +444,8 @@ void ComponentRender::triangleRasterizer(Triangle *t)
         w1_row += B20;
         w2_row += B01;
     }
+
+    delete fragment;
 }
 
 void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment)
@@ -629,8 +648,8 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTr
                 tr,
                 t->start_x,
                 t->start_y,
-                t->start_x+sizeTileWidth,
-                t->start_y+sizeTileHeight
+                t->start_x + sizeTileWidth,
+                t->start_y + sizeTileHeight
         );
     }
 }
@@ -654,7 +673,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    Fragment *fragment = new Fragment();
+    Fragment fragment;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -665,24 +684,24 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
 
             if ((w0 | w1 | w2) > 0) {
 
-                fragment->alpha = (int) w0 * t->reciprocalFullArea;
-                fragment->theta = (int) w1 * t->reciprocalFullArea;
-                fragment->gamma = 1 - fragment->alpha - fragment->theta;
+                fragment.alpha = (int) w0 * t->reciprocalFullArea;
+                fragment.theta = (int) w1 * t->reciprocalFullArea;
+                fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
-                fragment->depth = (fragment->alpha * t->An.z) + (fragment->theta * t->Bn.z) + (fragment->gamma * t->Cn.z);
+                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
                 const int bufferIndex = ( y * SETUP->screenWidth ) + x;
 
-                if ( fragment->depth < BUFFERS->getDepthBuffer( bufferIndex )) {
-                    fragment->affineUV = 1 / ((fragment->alpha * t->persp_correct_Az) + (fragment->theta * t->persp_correct_Bz) + (fragment->gamma * t->persp_correct_Cz) );
-                    fragment->texU   = ((fragment->alpha * t->tex_u1_Ac_z) + (fragment->theta * t->tex_u2_Bc_z) + (fragment->gamma * t->tex_u3_Cc_z) ) * fragment->affineUV;
-                    fragment->texV   = ((fragment->alpha * t->tex_v1_Ac_z) + (fragment->theta * t->tex_v2_Bc_z) + (fragment->gamma * t->tex_v3_Cc_z) ) * fragment->affineUV;
+                if ( fragment.depth < BUFFERS->getDepthBuffer( bufferIndex )) {
+                    fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) + (fragment.theta * t->persp_correct_Bz) + (fragment.gamma * t->persp_correct_Cz) );
+                    fragment.texU   = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
+                    fragment.texV   = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
 
-                    fragment->lightU = ((fragment->alpha * t->light_u1_Ac_z) + (fragment->theta * t->light_u2_Bc_z) + (fragment->gamma * t->light_u3_Cc_z) ) * fragment->affineUV;
-                    fragment->lightV = ((fragment->alpha * t->light_v1_Ac_z) + (fragment->theta * t->light_v2_Bc_z) + (fragment->gamma * t->light_v3_Cc_z) ) * fragment->affineUV;
+                    fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
+                    fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
 
                     if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
-                        processPixel( t, bufferIndex, x, y, fragment);
+                        processPixel( t, bufferIndex, x, y, &fragment);
                     }
                 }
             }

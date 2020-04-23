@@ -277,7 +277,8 @@ public:
     };
 
     enum WeaponsActions {
-        WALKING = 0,
+        IDLE = 0,
+        WALKING = 1,
     };
 
     enum CollisionResolverTypes {

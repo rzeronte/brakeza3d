@@ -66,5 +66,6 @@ void BillboardBody::updateTrianglesCoordinatesAndTexture(Camera3D *cam)
     Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
     this->updateUnconstrainedQuad(this, up, right );
+
     this->reassignTexture();
 }

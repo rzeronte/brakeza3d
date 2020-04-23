@@ -258,6 +258,8 @@ void ComponentGameInput::handleFire(SDL_Event *event)
             return;
         }
 
+        player->shoot();
+
         // First keydown
         if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {
             if (weaponType->isKeyDownHandle()) {
@@ -266,28 +268,8 @@ void ComponentGameInput::handleFire(SDL_Event *event)
                 }
                 int keyDownAnimationStatus = weaponType->getKeyDownAnimationStatus();
 
-                if (weaponType->animations[ keyDownAnimationStatus ]->isLooping()) {
-                    if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
-                        Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
-                        if (SETUP->LOG_WEAPONS_SYSTEM)  {
-                            Logging::getInstance()->Log("Init sound looping mode in first");
-                        }
-                    }
-                } else {
-                    Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                    if (SETUP->LOG_WEAPONS_SYSTEM)  {
-                        Logging::getInstance()->Log("Init sound fire phase in first ");
-                    }
-                    Tools::playMixedSound( weaponType->fireSounds[ keyDownAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON, 0);
-                }
-
-                if (weaponType->animations[ keyDownAnimationStatus ]->isProjectile()) {
-                    player->shoot();
-                }
-
                 weaponType->setWeaponAnimation( keyDownAnimationStatus );
                 weaponType->setFiring( true );
-                weaponType->fireCounters[ keyDownAnimationStatus ].setEnabled( true );
                 weaponType->status = keyDownAnimationStatus;
             }
         }
@@ -305,14 +287,8 @@ void ComponentGameInput::handleFire(SDL_Event *event)
                 int keyUpAnimationStatus = weaponType->getKeyUpAnimationStatus();
 
                 Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                Tools::playMixedSound( weaponType->fireSounds[ keyUpAnimationStatus ], EngineSetup::SoundChannels::SND_WEAPON, 0);
-
-                if (weaponType->animations[ keyUpAnimationStatus ]->isProjectile()) {
-                    player->shoot();
-                }
 
                 weaponType->setWeaponAnimation( keyUpAnimationStatus );
-                weaponType->fireCounters[ keyUpAnimationStatus ].setEnabled( true );
                 weaponType->status = keyUpAnimationStatus;
 
                 if (weaponType->status == EngineSetup::WeaponsActions::WALKING) {

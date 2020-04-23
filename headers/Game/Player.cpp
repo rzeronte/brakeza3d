@@ -130,8 +130,6 @@ void Player::shoot()
         projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->setLabel("projectile");
         projectile->setEnabled(true);
-        projectile->linkTexturesTo( weaponsManager->getCurrentWeaponType()->getProjectileTemplate() );
-        projectile->setAnimation(0);
         projectile->makeProjectileRigidBody(
             1,
             Vertex3D(0.5, 0.5, 0.5),
@@ -140,10 +138,6 @@ void Player::shoot()
             true,
             weaponsManager->getCurrentWeaponType()->getSpeed(),
             weaponsManager->getCurrentWeaponType()->getAccuracy()
-        );
-        projectile->getBillboard()->setDimensions(
-                weaponsManager->getCurrentWeaponType()->projectileWidth,
-                weaponsManager->getCurrentWeaponType()->projectileHeight
         );
 
         projectile->setRotation(Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation() );

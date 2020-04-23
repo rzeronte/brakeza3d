@@ -18,8 +18,8 @@ void ComponentBSP::onStart()
     std::cout << "ComponentBSP onStart" << std::endl;
 
     loadMapsFromJSON();
-    loadEnemiesJSON();
     loadWeaponsJSON();
+    //loadEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
@@ -207,11 +207,6 @@ void ComponentBSP::loadWeaponsJSON()
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage( damage->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamageRadius( damageRadius->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed( (float) speed->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setProjectileSize( projectileW->valuedouble, projectileH->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadMarkSound( soundMark->valuestring );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadCasingSound( casingTemp1->valuestring, 1 );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadCasingSound( casingTemp2->valuestring, 2 );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadCasingSound( casingTemp3->valuestring, 3 );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setAccuracy( accuracy->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDispersion( dispersion->valueint );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
@@ -253,53 +248,25 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *currentWeaponAnimation;
         cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
             cJSON *status     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "status");
-            cJSON *subfolder  = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "subfolder");
-            cJSON *frames     = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "frames");
-            cJSON *fps        = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "fps");
-            cJSON *offsetX    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetX");
-            cJSON *offsetY    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "offsetY");
-            cJSON *right      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "right");
+            cJSON *label      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "label");
+            cJSON *model      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "model");
+            cJSON *scale      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "scale");
             cJSON *stopEnd    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
-            cJSON *time       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "time");
-            cJSON *sound      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "sound");
             cJSON *looping    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
-            cJSON *next       = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "next");
             cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
 
-            Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(subfolder->valuestring) + ", status:" + std::to_string(status->valueint) +", next: " + std::to_string(next->valueint));
+            Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(label->valuestring) + ", status:" + std::to_string(status->valueint) );
 
             weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
-                    std::string(name->valuestring) + "/" + std::string(subfolder->valuestring),
-                    frames->valueint,
-                    fps->valueint,
-                    offsetX->valueint,
-                    offsetY->valueint,
-                    right->valueint,
-                    stopEnd->valueint,
-                    next->valueint,
-                    looping->valueint,
-                    projectile->valueint
+                    std::string(label->valuestring),
+                    std::string(model->valuestring),
+                    scale->valuedouble,
+                    stopEnd->valueint
             );
+            weaponManager->getWeaponTypeByLabel(name->valuestring)->setWeaponAnimation(0);
 
-            Counter animationCounter = Counter();
-            animationCounter.setStep( time->valuedouble );
-            animationCounter.setEnabled( false );
-            weaponManager->getWeaponTypeByLabel(name->valuestring)->fireCounters.push_back(animationCounter);
-
-            Logging::getInstance()->Log("Adding fire animation timer with step: " + std::to_string(time->valuedouble));
-
-            Mix_Chunk *animationSound = new Mix_Chunk();
-
-            std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
-
-            if (strlen(sound->valuestring) > 0) {
-                Logging::getInstance()->Log("Loading Fire Phases sound: " + pathSound);
-                animationSound = Mix_LoadWAV( (pathSound).c_str() );
-            } else {
-                Logging::getInstance()->Log("Loading Fire Phases sound: Empty");
-            }
-
-            weaponManager->getWeaponTypeByLabel(name->valuestring)->fireSounds.push_back(animationSound);
+            //Mix_Chunk *animationSound = new Mix_Chunk();
+            //std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
         }
     }
 }

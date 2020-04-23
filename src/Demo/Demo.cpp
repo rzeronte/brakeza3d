@@ -184,4 +184,18 @@ Demo::Demo()
         mesh2->setRotation( r );
         mesh2->setPosition( p );
     }
+
+    /*auto *gun = new Mesh3DAnimated();
+    Brakeza3D::get()->addObject3D(gun, gun->getLabel());
+    gun->setScale(0.05);
+    gun->setFollowPointLabel("CameraTracker");
+    gun->setFollowCamera(true );
+    //gun->setDrawOffset(Vertex3D(0, 0.6, -0.7));
+    gun->setPosition(Vertex3D(50, -2, 8));
+    gun->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+    gun->setFixedRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+    gun->setLabel("hands");
+    gun->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + "glock.fbx");
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setFollowTo(gun->getFollowMePointObject() );
+    */
 }

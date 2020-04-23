@@ -5,7 +5,8 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
-WeaponType::WeaponType(): available(true) {
+WeaponType::WeaponType(): available(true)
+{
 }
 
 WeaponType::WeaponType(std::string label)
@@ -13,23 +14,24 @@ WeaponType::WeaponType(std::string label)
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
-    for (int i = 0; i < WEAPON_MAX_ANIMATIONS; i++) {
-        this->animations[i] = new WeaponAnimation();
-    }
-
     makeProjectileTemplate();
     markTemplate = new Sprite3D();
+
+    animations = new Mesh3DAnimatedCollection();
+    animations->setFollowCamera( true );
+    animations->setScale(0.05);
+    animations->setLabel("weapon_" + label);
+    animations->setEnabled( false );
+    animations->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
+
+    Brakeza3D::get()->addObject3D(animations, animations->getLabel() );
 }
 
-void WeaponType::addAnimation(std::string animation_folder, int numFrames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile)
+void WeaponType::addAnimation(std::string label, std::string model, float scale, bool stopEnd)
 {
-    std::string full_animation_folder = EngineSetup::getInstance()->WEAPONS_FOLDER + animation_folder;
+    std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + model;
 
-    Logging::getInstance()->Log("Loading weapon animation: " + animation_folder + " ("+ std::to_string(numFrames)+" frames)", "WeaponType");
-
-    this->animations[this->numAnimations]->setup(full_animation_folder, numFrames, fps, offsetX, offsetY, right, stopEnd, next, looping, projectile);
-
-    this->animations[this->numAnimations]->loadImages();
+    this->animations->addAnimation( label, model, scale, stopEnd );
 
     this->numAnimations++;
 }
@@ -37,9 +39,6 @@ void WeaponType::addAnimation(std::string animation_folder, int numFrames, int f
 void WeaponType::onUpdate(Camera3D *cam)
 {
     if (status != 0) {
-        if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
-            Logging::getInstance()->Log("WeaponType status: " + std::to_string(status) + ", time: " + std::to_string(fireCounters[status].getStep()) + ", acumulated: " + std::to_string(fireCounters[status].getAcumulatedTime()));
-        }
 
         // Light FX for Repeater
         if (Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->currentWeaponIndex == EngineSetup::getInstance()->WeaponsTypes::REPEATER) {
@@ -51,71 +50,23 @@ void WeaponType::onUpdate(Camera3D *cam)
 
             Drawable::drawLightning( cam, A, B);
         }
-
-        if (fireCounters[status].isFinished()) {
-            int nextAnimationIndex = getCurrentWeaponAnimation()->getNextAnimationIndex();
-
-            if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
-                Logging::getInstance()->Log(getCurrentWeaponAnimation()->baseFile +  ": Finishing state... (next: " + std::to_string(nextAnimationIndex) + ")");
-            }
-
-            fireCounters[nextAnimationIndex].setEnabled( true );
-            status = nextAnimationIndex;
-
-            if (this->animations[ nextAnimationIndex ]->isProjectile()) {
-                Brakeza3D::get()->getComponentsManager()->getComponentGame()->getPlayer()->shoot();
-            }
-
-            if (this->animations[ nextAnimationIndex ]->isLooping()) {
-                if (!Mix_Playing(EngineSetup::SoundChannels::SND_WEAPON_LOOP)) {
-                    Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON_LOOP, -1);
-                    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
-                        Logging::getInstance()->Log("Init sound looping mode");
-                    }
-                }
-            } else {
-                Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-                if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
-                    Logging::getInstance()->Log("Init sound fire phase");
-                }
-                Tools::playMixedSound( fireSounds[ nextAnimationIndex ], EngineSetup::SoundChannels::SND_WEAPON, 0);
-            }
-
-            setWeaponAnimation(nextAnimationIndex );
-
-            if (status == EngineSetup::WeaponsActions::WALKING) {
-                setFiring( false );
-            }
-        }
-
-        std::vector<Counter>::iterator it;
-        for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
-            (it)->update();
-        }
     }
-
-    getCurrentWeaponAnimation()->updateFrame();
 }
 
 void WeaponType::setWeaponAnimation(int animationIndex)
 {
-    if (this->animations[animationIndex]->getNumFrames() == 0) {
-        printf("Error animation with 0 frames");
-        exit(-1);
-    }
-
-    this->animations[animationIndex]->currentFrame = 0;
-
     this->currentAnimationIndex = animationIndex;
+
+    this->animations->setAnimation( animationIndex );
 
     if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
         Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
     }
 }
 
-WeaponAnimation * WeaponType::getCurrentWeaponAnimation()
+Mesh3DAnimated * WeaponType::getCurrentWeaponAnimation()
 {
-    return this->animations[currentAnimationIndex];
+    return this->animations->getCurrentMesh3DAnimated();
 }
 
 void WeaponType::setSpeed(float speed)
@@ -125,25 +76,14 @@ void WeaponType::setSpeed(float speed)
 
 void WeaponType::makeProjectileTemplate()
 {
-    projectileTemplate = new SpriteDirectional3D();
+    projectileTemplate = new Mesh3D();
 
     projectileTemplate->setPosition(Vertex3D(5, 0, -10));
-    std::string spritePath = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/bullet/idle";
-    projectileTemplate->addAnimationDirectional2D(spritePath, 1, 20, false, -1);
-    projectileTemplate->setAnimation(0);
-    projectileTemplate->width  = 5;
-    projectileTemplate->height = 5;
 }
 
-SpriteDirectional3D* WeaponType::getProjectileTemplate()
+Mesh3D* WeaponType::getProjectileTemplate()
 {
     return this->projectileTemplate;
-}
-
-void WeaponType::setProjectileSize(float w, float h)
-{
-    this->projectileWidth = w;
-    this->projectileHeight = h;
 }
 
 float WeaponType::getDamage()
@@ -169,30 +109,6 @@ void WeaponType::setupMarkTemplate(std::string path, int numFrames, int fps, flo
     markTemplate->addAnimation(path, numFrames, fps);
     markTemplate->setAnimation(0);
     markTemplate->getBillboard()->setDimensions(w, h);
-}
-
-void WeaponType::loadMarkSound(std::string file)
-{
-    Logging::getInstance()->Log("loadMarkSound: " + EngineSetup::getInstance()->SOUNDS_FOLDER + file, "WeaponType");
-    soundMark = Mix_LoadWAV( (EngineSetup::getInstance()->SOUNDS_FOLDER + file).c_str() );
-}
-
-void WeaponType::loadCasingSound(std::string file, int num)
-{
-    switch (num) {
-        case 1:
-            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
-            soundCasing1 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
-            break;
-        case 2:
-            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
-            soundCasing2 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
-            break;
-        case 3:
-            Logging::getInstance()->Log("loadCasingSound: " + EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file, "WeaponType");
-            soundCasing3 = Mix_LoadWAV( (EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/sounds/" + file).c_str() );
-            break;
-    }
 }
 
 float WeaponType::getAccuracy() const {
@@ -241,26 +157,6 @@ void WeaponType::setFiring(bool firing)
 
     WeaponType::firing = firing;
 
-    if ( !firing ) {
-        std::vector<Counter>::iterator it;
-        for ( it = fireCounters.begin(); it != fireCounters.end(); it++) {
-            (it)->setEnabled(false);
-        }
-
-        int rndCasingSnd = Tools::random(1, 3);
-
-        switch (rndCasingSnd) {
-            case 1:
-                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing1, EngineSetup::SoundChannels::SND_MENU, 0);
-                break;
-            case 2:
-                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing2, EngineSetup::SoundChannels::SND_MENU, 0);
-                break;
-            case 3:
-                Tools::playMixedSound(Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->getCurrentWeaponType()->soundCasing3, EngineSetup::SoundChannels::SND_MENU, 0);
-                break;
-        }
-    }
 }
 
 bool WeaponType::isKeyDownHandle() const {

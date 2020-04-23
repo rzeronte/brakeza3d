@@ -74,11 +74,7 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
             continue;
         }
 
-        if (triangles[i]->testForClipping(
-                cube->planes,
-                0,
-                5
-        )) {
+        if (triangles[i]->testForClipping( cube->planes, 0,5 )) {
             triangles[i]->clipping(
                     camera,
                     cube->planes,

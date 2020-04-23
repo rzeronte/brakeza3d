@@ -57,6 +57,7 @@ public:
     std::vector<Triangle *> &getVisibleTriangles();
 
     std::vector<Triangle*> frameTriangles;
+    std::vector<Triangle*> clippedTriangles;
     std::vector<Triangle*> visibleTriangles;
 
     std::vector<Tile> tiles;

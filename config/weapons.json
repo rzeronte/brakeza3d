@@ -33,8 +33,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",         "projectile": false, "looping": false, "stop_end": false, "offsetX": 0, "offsetY": 0, "right": true },
-        { "status": 1, "next": 0, "subfolder": "fire", "frames": 3, "fps": 20, "time": 0.3, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 0, "offsetY": 0, "right": true }
+        { "status": 0, "label": "pistol_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -64,8 +64,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.00, "sound": "",            "projectile": false, "looping": false, "stop_end": false, "offsetX": 20, "offsetY": 0, "right": true },
-        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 20, "offsetY": 0, "right": true }
+        { "status": 0, "label": "repeater_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "repeater_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -95,8 +95,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0,  "sound": "",         "projectile": false, "looping": false, "stop_end": false, "offsetX": 50, "offsetY": 0, "right": true },
-        { "status": 1, "next": 0, "subfolder": "fire", "frames": 4, "fps": 20, "time": 0.30, "sound": "fire.wav", "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 50, "offsetY": 0, "right": true }
+        { "status": 0, "label": "rifle_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "rifle_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -127,8 +127,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk", "frames": 1, "fps": 1,  "time": 0.0, "sound": "",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 70, "offsetY": 0, "right": true },
-        { "status": 1, "next": 1, "subfolder": "fire", "frames": 3, "fps": 25, "time": 0.15, "sound": "looping.wav", "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 70, "offsetY": 0, "right": true }
+        { "status": 0, "label": "granade_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "granade_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -158,11 +158,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 3,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",                       "frames": 1, "fps": 1,  "time": 0,    "sound": "",                          "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/GETTING_READY_TO_FIRE", "frames": 4, "fps": 15, "time": 0.95, "sound": "GETTING_READY_TO_FIRE.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 2, "next": 2, "subfolder": "fire/LOOPING_FIRE",          "frames": 4, "fps": 25, "time": 0.10, "sound": "LOOPING_FIRE.wav",          "projectile": true,  "looping": true,  "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 3, "next": 4, "subfolder": "fire/ENDING_FIRE",           "frames": 4, "fps": 15, "time": 0.75, "sound": "ENDING_FIRE.wav",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 4, "next": 0, "subfolder": "fire/RELOADING",             "frames": 8, "fps": 15, "time": 0.5,  "sound": "RELOADING.wav",             "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true }
+        { "status": 0, "label": "chaingun_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "chaingun_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -192,9 +189,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",          "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/starting", "frames": 12, "fps": 13, "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 60, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/shoot",    "frames": 4,  "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 60, "offsetY": 0, "right": true }
+        { "status": 0, "label": "gauss_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "gauss_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -225,9 +221,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1, "fps": 1,  "time": 0.00, "sound": "",          "projectile": false, "looping": false, "stop_end": false, "offsetX": 10, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 1, "fps": 1,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 10, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/shot",  "frames": 3, "fps": 25, "time": 0.25, "sound": "fire.wav",  "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 10, "offsetY": 0, "right": true }
+        { "status": 0, "label": "vortex_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "vortex_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -257,9 +252,8 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "next": 0, "subfolder": "walk",       "frames": 1,  "fps": 1,  "time": 0.00, "sound": "",           "projectile": false, "looping": false, "stop_end": false, "offsetX": 90, "offsetY": 0, "right": true },
-        { "status": 1, "next": 2, "subfolder": "fire/start", "frames": 21, "fps": 21,  "time": 1.00, "sound": "start.wav", "projectile": false, "looping": false, "stop_end": false, "offsetX": 90, "offsetY": 0, "right": true },
-        { "status": 2, "next": 0, "subfolder": "fire/fire",  "frames": 7,  "fps": 25, "time": 0.25, "sound": "fire.wav",   "projectile": true,  "looping": false, "stop_end": true,  "offsetX": 90, "offsetY": 0, "right": true }
+        { "status": 0, "label": "rocket_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "rocket_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     }
   ]

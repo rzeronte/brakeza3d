@@ -13,7 +13,7 @@
 
 class Camera3D : public Object3D {
 public:
-    float yaw   = 0;			// Direction of travel
+    float yaw   = 0;	    // Direction of travel
     float pitch = 0;		// Neck angle
     float roll  = 0;
 
@@ -28,7 +28,12 @@ public:
     Frustum *frustum;
 
     Vector3D velocity;
-    Vector3D oldVelocity;
+
+    Object3D *follow_to = nullptr;
+
+    Object3D *getFollowTo() const;
+
+    void setFollowTo(Object3D *followTo);
 
     btPairCachingGhostObject *m_ghostObject;
     btKinematicCharacterController* kinematicController;

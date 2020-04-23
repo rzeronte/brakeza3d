@@ -7,9 +7,10 @@
 
 #include "Mesh3D.h"
 #include "../Physics/Mesh3DBody.h"
+#include "../Render/Logging.h"
 #include <cstring>
 
-#define NUM_BONES_PER_VERTEX 6
+#define NUM_BONES_PER_VERTEX 12
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData
@@ -27,6 +28,7 @@ struct VertexBoneData
                 return;
             }
         }
+        Logging::getInstance()->Log("NUM_BONES_PER_VERTEX reached");
         assert(0);
     }
 };
@@ -48,21 +50,30 @@ public:
     const aiScene* scene;
     int m_NumBones = 0;
 
+    M3 fixedRotation = M3::getMatrixIdentity();
+
     std::vector< std::vector<VertexBoneData> > meshVerticesBoneData;
     std::vector< std::vector<Vertex3D> > meshVertices;
 
-    int indexCurrentAnimation = 0;
+    int   indexCurrentAnimation = 0;
     float runningTime = 0;
-    bool remove_at_end_animation = false;
+    bool  remove_at_end_animation = false;
 
     std::map<std::string,uint> boneMapping; // maps a bone name to its index
-    std::vector<BoneInfo> boneInfo;
+    std::vector<BoneInfo>      boneInfo;
+
     aiMatrix4x4 m_GlobalInverseTransform;
+
+    std::string follow_me_point_label;
+    aiNode*     follow_me_point_node;
+    Object3D*   follow_me_point_object;
+
+    Object3D *getFollowMePointObject() const;
 
     void onUpdate();
 
     bool AssimpLoad(const std::string &Filename);
-    bool Init();
+    bool ReadNodes();
 
     aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
 
@@ -86,12 +97,25 @@ public:
 
     void AIMatrixToVertex( Vertex3D &V, aiMatrix4x4 &m );
 
-    void drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms);
+    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
     void drawVertexWeights();
     Uint32 processWeigthColor(int weight);
 
     bool isRemoveAtEndAnimation() const;
     void setRemoveAtEndAnimation(bool removeAtEnds);
+
+
+    aiNode *getFollowPointNode();
+    void    setFollowPointNode(aiNode *followPointOrigin);
+
+    void updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms);
+
+    const std::string &getFollowPointLabel() const;
+    void setFollowPointLabel(const std::string &followPointLabel);
+
+    const M3 &getFixedRotation() const;
+
+    void setFixedRotation(const M3 &fixedRotation);
 };
 
 

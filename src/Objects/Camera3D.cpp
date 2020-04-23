@@ -202,7 +202,6 @@ void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
         this->velocity.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
-    this->oldVelocity = this->velocity;
 
     // Reset speed
     speed  = 0;
@@ -237,4 +236,12 @@ void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsul
 
     kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
     kinematicController->setLinearDamping(0.99999);
+}
+
+Object3D *Camera3D::getFollowTo() const {
+    return follow_to;
+}
+
+void Camera3D::setFollowTo(Object3D *followTo) {
+    follow_to = followTo;
 }

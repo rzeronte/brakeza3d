@@ -61,6 +61,8 @@ public:
                 std::string animation_text = "Animation##" + std::to_string(i);
                 std::string collection = "Collection##" + std::to_string(i);
                 std::string removed_text = "Removed##" + std::to_string(i);
+                std::string follow_camera_text = "FollowCamera##" + std::to_string(i);
+                std::string draw_offset_text = "DrawOffset##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
@@ -101,7 +103,16 @@ public:
                         ImGui::TreePop();
                     }
 
+                    // drawOffset
+                    if (ImGui::TreeNode(draw_offset_text.c_str())) {
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->drawOffset.x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->drawOffset.y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::TreePop();
+                    }
+
                     ImGui::Checkbox(removed_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->removed);
+                    ImGui::Checkbox(follow_camera_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->followCamera);
 
                     // Only for meshes
                     Mesh3D *objMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
@@ -209,18 +220,17 @@ public:
                         std::string staminaText = "CurrentAnimation: " + std::to_string(oMesh3DAnimatedCollection->currentAnimation);
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
 
-                        const char* items[] = { "idle", "walk", "fire", "injuried", "dead" };
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
                         static ImGuiComboFlags flags = 0;
                         if (oMesh3DAnimatedCollection->currentAnimation >= 0) {
-                            item_current = items[oMesh3DAnimatedCollection->currentAnimation];
+                            item_current = oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->getLabel().c_str();
                         }
 
                         if ( ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) { // The second parameter is the label previewed before opening the combo.
-                            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
-                                bool is_selected = (item_current == items[n]);
-                                if (ImGui::Selectable(items[n], is_selected)) {
-                                    item_current = items[n];
+                            for (int n = 0; n < oMesh3DAnimatedCollection->mesh3Danimated.size(); n++) {
+                                bool is_selected = (item_current == oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel());
+                                if (ImGui::Selectable(oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel().c_str(), is_selected)) {
+                                    item_current = oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel().c_str();
                                 }
 
                                 if (is_selected) {

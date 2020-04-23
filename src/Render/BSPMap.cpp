@@ -453,7 +453,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         Vertex3D aabbMax = Vertex3D(v3aabbMax[0]*scale, v3aabbMax[1]*scale, v3aabbMax[2]*scale);
         Vertex3D aabbMin = Vertex3D(v3aabbMin[0]*scale, v3aabbMin[1]*scale, v3aabbMin[2]*scale);
 
-        if (rigid) {
+        if ( rigid ) {
             Mesh3DBody *body = new Mesh3DBody();
             body->aabbMax = aabbMax;
             body->aabbMin = aabbMin;
@@ -938,10 +938,9 @@ void BSPMap::DrawSurfaceTriangles(int surface)
     const int num = this->surface_triangles[surface].num;
 
     for (int i = offset; i < offset+num; i++) {
-        this->model_triangles[i]->updateTextureAnimated();
-        this->model_triangles[i]->updateLightmapFrame();
-        Triangle *t = this->model_triangles[i];
-        this->frameTriangles->emplace_back( t );
+        //this->model_triangles[i]->updateTextureAnimated();
+        //this->model_triangles[i]->updateLightmapFrame();
+        this->frameTriangles->emplace_back( this->model_triangles[i] );
     }
 }
 
@@ -1054,11 +1053,11 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 }
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::DrawVisibleLeaf(Camera3D *Cam)
+void BSPMap::DrawVisibleLeaf(Camera3D *cam)
 {
     if (this->currentLeaf == nullptr) return;
 
-    DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame, Cam);
+    DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame);
 }
 
 void BSPMap::DrawHulls(Camera3D *cam)
@@ -1075,7 +1074,7 @@ void BSPMap::DrawHulls(Camera3D *cam)
 }
 
 // Draw the visible surfaces
-void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam)
+void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces)
 {
     // Loop through all the visible surfaces and activate the texture objects
     for (int i = 0; i < numVisibleSurfaces; i++) {

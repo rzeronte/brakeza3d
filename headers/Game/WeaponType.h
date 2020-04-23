@@ -7,6 +7,8 @@
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
 #include "AmmoType.h"
+#include "../Objects/Mesh3D.h"
+#include "../Objects/Mesh3DAnimatedCollection.h"
 
 #define WEAPON_MAX_ANIMATIONS 10
 
@@ -25,11 +27,9 @@ public:
     AmmoType *ammo;
 
     std::string billboardTextureFile;
+
     float billboardWidth;
     float billboardHeight;
-
-    float projectileWidth;
-    float projectileHeight;
 
     float damage;
     float damageRadius;
@@ -37,8 +37,6 @@ public:
     float accuracy;
 
     bool firing = false;
-    std::vector<Counter>    fireCounters;
-    std::vector<Mix_Chunk*> fireSounds;
 
     bool keyDownHandle;
     bool keyUpHandle;
@@ -48,20 +46,15 @@ public:
 
     int dispersion = 0;
 
-    SpriteDirectional3D *projectileTemplate;
+    Mesh3D   *projectileTemplate;
     Sprite3D *markTemplate;
-
-    Mix_Chunk *soundMark;
-
-    Mix_Chunk *soundCasing1;
-    Mix_Chunk *soundCasing2;
-    Mix_Chunk *soundCasing3;
 
     int speed = 500;
 
     int numAnimations = 0;
     int currentAnimationIndex = 0;
-    WeaponAnimation *animations[WEAPON_MAX_ANIMATIONS];
+
+    Mesh3DAnimatedCollection *animations;
 
     SDL_Surface *iconHUD;
 
@@ -71,9 +64,9 @@ public:
 
     WeaponType();
 
-    void addAnimation(std::string, int frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int next, bool looping, bool projectile);
+    void addAnimation(std::string label, std::string model, float scale, bool stopEnd);
 
-    WeaponAnimation *getCurrentWeaponAnimation();
+    Mesh3DAnimated *getCurrentWeaponAnimation();
     void onUpdate(Camera3D *cam);
 
     void setWeaponAnimation(int);
@@ -84,10 +77,8 @@ public:
     void setSpeed(float speed);
     int  getSpeed() const;
 
-    void makeProjectileTemplate();
-    SpriteDirectional3D* getProjectileTemplate();
-
-    void setProjectileSize(float w, float h);
+    void    makeProjectileTemplate();
+    Mesh3D* getProjectileTemplate();
 
     float getDamage();
     void  setDamage(float damage);
@@ -96,9 +87,6 @@ public:
 
     Sprite3D *getMarkTemplate();
     void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
-
-    void loadMarkSound(std::string file);
-    void loadCasingSound(std::string file, int num);
 
     void loadIconHUD(std::string file);
     void loadSniperHUD(std::string file);

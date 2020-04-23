@@ -119,3 +119,11 @@ Object3D *Object3D::getParent() const {
 void Object3D::setParent(Object3D *parent) {
     Object3D::parent = parent;
 }
+
+bool Object3D::isFollowCamera() const {
+    return followCamera;
+}
+
+void Object3D::setFollowCamera(bool followCamera) {
+    Object3D::followCamera = followCamera;
+}

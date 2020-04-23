@@ -44,7 +44,15 @@ std::vector<Mesh3DAnimated *> Mesh3DAnimatedCollection::copyFrom(Mesh3DAnimatedC
     for (int i = 0; i < from->mesh3Danimated.size(); i++) {
         Mesh3DAnimated *copy = new Mesh3DAnimated();
         copy->scene = from->mesh3Danimated[i]->scene;
-        copy->Init();
+        copy->ReadNodes();
         this->mesh3Danimated.push_back( copy );
     }
+}
+
+const M3 &Mesh3DAnimatedCollection::getRotationFixed() const {
+    return rotationFixed;
+}
+
+void Mesh3DAnimatedCollection::setRotationFixed(const M3 &rotationFixed) {
+    Mesh3DAnimatedCollection::rotationFixed = rotationFixed;
 }

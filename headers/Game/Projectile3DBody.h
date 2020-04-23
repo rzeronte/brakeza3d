@@ -3,9 +3,9 @@
 #define BRAKEDA3D_PROJECTILE3DBODY_H
 
 
-#include "../Physics/SpriteDirectional3DBody.h"
+#include "../Physics/Mesh3DBody.h"
 
-class Projectile3DBody : public SpriteDirectional3DBody {
+class Projectile3DBody : public Mesh3DBody {
 private:
     bool fromEnemy;
     float damage;

@@ -390,7 +390,7 @@ public:
     void DrawSurface(int surface, Camera3D *camera);
     void DrawSurfaceTriangles(int surface);
 
-    void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces, Camera3D *cam);
+    void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces);
 
     void DrawVisibleLeaf(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);

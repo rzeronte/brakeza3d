@@ -654,8 +654,6 @@ bool Triangle::isPointInside(Vertex3D v)
 
 int Triangle::processLOD()
 {
-    int lod = EngineSetup::getInstance()->LOAD_OF_DETAIL;
-
     if (getTexture() == NULL) return 0;
 
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
@@ -678,10 +676,10 @@ int Triangle::processLOD()
             clamped_lod = 8;
         }
 
-        lod = clamped_lod;
+        return clamped_lod;
     }
 
-    return lod;
+    return EngineSetup::getInstance()->LOAD_OF_DETAIL;
 }
 
 bool Triangle::testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex)

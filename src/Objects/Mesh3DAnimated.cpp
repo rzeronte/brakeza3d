@@ -11,6 +11,10 @@ void Mesh3DAnimated::onUpdate()
 {
     if (!this->scene->HasAnimations()) return;
 
+    if (this->isFollowCamera()) {
+        this->setRotation( this->getRotation() * this->getFixedRotation() );
+    }
+
     // Update running time
     this->runningTime += Brakeza3D::get()->getDeltaTime();
     float maxTime = this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration / scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond;
@@ -25,10 +29,14 @@ void Mesh3DAnimated::onUpdate()
     std::vector<aiMatrix4x4> Transforms;
     this->BoneTransform(runningTime, Transforms);
 
+    for (int i = 0; i < this->modelTriangles.size(); i++) {
+        delete this->modelTriangles[i];
+    }
     this->modelTriangles.clear();
+
     for (int i = 0; i < this->scene->mNumMeshes; i++) {
 
-        //if (this->meshVertices[i].size() == 0) continue;
+        if (this->meshVertices[i].size() == 0) continue;
 
         // Apply bone transforms and create triangle
         for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
@@ -60,6 +68,11 @@ void Mesh3DAnimated::onUpdate()
         this->drawVertexWeights();
     }
 
+    // Update FollowPoint position
+    if (this->getFollowPointNode() != nullptr) {
+        this->updateFollowObjectPosition(Transforms);
+    }
+
     if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
         this->drawBones(scene->mRootNode, Transforms);
     }
@@ -67,11 +80,12 @@ void Mesh3DAnimated::onUpdate()
 
 bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 {
-    this->scene = importer.ReadFile( Filename, aiProcess_Triangulate            |
-                                              aiProcess_JoinIdenticalVertices  |
+
+    this->scene = importer.ReadFile( Filename, aiProcess_Triangulate |
+                                              aiProcess_JoinIdenticalVertices |
                                               aiProcess_SortByPType |
                                               aiProcess_FlipUVs
-                                              );
+    );
 
     if( !scene ) {
         Logging::getInstance()->Log("Error import 3D file for ASSIMP");
@@ -79,13 +93,13 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
         return false;
     }
 
-    this->Init();
     this->InitMaterials(scene, Filename);
+    this->ReadNodes();
 
     return true;
 }
 
-bool Mesh3DAnimated::Init()
+bool Mesh3DAnimated::ReadNodes()
 {
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
@@ -284,8 +298,8 @@ int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::ve
 
     if (this->m_NumBones == 0) return 0;
 
-    int   BoneIDs[NUM_BONES_PER_VERTEX] = {0};
-    float Weights[NUM_BONES_PER_VERTEX] = {0};
+    int   BoneIDs[NUM_BONES_PER_VERTEX] = {-1};
+    float Weights[NUM_BONES_PER_VERTEX] = {-1};
 
     for (int n = 0 ; n < NUM_BONES_PER_VERTEX ; n++) {
         BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n];     // boneID
@@ -301,7 +315,9 @@ int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::ve
         int   boneId = BoneIDs[n];
         float weight = Weights[n];
 
-        BoneTransform = BoneTransform + Transforms[boneId] * weight;
+        if (boneId != -1) {
+            BoneTransform = BoneTransform + Transforms[boneId] * weight;
+        }
     }
 
     this->AIMatrixToVertex(V, BoneTransform);
@@ -324,6 +340,13 @@ uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAni
 
 void Mesh3DAnimated::processNode(aiNode *node)
 {
+    if (std::string(node->mName.C_Str()) == this->getFollowPointLabel() ) {
+        this->setFollowPointNode( node );
+        this->follow_me_point_object = new Object3D();
+        this->follow_me_point_object->setPosition(*this->getPosition());
+        this->follow_me_point_object->setRotation(M3::getMatrixIdentity() );
+    }
+
     for (int x = 0; x < node->mNumMeshes; x++) {
         int idMesh = node->mMeshes[x];
         this->processMesh( idMesh, scene->mMeshes[ idMesh ] );
@@ -351,7 +374,7 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
 
     bool Ret = true;
 
-    std::cout << std::endl  << "Load ASSIMP: mNumMaterials: " << pScene->mNumMaterials << std::endl;
+    Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
     for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
         const aiMaterial* pMaterial = pScene->mMaterials[i];
@@ -375,6 +398,8 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
                     this->modelTextures[ this->numTextures ] = *t;
                     this->numTextures++;
                 }
+            } else {
+                Logging::getInstance()->Log("ASSIMP: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
             }
         //}
     }
@@ -453,33 +478,27 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D& Out, float AnimationTim
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> Transforms)
+void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
 {
-    if (this->m_NumBones == 0) return;
-        
     Uint32 colorPoints = Color::red();
 
-    int idCurrentNode = boneMapping[ node->mName.C_Str()];
+    int idCurrentNode;
 
-    Vertex3D bonePosition;
-    aiMatrix4x4 mOffset = boneInfo[ idCurrentNode ].BoneOffset;
-    aiMatrix4x4 mT = Transforms[idCurrentNode];
-    this->AIMatrixToVertex(bonePosition, mOffset.Inverse());
-    this->AIMatrixToVertex(bonePosition, mT);
-    Transforms::objectSpace(bonePosition, bonePosition, this);
+    if (boneMapping.find(node->mName.C_Str()) != boneMapping.end()) {
+        idCurrentNode = boneMapping[ node->mName.C_Str()];
+
+        Vertex3D bonePosition;
+        aiMatrix4x4 mOffset = boneInfo[ idCurrentNode ].BoneOffset;
+        aiMatrix4x4 mT = Transforms[idCurrentNode];
+
+        this->AIMatrixToVertex(bonePosition, mOffset.Inverse());
+        this->AIMatrixToVertex(bonePosition, mT);
+        Transforms::objectSpace(bonePosition, bonePosition, this);
+
+        Drawable::drawVertex(bonePosition, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), colorPoints);
+    }
 
     for (int j = 0; j < node->mNumChildren; j++) {
-        int idChildrenNode = boneMapping[ node->mChildren[j]->mName.C_Str()];
-
-        Vertex3D currentBonePosition;
-        aiMatrix4x4 mOffsetChildred = boneInfo[ idChildrenNode ].BoneOffset;
-        aiMatrix4x4 mT = Transforms[idChildrenNode];
-        this->AIMatrixToVertex(currentBonePosition, mOffsetChildred.Inverse());
-        this->AIMatrixToVertex(currentBonePosition, mT);
-        Transforms::objectSpace(currentBonePosition, currentBonePosition, this);
-
-        Drawable::drawVertex(currentBonePosition, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), colorPoints);
-
         drawBones(node->mChildren[j], Transforms);
     }
 }
@@ -556,3 +575,79 @@ bool Mesh3DAnimated::isRemoveAtEndAnimation() const {
 void Mesh3DAnimated::setRemoveAtEndAnimation(bool removeAtEnds) {
     remove_at_end_animation = removeAtEnds;
 }
+
+aiNode *Mesh3DAnimated::getFollowPointNode() {
+    return follow_me_point_node;
+}
+
+void Mesh3DAnimated::setFollowPointNode( aiNode *followPointOrigin) {
+    follow_me_point_node = followPointOrigin;
+
+    std::string BoneName = follow_me_point_node->mName.C_Str();
+    if (boneMapping.find(BoneName) == boneMapping.end()) {
+        int BoneIndex = boneMapping.size();
+        m_NumBones++;
+        BoneInfo bi;
+        boneInfo.push_back(bi);
+
+        boneMapping[BoneName] = BoneIndex;
+
+        boneInfo[BoneIndex].BoneOffset = follow_me_point_node->mTransformation;
+        boneInfo[BoneIndex].name = BoneName;
+    }
+}
+
+void Mesh3DAnimated::updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms)
+{
+    if (boneMapping.find( this->follow_me_point_label ) != boneMapping.end()) {
+        int idCurrentNode = boneMapping[ this->follow_me_point_node->mName.C_Str() ];
+
+        Vertex3D p;
+        aiMatrix4x4 m = boneInfo[ idCurrentNode ].BoneOffset;
+        aiMatrix4x4 m2 = Transforms[ idCurrentNode ];
+
+        this->AIMatrixToVertex( p, m.Inverse());
+        this->AIMatrixToVertex( p, m2);
+        Transforms::objectSpace( p, p, this);
+
+        this->getFollowMePointObject()->setPosition(p );
+
+        aiMatrix4x4 t = m2;
+
+        aiVector3D scale;
+        aiQuaternion rotation;
+        aiVector3D translation;
+        t.Decompose(scale, rotation, translation);
+
+        aiMatrix3x3 m3 = rotation.GetMatrix();
+        M3 nm(
+            m3.a1, m3.a2, m3.a3,
+            m3.b1, m3.b2, m3.b3,
+            m3.c1, m3.c2, m3.c3
+        );
+
+        M3 fixedRotation = M3::getMatrixRotationForEulerAngles(0, 180, 0); // :?
+        this->getFollowMePointObject()->setRotation(fixedRotation * (this->getRotation() * nm ).getTranspose());
+    }
+}
+
+const std::string &Mesh3DAnimated::getFollowPointLabel() const {
+    return follow_me_point_label;
+}
+
+void Mesh3DAnimated::setFollowPointLabel(const std::string &followPointLabel) {
+    follow_me_point_label = followPointLabel;
+}
+
+Object3D *Mesh3DAnimated::getFollowMePointObject() const {
+    return follow_me_point_object;
+}
+
+const M3 &Mesh3DAnimated::getFixedRotation() const {
+    return fixedRotation;
+}
+
+void Mesh3DAnimated::setFixedRotation(const M3 &fixedRotation) {
+    Mesh3DAnimated::fixedRotation = fixedRotation;
+}
+

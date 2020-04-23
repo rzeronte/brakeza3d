@@ -14,11 +14,11 @@ public:
     Object3D * parent;
 
     Object3D *getParent() const;
-
-    void setParent(Object3D *parent);
+    void     setParent(Object3D *parent);
 
     bool  enabled;
     bool  removed;
+    bool  followCamera = false;
 
     Vertex3D drawOffset = Vertex3D::zero();
 
@@ -64,6 +64,8 @@ public:
     void setDrawOffset(Vertex3D v);
     Vertex3D getDrawOffset();
 
+    bool isFollowCamera() const;
+    void setFollowCamera(bool followCamera);
 
 };
 

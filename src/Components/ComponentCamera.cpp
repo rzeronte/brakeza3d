@@ -34,11 +34,15 @@ void ComponentCamera::onUpdate() {
 
 void ComponentCamera::postUpdate()
 {
-    getCamera()->setPosition( ComponentsManager::get()->getComponentCollisions()->finalVelocity );
+    if (getCamera()->getFollowTo() != nullptr) {
+        getCamera()->setPosition( *getCamera()->getFollowTo()->getPosition() );
+        getCamera()->setRotation( getCamera()->getFollowTo()->getRotation() );
+    } else {
+        getCamera()->setPosition( ComponentsManager::get()->getComponentCollisions()->finalVelocity );
+        getCamera()->UpdateRotation();
+    }
 
-    this->getCamera()->UpdateRotation();
     this->getCamera()->UpdateFrustum();
-
 }
 
 void ComponentCamera::onEnd() {

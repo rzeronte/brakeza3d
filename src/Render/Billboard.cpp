@@ -10,9 +10,12 @@ Billboard::Billboard()
     EngineSetup *setup = EngineSetup::getInstance();
     this->width  = setup->BILLBOARD_WIDTH_DEFAULT;
     this->height = setup->BILLBOARD_HEIGHT_DEFAULT;
+
+    this->T1 = Triangle();
+    this->T2 = Triangle();
 }
 
-void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D U, Vertex3D R)
+void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
 {
     Vertex3D X;
     X.x = (width/2) * R.x;
@@ -50,8 +53,18 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D U, Vertex3D R)
     Q3.u = 0.0001; Q3.v = 0.0001;
     Q4.u = 1.0f;   Q4.v = 0.0001;
 
-    T1 = Triangle(Q3, Q2, Q1, o);
-    T2 = Triangle(Q4, Q3, Q1, o);
+    this->T1.A = Q3;
+    this->T1.B = Q2;
+    this->T1.C = Q1;
+    this->T1.parent = o;
+
+    this->T2.A = Q4;
+    this->T2.B = Q3;
+    this->T2.C = Q1;
+    this->T2.parent = o;
+
+    //T1 = Triangle(Q3, Q2, Q1, o);
+    //T2 = Triangle(Q4, Q3, Q1, o);
 }
 
 void Billboard::loadTexture(std::string fileName)

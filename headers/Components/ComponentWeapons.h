@@ -23,6 +23,8 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
+    Mesh3DAnimatedCollection *handsCollection;
+
     int numWeapons = 0;
     int currentWeaponIndex = 0;
 
