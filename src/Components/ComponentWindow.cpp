@@ -37,8 +37,9 @@ void ComponentWindow::postUpdate()
 
     SDL_GL_SwapWindow( this->window );
 
-    SDL_RenderCopy( renderer, SDL_CreateTextureFromSurface( renderer, screenSurface ), NULL, NULL);
-
+    SDL_Texture *tex = SDL_CreateTextureFromSurface( renderer, screenSurface );
+    SDL_RenderCopy( renderer, tex, NULL, NULL);
+    SDL_DestroyTexture(tex);
 }
 
 void ComponentWindow::onEnd()
