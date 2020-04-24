@@ -377,7 +377,13 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
     Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
     for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
-        const aiMaterial* pMaterial = pScene->mMaterials[i];
+        aiMaterial *pMaterial = pScene->mMaterials[i];
+        std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
+
+        if  (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
+            this->numTextures++;
+            continue;
+        };
 
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
             aiString Path;
@@ -399,7 +405,7 @@ bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Fil
                     this->numTextures++;
                 }
             } else {
-                Logging::getInstance()->Log("ASSIMP: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
+                Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
             }
         //}
     }

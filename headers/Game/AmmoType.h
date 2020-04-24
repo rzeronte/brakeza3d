@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include "../Objects/Mesh3DAnimated.h"
 
 class AmmoType {
 public:
@@ -21,10 +22,14 @@ public:
     int  getAmount() const;
     void setAmount(int ammo);
 
+    Mesh3DAnimated *getModel();
+
 private:
     std::string name;
     std::string classname;
     int amount;
+    Mesh3DAnimated model;
+
 public:
 };
 

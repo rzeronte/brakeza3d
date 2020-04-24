@@ -121,6 +121,7 @@ void Player::shoot()
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
         auto *projectile = new Projectile3DBody();
+        projectile->copyFrom( weaponsManager->getCurrentWeaponType()->getAmmoType()->getModel() );
         projectile->setFromEnemy( false );
         projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
         projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
@@ -128,7 +129,7 @@ void Player::shoot()
         projectile->getPosition()->x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->getPosition()->y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
         projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->setLabel("projectile");
+        projectile->setLabel("projectile" + weaponsManager->getCurrentWeaponType()->getAmmoType()->getName() );
         projectile->setEnabled(true);
         projectile->makeProjectileRigidBody(
             1,
@@ -140,7 +141,7 @@ void Player::shoot()
             weaponsManager->getCurrentWeaponType()->getAccuracy()
         );
 
-        projectile->setRotation(Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation() );
+        projectile->setRotation( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 

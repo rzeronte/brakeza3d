@@ -144,14 +144,18 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *name       = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "name");
         cJSON *classname  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "classname");
         cJSON *startAmmo  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "start_ammo");
+        cJSON *model      = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model");
+        cJSON *scale      = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "scale");
 
         auto* ammoType = new AmmoType();
         ammoType->setAmount(startAmmo->valueint);
         ammoType->setName(name->valuestring);
         ammoType->setClassname(classname->valuestring);
+        ammoType->getModel()->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring);
+        ammoType->getModel()->setScale( scale->valuedouble );
         weaponManager->ammoTypes.push_back(ammoType);
-        Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
 
+        Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
     }
 
     // Weapons Types
@@ -183,9 +187,6 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *dispersion    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
         cJSON *iconHUD       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "icon_hud");
         cJSON *sniper        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sniper");
-        cJSON *casingTemp1   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing1_sound");
-        cJSON *casingTemp2   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing2_sound");
-        cJSON *casingTemp3   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "casing3_sound");
         cJSON *index         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "index");
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");

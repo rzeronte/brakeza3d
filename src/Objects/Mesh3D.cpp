@@ -328,3 +328,26 @@ bool Mesh3D::isAABBVisibleInBSP( Vertex3D &from )
 
     return false;
 }
+
+void Mesh3D::copyFrom(Mesh3D *source)
+{
+    // Triangles
+    for (auto & modelTriangle : source->modelTriangles) {
+
+        auto *t = new Triangle(
+                modelTriangle->A,
+                modelTriangle->B,
+                modelTriangle->C,
+                this
+        );
+
+        t->setTexture(modelTriangle->getTexture());
+
+        this->modelTriangles.push_back(t);
+    }
+
+    // Textures
+    this->numTextures   = source->numTextures;
+    this->modelTextures = source->modelTextures;
+    this->scale         = source->scale;
+}

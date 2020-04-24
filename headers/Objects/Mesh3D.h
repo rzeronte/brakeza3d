@@ -60,10 +60,11 @@ public:
     int getBspEntityIndex() const;
     void setBspEntityIndex(int bspEntityIndex);
 
-    bool LoadMesh(const std::string& Filename);
     void updateBoundingBox();
 
     bool isAABBVisibleInBSP(Vertex3D &from);
+
+    void copyFrom(Mesh3D *source);
 };
 
 
