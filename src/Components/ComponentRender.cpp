@@ -113,14 +113,14 @@ void ComponentRender::getObjectsTriangles()
         }
 
         if (object->isFollowCamera()) {
-            object->setPosition( *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+            object->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
             object->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
         }
 
         // Sprite Directional 3D
         auto *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
         if (oSpriteDirectional != nullptr) {
-            if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum(*oSpriteDirectional->getPosition())) {
+            if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( oSpriteDirectional->getPosition() )) {
                 continue;
             }
 
@@ -128,7 +128,7 @@ void ComponentRender::getObjectsTriangles()
             Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
 
             if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSpriteDirectional->getPosition(), SETUP->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oSpriteDirectional->getPosition(), SETUP->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
             continue;
         }
@@ -140,7 +140,7 @@ void ComponentRender::getObjectsTriangles()
             Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
 
             if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oSprite->getPosition(), SETUP->TEXT_3D_COLOR, oSprite->getLabel());
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oSprite->getPosition(), SETUP->TEXT_3D_COLOR, oSprite->getLabel());
             }
             continue;
         }
@@ -161,7 +161,7 @@ void ComponentRender::getObjectsTriangles()
         if (oMeshAnimatedCollection != nullptr) {
             oMeshAnimatedCollection->getCurrentMesh3DAnimated()->updateBoundingBox();
 
-            Vertex3D p = *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+            Vertex3D p = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
             /*if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
                 continue;
             }*/
@@ -183,7 +183,7 @@ void ComponentRender::getObjectsTriangles()
 
             oMesh->draw( &this->frameTriangles) ;
             if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, *oMesh->getPosition(), SETUP->TEXT_3D_COLOR, oMesh->getLabel());
+                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oMesh->getPosition(), SETUP->TEXT_3D_COLOR, oMesh->getLabel());
             }
 
             if (SETUP->DRAW_DECAL_WIREFRAMES) {
@@ -214,7 +214,7 @@ void ComponentRender::hiddenSurfaceRemoval()
         frameTriangles[i]->updateNormal();
 
         // back face culling (needs objectSpace)
-        if (frameTriangles[i]->isBackFaceCulling( cam->getPosition() )) {
+        if (frameTriangles[i]->isBackFaceCulling( &cam->getPosition() )) {
             continue;
         }
 
