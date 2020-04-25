@@ -30,6 +30,7 @@ public:
 
     Texture *texture;
     Texture *lightmap;
+
     unsigned char typelight[4];
 
     // lightmap coordinates
@@ -127,8 +128,8 @@ public:
     int getLOD();
 
     float updateFullArea();
-    void updateBoundingBox();
-    int updateLightmapFrame();
+    void  updateBoundingBox();
+    void  updateLightmapFrame();
 
     OCLTriangle getOpenCL();
 
@@ -136,7 +137,6 @@ public:
     void setId(int id);
 
     Plane plane();
-
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

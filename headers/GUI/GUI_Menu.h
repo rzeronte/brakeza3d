@@ -99,6 +99,8 @@ public:
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::getInstance()->DRAW_TILES_GRID);
                 }
                 ImGui::Separator();
+                ImGui::Checkbox("Frustum Clipping", &EngineSetup::getInstance()->ENABLE_CLIPPING);
+                ImGui::Separator();
                 ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE, range_frustum_fardistance_sensibility, &range_min_frustum_fardistance, &range_max_frustum_fardistance, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
                     cam->farDistance = (float) EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;

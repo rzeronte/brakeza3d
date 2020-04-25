@@ -118,6 +118,7 @@ public:
 
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.000001f;
+    bool ENABLE_CLIPPING = true;
 
     // BSP ITEM BILLBOARDS
     std::string SPRITES_FOLDER = "../assets/sprites/";

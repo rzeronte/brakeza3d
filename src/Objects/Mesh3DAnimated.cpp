@@ -6,7 +6,6 @@
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Render/Transforms.h"
 
-
 void Mesh3DAnimated::onUpdate()
 {
     if (!this->scene->HasAnimations()) return;
@@ -25,6 +24,7 @@ void Mesh3DAnimated::onUpdate()
         }
         runningTime = 0.000;
     }
+
 
     std::vector<aiMatrix4x4> Transforms;
     this->BoneTransform(runningTime, Transforms);

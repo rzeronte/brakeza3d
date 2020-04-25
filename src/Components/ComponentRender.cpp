@@ -101,25 +101,25 @@ void ComponentRender::getObjectsTriangles()
         Object3D *object = *(it);
 
         // Check for delete
-        if (object->isRemoved()) {
+        if ( object->isRemoved() ) {
             getSceneObjects()->erase(it);
             continue;
         } else {
             it++;
         }
 
-        if (!object->isEnabled()) {
+        if ( !object->isEnabled() ) {
             continue;
         }
 
-        if (object->isFollowCamera()) {
-            object->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-            object->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
+        if ( object->isFollowCamera() ) {
+            object->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() );
+            object->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
         }
 
         // Sprite Directional 3D
         auto *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
-        if (oSpriteDirectional != nullptr) {
+        if ( oSpriteDirectional != nullptr ) {
             if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( oSpriteDirectional->getPosition() )) {
                 continue;
             }
@@ -130,6 +130,7 @@ void ComponentRender::getObjectsTriangles()
             if (SETUP->TEXT_ON_OBJECT3D) {
                 Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oSpriteDirectional->getPosition(), SETUP->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
             }
+
             continue;
         }
 
@@ -199,15 +200,14 @@ void ComponentRender::getObjectsTriangles()
 
 void ComponentRender::hiddenSurfaceRemoval()
 {
-    for (int i ; i < clippedTriangles.size(); i++) {
+    for (int i = 0 ; i < clippedTriangles.size(); i++) {
         delete clippedTriangles[i];
     }
-
     clippedTriangles.clear();
-    visibleTriangles.clear();
 
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
+    visibleTriangles.clear();
     for (int i = 0; i < frameTriangles.size() ; i++) {
 
         frameTriangles[i]->updateObjectSpace();
@@ -220,15 +220,17 @@ void ComponentRender::hiddenSurfaceRemoval()
 
         // Clipping (needs objectSpace)
         if (frameTriangles[i]->testForClipping( cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE )) {
-            frameTriangles[i]->clipping(
-                    cam,
-                    cam->frustum->planes,
-                    SETUP->LEFT_PLANE,
-                    SETUP->BOTTOM_PLANE,
-                    frameTriangles[i]->parent,
-                    clippedTriangles,
-                    frameTriangles[i]->isBSP
-            );
+            if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
+                frameTriangles[i]->clipping(
+                        cam,
+                        cam->frustum->planes,
+                        SETUP->LEFT_PLANE,
+                        SETUP->BOTTOM_PLANE,
+                        frameTriangles[i]->parent,
+                        clippedTriangles,
+                        frameTriangles[i]->isBSP
+                );
+            }
 
             continue;
         }
@@ -482,7 +484,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
             pixelColor = Tools::alphaBlend( BUFFERS->getVideoBuffer( x, y ), pixelColor, alpha );
         }
 
-        if (!t->parent->isDecal() && t->getLightmap()->isLightMapped() && SETUP->ENABLE_LIGHTMAPPING) {
+        if (!t->parent->isDecal() && t->getLightmap() != NULL && SETUP->ENABLE_LIGHTMAPPING) {
             t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV);
         }
     }

@@ -14,8 +14,8 @@
 Triangle::Triangle()
 {
     texture = NULL;
+    lightmap = NULL;
     parent = NULL;
-    lightmap = new Texture();
 }
 
 Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
@@ -26,11 +26,10 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
 
     this->parent = parent;
 
-    // la textura se carga bajo demanda
-    texture = NULL;
-    this->lod = 1;
+    texture  = NULL;
+    lightmap = NULL;
 
-    lightmap = new Texture();
+    this->lod = 1;
 }
 
 void Triangle::updateObjectSpace()
@@ -72,7 +71,7 @@ void Triangle::updateFullVertexSpaces(Camera3D *cam)
 
 void Triangle::updateUVCache()
 {
-    if (getLightmap()->isLightMapped()) {
+    if (getLightmap() != NULL) {
         getLightmapCoordinatesFromUV(light_u1, light_v1, A.u, A.v);
         getLightmapCoordinatesFromUV(light_u2, light_v2, B.u, B.v);
         getLightmapCoordinatesFromUV(light_u3, light_v3, C.u, C.v);
@@ -290,10 +289,13 @@ void Triangle::updateBoundingBox()
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
 }
 
-int Triangle::updateLightmapFrame()
+void Triangle::updateLightmapFrame()
 {
+    if (getLightmap() == NULL) return;
+
     int style;
     int length;
+
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         style = typelight[nl];
         float timeIncrement = Brakeza3D::get()->deltaTime / 100.0f;
