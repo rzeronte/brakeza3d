@@ -80,7 +80,7 @@ public:
         Sprite3D *gore = new Sprite3D();
         gore->linkTextureAnimation(EngineBuffers::getInstance()->bloodTemplates);
         gore->setAutoRemoveAfterAnimation(true);
-        gore->setPosition(*getProjectile()->getPosition() );
+        gore->setPosition( getProjectile()->getPosition() );
         gore->setAnimation(Tools::random(0, gore->numAnimations - 1));
         gore->getBillboard()->setDimensions(5, 5);
         Brakeza3D::get()->addObject3D(gore, "gore");
@@ -130,7 +130,7 @@ public:
 
     void gibsParticles(NPCEnemyBody *enemy)
     {
-        Vertex3D position = *enemy->getPosition();
+        Vertex3D position = enemy->getPosition();
         position.y-=0.5;
 
         NPCEnemyPartBody *gibsBody = new NPCEnemyPartBody();
@@ -145,11 +145,11 @@ public:
     void makeGoreDecals(float rotX, float rotY, float rotZ) {
         // decal
         Decal *decal = new Decal();
-        decal->setPosition(*getNPCEnemy()->getPosition());
+        decal->setPosition( getNPCEnemy()->getPosition() );
         decal->setupCube(10, 10, 10);
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
-        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->setPosition( decal->getPosition() );
         decal->cube->update();
         decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         decal->getSprite()->setAnimation(Tools::random(0, 10));

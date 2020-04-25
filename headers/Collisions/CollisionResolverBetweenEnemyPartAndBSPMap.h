@@ -72,7 +72,7 @@ public:
     void makeGoreDecals()
     {
         Decal *decal = new Decal();
-        decal->setPosition(*getEnemyPart()->getPosition());
+        decal->setPosition( getEnemyPart()->getPosition() );
         decal->setupCube(10, 10, 10);
 
         btVector3 linearVelocity;
@@ -91,7 +91,7 @@ public:
 
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
-        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->setPosition( decal->getPosition() );
         decal->cube->update();
         decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         Brakeza3D::get()->addObject3D(decal, "decal");

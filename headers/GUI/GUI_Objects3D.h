@@ -67,9 +67,9 @@ public:
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition()->x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition()->y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition()->z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition().y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition().z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 

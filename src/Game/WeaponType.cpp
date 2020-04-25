@@ -45,8 +45,8 @@ void WeaponType::onUpdate(Camera3D *cam)
             Vertex3D dir = cam->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
             dir.getNormalize();
 
-            Vertex3D A = *cam->getPosition() + dir.getScaled(1);
-            Vertex3D B = *cam->getPosition() + dir.getScaled(50);
+            Vertex3D A = cam->getPosition() + dir.getScaled(1);
+            Vertex3D B = cam->getPosition() + dir.getScaled(50);
 
             Drawable::drawLightning( cam, A, B);
         }

@@ -8,7 +8,7 @@ void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
     dst.setScaled(o->scale);
 
     dst = o->getRotation() * dst;
-    dst = dst + *o->getPosition();
+    dst = dst + o->getPosition();
 
     dst = dst + o->drawOffset;
 
@@ -20,7 +20,7 @@ void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Camera3D *cam)
 {
     dst = src;
 
-    dst = dst - *cam->getPosition();
+    dst = dst - cam->getPosition();
     dst = cam->getRotation() * dst;
 
     dst.u = src.u;
@@ -84,7 +84,7 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 
     T = V - o->drawOffset;
 
-    T = T - *o->getPosition();
+    T = T - o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
     T.x/=o->scale;
@@ -102,7 +102,7 @@ Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam)
     Vertex3D A;
 
     A = cam->getRotation().getTranspose() * V;
-    A = A + *cam->getPosition();
+    A = A + cam->getPosition();
 
     A.u = V.u;
     A.v = V.v;

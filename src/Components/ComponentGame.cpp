@@ -126,7 +126,7 @@ void ComponentGame::onUpdateIA()
 
             enemy->updateCounters();
 
-            if (!Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->isPointInFrustum(*object->getPosition())) {
+            if (!Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( object->getPosition() )) {
                 continue;
             }
 
@@ -134,8 +134,8 @@ void ComponentGame::onUpdateIA()
                 continue;
             }
 
-            Vertex3D A = *object->getPosition();
-            Vertex3D B = *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition();
+            Vertex3D A = object->getPosition();
+            Vertex3D B = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition();
 
             Vector3D ray = Vector3D(A, B);
 

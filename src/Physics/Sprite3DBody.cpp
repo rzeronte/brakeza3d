@@ -31,7 +31,7 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDy
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 

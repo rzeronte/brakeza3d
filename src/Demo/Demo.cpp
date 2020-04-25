@@ -52,7 +52,7 @@ Demo::Demo()
     // cubo
     Mesh3D *cube = new Mesh3D();
     cube->setEnabled(false);
-    cube->setPosition(*Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition());
+    cube->setPosition( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
     cube->loadOBJBlender("../assets/models/cubo.obj");
     Brakeza3D::get()->addObject3D(cube, "cube");
 
@@ -64,7 +64,7 @@ Demo::Demo()
     decal->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 0));
     decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
     decal->getSprite()->setAnimation(Tools::random(0, 10));
-    decal->cube->setPosition(*decal->getPosition());
+    decal->cube->setPosition( decal->getPosition() );
     decal->cube->update();
     Brakeza3D::get()->addObject3D(decal, "decal");
 

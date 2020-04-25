@@ -436,7 +436,7 @@ Uint32 Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
 Uint32 Tools::mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q)
 {
 
-    Vertex3D P = *lp->getPosition();
+    Vertex3D P = lp->getPosition();
     Vertex3D R = lp->AxisForward();
 
     Vector3D L = Vector3D(P, Q);

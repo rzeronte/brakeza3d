@@ -50,7 +50,7 @@ public:
             Sprite3D *particle = new Sprite3D();
             particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
             particle->setAutoRemoveAfterAnimation(true);
-            particle->setPosition(*getProjectile()->getPosition() );
+            particle->setPosition( getProjectile()->getPosition() );
             particle->setAnimation(0);
             particle->getBillboard()->setDimensions(
                     weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
@@ -80,7 +80,7 @@ public:
     void makeGoreDecals()
     {
         Decal *decal = new Decal();
-        decal->setPosition(*getProjectile()->getPosition());
+        decal->setPosition( getProjectile()->getPosition() );
         decal->setupCube(10, 10, 10);
 
         btVector3 linearVelocity;
@@ -99,7 +99,7 @@ public:
 
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
-        decal->cube->setPosition(*decal->getPosition());
+        decal->cube->setPosition( decal->getPosition() );
         decal->cube->update();
         decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         Brakeza3D::get()->addObject3D(decal, "decal");
@@ -115,7 +115,7 @@ public:
 
             auto *enemy = dynamic_cast<NPCEnemyBody*> (object);
             if ( enemy != nullptr ) {
-                Vector3D vector = Vector3D(*this->projectile->getPosition(), *enemy->getPosition() );
+                Vector3D vector = Vector3D( this->projectile->getPosition(), enemy->getPosition() );
                 int distance = vector.getComponent().getModule();
                 if ( distance <= projectile->getDamageRadius()) {
                     killEnemy( enemy );
@@ -152,7 +152,7 @@ public:
             dynamicsWorld->removeCollisionObject( (btCollisionObject *) enemyBody->getRigidBody() );
 
             // Offset down for draw sprite
-            Vertex3D pos = *enemyBody->getPosition();
+            Vertex3D pos = enemyBody->getPosition();
             pos.y += 0.85f;
             enemyBody->setPosition(pos);
             enemyBody->setBodyEnabled( false );
@@ -176,7 +176,7 @@ public:
         Sprite3D *gore = new Sprite3D();
         gore->linkTextureAnimation(EngineBuffers::getInstance()->bloodTemplates);
         gore->setAutoRemoveAfterAnimation(true);
-        gore->setPosition(*getProjectile()->getPosition() );
+        gore->setPosition( getProjectile()->getPosition() );
         gore->setAnimation(Tools::random(0, gore->numAnimations - 1));
         gore->getBillboard()->setDimensions(5, 5);
         Brakeza3D::get()->addObject3D(gore, "gore");
@@ -184,7 +184,7 @@ public:
 
     void gibsParticles(NPCEnemyBody *enemy)
     {
-        Vertex3D position = *enemy->getPosition();
+        Vertex3D position = enemy->getPosition();
         position.y-=0.5;
 
         NPCEnemyPartBody *gibsBody = new NPCEnemyPartBody();

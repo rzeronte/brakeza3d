@@ -32,7 +32,7 @@ btRigidBody* SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, b
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 
@@ -61,7 +61,7 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     Vertex3D dir;
     if (applyCameraImpulse) {
@@ -108,7 +108,7 @@ btRigidBody* SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     pos = pos + dir.getScaled(10); // un poquito delante del NPC
 

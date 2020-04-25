@@ -79,7 +79,7 @@ public:
                 if (ImGui::IsItemEdited()) {
                     cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
                     cam->frustum->setup(
-                            *cam->getPosition(),
+                            cam->getPosition(),
                             Vertex3D(0, 0, 1),
                             EngineSetup::getInstance()->up,
                             EngineSetup::getInstance()->right,
@@ -103,7 +103,7 @@ public:
                 if (ImGui::IsItemEdited()) {
                     cam->farDistance = (float) EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
                     cam->frustum->setup(
-                            *cam->getPosition(),
+                            cam->getPosition(),
                             Vertex3D(0, 0, 1),
                             EngineSetup::getInstance()->up,
                             EngineSetup::getInstance()->right,

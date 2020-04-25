@@ -13,8 +13,8 @@ void ComponentCamera::onStart() {
 
 void ComponentCamera::preUpdate()
 {
-    getCamera()->velocity.vertex1 = *getCamera()->getPosition();
-    getCamera()->velocity.vertex2 = *getCamera()->getPosition();
+    getCamera()->velocity.vertex1 = getCamera()->getPosition();
+    getCamera()->velocity.vertex2 = getCamera()->getPosition();
 }
 
 void ComponentCamera::onUpdate() {
@@ -35,7 +35,7 @@ void ComponentCamera::onUpdate() {
 void ComponentCamera::postUpdate()
 {
     if (getCamera()->getFollowTo() != nullptr) {
-        getCamera()->setPosition( *getCamera()->getFollowTo()->getPosition() );
+        getCamera()->setPosition( getCamera()->getFollowTo()->getPosition() );
         getCamera()->setRotation( getCamera()->getFollowTo()->getRotation() );
     } else {
         getCamera()->setPosition( ComponentsManager::get()->getComponentCollisions()->finalVelocity );

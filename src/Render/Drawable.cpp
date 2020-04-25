@@ -309,13 +309,13 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward)
 {
-    if (!cam->frustum->isPointInFrustum(*object->getPosition())) {
+    if (!cam->frustum->isPointInFrustum( object->getPosition() )) {
         return;
     }
 
-    if (drawRight)   Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisRight().getScaled(3)), cam, Color::green() );
-    if (drawUp)      Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisUp().getScaled(3)), cam, Color::red() );
-    if (drawForward) Drawable::drawVector3D( Vector3D(*object->getPosition(), *object->getPosition()+object->AxisForward().getScaled(3)), cam, Color::blue() );
+    if (drawRight)   Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisRight().getScaled(3)), cam, Color::green() );
+    if (drawUp)      Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisUp().getScaled(3)), cam, Color::red() );
+    if (drawForward) Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisForward().getScaled(3)), cam, Color::blue() );
 }
 
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangles)

@@ -13,7 +13,7 @@ void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string model
     if ( meshObject->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
         meshObject->setScale( scale );
         meshObject->setDrawOffset( this-> drawOffset );
-        meshObject->setPosition( *this->getPosition() );
+        meshObject->setPosition( this->getPosition() );
         meshObject->setRotation( this->rotationFixed );
         meshObject->setRemoveAtEndAnimation( remove_at_end );
     }
@@ -25,7 +25,7 @@ void Mesh3DAnimatedCollection::onUpdate()
 {
     if (this->currentAnimation < 0) return;
 
-    this->getCurrentMesh3DAnimated()->setPosition( *this->getPosition() );
+    this->getCurrentMesh3DAnimated()->setPosition( this->getPosition() );
     this->getCurrentMesh3DAnimated()->setRotation( this->getRotation() * rotationFixed);
     this->getCurrentMesh3DAnimated()->onUpdate();
 }

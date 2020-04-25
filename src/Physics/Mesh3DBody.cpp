@@ -42,7 +42,7 @@ btRigidBody* Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDyna
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
@@ -66,7 +66,7 @@ btRigidBody* Mesh3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Came
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     Vertex3D dir;
     if (applyCameraImpulse) {
@@ -114,7 +114,7 @@ btRigidBody* Mesh3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D si
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     pos = pos + dir.getScaled(10); // un poquito delante del NPC
 

@@ -111,7 +111,7 @@ void ComponentCollisions::makeGhostForCamera()
     triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel(SETUP->cameraTriggerNameIdentifier);
     triggerCamera->setEnabled(true);
-    triggerCamera->setPosition(*camera->getPosition());
+    triggerCamera->setPosition( camera->getPosition() );
     triggerCamera->getGhostObject()->setCollisionShape(camera->kinematicController->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
@@ -236,7 +236,7 @@ void ComponentCollisions::updatePhysicObjects()
 void ComponentCollisions::syncTriggerGhostCamera()
 {
     Vertex3D direction = camera->getRotation().getTranspose() * SETUP->forward;
-    Vertex3D p = *camera->getPosition();
+    Vertex3D p = camera->getPosition();
 
     float farDist = 1;
     p.x = p.x + direction.x * farDist;

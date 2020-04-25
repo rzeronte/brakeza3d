@@ -95,7 +95,7 @@ void Player::newGame()
 void Player::respawn()
 {
     ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
-    if ( Tools::isValidVector( *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() )) {
+    if ( Tools::isValidVector( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() )) {
         Logging::getInstance()->Log("error position start");
     }
 
@@ -125,10 +125,10 @@ void Player::shoot()
         projectile->setFromEnemy( false );
         projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
         projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
-        projectile->setPosition( *Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
-        projectile->getPosition()->x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->getPosition()->y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
-        projectile->getPosition()->z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
+        projectile->setPosition( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
+        projectile->getPosition().x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
+        projectile->getPosition().y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
+        projectile->getPosition().z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->setLabel("projectile" + weaponsManager->getCurrentWeaponType()->getAmmoType()->getName() );
         projectile->setEnabled(true);
         projectile->makeProjectileRigidBody(

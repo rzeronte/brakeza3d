@@ -84,7 +84,7 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
         Vertex3D p = way.getComponent().getNormalize().getScaled(this->getSpeed());
-        Vertex3D pos = *this->getPosition() + p;
+        Vertex3D pos = this->getPosition() + p;
 
         if (!Tools::isValidVector(pos)) {
             return;
@@ -116,10 +116,10 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
 {
     Projectile3DBody *projectile = new Projectile3DBody();
     projectile->setFromEnemy( true );
-    projectile->setPosition( *this->getPosition() );
+    projectile->setPosition( this->getPosition() );
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
-    Vector3D dir = Vector3D(*this->getPosition(), *cam->getPosition());
+    Vector3D dir = Vector3D( this->getPosition(),  cam->getPosition());
     projectile->makeProjectileRigidBodyToPlayer(1, Vertex3D(0.5, 0.5, 0.5), dir.getComponent().getNormalize(), dynamicsWorld, 700);
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 

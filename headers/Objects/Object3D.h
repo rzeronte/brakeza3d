@@ -34,7 +34,7 @@ public:
     std::string getLabel() const;
     void setLabel(const std::string label);
 
-    Vertex3D* getPosition();
+    Vertex3D &getPosition();
     M3 getRotation();
 
     void setPosition(Vertex3D p);

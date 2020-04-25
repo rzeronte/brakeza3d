@@ -242,7 +242,6 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
     aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
 
-
     if ( boneMapping.find(NodeName) != boneMapping.end() ) {
         uint BoneIndex = boneMapping[NodeName];
         boneInfo[ BoneIndex ].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
@@ -343,7 +342,7 @@ void Mesh3DAnimated::processNode(aiNode *node)
     if (std::string(node->mName.C_Str()) == this->getFollowPointLabel() ) {
         this->setFollowPointNode( node );
         this->follow_me_point_object = new Object3D();
-        this->follow_me_point_object->setPosition(*this->getPosition());
+        this->follow_me_point_object->setPosition( this->getPosition() );
         this->follow_me_point_object->setRotation(M3::getMatrixIdentity() );
     }
 

@@ -30,7 +30,7 @@ void ComponentBSP::onStart()
 void ComponentBSP::preUpdate()
 {
     if ( bsp->isLoaded() ) {
-        bspleaf_t *leaf = bsp->FindLeaf( *camera->getPosition(), true );
+        bspleaf_t *leaf = bsp->FindLeaf( camera->getPosition(), true );
         bsp->setVisibleSet( leaf );
     }
 }

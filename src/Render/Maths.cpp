@@ -212,7 +212,7 @@ float Maths::distanteBetweenpoints(Vertex3D v1, Vertex3D v2)
 
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam)
 {
-    Vertex3D a = *cam->getPosition() - *object->getPosition();
+    Vertex3D a = cam->getPosition() - object->getPosition();
     Vertex3D b = object->getRotation() * EngineSetup::getInstance()->forward;
 
     a = a.getNormalize();

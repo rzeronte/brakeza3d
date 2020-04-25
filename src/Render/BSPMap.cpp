@@ -457,8 +457,8 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             Mesh3DBody *body = new Mesh3DBody();
             body->aabbMax = aabbMax;
             body->aabbMin = aabbMin;
-            body->setPosition(*this->getPosition());
-            body->setRotation(this->getRotation());
+            body->setPosition( this->getPosition() );
+            body->setRotation( this->getRotation() );
             body->setEnabled(true);
             if (entityIndex >= 1 ) {
                 body->setBspEntityIndex(entityIndex);
@@ -483,8 +483,8 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             Mesh3DGhost *ghost = new Mesh3DGhost();
             ghost->aabbMax = aabbMax;
             ghost->aabbMin = aabbMin;
-            ghost->setPosition(*this->getPosition());
-            ghost->setRotation(this->getRotation());
+            ghost->setPosition( this->getPosition() );
+            ghost->setRotation(this->getRotation() );
 
             if (entityIndex >= 1 ) {
                 ghost->setBspEntityIndex(entityIndex);
@@ -983,7 +983,7 @@ void BSPMap::createBulletPhysicsShape()
     this->bspBtShape = new btBvhTriangleMeshShape(&bspBtMesh, true, true);
     this->bspBtShape->calculateLocalInertia(0, localInertia);
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
     trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     this->motionState = new btDefaultMotionState(trans);

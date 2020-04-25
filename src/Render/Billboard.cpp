@@ -27,21 +27,21 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     Y.y = (height/2) * U.y;
     Y.z = (height/2) * U.z;
 
-    Q1.x = o->getPosition()->x + X.x + Y.x;
-    Q1.y = o->getPosition()->y + X.y + Y.y;
-    Q1.z = o->getPosition()->z + X.z + Y.z;
+    Q1.x = o->getPosition().x + X.x + Y.x;
+    Q1.y = o->getPosition().y + X.y + Y.y;
+    Q1.z = o->getPosition().z + X.z + Y.z;
 
-    Q2.x = o->getPosition()->x - X.x + Y.x;
-    Q2.y = o->getPosition()->y - X.y + Y.y;
-    Q2.z = o->getPosition()->z - X.z + Y.z;
+    Q2.x = o->getPosition().x - X.x + Y.x;
+    Q2.y = o->getPosition().y - X.y + Y.y;
+    Q2.z = o->getPosition().z - X.z + Y.z;
 
-    Q3.x = o->getPosition()->x - X.x - Y.x;
-    Q3.y = o->getPosition()->y - X.y - Y.y;
-    Q3.z = o->getPosition()->z - X.z - Y.z;
+    Q3.x = o->getPosition().x - X.x - Y.x;
+    Q3.y = o->getPosition().y - X.y - Y.y;
+    Q3.z = o->getPosition().z - X.z - Y.z;
 
-    Q4.x = o->getPosition()->x + X.x - Y.x;
-    Q4.y = o->getPosition()->y + X.y - Y.y;
-    Q4.z = o->getPosition()->z + X.z - Y.z;
+    Q4.x = o->getPosition().x + X.x - Y.x;
+    Q4.y = o->getPosition().y + X.y - Y.y;
+    Q4.z = o->getPosition().z + X.z - Y.z;
 
     Q1 = Transforms::objectToLocal(Q1, o);
     Q2 = Transforms::objectToLocal(Q2, o);

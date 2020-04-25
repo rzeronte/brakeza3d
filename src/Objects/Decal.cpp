@@ -29,9 +29,9 @@ float Decal::getSCoord(Vertex3D Q)
 
 void Decal::setupFromAxis()
 {
-    sprite->setPosition(*getPosition());
+    sprite->setPosition( getPosition() );
 
-    P = *getPosition();
+    P = getPosition();
     N = AxisForward();
     T = AxisUp();
     B = AxisRight();

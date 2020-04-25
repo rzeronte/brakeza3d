@@ -12,7 +12,7 @@ btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
     btTransform trans;
     trans.setIdentity();
 
-    Vertex3D pos = *this->getPosition();
+    Vertex3D pos = this->getPosition();
 
     trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
 

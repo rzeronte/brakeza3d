@@ -1,7 +1,6 @@
 
 #include <SDL_image.h>
 #include "../../headers/Components/ComponentWeapons.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
@@ -22,7 +21,7 @@ void ComponentWeapons::onStart()
     handsCollection->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
     handsCollection->setLabel("handsCollection");
     handsCollection->addAnimation("hands_idle", "hands.fbx", 0.05, false);
-    handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
+    //handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
     handsCollection->setAnimation(0);
     Brakeza3D::get()->addObject3D(handsCollection, handsCollection->getLabel());
 

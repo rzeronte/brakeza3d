@@ -19,7 +19,7 @@ Camera3D::Camera3D() {
     // Inicializamos el frustum que acompañará a la cámara
     frustum = new Frustum();
     frustum->setup(
-            *this->getPosition(),
+            this->getPosition(),
             Vertex3D(0, 0, 1),
             EngineSetup::getInstance()->up,
             EngineSetup::getInstance()->right,
@@ -92,7 +92,7 @@ float Camera3D::getScreenAspectRatio()
 
 void Camera3D::UpdateFrustum()
 {
-    frustum->position  = *this->getPosition();
+    frustum->position  = this->getPosition();
 
     frustum->direction = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
     frustum->up        = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
@@ -189,10 +189,10 @@ void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
     }
 
     if ((fabs(speed) > 0)) {
-        this->velocity.vertex2.z = this->getPosition()->z + speed * (float) cos(-yaw * M_PI / 180.0);
-        this->velocity.vertex2.x = this->getPosition()->x + speed * (float) sin(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.z = this->getPosition().z + speed * (float) cos(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.x = this->getPosition().x + speed * (float) sin(-yaw * M_PI / 180.0);
         if ( allowVertical ) {
-            this->velocity.vertex2.y = this->getPosition()->y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
+            this->velocity.vertex2.y = this->getPosition().y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
         }
     }
 

@@ -314,7 +314,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
 
                 cam->horizontal_fov = (float) SETUP->ZOOM_FOV;
                 cam->frustum->setup(
-                        *cam->getPosition(),
+                        cam->getPosition(),
                         Vertex3D(0, 0, 1),
                         SETUP->up,
                         SETUP->right,
@@ -335,7 +335,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
 
                 cam->horizontal_fov = (float) SETUP->HORIZONTAL_FOV;
                 cam->frustum->setup(
-                        *cam->getPosition(),
+                        cam->getPosition(),
                         Vertex3D(0, 0, 1),
                         SETUP->up,
                         SETUP->right,
@@ -413,7 +413,7 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
         }
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(
-                *ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+                ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
                 Vertex3D(0, 0, 1),
                 SETUP->up,
                 SETUP->right,

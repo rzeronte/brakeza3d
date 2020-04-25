@@ -720,9 +720,9 @@ OCLTriangle Triangle::getOpenCL()
 
     ot.id = 0;
 
-    ot.o_x = parent->getPosition()->x;
-    ot.o_y = parent->getPosition()->y;
-    ot.o_z = parent->getPosition()->z;
+    ot.o_x = parent->getPosition().x;
+    ot.o_y = parent->getPosition().y;
+    ot.o_z = parent->getPosition().z;
 
     ot.o_scale = parent->scale;
 

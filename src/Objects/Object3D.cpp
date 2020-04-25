@@ -8,8 +8,8 @@
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
 }
 
-Vertex3D *Object3D::getPosition() {
-    return &position;
+Vertex3D &Object3D::getPosition() {
+    return position;
 }
 
 M3 Object3D::getRotation() {
