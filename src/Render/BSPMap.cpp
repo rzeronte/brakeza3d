@@ -677,6 +677,7 @@ void BSPMap::InitializeEntities()
 
                     auto *enemyBody = new NPCEnemyBody();
                     enemyBody->setScale( enemyTemplate->getScale() );
+                    enemyBody->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
                     enemyBody->setPosition( pos );
                     enemyBody->setRotation( rotMonster );
                     enemyBody->setRespawnRotation( rotMonster );
@@ -686,11 +687,11 @@ void BSPMap::InitializeEntities()
                     enemyBody->setRange( enemyTemplate->getRange() );
                     enemyBody->setCadence( enemyTemplate->getCadence() );
                     enemyBody->setLabel("BSPEntity_" + std::to_string(i) + " (monster)");
-                    enemyBody->addAnimation("swat_idle", "gangster/idle.fbx", enemyTemplate->getScale(), false);
-                    enemyBody->addAnimation("swat_walk", "gangster/walking.fbx", enemyTemplate->getScale(), false );
-                    enemyBody->addAnimation("swat_fire", "gangster/fire.fbx", enemyTemplate->getScale(), false );
-                    enemyBody->addAnimation("swat_injuried", "gangster/injuried.fbx", enemyTemplate->getScale(), false );
-                    enemyBody->addAnimation("swat_dead", "gangster/death.fbx", enemyTemplate->getScale(), true );
+                    enemyBody->addAnimation("swat_idle", "bob/bob_lamp_update.md5mesh", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_walk", "bob/bob_lamp_update.md5mesh", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_fire", "bob/bob_lamp_update.md5mesh", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_injuried", "bob/bob_lamp_update.md5mesh", enemyTemplate->getScale(), false );
+                    enemyBody->addAnimation("swat_dead", "bob/bob_lamp_update.md5mesh", enemyTemplate->getScale(), true );
                     enemyBody->setAnimation(EngineSetup::SOLDIER_IDLE);
                     enemyBody->makeSimpleRigidBody(
                             0,

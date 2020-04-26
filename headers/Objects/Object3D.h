@@ -67,6 +67,8 @@ public:
     bool isFollowCamera() const;
     void setFollowCamera(bool followCamera);
 
+    virtual void onUpdate();
+
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

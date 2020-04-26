@@ -71,6 +71,7 @@ public:
     Object3D *getFollowMePointObject() const;
 
     void onUpdate();
+    void updateFrameTransformations();
 
     bool AssimpLoad(const std::string &Filename);
     bool ReadNodes();

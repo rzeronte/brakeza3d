@@ -271,7 +271,7 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
 
 void Mesh3D::updateBoundingBox()
 {
-    float maxX, minX, maxY, minY, maxZ, minZ;
+    float maxX = -99999, minX = 99999, maxY = -99999, minY = 99999, maxZ = -99999, minZ = 99999;
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
         maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);
@@ -311,24 +311,6 @@ void Mesh3D::updateBoundingBox()
     Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
 }
 
-bool Mesh3D::isAABBVisibleInBSP( Vertex3D &from )
-{
-    for (int i = 0; i < 8; i++) {
-        bool rayCastResult = Brakeza3D::get()->getComponentsManager()
-                ->getComponentBSP()
-                ->getBSP()
-                ->recastWrapper->
-                rayCasting(from, aabb.vertices[ i ] )
-        ;
-
-        if (rayCastResult) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void Mesh3D::copyFrom(Mesh3D *source)
 {
     // Triangles
@@ -350,4 +332,9 @@ void Mesh3D::copyFrom(Mesh3D *source)
     this->numTextures   = source->numTextures;
     this->modelTextures = source->modelTextures;
     this->scale         = source->scale;
+}
+
+void Mesh3D::onUpdate()
+{
+    this->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles()) ;
 }

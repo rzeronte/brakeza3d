@@ -3,6 +3,7 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/ComponentsManager.h"
 
 SpriteDirectional3D::SpriteDirectional3D()
 {
@@ -117,4 +118,18 @@ void SpriteDirectional3D::updateStep()
 {
     step = (float) 1 / (float) this->getCurrentTextureAnimationDirectional()->fps;
     this->counterAnimations->setStep(step );
+}
+
+void SpriteDirectional3D::onUpdate()
+{
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( this->getPosition() )) {
+        return;
+    }
+
+    this->updateTrianglesCoordinates( ComponentsManager::get()->getComponentCamera()->getCamera() );
+
+    Drawable::drawBillboard(
+            this->getBillboard(),
+            &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
+    );
 }

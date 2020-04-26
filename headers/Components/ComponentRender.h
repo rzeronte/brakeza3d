@@ -35,13 +35,15 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    void getBSPTriangles();
-    void getObjectsTriangles();
+    void onUpdateBSP();
+    void onUpdateSceneObjects();
     void hiddenSurfaceRemoval();
+    void drawVisibleTriangles();
+
     void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);
     void handleOpenCLTriangles();
     void drawTilesGrid();
-    void drawFrameTriangles(std::vector<Triangle*> &visibleTriangles);
+    void drawTriangles(std::vector<Triangle*> &visibleTriangles);
     void processTriangle(Triangle *t);
     void triangleRasterizer(Triangle *t);
     void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *);

@@ -37,6 +37,8 @@ public:
     Sprite3D *getSprite() const;
 
     void setSprite(Sprite3D *sprite);
+
+    void onUpdate();
 };
 
 

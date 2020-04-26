@@ -4,6 +4,7 @@
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineSetup.h"
+#include "../../headers/ComponentsManager.h"
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
 }
@@ -126,4 +127,12 @@ bool Object3D::isFollowCamera() const {
 
 void Object3D::setFollowCamera(bool followCamera) {
     Object3D::followCamera = followCamera;
+}
+
+void Object3D::onUpdate()
+{
+    if ( this->isFollowCamera() ) {
+        this->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() );
+        this->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
+    }
 }

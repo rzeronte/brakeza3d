@@ -21,8 +21,9 @@ public:
     void addAnimation(std::string, std::string modelFilename, float scale, bool remove_at_end);
 
     void onUpdate();
-    std::vector<Mesh3DAnimated *> copyFrom(Mesh3DAnimatedCollection *);
+    void onUpdateCurrentMesh3D();
 
+    std::vector<Mesh3DAnimated *> copyFrom(Mesh3DAnimatedCollection *);
     const M3 &getRotationFixed() const;
     void setRotationFixed(const M3 &rotationFixed);
 };

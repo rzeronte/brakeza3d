@@ -8,6 +8,13 @@
 
 void Mesh3DAnimated::onUpdate()
 {
+    this->updateFrameTransformations();
+
+    Mesh3D::onUpdate();
+}
+
+void Mesh3DAnimated::updateFrameTransformations()
+{
     if (!this->scene->HasAnimations()) return;
 
     if (this->isFollowCamera()) {
@@ -80,6 +87,7 @@ void Mesh3DAnimated::onUpdate()
 
 bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
 {
+    Logging::getInstance()->Log("AssimpLoad for " + Filename);
 
     this->scene = importer.ReadFile( Filename, aiProcess_Triangulate |
                                               aiProcess_JoinIdenticalVertices |

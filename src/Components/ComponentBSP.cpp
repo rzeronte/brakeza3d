@@ -19,7 +19,7 @@ void ComponentBSP::onStart()
 
     loadMapsFromJSON();
     loadWeaponsJSON();
-    //loadEnemiesJSON();
+    loadEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");

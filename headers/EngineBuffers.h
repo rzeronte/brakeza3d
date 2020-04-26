@@ -26,6 +26,8 @@ public:
     Uint32 *videoBuffer;
     int    sizeBuffers;
 
+    int widthVideoBuffer = EngineSetup::getInstance()->screenWidth;
+
     int *firePixelsBuffer;
 
     OCLTriangle *OCLTrianglesBuffer;

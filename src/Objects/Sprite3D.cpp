@@ -4,6 +4,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/2D/TextureAnimation.h"
+#include "../../headers/ComponentsManager.h"
 
 Sprite3D::Sprite3D()
 {
@@ -86,4 +87,15 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst)
 TextureAnimation* Sprite3D::getCurrentTextureAnimation()
 {
     return this->animations[currentAnimationIndex];
+}
+
+void Sprite3D::onUpdate()
+{
+    Object3D::onUpdate();
+
+    this->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
+    Drawable::drawBillboard(
+            this->getBillboard(),
+            &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
+    );
 }

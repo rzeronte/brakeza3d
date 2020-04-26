@@ -26,25 +26,11 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::onUpdate()
 {
-    this->getBSPTriangles();
-    this->getObjectsTriangles();
+    this->onUpdateBSP();
+    this->onUpdateSceneObjects();
+
     this->hiddenSurfaceRemoval();
-
-    if (SETUP->BASED_TILE_RENDER) {
-        this->handleTrianglesToTiles(visibleTriangles);
-
-        this->drawTilesTriangles(&visibleTriangles);
-
-        if (SETUP->DRAW_TILES_GRID) {
-            this->drawTilesGrid();
-        }
-    } else {
-        if (!SETUP->RASTERIZER_OPENCL) {
-            this->drawFrameTriangles(visibleTriangles);
-        } else {
-            this->handleOpenCLTriangles();
-        }
-    }
+    this->drawVisibleTriangles();
 
     if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
@@ -54,12 +40,8 @@ void ComponentRender::onUpdate()
         this->drawSceneObjectsAxis();
     }
 
-    if (SETUP->DRAW_FRUSTUM) {
-        Drawable::drawFrustum(ComponentsManager::get()->getComponentCamera()->getCamera()->frustum, ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
-    }
-
     if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera() );
+        Drawable::drawMainAxis( ComponentsManager::get()->getComponentCamera()->getCamera() );
     }
 }
 
@@ -83,7 +65,7 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
     return visibleTriangles;
 }
 
-void ComponentRender::getBSPTriangles()
+void ComponentRender::onUpdateBSP()
 {
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded() ) {
         ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf(ComponentsManager::get()->getComponentCamera()->getCamera() );
@@ -94,7 +76,7 @@ void ComponentRender::getBSPTriangles()
     }
 }
 
-void ComponentRender::getObjectsTriangles()
+void ComponentRender::onUpdateSceneObjects()
 {
     std::vector<Object3D *>::iterator it;
     for ( it = getSceneObjects()->begin(); it != getSceneObjects()->end(); ) {
@@ -112,89 +94,7 @@ void ComponentRender::getObjectsTriangles()
             continue;
         }
 
-        if ( object->isFollowCamera() ) {
-            object->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() );
-            object->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
-        }
-
-        // Sprite Directional 3D
-        auto *oSpriteDirectional = dynamic_cast<SpriteDirectional3D*> (object);
-        if ( oSpriteDirectional != nullptr ) {
-            if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( oSpriteDirectional->getPosition() )) {
-                continue;
-            }
-
-            oSpriteDirectional->updateTrianglesCoordinates( ComponentsManager::get()->getComponentCamera()->getCamera() );
-            Drawable::drawBillboard(oSpriteDirectional->getBillboard(), &this->frameTriangles);
-
-            if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oSpriteDirectional->getPosition(), SETUP->TEXT_3D_COLOR, oSpriteDirectional->getLabel());
-            }
-
-            continue;
-        }
-
-        // Sprite 3D
-        auto *oSprite = dynamic_cast<Sprite3D*> (object);
-        if (oSprite != nullptr) {
-            oSprite->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
-            Drawable::drawBillboard(oSprite->getBillboard(), &frameTriangles);
-
-            if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oSprite->getPosition(), SETUP->TEXT_3D_COLOR, oSprite->getLabel());
-            }
-            continue;
-        }
-
-        auto *oBillboardBody = dynamic_cast<BillboardBody*> (object);
-        if (oBillboardBody != nullptr) {
-            oBillboardBody->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
-            Drawable::drawBillboard(oBillboardBody, &frameTriangles);
-            continue;
-        }
-
-        auto *oMeshAnimated = dynamic_cast<Mesh3DAnimated*> (object);
-        if (oMeshAnimated != nullptr) {
-            oMeshAnimated->onUpdate();
-        }
-
-        auto *oMeshAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection*> (object);
-        if (oMeshAnimatedCollection != nullptr) {
-            oMeshAnimatedCollection->getCurrentMesh3DAnimated()->updateBoundingBox();
-
-            Vertex3D p = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-            /*if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb )) {
-                continue;
-            }*/
-
-            //if (!oMeshAnimatedCollection->getCurrentMesh3DAnimated()->isAABBVisibleInBSP( p )) {
-                //continue;
-            //}
-
-            /*if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
-                Drawable::drawAABB( &oMeshAnimatedCollection->getCurrentMesh3DAnimated()->aabb, oMeshAnimatedCollection );
-            }*/
-
-            oMeshAnimatedCollection->onUpdate();
-            oMeshAnimatedCollection->getCurrentMesh3DAnimated()->draw( &this->frameTriangles );
-        }
-
-        auto *oMesh = dynamic_cast<Mesh3D*> (object);
-        if (oMesh != nullptr) {
-
-            oMesh->draw( &this->frameTriangles) ;
-            if (SETUP->TEXT_ON_OBJECT3D) {
-                Tools::writeText3D(ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->fontDefault, oMesh->getPosition(), SETUP->TEXT_3D_COLOR, oMesh->getLabel());
-            }
-
-            if (SETUP->DRAW_DECAL_WIREFRAMES) {
-                Decal *oDecal = dynamic_cast<Decal*> (oMesh);
-                if (oDecal != NULL) {
-                    oDecal->cube->draw( &this->frameTriangles );
-                }
-            }
-            continue;
-        }
+        object->onUpdate();
     }
 }
 
@@ -274,6 +174,25 @@ void ComponentRender::hiddenSurfaceRemoval()
     frameTriangles.clear();
 }
 
+void ComponentRender::drawVisibleTriangles()
+{
+    if (SETUP->BASED_TILE_RENDER) {
+        this->handleTrianglesToTiles(visibleTriangles);
+
+        this->drawTilesTriangles(&visibleTriangles);
+
+        if (SETUP->DRAW_TILES_GRID) {
+            this->drawTilesGrid();
+        }
+    } else {
+        if (!SETUP->RASTERIZER_OPENCL) {
+            this->drawTriangles(visibleTriangles);
+        } else {
+            this->handleOpenCLTriangles();
+        }
+    }
+}
+
 void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
 {
     for (int i = 0; i < this->numTiles; i++) {
@@ -342,7 +261,7 @@ void ComponentRender::drawTilesGrid()
     }
 }
 
-void ComponentRender::drawFrameTriangles(std::vector<Triangle*> &visibleTriangles)
+void ComponentRender::drawTriangles(std::vector<Triangle*> &visibleTriangles)
 {
     std::vector<Triangle *>::iterator it;
     for ( it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
@@ -484,7 +403,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
             pixelColor = Tools::alphaBlend( BUFFERS->getVideoBuffer( x, y ), pixelColor, alpha );
         }
 
-        if (!t->parent->isDecal() && t->getLightmap() != NULL && SETUP->ENABLE_LIGHTMAPPING) {
+        if (!t->parent->isDecal() && t->getLightmap() != NULL && !t->getTexture()->liquid && SETUP->ENABLE_LIGHTMAPPING) {
             t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV);
         }
     }

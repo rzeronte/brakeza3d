@@ -52,6 +52,8 @@ public:
     void linkTexturesTo(SpriteDirectional3D *clone);
 
     TextureAnimationDirectional* getCurrentTextureAnimationDirectional();
+
+    void onUpdate();
 };
 
 

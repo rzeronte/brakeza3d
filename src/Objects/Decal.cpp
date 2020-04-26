@@ -2,6 +2,7 @@
 #include "../../headers/Objects/Decal.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Objects/SpriteDirectional3D.h"
+#include "../../headers/ComponentsManager.h"
 
 Decal::Decal() : sprite(new Sprite3D())
 {
@@ -122,4 +123,11 @@ Sprite3D *Decal::getSprite() const {
 
 void Decal::setSprite(Sprite3D *sprite) {
     Decal::sprite = sprite;
+}
+
+void Decal::onUpdate()
+{
+    if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+        this->cube->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles() );
+    }
 }

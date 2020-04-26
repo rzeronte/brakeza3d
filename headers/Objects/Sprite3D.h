@@ -44,6 +44,8 @@ public:
     void linkTextureAnimation(Sprite3D *);
 
     TextureAnimation* getCurrentTextureAnimation();
+
+    void onUpdate();
 };
 
 

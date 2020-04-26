@@ -86,7 +86,7 @@ public:
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool TRIANGLE_MODE_TEXTURIZED = true;
 
     bool DRAW_ANIMATION_BONES = false;
     bool TRIANGLE_MODE_VERTEX_WEIGHT = false;

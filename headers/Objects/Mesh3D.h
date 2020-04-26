@@ -62,9 +62,9 @@ public:
 
     void updateBoundingBox();
 
-    bool isAABBVisibleInBSP(Vertex3D &from);
-
     void copyFrom(Mesh3D *source);
+
+    void onUpdate();
 };
 
 

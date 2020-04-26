@@ -4,6 +4,8 @@
 
 #include "../../headers/Physics/BillboardBody.h"
 #include "../../headers/EngineSetup.h"
+#include "../../headers/ComponentsManager.h"
+#include "../../headers/Render/Drawable.h"
 
 BillboardBody::BillboardBody()
 {
@@ -68,4 +70,12 @@ void BillboardBody::updateTrianglesCoordinatesAndTexture(Camera3D *cam)
     this->updateUnconstrainedQuad(this, up, right );
 
     this->reassignTexture();
+}
+
+void BillboardBody::onUpdate()
+{
+    Object3D::onUpdate();
+
+    this->updateTrianglesCoordinatesAndTexture( ComponentsManager::get()->getComponentCamera()->getCamera() );
+    Drawable::drawBillboard( this, &ComponentsManager::get()->getComponentRender()->getFrameTriangles() );
 }
