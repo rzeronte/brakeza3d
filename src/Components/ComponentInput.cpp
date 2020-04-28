@@ -8,15 +8,18 @@
 #include "../../headers/ComponentsManager.h"
 #include <iostream>
 
-ComponentInput::ComponentInput() {
+ComponentInput::ComponentInput()
+{
     setEnabled( true );
 }
 
-void ComponentInput::onStart() {
+void ComponentInput::onStart()
+{
     std::cout << "ComponentInput onStart" << std::endl;
 }
 
-void ComponentInput::preUpdate() {
+void ComponentInput::preUpdate()
+{
 
 }
 
@@ -36,14 +39,15 @@ void ComponentInput::onEnd() {
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
+    // Core
     ImGui_ImplSDL2_ProcessEvent(e);
+    updateKeyboardMapping();
+    updateMouseStates(e);
+    handleWindowEvents(e, finish);
 
     if ( !isEnabled() ) return;
 
-    updateKeyboardMapping();
-    updateMouseStates(e);
     handleMouse(e);
-    handleWindowEvents(e, finish);
 }
 
 
