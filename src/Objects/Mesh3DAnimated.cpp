@@ -36,11 +36,7 @@ void Mesh3DAnimated::updateFrameTransformations()
     std::vector<aiMatrix4x4> Transforms;
     this->BoneTransform(runningTime, Transforms);
 
-    for (int i = 0; i < this->modelTriangles.size(); i++) {
-        delete this->modelTriangles[i];
-    }
-    this->modelTriangles.clear();
-
+    int numModelTriangles = 0;
     for (int i = 0; i < this->scene->mNumMeshes; i++) {
 
         if (this->meshVertices[i].size() == 0) continue;
@@ -58,12 +54,17 @@ void Mesh3DAnimated::updateFrameTransformations()
             this->updateForBone(V2, i, Face.mIndices[1], Transforms);
             this->updateForBone(V3, i, Face.mIndices[2], Transforms);
 
-            auto *T = new Triangle(V1, V2, V3, this);
+            auto *T = this->modelTriangles[numModelTriangles];
+
+            T->A = V1;
+            T->B = V2;
+            T->C = V3;
+
             if (this->numTextures > 0) {
                 T->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
             }
 
-            this->modelTriangles.emplace_back( T );
+            numModelTriangles++;
         }
     }
 

@@ -75,6 +75,15 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+
+                ImGui::Checkbox("Render BSP Map", &EngineSetup::getInstance()->RENDER_BSP_TRIANGLES);
+                ImGui::Checkbox("onUpdate Objects", &EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE);
+                if (EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE) {
+                    ImGui::Checkbox("onUpdate Objects Threated", &EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED);
+                }
+
+                ImGui::Separator();
+
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::getInstance()->HORIZONTAL_FOV, range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
                     cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;

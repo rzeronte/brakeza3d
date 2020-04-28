@@ -233,11 +233,13 @@ void Mesh3D::loadOBJBlenderMaterials() {
 void Mesh3D::draw(std::vector<Triangle*> *frameTriangles)
 {
     // draw triangles of mesh
+    ComponentsManager::get()->getComponentRender()->lockFrameTriangles.lock();
     for (int i = 0; i < this->modelTriangles.size() ; i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
-        frameTriangles->emplace_back( this->modelTriangles[i] );
+        frameTriangles->push_back( this->modelTriangles[i] );
     }
+    ComponentsManager::get()->getComponentRender()->lockFrameTriangles.unlock();
 }
 
 /*void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)

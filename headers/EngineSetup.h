@@ -73,6 +73,11 @@ public:
     bool RENDER_MAIN_AXIS = true;
     bool RENDER_OBJECTS_AXIS = false;
 
+    bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
+    bool EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED = true;
+
+    bool RENDER_BSP_TRIANGLES = true;
+
     bool DEBUG_RENDER_INFO = false;
     bool OPENCL_SHOW_TIME_KERNELS = false;
 

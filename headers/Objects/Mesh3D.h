@@ -20,6 +20,8 @@ typedef float vec3_t[3];
 class Mesh3D : public Object3D {
 
 public:
+    std::mutex drawingMutex;
+
     std::string mesh_file;
 
     std::vector<Triangle*> modelTriangles;

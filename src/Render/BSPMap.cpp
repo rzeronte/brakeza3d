@@ -1001,6 +1001,7 @@ void BSPMap::createBulletPhysicsShape()
 void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
 {
     int numVisibleSurfaces = 0;
+    unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     /*
         // Suppose Leaf is the leaf the player is in.
@@ -1023,7 +1024,6 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
           }
      */
     // Get a pointer to the visibility list that is associated with the BSP leaf
-    unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
 
     for (int L = 1; L < this->getNumLeaves(); visibilityList++) {
         const unsigned char veces = *(visibilityList);

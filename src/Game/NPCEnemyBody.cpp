@@ -114,6 +114,8 @@ void NPCEnemyBody::syncPathFindingRotation()
 
 void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
 {
+    return;
+
     Projectile3DBody *projectile = new Projectile3DBody();
     projectile->setFromEnemy( true );
     projectile->setPosition( this->getPosition() );

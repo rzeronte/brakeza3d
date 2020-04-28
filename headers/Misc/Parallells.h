@@ -24,4 +24,9 @@ void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
     ComponentsManager::get()->getComponentRender()->drawTileTriangles(i, *visibleTriangles);
 }
 
+void Object3DOnUpdate(Object3D *o)
+{
+    o->onUpdate();
+}
+
 #endif //BRAKEDA3D_PARALLELLS_H
