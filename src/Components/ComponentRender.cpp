@@ -67,8 +67,13 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
 
 void ComponentRender::onUpdateBSP()
 {
+    if (!EngineSetup::getInstance()->RENDER_BSP_TRIANGLES) return;
+
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded() ) {
-        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf(ComponentsManager::get()->getComponentCamera()->getCamera() );
+
+        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf(
+                ComponentsManager::get()->getComponentCamera()->getCamera()
+        );
 
         if (SETUP->DRAW_BSP_HULLS) {
             ComponentsManager::get()->getComponentBSP()->getBSP()->DrawHulls(ComponentsManager::get()->getComponentCamera()->getCamera() );
@@ -78,7 +83,11 @@ void ComponentRender::onUpdateBSP()
 
 void ComponentRender::onUpdateSceneObjects()
 {
+    if (!EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
+
+    std::vector<std::thread> threads;
     std::vector<Object3D *>::iterator it;
+
     for ( it = getSceneObjects()->begin(); it != getSceneObjects()->end(); ) {
         Object3D *object = *(it);
 
@@ -94,8 +103,75 @@ void ComponentRender::onUpdateSceneObjects()
             continue;
         }
 
-        object->onUpdate();
+        if (!EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED) {
+            object->onUpdate();
+        } else {
+            threads.emplace_back( std::thread(Object3DOnUpdate, object) );
+        }
     }
+
+    if (EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED) {
+        for (std::thread & th : threads) {
+            if (th.joinable()) {
+                th.join();
+            }
+        }
+    }
+}
+
+void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t)
+{
+    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    t->updateObjectSpace();
+    t->updateNormal();
+
+    // back face culling (needs objectSpace)
+    if (t->isBackFaceCulling( &cam->getPosition() )) {
+        return;
+    }
+
+    // Clipping (needs objectSpace)
+    if (t->testForClipping( cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE )) {
+        if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
+            t->clipping(
+                    cam,
+                    cam->frustum->planes,
+                    SETUP->LEFT_PLANE,
+                    SETUP->BOTTOM_PLANE,
+                    t->parent,
+                    clippedTriangles,
+                    t->isBSP
+            );
+        }
+
+        return;
+    }
+
+    // Frustum Culling (needs objectSpace)
+    if (!cam->frustum->isPointInFrustum(t->Ao) &&
+        !cam->frustum->isPointInFrustum(t->Bo) &&
+        !cam->frustum->isPointInFrustum(t->Co)
+    ) {
+        return;
+    }
+
+    // Triangle precached data
+    // Estas operaciones las hacemos después de descartar triángulos
+    // para optimización en el rasterizador por software
+    t->updateCameraSpace( cam );
+    t->updateNDCSpace( cam );
+    t->updateScreenSpace();
+    t->updateBoundingBox();
+    t->updateFullArea();
+    t->updateUVCache();
+
+    if (SETUP->RASTERIZER_OPENCL) {
+        BUFFERS->addOCLTriangle( t->getOpenCL() );
+    }
+
+    t->drawed = false;
+    visibleTriangles.emplace_back( t );
 }
 
 void ComponentRender::hiddenSurfaceRemoval()
@@ -105,60 +181,9 @@ void ComponentRender::hiddenSurfaceRemoval()
     }
     clippedTriangles.clear();
 
-    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
     visibleTriangles.clear();
     for (int i = 0; i < frameTriangles.size() ; i++) {
-
-        frameTriangles[i]->updateObjectSpace();
-        frameTriangles[i]->updateNormal();
-
-        // back face culling (needs objectSpace)
-        if (frameTriangles[i]->isBackFaceCulling( &cam->getPosition() )) {
-            continue;
-        }
-
-        // Clipping (needs objectSpace)
-        if (frameTriangles[i]->testForClipping( cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE )) {
-            if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
-                frameTriangles[i]->clipping(
-                        cam,
-                        cam->frustum->planes,
-                        SETUP->LEFT_PLANE,
-                        SETUP->BOTTOM_PLANE,
-                        frameTriangles[i]->parent,
-                        clippedTriangles,
-                        frameTriangles[i]->isBSP
-                );
-            }
-
-            continue;
-        }
-
-        // Frustum Culling (needs objectSpace)
-        if (!cam->frustum->isPointInFrustum(frameTriangles[i]->Ao) &&
-            !cam->frustum->isPointInFrustum(frameTriangles[i]->Bo) &&
-            !cam->frustum->isPointInFrustum(frameTriangles[i]->Co)
-        ) {
-            continue;
-        }
-
-        // Triangle precached data
-        // Estas operaciones las hacemos después de descartar triángulos
-        // para optimización en el rasterizador por software
-        frameTriangles[i]->updateCameraSpace( cam );
-        frameTriangles[i]->updateNDCSpace( cam );
-        frameTriangles[i]->updateScreenSpace();
-        frameTriangles[i]->updateBoundingBox();
-        frameTriangles[i]->updateFullArea();
-        frameTriangles[i]->updateUVCache();
-
-        if (SETUP->RASTERIZER_OPENCL) {
-            BUFFERS->addOCLTriangle(frameTriangles[i]->getOpenCL());
-        }
-
-        this->frameTriangles[i]->drawed = false;
-        this->visibleTriangles.emplace_back(frameTriangles[i]);
+        this->hiddenSurfaceRemovalTriangle( frameTriangles[i] );
     }
 
     visibleTriangles.insert(
@@ -563,10 +588,9 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTr
     for (int j = 0 ; j < this->tiles[i].triangleIds.size() ; j++) {
         int triangleId = this->tiles[i].triangleIds[j];
         Tile *t = &this->tiles[i];
-        Triangle *tr = visibleTriangles[triangleId];
 
         this->softwareRasterizerForTile(
-                tr,
+                visibleTriangles[triangleId],
                 t->start_x,
                 t->start_y,
                 t->start_x + sizeTileWidth,
@@ -615,15 +639,16 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
 
                 if ( fragment.depth < BUFFERS->getDepthBuffer( bufferIndex )) {
                     fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) + (fragment.theta * t->persp_correct_Bz) + (fragment.gamma * t->persp_correct_Cz) );
+
                     fragment.texU   = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
                     fragment.texV   = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
 
                     fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
                     fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
 
-                    if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
+                    //if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
                         processPixel( t, bufferIndex, x, y, &fragment);
-                    }
+                    //  }
                 }
             }
 

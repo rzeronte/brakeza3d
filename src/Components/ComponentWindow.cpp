@@ -33,13 +33,13 @@ void ComponentWindow::onUpdate()
 
 void ComponentWindow::postUpdate()
 {
-    BUFFERS->flipVideoBufferToSurface( this->screenSurface );
+    //EBUFFERS->flipVideoBufferToSurface( this->screenSurface );
 
     SDL_GL_SwapWindow( this->window );
 
-    SDL_Texture *tex = SDL_CreateTextureFromSurface( renderer, screenSurface );
-    SDL_RenderCopy( renderer, tex, NULL, NULL);
-    SDL_DestroyTexture(tex);
+    SDL_UpdateTexture( screenTexture, NULL, BUFFERS->videoBuffer, screenSurface->pitch );
+
+    SDL_RenderCopy( renderer, screenTexture, NULL, NULL);
 }
 
 void ComponentWindow::onEnd()
@@ -82,6 +82,7 @@ void ComponentWindow::initWindow() {
         );
         // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
 
+
         if (window == NULL) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
@@ -90,6 +91,12 @@ void ComponentWindow::initWindow() {
             screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+
+            screenTexture = SDL_CreateTexture (renderer, SDL_PIXELFORMAT_ARGB8888,
+                               SDL_TEXTUREACCESS_STATIC,
+                               EngineSetup::getInstance()->screenWidth,
+                               EngineSetup::getInstance()->screenHeight
+            );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
 
