@@ -126,16 +126,16 @@ void ComponentHUD::drawHUD()
     if (WeaponType->isAvailable()) {
         r.x = 7; r.y = iconsY;
         SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, screenSurface, &r);
-        Tools::writeText(render, font, 25, textY, Color::gray(), std::to_string(WeaponType->getAmmoType()->getAmount()));
+        Tools::writeText(render, font, 25, textY, Color::green(), std::to_string(WeaponType->getAmmoType()->getAmount()));
     }
 
     // Stamina
     r.x = 57; r.y = iconsY;
     SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, screenSurface, &r);
-    Tools::writeText(render, font, 78, textY, Color::gray(), std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
+    Tools::writeText(render, font, 78, textY, Color::green(), std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
 
     // kills
-    Tools::writeText(render, font, 122, textY, Color::gray(), std::to_string( ComponentsManager::get()->getComponentGame()->getKills() ));
+    Tools::writeText(render, font, 122, textY, Color::green(), std::to_string( ComponentsManager::get()->getComponentGame()->getKills() ));
 
     // Weapon Icon
     if (WeaponType->isAvailable()) {

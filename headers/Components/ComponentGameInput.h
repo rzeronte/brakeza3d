@@ -9,7 +9,7 @@
 #include "Component.h"
 #include "../../src/Game/Player.h"
 
-class ComponentGameInput : public Component{
+class ComponentGameInput : public Component {
 public:
     ComponentGameInput( Player *player );
 
@@ -25,6 +25,8 @@ public:
 
     bool isEnabled() const;
     void setEnabled(bool enable);
+
+    void handleEscape(SDL_Event *event);
 
     void handleMovingCamera(SDL_Event *, bool &);
     void handleMouse(SDL_Event *);

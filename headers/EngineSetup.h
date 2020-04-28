@@ -81,7 +81,7 @@ public:
     bool DEBUG_RENDER_INFO = false;
     bool OPENCL_SHOW_TIME_KERNELS = false;
 
-    bool MENU_ACTIVE = false;
+    bool MENU_ACTIVE = true;
     bool LOADING = false;
     bool SPLASHING = true;
     bool FADEIN = false;

@@ -13,8 +13,9 @@ ComponentGameInput::ComponentGameInput(Player *player)
     setEnabled( true );
 }
 
-void ComponentGameInput::onStart() {
-
+void ComponentGameInput::onStart()
+{
+    ComponentsManager::get()->getComponentInput()->setEnabled( false );
 }
 
 void ComponentGameInput::preUpdate() {
@@ -76,28 +77,8 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
-    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
-        SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
-
-        if (!SETUP->MENU_ACTIVE) {
-            //SDL_SetRelativeMouseMode(SDL_TRUE);
-            Mix_HaltMusic();
-            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
-            SETUP->DRAW_WEAPON = true;
-            SETUP->DRAW_HUD    = true;
-        } else {
-            //SDL_SetRelativeMouseMode(SDL_FALSE);
-            SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, SETUP->screenWidth/2, SETUP->screenHeight/2);
-            Mix_HaltMusic();
-            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
-            SETUP->DRAW_WEAPON = false;
-            SETUP->DRAW_HUD    = false;
-        }
-
-        Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
-    }
+    this->handleEscape(event);
 
     handleRespawnAfterDead(event);
 
@@ -113,10 +94,39 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
 }
 
+void ComponentGameInput::handleEscape(SDL_Event *event)
+{
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+
+    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
+        SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
+
+        if (!SETUP->MENU_ACTIVE) {
+            //SDL_SetRelativeMouseMode(SDL_TRUE);
+            Mix_HaltMusic();
+            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
+            SETUP->DRAW_WEAPON = true;
+            SETUP->DRAW_HUD    = true;
+            ComponentsManager::get()->getComponentInput()->setEnabled( true );
+        } else {
+            //SDL_SetRelativeMouseMode(SDL_FALSE);
+            SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, SETUP->screenWidth/2, SETUP->screenHeight/2);
+            Mix_HaltMusic();
+            Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
+            SETUP->DRAW_WEAPON = false;
+            SETUP->DRAW_HUD    = false;
+            ComponentsManager::get()->getComponentInput()->setEnabled( false );
+        }
+
+        Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
+    }
+}
+
 void ComponentGameInput::handleMenuKeyboard(bool &end)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
+    // Subir y bajar de opción
     if (keyboard[SDL_SCANCODE_DOWN]) {
         if (SETUP->MENU_ACTIVE) {
             if (ComponentsManager::get()->getComponentMenu()->currentOption + 1 < ComponentsManager::get()->getComponentMenu()->numOptions) {
@@ -135,6 +145,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
         }
     }
 
+    // Enter en opción
     if (keyboard[SDL_SCANCODE_RETURN]) {
         if (SETUP->MENU_ACTIVE && ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
@@ -142,14 +153,18 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
         }
 
         if (SETUP->MENU_ACTIVE && player->state == PlayerState::GAMEOVER &&
-            ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
+            ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()
+            ->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME
+        ) {
             Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
             player->newGame();
         }
 
         if (SETUP->MENU_ACTIVE && player->state != PlayerState::GAMEOVER &&
-            ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
+            ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()
+            ->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME
+        ) {
 
             Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
 
