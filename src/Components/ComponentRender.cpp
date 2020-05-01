@@ -342,7 +342,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    Fragment *fragment = new Fragment();
+    auto *fragment = new Fragment();
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -372,11 +372,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
                     fragment->lightU = (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) + fragment->gamma * (t->light_u3_Cc_z) ) * fragment->affineUV;
                     fragment->lightV = (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) + fragment->gamma * (t->light_v3_Cc_z) ) * fragment->affineUV;
                     
-                    this->processPixel(
-                            t,
-                            bufferIndex,
-                            x, y, fragment
-                    );
+                    this->processPixel( t, bufferIndex, x, y, fragment );
                 }
             }
 
