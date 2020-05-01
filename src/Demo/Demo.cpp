@@ -163,7 +163,7 @@ Demo::Demo()
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     Brakeza3D::get()->addObject3D(mesh, "hellknight");
 
-    if ( mesh->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "hellknight.md5mesh") ) {
+    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "hellknight.md5mesh") ) {
         mesh->setScale(0.25 );
         Vertex3D p = Vertex3D(1, 1, 20);
         p.y-= -1;
@@ -175,7 +175,7 @@ Demo::Demo()
 
     Mesh3DAnimated* mesh2 = new Mesh3DAnimated();
     Brakeza3D::get()->addObject3D(mesh2, "bob_lamp");
-    if ( mesh2->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + "bob/bob_lamp_update.md5mesh") ) {
+    if (mesh2->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "bob/bob_lamp_update.md5mesh") ) {
         mesh2->setScale(1 );
         Vertex3D p = Vertex3D(1, 1, 1);
         p.y-= -1;

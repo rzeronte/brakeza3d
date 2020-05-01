@@ -6,9 +6,9 @@
 #define BRAKEDA3D_ITEMWEAPONBODY_H
 
 
-#include "../Physics/BillboardBody.h"
+#include "../Physics/Mesh3DBody.h"
 
-class ItemWeaponBody: public BillboardBody {
+class ItemWeaponBody: public Mesh3DBody {
 
     std::string weaponClassname;  // Related with weapon by classname
 

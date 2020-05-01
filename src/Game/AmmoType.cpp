@@ -32,6 +32,10 @@ void AmmoType::setClassname(const std::string &classname) {
     AmmoType::classname = classname;
 }
 
-Mesh3DAnimated* AmmoType::getModel() {
-    return &model;
+Mesh3DAnimated* AmmoType::getModelProjectile() {
+    return &model_projectile;
+}
+
+Mesh3DBody *AmmoType::getModelBox() {
+    return &model_box;
 }

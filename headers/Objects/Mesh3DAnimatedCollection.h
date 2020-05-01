@@ -23,7 +23,6 @@ public:
     void onUpdate();
     void onUpdateCurrentMesh3D();
 
-    std::vector<Mesh3DAnimated *> copyFrom(Mesh3DAnimatedCollection *);
     const M3 &getRotationFixed() const;
     void setRotationFixed(const M3 &rotationFixed);
 };

@@ -86,7 +86,7 @@ void Mesh3DAnimated::updateFrameTransformations()
     }
 }
 
-bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
+bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename)
 {
     Logging::getInstance()->Log("AssimpLoad for " + Filename);
 
@@ -102,7 +102,7 @@ bool Mesh3DAnimated::AssimpLoad(const std::string &Filename)
         return false;
     }
 
-    this->InitMaterials(scene, Filename);
+    this->AssimpInitMaterials(scene, Filename);
     this->ReadNodes();
 
     return true;
@@ -116,11 +116,11 @@ bool Mesh3DAnimated::ReadNodes()
     this->meshVertices.resize(scene->mNumMeshes);
     this->meshVerticesBoneData.resize(scene->mNumMeshes);
 
-    this->processNode(scene->mRootNode);
+    this->AssimpProcessNodeAnimation(scene->mRootNode);
     this->updateBoundingBox();
 }
 
-void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
+void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -147,8 +147,8 @@ void Mesh3DAnimated::processMesh(int idMesh, aiMesh *mesh)
         localMeshVertices[j] = v;
     }
 
-    this->meshVertices[ idMesh ] = localMeshVertices;
-    this->meshVerticesBoneData[ idMesh ] = localMeshBones;
+    this->meshVertices[ i ] = localMeshVertices;
+    this->meshVerticesBoneData[ i ] = localMeshBones;
 
     for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
         const aiFace& Face = mesh->mFaces[k];
@@ -346,7 +346,7 @@ uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim* pNodeAni
     return 0;
 }
 
-void Mesh3DAnimated::processNode(aiNode *node)
+void Mesh3DAnimated::AssimpProcessNodeAnimation(aiNode *node)
 {
     if (std::string(node->mName.C_Str()) == this->getFollowPointLabel() ) {
         this->setFollowPointNode( node );
@@ -357,68 +357,12 @@ void Mesh3DAnimated::processNode(aiNode *node)
 
     for (int x = 0; x < node->mNumMeshes; x++) {
         int idMesh = node->mMeshes[x];
-        this->processMesh( idMesh, scene->mMeshes[ idMesh ] );
+        this->AssimpProcessMeshAnimation(idMesh, scene->mMeshes[idMesh]);
     }
 
     for (int j = 0; j < node->mNumChildren; j++) {
-        processNode( node->mChildren[j] );
+        AssimpProcessNodeAnimation(node->mChildren[j]);
     }
-}
-
-
-bool Mesh3DAnimated::InitMaterials(const aiScene* pScene, const std::string& Filename)
-{
-    // Extract the directory part from the file name
-    std::string::size_type SlashIndex = Filename.find_last_of("/");
-    std::string Dir;
-
-    if (SlashIndex == std::string::npos) {
-        Dir = ".";
-    } else if (SlashIndex == 0) {
-        Dir = "/";
-    } else {
-        Dir = Filename.substr(0, SlashIndex);
-    }
-
-    bool Ret = true;
-
-    Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
-
-    for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
-        aiMaterial *pMaterial = pScene->mMaterials[i];
-        std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
-
-        if  (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
-            this->numTextures++;
-            continue;
-        };
-
-        //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-            aiString Path;
-            if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-                std::string p(Path.data);
-
-                std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
-
-                if (p.substr(0, 2) == ".\\") {
-                    p = p.substr(2, p.size() - 2);
-                }
-
-                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
-
-                std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-                Texture *t = new Texture();
-                if (t->loadTGA(FullPath.c_str(), 1) ) {
-                    this->modelTextures[ this->numTextures ] = *t;
-                    this->numTextures++;
-                }
-            } else {
-                Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
-            }
-        //}
-    }
-
-    return Ret;
 }
 
 void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m)

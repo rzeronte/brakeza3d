@@ -14,6 +14,7 @@
 
 class WeaponType {
 public:
+    WeaponType();
     WeaponType(std::string label);
 
     bool available;
@@ -25,11 +26,6 @@ public:
     std::string classname;
 
     AmmoType *ammo;
-
-    std::string billboardTextureFile;
-
-    float billboardWidth;
-    float billboardHeight;
 
     float damage;
     float damageRadius;
@@ -46,7 +42,6 @@ public:
 
     int dispersion = 0;
 
-    Mesh3D   *projectileTemplate;
     Sprite3D *markTemplate;
 
     int speed = 500;
@@ -55,6 +50,7 @@ public:
     int currentAnimationIndex = 0;
 
     Mesh3DAnimatedCollection *animations;
+    Mesh3D *model;
 
     SDL_Surface *iconHUD;
 
@@ -62,7 +58,6 @@ public:
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
-    WeaponType();
 
     void addAnimation(std::string label, std::string model, float scale, bool stopEnd);
 
@@ -76,9 +71,6 @@ public:
 
     void setSpeed(float speed);
     int  getSpeed() const;
-
-    void    makeProjectileTemplate();
-    Mesh3D* getProjectileTemplate();
 
     float getDamage();
     void  setDamage(float damage);
@@ -122,16 +114,13 @@ public:
     const std::string &getClassname() const;
     void  setClassname(const std::string &classname);
 
-    const std::string &getBillboardTextureFile() const;
-    void  setBillboardTextureFile(const std::string &billboardTexturePath);
-
-    void setBillboardDimensions(int w, int h);
-
     int  getIndex() const;
     void setIndex(int index);
 
     AmmoType *getAmmoType() const;
     void      setAmmoType(AmmoType *ammo);
+
+    Mesh3D *getModel();
 };
 
 

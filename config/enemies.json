@@ -7,17 +7,17 @@
       "damage": 10,
       "draw_offset": { "x": 0, "y": 2.5, "z": 0 },
       "box_shape_size": { "x": 2, "y": 4, "z": 2 },
-      "scale_mesh": 0.0005,
+      "scale_mesh": 1,
       "cadence": 0.25,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "gangster/walking.fbx", "label":  "anim_walk", "remove_at_end": false },
-        { "path": "gangster/fire.fbx", "label":  "anim_fire", "remove_at_end": false  },
-        { "path": "gangster/injuried.fbx", "label":  "anim_injuried", "remove_at_end": false },
-        { "path": "gangster/death.fbx", "label":  "anim_dead", "remove_at_end": false }
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_walk", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_fire", "remove_at_end": false  },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_injuried", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_dead", "remove_at_end": false }
       ]
     },
     {
@@ -27,17 +27,17 @@
       "damage": 20,
       "draw_offset": { "x": 0, "y": 2.5, "z": 0 },
       "box_shape_size": { "x": 2, "y": 4, "z": 2 },
-      "scale_mesh": 0.0005,
+      "scale_mesh": 1,
       "cadence": 0.15,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "gangster/walking.fbx", "label":  "anim_walk", "remove_at_end": false },
-        { "path": "gangster/fire.fbx", "label":  "anim_fire", "remove_at_end": false  },
-        { "path": "gangster/injuried.fbx", "label":  "anim_injuried", "remove_at_end": false },
-        { "path": "gangster/death.fbx", "label":  "anim_dead", "remove_at_end": false }
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_walk", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_fire", "remove_at_end": false  },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_injuried", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_dead", "remove_at_end": false }
       ]
     },
     {
@@ -47,17 +47,17 @@
       "damage": 10,
       "draw_offset": { "x": 0, "y": 2.5, "z": 0 },
       "box_shape_size": { "x": 2, "y": 4, "z": 2 },
-      "scale_mesh": 0.0005,
+      "scale_mesh": 1,
       "cadence": 0.25,
       "speed": 0.25,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "gangster/walking.fbx", "label":  "anim_walk", "remove_at_end": false },
-        { "path": "gangster/fire.fbx", "label":  "anim_fire", "remove_at_end": false  },
-        { "path": "gangster/injuried.fbx", "label":  "anim_injuried", "remove_at_end": false },
-        { "path": "gangster/death.fbx", "label":  "anim_dead", "remove_at_end": false }
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_walk", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_fire", "remove_at_end": false  },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_injuried", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_dead", "remove_at_end": false }
       ]
     },
     {
@@ -67,17 +67,17 @@
       "damage": 10,
       "draw_offset": { "x": 0, "y": 2.5, "z": 0 },
       "box_shape_size": { "x": 2, "y": 4, "z": 2 },
-      "scale_mesh": 0.0005,
+      "scale_mesh": 1,
       "cadence": 0.15,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
       "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
-        { "path": "gangster/walking.fbx", "label":  "anim_walk", "remove_at_end": false },
-        { "path": "gangster/fire.fbx", "label":  "anim_fire", "remove_at_end": false  },
-        { "path": "gangster/injuried.fbx", "label":  "anim_injuried", "remove_at_end": false },
-        { "path": "gangster/death.fbx", "label":  "anim_dead", "remove_at_end": false }
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_walk", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_fire", "remove_at_end": false  },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_injuried", "remove_at_end": false },
+        { "path": "bob/bob_lamp_update.md5mesh", "label":  "anim_dead", "remove_at_end": false }
       ]
     }
   ]

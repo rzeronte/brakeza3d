@@ -14,7 +14,6 @@ WeaponType::WeaponType(std::string label)
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
-    makeProjectileTemplate();
     markTemplate = new Sprite3D();
 
     animations = new Mesh3DAnimatedCollection();
@@ -23,8 +22,9 @@ WeaponType::WeaponType(std::string label)
     animations->setLabel("weapon_" + label);
     animations->setEnabled( false );
     animations->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
-
     Brakeza3D::get()->addObject3D(animations, animations->getLabel() );
+
+    model = new Mesh3D();
 }
 
 void WeaponType::addAnimation(std::string label, std::string model, float scale, bool stopEnd)
@@ -74,17 +74,6 @@ void WeaponType::setSpeed(float speed)
     this->speed = speed;
 }
 
-void WeaponType::makeProjectileTemplate()
-{
-    projectileTemplate = new Mesh3D();
-
-    projectileTemplate->setPosition(Vertex3D(5, 0, -10));
-}
-
-Mesh3D* WeaponType::getProjectileTemplate()
-{
-    return this->projectileTemplate;
-}
 
 float WeaponType::getDamage()
 {
@@ -227,20 +216,6 @@ void WeaponType::setClassname(const std::string &classname) {
     WeaponType::classname = classname;
 }
 
-void WeaponType::setBillboardDimensions(int w, int h)
-{
-    this->billboardWidth  = w;
-    this->billboardHeight = h;
-}
-
-const std::string &WeaponType::getBillboardTextureFile() const {
-    return billboardTextureFile;
-}
-
-void WeaponType::setBillboardTextureFile(const std::string &billboardTexturePath) {
-    WeaponType::billboardTextureFile = billboardTexturePath;
-}
-
 bool WeaponType::isAvailable() const {
     return available;
 }
@@ -271,5 +246,9 @@ float WeaponType::getDamageRadius() const {
 
 void WeaponType::setDamageRadius(float damageRadius) {
     WeaponType::damageRadius = damageRadius;
+}
+
+Mesh3D *WeaponType::getModel() {
+    return model;
 }
 

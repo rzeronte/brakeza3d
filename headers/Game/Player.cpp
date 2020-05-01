@@ -125,7 +125,7 @@ void Player::shoot()
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
         auto *projectile = new Projectile3DBody();
-        projectile->copyFrom( weaponsManager->getCurrentWeaponType()->getAmmoType()->getModel() );
+        projectile->copyFrom(weaponsManager->getCurrentWeaponType()->getAmmoType()->getModelProjectile() );
         projectile->setFromEnemy( false );
         projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
         projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );

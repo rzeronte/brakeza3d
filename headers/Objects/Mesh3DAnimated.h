@@ -73,7 +73,10 @@ public:
     void onUpdate();
     void updateFrameTransformations();
 
-    bool AssimpLoad(const std::string &Filename);
+    bool AssimpLoadAnimation(const std::string &Filename);
+    void AssimpProcessNodeAnimation(aiNode *node);
+    void AssimpProcessMeshAnimation(int i, aiMesh *mesh);
+
     bool ReadNodes();
 
     aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
@@ -85,11 +88,8 @@ public:
     uint FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
     uint FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
-    bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 
     int updateForBone(Vertex3D &dest, int meshID, int vertexID,  std::vector<aiMatrix4x4> &Transforms);
-    void processNode(aiNode *node);
-    void processMesh(int i, aiMesh *mesh);
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
 
     void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);

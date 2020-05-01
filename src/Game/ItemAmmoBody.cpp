@@ -19,3 +19,9 @@ const std::string &ItemAmmoBody::getAmmoTypeClassname() const {
 void ItemAmmoBody::setAmmoTypeClassname(const std::string &ammoTypeClassname) {
     ItemAmmoBody::ammoTypeClassname = ammoTypeClassname;
 }
+
+void ItemAmmoBody::onUpdate()
+{
+    this->setRotation ( this->getRotation() * M3::getMatrixRotationForEulerAngles(0, 3, 0));
+    Mesh3D::onUpdate();
+}

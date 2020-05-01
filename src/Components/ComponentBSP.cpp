@@ -144,15 +144,20 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *name       = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "name");
         cJSON *classname  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "classname");
         cJSON *startAmmo  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "start_ammo");
-        cJSON *model      = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model");
+        cJSON *model_proj = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model_projectile");
+        cJSON *model_box  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model_box");
         cJSON *scale      = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "scale");
 
         auto* ammoType = new AmmoType();
         ammoType->setAmount(startAmmo->valueint);
         ammoType->setName(name->valuestring);
         ammoType->setClassname(classname->valuestring);
-        ammoType->getModel()->AssimpLoad( EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring);
-        ammoType->getModel()->setScale( scale->valuedouble );
+        ammoType->getModelProjectile()->AssimpLoadAnimation( EngineSetup::getInstance()->MODELS_FOLDER + model_proj->valuestring );
+        ammoType->getModelProjectile()->setScale( scale->valuedouble );
+        ammoType->getModelBox()->setLabel( std::string(name->valuestring)+ "_model_box");
+        ammoType->getModelBox()->setScale( scale->valuedouble);
+        ammoType->getModelBox()->AssimpLoadGeometryFromFile( EngineSetup::getInstance()->MODELS_FOLDER + model_box->valuestring );
+
         weaponManager->ammoTypes.push_back(ammoType);
 
         Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
@@ -174,9 +179,6 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *ammoIndex     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "ammo_index");
         cJSON *name          = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
         cJSON *classname     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "classname");
-        cJSON *billboardTex  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "billboard_texture");
-        cJSON *billboardW    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "billboard_width");
-        cJSON *billboardH    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "billboard_height");
         cJSON *damage        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
         cJSON *damageRadius  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage_radius");
         cJSON *speed         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
@@ -188,6 +190,8 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *iconHUD       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "icon_hud");
         cJSON *sniper        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sniper");
         cJSON *index         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "index");
+        cJSON *model         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "model");
+        cJSON *scale         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "scale");
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
@@ -203,14 +207,15 @@ void ComponentBSP::loadWeaponsJSON()
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setClassname( classname->valuestring );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setIndex( index->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardTextureFile( billboardTex->valuestring );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setBillboardDimensions( billboardW->valuedouble, billboardH->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage( damage->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamageRadius( damageRadius->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed( (float) speed->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setAccuracy( accuracy->valuedouble );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setDispersion( dispersion->valueint );
         weaponManager->getWeaponTypeByLabel(name->valuestring)->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->setLabel( std::string(name->valuestring) + "_model" );
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->setScale( scale->valuedouble );
+        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->AssimpLoadGeometryFromFile( EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring );
 
         // WeaponType Keyboard Events
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setKeyDownHandle(keyDownHandle->valueint );

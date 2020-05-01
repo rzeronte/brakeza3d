@@ -22,7 +22,7 @@ class Mesh3D : public Object3D {
 public:
     std::mutex drawingMutex;
 
-    std::string mesh_file;
+    std::string source_file;
 
     std::vector<Triangle*> modelTriangles;
     AABB3D aabb;
@@ -44,6 +44,11 @@ public:
     Vertex3D aabbMax;
 
     Mesh3D();
+
+    bool AssimpLoadGeometryFromFile(std::string fileName);
+    bool AssimpInitMaterials(const aiScene* pScene, const std::string& Filename);
+    void AssimpProcessNodes(const aiScene*, aiNode *node);
+    void AssimpLoadMesh(aiMesh *mesh);
 
     // OBJ
     bool loadOBJBlender(const char *name);
@@ -67,6 +72,10 @@ public:
     void copyFrom(Mesh3D *source);
 
     void onUpdate();
+
+    const std::string &getSourceFile() const;
+
+    void setSourceFile(const std::string &sourceFile);
 };
 
 

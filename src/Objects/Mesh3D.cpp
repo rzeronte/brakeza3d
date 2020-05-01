@@ -27,9 +27,9 @@ Mesh3D::Mesh3D()
 
 bool Mesh3D::loadOBJBlender(const char *name)
 {
-    mesh_file = name;
+    source_file = name;
 
-    if (!Tools::fileExists(mesh_file)){
+    if (!Tools::fileExists(source_file)){
         Logging::getInstance()->Log("El fichero de modelo solicitado no existe.", "ERROR");
 
         return false;
@@ -50,7 +50,7 @@ void Mesh3D::loadOBJBlenderVertex()
     float x, y, z;
 
     int i = 0;
-    std::ifstream myfile (mesh_file);
+    std::ifstream myfile (source_file);
 
     while(!myfile.eof()) {
         getline (myfile,line);
@@ -83,11 +83,11 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
     int i = 0;
 
 
-    if (!Tools::fileExists(mesh_file)) {
+    if (!Tools::fileExists(source_file)) {
         return;
     }
 
-    std::ifstream myfile (mesh_file);
+    std::ifstream myfile (source_file);
     while(!myfile.eof()) {
         getline (myfile,line);
 
@@ -120,11 +120,11 @@ void Mesh3D::loadOBJBlenderTriangles()
     int idx1_vertex = -1, idx2_vertex = -1, idx3_vertex;
     int idx1_uv = -1, idx2_uv = -1, idx3_uv = -1;
 
-    if (!Tools::fileExists(mesh_file)) {
+    if (!Tools::fileExists(source_file)) {
         return;
     }
 
-    std::ifstream myfile (mesh_file);
+    std::ifstream myfile (source_file);
 
     while(!myfile.eof()) {
         getline (myfile,line);
@@ -203,7 +203,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
 
     int i = 0;
 
-    std::string mlt_filename = mesh_file;
+    std::string mlt_filename = source_file;
     mlt_filename.replace( mlt_filename.end() -3, mlt_filename.end(), "mtl");
 
     std::ifstream myfile (mlt_filename);
@@ -315,6 +315,8 @@ void Mesh3D::updateBoundingBox()
 
 void Mesh3D::copyFrom(Mesh3D *source)
 {
+    Logging::getInstance()->Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel());
+
     // Triangles
     for (auto & modelTriangle : source->modelTriangles) {
 
@@ -334,9 +336,151 @@ void Mesh3D::copyFrom(Mesh3D *source)
     this->numTextures   = source->numTextures;
     this->modelTextures = source->modelTextures;
     this->scale         = source->scale;
+    this->source_file   = source->source_file;
 }
 
 void Mesh3D::onUpdate()
 {
     this->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles()) ;
+}
+
+bool Mesh3D::AssimpLoadGeometryFromFile(std::string fileName)
+{
+    setSourceFile( fileName );
+
+    Logging::getInstance()->Log("AssimpLoadGeometryFromFile for " + fileName);
+
+    Assimp::Importer importer;
+    const aiScene* scene;
+
+    scene = importer.ReadFile( fileName, aiProcess_Triangulate |
+                                               aiProcess_JoinIdenticalVertices |
+                                               aiProcess_SortByPType |
+                                               aiProcess_FlipUVs
+    );
+
+    if( !scene ) {
+        Logging::getInstance()->Log("Error import 3D file for ASSIMP");
+        exit(-1);
+        return false;
+    }
+
+    AssimpInitMaterials(scene, fileName);
+    AssimpProcessNodes( scene, scene->mRootNode );
+}
+
+bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filename)
+{
+    // Extract the directory part from the file name
+    std::string::size_type SlashIndex = Filename.find_last_of("/");
+    std::string Dir;
+
+    if (SlashIndex == std::string::npos) {
+        Dir = ".";
+    } else if (SlashIndex == 0) {
+        Dir = "/";
+    } else {
+        Dir = Filename.substr(0, SlashIndex);
+    }
+
+    bool Ret = true;
+
+    Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
+
+    for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
+        aiMaterial *pMaterial = pScene->mMaterials[i];
+        std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
+
+        if  (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
+            this->numTextures++;
+            continue;
+        };
+
+        //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+        aiString Path;
+        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+            std::string p(Path.data);
+
+            std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
+
+            if (p.substr(0, 2) == ".\\") {
+                p = p.substr(2, p.size() - 2);
+            }
+
+            std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
+
+            std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
+            Texture *t = new Texture();
+            if (t->loadTGA(FullPath.c_str(), 1) ) {
+                this->modelTextures[ this->numTextures ] = *t;
+                this->numTextures++;
+            }
+        } else {
+            Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
+        }
+        //}
+    }
+
+    return Ret;
+}
+
+void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
+{
+    for (int x = 0; x < node->mNumMeshes; x++) {
+        int idMesh = node->mMeshes[x];
+        this->AssimpLoadMesh( scene->mMeshes[ idMesh ] );
+    }
+
+    for (int j = 0; j < node->mNumChildren; j++) {
+        AssimpProcessNodes( scene, node->mChildren[j] );
+    }
+}
+
+void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
+{
+
+    if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
+        Logging::getInstance()->Log("Skip mesh non triangle");
+        return;
+    }
+
+    const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
+
+    std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
+    for (unsigned int j = 0 ; j < mesh->mNumVertices ; j++) {
+
+        aiVector3t vf = mesh->mVertices[j];
+
+        Vertex3D v( vf.x, -vf.y, vf.z );
+
+        const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
+        v.u = pTexCoord->x;
+        v.v = pTexCoord->y;
+
+        localMeshVertices[j] = v;
+    }
+
+    for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
+        const aiFace& Face = mesh->mFaces[k];
+
+        if (Face.mNumIndices < 3) continue;
+
+        Vertex3D V1 = localMeshVertices.at(Face.mIndices[0]);
+        Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
+        Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
+
+        this->modelTriangles.push_back( new Triangle(V3, V2, V1, this) );
+
+        if (this->numTextures > 0) {
+            this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
+        }
+    }
+}
+
+const std::string &Mesh3D::getSourceFile() const {
+    return source_file;
+}
+
+void Mesh3D::setSourceFile(const std::string &sourceFile) {
+    source_file = sourceFile;
 }

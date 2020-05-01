@@ -12,7 +12,7 @@ void Mesh3DAnimatedCollection::addAnimation(std::string label, std::string model
     meshObject->setLabel(label);
     meshObject->setParent( this );
 
-    if ( meshObject->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
+    if (meshObject->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename) ) {
         meshObject->setScale( scale );
         meshObject->setDrawOffset( this-> drawOffset );
         meshObject->setPosition( this->getPosition() );
@@ -57,16 +57,6 @@ void Mesh3DAnimatedCollection::setAnimation(int index)
 
 Mesh3DAnimated *Mesh3DAnimatedCollection::getCurrentMesh3DAnimated() const {
     return this->mesh3Danimated[currentAnimation];
-}
-
-std::vector<Mesh3DAnimated *> Mesh3DAnimatedCollection::copyFrom(Mesh3DAnimatedCollection *from)
-{
-    for (int i = 0; i < from->mesh3Danimated.size(); i++) {
-        Mesh3DAnimated *copy = new Mesh3DAnimated();
-        copy->scene = from->mesh3Danimated[i]->scene;
-        copy->ReadNodes();
-        this->mesh3Danimated.push_back( copy );
-    }
 }
 
 const M3 &Mesh3DAnimatedCollection::getRotationFixed() const {

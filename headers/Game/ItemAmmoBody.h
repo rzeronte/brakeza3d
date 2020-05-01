@@ -6,9 +6,9 @@
 #define BRAKEDA3D_ITEMAMMOBODY_H
 
 
-#include "../Physics/BillboardBody.h"
+#include "../Physics/Mesh3DBody.h"
 
-class ItemAmmoBody : public BillboardBody {
+class ItemAmmoBody : public Mesh3DBody {
 public:
     int amount = 50;
     std::string ammoTypeClassname;
@@ -18,6 +18,8 @@ public:
 
     int  getAmount() const;
     void setAmount(int amount);
+
+    void onUpdate();
 };
 
 

@@ -30,6 +30,7 @@ public:
     btRigidBody* makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     btRigidBody* makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy);
     btRigidBody* makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse);
+    btRigidBody* makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world);
 
     // Quake BSP Moving attributes
     float speedMoving = 100;
