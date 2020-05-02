@@ -397,27 +397,27 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
         };
 
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-        aiString Path;
-        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-            std::string p(Path.data);
+            aiString Path;
+            if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+                std::string p(Path.data);
 
-            std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
+                std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
 
-            if (p.substr(0, 2) == ".\\") {
-                p = p.substr(2, p.size() - 2);
+                if (p.substr(0, 2) == ".\\") {
+                    p = p.substr(2, p.size() - 2);
+                }
+
+                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
+
+                std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
+                Texture *t = new Texture();
+                if (t->loadTGA(FullPath.c_str(), 1) ) {
+                    this->modelTextures[ this->numTextures ] = *t;
+                    this->numTextures++;
+                }
+            } else {
+                Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
             }
-
-            std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
-
-            std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-            Texture *t = new Texture();
-            if (t->loadTGA(FullPath.c_str(), 1) ) {
-                this->modelTextures[ this->numTextures ] = *t;
-                this->numTextures++;
-            }
-        } else {
-            Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
-        }
         //}
     }
 

@@ -40,6 +40,9 @@ public:
     void addWeaponType(std::string);
 
     WeaponType *getWeaponTypeByLabel(std::string label);
+
+    void setCurrentWeaponIndex(int currentWeaponIndex);
+
     WeaponType *getWeaponTypeByClassname(std::string label);
     WeaponType *getCurrentWeaponType();
 

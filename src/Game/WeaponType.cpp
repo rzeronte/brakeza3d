@@ -32,7 +32,7 @@ void WeaponType::addAnimation(std::string label, std::string model, float scale,
     std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + model;
 
     this->animations->addAnimation( label, model, scale, stopEnd );
-
+    this->animations[this->numAnimations].rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
     this->numAnimations++;
 }
 

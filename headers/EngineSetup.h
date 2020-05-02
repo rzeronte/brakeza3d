@@ -54,7 +54,7 @@ public:
 
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
 
-    const float EPSILON = 0.00001f;
+    float EPSILON = 0.00001f;
 
     bool  ENABLE_FOG    = true;
     float FOG_DISTANCE  = 75;

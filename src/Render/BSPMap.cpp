@@ -393,7 +393,7 @@ bool BSPMap::InitializeLightmaps()
                 this->lightmaps[surfaceId].numLightmaps++;
             }
 
-            Logging::getInstance()->Log(
+            /*Logging::getInstance()->Log(
                     "InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) +
                     ", numLightmaps: " + std::to_string(this->lightmaps[surfaceId].numLightmaps) +
                     ", lightmap w: " + std::to_string(smax) +
@@ -402,11 +402,11 @@ bool BSPMap::InitializeLightmaps()
                     ", mins[1]: " + std::to_string(lt->mins[1]) +
                     ", maxs[0]: " + std::to_string(lt->maxs[0]) +
                     ", maxs[1]: " + std::to_string(lt->maxs[1])
-            );
+            );*/
 
         } else {
             this->lightmaps[surfaceId].setLightMapped(false);
-            Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ",  No lightmap");
+            //Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ",  No lightmap");
         }
     }
 }
@@ -588,7 +588,7 @@ void BSPMap::InitializeEntities()
                     o->copyFrom( oTemplate );
                     o->setAmmoTypeClassname( classname );
                     o->setPosition( pos );
-                    o->makeSimpleRigidBody(0, pos, Vertex3D(3, 3, 3), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeSimpleRigidBody(0, pos, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                     brakeza3D->addObject3D( o, o->getLabel() );
                 }
 
@@ -658,7 +658,7 @@ void BSPMap::InitializeEntities()
                     o->setLabel( weapon->label );
                     o->setWeaponClassname( classname );
                     o->copyFrom( weapon->getModel() );
-                    o->makeSimpleRigidBody(0, pos, Vertex3D(3, 3, 3), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeSimpleRigidBody(0, pos, Vertex3D(2, 2, 2), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                     brakeza3D->addObject3D( o, o->getLabel() );
                 }
 

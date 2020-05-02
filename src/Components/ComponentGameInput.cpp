@@ -267,7 +267,7 @@ void ComponentGameInput::handleFire(SDL_Event *event)
         // no ammo
         if (weaponType->getAmmoType()->getAmount() <= 0) {
             weaponType->status = EngineSetup::WeaponsActions::WALKING;
-            weaponType->setWeaponAnimation( weaponType->getKeyUpAnimationStatus() );
+            //weaponType->setWeaponAnimation( weaponType->getKeyUpAnimationStatus() );
             weaponType->firing = false; // Avoid casings and end animations
             Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
             return;
@@ -283,7 +283,7 @@ void ComponentGameInput::handleFire(SDL_Event *event)
                 }
                 int keyDownAnimationStatus = weaponType->getKeyDownAnimationStatus();
 
-                weaponType->setWeaponAnimation( keyDownAnimationStatus );
+                //weaponType->setWeaponAnimation( keyDownAnimationStatus );
                 weaponType->setFiring( true );
                 weaponType->status = keyDownAnimationStatus;
             }
@@ -303,7 +303,7 @@ void ComponentGameInput::handleFire(SDL_Event *event)
 
                 Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
 
-                weaponType->setWeaponAnimation( keyUpAnimationStatus );
+                //weaponType->setWeaponAnimation( keyUpAnimationStatus );
                 weaponType->status = keyUpAnimationStatus;
 
                 if (weaponType->status == EngineSetup::WeaponsActions::WALKING) {

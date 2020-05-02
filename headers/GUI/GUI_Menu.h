@@ -59,6 +59,10 @@ public:
         const float range_min_frustum_fardistance = 1;
         const float range_max_frustum_fardistance = 1000;
 
+        const float range_frustum_clipping_distance_sensibility = 0.000001;
+        const float range_min_frustum_clipping_distance = 0;
+        const float range_max_frustum_clipping_distance = 1;
+
         const float range_fov_sensibility = 1;
         const float range_min_fov = 20;
         const float range_max_fov = 160;
@@ -109,6 +113,11 @@ public:
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Frustum Clipping", &EngineSetup::getInstance()->ENABLE_CLIPPING);
+                if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
+                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE, range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance, &range_max_frustum_clipping_distance, "%f", 1.0f);
+                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::getInstance()->EPSILON, range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance, &range_max_frustum_clipping_distance, "%f", 1.0f);
+                }
+
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE, range_frustum_fardistance_sensibility, &range_min_frustum_fardistance, &range_max_frustum_fardistance, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {

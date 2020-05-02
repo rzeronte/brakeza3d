@@ -1,9 +1,9 @@
 {
   "ammo": [
-    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.02},
-    { "index": 1, "name" : "shells",  "classname": "item_shells",  "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.02},
-    { "index": 2, "name" : "cells",   "classname": "item_cells",   "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.02 },
-    { "index": 3, "name" : "rockets", "classname": "item_rockets", "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.02 }
+    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.01 },
+    { "index": 1, "name" : "shells",  "classname": "item_shells",  "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.01 },
+    { "index": 2, "name" : "cells",   "classname": "item_cells",   "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.01 },
+    { "index": 3, "name" : "rockets", "classname": "item_rockets", "start_ammo": 50, "model_box": "weapon_box.fbx", "model_projectile": "lowpolybullet.obj", "scale": 0.01 }
   ],
   "weapons": [
     {
@@ -12,7 +12,7 @@
       "classname": "weapon_supershotgun",
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.015,
       "accuracy": 90,
       "dispersion": 1,
       "damage": 20,
@@ -32,8 +32,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "pistol_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "pistol_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "pistol_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_fire", "model": "glock_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -62,8 +63,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "repeater_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "repeater_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "repeater_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "repeater_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -92,8 +94,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "rifle_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "rifle_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "rifle_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "rifle_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -123,8 +126,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "granade_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "granade_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "granade_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "granade_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -153,8 +157,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 3,
       "animations": [
-        { "status": 0, "label": "chaingun_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "chaingun_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "chaingun_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "chaingun_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -183,8 +188,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "gauss_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "gauss_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "gauss_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "gauss_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -214,8 +220,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "vortex_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "vortex_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "vortex_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "vortex_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -244,8 +251,9 @@
       "key_down_animation_status": 1,
       "key_up_animation_status": 0,
       "animations": [
-        { "status": 0, "label": "rocket_walk", "model": "pistol_walk.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "rocket_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "rocket_walk", "model": "glock_idle.fbx", "scale": 0.05, "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "rocket_fire", "model": "pistol_fire.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "projectile": true,  "looping": false, "stop_end": false }
       ]
     }
   ]

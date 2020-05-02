@@ -22,7 +22,7 @@ void Mesh3DAnimated::updateFrameTransformations()
     }
 
     // Update running time
-    this->runningTime += Brakeza3D::get()->getDeltaTime();
+    this->runningTime += Brakeza3D::get()->getDeltaTime() * this->animation_speed;
     float maxTime = this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration / scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond;
     if ( runningTime >= maxTime )  {
         if ( this->isRemoveAtEndAnimation() ) {
@@ -31,7 +31,6 @@ void Mesh3DAnimated::updateFrameTransformations()
         }
         runningTime = 0.000;
     }
-
 
     std::vector<aiMatrix4x4> Transforms;
     this->BoneTransform(runningTime, Transforms);
@@ -188,7 +187,7 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
             BoneIndex = boneMapping[BoneName];
         }
 
-        Logging::getInstance()->Log(std::string("Loading Bone info for BoneIndex: ") + std::to_string(BoneIndex) + ": " + mesh->mBones[i]->mName.C_Str());
+        //Logging::getInstance()->Log(std::string("Loading Bone info for BoneIndex: ") + std::to_string(BoneIndex) + ": " + mesh->mBones[i]->mName.C_Str());
 
         for (int j = 0 ; j < mesh->mBones[i]->mNumWeights ; j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;

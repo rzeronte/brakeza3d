@@ -15,17 +15,19 @@ void ComponentWeapons::onStart()
     std::cout << "ComponentWeapons onStart" << std::endl;
 
     this->handsCollection = new Mesh3DAnimatedCollection();
-    handsCollection->setFollowCamera(true );
+    handsCollection->setFollowCamera( true );
     handsCollection->setScale(0.05);
     handsCollection->setPosition(Vertex3D(0, 0, 0));
-    handsCollection->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
+    handsCollection->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
     handsCollection->setLabel("handsCollection");
-    handsCollection->addAnimation("hands_idle", "hands.fbx", 0.05, false);
-    //handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
+    handsCollection->addAnimation("hands_idle", "hands_idle.fbx", 0.05, false);
+    handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
+    handsCollection->addAnimation("hands_reload", "hands_reload.fbx", 0.05, false);
     handsCollection->setAnimation(0);
     Brakeza3D::get()->addObject3D(handsCollection, handsCollection->getLabel());
 
     this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+
 }
 
 void ComponentWeapons::preUpdate() {
@@ -129,6 +131,13 @@ bool ComponentWeapons::isEmptyWeapon() {
     if (this->currentWeaponIndex != 0) {
         return false;
     }
+}
+
+void ComponentWeapons::setCurrentWeaponIndex(int currentWeaponIndex)
+{
+    this->getCurrentWeaponType()->animations->setEnabled( false );
+    ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
+    this->getCurrentWeaponType()->animations->setEnabled( true );
 }
 
 

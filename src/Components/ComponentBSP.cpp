@@ -270,11 +270,11 @@ void ComponentBSP::loadWeaponsJSON()
                     stopEnd->valueint
             );
             weaponManager->getWeaponTypeByLabel(name->valuestring)->setWeaponAnimation(0);
-
             //Mix_Chunk *animationSound = new Mix_Chunk();
             //std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
         }
     }
+    weaponManager->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
 }
 
 void ComponentBSP::loadEnemiesJSON()

@@ -50,6 +50,7 @@ public:
     float tex_v1_Ac_z,   tex_v2_Bc_z,   tex_v3_Cc_z;
     float persp_correct_Az, persp_correct_Bz, persp_correct_Cz;
 
+    // Screen coordinates bounds
     int maxX, minX, maxY, minY;
 
     Object3D *parent;

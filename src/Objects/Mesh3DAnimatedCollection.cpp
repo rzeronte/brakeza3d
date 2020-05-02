@@ -33,8 +33,10 @@ void Mesh3DAnimatedCollection::onUpdate()
         Drawable::drawAABB( &this->getCurrentMesh3DAnimated()->aabb, this );
     }
 
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &this->getCurrentMesh3DAnimated()->aabb )) {
-        return;
+    if (!this->isFollowCamera()) {
+        if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &this->getCurrentMesh3DAnimated()->aabb )) {
+            return;
+        }
     }
 
     this->onUpdateCurrentMesh3D();

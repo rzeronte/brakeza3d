@@ -38,6 +38,10 @@ public:
             const float range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
             const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
 
+            const float range_speed_min = 0;
+            const float range_speed_max = 1;
+            const float range_speed_sensibility = 0.1;
+
             const float range_angle_min = 0;
             const float range_angle_max = 360;
             const float range_angle_sensibility = 0.2;
@@ -217,8 +221,7 @@ public:
                     // Only for Mesh3DAnimatedCollection
                     auto *oMesh3DAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection *>(gameObjects[i]);
                     if (oMesh3DAnimatedCollection != NULL) {
-                        std::string staminaText = "CurrentAnimation: " + std::to_string(oMesh3DAnimatedCollection->currentAnimation);
-                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), staminaText.c_str());
+                        ImGui::DragScalar("Speed", ImGuiDataType_Float, &oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed, range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
 
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
                         static ImGuiComboFlags flags = 0;

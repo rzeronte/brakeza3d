@@ -112,8 +112,6 @@ void Player::respawn()
 
 void Player::shoot()
 {
-    return;
-
     ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
 
     if (ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex != ComponentHUD::StatusFace::EVIL) {

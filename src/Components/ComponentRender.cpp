@@ -4,7 +4,6 @@
 
 #include "../../headers/Components/ComponentRender.h"
 #include "../../headers/Components/ComponentWindow.h"
-#include "../../headers/Objects/Decal.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
 #include "../../headers/Brakeza3D.h"
@@ -85,7 +84,6 @@ void ComponentRender::onUpdateSceneObjects()
 {
     if (!EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
-    std::vector<std::thread> threads;
     std::vector<Object3D *>::iterator it;
 
     for ( it = getSceneObjects()->begin(); it != getSceneObjects()->end(); ) {
@@ -103,19 +101,7 @@ void ComponentRender::onUpdateSceneObjects()
             continue;
         }
 
-        if (!EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED) {
-            object->onUpdate();
-        } else {
-            threads.emplace_back( std::thread(Object3DOnUpdate, object) );
-        }
-    }
-
-    if (EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED) {
-        for (std::thread & th : threads) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
+        object->onUpdate();
     }
 }
 
@@ -369,9 +355,11 @@ void ComponentRender::triangleRasterizer(Triangle *t)
                     fragment->texU   = (fragment->alpha * (t->tex_u1_Ac_z) + fragment->theta * (t->tex_u2_Bc_z) + fragment->gamma * (t->tex_u3_Cc_z) ) * fragment->affineUV;
                     fragment->texV   = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) + fragment->gamma * (t->tex_v3_Cc_z) ) * fragment->affineUV;
 
-                    fragment->lightU = (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) + fragment->gamma * (t->light_u3_Cc_z) ) * fragment->affineUV;
-                    fragment->lightV = (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) + fragment->gamma * (t->light_v3_Cc_z) ) * fragment->affineUV;
-                    
+                    if (t->getLightmap() != NULL) {
+                        fragment->lightU = (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) + fragment->gamma * (t->light_u3_Cc_z) ) * fragment->affineUV;
+                        fragment->lightV = (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) + fragment->gamma * (t->light_v3_Cc_z) ) * fragment->affineUV;
+                    }
+
                     this->processPixel( t, bufferIndex, x, y, fragment );
                 }
             }
@@ -631,20 +619,22 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
 
                 fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
-                const int bufferIndex = ( y * SETUP->screenWidth ) + x;
+                const int bufferIndex = y * SETUP->screenWidth + x;
 
                 if ( fragment.depth < BUFFERS->getDepthBuffer( bufferIndex )) {
                     fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) + (fragment.theta * t->persp_correct_Bz) + (fragment.gamma * t->persp_correct_Cz) );
 
-                    fragment.texU   = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
-                    fragment.texV   = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
+                    fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
+                    fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
 
-                    fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
-                    fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
+                    if ( t->getLightmap() != nullptr ) {
+                        fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
+                        fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
+                    }
 
-                    //if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
+                    if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
                         processPixel( t, bufferIndex, x, y, &fragment);
-                    //  }
+                    }
                 }
             }
 
