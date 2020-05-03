@@ -112,45 +112,15 @@ void Player::respawn()
 
 void Player::shoot()
 {
-    ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
-
-    if (ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex != ComponentHUD::StatusFace::EVIL) {
-        ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::EVIL);
-    }
-
-    if (weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount() <= 0) return;
-
-    for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
-
-        auto *projectile = new Projectile3DBody();
-        projectile->copyFrom(weaponsManager->getCurrentWeaponType()->getAmmoType()->getModelProjectile() );
-        projectile->setFromEnemy( false );
-        projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
-        projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
-        projectile->setPosition( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
-        projectile->getPosition().x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->getPosition().y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
-        projectile->getPosition().z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->setLabel("projectile" + weaponsManager->getCurrentWeaponType()->getAmmoType()->getName() );
-        projectile->setEnabled(true);
-        projectile->makeProjectileRigidBody(
-            1,
-            Vertex3D(0.5, 0.5, 0.5),
-            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            true,
-            weaponsManager->getCurrentWeaponType()->getSpeed(),
-            weaponsManager->getCurrentWeaponType()->getAccuracy()
-        );
-
-        projectile->setRotation( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-    }
-
-    int currentWeaponAmmo = weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount();
-    weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(currentWeaponAmmo - 1);
+    Logging::getInstance()->Log("Player shoot!");
+    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 
+void Player::reload()
+{
+    Logging::getInstance()->Log("Player reload!");
+    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->reload();
+}
 
 void Player::respawnNPCS()
 {

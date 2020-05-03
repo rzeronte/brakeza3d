@@ -22,14 +22,18 @@ void Mesh3DAnimated::updateFrameTransformations()
     }
 
     // Update running time
+    this->animation_ends = false;
     this->runningTime += Brakeza3D::get()->getDeltaTime() * this->animation_speed;
     float maxTime = this->scene->mAnimations[ this->indexCurrentAnimation ]->mDuration / scene->mAnimations[ indexCurrentAnimation ]->mTicksPerSecond;
+
     if ( runningTime >= maxTime )  {
         if ( this->isRemoveAtEndAnimation() ) {
             this->getParent()->setRemoved( true );
             return;
         }
-        runningTime = 0.000;
+
+        this->animation_ends = true;
+        this->runningTime = 0.000;
     }
 
     std::vector<aiMatrix4x4> Transforms;
@@ -606,5 +610,9 @@ const M3 &Mesh3DAnimated::getFixedRotation() const {
 
 void Mesh3DAnimated::setFixedRotation(const M3 &fixedRotation) {
     Mesh3DAnimated::fixedRotation = fixedRotation;
+}
+
+bool Mesh3DAnimated::isAnimationEnds() {
+    return animation_ends;
 }
 

@@ -23,7 +23,10 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    Mesh3DAnimatedCollection *handsCollection;
+    void shoot();
+    void reload();
+
+    Mesh3DAnimatedCollection *arms;
 
     int numWeapons = 0;
     int currentWeaponIndex = 0;
@@ -50,7 +53,7 @@ public:
 
     bool isEmptyWeapon();
 
-    void onUpdateWeapon(Camera3D *cam, SDL_Surface *dst);
+    Mesh3DAnimatedCollection *getArms() const;
 
     void headBob(Vector3D velocity);
 };

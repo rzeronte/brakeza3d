@@ -13,6 +13,8 @@ public:
     int amount = 50;
     std::string ammoTypeClassname;
 
+    btRigidBody* makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world);
+
     const std::string &getAmmoTypeClassname() const;
     void setAmmoTypeClassname(const std::string &ammoTypeClassname);
 

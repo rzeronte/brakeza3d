@@ -74,7 +74,6 @@ public:
     bool RENDER_OBJECTS_AXIS = false;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
-    bool EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED = true;
 
     bool RENDER_BSP_TRIANGLES = true;
 
@@ -182,9 +181,10 @@ public:
     float MOUSE_SENSITIVITY	= 0.250;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = false;
-    bool BULLET_DEBUG_MODE = false;
-    bool BULLET_CHECK_ALL_PAIRS = true;
+    bool  BULLET_STEP_SIMULATION = true;
+    float BULLET_STEP_SIMULATION_MULTIPLIER = 1;
+    bool  BULLET_DEBUG_MODE = false;
+    bool  BULLET_CHECK_ALL_PAIRS = true;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
@@ -237,7 +237,7 @@ public:
     float TIME_STEP_IA_ENEMIES = 0.50f;
     float ZOOM_FOV = 40;
 
-    bool WEAPON_AUTOSWICH = true;
+    bool WEAPON_AUTOSWICH = false;
 
     int GAME_PLAYER_STAMINA_INITIAL = 100;
 
@@ -283,8 +283,10 @@ public:
     };
 
     enum WeaponsActions {
+        NONE = -1,
         IDLE = 0,
-        WALKING = 1,
+        FIRE = 1,
+        RELOAD = 2,
     };
 
     enum CollisionResolverTypes {
@@ -311,8 +313,6 @@ public:
         SND_BLOOD_HIT = 7,
         SND_CASINGS = 8
     };
-
-
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

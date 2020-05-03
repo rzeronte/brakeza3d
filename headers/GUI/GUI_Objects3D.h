@@ -223,6 +223,9 @@ public:
                     if (oMesh3DAnimatedCollection != NULL) {
                         ImGui::DragScalar("Speed", ImGuiDataType_Float, &oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed, range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
 
+                        std::string animationEndsText = "AnimationEnds: " + std::to_string( oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->isAnimationEnds() );
+                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), animationEndsText.c_str());
+
                         static const char* item_current; // Here our selection is a single pointer stored outside the object.
                         static ImGuiComboFlags flags = 0;
                         if (oMesh3DAnimatedCollection->currentAnimation >= 0) {

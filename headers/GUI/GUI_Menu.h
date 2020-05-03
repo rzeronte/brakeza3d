@@ -67,6 +67,10 @@ public:
         const float range_min_fov = 20;
         const float range_max_fov = 160;
 
+        const float range_stepsimulation_multiplier_sensibility = 0.01;
+        const float range_min_stepsimulation_multiplier = 0;
+        const float range_max_stepsimulation_multiplier = 1;
+
         bool changedFOGcolor = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
 
@@ -82,13 +86,10 @@ public:
 
                 ImGui::Checkbox("Render BSP Map", &EngineSetup::getInstance()->RENDER_BSP_TRIANGLES);
                 ImGui::Checkbox("onUpdate Objects", &EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE);
-                if (EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE) {
-                    ImGui::Checkbox("onUpdate Objects Threated", &EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE_THREATED);
-                }
 
                 ImGui::Separator();
-
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::getInstance()->HORIZONTAL_FOV, range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
+
                 if (ImGui::IsItemEdited()) {
                     cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
                     cam->frustum->setup(
@@ -229,8 +230,11 @@ public:
             }
 
             if (ImGui::BeginMenu("Physics")) {
-                ImGui::Separator();
                 ImGui::Checkbox("StepSimulation", &EngineSetup::getInstance()->BULLET_STEP_SIMULATION);
+                if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
+                    ImGui::DragScalar("StepSimulation Multiplier", ImGuiDataType_Float, &EngineSetup::getInstance()->BULLET_STEP_SIMULATION_MULTIPLIER, range_stepsimulation_multiplier_sensibility, &range_min_stepsimulation_multiplier, &range_max_stepsimulation_multiplier, "%f", 1.0f);
+                }
+                ImGui::Separator();
                 ImGui::Checkbox("Debug Mode", &EngineSetup::getInstance()->BULLET_DEBUG_MODE);
                 ImGui::Checkbox("Check All Pairs", &EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS);
                 ImGui::Separator();

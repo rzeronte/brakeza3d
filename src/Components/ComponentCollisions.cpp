@@ -276,7 +276,7 @@ Vertex3D ComponentCollisions::stepSimulation()
 
     if (SETUP->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation( time);
+        getDynamicsWorld()->stepSimulation( time * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
 
         // Physics for meshes
         updatePhysicObjects();

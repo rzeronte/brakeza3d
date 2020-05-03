@@ -39,3 +39,19 @@ Mesh3DAnimated* AmmoType::getModelProjectile() {
 Mesh3DBody *AmmoType::getModelBox() {
     return &model_box;
 }
+
+int AmmoType::getReloads() const {
+    return reloads;
+}
+
+void AmmoType::setReloads(int reloads) {
+    AmmoType::reloads = reloads;
+}
+
+int AmmoType::getReloadAmount() const {
+    return reload_amount;
+}
+
+void AmmoType::setReloadAmount(int reloadAmount) {
+    reload_amount = reloadAmount;
+}

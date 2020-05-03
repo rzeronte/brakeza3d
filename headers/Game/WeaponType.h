@@ -18,7 +18,7 @@ public:
     WeaponType(std::string label);
 
     bool available;
-    int status = EngineSetup::getInstance()->WeaponsActions::WALKING;
+    int status = EngineSetup::WeaponsActions::IDLE;
 
     int index; // For related with Enum in Setup
 
@@ -34,13 +34,9 @@ public:
 
     bool firing = false;
 
-    bool keyDownHandle;
-    bool keyUpHandle;
-
-    int keyDownAnimationStatus;
-    int keyUpAnimationStatus;
-
     int dispersion = 0;
+
+    Counter *counterCadence;
 
     Sprite3D *markTemplate;
 
@@ -49,7 +45,10 @@ public:
     int numAnimations = 0;
     int currentAnimationIndex = 0;
 
-    Mesh3DAnimatedCollection *animations;
+    Mesh3DAnimatedCollection *weaponAnimations;
+    std::vector<std::string> weaponSounds;
+    std::string soundEmptyLabel;
+
     Mesh3D *model;
 
     SDL_Surface *iconHUD;
@@ -58,11 +57,10 @@ public:
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
-
     void addAnimation(std::string label, std::string model, float scale, bool stopEnd);
 
     Mesh3DAnimated *getCurrentWeaponAnimation();
-    void onUpdate(Camera3D *cam);
+    void onUpdate();
 
     void setWeaponAnimation(int);
 
@@ -74,11 +72,12 @@ public:
 
     float getDamage();
     void  setDamage(float damage);
+
     float getDamageRadius() const;
     void  setDamageRadius(float damageRadius);
 
     Sprite3D *getMarkTemplate();
-    void setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
+    void      setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
 
     void loadIconHUD(std::string file);
     void loadSniperHUD(std::string file);
@@ -92,23 +91,10 @@ public:
     bool isFiring() const;
     void setFiring(bool firing);
 
-    bool isKeyDownHandle() const;
-    void setKeyDownHandle(bool keyDownHandle);
-
-    bool isKeyUpHandle() const;
-    void setKeyUpHandle(bool keyUpHandle);
-
-    int  getKeyDownAnimationStatus() const;
-    void setKeyDownAnimationStatus(int keyDownAnimationStatus);
-
-    int  getKeyUpAnimationStatus() const;
-    void setKeyUpAnimationStatus(int keyUpAnimationStatus);
-
     bool isSniper() const;
     void setSniper(bool sniper);
 
     bool isSniperEnabled() const;
-
     void setSniperEnabled(bool sniperEnabled);
 
     const std::string &getClassname() const;
@@ -120,7 +106,20 @@ public:
     AmmoType *getAmmoType() const;
     void      setAmmoType(AmmoType *ammo);
 
+    void shoot();
+    void reload();
+
     Mesh3D *getModel();
+
+    Mesh3DAnimatedCollection *getWeaponAnimations() const;
+    void setWeaponAnimations(Mesh3DAnimatedCollection *weaponAnimations);
+
+    std::vector<std::string> &getWeaponSounds();
+    void setWeaponSounds(const std::vector<std::string> &weaponSounds);
+
+    const std::string &getSoundEmptyLabel() const;
+    void  setSoundEmptyLabel(const std::string &soundEmptyLabel);
+
 };
 
 

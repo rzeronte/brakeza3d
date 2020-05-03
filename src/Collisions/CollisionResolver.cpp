@@ -18,6 +18,14 @@ int CollisionResolver::getTypeCollision()
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP;
     }
 
+    if (isSomeItemAmmo() && isSomeProjectile()) {
+        return 0;
+    }
+
+    if (isSomeItemWeapon() && isSomeProjectile()) {
+        return 0;
+    }
+
     if (isSomeProjectile() && isSomeNPCEnemy()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY;
     }

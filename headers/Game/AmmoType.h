@@ -23,13 +23,23 @@ public:
     int  getAmount() const;
     void setAmount(int ammo);
 
+    int  getReloads() const;
+    void setReloads(int reloads);
+
+    int getReloadAmount() const;
+
+    void setReloadAmount(int reloadAmount);
+
     Mesh3DAnimated* getModelProjectile();
     Mesh3DBody*     getModelBox();
 
 private:
     std::string name;
     std::string classname;
+
     int amount;
+    int reloads;
+    int reload_amount;
 
     Mesh3DAnimated model_projectile;
     Mesh3DBody     model_box;

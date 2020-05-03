@@ -31,6 +31,7 @@ public:
     void respawn();
 
     void shoot();
+    void reload();
 
     void takeDamage(float dmg);
     void getAid(float aid);

@@ -109,40 +109,35 @@ void ComponentHUD::setStatusFaceAnimation(int id)
 
 void ComponentHUD::drawHUD()
 {
-    SDL_Rect r;
-    int iconsY = 215;
-    int textY  = 212;
-    ComponentsManager* componentManager = ComponentsManager::get();
-    SDL_Surface *screenSurface = componentManager->getComponentWindow()->screenSurface;
-    SDL_Renderer *render = componentManager->getComponentWindow()->renderer;
-    WeaponType *WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
-    TTF_Font* font = componentManager->getComponentWindow()->fontDefault;
+    int textY  = 180;
+    int textX = 10;
+    int stepY = 10;
 
-    // HUD Base
-    r.x = 0; r.y = SETUP->screenHeight - this->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
-    SDL_BlitSurface(this->HUDTextures->getTextureByLabel("hud")->getSurface(1), NULL, screenSurface, &r);
+    ComponentsManager* componentManager = ComponentsManager::get();
+    SDL_Renderer*      render = componentManager->getComponentWindow()->renderer;
+    WeaponType*        WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
+    TTF_Font*          font = componentManager->getComponentWindow()->fontSmall;
+
+    // Weapon
+    Tools::writeText(render, font, textX, textY, Color::green(), "Weapon: " +  ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->getClassname() );
+
+    textY += stepY;
 
     // Ammo
     if (WeaponType->isAvailable()) {
-        r.x = 7; r.y = iconsY;
-        SDL_BlitSurface(this->HUDTextures->getTextureByLabel("ammo")->getSurface(1), NULL, screenSurface, &r);
-        Tools::writeText(render, font, 25, textY, Color::green(), std::to_string(WeaponType->getAmmoType()->getAmount()));
+        Tools::writeText(render, font, textX, textY, Color::green(), "Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads()));
+        textY += stepY;
+        Tools::writeText(render, font, textX, textY, Color::green(), "Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount()));
+        textY += stepY;
     }
+
 
     // Stamina
-    r.x = 57; r.y = iconsY;
-    SDL_BlitSurface(this->HUDTextures->getTextureByLabel("health")->getSurface(1), NULL, screenSurface, &r);
-    Tools::writeText(render, font, 78, textY, Color::green(), std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
+    Tools::writeText(render, font, textX, textY, Color::green(), "Health: " + std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
+
+    textY += stepY;
 
     // kills
-    Tools::writeText(render, font, 122, textY, Color::green(), std::to_string( ComponentsManager::get()->getComponentGame()->getKills() ));
+    Tools::writeText(render, font, textX, textY, Color::green(), "Kills: " + std::to_string( ComponentsManager::get()->getComponentGame()->getKills() ));
 
-    // Weapon Icon
-    if (WeaponType->isAvailable()) {
-        r.x = 183 ; r.y = iconsY-2;
-        SDL_BlitSurface(WeaponType->iconHUD, NULL, screenSurface, &r);
-    }
-
-    r.x = 151 ; r.y = iconsY-3;
-    SDL_BlitSurface(this->faceAnimations[currentFaceAnimationIndex]->getCurrentFrame()->getSurface(1), NULL, screenSurface, &r);
 }

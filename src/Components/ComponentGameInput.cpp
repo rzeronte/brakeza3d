@@ -89,6 +89,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
     this->handleZoom( event );
     this->handleCrouch( event );
     this->handleFire( event );
+    this->handleWeaponReload( event );
     this->handleSniper( event );
     this->handleWeaponSelector();
 
@@ -260,33 +261,10 @@ void ComponentGameInput::handleCrouch(SDL_Event *event)
 void ComponentGameInput::handleFire(SDL_Event *event)
 {
     if (event->key.keysym.sym == SDLK_q ) {
-        WeaponType *weaponType = ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType();
-
-        if (!weaponType->isAvailable() or player->state == PlayerState::GAMEOVER) return;
-
-        // no ammo
-        if (weaponType->getAmmoType()->getAmount() <= 0) {
-            weaponType->status = EngineSetup::WeaponsActions::WALKING;
-            //weaponType->setWeaponAnimation( weaponType->getKeyUpAnimationStatus() );
-            weaponType->firing = false; // Avoid casings and end animations
-            Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
-            return;
-        }
-
-        player->shoot();
 
         // First keydown
-        if (event->type == SDL_KEYDOWN && !weaponType->isFiring()) {
-            if (weaponType->isKeyDownHandle()) {
-                if (SETUP->LOG_WEAPONS_SYSTEM)  {
-                    Logging::getInstance()->Log("Fire KeyDown");
-                }
-                int keyDownAnimationStatus = weaponType->getKeyDownAnimationStatus();
-
-                //weaponType->setWeaponAnimation( keyDownAnimationStatus );
-                weaponType->setFiring( true );
-                weaponType->status = keyDownAnimationStatus;
-            }
+        if (event->type == SDL_KEYDOWN) {
+            player->shoot();
         }
 
         // Looping keydown
@@ -295,21 +273,27 @@ void ComponentGameInput::handleFire(SDL_Event *event)
 
         // keyup
         if (event->type == SDL_KEYUP) {
-            if (weaponType->isKeyUpHandle()) {
-                if (SETUP->LOG_WEAPONS_SYSTEM)  {
-                    Logging::getInstance()->Log("Fire KeyUp");
-                }
-                int keyUpAnimationStatus = weaponType->getKeyUpAnimationStatus();
 
-                Mix_HaltChannel(EngineSetup::SoundChannels::SND_WEAPON_LOOP);
+        }
+    }
+}
 
-                //weaponType->setWeaponAnimation( keyUpAnimationStatus );
-                weaponType->status = keyUpAnimationStatus;
+void ComponentGameInput::handleWeaponReload(SDL_Event *event)
+{
+    if (event->key.keysym.sym == SDLK_e ) {
 
-                if (weaponType->status == EngineSetup::WeaponsActions::WALKING) {
-                    weaponType->setFiring( false );
-                }
-            }
+        // First keydown
+        if (event->type == SDL_KEYDOWN) {
+            player->reload();
+        }
+
+        // Looping keydown
+        if (event->type == SDL_KEYDOWN) {
+        }
+
+        // keyup
+        if (event->type == SDL_KEYUP) {
+
         }
     }
 }
@@ -371,6 +355,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event)
 
 void ComponentGameInput::handleWeaponSelector()
 {
+    return;
     ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
     SoundPackage *soundPackage = BUFFERS->soundPackage;
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;

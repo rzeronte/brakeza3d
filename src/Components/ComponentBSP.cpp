@@ -144,18 +144,22 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *name       = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "name");
         cJSON *classname  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "classname");
         cJSON *startAmmo  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "start_ammo");
+        cJSON *reloads    = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "reloads");
         cJSON *model_proj = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model_projectile");
+        cJSON *scale_proj = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "scale_projectile");
         cJSON *model_box  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "model_box");
-        cJSON *scale      = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "scale");
+        cJSON *scale_box  = cJSON_GetObjectItemCaseSensitive(currentAmmoType, "scale_box");
 
         auto* ammoType = new AmmoType();
         ammoType->setAmount(startAmmo->valueint);
         ammoType->setName(name->valuestring);
         ammoType->setClassname(classname->valuestring);
+        ammoType->setReloads(reloads->valueint);
+        ammoType->setReloadAmount( startAmmo->valueint );
         ammoType->getModelProjectile()->AssimpLoadAnimation( EngineSetup::getInstance()->MODELS_FOLDER + model_proj->valuestring );
-        ammoType->getModelProjectile()->setScale( scale->valuedouble );
+        ammoType->getModelProjectile()->setScale( scale_proj->valuedouble );
         ammoType->getModelBox()->setLabel( std::string(name->valuestring)+ "_model_box");
-        ammoType->getModelBox()->setScale( scale->valuedouble);
+        ammoType->getModelBox()->setScale( scale_box->valuedouble);
         ammoType->getModelBox()->AssimpLoadGeometryFromFile( EngineSetup::getInstance()->MODELS_FOLDER + model_box->valuestring );
 
         weaponManager->ammoTypes.push_back(ammoType);
@@ -180,10 +184,9 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *name          = cJSON_GetObjectItemCaseSensitive(currentWeapon, "name");
         cJSON *classname     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "classname");
         cJSON *damage        = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage");
+        cJSON *cadence       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
         cJSON *damageRadius  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage_radius");
         cJSON *speed         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
-        cJSON *projectileW   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_width");
-        cJSON *projectileH   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "projectile_height");
         cJSON *soundMark     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
         cJSON *accuracy      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "accuracy");
         cJSON *dispersion    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
@@ -192,36 +195,28 @@ void ComponentBSP::loadWeaponsJSON()
         cJSON *index         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "index");
         cJSON *model         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "model");
         cJSON *scale         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "scale");
+        cJSON *sndEmptyLabel = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sound_empty_label");
 
         Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
-        cJSON *keyDownHandle = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_handle");
-        cJSON *keyUpHandle   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_handle");
-
-        cJSON *keyDownAnimationStatus = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_down_animation_status");
-        cJSON *keyUpAnimationStatus   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "key_up_animation_status");
-
         // WeaponType attributes
         weaponManager->addWeaponType(name->valuestring);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAvailable( true );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setClassname( classname->valuestring );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setIndex( index->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamage( damage->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDamageRadius( damageRadius->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setSpeed( (float) speed->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setAccuracy( accuracy->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setDispersion( dispersion->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->setLabel( std::string(name->valuestring) + "_model" );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->setScale( scale->valuedouble );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->getModel()->AssimpLoadGeometryFromFile( EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring );
-
-        // WeaponType Keyboard Events
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setKeyDownHandle(keyDownHandle->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setKeyUpHandle(keyUpHandle->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setKeyDownAnimationStatus( keyDownAnimationStatus->valueint );
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setKeyUpAnimationStatus( keyUpAnimationStatus->valueint) ;
+        WeaponType* weaponType = weaponManager->getWeaponTypeByLabel(name->valuestring);
+        weaponType->setAvailable( true );
+        weaponType->setClassname( classname->valuestring );
+        weaponType->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
+        weaponType->setIndex( index->valueint );
+        weaponType->setDamage( damage->valuedouble );
+        weaponType->setDamageRadius( damageRadius->valuedouble );
+        weaponType->setSpeed( (float) speed->valuedouble );
+        weaponType->setAccuracy( accuracy->valuedouble );
+        weaponType->setDispersion( dispersion->valueint );
+        weaponType->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
+        weaponType->getModel()->setLabel( std::string(name->valuestring) + "_model" );
+        weaponType->getModel()->setScale( scale->valuedouble );
+        weaponType->getModel()->AssimpLoadGeometryFromFile( EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring );
+        weaponType->counterCadence->setStep( cadence->valuedouble );
+        weaponType->setSoundEmptyLabel( sndEmptyLabel->valuestring);
 
         // WeaponType SniperHUD
         weaponManager->getWeaponTypeByLabel(name->valuestring)->setSniper( sniper->valueint );
@@ -260,6 +255,7 @@ void ComponentBSP::loadWeaponsJSON()
             cJSON *stopEnd    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
             cJSON *looping    = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
             cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
+            cJSON *sound      = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "sound");
 
             Logging::getInstance()->Log("Loading JSON Weapon Animation: " + std::string(label->valuestring) + ", status:" + std::to_string(status->valueint) );
 
@@ -269,11 +265,12 @@ void ComponentBSP::loadWeaponsJSON()
                     scale->valuedouble,
                     stopEnd->valueint
             );
+
+            weaponManager->getWeaponTypeByLabel(name->valuestring)->getWeaponSounds().emplace_back(sound->valuestring);
             weaponManager->getWeaponTypeByLabel(name->valuestring)->setWeaponAnimation(0);
-            //Mix_Chunk *animationSound = new Mix_Chunk();
-            //std::string pathSound = SETUP->WEAPONS_FOLDER + name->valuestring + "/sounds/" + sound->valuestring;
         }
     }
+
     weaponManager->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
 }
 

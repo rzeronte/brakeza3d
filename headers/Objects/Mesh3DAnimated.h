@@ -59,6 +59,7 @@ public:
     float runningTime = 0;
     bool  remove_at_end_animation = false;
     float animation_speed = 1;
+    bool  animation_ends = false;
 
     std::map<std::string,uint> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo>      boneInfo;
@@ -118,6 +119,7 @@ public:
     const M3 &getFixedRotation() const;
 
     void setFixedRotation(const M3 &fixedRotation);
+    bool isAnimationEnds();
 };
 
 

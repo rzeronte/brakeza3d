@@ -14,17 +14,17 @@ void ComponentWeapons::onStart()
 {
     std::cout << "ComponentWeapons onStart" << std::endl;
 
-    this->handsCollection = new Mesh3DAnimatedCollection();
-    handsCollection->setFollowCamera( true );
-    handsCollection->setScale(0.05);
-    handsCollection->setPosition(Vertex3D(0, 0, 0));
-    handsCollection->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
-    handsCollection->setLabel("handsCollection");
-    handsCollection->addAnimation("hands_idle", "hands_idle.fbx", 0.05, false);
-    handsCollection->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
-    handsCollection->addAnimation("hands_reload", "hands_reload.fbx", 0.05, false);
-    handsCollection->setAnimation(0);
-    Brakeza3D::get()->addObject3D(handsCollection, handsCollection->getLabel());
+    this->arms = new Mesh3DAnimatedCollection();
+    arms->setFollowCamera(true );
+    arms->setScale(0.05);
+    arms->setPosition(Vertex3D(0, 0, 0));
+    arms->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
+    arms->setLabel("handsCollection");
+    arms->addAnimation("hands_idle", "hands_idle.fbx", 0.05, false);
+    arms->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
+    arms->addAnimation("hands_reload", "hands_reload.fbx", 0.05, false);
+    arms->setAnimation(EngineSetup::WeaponsActions::IDLE );
+    Brakeza3D::get()->addObject3D(arms, arms->getLabel());
 
     this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
 
@@ -36,9 +36,10 @@ void ComponentWeapons::preUpdate() {
 
 void ComponentWeapons::onUpdate()
 {
-    if (!SETUP->MENU_ACTIVE && SETUP->DRAW_WEAPON) {
-        this->onUpdateWeapon( ComponentsManager::get()->getComponentCamera()->getCamera(), ComponentsManager::get()->getComponentWindow()->screenSurface );
+    if (this->getCurrentWeaponType()->getCurrentWeaponAnimation()->isAnimationEnds()) {
+        this->getArms()->setAnimation( EngineSetup::WeaponsActions::IDLE );
     }
+    this->getCurrentWeaponType()->onUpdate();
 }
 
 void ComponentWeapons::postUpdate() {
@@ -95,20 +96,6 @@ AmmoType *ComponentWeapons::getAmmoTypeByClassname(std::string classname)
     return nullptr;
 }
 
-void ComponentWeapons::onUpdateWeapon(Camera3D *cam, SDL_Surface *dst)
-{
-    //this->getCurrentWeaponType()->onUpdate( cam );
-
-    //this->headBob(cam->velocity);
-
-    /*if (getCurrentWeaponType()->isSniperEnabled()) {
-        SDL_BlitSurface(getCurrentWeaponType()->sniperHUD, NULL, dst, NULL);
-        return;
-    }*/
-
-    //this->getCurrentWeaponType()->getCurrentWeaponAnimation()->draw(dst, (int)this->offsetX, (int)this->offsetY);
-}
-
 void ComponentWeapons::headBob(Vector3D velocity)
 {
     Vertex3D v = velocity.getComponent();
@@ -127,7 +114,8 @@ void ComponentWeapons::headBob(Vector3D velocity)
     }
 }
 
-bool ComponentWeapons::isEmptyWeapon() {
+bool ComponentWeapons::isEmptyWeapon()
+{
     if (this->currentWeaponIndex != 0) {
         return false;
     }
@@ -135,9 +123,40 @@ bool ComponentWeapons::isEmptyWeapon() {
 
 void ComponentWeapons::setCurrentWeaponIndex(int currentWeaponIndex)
 {
-    this->getCurrentWeaponType()->animations->setEnabled( false );
+    this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( false );
     ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
-    this->getCurrentWeaponType()->animations->setEnabled( true );
+    this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( true );
+}
+
+void ComponentWeapons::shoot()
+{
+    Logging::getInstance()->Log("ComponentWeapons shoot!");
+
+    if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
+        getArms()->setAnimation( EngineSetup::WeaponsActions::FIRE);
+        this->getCurrentWeaponType()->shoot();
+    } else {
+        std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();
+        Tools::playMixedSound(
+                EngineBuffers::getInstance()->soundPackage->getSoundByLabel( soundLabel ),
+                EngineSetup::SoundChannels::SND_WEAPON,
+                0
+        );
+    }
+}
+
+void ComponentWeapons::reload()
+{
+    Logging::getInstance()->Log("ComponentWeapons reload!");
+
+    if (getCurrentWeaponType()->getAmmoType()->getReloads() > 0) {
+        this->getArms()->setAnimation( EngineSetup::WeaponsActions::RELOAD);
+        this->getCurrentWeaponType()->reload();
+    }
+}
+
+Mesh3DAnimatedCollection *ComponentWeapons::getArms() const {
+    return arms;
 }
 
 
