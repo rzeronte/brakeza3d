@@ -60,6 +60,10 @@
     { "file": "get_weapon.wav", "label": "getWeapon", "type": "sound" },
 
     { "file": "first_aid.wav", "label": "firstAid", "type": "sound" },
-    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" }
+    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
+
+    { "file": "glock_fire.wav",   "label": "glock_fire",   "type": "sound" },
+    { "file": "glock_empty.wav",  "label": "glock_empty",  "type": "sound" },
+    { "file": "glock_reload.wav", "label": "glock_reload", "type": "sound" }
   ]
 }
