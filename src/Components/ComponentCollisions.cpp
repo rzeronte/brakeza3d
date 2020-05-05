@@ -279,7 +279,7 @@ Vertex3D ComponentCollisions::stepSimulation()
         getDynamicsWorld()->stepSimulation( time * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
 
         // Physics for meshes
-        updatePhysicObjects();
+        this->updatePhysicObjects();
 
         btTransform trans = this->camera->kinematicController->getGhostObject()->getWorldTransform();
 
