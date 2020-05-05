@@ -263,8 +263,8 @@ public:
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
-                ImGui::DragScalar("BSP Lightmapping Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
-                ImGui::DragScalar("Texture color Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->TEXTURE_INTENSITY, range_sensibility_lightmap_intensity,  &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("Lightmap Blend Intensity", ImGuiDataType_Float, &EngineSetup::getInstance()->LIGHTMAPPING_BLEND_INTENSITY, range_sensibility_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("Lightmap Intensity", ImGuiDataType_Float, &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 

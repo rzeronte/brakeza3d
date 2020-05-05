@@ -66,7 +66,7 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
 
 void ComponentRender::onUpdateBSP()
 {
-    if (!EngineSetup::getInstance()->RENDER_BSP_TRIANGLES) return;
+    if (!SETUP->RENDER_BSP_TRIANGLES) return;
 
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded() ) {
 
@@ -82,7 +82,7 @@ void ComponentRender::onUpdateBSP()
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    if (!EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
+    if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
     std::vector<Object3D *>::iterator it;
 
@@ -119,7 +119,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t)
 
     // Clipping (needs objectSpace)
     if (t->testForClipping( cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE )) {
-        if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
+        if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
                     cam,
                     cam->frustum->planes,
@@ -388,18 +388,18 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
-        if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
+        /*if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
             float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
             fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * SETUP->LAVA_SCALE;
             fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * SETUP->LAVA_SCALE;
-        }
+        }*/
 
-        if ( t->parent->isDecal() ) {
+        /*if ( t->parent->isDecal() ) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1) ) {
                 return;
             }
-        }
+        }*/
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV );
 
@@ -612,27 +612,26 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
         for (int x = t->minX ; x < t->maxX ; x++) {
 
             if ((w0 | w1 | w2) > 0) {
+                if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
 
-                fragment.alpha = (int) w0 * t->reciprocalFullArea;
-                fragment.theta = (int) w1 * t->reciprocalFullArea;
-                fragment.gamma = 1 - fragment.alpha - fragment.theta;
+                    fragment.alpha = (int) w0 * t->reciprocalFullArea;
+                    fragment.theta = (int) w1 * t->reciprocalFullArea;
+                    fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
-                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
+                    fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
-                const int bufferIndex = y * SETUP->screenWidth + x;
+                    const int bufferIndex = y * SETUP->screenWidth + x;
+                    if ( fragment.depth < BUFFERS->getDepthBuffer( bufferIndex )) {
+                        fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) + (fragment.theta * t->persp_correct_Bz) + (fragment.gamma * t->persp_correct_Cz) );
 
-                if ( fragment.depth < BUFFERS->getDepthBuffer( bufferIndex )) {
-                    fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) + (fragment.theta * t->persp_correct_Bz) + (fragment.gamma * t->persp_correct_Cz) );
+                        fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
+                        fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
 
-                    fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z) ) * fragment.affineUV;
-                    fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z) ) * fragment.affineUV;
+                        if ( t->getLightmap() != nullptr ) {
+                            fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
+                            fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
+                        }
 
-                    if ( t->getLightmap() != nullptr ) {
-                        fragment.lightU = ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) + (fragment.gamma * t->light_u3_Cc_z) ) * fragment.affineUV;
-                        fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
-                    }
-
-                    if (! ((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY )) ) {
                         processPixel( t, bufferIndex, x, y, &fragment);
                     }
                 }

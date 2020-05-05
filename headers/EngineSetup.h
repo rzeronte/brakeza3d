@@ -201,8 +201,8 @@ public:
 
     bool  ENABLE_LIGHTMAPPING = true;
     bool  SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_INTENSITY = 0.08f;
-    float TEXTURE_INTENSITY = 0.1f;
+    float LIGHTMAPPING_BLEND_INTENSITY = 0.08f;
+    float LIGHTMAPPING_INTENSITY = 0.1f;
 
     bool DRAW_BSP_HULLS = false;
     bool DRAW_SPRITES = true;

@@ -273,7 +273,6 @@ void ComponentGameInput::handleFire(SDL_Event *event)
 
         // keyup
         if (event->type == SDL_KEYUP) {
-
         }
     }
 }
@@ -293,7 +292,6 @@ void ComponentGameInput::handleWeaponReload(SDL_Event *event)
 
         // keyup
         if (event->type == SDL_KEYUP) {
-
         }
     }
 }

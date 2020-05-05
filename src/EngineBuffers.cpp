@@ -69,7 +69,7 @@ void EngineBuffers::clearDepthBuffer()
 
 float EngineBuffers::getDepthBuffer(int x, int y)
 {
-    return depthBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x];
+    return depthBuffer[ y * this->widthVideoBuffer + x];
 }
 
 float EngineBuffers::getDepthBuffer(int i)
@@ -105,7 +105,7 @@ void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
 
 float EngineBuffers::getVideoBuffer(int x, int y)
 {
-    return videoBuffer[( y * EngineSetup::getInstance()->screenWidth ) + x ];
+    return videoBuffer[ y * this->widthVideoBuffer + x ];
 }
 
 void EngineBuffers::clearVideoBuffer()

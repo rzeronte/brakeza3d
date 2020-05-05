@@ -505,7 +505,7 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
 
     Uint32 lightmap_color;
     Uint8  lightmap_intensity = 0;
-    char c = 10;
+    char c = 1;
 
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         int indexPattern;
@@ -552,16 +552,16 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
                 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
 
         }
-        lightmap_intensity = lightmap_intensity + Tools::getRedValueFromColor(lightmap_color)  * (c/10  * engineSetup->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
+        lightmap_intensity = lightmap_intensity + Tools::getRedValueFromColor(lightmap_color)  * (c  * engineSetup->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
     }
 
     Uint8 pred, pgreen, pblue, palpha;
     SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
     pixelColor = (Uint32) Tools::createRGB(
-        std::min(int((pred * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c),
-        std::min(int((pgreen * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c),
-        std::min(int((pblue * engineSetup->TEXTURE_INTENSITY) * lightmap_intensity), (int) c)
+            std::min(int((pred * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c),
+            std::min(int((pgreen * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c),
+            std::min(int((pblue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c)
     );
 
     if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
