@@ -76,10 +76,12 @@ Vertex3D Vertex3D::getNormalize()
 {
     float modulo = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );
 
+    float inv_module = 1 / modulo;
+
     Vertex3D C(
-        this->x / modulo,
-        this->y / modulo,
-        this->z / modulo
+            this->x * inv_module,
+            this->y * inv_module,
+            this->z * inv_module
     );
 
     C.u = this->u;

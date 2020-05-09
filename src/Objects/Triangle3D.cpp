@@ -507,62 +507,50 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
     Uint8  lightmap_intensity = 0;
     char c = 1;
 
-    for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
+    for (int nl = 0; nl < lightmap->numLightmaps; nl++) {
         int indexPattern;
         int style = typelight[nl];
         if (style > 11) continue;
         switch(nl) {
             case 0:
-                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
-                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
-                } else {
-                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap, light_v, light_u);
-                }
+                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
                 indexPattern = (int) lightmapIndexPattern;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 1:
-                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
-                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap2, light_v, light_u);
-                } else {
-                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap2, light_v, light_u);
-                }
+                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap2, light_v, light_u);
                 indexPattern = (int) lightmapIndexPattern2;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 2:
-                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
-                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap3, light_v, light_u);
-                } else {
-                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap3, light_v, light_u);
-                }
+                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap3, light_v, light_u);
                 indexPattern = (int) lightmapIndexPattern3;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             case 3:
-                if (!engineSetup->LIGHTMAPS_BILINEAR_INTERPOLATION) {
-                    lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
-                } else {
-                    lightmap_color = Tools::readSurfacePixelFromBilinearUV(getLightmap()->lightmap4, light_v, light_u);
-                }
+                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
                 indexPattern = (int) lightmapIndexPattern4;
                 c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
                 break;
             default:
                 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
-
         }
-        lightmap_intensity = lightmap_intensity + Tools::getRedValueFromColor(lightmap_color)  * (c  * engineSetup->LIGHTMAPPING_INTENSITY); // RGB son iguales en un gris
+
+        lightmap_intensity += Tools::getRedValueFromColor(lightmap_color) + (c & 0xFF00);
     }
+
+    lightmap_intensity *= engineSetup->LIGHTMAPPING_INTENSITY; // RGB son iguales en un gris
 
     Uint8 pred, pgreen, pblue, palpha;
     SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
     pixelColor = (Uint32) Tools::createRGB(
-            std::min(int((pred * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c),
-            std::min(int((pgreen * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c),
-            std::min(int((pblue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY) * lightmap_intensity), (int) c)
+            (int) (pred * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
+            (int) (pgreen * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
+            (int) (pblue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY)
     );
+
+    pixelColor *= lightmap_intensity;
 
     if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
         SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);

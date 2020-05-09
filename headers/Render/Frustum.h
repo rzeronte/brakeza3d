@@ -41,10 +41,10 @@ public:
     Plane planes[6];
 
     // Near Plane Edges
-    Vector3D near_top = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D near_bottom = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D near_left = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D near_right = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
+    Vector3D near_top;
+    Vector3D near_bottom;
+    Vector3D near_left;
+    Vector3D near_right;
 
     // Near Left / Right / Top / Bottom in CameraSpace
     Vertex3D vNLs, vNRs;
