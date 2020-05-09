@@ -43,44 +43,38 @@ M3 M3::operator *(const M3 &v)
 
 M3 M3::operator *(const float scalar)
 {
-    M3 M = M3();
-    M.m[0] = m[0] * scalar  ;  M.m[1] = m[1] * scalar  ;  M.m[2] = m[3] * scalar;
-    M.m[3] = m[3] * scalar  ;  M.m[4] = m[4] * scalar  ;  M.m[5] = m[5] * scalar;
-    M.m[6] = m[6] * scalar  ;  M.m[7] = m[7] * scalar  ;  M.m[8] = m[8] * scalar;
-
-    return M;
+    return M3(
+            m[0] * scalar, m[1] * scalar, m[3] * scalar,
+            m[3] * scalar, m[4] * scalar, m[5] * scalar,
+            m[6] * scalar, m[7] * scalar, m[8] * scalar
+    );
 }
 
 Vertex3D M3::operator *(const Vertex3D A)
 {
-    Vertex3D V = Vertex3D();
-    V.x = (m[0] * A.x) + (m[1] * A.y) + (m[2] * A.z);
-    V.y = (m[3] * A.x) + (m[4] * A.y) + (m[5] * A.z);
-    V.z = (m[6] * A.x) + (m[7] * A.y) + (m[8] * A.z);
-
-    return V;
+    return Vertex3D(
+            (m[0] * A.x) + (m[1] * A.y) + (m[2] * A.z),
+            (m[3] * A.x) + (m[4] * A.y) + (m[5] * A.z),
+            (m[6] * A.x) + (m[7] * A.y) + (m[8] * A.z)
+    );
 }
 
 M3 M3::operator +(const M3 &v)
 {
-    M3 M = M3();
-
-    M.m[0] = m[0] + v.m[0]  ;  M.m[1] = m[1] + v.m[1]  ;  M.m[2] = m[3] + v.m[2];
-    M.m[3] = m[3] + v.m[3]  ;  M.m[4] = m[4] + v.m[4]  ;  M.m[5] = m[5] + v.m[5];
-    M.m[6] = m[6] + v.m[6]  ;  M.m[7] = m[7] + v.m[7]  ;  M.m[8] = m[8] + v.m[8];
-
-    return M;
+    return M3(
+            m[0] + v.m[0], m[1] + v.m[1], m[2] + v.m[2],
+            m[3] + v.m[3], m[4] + v.m[4], m[5] + v.m[5],
+            m[6] + v.m[6], m[7] + v.m[7], m[8] + v.m[8]
+    );
 }
 
 M3 M3::operator -(const M3 &v)
 {
-    M3 M = M3();
-
-    M.m[0] = m[0] - v.m[0]  ;  M.m[1] = m[1] - v.m[1]  ;  M.m[2] = m[3] - v.m[2];
-    M.m[3] = m[3] - v.m[3]  ;  M.m[4] = m[4] - v.m[4]  ;  M.m[5] = m[5] - v.m[5];
-    M.m[6] = m[6] - v.m[6]  ;  M.m[7] = m[7] - v.m[7]  ;  M.m[8] = m[8] - v.m[8];
-
-    return M;
+    return M3(
+            m[0] - v.m[0], m[1] - v.m[1], m[2] - v.m[2],
+            m[3] - v.m[3], m[4] - v.m[4], m[5] - v.m[5],
+            m[6] - v.m[6], m[7] - v.m[7], m[8] - v.m[8]
+    );
 }
 
 void M3::consoleInfo(std::string label) const {
@@ -92,18 +86,18 @@ void M3::consoleInfo(std::string label) const {
 
 M3 M3::getMatrixIdentity() {
     M3 M(
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1);
 
     return M;
 }
 
 M3 M3::getMatrixNULL() {
     M3 M(
-    0, 0, 0,
-    0, 0, 0,
-    0, 0, 0
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0
     );
 
     return M;
@@ -113,9 +107,9 @@ const M3 M3::RX(float degrees)
 {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
-        1, 0        , 0         ,
-        0, cos(rads), -sin(rads),
-        0, sin(rads), cos(rads)
+            1, 0        , 0         ,
+            0, cos(rads), -sin(rads),
+            0, sin(rads), cos(rads)
     );
 }
 
@@ -123,9 +117,9 @@ const M3 M3::RY(float degrees)
 {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
-        cos(rads) , 0 , sin(rads),
-        0         , 1 , 0        ,
-        -sin(rads), 0 , cos(rads)
+            cos(rads) , 0 , sin(rads),
+            0         , 1 , 0        ,
+            -sin(rads), 0 , cos(rads)
     );
 }
 
@@ -133,17 +127,17 @@ const M3 M3::RZ(float degrees)
 {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
-        cos(rads) , -sin(rads) , 0,
-        sin(rads) , cos(rads)  , 0,
-        0         , 0          , 1
+            cos(rads) , -sin(rads) , 0,
+            sin(rads) , cos(rads)  , 0,
+            0         , 0          , 1
     );
 }
 
 const M3 M3::ScaleMatrix(float scale) {
     M3 M(
-        scale, 0    , 0,
-        0    , scale, 0,
-        0    , 0    , scale
+            scale, 0    , 0,
+            0    , scale, 0,
+            0    , 0    , scale
     );
 
     return M;
@@ -189,9 +183,9 @@ M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z)
 void M3::setMatrixIdentity()
 {
     this->setup(
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1);
 }
 
 void M3::setMatrixNULL()
@@ -203,18 +197,18 @@ void M3::setMatrixRotationForEulerAngles(float x, float y, float z)
 {
     M3 m = M3::getMatrixRotationForEulerAngles(x, y, z);
     this->setup(
-    m.m[0], m.m[1], m.m[2],
-    m.m[3], m.m[4], m.m[5],
-    m.m[6], m.m[7], m.m[8]
+            m.m[0], m.m[1], m.m[2],
+            m.m[3], m.m[4], m.m[5],
+            m.m[6], m.m[7], m.m[8]
     );
 }
 
 M3 M3::getTranspose()
 {
     M3 m(
-        this->m[0], this->m[3], this->m[6],
-        this->m[1], this->m[4], this->m[7],
-        this->m[2], this->m[5], this->m[8]
+            this->m[0], this->m[3], this->m[6],
+            this->m[1], this->m[4], this->m[7],
+            this->m[2], this->m[5], this->m[8]
     );
 
     return m;

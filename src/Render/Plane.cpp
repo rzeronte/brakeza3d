@@ -31,12 +31,11 @@ void Plane::setNormal(Vertex3D n)
 
 float Plane::distance(const Vertex3D &p)
 {
-    Vertex3D n = getNormalVector().getNormalize();
+    Vertex3D n = this->normal.getNormalize();
 
-    float D = - ( (n.x * A.x) + (n.y * A.y) + (n.z * A.z) );
-    float dist = ( (n.x * p.x) + (n.y * p.y) + (n.z * p.z) + D);
+    float D = (n.x * A.x) + (n.y * A.y) + (n.z * A.z);
 
-    return dist;
+    return ( (n.x * p.x) + (n.y * p.y) + (n.z * p.z) - D);
 }
 
 void Plane::updateNormalVector()
@@ -60,9 +59,9 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
 
     // Componentes del vector director
     Vertex3D componente = Vertex3D(
-        vertex2.x - vertex1.x,
-        vertex2.y - vertex1.y,
-        vertex2.z - vertex1.z
+            vertex2.x - vertex1.x,
+            vertex2.y - vertex1.y,
+            vertex2.z - vertex1.z
     );
 
     // Vector director
@@ -82,11 +81,10 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
     // pointInPlane(x, y, z) = this->A
 
     Vertex3D pointInPlane = this->A;
-    Vertex3D normalPlaneVector = this->getNormalVector();
 
-    float A = normalPlaneVector.x;
-    float B = normalPlaneVector.y;
-    float C = normalPlaneVector.z;
+    float A = normal.x;
+    float B = normal.y;
+    float C = normal.z;
 
     // Hayamos D
     float D = - ( A * pointInPlane.x + B * pointInPlane.y + C * pointInPlane.z );
@@ -100,13 +98,11 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
     transition = t;
 
     // 3) punto de intersección ; sustituimos t en la ecuación de la recta entre 2 puntos
-    Vertex3D P(
-        vertex1.x + t * ( a ),
-        vertex1.y + t * ( b ),
-        vertex1.z + t * ( c )
+    return Vertex3D(
+            vertex1.x + t * ( a ),
+            vertex1.y + t * ( b ),
+            vertex1.z + t * ( c )
     );
-
-    return P;
 }
 
 bool Plane::isFrontFacingTo(Vertex3D direction)
