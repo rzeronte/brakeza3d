@@ -11,6 +11,7 @@ Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
     this->C = C;
 
     updateNormalVector();
+    this->normal = this->normal.getNormalize();
 }
 
 Plane::Plane(const Vertex3D P, const Vertex3D N)
@@ -31,7 +32,7 @@ void Plane::setNormal(Vertex3D n)
 
 float Plane::distance(const Vertex3D &p)
 {
-    Vertex3D n = this->normal.getNormalize();
+    Vertex3D n = this->normal;
 
     float D = (n.x * A.x) + (n.y * A.y) + (n.z * A.z);
 

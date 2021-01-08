@@ -313,9 +313,17 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
         return;
     }
 
-    if (drawRight)   Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisRight().getScaled(3)), cam, Color::green() );
-    if (drawUp)      Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisUp().getScaled(3)), cam, Color::red() );
-    if (drawForward) Drawable::drawVector3D( Vector3D( object->getPosition(), object->getPosition()+object->AxisForward().getScaled(3)), cam, Color::blue() );
+    Vertex3D endRight   = object->getPosition()+object->AxisRight().getScaled(3);
+    Vertex3D endUp      = object->getPosition()+object->AxisUp().getScaled(3);
+    Vertex3D endForward = object->getPosition()+object->AxisForward().getScaled(3);
+
+    Vector3D vRight   = Vector3D( object->getPosition(), endRight);
+    Vector3D vUp      = Vector3D( object->getPosition(), endUp);
+    Vector3D vForward = Vector3D( object->getPosition(), endForward);
+
+    if (drawRight)   Drawable::drawVector3D( vRight, cam, Color::green() );
+    if (drawUp)      Drawable::drawVector3D( vUp, cam, Color::red() );
+    if (drawForward) Drawable::drawVector3D( vForward, cam, Color::blue() );
 }
 
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle*> *frameTriangles)
