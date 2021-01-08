@@ -366,7 +366,9 @@ Vertex3D Triangle::getCenterOfMass()
 
 void Triangle::drawNormal(Camera3D *cam, Uint32 color)
 {
-    Drawable::drawVector3D( Vector3D( this->Ao, this->getNormal() ), cam, color );
+    Vertex3D normal = this->getNormal();
+    Vector3D v = Vector3D( this->Ao,  normal);
+    Drawable::drawVector3D( v, cam, color );
 }
 
 /*void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
@@ -458,7 +460,7 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
     }
 }*/
 
-void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v)
+void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v, bool bilinear)
 {
     float ignorablePartInt;
 
@@ -476,7 +478,7 @@ void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v)
         tex_v = 1 - modf(abs(tex_v) , &ignorablePartInt);
     }
 
-    if (EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION) {
+    if (bilinear) {
         pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
         return;
     }
@@ -484,7 +486,7 @@ void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v)
     pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
 }
 
-void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v)
+void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green, const Uint8 &blue, const Uint8 &alpha)
 {
     EngineSetup *engineSetup = EngineSetup::getInstance();
 
@@ -541,18 +543,16 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
 
     lightmap_intensity *= engineSetup->LIGHTMAPPING_INTENSITY; // RGB son iguales en un gris
 
-    Uint8 pred, pgreen, pblue, palpha;
-    SDL_GetRGBA(pixelColor, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
-
     pixelColor = (Uint32) Tools::createRGB(
-            (int) (pred * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
-            (int) (pgreen * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
-            (int) (pblue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY)
+            (int) (red * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
+            (int) (green * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
+            (int) (blue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY)
     );
 
     pixelColor *= lightmap_intensity;
 
-    if (EngineSetup::getInstance()->SHOW_LIGHTMAPPING) {
+    if (engineSetup->SHOW_LIGHTMAPPING) {
+        Uint8 pred, pgreen, pblue, palpha;
         SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
         pixelColor = (Uint32) Tools::createRGB(

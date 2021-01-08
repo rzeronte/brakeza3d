@@ -16,7 +16,6 @@ void ComponentRender::onStart()
 {
     std::cout << "ComponentRender onStart" << std::endl;
     initTiles();
-    initOpenCL();
 }
 
 void ComponentRender::preUpdate()
@@ -152,10 +151,6 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t)
     t->updateFullArea();
     t->updateUVCache();
 
-    if (SETUP->RASTERIZER_OPENCL) {
-        BUFFERS->addOCLTriangle( t->getOpenCL() );
-    }
-
     t->drawed = false;
     visibleTriangles.emplace_back( t );
 }
@@ -188,20 +183,18 @@ void ComponentRender::hiddenSurfaceRemoval()
 void ComponentRender::drawVisibleTriangles()
 {
     if (SETUP->BASED_TILE_RENDER) {
-        this->handleTrianglesToTiles(visibleTriangles);
 
+        this->handleTrianglesToTiles(visibleTriangles);
         this->drawTilesTriangles(&visibleTriangles);
 
         if (SETUP->DRAW_TILES_GRID) {
             this->drawTilesGrid();
         }
-    } else {
-        if (!SETUP->RASTERIZER_OPENCL) {
-            this->drawTriangles(visibleTriangles);
-        } else {
-            this->handleOpenCLTriangles();
-        }
+
+        return;
     }
+
+    this->drawTriangles(visibleTriangles);
 }
 
 void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles)
@@ -223,36 +216,6 @@ void ComponentRender::handleTrianglesToTiles(std::vector<Triangle*> &visibleTria
             }
         }
     }
-}
-
-void ComponentRender::handleOpenCLTriangles()
-{
-    int numTriangles = BUFFERS->numOCLTriangles;
-
-    opencl_buffer_triangles = clCreateBuffer(contextCPU, CL_MEM_READ_ONLY, numTriangles * sizeof(OCLTriangle), NULL, &ret);
-    clEnqueueWriteBuffer(command_queue_rasterizer, opencl_buffer_triangles, CL_TRUE, 0, numTriangles * sizeof(OCLTriangle), BUFFERS->OCLTrianglesBuffer, 0, NULL, NULL);
-
-    clSetKernelArg(processAllTriangles, 0, sizeof(cl_mem), (void *)&opencl_buffer_triangles);
-    clSetKernelArg(processAllTriangles, 1, sizeof(int), &SETUP->screenWidth);
-    clSetKernelArg(processAllTriangles, 2, sizeof(cl_mem), (void *)&opencl_buffer_video);
-    clSetKernelArg(processAllTriangles, 3, sizeof(cl_mem), (void *)&opencl_buffer_depth);
-
-    size_t global_item_size = numTriangles; // Process the entire lists
-    size_t local_item_size = 1;          // Divide work items into groups of 64
-
-    ret = clEnqueueNDRangeKernel(command_queue_rasterizer, processAllTriangles, 1, NULL, &global_item_size, &local_item_size, 0, NULL, NULL);
-
-    if (ret != CL_SUCCESS) {
-        Logging::getInstance()->getInstance()->Log( "Error processAllTriangles: " + std::to_string(ret) );
-
-        char buffer[1024];
-        clGetProgramBuildInfo(programCPU, device_cpu_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
-        if (strlen(buffer) > 0 ) {
-            Logging::getInstance()->getInstance()->Log( buffer );
-        }
-    }
-    clFinish(command_queue_rasterizer);
-    BUFFERS->numOCLTriangles = 0;
 }
 
 void ComponentRender::drawTilesGrid()
@@ -329,6 +292,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
     auto *fragment = new Fragment();
+    bool bilinear = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -352,15 +316,15 @@ void ComponentRender::triangleRasterizer(Triangle *t)
 
                 if ( fragment->depth < BUFFERS->getDepthBuffer( bufferIndex )) {
                     fragment->affineUV = 1 / (fragment->alpha * (t->persp_correct_Az) + fragment->theta * (t->persp_correct_Bz) + fragment->gamma * (t->persp_correct_Cz) );
-                    fragment->texU   = (fragment->alpha * (t->tex_u1_Ac_z) + fragment->theta * (t->tex_u2_Bc_z) + fragment->gamma * (t->tex_u3_Cc_z) ) * fragment->affineUV;
-                    fragment->texV   = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) + fragment->gamma * (t->tex_v3_Cc_z) ) * fragment->affineUV;
+                    fragment->texU = (fragment->alpha * (t->tex_u1_Ac_z) + fragment->theta * (t->tex_u2_Bc_z) + fragment->gamma * (t->tex_u3_Cc_z) ) * fragment->affineUV;
+                    fragment->texV = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) + fragment->gamma * (t->tex_v3_Cc_z) ) * fragment->affineUV;
 
                     if (t->getLightmap() != NULL) {
                         fragment->lightU = (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) + fragment->gamma * (t->light_u3_Cc_z) ) * fragment->affineUV;
                         fragment->lightV = (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) + fragment->gamma * (t->light_v3_Cc_z) ) * fragment->affineUV;
                     }
 
-                    this->processPixel( t, bufferIndex, x, y, fragment );
+                    this->processPixel( t, bufferIndex, x, y, fragment, bilinear);
                 }
             }
 
@@ -378,7 +342,7 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     delete fragment;
 }
 
-void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment)
+void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
 {
     Uint32 pixelColor(NULL);
 
@@ -388,12 +352,12 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
-        /*if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
+        if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
             float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
             float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
             fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * SETUP->LAVA_SCALE;
             fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * SETUP->LAVA_SCALE;
-        }*/
+        }
 
         /*if ( t->parent->isDecal() ) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1) ) {
@@ -401,7 +365,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
             }
         }*/
 
-        t->processPixelTexture(pixelColor, fragment->texU, fragment->texV );
+        t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
 
         Uint8 red, green, blue, alpha;
         SDL_GetRGBA(pixelColor, t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
@@ -413,7 +377,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         }
 
         if (!t->parent->isDecal() && t->getLightmap() != NULL && !t->getTexture()->liquid && SETUP->ENABLE_LIGHTMAPPING) {
-            t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV);
+            t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV, red, green, blue, alpha);
         }
     }
 
@@ -460,57 +424,6 @@ void ComponentRender::drawSceneObjectsAxis()
             Drawable::drawObject3DAxis(getSceneObjects()->operator[](i), ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
         }
     }
-}
-
-void ComponentRender::initOpenCL()
-{
-    platform_id   = NULL;
-    device_cpu_id = NULL;
-
-    ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms) ;
-    if (ret != CL_SUCCESS) {
-        printf("Unable to get platform_id");
-    }
-
-    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_cpu_id, &ret_num_devices);
-    if (ret != CL_SUCCESS) {
-        printf("Unable to get device_cpu_id");
-    }
-
-    ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_CPU, 1, &device_gpu_id, &ret_num_devices);
-    if (ret != CL_SUCCESS) {
-        printf("Unable to get device_gpu_id");
-    }
-
-    cl_context_properties properties[3];
-    properties[0] = CL_CONTEXT_PLATFORM;
-    properties[1] = (cl_context_properties) platform_id;
-    properties[2] = 0;
-
-    // Create an OpenCL context
-    contextCPU = clCreateContext(properties, 1, &device_cpu_id, NULL, NULL, &ret);
-    contextGPU = clCreateContext(properties, 1, &device_gpu_id, NULL, NULL, &ret);
-
-    command_queue_rasterizer = clCreateCommandQueue(contextCPU, device_cpu_id, NULL, &ret);
-
-    // Load the kernel source code into the array source_str
-    size_t source_size;
-    char *source_str = Tools::readFile("../opencl.cl", source_size);
-
-    // Create a program from the kernel source
-    programCPU = clCreateProgramWithSource(contextCPU, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
-    programGPU = clCreateProgramWithSource(contextGPU, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
-
-    // Build the program
-    clBuildProgram(programCPU, 1, &device_cpu_id, NULL, NULL, NULL);
-    clBuildProgram(programGPU, 1, &device_gpu_id, NULL, NULL, NULL);
-
-    // Create the OpenCL kernel
-    processAllTriangles = clCreateKernel(programCPU, "rasterizerFrameTrianglesKernel", &ret);
-
-    opencl_buffer_depth = clCreateBuffer(contextCPU, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, BUFFERS->sizeBuffers * sizeof(float), BUFFERS->depthBuffer, &ret);
-    opencl_buffer_video = clCreateBuffer(contextCPU, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, BUFFERS->sizeBuffers * sizeof(unsigned int), BUFFERS->videoBuffer, &ret);
-
 }
 
 void ComponentRender::initTiles()
@@ -603,6 +516,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
     Fragment fragment;
+    bool bilinear = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY ; y < t->maxY ; y++) {
         int w0 = w0_row;
@@ -632,7 +546,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
                             fragment.lightV = ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) + (fragment.gamma * t->light_v3_Cc_z) ) * fragment.affineUV;
                         }
 
-                        processPixel( t, bufferIndex, x, y, &fragment);
+                        processPixel( t, bufferIndex, x, y, &fragment, bilinear);
                     }
                 }
             }

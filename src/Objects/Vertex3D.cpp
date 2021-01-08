@@ -3,6 +3,7 @@
 #include "../../headers/Objects/Vertex3D.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
+#include "../../headers/Render/Maths.h"
 
 Vertex3D::Vertex3D()
 {
@@ -74,7 +75,7 @@ bool Vertex3D::operator !=(const Vertex3D &v)
 
 Vertex3D Vertex3D::getNormalize()
 {
-    float modulo = abs(sqrt( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );
+    float modulo = abs(Maths::sqrt1( (this->x*this->x) + (this->y*this->y) + (this->z*this->z) ) );
 
     float inv_module = 1 / modulo;
 

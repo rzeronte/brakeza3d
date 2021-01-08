@@ -12,7 +12,7 @@ public:
     Vertex3D vertex1;
     Vertex3D vertex2;
 
-    Vector3D(Vertex3D, Vertex3D);
+    Vector3D(Vertex3D &, Vertex3D &);
 
     Vertex3D getComponent() const;
     Vertex3D normal() const;

@@ -133,9 +133,9 @@ Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v)
 
 Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
 {
-    Uint32 *pixels = (Uint32 *)surface->pixels;
+    auto *pixels = (Uint32 *)surface->pixels;
 
-    return pixels[ ( y * surface->w ) + x ];
+    return pixels[ y * surface->w + x ];
 }
 
 bool Tools::fileExists(const std::string& name)

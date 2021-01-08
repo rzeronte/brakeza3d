@@ -44,18 +44,18 @@ int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V)
 {
     EngineSetup *SETUP = EngineSetup::getInstance();
 
-    if (P.distance(V.vertex1) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex2) > SETUP->FRUSTUM_CLIPPING_DISTANCE) {
+    float distanceV1 = P.distance(V.vertex1);
+    float distanceV2 = P.distance(V.vertex2);
+
+    if (distanceV1 > SETUP->FRUSTUM_CLIPPING_DISTANCE && distanceV2 > SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
     }
 
-    if (P.distance(V.vertex2) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex1) < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
+    if (distanceV2 > SETUP->FRUSTUM_CLIPPING_DISTANCE && distanceV1 < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 2;
     }
 
-    if (P.distance(V.vertex1) > SETUP->FRUSTUM_CLIPPING_DISTANCE &&
-        P.distance(V.vertex2) < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
+    if (distanceV1 > SETUP->FRUSTUM_CLIPPING_DISTANCE && distanceV2 < SETUP->FRUSTUM_CLIPPING_DISTANCE) {
         return 3;
     }
 
@@ -518,4 +518,11 @@ float Maths::normalizeToRange(float value, float min, float max)
     }
 
     return (value - min) / (max - min);
+}
+
+float Maths::sqrt1(const float &n)
+{
+    static union{int i; float f;} u;
+    u.i = 0x5F375A86 - (*(int*)&n >> 1);
+    return (int(3) - n * u.f * u.f) * n * u.f * 0.5f;
 }

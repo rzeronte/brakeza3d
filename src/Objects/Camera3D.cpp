@@ -29,7 +29,7 @@ Camera3D::Camera3D() {
             calcCanvasFarHeight(), calcCanvasFarWidth()
     );
 
-    this->velocity = Vector3D( Vertex3D::zero(), Vertex3D::zero() );
+    this->velocity = Vector3D();
 
     btConvexShape* capsule = new btCapsuleShapeZ(
             EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,

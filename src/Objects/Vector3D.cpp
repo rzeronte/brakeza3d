@@ -9,7 +9,7 @@ Vector3D::Vector3D()
 
 }
 
-Vector3D::Vector3D(Vertex3D A, Vertex3D B)
+Vector3D::Vector3D(Vertex3D &A, Vertex3D &B)
 {
     this->vertex1 = A;
     this->vertex2 = B;

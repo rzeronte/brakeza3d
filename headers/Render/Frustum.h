@@ -54,10 +54,10 @@ public:
     Vertex3D vNTpers, vNBpers;
 
     // Near Plane Edges
-    Vector3D far_top = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D far_bottom = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D far_left = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
-    Vector3D far_right = Vector3D(Vertex3D(0, 0, 0), Vertex3D(0, 0, 0));
+    Vector3D far_top = Vector3D();
+    Vector3D far_bottom = Vector3D();
+    Vector3D far_left = Vector3D();
+    Vector3D far_right = Vector3D();
 
 
 public:

@@ -57,8 +57,8 @@ public:
     static float TriangleArea(float x0, float y0, float x1, float y1, float x2, float y2);
 
     static float normalizeToRange(float value, float min, float max);
+    static float sqrt1(const float &n);
 
-    static btVector4 btVector4OR(btVector4 &a, btVector4 &b);
 };
 
 

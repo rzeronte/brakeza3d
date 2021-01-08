@@ -43,15 +43,15 @@ public:
     void drawVisibleTriangles();
 
     void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);
-    void handleOpenCLTriangles();
+
     void drawTilesGrid();
     void drawTriangles(std::vector<Triangle*> &visibleTriangles);
     void processTriangle(Triangle *t);
     void triangleRasterizer(Triangle *t);
-    void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *);
+    void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *, bool bilinear);
     void drawTilesTriangles(std::vector<Triangle*> *visibleTriangles);
     void drawSceneObjectsAxis();
-    void initOpenCL();
+
     void initTiles();
     void drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles);
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);

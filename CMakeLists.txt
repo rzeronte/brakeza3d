@@ -80,6 +80,9 @@ add_executable(brakeza3d
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
 
+        src/Misc/TextureAtlas.cpp
+        headers/Misc/TextureAtlas.h
+
         src/Render/Billboard.cpp
         headers/Render/Billboard.h
         src/Render/M3.cpp

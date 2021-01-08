@@ -50,7 +50,7 @@ void ComponentHUD::onUpdate()
             faceAnimations[currentFaceAnimationIndex]->nextFrame();
         }
 
-        drawHUD();
+        //drawHUD();
 
     }
 }
