@@ -12,7 +12,7 @@ void TexturePackage::addItem(const std::string& srcTexture, std::string label)
     t->loadTGA(srcTexture.c_str(), 1);
 
     item->texture = t;
-    item->label   = std::move(label);
+    item->label = std::move(label);
 
     this->items.push_back( item );
 }
