@@ -7,6 +7,7 @@
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/ComponentsManager.h"
+#include "../../headers/Game/ItemAmmoBody.h"
 
 ComponentBSP::ComponentBSP()
 {

@@ -59,7 +59,7 @@ public:
         const float range_min_frustum_fardistance = 1;
         const float range_max_frustum_fardistance = 1000;
 
-        const float range_frustum_clipping_distance_sensibility = 0.000001;
+        const float range_frustum_clipping_distance_sensibility = 0.001;
         const float range_min_frustum_clipping_distance = 0;
         const float range_max_frustum_clipping_distance = 1;
 

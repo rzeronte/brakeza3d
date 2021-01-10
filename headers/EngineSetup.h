@@ -121,7 +121,7 @@ public:
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
-    float FRUSTUM_CLIPPING_DISTANCE = 0.000001f;
+    float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
     bool ENABLE_CLIPPING = true;
 
     // BSP ITEM BILLBOARDS
@@ -136,8 +136,6 @@ public:
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
     std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
-
-    std::string ITEM_FIRSTAID_ICON = "first_aid.png";
 
     std::string CFG_MAPS    = "maps.json";
     std::string CFG_MENU    = "menu.json";
@@ -201,8 +199,8 @@ public:
 
     bool  ENABLE_LIGHTMAPPING = true;
     bool  SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_BLEND_INTENSITY = 0.08f;
-    float LIGHTMAPPING_INTENSITY = 0.1f;
+    float LIGHTMAPPING_BLEND_INTENSITY = 0.1f;
+    float LIGHTMAPPING_INTENSITY = 0.75f;
 
     bool DRAW_BSP_HULLS = false;
     bool DRAW_SPRITES = true;

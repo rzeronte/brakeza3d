@@ -23,7 +23,7 @@ public:
     int index; // For related with Enum in Setup
 
     std::string label;
-    std::string classname;
+    std::string classname;  // bsp quake map reference
 
     AmmoType *ammo;
 
@@ -45,10 +45,14 @@ public:
     int numAnimations = 0;
     int currentAnimationIndex = 0;
 
+    // Animations for this weapon
     Mesh3DAnimatedCollection *weaponAnimations;
+
+    // sounds
     std::vector<std::string> weaponSounds;
     std::string soundEmptyLabel;
 
+    // mesh for
     Mesh3D *model;
 
     SDL_Surface *iconHUD;

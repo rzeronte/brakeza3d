@@ -14,20 +14,7 @@ void ComponentWeapons::onStart()
 {
     std::cout << "ComponentWeapons onStart" << std::endl;
 
-    this->arms = new Mesh3DAnimatedCollection();
-    arms->setFollowCamera(true );
-    arms->setScale(0.05);
-    arms->setPosition(Vertex3D(0, 0, 0));
-    arms->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
-    arms->setLabel("handsCollection");
-    arms->addAnimation("hands_idle", "hands_idle.fbx", 0.05, false);
-    arms->addAnimation("hands_fire", "hands_fire.fbx", 0.05, false);
-    arms->addAnimation("hands_reload", "hands_reload.fbx", 0.05, false);
-    arms->setAnimation(EngineSetup::WeaponsActions::IDLE );
-    Brakeza3D::get()->addObject3D(arms, arms->getLabel());
-
     this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
-
 }
 
 void ComponentWeapons::preUpdate() {
@@ -36,9 +23,6 @@ void ComponentWeapons::preUpdate() {
 
 void ComponentWeapons::onUpdate()
 {
-    if (this->getCurrentWeaponType()->getCurrentWeaponAnimation()->isAnimationEnds()) {
-        this->getArms()->setAnimation( EngineSetup::WeaponsActions::IDLE );
-    }
     this->getCurrentWeaponType()->onUpdate();
 }
 
@@ -133,7 +117,6 @@ void ComponentWeapons::shoot()
     Logging::getInstance()->Log("ComponentWeapons shoot!");
 
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
-        getArms()->setAnimation( EngineSetup::WeaponsActions::FIRE);
         this->getCurrentWeaponType()->shoot();
     } else {
         std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();
@@ -150,13 +133,7 @@ void ComponentWeapons::reload()
     Logging::getInstance()->Log("ComponentWeapons reload!");
 
     if (getCurrentWeaponType()->getAmmoType()->getReloads() > 0) {
-        this->getArms()->setAnimation( EngineSetup::WeaponsActions::RELOAD);
         this->getCurrentWeaponType()->reload();
     }
 }
-
-Mesh3DAnimatedCollection *ComponentWeapons::getArms() const {
-    return arms;
-}
-
 

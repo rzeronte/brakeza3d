@@ -22,7 +22,7 @@ void ItemAmmoBody::setAmmoTypeClassname(const std::string &ammoTypeClassname) {
 
 void ItemAmmoBody::onUpdate()
 {
-    this->setRotation ( this->getRotation() * M3::getMatrixRotationForEulerAngles(0, 3, 0));
+    this->setRotation ( this->getRotation() * M3::getMatrixRotationForEulerAngles(0, 0, 2));
     Mesh3D::onUpdate();
 }
 

@@ -34,6 +34,8 @@ public:
 
     void setKills(int kills);
     int  getKills() const;
+
+    void createObjects3DFromBSPMap();
 };
 
 

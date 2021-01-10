@@ -1,9 +1,9 @@
 {
   "ammo": [
-    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.01, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 1, "name" : "shells",  "classname": "item_shells",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.01, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 2, "name" : "cells",   "classname": "item_cells",   "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.01, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 3, "name" : "rockets", "classname": "item_rockets", "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.01, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 }
+    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 1, "name" : "shells",  "classname": "item_shells",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 2, "name" : "cells",   "classname": "item_cells",   "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 3, "name" : "rockets", "classname": "item_rockets", "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 }
   ],
   "weapons": [
     {
@@ -13,7 +13,7 @@
       "cadence": 0.25,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.015,
+      "scale": 0.075,
       "accuracy": 90,
       "dispersion": 1,
       "damage": 20,
@@ -29,9 +29,9 @@
       "casing3_sound": "BulletCasing3.wav",
       "icon_hud": "pistol.png",
       "animations": [
-        { "status": 0, "label": "gauss_walk",    "model": "glock_idle.fbx", "scale": 0.05,   "sound": "glock_fire", "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "gauss_fire",    "model": "glock_fire.fbx", "scale": 0.05,   "sound": "glock_fire", "projectile": true,  "looping": false, "stop_end": false },
-        { "status": 1, "label": "pistol_reload", "model": "glock_reload.fbx", "scale": 0.05, "sound": "glock_reload", "projectile": true,  "looping": false, "stop_end": false }
+        { "status": 0, "label": "gauss_walk",    "model": "G18.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "gauss_fire",    "model": "G18.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 1, "label": "pistol_reload", "model": "G18.fbx", "scale": 0.01, "sound": "glock_reload", "projectile": true,  "looping": false, "stop_end": false }
       ]
     },
     {
@@ -41,7 +41,7 @@
       "cadence": 0.1,
       "ammo_index": 1,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.15,
       "accuracy": 70,
       "dispersion": 1,
       "damage": 20,
@@ -69,7 +69,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 65,
       "dispersion": 1,
       "damage": 25,
@@ -97,7 +97,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 100,
       "dispersion": 1,
       "damage": 25,
@@ -125,7 +125,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 60,
       "dispersion": 1,
       "damage": 25,
@@ -153,7 +153,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 100,
       "dispersion": 1,
       "damage": 25,
@@ -181,7 +181,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 100,
       "dispersion": 1,
       "damage": 125,
@@ -209,7 +209,7 @@
       "cadence": 0.1,
       "ammo_index": 0,
       "model": "weapon_box.fbx",
-      "scale": 0.02,
+      "scale": 0.075,
       "accuracy": 100,
       "dispersion": 1,
       "damage": 110,

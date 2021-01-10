@@ -26,8 +26,6 @@ public:
     void shoot();
     void reload();
 
-    Mesh3DAnimatedCollection *arms;
-
     int numWeapons = 0;
     int currentWeaponIndex = 0;
 
@@ -52,8 +50,6 @@ public:
     AmmoType *getAmmoTypeByClassname(std::string label);
 
     bool isEmptyWeapon();
-
-    Mesh3DAnimatedCollection *getArms() const;
 
     void headBob(Vector3D velocity);
 };
