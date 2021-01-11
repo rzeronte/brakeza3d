@@ -1,9 +1,9 @@
 {
   "ammo": [
-    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 1, "name" : "shells",  "classname": "item_shells",  "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 2, "name" : "cells",   "classname": "item_cells",   "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
-    { "index": 3, "name" : "rockets", "classname": "item_rockets", "reloads": 5, "start_ammo": 7, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 }
+    { "index": 0, "name" : "spikes",  "classname": "item_spikes",  "reloads": 5, "start_ammo": 700, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 1, "name" : "shells",  "classname": "item_shells",  "reloads": 5, "start_ammo": 700, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 2, "name" : "cells",   "classname": "item_cells",   "reloads": 5, "start_ammo": 700, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 },
+    { "index": 3, "name" : "rockets", "classname": "item_rockets", "reloads": 5, "start_ammo": 700, "model_box": "weapon_box.fbx", "scale_box": 0.075, "model_projectile": "lowpolybullet.obj", "scale_projectile": 0.2 }
   ],
   "weapons": [
     {
@@ -29,8 +29,8 @@
       "casing3_sound": "BulletCasing3.wav",
       "icon_hud": "pistol.png",
       "animations": [
-        { "status": 0, "label": "gauss_walk",    "model": "G18.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": false, "looping": false, "stop_end": false },
-        { "status": 1, "label": "gauss_fire",    "model": "G18.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": true,  "looping": false, "stop_end": false },
+        { "status": 0, "label": "gauss_walk",    "model": "machinegun_idle.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": false, "looping": false, "stop_end": false },
+        { "status": 1, "label": "gauss_fire",    "model": "machinegun_shot.fbx", "scale": 0.01, "sound": "glock_fire", "projectile": true,  "looping": true, "stop_end": false },
         { "status": 1, "label": "pistol_reload", "model": "G18.fbx", "scale": 0.01, "sound": "glock_reload", "projectile": true,  "looping": false, "stop_end": false }
       ]
     },

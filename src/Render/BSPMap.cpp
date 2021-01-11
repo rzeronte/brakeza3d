@@ -930,7 +930,12 @@ bspleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
             }
 
             if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
-                Logging::getInstance()->Log("[LOG_LEAF_TYPE] leafType: " + std::to_string(leaf->type) + " [floor = -1 | out = -2 |water = -3 |mud = -4 | lava = -5]");
+                Logging::getInstance()->Log(
+                        "Leaf type: " + std::to_string(leaf->type) +
+                        ", numsurf: " + std::to_string(leaf->numsurf) +
+                        ", distance: " + std::to_string(distance) +
+                        ", firstsurf: " + std::to_string(leaf->firstsurf)
+                );
             }
         }
     }

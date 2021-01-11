@@ -472,7 +472,6 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         this->modelTriangles.push_back( new Triangle(V3, V2, V1, this) );
 
         if (this->numTextures > 0) {
-            Logging::getInstance()->Log("Assing texture to subMesh");
             this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
         }
     }

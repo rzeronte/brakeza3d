@@ -40,7 +40,7 @@ public:
     Vertex3D down     = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 196.0f, 0);
+    Vertex3D gravity = Vertex3D(0, 10.0f, 0);
     float    BULLET_FALL_SPEED = 256;
 
     // Screen dimension constants
@@ -199,7 +199,7 @@ public:
 
     bool  ENABLE_LIGHTMAPPING = true;
     bool  SHOW_LIGHTMAPPING = false;
-    float LIGHTMAPPING_BLEND_INTENSITY = 0.1f;
+    float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
     float LIGHTMAPPING_INTENSITY = 0.75f;
 
     bool DRAW_BSP_HULLS = false;

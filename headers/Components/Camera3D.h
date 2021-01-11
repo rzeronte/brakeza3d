@@ -65,7 +65,6 @@ public:
 
     void makeKineticCharacter(btTransform transform, btConvexShape *capsule);
 
-    void Jump();
     void limitPitch();
 
     void consoleInfo();
