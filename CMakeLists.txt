@@ -3,8 +3,8 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -236,7 +236,11 @@ add_executable(brakeza3d
         headers/Components/ComponentGameInput.h
         src/Objects/Mesh3DAnimated.cpp
         headers/Objects/Mesh3DAnimated.h
-        src/Objects/Mesh3DAnimatedCollection.cpp headers/Objects/Mesh3DAnimatedCollection.h)
+        src/Objects/Mesh3DAnimatedCollection.cpp
+        headers/Objects/Mesh3DAnimatedCollection.h
+        src/Physics/BSPCollider.cpp
+        src/Physics/BSPCollider.h
+        )
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}
