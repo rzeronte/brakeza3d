@@ -40,12 +40,12 @@ struct dheader_t
     dentry_t texinfo;		// Texture info
     dentry_t surfaces;		// Map Surfaces
     dentry_t lightmaps;		// Wall Light Maps
-    dentry_t boundnodes;	// BSP to bound Hulls
+    dentry_t clipnodes;	    // BSP to bound Hulls
     dentry_t leaves;		// Hull BSP Leaves
     dentry_t lstsurf;		// List of Surfaces
     dentry_t edges;			// Original surface Edges
     dentry_t lstedges;		// List of surfaces Edges
-    dentry_t hulls;			// List of Hulls
+    dentry_t models;		// List of Hulls
 };
 
 typedef float vec2_t[2];	// S,T coordinates of the vertex
@@ -117,11 +117,11 @@ struct surface_t
     int lightmap;							// Offset to the lightmap or -1 (converted from long!)
 };
 
-struct bsphull_t
+struct model_t
 {
     boundbox_t box;		// The bounding box of the Hull
     vec3_t origin;		// Always zero
-    int headnode[4];	// Heads of BSP hulls, headnode[0] is main hull (index to the first bsp tree node) (converted from long!)
+    int headnode[4];	// Heads of BSP models, headnode[0] is main hull (index to the first bsp tree node) (converted from long!)
     int visleaves;		// Number of visible BSP leaves (converted from long!)
     int firstsurf;		// Id of surfaces (converted from long!)
     int numsurf;		// Number of surfaces (converted from long!)
@@ -183,6 +183,18 @@ typedef struct entity_t
     int         num_attributes = 0;
     epair_s     attributes[50];
 };
+
+typedef struct
+{
+    int planenum;    // The plane which splits the node
+    short children[2];	// negative numbers are contents
+    //short front;                 // If positive, id of Front child node
+    // If -2, the Front part is inside the model
+    // If -1, the Front part is outside the model
+    //short back;                  // If positive, id of Back child node
+    // If -2, the Back part is inside the model
+    // If -1, the Back part is outside the model
+} clipnode_t;
 
 class BSPMap: public Object3D
 {
@@ -254,7 +266,7 @@ public:
     int getNumSurfaceLists() { return header->lstsurf.size / sizeof (getSurfaceLists()[0]); }
 
     // Get number of leaves
-    int getNumLeaves() { return getHull(0)->visleaves; }
+    int getNumLeaves() { return getModel(0)->visleaves; }
 
     // Get array of vertices
     vec3_t *getVertices() { return (vec3_t *) &bsp[header->vertices.offset]; }
@@ -298,16 +310,16 @@ public:
     // Get surface list
     unsigned short getSurfaceList(int surfaceListId) { return getSurfaceLists()[surfaceListId]; }
 
-    // Get array of hulls (0 is the main rendering hull)
+    // Get array of models (0 is the main rendering hull)
     // used to get an index to the start node in the bsp tree
     // used to get the total number of bsp leaves
-    bsphull_t *getHulls() { return (bsphull_t *) &bsp[header->hulls.offset]; }
+    model_t *getModels() { return (model_t *) &bsp[header->models.offset]; }
 
     // Get hull
-    bsphull_t *getHull(int hullId) { return &getHulls()[hullId]; }
+    model_t *getModel(int modelId) { return &getModels()[modelId]; }
 
     // Get number of surfaces
-    int getNumHulls() { return header->hulls.size / (sizeof (getHulls()[0])); }
+    int getNumHulls() { return header->models.size / (sizeof (getModels()[0])); }
 
     // Get array of nodes, contains an index to the plane which intersects the node
     // contains an index to a right and a left node or to a leaf
@@ -318,7 +330,7 @@ public:
     bspnode_t *getNode(int nodeId) { return &getNodes()[nodeId]; }
 
     // Get start node
-    bspnode_t *getStartNode() { return &getNodes()[getHulls()[0].headnode[0]]; }
+    bspnode_t *getStartNode() { return &getNodes()[getModels()[0].headnode[0]]; }
 
     // Get array of leaves, contains an index to the visibility list
     // contains a number to the first surface and the number of surfaces in the leaf
@@ -381,6 +393,7 @@ public:
     bool InitializeLightmaps();
     void bindTrianglesLightmaps();
     void InitializeEntities();
+    void InitializeClipNodes();
     void createMesh3DAndGhostsFromHulls();
     void InitializeRecast();
 
@@ -405,6 +418,10 @@ public:
     // Get array of edges, contains the index to the start and end vertices in the pV
     char *getEntities() { return (char *) &bsp[header->entities.offset]; }
     char *parseEntities (char *s);
+
+    int getNumClipNodes() { return header->clipnodes.size / (sizeof (getClipNode()[0])); }
+    clipnode_t *getClipNode() { return (clipnode_t *) &bsp[header->texinfo.offset]; }
+    clipnode_t *getClipNode(int id) { return &getClipNode()[id]; }
 
     int getIndexOfFirstEntityByClassname(char *);
     int getIndexOfFirstEntityByTargetname(const char *);

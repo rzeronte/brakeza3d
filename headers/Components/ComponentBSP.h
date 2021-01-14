@@ -10,6 +10,7 @@
 #include "Component.h"
 #include "../Render/BSPMap.h"
 #include "../Misc/cJSON.h"
+#include "../../src/Physics/BSPCollider.h"
 
 class ComponentBSP : public Component {
 public:
@@ -31,7 +32,11 @@ public:
     cJSON *ammoTypesJSONList;
     cJSON *enemiesJSONList;
 
+    mnode_t *worldNodes;
+
     BSPMap *getBSP() const;
+    model_collision_t *getModelCollisionFromBSP(int modelId);
+
     void initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
     void setCameraInBSPStartPosition();
     void loadMapsFromJSON();

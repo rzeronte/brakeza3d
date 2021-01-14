@@ -82,7 +82,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     this->InitializeEntities();                // necesario para getStartMapPosition
     this->createMesh3DAndGhostsFromHulls();
     this->createBulletPhysicsShape();
-
+    this->InitializeClipNodes();
     this->setLoaded(true);
 
     return true;
@@ -418,7 +418,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
     for (int m = 1; m < numHulls; m++) {
         bool rigid = false;
 
-        bsphull_t *h = this->getHull(m);
+        model_t *hull = this->getModel(m);
 
         // Buscamos entidades que figuren con el modelo
         std::string targetName = "*" + std::to_string(m);
@@ -441,14 +441,14 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         }
 
         vec3_t v3aabbMax;
-        v3aabbMax[0] = h->box.max[0];
-        v3aabbMax[1] = -h->box.max[2];
-        v3aabbMax[2] = h->box.max[1];
+        v3aabbMax[0] = hull->box.max[0];
+        v3aabbMax[1] = -hull->box.max[2];
+        v3aabbMax[2] = hull->box.max[1];
 
         vec3_t v3aabbMin;
-        v3aabbMin[0] = h->box.min[0];
-        v3aabbMin[1] = -h->box.min[2];
-        v3aabbMin[2] = h->box.min[1];
+        v3aabbMin[0] = hull->box.min[0];
+        v3aabbMin[1] = -hull->box.min[2];
+        v3aabbMin[2] = hull->box.min[1];
 
         Vertex3D aabbMax = Vertex3D(v3aabbMax[0]*scale, v3aabbMax[1]*scale, v3aabbMax[2]*scale);
         Vertex3D aabbMin = Vertex3D(v3aabbMin[0]*scale, v3aabbMin[1]*scale, v3aabbMin[2]*scale);
@@ -463,7 +463,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             if (entityIndex >= 1 ) {
                 body->setBspEntityIndex(entityIndex);
             }
-            for (int surface = h->firstsurf; surface < h->firstsurf + h->numsurf ; surface++) {
+            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
 
                 const int offset = this->surface_triangles[surface].offset;
                 const int num = this->surface_triangles[surface].num;
@@ -490,7 +490,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
                 ghost->setBspEntityIndex(entityIndex);
             }
             ghost->setEnabled(false);
-            for (int surface = h->firstsurf; surface < h->firstsurf + h->numsurf ; surface++) {
+            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
 
                 const int offset = this->surface_triangles[surface].offset;
                 const int num = this->surface_triangles[surface].num;
@@ -514,7 +514,7 @@ void BSPMap::InitializeRecast()
     Logging::getInstance()->Log("InitializeRecast");
     int numVisibleSurfaces = 0;
 
-    bsphull_t *bspHull = getHull(0);
+    model_t *bspHull = getModel(0);
     int firstSurface = bspHull->firstsurf;
     int lastSurface = firstSurface + bspHull->numsurf;
     for (int k = firstSurface; k < lastSurface; k++) {
@@ -547,6 +547,16 @@ void BSPMap::InitializeEntities()
 {
     char *e = getEntities();
     this->parseEntities(e);
+}
+
+void BSPMap::InitializeClipNodes()
+{
+    Logging::getInstance()->Log("InitializeClipNodes: NumClipNodes: " + std::to_string(getNumClipNodes()));
+    clipnode_t *clipnode = (clipnode_t *) &bsp[header->clipnodes.offset];
+
+    for (int i = 0; i < getNumClipNodes() ; i++, clipnode++) {
+        std::cout << "back: " << clipnode->children[0] << ", front: " << clipnode->children[1] << ", planenum: " << clipnode->planenum << std::endl;
+    }
 }
 
 void BSPMap::bindTrianglesLightmaps()
@@ -753,7 +763,7 @@ void BSPMap::createBulletPhysicsShape()
 {
     int numVisibleSurfaces = 0;
 
-    bsphull_t *bspHull = getHull(0);
+    model_t *bspHull = getModel(0);
     int firstSurface = bspHull->firstsurf;
     int lastSurface = firstSurface + bspHull->numsurf;
     for (int k = firstSurface; k < lastSurface; k++) {
@@ -869,7 +879,7 @@ void BSPMap::DrawHulls(Camera3D *cam)
     int numHulls = this->getNumHulls();
 
     for (int m = 1; m < numHulls; m++) {
-        bsphull_t *h = this->getHull(m);
+        model_t *h = this->getModel(m);
 
         for (int i = h->firstsurf; i < h->firstsurf + h->numsurf ; i++) {
             this->DrawSurfaceTriangles( i );

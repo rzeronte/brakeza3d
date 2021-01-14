@@ -3,7 +3,6 @@
 #define BRAKEDA3D_COMPONENTCOLLISIONS_H
 
 
-#include "../Physics/Mesh3DGhost.h"
 #include "../Render/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "../Physics/Mesh3DBody.h"
@@ -26,7 +25,6 @@ public:
     std::vector<CollisionResolver*> collisions;
 
     Camera3D *camera;
-    Mesh3DGhost *triggerCamera;
     BSPMap *bspMap;
     std::vector<Triangle *> *visibleTriangles;
 
@@ -44,8 +42,6 @@ public:
     Vertex3D finalVelocity;
 
     void initBulletSystem();
-    void makeGhostForCamera();
-    void checkCollisionsForTriggerCamera();
     void checkCollisionsForAll();
 
     btDiscreteDynamicsWorld *getDynamicsWorld() const;
@@ -53,9 +49,6 @@ public:
 
     Camera3D *getCamera() const;
     void setCamera(Camera3D *camera);
-
-    Mesh3DGhost *getTriggerCamera() const;
-    void setTriggerCamera(Mesh3DGhost *triggerCamera);
 
     BSPMap *getBspMap() const;
     void setBspMap(BSPMap *bspMap);
@@ -66,13 +59,16 @@ public:
     bool needsCollision(const btCollisionObject* body0, const btCollisionObject* body1);
 
     void updatePhysicObjects();
-    void syncTriggerGhostCamera();
 
     Vertex3D stepSimulation();
 
     std::vector<CollisionResolver *> &getCollisions();
 
     void setCollisions(const std::vector<CollisionResolver *> &collisions);
+
+
+    //**
+    void SV_AddGravity (float deltaTime);
 
 };
 
