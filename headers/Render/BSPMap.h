@@ -292,6 +292,7 @@ public:
 
     // Get array of planes
     plane_t *getPlanes() { return (plane_t *) &bsp[header->planes.offset]; }
+    int getNumPlanes() { return header->planes.size / (sizeof (getPlanes()[0])); }
 
     // Get plane
     plane_t *getPlane(int planeId) { return &getPlanes()[planeId]; }
@@ -325,6 +326,7 @@ public:
     // contains an index to a right and a left node or to a leaf
     // used when traversing the bsp tree to find the leaf containing visible surfaces
     bspnode_t *getNodes() { return (bspnode_t *) &bsp[header->nodes.offset]; }
+    int getNumNodes() { return header->nodes.size / (sizeof (getNodes()[0])); }
 
     // Get node
     bspnode_t *getNode(int nodeId) { return &getNodes()[nodeId]; }
@@ -419,9 +421,9 @@ public:
     char *getEntities() { return (char *) &bsp[header->entities.offset]; }
     char *parseEntities (char *s);
 
-    int getNumClipNodes() { return header->clipnodes.size / (sizeof (getClipNode()[0])); }
-    clipnode_t *getClipNode() { return (clipnode_t *) &bsp[header->texinfo.offset]; }
-    clipnode_t *getClipNode(int id) { return &getClipNode()[id]; }
+    int getNumClipNodes() { return header->clipnodes.size / (sizeof (getClipNodes()[0])); }
+    clipnode_t *getClipNodes() { return (clipnode_t *) &bsp[header->texinfo.offset]; }
+    clipnode_t *getClipNode(int id) { return &getClipNodes()[id]; }
 
     int getIndexOfFirstEntityByClassname(char *);
     int getIndexOfFirstEntityByTargetname(const char *);

@@ -13,63 +13,23 @@ SV_Physics_Client ->
 #ifndef BRAKEDA3D_BSPCOLLIDER_H
 #define BRAKEDA3D_BSPCOLLIDER_H
 
-
 #include <cmath>
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/BSPMap.h"
-
 
 typedef float vec3_t[3];
 
 typedef int	string_t;
 typedef int	func_t;
 typedef float vec_t;
-
 typedef unsigned char byte;
 
-typedef struct
-{
-    vec3_t	origin;
-    vec3_t	angles;
-    int		modelindex;
-    int		frame;
-    int		colormap;
-    int		skin;
-    int		effects;
-} entity_state_t;
-
-typedef struct
-{
-    int			planenum;
-    short		children[2];	// negative numbers are contents
-} dclipnode_t;
-
-
-typedef struct mplane_s
-{
-    vec3_t	normal;
-    float	dist;
-    byte	type;			// for texture axis selection and fast side tests
-    byte	signbits;		// signx + signy<<1 + signz<<1
-    byte	pad[2];
-} mplane_t;
-
-typedef struct
-{
-    dclipnode_t 	*clipnodes;
-    mplane_t	*planes;
-    int			firstclipnode;
-    int			lastclipnode;
-    vec3_t		clip_mins;
-    vec3_t		clip_maxs;
-} hull_t;
 
 #define	MAX_ENT_LEAFS	16
 
 // edict->flags
 #define	FL_FLY					1
 #define	FL_SWIM					2
-//#define	FL_GLIMPSE				4
 #define	FL_CONVEYOR				4
 #define	FL_CLIENT				8
 #define	FL_INWATER				16
@@ -104,7 +64,6 @@ typedef struct
 #define	MOVETYPE_FLYMISSILE		9		// extra size to monsters
 #define	MOVETYPE_BOUNCE			10
 
-
 #define	MOVE_NORMAL		0
 #define	MOVE_NOMONSTERS	1
 #define	MOVE_MISSILE	2
@@ -123,11 +82,6 @@ typedef struct
 #define VectorAdd(a,b,c) {c[0]=a[0]+b[0];c[1]=a[1]+b[1];c[2]=a[2]+b[2];}
 #define VectorCopy(a,b) {b[0]=a[0];b[1]=a[1];b[2]=a[2];}
 
-#define	NEXT_EDICT(e) ((edict_t *)( (byte *)e + pr_edict_size))
-
-#define	EDICT_TO_PROG(e) ((byte *)e - (byte *)sv.edicts)
-#define PROG_TO_EDICT(e) ((edict_t *)((byte *)sv.edicts + e))
-
 #define	CONTENTS_EMPTY		-1
 #define	CONTENTS_SOLID		-2
 #define	CONTENTS_WATER		-3
@@ -137,88 +91,40 @@ typedef struct
 #define	CONTENTS_ORIGIN		-7		// removed at csg time
 #define	CONTENTS_CLIP		-8		// changed to contents_solid
 
+#define	MAX_QPATH		64			// max length of a quake game pathname
+
 #define	DIST_EPSILON	(0.03125)
+
 
 typedef struct
 {
-    float	modelindex;
-    vec3_t	absmin;
-    vec3_t	absmax;
-    float	ltime;
-    float	movetype;
-    float	solid;
     vec3_t	origin;
-    vec3_t	oldorigin;
-    vec3_t	velocity;
     vec3_t	angles;
-    vec3_t	avelocity;
-    vec3_t	punchangle;
-    string_t	classname;
-    string_t	model;
-    float	frame;
-    float	skin;
-    float	effects;
-    vec3_t	mins;
-    vec3_t	maxs;
-    vec3_t	size;
-    func_t	touch;
-    func_t	use;
-    func_t	think;
-    func_t	blocked;
-    float	nextthink;
-    int	groundentity;
-    float	health;
-    float	frags;
-    float	weapon;
-    string_t	weaponmodel;
-    float	weaponframe;
-    float	currentammo;
-    float	ammo_shells;
-    float	ammo_nails;
-    float	ammo_rockets;
-    float	ammo_cells;
-    float	items;
-    float	takedamage;
-    int	chain;
-    float	deadflag;
-    vec3_t	view_ofs;
-    float	button0;
-    float	button1;
-    float	button2;
-    float	impulse;
-    float	fixangle;
-    vec3_t	v_angle;
-    float	idealpitch;
-    string_t	netname;
-    int	enemy;
-    float	flags;
-    float	colormap;
-    float	team;
-    float	max_health;
-    float	teleport_time;
-    float	armortype;
-    float	armorvalue;
-    float	waterlevel;
-    float	watertype;
-    float	ideal_yaw;
-    float	yaw_speed;
-    int	aiment;
-    int	goalentity;
-    float	spawnflags;
-    string_t	target;
-    string_t	targetname;
-    float	dmg_take;
-    float	dmg_save;
-    int	dmg_inflictor;
-    int	owner;
-    vec3_t	movedir;
-    string_t	message;
-    float	sounds;
-    string_t	noise;
-    string_t	noise1;
-    string_t	noise2;
-    string_t	noise3;
-} entvars_t;
+    int		modelindex;
+    int		frame;
+    int		colormap;
+    int		skin;
+    int		effects;
+} entity_state_t;
+
+typedef struct mplane_s
+{
+    vec3_t	normal;
+    float	dist;
+    byte	type;			// for texture axis selection and fast side tests
+    byte	signbits;		// signx + signy<<1 + signz<<1
+    byte	pad[2];
+} mplane_t;
+
+typedef struct
+{
+    clipnode_t 	*clipnodes;
+    mplane_t	*planes;
+    int			firstclipnode;
+    int			lastclipnode;
+    vec3_t		clip_mins;
+    vec3_t		clip_maxs;
+} hull_t;
 
 typedef struct link_s
 {
@@ -236,7 +142,7 @@ typedef struct edict_s
     entity_state_t	baseline;
 
     float		freetime;			// sv.time when the object was freed
-    entvars_t	v;					// C exported fields from progs
+
 // other fields from progs come immediately after
 } edict_t;
 
@@ -252,8 +158,6 @@ typedef struct areanode_s
     link_t	solid_edicts;
 } areanode_t;
 
-
-
 typedef struct mnode_s
 {
     // common with leaf
@@ -264,7 +168,7 @@ typedef struct mnode_s
 
     struct mnode_s	*parent;
 
-// node specific
+    // node specific
     mplane_t	*plane;
     struct mnode_s	*children[2];
 
@@ -272,16 +176,9 @@ typedef struct mnode_s
     unsigned short		numsurfaces;
 } mnode_t;
 
+
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 typedef enum {ST_SYNC=0, ST_RAND } synctype_t;
-
-typedef struct efrag_s
-{
-    struct mleaf_s		*leaf;
-    struct efrag_s		*leafnext;
-    struct entity_s		*entity;
-    struct efrag_s		*entnext;
-} efrag_t;
 
 #define	MIPLEVELS	4
 typedef struct texture_s
@@ -349,54 +246,76 @@ typedef short svec3_t[3];	// X,Y,Z coordinates of the vertex in shorts
 
 typedef struct
 {
-    float		mins[3], maxs[3];
-    float		origin[3];
-    int			headnode[MAX_MAP_HULLS];
-    int			visleafs;		// not including the solid leaf 0
-    int			firstface, numfaces;
-} dmodel_t;
-
-typedef struct
-{
-    vec3_t		position;
-} mvertex_t;
-
-typedef struct
-{
     unsigned short	v[2];
     unsigned int	cachededgeoffset;
 } medge_t;
 
-typedef struct cache_user_s
-{
-    void	*data;
-} cache_user_t;
 
-#define	MAX_QPATH		64			// max length of a quake game pathname
+typedef struct mleaf_s
+{
+    // common with node
+    int			contents;		// wil be a negative contents number
+    int			visframe;		// node needs to be traversed if current
+
+    short		minmaxs[6];		// for bounding box culling
+
+    struct mnode_s	*parent;
+
+    // leaf specific
+    byte		*compressed_vis;
+
+    msurface_t	**firstmarksurface;
+    int			nummarksurfaces;
+    int			key;			// BSP sequence number for leaf's contents
+    byte		ambient_sound_level[NUM_AMBIENTS];
+} mleaf_t;
+
 typedef struct model_s
 {
+    vec3_t      origin;      // brakeza
+    int         modelindex;  // brakeza
+
     modtype_t	type;
     int			numframes;
     synctype_t	synctype;
 
-    vec3_t      origin;      // brakeza
-    int         modelindex;  // brakeza
-
-    int			flags;
+    float		flags;
     // volume occupied by the model
     vec3_t		mins, maxs;
     float		radius;
 
     int			numplanes;
     mplane_t	*planes;
+    hull_t		hulls[MAX_MAP_HULLS];
+
+    int			numnodes;
+
+    vec3_t	absmin;
+    vec3_t	absmax;
+
+    mnode_t  *nodes;
+
+    // Extracted from edict
+    link_t	area;				// linked to a division node or leaf
+    bool 	free;
+
+    int		num_leafs;              // Del edicto
+    short	leafnums[MAX_ENT_LEAFS];
 
     int			numleafs;		// number of visible leafs, not counting 0
-    bspleaf_t	*leafs;
+    mleaf_t		*leafs;
 
-    int			numclipnodes;
-    dclipnode_t	*clipnodes;
+    float	solid;
+    float	movetype;
+    vec3_t	velocity;
 
-    hull_t		hulls[MAX_MAP_HULLS];
+    float	waterlevel;
+    vec3_t	v_angle;
+
+    int			nummarksurfaces;
+    msurface_t	**marksurfaces;
+    byte		*visdata;
+
 } model_collision_t;
 
 typedef struct
@@ -418,7 +337,7 @@ typedef struct
     float		*start, *end;
     trace_t		trace;
     int			type;
-    edict_t		*passedict;
+    model_collision_t *passedict;
 } moveclip_t;
 
 #define	AREA_NODES	32
@@ -434,24 +353,36 @@ public:
 
     void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
     void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+    void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+
     void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs);
+
     hull_t *SV_HullForEntity (model_collision_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset);
     int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
     bool SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
+    int SV_FlyMove (model_collision_t *ent, float time, trace_t *steptrace);
+
     trace_t SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
     trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type);
+    void SV_UnlinkEdict (model_collision_t *ent);
+    void SV_FindTouchedLeafs (model_collision_t *ent, mnode_t *node);
+    void SV_LinkEdict (model_collision_t *ent, bool touch_triggers);
+    trace_t SV_PushEntity (model_collision_t *ent, vec3_t push);
+
+    void SV_WallFriction (model_collision_t *ent, trace_t *trace);
+    int SV_TryUnstick (model_collision_t *ent, vec3_t oldvel);
+    void SV_WalkMove (model_collision_t *ent, float deltaTime);
+
     int ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce);
-    int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace);
     void InsertLinkBefore (link_t *l, link_t *before);
     void RemoveLink (link_t *l);
-    void SV_UnlinkEdict (edict_t *ent);
-    void SV_FindTouchedLeafs (edict_t *ent, mnode_t *node);
-    void SV_LinkEdict (edict_t *ent, bool touch_triggers);
-    trace_t SV_PushEntity (edict_t *ent, vec3_t push);
-    void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-    void SV_WallFriction (edict_t *ent, trace_t *trace);
-    int SV_TryUnstick (edict_t *ent, vec3_t oldvel);
-    void SV_WalkMove (edict_t *ent, float deltaTime);
+
+    void Mod_LoadLeafs (model_collision_t *loadmodel);
+    void Mod_LoadNodes(model_collision_t *loadmodel);
+    void Mod_SetParent (mnode_t *node, mnode_t *parent);
+
+    model_collision_t *getModelCollisionFromBSP(int modelId);
+
     static int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p);
 };
 

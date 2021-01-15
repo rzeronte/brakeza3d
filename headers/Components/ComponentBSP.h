@@ -32,10 +32,7 @@ public:
     cJSON *ammoTypesJSONList;
     cJSON *enemiesJSONList;
 
-    mnode_t *worldNodes;
-
     BSPMap *getBSP() const;
-    model_collision_t *getModelCollisionFromBSP(int modelId);
 
     void initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
     void setCameraInBSPStartPosition();

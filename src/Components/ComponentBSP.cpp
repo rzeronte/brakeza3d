@@ -359,7 +359,3 @@ void ComponentBSP::loadEnemiesJSON()
 void ComponentBSP::setCamera(Camera3D *camera) {
     ComponentBSP::camera = camera;
 }
-
-model_collision_t *ComponentBSP::getModelCollisionFromBSP(int modelId) {
-    return new model_collision_t;
-}
