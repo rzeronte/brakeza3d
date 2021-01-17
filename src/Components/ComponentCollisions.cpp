@@ -169,9 +169,3 @@ std::vector<CollisionResolver *> &ComponentCollisions::getCollisions() {
 void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &collisions) {
     ComponentCollisions::collisions = collisions;
 }
-
-void ComponentCollisions::SV_AddGravity (float deltaTime)
-{
-    float ent_gravity = 1.0;
-    this->getCamera()->velocity.vertex2.y -= ent_gravity * 9.8 * deltaTime;
-}

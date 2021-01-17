@@ -1,6 +1,7 @@
 
 #include "../../headers/Components/ComponentCamera.h"
 #include "../../headers/ComponentsManager.h"
+#include "../../headers/Brakeza3D.h"
 
 ComponentCamera::ComponentCamera()
 {
@@ -20,7 +21,7 @@ void ComponentCamera::preUpdate()
 void ComponentCamera::onUpdate() {
 
     float reduction = 0;
-    bool  allowVertical = false;
+    bool  allowVertical = true;
 
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
         if (ComponentsManager::get()->getComponentBSP()->getBSP()->isCurrentLeafLiquid()) {
@@ -30,6 +31,30 @@ void ComponentCamera::onUpdate() {
     }
     getCamera()->UpdateVelocity( reduction, allowVertical );
 
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[0] = getCamera()->velocity.getComponent().x;
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[1] = getCamera()->velocity.getComponent().y;
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[2] = getCamera()->velocity.getComponent().z;
+
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->origin[0] = getCamera()->getPosition().x;
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->origin[1] = getCamera()->getPosition().y;
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->origin[2] = getCamera()->getPosition().z;
+
+    /*ComponentsManager::get()->getComponentBSP()->getBSPCollider()->SV_AddGravity (
+            ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel(),
+            Brakeza3D::get()->getDeltaTime()
+    );*/
+
+    //ComponentsManager::get()->getComponentBSP()->getBSPCollider()->SV_CheckStuck ( ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel() );
+
+    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->SV_WalkMove(
+            ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel(),
+            Brakeza3D::get()->getDeltaTime()
+    );
+
+
+    getCamera()->velocity.vertex2.x += ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[0];
+    getCamera()->velocity.vertex2.y += ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[1];
+    getCamera()->velocity.vertex2.z += ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->velocity[2];
 }
 
 void ComponentCamera::postUpdate()
