@@ -48,7 +48,7 @@ public:
     void saveToFloat3(float *v);
     void saveToBtVector3(btVector3 *v);
 
-    void consoleInfo(std::string label, bool);
+    void consoleInfo(std::string label, bool returnLine);
 };
 
 struct AABB3D

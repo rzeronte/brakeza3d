@@ -413,7 +413,7 @@ bool BSPMap::InitializeLightmaps()
 
 void BSPMap::createMesh3DAndGhostsFromHulls()
 {
-    int numHulls = this->getNumHulls();
+    int numHulls = this->getNumModels();
 
     for (int m = 1; m < numHulls; m++) {
         bool rigid = false;
@@ -454,7 +454,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
         Vertex3D aabbMin = Vertex3D(v3aabbMin[0]*scale, v3aabbMin[1]*scale, v3aabbMin[2]*scale);
 
         if ( rigid ) {
-            Mesh3DBody *body = new Mesh3DBody();
+            auto *body = new Mesh3DBody();
             body->aabbMax = aabbMax;
             body->aabbMin = aabbMin;
             body->setPosition( this->getPosition() );
@@ -555,7 +555,7 @@ void BSPMap::InitializeClipNodes()
     clipnode_t *clipnode = (clipnode_t *) &bsp[header->clipnodes.offset];
 
     for (int i = 0; i < getNumClipNodes() ; i++, clipnode++) {
-        std::cout << "back: " << clipnode->children[0] << ", front: " << clipnode->children[1] << ", planenum: " << clipnode->planenum << std::endl;
+        //std::cout << "back: " << clipnode->children[0] << ", front: " << clipnode->children[1] << ", planenum: " << clipnode->planenum << std::endl;
     }
 }
 
@@ -876,7 +876,7 @@ void BSPMap::DrawVisibleLeaf(Camera3D *cam)
 
 void BSPMap::DrawHulls(Camera3D *cam)
 {
-    int numHulls = this->getNumHulls();
+    int numHulls = this->getNumModels();
 
     for (int m = 1; m < numHulls; m++) {
         model_t *h = this->getModel(m);
@@ -1182,4 +1182,23 @@ void BSPMap::setLoaded(bool loaded) {
 
 void BSPMap::setFrameTriangles(std::vector<Triangle *> *frameTriangles) {
     BSPMap::frameTriangles = frameTriangles;
+}
+
+void BSPMap::drawClipNode(bspnode_t *node)
+{
+    for(int i = node->firstsurf; i < node->firstsurf + node->numsurf; i++) {
+        this->DrawSurfaceTriangles(i);
+    }
+    if (node->front >= 0)
+        this->drawClipNode( this->getNode(node->front) );
+
+    if (node->back >= 0)
+        this->drawClipNode( this->getNode(node->back) );
+}
+
+void BSPMap::drawClipNodes(int i)
+{
+    // Fetch the start node
+    bspnode_t *node = this->getStartNode(i);
+    this->drawClipNode( node );
 }

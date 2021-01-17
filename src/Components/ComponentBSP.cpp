@@ -4,10 +4,7 @@
 
 #include "../../headers/Components/ComponentBSP.h"
 #include "../../headers/Components/ComponentWeapons.h"
-#include "../../headers/Game/NPCEnemyBody.h"
-#include "../../headers/EngineBuffers.h"
 #include "../../headers/ComponentsManager.h"
-#include "../../headers/Game/ItemAmmoBody.h"
 
 ComponentBSP::ComponentBSP()
 {
@@ -26,6 +23,8 @@ void ComponentBSP::onStart()
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
     bsp->Initialize(nameMap->valuestring, "palette.lmp", camera);
     setCameraInBSPStartPosition();
+
+    bspCollider = new BSPCollider();
 }
 
 void ComponentBSP::preUpdate()
@@ -359,3 +358,8 @@ void ComponentBSP::loadEnemiesJSON()
 void ComponentBSP::setCamera(Camera3D *camera) {
     ComponentBSP::camera = camera;
 }
+
+BSPCollider *ComponentBSP::getBSPCollider() const {
+    return bspCollider;
+}
+

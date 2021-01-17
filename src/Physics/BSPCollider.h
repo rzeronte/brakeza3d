@@ -273,6 +273,7 @@ typedef struct mleaf_s
 typedef struct model_s
 {
     vec3_t      origin;      // brakeza
+    vec3_t	    oldorigin;   // brakeza
     int         modelindex;  // brakeza
 
     modtype_t	type;
@@ -347,9 +348,12 @@ class BSPCollider {
 public:
 
     areanode_t	sv_areanodes[AREA_NODES];
+    model_collision_t *worldmodel;
+    model_collision_t *playermodel;
     vec3_t vec3_origin;
 
     BSPCollider();
+    void LoadModelCollisionForWorld();
 
     void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
     void VectorScale (vec3_t in, vec_t scale, vec3_t out);
@@ -359,7 +363,7 @@ public:
 
     hull_t *SV_HullForEntity (model_collision_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset);
     int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
-    bool SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
+    bool SV_RecursiveHullCheck (hull_t *hull, int hullFirstClipNode, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
     int SV_FlyMove (model_collision_t *ent, float time, trace_t *steptrace);
 
     trace_t SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
@@ -384,6 +388,18 @@ public:
     model_collision_t *getModelCollisionFromBSP(int modelId);
 
     static int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p);
+
+    model_collision_t *getWorldModel();
+    model_collision_t *getPlayerModel();
+
+    void makeHull0(model_collision_t *loadmodel);
+    void makeHulls(model_collision_t *loadmodel);
+
+    void SV_AddGravity (model_collision_t *ent, float deltaTime);
+    void SV_CheckStuck (model_collision_t *ent);
+    model_collision_t *SV_TestEntityPosition (model_collision_t *ent);
+
+    void drawHull(model_collision_t *ent, int indexHull);
 };
 
 #endif //BRAKEDA3D_BSPCOLLIDER_H

@@ -66,10 +66,6 @@ public:
 
     void setCollisions(const std::vector<CollisionResolver *> &collisions);
 
-
-    //**
-    void SV_AddGravity (float deltaTime);
-
 };
 
 

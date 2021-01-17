@@ -320,7 +320,7 @@ public:
     model_t *getModel(int modelId) { return &getModels()[modelId]; }
 
     // Get number of surfaces
-    int getNumHulls() { return header->models.size / (sizeof (getModels()[0])); }
+    int getNumModels() { return header->models.size / (sizeof (getModels()[0])); }
 
     // Get array of nodes, contains an index to the plane which intersects the node
     // contains an index to a right and a left node or to a leaf
@@ -333,6 +333,7 @@ public:
 
     // Get start node
     bspnode_t *getStartNode() { return &getNodes()[getModels()[0].headnode[0]]; }
+    bspnode_t *getStartNode(int indexHull) { return &getNodes()[getModels()[0].headnode[indexHull]]; }
 
     // Get array of leaves, contains an index to the visibility list
     // contains a number to the first surface and the number of surfaces in the leaf
@@ -402,7 +403,6 @@ public:
     static float CalculateDistance(vec3_t a, vec3_t b);
     void CalcSurfaceExtents (int surface, lightmap_t* l);
 
-    void DrawSurface(int surface, Camera3D *camera);
     void DrawSurfaceTriangles(int surface);
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces);
@@ -447,6 +447,8 @@ public:
     void init(Camera3D *cam);
 
     void setFrameTriangles(std::vector<Triangle *> *frameTriangles);
+    void drawClipNodes(int i);
+    void drawClipNode(bspnode_t *node);
 };
 
 #endif

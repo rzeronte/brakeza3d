@@ -73,6 +73,7 @@ void ComponentRender::onUpdateBSP()
                 ComponentsManager::get()->getComponentCamera()->getCamera()
         );
 
+
         if (SETUP->DRAW_BSP_HULLS) {
             ComponentsManager::get()->getComponentBSP()->getBSP()->DrawHulls(ComponentsManager::get()->getComponentCamera()->getCamera() );
         }

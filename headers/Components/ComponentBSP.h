@@ -24,6 +24,8 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     BSPMap      *bsp;
+    BSPCollider *bspCollider;
+
     Camera3D    *camera;
     std::thread *BSPLoading;
 
@@ -41,6 +43,8 @@ public:
     void loadEnemiesJSON();
 
     void setCamera(Camera3D *camera);
+
+    BSPCollider *getBSPCollider() const;
 };
 
 

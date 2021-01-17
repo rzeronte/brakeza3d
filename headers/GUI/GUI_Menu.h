@@ -44,7 +44,7 @@ public:
         const float range_sensibility_lightnin_max = 10;
 
         const float range_min_test_int = 0;
-        const float range_max_test_int = 999;
+        const float range_max_test_int = 2;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
         const float range_test_sensibility = 0.1;
@@ -57,7 +57,7 @@ public:
 
         const float range_frustum_fardistance_sensibility = 1;
         const float range_min_frustum_fardistance = 1;
-        const float range_max_frustum_fardistance = 1000;
+        const float range_max_frustum_fardistance = 10000;
 
         const float range_frustum_clipping_distance_sensibility = 0.001;
         const float range_min_frustum_clipping_distance = 0;
