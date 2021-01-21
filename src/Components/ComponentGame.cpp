@@ -50,7 +50,7 @@ void ComponentGame::onUpdate()
     if (player->state != PlayerState::GAMEOVER) {
 
         if (mapBSP->isLoaded() && mapBSP->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
-            Drawable::waterShader( mapBSP->currentLeaf->type );
+            Drawable::waterShader( mapBSP->currentLeaf->contents );
         }
 
         if (mapBSP->isCurrentLeafLiquid()) {
@@ -59,7 +59,7 @@ void ComponentGame::onUpdate()
             player->setOxygen(100);
         }
 
-        if (mapBSP->isCurrentLeafLiquid() && mapBSP->currentLeaf->type == -5) {
+        if (mapBSP->isCurrentLeafLiquid() && mapBSP->currentLeaf->contents == -5) {
             player->takeDamage( 5 );
         }
 

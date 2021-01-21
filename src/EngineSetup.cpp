@@ -32,9 +32,6 @@ EngineSetup::EngineSetup()
     FOG_IMGUI_COLOR.y = Tools::getGreenValueFromColor(this->FOG_COLOR);
     FOG_IMGUI_COLOR.z = Tools::getBlueValueFromColor(this->FOG_COLOR);
 
-    setup["prueba"] = "ese";
-    setup["prueba1"] = 10;
-    setup["prueba2"] = 10.1;
 }
 
 void EngineSetup::setResolution(int w, int h)

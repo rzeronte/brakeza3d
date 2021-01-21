@@ -118,7 +118,7 @@ typedef struct mplane_s
 
 typedef struct
 {
-    clipnode_t 	*clipnodes;
+    dclipnode_t 	*clipnodes;
     mplane_t	*planes;
     int			firstclipnode;
     int			lastclipnode;
@@ -161,10 +161,11 @@ typedef struct areanode_s
 typedef struct mnode_s
 {
     // common with leaf
-    int			contents;		// 0, to differentiate from leafs
+    int			contents = 0 ;		// 0, to differentiate from leafs
     int			visframe;		// node needs to be traversed if current
 
-    short		minmaxs[6];		// for bounding box culling
+    short mins[3];		// for bounding box culling
+    short maxs[3];
 
     struct mnode_s	*parent;
 
@@ -250,19 +251,28 @@ typedef struct
     unsigned int	cachededgeoffset;
 } medge_t;
 
+typedef struct efrag_s
+{
+    struct mleaf_s		*leaf;
+    struct efrag_s		*leafnext;
+    struct entity_s		*entity;
+    struct efrag_s		*entnext;
+} efrag_t;
 
 typedef struct mleaf_s
 {
     // common with node
-    int			contents;		// wil be a negative contents number
+    int			contents = 0;		// wil be a negative contents number
     int			visframe;		// node needs to be traversed if current
 
-    short		minmaxs[6];		// for bounding box culling
+    vec3_t mins;		// for bounding box culling
+    vec3_t maxs;
 
     struct mnode_s	*parent;
 
     // leaf specific
     byte		*compressed_vis;
+    efrag_t		*efrags;
 
     msurface_t	**firstmarksurface;
     int			nummarksurfaces;
@@ -280,7 +290,10 @@ typedef struct model_s
     int			numframes;
     synctype_t	synctype;
 
-    float		flags;
+    int			numclipnodes;
+    dclipnode_t	*clipnodes;
+
+    int 		flags;
     // volume occupied by the model
     vec3_t		mins, maxs;
     float		radius;
@@ -310,7 +323,7 @@ typedef struct model_s
     float	movetype;
     vec3_t	velocity;
 
-    float	waterlevel;
+    float	waterlevel = 0;
     vec3_t	v_angle;
 
     int			nummarksurfaces;
@@ -341,6 +354,11 @@ typedef struct
     model_collision_t *passedict;
 } moveclip_t;
 
+typedef struct
+{
+    int		fileofs, filelen;
+} lump_t;
+
 #define	AREA_NODES	32
 
 
@@ -351,6 +369,7 @@ public:
     model_collision_t *worldmodel;
     model_collision_t *playermodel;
     vec3_t vec3_origin;
+    float scale;
 
     BSPCollider();
     void LoadModelCollisionForWorld();
@@ -368,9 +387,7 @@ public:
 
     trace_t SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
     trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type);
-    void SV_UnlinkEdict (model_collision_t *ent);
     void SV_FindTouchedLeafs (model_collision_t *ent, mnode_t *node);
-    void SV_LinkEdict (model_collision_t *ent, bool touch_triggers);
     trace_t SV_PushEntity (model_collision_t *ent, vec3_t push);
 
     void SV_WallFriction (model_collision_t *ent, trace_t *trace);
@@ -378,12 +395,6 @@ public:
     void SV_WalkMove (model_collision_t *ent, float deltaTime);
 
     int ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce);
-    void InsertLinkBefore (link_t *l, link_t *before);
-    void RemoveLink (link_t *l);
-
-    void Mod_LoadLeafs (model_collision_t *loadmodel);
-    void Mod_LoadNodes(model_collision_t *loadmodel);
-    void Mod_SetParent (mnode_t *node, mnode_t *parent);
 
     model_collision_t *getModelCollisionFromBSP(int modelId);
 
@@ -392,14 +403,21 @@ public:
     model_collision_t *getWorldModel();
     model_collision_t *getPlayerModel();
 
-    void makeHull0(model_collision_t *loadmodel);
-    void makeHulls(model_collision_t *loadmodel);
-
     void SV_AddGravity (model_collision_t *ent, float deltaTime);
     void SV_CheckStuck (model_collision_t *ent);
     model_collision_t *SV_TestEntityPosition (model_collision_t *ent);
 
-    void drawHull(model_collision_t *ent, int indexHull);
+    void drawHullAABB(model_collision_t *model, int indexHull);
+
+    void Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    void Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    void Mod_LoadClipnodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    void Mod_MakeClipHulls(model_collision_t *brushmodel);
+    void Mod_MakeDrawHull(model_collision_t *brushmodel);
+
+    void consoleTrace(trace_t *t);
+    static void Vertex3DToVec3(Vertex3D v, vec3_t &dest);
+    static Vertex3D QuakeToVertex3D(vec3_t &v);
 };
 
 #endif //BRAKEDA3D_BSPCOLLIDER_H

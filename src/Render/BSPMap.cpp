@@ -76,7 +76,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     this->InitializeLightmaps();
     this->InitializeTriangles();
 
-    this->InitializeRecast();
+    //this->InitializeRecast();
 
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
@@ -552,7 +552,7 @@ void BSPMap::InitializeEntities()
 void BSPMap::InitializeClipNodes()
 {
     Logging::getInstance()->Log("InitializeClipNodes: NumClipNodes: " + std::to_string(getNumClipNodes()));
-    clipnode_t *clipnode = (clipnode_t *) &bsp[header->clipnodes.offset];
+    dclipnode_t *clipnode = (dclipnode_t *) &bsp[header->clipnodes.offset];
 
     for (int i = 0; i < getNumClipNodes() ; i++, clipnode++) {
         //std::cout << "back: " << clipnode->children[0] << ", front: " << clipnode->children[1] << ", planenum: " << clipnode->planenum << std::endl;
@@ -812,7 +812,7 @@ void BSPMap::createBulletPhysicsShape()
     Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addRigidBody(this->bspRigidBody);
 }
 
-void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
+void BSPMap::setVisibleSet(dleaf_t *pLeaf)
 {
     int numVisibleSurfaces = 0;
     unsigned char * visibilityList = this->getVisibilityList(pLeaf->vislist);
@@ -845,7 +845,7 @@ void BSPMap::setVisibleSet(bspleaf_t *pLeaf)
         } else {
             for (int j = 0; j < 8; j++, L++) {
                 if (Tools::getBit(veces, j)) {
-                    bspleaf_t *visibleLeaf = this->getLeaf(L);
+                    dleaf_t *visibleLeaf = this->getLeaf(L);
                     int firstSurface = visibleLeaf->firstsurf;
                     int lastSurface = firstSurface + visibleLeaf->numsurf;
                     for (int k = firstSurface; k < lastSurface ; k++) {
@@ -897,12 +897,12 @@ void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces)
 }
 
 // Traverse the BSP tree to find the leaf containing visible surfaces from a specific position
-bspleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
+dleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
 {
-    bspleaf_t *leaf = NULL;
+    dleaf_t *leaf = NULL;
 
     // Fetch the start node
-    bspnode_t *node = this->getStartNode();
+    dnode_t *node = this->getStartNode();
     while (!leaf) {
         short nextNodeId;
 
@@ -923,14 +923,16 @@ bspleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
 
         float distance = CalculateDistance(plane->normal, cam_pos);
 
-        // If the camera is in front of the plane, traverse the right (front) node, otherwise traverse the left (back) node
+        // If the camera is in front of the plane
+        // traverse the right (front) node, otherwise traverse the left (back) node
         if (distance > plane->dist*scale) {
-            nextNodeId = node->front;
+            nextNodeId = node->children[0];
         } else {
-            nextNodeId = node->back;
+            nextNodeId = node->children[1];
         }
 
-        // If next node >= 0, traverse the node, otherwise use the inverse of the node as the index to the leaf (and we are done!)
+        // If next node >= 0, traverse the node
+        // otherwise use the inverse of the node as the index to the leaf (and we are done!)
         if (nextNodeId >= 0) {
             node = this->getNode(nextNodeId);
         } else {
@@ -941,7 +943,7 @@ bspleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft)
 
             if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
                 Logging::getInstance()->Log(
-                        "Leaf type: " + std::to_string(leaf->type) +
+                        "Leaf type: " + std::to_string(leaf->contents) +
                         ", numsurf: " + std::to_string(leaf->numsurf) +
                         ", distance: " + std::to_string(distance) +
                         ", firstsurf: " + std::to_string(leaf->firstsurf)
@@ -1124,7 +1126,7 @@ bool BSPMap::isCurrentLeafLiquid()
         return false;
     }
 
-    return BSPMap::isLeafLiquid( this->currentLeaf->type );
+    return BSPMap::isLeafLiquid( this->currentLeaf->contents );
 }
 
 bool BSPMap::isLeafLiquid(int type)
@@ -1184,21 +1186,22 @@ void BSPMap::setFrameTriangles(std::vector<Triangle *> *frameTriangles) {
     BSPMap::frameTriangles = frameTriangles;
 }
 
-void BSPMap::drawClipNode(bspnode_t *node)
+void BSPMap::drawClipNode(dnode_t *node)
 {
     for(int i = node->firstsurf; i < node->firstsurf + node->numsurf; i++) {
         this->DrawSurfaceTriangles(i);
     }
-    if (node->front >= 0)
-        this->drawClipNode( this->getNode(node->front) );
 
-    if (node->back >= 0)
-        this->drawClipNode( this->getNode(node->back) );
+    if (node->children[0] >= 0)
+        this->drawClipNode( this->getNode(node->children[0]) );
+
+    if (node->children[1] >= 0)
+        this->drawClipNode( this->getNode(node->children[1]) );
 }
 
 void BSPMap::drawClipNodes(int i)
 {
     // Fetch the start node
-    bspnode_t *node = this->getStartNode(i);
+    dnode_t *node = this->getStartNode(i);
     this->drawClipNode( node );
 }

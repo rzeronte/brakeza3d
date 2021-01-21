@@ -309,6 +309,7 @@ public:
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
+                ImGui::Checkbox("Camera Hulls contents", &EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS);
                 ImGui::Checkbox("Sprites", &EngineSetup::getInstance()->DRAW_SPRITES);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);

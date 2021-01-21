@@ -36,6 +36,11 @@ public:
     Camera3D* camera;
 
     Camera3D *getCamera() const;
+
+    void updateCameraBSPCollider();
+
+    void checkTrace(Vertex3D start, Vertex3D end, vec3_t mins, vec3_t maxs);
+    int  pointHullContent(vec3_t p);
 };
 
 

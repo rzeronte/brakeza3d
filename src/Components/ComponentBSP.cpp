@@ -17,7 +17,7 @@ void ComponentBSP::onStart()
 
     loadMapsFromJSON();
     loadWeaponsJSON();
-    loadEnemiesJSON();
+    //loadEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap  = cJSON_GetObjectItemCaseSensitive(firstMap, "name");
@@ -30,7 +30,7 @@ void ComponentBSP::onStart()
 void ComponentBSP::preUpdate()
 {
     if ( bsp->isLoaded() ) {
-        bspleaf_t *leaf = bsp->FindLeaf( camera->getPosition(), true );
+        dleaf_t *leaf = bsp->FindLeaf(camera->getPosition(), true );
         bsp->setVisibleSet( leaf );
     }
 }

@@ -19,8 +19,6 @@ public:
 
     static void setResolution(int, int);
 
-    std::map<std::string, std::any> setup;
-
     std::string LOG_FILE = "brakeza.log";
     bool LOGGING = true;
     bool LOGGING_TO_FILE = false;
@@ -56,14 +54,13 @@ public:
 
     float EPSILON = 0.00001f;
 
-    bool  ENABLE_FOG    = true;
+    bool  ENABLE_FOG    = false;
     float FOG_DISTANCE  = 75;
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
-    float FRUSTUM_FARPLANE_DISTANCE = 75;
+    float FRUSTUM_FARPLANE_DISTANCE = 2000;
     float HORIZONTAL_FOV = 90;
-    float MIN_TRIANGLE_AREA = 2.5;
 
     bool RASTERIZER_OPENCL = false;
 
@@ -168,10 +165,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 0.6f;
+    float WALKING_SPEED     = 9.f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 0.75f;
+    float STRAFE_SPEED      = 9.f;
 
     float WALKING_SPEED_LIQUID_DIVISOR = 1.5;
 
@@ -206,6 +203,7 @@ public:
     bool DRAW_SPRITES = true;
     bool DRAW_WEAPON = false;
     bool DRAW_HUD = true;
+    bool DRAW_BSP_CAMERA_HULL_CONTENTS = false;
 
     // BSP TEXTURES ANIMATED
     bool TRIANGLE_TEXTURES_ANIMATED = true;

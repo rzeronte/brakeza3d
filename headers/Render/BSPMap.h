@@ -127,21 +127,22 @@ struct model_t
     int numsurf;		// Number of surfaces (converted from long!)
 };
 
-struct bspnode_t
+struct dnode_t
 {
     int planenum;				// Id of the plane that splits the node (intersecting plane), must be in [0,numplanes) (converted from long!)
-    short front;				// Index to (front >= 0) ? front child node : leaf[~front]
-    short back;					// Index to (back >= 0) ? back child node : leaf[~back]
-    sboundbox_t sbox;			// Bounding box
+    short children[2] = {};	        // negative numbers are -(leafs+1), not nodes
+    short mins[3];		 // for sphere culling
+    short maxs[3];
     unsigned short firstsurf;	// First surface
     unsigned short numsurf;		// Number of surfaces
 };
 
-struct bspleaf_t
+struct dleaf_t
 {
-    int type;						// Special type of leaf (converted from long!)
+    int contents = 0;						// Special type of leaf (converted from long!)
     int vislist;					// Beginning of visibility lists, must be -1 or in [0,numvislist) (converted from long!)
-    sboundbox_t sbox;				// Bounding box
+    short mins[3];		 // for sphere culling
+    short maxs[3];
     short firstsurf;				// Id to the first surface in the list of surfaces
     short numsurf;					// Number of entries in the list of surfaces
     unsigned char ambientsnd[4];	// Ambient sound volumes, ff = max
@@ -194,7 +195,7 @@ typedef struct
     //short back;                  // If positive, id of Back child node
     // If -2, the Back part is inside the model
     // If -1, the Back part is outside the model
-} clipnode_t;
+} dclipnode_t;
 
 class BSPMap: public Object3D
 {
@@ -219,7 +220,7 @@ public:
     int *allSurfaces;			    // Array of full surfaces, contains an index to the surfaces
     int numAllSurfaces = 0;
 
-    float scale = 0.1f;
+    float scale = 1;
     dheader_t *header;
 
     surface_triangles_t *surface_triangles;
@@ -240,7 +241,7 @@ public:
     btDefaultMotionState* motionState;
     btRigidBody* bspRigidBody;
 
-    bspleaf_t *currentLeaf = nullptr;
+    dleaf_t *currentLeaf = nullptr;
     char *bsp;
 
     BSPMap();
@@ -325,23 +326,23 @@ public:
     // Get array of nodes, contains an index to the plane which intersects the node
     // contains an index to a right and a left node or to a leaf
     // used when traversing the bsp tree to find the leaf containing visible surfaces
-    bspnode_t *getNodes() { return (bspnode_t *) &bsp[header->nodes.offset]; }
+    dnode_t *getNodes() { return (dnode_t *) &bsp[header->nodes.offset]; }
     int getNumNodes() { return header->nodes.size / (sizeof (getNodes()[0])); }
 
     // Get node
-    bspnode_t *getNode(int nodeId) { return &getNodes()[nodeId]; }
+    dnode_t *getNode(int nodeId) { return &getNodes()[nodeId]; }
 
     // Get start node
-    bspnode_t *getStartNode() { return &getNodes()[getModels()[0].headnode[0]]; }
-    bspnode_t *getStartNode(int indexHull) { return &getNodes()[getModels()[0].headnode[indexHull]]; }
+    dnode_t *getStartNode() { return &getNodes()[getModels()[0].headnode[0]]; }
+    dnode_t *getStartNode(int indexHull) { return &getNodes()[getModels()[0].headnode[indexHull]]; }
 
     // Get array of leaves, contains an index to the visibility list
     // contains a number to the first surface and the number of surfaces in the leaf
     // used when we should sort out the surfaces that are visible
-    bspleaf_t *getLeaves() { return (bspleaf_t *) &bsp[header->leaves.offset]; }
+    dleaf_t *getLeaves() { return (dleaf_t *) &bsp[header->leaves.offset]; }
 
     // Get leaf
-    bspleaf_t *getLeaf(int leafId) { return &getLeaves()[leafId]; }
+    dleaf_t *getLeaf(int leafId) { return &getLeaves()[leafId]; }
 
     // Get array of visibility lists, used to determine which other leaves are visible from a given bsp leaf
     unsigned char *getVisibilityLists() { return (unsigned char *)(&bsp[header->visilist.offset]); }
@@ -410,8 +411,8 @@ public:
     void DrawVisibleLeaf(Camera3D *Cam);
     void DrawHulls(Camera3D *cam);
 
-    bspleaf_t *FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft);
-    void setVisibleSet(bspleaf_t *pLeaf);
+    dleaf_t *FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft);
+    void setVisibleSet(dleaf_t *pLeaf);
     void createBulletPhysicsShape();
 
     bool triangulateQuakeSurface(Vertex3D *vertexes, int num_vertices, int surface);
@@ -422,8 +423,8 @@ public:
     char *parseEntities (char *s);
 
     int getNumClipNodes() { return header->clipnodes.size / (sizeof (getClipNodes()[0])); }
-    clipnode_t *getClipNodes() { return (clipnode_t *) &bsp[header->texinfo.offset]; }
-    clipnode_t *getClipNode(int id) { return &getClipNodes()[id]; }
+    dclipnode_t *getClipNodes() { return (dclipnode_t *) &bsp[header->clipnodes.offset]; }
+    dclipnode_t *getClipNode(int id) { return &getClipNodes()[id]; }
 
     int getIndexOfFirstEntityByClassname(char *);
     int getIndexOfFirstEntityByTargetname(const char *);
@@ -448,7 +449,7 @@ public:
 
     void setFrameTriangles(std::vector<Triangle *> *frameTriangles);
     void drawClipNodes(int i);
-    void drawClipNode(bspnode_t *node);
+    void drawClipNode(dnode_t *node);
 };
 
 #endif
