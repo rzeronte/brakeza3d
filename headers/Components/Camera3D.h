@@ -50,6 +50,7 @@ public:
 
     void UpdateFrustum();
     void UpdateVelocity(float reduction, bool allowVertical);
+    void UpdatePositionForVelocity();
     void UpdateRotation(void);
 
     void Pitch(float pitch);

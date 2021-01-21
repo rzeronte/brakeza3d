@@ -180,6 +180,11 @@ void Camera3D::StrafeLeft(void)
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
+void Camera3D::UpdatePositionForVelocity()
+{
+    this->setPosition( this->velocity.vertex2);
+}
+
 void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
 {
     // Move the camera forward

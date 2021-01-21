@@ -937,6 +937,7 @@ void BSPCollider::drawHullAABB(model_collision_t *model, int indexHull)
         a.vertices[5] = Vertex3D(a.max.x, a.min.y, a.min.z);
         a.vertices[6] = Vertex3D(a.min.x, a.max.y, a.min.z);
         a.vertices[7] = Vertex3D(a.min.x, a.min.y, a.max.z);
+
         Object3D *p = new Object3D();
         Drawable::drawAABB(&a,p);
     }
@@ -1088,7 +1089,6 @@ void BSPCollider::Mod_MakeDrawHull(model_collision_t *brushmodel)
     count = brushmodel->numnodes;
     out = new dclipnode_t [count];
 
-
     hull->clipnodes = out;
     hull->firstclipnode = 0;
     hull->lastclipnode = count - 1;
@@ -1098,13 +1098,11 @@ void BSPCollider::Mod_MakeDrawHull(model_collision_t *brushmodel)
         out->planenum = in->plane - brushmodel->planes;
         for (j = 0; j < 2; j++) {
             child = in->children[j];
-            printf("child->contents: %d\r\n", child->contents);
             if (child->contents < 0)
                 out->children[j] = child->contents;
             else
                 out->children[j] = child - brushmodel->nodes;
         }
-        printf("out->children[0]: %d out->children[1]: %d\r\n", out->children[0], out->children[1]);
     }
 }
 

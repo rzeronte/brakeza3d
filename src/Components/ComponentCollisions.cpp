@@ -150,8 +150,6 @@ Vertex3D ComponentCollisions::stepSimulation()
         // Physics for meshes
         this->updatePhysicObjects();
     }
-
-    this->finalVelocity = this->camera->velocity.vertex2;
 }
 
 std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() {
