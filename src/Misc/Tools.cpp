@@ -490,3 +490,8 @@ int Tools::int_floor(float x)
     int i = (int)x; /* truncate */
     return i - ( i > x ); /* convert trunc to floor */
 }
+
+void Tools::consoleVec3(vec3_t v, std::string name)
+{
+    printf("%s: %f %f %f\r\n", name.c_str(), v[0], v[1], v[2]);
+}

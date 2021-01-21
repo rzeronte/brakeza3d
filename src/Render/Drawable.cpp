@@ -539,3 +539,4 @@ void Drawable::drawAABB(AABB3D *aabb, Object3D *o)
     Drawable::drawVertex(aabb->vertices[6], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
     Drawable::drawVertex(aabb->vertices[7], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
 }
+
