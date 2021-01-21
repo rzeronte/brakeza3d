@@ -47,7 +47,7 @@ void ComponentCamera::postUpdate()
         getCamera()->setPosition( getCamera()->getFollowTo()->getPosition() );
         getCamera()->setRotation( getCamera()->getFollowTo()->getRotation() );
     } else {
-        getCamera()->setPosition( ComponentsManager::get()->getComponentCollisions()->finalVelocity );
+        getCamera()->UpdatePositionForVelocity();
         getCamera()->UpdateRotation();
     }
 
