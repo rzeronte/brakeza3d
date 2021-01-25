@@ -65,6 +65,11 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
 
 void ComponentRender::onUpdateBSP()
 {
+    /*ComponentsManager::get()->getComponentBSP()->getBSPCollider()->drawHullAABB(
+            ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getWorldModel(),
+            0
+    );*/
+
     if (!SETUP->RENDER_BSP_TRIANGLES) return;
 
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded() ) {
@@ -421,7 +426,13 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle*> *visibleTriangle
 void ComponentRender::drawSceneObjectsAxis()
 {
     for (int i = 0; i < getSceneObjects()->size(); i++) {
-        if ( getSceneObjects()->operator[](i)->isEnabled() ) {
+        if (
+            getSceneObjects()->operator[](i)->isEnabled() &&
+                (
+                    !getSceneObjects()->operator[](i)->getLabel().compare( "test1") ||
+                    !getSceneObjects()->operator[](i)->getLabel().compare( "test2")
+                )
+        ) {
             Drawable::drawObject3DAxis(getSceneObjects()->operator[](i), ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
         }
     }

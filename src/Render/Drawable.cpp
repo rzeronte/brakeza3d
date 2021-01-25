@@ -313,9 +313,9 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
         return;
     }
 
-    Vertex3D endRight   = object->getPosition()+object->AxisRight().getScaled(3);
-    Vertex3D endUp      = object->getPosition()+object->AxisUp().getScaled(3);
-    Vertex3D endForward = object->getPosition()+object->AxisForward().getScaled(3);
+    Vertex3D endRight   = object->getPosition()+object->AxisRight().getScaled(5);
+    Vertex3D endUp      = object->getPosition()+object->AxisUp().getScaled(5);
+    Vertex3D endForward = object->getPosition()+object->AxisForward().getScaled(5);
 
     Vector3D vRight   = Vector3D( object->getPosition(), endRight);
     Vector3D vUp      = Vector3D( object->getPosition(), endUp);
