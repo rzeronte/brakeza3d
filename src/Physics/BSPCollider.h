@@ -1,15 +1,3 @@
-/*
-SV_Physics_Client ->
-   SV_CheckVelocity
-   SV_AddGravity
-   SV_CheckStuck
-   SV_WalkMove
-      - (Move slide)   SV_FlyMove
-                       - SV_Move
-      - (Move up)      SV_PushEntity
-      - (Move Forward) SV_FlyMove
- */
-
 #ifndef BRAKEDA3D_BSPCOLLIDER_H
 #define BRAKEDA3D_BSPCOLLIDER_H
 
@@ -20,12 +8,14 @@ SV_Physics_Client ->
 typedef float vec3_t[3];
 
 typedef int	string_t;
-typedef int	func_t;
 typedef float vec_t;
 typedef unsigned char byte;
 
+#define MAX_VELOCITY 320;
 
 #define	MAX_ENT_LEAFS	16
+
+#define	DIST_EPSILON	(0.03125)
 
 // edict->flags
 #define	FL_FLY					1
@@ -91,22 +81,6 @@ typedef unsigned char byte;
 #define	CONTENTS_ORIGIN		-7		// removed at csg time
 #define	CONTENTS_CLIP		-8		// changed to contents_solid
 
-#define	MAX_QPATH		64			// max length of a quake game pathname
-
-#define	DIST_EPSILON	(0.03125)
-
-
-typedef struct
-{
-    vec3_t	origin;
-    vec3_t	angles;
-    int		modelindex;
-    int		frame;
-    int		colormap;
-    int		skin;
-    int		effects;
-} entity_state_t;
-
 typedef struct mplane_s
 {
     vec3_t	normal;
@@ -130,33 +104,6 @@ typedef struct link_s
 {
     struct link_s	*prev, *next;
 } link_t;
-
-typedef struct edict_s
-{
-    bool 	   free;
-    link_t		area;				// linked to a division node or leaf
-
-    int			num_leafs;
-    short		leafnums[MAX_ENT_LEAFS];
-
-    entity_state_t	baseline;
-
-    float		freetime;			// sv.time when the object was freed
-
-// other fields from progs come immediately after
-} edict_t;
-
-
-
-
-typedef struct areanode_s
-{
-    int		axis;		// -1 = leaf node
-    float	dist;
-    struct areanode_s	*children[2];
-    link_t	trigger_edicts;
-    link_t	solid_edicts;
-} areanode_t;
 
 typedef struct mnode_s
 {
@@ -202,20 +149,6 @@ typedef struct
 } mtexinfo_t;
 
 #define MAXLIGHTMAPS 4
-typedef struct surfcache_s
-{
-    struct surfcache_s	*next;
-    struct surfcache_s 	**owner;		// NULL is an empty chunk of memory
-    int					lightadj[MAXLIGHTMAPS]; // checked for strobe flush
-    int					dlight;
-    int					size;		// including header
-    unsigned			width;
-    unsigned			height;		// DEBUG only needed for debug
-    float				mipscale;
-    struct texture_s	*texture;	// checked for animating textures
-    byte				data[4];	// width*height elements
-} surfcache_t;
-
 typedef struct msurface_s
 {
     int			visframe;		// should be drawn when node is crossed
@@ -229,7 +162,7 @@ typedef struct msurface_s
     int			firstedge;	// look up in model->surfedges[], negative numbers
     int			numedges;	// are backwards edges
 
-// surface generation data
+    // surface generation data
     struct surfcache_s	*cachespots[MIPLEVELS];
 
     short		texturemins[2];
@@ -237,7 +170,7 @@ typedef struct msurface_s
 
     mtexinfo_t	*texinfo;
 
-// lighting info
+    // lighting info
     byte		styles[MAXLIGHTMAPS];
     byte		*samples;		// [numstyles*surfsize]
 } msurface_t;
@@ -325,11 +258,16 @@ typedef struct model_s
 
     float	waterlevel = 0;
     vec3_t	v_angle;
+    vec3_t angles;
+    vec3_t	punchangle;
+    float	fixangle;
 
     int			nummarksurfaces;
     msurface_t	**marksurfaces;
     byte		*visdata;
 
+    vec3_t	wishdir;
+    float	wishspeed;
 } model_collision_t;
 
 typedef struct
@@ -359,13 +297,9 @@ typedef struct
     int		fileofs, filelen;
 } lump_t;
 
-#define	AREA_NODES	32
-
-
 class BSPCollider {
 public:
 
-    areanode_t	sv_areanodes[AREA_NODES];
     model_collision_t *worldmodel;
     model_collision_t *playermodel;
     vec3_t vec3_origin;
@@ -414,10 +348,28 @@ public:
     void Mod_LoadClipnodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
     void Mod_MakeClipHulls(model_collision_t *brushmodel);
     void Mod_MakeDrawHull(model_collision_t *brushmodel);
+    void SV_ClientThink (model_collision_t *model, float deltaTime);
 
+    void DropPunchAngle (model_collision_t *model, float deltaTime);
+    float V_CalcRoll (vec3_t angles, vec3_t velocity);
+    float V_CalcBob (float time, vec3_t velocity);
+
+    void ApplyBob(model_collision_t *model, float deltaTime);
+
+    void SV_CheckVelocity (model_collision_t *ent);
+    void SV_AirMove (model_collision_t *model, float deltaTime);
+    void SV_UserFriction (model_collision_t *model, float deltaTime);
+    void SV_AirAccelerate (model_collision_t *model, vec3_t wishveloc, float deltaTime);
+    void SV_Accelerate (model_collision_t *model, float deltaTime);
+
+    float VectorNormalize (vec3_t v);
     void consoleTrace(trace_t *t);
     static void Vertex3DToVec3(Vertex3D v, vec3_t &dest);
     static Vertex3D QuakeToVertex3D(vec3_t &v);
+
+    void checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_t maxs);
+    vec_t VectorLength(vec3_t v);
+
 };
 
 #endif //BRAKEDA3D_BSPCOLLIDER_H

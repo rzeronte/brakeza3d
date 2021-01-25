@@ -13,8 +13,9 @@ ComponentWeapons::ComponentWeapons()
 void ComponentWeapons::onStart()
 {
     std::cout << "ComponentWeapons onStart" << std::endl;
-
-    this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+    if (this->numWeapons > 0) {
+        this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+    }
 }
 
 void ComponentWeapons::preUpdate() {
@@ -23,7 +24,9 @@ void ComponentWeapons::preUpdate() {
 
 void ComponentWeapons::onUpdate()
 {
-    this->getCurrentWeaponType()->onUpdate();
+    if (numWeapons > 0) {
+        this->getCurrentWeaponType()->onUpdate();
+    }
 }
 
 void ComponentWeapons::postUpdate() {

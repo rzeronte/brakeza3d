@@ -16,7 +16,8 @@ void ComponentBSP::onStart()
     std::cout << "ComponentBSP onStart" << std::endl;
 
     loadMapsFromJSON();
-    loadWeaponsJSON();
+
+    //loadWeaponsJSON();
     //loadEnemiesJSON();
 
     cJSON *firstMap = cJSON_GetArrayItem(mapsJSONList, 0);
@@ -108,11 +109,7 @@ void ComponentBSP::setCameraInBSPStartPosition()
     camera->pitch = 0;
     camera->roll  = 0;
 
-    btCollisionObject *a;
     camera->setPosition( bspOriginalPosition );
-
-    btPairCachingGhostObject *kinematicGhost = camera->kinematicController->getGhostObject();
-    kinematicGhost->setWorldTransform(initialTransform);
 }
 
 void ComponentBSP::loadWeaponsJSON()

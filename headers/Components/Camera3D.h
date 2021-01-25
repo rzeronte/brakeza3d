@@ -35,9 +35,6 @@ public:
 
     void setFollowTo(Object3D *followTo);
 
-    btPairCachingGhostObject *m_ghostObject;
-    btKinematicCharacterController* kinematicController;
-
     Camera3D();
 
     float calcCanvasNearWidth();
@@ -63,8 +60,6 @@ public:
     void TurnLeft(void);
     void StrafeRight(void);
     void StrafeLeft(void);
-
-    void makeKineticCharacter(btTransform transform, btConvexShape *capsule);
 
     void limitPitch();
 

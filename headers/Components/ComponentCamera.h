@@ -39,7 +39,7 @@ public:
 
     void updateCameraBSPCollider();
 
-    void checkTrace(Vertex3D start, Vertex3D end, vec3_t mins, vec3_t maxs);
+    void drawCheckTrace(std::string o1, std::string o2);
     int  pointHullContent(vec3_t p);
 };
 

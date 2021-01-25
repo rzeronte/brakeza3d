@@ -29,7 +29,7 @@ public:
             const float range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
             const float range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
 
-            const float range_sensibility = -0.01;
+            const float range_sensibility = -0.1;
 
             const int range_framerate_min = EngineSetup::getInstance()->GUI_MIN_SPRITE3D_FRAMERATE;
             const int range_framerate_max = EngineSetup::getInstance()->GUI_MAX_SPRITE3D_FRAMERATE;

@@ -181,79 +181,22 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
 
 void ComponentGameInput::jump(bool checkOnGrount, float YForce, bool soundJump)
 {
-    if (checkOnGrount && !ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->onGround()) {
-        return;
-    }
-
     if (soundJump) {
         int rndJump = Tools::random(1, 4);
         Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
-
-    ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->jump(btVector3(0, YForce, 0));
 }
 
 void ComponentGameInput::handleCrouch(SDL_Event *event)
 {
     if (event->key.keysym.sym == SDLK_TAB ) {
 
-        btTransform trans;
-        btConvexShape *capsule;
-        float radius, height;
-        bool flag = false;
-        float offsetCrouch = 2.25;
-
         if (event->type == SDL_KEYDOWN && !player->isCrouch()) {
-            height = 1.0f;
-            radius = 1.0f;
-
-            btVector3 pos = ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
-            pos.setY(pos.y() + offsetCrouch);
-            trans.setIdentity();
-            trans.setOrigin(pos);
-
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->m_ghostObject);
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeAction(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController);
-
-            capsule = new btCapsuleShapeZ( radius, height );
-
             player->setCrouch(true);
-            flag = true;
         }
 
         if (event->type == SDL_KEYUP && player->isCrouch()) {
-            height = 4.5f;
-            radius = 1.5f;
-
-            btVector3 pos = ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->getGhostObject()->getWorldTransform().getOrigin();
-            pos.setY(pos.y() - offsetCrouch);
-            trans.setIdentity();
-            trans.setOrigin(pos);
-
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->m_ghostObject);
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeAction(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController);
-
-            capsule = new btCapsuleShapeZ( radius, height );
-
             player->setCrouch(false);
-            flag = true;
-        }
-
-        if ((event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ) && flag) {
-
-            ComponentsManager::get()->getComponentCamera()->getCamera()->makeKineticCharacter(trans, capsule );
-
-            ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->setGravity(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->getGravity() );
-            ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController->setFallSpeed(EngineSetup::getInstance()->BULLET_FALL_SPEED);
-
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->m_ghostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addAction(
-                    ComponentsManager::get()->getComponentCamera()->getCamera()->kinematicController);
         }
     }
 }

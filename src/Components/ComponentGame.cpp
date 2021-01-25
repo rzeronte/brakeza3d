@@ -26,7 +26,7 @@ void ComponentGame::onStart()
     SETUP->MENU_ACTIVE = true;
     Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 
-    createObjects3DFromBSPMap();
+    //createObjects3DFromBSPMap();
 }
 
 void ComponentGame::preUpdate()

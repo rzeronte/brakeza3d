@@ -80,7 +80,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
 
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
-    this->createMesh3DAndGhostsFromHulls();
+    //this->createMesh3DAndGhostsFromHulls();
     this->createBulletPhysicsShape();
     this->InitializeClipNodes();
     this->setLoaded(true);
@@ -480,7 +480,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
             Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
 
         } else {
-            Mesh3DGhost *ghost = new Mesh3DGhost();
+            auto *ghost = new Mesh3DGhost();
             ghost->aabbMax = aabbMax;
             ghost->aabbMin = aabbMin;
             ghost->setPosition( this->getPosition() );
@@ -1113,7 +1113,7 @@ Vertex3D BSPMap::getStartMapPosition()
 
     if (entityID != -1) {
         char *value = getEntityValue(entityID, "origin");
-        parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
+        //parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
     } else {
         Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");

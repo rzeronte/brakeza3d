@@ -31,18 +31,7 @@ Camera3D::Camera3D() {
 
     this->velocity = Vector3D();
 
-    btConvexShape* capsule = new btCapsuleShapeZ(
-            EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
-            EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
-    );
-
-    btTransform startTransform;
-    startTransform.setIdentity();
-    startTransform.setOrigin (btVector3(0, 0, 0));
-
-    this->makeKineticCharacter(startTransform, capsule);
-
-    this->setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
+    this->setLabel( EngineSetup::getInstance()->cameraNameIdentifier );
 }
 
 float Camera3D::getNearDistance()
@@ -207,7 +196,6 @@ void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
         this->velocity.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
-
     // Reset speed
     speed  = 0;
     strafe = 0;
@@ -229,18 +217,6 @@ void Camera3D::limitPitch()
     if (this->pitch <= -89) {
         this->pitch = -89;
     }
-}
-
-void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule)
-{
-    m_ghostObject = new btPairCachingGhostObject();
-    m_ghostObject->setWorldTransform( transform );
-
-    m_ghostObject->setCollisionShape( capsule );
-    m_ghostObject->setUserPointer(this);
-
-    kinematicController = new btKinematicCharacterController(m_ghostObject, capsule, 1.75f);
-    kinematicController->setLinearDamping(0.99999);
 }
 
 Object3D *Camera3D::getFollowTo() const {

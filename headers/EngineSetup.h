@@ -165,10 +165,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 9.f;
+    float WALKING_SPEED     = 400.f;
     float TURN_SPEED        = 0.099f;
     float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 9.f;
+    float STRAFE_SPEED      = 400.f;
 
     float WALKING_SPEED_LIQUID_DIVISOR = 1.5;
 
