@@ -8,6 +8,7 @@
 
 #include "Component.h"
 #include "../../src/Game/Player.h"
+#include "../Misc/cJSON.h"
 
 class ComponentGame : public Component {
 public:
@@ -20,6 +21,12 @@ public:
     void onEnd();
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
+    std::string currentMapName;
+
+    cJSON *mapsJSONList;
+    cJSON *weaponsJSONList;
+    cJSON *ammoTypesJSONList;
+    cJSON *enemiesJSONList;
 
     Player *player;
     int kills = 0;
@@ -35,7 +42,13 @@ public:
     void setKills(int kills);
     int  getKills() const;
 
-    void createObjects3DFromBSPMap();
+    void LoadMapsFromJSON();
+    void LoadWeaponsJSON();
+    void LoadEnemiesJSON();
+
+    void setFirstMapNameFromJSON();
+
+    void createObjects3DFromBSPEntities();
 };
 
 

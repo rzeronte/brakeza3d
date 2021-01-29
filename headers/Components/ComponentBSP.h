@@ -29,18 +29,12 @@ public:
     Camera3D    *camera;
     std::thread *BSPLoading;
 
-    cJSON *mapsJSONList;
-    cJSON *weaponsJSONList;
-    cJSON *ammoTypesJSONList;
-    cJSON *enemiesJSONList;
-
     BSPMap *getBSP() const;
 
+    void initMap(const char *bspFilename);
     void initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
+
     void setCameraInBSPStartPosition();
-    void loadMapsFromJSON();
-    void loadWeaponsJSON();
-    void loadEnemiesJSON();
 
     void setCamera(Camera3D *camera);
 

@@ -1,31 +1,13 @@
 {
   "maps": [
-    {
-      "name": "start.bsp"
-    },
-    {
-      "name": "e1m1.bsp"
-    },
-    {
-      "name": "e1m2.bsp"
-    },
-    {
-      "name": "e1m3.bsp"
-    },
-    {
-      "name": "e1m4.bsp"
-    },
-    {
-      "name": "e1m5.bsp"
-    },
-    {
-      "name": "e1m6.bsp"
-    },
-    {
-      "name": "e1m7.bsp"
-    },
-    {
-      "name": "e1m8.bsp"
-    }
+    { "name": "e1m1.bsp" },
+    { "name": "e1m1.bsp" },
+    { "name": "e1m2.bsp" },
+    { "name": "e1m3.bsp" },
+    { "name": "e1m4.bsp" },
+    { "name": "e1m5.bsp" },
+    { "name": "e1m6.bsp" },
+    { "name": "e1m7.bsp" },
+    { "name": "e1m8.bsp" }
   ]
 }

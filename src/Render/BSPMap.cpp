@@ -50,8 +50,6 @@ void BSPMap::init(Camera3D *cam)
     this->entities = new entity_t[MAX_BSP_ENTITIES];
     this->n_entities = 0;
     this->setLabel("BSPMap");
-
-    this->recastWrapper = new RecastWrapper();
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam)
@@ -75,14 +73,10 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     this->InitializeTextures();
     this->InitializeLightmaps();
     this->InitializeTriangles();
-
-    //this->InitializeRecast();
-
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
-    //this->createMesh3DAndGhostsFromHulls();
+    this->createMesh3DAndGhostsFromHulls();
     this->createBulletPhysicsShape();
-    this->InitializeClipNodes();
     this->setLoaded(true);
 
     return true;
@@ -507,56 +501,10 @@ void BSPMap::createMesh3DAndGhostsFromHulls()
     }
 }
 
-void BSPMap::InitializeRecast()
-{
-    std::vector<Triangle*> trianglesRecast;
-
-    Logging::getInstance()->Log("InitializeRecast");
-    int numVisibleSurfaces = 0;
-
-    model_t *bspHull = getModel(0);
-    int firstSurface = bspHull->firstsurf;
-    int lastSurface = firstSurface + bspHull->numsurf;
-    for (int k = firstSurface; k < lastSurface; k++) {
-        allSurfaces[numVisibleSurfaces++] = this->getSurfaceList(k);
-    }
-
-    this->numAllSurfaces = numVisibleSurfaces;
-    this->bspBtMesh = new btTriangleMesh();
-
-    for (int surface = 0; surface < numAllSurfaces; surface++) {
-
-        if (surface_triangles[surface].flags) continue; // Ignore physics for water/lava
-
-        const int offset = surface_triangles[surface].offset;
-        const int num = surface_triangles[surface].num;
-
-        for (int i = offset; i < offset+num; i++){
-            this->model_triangles[i]->updateFullVertexSpaces(this->camera);
-            trianglesRecast.push_back(this->model_triangles[i]);
-        }
-    }
-
-    recastWrapper->m_geom->loadBSPMapTriangles(trianglesRecast );
-
-    recastWrapper->initNavhMesh();
-    recastWrapper->initNavQuery();
-}
-
 void BSPMap::InitializeEntities()
 {
     char *e = getEntities();
     this->parseEntities(e);
-}
-
-void BSPMap::InitializeClipNodes()
-{
-    Logging::getInstance()->Log("InitializeClipNodes: NumClipNodes: " + std::to_string(getNumClipNodes()));
-    dclipnode_t *clipnode = (dclipnode_t *) &bsp[header->clipnodes.offset];
-
-    for (int i = 0; i < getNumClipNodes() ; i++, clipnode++) {
-        //std::cout << "back: " << clipnode->children[0] << ", front: " << clipnode->children[1] << ", planenum: " << clipnode->planenum << std::endl;
-    }
 }
 
 void BSPMap::bindTrianglesLightmaps()

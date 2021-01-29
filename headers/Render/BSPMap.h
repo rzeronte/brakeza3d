@@ -389,17 +389,13 @@ public:
     // Get texture info of a surface
     texinfo_t *getTextureInfo(int id) { return &getTextureInfo()[getSurface(id)->texinfoid]; }
 
-    RecastWrapper *recastWrapper;
-
     bool InitializeSurfaces(void);
     bool InitializeTextures(void);
     bool InitializeTriangles();
     bool InitializeLightmaps();
     void bindTrianglesLightmaps();
     void InitializeEntities();
-    void InitializeClipNodes();
     void createMesh3DAndGhostsFromHulls();
-    void InitializeRecast();
 
     static float CalculateDistance(vec3_t a, vec3_t b);
     void CalcSurfaceExtents (int surface, lightmap_t* l);
