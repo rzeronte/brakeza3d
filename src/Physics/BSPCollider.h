@@ -244,7 +244,7 @@ typedef struct model_s
 
     // Extracted from edict
     link_t	area;				// linked to a division node or leaf
-    bool 	free;
+    bool 	free = false;
 
     int		num_leafs;              // Del edicto
     short	leafnums[MAX_ENT_LEAFS];

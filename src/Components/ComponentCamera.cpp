@@ -89,13 +89,11 @@ void ComponentCamera::updateCameraBSPCollider()
     // do it!
     float deltaTime = Brakeza3D::get()->getDeltaTime();
 
-    bspCollider->SV_CheckVelocity( player );
-
+    bspCollider->SV_CheckVelocity ( player );
     bspCollider->SV_ClientThink( player, deltaTime );
-
-    bspCollider->SV_AddGravity ( player, deltaTime );
-    bspCollider->SV_CheckStuck ( player );
-    bspCollider->SV_WalkMove   ( player, deltaTime );
+    bspCollider->SV_AddGravity    ( player, deltaTime );
+    bspCollider->SV_CheckStuck    ( player );
+    bspCollider->SV_WalkMove      ( player, deltaTime );
 
     // update velocity
     getCamera()->velocity.vertex2 = BSPCollider::QuakeToVertex3D(player->origin);

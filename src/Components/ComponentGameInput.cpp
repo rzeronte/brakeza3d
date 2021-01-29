@@ -179,7 +179,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
     }
 }
 
-void ComponentGameInput::jump(bool checkOnGrount, float YForce, bool soundJump)
+void ComponentGameInput::jump(bool checkOnGround, float YForce, bool soundJump)
 {
     if (soundJump) {
         int rndJump = Tools::random(1, 4);

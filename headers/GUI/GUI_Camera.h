@@ -80,7 +80,14 @@ public:
 
                 ImGui::TreePop();
             }
+            ImGui::Separator();
 
+            if (ImGui::TreeNode( std::string("Velocity").c_str() )) {
+                ImGui::Text( (std::string("X: ") + std::to_string(camera->velocity.getComponent().x)).c_str());
+                ImGui::Text( (std::string("Y: ") + std::to_string(camera->velocity.getComponent().y)).c_str());
+                ImGui::Text( (std::string("Z: ") + std::to_string(camera->velocity.getComponent().z)).c_str());
+                ImGui::TreePop();
+            }
             ImGui::Separator();
 
             if (ImGui::TreeNode( mouse_text.c_str() )) {

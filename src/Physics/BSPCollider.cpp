@@ -18,12 +18,12 @@ void BSPCollider::LoadModelCollisionForWorld() {
 
     this->worldmodel = getModelCollisionFromBSP(0);
     this->playermodel = new model_collision_t;
-    this->playermodel->mins[0] = 0;
-    this->playermodel->mins[1] = 0;
-    this->playermodel->mins[2] = 0;
-    this->playermodel->maxs[0] = 0;
-    this->playermodel->maxs[1] = 0;
-    this->playermodel->maxs[2] = 0;
+    this->playermodel->mins[0] = -16;
+    this->playermodel->mins[1] = -16;
+    this->playermodel->mins[2] = -24;
+    this->playermodel->maxs[0] = 16;
+    this->playermodel->maxs[1] = 16;
+    this->playermodel->maxs[2] = 32;
 
     this->playermodel->movetype = MOVETYPE_WALK;
     this->playermodel->fixangle = 0;
@@ -431,6 +431,8 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
     blocked = 0;
     VectorCopy (ent->velocity, original_velocity);
     VectorCopy (ent->velocity, primal_velocity);
+    VectorCopy (ent->velocity, new_velocity);
+
     numplanes = 0;
 
     time_left = time;
@@ -448,20 +450,17 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
 
         // entity is trapped in another solid
         if (trace.allsolid) {
-            //Logging::getInstance()->Log("SV_Move: trace.allsolid");
             VectorCopy (vec3_origin, ent->velocity);
             return 3;
         }
 
         if (trace.fraction > 0) {	// actually covered some distance
-            //Logging::getInstance()->Log("SV_Move: trace.fraction > 0");
             VectorCopy (trace.endpos, ent->origin);
             VectorCopy (ent->velocity, original_velocity);
             numplanes = 0;
         }
 
         if (trace.fraction == 1) {
-            //Logging::getInstance()->Log("SV_Move: trace.fraction  == 1");
             break;		// moved the entire distance
         }
 
@@ -473,7 +472,7 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
         if (trace.plane.normal[2] > 0.7) {
             blocked |= 1;		// floor
             if (trace.ent->solid == SOLID_BSP) {
-                ent->flags =	(int)ent->flags | FL_ONGROUND;
+                ent->flags = (int)ent->flags | FL_ONGROUND;
             }
         }
 
@@ -517,10 +516,11 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
             VectorCopy (new_velocity, ent->velocity);
         } else {	// go along the crease
             if (numplanes != 2) {
-//				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
+				printf("clip velocity, numplanes == %i\n",numplanes);
                 VectorCopy (vec3_origin, ent->velocity);
                 return 7;
             }
+
             CrossProduct (planes[0], planes[1], dir);
             d = DotProduct (dir, ent->velocity);
             VectorScale (dir, d, ent->velocity);
@@ -733,7 +733,7 @@ void BSPCollider::SV_WalkMove (model_collision_t *ent, float deltaTime)
     }
 
     // Hemos chocado con 1 floor o 4 dead stop
-    if (!oldonground && ent->waterlevel == 0) {
+    if (!oldonground) {
         return;		// don't stair up while jumping
     }
 
@@ -862,6 +862,7 @@ void BSPCollider::SV_AddGravity (model_collision_t *ent, float deltaTime)
     float ent_gravity = 1.0f;
     float gravity = 800;
     ent->velocity[2] -= ent_gravity * gravity * deltaTime;
+
 }
 
 void BSPCollider::SV_CheckStuck (model_collision_t *ent)
@@ -1272,9 +1273,11 @@ void BSPCollider::SV_CheckVelocity (model_collision_t *ent)
     float maxvelocity = MAX_VELOCITY;
     float wishspeed = VectorLength(ent->velocity);
 
+    float tmp = ent->velocity[2];
     if (wishspeed > maxvelocity) {
         VectorScale (ent->velocity, maxvelocity/wishspeed, ent->velocity);
     }
+    ent->velocity[2] = tmp;
 }
 
 void BSPCollider::SV_AirMove (model_collision_t *model, float deltaTime)
