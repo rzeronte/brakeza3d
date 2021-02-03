@@ -168,21 +168,6 @@ void ComponentGame::resolveCollisions()
 
         if (!collisionType) continue;
 
-        if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP ) {
-            auto *resolver = new CollisionResolverBetweenProjectileAndBSPMap(
-                    collision->contactManifold,
-                    collision->objA,
-                    collision->objB,
-                    cm->getBspMap(),
-                    cm->getSceneObjects(),
-                    cm->getDynamicsWorld(),
-                    Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
-                    cm->getVisibleTriangles()
-            );
-            resolver->dispatch();
-            continue;
-        }
-
         if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY ) {
             auto *resolver = new CollisionResolverBetweenProjectileAndNPCEnemy(
                     collision->contactManifold,
@@ -218,21 +203,6 @@ void ComponentGame::resolveCollisions()
                     collision->objB,
                     cm->getBspMap(),
                     cm->getSceneObjects(),
-                    cm->getVisibleTriangles()
-            );
-            resolver->dispatch();
-            continue;
-        }
-
-        if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP ) {
-            auto *resolver = new CollisionResolverBetweenEnemyPartAndBSPMap(
-                    collision->contactManifold,
-                    collision->objA,
-                    collision->objB,
-                    cm->getBspMap(),
-                    cm->getSceneObjects(),
-                    cm->getDynamicsWorld(),
-                    Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
                     cm->getVisibleTriangles()
             );
             resolver->dispatch();

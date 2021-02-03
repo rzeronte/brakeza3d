@@ -28,7 +28,6 @@ public:
     Counter *counterMinReactionTime;
     int currentFaceAnimationIndex = 0;
     std::vector<TextureAnimation *> faceAnimations;
-    SDL_Texture *textTextureCache;
 
     void loadImages();
     void loadStatusFaceImages();

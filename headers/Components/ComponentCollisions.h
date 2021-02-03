@@ -6,6 +6,7 @@
 #include "../Render/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "../Physics/Mesh3DBody.h"
+#include "../Physics/Mesh3DGhost.h"
 #include "../Physics/SpriteDirectional3DBody.h"
 #include "ComponentWeapons.h"
 #include "../Collisions/CollisionResolver.h"
@@ -27,6 +28,7 @@ public:
     Camera3D *camera;
     BSPMap *bspMap;
     std::vector<Triangle *> *visibleTriangles;
+    Mesh3DGhost *triggerCamera;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration* collisionConfiguration;
@@ -38,8 +40,6 @@ public:
     btSequentialImpulseConstraintSolver* solver;
     btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     PhysicsDebugDraw* debugDraw;
-
-    Vertex3D finalVelocity;
 
     void initBulletSystem();
     void checkCollisionsForAll();
@@ -65,6 +65,12 @@ public:
     std::vector<CollisionResolver *> &getCollisions();
 
     void setCollisions(const std::vector<CollisionResolver *> &collisions);
+    void makeGhostForCamera();
+    void checkCollisionsForTriggerCamera();
+
+    Mesh3DGhost *getTriggerCamera() const;
+    void setTriggerCamera(Mesh3DGhost *triggerCamera);
+    void syncTriggerGhostCamera();
 
 };
 

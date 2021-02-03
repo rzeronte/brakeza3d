@@ -54,12 +54,12 @@ public:
 
     float EPSILON = 0.00001f;
 
-    bool  ENABLE_FOG    = false;
-    float FOG_DISTANCE  = 75;
+    bool  ENABLE_FOG    = true;
+    float FOG_DISTANCE  = 500;
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
-    float FRUSTUM_FARPLANE_DISTANCE = 2000;
+    float FRUSTUM_FARPLANE_DISTANCE = 1000;
     float HORIZONTAL_FOV = 90;
 
     bool RASTERIZER_OPENCL = false;
@@ -237,8 +237,8 @@ public:
 
     int GAME_PLAYER_STAMINA_INITIAL = 100;
 
-    float PLAYER_CAPSULE_RADIUS = 1.50f;
-    float PLAYER_CAPSULE_HEIGHT = 4.00f;
+    float PLAYER_CAPSULE_RADIUS = 10.50f;
+    float PLAYER_CAPSULE_HEIGHT = 40.00f;
 
     enum collisionGroups
     {

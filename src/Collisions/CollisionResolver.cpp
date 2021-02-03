@@ -6,18 +6,20 @@
 #include "../../headers/Game/ItemHealthBody.h"
 #include "../../headers/Game/ItemAmmoBody.h"
 
-CollisionResolver::CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles) :
-                                                contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles)
+CollisionResolver::CollisionResolver(
+        btPersistentManifold *contactManifold,
+        Object3D *objA,
+        Object3D *objB,
+        BSPMap *bspMap,
+        std::vector<Triangle *> &visibleTriangles
+        ) :
+        contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles)
 {
     this->type = -1;
 }
 
 int CollisionResolver::getTypeCollision()
 {
-    if (isSomeProjectile() && isSomeBSPMap()) {
-        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP;
-    }
-
     if (isSomeItemAmmo() && isSomeProjectile()) {
         return 0;
     }
@@ -36,10 +38,6 @@ int CollisionResolver::getTypeCollision()
 
     if (isSomeCamera() && isSomeMesh3DFuncButton()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON;
-    }
-
-    if (isSomeNPCEnemyPart() && isSomeBSPMap()) {
-        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP;
     }
 
     if (isSomeProjectile() && isSomeCamera()) {
@@ -71,21 +69,6 @@ bool CollisionResolver::isSomeCamera()
     if (!strcmp(objB->getLabel().c_str(), cameraIdentifier.c_str())) {
         return true;
     }
-}
-
-bool CollisionResolver::isSomeBSPMap()
-{
-    BSPMap *objAMap = dynamic_cast<BSPMap*> (objA);
-    if (objAMap != nullptr) {
-        return true;
-    }
-
-    BSPMap *objBMap = dynamic_cast<BSPMap*> (objB);
-    if (objBMap != nullptr) {
-        return true;
-    }
-
-    return false;
 }
 
 bool CollisionResolver::isSomeNPCEnemy()

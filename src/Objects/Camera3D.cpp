@@ -29,7 +29,16 @@ Camera3D::Camera3D() {
             calcCanvasFarHeight(), calcCanvasFarWidth()
     );
 
-    this->velocity = Vector3D();
+    btConvexShape* capsule = new btCapsuleShapeZ(
+            EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
+            EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
+    );
+
+    btTransform startTransform;
+    startTransform.setIdentity();
+    startTransform.setOrigin (btVector3(0, 0, 0));
+
+    this->makeKineticCharacter(startTransform, capsule);
 
     this->setLabel( EngineSetup::getInstance()->cameraNameIdentifier );
 }
@@ -225,4 +234,18 @@ Object3D *Camera3D::getFollowTo() const {
 
 void Camera3D::setFollowTo(Object3D *followTo) {
     follow_to = followTo;
+}
+
+void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule)
+{
+    m_ghostObject = new btPairCachingGhostObject();
+    m_ghostObject->setWorldTransform( transform );
+
+    m_ghostObject->setCollisionShape( capsule );
+    m_ghostObject->setUserPointer(this);
+}
+
+btPairCachingGhostObject* Camera3D::getGhostObject()
+{
+    return m_ghostObject;
 }

@@ -27,7 +27,6 @@ public:
     int getTypeCollision();
 
     bool isSomeCamera();
-    bool isSomeBSPMap();
     bool isSomeNPCEnemy();
     bool isSomeNPCEnemyPart();
     bool isSomeProjectile();

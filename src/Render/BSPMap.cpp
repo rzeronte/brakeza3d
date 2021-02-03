@@ -76,7 +76,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
     this->createMesh3DAndGhostsFromHulls();
-    this->createBulletPhysicsShape();
+    //this->createBulletPhysicsShape();
     this->setLoaded(true);
 
     return true;

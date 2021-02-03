@@ -30,6 +30,7 @@ public:
     Vector3D velocity;
 
     Object3D *follow_to = nullptr;
+    btPairCachingGhostObject *m_ghostObject;
 
     Object3D *getFollowTo() const;
 
@@ -63,7 +64,11 @@ public:
 
     void limitPitch();
 
+    void makeKineticCharacter(btTransform transform, btConvexShape *capsule);
+
     void consoleInfo();
+
+    btPairCachingGhostObject* getGhostObject();
 };
 
 

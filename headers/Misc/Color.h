@@ -24,7 +24,7 @@ public:
     static Uint32 magenta()    { return 0xFF00FF; }
     static Uint32 gray()       { return 0x323232; }
     static Uint32 darkwhite()  { return 0xF5F5F5; }
-    static Uint32 FOGDefault() { return 0x250000; }
+    static Uint32 FOGDefault() { return Color::black(); }
 
 };
 
