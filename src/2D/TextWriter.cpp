@@ -52,6 +52,7 @@ SDL_Texture* TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
     for (int x = 0 ; x < c->w ; x++) {
         for (int y = 0 ; y < c->h ; y++) {
             Uint32 color = Tools::readSurfacePixel(this->characterSurfaces[ascii], x, y);
+
             if (color == Color::black()) {
                 continue;
             }
