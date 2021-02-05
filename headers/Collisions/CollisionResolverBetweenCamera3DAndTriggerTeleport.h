@@ -44,6 +44,9 @@ public:
 
             ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getPlayerModel()->teleportingCounter.setEnabled(true);
             ComponentsManager::get()->getComponentBSP()->getBSPCollider()->resetPlayerModelData();
+
+            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("teleporting"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
         }
     }
 

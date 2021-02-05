@@ -78,23 +78,31 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
-    int offsetY = 150;
-    int stepY   = 100;
+    int offsetY = 50;
+    int stepY   = 10;
+
+    int xPos = 100;
 
     for( int i = 0 ; i < numOptions ; i++) {
 
         std::string text = this->options[ i ]->getLabel();
-        Uint32 color = Color::orange();
+        bool bold = false;
 
         if (i == ComponentMenu::MNU_NEW_GAME && ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::GAMEOVER ) {
             text = this->options[ ComponentMenu::MNU_NEW_GAME ]->getAlt();
         }
 
         if (i == currentOption) {
-            color = Color::white();
+            bold = true;
+            text = char(13) + text;
         }
 
-        Tools::writeTextCenterHorizontal( ComponentsManager::get()->getComponentWindow()->renderer, ComponentsManager::get()->getComponentWindow()->fontMedium, color, text, offsetY);
+        ComponentsManager::get()->getComponentHUD()->writeText(
+            xPos,
+            stepY + offsetY,
+            text.c_str(),
+            bold
+        );
 
         offsetY += stepY;
     }

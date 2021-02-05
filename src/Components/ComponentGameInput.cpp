@@ -64,10 +64,11 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
             player->counterStep->setEnabled(true);
 
             if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
-                int rndStep = Tools::random(1, 6);
-                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerStep" + std::to_string(rndStep)), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
+                Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerSteps"), EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
             }
         }
+    } else {
+        Mix_HaltChannel(EngineSetup::SoundChannels::SND_PLAYER_STEPS);
     }
 }
 

@@ -79,8 +79,7 @@ void ComponentGame::onUpdate()
 
     if (SETUP->LOADING) {
         SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, componentWindow->screenSurface, NULL);
-        std::string text = "Loading";
-        Tools::writeTextCenterHorizontal( componentWindow->renderer, componentWindow->fontDefault, Color::red(), text, 100);
+        componentHUD->writeTextCenter("Loading", false);
         Drawable::drawFireShader();
     }
 

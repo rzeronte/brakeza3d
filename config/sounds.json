@@ -10,12 +10,7 @@
     { "file": "enemy_dead.wav", "label": "soundEnemyDead", "type": "sound" },
     { "file": "body_explode.wav", "label": "bodyExplode", "type": "sound" },
 
-    { "file": "step1.wav", "label": "playerStep1", "type": "sound" },
-    { "file": "step2.wav", "label": "playerStep2", "type": "sound" },
-    { "file": "step3.wav", "label": "playerStep3", "type": "sound" },
-    { "file": "step4.wav", "label": "playerStep4", "type": "sound" },
-    { "file": "step5.wav", "label": "playerStep5", "type": "sound" },
-    { "file": "step6.wav", "label": "playerStep6", "type": "sound" },
+    { "file": "steps.wav", "label": "playerSteps", "type": "sound" },
 
     { "file": "playerDead1.wav", "label": "playerDead1", "type": "sound" },
     { "file": "playerDead2.wav", "label": "playerDead2", "type": "sound" },
@@ -29,10 +24,7 @@
     { "file": "playerPain3.wav", "label": "playerPain3", "type": "sound" },
     { "file": "playerPain4.wav", "label": "playerPain4", "type": "sound" },
 
-    { "file": "playerJump1.wav", "label": "playerJump1", "type": "sound" },
-    { "file": "playerJump2.wav", "label": "playerJump2", "type": "sound" },
-    { "file": "playerJump3.wav", "label": "playerJump3", "type": "sound" },
-    { "file": "playerJump4.wav", "label": "playerJump4", "type": "sound" },
+    { "file": "playerJump.wav", "label": "playerJump", "type": "sound" },
 
     { "file": "playerLand1.wav", "label": "playerLand1", "type": "sound" },
     { "file": "playerLand2.wav", "label": "playerLand2", "type": "sound" },

@@ -40,15 +40,6 @@ public:
 
     static bool isPixelInWindow(int x, int y);
 
-    static void writeText(SDL_Renderer *renderer, TTF_Font *font, int x, int y, Uint32 color, std::string text);
-    static void writeText3D(SDL_Renderer *renderer, Camera3D *cam, TTF_Font *font, Vertex3D, Uint32 color, std::string text);
-    static void writeTextCenter(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string text);
-    static void writeTextCenterHorizontal(SDL_Renderer *renderer, TTF_Font *font, Uint32 color, std::string &text, int ypos);
-
-    static void getTextAndRect(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32);
-    static void getTextAndRectCenter(SDL_Renderer *renderer, char *text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color);
-    static void getTextAndRectCenterHorizontal(SDL_Renderer *renderer, std::string &text, TTF_Font *font, SDL_Texture **texture, SDL_Rect *rect, Uint32 color, int ypos);
-
     static unsigned long createRGB(int r, int g, int b);
 
     static uint8_t getRedValueFromColor(uint32_t);

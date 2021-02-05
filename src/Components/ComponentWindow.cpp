@@ -24,7 +24,7 @@ void ComponentWindow::onStart()
 void ComponentWindow::preUpdate()
 {
     BUFFERS->clearDepthBuffer();
-    //BUFFERS->clearVideoBuffer();
+    BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::onUpdate()

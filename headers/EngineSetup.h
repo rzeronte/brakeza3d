@@ -138,8 +138,8 @@ public:
     std::string CFG_SOUNDS  = "sounds.json";
 
     bool  SOUND_ENABLED = true;
-    float SOUND_VOLUME_MUSIC = 25;
-    float SOUND_VOLUME_PLAYER = 128;
+    float SOUND_VOLUME_MUSIC = 128;
+    float SOUND_VOLUME_PLAYER = 75;
     float SOUND_VOLUME_ENVIRONMENT = 75;
     float SOUND_VOLUME_MENU = 75;
 

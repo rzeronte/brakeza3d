@@ -123,11 +123,10 @@ void Player::jump()
     }
 
     // sound
-    int rndJump = Tools::random(1, 4);
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump"), EngineSetup::SoundChannels::SND_PLAYER, 0);
 
     // apply force
-    Vertex3D jump(0, -150, 0);
+    Vertex3D jump = EngineSetup::getInstance()->JUMP_FORCE;
     Vertex3D current = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2;
     Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2 = current + jump;
 }
