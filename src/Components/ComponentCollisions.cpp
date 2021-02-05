@@ -3,13 +3,11 @@
 
 ComponentCollisions::ComponentCollisions()
 {
-
 }
 
-void ComponentCollisions::onStart() {
+void ComponentCollisions::onStart()
+{
     Logging::getInstance()->Log("ComponentCollisions onStart");
-
-    this->initBulletSystem();
 }
 
 void ComponentCollisions::preUpdate()
@@ -21,8 +19,8 @@ void ComponentCollisions::onUpdate()
     this->stepSimulation();
 }
 
-void ComponentCollisions::postUpdate() {
-
+void ComponentCollisions::postUpdate()
+{
 }
 
 void ComponentCollisions::onEnd() {
@@ -43,9 +41,10 @@ void ComponentCollisions::initBulletSystem()
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     this->overlappingPairCache = new btDbvtBroadphase();
 
-    btVector3 worldMin(-500,-500,-500);
-    btVector3 worldMax(500,500,500);
-    btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);
+    btVector3 worldMin(-5000, -5000, -5000);
+    btVector3 worldMax(5000, 5000, 5000);
+
+    auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
     this->overlappingPairCache = sweepBP;
 
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
@@ -74,28 +73,31 @@ new btGhostPairCallback()
 
 }
 
-btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
+btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const
+{
     return dynamicsWorld;
 }
 
-void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld) {
-    ComponentCollisions::dynamicsWorld = dynamicsWorld;
+void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *world)
+{
+    ComponentCollisions::dynamicsWorld = world;
 }
 
 Camera3D *ComponentCollisions::getCamera() const {
     return camera;
 }
 
-void ComponentCollisions::setCamera(Camera3D *camera) {
-    ComponentCollisions::camera = camera;
+void ComponentCollisions::setCamera(Camera3D *cam)
+{
+    ComponentCollisions::camera = cam;
 }
 
 BSPMap *ComponentCollisions::getBspMap() const {
     return bspMap;
 }
 
-void ComponentCollisions::setBspMap(BSPMap *bspMap) {
-    ComponentCollisions::bspMap = bspMap;
+void ComponentCollisions::setBSPMap(BSPMap *map) {
+    ComponentCollisions::bspMap = map;
 }
 
 bool ComponentCollisions::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
@@ -136,74 +138,6 @@ void ComponentCollisions::checkCollisionsForAll()
     }
 }
 
-
-void ComponentCollisions::checkCollisionsForTriggerCamera()
-{
-    Logging::getInstance()->Log("Camera is in collision with: " + std::to_string(this->triggerCamera->getGhostObject()->getNumOverlappingObjects()));
-
-    for (int i = 0; i < this->triggerCamera->getGhostObject()->getNumOverlappingObjects(); i++) {
-        const btCollisionObject *obj = this->triggerCamera->getGhostObject()->getOverlappingObject(i);
-        Mesh3D *brkObjectB = (Mesh3D *) obj->getUserPointer();
-
-        // No siempre tienen por qué ser Mesh
-        if (brkObjectB != NULL) {
-            if (brkObjectB->getLabel().find("hull") != std::string::npos) {
-                int entityIndex = brkObjectB->getBspEntityIndex();
-                char *classname = bspMap->getEntityValue(entityIndex, "classname");
-                Logging::getInstance()->Log(classname);
-                continue;
-                if (!strcmp(classname, "trigger_teleport")) {
-                    int targetEntityId = bspMap->getIndexOfFirstEntityByTargetname(bspMap->getEntityValue(entityIndex, "target") );
-                    if (targetEntityId >= 0) {
-
-                        if (this->bspMap->hasEntityAttribute(targetEntityId, "origin")) {
-                            char *value = bspMap->getEntityValue(targetEntityId, "origin");
-                            char *angle = bspMap->getEntityValue(targetEntityId, "angle");
-                            Vertex3D teleportPos = bspMap->parsePositionFromEntityAttribute(value);
-
-                            float BSP_YOffset = -5;
-                            float BSP_ZOffset = 0;
-
-                            /*int angleInt = atoi( std::string(angle).c_str() );
-                            camera->yaw   = 90-angleInt;
-                            camera->pitch = 0;
-                            camera->roll  = 0;
-
-                            btVector3 btPos = btVector3(teleportPos.x, teleportPos.y+BSP_YOffset, teleportPos.z+BSP_ZOffset);
-
-                            btTransform initialTransform;
-                            initialTransform.setOrigin( btPos );*/
-
-                            this->camera->setPosition( teleportPos );
-
-                            if (SETUP->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log( "[LOG_COLLISION_OBJECTS] teleporting to " +std::string(bspMap->getEntityValue(entityIndex, "target")));
-                            }
-                        }
-                    }
-                }
-
-                if (!strcmp(classname, "func_door")) {
-                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[ComponentID::COMPONENT_WINDOW]);
-                    Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string("func_door") );
-                }
-
-                if (!strcmp(classname, "trigger_multiple")) {
-                    auto *CW = dynamic_cast<ComponentWindow*>((*getComponents())[ComponentID::COMPONENT_WINDOW]);
-                    // check for message response
-                    if (strlen(bspMap->getEntityValue(entityIndex, "message")) > 0) {
-                        Tools::writeTextCenter( CW->renderer, CW->fontDefault, Color::white(), std::string(bspMap->getEntityValue(entityIndex, "message")) );
-                    }
-                }
-            }
-        }
-
-        if (SETUP->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->getInstance()->Log("[LOG_COLLISION_OBJECTS] Collision between triggerCamera and " + brkObjectB->getLabel());
-        }
-    }
-}
-
 void ComponentCollisions::updatePhysicObjects()
 {
     std::vector<Object3D *>::iterator it;
@@ -220,17 +154,12 @@ void ComponentCollisions::updatePhysicObjects()
 
 Vertex3D ComponentCollisions::stepSimulation()
 {
-    float time = Brakeza3D::get()->getDeltaTime();
-
     // check for collisions
-    if (bspMap->isLoaded()) {
-        checkCollisionsForTriggerCamera();
-        checkCollisionsForAll();
-    }
+    checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation( time * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
+        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime() * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
         // Physics for meshes
         this->updatePhysicObjects();
     }
@@ -276,16 +205,11 @@ Mesh3DGhost *ComponentCollisions::getTriggerCamera() const {
 
 void ComponentCollisions::makeGhostForCamera()
 {
-    btConvexShape* capsule = new btCapsuleShapeZ(
-            EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
-            EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
-    );
-
     triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel(SETUP->cameraTriggerNameIdentifier);
     triggerCamera->setEnabled(true);
     triggerCamera->setPosition( camera->getPosition() );
-    triggerCamera->getGhostObject()->setCollisionShape(capsule);
+    triggerCamera->getGhostObject()->setCollisionShape(getCamera()->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
 }

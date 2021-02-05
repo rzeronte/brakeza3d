@@ -52,8 +52,8 @@ bool Counter::isEnabled() const {
     return enabled;
 }
 
-void Counter::setEnabled(bool enabled) {
-    Counter::enabled = enabled;
+void Counter::setEnabled(bool e) {
+    Counter::enabled = e;
 
     this->acumulatedTime = 0;
     this->finished = false;
