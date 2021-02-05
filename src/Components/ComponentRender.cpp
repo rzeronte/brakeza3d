@@ -55,12 +55,19 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
-std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
+std::vector<Triangle *> &ComponentRender::getFrameTriangles()
+{
     return frameTriangles;
 }
 
-std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
+std::vector<Triangle *> &ComponentRender::getVisibleTriangles()
+{
     return visibleTriangles;
+}
+
+std::vector<LightPoint3D *> &ComponentRender::getLightPoints()
+{
+    return lightpoints;
 }
 
 void ComponentRender::onUpdateBSP()
@@ -394,6 +401,45 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
             pixelColor = SETUP->FOG_COLOR;
         } else {
             pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
+        }
+    }
+    if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
+        Vertex3D D;
+
+        if (this->lightpoints.size() > 0) {
+            // Coordenadas del punto que estamos procesando en el mundo (object space)
+            float x3d = fragment->alpha * t->Ao.x + fragment->theta * t->Bo.x + fragment->gamma * t->Co.x;
+            float y3d = fragment->alpha * t->Ao.y + fragment->theta * t->Bo.y + fragment->gamma * t->Co.y;
+            float z3d = fragment->alpha * t->Ao.z + fragment->theta * t->Bo.z + fragment->gamma * t->Co.z;
+
+            D = Vertex3D( x3d, y3d, z3d ); // Object space
+
+            for (int i = 0; i < this->lightpoints.size(); i++) {
+                if (!this->lightpoints[i]->isEnabled()) {
+                    continue;
+                }
+
+                // Color light apply
+                pixelColor = this->lightpoints[i]->mixColor(pixelColor, D);
+
+                /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
+                    Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
+
+                    if (isMesh != NULL && isMesh->isShadowCaster()) {
+                        // Shadow test
+                        Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
+                        Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
+                        const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
+
+                        if (Tools::isPixelInWindow(DP.x, DP.y)) {
+                            float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
+                            if ( Dl.z > buffer_shadowmapping_z) {
+                                pixelColor = Color::red();
+                            }
+                        }
+                    }
+                }*/
+            }
         }
     }
 

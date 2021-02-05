@@ -59,11 +59,13 @@ public:
 
     std::vector<Triangle *> &getFrameTriangles();
     std::vector<Triangle *> &getVisibleTriangles();
+    std::vector<LightPoint3D *> &getLightPoints();
 
     std::mutex lockFrameTriangles;
     std::vector<Triangle*> frameTriangles;
     std::vector<Triangle*> clippedTriangles;
     std::vector<Triangle*> visibleTriangles;
+    std::vector<LightPoint3D*> lightpoints;
 
     std::vector<Tile> tiles;
     int sizeTileWidth  = (EngineSetup::getInstance()->screenWidth/2);
@@ -72,25 +74,6 @@ public:
     int tilesHeight;
     int numTiles;
     int tilePixelsBufferSize;
-
-    // OpenCL Rasterizer
-    cl_platform_id platform_id;
-    cl_device_id device_cpu_id;
-    cl_device_id device_gpu_id;
-    cl_uint ret_num_devices;
-    cl_uint ret_num_platforms;
-    cl_int ret;
-    cl_context contextCPU;
-    cl_context contextGPU;
-    cl_program programCPU;
-    cl_program programGPU;
-    cl_kernel processAllTriangles;
-
-    cl_mem opencl_buffer_triangles;
-    cl_mem opencl_buffer_video;
-    cl_mem opencl_buffer_depth;
-
-    cl_command_queue command_queue_rasterizer;
 };
 
 

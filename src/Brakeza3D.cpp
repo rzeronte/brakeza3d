@@ -66,6 +66,12 @@ void Brakeza3D::mainLoop()
 
     onStartComponents();
 
+    auto *light = new LightPoint3D();
+    light->setPosition(Vertex3D(544, -32, 32));
+    light->setColor(0, 0, 255);
+    this->addObject3D(light, "light");
+    ComponentsManager::get()->getComponentRender()->lightpoints.push_back( light );
+
     while ( !finish ) {
         this->updateTimer();
 

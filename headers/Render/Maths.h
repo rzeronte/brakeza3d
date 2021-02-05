@@ -58,7 +58,6 @@ public:
 
     static float normalizeToRange(float value, float min, float max);
     static float sqrt1(const float &n);
-
 };
 
 

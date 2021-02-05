@@ -25,13 +25,12 @@ class GUI_Lights : public GUI  {
 
                 ImGui::SetNextWindowPos(ImVec2(2, 437), ImGuiSetCond_Once);
                 ImGui::SetNextWindowSize(ImVec2(250, 167), ImGuiSetCond_Once);
-                //window_flags |= ImGuiWindowFlags_NoMove;
 
                 ImGui::Begin(title.c_str(), &show, window_flags);
 
-                const float  range_min = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MIN_VALUE;
-                const float  range_max = EngineSetup::getInstance()->GUI_BAR_DEFAULT_MAX_VALUE;
-                const float  range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
+                const float  range_min = -10;
+                const float  range_max = 10;
+                const float  range_sensibility = 0.01f;
 
                 for (int i = 0; i < lightPoints.size(); i++) {
                     bool changed_color = false;

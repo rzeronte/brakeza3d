@@ -100,11 +100,11 @@ public:
 
     void drawNormal(Camera3D *cam, Uint32 color);
 
-    //void shadowMapping(LightPoint3D *lp);
 
     void processPixelTexture(Uint32 &, float, float, bool);
     void processPixelLightmap(Uint32 &, float, float, const Uint8 &, const Uint8 &, const Uint8 &, const Uint8 &);
 
+    //void shadowMapping(LightPoint3D *lp);
     //void scanVerticesForShadowMapping(LightPoint3D *lp);
     //void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
     //void scanShadowMappingTopFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);

@@ -29,6 +29,8 @@ public:
     ImVec4 imgui_color;
 
     void setColor(int, int, int);
+    Uint32 mixColor(Uint32 color, Vertex3D Q);
+
 };
 
 

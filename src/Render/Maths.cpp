@@ -526,3 +526,4 @@ float Maths::sqrt1(const float &n)
     u.i = 0x5F375A86 - (*(int*)&n >> 1);
     return (int(3) - n * u.f * u.f) * n * u.f * 0.5f;
 }
+
