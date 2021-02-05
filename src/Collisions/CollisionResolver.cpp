@@ -32,6 +32,14 @@ int CollisionResolver::getTypeCollision()
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY;
     }
 
+    if (isSomeCamera() && isSomeMesh3DTriggerMultiple()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE;
+    }
+
+    if (isSomeCamera() && isSomeMesh3DTriggerTeleport()) {
+        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT;
+    }
+
     if (isSomeCamera() && isSomeMesh3DFuncDoor()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR;
     }
@@ -61,7 +69,7 @@ int CollisionResolver::getTypeCollision()
 
 bool CollisionResolver::isSomeCamera()
 {
-    std::string cameraIdentifier = EngineSetup::getInstance()->cameraNameIdentifier;
+    std::string cameraIdentifier = EngineSetup::getInstance()->cameraTriggerNameIdentifier;
     if (!strcmp(objA->getLabel().c_str(), cameraIdentifier.c_str())) {
         return true;
     }
@@ -167,6 +175,45 @@ bool CollisionResolver::isSomeMesh3DFuncButton()
     }
 
     return false;
+}
+
+bool CollisionResolver::isSomeMesh3DTriggerMultiple()
+{
+    auto *objAMesh = dynamic_cast<Mesh3D*> (objA);
+    if (objAMesh != nullptr) {
+        if (this->isBSPEntityOfClassName(objAMesh, "trigger_multiple")) {
+            return true;
+        }
+    }
+
+    auto *objBMesh = dynamic_cast<Mesh3D*> (objB);
+    if (objBMesh != nullptr) {
+        if (this->isBSPEntityOfClassName(objBMesh, "trigger_multiple")) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CollisionResolver::isSomeMesh3DTriggerTeleport()
+{
+    auto *objAMesh = dynamic_cast<Mesh3D*> (objA);
+    if (objAMesh != nullptr) {
+        if (this->isBSPEntityOfClassName(objAMesh, "trigger_teleport")) {
+            return true;
+        }
+    }
+
+    auto *objBMesh = dynamic_cast<Mesh3D*> (objB);
+    if (objBMesh != nullptr) {
+        if (this->isBSPEntityOfClassName(objBMesh, "trigger_teleport")) {
+            return true;
+        }
+    }
+
+    return false;
+
 }
 
 bool CollisionResolver::isSomeItemWeapon()

@@ -35,7 +35,7 @@ void ComponentsManager::configureComponents()
 {
     getComponentBSP()->setCamera( getComponentCamera()->getCamera() );
 
-    getComponentCollisions()->setBspMap( getComponentBSP()->getBSP() );
+    getComponentCollisions()->setBSPMap(getComponentBSP()->getBSP());
     getComponentCollisions()->setCamera( getComponentCamera()->getCamera() );
     getComponentCollisions()->setVisibleTriangles( getComponentRender()->getVisibleTriangles() );
 

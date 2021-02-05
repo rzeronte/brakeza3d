@@ -4,6 +4,7 @@
 #include <cmath>
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/BSPMap.h"
+#include "../../headers/Misc/Counter.h"
 
 typedef float vec3_t[3];
 
@@ -218,6 +219,8 @@ typedef struct model_s
     vec3_t      origin;      // brakeza
     vec3_t	    oldorigin;   // brakeza
     int         modelindex;  // brakeza
+    bool        teleporting = false;
+    Counter     teleportingCounter;
 
     modtype_t	type;
     int			numframes;
@@ -249,8 +252,8 @@ typedef struct model_s
     int		num_leafs;              // Del edicto
     short	leafnums[MAX_ENT_LEAFS];
 
-    int			numleafs;		// number of visible leafs, not counting 0
-    mleaf_t		*leafs;
+    int		numleafs;		// number of visible leafs, not counting 0
+    mleaf_t	*leafs;
 
     float	solid;
     float	movetype;
@@ -307,9 +310,10 @@ public:
 
     BSPCollider();
     void LoadModelCollisionForWorld();
+    void resetPlayerModelData();
 
-    void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
-    void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+    void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
+    void VectorScale (const vec3_t in, vec_t scale, vec3_t out);
     void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 
     void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs);
@@ -369,6 +373,8 @@ public:
 
     void checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_t maxs);
     vec_t VectorLength(vec3_t v);
+
+    bool isPlayerOnGround();
 
 };
 

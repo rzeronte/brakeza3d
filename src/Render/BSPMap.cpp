@@ -54,10 +54,10 @@ void BSPMap::init(Camera3D *cam)
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam)
 {
-    this->init( cam );
+    this->init(cam);
 
-    std::string bspFilename_str     = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename).c_str();
-    std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename).c_str();
+    std::string bspFilename_str     = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename);
+    std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename);
 
     if (!LoadBSP(bspFilename_str.c_str())) {
         printf("[ERROR] Map::Initialize() Error loading bsp file\n");
@@ -75,7 +75,6 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     this->InitializeTriangles();
     this->bindTrianglesLightmaps();
     this->InitializeEntities();                // necesario para getStartMapPosition
-    this->createMesh3DAndGhostsFromHulls();
     //this->createBulletPhysicsShape();
     this->setLoaded(true);
 
@@ -302,7 +301,7 @@ bool BSPMap::InitializeTriangles()
         // Hayamos el número de triángulos creados para esta superficie
         int end_number_triangle = this->model_triangles.size();
         int surface_num_triangles = end_number_triangle - start_number_triangle ;
-        Logging::getInstance()->Log("Surface: " + std::to_string(i) + ", NumTriangles: " + std::to_string(surface_num_triangles) +", startOffset: " + std::to_string(start_number_triangle) + ", endOffset: " + std::to_string(end_number_triangle), "");
+        //Logging::getInstance()->Log("Surface: " + std::to_string(i) + ", NumTriangles: " + std::to_string(surface_num_triangles) +", startOffset: " + std::to_string(start_number_triangle) + ", endOffset: " + std::to_string(end_number_triangle), "");
 
         // Creamos el registro que relaciona una surface con sus triángulos
         this->surface_triangles[i].num = surface_num_triangles;
@@ -401,102 +400,6 @@ bool BSPMap::InitializeLightmaps()
         } else {
             this->lightmaps[surfaceId].setLightMapped(false);
             //Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ",  No lightmap");
-        }
-    }
-}
-
-void BSPMap::createMesh3DAndGhostsFromHulls()
-{
-    int numHulls = this->getNumModels();
-
-    for (int m = 1; m < numHulls; m++) {
-        bool rigid = false;
-
-        model_t *hull = this->getModel(m);
-
-        // Buscamos entidades que figuren con el modelo
-        std::string targetName = "*" + std::to_string(m);
-        int entityIndex = this->getIndexOfFirstEntityByModel( targetName.c_str() );
-
-        if (entityIndex >= 1 ) {
-            Logging::getInstance()->Log("Hull_"+ std::to_string(m) + " associated with BSPEntity: " + std::to_string(entityIndex));
-
-            char *classname = this->getEntityValue(entityIndex, "classname");
-
-            if (
-                //!strcmp(classname, "func_episodegate") ||
-                    !strcmp(classname, "func_door") ||
-                    !strcmp(classname, "func_button") ||
-                    !strcmp(classname, "func_bossgate") ||
-                    !strcmp(classname, "func_wall")
-                    ) {
-                rigid = true;
-            }
-        }
-
-        vec3_t v3aabbMax;
-        v3aabbMax[0] = hull->box.max[0];
-        v3aabbMax[1] = -hull->box.max[2];
-        v3aabbMax[2] = hull->box.max[1];
-
-        vec3_t v3aabbMin;
-        v3aabbMin[0] = hull->box.min[0];
-        v3aabbMin[1] = -hull->box.min[2];
-        v3aabbMin[2] = hull->box.min[1];
-
-        Vertex3D aabbMax = Vertex3D(v3aabbMax[0]*scale, v3aabbMax[1]*scale, v3aabbMax[2]*scale);
-        Vertex3D aabbMin = Vertex3D(v3aabbMin[0]*scale, v3aabbMin[1]*scale, v3aabbMin[2]*scale);
-
-        if ( rigid ) {
-            auto *body = new Mesh3DBody();
-            body->aabbMax = aabbMax;
-            body->aabbMin = aabbMin;
-            body->setPosition( this->getPosition() );
-            body->setRotation( this->getRotation() );
-            body->setEnabled(true);
-            if (entityIndex >= 1 ) {
-                body->setBspEntityIndex(entityIndex);
-            }
-            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
-
-                const int offset = this->surface_triangles[surface].offset;
-                const int num = this->surface_triangles[surface].num;
-
-                for (int i = offset; i < offset+num; i++) {
-                    Triangle *t = this->model_triangles[i];
-                    t->parent = body;
-
-                    body->modelTriangles.push_back( t );
-                }
-            }
-            body->updateBoundingBox();
-            body->makeRigidBody(0, this->camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
-            Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
-
-        } else {
-            auto *ghost = new Mesh3DGhost();
-            ghost->aabbMax = aabbMax;
-            ghost->aabbMin = aabbMin;
-            ghost->setPosition( this->getPosition() );
-            ghost->setRotation(this->getRotation() );
-
-            if (entityIndex >= 1 ) {
-                ghost->setBspEntityIndex(entityIndex);
-            }
-            ghost->setEnabled(false);
-            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
-
-                const int offset = this->surface_triangles[surface].offset;
-                const int num = this->surface_triangles[surface].num;
-
-                for (int i = offset; i < offset+num; i++) {
-                    Triangle *t = this->model_triangles[i];
-                    t->parent = ghost;
-                    ghost->modelTriangles.push_back( t );
-                }
-            }
-            ghost->makeGhostBody(this->camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
-            Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(m) + " (ghost)") ;
         }
     }
 }

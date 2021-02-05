@@ -395,7 +395,6 @@ public:
     bool InitializeLightmaps();
     void bindTrianglesLightmaps();
     void InitializeEntities();
-    void createMesh3DAndGhostsFromHulls();
 
     static float CalculateDistance(vec3_t a, vec3_t b);
     void CalcSurfaceExtents (int surface, lightmap_t* l);

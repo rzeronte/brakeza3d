@@ -11,6 +11,7 @@
 #include "ComponentWeapons.h"
 #include "ComponentWindow.h"
 #include "../GUI/GUIManager.h"
+#include "../2D/TextWriter.h"
 
 class ComponentHUD : public Component{
 public:
@@ -24,6 +25,8 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
+    TextWriter *textureWriter;
+
     Counter *counterFaceAnimation;
     Counter *counterMinReactionTime;
     int currentFaceAnimationIndex = 0;
@@ -32,6 +35,9 @@ public:
     void loadImages();
     void loadStatusFaceImages();
     void setStatusFaceAnimation(int id);
+    void writeText(int x, int y, const char *, bool bold);
+    void writeTextCenter(const char *, bool bold);
+
     void drawHUD();
 
     enum StatusFace {

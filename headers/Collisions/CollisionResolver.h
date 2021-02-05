@@ -33,6 +33,8 @@ public:
     bool isSomeMesh3D();
     bool isSomeMesh3DFuncDoor();
     bool isSomeMesh3DFuncButton();
+    bool isSomeMesh3DTriggerMultiple();
+    bool isSomeMesh3DTriggerTeleport();
     bool isSomeItemWeapon();
     bool isSomeItemHealth();
     bool isSomeItemAmmo();

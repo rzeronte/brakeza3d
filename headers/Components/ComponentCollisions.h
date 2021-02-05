@@ -2,7 +2,6 @@
 #ifndef BRAKEDA3D_COMPONENTCOLLISIONS_H
 #define BRAKEDA3D_COMPONENTCOLLISIONS_H
 
-
 #include "../Render/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "../Physics/Mesh3DBody.h"
@@ -51,7 +50,7 @@ public:
     void setCamera(Camera3D *camera);
 
     BSPMap *getBspMap() const;
-    void setBspMap(BSPMap *bspMap);
+    void setBSPMap(BSPMap *bspMap);
 
     std::vector<Triangle *> &getVisibleTriangles();
     void setVisibleTriangles(std::vector<Triangle *> &visibleTriangles);
@@ -66,7 +65,6 @@ public:
 
     void setCollisions(const std::vector<CollisionResolver *> &collisions);
     void makeGhostForCamera();
-    void checkCollisionsForTriggerCamera();
 
     Mesh3DGhost *getTriggerCamera() const;
     void setTriggerCamera(Mesh3DGhost *triggerCamera);

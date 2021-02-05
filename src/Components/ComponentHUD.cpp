@@ -19,10 +19,16 @@ void ComponentHUD::onStart()
     loadImages();
     loadStatusFaceImages();
     setStatusFaceAnimation(StatusFace::STAND);
+
+    textureWriter = new TextWriter(
+            ComponentsManager::get()->getComponentWindow()->renderer,
+            std::string(EngineSetup::getInstance()->SPRITES_FOLDER + "conchars.png").c_str()
+    );
+
 }
 
-void ComponentHUD::preUpdate() {
-
+void ComponentHUD::preUpdate()
+{
 }
 
 void ComponentHUD::onUpdate()
@@ -50,7 +56,7 @@ void ComponentHUD::onUpdate()
             faceAnimations[currentFaceAnimationIndex]->nextFrame();
         }
 
-        //drawHUD();
+        drawHUD();
 
     }
 }
@@ -107,6 +113,20 @@ void ComponentHUD::setStatusFaceAnimation(int id)
     counterFaceAnimation->setStep( step );
 }
 
+void ComponentHUD::writeTextCenter(const char *text, bool bold)
+{
+    int totalW = EngineSetup::getInstance()->screenWidth;
+    int totalH = EngineSetup::getInstance()->screenHeight;
+
+    int xPosition = (totalW/2) - (int) (strlen(text) * CONCHARS_CHARACTER_W)/2;
+    this->writeText(xPosition, totalH/2, text, bold);
+}
+
+void ComponentHUD::writeText(int x, int y, const char *text, bool bold)
+{
+    this->textureWriter->writeText(x, y, text, bold);
+}
+
 void ComponentHUD::drawHUD()
 {
     int textY  = 180;
@@ -114,30 +134,27 @@ void ComponentHUD::drawHUD()
     int stepY = 10;
 
     ComponentsManager* componentManager = ComponentsManager::get();
-    SDL_Renderer*      render = componentManager->getComponentWindow()->renderer;
     WeaponType*        WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
-    TTF_Font*          font = componentManager->getComponentWindow()->fontSmall;
 
     // Weapon
-    Tools::writeText(render, font, textX, textY, Color::green(), "Weapon: " +  ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->getClassname() );
+    this->textureWriter->writeText(textX, textY, std::string("Weapon: " +  ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->getClassname()).c_str(), false);
 
     textY += stepY;
 
     // Ammo
     if (WeaponType->isAvailable()) {
-        Tools::writeText(render, font, textX, textY, Color::green(), "Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads()));
+        this->textureWriter->writeText(textX, textY, std::string("Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads())).c_str(), false);
         textY += stepY;
-        Tools::writeText(render, font, textX, textY, Color::green(), "Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount()));
+        this->textureWriter->writeText(textX, textY, std::string("Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount())).c_str(), false);
         textY += stepY;
     }
 
 
     // Stamina
-    Tools::writeText(render, font, textX, textY, Color::green(), "Health: " + std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() ));
+    this->textureWriter->writeText(textX, textY, std::string("Health: " + std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() )).c_str(), true);
 
     textY += stepY;
 
     // kills
-    Tools::writeText(render, font, textX, textY, Color::green(), "Kills: " + std::to_string( ComponentsManager::get()->getComponentGame()->getKills() ));
-
+    this->textureWriter->writeText(textX, textY, std::string("Kills: " + std::to_string( ComponentsManager::get()->getComponentGame()->getKills() )).c_str(), true);
 }

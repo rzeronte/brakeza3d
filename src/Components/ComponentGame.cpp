@@ -8,11 +8,12 @@
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
-#include "../../headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerMultiple.h"
+#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
 
 ComponentGame::ComponentGame()
 {
@@ -26,20 +27,19 @@ void ComponentGame::onStart()
 
     LoadMapsFromJSON();
     setFirstMapNameFromJSON();
+
     ComponentsManager::get()->getComponentBSP()->initMap( currentMapName.c_str() );
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     LoadWeaponsJSON();
-    LoadEnemiesJSON();
+    //LoadEnemiesJSON();
 
-    createObjects3DFromBSPEntities();
+    //createObjects3DFromBSPEntities();   // enemies, items...
+    createMesh3DAndGhostsFromHulls();   // collision triggers, doors, secret walls...
 }
 
 void ComponentGame::preUpdate()
 {
-    ComponentsManager::get()->getComponentGame()->getPlayer()->tookDamage = false;
-    if (player->state != PlayerState::GAMEOVER) {
-        this->resolveCollisions();
-    }
 }
 
 void ComponentGame::onUpdate() 
@@ -90,6 +90,11 @@ void ComponentGame::onUpdate()
 
     if ( SETUP->FADEIN ) {
         Drawable::drawFadeIn();
+    }
+
+    ComponentsManager::get()->getComponentGame()->getPlayer()->tookDamage = false;
+    if (player->state != PlayerState::GAMEOVER) {
+        this->resolveCollisions();
     }
 }
 
@@ -177,6 +182,32 @@ void ComponentGame::resolveCollisions()
                     cm->getSceneObjects(),
                     cm->getDynamicsWorld(),
                     Brakeza3D::get()->getComponentsManager()->getComponentWeapons(),
+                    cm->getVisibleTriangles()
+            );
+            resolver->dispatch();
+            continue;
+        }
+
+        if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE ) {
+            auto *resolver = new CollisionResolverBetweenCamera3DAndTriggerMultiple(
+                    collision->contactManifold,
+                    collision->objA,
+                    collision->objB,
+                    cm->getBspMap(),
+                    cm->getSceneObjects(),
+                    cm->getVisibleTriangles()
+            );
+            resolver->dispatch();
+            continue;
+        }
+
+        if ( collisionType == SETUP->CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT) {
+            auto *resolver = new CollisionResolverBetweenCamera3DAndTriggerTeleport(
+                    collision->contactManifold,
+                    collision->objA,
+                    collision->objB,
+                    cm->getBspMap(),
+                    cm->getSceneObjects(),
                     cm->getVisibleTriangles()
             );
             resolver->dispatch();
@@ -789,3 +820,104 @@ void ComponentGame::LoadEnemiesJSON()
         BUFFERS->enemyTemplates.push_back(newEnemy);
     }
 }
+
+
+void ComponentGame::createMesh3DAndGhostsFromHulls()
+{
+    BSPMap *mapBSP = ComponentsManager::get()->getComponentBSP()->getBSP();
+    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    int numHulls = mapBSP->getNumModels();
+
+    for (int m = 1; m < numHulls; m++) {
+        bool rigid = false;
+
+        model_t *hull = mapBSP->getModel(m);
+
+        // Buscamos entidades que figuren con el modelo
+        std::string targetName = "*" + std::to_string(m);
+        int entityIndex = mapBSP->getIndexOfFirstEntityByModel( targetName.c_str() );
+
+        if (entityIndex >= 1 ) {
+            Logging::getInstance()->Log("Hull_"+ std::to_string(m) + " associated with BSPEntity: " + std::to_string(entityIndex));
+
+            char *classname = mapBSP->getEntityValue(entityIndex, "classname");
+
+            if (
+                //!strcmp(classname, "func_episodegate") ||
+                    !strcmp(classname, "func_door") ||
+                    !strcmp(classname, "func_button") ||
+                    !strcmp(classname, "func_bossgate") ||
+                    !strcmp(classname, "func_wall")
+                    ) {
+                rigid = true;
+            }
+        }
+
+        vec3_t v3aabbMax;
+        v3aabbMax[0] = hull->box.max[0];
+        v3aabbMax[1] = -hull->box.max[2];
+        v3aabbMax[2] = hull->box.max[1];
+
+        vec3_t v3aabbMin;
+        v3aabbMin[0] = hull->box.min[0];
+        v3aabbMin[1] = -hull->box.min[2];
+        v3aabbMin[2] = hull->box.min[1];
+
+        Vertex3D aabbMax = Vertex3D(v3aabbMax[0], v3aabbMax[1], v3aabbMax[2]);
+        Vertex3D aabbMin = Vertex3D(v3aabbMin[0], v3aabbMin[1], v3aabbMin[2]);
+
+        if ( rigid ) {
+            auto *body = new Mesh3DBody();
+            body->aabbMax = aabbMax;
+            body->aabbMin = aabbMin;
+            body->setPosition( mapBSP->getPosition() );
+            body->setRotation( mapBSP->getRotation() );
+            body->setEnabled(true);
+            if (entityIndex >= 1 ) {
+                body->setBspEntityIndex(entityIndex);
+            }
+            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
+
+                const int offset = mapBSP->surface_triangles[surface].offset;
+                const int num = mapBSP->surface_triangles[surface].num;
+
+                for (int i = offset; i < offset+num; i++) {
+                    Triangle *t = mapBSP->model_triangles[i];
+                    t->parent = body;
+
+                    body->modelTriangles.push_back( t );
+                }
+            }
+            body->updateBoundingBox();
+            body->makeRigidBody(0, camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
+            Brakeza3D::get()->addObject3D(body, "hull_" + std::to_string(m) + " (body)" ) ;
+
+        } else {
+            auto *ghost = new Mesh3DGhost();
+            ghost->aabbMax = aabbMax;
+            ghost->aabbMin = aabbMin;
+            ghost->setPosition( mapBSP->getPosition() );
+            ghost->setRotation(mapBSP->getRotation() );
+
+            if (entityIndex >= 1 ) {
+                ghost->setBspEntityIndex(entityIndex);
+            }
+            ghost->setEnabled(false);
+            for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf ; surface++) {
+
+                const int offset = mapBSP->surface_triangles[surface].offset;
+                const int num = mapBSP->surface_triangles[surface].num;
+
+                for (int i = offset; i < offset+num; i++) {
+                    Triangle *t = mapBSP->model_triangles[i];
+                    t->parent = ghost;
+                    ghost->modelTriangles.push_back( t );
+                }
+            }
+            ghost->makeGhostBody(camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), true);
+            Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(m) + " (ghost)") ;
+        }
+    }
+}
+

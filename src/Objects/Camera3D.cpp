@@ -183,20 +183,12 @@ void Camera3D::UpdatePositionForVelocity()
     this->setPosition( this->velocity.vertex2);
 }
 
-void Camera3D::UpdateVelocity(float reduction, bool allowVertical)
+void Camera3D::UpdateVelocity()
 {
-    // Move the camera forward
-    if (reduction > 0) {
-        speed  /= reduction;
-        strafe /= reduction;
-    }
-
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = this->getPosition().z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = this->getPosition().x + speed * (float) sin(-yaw * M_PI / 180.0);
-        if ( allowVertical ) {
-            this->velocity.vertex2.y = this->getPosition().y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
-        }
+        //this->velocity.vertex2.y = this->getPosition().y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
     }
 
     // Move the camera side ways

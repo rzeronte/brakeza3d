@@ -21,17 +21,6 @@ void ComponentCamera::preUpdate()
 
 void ComponentCamera::onUpdate() {
 
-    float reduction = 0;
-    bool  allowVertical = false;
-
-    // Liquid velocity reductor
-    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
-        if (ComponentsManager::get()->getComponentBSP()->getBSP()->isCurrentLeafLiquid()) {
-            reduction = SETUP->WALKING_SPEED_LIQUID_DIVISOR;
-            allowVertical = true;
-        }
-    }
-
     // debug hull contents flag
     if (EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS) {
         vec3_t p;
@@ -40,10 +29,9 @@ void ComponentCamera::onUpdate() {
         Logging::getInstance()->Log("Camera Hull CONTENT: " + std::to_string(contents));
     }
 
-    getCamera()->UpdateVelocity( reduction, allowVertical );
 
+    getCamera()->UpdateVelocity(  );
     updateCameraBSPCollider();
-
 }
 
 void ComponentCamera::postUpdate()
@@ -52,8 +40,17 @@ void ComponentCamera::postUpdate()
         getCamera()->setPosition( getCamera()->getFollowTo()->getPosition() );
         getCamera()->setRotation( getCamera()->getFollowTo()->getRotation() );
     } else {
-        getCamera()->UpdatePositionForVelocity();
         getCamera()->UpdateRotation();
+
+        BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
+        if (!bspCollider->getPlayerModel()->teleportingCounter.isEnabled()) {
+            getCamera()->UpdatePositionForVelocity();
+        } else {
+            bspCollider->getPlayerModel()->teleportingCounter.update();
+            if (bspCollider->getPlayerModel()->teleportingCounter.isFinished()) {
+                bspCollider->getPlayerModel()->teleportingCounter.setEnabled(false);
+            }
+        }
     }
 
     this->getCamera()->UpdateFrustum();

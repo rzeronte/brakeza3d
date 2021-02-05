@@ -54,11 +54,7 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
 
     // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
-        if (ComponentsManager::get()->getComponentBSP()->getBSP()->isCurrentLeafLiquid()) {
-            this->jump( false, -10, false);
-        } else {
-            this->jump( true, SETUP->JUMP_FORCE.y, true );
-        }
+        player->jump();
     }
 
     // step sounds
@@ -182,8 +178,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end)
 void ComponentGameInput::jump(bool checkOnGround, float YForce, bool soundJump)
 {
     if (soundJump) {
-        int rndJump = Tools::random(1, 4);
-        Tools::playMixedSound( BUFFERS->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        player->jump();
     }
 }
 

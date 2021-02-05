@@ -32,8 +32,8 @@ public:
         const float range_sensibility_fog_intensity = 0.01;
 
         const float range_min_fog_distance = 0;
-        const float range_max_fog_distance = 99;
-        const float range_sensibility_fog_distance = 0.5;
+        const float range_max_fog_distance = 5000;
+        const float range_sensibility_fog_distance = 1;
 
         const float range_sensibility_lava = 0.05;
         const float range_sensibility_lava_min = -5;

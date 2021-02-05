@@ -28,6 +28,7 @@ public:
     cJSON *ammoTypesJSONList;
     cJSON *enemiesJSONList;
 
+
     Player *player;
     int kills = 0;
 
@@ -49,6 +50,8 @@ public:
     void setFirstMapNameFromJSON();
 
     void createObjects3DFromBSPEntities();
+    void createMesh3DAndGhostsFromHulls();
+
 };
 
 

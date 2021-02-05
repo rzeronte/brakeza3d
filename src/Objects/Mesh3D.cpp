@@ -273,7 +273,7 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
 
 void Mesh3D::updateBoundingBox()
 {
-    float maxX = -99999, minX = 99999, maxY = -99999, minY = 99999, maxZ = -99999, minZ = 99999;
+    float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
         maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);

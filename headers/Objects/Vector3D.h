@@ -21,6 +21,7 @@ public:
     Vertex3D end() const;
     Vertex3D end(float) const;
     Vertex3D middlePoint() const;
+    void clear();
 
 };
 

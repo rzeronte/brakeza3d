@@ -28,8 +28,6 @@ public:
     std::string cameraNameIdentifier        = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
 
-    Vertex3D CameraPosition = Vertex3D(1, 1, -5);
-
     Vertex3D right   = Vertex3D(1, 0, 0);
     Vertex3D up      = Vertex3D(0, 1, 0);
     Vertex3D forward = Vertex3D(0, 0, 1);
@@ -39,7 +37,6 @@ public:
     Vertex3D backward = forward.getInverse();
 
     Vertex3D gravity = Vertex3D(0, 10.0f, 0);
-    float    BULLET_FALL_SPEED = 256;
 
     // Screen dimension constants
     int screenWidth  = 320;
@@ -170,8 +167,6 @@ public:
     float PITCH_SPEED       = 0.099f;
     float STRAFE_SPEED      = 400.f;
 
-    float WALKING_SPEED_LIQUID_DIVISOR = 1.5;
-
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.250;
 
@@ -183,9 +178,7 @@ public:
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -80, 0);
-
-    const float AIR_RESISTANCE = 1.1f;
+    Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
 
     float TESTING = 1.0;
     float TESTING_INT = 0;
@@ -230,15 +223,14 @@ public:
     int FIRE_HEIGHT = 240;
 
     bool  ENABLE_IA = true;
-    float TIME_STEP_IA_ENEMIES = 0.50f;
     float ZOOM_FOV = 40;
 
     bool WEAPON_AUTOSWICH = false;
 
     int GAME_PLAYER_STAMINA_INITIAL = 100;
 
-    float PLAYER_CAPSULE_RADIUS = 10.50f;
-    float PLAYER_CAPSULE_HEIGHT = 40.00f;
+    float PLAYER_CAPSULE_RADIUS = 16.00f;
+    float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
     enum collisionGroups
     {
@@ -289,8 +281,8 @@ public:
         COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY = 1,
         COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR = 2,
         COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON = 3,
-        COLLISION_RESOLVER_PROJECTILE_AND_BSPMAP = 4,
-        COLLISION_RESOLVER_NPCENEMYPART_AND_BSPMAP = 5,
+        COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE = 4,
+        COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT = 5,
         COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
         COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
         COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8,

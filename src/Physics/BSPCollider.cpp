@@ -12,12 +12,8 @@ BSPCollider::BSPCollider()
 
     LoadModelCollisionForWorld();
 }
-
-void BSPCollider::LoadModelCollisionForWorld() {
-    Logging::getInstance()->Log("LoadModelCollisionForWorld");
-
-    this->worldmodel = getModelCollisionFromBSP(0);
-    this->playermodel = new model_collision_t;
+void BSPCollider::resetPlayerModelData()
+{
     this->playermodel->mins[0] = -16;
     this->playermodel->mins[1] = -16;
     this->playermodel->mins[2] = -24;
@@ -39,6 +35,23 @@ void BSPCollider::LoadModelCollisionForWorld() {
     this->playermodel->punchangle[0] = 0;
     this->playermodel->punchangle[1] = 0;
     this->playermodel->punchangle[2] = 0;
+
+    this->playermodel->oldorigin[0] = 0;
+    this->playermodel->oldorigin[1] = 0;
+    this->playermodel->oldorigin[2] = 0;
+}
+
+void BSPCollider::LoadModelCollisionForWorld()
+{
+    Logging::getInstance()->Log("LoadModelCollisionForWorld");
+
+    this->worldmodel = getModelCollisionFromBSP(0);
+    this->playermodel = new model_collision_t;
+
+    this->playermodel->teleportingCounter.setStep(0.01f);
+    this->playermodel->teleportingCounter.setEnabled(false);
+
+    resetPlayerModelData();
 }
 
 model_collision_t *BSPCollider::getWorldModel()
@@ -82,18 +95,17 @@ model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId)
     return model;
 }
 
-
-void BSPCollider::CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
+void BSPCollider::CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross)
 {
     cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
     cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
     cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
-void BSPCollider::VectorScale (vec3_t in, vec_t scale, vec3_t out)
+void BSPCollider::VectorScale (const vec3_t in, vec_t s, vec3_t out)
 {
-    out[0] = in[0]*scale;
-    out[1] = in[1]*scale;
-    out[2] = in[2]*scale;
+    out[0] = in[0] * s;
+    out[1] = in[1] * s;
+    out[2] = in[2] * s;
 }
 
 void BSPCollider::SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs)
@@ -1114,6 +1126,12 @@ void BSPCollider::Mod_MakeDrawHull(model_collision_t *brushmodel)
                 out->children[j] = child - brushmodel->nodes;
         }
     }
+}
+bool BSPCollider::isPlayerOnGround()
+{
+    bool onground = (int)this->playermodel->flags & FL_ONGROUND;
+
+    return onground;
 }
 
 void BSPCollider::consoleTrace(trace_t *t)

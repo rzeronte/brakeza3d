@@ -47,7 +47,7 @@ public:
     float getVerticalFOV();
 
     void UpdateFrustum();
-    void UpdateVelocity(float reduction, bool allowVertical);
+    void UpdateVelocity();
     void UpdatePositionForVelocity();
     void UpdateRotation(void);
 

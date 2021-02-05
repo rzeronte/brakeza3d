@@ -116,6 +116,22 @@ void Player::shoot()
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 
+void Player::jump()
+{
+    if ( !Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSPCollider()->isPlayerOnGround() ) {
+        return;
+    }
+
+    // sound
+    int rndJump = Tools::random(1, 4);
+    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump" + std::to_string(rndJump)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+
+    // apply force
+    Vertex3D jump(0, -150, 0);
+    Vertex3D current = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2;
+    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2 = current + jump;
+}
+
 void Player::reload()
 {
     Logging::getInstance()->Log("Player reload!");
