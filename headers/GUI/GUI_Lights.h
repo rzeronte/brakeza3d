@@ -32,6 +32,14 @@ class GUI_Lights : public GUI  {
                 const float  range_max = 10;
                 const float  range_sensibility = 0.01f;
 
+                const float  range_position_min = -99999999;
+                const float  range_position_max = 99999999;
+                const float  range_position_sensibility = 1;
+
+                const float  range_potence_min = 0;
+                const float  range_potence_max = 1000;
+                const float  range_potence_sensibility = 0.1f;
+
                 for (int i = 0; i < lightPoints.size(); i++) {
                     bool changed_color = false;
                     std::string position_text = "Position##" + std::to_string(i);
@@ -44,21 +52,15 @@ class GUI_Lights : public GUI  {
 
                         ImGui::Checkbox(enabled_text.c_str(), &(lightPoints[i])->enabled);
 
-                        if (ImGui::TreeNode( position_text.c_str() )) {
-                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode( rotation_text.c_str() )) {
-                            //ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            //ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                            //ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightpoints[i]->getRotation()->z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+                        if (ImGui::TreeNode( "Position" )) {
+                            ImGui::DragScalar("X",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().x, range_position_sensibility,  &range_position_min, &range_position_max, "%f", 1.0f);
+                            ImGui::DragScalar("Y",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().y, range_position_sensibility,  &range_position_min, &range_position_max, "%f", 1.0f);
+                            ImGui::DragScalar("Z",     ImGuiDataType_Float,  &lightPoints[i]->getPosition().z, range_position_sensibility,  &range_position_min, &range_position_max, "%f", 1.0f);
                             ImGui::TreePop();
                         }
 
                         if (ImGui::TreeNode( attenuation_text.c_str() )) {
+                            ImGui::DragScalar("P",     ImGuiDataType_Float,  &lightPoints[i]->p, range_potence_sensibility,  &range_potence_min, &range_potence_max, "%f", 1.0f);
                             ImGui::DragScalar("Constant",   ImGuiDataType_Float,  &lightPoints[i]->kc, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                             ImGui::DragScalar("Linear",     ImGuiDataType_Float,  &lightPoints[i]->kl, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
                             ImGui::DragScalar("Quadratic",  ImGuiDataType_Float,  &lightPoints[i]->kq, range_sensibility,  &range_min, &range_max, "%f", 1.0f);

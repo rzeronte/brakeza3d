@@ -56,6 +56,15 @@ public:
     void drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles);
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
     void drawWireframe(Triangle *t);
+    void processPixelTextureAnimated(Fragment *fragment);
+    Uint32 processPixelFog(Fragment *fragment, Uint32 pixelColor);
+    Uint32 processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor);
+
+    void updateFPS(const float deltaTime);
+
+    int fps = 0;
+    int fpsFrameCounter = 0;
+    float frameTime = 0;
 
     std::vector<Triangle *> &getFrameTriangles();
     std::vector<Triangle *> &getVisibleTriangles();

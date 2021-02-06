@@ -20,10 +20,12 @@ void ComponentRender::onStart()
 
 void ComponentRender::preUpdate()
 {
+    this->updateFPS( Brakeza3D::get()->deltaTime );
 }
 
 void ComponentRender::onUpdate()
 {
+
     this->onUpdateBSP();
     this->onUpdateSceneObjects();
 
@@ -355,6 +357,70 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     delete fragment;
 }
 
+void ComponentRender::processPixelTextureAnimated(Fragment *fragment)
+{
+    float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
+    float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
+    fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * SETUP->LAVA_SCALE;
+    fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * SETUP->LAVA_SCALE;
+}
+
+Uint32 ComponentRender::processPixelFog(Fragment *fragment, Uint32 pixelColor)
+{
+    float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE);
+
+    if (nZ >= 1) {
+        pixelColor = SETUP->FOG_COLOR;
+    } else {
+        pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
+    }
+
+    return pixelColor;
+}
+
+Uint32 ComponentRender::processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor)
+{
+    Vertex3D D;
+
+    if (this->lightpoints.size() > 0) {
+        // Coordenadas del punto que estamos procesando en el mundo (object space)
+        float x3d = fragment->alpha * t->Ao.x + fragment->theta * t->Bo.x + fragment->gamma * t->Co.x;
+        float y3d = fragment->alpha * t->Ao.y + fragment->theta * t->Bo.y + fragment->gamma * t->Co.y;
+        float z3d = fragment->alpha * t->Ao.z + fragment->theta * t->Bo.z + fragment->gamma * t->Co.z;
+
+        D = Vertex3D( x3d, y3d, z3d ); // Object space
+
+        for (int i = 0; i < this->lightpoints.size(); i++) {
+            if (!this->lightpoints[i]->isEnabled()) {
+                continue;
+            }
+
+            // Color light apply
+            pixelColor = this->lightpoints[i]->mixColor(pixelColor, D);
+
+            /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
+                Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
+
+                if (isMesh != NULL && isMesh->isShadowCaster()) {
+                    // Shadow test
+                    Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
+                    Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
+                    const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
+
+                    if (Tools::isPixelInWindow(DP.x, DP.y)) {
+                        float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
+                        if ( Dl.z > buffer_shadowmapping_z) {
+                            pixelColor = Color::red();
+                        }
+                    }
+                }
+            }*/
+        }
+    }
+
+    return pixelColor;
+}
+
 void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
 {
     Uint32 pixelColor(NULL);
@@ -366,17 +432,15 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
-            float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
-            float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
-            fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2) ) * SETUP->LAVA_SCALE;
-            fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1) ) * SETUP->LAVA_SCALE;
+            // texU and texV are "animated"
+            this->processPixelTextureAnimated(fragment);
         }
 
-        /*if ( t->parent->isDecal() ) {
+        if ( t->parent->isDecal() ) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1) ) {
                 return;
             }
-        }*/
+        }
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
 
@@ -395,52 +459,11 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     }
 
     if (SETUP->ENABLE_FOG) {
-        float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE);
-
-        if (nZ >= 1) {
-            pixelColor = SETUP->FOG_COLOR;
-        } else {
-            pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
-        }
+        pixelColor = this->processPixelFog(fragment, pixelColor);
     }
+
     if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
-        Vertex3D D;
-
-        if (this->lightpoints.size() > 0) {
-            // Coordenadas del punto que estamos procesando en el mundo (object space)
-            float x3d = fragment->alpha * t->Ao.x + fragment->theta * t->Bo.x + fragment->gamma * t->Co.x;
-            float y3d = fragment->alpha * t->Ao.y + fragment->theta * t->Bo.y + fragment->gamma * t->Co.y;
-            float z3d = fragment->alpha * t->Ao.z + fragment->theta * t->Bo.z + fragment->gamma * t->Co.z;
-
-            D = Vertex3D( x3d, y3d, z3d ); // Object space
-
-            for (int i = 0; i < this->lightpoints.size(); i++) {
-                if (!this->lightpoints[i]->isEnabled()) {
-                    continue;
-                }
-
-                // Color light apply
-                pixelColor = this->lightpoints[i]->mixColor(pixelColor, D);
-
-                /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
-                    Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
-
-                    if (isMesh != NULL && isMesh->isShadowCaster()) {
-                        // Shadow test
-                        Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
-                        Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
-                        const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
-
-                        if (Tools::isPixelInWindow(DP.x, DP.y)) {
-                            float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
-                            if ( Dl.z > buffer_shadowmapping_z) {
-                                pixelColor = Color::red();
-                            }
-                        }
-                    }
-                }*/
-            }
-        }
+        pixelColor = this->processPixelLights(t, fragment, pixelColor);
     }
 
     BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
@@ -517,7 +540,6 @@ void ComponentRender::initTiles()
 
             this->tiles.emplace_back(t);
             // Load up the vector with MyClass objects
-
 
             Logging::getInstance()->Log("Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x)+", offset_y: " + std::to_string(y) + ")");
         }
@@ -626,4 +648,18 @@ void ComponentRender::drawWireframe(Triangle *t)
     Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), Color::green());
     Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), Color::green());
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
+}
+
+void ComponentRender::updateFPS(const float deltaTime)
+{
+    if (!EngineSetup::getInstance()->DRAW_FPS) return;
+
+    frameTime += deltaTime;
+    ++fpsFrameCounter;
+
+    if (frameTime > 1000) {
+        fps = fpsFrameCounter;
+        frameTime = 0;
+        fpsFrameCounter = 0;
+    }
 }

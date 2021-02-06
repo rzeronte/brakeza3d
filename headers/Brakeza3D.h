@@ -59,11 +59,6 @@ public:
     float last_ticks = 0;
     float current_ticks = 0;
     float executionTime = 0;
-    float frameTime = 0;
-
-    // Fps counter
-    int fps = 0;
-    int fpsFrameCounter = 0;
 
     float currentFadePercent = 1;
 

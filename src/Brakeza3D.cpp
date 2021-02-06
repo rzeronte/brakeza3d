@@ -119,30 +119,12 @@ void Brakeza3D::updateTimer()
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
 
-    frameTime += deltaTime;
     executionTime += deltaTime / 1000.f;
-
-    updateFPS();
 }
 
 float Brakeza3D::getDeltaTime()
 {
     return this->deltaTime/1000;
-}
-
-void Brakeza3D::updateFPS()
-{
-    if (!EngineSetup::getInstance()->DRAW_FPS) return;
-
-    ++fpsFrameCounter;
-    if (frameTime > 1000) {
-        fps = fpsFrameCounter;
-        frameTime = 0;
-        fpsFrameCounter = 0;
-    }
-
-    std::cout << "FPS: " <<fps << " fps" << std::endl;
-    //Tools::writeTextCenterHorizontal(getComponentsManager()->getComponentWindow()->renderer, getComponentsManager()->getComponentWindow()->fontSmall, Color::yellow(), std::to_string(fps) +"fps", 20);
 }
 
 void Brakeza3D::onStartComponents() {

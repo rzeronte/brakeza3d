@@ -141,6 +141,14 @@ void ComponentHUD::drawHUD()
 
     textY += stepY;
 
+    if (SETUP->DRAW_FPS) {
+        componentManager->getComponentHUD()->writeText(
+            1, 10,
+            std::to_string(componentManager->getComponentRender()->fps).c_str(),
+            false
+        );
+    }
+
     // Ammo
     if (WeaponType->isAvailable()) {
         this->textureWriter->writeText(textX, textY, std::string("Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads())).c_str(), false);

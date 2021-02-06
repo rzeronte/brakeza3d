@@ -22,6 +22,8 @@ public:
     float kl = 0;   // linear attenuation
     float kq = 0;   // quadratic attenuation
 
+    float p = 100;
+
     Camera3D *cam;
     float *shadowMappingBuffer;
     int sizeBuffer;
@@ -29,7 +31,7 @@ public:
     ImVec4 imgui_color;
 
     void setColor(int, int, int);
-    Uint32 mixColor(Uint32 color, Vertex3D Q);
+    Uint32 mixColor(Uint32 c, Vertex3D Q);
 
 };
 
