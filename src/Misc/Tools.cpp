@@ -289,7 +289,8 @@ void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times)
     Mix_PlayChannel(channel, chunk, times );
 }
 
-Uint32 Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
+Uint32 Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha)
+{
     Uint32 rb = color1 & 0xff00ff;
     Uint32 g  = color1 & 0x00ff00;
     rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
