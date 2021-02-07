@@ -31,7 +31,7 @@ public:
 
     static void drawFireShader();
     static void waterShader(int type);
-    static void drawFireClassicShader();
+    static void fireShaderOnHUDBuffer();
 
     static void drawFadeIn();
     static void drawFadeOut();

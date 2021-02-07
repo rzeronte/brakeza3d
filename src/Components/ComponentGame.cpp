@@ -31,13 +31,13 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentBSP()->initMap( currentMapName.c_str() );
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
-    LoadWeaponsJSON();
-    ComponentsManager::get()->getComponentWeapons()->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
-    ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+    //LoadWeaponsJSON();
+    //ComponentsManager::get()->getComponentWeapons()->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
+    //ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
 
-    LoadEnemiesJSON();
+    //LoadEnemiesJSON();
 
-    createObjects3DFromBSPEntities();   // enemies, items...
+    //createObjects3DFromBSPEntities();   // enemies, items...
     createMesh3DAndGhostsFromHulls();   // collision triggers, doors, secret walls...
 }
 
@@ -53,8 +53,6 @@ void ComponentGame::onUpdate()
     BSPMap           *mapBSP           = ComponentsManager::get()->getComponentBSP()->getBSP();
     ComponentWindow  *componentWindow  = ComponentsManager::get()->getComponentWindow();
     ComponentHUD     *componentHUD     = ComponentsManager::get()->getComponentHUD();
-
-    Drawable::drawFireClassicShader();
 
     if (player->state != PlayerState::GAMEOVER) {
 
@@ -84,6 +82,10 @@ void ComponentGame::onUpdate()
     if (SETUP->LOADING) {
         SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL, componentWindow->screenSurface, NULL);
         componentHUD->writeTextCenter("Loading", false);
+        Drawable::drawFireShader();
+    }
+
+    if (SETUP->MENU_ACTIVE) {
         Drawable::drawFireShader();
     }
 

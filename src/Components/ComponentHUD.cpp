@@ -129,6 +129,7 @@ void ComponentHUD::writeText(int x, int y, const char *text, bool bold)
 
 void ComponentHUD::drawHUD()
 {
+
     int textY  = 180;
     int textX = 10;
     int stepY = 10;
@@ -168,4 +169,5 @@ void ComponentHUD::drawHUD()
 
     // kills
     this->textureWriter->writeText(textX, textY, std::string("Kills: " + std::to_string( componentManager->getComponentGame()->getKills() )).c_str(), true);
+
 }

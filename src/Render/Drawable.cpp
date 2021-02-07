@@ -436,7 +436,7 @@ void Drawable::drawFireShader()
 
             if (fireIndex != 0) {
                 Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[ index ] = Color::black(); //fireColor; //::black();
+                EngineBuffers::getInstance()->videoBuffer[ index ] = fireColor; //::black();
             }
         }
     }
@@ -469,58 +469,61 @@ void Drawable::drawFacePercent(float percent) {
     }
 }
 
-void Drawable::drawFireClassicShader()
+void Drawable::fireShaderOnHUDBuffer()
 {
-    return;
     //define the width and height of the screen and the buffers
     const int screenWidth = EngineSetup::getInstance()->screenWidth;
-    const int screenHeight = EngineSetup::getInstance()->screenHeight;
 
     // Y-coordinate first because we use horizontal scanlines
-    Uint32 fire[screenHeight][screenWidth];  //this buffer will contain the fire
-    Uint32 buffer[screenHeight][screenWidth];  //this is the buffer to be drawn to the screen
     Uint32 palette[256]; //this will contain the color palette
 
     //generate the palette
-    int r = 255;
-    int g = 0;
-    int b = 0;
+    int r = 255, g = 0, b = 0;
 
     for (int x = 0; x < 256; x++) {
         palette[x] = Tools::createRGB(r, g, b);
         g++;
     }
+
     //make sure the fire buffer is zero in the beginning
     int h = EngineSetup::getInstance()->screenHeight;
     int w = EngineSetup::getInstance()->screenWidth;
-    for(int y = 0; y < h; y++)
-        for(int x = 0; x < w; x++)
-            fire[y][x] = 0;
-
 
     //randomize the bottom row of the fire buffer
-    for(int x = 0; x < w; x++) fire[h - 1][x] = abs(32768 + rand()) % 256;
+    /*for (int x = 0; x < w; x++)  {
+        int index = (h - 1) * screenWidth + x;
+        EngineBuffers::getInstance()->HUDbuffer[ index ] = abs(32768 + rand()) % 256;
+    }*/
 
     //do the fire calculations for every pixel, from top to bottom
     for(int y = 0; y < h - 1; y++) {
         for(int x = 0; x < w; x++) {
-            fire[y][x] = ((fire[(y + 1) % h][(x - 1 + w) % w]
-                         + fire[(y + 1) % h][(x) % w]
-                        + fire[(y + 1) % h][(x + 1) % w]
-                        + fire[(y + 2) % h][(x) % w])
-                        * 32) / 129;
+            int index = y * screenWidth + x;
+
+            int i1 = ((y + 1) % h) * screenWidth + ((x - 1 + w) % w);
+            int i2 = ((y + 1) % h) * screenWidth + ((x) % w);
+            int i3 = ((y + 1) % h) * screenWidth + ((x + 1) % w);
+            int i4 = ((y + 2) % h) * screenWidth + ((x) % w);
+
+            EngineBuffers::getInstance()->HUDbuffer[ index ]  = (
+            EngineBuffers::getInstance()->HUDbuffer[ i1 ] +
+            EngineBuffers::getInstance()->HUDbuffer[ i2 ] +
+            EngineBuffers::getInstance()->HUDbuffer[ i3 ] +
+            EngineBuffers::getInstance()->HUDbuffer[ i4 ] * EngineSetup::getInstance()->FIRE_DIVISOR1
+            ) / EngineSetup::getInstance()->FIRE_DIVISOR2;
         }
     }
 
     //set the drawing buffer to the fire buffer, using the palette colors
     for(int y = 0; y < h; y++) {
         for(int x = 0; x < w; x++) {
-            buffer[y][x] = palette[fire[y][x]];
+            int index = y * screenWidth + x;
+            int fireIndex = EngineBuffers::getInstance()->HUDbuffer[index];
+            if (fireIndex >= 0 && fireIndex <= 256 && fireIndex != 0) {
+                EngineBuffers::getInstance()->videoBuffer[index] = palette[ fireIndex ];
+            }
         }
     }
-
-    memcpy (&EngineBuffers::getInstance()->videoBuffer, &buffer, sizeof(buffer));
-
 }
 
 void Drawable::waterShader(int type)

@@ -180,7 +180,7 @@ public:
 
     Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
 
-    float TESTING = 1.0;
+    float TESTING = 64.0;
     float TESTING_INT = 0;
     bool  TESTING_BOOL = false;
 
@@ -212,6 +212,10 @@ public:
     float LIGHTNING_OFFSET_REDUCTION = 5.f;
     float LIGHTNING_PROBABILITY_BRANCH = 1.5;
     float LIGHTNING_SEGMENT_SHIFT = 0.7;
+
+    //LIGHTNING  EFFECT
+    float FIRE_DIVISOR1 = 32;
+    float FIRE_DIVISOR2 = 129;
 
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_WEAPONS_SYSTEM = false;

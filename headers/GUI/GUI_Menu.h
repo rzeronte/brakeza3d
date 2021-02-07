@@ -43,6 +43,11 @@ public:
         const float range_sensibility_lightnin_min = -10;
         const float range_sensibility_lightnin_max = 10;
 
+        const float range_sensibility_fire = 1;
+        const float range_sensibility_fire_min = 0;
+        const float range_sensibility_fire_max = 512;
+
+
         const float range_min_test_int = 0;
         const float range_max_test_int = 2;
 
@@ -285,6 +290,12 @@ public:
                     ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::DragScalar("Probability branch", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Fire Effect")) {
+                    ImGui::DragScalar("Divisor1", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR1, 1,  &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
+                    ImGui::DragScalar("Divisor2", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR2, 1,  &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
                     ImGui::EndMenu();
                 }
 

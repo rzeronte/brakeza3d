@@ -26,6 +26,8 @@ public:
     Uint32 *videoBuffer;
     int    sizeBuffers;
 
+    Uint32 *HUDbuffer;
+
     int widthVideoBuffer = EngineSetup::getInstance()->screenWidth;
 
     int *firePixelsBuffer;

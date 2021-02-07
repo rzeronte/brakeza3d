@@ -25,6 +25,17 @@ EngineBuffers::EngineBuffers()
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
 
+    //make sure the fire buffer is zero in the beginning
+    HUDbuffer = new Uint32[sizeBuffers];
+    int h = EngineSetup::getInstance()->screenHeight;
+    int w = EngineSetup::getInstance()->screenWidth;
+
+    for (int y = 0; y < h; y++) {
+        for(int x = 0; x < w; x++) {
+            int index = y * w + x;
+            HUDbuffer[ index ] = 0;
+        }
+    }
     soundPackage = new SoundPackage();
 
     // buffer for fire shader

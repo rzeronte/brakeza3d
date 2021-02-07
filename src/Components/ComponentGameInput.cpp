@@ -100,6 +100,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;
 
         if (!SETUP->MENU_ACTIVE) {
+
             //SDL_SetRelativeMouseMode(SDL_TRUE);
             Mix_HaltMusic();
             Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1 );
