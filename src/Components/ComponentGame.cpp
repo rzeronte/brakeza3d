@@ -32,9 +32,12 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     LoadWeaponsJSON();
-    //LoadEnemiesJSON();
+    ComponentsManager::get()->getComponentWeapons()->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
+    ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
 
-    //createObjects3DFromBSPEntities();   // enemies, items...
+    LoadEnemiesJSON();
+
+    createObjects3DFromBSPEntities();   // enemies, items...
     createMesh3DAndGhostsFromHulls();   // collision triggers, doors, secret walls...
 }
 
@@ -51,6 +54,7 @@ void ComponentGame::onUpdate()
     ComponentWindow  *componentWindow  = ComponentsManager::get()->getComponentWindow();
     ComponentHUD     *componentHUD     = ComponentsManager::get()->getComponentHUD();
 
+    Drawable::drawFireClassicShader();
 
     if (player->state != PlayerState::GAMEOVER) {
 
@@ -651,7 +655,6 @@ void ComponentGame::LoadWeaponsJSON()
         cJSON *cadence       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "cadence");
         cJSON *damageRadius  = cJSON_GetObjectItemCaseSensitive(currentWeapon, "damage_radius");
         cJSON *speed         = cJSON_GetObjectItemCaseSensitive(currentWeapon, "speed");
-        cJSON *soundMark     = cJSON_GetObjectItemCaseSensitive(currentWeapon, "mark_sound");
         cJSON *accuracy      = cJSON_GetObjectItemCaseSensitive(currentWeapon, "accuracy");
         cJSON *dispersion    = cJSON_GetObjectItemCaseSensitive(currentWeapon, "dispersion");
         cJSON *iconHUD       = cJSON_GetObjectItemCaseSensitive(currentWeapon, "icon_hud");
@@ -689,23 +692,6 @@ void ComponentGame::LoadWeaponsJSON()
             weaponManager->getWeaponTypeByLabel(name->valuestring)->loadSniperHUD( sniperHUD->valuestring );
         }
 
-        cJSON *fireMark   = cJSON_GetObjectItemCaseSensitive(currentWeapon, "fire_mark");
-        cJSON *markPath   = cJSON_GetObjectItemCaseSensitive(fireMark, "path");
-        cJSON *markFrames = cJSON_GetObjectItemCaseSensitive(fireMark, "frames");
-        cJSON *markFps    = cJSON_GetObjectItemCaseSensitive(fireMark, "fps");
-        cJSON *markW      = cJSON_GetObjectItemCaseSensitive(fireMark, "width");
-        cJSON *markH      = cJSON_GetObjectItemCaseSensitive(fireMark, "height");
-
-        Logging::getInstance()->Log("Creating weapon mark billboard for " + std::string(name->valuestring), "WEAPONS");
-
-        weaponManager->getWeaponTypeByLabel(name->valuestring)->setupMarkTemplate(
-                SETUP->WEAPONS_FOLDER + name->valuestring + "/" + markPath->valuestring,
-                markFrames->valueint,
-                markFps->valueint,
-                (float) markW->valuedouble,
-                (float) markH->valuedouble
-        );
-
         // animation's weapon loop
         cJSON *weaponAnimationsJSONList;
         weaponAnimationsJSONList = cJSON_GetObjectItemCaseSensitive(currentWeapon, "animations" );
@@ -735,7 +721,7 @@ void ComponentGame::LoadWeaponsJSON()
         }
     }
 
-    weaponManager->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
+    weaponManager->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::EMPTY);
 }
 
 
@@ -770,7 +756,6 @@ void ComponentGame::LoadEnemiesJSON()
         cJSON *cadence          = cJSON_GetObjectItemCaseSensitive(currentEnemy, "cadence");
         cJSON *speed            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed");
         cJSON *soundFire        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "fire_sound");
-        cJSON *soundMark        = cJSON_GetObjectItemCaseSensitive(currentEnemy, "mark_sound");
         cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
         cJSON *scale            = cJSON_GetObjectItemCaseSensitive(currentEnemy, "scale_mesh");
 

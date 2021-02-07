@@ -14,11 +14,8 @@ WeaponType::WeaponType(std::string label)
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
-    markTemplate = new Sprite3D();
-
     weaponAnimations = new Mesh3DAnimatedCollection();
     weaponAnimations->setFollowCamera( true );
-    weaponAnimations->setScale(0.05);
     weaponAnimations->setLabel("weapon_" + label);
     weaponAnimations->setEnabled( false );
     weaponAnimations->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
@@ -76,21 +73,6 @@ float WeaponType::getDamage()
 void WeaponType::setDamage(float damage)
 {
     this->damage = damage;
-}
-
-Sprite3D *WeaponType::getMarkTemplate()
-{
-    return markTemplate;
-}
-
-void WeaponType::setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h)
-{
-    Logging::getInstance()->Log("setup Mark Template: " + std::string(path));
-    markTemplate->setAutoRemoveAfterAnimation(true);
-    markTemplate->setEnabled(true);
-    markTemplate->addAnimation(path, numFrames, fps);
-    markTemplate->setAnimation(0);
-    markTemplate->getBillboard()->setDimensions(w, h);
 }
 
 float WeaponType::getAccuracy() const {
@@ -225,11 +207,7 @@ void WeaponType::shoot()
 
     ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
 
-    if (ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex != ComponentHUD::StatusFace::EVIL) {
-        ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::EVIL);
-    }
-
-    if (weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount() <= 0) return;
+    if (getAmmoType()->getAmount() <= 0) return;
 
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 

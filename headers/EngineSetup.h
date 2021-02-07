@@ -52,11 +52,11 @@ public:
     float EPSILON = 0.00001f;
 
     bool  ENABLE_FOG    = true;
-    float FOG_DISTANCE  = 500;
+    float FOG_DISTANCE  = 1000;
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
-    float FRUSTUM_FARPLANE_DISTANCE = 1000;
+    float FRUSTUM_FARPLANE_DISTANCE = 1250;
     float HORIZONTAL_FOV = 90;
 
     bool RASTERIZER_OPENCL = false;
@@ -260,6 +260,7 @@ public:
     };
 
     enum WeaponsTypes {
+        EMPTY = -1,
         PISTOL = 0,
         REPEATER = 1,
         STATIC_RIFLE = 2,

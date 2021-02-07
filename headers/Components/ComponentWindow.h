@@ -30,7 +30,6 @@ public:
     SDL_Renderer  *renderer;
     SDL_Surface   *screenSurface;
     SDL_Texture   *screenTexture;
-    SDL_Rect      screenRect;
 
     TTF_Font *fontSmall   = NULL;
     TTF_Font *fontDefault = NULL;

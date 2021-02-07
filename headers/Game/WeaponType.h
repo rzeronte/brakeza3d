@@ -38,8 +38,6 @@ public:
 
     Counter *counterCadence;
 
-    Sprite3D *markTemplate;
-
     int speed = 500;
 
     int numAnimations = 0;
@@ -79,9 +77,6 @@ public:
 
     float getDamageRadius() const;
     void  setDamageRadius(float damageRadius);
-
-    Sprite3D *getMarkTemplate();
-    void      setupMarkTemplate(std::string path, int numFrames, int fps, float w, float h);
 
     void loadIconHUD(std::string file);
     void loadSniperHUD(std::string file);

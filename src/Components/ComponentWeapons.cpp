@@ -7,15 +7,11 @@
 
 ComponentWeapons::ComponentWeapons()
 {
-    this->currentWeaponIndex = SETUP->WeaponsTypes::PISTOL;
+    this->currentWeaponIndex = SETUP->WeaponsTypes::EMPTY;
 }
 
 void ComponentWeapons::onStart()
 {
-    std::cout << "ComponentWeapons onStart" << std::endl;
-    if (this->numWeapons > 0) {
-        this->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
-    }
 }
 
 void ComponentWeapons::preUpdate() {
@@ -24,7 +20,7 @@ void ComponentWeapons::preUpdate() {
 
 void ComponentWeapons::onUpdate()
 {
-    if (numWeapons > 0) {
+    if (this->currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
         this->getCurrentWeaponType()->onUpdate();
     }
 }
@@ -103,20 +99,39 @@ void ComponentWeapons::headBob(Vector3D velocity)
 
 bool ComponentWeapons::isEmptyWeapon()
 {
-    if (this->currentWeaponIndex != 0) {
+    if (this->currentWeaponIndex >= 0) {
         return false;
     }
+
+    return true;
 }
 
 void ComponentWeapons::setCurrentWeaponIndex(int currentWeaponIndex)
 {
-    this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( false );
+    if (currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
+        // Si ya teníamos un arma, la deshabilitamos
+        if (this->currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
+            this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( false );
+        }
+
+        ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
+
+        // Habilitamos la nueva selección
+        this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( true );
+
+        return;
+    }
+
     ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
-    this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled( true );
+
 }
 
 void ComponentWeapons::shoot()
 {
+    if (isEmptyWeapon()) {
+        return;
+    }
+
     Logging::getInstance()->Log("ComponentWeapons shoot!");
 
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {

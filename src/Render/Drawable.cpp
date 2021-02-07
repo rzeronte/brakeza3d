@@ -469,6 +469,60 @@ void Drawable::drawFacePercent(float percent) {
     }
 }
 
+void Drawable::drawFireClassicShader()
+{
+    return;
+    //define the width and height of the screen and the buffers
+    const int screenWidth = EngineSetup::getInstance()->screenWidth;
+    const int screenHeight = EngineSetup::getInstance()->screenHeight;
+
+    // Y-coordinate first because we use horizontal scanlines
+    Uint32 fire[screenHeight][screenWidth];  //this buffer will contain the fire
+    Uint32 buffer[screenHeight][screenWidth];  //this is the buffer to be drawn to the screen
+    Uint32 palette[256]; //this will contain the color palette
+
+    //generate the palette
+    int r = 255;
+    int g = 0;
+    int b = 0;
+
+    for (int x = 0; x < 256; x++) {
+        palette[x] = Tools::createRGB(r, g, b);
+        g++;
+    }
+    //make sure the fire buffer is zero in the beginning
+    int h = EngineSetup::getInstance()->screenHeight;
+    int w = EngineSetup::getInstance()->screenWidth;
+    for(int y = 0; y < h; y++)
+        for(int x = 0; x < w; x++)
+            fire[y][x] = 0;
+
+
+    //randomize the bottom row of the fire buffer
+    for(int x = 0; x < w; x++) fire[h - 1][x] = abs(32768 + rand()) % 256;
+
+    //do the fire calculations for every pixel, from top to bottom
+    for(int y = 0; y < h - 1; y++) {
+        for(int x = 0; x < w; x++) {
+            fire[y][x] = ((fire[(y + 1) % h][(x - 1 + w) % w]
+                         + fire[(y + 1) % h][(x) % w]
+                        + fire[(y + 1) % h][(x + 1) % w]
+                        + fire[(y + 2) % h][(x) % w])
+                        * 32) / 129;
+        }
+    }
+
+    //set the drawing buffer to the fire buffer, using the palette colors
+    for(int y = 0; y < h; y++) {
+        for(int x = 0; x < w; x++) {
+            buffer[y][x] = palette[fire[y][x]];
+        }
+    }
+
+    memcpy (&EngineBuffers::getInstance()->videoBuffer, &buffer, sizeof(buffer));
+
+}
+
 void Drawable::waterShader(int type)
 {
     //BSP LAVA EFFECT

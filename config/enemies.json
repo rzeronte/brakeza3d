@@ -11,7 +11,6 @@
       "cadence": 0.25,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
-      "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
         { "path": "Cubex.fbx", "label":  "anim_walk", "remove_at_end": false },
@@ -31,7 +30,6 @@
       "cadence": 0.15,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
-      "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
         { "path": "Cubex.fbx", "label":  "anim_walk", "remove_at_end": false },
@@ -51,7 +49,6 @@
       "cadence": 0.25,
       "speed": 0.25,
       "fire_sound": "gun_fire.wav",
-      "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
         { "path": "Cubex.fbx", "label":  "anim_walk", "remove_at_end": false },
@@ -71,7 +68,6 @@
       "cadence": 0.15,
       "speed": 0.5,
       "fire_sound": "gun_fire.wav",
-      "mark_sound": "gun_mark.wav",
       "default_animation": 0,
       "animations": [
         { "path": "Cubex.fbx", "label":  "anim_walk", "remove_at_end": false },

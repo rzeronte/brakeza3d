@@ -37,9 +37,9 @@ void ComponentWindow::postUpdate()
 
     SDL_GL_SwapWindow( this->window );
 
-    SDL_UpdateTexture( screenTexture, NULL, BUFFERS->videoBuffer, screenSurface->pitch );
+    SDL_UpdateTexture( this->screenTexture, NULL, BUFFERS->videoBuffer, screenSurface->pitch );
 
-    SDL_RenderCopy( renderer, screenTexture, NULL, NULL);
+    SDL_RenderCopy( renderer, this->screenTexture, NULL, NULL);
 }
 
 void ComponentWindow::onEnd()

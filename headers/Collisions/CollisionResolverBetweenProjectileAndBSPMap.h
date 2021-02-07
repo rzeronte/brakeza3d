@@ -45,22 +45,6 @@ public:
             if ( projectile->getDamageRadius() > 0) {
                 makeDamageRadius();
             }
-
-            // particles
-            Sprite3D *particle = new Sprite3D();
-            particle->linkTextureAnimation(weaponManager->getCurrentWeaponType()->getMarkTemplate());
-            particle->setAutoRemoveAfterAnimation(true);
-            particle->setPosition( getProjectile()->getPosition() );
-            particle->setAnimation(0);
-            particle->getBillboard()->setDimensions(
-                    weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->width,
-                    weaponManager->getCurrentWeaponType()->getMarkTemplate()->getBillboard()->height
-            );
-            Brakeza3D::get()->addObject3D(particle, "particles");
-
-            //Tools::playMixedSound(weaponManager->getCurrentWeaponType()->soundMark, EngineSetup::SoundChannels::SND_ENVIRONMENT);
-
-            //makeGoreDecals();
         }
     }
 

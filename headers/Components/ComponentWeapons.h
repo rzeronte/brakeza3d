@@ -26,8 +26,7 @@ public:
     void shoot();
     void reload();
 
-    int numWeapons = 0;
-    int currentWeaponIndex = 0;
+    int currentWeaponIndex = -1;
 
     float headBobOffsetY = 0;
 

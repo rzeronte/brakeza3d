@@ -13,12 +13,6 @@ NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25)
 
     this->counterInjuried = new Counter();
     this->counterInjuried->setStep( 0.25 );
-
-    this->projectileTemplate = new SpriteDirectional3D();
-    projectileTemplate->addAnimationDirectional2D(EngineSetup::getInstance()->SPRITES_FOLDER + "bullet/idle", 1, 20, false, -1);
-    projectileTemplate->setAnimation(0);
-    projectileTemplate->width  = 0.5;
-    projectileTemplate->height = 0.5;
 }
 
 void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)

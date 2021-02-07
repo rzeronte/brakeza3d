@@ -134,10 +134,11 @@ void ComponentHUD::drawHUD()
     int stepY = 10;
 
     ComponentsManager* componentManager = ComponentsManager::get();
-    WeaponType*        WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
 
     // Weapon
-    this->textureWriter->writeText(textX, textY, std::string("Weapon: " +  ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->getClassname()).c_str(), false);
+    if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
+        this->textureWriter->writeText(textX, textY, std::string("Weapon: " +  componentManager->getComponentWeapons()->getCurrentWeaponType()->getClassname()).c_str(), false);
+    }
 
     textY += stepY;
 
@@ -150,19 +151,21 @@ void ComponentHUD::drawHUD()
     }
 
     // Ammo
-    if (WeaponType->isAvailable()) {
-        this->textureWriter->writeText(textX, textY, std::string("Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads())).c_str(), false);
-        textY += stepY;
-        this->textureWriter->writeText(textX, textY, std::string("Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount())).c_str(), false);
-        textY += stepY;
+    if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
+        WeaponType* WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
+        if (WeaponType->isAvailable()) {
+            this->textureWriter->writeText(textX, textY, std::string("Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads())).c_str(), false);
+            textY += stepY;
+            this->textureWriter->writeText(textX, textY, std::string("Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount())).c_str(), false);
+            textY += stepY;
+        }
     }
 
-
     // Stamina
-    this->textureWriter->writeText(textX, textY, std::string("Health: " + std::to_string( ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() )).c_str(), true);
+    this->textureWriter->writeText(textX, textY, std::string("Health: " + std::to_string( componentManager->getComponentGame()->getPlayer()->getStamina() )).c_str(), true);
 
     textY += stepY;
 
     // kills
-    this->textureWriter->writeText(textX, textY, std::string("Kills: " + std::to_string( ComponentsManager::get()->getComponentGame()->getKills() )).c_str(), true);
+    this->textureWriter->writeText(textX, textY, std::string("Kills: " + std::to_string( componentManager->getComponentGame()->getKills() )).c_str(), true);
 }

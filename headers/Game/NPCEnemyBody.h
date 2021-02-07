@@ -14,7 +14,6 @@ public:
     EnemyState state;
 
     std::vector<Vertex3D> points;
-    SpriteDirectional3D *projectileTemplate;
 
     float stepIA;
     Counter *counterIA;
