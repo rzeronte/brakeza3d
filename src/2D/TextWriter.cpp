@@ -56,6 +56,7 @@ SDL_Texture* TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
             if (color == Color::black()) {
                 continue;
             }
+            //EngineBuffers::getInstance()->HUDbuffer[(yOrigin + y) * 320 + (xOrigin + x) ] = Tools::random(200, 256);
             EngineBuffers::getInstance()->setVideoBuffer(xOrigin + x, yOrigin + y, color);
         }
     }
