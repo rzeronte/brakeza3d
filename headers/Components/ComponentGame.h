@@ -9,6 +9,8 @@
 #include "Component.h"
 #include "../../src/Game/Player.h"
 #include "../Misc/cJSON.h"
+#include "ComponentBSP.h"
+#include "../Physics/Mesh3DGhost.h"
 
 class ComponentGame : public Component {
 public:
@@ -51,6 +53,10 @@ public:
 
     void createObjects3DFromBSPEntities();
     void createMesh3DAndGhostsFromHulls();
+
+    void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
 
 };
 

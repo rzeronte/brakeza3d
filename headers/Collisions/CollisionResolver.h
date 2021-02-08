@@ -7,6 +7,7 @@
 #include "../Render/BSPMap.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Game/Projectile3DBody.h"
+#include "../Game/DoorGhost.h"
 
 class CollisionResolver {
 
@@ -40,7 +41,7 @@ public:
     bool isSomeItemAmmo();
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
-    void moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId);
+    void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId);
 
     int  getType() const;
     void setType(int type);

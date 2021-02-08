@@ -7,13 +7,13 @@
 
 class CollisionResolverBetweenCamera3DAndFuncDoor : public CollisionResolver {
 public:
-    Mesh3DBody *mesh;
+    DoorGhost *mesh;
     ComponentCamera *camera;
     std::vector<Object3D*> *gameObjects;
 
     CollisionResolverBetweenCamera3DAndFuncDoor(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D*> *gameObjects, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
     {
-        this->mesh   = this->getMesh3D();
+        this->mesh   = this->getDoorGhost();
         this->camera = this->getCamera();
         this->gameObjects = gameObjects;
     }
@@ -29,15 +29,15 @@ public:
 
         if (!bspMap->hasEntityAttribute(originalEntityIndex, "targetname")) {
             // No tiene targetname
-            Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (getMesh3D());
+            auto *originalBody = dynamic_cast<DoorGhost*> (getDoorGhost());
 
             if (originalBody != nullptr) {
                 if (originalBody->isMoving()) return;
 
-                this->moveMesh3DBody(originalBody, originalEntityIndex);
+                this->moveDoorGhost(originalBody, originalEntityIndex);
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
                 if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                    Logging::getInstance()->getInstance()->Log("moveMesh3DBody: " + originalBody->getLabel());
+                    Logging::getInstance()->getInstance()->Log("moveDoorGhost: " + originalBody->getLabel());
                 }
             }
         } else {
@@ -56,9 +56,9 @@ public:
                             int countValueInt = atoi( std::string(countValue).c_str() );
 
                             if (countValueInt == currentCounter) {
-                                Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (getMesh3D());
+                                auto *originalBody = dynamic_cast<DoorGhost*> (getDoorGhost());
 
-                                this->moveMesh3DBody(originalBody, originalEntityIndex);
+                                this->moveDoorGhost(originalBody, originalEntityIndex);
                             } else {
                                 if (strlen(bspMap->getEntityValue(originalEntityIndex, "message")) > 0) {
                                     //Tools::writeTextCenter(Engine::renderer, Engine::font, Color::white(), std::string(bspMap->getEntityValue(originalEntityIndex, "message")) );
@@ -84,14 +84,14 @@ public:
         }
     }
 
-    Mesh3DBody* getMesh3D()
+    DoorGhost* getDoorGhost()
     {
-        Mesh3DBody *meshA = dynamic_cast<Mesh3DBody*> (this->objA);
+        DoorGhost *meshA = dynamic_cast<DoorGhost*> (this->objA);
         if (meshA != NULL) {
             return meshA;
         }
 
-        Mesh3DBody *meshB = dynamic_cast<Mesh3DBody*> (this->objB);
+        DoorGhost *meshB = dynamic_cast<DoorGhost*> (this->objB);
         if (meshB != NULL) {
             return meshB;
         }

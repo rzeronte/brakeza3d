@@ -29,8 +29,8 @@ public:
         char *targetRemote = bspMap->getEntityValue(originalEntityIndex, "target");
         int targetRemoteEntityId = bspMap->getIndexOfFirstEntityByTargetname(targetRemote );
 
-        Mesh3DBody *originalBody = dynamic_cast<Mesh3DBody*> (getMesh3D());
-        this->moveMesh3DBody(originalBody, originalEntityIndex);
+        auto *originalBody = dynamic_cast<DoorGhost*> (getMesh3D());
+        this->moveDoorGhost(originalBody, originalEntityIndex);
 
         if (targetRemoteEntityId >= 0) {
             char *classnameRemote = bspMap->getEntityValue(targetRemoteEntityId, "classname");
@@ -41,8 +41,8 @@ public:
                     if (oRemoteMesh != NULL) {
                         if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
 
-                            Mesh3DBody *oRemoteBody = dynamic_cast<Mesh3DBody*> (oRemoteMesh);
-                            this->moveMesh3DBody(oRemoteBody, targetRemoteEntityId);
+                            auto *oRemoteBody = dynamic_cast<DoorGhost*> (oRemoteMesh);
+                            this->moveDoorGhost(oRemoteBody, targetRemoteEntityId);
 
                             if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
                                 Logging::getInstance()->getInstance()->Log("Moving Door: " + oRemoteBody->getLabel());
@@ -52,10 +52,10 @@ public:
                 }
             }
 
-            if (!strcmp(classnameRemote, "trigger_counter") ) {
+            /*if (!strcmp(classnameRemote, "trigger_counter") ) {
                 // Si el objeto original era un botón
                 if (!strcmp(classname, "func_button")) {
-                    Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (getMesh3D());
+                    Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (getDoorGhost());
                     if (oButton->active) {
                         for (int k = 0; k < this->gameObjects->size(); k++) {
                             Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
@@ -73,7 +73,7 @@ public:
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 

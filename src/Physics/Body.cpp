@@ -3,8 +3,6 @@
 //
 
 #include "../../headers/Physics/Body.h"
-#include "../../headers/Objects/Vertex3D.h"
-
 
 Body::Body() {
 

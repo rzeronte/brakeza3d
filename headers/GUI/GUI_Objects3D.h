@@ -14,6 +14,7 @@
 #include "../Render/Logging.h"
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
+#include "../Game/DoorGhost.h"
 
 class GUI_Objects3D : public GUI  {
 public:
@@ -200,11 +201,11 @@ public:
                     }
 
                     // Only for Mesh3DBody
-                    Mesh3DBody *pMeshBody = dynamic_cast<Mesh3DBody *>(gameObjects[i]);
+                    DoorGhost *pMeshBody = dynamic_cast<DoorGhost *>(gameObjects[i]);
                     if (pMeshBody != NULL) {
-                        ImGui::Checkbox("Moving", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->moving);
-                        ImGui::Checkbox("Reverse moving", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->reverseMoving);
-                        ImGui::Checkbox("Waiting", &dynamic_cast<Mesh3DBody *>(gameObjects[i])->waiting);
+                        ImGui::Checkbox("Moving", &dynamic_cast<DoorGhost *>(gameObjects[i])->moving);
+                        ImGui::Checkbox("Reverse moving", &dynamic_cast<DoorGhost *>(gameObjects[i])->reverseMoving);
+                        ImGui::Checkbox("Waiting", &dynamic_cast<DoorGhost *>(gameObjects[i])->waiting);
                         if (pMeshBody->moving || pMeshBody->reverseMoving) {
                             std::string offsetText = "OffsetMoving :" + std::to_string(pMeshBody->offsetMoving);
                             ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), offsetText.c_str());

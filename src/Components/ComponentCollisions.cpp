@@ -113,27 +113,39 @@ void ComponentCollisions::checkCollisionsForAll()
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
     // All collisions pairs
-    if (SETUP->BULLET_CHECK_ALL_PAIRS) {
-        int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
-        for (int i = 0; i < numManifolds; i++) {
-            btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-            if (contactManifold->getNumContacts() > 0) {
-                const btCollisionObject *obA = contactManifold->getBody0();
-                const btCollisionObject *obB = contactManifold->getBody1();
+    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+    for (int i = 0; i < numManifolds; i++) {
 
-                auto *brkObjectA = (Object3D *) obA->getUserPointer();
-                auto *brkObjectB = (Object3D *) obB->getUserPointer();
+        btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 
-                auto *collisionResolver = new CollisionResolver(
-                        contactManifold,
-                        brkObjectA,
-                        brkObjectB,
-                        getBspMap(),
-                        getVisibleTriangles()
-                );
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back( collisionResolver );
+        if (contactManifold->getNumContacts() > 0) {
+            const btCollisionObject *obA = contactManifold->getBody0();
+            const btCollisionObject *obB = contactManifold->getBody1();
 
-            }
+            auto *brkObjectA = (Object3D *) obA->getUserPointer();
+            auto *brkObjectB = (Object3D *) obB->getUserPointer();
+
+            auto *collisionResolver = new CollisionResolver(
+                    contactManifold,
+                    brkObjectA,
+                    brkObjectB,
+                    getBspMap(),
+                    getVisibleTriangles()
+            );
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back( collisionResolver );
+
+        }
+    }
+}
+
+void ComponentCollisions::updatePhysicsGhosts()
+{
+    std::vector<Object3D *>::iterator it;
+    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
+        auto *ghost = dynamic_cast<Ghost*> (*it);
+        if ( ghost != nullptr ) {
+            if ( !ghost->isGhostEnabled() ) continue;
+            ghost->integrate();
         }
     }
 }
@@ -148,8 +160,6 @@ void ComponentCollisions::updatePhysicObjects()
             body->integrate();
         }
     }
-
-    this->syncTriggerGhostCamera();
 }
 
 Vertex3D ComponentCollisions::stepSimulation()
@@ -160,8 +170,13 @@ Vertex3D ComponentCollisions::stepSimulation()
     if (SETUP->BULLET_STEP_SIMULATION) {
         // Bullet Step Simulation
         getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime() * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
+
         // Physics for meshes
         this->updatePhysicObjects();
+
+        // Sync Ghost with bullet
+        this->updatePhysicsGhosts();
+        this->syncTriggerGhostCamera();
     }
 }
 
@@ -199,7 +214,8 @@ void ComponentCollisions::syncTriggerGhostCamera()
     this->triggerCamera->getGhostObject()->setWorldTransform(t);
 }
 
-Mesh3DGhost *ComponentCollisions::getTriggerCamera() const {
+Mesh3DGhost *ComponentCollisions::getTriggerCamera() const
+{
     return triggerCamera;
 }
 
@@ -214,6 +230,7 @@ void ComponentCollisions::makeGhostForCamera()
     dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
 }
 
-void ComponentCollisions::setTriggerCamera(Mesh3DGhost *ghost) {
+void ComponentCollisions::setTriggerCamera(Mesh3DGhost *ghost)
+{
     ComponentCollisions::triggerCamera = ghost;
 }

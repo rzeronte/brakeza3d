@@ -7,12 +7,12 @@
 
 
 #include "CollisionResolver.h"
-#include "../Game/ItemWeaponBody.h"
+#include "../Game/ItemWeaponGhost.h"
 
 class CollisionResolverBetweenCamera3DAndItemWeapon : public CollisionResolver {
 public:
     ComponentCamera *camera;
-    ItemWeaponBody *itemWeaponBody;
+    ItemWeaponGhost *itemWeaponBody;
 
     std::vector<Object3D *> *gameObjects;
     btDiscreteDynamicsWorld* dynamicsWorld;
@@ -38,7 +38,7 @@ public:
 
         if (wt != nullptr) {
             // Remove item for physics engine
-            dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemWeaponBody->getRigidBody() );
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemWeaponBody->ghostObject );
 
             // Activate weapon
             wt->setAvailable( true );
@@ -66,14 +66,14 @@ public:
         }
     }
 
-    ItemWeaponBody* getItemWeaponBody()
+    ItemWeaponGhost* getItemWeaponBody()
     {
-        auto *itemWeaponA = dynamic_cast<ItemWeaponBody*> (this->objA);
+        auto *itemWeaponA = dynamic_cast<ItemWeaponGhost*> (this->objA);
         if (itemWeaponA != NULL) {
             return itemWeaponA;
         }
 
-        auto *itemWeaponB = dynamic_cast<ItemWeaponBody*> (this->objB);
+        auto *itemWeaponB = dynamic_cast<ItemWeaponGhost*> (this->objB);
         if (itemWeaponB != NULL) {
             return itemWeaponB;
         }

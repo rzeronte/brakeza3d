@@ -8,7 +8,7 @@
 
 #include <string>
 #include "../Objects/Mesh3DAnimated.h"
-#include "ItemWeaponBody.h"
+#include "ItemWeaponGhost.h"
 
 class AmmoType {
 public:

@@ -10,19 +10,15 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Mesh3D.h"
+#include "Ghost.h"
 
-class Mesh3DGhost: public Mesh3D {
+class Mesh3DGhost: public Mesh3D, public Ghost {
 public:
     Mesh3DGhost();
 
-    void makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
-    static bool CheckGhost(btPairCachingGhostObject* Ghost);
-
-    btPairCachingGhostObject* getGhostObject() { return m_ghostObject; };
-
-    btPairCachingGhostObject *m_ghostObject;
-
     int currentTriggerCounter = 0;
+private:
+    void integrate() override;
 
 private:
 

@@ -7,14 +7,14 @@
 
 
 #include "CollisionResolver.h"
-#include "../Game/ItemHealthBody.h"
+#include "../Game/ItemHealthGhost.h"
 #include "../EngineBuffers.h"
 #include "../../src/Game/Player.h"
 
 class CollisionResolverBetweenCamera3DAndItemHealth : public CollisionResolver
 {
     ComponentCamera *camera;
-    ItemHealthBody *itemHealth;
+    ItemHealthGhost *itemHealth;
     Player *player;
 
     std::vector<Object3D *> *gameObjects;
@@ -34,14 +34,14 @@ class CollisionResolverBetweenCamera3DAndItemHealth : public CollisionResolver
         }
     }
 
-    ItemHealthBody* getItemHealthBody()
+    ItemHealthGhost* getItemHealthBody()
     {
-        auto *itemHealthA = dynamic_cast<ItemHealthBody*> (this->objA);
+        auto *itemHealthA = dynamic_cast<ItemHealthGhost*> (this->objA);
         if (itemHealthA != nullptr) {
             return itemHealthA;
         }
 
-        auto *itemHealthB = dynamic_cast<ItemHealthBody*> (this->objB);
+        auto *itemHealthB = dynamic_cast<ItemHealthGhost*> (this->objB);
         if (itemHealthB != nullptr) {
             return itemHealthB;
         }
@@ -69,7 +69,7 @@ public:
         if (player->getStamina() >= EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) return;
 
         // Remove item for physics engine
-        dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemHealth->getRigidBody() );
+        dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemHealth->ghostObject );
 
         // add aid
         player->getAid( itemHealth->getAid() );

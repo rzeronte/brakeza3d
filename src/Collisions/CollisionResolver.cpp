@@ -2,9 +2,10 @@
 #include "../../headers/Collisions/CollisionResolver.h"
 #include "../../headers/Game/NPCEnemyBody.h"
 #include "../../headers/Game/NPCEnemyPartBody.h"
-#include "../../headers/Game/ItemWeaponBody.h"
-#include "../../headers/Game/ItemHealthBody.h"
-#include "../../headers/Game/ItemAmmoBody.h"
+#include "../../headers/Game/ItemWeaponGhost.h"
+#include "../../headers/Game/ItemHealthGhost.h"
+#include "../../headers/Game/ItemAmmoGhost.h"
+#include "../../headers/Game/DoorGhost.h"
 
 CollisionResolver::CollisionResolver(
         btPersistentManifold *contactManifold,
@@ -141,18 +142,14 @@ bool CollisionResolver::isSomeMesh3D()
 
 bool CollisionResolver::isSomeMesh3DFuncDoor()
 {
-    Mesh3D *objAMesh = dynamic_cast<Mesh3D*> (objA);
+    auto *objAMesh = dynamic_cast<DoorGhost*> (objA);
     if (objAMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objAMesh, "func_door")) {
-            return true;
-        }
+        return true;
     }
 
-    Mesh3D *objBMesh = dynamic_cast<Mesh3D*> (objB);
+    auto *objBMesh = dynamic_cast<DoorGhost*> (objB);
     if (objBMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objBMesh, "func_door")) {
-            return true;
-        }
+        return true;
     }
 
     return false;
@@ -218,12 +215,12 @@ bool CollisionResolver::isSomeMesh3DTriggerTeleport()
 
 bool CollisionResolver::isSomeItemWeapon()
 {
-    auto *objAItemWeapon = dynamic_cast<ItemWeaponBody*> (objA);
+    auto *objAItemWeapon = dynamic_cast<ItemWeaponGhost*> (objA);
     if (objAItemWeapon != nullptr) {
         return true;
     }
 
-    auto *objBItemWeapon = dynamic_cast<ItemWeaponBody*> (objB);
+    auto *objBItemWeapon = dynamic_cast<ItemWeaponGhost*> (objB);
     if (objBItemWeapon != nullptr) {
         return true;
     }
@@ -233,12 +230,12 @@ bool CollisionResolver::isSomeItemWeapon()
 
 bool CollisionResolver::isSomeItemHealth()
 {
-    auto *tmpObjA = dynamic_cast<ItemHealthBody*> (objA);
+    auto *tmpObjA = dynamic_cast<ItemHealthGhost*> (objA);
     if (tmpObjA != nullptr) {
         return true;
     }
 
-    auto *tmpObjB = dynamic_cast<ItemHealthBody*> (objB);
+    auto *tmpObjB = dynamic_cast<ItemHealthGhost*> (objB);
     if (tmpObjB != nullptr) {
         return true;
     }
@@ -248,12 +245,12 @@ bool CollisionResolver::isSomeItemHealth()
 
 bool CollisionResolver::isSomeItemAmmo()
 {
-    auto *tmpObjA = dynamic_cast<ItemAmmoBody*> (objA);
+    auto *tmpObjA = dynamic_cast<ItemAmmoGhost*> (objA);
     if (tmpObjA != nullptr) {
         return true;
     }
 
-    auto *tmpObjB = dynamic_cast<ItemAmmoBody*> (objB);
+    auto *tmpObjB = dynamic_cast<ItemAmmoGhost*> (objB);
     if (tmpObjB != nullptr) {
         return true;
     }
@@ -277,7 +274,7 @@ bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, std::string query)
 }
 
 
-void CollisionResolver::moveMesh3DBody(Mesh3DBody *oRemoteBody, int targetEntityId) {
+void CollisionResolver::moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId) {
 
     if ( oRemoteBody->isMoving()|| oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
 

@@ -7,14 +7,14 @@
 
 
 #include "CollisionResolver.h"
-#include "../Game/ItemAmmoBody.h"
+#include "../Game/ItemAmmoGhost.h"
 #include "../EngineBuffers.h"
 #include "../../src/Game/Player.h"
 
 class CollisionResolverBetweenCamera3DAndItemAmmo : public CollisionResolver {
 public:
     ComponentCamera *camera;
-    ItemAmmoBody *itemAmmo;
+    ItemAmmoGhost *itemAmmo;
     Player *player;
 
     std::vector<Object3D *> *gameObjects;
@@ -43,7 +43,7 @@ public:
         if (ammoType != nullptr) {
 
             // Remove item for physics engine
-            dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemAmmo->getRigidBody() );
+            dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemAmmo->ghostObject );
             ammoType->setAmount( ammoType->getAmount() + itemAmmo->getAmount() );
 
             this->itemAmmo->setRemoved( true );
@@ -64,14 +64,14 @@ public:
         }
     }
 
-    ItemAmmoBody* getItemAmmoBody()
+    ItemAmmoGhost* getItemAmmoBody()
     {
-        auto *itemTmpA = dynamic_cast<ItemAmmoBody*> (this->objA);
+        auto *itemTmpA = dynamic_cast<ItemAmmoGhost*> (this->objA);
         if (itemTmpA != nullptr) {
             return itemTmpA;
         }
 
-        auto *itemTmpB = dynamic_cast<ItemAmmoBody*> (this->objB);
+        auto *itemTmpB = dynamic_cast<ItemAmmoGhost*> (this->objB);
         if (itemTmpB != nullptr) {
             return itemTmpB;
         }

@@ -15,9 +15,9 @@
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/Physics/Sprite3DBody.h"
 #include "../../headers/Physics/BillboardBody.h"
-#include "../../headers/Game/ItemWeaponBody.h"
-#include "../../headers/Game/ItemHealthBody.h"
-#include "../../headers/Game/ItemAmmoBody.h"
+#include "../../headers/Game/ItemWeaponGhost.h"
+#include "../../headers/Game/ItemHealthGhost.h"
+#include "../../headers/Game/ItemAmmoGhost.h"
 
 BSPMap::BSPMap(): frameTriangles(nullptr)
 {
