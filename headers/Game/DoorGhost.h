@@ -15,7 +15,7 @@ class DoorGhost : public Mesh3DGhost {
 public:
 
     // Quake BSP Moving attributes
-    float speedMoving = 1000;
+    float speedMoving = 100;
     float angleMoving;
     bool moving;
     bool waiting;

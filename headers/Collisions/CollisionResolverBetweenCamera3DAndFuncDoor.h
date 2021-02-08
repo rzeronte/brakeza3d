@@ -34,6 +34,8 @@ public:
             if (originalBody != nullptr) {
                 if (originalBody->isMoving()) return;
 
+                //findAnotherDoorComponents();
+
                 this->moveDoorGhost(originalBody, originalEntityIndex);
                 Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
                 if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
@@ -94,6 +96,19 @@ public:
         DoorGhost *meshB = dynamic_cast<DoorGhost*> (this->objB);
         if (meshB != NULL) {
             return meshB;
+        }
+    }
+
+    void findAnotherDoorComponents()
+    {
+        std::vector<Object3D *>::iterator it;
+        for ( it = this->gameObjects->begin(); it != this->gameObjects->end(); it++) {
+            auto *ghost = dynamic_cast<DoorGhost*> (*it);
+            if ( ghost != nullptr ) {
+                if (this->mesh->aabb.isColliding(&ghost->aabb)) {
+                    Drawable::drawAABB(&ghost->aabb, ghost);
+                }
+            }
         }
     }
 

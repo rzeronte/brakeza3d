@@ -40,9 +40,6 @@ public:
     bool shadowCaster;
     int BSPEntityIndex;
 
-    Vertex3D aabbMin;
-    Vertex3D aabbMax;
-
     Mesh3D();
 
     bool AssimpLoadGeometryFromFile(std::string fileName);

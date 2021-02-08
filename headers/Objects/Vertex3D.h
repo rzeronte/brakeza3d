@@ -51,15 +51,4 @@ public:
     void consoleInfo(std::string label, bool returnLine);
 };
 
-struct AABB3D
-{
-    Vertex3D min;		// Minimum values of X,Y,Z
-    Vertex3D max;		// Maximum values of X,Y,Z
-    Vertex3D vertices[8];
-
-    Vertex3D size() {
-        return max - min;
-    }
-};
-
 #endif //SDL2_3D_ENGINE_VERTEX_H

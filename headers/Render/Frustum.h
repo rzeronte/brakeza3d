@@ -6,6 +6,7 @@
 #include "../Objects/Object3D.h"
 #include "../Objects/Vector3D.h"
 #include "Plane.h"
+#include "AABB3D.h"
 
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 class Frustum {

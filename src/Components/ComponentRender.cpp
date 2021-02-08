@@ -99,7 +99,6 @@ void ComponentRender::onUpdateSceneObjects()
     if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
     std::vector<Object3D *>::iterator it;
-
     for ( it = getSceneObjects()->begin(); it != getSceneObjects()->end(); ) {
         Object3D *object = *(it);
 

@@ -52,9 +52,9 @@ void DoorGhost::integrateMoving()
         return;
     }
 
-    float sizeX = this->aabbMax.x - this->aabbMin.x;
-    float sizeY = this->aabbMax.y - this->aabbMin.y;
-    float sizeZ = this->aabbMax.z - this->aabbMin.z;
+    float sizeZ = this->aabb.max.x - this->aabb.min.x;
+    float sizeX = this->aabb.max.y - this->aabb.min.y;
+    float sizeY = this->aabb.max.z - this->aabb.min.z;
 
     // Sync position
     btTransform t = this->ghostObject->getWorldTransform();

@@ -845,19 +845,6 @@ void ComponentGame::makeDoorGhost(int indexModel, int entityIndex, bool enabled,
 
     // Buscamos entidades que figuren con el modelo
 
-    vec3_t v3aabbMax;
-    v3aabbMax[0] = hull->box.max[0];
-    v3aabbMax[1] = -hull->box.max[2];
-    v3aabbMax[2] = hull->box.max[1];
-
-    vec3_t v3aabbMin;
-    v3aabbMin[0] = hull->box.min[0];
-    v3aabbMin[1] = -hull->box.min[2];
-    v3aabbMin[2] = hull->box.min[1];
-
-    Vertex3D aabbMax = Vertex3D(v3aabbMax[0], v3aabbMax[1], v3aabbMax[2]);
-    Vertex3D aabbMin = Vertex3D(v3aabbMin[0], v3aabbMin[1], v3aabbMin[2]);
-
     auto *ghost = new DoorGhost();
     ghost->setEnabled(enabled);
 
@@ -865,8 +852,6 @@ void ComponentGame::makeDoorGhost(int indexModel, int entityIndex, bool enabled,
         ghost->setBspEntityIndex(entityIndex);
     }
 
-    ghost->aabbMax = aabbMax;
-    ghost->aabbMin = aabbMin;
     ghost->setPosition( mapBSP->getPosition() );
     ghost->setRotation(mapBSP->getRotation() );
 
@@ -884,28 +869,11 @@ void ComponentGame::makeMesh3DGhost(int indexModel, int entityIndex, bool enable
 
     // Buscamos entidades que figuren con el modelo
 
-    vec3_t v3aabbMax;
-    v3aabbMax[0] = hull->box.max[0];
-    v3aabbMax[1] = -hull->box.max[2];
-    v3aabbMax[2] = hull->box.max[1];
-
-    vec3_t v3aabbMin;
-    v3aabbMin[0] = hull->box.min[0];
-    v3aabbMin[1] = -hull->box.min[2];
-    v3aabbMin[2] = hull->box.min[1];
-
-    Vertex3D aabbMax = Vertex3D(v3aabbMax[0], v3aabbMax[1], v3aabbMax[2]);
-    Vertex3D aabbMin = Vertex3D(v3aabbMin[0], v3aabbMin[1], v3aabbMin[2]);
-
     auto *ghost = new Mesh3DGhost();
     if (entityIndex >= 1 ) {
         ghost->setBspEntityIndex(entityIndex);
     }
-
     ghost->setEnabled(enabled);
-
-    ghost->aabbMax = aabbMax;
-    ghost->aabbMin = aabbMin;
     ghost->setPosition( mapBSP->getPosition() );
     ghost->setRotation(mapBSP->getRotation() );
 
@@ -932,5 +900,7 @@ void ComponentGame::getTrianglesHull(Mesh3DGhost* mesh, model_t *hull)
             mesh->modelTriangles.push_back( t );
         }
     }
+
+    mesh->updateBoundingBox();
 }
 
