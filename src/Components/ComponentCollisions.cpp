@@ -41,11 +41,11 @@ void ComponentCollisions::initBulletSystem()
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     this->overlappingPairCache = new btDbvtBroadphase();
 
-    btVector3 worldMin(-5000, -5000, -5000);
-    btVector3 worldMax(5000, 5000, 5000);
+    btVector3 worldMin(-50000, -50000, -50000);
+    btVector3 worldMax(50000, 50000, 50000);
 
     auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
-    this->overlappingPairCache = sweepBP;
+    //this->overlappingPairCache = sweepBP;
 
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     this->solver = new btSequentialImpulseConstraintSolver;
@@ -54,23 +54,22 @@ void ComponentCollisions::initBulletSystem()
     this->debugDraw = new PhysicsDebugDraw(this->camera);
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, SETUP->gravity.y, 0));
+    this->dynamicsWorld->setGravity(btVector3(0, 800, 0));
 
     this->dynamicsWorld->setDebugDrawer(debugDraw);
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
-    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(
+    /*this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(
 new btGhostPairCallback()
-    );
+    );*/
 
-    this->dynamicsWorld->addCollisionObject(
+    /*this->dynamicsWorld->addCollisionObject(
         this->camera->m_ghostObject,
         btBroadphaseProxy::CharacterFilter,
         btBroadphaseProxy::StaticFilter
-    );
+    );*/
 
-    this->makeGhostForCamera();
-
+    //this->makeGhostForCamera();
 }
 
 btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const
@@ -168,15 +167,23 @@ Vertex3D ComponentCollisions::stepSimulation()
     checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
+
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime() * SETUP->BULLET_STEP_SIMULATION_MULTIPLIER );
+        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime(), 4);
 
         // Physics for meshes
         this->updatePhysicObjects();
 
         // Sync Ghost with bullet
         this->updatePhysicsGhosts();
-        this->syncTriggerGhostCamera();
+
+        //this->syncTriggerGhostCamera();
+
+        // todo: estudiar pq tengo q poner esto inmediatemente después del stepSimulation :S
+        // En caso contrario el movimiento da "saltos"
+        //camera->setPosition( camera->getFollowTo()->getPosition() + camera->follow_to_position_offset);
+        //camera->UpdateFrustum();
+
     }
 }
 

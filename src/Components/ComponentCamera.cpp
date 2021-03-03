@@ -22,33 +22,39 @@ void ComponentCamera::preUpdate()
 void ComponentCamera::onUpdate() {
 
     // debug hull contents flag
-    if (EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS) {
+    if (EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS &&
+        ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()
+    ) {
         vec3_t p;
         BSPCollider::Vertex3DToVec3(getCamera()->getPosition(),p);
         int contents = pointHullContent( p );
         Logging::getInstance()->Log("Camera Hull CONTENT: " + std::to_string(contents));
     }
 
+    getCamera()->UpdateVelocity();
 
-    getCamera()->UpdateVelocity(  );
-    updateCameraBSPCollider();
+    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
+        updateCameraBSPCollider();
+    }
 }
 
 void ComponentCamera::postUpdate()
 {
-    if (getCamera()->getFollowTo() != nullptr) {
-        getCamera()->setPosition( getCamera()->getFollowTo()->getPosition() );
-        getCamera()->setRotation( getCamera()->getFollowTo()->getRotation() );
-    } else {
-        getCamera()->UpdateRotation();
+    if (this->is_fly_mode) {
 
-        BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
-        if (!bspCollider->getPlayerModel()->teleportingCounter.isEnabled()) {
-            getCamera()->UpdatePositionForVelocity();
-        } else {
-            bspCollider->getPlayerModel()->teleportingCounter.update();
-            if (bspCollider->getPlayerModel()->teleportingCounter.isFinished()) {
-                bspCollider->getPlayerModel()->teleportingCounter.setEnabled(false);
+        getCamera()->UpdateRotation();
+        getCamera()->UpdatePositionForVelocity();
+
+        if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
+            // BSP teleporting update position
+            BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
+            if (!bspCollider->getPlayerModel()->teleportingCounter.isEnabled()) {
+                getCamera()->UpdatePositionForVelocity();
+            } else {
+                bspCollider->getPlayerModel()->teleportingCounter.update();
+                if (bspCollider->getPlayerModel()->teleportingCounter.isFinished()) {
+                    bspCollider->getPlayerModel()->teleportingCounter.setEnabled(false);
+                }
             }
         }
     }
@@ -87,10 +93,12 @@ void ComponentCamera::updateCameraBSPCollider()
     float deltaTime = Brakeza3D::get()->getDeltaTime();
 
     bspCollider->SV_CheckVelocity ( player );
-    bspCollider->SV_ClientThink( player, deltaTime );
+    bspCollider->SV_ClientThink   ( player, deltaTime );
     bspCollider->SV_AddGravity    ( player, deltaTime );
     bspCollider->SV_CheckStuck    ( player );
     bspCollider->SV_WalkMove      ( player, deltaTime );
+
+    //bspCollider->SV_FlyMove(player, deltaTime, NULL);
 
     // update velocity
     getCamera()->velocity.vertex2 = BSPCollider::QuakeToVertex3D(player->origin);
@@ -114,4 +122,14 @@ void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish) {
 
 Camera3D *ComponentCamera::getCamera() const {
     return camera;
+}
+
+bool ComponentCamera::isFlyMode() const
+{
+    return is_fly_mode;
+}
+
+void ComponentCamera::setIsFlyMode(bool isFlyMode)
+{
+    is_fly_mode = isFlyMode;
 }

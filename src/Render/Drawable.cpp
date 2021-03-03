@@ -3,6 +3,7 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Misc/Octree.h"
 
 void Drawable::drawBox2D(SDL_Rect r)
 {
@@ -118,7 +119,7 @@ void Drawable::drawLine2D(Line2D L, Uint32 color)
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
             }
         }
-    } else{
+    } else {
         int p = 2 * deltaX - deltaY;
         int incE = 2 * deltaX;
         int incNE = 2 * (deltaX - deltaY);
@@ -133,7 +134,6 @@ void Drawable::drawLine2D(Line2D L, Uint32 color)
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
             }
-
         }
     }
 }
@@ -585,15 +585,60 @@ void Drawable::waterShader(int type)
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
-void Drawable::drawAABB(AABB3D *aabb, Object3D *o)
+void Drawable::drawAABB(AABB3D *aabb, Object3D *o, Uint32 color)
 {
-    Drawable::drawVertex(aabb->vertices[0], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red() );
-    Drawable::drawVertex(aabb->vertices[1], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::green() );
-    Drawable::drawVertex(aabb->vertices[2], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[3], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[4], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[5], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[6], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
-    Drawable::drawVertex(aabb->vertices[7], ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow() );
+    Vector3D v01(aabb->vertices[0], aabb->vertices[2]);
+    Vector3D v02(aabb->vertices[0], aabb->vertices[3]);
+    Vector3D v03(aabb->vertices[0], aabb->vertices[4]);
+    Vector3D v04(aabb->vertices[1], aabb->vertices[6]);
+    Vector3D v05(aabb->vertices[1], aabb->vertices[5]);
+    Vector3D v06(aabb->vertices[2], aabb->vertices[5]);
+    Vector3D v07(aabb->vertices[2], aabb->vertices[6]);
+    Vector3D v08(aabb->vertices[3], aabb->vertices[7]);
+    Vector3D v09(aabb->vertices[3], aabb->vertices[5]);
+    Vector3D v10(aabb->vertices[6], aabb->vertices[4]);
+    Vector3D v11(aabb->vertices[7], aabb->vertices[4]);
+    Vector3D v12(aabb->vertices[7], aabb->vertices[1]);
+
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    Drawable::drawVector3D(v01, camera, color);
+    Drawable::drawVector3D(v02, camera, color);
+    Drawable::drawVector3D(v03, camera, color);
+    Drawable::drawVector3D(v04, camera, color);
+    Drawable::drawVector3D(v05, camera, color);
+    Drawable::drawVector3D(v06, camera, color);
+    Drawable::drawVector3D(v07, camera, color);
+    Drawable::drawVector3D(v08, camera, color);
+    Drawable::drawVector3D(v09, camera, color);
+    Drawable::drawVector3D(v10, camera, color);
+    Drawable::drawVector3D(v11, camera, color);
+    Drawable::drawVector3D(v12, camera, color);
+
+    Drawable::drawVertex(aabb->max, camera, Color::red() );
+    Drawable::drawVertex(aabb->min, camera, Color::green() );
+}
+
+void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
+{
+    auto o = Object3D();
+
+    Uint32 color = Color::white();
+    if (node->isLeaf() && node->triangles.size() == 0) {
+        Drawable::drawAABB(&node->bounds, &o, color);
+    }
+
+    for (int i = 0; i < 8; i++) {
+        if (node->children[i] != NULL) {
+            Drawable::drawOctreeNode(node->children[i], onlyWithTriangles);
+        }
+    }
+}
+
+void Drawable::drawOctree(Octree *octree, bool onlyWithTriangles)
+{
+    auto o = Object3D();
+    Drawable::drawAABB(&octree->root->bounds, &o, Color::yellow());
+    Drawable::drawOctreeNode(octree->root, onlyWithTriangles);
 }
 

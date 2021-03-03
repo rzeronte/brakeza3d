@@ -3,8 +3,8 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
@@ -199,13 +199,13 @@ add_executable(brakeza3d
         headers/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
         headers/Physics/BillboardBody.h
-        src/Game/ItemWeaponBody.cpp
-        headers/Game/ItemWeaponBody.h
+        src/Game/ItemWeaponGhost.cpp
+        headers/Game/ItemWeaponGhost.h
         headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h
-        src/Game/ItemAmmoBody.cpp
-        headers/Game/ItemAmmoBody.h
-        src/Game/ItemHealthBody.cpp
-        headers/Game/ItemHealthBody.h
+        src/Game/ItemAmmoGhost.cpp
+        headers/Game/ItemAmmoGhost.h
+        src/Game/ItemHealthGhost.cpp
+        headers/Game/ItemHealthGhost.h
         headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h
         headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h
         src/Game/AmmoType.cpp
@@ -240,7 +240,7 @@ add_executable(brakeza3d
         headers/Objects/Mesh3DAnimatedCollection.h
         src/Physics/BSPCollider.cpp
         src/Physics/BSPCollider.h
-        src/2D/TextWriter.cpp headers/2D/TextWriter.h)
+        src/2D/TextWriter.cpp headers/2D/TextWriter.h headers/Game/DoorGhost.cpp headers/Game/DoorGhost.h headers/Physics/Ghost.cpp headers/Physics/Ghost.h headers/Render/AABB3D.h src/Misc/Octree.cpp headers/Misc/Octree.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}

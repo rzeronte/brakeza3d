@@ -2,7 +2,10 @@
 #include "../../headers/Render/Plane.h"
 #include "../../headers/Render/Maths.h"
 
-Plane::Plane() {}
+Plane::Plane()
+{
+
+}
 
 Plane::Plane(Vertex3D A, Vertex3D B, Vertex3D C)
 {
