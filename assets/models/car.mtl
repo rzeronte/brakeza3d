@@ -1,0 +1,13 @@
+# Blender MTL File: 'LowPolyCars.blend'
+# Material Count: 1
+
+newmtl Material.car2
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 2.000000 2.000000 2.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd /Users/darkhead/Downloads/Low Poly Cars (Free)_blender/Textures/Car Texture 1.png

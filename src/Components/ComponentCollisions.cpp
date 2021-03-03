@@ -181,9 +181,10 @@ Vertex3D ComponentCollisions::stepSimulation()
 
         // todo: estudiar pq tengo q poner esto inmediatemente después del stepSimulation :S
         // En caso contrario el movimiento da "saltos"
-        //camera->setPosition( camera->getFollowTo()->getPosition() + camera->follow_to_position_offset);
-        //camera->UpdateFrustum();
-
+        if (!ComponentsManager::get()->getComponentCamera()->isFlyMode()) {
+            camera->setPosition( camera->getFollowTo()->getPosition() + camera->follow_to_position_offset);
+            camera->UpdateFrustum();
+        }
     }
 }
 

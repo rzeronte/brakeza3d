@@ -26,7 +26,6 @@ void ComponentGame::onStart()
 {
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
-
     SETUP->MENU_ACTIVE = true;
     Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
 
@@ -35,16 +34,14 @@ void ComponentGame::onStart()
 
 void ComponentGame::startThirdPerson()
 {
-    ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
-
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
-    camera->follow_to_position_offset = Vertex3D(12, -522, 0);
+    camera->follow_to_position_offset = Vertex3D(12, -22, 0);
 
     // ---- city
     city = new Mesh3DBody();
-    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city2.obj").c_str());
+    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj").c_str());
     city->makeRigidBodyFromTriangleMesh(
             0.0f,
             camera,
@@ -91,6 +88,7 @@ void ComponentGame::startThirdPerson()
 
     // cam follow to car
     //camera->setFollowTo(car);
+    ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
 }
 
