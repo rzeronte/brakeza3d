@@ -4,8 +4,9 @@
 
 Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)
 {
-    this->counterStep       = new Counter(0.30);
+    this->counterStep = new Counter(0.30);
     this->counterSoundTakeDamage = new Counter(0.30);
+    this->is_vehicle = true;
 }
 
 int Player::getStamina() const {
@@ -178,4 +179,12 @@ void Player::getAid(float aid)
     if (stamina > EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {
         this->stamina = EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL;
     }
+}
+
+bool Player::isVehicle() const {
+    return this->is_vehicle;
+}
+
+void Player::setIsVehicle(bool isVehicle) {
+    is_vehicle = isVehicle;
 }

@@ -71,10 +71,6 @@ void Mesh3DAnimated::updateFrameTransformations()
         }
     }
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
-        Drawable::drawAABB(&this->aabb, this);
-    }
-
     if (EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT) {
         this->drawVertexWeights();
     }
@@ -615,4 +611,3 @@ void Mesh3DAnimated::setFixedRotation(const M3 &fixedRotation) {
 bool Mesh3DAnimated::isAnimationEnds() {
     return animation_ends;
 }
-

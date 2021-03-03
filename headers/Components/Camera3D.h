@@ -30,6 +30,8 @@ public:
     Vector3D velocity;
 
     Object3D *follow_to = nullptr;
+    Vertex3D follow_to_position_offset;
+
     btPairCachingGhostObject *m_ghostObject;
 
     Object3D *getFollowTo() const;

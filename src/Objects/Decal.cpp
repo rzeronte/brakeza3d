@@ -128,6 +128,6 @@ void Decal::setSprite(Sprite3D *sprite) {
 void Decal::onUpdate()
 {
     if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
-        this->cube->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles() );
+        this->cube->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }
 }

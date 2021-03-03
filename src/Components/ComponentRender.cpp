@@ -25,7 +25,6 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::onUpdate()
 {
-
     this->onUpdateBSP();
     this->onUpdateSceneObjects();
 
@@ -177,14 +176,15 @@ void ComponentRender::hiddenSurfaceRemoval()
     clippedTriangles.clear();
 
     visibleTriangles.clear();
+
     for (int i = 0; i < frameTriangles.size() ; i++) {
         this->hiddenSurfaceRemovalTriangle( frameTriangles[i] );
     }
 
     visibleTriangles.insert(
-            visibleTriangles.end(),
-            std::make_move_iterator(clippedTriangles.begin()),
-            std::make_move_iterator(clippedTriangles.end())
+        visibleTriangles.end(),
+        std::make_move_iterator(clippedTriangles.begin()),
+        std::make_move_iterator(clippedTriangles.end())
     );
 
     if (SETUP->DEBUG_RENDER_INFO) {
@@ -192,6 +192,33 @@ void ComponentRender::hiddenSurfaceRemoval()
     }
 
     frameTriangles.clear();
+}
+
+void ComponentRender::hiddenOctreeRemoval()
+{
+    std::vector<Triangle*> newFrameTriangles;
+
+    this->frameTriangles = newFrameTriangles;
+}
+
+void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle*> &triangles)
+{
+    if (
+        node->isLeaf() &&
+        ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(
+                &node->bounds
+        )
+    ) {
+        for (int j = 0 ; j < node->triangles.size() ; j++) {
+            triangles.push_back( node->triangles[j]);
+        }
+    }
+
+    for (int i = 0 ; i < 8 ; i++) {
+        if (node->children[i] != NULL) {
+            this->hiddenOctreeRemovalNode(node->children[i], triangles);
+        }
+    }
 }
 
 void ComponentRender::drawVisibleTriangles()
@@ -425,11 +452,17 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     Uint32 pixelColor(NULL);
 
     if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
-        pixelColor = (Uint32) Tools::createRGB(fragment->alpha * 255, fragment->theta * 255, fragment->gamma * 255);
+        pixelColor = (Uint32) Tools::createRGB(
+            fragment->alpha * 255,
+            fragment->theta * 255,
+            fragment->gamma * 255
+        );
     }
 
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
+        if (t->texture->getSurface(t->lod) == NULL) return;
+
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED ) {
             // texU and texV are "animated"
             this->processPixelTextureAnimated(fragment);
@@ -572,6 +605,24 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle*> &visibleTr
                 t->start_x + sizeTileWidth,
                 t->start_y + sizeTileHeight
         );
+
+        // wireframe
+        if ( SETUP->TRIANGLE_MODE_WIREFRAME ||
+            (
+                visibleTriangles[triangleId]->parent->isDecal() &&
+                SETUP->DRAW_DECAL_WIREFRAMES
+            )
+        ) {
+            drawWireframe(visibleTriangles[triangleId]);
+        }
+
+        // Pixels
+        if (SETUP->TRIANGLE_MODE_PIXELS ) {
+            Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
+            Drawable::drawVertex(visibleTriangles[triangleId]->Co, CC, Color::green());
+            Drawable::drawVertex(visibleTriangles[triangleId]->Bo, CC, Color::green());
+            Drawable::drawVertex(visibleTriangles[triangleId]->Co, CC, Color::green());
+        }
     }
 }
 

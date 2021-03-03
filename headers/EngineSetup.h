@@ -83,8 +83,8 @@ public:
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
-    bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = true;
+    bool TRIANGLE_MODE_COLOR_SOLID = true;
+    bool TRIANGLE_MODE_TEXTURIZED = false;
 
     bool DRAW_ANIMATION_BONES = false;
     bool TRIANGLE_MODE_VERTEX_WEIGHT = false;
@@ -98,6 +98,7 @@ public:
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
     bool DRAW_MESH3D_AABB = false;
+    bool DRAW_MESH3D_OCTREE = false;
 
     // Z BUFFER
     bool ENABLE_SHADOW_CASTING = false;
@@ -162,10 +163,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 400.f;
-    float TURN_SPEED        = 0.099f;
-    float PITCH_SPEED       = 0.099f;
-    float STRAFE_SPEED      = 400.f;
+    float WALKING_SPEED     = 4.1f;
+    float TURN_SPEED        = 5.f;
+    float PITCH_SPEED       = 5.f;
+    float STRAFE_SPEED      = 4.1f;
 
     // MOUSE
     float MOUSE_SENSITIVITY	= 0.250;

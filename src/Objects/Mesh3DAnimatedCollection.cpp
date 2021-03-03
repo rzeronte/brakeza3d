@@ -29,10 +29,6 @@ void Mesh3DAnimatedCollection::onUpdate()
     
     this->getCurrentMesh3DAnimated()->updateBoundingBox();
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
-        Drawable::drawAABB( &this->getCurrentMesh3DAnimated()->aabb, this );
-    }
-
     if (!this->isFollowCamera()) {
         if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum( &this->getCurrentMesh3DAnimated()->aabb )) {
             return;
@@ -40,7 +36,9 @@ void Mesh3DAnimatedCollection::onUpdate()
     }
 
     this->onUpdateCurrentMesh3D();
-    this->getCurrentMesh3DAnimated()->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles() );
+    this->getCurrentMesh3DAnimated()->sendTrianglesToFrame(
+        &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
+    );
 }
 
 void Mesh3DAnimatedCollection::onUpdateCurrentMesh3D()

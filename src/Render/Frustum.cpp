@@ -45,7 +45,8 @@ void Frustum::updateCenters() {
     nc.z = this->position.z + direction.z * nearDist;
 }
 
-void Frustum::updatePoints() {
+void Frustum::updatePoints()
+{
     ntl.x = nc.x + (up.x * Hnear/2) - (right.x * Wnear/2);
     ntl.y = nc.y + (up.y * Hnear/2) - (right.y * Wnear/2);
     ntl.z = nc.z + (up.z * Hnear/2) - (right.z * Wnear/2);
@@ -133,6 +134,11 @@ void Frustum::updatePlanes() {
     Vertex3D right1f(ftr.x, ftr.y, ftr.z);
     Vertex3D right2f(fbr.x, fbr.y, fbr.z);
     this->far_right = Vector3D(right1f, right2f);
+}
+
+void Frustum::updateBounds()
+{
+
 }
 
 bool Frustum::isPointInFrustum(Vertex3D &v)

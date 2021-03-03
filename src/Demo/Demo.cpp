@@ -195,7 +195,7 @@ Demo::Demo()
     gun->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
     gun->setFixedRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
     gun->setLabel("hands");
-    gun->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + "glock.fbx");
+    gun->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + "glock.Mesh3DBody");
     ComponentsManager::get()->getComponentCamera()->getCamera()->setFollowTo(gun->getFollowMePointObject() );
     */
 }

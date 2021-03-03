@@ -15,6 +15,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerMultiple.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
 #include "../../headers/Game/DoorGhost.h"
+#include "../../headers/Misc/Octree.h"
 
 ComponentGame::ComponentGame()
 {
@@ -23,22 +24,92 @@ ComponentGame::ComponentGame()
 
 void ComponentGame::onStart()
 {
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+
+
     SETUP->MENU_ACTIVE = true;
     Mix_PlayMusic( BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1 );
+
+    startThirdPerson();
+}
+
+void ComponentGame::startThirdPerson()
+{
+    ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
+
+    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
+    camera->follow_to_position_offset = Vertex3D(12, -522, 0);
+
+    // ---- city
+    city = new Mesh3DBody();
+    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city2.obj").c_str());
+    city->makeRigidBodyFromTriangleMesh(
+            0.0f,
+            camera,
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+            false
+    );
+    city->buildOctree();
+    Brakeza3D::get()->addObject3D(city, "city");
+
+    // ---- car
+    car = new Mesh3DBody();
+    car->setPosition( originalCarPosition );
+    car->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "car.obj").c_str());
+    car->makeSimpleRigidBody(
+            800,
+            car->getPosition(),
+            Vertex3D(1, 1, 1),
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
+    );
+    Brakeza3D::get()->addObject3D(car, "car");
+
+    // ---- character
+    character = new Mesh3DBody();
+    character->setPosition( originalCarPosition  + Vertex3D(15, 0, 0));
+    character->setPosition( originalCarPosition );
+    character->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
+    character->makeSimpleRigidBody(
+            80,
+            character->getPosition(),
+            Vertex3D(1, 1, 1),
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
+    );
+    character->setEnabled(false);
+    Brakeza3D::get()->addObject3D(character, "character");
+
+    Vertex3D camPosition = car->getPosition() + camera->follow_to_position_offset;
+
+    // start cam position
+    camera->setPosition( camPosition );
+    camera->pitch = 45;
+    camera->yaw   = 90;
+    camera->roll  = 0;
+    camera->UpdateRotation();
+
+    // cam follow to car
+    //camera->setFollowTo(car);
+
+}
+
+void ComponentGame::startFPS()
+{
+    ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
     LoadMapsFromJSON();
     setFirstMapNameFromJSON();
 
     ComponentsManager::get()->getComponentBSP()->initMap( currentMapName.c_str() );
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
-    //LoadWeaponsJSON();
-    //ComponentsManager::get()->getComponentWeapons()->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
-    //ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+    LoadWeaponsJSON();
+    ComponentsManager::get()->getComponentWeapons()->setCurrentWeaponIndex(EngineSetup::WeaponsTypes::PISTOL);
+    ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
 
-    //LoadEnemiesJSON();
+    LoadEnemiesJSON();
 
-    //createObjects3DFromBSPEntities();   // enemies, items...
+    createObjects3DFromBSPEntities();   // enemies, items...
     createMesh3DAndGhostsFromHulls();   // collision triggers, doors, secret walls...
 }
 
@@ -48,12 +119,33 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate() 
 {
+    Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();
-    Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     BSPMap           *mapBSP           = ComponentsManager::get()->getComponentBSP()->getBSP();
     ComponentWindow  *componentWindow  = ComponentsManager::get()->getComponentWindow();
     ComponentHUD     *componentHUD     = ComponentsManager::get()->getComponentHUD();
+
+    // set car rotation
+    Vertex3D impulse = camera->velocity.getComponent();
+    if (player->isVehicle()) {
+        float accel = 4000;
+
+        impulse.setLength(accel);
+
+        ComponentsManager::get()->getComponentGame()->car->setRotation(
+                M3::getMatrixRotationForEulerAngles(0,camera->yaw - 90,0).getTranspose()
+        );
+        ComponentsManager::get()->getComponentGame()->car->applyImpulse( impulse );
+    } else {
+        float accel = 270;
+        impulse.setLength(accel);
+        ComponentsManager::get()->getComponentGame()->character->setRotation(
+                M3::getMatrixRotationForEulerAngles(0,camera->yaw - 90,0).getTranspose()
+        );
+        ComponentsManager::get()->getComponentGame()->character->applyImpulse( impulse );
+
+    }
 
     if (player->state != PlayerState::GAMEOVER) {
 
@@ -106,7 +198,9 @@ void ComponentGame::onUpdate()
 
 void ComponentGame::postUpdate()
 {
+
     player->evalStatusMachine();
+
 }
 
 void ComponentGame::onEnd() {

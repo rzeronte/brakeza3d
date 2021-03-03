@@ -8,21 +8,21 @@
 #include "../Misc/Tools.h"
 #include "../EngineSetup.h"
 #include "Object3D.h"
+#include "../Misc/Octree.h"
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-#define MAX_VERTEX_MODEL 15000
-#define MAX_MESH_TEXTURES 100
+#define MAX_VERTEX_MODEL 150000
+#define MAX_MESH_TEXTURES 512
 
 typedef float vec3_t[3];
 
 class Mesh3D : public Object3D {
 
 public:
-    std::mutex drawingMutex;
-
     std::string source_file;
+    std::string prefix_texture_folder;
 
     std::vector<Triangle*> modelTriangles;
     AABB3D aabb;
@@ -54,14 +54,14 @@ public:
     void loadOBJBlenderTextureCoordinates();
     void loadOBJBlenderMaterials();
 
-    void draw(std::vector<Triangle*> *frameTriangles);
+    void sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles);
     //void shadowMapping(LightPoint3D *);
     //void setLightPoints(std::vector<LightPoint3D*> &);
 
     bool isShadowCaster() const;
     void setShadowCaster(bool shadow_caster);
 
-    int getBspEntityIndex() const;
+    int  getBspEntityIndex() const;
     void setBspEntityIndex(int bspEntityIndex);
 
     void updateBoundingBox();
@@ -73,6 +73,13 @@ public:
     const std::string &getSourceFile() const;
 
     void setSourceFile(const std::string &sourceFile);
+
+    Octree *getOctree() const;
+    void buildOctree();
+
+private:
+    Octree *octree;
+
 };
 
 

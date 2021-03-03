@@ -32,9 +32,6 @@ public:
 
     int *firePixelsBuffer;
 
-    OCLTriangle *OCLTrianglesBuffer;
-    int numOCLTriangles = 0;
-
     // sounds
     SoundPackage *soundPackage;
 

@@ -17,6 +17,8 @@ private:
     int   defaultLives;
     float oxygen;
 
+    bool is_vehicle;
+
 public:
     PlayerState state;
 
@@ -54,6 +56,10 @@ public:
 
     float getOxygen() const;
     void  setOxygen(float air);
+
+    bool isVehicle() const;
+
+    void setIsVehicle(bool isVehicle);
 };
 
 

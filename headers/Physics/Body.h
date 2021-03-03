@@ -19,12 +19,17 @@ public:
     btRigidBody* m_body;
     btCollisionObject* m_collider;
 
+    btTriangleMesh triangleMesh;
+    btBvhTriangleMeshShape *shape;
+    btDefaultMotionState* motionState;
+
     btCollisionObject* getCollider()  { return m_collider; }
     btRigidBody*       getRigidBody() { return m_body; }
 
     void setBodyEnabled(bool state);
     void setBoxShapeSize(Vertex3D size);
     Vertex3D getBoxShapeSize();
+    void applyImpulse(Vertex3D impulse);
 
     virtual void integrate();
 

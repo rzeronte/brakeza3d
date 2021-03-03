@@ -49,7 +49,7 @@ public:
 
 
         const float range_min_test_int = 0;
-        const float range_max_test_int = 2;
+        const float range_max_test_int = 10000;
 
         const float range_sensibility = EngineSetup::getInstance()->GUI_BAR_SENSITIVITY;
         const float range_test_sensibility = 0.1;
@@ -159,8 +159,6 @@ public:
                 ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_INTENSITY, range_sensibility_fog_intensity,  &range_min_fog_intensity, &range_max_fog_intensity, "%f", 1.0f);
                 ImGui::DragScalar("FOG Distance", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_DISTANCE, range_sensibility_fog_distance,  &range_min_fog_distance, &range_max_fog_distance, "%f", 1.0f);
 
-                ImGui::Separator();
-                ImGui::Checkbox("OpenCL Rasterizer", &EngineSetup::getInstance()->RASTERIZER_OPENCL);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME);
@@ -314,6 +312,7 @@ public:
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::getInstance()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::getInstance()->RENDER_OBJECTS_AXIS);
                 ImGui::Checkbox("Draw Mesh3D AABB", &EngineSetup::getInstance()->DRAW_MESH3D_AABB);
+                ImGui::Checkbox("Draw Mesh3D Octree", &EngineSetup::getInstance()->DRAW_MESH3D_OCTREE);
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);
                 ImGui::Checkbox("Draw Decals wireframe", &EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES);
                 ImGui::Separator();

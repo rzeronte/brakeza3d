@@ -106,7 +106,7 @@ public:
             auto *ghost = dynamic_cast<DoorGhost*> (*it);
             if ( ghost != nullptr ) {
                 if (this->mesh->aabb.isColliding(&ghost->aabb)) {
-                    Drawable::drawAABB(&ghost->aabb, ghost);
+                    Drawable::drawAABB(&ghost->aabb, ghost, Color::white());
                 }
             }
         }

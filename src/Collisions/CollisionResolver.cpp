@@ -5,7 +5,6 @@
 #include "../../headers/Game/ItemWeaponGhost.h"
 #include "../../headers/Game/ItemHealthGhost.h"
 #include "../../headers/Game/ItemAmmoGhost.h"
-#include "../../headers/Game/DoorGhost.h"
 
 CollisionResolver::CollisionResolver(
         btPersistentManifold *contactManifold,

@@ -39,7 +39,8 @@ public:
     void onUpdateSceneObjects();
     void hiddenSurfaceRemoval();
     void hiddenSurfaceRemovalTriangle(Triangle *t);
-
+    void hiddenOctreeRemoval();
+    void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle*> &triangles);
     void drawVisibleTriangles();
 
     void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);

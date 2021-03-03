@@ -11,6 +11,7 @@
 #include "../Misc/cJSON.h"
 #include "ComponentBSP.h"
 #include "../Physics/Mesh3DGhost.h"
+#include "../Misc/Octree.h"
 
 class ComponentGame : public Component {
 public:
@@ -32,6 +33,11 @@ public:
 
 
     Player *player;
+    Mesh3DBody *car;
+    Mesh3DBody *character;
+    Mesh3DBody *city;
+    Mesh3D *sample;
+
     int kills = 0;
 
     Player *getPlayer() const;
@@ -58,6 +64,8 @@ public:
     void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
     void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
 
+    void startThirdPerson();
+    void startFPS();
 };
 
 

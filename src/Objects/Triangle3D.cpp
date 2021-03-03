@@ -173,28 +173,27 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
 void Triangle::updateTextureAnimated()
 {
     if (this->getTexture() == NULL) return;
+    if (!this->getTexture()->animated) return;
 
-    if (this->getTexture()->animated) {
-        this->timerTextureAnimatedFrameControl += Brakeza3D::get()->deltaTime / 1000;
+    this->timerTextureAnimatedFrameControl += Brakeza3D::get()->deltaTime / 1000;
 
-        int maxFrames = this->getTexture()->numAnimatedFrames;
+    int maxFrames = this->getTexture()->numAnimatedFrames;
 
-        if (currentBSPTextureAnimatedFrame <= maxFrames) {
-            std::string baseName = this->getTexture()->getFilename().substr(2, this->getTexture()->getFilename().length());
+    if (currentBSPTextureAnimatedFrame <= maxFrames) {
+        std::string baseName = this->getTexture()->getFilename().substr(2, this->getTexture()->getFilename().length());
 
-            std::string n = "+" + std::to_string(currentBSPTextureAnimatedFrame) + baseName;
+        std::string n = "+" + std::to_string(currentBSPTextureAnimatedFrame) + baseName;
 
-            float stepTime = (float) 1 / (float) maxFrames;
+        float stepTime = (float) 1 / (float) maxFrames;
 
-            if (this->timerTextureAnimatedFrameControl >= stepTime) {
-                this->setTexture(ComponentsManager::get()->getComponentBSP()->getBSP()->getTexture(n));
-                this->currentBSPTextureAnimatedFrame++;
-                this->timerTextureAnimatedFrameControl = 0;
-            }
+        if (this->timerTextureAnimatedFrameControl >= stepTime) {
+            this->setTexture(ComponentsManager::get()->getComponentBSP()->getBSP()->getTexture(n));
+            this->currentBSPTextureAnimatedFrame++;
+            this->timerTextureAnimatedFrameControl = 0;
+        }
 
-            if ( currentBSPTextureAnimatedFrame >= maxFrames ) {
-                currentBSPTextureAnimatedFrame = 0;
-            }
+        if ( currentBSPTextureAnimatedFrame >= maxFrames ) {
+            currentBSPTextureAnimatedFrame = 0;
         }
     }
 }
@@ -273,10 +272,6 @@ void Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
             triangles[i]->updateUVCache();
             triangles[i]->updateBoundingBox();
             triangles[i]->updateFullArea();
-
-            if (EngineSetup::getInstance()->RASTERIZER_OPENCL) {
-                EngineBuffers::getInstance()->addOCLTriangle(triangles[i]->getOpenCL());
-            }
         }
     }
 }
@@ -367,7 +362,10 @@ Vertex3D Triangle::getCenterOfMass()
 void Triangle::drawNormal(Camera3D *cam, Uint32 color)
 {
     Vertex3D normal = this->getNormal();
-    Vector3D v = Vector3D( this->Ao,  normal);
+    Vertex3D origin = this->getCenterOfMass();
+
+    Vertex3D destiny = origin + normal.getNormalize().getScaled(5);
+    Vector3D v = Vector3D( origin, destiny);
     Drawable::drawVector3D( v, cam, color );
 }
 

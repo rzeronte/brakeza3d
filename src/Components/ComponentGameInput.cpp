@@ -51,14 +51,32 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)
     if (SETUP->MENU_ACTIVE) return;
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+    ComponentGame *game = ComponentsManager::get()->getComponentGame();
 
     // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
-        player->jump();
+        if (event->type == SDL_KEYDOWN) {
+            if (player->isVehicle()) {
+                player->setIsVehicle(false);
+                cam->setFollowTo( game->character );
+                game->car->setEnabled(false);
+                game->character->setEnabled(true);
+            } else {
+                player->setIsVehicle(true);
+                cam->setFollowTo( game->car );
+                game->car->setEnabled(true);
+                game->character->setEnabled(false);
+            }
+        }
+        //player->jump();
     }
 
     // step sounds
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
+        if (event->type == SDL_KEYDOWN) {
+        }
+
         if (player->counterStep->isFinished()) {
 
             player->counterStep->setEnabled(true);

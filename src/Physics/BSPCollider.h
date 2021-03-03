@@ -297,7 +297,7 @@ typedef struct
 
 typedef struct
 {
-    int		fileofs, filelen;
+    int	fileofs, filelen;
 } lump_t;
 
 class BSPCollider {
@@ -305,10 +305,13 @@ public:
 
     model_collision_t *worldmodel;
     model_collision_t *playermodel;
+    std::vector<model_collision_t *>entities;
+
     vec3_t vec3_origin;
     float scale;
 
     BSPCollider();
+    void LoadModelCollisionForEntities();
     void LoadModelCollisionForWorld();
     void resetPlayerModelData();
 
@@ -325,7 +328,6 @@ public:
 
     trace_t SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
     trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type);
-    void SV_FindTouchedLeafs (model_collision_t *ent, mnode_t *node);
     trace_t SV_PushEntity (model_collision_t *ent, vec3_t push);
 
     void SV_WallFriction (model_collision_t *ent, trace_t *trace);
@@ -375,6 +377,7 @@ public:
     vec_t VectorLength(vec3_t v);
 
     bool isPlayerOnGround();
+    void SV_ClipToLinks( moveclip_t *clip, trace_t &trace);
 
 };
 

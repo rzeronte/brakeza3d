@@ -41,6 +41,8 @@ Camera3D::Camera3D() {
     this->makeKineticCharacter(startTransform, capsule);
 
     this->setLabel( EngineSetup::getInstance()->cameraNameIdentifier );
+
+    this->follow_to_position_offset = Vertex3D(10, -15, 0);
 }
 
 float Camera3D::getNearDistance()
@@ -188,7 +190,7 @@ void Camera3D::UpdateVelocity()
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = this->getPosition().z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = this->getPosition().x + speed * (float) sin(-yaw * M_PI / 180.0);
-        //this->velocity.vertex2.y = this->getPosition().y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
+        this->velocity.vertex2.y = this->getPosition().y + speed * (float) sin(pitch * M_PI / 180.0); // VERTICAL
     }
 
     // Move the camera side ways

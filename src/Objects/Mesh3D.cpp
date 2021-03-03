@@ -23,6 +23,8 @@ Mesh3D::Mesh3D()
     shadowCaster = false;
     BSPEntityIndex = -1;
     decal = false;
+
+    this->octree = NULL;
 }
 
 bool Mesh3D::loadOBJBlender(const char *name)
@@ -230,7 +232,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
     Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
 }
 
-void Mesh3D::draw(std::vector<Triangle*> *frameTriangles)
+void Mesh3D::sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles)
 {
     // draw triangles of mesh
     ComponentsManager::get()->getComponentRender()->lockFrameTriangles.lock();
@@ -276,14 +278,35 @@ void Mesh3D::updateBoundingBox()
     float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
-        maxX = std::fmax(maxX, this->modelTriangles[i]->A.x);
-        minX = std::fmin(minX, this->modelTriangles[i]->A.x);
+        maxX = std::fmax(maxX, this->modelTriangles[i]->Ao.x);
+        minX = std::fmin(minX, this->modelTriangles[i]->Ao.x);
 
-        maxY = std::fmax(maxY, this->modelTriangles[i]->A.y);
-        minY = std::fmin(minY, this->modelTriangles[i]->A.y);
+        maxY = std::fmax(maxY, this->modelTriangles[i]->Ao.y);
+        minY = std::fmin(minY, this->modelTriangles[i]->Ao.y);
 
-        maxZ = std::fmax(maxZ, this->modelTriangles[i]->A.z);
-        minZ = std::fmin(minZ, this->modelTriangles[i]->A.z);
+        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Ao.z);
+        minZ = std::fmin(minZ, this->modelTriangles[i]->Ao.z);
+
+        //
+        maxX = std::fmax(maxX, this->modelTriangles[i]->Bo.x);
+        minX = std::fmin(minX, this->modelTriangles[i]->Bo.x);
+
+        maxY = std::fmax(maxY, this->modelTriangles[i]->Bo.y);
+        minY = std::fmin(minY, this->modelTriangles[i]->Bo.y);
+
+        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Bo.z);
+        minZ = std::fmin(minZ, this->modelTriangles[i]->Bo.z);
+
+        //
+        maxX = std::fmax(maxX, this->modelTriangles[i]->Co.x);
+        minX = std::fmin(minX, this->modelTriangles[i]->Co.x);
+
+        maxY = std::fmax(maxY, this->modelTriangles[i]->Co.y);
+        minY = std::fmin(minY, this->modelTriangles[i]->Co.y);
+
+        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Co.z);
+        minZ = std::fmin(minZ, this->modelTriangles[i]->Co.z);
+
     }
 
     this->aabb.max.x = maxX;
@@ -341,7 +364,18 @@ void Mesh3D::copyFrom(Mesh3D *source)
 
 void Mesh3D::onUpdate()
 {
-    this->draw( &ComponentsManager::get()->getComponentRender()->getFrameTriangles()) ;
+    this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles()) ;
+
+    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
+        if (this->octree != NULL) {
+            Drawable::drawOctree(this->octree, true);
+        }
+    }
+
+    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+        this->updateBoundingBox();
+        Drawable::drawAABB(&this->aabb, this, Color::white());
+    }
 }
 
 bool Mesh3D::AssimpLoadGeometryFromFile(std::string fileName)
@@ -407,7 +441,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
                     p = p.substr(2, p.size() - 2);
                 }
 
-                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + base_filename;
+                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
 
                 std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
                 Texture *t = new Texture();
@@ -483,4 +517,14 @@ const std::string &Mesh3D::getSourceFile() const {
 
 void Mesh3D::setSourceFile(const std::string &sourceFile) {
     source_file = sourceFile;
+}
+
+Octree *Mesh3D::getOctree() const {
+    return octree;
+}
+
+void Mesh3D::buildOctree() 
+{
+    this->updateBoundingBox();
+    this->octree = new Octree(this->modelTriangles, this->aabb);
 }

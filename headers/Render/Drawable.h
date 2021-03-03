@@ -9,6 +9,7 @@
 #include "../Objects/Line2D.h"
 #include "../Objects/Cube3D.h"
 #include "Billboard.h"
+#include "../Misc/Octree.h"
 
 class Drawable {
 public:
@@ -36,7 +37,9 @@ public:
     static void drawFadeIn();
     static void drawFadeOut();
     static void drawFacePercent(float percent);
-    static void drawAABB(AABB3D *, Object3D *);
+    static void drawAABB(AABB3D *, Object3D *, Uint32);
+    static void drawOctree(Octree *, bool onlyWithTriangles);
+    static void drawOctreeNode(OctreeNode *, bool onlyWithTriangles);
 };
 
 

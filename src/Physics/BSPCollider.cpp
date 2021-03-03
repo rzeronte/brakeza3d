@@ -1,5 +1,6 @@
 #include "BSPCollider.h"
 #include "../../headers/ComponentsManager.h"
+#include "../../headers/Render/Transforms.h"
 
 static inline short LittleShort(short s) { return s; }
 static inline int LittleLong(int l) { return l; }
@@ -11,7 +12,9 @@ BSPCollider::BSPCollider()
     this->vec3_origin[2] = 0;
 
     LoadModelCollisionForWorld();
+    LoadModelCollisionForEntities();
 }
+
 void BSPCollider::resetPlayerModelData()
 {
     this->playermodel->mins[0] = -16;
@@ -39,6 +42,60 @@ void BSPCollider::resetPlayerModelData()
     this->playermodel->oldorigin[0] = 0;
     this->playermodel->oldorigin[1] = 0;
     this->playermodel->oldorigin[2] = 0;
+}
+
+void BSPCollider::LoadModelCollisionForEntities()
+{
+    int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
+    BSPMap *bspMAP = ComponentsManager::get()->getComponentBSP()->getBSP();
+    this->entities.resize( numModels );
+
+    for (int i = 1; i < this->entities.size(); i++ ) {
+        this->entities[i] = getModelCollisionFromBSP(i);
+    }
+
+    model_t *bm;
+    for (int i = 1; i < this->entities.size(); i++ ) {
+        bm = bspMAP->getModel(i);
+        model_collision_t *mod = this->entities[i];
+
+        mod->hulls[0].firstclipnode = bm->headnode[0];
+        for (int j = 0; j < MAX_MAP_HULLS ; j++) {
+            mod->hulls[j].firstclipnode = bm->headnode[j];
+            mod->hulls[j].lastclipnode = mod->numclipnodes-1;
+
+            VectorCopy(bm->box.max, mod->hulls[j].clip_maxs);
+            VectorCopy(bm->box.min, mod->hulls[j].clip_mins);
+        }
+
+        VectorAdd(mod->origin, mod->mins, mod->absmin);
+        VectorAdd(mod->origin, mod->maxs, mod->absmax);
+
+        Logging::getInstance()->Log("modelindex: " + std::to_string( i ));
+
+        if ((int)mod->flags & FL_ITEM) {
+            mod->absmin[0] -= 15;
+            mod->absmin[1] -= 15;
+            mod->absmax[0] += 15;
+            mod->absmax[1] += 15;
+        } else {
+            /*
+             * because movement is clipped an epsilon away from an actual edge, we
+             * must fully check even when bounding boxes don't quite touch
+             */
+            mod->absmin[0] -= 2;
+            mod->absmin[1] -= 2;
+            mod->absmin[2] -= 2;
+            mod->absmax[0] += 2;
+            mod->absmax[1] += 2;
+            mod->absmax[2] += 2;
+        }
+
+        Tools::consoleVec3(mod->absmax, "max");
+        Tools::consoleVec3(mod->absmin, "min");
+        Tools::consoleVec3(mod->origin, "origin");
+
+    }
 }
 
 void BSPCollider::LoadModelCollisionForWorld()
@@ -84,13 +141,10 @@ model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId)
     Mod_LoadClipnodes_BSP29(model, bspMap->header);
     Mod_MakeDrawHull(model);
 
-    model->origin[0] = bspModel->origin[0];
-    model->origin[1] = bspModel->origin[1];
-    model->origin[2] = bspModel->origin[2];
-
-    model->oldorigin[0] = bspModel->origin[0];
-    model->oldorigin[1] = bspModel->origin[1];
-    model->oldorigin[2] = bspModel->origin[2];
+    VectorCopy(bspModel->origin, model->origin);
+    VectorCopy(bspModel->box.min, model->mins);
+    VectorCopy(bspModel->box.max, model->maxs);
+    VectorCopy(bspModel->origin, model->oldorigin);
 
     return model;
 }
@@ -352,7 +406,6 @@ trace_t BSPCollider::SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, 
 trace_t BSPCollider::SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type)
 {
     moveclip_t	clip;
-    int			i;
 
     memset ( &clip, 0, sizeof ( moveclip_t ) );
 
@@ -364,18 +417,14 @@ trace_t BSPCollider::SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end
     clip.maxs = maxs;
     clip.type = type;
 
-    if (type == MOVE_MISSILE) {
-        for (i=0 ; i<3 ; i++) {
-            clip.mins2[i] = -15;
-            clip.maxs2[i] = 15;
-        }
-    } else {
-        VectorCopy (mins, clip.mins2);
-        VectorCopy (maxs, clip.maxs2);
-    }
+    VectorCopy (mins, clip.mins);
+    VectorCopy (maxs, clip.maxs);
 
     // create the bounding box of the entire move
-    SV_MoveBounds ( start, clip.mins2, clip.maxs2, end, clip.boxmins, clip.boxmaxs );
+    SV_MoveBounds ( start, clip.mins, clip.maxs, end, clip.boxmins, clip.boxmaxs );
+
+    // clip to entities
+    SV_ClipToLinks ( &clip , clip.trace);
 
     return clip.trace;
 }
@@ -497,9 +546,8 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
 
         // run the impact function
         //SV_Impact (ent, trace.ent);
-        if (ent->free)
-            break;		// removed by the impact function
-
+        //if (ent->free)
+        //    break;		// removed by the impact function
 
         time_left -= time_left * trace.fraction;
 
@@ -549,46 +597,6 @@ int BSPCollider::SV_FlyMove (model_collision_t *ent, float time, trace_t *steptr
     return blocked;
 }
 
-void BSPCollider::SV_FindTouchedLeafs (model_collision_t *ent, mnode_t *node)
-{
-    mplane_t	*splitplane;
-    mleaf_t 	*leaf;
-    int			sides;
-    int			leafnum;
-
-    if (node->contents == CONTENTS_SOLID)
-        return;
-
-    // add an efrag if the node is a leaf
-
-    if ( node->contents < 0)
-    {
-        if (ent->num_leafs == MAX_ENT_LEAFS)
-            return;
-
-        model_collision_t *worldmodelleafs = getModelCollisionFromBSP(0);
-
-        leaf = (mleaf_t *)node;
-        leafnum = leaf - worldmodelleafs->leafs - 1;
-
-        ent->leafnums[ent->num_leafs] = leafnum;
-        ent->num_leafs++;
-        return;
-    }
-
-    // NODE_MIXED
-    splitplane = node->plane;
-    sides = BoxOnPlaneSide(ent->absmin, ent->absmax, splitplane);
-
-    // recurse down the contacted sides
-    if (sides & 1)
-        SV_FindTouchedLeafs (ent, node->children[0]);
-
-    if (sides & 2)
-        SV_FindTouchedLeafs (ent, node->children[1]);
-}
-
-
 trace_t BSPCollider::SV_PushEntity (model_collision_t *ent, vec3_t push)
 {
     trace_t	trace;
@@ -596,12 +604,12 @@ trace_t BSPCollider::SV_PushEntity (model_collision_t *ent, vec3_t push)
 
     VectorAdd (ent->origin, push, end);
 
-    if (ent->movetype == MOVETYPE_FLYMISSILE)
+    /*if (ent->movetype == MOVETYPE_FLYMISSILE)
         trace = SV_Move (ent->origin, ent->mins, ent->maxs, end, MOVE_MISSILE);
     else if (ent->solid == SOLID_TRIGGER || ent->solid == SOLID_NOT)
         // only clip against bmodels
         trace = SV_Move (ent->origin, ent->mins, ent->maxs, end, MOVE_NOMONSTERS);
-    else
+    else*/
         trace = SV_Move (ent->origin, ent->mins, ent->maxs, end, MOVE_NORMAL);
 
     VectorCopy (trace.endpos, ent->origin);
@@ -936,33 +944,30 @@ model_collision_t *BSPCollider::SV_TestEntityPosition (model_collision_t *ent)
 void BSPCollider::drawHullAABB(model_collision_t *model, int indexHull)
 {
     hull_t hull = model->hulls[indexHull];
-    BSPMap *bspMap = ComponentsManager::get()->getComponentBSP()->getBSP();
 
-    for (int i = 0; i < model->numnodes; i++) {
-        mnode_t node = model->nodes[i];
-        for (int j = node.firstsurface; j < node.firstsurface + node.numsurfaces; j++) {
-            bspMap->DrawSurfaceTriangles( j );
-        }
-        AABB3D a;
-        a.min.x = node.mins[0];
-        a.min.y = node.mins[1];
-        a.min.z = node.mins[2];
-        a.max.x = node.maxs[0];
-        a.max.y = node.maxs[1];
-        a.max.z = node.maxs[2];
+    AABB3D a;
+    a.min.x = hull.clip_mins[0];
+    a.min.y = hull.clip_mins[1];
+    a.min.z = hull.clip_mins[2];
+    a.max.x = hull.clip_maxs[0];
+    a.max.y = hull.clip_maxs[1];
+    a.max.z = hull.clip_maxs[2];
 
-        a.vertices[0] = a.max;
-        a.vertices[1] = a.min;
-        a.vertices[2] = Vertex3D(a.max.x, a.max.y, a.min.z);
-        a.vertices[3] = Vertex3D(a.max.x, a.min.y, a.max.z);
-        a.vertices[4] = Vertex3D(a.min.x, a.max.y, a.max.z);
-        a.vertices[5] = Vertex3D(a.max.x, a.min.y, a.min.z);
-        a.vertices[6] = Vertex3D(a.min.x, a.max.y, a.min.z);
-        a.vertices[7] = Vertex3D(a.min.x, a.min.y, a.max.z);
+    a.vertices[0] = a.max;
+    a.vertices[1] = a.min;
+    a.vertices[2] = Vertex3D(a.max.x, a.max.y, a.min.z);
+    a.vertices[3] = Vertex3D(a.max.x, a.min.y, a.max.z);
+    a.vertices[4] = Vertex3D(a.min.x, a.max.y, a.max.z);
+    a.vertices[5] = Vertex3D(a.max.x, a.min.y, a.min.z);
+    a.vertices[6] = Vertex3D(a.min.x, a.max.y, a.min.z);
+    a.vertices[7] = Vertex3D(a.min.x, a.min.y, a.max.z);
 
-        Object3D *p = new Object3D();
-        Drawable::drawAABB(&a,p);
-    }
+    //for (int i = 0; i < 8; i++) {
+    //    a.vertices[i] = M3(90, 0, 0) * a.vertices[i];
+    //}
+
+    auto *p = new Object3D();
+    Drawable::drawAABB(&a,p, Color::white());
 }
 
 void BSPCollider::Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header)
@@ -1435,7 +1440,8 @@ void BSPCollider::checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_
     vec3_t end;
     BSPCollider::Vertex3DToVec3(finish, end);
 
-    trace_t t = SV_ClipMoveToEntity ( getWorldModel(), origin, mins, maxs, end );
+    model_collision_t *model = getWorldModel();
+    trace_t t = SV_ClipMoveToEntity ( model, origin, mins, maxs, end );
 
     consoleTrace(&t);
 
@@ -1455,4 +1461,45 @@ vec_t BSPCollider::VectorLength(vec3_t v)
     length = sqrt (length);		// FIXME
 
     return length;
+}
+
+void BSPCollider::SV_ClipToLinks( moveclip_t *clip, trace_t &trace)
+{
+    model_collision_t *touch;
+    trace_t checkTrace;
+    // touch linked edicts
+    for (int i = 1; i < this->entities.size(); i++) {
+
+        touch = this->entities[i];
+        if (i != 38) continue;
+        printf("modelindex: %d, max: %f, %f, %f\r\n", i, touch->absmax[0], touch->absmax[1], touch->absmax[2]);
+        printf("modelindex: %d, min: %f, %f, %f\r\n", i, touch->absmin[0], touch->absmin[1], touch->absmin[2]);
+
+        if (clip->boxmins[0] > touch->absmax[0]
+            || clip->boxmins[1] > touch->absmax[1]
+            || clip->boxmins[2] > touch->absmax[2]
+            || clip->boxmaxs[0] < touch->absmin[0]
+            || clip->boxmaxs[1] < touch->absmin[1]
+            || clip->boxmaxs[2] < touch->absmin[2]
+        ) {
+            continue;
+        }
+
+        // might intersect, so do an exact clip
+        if (clip->trace.allsolid) {
+            return;
+        }
+
+        checkTrace = SV_ClipMoveToEntity (touch, clip->start, clip->boxmins, clip->boxmaxs, clip->end);
+
+        if (checkTrace.allsolid || checkTrace.startsolid || checkTrace.fraction < clip->trace.fraction) {
+            if (clip->trace.startsolid) {
+                clip->trace = checkTrace;
+                clip->trace.startsolid = true;
+            } else {
+                clip->trace = checkTrace;
+            }
+        } else if (trace.startsolid)
+            clip->trace.startsolid = true;
+    }
 }

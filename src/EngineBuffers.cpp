@@ -42,8 +42,6 @@ EngineBuffers::EngineBuffers()
     int firePixelsBufferSize = setup->FIRE_WIDTH * setup->FIRE_HEIGHT;
     firePixelsBuffer = new int[firePixelsBufferSize];
 
-    OCLTrianglesBuffer = new OCLTriangle[EngineSetup::getInstance()->ENGINE_MAX_OCLTRIANGLES];
-
     // 37 colores * 3 (rgb channels)
     this->makeFireColors();
     this->fireShaderSetup();
@@ -106,12 +104,6 @@ void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value)
 void EngineBuffers::setVideoBuffer(const int i, Uint32 value)
 {
     videoBuffer[ i ] = value;
-}
-
-void EngineBuffers::addOCLTriangle(OCLTriangle oclt)
-{
-    OCLTrianglesBuffer[numOCLTriangles] = oclt;
-    numOCLTriangles++;
 }
 
 float EngineBuffers::getVideoBuffer(int x, int y)

@@ -60,6 +60,7 @@ public:
     Vector3D far_left = Vector3D();
     Vector3D far_right = Vector3D();
 
+    AABB3D bounds;
 
 public:
     Frustum();
@@ -69,6 +70,7 @@ public:
     void updateCenters();
     void updatePlanes();
     void updatePoints();
+    void updateBounds();
 
     bool isPointInFrustum(Vertex3D &v);
     bool isAABBInFrustum(AABB3D *aabb);

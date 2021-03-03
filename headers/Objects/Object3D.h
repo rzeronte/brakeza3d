@@ -20,7 +20,7 @@ public:
     bool  removed;
     bool  followCamera = false;
 
-    Vertex3D drawOffset = Vertex3D::zero();
+    Vertex3D drawOffset;
 
     float scale;
 

@@ -3,6 +3,8 @@
 //
 
 #include "../../headers/Physics/Body.h"
+#include "../../headers/EngineSetup.h"
+#include "../../headers/Misc/Tools.h"
 
 Body::Body() {
 
@@ -24,5 +26,20 @@ void Body::setBoxShapeSize(Vertex3D size)
 
 Vertex3D Body::getBoxShapeSize() {
     return this->boxShapeSize;
+}
+
+void Body::applyImpulse(Vertex3D impulse)
+{
+
+    this->m_body->clearForces();
+
+    if (!Tools::isValidVector(impulse) ) {
+        return;
+    }
+
+    btVector3 i( impulse.x, impulse.y, impulse.z );
+
+    this->m_body->activate(true);
+    this->m_body->applyCentralImpulse( i );
 }
 
