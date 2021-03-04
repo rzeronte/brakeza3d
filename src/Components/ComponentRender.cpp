@@ -527,13 +527,7 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle*> *visibleTriangle
 void ComponentRender::drawSceneObjectsAxis()
 {
     for (int i = 0; i < getSceneObjects()->size(); i++) {
-        if (
-            getSceneObjects()->operator[](i)->isEnabled() &&
-                (
-                    !getSceneObjects()->operator[](i)->getLabel().compare( "test1") ||
-                    !getSceneObjects()->operator[](i)->getLabel().compare( "test2")
-                )
-        ) {
+        if ( getSceneObjects()->operator[](i)->isEnabled() ) {
             Drawable::drawObject3DAxis(getSceneObjects()->operator[](i), ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
         }
     }
