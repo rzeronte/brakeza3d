@@ -313,6 +313,13 @@ public:
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::getInstance()->RENDER_OBJECTS_AXIS);
                 ImGui::Checkbox("Draw Mesh3D AABB", &EngineSetup::getInstance()->DRAW_MESH3D_AABB);
                 ImGui::Checkbox("Draw Mesh3D Octree", &EngineSetup::getInstance()->DRAW_MESH3D_OCTREE);
+                ImGui::Checkbox("Draw Mesh3D Grid", &EngineSetup::getInstance()->DRAW_MESH3D_GRID);
+                if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
+                    ImGui::Separator();
+                    ImGui::Checkbox("CubeGrids Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY);
+                    ImGui::Checkbox("CubeGrids No Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY);
+                    ImGui::Separator();
+                }
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);
                 ImGui::Checkbox("Draw Decals wireframe", &EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES);
                 ImGui::Separator();

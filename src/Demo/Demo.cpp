@@ -65,7 +65,7 @@ Demo::Demo()
     decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
     decal->getSprite()->setAnimation(Tools::random(0, 10));
     decal->cube->setPosition( decal->getPosition() );
-    decal->cube->update();
+    decal->cube->updateGeometry();
     Brakeza3D::get()->addObject3D(decal, "decal");
 
     // triangle

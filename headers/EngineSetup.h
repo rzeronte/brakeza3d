@@ -99,6 +99,9 @@ public:
 
     bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
+    bool DRAW_MESH3D_GRID = false;
+    bool DRAW_MESH3D_GRID_EMPTY = true;
+    bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
     // Z BUFFER
     bool ENABLE_SHADOW_CASTING = false;

@@ -966,8 +966,7 @@ void BSPCollider::drawHullAABB(model_collision_t *model, int indexHull)
     //    a.vertices[i] = M3(90, 0, 0) * a.vertices[i];
     //}
 
-    auto *p = new Object3D();
-    Drawable::drawAABB(&a,p, Color::white());
+    Drawable::drawAABB(&a, Color::white());
 }
 
 void BSPCollider::Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header)

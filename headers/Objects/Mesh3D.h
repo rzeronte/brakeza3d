@@ -9,6 +9,7 @@
 #include "../EngineSetup.h"
 #include "Object3D.h"
 #include "../Misc/Octree.h"
+#include "../Misc/Grid3D.h"
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
@@ -34,8 +35,6 @@ public:
 
     int numVertices;
     int numTextures;
-
-    //std::vector<LightPoint3D *>lightPoints;
 
     bool shadowCaster;
     int BSPEntityIndex;
@@ -77,8 +76,12 @@ public:
     Octree *getOctree() const;
     void buildOctree();
 
+    Grid3D *getGrid3D() const;
+    void buildGrid3D(int sizeX, int sizeY, int sizeZ);
+
 private:
     Octree *octree;
+    Grid3D *grid;
 
 };
 

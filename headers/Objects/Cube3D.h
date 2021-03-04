@@ -48,7 +48,7 @@ static const float cubeVertexBuffer[] = {
         1.0f,-1.0f, 1.0f
 };
 
-class Cube3D : public Mesh3D{
+class Cube3D : public Mesh3D {
 public:
     Vertex3D vertices[36];
     Plane planes[6];
@@ -57,7 +57,7 @@ public:
     Cube3D(float scale);
     Cube3D(float scaleX, float scaleY, float scaleZ);
 
-    void update();
+    void updateGeometry();
     void makeVertices();
     void makeTriangles();
     void makePlanes();

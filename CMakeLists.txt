@@ -240,7 +240,7 @@ add_executable(brakeza3d
         headers/Objects/Mesh3DAnimatedCollection.h
         src/Physics/BSPCollider.cpp
         src/Physics/BSPCollider.h
-        src/2D/TextWriter.cpp headers/2D/TextWriter.h headers/Game/DoorGhost.cpp headers/Game/DoorGhost.h headers/Physics/Ghost.cpp headers/Physics/Ghost.h headers/Render/AABB3D.h src/Misc/Octree.cpp headers/Misc/Octree.h)
+        src/2D/TextWriter.cpp headers/2D/TextWriter.h headers/Game/DoorGhost.cpp headers/Game/DoorGhost.h headers/Physics/Ghost.cpp headers/Physics/Ghost.h headers/Render/AABB3D.h src/Misc/Octree.cpp headers/Misc/Octree.h headers/Misc/Grid3D.cpp headers/Misc/Grid3D.h)
 
 target_link_libraries(brakeza3d
         ${SDL2_LIBRARY}

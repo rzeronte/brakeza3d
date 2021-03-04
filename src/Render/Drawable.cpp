@@ -585,7 +585,7 @@ void Drawable::waterShader(int type)
     memcpy (&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
-void Drawable::drawAABB(AABB3D *aabb, Object3D *o, Uint32 color)
+void Drawable::drawAABB(AABB3D *aabb, Uint32 color)
 {
     Vector3D v01(aabb->vertices[0], aabb->vertices[2]);
     Vector3D v02(aabb->vertices[0], aabb->vertices[3]);
@@ -621,11 +621,9 @@ void Drawable::drawAABB(AABB3D *aabb, Object3D *o, Uint32 color)
 
 void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
 {
-    auto o = Object3D();
-
     Uint32 color = Color::white();
-    if (node->isLeaf() && node->triangles.size() == 0) {
-        Drawable::drawAABB(&node->bounds, &o, color);
+    if (node->isLeaf() ) {
+        Drawable::drawAABB(&node->bounds, color);
     }
 
     for (int i = 0; i < 8; i++) {
@@ -637,8 +635,24 @@ void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
 
 void Drawable::drawOctree(Octree *octree, bool onlyWithTriangles)
 {
-    auto o = Object3D();
-    Drawable::drawAABB(&octree->root->bounds, &o, Color::yellow());
+    Drawable::drawAABB(&octree->root->bounds, Color::yellow());
     Drawable::drawOctreeNode(octree->root, onlyWithTriangles);
 }
+
+void Drawable::drawGrid3D(Grid3D *grid)
+{
+    for (int i = 0; i < grid->boxes.size(); i++) {
+
+        if (grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY) {
+            Uint32 c = Color::yellow();
+            Drawable::drawAABB(grid->boxes[i]->box, c);
+        }
+
+        if (!grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY) {
+            Uint32 c = Color::red();
+            Drawable::drawAABB(grid->boxes[i]->box, c);
+        }
+    }
+}
+
 

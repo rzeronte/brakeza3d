@@ -150,7 +150,7 @@ public:
         decal->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->cube->setPosition( decal->getPosition() );
-        decal->cube->update();
+        decal->cube->updateGeometry();
         decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         decal->getSprite()->setAnimation(Tools::random(0, 10));
         Brakeza3D::get()->addObject3D(decal, "decal");

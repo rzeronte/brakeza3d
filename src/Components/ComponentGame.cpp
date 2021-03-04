@@ -16,6 +16,7 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
 #include "../../headers/Game/DoorGhost.h"
 #include "../../headers/Misc/Octree.h"
+#include "../../headers/Misc/Grid3D.h"
 
 ComponentGame::ComponentGame()
 {
@@ -37,7 +38,7 @@ void ComponentGame::startThirdPerson()
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
-    camera->follow_to_position_offset = Vertex3D(12, -22, 0);
+    camera->follow_to_position_offset = Vertex3D(12, -122, 0);
 
     // ---- city
     city = new Mesh3DBody();
@@ -49,12 +50,14 @@ void ComponentGame::startThirdPerson()
             false
     );
     city->buildOctree();
+    city->setEnabled( false );
     Brakeza3D::get()->addObject3D(city, "city");
 
     // ---- car
     car = new Mesh3DBody();
     car->setPosition( originalCarPosition );
     car->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "car.obj").c_str());
+    car->buildOctree();
     car->makeSimpleRigidBody(
             800,
             car->getPosition(),
@@ -66,7 +69,6 @@ void ComponentGame::startThirdPerson()
     // ---- character
     character = new Mesh3DBody();
     character->setPosition( originalCarPosition  + Vertex3D(15, 0, 0));
-    character->setPosition( originalCarPosition );
     character->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
     character->makeSimpleRigidBody(
             80,
@@ -86,10 +88,19 @@ void ComponentGame::startThirdPerson()
     camera->roll  = 0;
     camera->UpdateRotation();
 
+    // demo object
+    auto *mono = new Mesh3D();
+    mono->setPosition(Vertex3D(100, 100, 100));
+    mono->setScale(10);
+    mono->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
+    mono->buildOctree();
+    mono->buildGrid3D(10, 10, 10);
+    Brakeza3D::get()->addObject3D(mono, "mono");
+
+
     // cam follow to car
     //camera->setFollowTo(car);
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
-
 }
 
 void ComponentGame::startFPS()

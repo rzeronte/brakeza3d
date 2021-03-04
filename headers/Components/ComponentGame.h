@@ -12,6 +12,7 @@
 #include "ComponentBSP.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Misc/Octree.h"
+#include "../Misc/Grid3D.h"
 
 class ComponentGame : public Component {
 public:

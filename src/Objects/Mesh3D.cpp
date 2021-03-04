@@ -25,6 +25,7 @@ Mesh3D::Mesh3D()
     decal = false;
 
     this->octree = NULL;
+    this->grid = NULL;
 }
 
 bool Mesh3D::loadOBJBlender(const char *name)
@@ -272,12 +273,13 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
     BSPEntityIndex = bspEntityIndex;
 }
 
-
 void Mesh3D::updateBoundingBox()
 {
     float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
+        this->modelTriangles[i]->updateObjectSpace();
+
         maxX = std::fmax(maxX, this->modelTriangles[i]->Ao.x);
         minX = std::fmin(minX, this->modelTriangles[i]->Ao.x);
 
@@ -306,7 +308,6 @@ void Mesh3D::updateBoundingBox()
 
         maxZ = std::fmax(maxZ, this->modelTriangles[i]->Co.z);
         minZ = std::fmin(minZ, this->modelTriangles[i]->Co.z);
-
     }
 
     this->aabb.max.x = maxX;
@@ -325,15 +326,6 @@ void Mesh3D::updateBoundingBox()
     this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
     this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
     this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
-
-    Transforms::objectSpace(this->aabb.vertices[0], this->aabb.vertices[0], this);
-    Transforms::objectSpace(this->aabb.vertices[1], this->aabb.vertices[1], this);
-    Transforms::objectSpace(this->aabb.vertices[2], this->aabb.vertices[2], this);
-    Transforms::objectSpace(this->aabb.vertices[3], this->aabb.vertices[3], this);
-    Transforms::objectSpace(this->aabb.vertices[4], this->aabb.vertices[4], this);
-    Transforms::objectSpace(this->aabb.vertices[5], this->aabb.vertices[5], this);
-    Transforms::objectSpace(this->aabb.vertices[6], this->aabb.vertices[6], this);
-    Transforms::objectSpace(this->aabb.vertices[7], this->aabb.vertices[7], this);
 }
 
 void Mesh3D::copyFrom(Mesh3D *source)
@@ -342,12 +334,11 @@ void Mesh3D::copyFrom(Mesh3D *source)
 
     // Triangles
     for (auto & modelTriangle : source->modelTriangles) {
-
         auto *t = new Triangle(
-                modelTriangle->A,
-                modelTriangle->B,
-                modelTriangle->C,
-                this
+            modelTriangle->A,
+            modelTriangle->B,
+            modelTriangle->C,
+            this
         );
 
         t->setTexture(modelTriangle->getTexture());
@@ -372,9 +363,15 @@ void Mesh3D::onUpdate()
         }
     }
 
+    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
+        if (this->grid != NULL) {
+            Drawable::drawGrid3D(this->grid);
+        }
+    }
+
     if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
         this->updateBoundingBox();
-        Drawable::drawAABB(&this->aabb, this, Color::white());
+        Drawable::drawAABB(&this->aabb, Color::white());
     }
 }
 
@@ -521,6 +518,17 @@ void Mesh3D::setSourceFile(const std::string &sourceFile) {
 
 Octree *Mesh3D::getOctree() const {
     return octree;
+}
+
+Grid3D *Mesh3D::getGrid3D() const
+{
+    return grid;
+}
+
+void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
+{
+    this->updateBoundingBox();
+    this->grid = new Grid3D(this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ);
 }
 
 void Mesh3D::buildOctree() 
