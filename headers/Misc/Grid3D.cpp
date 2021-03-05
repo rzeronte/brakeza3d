@@ -3,7 +3,6 @@
 //
 
 #include "Grid3D.h"
-#include "../Render/Logging.h"
 #include "../EngineSetup.h"
 
 Grid3D::Grid3D( std::vector<Triangle*> &triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ)
@@ -55,27 +54,13 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
 {
     for (int i = 0; i < triangles.size(); i++) {
         triangles[i]->updateObjectSpace();
-        if (
-            this->isVertexInsideAABB(triangles[i]->Ao, cube.box) ||
-            this->isVertexInsideAABB(triangles[i]->Bo, cube.box) ||
-            this->isVertexInsideAABB(triangles[i]->Co, cube.box)
-        ) {
-            return false;
-        }
-    }
+        std::vector<Plane> planes = cube.box->getPlanes();
 
-    return true;
-}
+        bool r1 = Plane::isVertex3DClosedByPlanes(triangles[i]->Ao, planes);
+        bool r2 = Plane::isVertex3DClosedByPlanes(triangles[i]->Bo, planes);
+        bool r3 = Plane::isVertex3DClosedByPlanes(triangles[i]->Co, planes);
 
-bool Grid3D::isVertexInsideAABB(Vertex3D v, AABB3D *aabb)
-{
-    aabb->updateVertices();
-    std::vector<Plane> planes = aabb->getPlanes();
-
-    for (int i = 0; i < planes.size(); i++) {
-        Plane p = planes[i];
-        float d = p.distance(v);
-        if (d >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        if ( r1 || r2 || r3 ) {
             return false;
         }
     }

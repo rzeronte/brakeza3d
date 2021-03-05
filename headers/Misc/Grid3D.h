@@ -23,13 +23,11 @@ public:
     std::vector<CubeGrid3D*> boxes;
 
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle*> &triangles);
-    bool isVertexInsideAABB(Vertex3D v, AABB3D *bounds);
 
 private:
     int numberCubesX;
     int numberCubesY;
     int numberCubesZ;
-
 };
 
 

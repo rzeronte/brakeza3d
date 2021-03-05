@@ -42,15 +42,15 @@ void ComponentGame::startThirdPerson()
 
     // ---- city
     city = new Mesh3DBody();
-    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj").c_str());
+    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city.obj").c_str());
     city->makeRigidBodyFromTriangleMesh(
             0.0f,
             camera,
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
             false
     );
-    city->buildOctree();
-    city->setEnabled( false );
+    city->buildGrid3D(20, 4, 20);
+    city->setEnabled( true );
     Brakeza3D::get()->addObject3D(city, "city");
 
     // ---- car

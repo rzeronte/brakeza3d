@@ -31,7 +31,9 @@ public:
     void setNormal(Vertex3D);
 
     Vertex3D origin() const;
-    Vertex3D closest( Vertex3D p);
+    Vertex3D closest( Vertex3D p );
+
+    static bool isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes);
 
 };
 

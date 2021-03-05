@@ -34,7 +34,6 @@ public:
 
     OctreeNode* BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds, int recursiveDepth);
     bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
-    bool isVertexInsideAABB(Vertex3D v, std::vector<Plane> planes);
 
 };
 

@@ -83,29 +83,13 @@ bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds)
 
     triangle->updateObjectSpace();
 
-    bool r1 = this->isVertexInsideAABB(triangle->Ao, planes);
-    bool r2 = this->isVertexInsideAABB(triangle->Bo, planes);
-    bool r3 = this->isVertexInsideAABB(triangle->Co, planes);
+    bool r1 = Plane::isVertex3DClosedByPlanes(triangle->Ao, planes);
+    bool r2 = Plane::isVertex3DClosedByPlanes(triangle->Bo, planes);
+    bool r3 = Plane::isVertex3DClosedByPlanes(triangle->Co, planes);
 
     if (r1 || r2 || r3 ) {
         return true;
     }
 
     return false;
-}
-
-bool Octree::isVertexInsideAABB(Vertex3D v, std::vector<Plane> planes)
-{
-    int plane_init = 0;
-    int plane_end = 6;
-
-    for (int i = plane_init; i < plane_end; i++) {
-        Plane p = planes[i];
-        float d = p.distance(v);
-        if (d >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
-            return false;
-        }
-    }
-
-    return true;
 }
