@@ -1,6 +1,7 @@
 
 #include "../../headers/Render/Plane.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/EngineSetup.h"
 
 Plane::Plane()
 {
@@ -136,4 +137,16 @@ Vertex3D Plane::closest( Vertex3D p )
     float t = this->distance(p);
 
     return p - this->getNormalVector().getNormalize().getScaled( t );
+}
+
+bool Plane::isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes)
+{
+    for (int i = 0; i < planes.size(); i++) {
+        float d = planes[i].distance(v);
+        if (d >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+            return false;
+        }
+    }
+
+    return true;
 }
