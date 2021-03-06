@@ -132,8 +132,6 @@ public:
     void  updateBoundingBox();
     void  updateLightmapFrame();
 
-    OCLTriangle getOpenCL();
-
     int getId() const;
     void setId(int id);
 

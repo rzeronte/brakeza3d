@@ -62,6 +62,17 @@ public:
 
         return planes;
     }
+
+    Vertex3D getCenter()
+    {
+        Vertex3D dimensions = (this->max - this->min).getScaled(0.5);
+
+        return Vertex3D(
+            this->min.x + dimensions.x,
+            this->min.y + dimensions.y,
+            this->min.z + dimensions.z
+        );
+    }
 };
 
 

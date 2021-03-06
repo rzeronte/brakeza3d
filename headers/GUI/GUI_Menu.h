@@ -316,8 +316,11 @@ public:
                 ImGui::Checkbox("Draw Mesh3D Grid", &EngineSetup::getInstance()->DRAW_MESH3D_GRID);
                 if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
                     ImGui::Separator();
-                    ImGui::Checkbox("CubeGrids Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY);
-                    ImGui::Checkbox("CubeGrids No Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY);
+                    ImGui::Checkbox("Grid3D: Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY);
+                    ImGui::Checkbox("Grid3D: No Empty", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY);
+                    ImGui::Separator();
+                    ImGui::Checkbox("Grid3D: Draw Center", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS);
+                    ImGui::Checkbox("Grid3D: Draw AABB", &EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES);
                     ImGui::Separator();
                 }
                 ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::getInstance()->DRAW_OBJECT3D_BILLBOARD);

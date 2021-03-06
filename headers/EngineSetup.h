@@ -100,6 +100,8 @@ public:
     bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
     bool DRAW_MESH3D_GRID = false;
+    bool DRAW_MESH3D_GRID_POINTS = true;
+    bool DRAW_MESH3D_GRID_CUBES = false;
     bool DRAW_MESH3D_GRID_EMPTY = true;
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 

@@ -641,16 +641,29 @@ void Drawable::drawOctree(Octree *octree, bool onlyWithTriangles)
 
 void Drawable::drawGrid3D(Grid3D *grid)
 {
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
     for (int i = 0; i < grid->boxes.size(); i++) {
 
         if (grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY) {
             Uint32 c = Color::yellow();
-            Drawable::drawAABB(grid->boxes[i]->box, c);
+            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
+                Drawable::drawAABB(grid->boxes[i]->box, c);
+            }
+            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
+                Drawable::drawVertex(grid->boxes[i]->box->getCenter(), camera, c);
+            }
         }
 
         if (!grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY) {
             Uint32 c = Color::red();
-            Drawable::drawAABB(grid->boxes[i]->box, c);
+            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
+                Drawable::drawAABB(grid->boxes[i]->box, c);
+            }
+            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
+
+                Drawable::drawVertex(grid->boxes[i]->box->getCenter(), camera, c);
+            }
         }
     }
 }

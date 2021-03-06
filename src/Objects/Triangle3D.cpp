@@ -701,33 +701,3 @@ Plane Triangle::plane()
 {
     return Plane(this->Ao, this->Bo, this->Co);
 }
-
-OCLTriangle Triangle::getOpenCL()
-{
-    OCLTriangle ot;
-
-    ot.id = 0;
-
-    ot.o_x = parent->getPosition().x;
-    ot.o_y = parent->getPosition().y;
-    ot.o_z = parent->getPosition().z;
-
-    ot.o_scale = parent->scale;
-
-    M3 objRot = parent->getRotation();
-    ot.oPitch = objRot.getPitch();
-    ot.oYaw   = objRot.getYaw();
-    ot.oRoll  = objRot.getRoll();
-
-    ot.A_x = A.x; ot.A_y = A.y; ot.A_z = A.z;
-    ot.B_x = B.x; ot.B_y = B.y; ot.B_z = B.z;
-    ot.C_x = C.x; ot.C_y = C.y; ot.C_z = C.z;
-
-    ot.As_x = As.x; ot.As_y = As.y;
-    ot.Bs_x = Bs.x; ot.Bs_y = Bs.y;
-    ot.Cs_x = Cs.x; ot.Cs_y = Cs.y;
-
-    ot.An_z = An.z; ot.Bn_z = Bn.z; ot.Cn_z = Cn.z;
-
-    return ot;
-}

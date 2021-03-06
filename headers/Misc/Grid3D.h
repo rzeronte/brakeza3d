@@ -11,6 +11,9 @@
 
 struct CubeGrid3D {
     AABB3D *box;
+    int posX;
+    int posY;
+    int posZ;
     bool is_empty = true;
 };
 
@@ -23,7 +26,10 @@ public:
     std::vector<CubeGrid3D*> boxes;
 
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle*> &triangles);
+    void fillEmptiesWithAABBvsTriangles(std::vector<Triangle*> &triangles);
+    void fillEmptiesWithVector3DvsTriangles(Vertex3D ray, std::vector<Triangle*> &triangles);
 
+    bool saveToFile(std::string filename);
 private:
     int numberCubesX;
     int numberCubesY;

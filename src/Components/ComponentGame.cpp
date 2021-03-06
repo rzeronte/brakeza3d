@@ -17,6 +17,7 @@
 #include "../../headers/Game/DoorGhost.h"
 #include "../../headers/Misc/Octree.h"
 #include "../../headers/Misc/Grid3D.h"
+#include "../../headers/Misc/PathFinder.h"
 
 ComponentGame::ComponentGame()
 {
@@ -42,14 +43,16 @@ void ComponentGame::startThirdPerson()
 
     // ---- city
     city = new Mesh3DBody();
-    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city.obj").c_str());
+    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_part_1.obj"));
     city->makeRigidBodyFromTriangleMesh(
             0.0f,
             camera,
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
             false
     );
-    city->buildGrid3D(20, 4, 20);
+
+    city->buildGrid3D(64, 1, 64);
+    city->getGrid3D()->saveToFile("city.grid");
     city->setEnabled( true );
     Brakeza3D::get()->addObject3D(city, "city");
 
