@@ -373,22 +373,18 @@ Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y)
         case 1:
             return *p;
             break;
-
         case 2:
             return *(Uint16 *)p;
             break;
-
         case 3:
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
                 return p[0] << 16 | p[1] << 8 | p[2];
             else
                 return p[0] | p[1] << 8 | p[2] << 16;
             break;
-
         case 4:
             return *(Uint32 *)p;
             break;
-
         default:
             return 0;       /* shouldn't happen, but avoids warnings */
     }
@@ -402,4 +398,23 @@ void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder)
             pathfinder->setValue( y, x,  c->is_empty);
         }
     }
+}
+
+std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PathFinder::Pair> path)
+{
+    std::vector<Vertex3D> result;
+
+    while (!path.empty()) {
+        std::pair<int, int> p = path.top();
+        path.pop();
+
+        int x = p.first;
+        int y = 0;
+        int z = p.second;
+
+        CubeGrid3D *cube = grid->getFromPosition(x, y, z);
+        result.push_back( cube->box->getCenter() );
+    }
+
+    return result;
 }

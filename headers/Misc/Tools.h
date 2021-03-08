@@ -70,6 +70,7 @@ public:
     static void consoleVec3(vec3_t v, std::string);
     static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
     static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
+    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PathFinder::Pair> path);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

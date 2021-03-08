@@ -40,7 +40,7 @@ public:
 
     static void VertexSwap(Vertex3D *vertexes, int i, int j);
 
-    static float distanteBetweenpoints(Vertex3D v1, Vertex3D v2);
+    static float distanceBetweenVertices(Vertex3D v1, Vertex3D v2);
 
     static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam);
 

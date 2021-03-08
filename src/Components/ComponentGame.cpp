@@ -89,13 +89,14 @@ void ComponentGame::startThirdPerson()
     camera->UpdateRotation();
 
     // demo object
-    auto *mono = new Mesh3D();
-    mono->setPosition(Vertex3D(100, 100, 100));
-    mono->setScale(10);
-    mono->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
-    mono->buildOctree();
-    mono->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
-    Brakeza3D::get()->addObject3D(mono, "mono");
+    this->sample = new Mesh3D();
+    sample->setLabel("mono");
+    sample->setPosition(Vertex3D(100, 100, 100));
+    sample->setScale(10);
+    sample->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
+    sample->buildOctree();
+    sample->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
+    Brakeza3D::get()->addObject3D(sample, "mono");
 
     // cam follow to car
     //camera->setFollowTo(car);
@@ -104,15 +105,7 @@ void ComponentGame::startThirdPerson()
     this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
     this->pathFinder->loadGridFromPNG("city.png");
     //this->loadPathFinderGridWidthGrid3D();
-}
-
-void ComponentGame::loadPathFinderGridWidthGrid3D()
-{
-    Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
-
-    //this->pathFinder->saveGridToPNG("city.png");
-    //this->pathFinder->loadGridFromPNG("city.png");
-    //pathFinder->consoleDebug();
+    //Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
 }
 
 void ComponentGame::startFPS()
@@ -140,20 +133,8 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate() 
 {
-    std::stack<PathFinder::Pair> path;
-    PathFinder::Pair src  = std::make_pair(EngineSetup::getInstance()->TESTING_INT1, EngineSetup::getInstance()->TESTING_INT2);
-    PathFinder::Pair dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3, EngineSetup::getInstance()->TESTING_INT4);
-    CubeGrid3D *cubeStart = city->getGrid3D()->getFromPosition(src.first, 0, src.second);
-    CubeGrid3D *cubeDest = city->getGrid3D()->getFromPosition(dest.first, 0, dest.second);
-
-    bool result = this->pathFinder->AStarSearch(src, dest, path);
-    if (result) {
-        Drawable::drawPathInGrid(city->getGrid3D(), path);
-    }
-    if(cubeStart != NULL)
-        Drawable::drawAABB(cubeStart->box, Color::green());
-    if(cubeDest != NULL)
-        Drawable::drawAABB(cubeDest->box, Color::red());
+    //tmp
+    Drawable::drawPathDebug(city->getGrid3D(), this->pathFinder);
 
     Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();

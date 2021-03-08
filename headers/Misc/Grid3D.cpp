@@ -80,6 +80,8 @@ void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle*> &triangles)
     for (int i = 0; i < this->boxes.size(); i++) {
         if (this->isEmpty(*this->boxes[i], triangles)) {
             this->boxes[i]->is_empty = true;
+        } else {
+            this->boxes[i]->is_empty = false;
         }
     }
 }
@@ -192,3 +194,20 @@ void Grid3D::setImageFilename(const std::string &imageFilename)
 void Grid3D::setFixedYImageData(int fixedYImageData) {
     Grid3D::fixedYImageData = fixedYImageData;
 }
+
+
+Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path)
+{
+    float min_distance = 9999999999;
+    int index = 0;
+    for (int i = 0; i < path.size(); i++) {
+        float d = Maths::distanceBetweenVertices(v, path[i]);
+        if (d < min_distance) {
+            min_distance = d;
+            index = i;
+        }
+    }
+
+    return path[index];
+}
+

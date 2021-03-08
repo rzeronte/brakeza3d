@@ -71,7 +71,6 @@ public:
     void startThirdPerson();
     void startFPS();
 
-    void loadPathFinderGridWidthGrid3D();
 };
 
 

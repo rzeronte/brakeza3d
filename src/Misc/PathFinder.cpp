@@ -8,6 +8,7 @@
 #include "../../headers/Misc/Color.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
+#include "../../headers/Render/Maths.h"
 
 PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
 {

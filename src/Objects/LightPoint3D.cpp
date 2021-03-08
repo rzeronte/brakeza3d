@@ -57,7 +57,7 @@ void LightPoint3D::setColor(int r, int g, int b)
 
 Uint32 LightPoint3D::mixColor(Uint32 c, Vertex3D Q)
 {
-    float distance = Maths::distanteBetweenpoints( this->getPosition(), Q );
+    float distance = Maths::distanceBetweenVertices(this->getPosition(), Q);
 
     Vertex3D P = this->getPosition();
     Vertex3D R = this->AxisForward();

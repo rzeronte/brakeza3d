@@ -11,6 +11,7 @@
 #include <stack>          // std::stack
 #include <set>
 #include <vector>
+#include "../Objects/Vertex3D.h"
 
 #define FLT_MAX 10
 
@@ -29,6 +30,7 @@ public:
 
     void saveGridToPNG(std::string filename);
     void loadGridFromPNG(std::string filename);
+    PathFinder::Pair getClosestPoint(Vertex3D *v, std::stack<Pair> path);
 
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type
