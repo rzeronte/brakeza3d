@@ -39,6 +39,7 @@ void ComponentGame::startThirdPerson()
 
     // ---- city
     city = new Mesh3DBody();
+    city->setLabel("city");
     city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_part_1.obj"));
     city->makeRigidBodyFromTriangleMesh(
             0.0f,
@@ -46,15 +47,14 @@ void ComponentGame::startThirdPerson()
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
             false
     );
-    city->buildGrid3D(64, 1, 64,
-                      Grid3D::EmptyStrategies::RAY_INTERSECTION,
-                      Vertex3D(0, 1, 0)
-    );
+    //city->buildGrid3DForEmptyRayIntersectionStrategy(64, 1, 64, Vertex3D(0, 1, 0));
+    city->buildGrid3DForEmptyDataImageStrategy(64, 64, EngineSetup::getInstance()->GRIDS_FOLDER + "city.png", 0);
     city->setEnabled( true );
     Brakeza3D::get()->addObject3D(city, "city");
 
     // ---- car
     car = new Mesh3DBody();
+    car->setLabel("car");
     car->setPosition( originalCarPosition );
     car->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "car.obj").c_str());
     car->buildOctree();
@@ -68,7 +68,7 @@ void ComponentGame::startThirdPerson()
 
     // ---- character
     character = new Mesh3DBody();
-    character->setPosition( originalCarPosition  + Vertex3D(15, 0, 0));
+    character->setPosition( originalCarPosition + Vertex3D(15, 0, 0));
     character->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
     character->makeSimpleRigidBody(
             80,
@@ -94,26 +94,24 @@ void ComponentGame::startThirdPerson()
     mono->setScale(10);
     mono->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
     mono->buildOctree();
-    mono->buildGrid3D(10, 10, 10, Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
+    mono->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
     Brakeza3D::get()->addObject3D(mono, "mono");
 
     // cam follow to car
     //camera->setFollowTo(car);
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
-    this->loadPathFinderGrid();
+    this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
+    this->pathFinder->loadGridFromPNG("city.png");
+    //this->loadPathFinderGridWidthGrid3D();
 }
 
-void ComponentGame::loadPathFinderGrid()
+void ComponentGame::loadPathFinderGridWidthGrid3D()
 {
-    this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
+    Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
 
-    for (int x = 0; x < city->getGrid3D()->numberCubesX; x++) {
-        for (int y = 0; y < city->getGrid3D()->numberCubesZ; y++) {
-            CubeGrid3D *c = city->getGrid3D()->getFromPosition( x, 0, y); // grid de altura 0
-            pathFinder->setValue( y, x,  c->is_empty);
-        }
-    }
+    //this->pathFinder->saveGridToPNG("city.png");
+    //this->pathFinder->loadGridFromPNG("city.png");
     //pathFinder->consoleDebug();
 }
 

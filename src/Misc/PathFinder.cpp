@@ -2,7 +2,12 @@
 // Created by darkhead on 5/3/21.
 //
 
+#include <SDL_surface.h>
+#include <SDL_image.h>
 #include "../../headers/Misc/PathFinder.h"
+#include "../../headers/Misc/Color.h"
+#include "../../headers/EngineSetup.h"
+#include "../../headers/Misc/Tools.h"
 
 PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
 {
@@ -662,5 +667,51 @@ void PathFinder::consoleDebugPath(std::stack<Pair> path)
             printf("%c ", debugGrid[y][x]);
         }
         printf("\r\n");
+    }
+}
+
+void PathFinder::saveGridToPNG(std::string filename)
+{
+    SDL_Surface *s = SDL_CreateRGBSurface(0, this->sizeX, this->sizeY, 32, 0, 0, 0, 0);
+
+    Uint32 black = Color::black();
+    Uint32 red   = Color::red();
+
+    auto *buffer = new Uint32[this->sizeY*this->sizeX];
+
+    for (int y = 0; y < this->sizeY; y++) {
+        for (int x = 0; x < this->sizeX; x++) {
+            int index = y * this->sizeX + x;
+            if (this->grid[y][x] != 0) {
+                buffer[index] = red;
+            } else {
+                buffer[index] = black;
+            }
+        }
+    }
+    memcpy (&s->pixels, &buffer, sizeof(s->pixels));
+    IMG_SavePNG(s, (EngineSetup::getInstance()->GRIDS_FOLDER + filename).c_str());
+    SDL_FreeSurface(s);
+}
+
+void PathFinder::loadGridFromPNG(std::string filename)
+{
+    SDL_Surface *s = IMG_Load((EngineSetup::getInstance()->GRIDS_FOLDER + filename).c_str());
+
+    int sx = s->w;
+    int sy = s->h;
+
+    for (int y = 0; y < sy; y++) {
+        for (int x = 0; x < sx; x++) {
+            int index = y * sx + x;
+            Uint32 c = Tools::getSurfacePixel(s, x, y);
+            Uint8 pred, pgreen, pblue, palpha;
+            SDL_GetRGBA(c, s->format, &pred, &pgreen, &pblue, &palpha);
+            if (pred == 0 && pgreen == 0 && pblue == 0) {
+                grid[y][x] = 0; // blocked
+            } else {
+                grid[y][x] = 1; // not blocked
+            }
+        }
     }
 }

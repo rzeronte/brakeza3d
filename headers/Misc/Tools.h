@@ -10,6 +10,8 @@
 #include "../Render/Texture.h"
 #include "../Objects/LightPoint3D.h"
 #include "../Render/M3.h"
+#include "Grid3D.h"
+#include "PathFinder.h"
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -66,7 +68,8 @@ public:
     static int int_floor(float x);
 
     static void consoleVec3(vec3_t v, std::string);
-
+    static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
+    static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

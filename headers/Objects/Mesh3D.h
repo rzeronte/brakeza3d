@@ -70,15 +70,15 @@ public:
     void onUpdate();
 
     const std::string &getSourceFile() const;
-
     void setSourceFile(const std::string &sourceFile);
 
     Octree *getOctree() const;
-    void buildOctree();
+    void    buildOctree();
 
     Grid3D *getGrid3D() const;
-    void buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy);
-    void buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy, Vertex3D direction);
+    void buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ);
+    void buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction);
+    void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY);
 
 private:
     Octree *octree;

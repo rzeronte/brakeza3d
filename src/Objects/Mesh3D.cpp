@@ -525,23 +525,36 @@ Grid3D *Mesh3D::getGrid3D() const
     return grid;
 }
 
-void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy)
+void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
 {
+    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb,sizeX, sizeY, sizeZ, strategy);
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb,sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
     this->grid->applyEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy, Vertex3D direction)
+void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
 {
+    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ, strategy);
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::RAY_INTERSECTION);
     this->grid->setRayIntersectionDirection( direction );
+    this->grid->applyEmptyStrategy();
+}
+
+void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY)
+{
+    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(DataImage)");
+    this->updateBoundingBox();
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);
+    this->grid->setImageFilename( filename );
+    this->grid->setFixedYImageData( fixedY );
     this->grid->applyEmptyStrategy();
 }
 
 void Mesh3D::buildOctree() 
 {
+    Logging::getInstance()->Log("Building Octree for " + this->getLabel());
     this->updateBoundingBox();
     this->octree = new Octree(this->modelTriangles, this->aabb);
 }

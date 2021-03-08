@@ -27,6 +27,9 @@ public:
     void setValue(int posX, int posY, bool value);
     PathFinder(int sizeX, int sizeY);
 
+    void saveGridToPNG(std::string filename);
+    void loadGridFromPNG(std::string filename);
+
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type
     typedef std::pair<double, std::pair<int, int> > pPair;
@@ -49,6 +52,7 @@ private:
     bool isDestination(int row, int col, Pair dest);
     double calculateHValue(int row, int col, Pair dest);
     std::stack<Pair> tracePath(cell **cellDetails, Pair dest);
+
 };
 
 

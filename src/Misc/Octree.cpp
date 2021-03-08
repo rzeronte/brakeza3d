@@ -2,7 +2,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/EngineSetup.h"
 
-#define MAX_RECURSIVE_DEPTH 2
+#define MAX_RECURSIVE_DEPTH 1
 
 Octree::Octree(std::vector<Triangle*> &triangles, AABB3D bounds)
 {

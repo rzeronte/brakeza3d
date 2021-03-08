@@ -136,6 +136,7 @@ public:
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
     std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
+    std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
 
     std::string CFG_MAPS    = "maps.json";
     std::string CFG_MENU    = "menu.json";

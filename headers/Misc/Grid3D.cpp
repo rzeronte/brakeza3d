@@ -5,8 +5,10 @@
 #include "Grid3D.h"
 #include "../EngineSetup.h"
 #include "../Render/Maths.h"
+#include "Tools.h"
 #include <iostream>
 #include <fstream>
+#include <SDL_image.h>
 
 Grid3D::Grid3D(std::vector<Triangle*> *triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ, EmptyStrategies strategy)
 {
@@ -65,6 +67,9 @@ void Grid3D::applyEmptyStrategy()
         case Grid3D::EmptyStrategies::CONTAIN_TRIANGLES:
             this->fillEmptiesWithAABBvsTriangles(*this->triangles);
             break;
+        case Grid3D::EmptyStrategies::IMAGE_FILE:
+            this->fillEmptiesWithImageData(this->imageFilename, this->fixedYImageData);
+            break;
         default:
             break;
     }
@@ -117,6 +122,33 @@ void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triang
     }
 }
 
+void Grid3D::fillEmptiesWithImageData(std::string filename, int fixedY)
+{
+    SDL_Surface *s = IMG_Load(filename.c_str());
+
+    int sx = s->h;
+    int sy = s->w;
+
+    this->numberCubesX = sx;
+    this->numberCubesZ = sy;
+    this->numberCubesY = fixedY;    // no height in grids from images
+
+    for (int x = 0; x < numberCubesX; x++) {
+        for (int z = 0; z < numberCubesZ; z++) {
+            CubeGrid3D *c = getFromPosition(z, fixedY, x);
+
+            Uint32 color = Tools::getSurfacePixel(s, x, z);
+            Uint8 pred, pgreen, pblue, palpha;
+            SDL_GetRGBA(color, s->format, &pred, &pgreen, &pblue, &palpha);
+            if (pred == 0 && pgreen == 0 && pblue == 0) {
+                c->is_empty = false;
+            } else {
+                c->is_empty = true;
+            }
+        }
+    }
+}
+
 bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
 {
     for (int i = 0; i < triangles.size(); i++) {
@@ -136,40 +168,6 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
     return true;
 }
 
-bool Grid3D::saveToFile(std::string filename)
-{
-    std::ofstream file(filename, std::ios::out);
-
-    if(file.is_open()) {
-
-        for (int i = 0; i < this->boxes.size(); i++) {
-            std::string l =
-                "{ x: " + std::to_string(this->boxes[i]->posX) +
-                ", y: " + std::to_string(this->boxes[i]->posY) +
-                ", z: " + std::to_string(this->boxes[i]->posZ) +
-                ", empty: " + std::to_string(this->boxes[i]->is_empty) +
-                ", min: " +
-                    "{ x: " + std::to_string(this->boxes[i]->box->min.x) +
-                    ", y: " + std::to_string(this->boxes[i]->box->min.y) +
-                    ", z: " + std::to_string(this->boxes[i]->box->min.z) +
-                    "}, "
-                ", max: " +
-                    "{ x: " + std::to_string(this->boxes[i]->box->max.x) +
-                    ", y: " + std::to_string(this->boxes[i]->box->max.y) +
-                    ", z: " + std::to_string(this->boxes[i]->box->max.z) +
-                    "}"
-                "}"
-            ;
-            file << l << std::endl;
-        }
-        file.close();
-    } else  {
-        std::cerr<<"Unable to open file";
-    }
-
-    return false;
-}
-
 void Grid3D::setRayIntersectionDirection(Vertex3D rayIntersectionDirection)
 {
     Grid3D::rayIntersectionDirection = rayIntersectionDirection;
@@ -184,4 +182,13 @@ CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z)
     }
 
     return NULL;
+}
+
+void Grid3D::setImageFilename(const std::string &imageFilename)
+{
+    Grid3D::imageFilename = imageFilename;
+}
+
+void Grid3D::setFixedYImageData(int fixedYImageData) {
+    Grid3D::fixedYImageData = fixedYImageData;
 }
