@@ -361,3 +361,45 @@ void Tools::consoleVec3(vec3_t v, std::string name)
 {
     printf("%s: %f %f %f\r\n", name.c_str(), v[0], v[1], v[2]);
 }
+
+Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to retrieve */
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch (bpp)
+    {
+        case 1:
+            return *p;
+            break;
+
+        case 2:
+            return *(Uint16 *)p;
+            break;
+
+        case 3:
+            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+                return p[0] << 16 | p[1] << 8 | p[2];
+            else
+                return p[0] | p[1] << 8 | p[2] << 16;
+            break;
+
+        case 4:
+            return *(Uint32 *)p;
+            break;
+
+        default:
+            return 0;       /* shouldn't happen, but avoids warnings */
+    }
+}
+
+void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder)
+{
+    for (int x = 0; x < grid->numberCubesX; x++) {
+        for (int y = 0; y < grid->numberCubesZ; y++) {
+            CubeGrid3D *c = grid->getFromPosition( x, 0, y); // grid de altura 0
+            pathfinder->setValue( y, x,  c->is_empty);
+        }
+    }
+}
