@@ -670,19 +670,32 @@ void Drawable::drawGrid3D(Grid3D *grid)
 
 void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::Pair> path)
 {
-    std::vector<Vertex3D> pathVertices;
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Uint32 c = Color::magenta();
 
-    while (!path.empty()) {
+    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, path);
 
-        std::pair<int, int> p = path.top();
-        path.pop();
-        int x = p.first;
-        int y = 0;
-        int z = p.second;
-        CubeGrid3D *cube = grid->getFromPosition(x, y, z);
-        Drawable::drawVertex(cube->box->getCenter(), camera, c);
-        Drawable::drawAABB(cube->box, c);
+    for (int i = 0; i < pathVertices.size(); i++) {
+        Drawable::drawVertex(pathVertices[i], camera, Color::cyan());
     }
+}
+
+void Drawable::drawPathDebug(Grid3D *grid, PathFinder *pathfinder)
+{
+    std::stack<PathFinder::Pair> path;
+    PathFinder::Pair src  = std::make_pair(EngineSetup::getInstance()->TESTING_INT1, EngineSetup::getInstance()->TESTING_INT2);
+    PathFinder::Pair dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3, EngineSetup::getInstance()->TESTING_INT4);
+
+    CubeGrid3D *cubeStart = grid->getFromPosition(src.first, 0, src.second);
+    CubeGrid3D *cubeDest = grid->getFromPosition(dest.first, 0, dest.second);
+
+    bool result = pathfinder->AStarSearch(src, dest, path);
+    if (result) {
+        Drawable::drawPathInGrid(grid, path);
+    }
+
+    if(cubeStart != NULL)
+        Drawable::drawAABB(cubeStart->box, Color::green());
+
+    if(cubeDest != NULL)
+        Drawable::drawAABB(cubeDest->box, Color::red());
 }
