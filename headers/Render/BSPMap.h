@@ -404,7 +404,7 @@ public:
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces);
 
     void DrawVisibleLeaf(Camera3D *Cam);
-    void DrawHulls(Camera3D *cam);
+    void DrawHulls();
 
     dleaf_t *FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft);
     void setVisibleSet(dleaf_t *pLeaf);

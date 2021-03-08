@@ -10,16 +10,24 @@
 #include <math.h>       /* sqrt */
 #include <stack>          // std::stack
 #include <set>
+#include <vector>
 
 #define FLT_MAX 10
-#define ROW 9
-#define COL 10
 
-class PathFinder {
-
+class PathFinder
+{
+public:
     // Creating a shortcut for int, int pair type
     typedef std::pair<int, int> Pair;
 
+    void demo();
+    void consoleDebug();
+    void consoleDebugPath(std::stack<Pair> path);
+    bool AStarSearch(Pair src, Pair dest, std::stack<Pair> &path);
+    void setValue(int posX, int posY, bool value);
+    PathFinder(int sizeX, int sizeY);
+
+private:
     // Creating a shortcut for pair<int, pair<int, int>> type
     typedef std::pair<double, std::pair<int, int> > pPair;
 
@@ -32,14 +40,15 @@ class PathFinder {
         double f, g, h;
     };
 
+    const int sizeX;
+    const int sizeY;
+    int **grid;
+
     bool isValid(int row, int col);
-    bool isUnBlocked(int grid[][COL], int row, int col);
+    bool isUnBlocked(int **grid, int row, int col);
     bool isDestination(int row, int col, Pair dest);
     double calculateHValue(int row, int col, Pair dest);
-    void tracePath(cell cellDetails[][COL], Pair dest);
-public:
-    void demo();
-    void aStarSearch(int grid[][COL], Pair src, Pair dest);
+    std::stack<Pair> tracePath(cell **cellDetails, Pair dest);
 };
 
 

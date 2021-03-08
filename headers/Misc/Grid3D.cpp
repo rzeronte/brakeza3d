@@ -8,12 +8,16 @@
 #include <iostream>
 #include <fstream>
 
-Grid3D::Grid3D( std::vector<Triangle*> &triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ)
+Grid3D::Grid3D(std::vector<Triangle*> *triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ, EmptyStrategies strategy)
 {
+    this->strategy = strategy;
+
     this->bounds = bounds;
     this->numberCubesX = sizeX;
     this->numberCubesY = sizeY;
     this->numberCubesZ = sizeZ;
+
+    this->triangles = triangles;
 
     Vertex3D dimensions = this->bounds.max - this->bounds.min;
 
@@ -50,8 +54,20 @@ Grid3D::Grid3D( std::vector<Triangle*> &triangles, const AABB3D &bounds, int siz
         offsetPosition.y = 0;
         offsetPosition.x += cubeSizeX;
     }
+}
 
-    this->fillEmptiesWithVector3DvsTriangles(Vertex3D(0, 1, 0), triangles);
+void Grid3D::applyEmptyStrategy()
+{
+    switch (strategy) {
+        case Grid3D::EmptyStrategies::RAY_INTERSECTION:
+            this->fillEmptiesWithVector3DvsTriangles( this->rayIntersectionDirection, *this->triangles);
+            break;
+        case Grid3D::EmptyStrategies::CONTAIN_TRIANGLES:
+            this->fillEmptiesWithAABBvsTriangles(*this->triangles);
+            break;
+        default:
+            break;
+    }
 }
 
 void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle*> &triangles)
@@ -152,4 +168,20 @@ bool Grid3D::saveToFile(std::string filename)
     }
 
     return false;
+}
+
+void Grid3D::setRayIntersectionDirection(Vertex3D rayIntersectionDirection)
+{
+    Grid3D::rayIntersectionDirection = rayIntersectionDirection;
+}
+
+CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z)
+{
+    for (int i = 0; i < this->boxes.size(); i++) {
+        if (this->boxes[i]->posX == x && this->boxes[i]->posY == y &&this->boxes[i]->posZ == z) {
+            return this->boxes[i];
+        }
+    }
+
+    return NULL;
 }

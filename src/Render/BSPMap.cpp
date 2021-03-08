@@ -725,21 +725,14 @@ void BSPMap::DrawVisibleLeaf(Camera3D *cam)
     DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame);
 }
 
-void BSPMap::DrawHulls(Camera3D *cam)
+void BSPMap::DrawHulls()
 {
     int numHulls = this->getNumModels();
 
     for (int m = 1; m < numHulls; m++) {
         model_t *h = this->getModel(m);
-        if (m == EngineSetup::getInstance()->TESTING_INT) {
-
-            std::cout << "max:" << h->box.max[0] << ", " << h->box.max[1] << ", " << h->box.max[2] << std::endl;
-            std::cout << "min:" << h->box.min[0] << ", " << h->box.min[1] << ", " << h->box.min[2] << std::endl;
-
-            for (int i = h->firstsurf; i < h->firstsurf + h->numsurf ; i++) {
-                this->DrawSurfaceTriangles( i );
-            }
-
+        for (int i = h->firstsurf; i < h->firstsurf + h->numsurf ; i++) {
+            this->DrawSurfaceTriangles( i );
         }
     }
 }

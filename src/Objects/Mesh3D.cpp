@@ -525,10 +525,19 @@ Grid3D *Mesh3D::getGrid3D() const
     return grid;
 }
 
-void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
+void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy)
 {
     this->updateBoundingBox();
-    this->grid = new Grid3D(this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ);
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb,sizeX, sizeY, sizeZ, strategy);
+    this->grid->applyEmptyStrategy();
+}
+
+void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ, Grid3D::EmptyStrategies strategy, Vertex3D direction)
+{
+    this->updateBoundingBox();
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ, strategy);
+    this->grid->setRayIntersectionDirection( direction );
+    this->grid->applyEmptyStrategy();
 }
 
 void Mesh3D::buildOctree() 

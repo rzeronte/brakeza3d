@@ -668,4 +668,21 @@ void Drawable::drawGrid3D(Grid3D *grid)
     }
 }
 
+void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::Pair> path)
+{
+    std::vector<Vertex3D> pathVertices;
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    Uint32 c = Color::magenta();
 
+    while (!path.empty()) {
+
+        std::pair<int, int> p = path.top();
+        path.pop();
+        int x = p.first;
+        int y = 0;
+        int z = p.second;
+        CubeGrid3D *cube = grid->getFromPosition(x, y, z);
+        Drawable::drawVertex(cube->box->getCenter(), camera, c);
+        Drawable::drawAABB(cube->box, c);
+    }
+}

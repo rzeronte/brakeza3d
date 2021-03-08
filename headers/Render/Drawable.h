@@ -11,6 +11,7 @@
 #include "Billboard.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
+#include "../Misc/PathFinder.h"
 
 class Drawable {
 public:
@@ -42,6 +43,7 @@ public:
     static void drawOctree(Octree *, bool onlyWithTriangles);
     static void drawOctreeNode(OctreeNode *, bool onlyWithTriangles);
     static void drawGrid3D(Grid3D *);
+    static void drawPathInGrid(Grid3D *, std::stack<PathFinder::Pair>);
 };
 
 

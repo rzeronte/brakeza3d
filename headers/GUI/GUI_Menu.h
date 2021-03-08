@@ -349,7 +349,11 @@ public:
 
             if (ImGui::BeginMenu("Developers")) {
                 ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT1, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT2, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT3, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT4, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT5", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT5, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
                 ImGui::Checkbox("Boolean TEST", &EngineSetup::getInstance()->TESTING_BOOL);
                 ImGui::EndMenu();
             }

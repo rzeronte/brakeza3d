@@ -187,7 +187,12 @@ public:
     Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
 
     float TESTING = 64.0;
-    float TESTING_INT = 0;
+    float TESTING_INT1 = 1;
+    float TESTING_INT2 = 2;
+    float TESTING_INT3 = 3;
+    float TESTING_INT4 = 4;
+    float TESTING_INT5 = 5;
+
     bool  TESTING_BOOL = false;
 
     int  LOAD_OF_DETAIL = 1;

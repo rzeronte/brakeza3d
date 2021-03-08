@@ -13,6 +13,7 @@
 #include "../Physics/Mesh3DGhost.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
+#include "../Misc/PathFinder.h"
 
 class ComponentGame : public Component {
 public:
@@ -38,6 +39,8 @@ public:
     Mesh3DBody *character;
     Mesh3DBody *city;
     Mesh3D *sample;
+
+    PathFinder *pathFinder;
 
     int kills = 0;
 
@@ -67,6 +70,8 @@ public:
 
     void startThirdPerson();
     void startFPS();
+
+    void loadPathFinderGrid();
 };
 
 

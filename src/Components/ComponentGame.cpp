@@ -14,10 +14,6 @@
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerMultiple.h"
 #include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
-#include "../../headers/Game/DoorGhost.h"
-#include "../../headers/Misc/Octree.h"
-#include "../../headers/Misc/Grid3D.h"
-#include "../../headers/Misc/PathFinder.h"
 
 ComponentGame::ComponentGame()
 {
@@ -50,9 +46,10 @@ void ComponentGame::startThirdPerson()
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
             false
     );
-
-    city->buildGrid3D(64, 1, 64);
-    city->getGrid3D()->saveToFile("city.grid");
+    city->buildGrid3D(64, 1, 64,
+                      Grid3D::EmptyStrategies::RAY_INTERSECTION,
+                      Vertex3D(0, 1, 0)
+    );
     city->setEnabled( true );
     Brakeza3D::get()->addObject3D(city, "city");
 
@@ -97,13 +94,27 @@ void ComponentGame::startThirdPerson()
     mono->setScale(10);
     mono->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
     mono->buildOctree();
-    mono->buildGrid3D(10, 10, 10);
+    mono->buildGrid3D(10, 10, 10, Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
     Brakeza3D::get()->addObject3D(mono, "mono");
-
 
     // cam follow to car
     //camera->setFollowTo(car);
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
+
+    this->loadPathFinderGrid();
+}
+
+void ComponentGame::loadPathFinderGrid()
+{
+    this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
+
+    for (int x = 0; x < city->getGrid3D()->numberCubesX; x++) {
+        for (int y = 0; y < city->getGrid3D()->numberCubesZ; y++) {
+            CubeGrid3D *c = city->getGrid3D()->getFromPosition( x, 0, y); // grid de altura 0
+            pathFinder->setValue( y, x,  c->is_empty);
+        }
+    }
+    //pathFinder->consoleDebug();
 }
 
 void ComponentGame::startFPS()
@@ -131,6 +142,21 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate() 
 {
+    std::stack<PathFinder::Pair> path;
+    PathFinder::Pair src  = std::make_pair(EngineSetup::getInstance()->TESTING_INT1, EngineSetup::getInstance()->TESTING_INT2);
+    PathFinder::Pair dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3, EngineSetup::getInstance()->TESTING_INT4);
+    CubeGrid3D *cubeStart = city->getGrid3D()->getFromPosition(src.first, 0, src.second);
+    CubeGrid3D *cubeDest = city->getGrid3D()->getFromPosition(dest.first, 0, dest.second);
+
+    bool result = this->pathFinder->AStarSearch(src, dest, path);
+    if (result) {
+        Drawable::drawPathInGrid(city->getGrid3D(), path);
+    }
+    if(cubeStart != NULL)
+        Drawable::drawAABB(cubeStart->box, Color::green());
+    if(cubeDest != NULL)
+        Drawable::drawAABB(cubeDest->box, Color::red());
+
     Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();

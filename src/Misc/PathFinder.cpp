@@ -4,21 +4,33 @@
 
 #include "../../headers/Misc/PathFinder.h"
 
+PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
+{
+    grid = new int *[this->sizeY];
+    for(int i = 0; i < this->sizeY; i++) {
+        grid[i] = new int[this->sizeX];
+    }
+
+    for (int x = 0; x < this->sizeX; x++) {
+        for (int y = 0; y < this->sizeY; y++) {
+            grid[y][x] = 0;
+        }
+    }
+}
+
 // A Utility Function to check whether given cell (row, col)
 // is a valid cell or not.
 bool PathFinder::isValid(int row, int col)
 {
     // Returns true if row number and column number
     // is in range
-    return (row >= 0) && (row < ROW) && (col >= 0)
-           && (col < COL);
+    return (row >= 0) && (row < this->sizeY) && (col >= 0) && (col < this->sizeX);
 }
 
 // A Utility Function to check whether the given cell is
 // blocked or not
-bool PathFinder::isUnBlocked(int grid[][COL], int row, int col)
+bool PathFinder::isUnBlocked(int **grid, int row, int col)
 {
-    // Returns true if the cell is not blocked else false
     if (grid[row][col] == 1)
         return (true);
     else
@@ -39,23 +51,22 @@ bool PathFinder::isDestination(int row, int col, Pair dest)
 double PathFinder::calculateHValue(int row, int col, Pair dest)
 {
     // Return using the distance formula
-    return ((double)sqrt(
-            (row - dest.first) * (row - dest.first)
-            + (col - dest.second) * (col - dest.second)));
+    return ((double) sqrt(
+        (row - dest.first) * (row - dest.first)
+        + (col - dest.second) * (col - dest.second)
+    ));
 }
 
 // A Utility Function to trace the path from the source
 // to destination
-void PathFinder::tracePath(cell cellDetails[][COL], Pair dest)
+std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest)
 {
-    printf("\nThe Path is ");
     int row = dest.first;
     int col = dest.second;
 
     std::stack<Pair> Path;
 
-    while (!(cellDetails[row][col].parent_i == row
-             && cellDetails[row][col].parent_j == col)) {
+    while (!(cellDetails[row][col].parent_i == row && cellDetails[row][col].parent_j == col)) {
         Path.push(std::make_pair(row, col));
         int temp_row = cellDetails[row][col].parent_i;
         int temp_col = cellDetails[row][col].parent_j;
@@ -64,61 +75,63 @@ void PathFinder::tracePath(cell cellDetails[][COL], Pair dest)
     }
 
     Path.push(std::make_pair(row, col));
-    while (!Path.empty()) {
+
+    // Path running example
+    /*while (!Path.empty()) {
         std::pair<int, int> p = Path.top();
         Path.pop();
         printf("-> (%d,%d) ", p.first, p.second);
-    }
+    }*/
 
-    return;
+    return Path;
 }
 
 // A Function to find the shortest path between
 // a given source cell to a destination cell according
 // to A* Search Algorithm
-void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
+bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
 {
     // If the source is out of range
     if (isValid(src.first, src.second) == false) {
-        printf("Source is invalid\n");
-        return;
+        //printf("Source is invalid\n");
+        return false;
     }
 
     // If the destination is out of range
     if (isValid(dest.first, dest.second) == false) {
-        printf("Destination is invalid\n");
-        return;
+        //printf("Destination is invalid\n");
+        return false;
     }
 
     // Either the source or the destination is blocked
-    if (isUnBlocked(grid, src.first, src.second) == false
-        || isUnBlocked(grid, dest.first, dest.second)
-           == false) {
-        printf("Source or the destination is blocked\n");
-        return;
+    if (isUnBlocked(grid, src.first, src.second) == false|| isUnBlocked(grid, dest.first, dest.second) == false) {
+        //printf("Source or the destination is blocked\n");
+        return false;
     }
 
     // If the destination cell is the same as source cell
-    if (isDestination(src.first, src.second, dest)
-        == true) {
-        printf("We are already at the destination\n");
-        return;
+    if (isDestination(src.first, src.second, dest) == true) {
+        //printf("We are already at the destination\n");
+        return false;
     }
 
     // Create a closed list and initialise it to false which
     // means that no cell has been included yet This closed
     // list is implemented as a boolean 2D array
-    bool closedList[ROW][COL];
+    bool closedList[this->sizeY][this->sizeX];
     memset(closedList, false, sizeof(closedList));
 
     // Declare a 2D array of structure to hold the details
     // of that cell
-    cell cellDetails[ROW][COL];
+    cell **cellDetails;
+    cellDetails = new cell *[this->sizeY];
+    for(int i = 0; i < this->sizeY; i++) {
+        cellDetails[i] = new cell[this->sizeX];
+    }
 
     int i, j;
-
-    for (i = 0; i < ROW; i++) {
-        for (j = 0; j < COL; j++) {
+    for (i = 0; i < this->sizeY; i++) {
+        for (j = 0; j < this->sizeX; j++) {
             cellDetails[i][j].f = FLT_MAX;
             cellDetails[i][j].g = FLT_MAX;
             cellDetails[i][j].h = FLT_MAX;
@@ -198,17 +211,15 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j].parent_i = i;
                 cellDetails[i - 1][j].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j] == false
-                     && isUnBlocked(grid, i - 1, j)
-                        == true) {
+            else if (closedList[i - 1][j] == false && isUnBlocked(grid, i - 1, j) == true) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i - 1, j, dest);
                 fNew = gNew + hNew;
@@ -221,10 +232,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j].f == FLT_MAX
-                    || cellDetails[i - 1][j].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i - 1, j)));
+                if (cellDetails[i - 1][j].f == FLT_MAX || cellDetails[i - 1][j].f > fNew) {
+                    openList.insert(std::make_pair( fNew, std::make_pair(i - 1, j)));
 
                     // Update the details of this cell
                     cellDetails[i - 1][j].f = fNew;
@@ -246,17 +255,15 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j].parent_i = i;
                 cellDetails[i + 1][j].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j] == false
-                     && isUnBlocked(grid, i + 1, j)
-                        == true) {
+            else if (closedList[i + 1][j] == false && isUnBlocked(grid, i + 1, j) == true) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i + 1, j, dest);
                 fNew = gNew + hNew;
@@ -269,10 +276,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i + 1][j].f == FLT_MAX
-                    || cellDetails[i + 1][j].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i + 1, j)));
+                if (cellDetails[i + 1][j].f == FLT_MAX || cellDetails[i + 1][j].f > fNew) {
+                    openList.insert(std::make_pair(fNew, std::make_pair(i + 1, j)));
                     // Update the details of this cell
                     cellDetails[i + 1][j].f = fNew;
                     cellDetails[i + 1][j].g = gNew;
@@ -293,18 +298,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i][j + 1].parent_i = i;
                 cellDetails[i][j + 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j + 1] == false
-                     && isUnBlocked(grid, i, j + 1)
-                        == true) {
+            else if (closedList[i][j + 1] == false && isUnBlocked(grid, i, j + 1)  == true) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j + 1, dest);
                 fNew = gNew + hNew;
@@ -317,10 +320,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i][j + 1].f == FLT_MAX
-                    || cellDetails[i][j + 1].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i, j + 1)));
+                if (cellDetails[i][j + 1].f == FLT_MAX || cellDetails[i][j + 1].f > fNew) {
+                    openList.insert(std::make_pair(fNew, std::make_pair(i, j + 1)));
 
                     // Update the details of this cell
                     cellDetails[i][j + 1].f = fNew;
@@ -342,18 +343,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i][j - 1].parent_i = i;
                 cellDetails[i][j - 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j - 1] == false
-                     && isUnBlocked(grid, i, j - 1)
-                        == true) {
+            else if (closedList[i][j - 1] == false && isUnBlocked(grid, i, j - 1) == true) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j - 1, dest);
                 fNew = gNew + hNew;
@@ -392,18 +391,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j + 1].parent_i = i;
                 cellDetails[i - 1][j + 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j + 1] == false
-                     && isUnBlocked(grid, i - 1, j + 1)
-                        == true) {
+            else if (closedList[i - 1][j + 1] == false && isUnBlocked(grid, i - 1, j + 1) == true) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i - 1, j + 1, dest);
                 fNew = gNew + hNew;
@@ -416,10 +413,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j + 1].f == FLT_MAX
-                    || cellDetails[i - 1][j + 1].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i - 1, j + 1)));
+                if (cellDetails[i - 1][j + 1].f == FLT_MAX || cellDetails[i - 1][j + 1].f > fNew) {
+                    openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j + 1)));
 
                     // Update the details of this cell
                     cellDetails[i - 1][j + 1].f = fNew;
@@ -442,18 +437,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j - 1].parent_i = i;
                 cellDetails[i - 1][j - 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j - 1] == false
-                     && isUnBlocked(grid, i - 1, j - 1)
-                        == true) {
+            else if (closedList[i - 1][j - 1] == false && isUnBlocked(grid, i - 1, j - 1) == true) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i - 1, j - 1, dest);
                 fNew = gNew + hNew;
@@ -466,10 +459,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j - 1].f == FLT_MAX
-                    || cellDetails[i - 1][j - 1].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i - 1, j - 1)));
+                if (cellDetails[i - 1][j - 1].f == FLT_MAX || cellDetails[i - 1][j - 1].f > fNew) {
+                    openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j - 1)));
                     // Update the details of this cell
                     cellDetails[i - 1][j - 1].f = fNew;
                     cellDetails[i - 1][j - 1].g = gNew;
@@ -491,18 +482,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j + 1].parent_i = i;
                 cellDetails[i + 1][j + 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j + 1] == false
-                     && isUnBlocked(grid, i + 1, j + 1)
-                        == true) {
+            else if (closedList[i + 1][j + 1] == false && isUnBlocked(grid, i + 1, j + 1) == true) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i + 1, j + 1, dest);
                 fNew = gNew + hNew;
@@ -515,10 +504,8 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i + 1][j + 1].f == FLT_MAX
-                    || cellDetails[i + 1][j + 1].f > fNew) {
-                    openList.insert(std::make_pair(
-                            fNew, std::make_pair(i + 1, j + 1)));
+                if (cellDetails[i + 1][j + 1].f == FLT_MAX || cellDetails[i + 1][j + 1].f > fNew) {
+                    openList.insert(std::make_pair(fNew, std::make_pair(i + 1, j + 1)));
 
                     // Update the details of this cell
                     cellDetails[i + 1][j + 1].f = fNew;
@@ -541,18 +528,16 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j - 1].parent_i = i;
                 cellDetails[i + 1][j - 1].parent_j = j;
-                printf("The destination cell is found\n");
-                tracePath(cellDetails, dest);
+                //printf("The destination cell is found\n");
+                path = tracePath(cellDetails, dest);
                 foundDest = true;
-                return;
+                return foundDest;
             }
 
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j - 1] == false
-                     && isUnBlocked(grid, i + 1, j - 1)
-                        == true) {
+            else if (closedList[i + 1][j - 1] == false && isUnBlocked(grid, i + 1, j - 1) == true) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i + 1, j - 1, dest);
                 fNew = gNew + hNew;
@@ -586,32 +571,96 @@ void PathFinder::aStarSearch(int grid[][COL], Pair src, Pair dest)
     // reach the destiantion cell. This may happen when the
     // there is no way to destination cell (due to
     // blockages)
-    if (foundDest == false)
-        printf("Failed to find the Destination Cell\n");
 
-    return;
+    return foundDest;
 }
 
-void PathFinder::demo() {
-    /* Description of the Grid-
- 1--> The cell is not blocked
- 0--> The cell is blocked    */
-    int grid[ROW][COL]
-            = { { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
-                { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
-                { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 },
-                { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 },
-                { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 },
-                { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 },
-                { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 },
-                { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
-                { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 } };
+void PathFinder::setValue(int posX, int posY, bool value)
+{
+    this->grid[posY][posX] = value;
+}
+
+void PathFinder::demo()
+{
+    int data[9][10] = {
+        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
+        { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
+        { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 },
+        { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 },
+        { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 },
+        { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 },
+        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
+        { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 }
+    };
+
+
+    // load data into grid
+    for (int x = 0; x < this->sizeX; x++) {
+        for (int y = 0; y < this->sizeY; y++) {
+            setValue( x, y, data[y][x] );
+        }
+    }
+
+    consoleDebug();
 
     // Source is the left-most bottom-most corner
     Pair src = std::make_pair(8, 0);
 
     // Destination is the left-most top-most corner
-    Pair dest = std::make_pair(0, 0);
+    Pair dest = std::make_pair(0, 9);
 
-    aStarSearch(grid, src, dest);
+    std::stack<Pair> path;
+    bool result = AStarSearch(src, dest, path);
+
+    if (result) {
+        printf("Destination has found\r\n");
+
+        consoleDebugPath( path );
+    }
+}
+
+void PathFinder::consoleDebug()
+{
+    printf("\r\nDebug Grid: \r\n");
+    for (int y = 0; y < this->sizeY; y++) {
+        for (int x = 0; x < this->sizeX; x++) {
+            printf("%d ", grid[y][x]);
+        }
+        printf("\r\n");
+    }
+}
+
+void PathFinder::consoleDebugPath(std::stack<Pair> path)
+{
+    char debugGrid[this->sizeY][this->sizeX];
+
+    // reset all visual debug cells to '-'
+    for (int y = 0; y < this->sizeY; y++) {
+        for (int x = 0; x < this->sizeX; x++) {
+            debugGrid[y][x] = '-';
+        }
+    }
+
+        if (path.empty()) {
+        printf("consoleDebugPath: path is empty");
+        return;
+    }
+
+    printf("Path trace: ");
+    // mark path cell with '*'
+    while (!path.empty()) {
+        std::pair<int, int> p = path.top();
+        path.pop();
+        debugGrid[p.first][p.second] = '*';
+        printf("->(%d,%d)", p.first, p.second);
+    }
+
+    printf("\r\nDebug path: \r\n");
+    for (int y = 0; y < this->sizeY; y++) {
+        for (int x = 0; x < this->sizeX; x++) {
+            printf("%c ", debugGrid[y][x]);
+        }
+        printf("\r\n");
+    }
 }
