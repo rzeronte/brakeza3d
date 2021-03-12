@@ -28,7 +28,6 @@ Grid3D::Grid3D(std::vector<Triangle*> *triangles, const AABB3D &bounds, int size
     float cubeSizeZ = dimensions.z / this->numberCubesZ;
 
     Vertex3D offsetPosition = Vertex3D::zero();
-
     for (int x = 0; x < numberCubesX; x++) {
         for (int y = 0; y < numberCubesY; y++) {
             for (int z = 0; z < numberCubesZ; z++) {
@@ -196,7 +195,7 @@ void Grid3D::setFixedYImageData(int fixedYImageData) {
 }
 
 
-Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path)
+Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex)
 {
     float min_distance = 9999999999;
     int index = 0;
@@ -208,6 +207,7 @@ Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path)
         }
     }
 
+    indexVertex = index;
     return path[index];
 }
 

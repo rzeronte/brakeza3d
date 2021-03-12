@@ -33,23 +33,27 @@ void ComponentGame::onStart()
 void ComponentGame::startThirdPerson()
 {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    btDiscreteDynamicsWorld *world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
 
     Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
     camera->follow_to_position_offset = Vertex3D(12, -122, 0);
 
+    // ---- plane
+    plane = new Mesh3DBody();
+    plane->setLabel("plane");
+    plane->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj"));
+    plane->makeRigidBodyFromTriangleMesh(0.0f, camera, world,false);
+    plane->setEnabled( true );
+    Brakeza3D::get()->addObject3D(plane, "plane");
+
     // ---- city
     city = new Mesh3DBody();
     city->setLabel("city");
-    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_part_1.obj"));
-    city->makeRigidBodyFromTriangleMesh(
-            0.0f,
-            camera,
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-            false
-    );
+    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj"));
+    city->makeRigidBodyFromTriangleMesh(0.0f, camera, world,false);
     //city->buildGrid3DForEmptyRayIntersectionStrategy(64, 1, 64, Vertex3D(0, 1, 0));
     city->buildGrid3DForEmptyDataImageStrategy(64, 64, EngineSetup::getInstance()->GRIDS_FOLDER + "city.png", 0);
-    city->setEnabled( true );
+    city->setEnabled( false );
     Brakeza3D::get()->addObject3D(city, "city");
 
     // ---- car
@@ -58,24 +62,14 @@ void ComponentGame::startThirdPerson()
     car->setPosition( originalCarPosition );
     car->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "car.obj").c_str());
     car->buildOctree();
-    car->makeSimpleRigidBody(
-            800,
-            car->getPosition(),
-            Vertex3D(1, 1, 1),
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
-    );
+    car->makeSimpleRigidBody(800,car->getPosition(),Vertex3D(1, 1, 1), world );
     Brakeza3D::get()->addObject3D(car, "car");
 
     // ---- character
     character = new Mesh3DBody();
     character->setPosition( originalCarPosition + Vertex3D(15, 0, 0));
     character->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
-    character->makeSimpleRigidBody(
-            80,
-            character->getPosition(),
-            Vertex3D(1, 1, 1),
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
-    );
+    character->makeSimpleRigidBody(80,character->getPosition(),Vertex3D(1, 1, 1), world );
     character->setEnabled(false);
     Brakeza3D::get()->addObject3D(character, "character");
 
@@ -98,13 +92,23 @@ void ComponentGame::startThirdPerson()
     sample->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
     Brakeza3D::get()->addObject3D(sample, "mono");
 
+    // ---- npc
+    npc = new Mesh3DBody();
+    npc->setScale(5);
+    npc->setPosition( originalCarPosition + Vertex3D(15, 0, 0));
+    npc->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
+    npc->makeSimpleRigidBody(80,character->getPosition(),Vertex3D(1, 1, 1), world);
+    npc->setEnabled(true);
+    Brakeza3D::get()->addObject3D(npc, "npc");
+
     // cam follow to car
     //camera->setFollowTo(car);
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
     this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
-    this->pathFinder->loadGridFromPNG("city.png");
-    //this->loadPathFinderGridWidthGrid3D();
+    this->pathFinder->loadGridFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "city.png"));
+
+    // Fill pathfinder grid with Grid3D empties
     //Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
 }
 
@@ -131,10 +135,57 @@ void ComponentGame::preUpdate()
 {
 }
 
-void ComponentGame::onUpdate() 
+void ComponentGame::onUpdate()
 {
-    //tmp
-    Drawable::drawPathDebug(city->getGrid3D(), this->pathFinder);
+    Drawable::drawPathDebugForDevelopment(city->getGrid3D(), this->pathFinder);
+
+    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(
+        city->getGrid3D(),
+        PathFinder::readPathFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "path1.png"))
+    );
+
+    int indexVertex;
+    Vertex3D destiny = city->getGrid3D()->getClosestPoint(npc->getPosition(), pathVertices, indexVertex);
+
+    float force = EngineSetup::getInstance()->TESTING_INT5;
+
+    Vector3D v(npc->getPosition(), destiny);
+    Vertex3D direction = v.getComponent();
+    if (direction.getModule() > EngineSetup::getInstance()->TESTING) {
+        direction.setLength(force);
+        this->npc->applyImpulse(direction);
+    } else {
+        int newIndexVertex = indexVertex + 1;
+        if (this->direction) {
+            newIndexVertex = indexVertex + 1;
+            if ( newIndexVertex < pathVertices.size()) {
+                destiny = pathVertices[newIndexVertex];
+                v = Vector3D(npc->getPosition(), destiny);
+                direction = v.getComponent();
+                direction.setLength(force);
+                this->npc->applyImpulse(direction);
+            } else {
+                this->direction = !this->direction;
+            }
+        } else {
+            newIndexVertex = indexVertex - 1;
+            if ( newIndexVertex > 0) {
+                destiny = pathVertices[newIndexVertex];
+                v = Vector3D(npc->getPosition(), destiny);
+                direction = v.getComponent();
+                direction.setLength(force);
+                this->npc->applyImpulse(direction);
+            } else {
+                this->direction = !this->direction;
+            }
+        }
+    }
+
+
+    Drawable::drawPathInGrid(
+        city->getGrid3D(),
+        PathFinder::readPathFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "path1.png"))
+    );
 
     Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();

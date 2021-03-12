@@ -44,7 +44,7 @@ public:
     static void drawOctreeNode(OctreeNode *, bool onlyWithTriangles);
     static void drawGrid3D(Grid3D *);
     static void drawPathInGrid(Grid3D *, std::stack<PathFinder::Pair>);
-    static void drawPathDebug(Grid3D *, PathFinder *);
+    static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
 };
 
 

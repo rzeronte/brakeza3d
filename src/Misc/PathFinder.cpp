@@ -9,6 +9,7 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Maths.h"
+#include "../../headers/Render/Logging.h"
 
 PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
 {
@@ -697,7 +698,7 @@ void PathFinder::saveGridToPNG(std::string filename)
 
 void PathFinder::loadGridFromPNG(std::string filename)
 {
-    SDL_Surface *s = IMG_Load((EngineSetup::getInstance()->GRIDS_FOLDER + filename).c_str());
+    SDL_Surface *s = IMG_Load((filename).c_str());
 
     int sx = s->w;
     int sy = s->h;
@@ -715,4 +716,47 @@ void PathFinder::loadGridFromPNG(std::string filename)
             }
         }
     }
+}
+
+std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename)
+{
+    Logging::getInstance()->Log("PathFinder readPathFromPNG " + filename);
+
+    SDL_Surface *surface = IMG_Load((filename).c_str());
+
+    int width  = surface->w;
+    int height = surface->h;
+
+    Pair src, dest;
+
+    // get start and end position
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int index = y * width + x;
+            Uint32 color = Tools::getSurfacePixel(surface, x, y);
+            Uint8 pred, pgreen, pblue, palpha;
+            SDL_GetRGBA(color, surface->format, &pred, &pgreen, &pblue, &palpha);
+            if (pred == 0 && pgreen == 255 && pblue == 0) { // green
+                src.first = y;
+                src.second = x;
+                //printf("start!: %d, %d", x, y);
+            }
+            if (pred == 0 && pgreen == 0 && pblue == 255) { // blue
+                dest.first = y;
+                dest.second = x;
+                //printf("ends!: %d, %d", x, y);
+            }
+        }
+    }
+
+    auto *pathfinder = new PathFinder(width, height);
+    pathfinder->loadGridFromPNG(filename);
+
+    std::stack<PathFinder::Pair> path;
+    pathfinder->AStarSearch(src, dest, path);
+
+    delete surface;
+    delete pathfinder;
+
+    return path;
 }

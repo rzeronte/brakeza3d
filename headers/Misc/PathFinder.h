@@ -30,7 +30,7 @@ public:
 
     void saveGridToPNG(std::string filename);
     void loadGridFromPNG(std::string filename);
-    PathFinder::Pair getClosestPoint(Vertex3D *v, std::stack<Pair> path);
+    static std::stack<PathFinder::Pair> readPathFromPNG(std::string filename);
 
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type

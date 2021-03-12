@@ -46,7 +46,7 @@ public:
     void setFixedYImageData(int fixedYImageData);
 
     CubeGrid3D *getFromPosition(int x, int y, int z);
-    Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path);
+    Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
 
     int numberCubesX;
     int numberCubesY;

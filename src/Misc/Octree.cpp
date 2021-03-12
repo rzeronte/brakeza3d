@@ -28,7 +28,7 @@ OctreeNode* Octree::BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds
         return node;
     }
 
-    Vertex3D childDimensions = (bounds.max - bounds.min).getScaled(0.5);
+    Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
     Logging::getInstance()->Log("OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()));
 
@@ -41,30 +41,30 @@ OctreeNode* Octree::BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds
                 childOffset = Vertex3D(0, 0, 0);
                 break;
             case 1:
-                childOffset = Vertex3D(childDimensions.x, 0, 0);
+                childOffset = Vertex3D(childSize.x, 0, 0);
                 break;
             case 2:
-                childOffset = Vertex3D(childDimensions.x, childDimensions.y, 0);
+                childOffset = Vertex3D(childSize.x, childSize.y, 0);
                 break;
             case 3:
-                childOffset = Vertex3D(childDimensions.x, childDimensions.y, childDimensions.z);
+                childOffset = Vertex3D(childSize.x, childSize.y, childSize.z);
                 break;
             case 4:
-                childOffset = Vertex3D(0, 0, childDimensions.z);
+                childOffset = Vertex3D(0, 0, childSize.z);
                 break;
             case 5:
-                childOffset = Vertex3D(0, childDimensions.y, childDimensions.z);
+                childOffset = Vertex3D(0, childSize.y, childSize.z);
                 break;
             case 6:
-                childOffset = Vertex3D(0, childDimensions.y, 0);
+                childOffset = Vertex3D(0, childSize.y, 0);
                 break;
             case 7:
-                childOffset = Vertex3D(childDimensions.x, 0, childDimensions.z);
+                childOffset = Vertex3D(childSize.x, 0, childSize.z);
                 break;
         }
 
         childBounds.min = bounds.min + childOffset;
-        childBounds.max = bounds.min + childOffset + childDimensions;
+        childBounds.max = bounds.min + childOffset + childSize;
         childBounds.updateVertices();
 
         node->children[i] = BuildOctree(

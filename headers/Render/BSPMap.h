@@ -130,8 +130,8 @@ struct model_t
 struct dnode_t
 {
     int planenum;				// Id of the plane that splits the node (intersecting plane), must be in [0,numplanes) (converted from long!)
-    short children[2] = {};	        // negative numbers are -(leafs+1), not nodes
-    short mins[3];		 // for sphere culling
+    short children[2] = {};	    // negative numbers are -(leafs+1), not nodes
+    short mins[3];		        // for sphere culling
     short maxs[3];
     unsigned short firstsurf;	// First surface
     unsigned short numsurf;		// Number of surfaces
@@ -139,9 +139,9 @@ struct dnode_t
 
 struct dleaf_t
 {
-    int contents = 0;						// Special type of leaf (converted from long!)
+    int contents = 0;				// Special type of leaf (converted from long!)
     int vislist;					// Beginning of visibility lists, must be -1 or in [0,numvislist) (converted from long!)
-    short mins[3];		 // for sphere culling
+    short mins[3];		            // for sphere culling
     short maxs[3];
     short firstsurf;				// Id to the first surface in the list of surfaces
     short numsurf;					// Number of entries in the list of surfaces

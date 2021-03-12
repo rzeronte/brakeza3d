@@ -38,9 +38,14 @@ public:
     Mesh3DBody *car;
     Mesh3DBody *character;
     Mesh3DBody *city;
+    Mesh3DBody *plane;
     Mesh3D *sample;
 
+    bool direction = true;
+
     PathFinder *pathFinder;
+
+    Mesh3DBody *npc;
 
     int kills = 0;
 
