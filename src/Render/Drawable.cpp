@@ -679,7 +679,7 @@ void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::Pair> path)
     }
 }
 
-void Drawable::drawPathDebug(Grid3D *grid, PathFinder *pathfinder)
+void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
 {
     std::stack<PathFinder::Pair> path;
     PathFinder::Pair src  = std::make_pair(EngineSetup::getInstance()->TESTING_INT1, EngineSetup::getInstance()->TESTING_INT2);
