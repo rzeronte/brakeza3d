@@ -52,7 +52,7 @@ void ComponentGame::startThirdPerson()
     city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj"));
     city->makeRigidBodyFromTriangleMesh(0.0f, camera, world,false);
     //city->buildGrid3DForEmptyRayIntersectionStrategy(64, 1, 64, Vertex3D(0, 1, 0));
-    city->buildGrid3DForEmptyDataImageStrategy(64, 64, EngineSetup::getInstance()->GRIDS_FOLDER + "city.png", 0);
+    //city->buildGrid3DForEmptyDataImageStrategy(64, 64, EngineSetup::getInstance()->GRIDS_FOLDER + "city.png", 0);
     city->setEnabled( false );
     Brakeza3D::get()->addObject3D(city, "city");
 
@@ -105,8 +105,8 @@ void ComponentGame::startThirdPerson()
     //camera->setFollowTo(car);
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
-    this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
-    this->pathFinder->loadGridFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "city.png"));
+    //this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
+    //this->pathFinder->loadGridFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "city.png"));
 
     // Fill pathfinder grid with Grid3D empties
     //Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
@@ -137,7 +137,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    Drawable::drawPathDebugForDevelopment(city->getGrid3D(), this->pathFinder);
+    /*Drawable::drawPathDebugForDevelopment(city->getGrid3D(), this->pathFinder);
 
     std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(
         city->getGrid3D(),
@@ -186,7 +186,7 @@ void ComponentGame::onUpdate()
         city->getGrid3D(),
         PathFinder::readPathFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "path1.png"))
     );
-
+*/
     Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();

@@ -2,7 +2,7 @@
 #ifndef SDL2_3D_ENGINE_VECTOR3D_H
 #define SDL2_3D_ENGINE_VECTOR3D_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Vertex3D.h"
 
 class Vector3D {

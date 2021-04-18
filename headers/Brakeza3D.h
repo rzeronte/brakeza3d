@@ -1,8 +1,6 @@
 #ifndef BRAKEDA3D_BRAKEZA3D_H
 #define BRAKEDA3D_BRAKEZA3D_H
 
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include <vector>
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"

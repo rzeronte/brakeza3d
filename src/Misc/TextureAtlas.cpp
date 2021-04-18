@@ -2,7 +2,7 @@
 // Created by darkhead on 21/5/20.
 //
 
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "../../headers/Misc/TextureAtlas.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Misc/Color.h"

@@ -3,7 +3,7 @@
 #define BRAKEDA3D_COMPONENTWEAPONS_H
 
 #include <string>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "../Misc/Timer.h"
 #include "../2D/WeaponAnimation.h"
 #include "../Game/WeaponType.h"

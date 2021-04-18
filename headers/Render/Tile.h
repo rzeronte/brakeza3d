@@ -3,7 +3,6 @@
 
 #include "../Objects/Triangle3D.h"
 #include <vector>
-#include <OpenCL/opencl.h>
 
 #define MAX_TILE_TRIANGLES 3000
 
@@ -19,15 +18,5 @@ struct Tile {
     float *bufferDepth;
 };
 
-struct OCLTile {
-    bool draw;
-    int id;
-    int id_x;
-    int id_y;
-    int start_x;
-    int start_y;
-    int numTriangles;
-    int triangleIds[1500];
-};
 
 #endif //SDL2_3D_ENGINE_GUI_H

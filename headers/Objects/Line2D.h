@@ -3,7 +3,7 @@
 #define SDL2_3D_ENGINE_LINE2D_H
 
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Point2D.h"
 
 class Line2D {

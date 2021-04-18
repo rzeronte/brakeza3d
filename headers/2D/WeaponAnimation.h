@@ -2,7 +2,7 @@
 #define BRAKEDA3D_WEAPONANIMATION_H
 
 #include <string>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "../Misc/Timer.h"
 
 #define WEAPON_ANIMATION_MAX_FRAMES 30

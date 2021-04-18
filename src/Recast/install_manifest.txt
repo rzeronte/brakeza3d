@@ -1,5 +1,0 @@
-/usr/local/lib/libRecast.VERSION.dylib
-/usr/local/lib/libRecast.dylib
-/usr/local/include/Recast.h
-/usr/local/include/RecastAlloc.h
-/usr/local/include/RecastAssert.h

@@ -2,9 +2,9 @@
 #ifndef SDL2_3D_ENGINE_VERTEX_H
 #define SDL2_3D_ENGINE_VERTEX_H
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include <string>
-#include <LinearMath/btVector3.h>
+#include <bullet/LinearMath/btVector3.h>
 
 
 class Vertex3D {

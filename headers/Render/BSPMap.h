@@ -4,13 +4,6 @@
 #include "../Components/Camera3D.h"
 #include "../Objects/Triangle3D.h"
 #include "btBulletDynamicsCommon.h"
-#include "Recast.h"
-#include "RecastDebugDraw.h"
-#include "RecastDump.h"
-#include "DetourNavMesh.h"
-#include "DetourNavMeshBuilder.h"
-#include "DetourDebugDraw.h"
-#include "../Recastnavigation/RecastGeometry.h"
 
 #define BSP_VERSION		29
 #define MAXLIGHTMAPS	4
@@ -201,7 +194,7 @@ class BSPMap: public Object3D
 {
 private:
 
-    static static int LoadFile(const char *filename, void **bufferptr);
+    static int LoadFile(const char *filename, void **bufferptr);
     bool LoadPalette(const char *filename);
     bool LoadBSP(const char *filename);
 

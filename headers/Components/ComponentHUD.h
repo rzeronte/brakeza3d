@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_COMPONENTHUD_H
 #define BRAKEDA3D_COMPONENTHUD_H
 
-#include <SDL_events.h>
+#include <SDL2/SDL_events.h>
 #include "../Misc/TexturePackage.h"
 #include "Component.h"
 #include "ComponentWeapons.h"

@@ -3,7 +3,7 @@
 #define BRAKEDA3D_MENUOPTION_H
 
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include <string>
 
 class MenuOption {

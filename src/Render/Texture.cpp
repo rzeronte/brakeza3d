@@ -4,7 +4,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/Render/Maths.h"
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 Texture::Texture()
 {

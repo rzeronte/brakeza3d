@@ -6,7 +6,7 @@
 #define SDL2_3D_ENGINE_COLOR_H
 
 
-#include <SDL_quit.h>
+#include <SDL2/SDL_quit.h>
 
 class Color {
 public:

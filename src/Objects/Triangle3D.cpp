@@ -1,5 +1,5 @@
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include <cmath>
 #include <list>
 #include "../../headers/Objects/Triangle3D.h"

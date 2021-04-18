@@ -6,9 +6,9 @@
 #define BRAKEDA3D_COMPONENTWINDOW_H
 
 
-#include <SDL_video.h>
-#include <SDL_render.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_ttf.h>
 #include "Component.h"
 
 

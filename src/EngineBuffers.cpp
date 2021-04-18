@@ -1,5 +1,5 @@
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include "../headers/EngineBuffers.h"
 #include "../headers/Misc/Tools.h"
 #include "../headers/Misc/cJSON.h"

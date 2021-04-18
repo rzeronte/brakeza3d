@@ -1,8 +1,8 @@
 
 #include <string>
 #include <vector>
-#include <SDL_system.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_system.h>
+#include <SDL2/SDL_ttf.h>
 #include <algorithm>
 #include <math.h>
 #include "../../headers/Misc/Tools.h"

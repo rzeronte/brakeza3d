@@ -3,8 +3,8 @@
 #define SDL2_3D_ENGINE_LTIMER_H
 
 
-#include <SDL_types.h>
-#include <SDL_timer.h>
+#include <SDL2/SDL_types.h>
+#include <SDL2/SDL_timer.h>
 
 //The application time based timer
 class Timer

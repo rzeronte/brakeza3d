@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_COMPONENTBSP_H
 #define BRAKEDA3D_COMPONENTBSP_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <thread>
 #include "Component.h"
 #include "../Render/BSPMap.h"

@@ -7,6 +7,7 @@
 
 
 #include <vector>
+#include <mutex>
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
 #include "../Render/Tile.h"

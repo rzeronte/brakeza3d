@@ -1,7 +1,0 @@
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/install/local.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/install/strip.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/install.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/list_install_components.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/rebuild_cache.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/edit_cache.dir
-/Users/darkhead/CLionProjects/recastnavigation/Recast/CMakeFiles/Recast.dir

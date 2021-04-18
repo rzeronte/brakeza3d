@@ -6,7 +6,7 @@
 #define BRAKEDA3D_COMPONENTINPUT_H
 
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Component.h"
 #include "ComponentCamera.h"
 

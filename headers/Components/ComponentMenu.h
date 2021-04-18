@@ -3,6 +3,7 @@
 #define BRAKEDA3D_COMPONENTMENU_H
 
 #include <string>
+#include <SDL2/SDL_events.h>
 #include "../2D/MenuOption.h"
 #include "../Misc/cJSON.h"
 #include "Component.h"

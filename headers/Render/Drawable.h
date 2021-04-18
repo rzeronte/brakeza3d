@@ -3,7 +3,7 @@
 #define SDL2_3D_ENGINE_DRAWABLE_H
 
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include "Frustum.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/Line2D.h"

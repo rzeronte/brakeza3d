@@ -2,9 +2,9 @@
 #define SDL2_3D_ENGINE_ZBUFFER_H
 
 #include <iostream>
-#include <SDL_surface.h>
-#include <SDL_audio.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_mixer.h>
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Game/NPCEnemyBody.h"

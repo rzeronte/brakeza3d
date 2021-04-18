@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3")
@@ -16,24 +17,11 @@ set(OpenGL_dir /Library/Frameworks/OpenGL.framework/Headers/)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(Bullet REQUIRED)
-find_package(OpenCL REQUIRED)
 
 include_directories(
-        ${SDL2_dir}
-        ${SDL2_image_dir}
-        ${SDL2_ttf_dir}
-        ${SDL2_mixer_dir}
-        ${OPENGL_INCLUDE_DIRS}
-        ${BULLET_INCLUDE_DIRS}
-        ${OpenCL_INCLUDE_DIRS}
-        ${ASSIMP_INCLUDE_DIR}
-        ${GLM_INCLUDE_DIRS}
+        /usr/include/
+        /usr/include/bullet
+        /usr/include/SDL2
 )
 
 add_executable(brakeza3d
@@ -178,13 +166,6 @@ add_executable(brakeza3d
         headers/Physics/Body.h
         headers/Objects/Cube3D.cpp
         headers/Objects/Cube3D.h
-        src/Recastnavigation/RecastWrapper.cpp
-        headers/Recastnavigation/RecastWrapper.h
-        src/Recastnavigation/RecastGeometry.cpp
-        headers/Recastnavigation/RecastGeometry.h
-        src/Recastnavigation/RecastGeometryLoader.cpp
-        headers/Recastnavigation/RecastGeometryLoader.h
-        src/Recastnavigation/RecastBuildContext.cpp headers/Recastnavigation/RecastBuildContext.h
 
         headers/Game/Player.cpp src/Game/Player.h
         src/Demo/Demo.cpp headers/Demo/Demo.h
@@ -243,13 +224,15 @@ add_executable(brakeza3d
         src/2D/TextWriter.cpp headers/2D/TextWriter.h headers/Game/DoorGhost.cpp headers/Game/DoorGhost.h headers/Physics/Ghost.cpp headers/Physics/Ghost.h headers/Render/AABB3D.h src/Misc/Octree.cpp headers/Misc/Octree.h headers/Misc/Grid3D.cpp headers/Misc/Grid3D.h src/Misc/PathFinder.cpp headers/Misc/PathFinder.h)
 
 target_link_libraries(brakeza3d
-        ${SDL2_LIBRARY}
-        ${SDL2_IMAGE_LIBRARY}
-        ${SDLTTF_LIBRARY}
-        ${SDL2_MIXER_LIBRARY}
-        ${OPENGL_LIBRARIES}
-        ${BULLET_LIBRARIES}
-        ${OpenCL_LIBRARY}
+        SDL2
+        SDL2_image
+        SDL2_ttf
+        SDL2_mixer
+        BulletSoftBody
+        BulletDynamics
+        BulletCollision
+        LinearMath
         assimp
-        DebugUtils Detour DetourCrowd DetourTileCache Recast
+        GL
+        GLU
 )

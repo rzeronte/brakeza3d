@@ -3,7 +3,7 @@
 #define SDL2_3D_ENGINE_TEXTURE_H
 
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 #include <string>
 #include "../Objects/Point2D.h"
 #include "../Objects/Vertex3D.h"

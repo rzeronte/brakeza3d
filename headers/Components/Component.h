@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_COMPONENT_H
 #define BRAKEDA3D_COMPONENT_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <vector>
 #include "../Objects/Object3D.h"
 #include "../EngineSetup.h"

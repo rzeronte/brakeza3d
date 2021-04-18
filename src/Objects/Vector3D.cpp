@@ -1,5 +1,5 @@
 
-#include <SDL_quit.h>
+#include <SDL2/SDL_quit.h>
 #include "../../headers/Objects/Vector3D.h"
 
 class string;
