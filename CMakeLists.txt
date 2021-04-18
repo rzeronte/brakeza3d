@@ -3,25 +3,17 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
-set(SDL2_dir /Library/Frameworks/SDL2.framework/Headers)
-set(SDL2_image_dir /Library/Frameworks/SDL2_image.framework/Headers)
-set(SDL2_ttf_dir /Library/Frameworks/SDL2_ttf.framework/Headers)
-set(SDL2_mixer_dir /Library/Frameworks/SDL2_mixer.framework/Headers)
-set(OpenGL_dir /Library/Frameworks/OpenGL.framework/Headers/)
-
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-
 include_directories(
-        /usr/include/
-        /usr/include/bullet
-        /usr/include/SDL2
+    /usr/include/
+    /usr/include/bullet
+    /usr/include/SDL2
 )
 
 add_executable(brakeza3d
@@ -234,5 +226,4 @@ target_link_libraries(brakeza3d
         LinearMath
         assimp
         GL
-        GLU
 )
