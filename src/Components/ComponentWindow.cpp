@@ -3,6 +3,7 @@
 //
 
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include "../../headers/Components/ComponentWindow.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/EngineBuffers.h"
@@ -77,10 +78,8 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
-        // | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
-
 
         if (window == NULL) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -91,14 +90,13 @@ void ComponentWindow::initWindow() {
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
-            screenTexture = SDL_CreateTexture (renderer, SDL_PIXELFORMAT_ARGB8888,
+            screenTexture = SDL_CreateTexture (renderer, SDL_PIXELFORMAT_RGBA32,
                                SDL_TEXTUREACCESS_STATIC,
                                EngineSetup::getInstance()->screenWidth,
                                EngineSetup::getInstance()->screenHeight
             );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
-
             SDL_GL_SwapWindow(window);
         }
     }
