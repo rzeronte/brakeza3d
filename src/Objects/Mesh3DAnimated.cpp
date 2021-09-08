@@ -63,9 +63,9 @@ void Mesh3DAnimated::updateFrameTransformations()
             T->B = V2;
             T->C = V3;
 
-            //if (this->numTextures > 0) {
-            //    T->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
-            //}
+            if (this->numTextures > 0) {
+                T->setTexture( &this->modelTextures[ this->scene->mMeshes[i]->mMaterialIndex ] );
+            }
 
             numModelTriangles++;
         }
@@ -131,6 +131,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh)
         return;
     }
 
+    std::cout << "Loading mesh animation with materialIndex: " << mesh->mMaterialIndex << std::endl;
     this->loadMeshBones(mesh, localMeshBones);
 
     for (unsigned int j = 0 ; j < mesh->mNumVertices ; j++) {

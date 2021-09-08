@@ -33,83 +33,26 @@ void ComponentGame::onStart()
 void ComponentGame::startThirdPerson()
 {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    btDiscreteDynamicsWorld *world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
-
     Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
     camera->follow_to_position_offset = Vertex3D(12, -122, 0);
 
-    // ---- plane
-    plane = new Mesh3DBody();
-    plane->setLabel("plane");
-    plane->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj"));
-    plane->makeRigidBodyFromTriangleMesh(0.0f, camera, world,false);
-    plane->setEnabled( true );
-    Brakeza3D::get()->addObject3D(plane, "plane");
-
-    // ---- city
-    city = new Mesh3DBody();
-    city->setLabel("city");
-    city->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "city_plane.obj"));
-    city->makeRigidBodyFromTriangleMesh(0.0f, camera, world,false);
-    //city->buildGrid3DForEmptyRayIntersectionStrategy(64, 1, 64, Vertex3D(0, 1, 0));
-    //city->buildGrid3DForEmptyDataImageStrategy(64, 64, EngineSetup::getInstance()->GRIDS_FOLDER + "city.png", 0);
-    city->setEnabled( false );
-    Brakeza3D::get()->addObject3D(city, "city");
-
-    // ---- car
-    car = new Mesh3DBody();
-    car->setLabel("car");
-    car->setPosition( originalCarPosition );
-    car->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "car.obj").c_str());
-    car->buildOctree();
-    car->makeSimpleRigidBody(800,car->getPosition(),Vertex3D(1, 1, 1), world );
-    Brakeza3D::get()->addObject3D(car, "car");
-
-    // ---- character
-    character = new Mesh3DBody();
-    character->setPosition( originalCarPosition + Vertex3D(15, 0, 0));
-    character->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
-    character->makeSimpleRigidBody(80,character->getPosition(),Vertex3D(1, 1, 1), world );
-    character->setEnabled(false);
-    Brakeza3D::get()->addObject3D(character, "character");
-
-    Vertex3D camPosition = car->getPosition() + camera->follow_to_position_offset;
-
     // start cam position
-    camera->setPosition( camPosition );
-    camera->pitch = 45;
-    camera->yaw   = 90;
-    camera->roll  = 0;
+    camera->setPosition( originalCarPosition );
     camera->UpdateRotation();
 
-    // demo object
-    this->sample = new Mesh3D();
-    sample->setLabel("mono");
-    sample->setPosition(Vertex3D(100, 100, 100));
-    sample->setScale(10);
-    sample->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
-    sample->buildOctree();
-    sample->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
-    Brakeza3D::get()->addObject3D(sample, "mono");
+    Mesh3DAnimated* mesh = new Mesh3DAnimated();
+    Brakeza3D::get()->addObject3D(mesh, "hellknight");
 
-    // ---- npc
-    npc = new Mesh3DBody();
-    npc->setScale(5);
-    npc->setPosition( originalCarPosition + Vertex3D(15, 0, 0));
-    npc->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "character.fbx").c_str());
-    npc->makeSimpleRigidBody(80,character->getPosition(),Vertex3D(1, 1, 1), world);
-    npc->setEnabled(true);
-    Brakeza3D::get()->addObject3D(npc, "npc");
-
-    // cam follow to car
-    //camera->setFollowTo(car);
+    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx") ) {
+        mesh->setScale(0.025 );
+        Vertex3D p = Vertex3D(1, 1, 20);
+        p.y-= -1;
+        p.z-= -10;
+        M3 r = M3::getMatrixRotationForEulerAngles(90, 1800, 0);
+        mesh->setRotation( r );
+        mesh->setPosition( p );
+    }
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
-
-    //this->pathFinder = new PathFinder(city->getGrid3D()->numberCubesX, city->getGrid3D()->numberCubesZ);
-    //this->pathFinder->loadGridFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "city.png"));
-
-    // Fill pathfinder grid with Grid3D empties
-    //Tools::LoadPathFinderWithGrid3D(city->getGrid3D(), this->pathFinder);
 }
 
 void ComponentGame::startFPS()
@@ -137,56 +80,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    /*Drawable::drawPathDebugForDevelopment(city->getGrid3D(), this->pathFinder);
-
-    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(
-        city->getGrid3D(),
-        PathFinder::readPathFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "path1.png"))
-    );
-
-    int indexVertex;
-    Vertex3D destiny = city->getGrid3D()->getClosestPoint(npc->getPosition(), pathVertices, indexVertex);
-
-    float force = EngineSetup::getInstance()->TESTING_INT5;
-
-    Vector3D v(npc->getPosition(), destiny);
-    Vertex3D direction = v.getComponent();
-    if (direction.getModule() > EngineSetup::getInstance()->TESTING) {
-        direction.setLength(force);
-        this->npc->applyImpulse(direction);
-    } else {
-        int newIndexVertex = indexVertex + 1;
-        if (this->direction) {
-            newIndexVertex = indexVertex + 1;
-            if ( newIndexVertex < pathVertices.size()) {
-                destiny = pathVertices[newIndexVertex];
-                v = Vector3D(npc->getPosition(), destiny);
-                direction = v.getComponent();
-                direction.setLength(force);
-                this->npc->applyImpulse(direction);
-            } else {
-                this->direction = !this->direction;
-            }
-        } else {
-            newIndexVertex = indexVertex - 1;
-            if ( newIndexVertex > 0) {
-                destiny = pathVertices[newIndexVertex];
-                v = Vector3D(npc->getPosition(), destiny);
-                direction = v.getComponent();
-                direction.setLength(force);
-                this->npc->applyImpulse(direction);
-            } else {
-                this->direction = !this->direction;
-            }
-        }
-    }
-
-
-    Drawable::drawPathInGrid(
-        city->getGrid3D(),
-        PathFinder::readPathFromPNG(std::string(EngineSetup::getInstance()->GRIDS_FOLDER + "path1.png"))
-    );
-*/
     Camera3D         *camera           = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup      *setup            = EngineSetup::getInstance();
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();
@@ -196,47 +89,10 @@ void ComponentGame::onUpdate()
 
     // set car rotation
     Vertex3D impulse = camera->velocity.getComponent();
-    if (player->isVehicle()) {
-        float accel = 4000;
-
-        impulse.setLength(accel);
-
-        ComponentsManager::get()->getComponentGame()->car->setRotation(
-                M3::getMatrixRotationForEulerAngles(0,camera->yaw - 90,0).getTranspose()
-        );
-        ComponentsManager::get()->getComponentGame()->car->applyImpulse( impulse );
-    } else {
-        float accel = 270;
-        impulse.setLength(accel);
-        ComponentsManager::get()->getComponentGame()->character->setRotation(
-                M3::getMatrixRotationForEulerAngles(0,camera->yaw - 90,0).getTranspose()
-        );
-        ComponentsManager::get()->getComponentGame()->character->applyImpulse( impulse );
-
-    }
 
     if (player->state != PlayerState::GAMEOVER) {
-
-        if (mapBSP->isLoaded() && mapBSP->isCurrentLeafLiquid() && !setup->MENU_ACTIVE) {
-            Drawable::waterShader( mapBSP->currentLeaf->contents );
-        }
-
-        if (mapBSP->isCurrentLeafLiquid()) {
-            player->setOxygen(player->getOxygen() - 0.5);
-        } else {
-            player->setOxygen(100);
-        }
-
-        if (mapBSP->isCurrentLeafLiquid() && mapBSP->currentLeaf->contents == -5) {
-            player->takeDamage( 1 );
-        }
-
         if ( setup->ENABLE_IA ) {
             onUpdateIA();
-        }
-
-        if ( player->isDead() || player->tookDamage ) {
-            redScreen();
         }
     }
 
@@ -258,7 +114,6 @@ void ComponentGame::onUpdate()
         Drawable::drawFadeIn();
     }
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->tookDamage = false;
     if (player->state != PlayerState::GAMEOVER) {
         this->resolveCollisions();
     }

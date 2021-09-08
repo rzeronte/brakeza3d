@@ -57,7 +57,7 @@ Grid3D::Grid3D(std::vector<Triangle*> *triangles, const AABB3D &bounds, int size
     }
 }
 
-void Grid3D::applyEmptyStrategy()
+void Grid3D::applyCheckCellEmptyStrategy()
 {
     switch (strategy) {
         case Grid3D::EmptyStrategies::RAY_INTERSECTION:

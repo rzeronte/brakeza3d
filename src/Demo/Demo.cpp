@@ -142,23 +142,8 @@ Demo::Demo()
     // Lighting example
     /*Vertex3D startPoint = Vertex3D(45, -2, 40);
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
-    Drawable::drawLightning(camera, startPoint, endPoint);*/
-
-    //this->bspMap->recastWrapper->drawNavMeshPoints();
-
-    // Calc Pathfinding example
-    //Vertex3D A(*this->getObjectByLabel("BSPEntity_21 (monster)")->getPosition());
-    //Vertex3D B(*this->getObjectByLabel("BSPEntity_245 (monster)")->getPosition());
-    //Vector3D t(A, B);
-    //std::vector<Vertex3D> points;
-    //this->bspMap->recastWrapper->getPathBetween(A, B, points);
-    //this->bspMap->recastWrapper->drawPathSegments(points);
-    //Drawable::drawVector3D(t, camera, Color::magenta());
-
-    // Raycasting example
-    /*Vertex3D A(-13, 16, 191);
-    Vertex3D B(*camera->getPosition());
-    bool hitResult = this->bspMap->recastWrapper->rayCasting(A, B);*/
+    Drawable::drawLightning(camera, startPoint, endPoint);
+     */
 
     Mesh3DAnimated* mesh = new Mesh3DAnimated();
     Brakeza3D::get()->addObject3D(mesh, "hellknight");
@@ -198,4 +183,16 @@ Demo::Demo()
     gun->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + "glock.Mesh3DBody");
     ComponentsManager::get()->getComponentCamera()->getCamera()->setFollowTo(gun->getFollowMePointObject() );
     */
+
+
+    // demo object
+    Mesh3D *sample = new Mesh3D();
+    sample->setLabel("mono");
+    sample->setPosition(Vertex3D(100, 100, 100));
+    sample->setScale(10);
+    sample->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj").c_str());
+    sample->buildOctree();
+    sample->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
+    Brakeza3D::get()->addObject3D(sample, "mono");
+
 }

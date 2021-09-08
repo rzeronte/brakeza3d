@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++  -dynamiclib -Wl,-headerpad_max_install_names  -o libDetourTileCache.VERSION.dylib -install_name /Users/darkhead/CLionProjects/recastnavigation/DetourTileCache/libDetourTileCache.VERSION.dylib CMakeFiles/DetourTileCache.dir/Source/DetourTileCache.o CMakeFiles/DetourTileCache.dir/Source/DetourTileCacheBuilder.o -lDetour 

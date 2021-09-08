@@ -1,8 +1,0 @@
-/usr/local/lib/libDetourCrowd.VERSION.dylib
-/usr/local/lib/libDetourCrowd.dylib
-/usr/local/include/DetourCrowd.h
-/usr/local/include/DetourLocalBoundary.h
-/usr/local/include/DetourObstacleAvoidance.h
-/usr/local/include/DetourPathCorridor.h
-/usr/local/include/DetourPathQueue.h
-/usr/local/include/DetourProximityGrid.h

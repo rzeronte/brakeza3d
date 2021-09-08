@@ -16,7 +16,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
   "DebugUtils_EXPORTS"
   )
 
-# The include file search paths:
+# The headers file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   )
 

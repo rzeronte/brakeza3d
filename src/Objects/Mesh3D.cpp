@@ -236,13 +236,11 @@ void Mesh3D::loadOBJBlenderMaterials() {
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles)
 {
     // draw triangles of mesh
-    ComponentsManager::get()->getComponentRender()->lockFrameTriangles.lock();
     for (int i = 0; i < this->modelTriangles.size() ; i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
         frameTriangles->push_back( this->modelTriangles[i] );
     }
-    ComponentsManager::get()->getComponentRender()->lockFrameTriangles.unlock();
 }
 
 /*void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
@@ -427,6 +425,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
             continue;
         };
 
+        std::cout << "Trying import type texture: " << pMaterial->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
             aiString Path;
             if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
@@ -530,7 +529,7 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
     Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb,sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
-    this->grid->applyEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();
 }
 
 void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
@@ -539,7 +538,7 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::RAY_INTERSECTION);
     this->grid->setRayIntersectionDirection( direction );
-    this->grid->applyEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();
 }
 
 void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY)
@@ -549,7 +548,7 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::str
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);
     this->grid->setImageFilename( filename );
     this->grid->setFixedYImageData( fixedY );
-    this->grid->applyEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();
 }
 
 void Mesh3D::buildOctree() 

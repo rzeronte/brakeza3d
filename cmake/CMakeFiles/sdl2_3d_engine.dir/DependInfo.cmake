@@ -40,7 +40,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
-# The include file search paths:
+# The headers file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/Library/Frameworks/SDL2.framework/Headers"
   "/Library/Frameworks/SDL2_image.framework/Headers"

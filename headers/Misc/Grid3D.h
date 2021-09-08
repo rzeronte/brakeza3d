@@ -33,7 +33,7 @@ public:
     AABB3D bounds;
     std::vector<CubeGrid3D*> boxes;
 
-    void applyEmptyStrategy();
+    void applyCheckCellEmptyStrategy();
 
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle*> &triangles);
     void fillEmptiesWithAABBvsTriangles(std::vector<Triangle*> &triangles);

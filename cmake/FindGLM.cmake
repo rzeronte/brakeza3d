@@ -9,7 +9,7 @@
 # GLM_ROOT_DIR - root directory of a glm installation
 # Headers are expected to be found in either:
 # <GLM_ROOT_DIR>/glm/glm.hpp OR
-# <GLM_ROOT_DIR>/include/glm/glm.hpp
+# <GLM_ROOT_DIR>/headers/glm/glm.hpp
 # This variable can either be a cmake or environment
 # variable. Note however that changing the value
 # of the environment varible will NOT result in

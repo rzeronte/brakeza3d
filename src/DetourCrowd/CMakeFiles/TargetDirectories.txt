@@ -1,7 +1,0 @@
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/install/local.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/install/strip.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/DetourCrowd.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/install.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/list_install_components.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/rebuild_cache.dir
-/Users/darkhead/CLionProjects/recastnavigation/DetourCrowd/CMakeFiles/edit_cache.dir

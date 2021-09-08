@@ -346,17 +346,15 @@ bool Triangle::isBackFaceCulling(Vertex3D *position)
 
 Vertex3D Triangle::getCenterOfMass()
 {
-    Vertex3D A;
-
     Vertex3D At = this->Ao;
     Vertex3D Bt = this->Bo;
     Vertex3D Ct = this->Co;
 
-    A.x = (At.x+Bt.x+Ct.x)/3;
-    A.y = (At.y+Bt.y+Ct.y)/3;
-    A.z = (At.z+Bt.z+Ct.z)/3;
-
-    return A;
+    return Vertex3D(
+        (At.x+Bt.x+Ct.x)/3,
+        (At.y+Bt.y+Ct.y)/3,
+        (At.z+Bt.z+Ct.z)/3
+    );
 }
 
 void Triangle::drawNormal(Camera3D *cam, Uint32 color)
