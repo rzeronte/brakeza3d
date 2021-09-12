@@ -39,7 +39,7 @@ float LightPoint3D::getShadowMappingBuffer(int x, int y)
     return shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth ) + x ];
 }
 
-float LightPoint3D::setShadowMappingBuffer(int x, int y, float value)
+void LightPoint3D::setShadowMappingBuffer(int x, int y, float value)
 {
     shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth ) + x ] = value;
 }

@@ -5,21 +5,19 @@
 
 Mesh3DAnimated::Mesh3DAnimated()
 {
-    scene = nullptr;
 }
 
 void Mesh3DAnimated::onUpdate()
 {
-//    if (this->scene != nullptr) {
-//        this->updateFrameTransformations();
-//    }
-//
+    if (this->scene != nullptr) {
+        this->updateFrameTransformations();
+    }
+
     Mesh3D::onUpdate();
 }
 
 void Mesh3DAnimated::updateFrameTransformations()
 {
-    return;
     if (!this->scene->HasAnimations()) return;
 
     if (this->isFollowCamera()) {
@@ -109,8 +107,6 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename)
     this->AssimpInitMaterials(scene, Filename);
     this->ReadNodes();
 
-    std::cout << "Finish load animation" << std::endl;
-
     return true;
 }
 
@@ -156,7 +152,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh)
 
     this->meshVertices[ i ] = localMeshVertices;
     this->meshVerticesBoneData[ i ] = localMeshBones;
-    this->modelTriangles.resize(0);
+
     for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
         const aiFace& Face = mesh->mFaces[k];
 
@@ -183,7 +179,7 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
         if (boneMapping.find(BoneName) == boneMapping.end()) {
             BoneIndex = m_NumBones;
             m_NumBones++;
-            BoneInfo bi;
+            BoneInfo bi = BoneInfo();
             boneInfo.push_back(bi);
 
             boneMapping[BoneName] = BoneIndex;
@@ -364,7 +360,6 @@ void Mesh3DAnimated::AssimpProcessNodeAnimation(aiNode *node)
     }
 
     for (unsigned int x = 0; x < node->mNumMeshes; x++) {
-
         int idMesh = node->mMeshes[x];
         this->AssimpProcessMeshAnimation(idMesh, scene->mMeshes[idMesh]);
     }
@@ -532,6 +527,7 @@ Uint32 Mesh3DAnimated::processWeigthColor(int weight)
             break;
     }
 
+    c = Color::white();
     return c;
 }
 

@@ -14,7 +14,7 @@ public:
 
     void clearShadowMappingBuffer();
     float getShadowMappingBuffer(int x, int y);
-    float setShadowMappingBuffer(int x, int y, float value);
+    void setShadowMappingBuffer(int x, int y, float value);
 
     Uint32 color;
 

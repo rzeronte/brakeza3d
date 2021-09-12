@@ -34,6 +34,7 @@ Mix_Chunk *SoundPackage::getSoundByLabel(const std::string &label)
             return items[i]->sound;
         }
     }
+    return nullptr;
 }
 
 Mix_Music *SoundPackage::getMusicByLabel(const std::string &label)
@@ -43,4 +44,5 @@ Mix_Music *SoundPackage::getMusicByLabel(const std::string &label)
             return items[i]->music;
         }
     }
+    return nullptr;
 }

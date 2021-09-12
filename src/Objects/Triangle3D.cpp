@@ -501,7 +501,7 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
         light_v = 1 - modf(abs(light_v) , &intpart);
     }
 
-    Uint32 lightmap_color;
+    Uint32 lightmap_color = 0;
     Uint8  lightmap_intensity = 0;
     char c = 1;
 
