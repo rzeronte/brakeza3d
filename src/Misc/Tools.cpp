@@ -268,17 +268,6 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
     return true;
 }
 
-std::string Tools::floatTruncate(float val, int numDigits)
-{
-    std::string output = std::to_string(val).substr(0, numDigits+1);
-    if (output.find('.') ==  std::string::npos ||
-        output.back() == '.')
-    {
-        output.pop_back();
-    }
-    return output;
-}
-
 void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times)
 {
     if (chunk == NULL)  {

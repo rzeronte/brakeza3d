@@ -161,7 +161,7 @@ void ComponentCollisions::updatePhysicObjects()
     }
 }
 
-Vertex3D ComponentCollisions::stepSimulation()
+void ComponentCollisions::stepSimulation()
 {
     // check for collisions
     checkCollisionsForAll();
@@ -169,7 +169,7 @@ Vertex3D ComponentCollisions::stepSimulation()
     if (SETUP->BULLET_STEP_SIMULATION) {
 
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime(), 4);
+        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime(), 1);
 
         // Physics for meshes
         this->updatePhysicObjects();
@@ -178,13 +178,6 @@ Vertex3D ComponentCollisions::stepSimulation()
         this->updatePhysicsGhosts();
 
         //this->syncTriggerGhostCamera();
-
-        // todo: estudiar pq tengo q poner esto inmediatemente después del stepSimulation :S
-        // En caso contrario el movimiento da "saltos"
-        if (!ComponentsManager::get()->getComponentCamera()->isFlyMode()) {
-            camera->setPosition( camera->getFollowTo()->getPosition() + camera->follow_to_position_offset);
-            camera->UpdateFrustum();
-        }
     }
 }
 
