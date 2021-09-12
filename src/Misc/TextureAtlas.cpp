@@ -120,6 +120,7 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(std::string name)
             return textures_info[i];
         }
     }
+    return TextureAtlasImageInfo();
 }
 
 void TextureAtlas::saveJPG(std::string name)

@@ -24,4 +24,5 @@ Texture *TexturePackage::getTextureByLabel(const std::string &label)
             return items[i]->texture;
         }
     }
+    return nullptr;
 }
