@@ -90,7 +90,7 @@ void Brakeza3D::addObject3D(Object3D *obj, std::string label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
     obj->setLabel(label);
-    sceneObjects.emplace_back(obj);
+    sceneObjects.push_back(obj);
 }
 
 Object3D* Brakeza3D::getObjectByLabel(std::string label)

@@ -38,7 +38,7 @@ public:
 
     Vertex3D getScaled(float);
     Vertex3D getScaled(float xs, float ys, float zs);
-    Vertex3D setScaled(float);
+    void setScaled(float);
 
     void setLength(float);
 

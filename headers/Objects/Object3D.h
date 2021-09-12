@@ -18,7 +18,7 @@ public:
 
     bool  enabled;
     bool  removed;
-    bool  followCamera = false;
+    bool  followCamera;
 
     Vertex3D drawOffset;
 
@@ -64,7 +64,7 @@ public:
     void setDrawOffset(Vertex3D v);
     Vertex3D getDrawOffset();
 
-    bool isFollowCamera() const;
+    bool isFollowCamera();
     void setFollowCamera(bool followCamera);
 
     virtual void onUpdate();

@@ -384,8 +384,8 @@ public:
 
     bool InitializeSurfaces(void);
     bool InitializeTextures(void);
-    bool InitializeTriangles();
-    bool InitializeLightmaps();
+    void InitializeTriangles();
+    void InitializeLightmaps();
     void bindTrianglesLightmaps();
     void InitializeEntities();
 

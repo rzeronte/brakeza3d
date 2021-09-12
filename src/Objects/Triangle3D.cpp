@@ -329,7 +329,7 @@ void Triangle::updateLightmapFrame()
     }
 }
 
-float Triangle::updateFullArea()
+void Triangle::updateFullArea()
 {
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;

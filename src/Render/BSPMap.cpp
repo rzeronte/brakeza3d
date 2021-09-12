@@ -287,7 +287,7 @@ bool BSPMap::InitializeTextures(void)
     return true;
 }
 
-bool BSPMap::InitializeTriangles()
+void BSPMap::InitializeTriangles()
 {
     // Creamos triángulos
     for (int i = 0; i < this->getNumSurfaces(); i++) {
@@ -315,7 +315,7 @@ bool BSPMap::InitializeTriangles()
     Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
 }
 
-bool BSPMap::InitializeLightmaps()
+void BSPMap::InitializeLightmaps()
 {
     for (int surfaceId = 0; surfaceId < this->getNumSurfaces(); surfaceId++) {
         surface_t *surf = this->getSurface(surfaceId);
@@ -968,6 +968,7 @@ Vertex3D BSPMap::getStartMapPosition()
     } else {
         Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
     }
+    return Vertex3D();
 }
 
 bool BSPMap::isCurrentLeafLiquid()
@@ -1022,6 +1023,7 @@ Texture *BSPMap::getTexture(std::string name)
             return &textures[i];
         }
     }
+    return nullptr;
 }
 
 bool BSPMap::isLoaded() const {

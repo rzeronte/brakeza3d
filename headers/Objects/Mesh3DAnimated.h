@@ -45,6 +45,7 @@ struct BoneInfo
 class Mesh3DAnimated : public Mesh3D
 {
 public:
+    Mesh3DAnimated();
 
     Assimp::Importer importer;
     const aiScene* scene;
@@ -79,9 +80,9 @@ public:
     void AssimpProcessNodeAnimation(aiNode *node);
     void AssimpProcessMeshAnimation(int i, aiMesh *mesh);
 
-    bool ReadNodes();
+    void ReadNodes();
 
-    aiMatrix4x4 BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
+    void BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>& Transforms);
 
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
     const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);

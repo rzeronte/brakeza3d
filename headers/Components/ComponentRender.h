@@ -72,7 +72,6 @@ public:
     std::vector<Triangle *> &getVisibleTriangles();
     std::vector<LightPoint3D *> &getLightPoints();
 
-    std::mutex lockFrameTriangles;
     std::vector<Triangle*> frameTriangles;
     std::vector<Triangle*> clippedTriangles;
     std::vector<Triangle*> visibleTriangles;

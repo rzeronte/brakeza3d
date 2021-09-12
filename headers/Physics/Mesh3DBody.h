@@ -14,7 +14,7 @@ public:
 
     void integrate();
 
-    btRigidBody* makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
+    void makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     btRigidBody* makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
     btRigidBody* makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse);
     btRigidBody* makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world);

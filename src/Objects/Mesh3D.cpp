@@ -44,6 +44,8 @@ bool Mesh3D::loadOBJBlender(const char *name)
     this->loadOBJBlenderMaterials();
     this->loadOBJBlenderTextureCoordinates();
     this->loadOBJBlenderTriangles();
+
+    return true;
 }
 
 void Mesh3D::loadOBJBlenderVertex()
@@ -236,7 +238,7 @@ void Mesh3D::loadOBJBlenderMaterials() {
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles)
 {
     // draw triangles of mesh
-    for (int i = 0; i < this->modelTriangles.size() ; i++) {
+    for (unsigned int i = 0; i < this->modelTriangles.size() ; i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
         frameTriangles->push_back( this->modelTriangles[i] );
@@ -353,36 +355,33 @@ void Mesh3D::copyFrom(Mesh3D *source)
 
 void Mesh3D::onUpdate()
 {
-    this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles()) ;
+    this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
-        if (this->octree != NULL) {
-            Drawable::drawOctree(this->octree, true);
-        }
-    }
-
-    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
-        if (this->grid != NULL) {
-            Drawable::drawGrid3D(this->grid);
-        }
-    }
-
-    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
-        this->updateBoundingBox();
-        Drawable::drawAABB(&this->aabb, Color::white());
-    }
+//    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
+//        if (this->octree != NULL) {
+//            Drawable::drawOctree(this->octree, true);
+//        }
+//    }
+//
+//    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
+//        if (this->grid != NULL) {
+//            Drawable::drawGrid3D(this->grid);
+//        }
+//    }
+//
+//    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+//        this->updateBoundingBox();
+//        Drawable::drawAABB(&this->aabb, Color::white());
+//    }
 }
 
-bool Mesh3D::AssimpLoadGeometryFromFile(std::string fileName)
+bool Mesh3D::AssimpLoadGeometryFromFile(const std::string& fileName)
 {
     setSourceFile( fileName );
 
     Logging::getInstance()->Log("AssimpLoadGeometryFromFile for " + fileName);
 
-    Assimp::Importer importer;
-    const aiScene* scene;
-
-    scene = importer.ReadFile( fileName, aiProcess_Triangulate |
+    const aiScene* scene = importer.ReadFile( fileName, aiProcess_Triangulate |
                                                aiProcess_JoinIdenticalVertices |
                                                aiProcess_SortByPType |
                                                aiProcess_FlipUVs
@@ -396,6 +395,8 @@ bool Mesh3D::AssimpLoadGeometryFromFile(std::string fileName)
 
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes( scene, scene->mRootNode );
+
+    return true;
 }
 
 bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filename)
@@ -417,6 +418,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
     Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
     for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
+
         aiMaterial *pMaterial = pScene->mMaterials[i];
         std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
 
@@ -424,7 +426,6 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
             this->numTextures++;
             continue;
         };
-
         std::cout << "Trying import type texture: " << pMaterial->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
             aiString Path;
@@ -511,7 +512,8 @@ const std::string &Mesh3D::getSourceFile() const {
     return source_file;
 }
 
-void Mesh3D::setSourceFile(const std::string &sourceFile) {
+void Mesh3D::setSourceFile(const std::string &sourceFile)
+{
     source_file = sourceFile;
 }
 

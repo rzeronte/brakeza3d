@@ -24,6 +24,7 @@ class Mesh3D : public Object3D {
 public:
     std::string source_file;
     std::string prefix_texture_folder;
+    Assimp::Importer importer;
 
     std::vector<Triangle*> modelTriangles;
     AABB3D aabb;
@@ -41,7 +42,7 @@ public:
 
     Mesh3D();
 
-    bool AssimpLoadGeometryFromFile(std::string fileName);
+    bool AssimpLoadGeometryFromFile(const std::string& fileName);
     bool AssimpInitMaterials(const aiScene* pScene, const std::string& Filename);
     void AssimpProcessNodes(const aiScene*, aiNode *node);
     void AssimpLoadMesh(aiMesh *mesh);

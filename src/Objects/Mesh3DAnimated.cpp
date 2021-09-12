@@ -1,20 +1,25 @@
-//
-// Created by darkhead on 13/2/20.
-//
-
 #include "../../headers/Objects/Mesh3DAnimated.h"
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/Render/Transforms.h"
 
+
+Mesh3DAnimated::Mesh3DAnimated()
+{
+    scene = nullptr;
+}
+
 void Mesh3DAnimated::onUpdate()
 {
-    this->updateFrameTransformations();
-
+//    if (this->scene != nullptr) {
+//        this->updateFrameTransformations();
+//    }
+//
     Mesh3D::onUpdate();
 }
 
 void Mesh3DAnimated::updateFrameTransformations()
 {
+    return;
     if (!this->scene->HasAnimations()) return;
 
     if (this->isFollowCamera()) {
@@ -104,10 +109,12 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename)
     this->AssimpInitMaterials(scene, Filename);
     this->ReadNodes();
 
+    std::cout << "Finish load animation" << std::endl;
+
     return true;
 }
 
-bool Mesh3DAnimated::ReadNodes()
+void Mesh3DAnimated::ReadNodes()
 {
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
@@ -149,7 +156,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh)
 
     this->meshVertices[ i ] = localMeshVertices;
     this->meshVerticesBoneData[ i ] = localMeshBones;
-
+    this->modelTriangles.resize(0);
     for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
         const aiFace& Face = mesh->mFaces[k];
 
@@ -200,7 +207,7 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
     }
 }
 
-aiMatrix4x4 Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms)
 {
     aiMatrix4x4 Identity = aiMatrix4x4();
 
@@ -285,6 +292,7 @@ uint Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim* pNodeAn
     }
 
 //    assert(0);
+    return 0;
 }
 
 uint Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -355,12 +363,13 @@ void Mesh3DAnimated::AssimpProcessNodeAnimation(aiNode *node)
         this->follow_me_point_object->setRotation(M3::getMatrixIdentity() );
     }
 
-    for (int x = 0; x < node->mNumMeshes; x++) {
+    for (unsigned int x = 0; x < node->mNumMeshes; x++) {
+
         int idMesh = node->mMeshes[x];
         this->AssimpProcessMeshAnimation(idMesh, scene->mMeshes[idMesh]);
     }
 
-    for (int j = 0; j < node->mNumChildren; j++) {
+    for (unsigned int j = 0; j < node->mNumChildren; j++) {
         AssimpProcessNodeAnimation(node->mChildren[j]);
     }
 }

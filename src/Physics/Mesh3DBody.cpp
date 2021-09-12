@@ -137,7 +137,7 @@ void Mesh3DBody::integrate()
 }
 
 
-btRigidBody* Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
+void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace)
 {
     this->triangleMesh = new btTriangleMesh();
 

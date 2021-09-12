@@ -128,7 +128,7 @@ public:
     int processLOD();
     int getLOD();
 
-    float updateFullArea();
+    void updateFullArea();
     void  updateBoundingBox();
     void  updateLightmapFrame();
 

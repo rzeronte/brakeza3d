@@ -6,7 +6,10 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/ComponentsManager.h"
 
-Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
+Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false)
+{
+    followCamera = false;
+
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -121,8 +124,8 @@ void Object3D::setParent(Object3D *parent) {
     Object3D::parent = parent;
 }
 
-bool Object3D::isFollowCamera() const {
-    return followCamera;
+bool Object3D::isFollowCamera() {
+    return this->followCamera;
 }
 
 void Object3D::setFollowCamera(bool followCamera) {

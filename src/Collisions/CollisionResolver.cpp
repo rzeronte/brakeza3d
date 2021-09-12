@@ -77,6 +77,8 @@ bool CollisionResolver::isSomeCamera()
     if (!strcmp(objB->getLabel().c_str(), cameraIdentifier.c_str())) {
         return true;
     }
+
+    return false;
 }
 
 bool CollisionResolver::isSomeNPCEnemy()

@@ -146,7 +146,7 @@ float Vertex3D::squaredLength()
     return norm;
 }
 
-Vertex3D Vertex3D::setScaled(float s)
+void Vertex3D::setScaled(float s)
 {
     this->x*=s;
     this->y*=s;
