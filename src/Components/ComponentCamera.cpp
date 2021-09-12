@@ -111,6 +111,8 @@ int ComponentCamera::pointHullContent(vec3_t p)
     int test = bspCollider->SV_HullPointContents(&bspCollider->getWorldModel()->hulls[0],0, p );
 
     Logging::getInstance()->Log("SV_HullPointContents: " + std::to_string(test));
+
+    return test;
 }
 
 void ComponentCamera::onEnd() {
