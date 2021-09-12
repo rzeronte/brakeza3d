@@ -39,7 +39,6 @@ public:
     Mesh3DBody *character;
     Mesh3DBody *city;
     Mesh3DBody *plane;
-    Mesh3D *sample;
 
     bool direction = true;
 

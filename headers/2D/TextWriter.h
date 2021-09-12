@@ -19,7 +19,7 @@ public:
     TextWriter(SDL_Renderer *renderer, const char *concharsFile);
 
     void writeText(int x, int y, const char *text, bool bold);
-    SDL_Texture* putCharacter(int ascii, int x, int y);
+    void putCharacter(int ascii, int x, int y);
 
 private:
     SDL_Renderer *renderer;

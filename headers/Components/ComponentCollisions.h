@@ -60,7 +60,7 @@ public:
     void updatePhysicObjects();
     void updatePhysicsGhosts();
 
-    Vertex3D stepSimulation();
+    void stepSimulation();
 
     std::vector<CollisionResolver *> &getCollisions();
 

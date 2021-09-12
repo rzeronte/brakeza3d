@@ -19,8 +19,8 @@ void ComponentMenu::onStart()
     loadMenuOptions();
 }
 
-void ComponentMenu::preUpdate() {
-
+void ComponentMenu::preUpdate()
+{
 }
 
 void ComponentMenu::onUpdate()
@@ -84,7 +84,6 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
     int xPos = 100;
 
     for( int i = 0 ; i < numOptions ; i++) {
-
         std::string text = this->options[ i ]->getLabel();
         bool bold = false;
 
@@ -96,7 +95,6 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
             bold = true;
             text = char(13) + text;
         }
-
         ComponentsManager::get()->getComponentHUD()->writeText(
             xPos,
             stepY + offsetY,

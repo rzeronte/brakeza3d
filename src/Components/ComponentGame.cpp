@@ -40,18 +40,28 @@ void ComponentGame::startThirdPerson()
     camera->setPosition( originalCarPosition );
     camera->UpdateRotation();
 
-    Mesh3DAnimated* mesh = new Mesh3DAnimated();
-    Brakeza3D::get()->addObject3D(mesh, "hellknight");
+//    Mesh3DAnimated* mesh = new Mesh3DAnimated();
+//    Brakeza3D::get()->addObject3D(mesh, "hellknight");
+//
+//    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx") ) {
+//        mesh->setScale(0.025 );
+//        Vertex3D p = Vertex3D(1, 1, 20);
+//        p.y-= -1;
+//        p.z-= -10;
+//        M3 r = M3::getMatrixRotationForEulerAngles(90, 1800, 0);
+//        mesh->setRotation( r );
+//        mesh->setPosition( p );
+//    }
 
-    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx") ) {
-        mesh->setScale(0.025 );
-        Vertex3D p = Vertex3D(1, 1, 20);
-        p.y-= -1;
-        p.z-= -10;
-        M3 r = M3::getMatrixRotationForEulerAngles(90, 1800, 0);
-        mesh->setRotation( r );
-        mesh->setPosition( p );
-    }
+    // demo object
+//    Mesh3D *sample = new Mesh3D();
+//    sample->setLabel("mono");
+//    sample->setPosition(Vertex3D(100, 100, 100));
+//    sample->setScale(1);
+//    sample->AssimpLoadGeometryFromFile( std::string(EngineSetup::getInstance()->MODELS_FOLDER + "dungeon.fbx").c_str());
+//    Brakeza3D::get()->addObject3D(sample, "mono");
+
+
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 }
 

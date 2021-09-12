@@ -44,8 +44,8 @@ public:
 
     int RESOLUTION = screenWidth * screenHeight;
 
-    bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = true;
+    bool BASED_TILE_RENDER = false;
+    bool BASED_TILE_RENDER_THREADED = false;
 
     const int ENGINE_MAX_OCLTRIANGLES = 10240;
 

@@ -45,7 +45,7 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile)
     }
 }
 
-SDL_Texture* TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
+void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
 {
     SDL_Surface *c = this->characterSurfaces[ascii];
 
@@ -65,18 +65,16 @@ SDL_Texture* TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
 void TextWriter::writeText(int x, int y, const char *text, bool bold)
 {
     int currentX = x;
-    int currentY = y;
 
     // The sprite have two sets of characters, first normal, second bold
     int lengthDictionary = ((CONCHARS_WIDTH/CONCHARS_CHARACTER_W) * (CONCHARS_HEIGHT/CONCHARS_CHARACTER_H)) / 2;
-
-    for (int i = 0; i < strlen(text); i++) {
+    for (int i = 0; i < (int) strlen(text); i++) {
         int c = (int) text[i];
 
         if (bold) {
             c += lengthDictionary;
         }
-        this->putCharacter(c, currentX, currentY);
+        this->putCharacter(c, currentX, y);
         currentX += CONCHARS_CHARACTER_W;
     }
 }

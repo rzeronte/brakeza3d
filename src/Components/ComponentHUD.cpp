@@ -21,10 +21,9 @@ void ComponentHUD::onStart()
     setStatusFaceAnimation(StatusFace::STAND);
 
     textureWriter = new TextWriter(
-            ComponentsManager::get()->getComponentWindow()->renderer,
-            std::string(EngineSetup::getInstance()->SPRITES_FOLDER + "conchars.png").c_str()
+        ComponentsManager::get()->getComponentWindow()->renderer,
+        std::string(EngineSetup::getInstance()->SPRITES_FOLDER + "conchars.png").c_str()
     );
-
 }
 
 void ComponentHUD::preUpdate()
