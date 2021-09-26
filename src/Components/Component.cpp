@@ -15,8 +15,8 @@ void Component::setComponents(std::vector<Component *> *components) {
     Component::components = components;
 }
 
-Component *Component::getComponentById(int id) {
-    return this->components->at(id);
+Component *Component::getComponentById(int componentId) {
+    return this->components->at(componentId);
 }
 
 void Component::setSceneObjects(std::vector<Object3D *> *sceneObjects) {

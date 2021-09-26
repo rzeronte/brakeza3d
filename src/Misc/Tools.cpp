@@ -2,12 +2,9 @@
 #include <string>
 #include <vector>
 #include <SDL2/SDL_system.h>
-#include <SDL2/SDL_ttf.h>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 #include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Maths.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 
@@ -43,7 +40,7 @@ bool Tools::isPixelInWindow(int x, int y) {
 }
 
 unsigned long Tools::createRGB(int r, int g, int b) {
-    return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+    return (unsigned long) ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
 uint8_t Tools::getRedValueFromColor(uint32_t c) {
@@ -152,7 +149,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
 
     if (!fp) {
         Logging::getInstance()->Log("File " + name + " can't be loaded!", "ERROR");
-        return "";
+        return nullptr;
     }
     char *file_str = (char *) malloc(MAX_SOURCE_SIZE);
 
@@ -343,10 +340,7 @@ Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y) {
             return *(Uint16 *) p;
             break;
         case 3:
-            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-                return p[0] << 16 | p[1] << 8 | p[2];
-            else
-                return p[0] | p[1] << 8 | p[2] << 16;
+            return p[0] | p[1] << 8 | p[2] << 16;
             break;
         case 4:
             return *(Uint32 *) p;
@@ -365,7 +359,7 @@ void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder) {
     }
 }
 
-std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PathFinder::Pair> path) {
+std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PathFinder::PairData> path) {
     std::vector<Vertex3D> result;
 
     while (!path.empty()) {

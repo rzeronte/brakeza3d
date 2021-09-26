@@ -5,11 +5,8 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include "../../headers/Components/ComponentWindow.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/EngineBuffers.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"
-#include "../../headers/Render/Logging.h"
 
 ComponentWindow::ComponentWindow() {
     this->initWindow();

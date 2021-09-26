@@ -4,9 +4,7 @@
 
 #include <SDL_mixer.h>
 #include "../../headers/Components/ComponentSound.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Misc/cJSON.h"
-#include "../../headers/Misc/Tools.h"
 #include <iostream>
 
 ComponentSound::ComponentSound() {

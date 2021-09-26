@@ -39,7 +39,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <ctype.h>
@@ -443,7 +442,7 @@ static cJSON_bool print_number(const cJSON *const item, printbuffer *const outpu
         length = sprintf((char *) number_buffer, "%1.15g", d);
 
         /* Check whether the original double can be recovered */
-        if ((sscanf((char *) number_buffer, "%lg", &test) != 1) || ((double) test != d)) {
+        if ((sscanf((char *) number_buffer, "%lg", &test) != 1) || (test != d)) {
             /* If not, print with 17 decimal places of precision */
             length = sprintf((char *) number_buffer, "%1.17g", d);
         }
@@ -891,7 +890,7 @@ CJSON_PUBLIC(cJSON *)cJSON_ParseWithOpts(const char *value, const char **return_
     }
 
     buffer.content = (const unsigned char *) value;
-    buffer.length = strlen((const char *) value) + sizeof("");
+    buffer.length = strlen(value) + sizeof("");
     buffer.offset = 0;
     buffer.hooks = global_hooks;
 
@@ -2327,7 +2326,7 @@ CJSON_PUBLIC(void) cJSON_Minify(char *json) {
                 break;
 
             case '\"':
-                minify_string(&json, (char **) &into);
+                minify_string(&json, &into);
                 break;
 
             default:

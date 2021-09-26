@@ -325,8 +325,8 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
         for (int x = t->minX; x < t->maxX; x++) {
 
             if ((w0 | w1 | w2) > 0) {
-                fragment->alpha = (int) w0 * t->reciprocalFullArea;
-                fragment->theta = (int) w1 * t->reciprocalFullArea;
+                fragment->alpha = w0 * t->reciprocalFullArea;
+                fragment->theta = w1 * t->reciprocalFullArea;
                 fragment->gamma = 1 - fragment->alpha - fragment->theta;
 
                 fragment->depth =
@@ -517,7 +517,7 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
 }
 
 void ComponentRender::drawSceneObjectsAxis() {
-    for (int i = 0; i < getSceneObjects()->size(); i++) {
+    for (unsigned int i = 0; i < getSceneObjects()->size(); i++) {
         if (getSceneObjects()->operator[](i)->isEnabled()) {
             Drawable::drawObject3DAxis(getSceneObjects()->operator[](i),
                                        ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
@@ -582,13 +582,13 @@ void ComponentRender::initTiles() {
     }
 }
 
-void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &visibleTriangles) {
+void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &trianglesToDraw) {
     for (int j = 0; j < this->tiles[i].triangleIds.size(); j++) {
         int triangleId = this->tiles[i].triangleIds[j];
         Tile *t = &this->tiles[i];
 
         this->softwareRasterizerForTile(
-                visibleTriangles[triangleId],
+                trianglesToDraw[triangleId],
                 t->start_x,
                 t->start_y,
                 t->start_x + sizeTileWidth,
@@ -598,19 +598,19 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &visibleT
         // wireframe
         if (SETUP->TRIANGLE_MODE_WIREFRAME ||
             (
-                    visibleTriangles[triangleId]->parent->isDecal() &&
+                    trianglesToDraw[triangleId]->parent->isDecal() &&
                     SETUP->DRAW_DECAL_WIREFRAMES
             )
                 ) {
-            drawWireframe(visibleTriangles[triangleId]);
+            drawWireframe(trianglesToDraw[triangleId]);
         }
 
         // Pixels
         if (SETUP->TRIANGLE_MODE_PIXELS) {
             Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
-            Drawable::drawVertex(visibleTriangles[triangleId]->Co, CC, Color::green());
-            Drawable::drawVertex(visibleTriangles[triangleId]->Bo, CC, Color::green());
-            Drawable::drawVertex(visibleTriangles[triangleId]->Co, CC, Color::green());
+            Drawable::drawVertex(trianglesToDraw[triangleId]->Co, CC, Color::green());
+            Drawable::drawVertex(trianglesToDraw[triangleId]->Bo, CC, Color::green());
+            Drawable::drawVertex(trianglesToDraw[triangleId]->Co, CC, Color::green());
         }
     }
 }
@@ -646,8 +646,8 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
             if ((w0 | w1 | w2) > 0) {
                 if (!((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY))) {
 
-                    fragment.alpha = (int) w0 * t->reciprocalFullArea;
-                    fragment.theta = (int) w1 * t->reciprocalFullArea;
+                    fragment.alpha = w0 * t->reciprocalFullArea;
+                    fragment.theta = w1 * t->reciprocalFullArea;
                     fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
                     fragment.depth =
