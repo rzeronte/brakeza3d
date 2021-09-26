@@ -10,13 +10,13 @@
 
 Frustum::Frustum() {}
 
-Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
-{
+Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
+                 float Wnear, float farDist, float Hfar, float Wfar) {
     setup(position, direction, up, right, nearDist, Hnear, Wnear, farDist, Hfar, Wfar);
 }
 
-void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar)
-{
+void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
+                    float Wnear, float farDist, float Hfar, float Wfar) {
     this->position = position;
 
     this->direction = direction;
@@ -45,53 +45,52 @@ void Frustum::updateCenters() {
     nc.z = this->position.z + direction.z * nearDist;
 }
 
-void Frustum::updatePoints()
-{
-    ntl.x = nc.x + (up.x * Hnear/2) - (right.x * Wnear/2);
-    ntl.y = nc.y + (up.y * Hnear/2) - (right.y * Wnear/2);
-    ntl.z = nc.z + (up.z * Hnear/2) - (right.z * Wnear/2);
+void Frustum::updatePoints() {
+    ntl.x = nc.x + (up.x * Hnear / 2) - (right.x * Wnear / 2);
+    ntl.y = nc.y + (up.y * Hnear / 2) - (right.y * Wnear / 2);
+    ntl.z = nc.z + (up.z * Hnear / 2) - (right.z * Wnear / 2);
 
-    ntr.x = nc.x + (up.x * Hnear/2) + (right.x * Wnear/2);
-    ntr.y = nc.y + (up.y * Hnear/2) + (right.y * Wnear/2);
-    ntr.z = nc.z + (up.z * Hnear/2) + (right.z * Wnear/2);
+    ntr.x = nc.x + (up.x * Hnear / 2) + (right.x * Wnear / 2);
+    ntr.y = nc.y + (up.y * Hnear / 2) + (right.y * Wnear / 2);
+    ntr.z = nc.z + (up.z * Hnear / 2) + (right.z * Wnear / 2);
 
-    nbl.x = nc.x - (up.x * Hnear/2) - (right.x * Wnear/2);
-    nbl.y = nc.y - (up.y * Hnear/2) - (right.y * Wnear/2);
-    nbl.z = nc.z - (up.z * Hnear/2) - (right.z * Wnear/2);
+    nbl.x = nc.x - (up.x * Hnear / 2) - (right.x * Wnear / 2);
+    nbl.y = nc.y - (up.y * Hnear / 2) - (right.y * Wnear / 2);
+    nbl.z = nc.z - (up.z * Hnear / 2) - (right.z * Wnear / 2);
 
-    nbr.x = nc.x - (up.x * Hnear/2) + (right.x * Wnear/2);
-    nbr.y = nc.y - (up.y * Hnear/2) + (right.y * Wnear/2);
-    nbr.z = nc.z - (up.z * Hnear/2) + (right.z * Wnear/2);
+    nbr.x = nc.x - (up.x * Hnear / 2) + (right.x * Wnear / 2);
+    nbr.y = nc.y - (up.y * Hnear / 2) + (right.y * Wnear / 2);
+    nbr.z = nc.z - (up.z * Hnear / 2) + (right.z * Wnear / 2);
 
-    ftl.x = fc.x + (up.x * Hfar/2) - (right.x * Wfar/2);
-    ftl.y = fc.y + (up.y * Hfar/2) - (right.y * Wfar/2);
-    ftl.z = fc.z + (up.z * Hfar/2) - (right.z * Wfar/2);
+    ftl.x = fc.x + (up.x * Hfar / 2) - (right.x * Wfar / 2);
+    ftl.y = fc.y + (up.y * Hfar / 2) - (right.y * Wfar / 2);
+    ftl.z = fc.z + (up.z * Hfar / 2) - (right.z * Wfar / 2);
 
-    ftr.x = fc.x + (up.x * Hfar/2) + (right.x * Wfar/2);
-    ftr.y = fc.y + (up.y * Hfar/2) + (right.y * Wfar/2);
-    ftr.z = fc.z + (up.z * Hfar/2) + (right.z * Wfar/2);
+    ftr.x = fc.x + (up.x * Hfar / 2) + (right.x * Wfar / 2);
+    ftr.y = fc.y + (up.y * Hfar / 2) + (right.y * Wfar / 2);
+    ftr.z = fc.z + (up.z * Hfar / 2) + (right.z * Wfar / 2);
 
-    fbl.x = fc.x - (up.x * Hfar/2) - (right.x * Wfar/2);
-    fbl.y = fc.y - (up.y * Hfar/2) - (right.y * Wfar/2);
-    fbl.z = fc.z - (up.z * Hfar/2) - (right.z * Wfar/2);
+    fbl.x = fc.x - (up.x * Hfar / 2) - (right.x * Wfar / 2);
+    fbl.y = fc.y - (up.y * Hfar / 2) - (right.y * Wfar / 2);
+    fbl.z = fc.z - (up.z * Hfar / 2) - (right.z * Wfar / 2);
 
-    fbr.x = fc.x - (up.x * Hfar/2) + (right.x * Wfar/2);
-    fbr.y = fc.y - (up.y * Hfar/2) + (right.y * Wfar/2);
-    fbr.z = fc.z - (up.z * Hfar/2) + (right.z * Wfar/2);
+    fbr.x = fc.x - (up.x * Hfar / 2) + (right.x * Wfar / 2);
+    fbr.y = fc.y - (up.y * Hfar / 2) + (right.y * Wfar / 2);
+    fbr.z = fc.z - (up.z * Hfar / 2) + (right.z * Wfar / 2);
 }
 
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 void Frustum::updatePlanes() {
 
     // near/far plane
-    planes[EngineSetup::getInstance()->NEAR_PLANE]   = Plane(ntl, ntr, nbl);   // near
-    planes[EngineSetup::getInstance()->FAR_PLANE]    = Plane(ftr, ftl, fbl);   // far
+    planes[EngineSetup::getInstance()->NEAR_PLANE] = Plane(ntl, ntr, nbl);   // near
+    planes[EngineSetup::getInstance()->FAR_PLANE] = Plane(ftr, ftl, fbl);   // far
 
     // view frustum
-    planes[EngineSetup::getInstance()->LEFT_PLANE]   = Plane(position, fbl, ftl  );   // left
-    planes[EngineSetup::getInstance()->RIGHT_PLANE]  = Plane(position, ftr, fbr );   // right
-    planes[EngineSetup::getInstance()->TOP_PLANE]    = Plane(position, ftl, ftr );   // top
-    planes[EngineSetup::getInstance()->BOTTOM_PLANE] = Plane(position, fbr, fbl );   // bottom
+    planes[EngineSetup::getInstance()->LEFT_PLANE] = Plane(position, fbl, ftl);   // left
+    planes[EngineSetup::getInstance()->RIGHT_PLANE] = Plane(position, ftr, fbr);   // right
+    planes[EngineSetup::getInstance()->TOP_PLANE] = Plane(position, ftl, ftr);   // top
+    planes[EngineSetup::getInstance()->BOTTOM_PLANE] = Plane(position, fbr, fbl);   // bottom
 
     // Near edges
     //top
@@ -136,16 +135,14 @@ void Frustum::updatePlanes() {
     this->far_right = Vector3D(right1f, right2f);
 }
 
-void Frustum::updateBounds()
-{
+void Frustum::updateBounds() {
 
 }
 
-bool Frustum::isPointInFrustum(Vertex3D &v)
-{
+bool Frustum::isPointInFrustum(Vertex3D &v) {
     EngineSetup *setup = EngineSetup::getInstance();
 
-    for(int i = setup->FAR_PLANE; i <= setup->BOTTOM_PLANE; i++) {
+    for (int i = setup->FAR_PLANE; i <= setup->BOTTOM_PLANE; i++) {
         if (planes[i].distance(v) >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
@@ -164,18 +161,17 @@ void Frustum::consoleInfo() {
     printf("\r\n");
 }
 
-bool Frustum::isAABBInFrustum(AABB3D *aabb)
-{
+bool Frustum::isAABBInFrustum(AABB3D *aabb) {
     if (
-    !this->isPointInFrustum( aabb->vertices[0] ) &&
-    !this->isPointInFrustum( aabb->vertices[1] ) &&
-    !this->isPointInFrustum( aabb->vertices[2] ) &&
-    !this->isPointInFrustum( aabb->vertices[3] ) &&
-    !this->isPointInFrustum( aabb->vertices[4] ) &&
-    !this->isPointInFrustum( aabb->vertices[5] ) &&
-    !this->isPointInFrustum( aabb->vertices[6] ) &&
-    !this->isPointInFrustum( aabb->vertices[7] )
-    ) {
+            !this->isPointInFrustum(aabb->vertices[0]) &&
+            !this->isPointInFrustum(aabb->vertices[1]) &&
+            !this->isPointInFrustum(aabb->vertices[2]) &&
+            !this->isPointInFrustum(aabb->vertices[3]) &&
+            !this->isPointInFrustum(aabb->vertices[4]) &&
+            !this->isPointInFrustum(aabb->vertices[5]) &&
+            !this->isPointInFrustum(aabb->vertices[6]) &&
+            !this->isPointInFrustum(aabb->vertices[7])
+            ) {
         return false;
     }
 

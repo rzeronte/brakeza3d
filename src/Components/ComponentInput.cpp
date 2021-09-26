@@ -8,24 +8,20 @@
 #include "../../headers/ComponentsManager.h"
 #include <iostream>
 
-ComponentInput::ComponentInput()
-{
-    setEnabled( true );
+ComponentInput::ComponentInput() {
+    setEnabled(true);
 }
 
-void ComponentInput::onStart()
-{
+void ComponentInput::onStart() {
     std::cout << "ComponentInput onStart" << std::endl;
 }
 
-void ComponentInput::preUpdate()
-{
+void ComponentInput::preUpdate() {
 
 }
 
-void ComponentInput::onUpdate()
-{
-    if ( !isEnabled() ) return;
+void ComponentInput::onUpdate() {
+    if (!isEnabled()) return;
     handleKeyboardMovingCamera();
 }
 
@@ -37,23 +33,21 @@ void ComponentInput::onEnd() {
 
 }
 
-void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
-{
+void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
     // Core
     ImGui_ImplSDL2_ProcessEvent(e);
     updateKeyboardMapping();
     updateMouseStates(e);
     handleWindowEvents(e, finish);
 
-    if ( !isEnabled() ) return;
+    if (!isEnabled()) return;
 
     handleMouse(e);
 }
 
 
-void ComponentInput::handleMouse(SDL_Event *event)
-{
-    ImGuiIO& io = ImGui::GetIO();
+void ComponentInput::handleMouse(SDL_Event *event) {
+    ImGuiIO &io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
     // Camera rotation
@@ -66,12 +60,11 @@ void ComponentInput::handleMouse(SDL_Event *event)
     }
 
     // Firing
-    if ( MousePressed ) {
+    if (MousePressed) {
     }
 }
 
-void ComponentInput::handleKeyboardMovingCamera()
-{
+void ComponentInput::handleKeyboardMovingCamera() {
     if (keyboard[SDL_SCANCODE_W]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
     }
@@ -98,8 +91,7 @@ void ComponentInput::handleKeyboardMovingCamera()
     }
 }
 
-void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end)
-{
+void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {
     if (e->type == SDL_WINDOWEVENT) {
         switch (e->window.event) {
             case SDL_WINDOWEVENT_SHOWN:
@@ -143,13 +135,11 @@ void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end)
     }
 }
 
-void ComponentInput::updateKeyboardMapping()
-{
+void ComponentInput::updateKeyboardMapping() {
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
 }
 
-void ComponentInput::updateMouseStates(SDL_Event *event)
-{
+void ComponentInput::updateMouseStates(SDL_Event *event) {
     if (event->type == SDL_MOUSEBUTTONDOWN) {
         MousePressed = true;
     }

@@ -4,7 +4,7 @@
 
 #include "../../headers/Components/Component.h"
 
-Component::Component(): SETUP(EngineSetup::getInstance()), BUFFERS(EngineBuffers::getInstance()) {
+Component::Component() : SETUP(EngineSetup::getInstance()), BUFFERS(EngineBuffers::getInstance()) {
 }
 
 std::vector<Component *> *Component::getComponents() const {
@@ -15,7 +15,7 @@ void Component::setComponents(std::vector<Component *> *components) {
     Component::components = components;
 }
 
-Component* Component::getComponentById(int id) {
+Component *Component::getComponentById(int id) {
     return this->components->at(id);
 }
 

@@ -9,13 +9,11 @@
 #include "../../headers/Misc/Tools.h"
 #include <iostream>
 
-ComponentSound::ComponentSound()
-{
+ComponentSound::ComponentSound() {
     initSoundSystem();
 }
 
-void ComponentSound::onStart()
-{
+void ComponentSound::onStart() {
     std::cout << "ComponentSound onStart" << std::endl;
     loadSoundsJSON();
 }
@@ -39,12 +37,11 @@ void ComponentSound::postUpdate() {
 void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentSound::initSoundSystem()
-{
+void ComponentSound::initSoundSystem() {
     Logging::getInstance()->Log("Init Sound System");
 
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
-        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
 
     Mix_Volume(EngineSetup::SoundChannels::SND_MENU, SETUP->SOUND_VOLUME_MENU);
@@ -53,14 +50,13 @@ void ComponentSound::initSoundSystem()
     Mix_VolumeMusic(SETUP->SOUND_VOLUME_MUSIC);
 }
 
-void ComponentSound::loadSoundsJSON()
-{
+void ComponentSound::loadSoundsJSON() {
     Logging::getInstance()->Log("Loading Sounds in package...", "SOUNDS");
 
     std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
     size_t file_size;
     std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_SOUNDS;
-    const char* mapsFile = Tools::readFile(filePath, file_size);
+    const char *mapsFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
     if (myDataJSON == NULL) {
@@ -68,7 +64,7 @@ void ComponentSound::loadSoundsJSON()
         return;
     }
 
-    cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds" );
+    cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds");
 
     cJSON *currentSound;
     cJSON_ArrayForEach(currentSound, soundsJSONList) {

@@ -8,10 +8,9 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
 
-TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile)
-{
+TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
     if (!Tools::fileExists(concharsFile)) {
-        Logging::getInstance()->Log( std::string("Error loading file") + concharsFile);
+        Logging::getInstance()->Log(std::string("Error loading file") + concharsFile);
         return;
     }
 
@@ -29,28 +28,27 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile)
             r.y = y;
 
             auto *s = SDL_CreateRGBSurface(
-                0,
-                CONCHARS_CHARACTER_W,
-                CONCHARS_CHARACTER_H,
-                32,
-                0,
-                0,
-                0,
-                0
+                    0,
+                    CONCHARS_CHARACTER_W,
+                    CONCHARS_CHARACTER_H,
+                    32,
+                    0,
+                    0,
+                    0,
+                    0
             );
 
-            SDL_BlitSurface( sprite, &r, s, NULL);
-            this->characterSurfaces.push_back( s );
+            SDL_BlitSurface(sprite, &r, s, NULL);
+            this->characterSurfaces.push_back(s);
         }
     }
 }
 
-void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
-{
+void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin) {
     SDL_Surface *c = this->characterSurfaces[ascii];
 
-    for (int x = 0 ; x < c->w ; x++) {
-        for (int y = 0 ; y < c->h ; y++) {
+    for (int x = 0; x < c->w; x++) {
+        for (int y = 0; y < c->h; y++) {
             Uint32 color = Tools::readSurfacePixel(this->characterSurfaces[ascii], x, y);
 
             if (color == Color::black()) {
@@ -62,12 +60,11 @@ void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
     }
 }
 
-void TextWriter::writeText(int x, int y, const char *text, bool bold)
-{
+void TextWriter::writeText(int x, int y, const char *text, bool bold) {
     int currentX = x;
 
     // The sprite have two sets of characters, first normal, second bold
-    int lengthDictionary = ((CONCHARS_WIDTH/CONCHARS_CHARACTER_W) * (CONCHARS_HEIGHT/CONCHARS_CHARACTER_H)) / 2;
+    int lengthDictionary = ((CONCHARS_WIDTH / CONCHARS_CHARACTER_W) * (CONCHARS_HEIGHT / CONCHARS_CHARACTER_H)) / 2;
     for (int i = 0; i < (int) strlen(text); i++) {
         int c = (int) text[i];
 

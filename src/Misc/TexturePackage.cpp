@@ -4,8 +4,7 @@ TexturePackage::TexturePackage() {
 
 }
 
-void TexturePackage::addItem(const std::string& srcTexture, std::string label)
-{
+void TexturePackage::addItem(const std::string &srcTexture, std::string label) {
     auto *item = new TexturePackageItem();
     auto *t = new Texture();
 
@@ -14,12 +13,11 @@ void TexturePackage::addItem(const std::string& srcTexture, std::string label)
     item->texture = t;
     item->label = std::move(label);
 
-    this->items.push_back( item );
+    this->items.push_back(item);
 }
 
-Texture *TexturePackage::getTextureByLabel(const std::string &label)
-{
-    for (int i = 0; i < this->items.size(); i++ ) {
+Texture *TexturePackage::getTextureByLabel(const std::string &label) {
+    for (int i = 0; i < this->items.size(); i++) {
         if (!items[i]->label.compare(label)) {
             return items[i]->texture;
         }

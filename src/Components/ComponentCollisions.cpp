@@ -1,26 +1,21 @@
 #include "../../headers/Components/ComponentCollisions.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
 
-ComponentCollisions::ComponentCollisions()
-{
+ComponentCollisions::ComponentCollisions() {
 }
 
-void ComponentCollisions::onStart()
-{
+void ComponentCollisions::onStart() {
     Logging::getInstance()->Log("ComponentCollisions onStart");
 }
 
-void ComponentCollisions::preUpdate()
-{
+void ComponentCollisions::preUpdate() {
 }
 
-void ComponentCollisions::onUpdate()
-{
+void ComponentCollisions::onUpdate() {
     this->stepSimulation();
 }
 
-void ComponentCollisions::postUpdate()
-{
+void ComponentCollisions::postUpdate() {
 }
 
 void ComponentCollisions::onEnd() {
@@ -30,8 +25,7 @@ void ComponentCollisions::onEnd() {
 void ComponentCollisions::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentCollisions::initBulletSystem()
-{
+void ComponentCollisions::initBulletSystem() {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     this->collisionConfiguration = new btDefaultCollisionConfiguration();
 
@@ -72,13 +66,11 @@ new btGhostPairCallback()
     //this->makeGhostForCamera();
 }
 
-btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const
-{
+btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
     return dynamicsWorld;
 }
 
-void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *world)
-{
+void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *world) {
     ComponentCollisions::dynamicsWorld = world;
 }
 
@@ -86,8 +78,7 @@ Camera3D *ComponentCollisions::getCamera() const {
     return camera;
 }
 
-void ComponentCollisions::setCamera(Camera3D *cam)
-{
+void ComponentCollisions::setCamera(Camera3D *cam) {
     ComponentCollisions::camera = cam;
 }
 
@@ -99,16 +90,16 @@ void ComponentCollisions::setBSPMap(BSPMap *map) {
     ComponentCollisions::bspMap = map;
 }
 
-bool ComponentCollisions::needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
-{
-    bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup & body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
-    collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup & body0->getBroadphaseHandle()->m_collisionFilterMask);
+bool ComponentCollisions::needsCollision(const btCollisionObject *body0, const btCollisionObject *body1) {
+    bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup &
+                     body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
+    collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup &
+                            body0->getBroadphaseHandle()->m_collisionFilterMask);
 
     return collides;
 }
 
-void ComponentCollisions::checkCollisionsForAll()
-{
+void ComponentCollisions::checkCollisionsForAll() {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
     // All collisions pairs
@@ -131,45 +122,43 @@ void ComponentCollisions::checkCollisionsForAll()
                     getBspMap(),
                     getVisibleTriangles()
             );
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back( collisionResolver );
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back(
+                    collisionResolver);
 
         }
     }
 }
 
-void ComponentCollisions::updatePhysicsGhosts()
-{
+void ComponentCollisions::updatePhysicsGhosts() {
     std::vector<Object3D *>::iterator it;
     for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
-        auto *ghost = dynamic_cast<Ghost*> (*it);
-        if ( ghost != nullptr ) {
-            if ( !ghost->isGhostEnabled() ) continue;
+        auto *ghost = dynamic_cast<Ghost *> (*it);
+        if (ghost != nullptr) {
+            if (!ghost->isGhostEnabled()) continue;
             ghost->integrate();
         }
     }
 }
 
-void ComponentCollisions::updatePhysicObjects()
-{
+void ComponentCollisions::updatePhysicObjects() {
     std::vector<Object3D *>::iterator it;
     for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
-        Body *body = dynamic_cast<Body*> (*it);
-        if ( body != nullptr ) {
-            if ( !body->bodyEnabled ) continue;
+        Body *body = dynamic_cast<Body *> (*it);
+        if (body != nullptr) {
+            if (!body->bodyEnabled) continue;
             body->integrate();
         }
     }
 }
 
-void ComponentCollisions::stepSimulation()
-{
+void ComponentCollisions::stepSimulation() {
     // check for collisions
     checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation( Brakeza3D::get()->getDeltaTime(), 1);
+        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime(), 1);
 
         // Physics for meshes
         this->updatePhysicObjects();
@@ -198,9 +187,7 @@ void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &
 }
 
 
-
-void ComponentCollisions::syncTriggerGhostCamera()
-{
+void ComponentCollisions::syncTriggerGhostCamera() {
     Vertex3D direction = camera->getRotation().getTranspose() * SETUP->forward;
     Vertex3D p = camera->getPosition();
 
@@ -215,23 +202,22 @@ void ComponentCollisions::syncTriggerGhostCamera()
     this->triggerCamera->getGhostObject()->setWorldTransform(t);
 }
 
-Mesh3DGhost *ComponentCollisions::getTriggerCamera() const
-{
+Mesh3DGhost *ComponentCollisions::getTriggerCamera() const {
     return triggerCamera;
 }
 
-void ComponentCollisions::makeGhostForCamera()
-{
+void ComponentCollisions::makeGhostForCamera() {
     triggerCamera = new Mesh3DGhost();
     triggerCamera->setLabel(SETUP->cameraTriggerNameIdentifier);
     triggerCamera->setEnabled(true);
-    triggerCamera->setPosition( camera->getPosition() );
+    triggerCamera->setPosition(camera->getPosition());
     triggerCamera->getGhostObject()->setCollisionShape(getCamera()->getGhostObject()->getCollisionShape());
     triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
-    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger, EngineSetup::collisionGroups::DefaultFilter|EngineSetup::collisionGroups::BSPHullTrigger);
+    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger,
+                                      EngineSetup::collisionGroups::DefaultFilter |
+                                      EngineSetup::collisionGroups::BSPHullTrigger);
 }
 
-void ComponentCollisions::setTriggerCamera(Mesh3DGhost *ghost)
-{
+void ComponentCollisions::setTriggerCamera(Mesh3DGhost *ghost) {
     ComponentCollisions::triggerCamera = ghost;
 }
