@@ -14,21 +14,23 @@ public:
     NPCEnemyPartBody *enemyPart;
 
     std::vector<Object3D *> *gameObjects;
-    btDiscreteDynamicsWorld* dynamicsWorld;
+    btDiscreteDynamicsWorld *dynamicsWorld;
     ComponentWeapons *weaponManager;
 
-    CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
-    {
+    CollisionResolverBetweenEnemyPartAndBSPMap(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
+                                               BSPMap *bspMap, std::vector<Object3D *> *gameObjects,
+                                               btDiscreteDynamicsWorld *dynamicsWorld, ComponentWeapons *weaponManager,
+                                               std::vector<Triangle *> &visibleTriangles) : CollisionResolver(
+            contactManifold, objA, objB, bspMap, visibleTriangles) {
         this->enemyPart = getEnemyPart();
-        this->bspMap    = getBSPMap();
+        this->bspMap = getBSPMap();
 
-        this->gameObjects   = gameObjects;
+        this->gameObjects = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
     }
 
-    void dispatch()
-    {
+    void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
             Logging::getInstance()->Log("CollisionResolverBetweenEnemyPartAndBSPMap");
         }
@@ -43,36 +45,33 @@ public:
         dynamicsWorld->removeCollisionObject(getEnemyPart()->getRigidBody());
     }
 
-    BSPMap *getBSPMap()
-    {
-        BSPMap *bspMapA = dynamic_cast<BSPMap*> (this->objA);
+    BSPMap *getBSPMap() {
+        BSPMap *bspMapA = dynamic_cast<BSPMap *> (this->objA);
         if (bspMapA != NULL) {
             return bspMapA;
         }
 
-        BSPMap *bspMapB = dynamic_cast<BSPMap*> (this->objB);
+        BSPMap *bspMapB = dynamic_cast<BSPMap *> (this->objB);
         if (bspMapB != NULL) {
             return bspMapB;
         }
     }
 
-    NPCEnemyPartBody *getEnemyPart()
-    {
-        NPCEnemyPartBody *NPCPartA = dynamic_cast<NPCEnemyPartBody*> (this->objA);
+    NPCEnemyPartBody *getEnemyPart() {
+        NPCEnemyPartBody *NPCPartA = dynamic_cast<NPCEnemyPartBody *> (this->objA);
         if (NPCPartA != NULL) {
             return NPCPartA;
         }
 
-        NPCEnemyPartBody *NPCPartB = dynamic_cast<NPCEnemyPartBody*> (this->objB);
+        NPCEnemyPartBody *NPCPartB = dynamic_cast<NPCEnemyPartBody *> (this->objB);
         if (NPCPartB != NULL) {
             return NPCPartB;
         }
     }
 
-    void makeGoreDecals()
-    {
+    void makeGoreDecals() {
         Decal *decal = new Decal();
-        decal->setPosition( getEnemyPart()->getPosition() );
+        decal->setPosition(getEnemyPart()->getPosition());
         decal->setupCube(10, 10, 10);
 
         btVector3 linearVelocity;
@@ -91,9 +90,10 @@ public:
 
         decal->getSprite()->linkTextureAnimation(EngineBuffers::getInstance()->goreDecalTemplates);
         decal->getSprite()->setAnimation(Tools::random(0, 10));
-        decal->cube->setPosition( decal->getPosition() );
+        decal->cube->setPosition(decal->getPosition());
         decal->cube->updateGeometry();
-        decal->getTriangles(*visibleTriangles, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
+        decal->getTriangles(*visibleTriangles,
+                            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera());
         Brakeza3D::get()->addObject3D(decal, "decal");
     }
 };

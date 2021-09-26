@@ -10,9 +10,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(
-    /usr/include/
-    /usr/include/bullet
-    /usr/include/SDL2
+        /usr/include/
+        /usr/include/bullet
+        /usr/include/SDL2
 )
 
 add_executable(brakeza3d
@@ -226,4 +226,4 @@ target_link_libraries(brakeza3d
         assimp
         GL
         pthread
-)
+        )

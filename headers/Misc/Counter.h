@@ -18,6 +18,7 @@ private:
 public:
 
     Counter();
+
     Counter(float step);
 
     void setStep(float step);
@@ -25,6 +26,7 @@ public:
     float getStep() const;
 
     void update();
+
     bool isFinished() const;
 
     float getAcumulatedTime() const;

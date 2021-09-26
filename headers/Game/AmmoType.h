@@ -15,23 +15,28 @@ public:
     AmmoType();
 
     const std::string &getName() const;
-    void  setName(const std::string &name);
+
+    void setName(const std::string &name);
 
     const std::string &getClassname() const;
-    void  setClassname(const std::string &classname);
 
-    int  getAmount() const;
+    void setClassname(const std::string &classname);
+
+    int getAmount() const;
+
     void setAmount(int ammo);
 
-    int  getReloads() const;
+    int getReloads() const;
+
     void setReloads(int reloads);
 
     int getReloadAmount() const;
 
     void setReloadAmount(int reloadAmount);
 
-    Mesh3DAnimated* getModelProjectile();
-    Mesh3DBody*     getModelBox();
+    Mesh3DAnimated *getModelProjectile();
+
+    Mesh3DBody *getModelBox();
 
 private:
     std::string name;
@@ -42,7 +47,7 @@ private:
     int reload_amount;
 
     Mesh3DAnimated model_projectile;
-    Mesh3DBody     model_box;
+    Mesh3DBody model_box;
 public:
 
 public:

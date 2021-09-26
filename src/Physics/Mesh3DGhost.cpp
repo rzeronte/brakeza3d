@@ -9,8 +9,7 @@
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "../../headers/Brakeza3D.h"
 
-Mesh3DGhost::Mesh3DGhost()
-{
+Mesh3DGhost::Mesh3DGhost() {
     BSPEntityIndex = -1;
 }
 

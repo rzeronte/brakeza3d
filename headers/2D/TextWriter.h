@@ -19,12 +19,13 @@ public:
     TextWriter(SDL_Renderer *renderer, const char *concharsFile);
 
     void writeText(int x, int y, const char *text, bool bold);
+
     void putCharacter(int ascii, int x, int y);
 
 private:
     SDL_Renderer *renderer;
     SDL_Surface *sprite;
-    std::vector<SDL_Surface*> characterSurfaces;
+    std::vector<SDL_Surface *> characterSurfaces;
 
 
 };

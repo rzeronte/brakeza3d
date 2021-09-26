@@ -16,14 +16,13 @@
 #include "../Objects/Mesh3DAnimatedCollection.h"
 #include "../Game/DoorGhost.h"
 
-class GUI_Objects3D : public GUI  {
+class GUI_Objects3D : public GUI {
 public:
     bool show = false;
 
     virtual ~GUI_Objects3D() {}
 
-    virtual void draw(std::vector<Object3D*> &gameObjects)
-    {
+    virtual void draw(std::vector<Object3D *> &gameObjects) {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
@@ -54,7 +53,8 @@ public:
                 std::string header_text;
                 Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
                 if (pMesh != NULL && !gameObjects[i]->isDecal()) {
-                    header_text = gameObjects[i]->getLabel() + " (numTriangles: " + std::to_string(pMesh->modelTriangles.size())+")"+ "##" + std::to_string(i);
+                    header_text = gameObjects[i]->getLabel() + " (numTriangles: " +
+                                  std::to_string(pMesh->modelTriangles.size()) + ")" + "##" + std::to_string(i);
                 } else {
                     header_text = gameObjects[i]->getLabel() + "##" + std::to_string(i);
                 }
@@ -72,9 +72,12 @@ public:
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition().y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition().z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition().y, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition().z, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
@@ -86,13 +89,16 @@ public:
 
                         // position
                         bool needUpdateRotation = false;
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &rotX, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &rotX, range_angle_sensibility, &range_angle_min,
+                                          &range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
                             needUpdateRotation = true;
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &rotY, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &rotY, range_angle_sensibility, &range_angle_min,
+                                          &range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
                             needUpdateRotation = true;
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &rotZ, range_angle_sensibility, &range_angle_min, &range_angle_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &rotZ, range_angle_sensibility, &range_angle_min,
+                                          &range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
                             needUpdateRotation = true;
 
@@ -100,24 +106,31 @@ public:
                             gameObjects[i]->setRotation(M3::getMatrixRotationForEulerAngles(rotX, rotY, rotZ));
 
                         }
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),
+                                           std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
+                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),
+                                           std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
                         ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
+                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                           std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
                         ImGui::TreePop();
                     }
 
                     // drawOffset
                     if (ImGui::TreeNode(draw_offset_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->drawOffset.x, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->drawOffset.y, range_sensibility, &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->drawOffset.x, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->drawOffset.y, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility,
+                                          &range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
                     ImGui::Checkbox(removed_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->removed);
-                    ImGui::Checkbox(follow_camera_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->followCamera);
+                    ImGui::Checkbox(follow_camera_text.c_str(),
+                                    &dynamic_cast<Object3D *>(gameObjects[i])->followCamera);
 
                     // Only for meshes
                     Mesh3D *objMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
@@ -129,7 +142,8 @@ public:
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
                     if (pDecal != NULL) {
                         ImGui::Checkbox(std::string("Draw Decal Planes").c_str(), &pDecal->drawWireframe);
-                        std::string decalNumTriangles = "Decal Triangles: " + std::to_string(pDecal->modelTriangles.size());
+                        std::string decalNumTriangles =
+                                "Decal Triangles: " + std::to_string(pDecal->modelTriangles.size());
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
                     }
 
@@ -137,13 +151,15 @@ public:
                     SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(gameObjects[i]);
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,
+                                          &pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,
+                                          &range_framerate_min, &range_framerate_max, "%d fps", 1);
                         if (ImGui::IsItemDeactivatedAfterEdit()) {
                             pSprite3D->updateStep();
                         }
 
-                        const char* items[] = { "walk", "fire", "injuried", "dead", "explosion" };
-                        static const char* item_current; // Here our selection is a single pointer stored outside the object.
+                        const char *items[] = {"walk", "fire", "injuried", "dead", "explosion"};
+                        static const char *item_current; // Here our selection is a single pointer stored outside the object.
 
                         switch (pSprite3D->currentAnimation) {
                             default:
@@ -164,7 +180,8 @@ public:
                                 break;
                         }
 
-                        if ( ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) { // The second parameter is the label previewed before opening the combo.
+                        if (ImGui::BeginCombo(animation_text.c_str(), item_current,
+                                              flags)) { // The second parameter is the label previewed before opening the combo.
                             for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
                                 bool is_selected = (item_current == items[n]);
                                 if (ImGui::Selectable(items[n], is_selected)) {
@@ -187,7 +204,8 @@ public:
                     // Only for SPRITES
                     Sprite3D *pSprite = dynamic_cast<Sprite3D *>(gameObjects[i]);
                     if (pSprite != NULL) {
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,  &pSprite->getCurrentTextureAnimation()->fps, 1.f,  &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32, &pSprite->getCurrentTextureAnimation()->fps,
+                                          1.f, &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
 
                     // All Objects setup
@@ -196,7 +214,8 @@ public:
                     // Only for Mesh3DGhost
                     Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(gameObjects[i]);
                     if (pMeshGhost != NULL) {
-                        std::string counterText = "currentTriggerCounter: " + std::to_string(pMeshGhost->currentTriggerCounter);
+                        std::string counterText =
+                                "currentTriggerCounter: " + std::to_string(pMeshGhost->currentTriggerCounter);
                         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), counterText.c_str());
                     }
 
@@ -222,21 +241,27 @@ public:
                     // Only for Mesh3DAnimatedCollection
                     auto *oMesh3DAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection *>(gameObjects[i]);
                     if (oMesh3DAnimatedCollection != NULL) {
-                        ImGui::DragScalar("Speed", ImGuiDataType_Float, &oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed, range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
+                        ImGui::DragScalar("Speed", ImGuiDataType_Float,
+                                          &oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed,
+                                          range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
 
-                        std::string animationEndsText = "AnimationEnds: " + std::to_string( oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->isAnimationEnds() );
+                        std::string animationEndsText = "AnimationEnds: " + std::to_string(
+                                oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->isAnimationEnds());
                         ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), animationEndsText.c_str());
 
-                        static const char* item_current; // Here our selection is a single pointer stored outside the object.
+                        static const char *item_current; // Here our selection is a single pointer stored outside the object.
                         static ImGuiComboFlags flags = 0;
                         if (oMesh3DAnimatedCollection->currentAnimation >= 0) {
                             item_current = oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->getLabel().c_str();
                         }
 
-                        if ( ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) { // The second parameter is the label previewed before opening the combo.
+                        if (ImGui::BeginCombo(animation_text.c_str(), item_current,
+                                              flags)) { // The second parameter is the label previewed before opening the combo.
                             for (int n = 0; n < oMesh3DAnimatedCollection->mesh3Danimated.size(); n++) {
-                                bool is_selected = (item_current == oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel());
-                                if (ImGui::Selectable(oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel().c_str(), is_selected)) {
+                                bool is_selected = (item_current ==
+                                                    oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel());
+                                if (ImGui::Selectable(oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel().c_str(),
+                                                      is_selected)) {
                                     item_current = oMesh3DAnimatedCollection->mesh3Danimated[n]->getLabel().c_str();
                                 }
 
@@ -246,7 +271,8 @@ public:
 
                                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                                     oMesh3DAnimatedCollection->currentAnimation = n;
-                                    Logging::getInstance()->Log(("Changing collection animation frame to: " + std::to_string(n)));
+                                    Logging::getInstance()->Log(
+                                            ("Changing collection animation frame to: " + std::to_string(n)));
                                 }
                             }
                             ImGui::EndCombo();

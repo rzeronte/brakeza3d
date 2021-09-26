@@ -7,8 +7,7 @@
 #include "../../headers/Brakeza3D.h"
 #include <string>
 
-Mesh3D::Mesh3D()
-{
+Mesh3D::Mesh3D() {
     this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];
     this->modelTextures = new Texture[MAX_MESH_TEXTURES];
     this->verticesTextureCoordsList = new vec3_t[MAX_VERTEX_MODEL];
@@ -28,17 +27,16 @@ Mesh3D::Mesh3D()
     this->grid = NULL;
 }
 
-bool Mesh3D::loadOBJBlender(const char *name)
-{
+bool Mesh3D::loadOBJBlender(const char *name) {
     source_file = name;
 
-    if (!Tools::fileExists(source_file)){
+    if (!Tools::fileExists(source_file)) {
         Logging::getInstance()->Log("El fichero de modelo solicitado no existe.", "ERROR");
 
         return false;
     }
 
-    Logging::getInstance()->Log("Loading OBJ: " + (std::string)name + "", "INFO");
+    Logging::getInstance()->Log("Loading OBJ: " + (std::string) name + "", "INFO");
 
     this->loadOBJBlenderVertex();
     this->loadOBJBlenderMaterials();
@@ -48,25 +46,24 @@ bool Mesh3D::loadOBJBlender(const char *name)
     return true;
 }
 
-void Mesh3D::loadOBJBlenderVertex()
-{
+void Mesh3D::loadOBJBlenderVertex() {
     std::vector<std::string> line_chunks;
     std::string line;
     float x, y, z;
 
     int i = 0;
-    std::ifstream myfile (source_file);
+    std::ifstream myfile(source_file);
 
-    while(!myfile.eof()) {
-        getline (myfile,line);
+    while (!myfile.eof()) {
+        getline(myfile, line);
 
         //Si empieza por 'v' es un vértice
         if (line[0] == 'v' && line[1] != 't') {
             line_chunks = Tools::split(line, ' ');
 
-            x = (float) atof(line_chunks[1].c_str() );
-            y = (float) atof(line_chunks[2].c_str() );
-            z = (float) atof(line_chunks[3].c_str() );
+            x = (float) atof(line_chunks[1].c_str());
+            y = (float) atof(line_chunks[2].c_str());
+            z = (float) atof(line_chunks[3].c_str());
 
             this->modelVertices[i] = Vertex3D(-x, -y, z);
             i++;
@@ -80,8 +77,7 @@ void Mesh3D::loadOBJBlenderVertex()
     return;
 }
 
-void Mesh3D::loadOBJBlenderTextureCoordinates()
-{
+void Mesh3D::loadOBJBlenderTextureCoordinates() {
     std::vector<std::string> line_chunks;
     std::string line;
     float u, v;
@@ -92,16 +88,16 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
         return;
     }
 
-    std::ifstream myfile (source_file);
-    while(!myfile.eof()) {
-        getline (myfile,line);
+    std::ifstream myfile(source_file);
+    while (!myfile.eof()) {
+        getline(myfile, line);
 
         //Si empieza por 'vt' es una coordenada uv
         if (line[0] == 'v' && line[1] == 't') {
             line_chunks = Tools::split(line, ' ');
 
-            u = atof(line_chunks[1].c_str() );
-            v = atof(line_chunks[2].c_str() );
+            u = atof(line_chunks[1].c_str());
+            v = atof(line_chunks[2].c_str());
 
             this->verticesTextureCoordsList[i][0] = u;
             this->verticesTextureCoordsList[i][1] = v;
@@ -115,8 +111,7 @@ void Mesh3D::loadOBJBlenderTextureCoordinates()
     return;
 }
 
-void Mesh3D::loadOBJBlenderTriangles()
-{
+void Mesh3D::loadOBJBlenderTriangles() {
     std::string line, v;
     std::vector<std::string> line_chunks;
     std::vector<std::string> vertex_chunks;
@@ -129,10 +124,10 @@ void Mesh3D::loadOBJBlenderTriangles()
         return;
     }
 
-    std::ifstream myfile (source_file);
+    std::ifstream myfile(source_file);
 
-    while(!myfile.eof()) {
-        getline (myfile,line);
+    while (!myfile.eof()) {
+        getline(myfile, line);
 
         //Si empieza por 'f' es un triángulo
         if (line[0] == 'f') {
@@ -142,24 +137,28 @@ void Mesh3D::loadOBJBlenderTriangles()
             vertex_chunks = Tools::split(line_chunks[1], '/');
             idx1_vertex = std::stoi(vertex_chunks[0]);
             if (!vertex_chunks[1].empty()) {
-                idx1_uv =  std::stoi(vertex_chunks[1]);
+                idx1_uv = std::stoi(vertex_chunks[1]);
             }
 
             vertex_chunks = Tools::split(line_chunks[2], '/');
-            idx2_vertex = std::stoi( vertex_chunks[0]);
+            idx2_vertex = std::stoi(vertex_chunks[0]);
             if (!vertex_chunks[1].empty()) {
-                idx2_uv =  std::stoi(vertex_chunks[1]);
+                idx2_uv = std::stoi(vertex_chunks[1]);
             }
 
             vertex_chunks = Tools::split(line_chunks[3], '/');
-            idx3_vertex = std::stoi( vertex_chunks[0]);
+            idx3_vertex = std::stoi(vertex_chunks[0]);
             if (!vertex_chunks[1].empty()) {
-                idx3_uv =  std::stoi(vertex_chunks[1]);
+                idx3_uv = std::stoi(vertex_chunks[1]);
             }
 
             // El Blender el índice empieza en 1, nosotros usamos el 0.
-            idx1_vertex--; idx2_vertex--;idx3_vertex--;
-            idx1_uv--; idx2_uv--;idx3_uv--;
+            idx1_vertex--;
+            idx2_vertex--;
+            idx3_vertex--;
+            idx1_uv--;
+            idx2_uv--;
+            idx3_uv--;
 
             Vertex3D V1 = this->modelVertices[idx1_vertex];
             Vertex3D V2 = this->modelVertices[idx2_vertex];
@@ -181,7 +180,7 @@ void Mesh3D::loadOBJBlenderTriangles()
             }
 
             // triangle geometry
-            this->modelTriangles.emplace_back( new Triangle(V1, V2, V3, this) );
+            this->modelTriangles.emplace_back(new Triangle(V1, V2, V3, this));
 
             // set texture
             if (this->modelTextures[0].loaded) {
@@ -198,7 +197,8 @@ void Mesh3D::loadOBJBlenderTriangles()
         }
     }
 
-    Logging::getInstance()->Log(this->label + ": OBJ Mesh Triangles: " + std::to_string(this->modelTriangles.size()) + "", "INFO");
+    Logging::getInstance()->Log(
+            this->label + ": OBJ Mesh Triangles: " + std::to_string(this->modelTriangles.size()) + "", "INFO");
 }
 
 void Mesh3D::loadOBJBlenderMaterials() {
@@ -209,9 +209,9 @@ void Mesh3D::loadOBJBlenderMaterials() {
     int i = 0;
 
     std::string mlt_filename = source_file;
-    mlt_filename.replace( mlt_filename.end() -3, mlt_filename.end(), "mtl");
+    mlt_filename.replace(mlt_filename.end() - 3, mlt_filename.end(), "mtl");
 
-    std::ifstream myfile (mlt_filename);
+    std::ifstream myfile(mlt_filename);
 
     int cont_materials = 0;
 
@@ -219,13 +219,13 @@ void Mesh3D::loadOBJBlenderMaterials() {
         return;
     }
 
-    while(!myfile.eof()) {
-        getline (myfile,line);
+    while (!myfile.eof()) {
+        getline(myfile, line);
         line_chunks = Tools::split(line, ' ');
 
         if (line_chunks[0].compare("map_Kd") == 0) {
             Texture t = Texture();
-            t.loadTGA( line_chunks[1].c_str(), 1 );
+            t.loadTGA(line_chunks[1].c_str(), 1);
             this->modelTextures[i] = t;
             this->numTextures++;
             cont_materials++;
@@ -235,13 +235,12 @@ void Mesh3D::loadOBJBlenderMaterials() {
     Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
 }
 
-void Mesh3D::sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles)
-{
+void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
     // draw triangles of mesh
-    for (unsigned int i = 0; i < this->modelTriangles.size() ; i++) {
+    for (unsigned int i = 0; i < this->modelTriangles.size(); i++) {
         this->modelTriangles[i]->updateTextureAnimated();
         this->modelTriangles[i]->updateLightmapFrame();
-        frameTriangles->push_back( this->modelTriangles[i] );
+        frameTriangles->push_back(this->modelTriangles[i]);
     }
 }
 
@@ -273,8 +272,7 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
     BSPEntityIndex = bspEntityIndex;
 }
 
-void Mesh3D::updateBoundingBox()
-{
+void Mesh3D::updateBoundingBox() {
     float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
@@ -328,17 +326,16 @@ void Mesh3D::updateBoundingBox()
     this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
 }
 
-void Mesh3D::copyFrom(Mesh3D *source)
-{
+void Mesh3D::copyFrom(Mesh3D *source) {
     Logging::getInstance()->Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel());
 
     // Triangles
-    for (auto & modelTriangle : source->modelTriangles) {
+    for (auto &modelTriangle : source->modelTriangles) {
         auto *t = new Triangle(
-            modelTriangle->A,
-            modelTriangle->B,
-            modelTriangle->C,
-            this
+                modelTriangle->A,
+                modelTriangle->B,
+                modelTriangle->C,
+                this
         );
 
         t->setTexture(modelTriangle->getTexture());
@@ -347,14 +344,13 @@ void Mesh3D::copyFrom(Mesh3D *source)
     }
 
     // Textures
-    this->numTextures   = source->numTextures;
+    this->numTextures = source->numTextures;
     this->modelTextures = source->modelTextures;
-    this->scale         = source->scale;
-    this->source_file   = source->source_file;
+    this->scale = source->scale;
+    this->source_file = source->source_file;
 }
 
-void Mesh3D::onUpdate()
-{
+void Mesh3D::onUpdate() {
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
 //    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
@@ -375,32 +371,30 @@ void Mesh3D::onUpdate()
 //    }
 }
 
-bool Mesh3D::AssimpLoadGeometryFromFile(const std::string& fileName)
-{
-    setSourceFile( fileName );
+bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
+    setSourceFile(fileName);
 
     Logging::getInstance()->Log("AssimpLoadGeometryFromFile for " + fileName);
 
-    const aiScene* scene = importer.ReadFile( fileName, aiProcess_Triangulate |
-                                               aiProcess_JoinIdenticalVertices |
-                                               aiProcess_SortByPType |
-                                               aiProcess_FlipUVs
+    const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate |
+                                                       aiProcess_JoinIdenticalVertices |
+                                                       aiProcess_SortByPType |
+                                                       aiProcess_FlipUVs
     );
 
-    if( !scene ) {
+    if (!scene) {
         Logging::getInstance()->Log("Error import 3D file for ASSIMP");
         exit(-1);
         return false;
     }
 
     AssimpInitMaterials(scene, fileName);
-    AssimpProcessNodes( scene, scene->mRootNode );
+    AssimpProcessNodes(scene, scene->mRootNode);
 
     return true;
 }
 
-bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filename)
-{
+bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename) {
     // Extract the directory part from the file name
     std::string::size_type SlashIndex = Filename.find_last_of("/");
     std::string Dir;
@@ -417,58 +411,58 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
 
     Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
-    for (uint i = 0 ; i < pScene->mNumMaterials ; i++) {
+    for (uint i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
         std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
 
-        if  (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
+        if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
             this->numTextures++;
             continue;
         };
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE)  >= 1) {
-            aiString Path;
-            if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-                std::string p(Path.data);
+        aiString Path;
+        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+            std::string p(Path.data);
 
-                std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
+            std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
 
-                if (p.substr(0, 2) == ".\\") {
-                    p = p.substr(2, p.size() - 2);
-                }
-
-                std::string FullPath = EngineSetup::getInstance()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
-
-                std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-                Texture *t = new Texture();
-                if (t->loadTGA(FullPath.c_str(), 1) ) {
-                    this->modelTextures[ this->numTextures ] = *t;
-                    this->modelTextures[ this->numTextures ].loaded = true;
-                    this->numTextures++;
-                }
-            } else {
-                Logging::getInstance()->Log("ERROR: mMaterial["+std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
+            if (p.substr(0, 2) == ".\\") {
+                p = p.substr(2, p.size() - 2);
             }
+
+            std::string FullPath =
+                    EngineSetup::getInstance()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
+
+            std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
+            Texture *t = new Texture();
+            if (t->loadTGA(FullPath.c_str(), 1)) {
+                this->modelTextures[this->numTextures] = *t;
+                this->modelTextures[this->numTextures].loaded = true;
+                this->numTextures++;
+            }
+        } else {
+            Logging::getInstance()->Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color",
+                                        "Mesh3DAnimated");
+        }
         //}
     }
 
     return Ret;
 }
 
-void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
-{
+void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node) {
     for (int x = 0; x < node->mNumMeshes; x++) {
         int idMesh = node->mMeshes[x];
-        this->AssimpLoadMesh( scene->mMeshes[ idMesh ] );
+        this->AssimpLoadMesh(scene->mMeshes[idMesh]);
     }
 
     for (int j = 0; j < node->mNumChildren; j++) {
-        AssimpProcessNodes( scene, node->mChildren[j] );
+        AssimpProcessNodes(scene, node->mChildren[j]);
     }
 }
 
-void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
-{
+void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::getInstance()->Log("Skip mesh non triangle");
@@ -478,21 +472,21 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
-    for (unsigned int j = 0 ; j < mesh->mNumVertices ; j++) {
+    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
 
         aiVector3t vf = mesh->mVertices[j];
 
-        Vertex3D v( vf.x, -vf.y, vf.z );
+        Vertex3D v(vf.x, -vf.y, vf.z);
 
-        const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
+        const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
         v.u = pTexCoord->x;
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
     }
 
-    for (unsigned int k = 0 ; k < mesh->mNumFaces ; k++) {
-        const aiFace& Face = mesh->mFaces[k];
+    for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
+        const aiFace &Face = mesh->mFaces[k];
 
         if (Face.mNumIndices < 3) continue;
 
@@ -500,10 +494,10 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-        this->modelTriangles.push_back( new Triangle(V3, V2, V1, this) );
+        this->modelTriangles.push_back(new Triangle(V3, V2, V1, this));
 
         if (this->numTextures > 0) {
-            this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
+            this->modelTriangles[k]->setTexture(&this->modelTextures[mesh->mMaterialIndex]);
         }
     }
 }
@@ -512,8 +506,7 @@ const std::string &Mesh3D::getSourceFile() const {
     return source_file;
 }
 
-void Mesh3D::setSourceFile(const std::string &sourceFile)
-{
+void Mesh3D::setSourceFile(const std::string &sourceFile) {
     source_file = sourceFile;
 }
 
@@ -521,40 +514,37 @@ Octree *Mesh3D::getOctree() const {
     return octree;
 }
 
-Grid3D *Mesh3D::getGrid3D() const
-{
+Grid3D *Mesh3D::getGrid3D() const {
     return grid;
 }
 
-void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
-{
+void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ) {
     Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb,sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
+                            Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
-{
+void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction) {
     Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ, Grid3D::EmptyStrategies::RAY_INTERSECTION);
-    this->grid->setRayIntersectionDirection( direction );
+    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
+                            Grid3D::EmptyStrategies::RAY_INTERSECTION);
+    this->grid->setRayIntersectionDirection(direction);
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY)
-{
+void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY) {
     Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(DataImage)");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);
-    this->grid->setImageFilename( filename );
-    this->grid->setFixedYImageData( fixedY );
+    this->grid->setImageFilename(filename);
+    this->grid->setFixedYImageData(fixedY);
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildOctree() 
-{
+void Mesh3D::buildOctree() {
     Logging::getInstance()->Log("Building Octree for " + this->getLabel());
     this->updateBoundingBox();
     this->octree = new Octree(this->modelTriangles, this->aabb);

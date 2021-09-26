@@ -18,13 +18,16 @@ public:
     MenuOption(std::string label, int action);
 
     std::string &getLabel();
-    void  setLabel(const std::string &label);
 
-    int  getAction() const;
+    void setLabel(const std::string &label);
+
+    int getAction() const;
+
     void setAction(int action);
 
     std::string &getAlt();
-    void  setAlt(const std::string &alt);
+
+    void setAlt(const std::string &alt);
 };
 
 

@@ -11,10 +11,9 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
-PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
-{
+PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY) {
     grid = new int *[this->sizeY];
-    for(int i = 0; i < this->sizeY; i++) {
+    for (int i = 0; i < this->sizeY; i++) {
         grid[i] = new int[this->sizeX];
     }
 
@@ -27,8 +26,7 @@ PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY)
 
 // A Utility Function to check whether given cell (row, col)
 // is a valid cell or not.
-bool PathFinder::isValid(int row, int col)
-{
+bool PathFinder::isValid(int row, int col) {
     // Returns true if row number and column number
     // is in range
     return (row >= 0) && (row < this->sizeY) && (col >= 0) && (col < this->sizeX);
@@ -36,8 +34,7 @@ bool PathFinder::isValid(int row, int col)
 
 // A Utility Function to check whether the given cell is
 // blocked or not
-bool PathFinder::isUnBlocked(int **grid, int row, int col)
-{
+bool PathFinder::isUnBlocked(int **grid, int row, int col) {
     if (grid[row][col] == 1)
         return (true);
     else
@@ -46,8 +43,7 @@ bool PathFinder::isUnBlocked(int **grid, int row, int col)
 
 // A Utility Function to check whether destination cell has
 // been reached or not
-bool PathFinder::isDestination(int row, int col, Pair dest)
-{
+bool PathFinder::isDestination(int row, int col, Pair dest) {
     if (row == dest.first && col == dest.second)
         return (true);
     else
@@ -55,19 +51,17 @@ bool PathFinder::isDestination(int row, int col, Pair dest)
 }
 
 // A Utility Function to calculate the 'h' heuristics.
-double PathFinder::calculateHValue(int row, int col, Pair dest)
-{
+double PathFinder::calculateHValue(int row, int col, Pair dest) {
     // Return using the distance formula
     return ((double) sqrt(
-        (row - dest.first) * (row - dest.first)
-        + (col - dest.second) * (col - dest.second)
+            (row - dest.first) * (row - dest.first)
+            + (col - dest.second) * (col - dest.second)
     ));
 }
 
 // A Utility Function to trace the path from the source
 // to destination
-std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest)
-{
+std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest) {
     int row = dest.first;
     int col = dest.second;
 
@@ -96,8 +90,7 @@ std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest
 // A Function to find the shortest path between
 // a given source cell to a destination cell according
 // to A* Search Algorithm
-bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
-{
+bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
     // If the source is out of range
     if (isValid(src.first, src.second) == false) {
         //printf("Source is invalid\n");
@@ -111,7 +104,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
     }
 
     // Either the source or the destination is blocked
-    if (isUnBlocked(grid, src.first, src.second) == false|| isUnBlocked(grid, dest.first, dest.second) == false) {
+    if (isUnBlocked(grid, src.first, src.second) == false || isUnBlocked(grid, dest.first, dest.second) == false) {
         //printf("Source or the destination is blocked\n");
         return false;
     }
@@ -132,7 +125,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
     // of that cell
     cell **cellDetails;
     cellDetails = new cell *[this->sizeY];
-    for(int i = 0; i < this->sizeY; i++) {
+    for (int i = 0; i < this->sizeY; i++) {
         cellDetails[i] = new cell[this->sizeX];
     }
 
@@ -240,7 +233,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
                 if (cellDetails[i - 1][j].f == FLT_MAX || cellDetails[i - 1][j].f > fNew) {
-                    openList.insert(std::make_pair( fNew, std::make_pair(i - 1, j)));
+                    openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j)));
 
                     // Update the details of this cell
                     cellDetails[i - 1][j].f = fNew;
@@ -314,7 +307,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j + 1] == false && isUnBlocked(grid, i, j + 1)  == true) {
+            else if (closedList[i][j + 1] == false && isUnBlocked(grid, i, j + 1) == true) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j + 1, dest);
                 fNew = gNew + hNew;
@@ -582,30 +575,28 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path)
     return foundDest;
 }
 
-void PathFinder::setValue(int posX, int posY, bool value)
-{
+void PathFinder::setValue(int posX, int posY, bool value) {
     this->grid[posY][posX] = value;
 }
 
-void PathFinder::demo()
-{
+void PathFinder::demo() {
     int data[9][10] = {
-        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
-        { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
-        { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 },
-        { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 },
-        { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 },
-        { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 },
-        { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 },
-        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
-        { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 }
+            {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+            {1, 1, 1, 0, 1, 1, 1, 0, 1, 1},
+            {1, 1, 1, 0, 1, 1, 0, 1, 0, 1},
+            {0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+            {1, 1, 1, 0, 1, 1, 1, 0, 1, 0},
+            {1, 0, 1, 1, 1, 1, 0, 1, 0, 0},
+            {1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+            {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+            {1, 1, 1, 0, 0, 0, 1, 0, 0, 1}
     };
 
 
     // load data into grid
     for (int x = 0; x < this->sizeX; x++) {
         for (int y = 0; y < this->sizeY; y++) {
-            setValue( x, y, data[y][x] );
+            setValue(x, y, data[y][x]);
         }
     }
 
@@ -623,12 +614,11 @@ void PathFinder::demo()
     if (result) {
         printf("Destination has found\r\n");
 
-        consoleDebugPath( path );
+        consoleDebugPath(path);
     }
 }
 
-void PathFinder::consoleDebug()
-{
+void PathFinder::consoleDebug() {
     printf("\r\nDebug Grid: \r\n");
     for (int y = 0; y < this->sizeY; y++) {
         for (int x = 0; x < this->sizeX; x++) {
@@ -638,8 +628,7 @@ void PathFinder::consoleDebug()
     }
 }
 
-void PathFinder::consoleDebugPath(std::stack<Pair> path)
-{
+void PathFinder::consoleDebugPath(std::stack<Pair> path) {
     char debugGrid[this->sizeY][this->sizeX];
 
     // reset all visual debug cells to '-'
@@ -649,7 +638,7 @@ void PathFinder::consoleDebugPath(std::stack<Pair> path)
         }
     }
 
-        if (path.empty()) {
+    if (path.empty()) {
         printf("consoleDebugPath: path is empty");
         return;
     }
@@ -672,14 +661,13 @@ void PathFinder::consoleDebugPath(std::stack<Pair> path)
     }
 }
 
-void PathFinder::saveGridToPNG(std::string filename)
-{
+void PathFinder::saveGridToPNG(std::string filename) {
     SDL_Surface *s = SDL_CreateRGBSurface(0, this->sizeX, this->sizeY, 32, 0, 0, 0, 0);
 
     Uint32 black = Color::black();
-    Uint32 red   = Color::red();
+    Uint32 red = Color::red();
 
-    auto *buffer = new Uint32[this->sizeY*this->sizeX];
+    auto *buffer = new Uint32[this->sizeY * this->sizeX];
 
     for (int y = 0; y < this->sizeY; y++) {
         for (int x = 0; x < this->sizeX; x++) {
@@ -691,13 +679,12 @@ void PathFinder::saveGridToPNG(std::string filename)
             }
         }
     }
-    memcpy (&s->pixels, &buffer, sizeof(s->pixels));
+    memcpy(&s->pixels, &buffer, sizeof(s->pixels));
     IMG_SavePNG(s, (EngineSetup::getInstance()->GRIDS_FOLDER + filename).c_str());
     SDL_FreeSurface(s);
 }
 
-void PathFinder::loadGridFromPNG(std::string filename)
-{
+void PathFinder::loadGridFromPNG(std::string filename) {
     SDL_Surface *s = IMG_Load((filename).c_str());
 
     int sx = s->w;
@@ -718,13 +705,12 @@ void PathFinder::loadGridFromPNG(std::string filename)
     }
 }
 
-std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename)
-{
+std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename) {
     Logging::getInstance()->Log("PathFinder readPathFromPNG " + filename);
 
     SDL_Surface *surface = IMG_Load((filename).c_str());
 
-    int width  = surface->w;
+    int width = surface->w;
     int height = surface->h;
 
     Pair src, dest;

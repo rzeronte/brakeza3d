@@ -15,21 +15,27 @@
 
 #define FLT_MAX 10
 
-class PathFinder
-{
+class PathFinder {
 public:
     // Creating a shortcut for int, int pair type
     typedef std::pair<int, int> Pair;
 
     void demo();
+
     void consoleDebug();
+
     void consoleDebugPath(std::stack<Pair> path);
+
     bool AStarSearch(Pair src, Pair dest, std::stack<Pair> &path);
+
     void setValue(int posX, int posY, bool value);
+
     PathFinder(int sizeX, int sizeY);
 
     void saveGridToPNG(std::string filename);
+
     void loadGridFromPNG(std::string filename);
+
     static std::stack<PathFinder::Pair> readPathFromPNG(std::string filename);
 
 private:
@@ -50,9 +56,13 @@ private:
     int **grid;
 
     bool isValid(int row, int col);
+
     bool isUnBlocked(int **grid, int row, int col);
+
     bool isDestination(int row, int col, Pair dest);
+
     double calculateHValue(int row, int col, Pair dest);
+
     std::stack<Pair> tracePath(cell **cellDetails, Pair dest);
 
 };

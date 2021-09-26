@@ -30,36 +30,59 @@ public:
     ComponentRender();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     void onUpdateBSP();
+
     void onUpdateSceneObjects();
+
     void hiddenSurfaceRemoval();
+
     void hiddenSurfaceRemovalTriangle(Triangle *t);
+
     void hiddenOctreeRemoval();
-    void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle*> &triangles);
+
+    void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
+
     void drawVisibleTriangles();
 
-    void handleTrianglesToTiles(std::vector<Triangle*> &visibleTriangles);
+    void handleTrianglesToTiles(std::vector<Triangle *> &visibleTriangles);
 
     void drawTilesGrid();
-    void drawTriangles(std::vector<Triangle*> &visibleTriangles);
+
+    void drawTriangles(std::vector<Triangle *> &visibleTriangles);
+
     void processTriangle(Triangle *t);
+
     void triangleRasterizer(Triangle *t);
+
     void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *, bool bilinear);
-    void drawTilesTriangles(std::vector<Triangle*> *visibleTriangles);
+
+    void drawTilesTriangles(std::vector<Triangle *> *visibleTriangles);
+
     void drawSceneObjectsAxis();
 
     void initTiles();
-    void drawTileTriangles(int i, std::vector<Triangle*> &visibleTriangles);
+
+    void drawTileTriangles(int i, std::vector<Triangle *> &visibleTriangles);
+
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
+
     void drawWireframe(Triangle *t);
+
     void processPixelTextureAnimated(Fragment *fragment);
+
     Uint32 processPixelFog(Fragment *fragment, Uint32 pixelColor);
+
     Uint32 processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor);
 
     void updateFPS(const float deltaTime);
@@ -69,17 +92,19 @@ public:
     float frameTime = 0;
 
     std::vector<Triangle *> &getFrameTriangles();
+
     std::vector<Triangle *> &getVisibleTriangles();
+
     std::vector<LightPoint3D *> &getLightPoints();
 
-    std::vector<Triangle*> frameTriangles;
-    std::vector<Triangle*> clippedTriangles;
-    std::vector<Triangle*> visibleTriangles;
-    std::vector<LightPoint3D*> lightpoints;
+    std::vector<Triangle *> frameTriangles;
+    std::vector<Triangle *> clippedTriangles;
+    std::vector<Triangle *> visibleTriangles;
+    std::vector<LightPoint3D *> lightpoints;
 
     std::vector<Tile> tiles;
-    int sizeTileWidth  = (EngineSetup::getInstance()->screenWidth/2);
-    int sizeTileHeight = (EngineSetup::getInstance()->screenHeight/2);
+    int sizeTileWidth = (EngineSetup::getInstance()->screenWidth / 2);
+    int sizeTileHeight = (EngineSetup::getInstance()->screenHeight / 2);
     int tilesWidth;
     int tilesHeight;
     int numTiles;

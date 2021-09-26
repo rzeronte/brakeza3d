@@ -11,11 +11,10 @@ Counter::Counter(float step) {
     this->step = step;
 }
 
-void Counter::update()
-{
+void Counter::update() {
     if (!isEnabled()) return;
 
-    float ticks     = this->timer->getTicks();
+    float ticks = this->timer->getTicks();
     float deltatime = ticks - this->lastTicks;
     this->lastTicks = ticks;
 

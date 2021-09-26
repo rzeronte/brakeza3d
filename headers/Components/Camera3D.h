@@ -13,16 +13,16 @@
 
 class Camera3D : public Object3D {
 public:
-    float yaw   = 0;	    // Direction of travel
-    float pitch = 0;		// Neck angle
-    float roll  = 0;
+    float yaw = 0;        // Direction of travel
+    float pitch = 0;        // Neck angle
+    float roll = 0;
 
-    float speed;		// Speed along heading
+    float speed;        // Speed along heading
     float strafe;       // Speed along heading
     float jump;         // Speed along vertical
 
     float horizontal_fov;
-    float farDistance ;
+    float farDistance;
     float aspectRatio;
 
     Frustum *frustum;
@@ -41,27 +41,45 @@ public:
     Camera3D();
 
     float calcCanvasNearWidth();
+
     float calcCanvasNearHeight();
+
     float getScreenAspectRatio();
+
     float calcCanvasFarWidth();
+
     float calcCanvasFarHeight();
+
     float getNearDistance();
+
     float getVerticalFOV();
 
     void UpdateFrustum();
+
     void UpdateVelocity();
+
     void UpdatePositionForVelocity();
+
     void UpdateRotation(void);
 
     void Pitch(float pitch);
+
     void Yaw(float yaw);
+
     void PitchUp(void);
+
     void PitchDown(void);
+
     void MoveForward(void);
+
     void MoveBackward(void);
+
     void TurnRight(void);
+
     void TurnLeft(void);
+
     void StrafeRight(void);
+
     void StrafeLeft(void);
 
     void limitPitch();
@@ -70,7 +88,7 @@ public:
 
     void consoleInfo();
 
-    btPairCachingGhostObject* getGhostObject();
+    btPairCachingGhostObject *getGhostObject();
 };
 
 

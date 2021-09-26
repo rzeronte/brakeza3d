@@ -15,6 +15,7 @@
 class WeaponType {
 public:
     WeaponType();
+
     WeaponType(std::string label);
 
     bool available;
@@ -62,62 +63,80 @@ public:
     void addAnimation(std::string label, std::string model, float scale, bool stopEnd);
 
     Mesh3DAnimated *getCurrentWeaponAnimation();
+
     void onUpdate();
 
     void setWeaponAnimation(int);
 
     bool isAvailable() const;
+
     void setAvailable(bool available);
 
     void setSpeed(float speed);
-    int  getSpeed() const;
+
+    int getSpeed() const;
 
     float getDamage();
-    void  setDamage(float damage);
+
+    void setDamage(float damage);
 
     float getDamageRadius() const;
-    void  setDamageRadius(float damageRadius);
+
+    void setDamageRadius(float damageRadius);
 
     void loadIconHUD(std::string file);
+
     void loadSniperHUD(std::string file);
 
     float getAccuracy() const;
-    void  setAccuracy(float accuracy);
 
-    int  getDispersion() const;
+    void setAccuracy(float accuracy);
+
+    int getDispersion() const;
+
     void setDispersion(float dispersion);
 
     bool isFiring() const;
+
     void setFiring(bool firing);
 
     bool isSniper() const;
+
     void setSniper(bool sniper);
 
     bool isSniperEnabled() const;
+
     void setSniperEnabled(bool sniperEnabled);
 
     const std::string &getClassname() const;
-    void  setClassname(const std::string &classname);
 
-    int  getIndex() const;
+    void setClassname(const std::string &classname);
+
+    int getIndex() const;
+
     void setIndex(int index);
 
     AmmoType *getAmmoType() const;
-    void      setAmmoType(AmmoType *ammo);
+
+    void setAmmoType(AmmoType *ammo);
 
     void shoot();
+
     void reload();
 
     Mesh3D *getModel();
 
     Mesh3DAnimatedCollection *getWeaponAnimations() const;
+
     void setWeaponAnimations(Mesh3DAnimatedCollection *weaponAnimations);
 
     std::vector<std::string> &getWeaponSounds();
+
     void setWeaponSounds(const std::vector<std::string> &weaponSounds);
 
     const std::string &getSoundEmptyLabel() const;
-    void  setSoundEmptyLabel(const std::string &soundEmptyLabel);
+
+    void setSoundEmptyLabel(const std::string &soundEmptyLabel);
 
 };
 

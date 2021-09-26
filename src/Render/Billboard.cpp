@@ -3,29 +3,27 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineSetup.h"
 
-Billboard::Billboard()
-{
+Billboard::Billboard() {
     this->texture = new Texture();
 
     EngineSetup *setup = EngineSetup::getInstance();
-    this->width  = setup->BILLBOARD_WIDTH_DEFAULT;
+    this->width = setup->BILLBOARD_WIDTH_DEFAULT;
     this->height = setup->BILLBOARD_HEIGHT_DEFAULT;
 
     this->T1 = Triangle();
     this->T2 = Triangle();
 }
 
-void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
-{
+void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R) {
     Vertex3D X;
-    X.x = (width/2) * R.x;
-    X.y = (width/2) * R.y;
-    X.z = (width/2) * R.z;
+    X.x = (width / 2) * R.x;
+    X.y = (width / 2) * R.y;
+    X.z = (width / 2) * R.z;
 
     Vertex3D Y;
-    Y.x = (height/2) * U.x;
-    Y.y = (height/2) * U.y;
-    Y.z = (height/2) * U.z;
+    Y.x = (height / 2) * U.x;
+    Y.y = (height / 2) * U.y;
+    Y.z = (height / 2) * U.z;
 
     Q1.x = o->getPosition().x + X.x + Y.x;
     Q1.y = o->getPosition().y + X.y + Y.y;
@@ -48,10 +46,14 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     Q3 = Transforms::objectToLocal(Q3, o);
     Q4 = Transforms::objectToLocal(Q4, o);
 
-    Q1.u = 1.0f;   Q1.v = 1.0f;
-    Q2.u = 0.0001; Q2.v = 1.0f;
-    Q3.u = 0.0001; Q3.v = 0.0001;
-    Q4.u = 1.0f;   Q4.v = 0.0001;
+    Q1.u = 1.0f;
+    Q1.v = 1.0f;
+    Q2.u = 0.0001;
+    Q2.v = 1.0f;
+    Q3.u = 0.0001;
+    Q3.v = 0.0001;
+    Q4.u = 1.0f;
+    Q4.v = 0.0001;
 
     this->T1.A = Q3;
     this->T1.B = Q2;
@@ -67,26 +69,22 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     //T2 = Triangle(Q4, Q3, Q1, o);
 }
 
-void Billboard::loadTexture(const std::string&& fileName)
-{
-    this->texture->loadTGA( fileName.c_str(), 1);
+void Billboard::loadTexture(const std::string &&fileName) {
+    this->texture->loadTGA(fileName.c_str(), 1);
     setTrianglesTexture(this->texture);
 }
 
-void Billboard::setTrianglesTexture(Texture *t)
-{
+void Billboard::setTrianglesTexture(Texture *t) {
     this->T1.setTexture(t);
     this->T2.setTexture(t);
 }
 
-void Billboard::reassignTexture()
-{
+void Billboard::reassignTexture() {
     setTrianglesTexture(this->texture);
 
 }
 
-void Billboard::setDimensions(float w, float h)
-{
+void Billboard::setDimensions(float w, float h) {
     this->width = w;
     this->height = h;
 }

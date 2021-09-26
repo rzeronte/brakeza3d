@@ -26,7 +26,7 @@ public:
     std::string prefix_texture_folder;
     Assimp::Importer importer;
 
-    std::vector<Triangle*> modelTriangles;
+    std::vector<Triangle *> modelTriangles;
     AABB3D aabb;
 
     Texture *modelTextures;
@@ -42,26 +42,35 @@ public:
 
     Mesh3D();
 
-    bool AssimpLoadGeometryFromFile(const std::string& fileName);
-    bool AssimpInitMaterials(const aiScene* pScene, const std::string& Filename);
-    void AssimpProcessNodes(const aiScene*, aiNode *node);
+    bool AssimpLoadGeometryFromFile(const std::string &fileName);
+
+    bool AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
+
+    void AssimpProcessNodes(const aiScene *, aiNode *node);
+
     void AssimpLoadMesh(aiMesh *mesh);
 
     // OBJ
     bool loadOBJBlender(const char *name);
+
     void loadOBJBlenderVertex();
+
     void loadOBJBlenderTriangles();
+
     void loadOBJBlenderTextureCoordinates();
+
     void loadOBJBlenderMaterials();
 
-    void sendTrianglesToFrame(std::vector<Triangle*> *frameTriangles);
+    void sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles);
     //void shadowMapping(LightPoint3D *);
     //void setLightPoints(std::vector<LightPoint3D*> &);
 
     bool isShadowCaster() const;
+
     void setShadowCaster(bool shadow_caster);
 
-    int  getBspEntityIndex() const;
+    int getBspEntityIndex() const;
+
     void setBspEntityIndex(int bspEntityIndex);
 
     void updateBoundingBox();
@@ -71,14 +80,19 @@ public:
     void onUpdate();
 
     const std::string &getSourceFile() const;
+
     void setSourceFile(const std::string &sourceFile);
 
     Octree *getOctree() const;
-    void    buildOctree();
+
+    void buildOctree();
 
     Grid3D *getGrid3D() const;
+
     void buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ);
+
     void buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction);
+
     void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY);
 
 private:

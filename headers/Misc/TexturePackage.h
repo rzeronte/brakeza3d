@@ -14,7 +14,7 @@ class TexturePackage {
 public:
     TexturePackage();
 
-    void addItem(const std::string& srcTexture, std::string label);
+    void addItem(const std::string &srcTexture, std::string label);
 
     Texture *getTextureByLabel(const std::string &label);
 

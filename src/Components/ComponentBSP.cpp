@@ -6,50 +6,42 @@
 #include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/ComponentsManager.h"
 
-ComponentBSP::ComponentBSP()
-{
+ComponentBSP::ComponentBSP() {
     bsp = new BSPMap();
 }
 
-void ComponentBSP::onStart()
-{
+void ComponentBSP::onStart() {
     std::cout << "ComponentBSP onStart" << std::endl;
 
 }
 
-void ComponentBSP::initMap(const char *bspFilename)
-{
-    bsp->Initialize( bspFilename, "palette.lmp", camera);
+void ComponentBSP::initMap(const char *bspFilename) {
+    bsp->Initialize(bspFilename, "palette.lmp", camera);
     setCameraInBSPStartPosition();
 
     bspCollider = new BSPCollider();
 }
 
-void ComponentBSP::preUpdate()
-{
-    if ( bsp->isLoaded() ) {
-        dleaf_t *leaf = bsp->FindLeaf(camera->getPosition(), true );
-        bsp->setVisibleSet( leaf );
+void ComponentBSP::preUpdate() {
+    if (bsp->isLoaded()) {
+        dleaf_t *leaf = bsp->FindLeaf(camera->getPosition(), true);
+        bsp->setVisibleSet(leaf);
     }
 }
 
-void ComponentBSP::onUpdate()
-{
+void ComponentBSP::onUpdate() {
 
 }
 
-void ComponentBSP::postUpdate()
-{
+void ComponentBSP::postUpdate() {
 
 }
 
-void ComponentBSP::onEnd()
-{
+void ComponentBSP::onEnd() {
 
 }
 
-void ComponentBSP::onSDLPollEvent(SDL_Event *event, bool &finish)
-{
+void ComponentBSP::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
@@ -57,29 +49,27 @@ BSPMap *ComponentBSP::getBSP() const {
     return bsp;
 }
 
-void ComponentBSP::initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
-{
+void ComponentBSP::initParallelBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles) {
     //this->loadingBSP = new std::thread(ParallellInitBSP, bspFilename, frameTriangles);
 }
 
 
-void ComponentBSP::setCameraInBSPStartPosition()
-{
+void ComponentBSP::setCameraInBSPStartPosition() {
     // Load start position from BSP
     Vertex3D bspOriginalPosition = getBSP()->getStartMapPosition();
 
     int entityID = getBSP()->getIndexOfFirstEntityByClassname("info_player_start");
     btTransform initialTransform;
-    initialTransform.setOrigin( btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z) );
+    initialTransform.setOrigin(btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z));
 
     char *angle = getBSP()->getEntityValue(entityID, "angle");
-    int angleInt = atoi( std::string(angle).c_str() );
+    int angleInt = atoi(std::string(angle).c_str());
 
-    camera->yaw   = 90 - angleInt;
+    camera->yaw = 90 - angleInt;
     camera->pitch = 0;
-    camera->roll  = 0;
+    camera->roll = 0;
 
-    camera->setPosition( bspOriginalPosition );
+    camera->setPosition(bspOriginalPosition);
 }
 
 void ComponentBSP::setCamera(Camera3D *camera) {

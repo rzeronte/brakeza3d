@@ -11,8 +11,8 @@
 Camera3D::Camera3D() {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
     horizontal_fov = EngineSetup::getInstance()->HORIZONTAL_FOV;
-    aspectRatio    = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
-    farDistance    = EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
+    aspectRatio = ((float) EngineSetup::getInstance()->screenHeight / (float) EngineSetup::getInstance()->screenWidth);
+    farDistance = EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
 
     this->consoleInfo();
 
@@ -29,74 +29,67 @@ Camera3D::Camera3D() {
             calcCanvasFarHeight(), calcCanvasFarWidth()
     );
 
-    btConvexShape* capsule = new btCapsuleShapeZ(
+    btConvexShape *capsule = new btCapsuleShapeZ(
             EngineSetup::getInstance()->PLAYER_CAPSULE_RADIUS,
             EngineSetup::getInstance()->PLAYER_CAPSULE_HEIGHT
     );
 
     btTransform startTransform;
     startTransform.setIdentity();
-    startTransform.setOrigin (btVector3(0, 0, 0));
+    startTransform.setOrigin(btVector3(0, 0, 0));
 
     this->makeKineticCharacter(startTransform, capsule);
 
-    this->setLabel( EngineSetup::getInstance()->cameraNameIdentifier );
+    this->setLabel(EngineSetup::getInstance()->cameraNameIdentifier);
 
     this->follow_to_position_offset = Vertex3D(10, -15, 0);
 }
 
-float Camera3D::getNearDistance()
-{
-    return (1 / tanf( Maths::degreesToRadians(this->horizontal_fov/2) ));
+float Camera3D::getNearDistance() {
+    return (1 / tanf(Maths::degreesToRadians(this->horizontal_fov / 2)));
 }
 
-float Camera3D::getVerticalFOV()
-{
-    float vfov = 2 * atanf( getScreenAspectRatio() / getNearDistance() );
+float Camera3D::getVerticalFOV() {
+    float vfov = 2 * atanf(getScreenAspectRatio() / getNearDistance());
 
-    return Maths::radiansToDegrees( vfov );
+    return Maths::radiansToDegrees(vfov);
 }
 
-float Camera3D::calcCanvasNearWidth()
-{
-    float width = ( 2 * tanf( Maths::degreesToRadians(horizontal_fov / 2) ) * getNearDistance() ) ;
+float Camera3D::calcCanvasNearWidth() {
+    float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * getNearDistance());
 
     return width;
 }
 
-float Camera3D::calcCanvasNearHeight()
-{
-    float height = ( 2 * tanf( Maths::degreesToRadians( getVerticalFOV() / 2) ) * getNearDistance() ) * getScreenAspectRatio();
+float Camera3D::calcCanvasNearHeight() {
+    float height =
+            (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * getNearDistance()) * getScreenAspectRatio();
 
     return height;
 }
 
-float Camera3D::calcCanvasFarWidth()
-{
-    float width = ( 2 * tanf( Maths::degreesToRadians(horizontal_fov / 2) ) * farDistance) ;
+float Camera3D::calcCanvasFarWidth() {
+    float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * farDistance);
 
     return width;
 }
 
-float Camera3D::calcCanvasFarHeight()
-{
-    float height = (2 * tanf( Maths::degreesToRadians( getVerticalFOV() / 2) ) * farDistance) * getScreenAspectRatio();
+float Camera3D::calcCanvasFarHeight() {
+    float height = (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * farDistance) * getScreenAspectRatio();
 
     return height;
 }
 
-float Camera3D::getScreenAspectRatio()
-{
+float Camera3D::getScreenAspectRatio() {
     return this->aspectRatio;
 }
 
-void Camera3D::UpdateFrustum()
-{
-    frustum->position  = this->getPosition();
+void Camera3D::UpdateFrustum() {
+    frustum->position = this->getPosition();
 
     frustum->direction = this->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
-    frustum->up        = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    frustum->right     = this->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+    frustum->up = this->getRotation().getTranspose() * EngineSetup::getInstance()->up;
+    frustum->right = this->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
     frustum->updateCenters();
     frustum->updatePoints();
@@ -115,8 +108,7 @@ void Camera3D::UpdateFrustum()
     frustum->vNBpers = Transforms::perspectiveDivision(frustum->vNBs, this);
 }
 
-void Camera3D::consoleInfo()
-{
+void Camera3D::consoleInfo() {
     printf("Camera Aspect Ratio: %f | HFOV: %f | VFOV: %f | NearDistance: %f | Canvas W: %f | Canvas H: %f\r\n",
            aspectRatio,
            horizontal_fov,
@@ -126,67 +118,55 @@ void Camera3D::consoleInfo()
     );
 }
 
-void Camera3D::Pitch(float pitch)
-{
+void Camera3D::Pitch(float pitch) {
     this->pitch += pitch * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
     limitPitch();
 }
 
-void Camera3D::Yaw(float yaw)
-{
+void Camera3D::Yaw(float yaw) {
     this->yaw -= yaw * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
 }
 
-void Camera3D::PitchUp(void)
-{
+void Camera3D::PitchUp(void) {
     pitch += EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
-void Camera3D::PitchDown(void)
-{
+void Camera3D::PitchDown(void) {
     pitch -= EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
-void Camera3D::MoveForward(void)
-{
+void Camera3D::MoveForward(void) {
     speed += EngineSetup::getInstance()->WALKING_SPEED;
 }
 
-void Camera3D::MoveBackward(void)
-{
+void Camera3D::MoveBackward(void) {
     speed -= EngineSetup::getInstance()->WALKING_SPEED;
 }
 
-void Camera3D::TurnRight(void)
-{
+void Camera3D::TurnRight(void) {
     yaw -= EngineSetup::getInstance()->TURN_SPEED;
 }
 
-void Camera3D::TurnLeft(void)
-{
+void Camera3D::TurnLeft(void) {
     yaw += EngineSetup::getInstance()->TURN_SPEED;
 }
 
-void Camera3D::StrafeRight(void)
-{
+void Camera3D::StrafeRight(void) {
     strafe += EngineSetup::getInstance()->STRAFE_SPEED;
 
 }
 
-void Camera3D::StrafeLeft(void)
-{
+void Camera3D::StrafeLeft(void) {
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
-void Camera3D::UpdatePositionForVelocity()
-{
-    this->setPosition( this->velocity.vertex2);
+void Camera3D::UpdatePositionForVelocity() {
+    this->setPosition(this->velocity.vertex2);
 }
 
-void Camera3D::UpdateVelocity()
-{
+void Camera3D::UpdateVelocity() {
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = this->getPosition().z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = this->getPosition().x + speed * (float) sin(-yaw * M_PI / 180.0);
@@ -196,24 +176,22 @@ void Camera3D::UpdateVelocity()
     // Move the camera side ways
     if ((fabs(strafe) > 0)) {
         this->velocity.vertex2.z += strafe * (float) -sin(-yaw * M_PI / 180.0);
-        this->velocity.vertex2.x += - strafe * (float) -cos(-yaw * M_PI / 180.0);
+        this->velocity.vertex2.x += -strafe * (float) -cos(-yaw * M_PI / 180.0);
     }
 
     // Reset speed
-    speed  = 0;
+    speed = 0;
     strafe = 0;
-    jump   = 0;
+    jump = 0;
 }
 
-void Camera3D::UpdateRotation()
-{
+void Camera3D::UpdateRotation() {
     M3 im = M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, this->roll);
 
     this->setRotation(im);
 }
 
-void Camera3D::limitPitch()
-{
+void Camera3D::limitPitch() {
     if (this->pitch >= 89) {
         this->pitch = 89;
     }
@@ -230,16 +208,14 @@ void Camera3D::setFollowTo(Object3D *followTo) {
     follow_to = followTo;
 }
 
-void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule)
-{
+void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule) {
     m_ghostObject = new btPairCachingGhostObject();
-    m_ghostObject->setWorldTransform( transform );
+    m_ghostObject->setWorldTransform(transform);
 
-    m_ghostObject->setCollisionShape( capsule );
+    m_ghostObject->setCollisionShape(capsule);
     m_ghostObject->setUserPointer(this);
 }
 
-btPairCachingGhostObject* Camera3D::getGhostObject()
-{
+btPairCachingGhostObject *Camera3D::getGhostObject() {
     return m_ghostObject;
 }

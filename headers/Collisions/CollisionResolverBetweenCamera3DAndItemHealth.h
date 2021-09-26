@@ -11,56 +11,56 @@
 #include "../EngineBuffers.h"
 #include "../../src/Game/Player.h"
 
-class CollisionResolverBetweenCamera3DAndItemHealth : public CollisionResolver
-{
+class CollisionResolverBetweenCamera3DAndItemHealth : public CollisionResolver {
     ComponentCamera *camera;
     ItemHealthGhost *itemHealth;
     Player *player;
 
     std::vector<Object3D *> *gameObjects;
-    btDiscreteDynamicsWorld* dynamicsWorld;
+    btDiscreteDynamicsWorld *dynamicsWorld;
     ComponentWeapons *weaponManager;
 
-    ComponentCamera* getCamera()
-    {
+    ComponentCamera *getCamera() {
         if (objA->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objA);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera *> (this->objA);
             return camera;
         }
 
         if (objB->getLabel() == EngineSetup::getInstance()->cameraNameIdentifier) {
-            ComponentCamera *camera = dynamic_cast<ComponentCamera*> (this->objB);
+            ComponentCamera *camera = dynamic_cast<ComponentCamera *> (this->objB);
             return camera;
         }
     }
 
-    ItemHealthGhost* getItemHealthBody()
-    {
-        auto *itemHealthA = dynamic_cast<ItemHealthGhost*> (this->objA);
+    ItemHealthGhost *getItemHealthBody() {
+        auto *itemHealthA = dynamic_cast<ItemHealthGhost *> (this->objA);
         if (itemHealthA != nullptr) {
             return itemHealthA;
         }
 
-        auto *itemHealthB = dynamic_cast<ItemHealthGhost*> (this->objB);
+        auto *itemHealthB = dynamic_cast<ItemHealthGhost *> (this->objB);
         if (itemHealthB != nullptr) {
             return itemHealthB;
         }
     }
 
 public:
-    CollisionResolverBetweenCamera3DAndItemHealth(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles, Player *player) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
-    {
+    CollisionResolverBetweenCamera3DAndItemHealth(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
+                                                  BSPMap *bspMap, std::vector<Object3D *> *gameObjects,
+                                                  btDiscreteDynamicsWorld *dynamicsWorld,
+                                                  ComponentWeapons *weaponManager,
+                                                  std::vector<Triangle *> &visibleTriangles, Player *player)
+            : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles) {
         this->camera = getCamera();
         this->itemHealth = getItemHealthBody();
 
-        this->gameObjects   = gameObjects;
+        this->gameObjects = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
         this->player = player;
     }
 
-    void dispatch()
-    {
+    void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
             Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndItemHealth");
         }
@@ -69,14 +69,15 @@ public:
         if (player->getStamina() >= EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) return;
 
         // Remove item for physics engine
-        dynamicsWorld->removeCollisionObject( (btCollisionObject *) itemHealth->ghostObject );
+        dynamicsWorld->removeCollisionObject((btCollisionObject *) itemHealth->ghostObject);
 
         // add aid
-        player->getAid( itemHealth->getAid() );
+        player->getAid(itemHealth->getAid());
 
         // Remove item health from scene
-        this->itemHealth->setRemoved( true );
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("firstAid"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        this->itemHealth->setRemoved(true);
+        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("firstAid"),
+                              EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 };
 

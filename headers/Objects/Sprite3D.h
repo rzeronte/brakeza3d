@@ -34,16 +34,20 @@ public:
     Billboard *getBillboard() const;
 
     void addAnimation(std::string, int, int);
+
     void setAnimation(int);
+
     void updateTexture();
+
     void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
 
     bool isAutoRemoveAfterAnimation() const;
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
+
     void linkTextureAnimation(Sprite3D *);
 
-    TextureAnimation* getCurrentTextureAnimation();
+    TextureAnimation *getCurrentTextureAnimation();
 
     void onUpdate();
 };

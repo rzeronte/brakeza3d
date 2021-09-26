@@ -42,16 +42,22 @@ public:
     SpriteDirectional3D();
 
     Billboard *getBillboard() const;
+
     void addAnimationDirectional2D(std::string, int frames, int fps, bool zeroDirection, int maxTimes);
+
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
+
     void setAnimation(int);
 
     int getDirectionForAngle(float enemyAngle);
+
     void updateStep();
+
     void updateTrianglesCoordinates(Camera3D *cam);
+
     void linkTexturesTo(SpriteDirectional3D *clone);
 
-    TextureAnimationDirectional* getCurrentTextureAnimationDirectional();
+    TextureAnimationDirectional *getCurrentTextureAnimationDirectional();
 
     void onUpdate();
 };

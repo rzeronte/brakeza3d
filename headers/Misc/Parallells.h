@@ -2,8 +2,7 @@
 #define BRAKEDA3D_PARALLELLS_H
 
 
-void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles)
-{
+void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles) {
     //Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
 
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
@@ -14,18 +13,16 @@ void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle*> *frameTri
     //Game::get()->player->respawnNPCS();
 
     EngineSetup::getInstance()->DRAW_WEAPON = true;
-    EngineSetup::getInstance()->DRAW_HUD    = true;
-    EngineSetup::getInstance()->LOADING     = false;
+    EngineSetup::getInstance()->DRAW_HUD = true;
+    EngineSetup::getInstance()->LOADING = false;
 
 }
 
-void ParallellDrawTileTriangles(int i, std::vector<Triangle*> *visibleTriangles)
-{
+void ParallellDrawTileTriangles(int i, std::vector<Triangle *> *visibleTriangles) {
     ComponentsManager::get()->getComponentRender()->drawTileTriangles(i, *visibleTriangles);
 }
 
-void Object3DOnUpdate(Object3D *o)
-{
+void Object3DOnUpdate(Object3D *o) {
     o->onUpdate();
 }
 

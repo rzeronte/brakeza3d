@@ -7,17 +7,15 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
 
-PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam)
-{
+PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam) {
     this->cam = cam;
 }
 
-void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
-{
+void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color) {
     Vertex3D a = Vertex3D(from.x(), from.y(), from.z());
     Vertex3D b = Vertex3D(to.x(), to.y(), to.z());
 
-    if ( cam->frustum->isPointInFrustum(a) && cam->frustum->isPointInFrustum(b) ) {
+    if (cam->frustum->isPointInFrustum(a) && cam->frustum->isPointInFrustum(b)) {
         Drawable::drawVector3D(Vector3D(a, b), cam, Color::red());
     }
 }

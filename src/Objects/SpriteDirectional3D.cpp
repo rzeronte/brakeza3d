@@ -5,38 +5,38 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"
 
-SpriteDirectional3D::SpriteDirectional3D()
-{
+SpriteDirectional3D::SpriteDirectional3D() {
     this->billboard = new Billboard();
     this->counterAnimations = new Counter();
 
     this->width = 10; //EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT;
     this->height = 10; //EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT;
 
-    for (int i = 0; i< BILLBOARD3D_MAX_ANIMATIONS; i++) {
+    for (int i = 0; i < BILLBOARD3D_MAX_ANIMATIONS; i++) {
         this->animations[i] = new TextureAnimationDirectional();
     }
 }
 
-Billboard *SpriteDirectional3D::getBillboard() const
-{
+Billboard *SpriteDirectional3D::getBillboard() const {
     return billboard;
 }
 
-void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam)
-{
-    Vertex3D up    = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
+void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam) {
+    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
     Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
 
-    this->getBillboard()->updateUnconstrainedQuad( this, up, right );
+    this->getBillboard()->updateUnconstrainedQuad(this, up, right);
     this->updateTextureFromCameraAngle(this, cam);
 }
 
-void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection, int maxTimes)
-{
-    Logging::getInstance()->Log("Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) + " animations)", "BILLBOARD");
+void
+SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection,
+                                               int maxTimes) {
+    Logging::getInstance()->Log(
+            "Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) +
+            " animations)", "BILLBOARD");
 
-    this->animations[this->numAnimations]->setup(animation_folder, numFrames, fps, maxTimes );
+    this->animations[this->numAnimations]->setup(animation_folder, numFrames, fps, maxTimes);
 
     if (!zeroDirection) {
         this->animations[this->numAnimations]->loadImages();
@@ -48,12 +48,11 @@ void SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder
     this->numAnimations++;
 }
 
-void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
-{
+void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam) {
     if (numAnimations == 0) return;
 
     float enemyAngle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
-    int   direction  = getDirectionForAngle( enemyAngle );
+    int direction = getDirectionForAngle(enemyAngle);
 
     counterAnimations->update();
 
@@ -63,21 +62,19 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     }
 
     if (getCurrentTextureAnimationDirectional()->isZeroDirection) {
-        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0) );
+        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
     } else {
-        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(direction) );
+        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(direction));
     }
 }
 
-void SpriteDirectional3D::setAnimation(int indexAnimation)
-{
+void SpriteDirectional3D::setAnimation(int indexAnimation) {
     this->currentAnimation = indexAnimation;
     this->updateStep();
-    this->counterAnimations->setStep(step );
+    this->counterAnimations->setStep(step);
 }
 
-void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone)
-{
+void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone) {
     this->numAnimations = clone->numAnimations;
     for (int i = 0; i < clone->numAnimations; i++) {
         this->animations[i]->importTextures(clone->animations[i], clone->animations[i]->numFrames);
@@ -88,13 +85,11 @@ void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone)
     }
 }
 
-TextureAnimationDirectional* SpriteDirectional3D::getCurrentTextureAnimationDirectional()
-{
+TextureAnimationDirectional *SpriteDirectional3D::getCurrentTextureAnimationDirectional() {
     return this->animations[currentAnimation];
 }
 
-int SpriteDirectional3D::getDirectionForAngle(float enemyAngle)
-{
+int SpriteDirectional3D::getDirectionForAngle(float enemyAngle) {
     if (enemyAngle >= 292.5f && enemyAngle < 337.5f)
         return 8;
     else if (enemyAngle >= 22.5f && enemyAngle < 67.5f)
@@ -111,22 +106,20 @@ int SpriteDirectional3D::getDirectionForAngle(float enemyAngle)
         return 7;
     else if (enemyAngle >= 337.5f || enemyAngle < 22.5f)
         return 1;
-    else return  0;
+    else return 0;
 }
 
-void SpriteDirectional3D::updateStep()
-{
+void SpriteDirectional3D::updateStep() {
     step = (float) 1 / (float) this->getCurrentTextureAnimationDirectional()->fps;
-    this->counterAnimations->setStep(step );
+    this->counterAnimations->setStep(step);
 }
 
-void SpriteDirectional3D::onUpdate()
-{
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum( this->getPosition() )) {
+void SpriteDirectional3D::onUpdate() {
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum(this->getPosition())) {
         return;
     }
 
-    this->updateTrianglesCoordinates( ComponentsManager::get()->getComponentCamera()->getCamera() );
+    this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     Drawable::drawBillboard(
             this->getBillboard(),

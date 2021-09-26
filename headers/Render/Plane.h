@@ -16,23 +16,30 @@ public:
     Vertex3D normal;
 
     Plane(const Vertex3D A, const Vertex3D B, const Vertex3D C);
+
     Plane(const Vertex3D P, const Vertex3D N);
+
     Plane();
 
     float distance(const Vertex3D &p);
 
     Vertex3D getNormalVector();
-    void     updateNormalVector();
+
+    void updateNormalVector();
 
     Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2, float &transition);
+
     bool isFrontFacingTo(Vertex3D direction);
+
     bool intersect(Vector3D ray, float &t);
 
     void setOrigin(Vertex3D);
+
     void setNormal(Vertex3D);
 
     Vertex3D origin() const;
-    Vertex3D closest( Vertex3D p );
+
+    Vertex3D closest(Vertex3D p);
 
     static bool isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes);
 

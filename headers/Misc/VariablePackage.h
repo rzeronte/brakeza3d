@@ -11,12 +11,14 @@
 
 class VariablePackage {
 public:
-    std::map<std::string, float>   numericData;
-    std::map<std::string, bool>    boolData;
-    std::map<std::string, char *>  charData;
+    std::map<std::string, float> numericData;
+    std::map<std::string, bool> boolData;
+    std::map<std::string, char *> charData;
 
-    float       &numericValue(char *key);
-    bool        &booleanValue(char *key);
+    float &numericValue(char *key);
+
+    bool &booleanValue(char *key);
+
     std::string stringValue(const char *key);
 };
 

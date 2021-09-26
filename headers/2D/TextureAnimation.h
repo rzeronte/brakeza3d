@@ -22,14 +22,17 @@ public:
     TextureAnimation();
 
     void setup(std::string file, int num_frames, int fps);
+
     void loadImages();
 
     int getNumFrames() const;
+
     void nextFrame();
 
     Texture *getCurrentFrame();
 
     bool isEndAnimation() const;
+
     void setEndAnimation(bool endAnimation);
 
     bool isPaused() const;

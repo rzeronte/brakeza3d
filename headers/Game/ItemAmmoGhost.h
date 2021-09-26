@@ -15,9 +15,11 @@ public:
 
 
     const std::string &getAmmoTypeClassname() const;
+
     void setAmmoTypeClassname(const std::string &ammoTypeClassname);
 
-    int  getAmount() const;
+    int getAmount() const;
+
     void setAmount(int amount);
 
     void onUpdate();

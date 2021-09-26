@@ -7,15 +7,16 @@
 class Logging {
 public:
 
-    static Logging* instance;
+    static Logging *instance;
 
     Logging();
 
 public:
 
-    static Logging* getInstance();
+    static Logging *getInstance();
 
     void Log(std::string message, std::string type);
+
     void Log(std::string message);
 };
 

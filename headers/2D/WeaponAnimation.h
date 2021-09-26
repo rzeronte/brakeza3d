@@ -26,16 +26,18 @@ public:
     float last_ticks;
     float timerCurrent = 0;
 
-    bool stopEnd    = false;
-    bool looping    = false;
+    bool stopEnd = false;
+    bool looping = false;
     bool projectile = false;
 
-    int  offsetX = 0;
-    int  offsetY = 0;
+    int offsetX = 0;
+    int offsetY = 0;
 
-    bool right   = false;
+    bool right = false;
 
-    void setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping, bool projectile);
+    void setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd,
+               int nextAnimationIndex, bool looping, bool projectile);
+
     void loadImages();
 
     int getNumFrames() const;
@@ -49,15 +51,19 @@ public:
     void updateFrame();
 
     bool isStopEnd() const;
+
     void setStopEnd(bool stopEnd);
 
-    int  getNextAnimationIndex() const;
+    int getNextAnimationIndex() const;
+
     void setNextAnimationIndex(int nextAnimationIndex);
 
     bool isLooping() const;
+
     void setLooping(bool looping);
 
     bool isProjectile() const;
+
     void setProjectile(bool projectile);
 };
 

@@ -1,19 +1,16 @@
 
 #include "../../headers/Game/Enemy.h"
 
-Enemy::Enemy() : startStamina (100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0)
-{
+Enemy::Enemy() : startStamina(100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0) {
     this->stamina = this->startStamina;
     this->counterCadence = new Counter();
 }
 
-void Enemy::takeDamage(float damageTaken)
-{
+void Enemy::takeDamage(float damageTaken) {
     this->stamina -= damageTaken;
 }
 
-bool Enemy::isTakeHeavyDamage(float damageTaken)
-{
+bool Enemy::isTakeHeavyDamage(float damageTaken) {
     if (damageTaken > (startStamina / 4)) {
         return true;
     }
@@ -68,7 +65,7 @@ float Enemy::getCadence() const {
 
 void Enemy::setCadence(float cadence) {
     Enemy::cadence = cadence;
-    this->counterCadence->setStep( cadence );
+    this->counterCadence->setStep(cadence);
 }
 
 const Vertex3D &Enemy::getRespawnPosition() const {

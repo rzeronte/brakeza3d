@@ -5,8 +5,7 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
 
-ComponentMenu::ComponentMenu()
-{
+ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
     this->numOptions = 0;
 
@@ -14,19 +13,16 @@ ComponentMenu::ComponentMenu()
     menu_background = IMG_Load(file);
 }
 
-void ComponentMenu::onStart()
-{
+void ComponentMenu::onStart() {
     loadMenuOptions();
 }
 
-void ComponentMenu::preUpdate()
-{
+void ComponentMenu::preUpdate() {
 }
 
-void ComponentMenu::onUpdate()
-{
+void ComponentMenu::onUpdate() {
     if (SETUP->MENU_ACTIVE) {
-        drawOptions( ComponentsManager::get()->getComponentWindow()->screenSurface);
+        drawOptions(ComponentsManager::get()->getComponentWindow()->screenSurface);
     }
 }
 
@@ -42,8 +38,7 @@ void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
-void ComponentMenu::loadMenuOptions()
-{
+void ComponentMenu::loadMenuOptions() {
     size_t file_size;
     const char *mapsFile;
     mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
@@ -54,41 +49,42 @@ void ComponentMenu::loadMenuOptions()
     }
 
     cJSON *currentOption = NULL;
-    optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options" );
+    optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options");
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
     Logging::getInstance()->Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON");
 
     cJSON_ArrayForEach(currentOption, optionsJSON) {
-        cJSON *nameOption   = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
+        cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
         cJSON *actionOption = cJSON_GetObjectItemCaseSensitive(currentOption, "action");
-        cJSON *altOption    = cJSON_GetObjectItemCaseSensitive(currentOption, "alt");
+        cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
-            Logging::getInstance()->Log("Adding menu option " + std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint));
-            this->options[numOptions] = new MenuOption( nameOption->valuestring, actionOption->valueint );
+            Logging::getInstance()->Log("Adding menu option " + std::string(nameOption->valuestring) + "/" +
+                                        std::to_string(actionOption->valueint));
+            this->options[numOptions] = new MenuOption(nameOption->valuestring, actionOption->valueint);
             this->options[numOptions]->setAlt(altOption->valuestring);
             numOptions++;
         }
     }
 }
 
-void ComponentMenu::drawOptions(SDL_Surface *dst)
-{
+void ComponentMenu::drawOptions(SDL_Surface *dst) {
     // Draw back
     SDL_BlitSurface(menu_background, NULL, dst, NULL);
 
     int offsetY = 50;
-    int stepY   = 10;
+    int stepY = 10;
 
     int xPos = 100;
 
-    for( int i = 0 ; i < numOptions ; i++) {
-        std::string text = this->options[ i ]->getLabel();
+    for (int i = 0; i < numOptions; i++) {
+        std::string text = this->options[i]->getLabel();
         bool bold = false;
 
-        if (i == ComponentMenu::MNU_NEW_GAME && ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::GAMEOVER ) {
-            text = this->options[ ComponentMenu::MNU_NEW_GAME ]->getAlt();
+        if (i == ComponentMenu::MNU_NEW_GAME &&
+            ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::GAMEOVER) {
+            text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 
         if (i == currentOption) {
@@ -96,10 +92,10 @@ void ComponentMenu::drawOptions(SDL_Surface *dst)
             text = char(13) + text;
         }
         ComponentsManager::get()->getComponentHUD()->writeText(
-            xPos,
-            stepY + offsetY,
-            text.c_str(),
-            bold
+                xPos,
+                stepY + offsetY,
+                text.c_str(),
+                bold
         );
 
         offsetY += stepY;

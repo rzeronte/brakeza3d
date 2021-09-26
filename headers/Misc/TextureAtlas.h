@@ -26,9 +26,11 @@ public:
 
     bool addTexture(Texture *texture, bool lightmap, std::string name);
 
-    std::vector<Texture*> textures;
+    std::vector<Texture *> textures;
     std::vector<TextureAtlasImageInfo> textures_info;
+
     TextureAtlasImageInfo getAtlasTextureInfoForName(std::string name);
+
     void saveJPG(std::string name);
 
     int total_width;
@@ -38,6 +40,7 @@ public:
 private:
 
     bool checkForAllocate(int xpos, int ypos, int width, int height);
+
     void allocateMask(int xpos, int ypos, int width, int height);
 
 

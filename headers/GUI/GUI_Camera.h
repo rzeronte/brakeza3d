@@ -7,14 +7,13 @@
 #include "../Components/Camera3D.h"
 #include "../../imgui/imgui.h"
 
-class GUI_Camera : public GUI  {
+class GUI_Camera : public GUI {
 public:
     bool show = false;
 
     virtual ~GUI_Camera() {}
 
-    virtual void draw(Camera3D *camera)
-    {
+    virtual void draw(Camera3D *camera) {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
@@ -49,49 +48,61 @@ public:
             std::string position_text = "Position##1";
             std::string rotation_text = "Orientation##2";
             std::string movement_text = "Keyboard##3";
-            std::string mouse_text    = "Mouse##4";
-            std::string forces_text   = "Forces##5";
+            std::string mouse_text = "Mouse##4";
+            std::string forces_text = "Forces##5";
 
             // position
-            if (ImGui::TreeNode( position_text.c_str() )) {
-                ImGui::DragScalar("X", ImGuiDataType_Float,  &camera->getPosition().x, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("Y", ImGuiDataType_Float,  &camera->getPosition().y, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("Z", ImGuiDataType_Float,  &camera->getPosition().z, range_sensibility,  &range_min, &range_max, "%f", 1.0f);
+            if (ImGui::TreeNode(position_text.c_str())) {
+                ImGui::DragScalar("X", ImGuiDataType_Float, &camera->getPosition().x, range_sensibility, &range_min,
+                                  &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &camera->getPosition().y, range_sensibility, &range_min,
+                                  &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &camera->getPosition().z, range_sensibility, &range_min,
+                                  &range_max, "%f", 1.0f);
                 ImGui::TreePop();
             }
 
             ImGui::Separator();
 
             // rotation
-            if (ImGui::TreeNode( rotation_text.c_str() )) {
-                ImGui::DragScalar("Yaw", ImGuiDataType_Float,  &camera->yaw, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
-                ImGui::DragScalar("Pitch", ImGuiDataType_Float,  &camera->pitch, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
-                ImGui::DragScalar("Roll", ImGuiDataType_Float,  &camera->roll, range_sensibility,  &range_min_yaw, &range_max_yaw, "%f", 1.0f);
+            if (ImGui::TreeNode(rotation_text.c_str())) {
+                ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->yaw, range_sensibility, &range_min_yaw,
+                                  &range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->pitch, range_sensibility, &range_min_yaw,
+                                  &range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->roll, range_sensibility, &range_min_yaw,
+                                  &range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
 
             ImGui::Separator();
 
-            if (ImGui::TreeNode( movement_text.c_str() )) {
-                ImGui::DragScalar("Walking", ImGuiDataType_Float, &EngineSetup::getInstance()->WALKING_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
-                ImGui::DragScalar("Turn", ImGuiDataType_Float,    &EngineSetup::getInstance()->TURN_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
-                ImGui::DragScalar("Pitch", ImGuiDataType_Float,   &EngineSetup::getInstance()->PITCH_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
-                ImGui::DragScalar("Strafe", ImGuiDataType_Float,  &EngineSetup::getInstance()->STRAFE_SPEED, range_sensibility,  &range_min_movement, &range_max_movement, "%f", 1.0f);
+            if (ImGui::TreeNode(movement_text.c_str())) {
+                ImGui::DragScalar("Walking", ImGuiDataType_Float, &EngineSetup::getInstance()->WALKING_SPEED,
+                                  range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Turn", ImGuiDataType_Float, &EngineSetup::getInstance()->TURN_SPEED,
+                                  range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Pitch", ImGuiDataType_Float, &EngineSetup::getInstance()->PITCH_SPEED,
+                                  range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+                ImGui::DragScalar("Strafe", ImGuiDataType_Float, &EngineSetup::getInstance()->STRAFE_SPEED,
+                                  range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
 
                 ImGui::TreePop();
             }
             ImGui::Separator();
 
-            if (ImGui::TreeNode( std::string("Velocity").c_str() )) {
-                ImGui::Text( (std::string("X: ") + std::to_string(camera->velocity.getComponent().x)).c_str());
-                ImGui::Text( (std::string("Y: ") + std::to_string(camera->velocity.getComponent().y)).c_str());
-                ImGui::Text( (std::string("Z: ") + std::to_string(camera->velocity.getComponent().z)).c_str());
+            if (ImGui::TreeNode(std::string("Velocity").c_str())) {
+                ImGui::Text((std::string("X: ") + std::to_string(camera->velocity.getComponent().x)).c_str());
+                ImGui::Text((std::string("Y: ") + std::to_string(camera->velocity.getComponent().y)).c_str());
+                ImGui::Text((std::string("Z: ") + std::to_string(camera->velocity.getComponent().z)).c_str());
                 ImGui::TreePop();
             }
             ImGui::Separator();
 
-            if (ImGui::TreeNode( mouse_text.c_str() )) {
-                ImGui::DragScalar("Sens.", ImGuiDataType_Float,  &EngineSetup::getInstance()->MOUSE_SENSITIVITY, range_sensibility,  &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f", 1.0f);
+            if (ImGui::TreeNode(mouse_text.c_str())) {
+                ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::getInstance()->MOUSE_SENSITIVITY,
+                                  range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",
+                                  1.0f);
                 ImGui::TreePop();
             }
 

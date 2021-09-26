@@ -17,22 +17,28 @@ public:
     ComponentBSP();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    BSPMap      *bsp;
+    BSPMap *bsp;
     BSPCollider *bspCollider;
 
-    Camera3D    *camera;
+    Camera3D *camera;
     std::thread *BSPLoading;
 
     BSPMap *getBSP() const;
 
     void initMap(const char *bspFilename);
-    void initParallelBSP(const char *bspFilename, std::vector<Triangle*> *frameTriangles);
+
+    void initParallelBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles);
 
     void setCameraInBSPStartPosition();
 

@@ -27,13 +27,18 @@ public:
     ComponentCamera();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    Camera3D* camera;
+    Camera3D *camera;
     bool is_fly_mode;
 
     Camera3D *getCamera() const;
@@ -41,9 +46,11 @@ public:
     void updateCameraBSPCollider();
 
     void drawCheckTrace(std::string o1, std::string o2);
-    int  pointHullContent(vec3_t p);
+
+    int pointHullContent(vec3_t p);
 
     bool isFlyMode() const;
+
     void setIsFlyMode(bool isFlyMode);
 };
 

@@ -13,8 +13,9 @@ class EngineSetup {
 public:
     EngineSetup();
 
-    static EngineSetup* getInstance();
-    static EngineSetup* instance;
+    static EngineSetup *getInstance();
+
+    static EngineSetup *instance;
 
     static void setResolution(int, int);
 
@@ -24,21 +25,21 @@ public:
 
     std::string ENGINE_TITLE = "Brakeza3D v0.6";
 
-    std::string cameraNameIdentifier        = "Camera";
+    std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
 
-    Vertex3D right   = Vertex3D(1, 0, 0);
-    Vertex3D up      = Vertex3D(0, 1, 0);
+    Vertex3D right = Vertex3D(1, 0, 0);
+    Vertex3D up = Vertex3D(0, 1, 0);
     Vertex3D forward = Vertex3D(0, 0, 1);
 
-    Vertex3D left     = right.getInverse();
-    Vertex3D down     = up.getInverse();
+    Vertex3D left = right.getInverse();
+    Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
     Vertex3D gravity = Vertex3D(0, 10.0f, 0);
 
     // Screen dimension constants
-    int screenWidth  = 640;
+    int screenWidth = 640;
     int screenHeight = 480;
 
     int RESOLUTION = screenWidth * screenHeight;
@@ -50,8 +51,8 @@ public:
 
     float EPSILON = 0.00001f;
 
-    bool  ENABLE_FOG    = true;
-    float FOG_DISTANCE  = 1000;
+    bool ENABLE_FOG = true;
+    float FOG_DISTANCE = 1000;
     float FOG_INTENSITY = 1;
     float FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
@@ -112,11 +113,11 @@ public:
     bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
-    int NEAR_PLANE   = 0;
-    int FAR_PLANE    = 1;
-    int LEFT_PLANE   = 2;
-    int RIGHT_PLANE  = 3;
-    int TOP_PLANE    = 4;
+    int NEAR_PLANE = 0;
+    int FAR_PLANE = 1;
+    int LEFT_PLANE = 2;
+    int RIGHT_PLANE = 3;
+    int TOP_PLANE = 4;
     int BOTTOM_PLANE = 5;
 
     // CONFIG VALUES
@@ -137,13 +138,13 @@ public:
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
 
-    std::string CFG_MAPS    = "maps.json";
-    std::string CFG_MENU    = "menu.json";
+    std::string CFG_MAPS = "maps.json";
+    std::string CFG_MENU = "menu.json";
     std::string CFG_WEAPONS = "weapons.json";
     std::string CFG_ENEMIES = "enemies.json";
-    std::string CFG_SOUNDS  = "sounds.json";
+    std::string CFG_SOUNDS = "sounds.json";
 
-    bool  SOUND_ENABLED = true;
+    bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
     float SOUND_VOLUME_PLAYER = 75;
     float SOUND_VOLUME_ENVIRONMENT = 75;
@@ -168,19 +169,19 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED     = 4.1f;
-    float TURN_SPEED        = 5.f;
-    float PITCH_SPEED       = 5.f;
-    float STRAFE_SPEED      = 4.1f;
+    float WALKING_SPEED = 4.1f;
+    float TURN_SPEED = 5.f;
+    float PITCH_SPEED = 5.f;
+    float STRAFE_SPEED = 4.1f;
 
     // MOUSE
-    float MOUSE_SENSITIVITY	= 0.250;
+    float MOUSE_SENSITIVITY = 0.250;
 
     // COLLISION SYSTEM
-    bool  BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = true;
     float BULLET_STEP_SIMULATION_MULTIPLIER = 1;
-    bool  BULLET_DEBUG_MODE = false;
-    bool  BULLET_CHECK_ALL_PAIRS = true;
+    bool BULLET_DEBUG_MODE = false;
+    bool BULLET_CHECK_ALL_PAIRS = true;
 
     float PLAYER_SPHERE_RADIUS = 30.f;
 
@@ -193,13 +194,13 @@ public:
     float TESTING_INT4 = 4;
     float TESTING_INT5 = 5;
 
-    bool  TESTING_BOOL = false;
+    bool TESTING_BOOL = false;
 
-    int  LOAD_OF_DETAIL = 1;
+    int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
-    bool  ENABLE_LIGHTMAPPING = true;
-    bool  SHOW_LIGHTMAPPING = false;
+    bool ENABLE_LIGHTMAPPING = true;
+    bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
     float LIGHTMAPPING_INTENSITY = 0.75f;
 
@@ -237,7 +238,7 @@ public:
     int FIRE_WIDTH = 320;
     int FIRE_HEIGHT = 240;
 
-    bool  ENABLE_IA = true;
+    bool ENABLE_IA = true;
     float ZOOM_FOV = 40;
 
     bool WEAPON_AUTOSWICH = false;
@@ -247,8 +248,7 @@ public:
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
-    enum collisionGroups
-    {
+    enum collisionGroups {
         DefaultFilter = 1,
         StaticFilter = 2,
         KinematicFilter = 4,

@@ -4,12 +4,13 @@
 #include <iostream>
 
 class Point2D {
-    public:
+public:
     Point2D();
 
     Point2D(float x, float y);
 
     void consoleInfo(std::string a, bool);
+
     float x, y;
 };
 

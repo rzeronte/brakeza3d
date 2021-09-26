@@ -5,8 +5,7 @@
 #include "../../headers/Game/NPCEnemyPartBody.h"
 #include "../../headers/Misc/Tools.h"
 
-btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world)
-{
+btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
     this->mass = mass;
 
     btTransform trans;
@@ -14,13 +13,13 @@ btRigidBody* NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
 
     Vertex3D pos = this->getPosition();
 
-    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
+    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
 
-    btCollisionShape* shape;
+    btCollisionShape *shape;
 
     if (this->mass == 0) {
         shape = new btBoxShape(btVector3(2.5, 2.5, 2.5));

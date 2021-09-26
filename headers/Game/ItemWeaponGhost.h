@@ -8,13 +8,14 @@
 
 #include "../Physics/Mesh3DGhost.h"
 
-class ItemWeaponGhost: public Mesh3DGhost {
+class ItemWeaponGhost : public Mesh3DGhost {
 
     std::string weaponClassname;  // Related with weapon by classname
 
 public:
     const std::string &getWeaponClassname() const;
-    void  setWeaponClassname(const std::string &weaponClassname);
+
+    void setWeaponClassname(const std::string &weaponClassname);
 };
 
 

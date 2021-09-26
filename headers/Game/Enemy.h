@@ -14,7 +14,7 @@ public:
     std::string classname;  // For BSP classname match
 
     Vertex3D respawnPosition;
-    M3       respawnRotation;
+    M3 respawnRotation;
 
     float startStamina;
     float stamina;
@@ -32,30 +32,39 @@ public:
     Enemy();
 
     void takeDamage(float damageTaken);
+
     bool isTakeHeavyDamage(float damageTaken);
 
     float getDamage() const;
-    void  setDamage(float damage);
+
+    void setDamage(float damage);
 
     float getRange() const;
-    void  setRange(float range);
+
+    void setRange(float range);
 
     float getSpeed() const;
-    void  setSpeed(float speed);
+
+    void setSpeed(float speed);
 
     float getCadence() const;
-    void  setCadence(float cadence);
+
+    void setCadence(float cadence);
 
     const std::string &getClassname() const;
-    void  setClassname(const std::string &classname);
+
+    void setClassname(const std::string &classname);
 
     bool isDead() const;
+
     void setDead(bool dead);
 
     const Vertex3D &getRespawnPosition() const;
+
     void setRespawnPosition(const Vertex3D &respawnPosition);
 
     const M3 &getRespawnRotation() const;
+
     void setRespawnRotation(const M3 &respawnRotation);
 };
 

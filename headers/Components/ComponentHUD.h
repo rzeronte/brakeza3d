@@ -13,15 +13,20 @@
 #include "../GUI/GUIManager.h"
 #include "../2D/TextWriter.h"
 
-class ComponentHUD : public Component{
+class ComponentHUD : public Component {
 public:
     ComponentHUD();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
@@ -33,9 +38,13 @@ public:
     std::vector<TextureAnimation *> faceAnimations;
 
     void loadImages();
+
     void loadStatusFaceImages();
+
     void setStatusFaceAnimation(int id);
+
     void writeText(int x, int y, const char *, bool bold);
+
     void writeTextCenter(const char *, bool bold);
 
     void drawHUD();

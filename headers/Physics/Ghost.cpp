@@ -5,29 +5,27 @@
 #include "Ghost.h"
 #include "../Brakeza3D.h"
 
-Ghost::Ghost()
-{
+Ghost::Ghost() {
     this->ghostObject = new btPairCachingGhostObject();
 }
 
-void Ghost::makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace, Mesh3D* mesh)
-{
+void Ghost::makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace, Mesh3D *mesh) {
     this->ghostObject = new btPairCachingGhostObject();
 
     auto *me = new btConvexHullShape();
 
-    for (int i=0; i < mesh->modelTriangles.size(); i++) {
+    for (int i = 0; i < mesh->modelTriangles.size(); i++) {
         mesh->modelTriangles[i]->updateFullVertexSpaces(cam);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {
-            a = btVector3(mesh->modelTriangles[i]->Ao.x, mesh->modelTriangles[i]->Ao.y, mesh->modelTriangles[i]->Ao.z );
-            b = btVector3(mesh->modelTriangles[i]->Bo.x, mesh->modelTriangles[i]->Bo.y, mesh->modelTriangles[i]->Bo.z );
-            c = btVector3(mesh->modelTriangles[i]->Co.x, mesh->modelTriangles[i]->Co.y, mesh->modelTriangles[i]->Co.z );
+            a = btVector3(mesh->modelTriangles[i]->Ao.x, mesh->modelTriangles[i]->Ao.y, mesh->modelTriangles[i]->Ao.z);
+            b = btVector3(mesh->modelTriangles[i]->Bo.x, mesh->modelTriangles[i]->Bo.y, mesh->modelTriangles[i]->Bo.z);
+            c = btVector3(mesh->modelTriangles[i]->Co.x, mesh->modelTriangles[i]->Co.y, mesh->modelTriangles[i]->Co.z);
         } else {
-            a = btVector3(mesh->modelTriangles[i]->A.x, mesh->modelTriangles[i]->A.y, mesh->modelTriangles[i]->A.z );
-            b = btVector3(mesh->modelTriangles[i]->B.x, mesh->modelTriangles[i]->B.y, mesh->modelTriangles[i]->B.z );
-            c = btVector3(mesh->modelTriangles[i]->C.x, mesh->modelTriangles[i]->C.y, mesh->modelTriangles[i]->C.z );
+            a = btVector3(mesh->modelTriangles[i]->A.x, mesh->modelTriangles[i]->A.y, mesh->modelTriangles[i]->A.z);
+            b = btVector3(mesh->modelTriangles[i]->B.x, mesh->modelTriangles[i]->B.y, mesh->modelTriangles[i]->B.z);
+            c = btVector3(mesh->modelTriangles[i]->C.x, mesh->modelTriangles[i]->C.y, mesh->modelTriangles[i]->C.z);
         }
         me->addPoint(a);
         me->addPoint(b);
@@ -38,25 +36,26 @@ void Ghost::makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool us
     trans.setIdentity();
 
     trans.setOrigin(btVector3(0, 0, 0));
-    btCollisionShape* shape = new btConvexHullShape(*me);
+    btCollisionShape *shape = new btConvexHullShape(*me);
 
     ghostObject->setCollisionShape(shape);
     ghostObject->setWorldTransform(trans);
 
     this->ghostObject->setUserPointer(this);
 
-    world->addCollisionObject(ghostObject, EngineSetup::collisionGroups::BSPHullTrigger, EngineSetup::collisionGroups::CameraTrigger);
+    world->addCollisionObject(ghostObject, EngineSetup::collisionGroups::BSPHullTrigger,
+                              EngineSetup::collisionGroups::CameraTrigger);
 }
 
-bool Ghost::CheckGhost(btPairCachingGhostObject* Ghost)
-{
+bool Ghost::CheckGhost(btPairCachingGhostObject *Ghost) {
     btManifoldArray ManifoldArray;
-    btBroadphasePairArray& PairArray = Ghost->getOverlappingPairCache()->getOverlappingPairArray();
+    btBroadphasePairArray &PairArray = Ghost->getOverlappingPairCache()->getOverlappingPairArray();
 
     for (int i = 0; i < PairArray.size(); i++) {
         ManifoldArray.clear();
 
-        btBroadphasePair* CollisionPair = Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->getPairCache()->findPair(PairArray[i].m_pProxy0, PairArray[i].m_pProxy1);
+        btBroadphasePair *CollisionPair = Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->getPairCache()->findPair(
+                PairArray[i].m_pProxy0, PairArray[i].m_pProxy1);
 
         if (!CollisionPair) {
             continue;
@@ -68,7 +67,7 @@ bool Ghost::CheckGhost(btPairCachingGhostObject* Ghost)
 
         for (int j = 0; j < ManifoldArray.size(); j++) {
             for (int p = 0; p < ManifoldArray[j]->getNumContacts(); p++) {
-                const btManifoldPoint& Point = ManifoldArray[j]->getContactPoint(p);
+                const btManifoldPoint &Point = ManifoldArray[j]->getContactPoint(p);
 
                 if (Point.getDistance() < 0.0f) {
                     return true;
@@ -80,12 +79,10 @@ bool Ghost::CheckGhost(btPairCachingGhostObject* Ghost)
     return false;
 }
 
-bool Ghost::isGhostEnabled()
-{
+bool Ghost::isGhostEnabled() {
     return this->ghostEnabled;
 }
 
-void Ghost::setGhostEnabled(bool enabled)
-{
+void Ghost::setGhostEnabled(bool enabled) {
     this->ghostEnabled = enabled;
 }

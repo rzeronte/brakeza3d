@@ -6,8 +6,7 @@
 #include "../EngineBuffers.h"
 #include "../Brakeza3D.h"
 
-DoorGhost::DoorGhost()
-{
+DoorGhost::DoorGhost() {
     moving = false;
     reverseMoving = false;
     waiting = false;
@@ -15,8 +14,7 @@ DoorGhost::DoorGhost()
     timer = new Timer();
 }
 
-void DoorGhost::integrate()
-{
+void DoorGhost::integrate() {
     if (this->isMoving() || this->isReverseMoving() || this->isWaiting()) {
         this->integrateMoving();
     }
@@ -25,28 +23,28 @@ void DoorGhost::integrate()
     btTransform t = ghostObject->getWorldTransform();
     btVector3 pos = t.getOrigin();
 
-    Vertex3D worldPosition = Vertex3D(pos.getX() , pos.getY() , pos.getZ());
+    Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion  quat = t.getRotation();
+    btQuaternion quat = t.getRotation();
     float angle = quat.getAngle();
     btVector3 axis = quat.getAxis();
 }
 
-void DoorGhost::integrateMoving()
-{
-    if ( this->isWaiting()) {
+void DoorGhost::integrateMoving() {
+    if (this->isWaiting()) {
         // Frame secuence control
         float deltatime = this->timer->getTicks() - this->last_ticks;
         this->last_ticks = this->timer->getTicks();
-        this->timerCurrent += (deltatime/1000.f);
+        this->timerCurrent += (deltatime / 1000.f);
 
         if (this->timerCurrent >= waitTime) {
             timer->stop();
             this->setWaiting(false);
             this->setReverseMoving(true);
-            Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+            Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("openDoor"),
+                                  EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
         }
 
         return;
@@ -80,8 +78,7 @@ void DoorGhost::integrateMoving()
     this->ghostObject->setWorldTransform(t);
 }
 
-Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ)
-{
+Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ) {
     Vertex3D move = Vertex3D::zero();
 
     M3 r = M3::getMatrixRotationForEulerAngles(0, -angleMoving, 0);
@@ -92,15 +89,15 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ)
     }
 
     float maxMovementSize = sizeZ;
-    if (angleMoving == 90 || angleMoving == 270 ){
+    if (angleMoving == 90 || angleMoving == 270) {
         maxMovementSize = sizeZ;
     }
-    if (angleMoving == 0 || angleMoving == 180 ){
+    if (angleMoving == 0 || angleMoving == 180) {
         maxMovementSize = sizeX;
     }
 
     // Si he superado el límite actualizo estado
-    if ( offsetMoving >= abs(maxMovementSize) ) {
+    if (offsetMoving >= abs(maxMovementSize)) {
 
         if (reverseMoving == true) {
             reverseMoving = false;
@@ -116,9 +113,9 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ)
         return move;
     }
 
-    move = right.getScaled( Brakeza3D::get()->getDeltaTime() * this->speedMoving );
+    move = right.getScaled(Brakeza3D::get()->getDeltaTime() * this->speedMoving);
 
-    if ( (offsetMoving + move.getModule()) > abs(maxMovementSize)) {
+    if ((offsetMoving + move.getModule()) > abs(maxMovementSize)) {
         move.setLength(abs(maxMovementSize) - offsetMoving);
     }
 
@@ -127,8 +124,7 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ)
     return move;
 }
 
-Vertex3D DoorGhost::integrateVerticalMovement(float sizeY)
-{
+Vertex3D DoorGhost::integrateVerticalMovement(float sizeY) {
     Vertex3D move;
     Vertex3D down = EngineSetup::getInstance()->down;
 
@@ -136,7 +132,7 @@ Vertex3D DoorGhost::integrateVerticalMovement(float sizeY)
         down = down.getInverse();
     }
 
-    if ( offsetMoving >= abs(sizeY) ) {
+    if (offsetMoving >= abs(sizeY)) {
         if (reverseMoving == true) {
             reverseMoving = false;
         } else {
@@ -150,19 +146,17 @@ Vertex3D DoorGhost::integrateVerticalMovement(float sizeY)
         return move;
     }
 
-    move = down.getScaled(Brakeza3D::get()->getDeltaTime() * this->speedMoving );
-    offsetMoving+=move.getModule();
+    move = down.getScaled(Brakeza3D::get()->getDeltaTime() * this->speedMoving);
+    offsetMoving += move.getModule();
 
     return move;
 }
 
-bool DoorGhost::isMoving() const
-{
+bool DoorGhost::isMoving() const {
     return moving;
 }
 
-void DoorGhost::setMoving(bool m)
-{
+void DoorGhost::setMoving(bool m) {
     DoorGhost::moving = m;
 }
 
@@ -170,39 +164,32 @@ bool DoorGhost::isReverseMoving() const {
     return reverseMoving;
 }
 
-void DoorGhost::setReverseMoving(bool m)
-{
+void DoorGhost::setReverseMoving(bool m) {
     DoorGhost::reverseMoving = m;
 }
 
-void DoorGhost::setWaiting(bool w)
-{
+void DoorGhost::setWaiting(bool w) {
     DoorGhost::waiting = w;
 }
 
-bool DoorGhost::isWaiting() const
-{
+bool DoorGhost::isWaiting() const {
     return waiting;
 }
 
-void DoorGhost::setSpeedMoving(float speed)
-{
+void DoorGhost::setSpeedMoving(float speed) {
     this->speedMoving = speed;
 }
 
 
-float DoorGhost::getSpeedMoving()
-{
+float DoorGhost::getSpeedMoving() {
     return this->speedMoving;
 }
 
-float DoorGhost::getAngleMoving() const
-{
+float DoorGhost::getAngleMoving() const {
     return angleMoving;
 }
 
-void DoorGhost::setAngleMoving(float angle)
-{
+void DoorGhost::setAngleMoving(float angle) {
     DoorGhost::angleMoving = angle;
 }
 

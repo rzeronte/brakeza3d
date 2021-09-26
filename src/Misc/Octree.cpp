@@ -4,14 +4,12 @@
 
 #define MAX_RECURSIVE_DEPTH 1
 
-Octree::Octree(std::vector<Triangle*> &triangles, AABB3D bounds)
-{
+Octree::Octree(std::vector<Triangle *> &triangles, AABB3D bounds) {
     this->root = this->BuildOctree(triangles, bounds, 0);
 }
 
-OctreeNode* Octree::BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds, int recursiveDepth)
-{
-    auto* node = new OctreeNode();
+OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bounds, int recursiveDepth) {
+    auto *node = new OctreeNode();
     node->triangles.resize(0);
     node->bounds = bounds;
 
@@ -30,7 +28,8 @@ OctreeNode* Octree::BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
-    Logging::getInstance()->Log("OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()));
+    Logging::getInstance()->Log(
+            "OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()));
 
     for (int i = 0; i < 8; i++) {
         AABB3D childBounds;
@@ -68,17 +67,16 @@ OctreeNode* Octree::BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds
         childBounds.updateVertices();
 
         node->children[i] = BuildOctree(
-            node->triangles,
-            childBounds,
-            recursiveDepth + 1
+                node->triangles,
+                childBounds,
+                recursiveDepth + 1
         );
     }
 
     return node;
 }
 
-bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds)
-{
+bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds) {
     std::vector<Plane> planes = childBounds.getPlanes();
 
     triangle->updateObjectSpace();
@@ -87,7 +85,7 @@ bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds)
     bool r2 = Plane::isVertex3DClosedByPlanes(triangle->Bo, planes);
     bool r3 = Plane::isVertex3DClosedByPlanes(triangle->Co, planes);
 
-    if (r1 || r2 || r3 ) {
+    if (r1 || r2 || r3) {
         return true;
     }
 

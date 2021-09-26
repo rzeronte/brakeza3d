@@ -31,17 +31,27 @@ public:
     DoorGhost();
 
     void integrate();
+
     void integrateMoving();
+
     Vertex3D integrateHorizontalMovement(float sizeX, float sizeZ);
+
     Vertex3D integrateVerticalMovement(float sizeY);
 
     bool isMoving() const;
+
     void setMoving(bool moving);
+
     bool isReverseMoving() const;
+
     void setReverseMoving(bool moving);
+
     void setWaiting(bool waiting);
+
     bool isWaiting() const;
+
     void setSpeedMoving(float speed);
+
     float getSpeedMoving();
 
     float getAngleMoving() const;

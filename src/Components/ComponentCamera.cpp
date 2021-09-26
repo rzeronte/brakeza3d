@@ -3,8 +3,7 @@
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
 
-ComponentCamera::ComponentCamera()
-{
+ComponentCamera::ComponentCamera() {
     this->camera = new Camera3D();
 }
 
@@ -13,8 +12,7 @@ void ComponentCamera::onStart() {
     std::cout << "ComponentCamera onStart" << std::endl;
 }
 
-void ComponentCamera::preUpdate()
-{
+void ComponentCamera::preUpdate() {
     getCamera()->velocity.vertex1 = getCamera()->getPosition();
     getCamera()->velocity.vertex2 = getCamera()->getPosition();
 }
@@ -24,10 +22,10 @@ void ComponentCamera::onUpdate() {
     // debug hull contents flag
     if (EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS &&
         ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()
-    ) {
+            ) {
         vec3_t p;
-        BSPCollider::Vertex3DToVec3(getCamera()->getPosition(),p);
-        int contents = pointHullContent( p );
+        BSPCollider::Vertex3DToVec3(getCamera()->getPosition(), p);
+        int contents = pointHullContent(p);
         Logging::getInstance()->Log("Camera Hull CONTENT: " + std::to_string(contents));
     }
 
@@ -38,8 +36,7 @@ void ComponentCamera::onUpdate() {
     }
 }
 
-void ComponentCamera::postUpdate()
-{
+void ComponentCamera::postUpdate() {
     if (this->is_fly_mode) {
 
         getCamera()->UpdateRotation();
@@ -47,7 +44,7 @@ void ComponentCamera::postUpdate()
 
         if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
             // BSP teleporting update position
-            BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
+            BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
             if (!bspCollider->getPlayerModel()->teleportingCounter.isEnabled()) {
                 getCamera()->UpdatePositionForVelocity();
             } else {
@@ -62,22 +59,20 @@ void ComponentCamera::postUpdate()
     this->getCamera()->UpdateFrustum();
 }
 
-void ComponentCamera::drawCheckTrace(std::string o1, std::string o2)
-{
+void ComponentCamera::drawCheckTrace(std::string o1, std::string o2) {
     vec3_t mins = {1, 1, 1};
     vec3_t maxs = {1, 1, 1};
 
     ComponentsManager::get()->getComponentBSP()->getBSPCollider()->checkTrace(
-        Brakeza3D::get()->getObjectByLabel(o1)->getPosition(),
-        Brakeza3D::get()->getObjectByLabel(o2)->getPosition(),
-        mins,
-        maxs
+            Brakeza3D::get()->getObjectByLabel(o1)->getPosition(),
+            Brakeza3D::get()->getObjectByLabel(o2)->getPosition(),
+            mins,
+            maxs
     );
 }
 
-void ComponentCamera::updateCameraBSPCollider()
-{
-    BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
+void ComponentCamera::updateCameraBSPCollider() {
+    BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
     model_collision_t *player = bspCollider->getPlayerModel();
 
     // velocity
@@ -92,11 +87,11 @@ void ComponentCamera::updateCameraBSPCollider()
     // do it!
     float deltaTime = Brakeza3D::get()->getDeltaTime();
 
-    bspCollider->SV_CheckVelocity ( player );
-    bspCollider->SV_ClientThink   ( player, deltaTime );
-    bspCollider->SV_AddGravity    ( player, deltaTime );
-    bspCollider->SV_CheckStuck    ( player );
-    bspCollider->SV_WalkMove      ( player, deltaTime );
+    bspCollider->SV_CheckVelocity(player);
+    bspCollider->SV_ClientThink(player, deltaTime);
+    bspCollider->SV_AddGravity(player, deltaTime);
+    bspCollider->SV_CheckStuck(player);
+    bspCollider->SV_WalkMove(player, deltaTime);
 
     //bspCollider->SV_FlyMove(player, deltaTime, NULL);
 
@@ -104,11 +99,10 @@ void ComponentCamera::updateCameraBSPCollider()
     getCamera()->velocity.vertex2 = BSPCollider::QuakeToVertex3D(player->origin);
 }
 
-int ComponentCamera::pointHullContent(vec3_t p)
-{
-    BSPCollider* bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
+int ComponentCamera::pointHullContent(vec3_t p) {
+    BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
 
-    int test = bspCollider->SV_HullPointContents(&bspCollider->getWorldModel()->hulls[0],0, p );
+    int test = bspCollider->SV_HullPointContents(&bspCollider->getWorldModel()->hulls[0], 0, p);
 
     Logging::getInstance()->Log("SV_HullPointContents: " + std::to_string(test));
 
@@ -126,12 +120,10 @@ Camera3D *ComponentCamera::getCamera() const {
     return camera;
 }
 
-bool ComponentCamera::isFlyMode() const
-{
+bool ComponentCamera::isFlyMode() const {
     return is_fly_mode;
 }
 
-void ComponentCamera::setIsFlyMode(bool isFlyMode)
-{
+void ComponentCamera::setIsFlyMode(bool isFlyMode) {
     is_fly_mode = isFlyMode;
 }

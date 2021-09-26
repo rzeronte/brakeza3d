@@ -20,10 +20,15 @@ public:
     ComponentGame();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     std::string currentMapName;
@@ -57,22 +62,29 @@ public:
     void redScreen();
 
     void setKills(int kills);
-    int  getKills() const;
+
+    int getKills() const;
 
     void LoadMapsFromJSON();
+
     void LoadWeaponsJSON();
+
     void LoadEnemiesJSON();
 
     void setFirstMapNameFromJSON();
 
     void createObjects3DFromBSPEntities();
+
     void createMesh3DAndGhostsFromHulls();
 
     void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+
     void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+
     void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
 
     void startThirdPerson();
+
     void startFPS();
 
 };

@@ -13,8 +13,10 @@ public:
     bool debug = false;
 
     Line2D();
+
     Line2D(int, int, int, int);
-    Point2D middlePoint() ;
+
+    Point2D middlePoint();
 
 };
 

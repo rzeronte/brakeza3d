@@ -2,8 +2,9 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 
-Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false), stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives), tookDamage(false), stooped(false)
-{
+Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false),
+                   stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives),
+                   tookDamage(false), stooped(false) {
     this->counterStep = new Counter(0.30);
     this->counterSoundTakeDamage = new Counter(0.30);
     this->is_vehicle = true;
@@ -29,12 +30,12 @@ bool Player::isDead() const {
     return dead;
 }
 
-void Player::setDead(bool dead)
-{
+void Player::setDead(bool dead) {
     if (this->dead != dead && dead) {
-        ComponentsManager::get()->getComponentInput()->setEnabled( false);
+        ComponentsManager::get()->getComponentInput()->setEnabled(false);
         int rndPlayerDead = Tools::random(1, 6);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
+                "playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::DEAD);
@@ -42,8 +43,7 @@ void Player::setDead(bool dead)
     this->dead = dead;
 }
 
-void Player::evalStatusMachine()
-{
+void Player::evalStatusMachine() {
 
     this->counterStep->update();
     this->counterSoundTakeDamage->update();
@@ -56,8 +56,7 @@ void Player::evalStatusMachine()
     }
 }
 
-void Player::takeDamage(float dmg)
-{
+void Player::takeDamage(float dmg) {
     if (dead) return;
 
     this->stamina -= dmg;
@@ -68,12 +67,13 @@ void Player::takeDamage(float dmg)
     if (counterSoundTakeDamage->isFinished()) {
         counterSoundTakeDamage->setEnabled(true);
         int rndPlayerPain = Tools::random(1, 4);
-        Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
+                "playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     if (stamina <= 0) {
         state = PlayerState::DEAD;
-        setDead( true );
+        setDead(true);
         lives--;
 
         if (lives <= 0) {
@@ -83,9 +83,8 @@ void Player::takeDamage(float dmg)
     }
 }
 
-void Player::newGame()
-{
-    ComponentsManager::get()->getComponentInput()->setEnabled( true );
+void Player::newGame() {
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
     setLives(defaultLives);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     EngineSetup::getInstance()->MENU_ACTIVE = false;
@@ -95,36 +94,36 @@ void Player::newGame()
     this->state = PlayerState::LIVE;
 }
 
-void Player::respawn()
-{
+void Player::respawn() {
     ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
-    if ( Tools::isValidVector( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() )) {
+    if (Tools::isValidVector(
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition())) {
         Logging::getInstance()->Log("error position start");
     }
 
-    ComponentsManager::get()->getComponentInput()->setEnabled( true );
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::STAND);
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
     oxygen = 100;
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"),
+                          EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 }
 
-void Player::shoot()
-{
+void Player::shoot() {
     Logging::getInstance()->Log("Player shoot!");
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 
-void Player::jump()
-{
-    if ( !Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSPCollider()->isPlayerOnGround() ) {
+void Player::jump() {
+    if (!Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSPCollider()->isPlayerOnGround()) {
         return;
     }
 
     // sound
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump"),
+                          EngineSetup::SoundChannels::SND_PLAYER, 0);
 
     // apply force
     Vertex3D jump = EngineSetup::getInstance()->JUMP_FORCE;
@@ -132,14 +131,12 @@ void Player::jump()
     Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2 = current + jump;
 }
 
-void Player::reload()
-{
+void Player::reload() {
     Logging::getInstance()->Log("Player reload!");
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->reload();
 }
 
-void Player::respawnNPCS()
-{
+void Player::respawnNPCS() {
     std::vector<Object3D *>::iterator it;
     for (it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); it++) {
         Object3D *object = *(it);
@@ -163,8 +160,7 @@ float Player::getOxygen() const {
     return oxygen;
 }
 
-void Player::setOxygen(float air)
-{
+void Player::setOxygen(float air) {
     if (air < 0) {
         this->takeDamage(this->stamina);
         return;
@@ -172,8 +168,7 @@ void Player::setOxygen(float air)
     Player::oxygen = air;
 }
 
-void Player::getAid(float aid)
-{
+void Player::getAid(float aid) {
     this->stamina = stamina + aid;
 
     if (stamina > EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {

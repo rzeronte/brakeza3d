@@ -8,12 +8,13 @@
 
 #include "../Physics/Mesh3DGhost.h"
 
-class ItemHealthGhost: public Mesh3DGhost{
+class ItemHealthGhost : public Mesh3DGhost {
     float aid;
 public:
     ItemHealthGhost();
 
-    void  setAid(float aid);
+    void setAid(float aid);
+
     float getAid() const;
 };
 

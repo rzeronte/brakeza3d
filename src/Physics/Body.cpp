@@ -6,8 +6,7 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
 
-Body::Body()
-{
+Body::Body() {
     this->m_body = nullptr;
     this->m_collider = nullptr;
     this->shape = nullptr;
@@ -18,13 +17,11 @@ void Body::integrate() {
 
 }
 
-void Body::setBodyEnabled(bool state)
-{
+void Body::setBodyEnabled(bool state) {
     this->bodyEnabled = state;
 }
 
-void Body::setBoxShapeSize(Vertex3D size)
-{
+void Body::setBoxShapeSize(Vertex3D size) {
     this->boxShapeSize = size;
 }
 
@@ -32,18 +29,17 @@ Vertex3D Body::getBoxShapeSize() const {
     return this->boxShapeSize;
 }
 
-void Body::applyImpulse(Vertex3D impulse) const
-{
+void Body::applyImpulse(Vertex3D impulse) const {
 
     this->m_body->clearForces();
 
-    if (!Tools::isValidVector(impulse) ) {
+    if (!Tools::isValidVector(impulse)) {
         return;
     }
 
-    btVector3 i( impulse.x, impulse.y, impulse.z );
+    btVector3 i(impulse.x, impulse.y, impulse.z);
 
     this->m_body->activate(true);
-    this->m_body->applyCentralImpulse( i );
+    this->m_body->applyCentralImpulse(i);
 }
 

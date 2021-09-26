@@ -11,12 +11,14 @@
 #include "../Components/Camera3D.h"
 #include "../Misc/Tools.h"
 
-class GUI_Menu : public GUI  {
+class GUI_Menu : public GUI {
 public:
 
     virtual ~GUI_Menu() {}
 
-    virtual void draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_camera_info, bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
+    virtual void
+    draw(bool &done, bool &show_window_inspector, bool &show_window_lights_inspector, bool &show_camera_info,
+         bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
 
         bool show_about_window = false;
 
@@ -93,7 +95,8 @@ public:
                 ImGui::Checkbox("onUpdate Objects", &EngineSetup::getInstance()->EXECUTE_GAMEOBJECTS_ONUPDATE);
 
                 ImGui::Separator();
-                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::getInstance()->HORIZONTAL_FOV, range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
+                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::getInstance()->HORIZONTAL_FOV,
+                                  range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
 
                 if (ImGui::IsItemEdited()) {
                     cam->horizontal_fov = (float) EngineSetup::getInstance()->HORIZONTAL_FOV;
@@ -120,12 +123,20 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Frustum Clipping", &EngineSetup::getInstance()->ENABLE_CLIPPING);
                 if (EngineSetup::getInstance()->ENABLE_CLIPPING) {
-                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE, range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance, &range_max_frustum_clipping_distance, "%f", 1.0f);
-                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::getInstance()->EPSILON, range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance, &range_max_frustum_clipping_distance, "%f", 1.0f);
+                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE,
+                                      range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,
+                                      &range_max_frustum_clipping_distance, "%f", 1.0f);
+                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::getInstance()->EPSILON,
+                                      range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,
+                                      &range_max_frustum_clipping_distance, "%f", 1.0f);
                 }
 
                 ImGui::Separator();
-                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float, &EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE, range_frustum_fardistance_sensibility, &range_min_frustum_fardistance, &range_max_frustum_fardistance, "%f", 1.0f);
+                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float,
+                                  &EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE,
+                                  range_frustum_fardistance_sensibility, &range_min_frustum_fardistance,
+                                  &range_max_frustum_fardistance, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
                     cam->farDistance = (float) EngineSetup::getInstance()->FRUSTUM_FARPLANE_DISTANCE;
                     cam->frustum->setup(
@@ -144,20 +155,25 @@ public:
                 ImGui::Separator();
 
                 ImGui::Checkbox("Enable FOG", &EngineSetup::getInstance()->ENABLE_FOG);
-                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float*)&EngineSetup::getInstance()->FOG_IMGUI_COLOR, misc_flags);
+                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float *) &EngineSetup::getInstance()->FOG_IMGUI_COLOR,
+                                                    misc_flags);
 
                 if (changedFOGcolor) {
                     EngineSetup::getInstance()->FOG_COLOR = Tools::createRGB(
-                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.x*256,
-                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.y*256,
-                        EngineSetup::getInstance()->FOG_IMGUI_COLOR.z*256
+                            EngineSetup::getInstance()->FOG_IMGUI_COLOR.x * 256,
+                            EngineSetup::getInstance()->FOG_IMGUI_COLOR.y * 256,
+                            EngineSetup::getInstance()->FOG_IMGUI_COLOR.z * 256
                     );
                 }
 
                 ImGui::Separator();
 
-                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_INTENSITY, range_sensibility_fog_intensity,  &range_min_fog_intensity, &range_max_fog_intensity, "%f", 1.0f);
-                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float,  &EngineSetup::getInstance()->FOG_DISTANCE, range_sensibility_fog_distance,  &range_min_fog_distance, &range_max_fog_distance, "%f", 1.0f);
+                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float, &EngineSetup::getInstance()->FOG_INTENSITY,
+                                  range_sensibility_fog_intensity, &range_min_fog_intensity, &range_max_fog_intensity,
+                                  "%f", 1.0f);
+                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float, &EngineSetup::getInstance()->FOG_DISTANCE,
+                                  range_sensibility_fog_distance, &range_min_fog_distance, &range_max_fog_distance,
+                                  "%f", 1.0f);
 
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::getInstance()->TRIANGLE_MODE_PIXELS);
@@ -187,7 +203,8 @@ public:
                     ImGui::Separator();
                     ImGui::Checkbox("Lightmaps", &EngineSetup::getInstance()->ENABLE_LIGHTMAPPING);
                     if (EngineSetup::getInstance()->ENABLE_LIGHTMAPPING) {
-                        ImGui::Checkbox("Lightmap Bilinear", &EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION);
+                        ImGui::Checkbox("Lightmap Bilinear",
+                                        &EngineSetup::getInstance()->LIGHTMAPS_BILINEAR_INTERPOLATION);
                         ImGui::Checkbox("Show Lightmaps", &EngineSetup::getInstance()->SHOW_LIGHTMAPPING);
                     }
                 }
@@ -205,29 +222,43 @@ public:
                 ImGui::Checkbox("Global enable", &EngineSetup::getInstance()->SOUND_ENABLED);
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                     if (!EngineSetup::getInstance()->SOUND_ENABLED) {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_MENU, 0 );
-                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, 0 );
-                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, 0 );
+                        Mix_Volume(EngineSetup::SoundChannels::SND_MENU, 0);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, 0);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
                         Mix_VolumeMusic(0);
                     } else {
                         Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU);
-                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
-                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER,
+                                   EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,
+                                   EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
                         Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC);
                     }
                 }
 
-                ImGui::DragScalar("Music vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                ImGui::DragScalar("Music vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MUSIC,
+                                  range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) { Mix_VolumeMusic(EngineSetup::getInstance()->SOUND_VOLUME_MUSIC); }
 
-                ImGui::DragScalar("Menu vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MENU, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU); }
+                ImGui::DragScalar("Menu vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_MENU,
+                                  range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::getInstance()->SOUND_VOLUME_MENU);
+                }
 
-                ImGui::DragScalar("Player vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_PLAYER, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER); }
+                ImGui::DragScalar("Player vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_PLAYER,
+                                  range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::getInstance()->SOUND_VOLUME_PLAYER);
+                }
 
-                ImGui::DragScalar("Environment vol.", ImGuiDataType_Float, &EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT); }
+                ImGui::DragScalar("Environment vol.", ImGuiDataType_Float,
+                                  &EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT, range_sensibility_volume,
+                                  &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,
+                               EngineSetup::getInstance()->SOUND_VOLUME_ENVIRONMENT);
+                }
 
                 ImGui::EndMenu();
             }
@@ -235,13 +266,17 @@ public:
             if (ImGui::BeginMenu("Physics")) {
                 ImGui::Checkbox("StepSimulation", &EngineSetup::getInstance()->BULLET_STEP_SIMULATION);
                 if (EngineSetup::getInstance()->BULLET_STEP_SIMULATION) {
-                    ImGui::DragScalar("StepSimulation Multiplier", ImGuiDataType_Float, &EngineSetup::getInstance()->BULLET_STEP_SIMULATION_MULTIPLIER, range_stepsimulation_multiplier_sensibility, &range_min_stepsimulation_multiplier, &range_max_stepsimulation_multiplier, "%f", 1.0f);
+                    ImGui::DragScalar("StepSimulation Multiplier", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->BULLET_STEP_SIMULATION_MULTIPLIER,
+                                      range_stepsimulation_multiplier_sensibility, &range_min_stepsimulation_multiplier,
+                                      &range_max_stepsimulation_multiplier, "%f", 1.0f);
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Debug Mode", &EngineSetup::getInstance()->BULLET_DEBUG_MODE);
                 ImGui::Checkbox("Check All Pairs", &EngineSetup::getInstance()->BULLET_CHECK_ALL_PAIRS);
                 ImGui::Separator();
-                ImGui::DragScalar("Radius", ImGuiDataType_Float,  &EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS, range_sensibility,  &range_min_radius, &range_max_radius, "%f", 1.0f);
+                ImGui::DragScalar("Radius", ImGuiDataType_Float, &EngineSetup::getInstance()->PLAYER_SPHERE_RADIUS,
+                                  range_sensibility, &range_min_radius, &range_max_radius, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 
@@ -266,8 +301,14 @@ public:
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Checkbox("Draw Lights Axis", &EngineSetup::getInstance()->DRAW_LIGHTPOINTS_AXIS);
                 ImGui::Separator();
-                ImGui::DragScalar("Lightmap Blend Intensity", ImGuiDataType_Float, &EngineSetup::getInstance()->LIGHTMAPPING_BLEND_INTENSITY, range_sensibility_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
-                ImGui::DragScalar("Lightmap Intensity", ImGuiDataType_Float, &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY, range_sensibility_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("Lightmap Blend Intensity", ImGuiDataType_Float,
+                                  &EngineSetup::getInstance()->LIGHTMAPPING_BLEND_INTENSITY,
+                                  range_sensibility_lightmap_intensity, &range_min_lightmap_intensity,
+                                  &range_max_lightmap_intensity, "%f", 1.0f);
+                ImGui::DragScalar("Lightmap Intensity", ImGuiDataType_Float,
+                                  &EngineSetup::getInstance()->LIGHTMAPPING_INTENSITY,
+                                  range_sensibility_lightmap_intensity, &range_min_lightmap_intensity,
+                                  &range_max_lightmap_intensity, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 
@@ -276,24 +317,44 @@ public:
                 if (ImGui::BeginMenu("Liquid Shader")) {
                     ImGui::Checkbox("Animated textures", &EngineSetup::getInstance()->TRIANGLE_TEXTURES_ANIMATED);
                     //if (EngineSetup::get()->TRIANGLE_TEXTURES_ANIMATED) {
-                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SPEED, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_SCALE, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,  &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,  &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LAVA_CLOSENESS, range_sensibility_lava,
+                                      &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float, &EngineSetup::getInstance()->LAVA_SPEED,
+                                      range_sensibility_lava, &range_sensibility_lava_min, &range_sensibility_lava_max,
+                                      "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float, &EngineSetup::getInstance()->LAVA_SCALE,
+                                      range_sensibility_lava, &range_sensibility_lava_min, &range_sensibility_lava_max,
+                                      "%f", 1.0f);
+                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LAVA_INTENSITY, range_sensibility_lava,
+                                      &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
                     //}
                     ImGui::EndMenu();
                 }
                 if (ImGui::BeginMenu("Lightning")) {
-                    ImGui::DragScalar("Generations", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Probability branch", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,  &EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,  &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("Generations", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,
+                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION,
+                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
+                                      &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("Probability branch", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH,
+                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
+                                      &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,
+                                      &EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,
+                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::EndMenu();
                 }
 
                 if (ImGui::BeginMenu("Fire Effect")) {
-                    ImGui::DragScalar("Divisor1", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR1, 1,  &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
-                    ImGui::DragScalar("Divisor2", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR2, 1,  &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
+                    ImGui::DragScalar("Divisor1", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR1, 1,
+                                      &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
+                    ImGui::DragScalar("Divisor2", ImGuiDataType_Float, &EngineSetup::getInstance()->FIRE_DIVISOR2, 1,
+                                      &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
                     ImGui::EndMenu();
                 }
 
@@ -348,12 +409,18 @@ public:
             }
 
             if (ImGui::BeginMenu("Developers")) {
-                ImGui::DragScalar("TESTING", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING, range_test_sensibility,  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT1, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT2, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT3, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT4, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT5", ImGuiDataType_Float,  &EngineSetup::getInstance()->TESTING_INT5, 1,  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING,
+                                  range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING_INT1, 1,
+                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING_INT2, 1,
+                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING_INT3, 1,
+                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING_INT4, 1,
+                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT5", ImGuiDataType_Float, &EngineSetup::getInstance()->TESTING_INT5, 1,
+                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
                 ImGui::Checkbox("Boolean TEST", &EngineSetup::getInstance()->TESTING_BOOL);
                 ImGui::EndMenu();
             }
@@ -363,7 +430,7 @@ public:
 
         if (show_about_window) ImGui::OpenPopup("New");
 
-        if (ImGui::BeginPopup("New"))  {
+        if (ImGui::BeginPopup("New")) {
             ImGui::Text("Brakeza v.0.6.");
             ImGui::Text("Eduardo Rodríguez <eduardo@brakeza.com>");
             ImGui::Text("https://brakeza.com");

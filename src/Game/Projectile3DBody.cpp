@@ -9,7 +9,7 @@ bool Projectile3DBody::isFromEnemy() {
     return fromEnemy;
 };
 
-void Projectile3DBody::setFromEnemy(bool isFromEnemy){
+void Projectile3DBody::setFromEnemy(bool isFromEnemy) {
     fromEnemy = isFromEnemy;
 }
 
@@ -30,8 +30,9 @@ void Projectile3DBody::setDamageRadius(float damageRadius) {
 }
 
 
-btRigidBody* Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy)
-{
+btRigidBody *
+Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world,
+                                          bool applyCameraImpulse, float forceImpulse, float accuracy) {
     this->mass = mass;
 
     btTransform trans;
@@ -42,14 +43,15 @@ btRigidBody* Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size
     Vertex3D dir;
     dir = cam->getRotation().getTranspose() * AxisForward();
 
-    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
+    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
 
-    btVector3 btSize; size.saveToBtVector3(&btSize);
-    btCollisionShape* shape = new btBoxShape(btSize);
+    btVector3 btSize;
+    size.saveToBtVector3(&btSize);
+    btCollisionShape *shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
 
@@ -59,7 +61,7 @@ btRigidBody* Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
     if (applyCameraImpulse) {
-        dir    = dir.getScaled(forceImpulse);
+        dir = dir.getScaled(forceImpulse);
         dir.x += Tools::random(-100 + accuracy, 100 - accuracy);
         dir.y += Tools::random(-100 + accuracy, 100 - accuracy);
         dir.z += Tools::random(-100 + accuracy, 100 - accuracy);

@@ -24,31 +24,32 @@
 
 class Brakeza3D {
 private:
-    std::vector<Object3D*> sceneObjects;
+    std::vector<Object3D *> sceneObjects;
 
-    ComponentsManager   *componentsManager;
+    ComponentsManager *componentsManager;
 
-    ComponentCamera     *componentCamera;
+    ComponentCamera *componentCamera;
     ComponentCollisions *componentCollisions;
-    ComponentWeapons    *componentWeapons;
-    ComponentMenu       *componentMenu;
-    ComponentInput      *componentInput;
-    ComponentWindow     *componentWindow;
-    ComponentBSP        *componentBSP;
-    ComponentSound      *componentSound;
-    ComponentRender     *componentRender;
-    ComponentHUD        *componentHUD;
-    ComponentGUI        *componentGUI;
-    ComponentGame       *componentGame;
-    ComponentGameInput  *componentGameInput;
+    ComponentWeapons *componentWeapons;
+    ComponentMenu *componentMenu;
+    ComponentInput *componentInput;
+    ComponentWindow *componentWindow;
+    ComponentBSP *componentBSP;
+    ComponentSound *componentSound;
+    ComponentRender *componentRender;
+    ComponentHUD *componentHUD;
+    ComponentGUI *componentGUI;
+    ComponentGame *componentGame;
+    ComponentGameInput *componentGameInput;
 
     Timer engineTimer;
 
 public:
     Brakeza3D();
 
-    static Brakeza3D* get();
-    static Brakeza3D* instance;
+    static Brakeza3D *get();
+
+    static Brakeza3D *instance;
 
     bool finish = false;
 
@@ -59,27 +60,36 @@ public:
 
     float currentFadePercent = 1;
 
-    void                    start();
-    void                    addObject3D(Object3D *obj, const std::string& label);
-    std::vector<Object3D*> &getSceneObjects();
-    Object3D*               getObjectByLabel(const std::string& label);
+    void start();
 
-    Timer* getTimer();
-    void   updateTimer();
-    float  getDeltaTime() const;
+    void addObject3D(Object3D *obj, const std::string &label);
+
+    std::vector<Object3D *> &getSceneObjects();
+
+    Object3D *getObjectByLabel(const std::string &label);
+
+    Timer *getTimer();
+
+    void updateTimer();
+
+    float getDeltaTime() const;
 
     void onStartComponents();
+
     void preUpdateComponents();
+
     void onUpdateComponents();
+
     void postUpdateComponents();
+
     void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish);
+
     void onEndComponents();
 
     void mainLoop();
 
     ComponentsManager *getComponentsManager() const;
 };
-
 
 
 #endif //BRAKEDA3D_BRAKEZA3D_H

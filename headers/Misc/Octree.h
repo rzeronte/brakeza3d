@@ -9,14 +9,13 @@
 #include "../Render/AABB3D.h"
 #include "../Objects/Triangle3D.h"
 
-struct OctreeNode
-{
+struct OctreeNode {
     AABB3D bounds;
-    OctreeNode* children[8];
-    std::vector<Triangle*> triangles;
+    OctreeNode *children[8];
+    std::vector<Triangle *> triangles;
 
     bool isLeaf() {
-        for (int i = 0; i < 8 ; i++) {
+        for (int i = 0; i < 8; i++) {
             if (this->children[i] != NULL) {
                 return false;
             }
@@ -30,9 +29,10 @@ class Octree {
 public:
     OctreeNode *root;
 
-    Octree(std::vector<Triangle*> &triangles, AABB3D bounds);
+    Octree(std::vector<Triangle *> &triangles, AABB3D bounds);
 
-    OctreeNode* BuildOctree(std::vector<Triangle*> &triangles, AABB3D bounds, int recursiveDepth);
+    OctreeNode *BuildOctree(std::vector<Triangle *> &triangles, AABB3D bounds, int recursiveDepth);
+
     bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
 
 };

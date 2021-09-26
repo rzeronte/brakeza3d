@@ -5,73 +5,64 @@
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
-WeaponType::WeaponType(): available(true)
-{
+WeaponType::WeaponType() : available(true) {
 }
 
-WeaponType::WeaponType(std::string label)
-{
+WeaponType::WeaponType(std::string label) {
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
     weaponAnimations = new Mesh3DAnimatedCollection();
-    weaponAnimations->setFollowCamera( true );
+    weaponAnimations->setFollowCamera(true);
     weaponAnimations->setLabel("weapon_" + label);
-    weaponAnimations->setEnabled( false );
+    weaponAnimations->setEnabled(false);
     weaponAnimations->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
-    Brakeza3D::get()->addObject3D( weaponAnimations, weaponAnimations->getLabel() );
+    Brakeza3D::get()->addObject3D(weaponAnimations, weaponAnimations->getLabel());
 
     model = new Mesh3D();
 
     counterCadence = new Counter();
 }
 
-void WeaponType::addAnimation(std::string label, std::string model, float scale, bool stopEnd)
-{
+void WeaponType::addAnimation(std::string label, std::string model, float scale, bool stopEnd) {
     std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + model;
 
-    weaponAnimations->addAnimation( label, model, scale, stopEnd );
+    weaponAnimations->addAnimation(label, model, scale, stopEnd);
     weaponAnimations[this->numAnimations].rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
     this->numAnimations++;
 }
 
-void WeaponType::onUpdate()
-{
+void WeaponType::onUpdate() {
     if (getCurrentWeaponAnimation()->isAnimationEnds()) {
-        this->setWeaponAnimation( EngineSetup::WeaponsActions::IDLE);
-        this->setFiring( false );
+        this->setWeaponAnimation(EngineSetup::WeaponsActions::IDLE);
+        this->setFiring(false);
     }
 }
 
-void WeaponType::setWeaponAnimation(int animationIndex)
-{
+void WeaponType::setWeaponAnimation(int animationIndex) {
     this->currentAnimationIndex = animationIndex;
 
-    this->weaponAnimations->setAnimation( animationIndex );
+    this->weaponAnimations->setAnimation(animationIndex);
 
-    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM) {
         Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
     }
 }
 
-Mesh3DAnimated * WeaponType::getCurrentWeaponAnimation()
-{
+Mesh3DAnimated *WeaponType::getCurrentWeaponAnimation() {
     return this->weaponAnimations->getCurrentMesh3DAnimated();
 }
 
-void WeaponType::setSpeed(float speed)
-{
+void WeaponType::setSpeed(float speed) {
     this->speed = speed;
 }
 
 
-float WeaponType::getDamage()
-{
+float WeaponType::getDamage() {
     return this->damage;
 }
 
-void WeaponType::setDamage(float damage)
-{
+void WeaponType::setDamage(float damage) {
     this->damage = damage;
 }
 
@@ -95,8 +86,7 @@ int WeaponType::getSpeed() const {
     return speed;
 }
 
-void WeaponType::loadIconHUD(std::string file)
-{
+void WeaponType::loadIconHUD(std::string file) {
     std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + file;
 
     Logging::getInstance()->Log("Loading weapon icon:" + path);
@@ -108,14 +98,12 @@ void WeaponType::loadIconHUD(std::string file)
     }
 }
 
-bool WeaponType::isFiring() const
-{
+bool WeaponType::isFiring() const {
     return firing;
 }
 
-void WeaponType::setFiring(bool firing)
-{
-    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM)  {
+void WeaponType::setFiring(bool firing) {
+    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM) {
         Logging::getInstance()->Log("setFiring: " + std::to_string((int) firing));
     }
 
@@ -195,35 +183,37 @@ Mesh3D *WeaponType::getModel() {
     return model;
 }
 
-void WeaponType::shoot()
-{
+void WeaponType::shoot() {
     Logging::getInstance()->Log("WeaponType shoot!");
 
     if (isFiring()) return;
 
-    this->setFiring( true );
+    this->setFiring(true);
 
-    this->setWeaponAnimation( EngineSetup::WeaponsActions::FIRE);
+    this->setWeaponAnimation(EngineSetup::WeaponsActions::FIRE);
 
-    ComponentWeapons* weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
+    ComponentWeapons *weaponsManager = Brakeza3D::get()->getComponentsManager()->getComponentWeapons();
 
     if (getAmmoType()->getAmount() <= 0) return;
 
     for (int i = 0; i < weaponsManager->getCurrentWeaponType()->getDispersion(); i++) {
 
         auto *projectile = new Projectile3DBody();
-        projectile->copyFrom(weaponsManager->getCurrentWeaponType()->getAmmoType()->getModelProjectile() );
-        projectile->setFromEnemy( false );
-        projectile->setDamage( weaponsManager->getCurrentWeaponType()->getDamage() );
-        projectile->setDamageRadius( weaponsManager->getCurrentWeaponType()->getDamageRadius() );
-        projectile->setPosition( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition() );
+        projectile->copyFrom(weaponsManager->getCurrentWeaponType()->getAmmoType()->getModelProjectile());
+        projectile->setFromEnemy(false);
+        projectile->setDamage(weaponsManager->getCurrentWeaponType()->getDamage());
+        projectile->setDamageRadius(weaponsManager->getCurrentWeaponType()->getDamageRadius());
+        projectile->setPosition(
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition());
 
-        Vertex3D dir = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() * EngineSetup::getInstance()->forward;
-        projectile->setPosition( projectile->getPosition() + dir.getScaled(10));
+        Vertex3D dir =
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() *
+                EngineSetup::getInstance()->forward;
+        projectile->setPosition(projectile->getPosition() + dir.getScaled(10));
         projectile->getPosition().x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->getPosition().y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5 ;
+        projectile->getPosition().y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->getPosition().z += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
-        projectile->setLabel("projectile_" + weaponsManager->getCurrentWeaponType()->getAmmoType()->getName() );
+        projectile->setLabel("projectile_" + weaponsManager->getCurrentWeaponType()->getAmmoType()->getName());
         projectile->setEnabled(true);
         projectile->makeProjectileRigidBody(
                 1,
@@ -235,7 +225,8 @@ void WeaponType::shoot()
                 weaponsManager->getCurrentWeaponType()->getAccuracy()
         );
 
-        projectile->setRotation( Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
+        projectile->setRotation(
+                Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose());
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 
@@ -243,26 +234,25 @@ void WeaponType::shoot()
     weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(currentWeaponAmmo - 1);
 
     // Sound projectile
-    const std::string soundLabel = weaponSounds[ this->getCurrentWeaponAnimation()->indexCurrentAnimation];
+    const std::string soundLabel = weaponSounds[this->getCurrentWeaponAnimation()->indexCurrentAnimation];
 
     Tools::playMixedSound(
-            EngineBuffers::getInstance()->soundPackage->getSoundByLabel( soundLabel ),
+            EngineBuffers::getInstance()->soundPackage->getSoundByLabel(soundLabel),
             EngineSetup::SoundChannels::SND_WEAPON,
             0
     );
 }
 
-void WeaponType::reload()
-{
+void WeaponType::reload() {
     if (getAmmoType()->getReloads() > 0) {
-        getAmmoType()->setAmount( getAmmoType()->getReloadAmount() );
-        getAmmoType()->setReloads( getAmmoType()->getReloads() - 1);
+        getAmmoType()->setAmount(getAmmoType()->getReloadAmount());
+        getAmmoType()->setReloads(getAmmoType()->getReloads() - 1);
 
-        this->setWeaponAnimation( EngineSetup::WeaponsActions::RELOAD );
+        this->setWeaponAnimation(EngineSetup::WeaponsActions::RELOAD);
 
-        const std::string soundLabel = weaponSounds[ EngineSetup::WeaponsActions::RELOAD ];
+        const std::string soundLabel = weaponSounds[EngineSetup::WeaponsActions::RELOAD];
         Tools::playMixedSound(
-                EngineBuffers::getInstance()->soundPackage->getSoundByLabel( soundLabel ),
+                EngineBuffers::getInstance()->soundPackage->getSoundByLabel(soundLabel),
                 EngineSetup::SoundChannels::SND_WEAPON,
                 0
         );

@@ -11,57 +11,50 @@
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
 
-Triangle::Triangle()
-{
+Triangle::Triangle() {
     texture = NULL;
     lightmap = NULL;
     parent = NULL;
 }
 
-Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
-{
+Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
     this->A = A;
     this->B = B;
     this->C = C;
 
     this->parent = parent;
 
-    texture  = NULL;
+    texture = NULL;
     lightmap = NULL;
 
     this->lod = 1;
 }
 
-void Triangle::updateObjectSpace()
-{
+void Triangle::updateObjectSpace() {
     Transforms::objectSpace(Ao, A, parent);
     Transforms::objectSpace(Bo, B, parent);
     Transforms::objectSpace(Co, C, parent);
 }
 
-void Triangle::updateCameraSpace(Camera3D *cam)
-{
+void Triangle::updateCameraSpace(Camera3D *cam) {
     Transforms::cameraSpace(Ac, Ao, cam);
     Transforms::cameraSpace(Bc, Bo, cam);
     Transforms::cameraSpace(Cc, Co, cam);
 }
 
-void Triangle::updateNDCSpace(Camera3D *cam)
-{
+void Triangle::updateNDCSpace(Camera3D *cam) {
     An = Transforms::NDCSpace(Ac, cam);
     Bn = Transforms::NDCSpace(Bc, cam);
     Cn = Transforms::NDCSpace(Cc, cam);
 }
 
-void Triangle::updateScreenSpace()
-{
+void Triangle::updateScreenSpace() {
     Transforms::screenSpace(As, An);
     Transforms::screenSpace(Bs, Bn);
     Transforms::screenSpace(Cs, Cn);
 }
 
-void Triangle::updateFullVertexSpaces(Camera3D *cam)
-{
+void Triangle::updateFullVertexSpaces(Camera3D *cam) {
     this->updateObjectSpace();
     this->updateCameraSpace(cam);
     this->updateNDCSpace(cam);
@@ -69,8 +62,7 @@ void Triangle::updateFullVertexSpaces(Camera3D *cam)
     this->updateNormal();
 }
 
-void Triangle::updateUVCache()
-{
+void Triangle::updateUVCache() {
     if (getLightmap() != NULL) {
         getLightmapCoordinatesFromUV(light_u1, light_v1, A.u, A.v);
         getLightmapCoordinatesFromUV(light_u2, light_v2, B.u, B.v);
@@ -90,7 +82,7 @@ void Triangle::updateUVCache()
         tex_v3 = C.v;
 
         if (parent->isDecal()) {
-            Decal *decalParent = dynamic_cast<Decal*> (parent);
+            Decal *decalParent = dynamic_cast<Decal *> (parent);
 
             float decal_As = decalParent->getSCoord(Ao);
             float decal_At = decalParent->getTCoord(Ao);
@@ -138,24 +130,23 @@ void Triangle::updateUVCache()
         tex_v2_Bc_z = tex_v2 / Bc.z;
         tex_v3_Cc_z = tex_v3 / Cc.z;
 
-        persp_correct_Az = 1/Ac.z;
-        persp_correct_Bz = 1/Bc.z;
-        persp_correct_Cz = 1/Cc.z;
+        persp_correct_Az = 1 / Ac.z;
+        persp_correct_Bz = 1 / Bc.z;
+        persp_correct_Cz = 1 / Cc.z;
     }
 }
 
-void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v)
-{
+void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) {
     float cu = tex_u;
     float cv = tex_v;
 
     float intpart;
     if (
-        modf( getLightmap()->minu[0], &intpart) == 0 &&
-        modf( getLightmap()->maxv[0], &intpart) == 0 &&
-        modf( getLightmap()->minu[1], &intpart) == 0 &&
-        modf( getLightmap()->maxv[1], &intpart) == 0
-    ) {
+            modf(getLightmap()->minu[0], &intpart) == 0 &&
+            modf(getLightmap()->maxv[0], &intpart) == 0 &&
+            modf(getLightmap()->minu[1], &intpart) == 0 &&
+            modf(getLightmap()->maxv[1], &intpart) == 0
+            ) {
         cu = cu / getLightmap()->extents[1];
         cv = cv / getLightmap()->extents[0];
     } else {
@@ -170,8 +161,7 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
     lv = cv;
 }
 
-void Triangle::updateTextureAnimated()
-{
+void Triangle::updateTextureAnimated() {
     if (this->getTexture() == NULL) return;
     if (!this->getTexture()->animated) return;
 
@@ -192,20 +182,18 @@ void Triangle::updateTextureAnimated()
             this->timerTextureAnimatedFrameControl = 0;
         }
 
-        if ( currentBSPTextureAnimatedFrame >= maxFrames ) {
+        if (currentBSPTextureAnimatedFrame >= maxFrames) {
             currentBSPTextureAnimatedFrame = 0;
         }
     }
 }
 
-void Triangle::updateNormal()
-{
+void Triangle::updateNormal() {
 
     this->normal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();
 }
 
-Vertex3D Triangle::getNormal()
-{
+Vertex3D Triangle::getNormal() {
     return this->normal;
 }
 
@@ -227,20 +215,26 @@ Vertex3D Triangle::getNormal()
     this->scanVerticesForShadowMapping(lp);
 }*/
 
-void Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP)
-{
-    Vertex3D output_vertices[10] ; int num_outvertices   = 0;
-    Vertex3D input_vertices[10]  ; int num_inputvertices = 0;
+void
+Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent,
+                   std::vector<Triangle *> &triangles, bool isBSP) {
+    Vertex3D output_vertices[10];
+    int num_outvertices = 0;
+    Vertex3D input_vertices[10];
+    int num_inputvertices = 0;
 
-    input_vertices[0] = this->Ao; num_inputvertices++;
-    input_vertices[1] = this->Bo; num_inputvertices++;
-    input_vertices[2] = this->Co; num_inputvertices++;
+    input_vertices[0] = this->Ao;
+    num_inputvertices++;
+    input_vertices[1] = this->Bo;
+    num_inputvertices++;
+    input_vertices[2] = this->Co;
+    num_inputvertices++;
 
     // clip against planes
-    for (int i = startPlaneIndex ; i <= endPlaneIndex ; i++) {
+    for (int i = startPlaneIndex; i <= endPlaneIndex; i++) {
         Maths::ClippingPolygon(input_vertices, num_inputvertices, output_vertices, num_outvertices, i, planes);
 
-        memcpy (&input_vertices, &output_vertices, sizeof(output_vertices));
+        memcpy(&input_vertices, &output_vertices, sizeof(output_vertices));
         /*for (int j = 0; j < num_outvertices; j++) { input_vertices[j] = output_vertices[j]; }*/
 
         num_inputvertices = num_outvertices;
@@ -264,7 +258,7 @@ void Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < triangles.size(); i++) {
-            triangles[i]->lightmapIndexPattern  = this->lightmapIndexPattern;
+            triangles[i]->lightmapIndexPattern = this->lightmapIndexPattern;
             triangles[i]->lightmapIndexPattern2 = this->lightmapIndexPattern2;
             triangles[i]->lightmapIndexPattern3 = this->lightmapIndexPattern3;
             triangles[i]->lightmapIndexPattern4 = this->lightmapIndexPattern4;
@@ -276,16 +270,14 @@ void Triangle::clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int e
     }
 }
 
-void Triangle::updateBoundingBox()
-{
+void Triangle::updateBoundingBox() {
     maxX = std::max(As.x, std::max(Bs.x, Cs.x));
     minX = std::min(As.x, std::min(Bs.x, Cs.x));
     maxY = std::max(As.y, std::max(Bs.y, Cs.y));
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
 }
 
-void Triangle::updateLightmapFrame()
-{
+void Triangle::updateLightmapFrame() {
     if (getLightmap() == NULL) return;
 
     int style;
@@ -294,8 +286,8 @@ void Triangle::updateLightmapFrame()
     for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
         style = typelight[nl];
         float timeIncrement = Brakeza3D::get()->deltaTime / 100.0f;
-        if ( style > 10) continue;
-        switch(nl) {
+        if (style > 10) continue;
+        switch (nl) {
             default:
             case 0:
                 lightmapIndexPattern += timeIncrement;
@@ -329,42 +321,38 @@ void Triangle::updateLightmapFrame()
     }
 }
 
-void Triangle::updateFullArea()
-{
+void Triangle::updateFullArea() {
     this->fullArea = Maths::orient2d(Bs, Cs, Point2D((int) As.x, (int) As.y));
     this->reciprocalFullArea = 1 / this->fullArea;
 }
 
 // (v0 - P) . N
-bool Triangle::isBackFaceCulling(Vertex3D *position)
-{
+bool Triangle::isBackFaceCulling(Vertex3D *position) {
     // Camera-triangle vector
     Vertex3D v = this->Ao - *position;
 
     return (v * this->getNormal()) >= 0;
 }
 
-Vertex3D Triangle::getCenterOfMass()
-{
+Vertex3D Triangle::getCenterOfMass() {
     Vertex3D At = this->Ao;
     Vertex3D Bt = this->Bo;
     Vertex3D Ct = this->Co;
 
     return Vertex3D(
-        (At.x+Bt.x+Ct.x)/3,
-        (At.y+Bt.y+Ct.y)/3,
-        (At.z+Bt.z+Ct.z)/3
+            (At.x + Bt.x + Ct.x) / 3,
+            (At.y + Bt.y + Ct.y) / 3,
+            (At.z + Bt.z + Ct.z) / 3
     );
 }
 
-void Triangle::drawNormal(Camera3D *cam, Uint32 color)
-{
+void Triangle::drawNormal(Camera3D *cam, Uint32 color) {
     Vertex3D normal = this->getNormal();
     Vertex3D origin = this->getCenterOfMass();
 
     Vertex3D destiny = origin + normal.getNormalize().getScaled(5);
-    Vector3D v = Vector3D( origin, destiny);
-    Drawable::drawVector3D( v, cam, color );
+    Vector3D v = Vector3D(origin, destiny);
+    Drawable::drawVector3D(v, cam, color);
 }
 
 /*void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
@@ -456,22 +444,21 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color)
     }
 }*/
 
-void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v, bool bilinear)
-{
+void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v, bool bilinear) {
     float ignorablePartInt;
 
     // Check for inversion U
     if (!std::signbit(tex_u)) {
-        tex_u = modf(tex_u , &ignorablePartInt);
+        tex_u = modf(tex_u, &ignorablePartInt);
     } else {
-        tex_u = 1 - modf(abs(tex_u) , &ignorablePartInt);
+        tex_u = 1 - modf(abs(tex_u), &ignorablePartInt);
     }
 
     // Check for inversion V
     if (!std::signbit(tex_v)) {
-        tex_v = modf(tex_v , &ignorablePartInt);
+        tex_v = modf(tex_v, &ignorablePartInt);
     } else {
-        tex_v = 1 - modf(abs(tex_v) , &ignorablePartInt);
+        tex_v = 1 - modf(abs(tex_v), &ignorablePartInt);
     }
 
     if (bilinear) {
@@ -484,34 +471,35 @@ void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v,
     pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
 }
 
-void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green, const Uint8 &blue, const Uint8 &alpha)
-{
+void
+Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green,
+                               const Uint8 &blue, const Uint8 &alpha) {
     EngineSetup *engineSetup = EngineSetup::getInstance();
 
     float intpart;
     // Check for inversion U
     if (!std::signbit(light_u)) {
-        light_u = modf(light_u , &intpart);
+        light_u = modf(light_u, &intpart);
     } else {
-        light_u = 1 - modf(abs(light_u) , &intpart);
+        light_u = 1 - modf(abs(light_u), &intpart);
     }
 
     // Check for inversion V
     if (!std::signbit(light_v)) {
-        light_v = modf(light_v , &intpart);
+        light_v = modf(light_v, &intpart);
     } else {
-        light_v = 1 - modf(abs(light_v) , &intpart);
+        light_v = 1 - modf(abs(light_v), &intpart);
     }
 
     Uint32 lightmap_color = 0;
-    Uint8  lightmap_intensity = 0;
+    Uint8 lightmap_intensity = 0;
     char c = 1;
 
     for (int nl = 0; nl < lightmap->numLightmaps; nl++) {
         int indexPattern;
         int style = typelight[nl];
         if (style > 11) continue;
-        switch(nl) {
+        switch (nl) {
             case 0:
                 lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
                 indexPattern = (int) lightmapIndexPattern;
@@ -542,8 +530,8 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
     lightmap_intensity *= engineSetup->LIGHTMAPPING_INTENSITY; // RGB son iguales en un gris
 
     pixelColor = (Uint32) Tools::createRGB(
-            (int) (red * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
-            (int) (green * engineSetup->LIGHTMAPPING_BLEND_INTENSITY ),
+            (int) (red * engineSetup->LIGHTMAPPING_BLEND_INTENSITY),
+            (int) (green * engineSetup->LIGHTMAPPING_BLEND_INTENSITY),
             (int) (blue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY)
     );
 
@@ -554,7 +542,7 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
         SDL_GetRGBA(lightmap_color, texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
 
         pixelColor = (Uint32) Tools::createRGB(
-                std::min(int((pred) * lightmap_intensity ), (int) c),
+                std::min(int((pred) * lightmap_intensity), (int) c),
                 std::min(int((pgreen) * lightmap_intensity), (int) c),
                 std::min(int((pblue) * lightmap_intensity), (int) c)
         );
@@ -600,23 +588,19 @@ void Triangle::processPixelLightmap(Uint32 &pixelColor, float light_u, float lig
     }
 }*/
 
-Texture *Triangle::getTexture() const
-{
+Texture *Triangle::getTexture() const {
     return texture;
 }
 
-void Triangle::setTexture(Texture *t)
-{
+void Triangle::setTexture(Texture *t) {
     texture = t;
 }
 
-Texture *Triangle::getLightmap() const
-{
+Texture *Triangle::getLightmap() const {
     return lightmap;
 }
 
-void Triangle::setLightmap(Texture *t)
-{
+void Triangle::setLightmap(Texture *t) {
     lightmap = t;
 }
 
@@ -625,27 +609,23 @@ void Triangle::setLightmap(Texture *t)
     this->lightPoints = lightPoints;
 }*/
 
-void Triangle::setClipped(bool value)
-{
+void Triangle::setClipped(bool value) {
     this->clipped = value;
 }
 
-bool Triangle::isClipped()
-{
+bool Triangle::isClipped() {
     return this->clipped;
 }
 
-bool Triangle::isPointInside(Vertex3D v)
-{
+bool Triangle::isPointInside(Vertex3D v) {
     return Maths::PointInTriangle(v, Ao, Bo, Co);
 }
 
-int Triangle::processLOD()
-{
+int Triangle::processLOD() {
     if (getTexture() == NULL) return 0;
 
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
-        float area_screen  = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
+        float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
         float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
 
         float r = area_texture / area_screen;
@@ -656,9 +636,9 @@ int Triangle::processLOD()
         // Range LOD selection
         if (triangle_lod < 10) {
             clamped_lod = 1;
-        } else if (triangle_lod >= 10 && triangle_lod  < 15) {
+        } else if (triangle_lod >= 10 && triangle_lod < 15) {
             clamped_lod = 2;
-        } else if (triangle_lod >= 15 && triangle_lod  < 25) {
+        } else if (triangle_lod >= 15 && triangle_lod < 25) {
             clamped_lod = 4;
         } else if (triangle_lod > 25) {
             clamped_lod = 8;
@@ -670,17 +650,16 @@ int Triangle::processLOD()
     return EngineSetup::getInstance()->LOAD_OF_DETAIL;
 }
 
-bool Triangle::testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex)
-{
+bool Triangle::testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex) {
     // clip against planes
     Vector3D edges[3];
     edges[0] = Vector3D(Ao, Bo);
     edges[1] = Vector3D(Bo, Co);
     edges[2] = Vector3D(Co, Ao);
 
-    for (int i = startPlaneIndex ; i <= endPlaneIndex ; i++) {
-        for (int e = 0 ; e < 3 ; e++) {
-            if ( Maths::isVector3DClippingPlane(planes[i], edges[e]) > 1 ) {
+    for (int i = startPlaneIndex; i <= endPlaneIndex; i++) {
+        for (int e = 0; e < 3; e++) {
+            if (Maths::isVector3DClippingPlane(planes[i], edges[e]) > 1) {
                 return true;
             }
         }
@@ -697,7 +676,6 @@ void Triangle::setId(int id) {
     Triangle::id = id;
 }
 
-Plane Triangle::plane()
-{
+Plane Triangle::plane() {
     return Plane(this->Ao, this->Bo, this->Co);
 }

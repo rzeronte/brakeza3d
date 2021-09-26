@@ -5,16 +5,18 @@
 #include "../../headers/Objects/Object3D.h"
 #include "../../headers/Misc/Counter.h"
 
-typedef enum {LIVE, DEAD, GAMEOVER} PlayerState;
+typedef enum {
+    LIVE, DEAD, GAMEOVER
+} PlayerState;
 
 class Player {
 private:
 
     float stamina;
-    bool  dead;
-    bool  stooped;
-    int   lives;
-    int   defaultLives;
+    bool dead;
+    bool stooped;
+    int lives;
+    int defaultLives;
     float oxygen;
 
     bool is_vehicle;
@@ -30,32 +32,42 @@ public:
     Player();
 
     void newGame();
+
     void respawn();
 
     void shoot();
+
     void reload();
+
     void jump();
 
     void takeDamage(float dmg);
+
     void getAid(float aid);
 
     int getStamina() const;
+
     void setStamina(int stamina);
 
     int getLives() const;
+
     void setLives(int lives);
 
     bool isDead() const;
+
     void setDead(bool dead);
 
     void evalStatusMachine();
+
     void respawnNPCS();
 
     bool isCrouch() const;
+
     void setCrouch(bool stooped);
 
     float getOxygen() const;
-    void  setOxygen(float air);
+
+    void setOxygen(float air);
 
     bool isVehicle() const;
 

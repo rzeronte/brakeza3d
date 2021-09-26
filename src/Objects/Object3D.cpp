@@ -6,8 +6,7 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/ComponentsManager.h"
 
-Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false)
-{
+Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
     followCamera = false;
 
 }
@@ -92,23 +91,19 @@ bool Object3D::isRemoved() const {
     return removed;
 }
 
-void Object3D::setRemoved(bool removed)
-{
+void Object3D::setRemoved(bool removed) {
     Object3D::removed = removed;
 }
 
-bool Object3D::isDecal() const
-{
+bool Object3D::isDecal() const {
     return decal;
 }
 
-void Object3D::setDecal(bool decal)
-{
+void Object3D::setDecal(bool decal) {
     Object3D::decal = decal;
 }
 
-void Object3D::setDrawOffset(Vertex3D offset)
-{
+void Object3D::setDrawOffset(Vertex3D offset) {
     this->drawOffset = offset;
 }
 
@@ -132,10 +127,9 @@ void Object3D::setFollowCamera(bool followCamera) {
     Object3D::followCamera = followCamera;
 }
 
-void Object3D::onUpdate()
-{
-    if ( this->isFollowCamera() ) {
-        this->setPosition( ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() );
-        this->setRotation( ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() );
+void Object3D::onUpdate() {
+    if (this->isFollowCamera()) {
+        this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+        this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
 }

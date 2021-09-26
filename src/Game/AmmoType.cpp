@@ -4,8 +4,7 @@
 
 #include "../../headers/Game/AmmoType.h"
 
-AmmoType::AmmoType()
-{
+AmmoType::AmmoType() {
     this->amount = 0;
     this->reloads = 0;
     this->reload_amount = 0;
@@ -36,7 +35,7 @@ void AmmoType::setClassname(const std::string &classname) {
     AmmoType::classname = classname;
 }
 
-Mesh3DAnimated* AmmoType::getModelProjectile() {
+Mesh3DAnimated *AmmoType::getModelProjectile() {
     return &model_projectile;
 }
 

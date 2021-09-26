@@ -4,13 +4,11 @@
 #include "../../headers/Objects/SpriteDirectional3D.h"
 #include "../../headers/ComponentsManager.h"
 
-Decal::Decal() : sprite(new Sprite3D())
-{
+Decal::Decal() : sprite(new Sprite3D()) {
     setDecal(true);
 }
 
-void Decal::setupCube(float sizeX, float sizeY, float sizeZ)
-{
+void Decal::setupCube(float sizeX, float sizeY, float sizeZ) {
     this->w = sizeX;
     this->h = sizeY;
 
@@ -18,19 +16,16 @@ void Decal::setupCube(float sizeX, float sizeY, float sizeZ)
     cube->setDecal(true);
 }
 
-float Decal::getTCoord(Vertex3D Q)
-{
-    return (float) ( (T * (Q-P) / w ) + 0.5f );
+float Decal::getTCoord(Vertex3D Q) {
+    return (float) ((T * (Q - P) / w) + 0.5f);
 }
 
-float Decal::getSCoord(Vertex3D Q)
-{
-    return (float) (B * (Q-P) / h ) + 0.5f;
+float Decal::getSCoord(Vertex3D Q) {
+    return (float) (B * (Q - P) / h) + 0.5f;
 }
 
-void Decal::setupFromAxis()
-{
-    sprite->setPosition( getPosition() );
+void Decal::setupFromAxis() {
+    sprite->setPosition(getPosition());
 
     P = getPosition();
     N = AxisForward();
@@ -38,14 +33,12 @@ void Decal::setupFromAxis()
     B = AxisRight();
 }
 
-void Decal::setDimensions(float w, float h)
-{
+void Decal::setDimensions(float w, float h) {
     this->w = w;
     this->h = h;
 }
 
-void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
-{
+void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
     this->modelTriangles.clear();
 
     setupFromAxis();
@@ -54,16 +47,16 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
     int clipped = 0;
     int out = 0;
 
-    for (int i = 0; i < triangles.size() ; i++ ) {
+    for (int i = 0; i < triangles.size(); i++) {
         if (!triangles[i]->isBSP) continue;
 
-        if (triangles[i]->parent->isDecal())  {
+        if (triangles[i]->parent->isDecal()) {
             alreadyDecal++;
             continue;
         }
 
-        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D*> (triangles[i]->parent);
-        auto *sprite = dynamic_cast<Sprite3D*> (triangles[i]->parent);
+        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D *> (triangles[i]->parent);
+        auto *sprite = dynamic_cast<Sprite3D *> (triangles[i]->parent);
 
         // Decals ignoran sprites
         if (spriteDirectional != NULL || sprite != NULL) {
@@ -75,7 +68,7 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
             continue;
         }
 
-        if (triangles[i]->testForClipping( cube->planes, 0,5 )) {
+        if (triangles[i]->testForClipping(cube->planes, 0, 5)) {
             triangles[i]->clipping(
                     camera,
                     cube->planes,
@@ -92,7 +85,7 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
         if (!cube->isPointInside(triangles[i]->Ao) &&
             !cube->isPointInside(triangles[i]->Bo) &&
             !cube->isPointInside(triangles[i]->Co)
-        ) {
+                ) {
             out++;
             continue;
         }
@@ -105,12 +98,12 @@ void Decal::getTriangles(std::vector<Triangle*> &triangles, Camera3D *camera)
         t->B = Transforms::objectToLocal(t->Bo, this);
         t->C = Transforms::objectToLocal(t->Co, this);
 
-        modelTriangles.emplace_back( t );
+        modelTriangles.emplace_back(t);
     }
 
     // Fix separation for avoid Z-fighting
     float OffsetSeparation = 0.25;
-    for (int i = 0; i < modelTriangles.size() ; i++) {
+    for (int i = 0; i < modelTriangles.size(); i++) {
         modelTriangles[i]->A = modelTriangles[i]->A - N.getScaled(OffsetSeparation);
         modelTriangles[i]->B = modelTriangles[i]->B - N.getScaled(OffsetSeparation);
         modelTriangles[i]->C = modelTriangles[i]->C - N.getScaled(OffsetSeparation);
@@ -125,8 +118,7 @@ void Decal::setSprite(Sprite3D *sprite) {
     Decal::sprite = sprite;
 }
 
-void Decal::onUpdate()
-{
+void Decal::onUpdate() {
     if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
         this->cube->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }

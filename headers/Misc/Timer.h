@@ -7,16 +7,18 @@
 #include <SDL2/SDL_timer.h>
 
 //The application time based timer
-class Timer
-{
+class Timer {
 public:
     //Initializes variables
     Timer();
 
     //The various clock actions
     void start();
+
     void stop();
+
     void pause();
+
     void unpause();
 
     //Gets the timer's time
@@ -24,6 +26,7 @@ public:
 
     //Checks the status of the timer
     bool isStarted();
+
     bool isPaused();
 
 private:

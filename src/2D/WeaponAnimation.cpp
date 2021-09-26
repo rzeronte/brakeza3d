@@ -5,15 +5,15 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
 
-WeaponAnimation::WeaponAnimation()
-{
+WeaponAnimation::WeaponAnimation() {
     timer = new Timer();
     timer->start();
     currentFrame = 0;
 }
 
-void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd, int nextAnimationIndex, bool looping, bool projectile)
-{
+void
+WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd,
+                       int nextAnimationIndex, bool looping, bool projectile) {
     this->baseFile = file;
     this->fps = fps;
     this->numFrames = num_frames;
@@ -27,39 +27,34 @@ void WeaponAnimation::setup(std::string file, int num_frames, int fps, int offse
     this->projectile = projectile;
 }
 
-void WeaponAnimation::loadImages()
-{
-    for (int i = 0; i < this->getNumFrames() ; i++) {
+void WeaponAnimation::loadImages() {
+    for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->baseFile + "/" + std::to_string(i) + ".png";
         Logging::getInstance()->Log("Loading weapon image: " + file);
         this->frames[i] = IMG_Load(file.c_str());
     }
 }
 
-int WeaponAnimation::getNumFrames() const
-{
+int WeaponAnimation::getNumFrames() const {
     return numFrames;
 }
 
-SDL_Surface *WeaponAnimation::getCurrentSurface()
-{
+SDL_Surface *WeaponAnimation::getCurrentSurface() {
     return this->frames[currentFrame];
 }
 
-void WeaponAnimation::resetAnimation()
-{
+void WeaponAnimation::resetAnimation() {
     this->currentFrame = 0;
     this->timerCurrent = 0;
 }
 
-void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY)
-{
+void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffsetY) {
     SDL_Rect destPos;
 
     if (this->right) {
         destPos.x = EngineSetup::getInstance()->screenWidth - this->getCurrentSurface()->w;
     } else {
-        destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w/2);
+        destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w / 2);
     }
     destPos.x += globalOffsetX;
     destPos.x += this->offsetX;
@@ -67,18 +62,18 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     destPos.y = EngineSetup::getInstance()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
 
     if (EngineSetup::getInstance()->DRAW_HUD) {
-        destPos.y -= Brakeza3D::get()->getComponentsManager()->getComponentHUD()->HUDTextures->getTextureByLabel("hud")->getSurface(1)->h;
+        destPos.y -= Brakeza3D::get()->getComponentsManager()->getComponentHUD()->HUDTextures->getTextureByLabel(
+                "hud")->getSurface(1)->h;
     }
 
     SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
 }
 
-void WeaponAnimation::updateFrame()
-{
+void WeaponAnimation::updateFrame() {
     // Frame secuence control
     float deltatime = this->timer->getTicks() - this->last_ticks;
     this->last_ticks = this->timer->getTicks();
-    timerCurrent += (deltatime/1000.f);
+    timerCurrent += (deltatime / 1000.f);
 
     float step = (float) 1 / this->fps;
 
@@ -87,7 +82,7 @@ void WeaponAnimation::updateFrame()
         currentFrame++;
 
         if (currentFrame >= this->getNumFrames()) {
-            if ( isStopEnd() ) {
+            if (isStopEnd()) {
                 currentFrame--;
                 return;
             }

@@ -5,10 +5,9 @@
 #include "../headers/Misc/cJSON.h"
 #include "../headers/Render/Logging.h"
 
-EngineBuffers* EngineBuffers::instance = 0;
+EngineBuffers *EngineBuffers::instance = 0;
 
-EngineBuffers* EngineBuffers::getInstance()
-{
+EngineBuffers *EngineBuffers::getInstance() {
     if (instance == 0) {
         instance = new EngineBuffers();
     }
@@ -16,8 +15,7 @@ EngineBuffers* EngineBuffers::getInstance()
     return instance;
 }
 
-EngineBuffers::EngineBuffers()
-{
+EngineBuffers::EngineBuffers() {
     EngineSetup *setup = EngineSetup::getInstance();
 
     sizeBuffers = setup->RESOLUTION;
@@ -31,9 +29,9 @@ EngineBuffers::EngineBuffers()
     int w = EngineSetup::getInstance()->screenWidth;
 
     for (int y = 0; y < h; y++) {
-        for(int x = 0; x < w; x++) {
+        for (int x = 0; x < w; x++) {
             int index = y * w + x;
-            HUDbuffer[ index ] = 0;
+            HUDbuffer[index] = 0;
         }
     }
     soundPackage = new SoundPackage();
@@ -71,48 +69,39 @@ EngineBuffers::EngineBuffers()
     gibsTemplate->addAnimation(setup->SPRITES_FOLDER + "gibs/gibs3", 8, 25);
 }
 
-void EngineBuffers::clearDepthBuffer()
-{
+void EngineBuffers::clearDepthBuffer() {
     std::fill(depthBuffer, depthBuffer + sizeBuffers, 10000);
 }
 
-float EngineBuffers::getDepthBuffer(int x, int y)
-{
-    return depthBuffer[ y * this->widthVideoBuffer + x];
+float EngineBuffers::getDepthBuffer(int x, int y) {
+    return depthBuffer[y * this->widthVideoBuffer + x];
 }
 
-float EngineBuffers::getDepthBuffer(int i)
-{
+float EngineBuffers::getDepthBuffer(int i) {
     return depthBuffer[i];
 }
 
-void EngineBuffers::setDepthBuffer(int x, int y, float value)
-{
-    depthBuffer[ y * this->widthVideoBuffer + x ] = value;
+void EngineBuffers::setDepthBuffer(int x, int y, float value) {
+    depthBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setDepthBuffer(const int i, const float value)
-{
+void EngineBuffers::setDepthBuffer(const int i, const float value) {
     depthBuffer[i] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value)
-{
-    videoBuffer[ y * this->widthVideoBuffer + x ] = value;
+void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value) {
+    videoBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int i, Uint32 value)
-{
-    videoBuffer[ i ] = value;
+void EngineBuffers::setVideoBuffer(const int i, Uint32 value) {
+    videoBuffer[i] = value;
 }
 
-float EngineBuffers::getVideoBuffer(int x, int y)
-{
-    return videoBuffer[ y * this->widthVideoBuffer + x ];
+float EngineBuffers::getVideoBuffer(int x, int y) {
+    return videoBuffer[y * this->widthVideoBuffer + x];
 }
 
-void EngineBuffers::clearVideoBuffer()
-{
+void EngineBuffers::clearVideoBuffer() {
     if (EngineSetup::getInstance()->ENABLE_FOG) {
         std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::getInstance()->FOG_COLOR);
         return;
@@ -121,14 +110,12 @@ void EngineBuffers::clearVideoBuffer()
     std::fill(videoBuffer, videoBuffer + sizeBuffers, NULL);
 }
 
-void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface)
-{
+void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
     // buffer -> surface
-    memcpy (&surface->pixels, &videoBuffer, sizeof(surface->pixels));
+    memcpy(&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
-void EngineBuffers::makeFireColors()
-{
+void EngineBuffers::makeFireColors() {
     // Populate pallete
     for (int i = 0; i < 111 / 3; i++) {
         fireColors[i] = Tools::createRGB(
@@ -137,30 +124,28 @@ void EngineBuffers::makeFireColors()
                 rgbs[i * 3 + 2]
         );
 
-        videoBuffer[100 * 320 +i] = fireColors[i];
+        videoBuffer[100 * 320 + i] = fireColors[i];
     }
 }
 
-void EngineBuffers::fireShaderSetup()
-{
+void EngineBuffers::fireShaderSetup() {
     // Set whole screen to 0 (color: 0x07,0x07,0x07)
-    int FIRE_WIDTH  = EngineSetup::getInstance()->FIRE_WIDTH;
+    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
     int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
 
     int firePixelsBufferSize = FIRE_HEIGHT * FIRE_WIDTH;
-    for(int i = 0 ; i < firePixelsBufferSize ; i++) {
+    for (int i = 0; i < firePixelsBufferSize; i++) {
         this->firePixelsBuffer[i] = 0;
     }
 
     // Set bottom line to 37 (color white: 0xFF,0xFF,0xFF)
-    for(int i = 0; i < FIRE_WIDTH; i++) {
-        this->firePixelsBuffer[ (FIRE_HEIGHT-1) * FIRE_WIDTH + i] = 36;
+    for (int i = 0; i < FIRE_WIDTH; i++) {
+        this->firePixelsBuffer[(FIRE_HEIGHT - 1) * FIRE_WIDTH + i] = 36;
     }
 }
 
-NPCEnemyBody* EngineBuffers::getEnemyTemplateForClassname(std::string classname)
-{
-    for ( NPCEnemyBody *e : this->enemyTemplates) {
+NPCEnemyBody *EngineBuffers::getEnemyTemplateForClassname(std::string classname) {
+    for (NPCEnemyBody *e : this->enemyTemplates) {
         if (e->getClassname() == classname) {
             return e;
         }

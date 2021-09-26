@@ -8,15 +8,14 @@
 #include "GUI.h"
 #include "../../imgui/imgui.h"
 
-class GUI_Weapons : public GUI  {
-    public:
+class GUI_Weapons : public GUI {
+public:
     bool show = false;
     int misc_flags = ImGuiColorEditFlags_NoOptions;
 
     virtual ~GUI_Weapons() {}
 
-    virtual void draw()
-    {
+    virtual void draw() {
         /*ImGuiWindowFlags window_flags = 0;
 
         if (show) {

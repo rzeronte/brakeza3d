@@ -6,58 +6,59 @@
 #include "../../headers/Brakeza3D.h"
 #include "../../headers/EngineBuffers.h"
 
-NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25)
-{
+NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25) {
     this->counterIA = new Counter();
-    this->counterIA->setStep( stepIA );
+    this->counterIA->setStep(stepIA);
 
     this->counterInjuried = new Counter();
-    this->counterInjuried->setStep( 0.25 );
+    this->counterInjuried->setStep(0.25);
 }
 
-void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
-{
-    switch(state) {
+void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Camera3D *cam,
+                                     btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D *> &gameObjects) {
+    switch (state) {
         case EnemyState::ENEMY_STATE_ATTACK:
             this->syncPathFindingRotation();
 
-            if  (this->counterCadence->isFinished() ) {
+            if (this->counterCadence->isFinished()) {
                 this->counterCadence->setEnabled(true);
                 this->shoot(cam, dynamicsWorld, gameObjects);
             }
 
-            if ( raycastlength >= this->getRange() ) {
-                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
+            if (raycastlength >= this->getRange()) {
+                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
                 this->state = EnemyState::ENEMY_STATE_STOP;
             }
             break;
         case EnemyState::ENEMY_STATE_FOLLOW:
 
-            this->doFollowPathfinding( raycastResult );
+            this->doFollowPathfinding(raycastResult);
 
             if (!raycastResult) {
-                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_IDLE );
+                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_IDLE);
                 this->state = EnemyState::ENEMY_STATE_STOP;
             } else {
-                if ( raycastlength <= this->getRange() ) {
+                if (raycastlength <= this->getRange()) {
                     this->state = EnemyState::ENEMY_STATE_ATTACK;
-                    this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_FIRE );
+                    this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_FIRE);
                 }
             }
             break;
         case EnemyState::ENEMY_STATE_INJURIED:
-            this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_INJURIED );
-            if  (this->counterInjuried->isFinished() ) {
+            this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_INJURIED);
+            if (this->counterInjuried->isFinished()) {
                 this->state = EnemyState::ENEMY_STATE_STOP;
-                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK );
+                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
 
             }
             break;
         case EnemyState::ENEMY_STATE_STOP:
-            if ( raycastResult ) {
+            if (raycastResult) {
                 this->state = EnemyState::ENEMY_STATE_FOLLOW;
-                this->setAnimation( EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
-                Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+                Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
+                        "enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT,
+                                      0);
             }
             break;
         case EnemyState::ENEMY_STATE_DIE:
@@ -67,8 +68,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
     }
 }
 
-void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
-{
+void NPCEnemyBody::doFollowPathfinding(bool raycastResult) {
     if (!raycastResult) return;
 
     if (this->points.size() > 0) {
@@ -85,8 +85,8 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
         }
 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
-        this->setRotation( newRot );
-        this->setPosition( pos );
+        this->setRotation(newRot);
+        this->setPosition(pos);
         btVector3 dest;
         pos.saveToBtVector3(&dest);
 
@@ -96,8 +96,7 @@ void NPCEnemyBody::doFollowPathfinding( bool raycastResult )
     }
 }
 
-void NPCEnemyBody::syncPathFindingRotation()
-{
+void NPCEnemyBody::syncPathFindingRotation() {
     if (this->points.size() > 0) {
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
@@ -106,17 +105,17 @@ void NPCEnemyBody::syncPathFindingRotation()
     }
 }
 
-void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D*> &gameObjects)
-{
+void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D *> &gameObjects) {
     return;
 
     Projectile3DBody *projectile = new Projectile3DBody();
-    projectile->setFromEnemy( true );
-    projectile->setPosition( this->getPosition() );
+    projectile->setFromEnemy(true);
+    projectile->setPosition(this->getPosition());
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
-    Vector3D dir = Vector3D( this->getPosition(),  cam->getPosition());
-    projectile->makeProjectileRigidBodyToPlayer(1, Vertex3D(0.5, 0.5, 0.5), dir.getComponent().getNormalize(), dynamicsWorld, 700);
+    Vector3D dir = Vector3D(this->getPosition(), cam->getPosition());
+    projectile->makeProjectileRigidBodyToPlayer(1, Vertex3D(0.5, 0.5, 0.5), dir.getComponent().getNormalize(),
+                                                dynamicsWorld, 700);
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
     if (this->points.size() > 0) {
@@ -126,21 +125,20 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
         projectile->setRotation(newRot.getTranspose());
     }
 
-    Tools::playMixedSound( EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"), EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),
+                          EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
 }
 
-void NPCEnemyBody::updateCounters()
-{
+void NPCEnemyBody::updateCounters() {
     this->counterCadence->update();
     this->counterIA->update();
     this->counterInjuried->update();
 }
 
-void NPCEnemyBody::respawn()
-{
+void NPCEnemyBody::respawn() {
     this->stamina = this->startStamina;
-    this->dead    = false;
+    this->dead = false;
 
     btMotionState *mMotionState = this->getRigidBody()->getMotionState();
 
@@ -148,26 +146,26 @@ void NPCEnemyBody::respawn()
     trans.setIdentity();
 
     Vertex3D pos = this->getRespawnPosition();
-    this->setPosition( this->getRespawnPosition() );
+    this->setPosition(this->getRespawnPosition());
 
-    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
-    mMotionState->setWorldTransform( trans );
-    this->getRigidBody()->setWorldTransform( trans );
-    this->setRotation( this->getRespawnRotation() );
+    mMotionState->setWorldTransform(trans);
+    this->getRigidBody()->setWorldTransform(trans);
+    this->setRotation(this->getRespawnRotation());
 }
 
-btRigidBody* NPCEnemyBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world)
-{
+btRigidBody *
+NPCEnemyBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
     this->mass = mass;
 
     btTransform trans;
     trans.setIdentity();
 
-    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
     btVector3 localInertia(0, 0, 0);
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
-    btCollisionShape* shape = new btBoxShape(btVector3( dimensions.x, dimensions.y, dimensions.z) );
+    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);

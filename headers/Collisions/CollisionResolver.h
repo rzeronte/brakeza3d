@@ -22,28 +22,43 @@ public:
 
     int type;
 
-    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Triangle *> &visibleTriangles);
+    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap,
+                      std::vector<Triangle *> &visibleTriangles);
+
     virtual ~CollisionResolver();
 
     int getTypeCollision();
 
     bool isSomeCamera();
+
     bool isSomeNPCEnemy();
+
     bool isSomeNPCEnemyPart();
+
     bool isSomeProjectile();
+
     bool isSomeMesh3D();
+
     bool isSomeMesh3DFuncDoor();
+
     bool isSomeMesh3DFuncButton();
+
     bool isSomeMesh3DTriggerMultiple();
+
     bool isSomeMesh3DTriggerTeleport();
+
     bool isSomeItemWeapon();
+
     bool isSomeItemHealth();
+
     bool isSomeItemAmmo();
 
     bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
+
     void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId);
 
-    int  getType() const;
+    int getType() const;
+
     void setType(int type);
 };
 

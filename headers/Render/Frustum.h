@@ -64,15 +64,24 @@ public:
 
 public:
     Frustum();
-    Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar);
-    void setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear, float farDist, float Hfar, float Wfar);
+
+    Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
+            float Wnear, float farDist, float Hfar, float Wfar);
+
+    void
+    setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear,
+          float farDist, float Hfar, float Wfar);
 
     void updateCenters();
+
     void updatePlanes();
+
     void updatePoints();
+
     void updateBounds();
 
     bool isPointInFrustum(Vertex3D &v);
+
     bool isAABBInFrustum(AABB3D *aabb);
 
     void consoleInfo();

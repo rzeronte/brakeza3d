@@ -17,21 +17,23 @@ public:
     Player *player;
 
     std::vector<Object3D *> *gameObjects;
-    btDiscreteDynamicsWorld* dynamicsWorld;
+    btDiscreteDynamicsWorld *dynamicsWorld;
     ComponentWeapons *weaponManager;
 
-    CollisionResolverBetweenProjectileAndPlayer(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap, std::vector<Object3D *> *gameObjects, btDiscreteDynamicsWorld* dynamicsWorld, ComponentWeapons *weaponManager, std::vector<Triangle *> &visibleTriangles, Player *player) : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles)
-    {
+    CollisionResolverBetweenProjectileAndPlayer(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
+                                                BSPMap *bspMap, std::vector<Object3D *> *gameObjects,
+                                                btDiscreteDynamicsWorld *dynamicsWorld, ComponentWeapons *weaponManager,
+                                                std::vector<Triangle *> &visibleTriangles, Player *player)
+            : CollisionResolver(contactManifold, objA, objB, bspMap, visibleTriangles) {
         this->projectile = this->getProjectile();
-        this->player     = player;
+        this->player = player;
 
-        this->gameObjects   = gameObjects;
+        this->gameObjects = gameObjects;
         this->dynamicsWorld = dynamicsWorld;
         this->weaponManager = weaponManager;
     }
 
-    void dispatch()
-    {
+    void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
             Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndPlayer");
         }
@@ -45,14 +47,13 @@ public:
         player->takeDamage(1);
     }
 
-    Projectile3DBody *getProjectile()
-    {
-        Projectile3DBody *projectileA = dynamic_cast<Projectile3DBody*> (this->objA);
+    Projectile3DBody *getProjectile() {
+        Projectile3DBody *projectileA = dynamic_cast<Projectile3DBody *> (this->objA);
         if (projectileA != NULL) {
             return projectileA;
         }
 
-        Projectile3DBody *projectileB = dynamic_cast<Projectile3DBody*> (this->objB);
+        Projectile3DBody *projectileB = dynamic_cast<Projectile3DBody *> (this->objB);
         if (projectileB != NULL) {
             return projectileB;
         }

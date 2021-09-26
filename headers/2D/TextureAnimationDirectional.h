@@ -23,15 +23,19 @@ public:
     Texture *frames[9][ANIMATION2D_MAX_FRAMES];
 
     TextureAnimationDirectional();
+
     void setup(std::string file, int numFrames, int fps, int maxTimes);
 
     void loadImages();
+
     void loadImagesForZeroDirection();
 
     Texture *getCurrentFrame(int direction);
 
-    int  getNumFrames() const;
+    int getNumFrames() const;
+
     void nextFrame();
+
     void importTextures(TextureAnimationDirectional *origin, int numFrames);
 };
 

@@ -15,10 +15,15 @@ public:
     ComponentInput();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     bool enabled;
@@ -29,19 +34,24 @@ public:
     bool MousePressed = false;
     bool MouseMotion = false;
 
-    bool leftButton  = false;
+    bool leftButton = false;
     bool rightButton = false;
 
     bool isEnabled() const;
+
     void setEnabled(bool enabled);
 
     void handleWindowEvents(SDL_Event *e, bool &);
+
     void updateKeyboardMapping();
+
     void updateMouseStates(SDL_Event *e);
+
     void handleKeyboardMovingCamera();
+
     void handleMouse(SDL_Event *);
 
-    Uint8* keyboard;
+    Uint8 *keyboard;
 };
 
 

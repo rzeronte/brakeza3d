@@ -4,28 +4,26 @@
 #include "../../headers/Misc/Tools.h"
 #include <vector>
 
-void Sprite3DBody::integrate()
-{
+void Sprite3DBody::integrate() {
     if (this->mass == 0) {
         //return;
     }
 
     // Sync position
-    btTransform t ;
+    btTransform t;
     m_body->getMotionState()->getWorldTransform(t);
     btVector3 pos = t.getOrigin();
 
-    Vertex3D worldPosition = Vertex3D(pos.getX() , pos.getY() , pos.getZ());
+    Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion  quat = t.getRotation();
+    btQuaternion quat = t.getRotation();
     float angle = quat.getAngle();
     btVector3 axis = quat.getAxis();
 }
 
-btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world)
-{
+btRigidBody *Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
     this->mass = mass;
 
     btTransform trans;
@@ -33,14 +31,15 @@ btRigidBody* Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDy
 
     Vertex3D pos = this->getPosition();
 
-    trans.setOrigin(btVector3(pos.x , pos.y, pos.z));
+    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
+    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
 
-    btVector3 btSize; size.saveToBtVector3(&btSize);
-    btCollisionShape* shape = new btBoxShape(btSize);
+    btVector3 btSize;
+    size.saveToBtVector3(&btSize);
+    btCollisionShape *shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);

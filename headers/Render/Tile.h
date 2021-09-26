@@ -13,7 +13,7 @@ struct Tile {
     int id_y;
     int start_x;
     int start_y;
-    std::vector <int> triangleIds;
+    std::vector<int> triangleIds;
     unsigned int *buffer;
     float *bufferDepth;
 };

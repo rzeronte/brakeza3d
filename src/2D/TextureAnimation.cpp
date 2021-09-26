@@ -2,16 +2,14 @@
 #include "../../headers/2D/TextureAnimation.h"
 #include "../../headers/EngineSetup.h"
 
-TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false)
-{
-    for (int j = 0; j < ANIMATION2D_MAX_FRAMES ; j++) {
+TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false) {
+    for (int j = 0; j < ANIMATION2D_MAX_FRAMES; j++) {
         this->frames[j] = new Texture();
     }
 }
 
 
-void TextureAnimation::setup(std::string file, int num_frames, int fps)
-{
+void TextureAnimation::setup(std::string file, int num_frames, int fps) {
     this->base_file = file;
     this->numFrames = num_frames;
     this->fps = fps;
@@ -19,26 +17,22 @@ void TextureAnimation::setup(std::string file, int num_frames, int fps)
     this->loadImages();
 }
 
-void TextureAnimation::loadImages()
-{
-    for (int i = 0; i < this->getNumFrames() ; i++) {
+void TextureAnimation::loadImages() {
+    for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
-        this->frames[i]->loadTGA( file.c_str(), 1 );
+        this->frames[i]->loadTGA(file.c_str(), 1);
     }
 }
 
-int TextureAnimation::getNumFrames() const
-{
+int TextureAnimation::getNumFrames() const {
     return numFrames;
 }
 
-Texture *TextureAnimation::getCurrentFrame()
-{
+Texture *TextureAnimation::getCurrentFrame() {
     return this->frames[currentFrame];
 }
 
-void TextureAnimation::nextFrame()
-{
+void TextureAnimation::nextFrame() {
     setEndAnimation(false);
 
     if (!isPaused()) {

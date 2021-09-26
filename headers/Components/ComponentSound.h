@@ -14,13 +14,19 @@ public:
     ComponentSound();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     void initSoundSystem();
+
     void loadSoundsJSON();
 };
 

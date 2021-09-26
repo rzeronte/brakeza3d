@@ -7,17 +7,22 @@
 #include "Body.h"
 
 
-class Mesh3DBody: public Mesh3D, public Body {
+class Mesh3DBody : public Mesh3D, public Body {
 public:
     Mesh3DBody();
 
 
     void integrate();
 
-    void makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
-    btRigidBody* makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld*, bool useObjectSpace);
-    btRigidBody* makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld* world, float forceImpulse);
-    btRigidBody* makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld* world);
+    void makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld *, bool useObjectSpace);
+
+    btRigidBody *makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld *, bool useObjectSpace);
+
+    btRigidBody *
+    makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld *world,
+                                    float forceImpulse);
+
+    btRigidBody *makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
 
 };
 

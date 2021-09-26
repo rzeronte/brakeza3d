@@ -9,14 +9,13 @@
 #include "GUIManager.h"
 #include "../Render/Tile.h"
 
-class GUI_Tiles : public GUI  {
+class GUI_Tiles : public GUI {
 public:
     bool show = false;
 
     virtual ~GUI_Tiles() {}
 
-    virtual void draw(Camera3D *camera, std::vector<Tile> &tiles, int numColumns)
-    {
+    virtual void draw(Camera3D *camera, std::vector<Tile> &tiles, int numColumns) {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
@@ -30,8 +29,10 @@ public:
             ImGui::Columns(numColumns, "mycolumns3", false);
 
             if (EngineSetup::getInstance()->BASED_TILE_RENDER) {
-                for (int i = 0 ; i < tiles.size(); i++) {
-                    ImGui::Checkbox(std::string(std::to_string(i) + " ("+ std::to_string(tiles[i].triangleIds.size())+")").c_str(), &tiles[i].draw);
+                for (int i = 0; i < tiles.size(); i++) {
+                    ImGui::Checkbox(std::string(
+                            std::to_string(i) + " (" + std::to_string(tiles[i].triangleIds.size()) + ")").c_str(),
+                                    &tiles[i].draw);
                     ImGui::NextColumn();
                 }
             }

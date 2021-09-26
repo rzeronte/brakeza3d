@@ -15,15 +15,19 @@ public:
     Projectile3DBody();
 
     bool isFromEnemy();
+
     void setFromEnemy(bool isFromEnemy);
 
     float getDamage() const;
-    void  setDamage(float damage);
+
+    void setDamage(float damage);
 
     float getDamageRadius() const;
-    void  setDamageRadius(float damageRadius);
 
-    btRigidBody* makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world, bool applyCameraImpulse, float forceImpulse, float accuracy);
+    void setDamageRadius(float damageRadius);
+
+    btRigidBody *makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world,
+                                         bool applyCameraImpulse, float forceImpulse, float accuracy);
 
 };
 

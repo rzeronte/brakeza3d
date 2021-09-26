@@ -17,21 +17,27 @@ public:
     ComponentWeapons();
 
     void onStart();
+
     void preUpdate();
+
     void onUpdate();
+
     void postUpdate();
+
     void onEnd();
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     void shoot();
+
     void reload();
 
     int currentWeaponIndex = -1;
 
     float headBobOffsetY = 0;
 
-    std::vector<WeaponType*> weaponTypes;
-    std::vector<AmmoType*>   ammoTypes;
+    std::vector<WeaponType *> weaponTypes;
+    std::vector<AmmoType *> ammoTypes;
 
     // Global Offset When drawing
     float offsetX = 0;
@@ -44,6 +50,7 @@ public:
     void setCurrentWeaponIndex(int currentWeaponIndex);
 
     WeaponType *getWeaponTypeByClassname(std::string label);
+
     WeaponType *getCurrentWeaponType();
 
     AmmoType *getAmmoTypeByClassname(std::string label);

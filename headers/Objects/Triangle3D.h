@@ -46,8 +46,8 @@ public:
     // texture & lightmaps pre-cached data
     float light_u1_Ac_z, light_u2_Bc_z, light_u3_Cc_z;
     float light_v1_Ac_z, light_v2_Bc_z, light_v3_Cc_z;
-    float tex_u1_Ac_z,   tex_u2_Bc_z,   tex_u3_Cc_z;
-    float tex_v1_Ac_z,   tex_v2_Bc_z,   tex_v3_Cc_z;
+    float tex_u1_Ac_z, tex_u2_Bc_z, tex_u3_Cc_z;
+    float tex_v1_Ac_z, tex_v2_Bc_z, tex_v3_Cc_z;
     float persp_correct_Az, persp_correct_Bz, persp_correct_Cz;
 
     // Screen coordinates bounds
@@ -78,30 +78,38 @@ public:
     float lightmapIndexPattern4 = 0;
 
     Triangle();
+
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
     void updateFullVertexSpaces(Camera3D *cam);
 
     void updateObjectSpace();
+
     void updateCameraSpace(Camera3D *cam);
+
     void updateNDCSpace(Camera3D *cam);
+
     void updateScreenSpace();
 
     void updateTextureAnimated();
 
     void updateUVCache();
+
     void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v);
 
     bool isBackFaceCulling(Vertex3D *position);
-    
+
     Vertex3D getNormal();
-    void     updateNormal();
+
+    void updateNormal();
+
     Vertex3D getCenterOfMass();
 
     void drawNormal(Camera3D *cam, Uint32 color);
 
 
     void processPixelTexture(Uint32 &, float, float, bool);
+
     void processPixelLightmap(Uint32 &, float, float, const Uint8 &, const Uint8 &, const Uint8 &, const Uint8 &);
 
     //void shadowMapping(LightPoint3D *lp);
@@ -111,14 +119,20 @@ public:
     //void scanShadowMappingLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
 
     Texture *getTexture() const;
+
     void setTexture(Texture *texture);
 
     Texture *getLightmap() const;
+
     void setLightmap(Texture *texture);
 
-    void clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle*> &triangles, bool isBSP);
+    void clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent,
+                  std::vector<Triangle *> &triangles, bool isBSP);
+
     void setClipped(bool);
+
     bool isClipped();
+
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
 
     //void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
@@ -128,10 +142,13 @@ public:
     int processLOD();
 
     void updateFullArea();
-    void  updateBoundingBox();
-    void  updateLightmapFrame();
+
+    void updateBoundingBox();
+
+    void updateLightmapFrame();
 
     int getId() const;
+
     void setId(int id);
 
     Plane plane();

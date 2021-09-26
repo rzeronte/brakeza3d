@@ -10,10 +10,13 @@ class LightPoint3D : public Object3D {
 public:
 
     LightPoint3D();
+
     void syncFrustum();
 
     void clearShadowMappingBuffer();
+
     float getShadowMappingBuffer(int x, int y);
+
     void setShadowMappingBuffer(int x, int y, float value);
 
     Uint32 color;
@@ -31,6 +34,7 @@ public:
     ImVec4 imgui_color;
 
     void setColor(int, int, int);
+
     Uint32 mixColor(Uint32 c, Vertex3D Q);
 
 };

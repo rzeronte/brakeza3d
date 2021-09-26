@@ -4,12 +4,10 @@
 
 #include "../../headers/Misc/Color.h"
 
-Color::Color()
-{
+Color::Color() {
     //ctor
 }
 
-Color::~Color()
-{
+Color::~Color() {
     //dtor
 }
