@@ -2,12 +2,11 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 
-Player::Player() : defaultLives(5), oxygen(100), state(PlayerState::GAMEOVER), dead(false),
+Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false),
                    stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives),
-                   tookDamage(false), stooped(false) {
+                   stooped(false) {
     this->counterStep = new Counter(0.30);
     this->counterSoundTakeDamage = new Counter(0.30);
-    this->is_vehicle = true;
 }
 
 int Player::getStamina() const {
@@ -16,10 +15,6 @@ int Player::getStamina() const {
 
 void Player::setStamina(int stamina) {
     Player::stamina = stamina;
-}
-
-int Player::getLives() const {
-    return lives;
 }
 
 void Player::setLives(int lives) {
@@ -60,7 +55,6 @@ void Player::takeDamage(float dmg) {
     if (dead) return;
 
     this->stamina -= dmg;
-    this->tookDamage = true;
 
     ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::OUCH);
 
@@ -106,7 +100,6 @@ void Player::respawn() {
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
-    oxygen = 100;
     Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"),
                           EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 }
@@ -156,30 +149,10 @@ void Player::setCrouch(bool stooped) {
     Player::stooped = stooped;
 }
 
-float Player::getOxygen() const {
-    return oxygen;
-}
-
-void Player::setOxygen(float air) {
-    if (air < 0) {
-        this->takeDamage(this->stamina);
-        return;
-    }
-    Player::oxygen = air;
-}
-
 void Player::getAid(float aid) {
     this->stamina = stamina + aid;
 
-    if (stamina > EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {
-        this->stamina = EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL;
+    if (stamina > (float) EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {
+        this->stamina = (float) EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL;
     }
-}
-
-bool Player::isVehicle() const {
-    return this->is_vehicle;
-}
-
-void Player::setIsVehicle(bool isVehicle) {
-    is_vehicle = isVehicle;
 }

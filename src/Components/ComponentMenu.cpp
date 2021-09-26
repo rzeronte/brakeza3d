@@ -1,8 +1,6 @@
 
 #include <SDL_image.h>
 #include "../../headers/Components/ComponentMenu.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
 
 ComponentMenu::ComponentMenu() {

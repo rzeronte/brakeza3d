@@ -17,11 +17,11 @@ void Decal::setupCube(float sizeX, float sizeY, float sizeZ) {
 }
 
 float Decal::getTCoord(Vertex3D Q) {
-    return (float) ((T * (Q - P) / w) + 0.5f);
+    return (T * (Q - P) / w) + 0.5f;
 }
 
 float Decal::getSCoord(Vertex3D Q) {
-    return (float) (B * (Q - P) / h) + 0.5f;
+    return B * (Q - P) / h + 0.5f;
 }
 
 void Decal::setupFromAxis() {

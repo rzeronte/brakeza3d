@@ -1,14 +1,12 @@
 
 #include <SDL2/SDL_surface.h>
 #include "../headers/EngineBuffers.h"
-#include "../headers/Misc/Tools.h"
 #include "../headers/Misc/cJSON.h"
-#include "../headers/Render/Logging.h"
 
-EngineBuffers *EngineBuffers::instance = 0;
+EngineBuffers *EngineBuffers::instance = nullptr;
 
 EngineBuffers *EngineBuffers::getInstance() {
-    if (instance == 0) {
+    if (instance == nullptr) {
         instance = new EngineBuffers();
     }
 

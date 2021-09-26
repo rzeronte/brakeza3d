@@ -1,7 +1,7 @@
 
 #include <fcntl.h> // open
-#include <stdio.h> // printf
-#include <stdlib.h> // malloc, free
+#include <cstdio> // printf
+#include <cstdlib> // malloc, free
 #include <sys/stat.h> // stat
 #include <unistd.h> // lseek, read, close
 #include <cstring>
@@ -11,13 +11,7 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Game/NPCEnemyBody.h"
-#include "../../headers/EngineBuffers.h"
 #include "../../headers/Physics/Sprite3DBody.h"
-#include "../../headers/Physics/BillboardBody.h"
-#include "../../headers/Game/ItemWeaponGhost.h"
-#include "../../headers/Game/ItemHealthGhost.h"
-#include "../../headers/Game/ItemAmmoGhost.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);
@@ -89,7 +83,7 @@ int BSPMap::LoadFile(const char *filename, void **bufferptr) {
     }
 
     stat(filename, &st);
-    length = st.st_size;
+    length = (int) st.st_size;
     lseek(f, 0, SEEK_SET);
     buffer = malloc(length);
     read(f, buffer, length);
@@ -124,7 +118,7 @@ bool BSPMap::LoadBSP(const char *filename) {
 
     header = (dheader_t *) bsp;
     if (header->version != BSP_VERSION) {
-        printf("[ERROR] Map::LoadBSP() BSP file version mismatch!: %h\n", header->version);
+        printf("[ERROR] Map::LoadBSP() BSP file version mismatch!: %d\n", header->version);
         //return false;
     }
 

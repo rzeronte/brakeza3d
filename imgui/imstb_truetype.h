@@ -2475,7 +2475,7 @@ static stbtt_int32 stbtt__GetGlyphGPOSInfoAdvance(const stbtt_fontinfo *info, in
         stbtt_uint16 subTableCount = ttUSHORT(lookupTable + 4);
         stbtt_uint8 *subTableOffsets = lookupTable + 6;
         switch (lookupType) {
-            case 2: { // Pair Adjustment Positioning Subtable
+            case 2: { // PairData Adjustment Positioning Subtable
                 stbtt_int32 sti;
                 for (sti = 0; sti < subTableCount; sti++) {
                     stbtt_uint16 subtableOffset = ttUSHORT(subTableOffsets + 2 * sti);

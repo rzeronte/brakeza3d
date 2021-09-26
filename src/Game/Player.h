@@ -17,17 +17,12 @@ private:
     bool stooped;
     int lives;
     int defaultLives;
-    float oxygen;
-
-    bool is_vehicle;
 
 public:
     PlayerState state;
 
     Counter *counterStep;
     Counter *counterSoundTakeDamage;
-
-    bool tookDamage;
 
     Player();
 
@@ -49,8 +44,6 @@ public:
 
     void setStamina(int stamina);
 
-    int getLives() const;
-
     void setLives(int lives);
 
     bool isDead() const;
@@ -64,14 +57,6 @@ public:
     bool isCrouch() const;
 
     void setCrouch(bool stooped);
-
-    float getOxygen() const;
-
-    void setOxygen(float air);
-
-    bool isVehicle() const;
-
-    void setIsVehicle(bool isVehicle);
 };
 
 

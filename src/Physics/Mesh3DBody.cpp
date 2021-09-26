@@ -2,7 +2,6 @@
 #include <btBulletDynamicsCommon.h>
 #include "../../headers/Physics/Mesh3DBody.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "../../headers/Brakeza3D.h"
 
 Mesh3DBody::Mesh3DBody() {
     mass = 1.f;

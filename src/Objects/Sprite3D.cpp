@@ -1,9 +1,7 @@
 
 #include "../../headers/Objects/Sprite3D.h"
-#include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/2D/TextureAnimation.h"
 #include "../../headers/ComponentsManager.h"
 
 Sprite3D::Sprite3D() {

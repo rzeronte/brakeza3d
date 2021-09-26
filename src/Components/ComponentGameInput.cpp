@@ -3,7 +3,6 @@
 //
 
 #include "../../headers/Components/ComponentGameInput.h"
-#include "../../headers/EngineSetup.h"
 #include "../../headers/ComponentsManager.h"
 
 
@@ -55,17 +54,6 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end) {
     // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
         if (event->type == SDL_KEYDOWN) {
-            if (player->isVehicle()) {
-                player->setIsVehicle(false);
-                cam->setFollowTo(game->character);
-                game->car->setEnabled(false);
-                game->character->setEnabled(true);
-            } else {
-                player->setIsVehicle(true);
-                cam->setFollowTo(game->car);
-                game->car->setEnabled(true);
-                game->character->setEnabled(false);
-            }
         }
         //player->jump();
     }
@@ -267,7 +255,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
                 Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("sniperOn"),
                                       EngineSetup::SoundChannels::SND_WEAPON, 0);
 
-                cam->horizontal_fov = (float) SETUP->ZOOM_FOV;
+                cam->horizontal_fov = SETUP->ZOOM_FOV;
                 cam->frustum->setup(
                         cam->getPosition(),
                         Vertex3D(0, 0, 1),
@@ -288,7 +276,7 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
 
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false);
 
-                cam->horizontal_fov = (float) SETUP->HORIZONTAL_FOV;
+                cam->horizontal_fov = SETUP->HORIZONTAL_FOV;
                 cam->frustum->setup(
                         cam->getPosition(),
                         Vertex3D(0, 0, 1),
@@ -362,11 +350,11 @@ void ComponentGameInput::handleWeaponSelector() {
 void ComponentGameInput::handleZoom(SDL_Event *event) {
     if (event->key.keysym.sym == SDLK_z) {
         if (event->type == SDL_KEYDOWN) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) SETUP->ZOOM_FOV;
+            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = SETUP->ZOOM_FOV;
         }
 
         if (event->type == SDL_KEYUP) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = (float) SETUP->HORIZONTAL_FOV;
+            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = SETUP->HORIZONTAL_FOV;
         }
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(

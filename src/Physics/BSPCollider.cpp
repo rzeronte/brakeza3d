@@ -1,6 +1,5 @@
 #include "BSPCollider.h"
 #include "../../headers/ComponentsManager.h"
-#include "../../headers/Render/Transforms.h"
 
 static inline short LittleShort(short s) { return s; }
 
@@ -48,7 +47,7 @@ void BSPCollider::resetPlayerModelData() const {
 }
 
 void BSPCollider::LoadModelCollisionForEntities() {
-    int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
+    unsigned long numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
     BSPMap *bspMAP = ComponentsManager::get()->getComponentBSP()->getBSP();
     this->entities.resize(numModels);
 
@@ -75,7 +74,7 @@ void BSPCollider::LoadModelCollisionForEntities() {
 
         Logging::getInstance()->Log("modelindex: " + std::to_string(i));
 
-        if ((int) mod->flags & FL_ITEM) {
+        if (mod->flags & FL_ITEM) {
             mod->absmin[0] -= 15;
             mod->absmin[1] -= 15;
             mod->absmax[0] += 15;
@@ -527,7 +526,7 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
         if (trace.plane.normal[2] > 0.7) {
             blocked |= 1;        // floor
             if (trace.ent->solid == SOLID_BSP) {
-                ent->flags = (int) ent->flags | FL_ONGROUND;
+                ent->flags = ent->flags | FL_ONGROUND;
             }
         }
 
@@ -747,8 +746,8 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
     // do a regular slide move unless it looks like you ran into a step
 
     // Creo que invierte el flag que hubiera para onground
-    oldonground = (int) ent->flags & FL_ONGROUND;
-    ent->flags = (int) ent->flags & ~FL_ONGROUND;
+    oldonground = ent->flags & FL_ONGROUND;
+    ent->flags = ent->flags & ~FL_ONGROUND;
 
     // Almacena la posición original y la velocidad de la entidad antes de hacerle ningún cambio
     VectorCopy (ent->origin, oldorg);
@@ -809,7 +808,7 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
 
     if (downtrace.plane.normal[2] > 0.7) {
         if (ent->solid == SOLID_BSP) {
-            ent->flags = (int) ent->flags | FL_ONGROUND;
+            ent->flags = ent->flags | FL_ONGROUND;
         }
     } else {
         // if the push down didn't end up on good ground, use the move without
@@ -1134,7 +1133,7 @@ void BSPCollider::Mod_MakeDrawHull(model_collision_t *brushmodel) {
 }
 
 bool BSPCollider::isPlayerOnGround() {
-    bool onground = (int) this->playermodel->flags & FL_ONGROUND;
+    bool onground = this->playermodel->flags & FL_ONGROUND;
 
     return onground;
 }
@@ -1161,7 +1160,7 @@ void BSPCollider::SV_ClientThink(model_collision_t *model, float deltaTime) {
     if (model->movetype == MOVETYPE_NONE)
         return;
 
-    bool onground = (int) model->flags & FL_ONGROUND;
+    bool onground = model->flags & FL_ONGROUND;
 
     vec3_t origin;
     vec3_t velocity;
@@ -1282,7 +1281,6 @@ float BSPCollider::V_CalcBob(float time, vec3_t velocity) {
 }
 
 int nanmask = 255 << 23;
-#define    IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
 void BSPCollider::SV_CheckVelocity(model_collision_t *ent) {
     float maxvelocity = MAX_VELOCITY;
@@ -1308,7 +1306,7 @@ void BSPCollider::SV_AirMove(model_collision_t *model, float deltaTime) {
     fmove = 0.f;
     smove = 0.f;
 
-    int onground = (int) model->flags & FL_ONGROUND;
+    int onground = model->flags & FL_ONGROUND;
 
     for (i = 0; i < 3; i++)
         wishvel[i] = forward[i] * fmove + right[i] * smove;

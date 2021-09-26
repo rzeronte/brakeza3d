@@ -3,7 +3,6 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Misc/Octree.h"
 
 void Drawable::drawBox2D(SDL_Rect r) {
     int x = r.x;
@@ -652,7 +651,7 @@ void Drawable::drawGrid3D(Grid3D *grid) {
     }
 }
 
-void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::Pair> path) {
+void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::PairData> path) {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, path);
@@ -663,11 +662,11 @@ void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::Pair> path) {
 }
 
 void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder) {
-    std::stack<PathFinder::Pair> path;
-    PathFinder::Pair src = std::make_pair(EngineSetup::getInstance()->TESTING_INT1,
-                                          EngineSetup::getInstance()->TESTING_INT2);
-    PathFinder::Pair dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3,
-                                           EngineSetup::getInstance()->TESTING_INT4);
+    std::stack<PathFinder::PairData> path;
+    PathFinder::PairData src = std::make_pair(EngineSetup::getInstance()->TESTING_INT1,
+                                              EngineSetup::getInstance()->TESTING_INT2);
+    PathFinder::PairData dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3,
+                                               EngineSetup::getInstance()->TESTING_INT4);
 
     CubeGrid3D *cubeStart = grid->getFromPosition(src.first, 0, src.second);
     CubeGrid3D *cubeDest = grid->getFromPosition(dest.first, 0, dest.second);

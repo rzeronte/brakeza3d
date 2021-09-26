@@ -1,8 +1,4 @@
-#include <string>
 #include "../../headers/Objects/Line2D.h"
-#include "../../headers/Misc/Color.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/EngineBuffers.h"
 
 Line2D::Line2D() {
     this->x1 = 0;

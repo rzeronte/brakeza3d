@@ -61,17 +61,17 @@ void DoorGhost::integrateMoving() {
     // horizontal move
     if (angleMoving >= 0) {
         Vertex3D horizontalMovement = this->integrateHorizontalMovement(sizeX, sizeZ);
-        bulletBodyPosition[0] += horizontalMovement.x;
-        bulletBodyPosition[1] += horizontalMovement.y;
-        bulletBodyPosition[2] += horizontalMovement.z;
+        bulletBodyPosition.setX( bulletBodyPosition.getX() + horizontalMovement.x);
+        bulletBodyPosition.setY( bulletBodyPosition.getY() + horizontalMovement.y);
+        bulletBodyPosition.setZ( bulletBodyPosition.getZ() + horizontalMovement.z);
     }
 
     // vertical move down
     if (angleMoving == VERTICAL_MOVEMENT_ANGLE) {
         Vertex3D verticalMovement = this->integrateVerticalMovement(sizeY);
-        bulletBodyPosition[0] -= verticalMovement.x;
-        bulletBodyPosition[1] -= verticalMovement.y;
-        bulletBodyPosition[2] -= verticalMovement.z;
+        bulletBodyPosition.setX( bulletBodyPosition.getX() + verticalMovement.x);
+        bulletBodyPosition.setY( bulletBodyPosition.getY() + verticalMovement.y);
+        bulletBodyPosition.setZ( bulletBodyPosition.getZ() + verticalMovement.z);
     }
 
     t.setOrigin(bulletBodyPosition);

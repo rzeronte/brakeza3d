@@ -3,7 +3,6 @@
 //
 
 #include "../../headers/Components/ComponentGUI.h"
-#include "../../imgui/imgui.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"
 #include "../../headers/Brakeza3D.h"

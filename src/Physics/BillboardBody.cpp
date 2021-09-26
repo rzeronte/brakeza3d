@@ -5,7 +5,6 @@
 #include "../../headers/Physics/BillboardBody.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/ComponentsManager.h"
-#include "../../headers/Render/Drawable.h"
 
 BillboardBody::BillboardBody() {
 

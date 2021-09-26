@@ -2,7 +2,6 @@
 // Created by darkhead on 29/5/18.
 //
 
-#include <iostream>
 #include "../../headers/Render/Frustum.h"
 #include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Transforms.h"

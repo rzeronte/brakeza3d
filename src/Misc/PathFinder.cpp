@@ -8,7 +8,6 @@
 #include "../../headers/Misc/Color.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Maths.h"
 #include "../../headers/Render/Logging.h"
 
 PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY) {
@@ -43,7 +42,7 @@ bool PathFinder::isUnBlocked(int **grid, int row, int col) {
 
 // A Utility Function to check whether destination cell has
 // been reached or not
-bool PathFinder::isDestination(int row, int col, Pair dest) {
+bool PathFinder::isDestination(int row, int col, PairData dest) {
     if (row == dest.first && col == dest.second)
         return (true);
     else
@@ -51,7 +50,7 @@ bool PathFinder::isDestination(int row, int col, Pair dest) {
 }
 
 // A Utility Function to calculate the 'h' heuristics.
-double PathFinder::calculateHValue(int row, int col, Pair dest) {
+double PathFinder::calculateHValue(int row, int col, PairData dest) {
     // Return using the distance formula
     return ((double) sqrt(
             (row - dest.first) * (row - dest.first)
@@ -61,11 +60,11 @@ double PathFinder::calculateHValue(int row, int col, Pair dest) {
 
 // A Utility Function to trace the path from the source
 // to destination
-std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest) {
+std::stack<PathFinder::PairData> PathFinder::tracePath(cell **cellDetails, PairData dest) {
     int row = dest.first;
     int col = dest.second;
 
-    std::stack<Pair> Path;
+    std::stack<PairData> Path;
 
     while (!(cellDetails[row][col].parent_i == row && cellDetails[row][col].parent_j == col)) {
         Path.push(std::make_pair(row, col));
@@ -90,27 +89,27 @@ std::stack<PathFinder::Pair> PathFinder::tracePath(cell **cellDetails, Pair dest
 // A Function to find the shortest path between
 // a given source cell to a destination cell according
 // to A* Search Algorithm
-bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
+bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &path) {
     // If the source is out of range
-    if (isValid(src.first, src.second) == false) {
+    if (!isValid(src.first, src.second)) {
         //printf("Source is invalid\n");
         return false;
     }
 
     // If the destination is out of range
-    if (isValid(dest.first, dest.second) == false) {
+    if (!isValid(dest.first, dest.second)) {
         //printf("Destination is invalid\n");
         return false;
     }
 
     // Either the source or the destination is blocked
-    if (isUnBlocked(grid, src.first, src.second) == false || isUnBlocked(grid, dest.first, dest.second) == false) {
+    if (!isUnBlocked(grid, src.first, src.second) || !isUnBlocked(grid, dest.first, dest.second)) {
         //printf("Source or the destination is blocked\n");
         return false;
     }
 
     // If the destination cell is the same as source cell
-    if (isDestination(src.first, src.second, dest) == true) {
+    if (isDestination(src.first, src.second, dest)) {
         //printf("We are already at the destination\n");
         return false;
     }
@@ -204,10 +203,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //----------- 1st Successor (North) ------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i - 1, j) == true) {
+        if (isValid(i - 1, j)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i - 1, j, dest) == true) {
+            if (isDestination(i - 1, j, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j].parent_i = i;
                 cellDetails[i - 1][j].parent_j = j;
@@ -219,7 +218,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j] == false && isUnBlocked(grid, i - 1, j) == true) {
+            else if (!closedList[i - 1][j] && isUnBlocked(grid, i - 1, j)) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i - 1, j, dest);
                 fNew = gNew + hNew;
@@ -248,10 +247,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //----------- 2nd Successor (South) ------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i + 1, j) == true) {
+        if (isValid(i + 1, j)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i + 1, j, dest) == true) {
+            if (isDestination(i + 1, j, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j].parent_i = i;
                 cellDetails[i + 1][j].parent_j = j;
@@ -263,7 +262,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j] == false && isUnBlocked(grid, i + 1, j) == true) {
+            else if (!closedList[i + 1][j] && isUnBlocked(grid, i + 1, j)) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i + 1, j, dest);
                 fNew = gNew + hNew;
@@ -291,10 +290,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //----------- 3rd Successor (East) ------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i, j + 1) == true) {
+        if (isValid(i, j + 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i, j + 1, dest) == true) {
+            if (isDestination(i, j + 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i][j + 1].parent_i = i;
                 cellDetails[i][j + 1].parent_j = j;
@@ -307,7 +306,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j + 1] == false && isUnBlocked(grid, i, j + 1) == true) {
+            else if (!closedList[i][j + 1] && isUnBlocked(grid, i, j + 1)) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j + 1, dest);
                 fNew = gNew + hNew;
@@ -336,10 +335,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //----------- 4th Successor (West) ------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i, j - 1) == true) {
+        if (isValid(i, j - 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i, j - 1, dest) == true) {
+            if (isDestination(i, j - 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i][j - 1].parent_i = i;
                 cellDetails[i][j - 1].parent_j = j;
@@ -352,7 +351,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j - 1] == false && isUnBlocked(grid, i, j - 1) == true) {
+            else if (!closedList[i][j - 1] && isUnBlocked(grid, i, j - 1)) {
                 gNew = cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j - 1, dest);
                 fNew = gNew + hNew;
@@ -384,10 +383,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i - 1, j + 1) == true) {
+        if (isValid(i - 1, j + 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i - 1, j + 1, dest) == true) {
+            if (isDestination(i - 1, j + 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j + 1].parent_i = i;
                 cellDetails[i - 1][j + 1].parent_j = j;
@@ -400,7 +399,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j + 1] == false && isUnBlocked(grid, i - 1, j + 1) == true) {
+            else if (!closedList[i - 1][j + 1] && isUnBlocked(grid, i - 1, j + 1)) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i - 1, j + 1, dest);
                 fNew = gNew + hNew;
@@ -430,10 +429,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i - 1, j - 1) == true) {
+        if (isValid(i - 1, j - 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i - 1, j - 1, dest) == true) {
+            if (isDestination(i - 1, j - 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i - 1][j - 1].parent_i = i;
                 cellDetails[i - 1][j - 1].parent_j = j;
@@ -446,7 +445,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i - 1][j - 1] == false && isUnBlocked(grid, i - 1, j - 1) == true) {
+            else if (!closedList[i - 1][j - 1] && isUnBlocked(grid, i - 1, j - 1)) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i - 1, j - 1, dest);
                 fNew = gNew + hNew;
@@ -475,10 +474,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i + 1, j + 1) == true) {
+        if (isValid(i + 1, j + 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i + 1, j + 1, dest) == true) {
+            if (isDestination(i + 1, j + 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j + 1].parent_i = i;
                 cellDetails[i + 1][j + 1].parent_j = j;
@@ -491,7 +490,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j + 1] == false && isUnBlocked(grid, i + 1, j + 1) == true) {
+            else if (!closedList[i + 1][j + 1] && isUnBlocked(grid, i + 1, j + 1)) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i + 1, j + 1, dest);
                 fNew = gNew + hNew;
@@ -521,10 +520,10 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
         //------------
 
         // Only process this cell if this is a valid one
-        if (isValid(i + 1, j - 1) == true) {
+        if (isValid(i + 1, j - 1)) {
             // If the destination cell is the same as the
             // current successor
-            if (isDestination(i + 1, j - 1, dest) == true) {
+            if (isDestination(i + 1, j - 1, dest)) {
                 // Set the Parent of the destination cell
                 cellDetails[i + 1][j - 1].parent_i = i;
                 cellDetails[i + 1][j - 1].parent_j = j;
@@ -537,7 +536,7 @@ bool PathFinder::AStarSearch(Pair src, Pair dest, std::stack<Pair> &path) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i + 1][j - 1] == false && isUnBlocked(grid, i + 1, j - 1) == true) {
+            else if (!closedList[i + 1][j - 1] && isUnBlocked(grid, i + 1, j - 1)) {
                 gNew = cellDetails[i][j].g + 1.414;
                 hNew = calculateHValue(i + 1, j - 1, dest);
                 fNew = gNew + hNew;
@@ -603,12 +602,12 @@ void PathFinder::demo() {
     consoleDebug();
 
     // Source is the left-most bottom-most corner
-    Pair src = std::make_pair(8, 0);
+    PairData src = std::make_pair(8, 0);
 
     // Destination is the left-most top-most corner
-    Pair dest = std::make_pair(0, 9);
+    PairData dest = std::make_pair(0, 9);
 
-    std::stack<Pair> path;
+    std::stack<PairData> path;
     bool result = AStarSearch(src, dest, path);
 
     if (result) {
@@ -628,7 +627,7 @@ void PathFinder::consoleDebug() {
     }
 }
 
-void PathFinder::consoleDebugPath(std::stack<Pair> path) {
+void PathFinder::consoleDebugPath(std::stack<PairData> path) {
     char debugGrid[this->sizeY][this->sizeX];
 
     // reset all visual debug cells to '-'
@@ -661,7 +660,7 @@ void PathFinder::consoleDebugPath(std::stack<Pair> path) {
     }
 }
 
-void PathFinder::saveGridToPNG(std::string filename) {
+void PathFinder::saveGridToPNG(const std::string& filename) {
     SDL_Surface *s = SDL_CreateRGBSurface(0, this->sizeX, this->sizeY, 32, 0, 0, 0, 0);
 
     Uint32 black = Color::black();
@@ -705,7 +704,7 @@ void PathFinder::loadGridFromPNG(std::string filename) {
     }
 }
 
-std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename) {
+std::stack<PathFinder::PairData> PathFinder::readPathFromPNG(const std::string& filename) {
     Logging::getInstance()->Log("PathFinder readPathFromPNG " + filename);
 
     SDL_Surface *surface = IMG_Load((filename).c_str());
@@ -713,7 +712,7 @@ std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename) {
     int width = surface->w;
     int height = surface->h;
 
-    Pair src, dest;
+    PairData src, dest;
 
     // get start and end position
     for (int y = 0; y < height; y++) {
@@ -738,7 +737,7 @@ std::stack<PathFinder::Pair> PathFinder::readPathFromPNG(std::string filename) {
     auto *pathfinder = new PathFinder(width, height);
     pathfinder->loadGridFromPNG(filename);
 
-    std::stack<PathFinder::Pair> path;
+    std::stack<PathFinder::PairData> path;
     pathfinder->AStarSearch(src, dest, path);
 
     delete surface;

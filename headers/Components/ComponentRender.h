@@ -73,7 +73,7 @@ public:
 
     void initTiles();
 
-    void drawTileTriangles(int i, std::vector<Triangle *> &visibleTriangles);
+    void drawTileTriangles(int i, std::vector<Triangle *> &trianglesToDraw);
 
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
 

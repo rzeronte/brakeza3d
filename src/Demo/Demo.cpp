@@ -1,9 +1,7 @@
 #include "../../headers/Demo/Demo.h"
 #include "../../headers/Objects/LightPoint3D.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/EngineBuffers.h"
 #include "../../headers/Physics/Sprite3DBody.h"
-#include "../../headers/Objects/Mesh3DAnimated.h"
 
 Demo::Demo() {
     LightPoint3D *lp1 = new LightPoint3D();

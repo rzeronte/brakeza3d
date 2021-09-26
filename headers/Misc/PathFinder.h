@@ -18,25 +18,25 @@
 class PathFinder {
 public:
     // Creating a shortcut for int, int pair type
-    typedef std::pair<int, int> Pair;
+    typedef std::pair<int, int> PairData;
 
     void demo();
 
     void consoleDebug();
 
-    void consoleDebugPath(std::stack<Pair> path);
+    void consoleDebugPath(std::stack<PairData> path);
 
-    bool AStarSearch(Pair src, Pair dest, std::stack<Pair> &path);
+    bool AStarSearch(PairData src, PairData dest, std::stack<PairData> &path);
 
     void setValue(int posX, int posY, bool value);
 
     PathFinder(int sizeX, int sizeY);
 
-    void saveGridToPNG(std::string filename);
+    void saveGridToPNG(const std::string& filename);
 
     void loadGridFromPNG(std::string filename);
 
-    static std::stack<PathFinder::Pair> readPathFromPNG(std::string filename);
+    static std::stack<PathFinder::PairData> readPathFromPNG(const std::string& filename);
 
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type
@@ -59,11 +59,11 @@ private:
 
     bool isUnBlocked(int **grid, int row, int col);
 
-    bool isDestination(int row, int col, Pair dest);
+    bool isDestination(int row, int col, PairData dest);
 
-    double calculateHValue(int row, int col, Pair dest);
+    double calculateHValue(int row, int col, PairData dest);
 
-    std::stack<Pair> tracePath(cell **cellDetails, Pair dest);
+    std::stack<PairData> tracePath(cell **cellDetails, PairData dest);
 
 };
 

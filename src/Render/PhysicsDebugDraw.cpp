@@ -3,9 +3,7 @@
 //
 
 #include "../../headers/Render/PhysicsDebugDraw.h"
-#include "../../headers/Objects/Vector3D.h"
 #include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Transforms.h"
 
 PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam) {
     this->cam = cam;

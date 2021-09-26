@@ -87,7 +87,7 @@ public:
 
     static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
 
-    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PathFinder::Pair> path);
+    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PathFinder::PairData> path);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

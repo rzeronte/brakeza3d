@@ -1,9 +1,6 @@
 
 #include "../headers/Brakeza3D.h"
-#include "../headers/Objects/Mesh3DAnimated.h"
-#include "../headers/Objects/Mesh3DAnimatedCollection.h"
 #include <thread>
-#include <glm/glm.hpp>
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 

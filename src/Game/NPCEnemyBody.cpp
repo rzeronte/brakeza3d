@@ -1,10 +1,7 @@
 
 #include "../../headers/Game/NPCEnemyBody.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Game/Projectile3DBody.h"
-#include "../../headers/Render/Billboard.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/EngineBuffers.h"
 
 NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25) {
     this->counterIA = new Counter();

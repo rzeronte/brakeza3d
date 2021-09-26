@@ -1,7 +1,6 @@
 
 #include <SDL_image.h>
 #include "../../headers/Game/WeaponType.h"
-#include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 

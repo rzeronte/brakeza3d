@@ -19,45 +19,20 @@ typedef unsigned char byte;
 #define    DIST_EPSILON    (0.03125)
 
 // edict->flags
-#define    FL_FLY                    1
-#define    FL_SWIM                    2
-#define    FL_CONVEYOR                4
-#define    FL_CLIENT                8
-#define    FL_INWATER                16
-#define    FL_MONSTER                32
-#define    FL_GODMODE                64
-#define    FL_NOTARGET                128
+
 #define    FL_ITEM                    256
 #define    FL_ONGROUND                512
-#define    FL_PARTIALGROUND        1024    // not all corners are valid
-#define    FL_WATERJUMP            2048    // player jumping out of water
-#define    FL_JUMPRELEASED            4096    // for jump debouncing
 
-// edict->solid values
-#define    SOLID_NOT                0        // no interaction with other objects
-#define    SOLID_TRIGGER            1        // touch on edge, but not blocking
-#define    SOLID_BBOX                2        // touch on edge, block
-#define    SOLID_SLIDEBOX            3        // touch on edge, but not an onground
+
 #define    SOLID_BSP                4        // bsp clip, touch on edge, block
 
 #define    STEPSIZE    18
 
 // edict->movetype values
 #define    MOVETYPE_NONE            0        // never moves
-#define    MOVETYPE_ANGLENOCLIP    1
-#define    MOVETYPE_ANGLECLIP        2
 #define    MOVETYPE_WALK            3        // gravity
-#define    MOVETYPE_STEP            4        // gravity, special edge handling
-#define    MOVETYPE_FLY            5
-#define    MOVETYPE_TOSS            6        // gravity
-#define    MOVETYPE_PUSH            7        // no clip to world, push and crush
 #define    MOVETYPE_NOCLIP            8
-#define    MOVETYPE_FLYMISSILE        9        // extra size to monsters
-#define    MOVETYPE_BOUNCE            10
-
 #define    MOVE_NORMAL        0
-#define    MOVE_NOMONSTERS    1
-#define    MOVE_MISSILE    2
 
 // up / down
 #define    PITCH    0
@@ -75,12 +50,7 @@ typedef unsigned char byte;
 
 #define    CONTENTS_EMPTY        -1
 #define    CONTENTS_SOLID        -2
-#define    CONTENTS_WATER        -3
 #define    CONTENTS_SLIME        -4
-#define    CONTENTS_LAVA        -5
-#define    CONTENTS_SKY        -6
-#define    CONTENTS_ORIGIN        -7        // removed at csg time
-#define    CONTENTS_CLIP        -8        // changed to contents_solid
 
 typedef struct mplane_s {
     vec3_t normal;

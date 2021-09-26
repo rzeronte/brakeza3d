@@ -1,8 +1,5 @@
 
 #include "../../headers/Physics/Sprite3DBody.h"
-#include "../../headers/Physics/Body.h"
-#include "../../headers/Misc/Tools.h"
-#include <vector>
 
 void Sprite3DBody::integrate() {
     if (this->mass == 0) {
