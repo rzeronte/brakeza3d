@@ -313,20 +313,20 @@ public:
     BSPCollider();
     void LoadModelCollisionForEntities();
     void LoadModelCollisionForWorld();
-    void resetPlayerModelData();
+    void resetPlayerModelData() const;
 
-    void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
-    void VectorScale (const vec3_t in, vec_t scale, vec3_t out);
+    static void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
+    static void VectorScale (const vec3_t in, vec_t scale, vec3_t out);
     void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 
-    void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs);
+    static void SV_MoveBounds (const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, vec3_t boxmins, vec3_t boxmaxs);
 
-    hull_t *SV_HullForEntity (model_collision_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset);
-    int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
+    static hull_t *SV_HullForEntity (model_collision_t *ent, const vec3_t mins, const vec3_t maxs, vec3_t offset);
+    static int SV_HullPointContents (hull_t *hull, int num, const vec3_t p);
     bool SV_RecursiveHullCheck (hull_t *hull, int hullFirstClipNode, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
     int SV_FlyMove (model_collision_t *ent, float time, trace_t *steptrace);
 
-    trace_t SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+    trace_t SV_ClipMoveToEntity (model_collision_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end);
     trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type);
     trace_t SV_PushEntity (model_collision_t *ent, vec3_t push);
 
@@ -334,14 +334,14 @@ public:
     int SV_TryUnstick (model_collision_t *ent, vec3_t oldvel);
     void SV_WalkMove (model_collision_t *ent, float deltaTime);
 
-    int ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce);
+    static int ClipVelocity (const vec3_t in, const vec3_t normal, vec3_t out, float overbounce);
 
     model_collision_t *getModelCollisionFromBSP(int modelId);
 
     static int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p);
 
-    model_collision_t *getWorldModel();
-    model_collision_t *getPlayerModel();
+    model_collision_t *getWorldModel() const;
+    model_collision_t *getPlayerModel() const;
 
     void SV_AddGravity (model_collision_t *ent, float deltaTime);
     void SV_CheckStuck (model_collision_t *ent);

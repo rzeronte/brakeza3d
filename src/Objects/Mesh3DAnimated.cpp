@@ -165,7 +165,9 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh)
         this->modelTriangles.push_back( new Triangle(V1, V2, V3, this) );
 
         if (this->numTextures > 0) {
-            this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
+            if (&this->modelTextures[mesh->mMaterialIndex] != NULL) {
+                this->modelTriangles[k]->setTexture( &this->modelTextures[ mesh->mMaterialIndex ] );
+            }
         }
     }
 }

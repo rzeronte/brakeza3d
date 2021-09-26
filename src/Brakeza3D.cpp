@@ -5,17 +5,31 @@
 #include <thread>
 #include <glm/glm.hpp>
 
-Brakeza3D* Brakeza3D::instance = 0;
+Brakeza3D* Brakeza3D::instance = nullptr;
 
 Brakeza3D::Brakeza3D()
 {
     componentsManager = ComponentsManager::get();
     componentsManager->setSceneObjects( &sceneObjects );
+
+    componentCamera     = nullptr;
+    componentInput      = nullptr;
+    componentWeapons    = nullptr;
+    componentCollisions = nullptr;
+    componentWindow     = nullptr;
+    componentBSP        = nullptr;
+    componentSound      = nullptr;
+    componentRender     = nullptr;
+    componentMenu       = nullptr;
+    componentHUD        = nullptr;
+    componentGUI        = nullptr;
+    componentGame       = nullptr;
+    componentGameInput  = nullptr;
 }
 
 Brakeza3D* Brakeza3D::get()
 {
-    if (instance == 0) {
+    if (instance == nullptr) {
         instance = new Brakeza3D();
     }
 
@@ -86,17 +100,17 @@ std::vector<Object3D*> &Brakeza3D::getSceneObjects()
     return sceneObjects;
 }
 
-void Brakeza3D::addObject3D(Object3D *obj, std::string label)
+void Brakeza3D::addObject3D(Object3D *obj, const std::string& label)
 {
     Logging::getInstance()->Log("Adding Object3D: '" + label + "'", "INFO");
     obj->setLabel(label);
     sceneObjects.push_back(obj);
 }
 
-Object3D* Brakeza3D::getObjectByLabel(std::string label)
+Object3D* Brakeza3D::getObjectByLabel(const std::string& label)
 {
     for (int i = 0; i < this->sceneObjects.size(); i++ ) {
-        if (!sceneObjects[i]->getLabel().compare(label)) {
+        if (sceneObjects[i]->getLabel() == label) {
             return sceneObjects[i];
         }
     }
@@ -109,14 +123,14 @@ Timer* Brakeza3D::getTimer()
 
 void Brakeza3D::updateTimer()
 {
-    current_ticks = engineTimer.getTicks();
+    current_ticks = (float) engineTimer.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
 
     executionTime += deltaTime / 1000.f;
 }
 
-float Brakeza3D::getDeltaTime()
+float Brakeza3D::getDeltaTime() const
 {
     return this->deltaTime/1000;
 }

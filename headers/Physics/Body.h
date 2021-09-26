@@ -23,17 +23,15 @@ public:
     btBvhTriangleMeshShape *shape;
     btDefaultMotionState* motionState;
 
-    btCollisionObject* getCollider()  { return m_collider; }
-    btRigidBody*       getRigidBody() { return m_body; }
+    btCollisionObject* getCollider() const  { return m_collider; }
+    btRigidBody*       getRigidBody() const { return m_body; }
 
     void setBodyEnabled(bool state);
     void setBoxShapeSize(Vertex3D size);
-    Vertex3D getBoxShapeSize();
-    void applyImpulse(Vertex3D impulse);
+    Vertex3D getBoxShapeSize() const;
+    void applyImpulse(Vertex3D impulse) const;
 
     virtual void integrate();
-
-
 };
 
 

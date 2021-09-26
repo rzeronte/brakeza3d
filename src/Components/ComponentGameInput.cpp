@@ -43,7 +43,11 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentGameInput::handleMouse(SDL_Event *event)
 {
+    if (event->type == SDL_BUTTON_RIGHT) {
+    }
 
+    if (event->type == SDL_BUTTON_LEFT) {
+    }
 }
 
 void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end)

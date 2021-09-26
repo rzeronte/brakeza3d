@@ -28,8 +28,8 @@ void BillboardBody::integrate()
 
     // Sync rotation
     btQuaternion  quat = t.getRotation();
-    float angle = quat.getAngle();
-    btVector3 axis = quat.getAxis();
+    //float angle = quat.getAngle();
+    //btVector3 axis = quat.getAxis();
 }
 
 btRigidBody* BillboardBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world)
@@ -45,7 +45,7 @@ btRigidBody* BillboardBody::makeRigidBody(float mass, Vertex3D size, btDiscreteD
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize; size.saveToBtVector3(&btSize);
     btCollisionShape* shape = new btBoxShape(btSize);

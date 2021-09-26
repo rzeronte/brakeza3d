@@ -126,7 +126,6 @@ public:
     bool isPointInside(Vertex3D);
 
     int processLOD();
-    int getLOD();
 
     void updateFullArea();
     void  updateBoundingBox();

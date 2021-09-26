@@ -33,31 +33,43 @@ void ComponentGame::onStart()
 void ComponentGame::startThirdPerson()
 {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Vertex3D originalCarPosition = Vertex3D(-5, -5, -11);
-    camera->follow_to_position_offset = Vertex3D(12, -122, 0);
+    Vertex3D originalCameraPosition = Vertex3D(-65, 54, 273);
+
 
     // start cam position
-    camera->setPosition( originalCarPosition );
+    camera->setPosition(originalCameraPosition );
+    camera->yaw   = 180;
+    camera->pitch = 0;
+    camera->roll  = 0;
+
     camera->UpdateRotation();
 
     auto* mesh = new Mesh3DAnimated();
-    Brakeza3D::get()->addObject3D(mesh, "hellknight");
-
+    mesh->setLabel("mainCharacter");
     if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx") ) {
-        mesh->setScale(0.01 );
-        Vertex3D p = Vertex3D(1, 1, 20);
-        mesh->setPosition( p );
+        mesh->setScale(0.003);
+        mesh->setPosition(Vertex3D(-65, 97, 141));
+        mesh->setRotation(M3::getMatrixRotationForEulerAngles(180, 90, 0));
     }
+    Brakeza3D::get()->addObject3D(mesh, "main");
 
     auto *dungeon = new Mesh3D();
-    dungeon->setLabel("mono");
+    dungeon->setLabel("scene");
     dungeon->setPosition(Vertex3D(100, 100, 100));
-    dungeon->setScale(1);
-    dungeon->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "dungeon.fbx").c_str());
+    dungeon->setScale(0.1);
+    dungeon->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "dungeon.fbx"));
     Brakeza3D::get()->addObject3D(dungeon, "dungeon");
 
-
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
+
+//    auto *mainCharacter = new Mesh3D();
+//    mainCharacter->setLabel("mainCharacter");
+//    mainCharacter->setPosition(Vertex3D(-65, 97, 141));
+//    mainCharacter->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 270));
+//    mainCharacter->setScale(0.3);
+//    mainCharacter->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx"));
+//    Brakeza3D::get()->addObject3D(mainCharacter, "mainCharacter");
+
 }
 
 void ComponentGame::startFPS()

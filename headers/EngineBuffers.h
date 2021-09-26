@@ -17,7 +17,6 @@ private:
     static EngineBuffers* instance;
 
     EngineBuffers();
-    ~EngineBuffers();
 
 public:
     static EngineBuffers* getInstance();
@@ -97,8 +96,6 @@ public:
     void  setVideoBuffer(const int x, const int y, Uint32 value);
     void  setVideoBuffer(const int i, Uint32 value);
     void  flipVideoBufferToSurface(SDL_Surface *);
-
-    void addOCLTriangle(OCLTriangle);
 
     void makeFireColors();
     void fireShaderSetup();

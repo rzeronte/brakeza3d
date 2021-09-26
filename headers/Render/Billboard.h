@@ -14,8 +14,6 @@ public:
     Triangle T1;
     Triangle T2;
 
-    bool drawable;
-
     Vertex3D Q1;
     Vertex3D Q2;
     Vertex3D Q3;
@@ -26,16 +24,12 @@ public:
     Billboard();
 
     void updateUnconstrainedQuad(Object3D *o, Vertex3D &up, Vertex3D &right);
-    void loadTexture(std::string);
+    void loadTexture(const std::string&&);
 
     void setTrianglesTexture(Texture *);
     void reassignTexture();
 
-    bool isDrawable() const;
-    void setDrawable(bool drawable);
-
     void setDimensions(float w, float h);
-
 };
 
 

@@ -67,18 +67,10 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     //T2 = Triangle(Q4, Q3, Q1, o);
 }
 
-void Billboard::loadTexture(std::string fileName)
+void Billboard::loadTexture(const std::string&& fileName)
 {
     this->texture->loadTGA( fileName.c_str(), 1);
     setTrianglesTexture(this->texture);
-}
-
-bool Billboard::isDrawable() const {
-    return drawable;
-}
-
-void Billboard::setDrawable(bool drawable) {
-    Billboard::drawable = drawable;
 }
 
 void Billboard::setTrianglesTexture(Texture *t)

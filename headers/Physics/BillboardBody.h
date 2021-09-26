@@ -14,12 +14,11 @@ class BillboardBody: public Object3D, public Billboard, public Body {
 public:
     BillboardBody();
 
-    void integrate();
+    void integrate() override;
+    void onUpdate() override;
+
     void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
     btRigidBody* makeRigidBody(float, Vertex3D size, btDiscreteDynamicsWorld*);
-
-    void onUpdate();
-
 };
 
 

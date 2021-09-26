@@ -6,8 +6,12 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
 
-Body::Body() {
-
+Body::Body()
+{
+    this->m_body = nullptr;
+    this->m_collider = nullptr;
+    this->shape = nullptr;
+    this->motionState = nullptr;
 }
 
 void Body::integrate() {
@@ -24,11 +28,11 @@ void Body::setBoxShapeSize(Vertex3D size)
     this->boxShapeSize = size;
 }
 
-Vertex3D Body::getBoxShapeSize() {
+Vertex3D Body::getBoxShapeSize() const {
     return this->boxShapeSize;
 }
 
-void Body::applyImpulse(Vertex3D impulse)
+void Body::applyImpulse(Vertex3D impulse) const
 {
 
     this->m_body->clearForces();

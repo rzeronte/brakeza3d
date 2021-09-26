@@ -12,7 +12,6 @@ class EngineSetup {
 
 public:
     EngineSetup();
-    ~EngineSetup();
 
     static EngineSetup* getInstance();
     static EngineSetup* instance;
@@ -39,8 +38,8 @@ public:
     Vertex3D gravity = Vertex3D(0, 10.0f, 0);
 
     // Screen dimension constants
-    int screenWidth  = 320;
-    int screenHeight = 240;
+    int screenWidth  = 640;
+    int screenHeight = 480;
 
     int RESOLUTION = screenWidth * screenHeight;
 
@@ -83,8 +82,8 @@ public:
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
-    bool TRIANGLE_MODE_COLOR_SOLID = true;
-    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool TRIANGLE_MODE_COLOR_SOLID = false;
+    bool TRIANGLE_MODE_TEXTURIZED = true;
 
     bool DRAW_ANIMATION_BONES = false;
     bool TRIANGLE_MODE_VERTEX_WEIGHT = false;

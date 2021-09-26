@@ -10,7 +10,6 @@ public:
     static Logging* instance;
 
     Logging();
-    ~Logging();
 
 public:
 

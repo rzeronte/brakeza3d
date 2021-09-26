@@ -46,7 +46,6 @@ private:
 
 public:
     Brakeza3D();
-    ~Brakeza3D();
 
     static Brakeza3D* get();
     static Brakeza3D* instance;
@@ -61,15 +60,13 @@ public:
     float currentFadePercent = 1;
 
     void                    start();
-    void                    addObject3D(Object3D *obj, std::string label);
+    void                    addObject3D(Object3D *obj, const std::string& label);
     std::vector<Object3D*> &getSceneObjects();
-    Object3D*               getObjectByLabel(std::string label);
+    Object3D*               getObjectByLabel(const std::string& label);
 
     Timer* getTimer();
     void   updateTimer();
-    float  getDeltaTime();
-
-    void updateFPS();
+    float  getDeltaTime() const;
 
     void onStartComponents();
     void preUpdateComponents();

@@ -477,6 +477,8 @@ void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v,
     if (bilinear) {
         pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
         return;
+
+
     }
 
     pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);

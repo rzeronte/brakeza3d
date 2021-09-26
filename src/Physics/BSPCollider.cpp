@@ -7,6 +7,10 @@ static inline int LittleLong(int l) { return l; }
 
 BSPCollider::BSPCollider()
 {
+    this->worldmodel = nullptr;
+    this->playermodel = nullptr;
+    this->scale = 1;
+
     this->vec3_origin[0] = 0;
     this->vec3_origin[1] = 0;
     this->vec3_origin[2] = 0;
@@ -15,7 +19,7 @@ BSPCollider::BSPCollider()
     LoadModelCollisionForEntities();
 }
 
-void BSPCollider::resetPlayerModelData()
+void BSPCollider::resetPlayerModelData() const
 {
     this->playermodel->mins[0] = -16;
     this->playermodel->mins[1] = -16;
@@ -111,12 +115,12 @@ void BSPCollider::LoadModelCollisionForWorld()
     resetPlayerModelData();
 }
 
-model_collision_t *BSPCollider::getWorldModel()
+model_collision_t *BSPCollider::getWorldModel() const
 {
     return this->worldmodel;
 }
 
-model_collision_t *BSPCollider::getPlayerModel()
+model_collision_t *BSPCollider::getPlayerModel() const
 {
     return this->playermodel;
 }
@@ -162,7 +166,7 @@ void BSPCollider::VectorScale (const vec3_t in, vec_t s, vec3_t out)
     out[2] = in[2] * s;
 }
 
-void BSPCollider::SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs)
+void BSPCollider::SV_MoveBounds (const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, vec3_t boxmins, vec3_t boxmaxs)
 {
     int		i;
 
@@ -188,7 +192,7 @@ Returns a hull that can be used for testing or clipping an object of mins/maxs s
 Offset is filled in to contain the adjustment that must be added to the
 testing object's origin to get a point to use with the returned hull.
 */
-hull_t *BSPCollider::SV_HullForEntity (model_collision_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset) {
+hull_t *BSPCollider::SV_HullForEntity (model_collision_t *ent, const vec3_t mins, const vec3_t maxs, vec3_t offset) {
     vec3_t size;
     vec3_t hullmins, hullmaxs;
     hull_t *hull;
@@ -212,7 +216,7 @@ hull_t *BSPCollider::SV_HullForEntity (model_collision_t *ent, vec3_t mins, vec3
     return hull;
 }
 
-int BSPCollider::SV_HullPointContents (hull_t *hull, int num, vec3_t p)
+int BSPCollider::SV_HullPointContents (hull_t *hull, int num, const vec3_t p)
 {
     dclipnode_t	*node;
     mplane_t 	*plane;
@@ -298,9 +302,9 @@ bool BSPCollider::SV_RecursiveHullCheck (hull_t *hull, int hullFirstClipNode, fl
 
     // put the crosspoint DIST_EPSILON pixels on the near side
     if (t1 < 0) {
-        frac = (t1 + DIST_EPSILON)/(t1-t2);
+        frac = (float) ((t1 + DIST_EPSILON)/(t1-t2));
     } else {
-        frac = (t1 - DIST_EPSILON)/(t1-t2);
+        frac = (float) ((t1 - DIST_EPSILON)/(t1-t2));
     }
 
     if (frac < 0) {
@@ -370,7 +374,7 @@ Handles selection or creation of a clipping hull, and offseting (and
 eventually rotation) of the end points
 ==================
 */
-trace_t BSPCollider::SV_ClipMoveToEntity (model_collision_t *ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+trace_t BSPCollider::SV_ClipMoveToEntity (model_collision_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end)
 {
     trace_t		trace;
     vec3_t		offset;
@@ -440,7 +444,7 @@ returns the blocked flags (1 = floor, 2 = step / wall)
 */
 #define	STOP_EPSILON	0.1
 
-int BSPCollider::ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
+int BSPCollider::ClipVelocity (const vec3_t in, const vec3_t normal, vec3_t out, float overbounce)
 {
     float	backoff;
     float	change;
@@ -449,7 +453,7 @@ int BSPCollider::ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overb
     blocked = 0;
     if (normal[2] > 0)
         blocked |= 1;		// floor
-    if (!normal[2])
+    if (normal[2] <=0)
         blocked |= 2;		// step
 
     backoff = DotProduct (in, normal) * overbounce;

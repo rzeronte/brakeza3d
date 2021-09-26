@@ -426,8 +426,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
             this->numTextures++;
             continue;
         };
-        std::cout << "Trying import type texture: " << pMaterial->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
-        //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+        //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE)  >= 1) {
             aiString Path;
             if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
                 std::string p(Path.data);
@@ -444,6 +443,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene* pScene, const std::string& Filen
                 Texture *t = new Texture();
                 if (t->loadTGA(FullPath.c_str(), 1) ) {
                     this->modelTextures[ this->numTextures ] = *t;
+                    this->modelTextures[ this->numTextures ].loaded = true;
                     this->numTextures++;
                 }
             } else {
