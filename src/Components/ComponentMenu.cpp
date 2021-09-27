@@ -41,12 +41,12 @@ void ComponentMenu::loadMenuOptions() {
     const char *mapsFile;
     mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
-    if (myDataJSON == NULL) {
+    if (myDataJSON == nullptr) {
         Logging::getInstance()->Log("menu.json can't be loaded", "ERROR");
         return;
     }
 
-    cJSON *currentOption = NULL;
+    cJSON *currentOption = nullptr;
     optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options");
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
@@ -69,7 +69,7 @@ void ComponentMenu::loadMenuOptions() {
 
 void ComponentMenu::drawOptions(SDL_Surface *dst) {
     // Draw back
-    SDL_BlitSurface(menu_background, NULL, dst, NULL);
+    SDL_BlitSurface(menu_background, nullptr, dst, nullptr);
 
     int offsetY = 50;
     int stepY = 10;

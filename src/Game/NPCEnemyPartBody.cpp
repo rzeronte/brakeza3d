@@ -17,7 +17,7 @@ btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btCollisionShape *shape;
 
@@ -36,9 +36,9 @@ btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
 
     Vertex3D up = EngineSetup::getInstance()->up.getInverse();
 
-    double r1 = ((double) rand() / (RAND_MAX)) + 1;
-    double r2 = ((double) rand() / (RAND_MAX)) + 1;
-    double r3 = ((double) rand() / (RAND_MAX)) + 1;
+    float r1 = ((float) std::rand() / (RAND_MAX)) + 1;
+    //double r2 = ((double) rand() / (RAND_MAX)) + 1;
+    float r3 = ((float) std::rand() / (RAND_MAX)) + 1;
     Vertex3D randomNoise = Vertex3D(r1, 0, r3);
     randomNoise.consoleInfo("randomNose", false);
 

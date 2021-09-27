@@ -24,7 +24,7 @@ public:
 
     TextureAnimationDirectional();
 
-    void setup(std::string file, int numFrames, int fps, int maxTimes);
+    void setup(std::string file, int newNumFrames, int newFps, int newMaxTimes);
 
     void loadImages();
 

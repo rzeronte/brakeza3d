@@ -1,7 +1,6 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "../../headers/Physics/Mesh3DBody.h"
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 Mesh3DBody::Mesh3DBody() {
     mass = 1.f;
@@ -9,7 +8,7 @@ Mesh3DBody::Mesh3DBody() {
 }
 
 btRigidBody *Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace) {
-    btConvexHullShape *me = new btConvexHullShape();
+    auto *me = new btConvexHullShape();
 
     for (int i = 0; i < this->modelTriangles.size(); i++) {
         this->modelTriangles[i]->updateFullVertexSpaces(cam);
@@ -38,7 +37,7 @@ btRigidBody *Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDyna
     trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     btVector3 localInertia(0, 0, 0);
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
     btCollisionShape *shape = new btConvexHullShape(*me);
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
     this->m_body = new btRigidBody(cInfo);
@@ -67,7 +66,7 @@ Mesh3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D 
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);
@@ -98,7 +97,7 @@ Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, b
 
     trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
     btVector3 localInertia(0, 0, 0);
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
     btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
@@ -128,9 +127,9 @@ void Mesh3DBody::integrate() {
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion quat = t.getRotation();
-    float angle = quat.getAngle();
-    btVector3 axis = quat.getAxis();
+    //btQuaternion quat = t.getRotation();
+    //float angle = quat.getAngle();
+    //btVector3 axis = quat.getAxis();
 
 }
 

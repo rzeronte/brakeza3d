@@ -60,9 +60,9 @@ public:
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
-    void addAnimation(std::string label, std::string model, float scale, bool stopEnd);
+    void addAnimation(std::string newLabel, std::string newModel, float scale, bool stopEnd);
 
-    Mesh3DAnimated *getCurrentWeaponAnimation();
+    Mesh3DAnimated *getCurrentWeaponAnimation() const;
 
     void onUpdate();
 
@@ -76,7 +76,7 @@ public:
 
     int getSpeed() const;
 
-    float getDamage();
+    float getDamage() const;
 
     void setDamage(float damage);
 
@@ -84,9 +84,9 @@ public:
 
     void setDamageRadius(float damageRadius);
 
-    void loadIconHUD(std::string file);
+    void loadIconHUD(const std::string& file);
 
-    void loadSniperHUD(std::string file);
+    void loadSniperHUD(const std::string& file);
 
     float getAccuracy() const;
 
@@ -124,7 +124,7 @@ public:
 
     void reload();
 
-    Mesh3D *getModel();
+    Mesh3D *getModel() const;
 
     Mesh3DAnimatedCollection *getWeaponAnimations() const;
 

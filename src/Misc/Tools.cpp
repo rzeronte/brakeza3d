@@ -3,7 +3,6 @@
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
-#include <cmath>
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
@@ -55,11 +54,11 @@ uint8_t Tools::getBlueValueFromColor(uint32_t c) {
     return (c);
 }
 
-const float Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
+float Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
     return surface->w * u;
 }
 
-const float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
+float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
     return surface->h * v;
 }
 
@@ -185,7 +184,7 @@ int Tools::random(int min, int max) //range : [min, max)
 {
     static bool first = true;
     if (first) {
-        srand(time(NULL)); //seeding for the first time only!
+        srand(time(nullptr)); //seeding for the first time only!
         first = false;
     }
     return min + rand() % ((max + 1) - min);
@@ -251,7 +250,7 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
 }
 
 void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times) {
-    if (chunk == NULL) {
+    if (chunk == nullptr) {
         Logging::getInstance()->Log("Error loading chunk sound");
         return;
     }
@@ -323,7 +322,7 @@ int Tools::int_floor(float x) {
     return i - (i > x); /* convert trunc to floor */
 }
 
-void Tools::consoleVec3(vec3_t v, std::string name) {
+void Tools::consoleVec3(vec3_t v, const std::string& name) {
     printf("%s: %f %f %f\r\n", name.c_str(), v[0], v[1], v[2]);
 }
 
@@ -359,7 +358,7 @@ void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder) {
     }
 }
 
-std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PathFinder::PairData> path) {
+std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path) {
     std::vector<Vertex3D> result;
 
     while (!path.empty()) {

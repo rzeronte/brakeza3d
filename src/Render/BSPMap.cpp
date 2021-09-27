@@ -11,22 +11,17 @@
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
-#include "../../headers/Physics/Sprite3DBody.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);
 }
 
 void BSPMap::init(Camera3D *cam) {
-    bsp = NULL;
+    bsp = nullptr;
     this->camera = cam;
-    surfacePrimitives = NULL;
-    textureObjNames = NULL;
-    visibleSurfaces = NULL;
-
-    if (surfacePrimitives) delete[] surfacePrimitives;
-    if (textureObjNames) delete[] textureObjNames;
-    if (visibleSurfaces) delete[] visibleSurfaces;
+    surfacePrimitives = nullptr;
+    textureObjNames = nullptr;
+    visibleSurfaces = nullptr;
 
     this->textures = new Texture[MAX_MAP_TEXTURES];
     this->lightmaps = new Texture[MAX_BSP_TRIANGLES];
@@ -126,7 +121,7 @@ bool BSPMap::LoadBSP(const char *filename) {
 }
 
 // Calculate primitive surfaces
-bool BSPMap::InitializeSurfaces(void) {
+bool BSPMap::InitializeSurfaces() {
     // Allocate memory for the visible surfaces array
     visibleSurfaces = new int[this->getNumSurfaceLists()];
     allSurfaces = new int[this->getNumSurfaceLists()];
@@ -148,9 +143,6 @@ bool BSPMap::InitializeSurfaces(void) {
 
         // Get a pointer to texinfo for this surface
         texinfo_t *textureInfo = this->getTextureInfo(i);
-
-        // Get a pointer to the surface's miptextures
-        miptex_t *mipTexture = this->getMipTexture(textureInfo->texid);
 
         // Point to a surface primitive array
         primdesc_t *primitives = &surfacePrimitives[i * numMaxEdgesPerSurface];
@@ -183,7 +175,7 @@ bool BSPMap::InitializeSurfaces(void) {
 }
 
 // Build mipmaps from the textures, create texture objects and assign mipmaps to the created objects
-bool BSPMap::InitializeTextures(void) {
+bool BSPMap::InitializeTextures() {
     int numAnimTextues = 0;
     int numSkyTextures = 0;
 
@@ -212,8 +204,8 @@ bool BSPMap::InitializeTextures(void) {
 
         if (strlen(mipTexture->name) == 0) continue;
 
-        int width = mipTexture->width;
-        int height = mipTexture->height;
+        int width = (int) mipTexture->width;
+        int height = (int) mipTexture->height;
 
         textures[i] = Texture(width, height);
 
@@ -277,16 +269,14 @@ void BSPMap::InitializeTriangles() {
     // Creamos triángulos
     for (int i = 0; i < this->getNumSurfaces(); i++) {
 
-        surface_t *s = this->getSurface(i);
         texinfo_t *tInfo = this->getTextureInfo(i);
 
-        int start_number_triangle = this->model_triangles.size();
+        int start_number_triangle = (int) this->model_triangles.size();
         this->createTrianglesForSurface(i);
 
         // Hayamos el número de triángulos creados para esta superficie
-        int end_number_triangle = this->model_triangles.size();
+        int end_number_triangle = (int) this->model_triangles.size();
         int surface_num_triangles = end_number_triangle - start_number_triangle;
-        //Logging::getInstance()->Log("Surface: " + std::to_string(i) + ", NumTriangles: " + std::to_string(surface_num_triangles) +", startOffset: " + std::to_string(start_number_triangle) + ", endOffset: " + std::to_string(end_number_triangle), "");
 
         // Creamos el registro que relaciona una surface con sus triángulos
         this->surface_triangles[i].num = surface_num_triangles;
@@ -295,7 +285,6 @@ void BSPMap::InitializeTriangles() {
 
     }
 
-    this->model_triangles[0]->A.consoleInfo("A", false);
     Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
     Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
 }
@@ -313,10 +302,10 @@ void BSPMap::InitializeLightmaps() {
             int tmax = lt->height;
             int lightMapSize = lt->width * lt->height;
 
-            unsigned int *texture = new unsigned int[lightMapSize];
-            unsigned int *texture2 = new unsigned int[lightMapSize];
-            unsigned int *texture3 = new unsigned int[lightMapSize];
-            unsigned int *texture4 = new unsigned int[lightMapSize];
+            auto *texture = new unsigned int[lightMapSize];
+            auto *texture2 = new unsigned int[lightMapSize];
+            auto *texture3 = new unsigned int[lightMapSize];
+            auto *texture4 = new unsigned int[lightMapSize];
 
             // Clear block
             for (int c = 0; c < lightMapSize; c++) {
@@ -334,7 +323,7 @@ void BSPMap::InitializeLightmaps() {
                     for (int x = 0; x < smax; x++) {
                         int i = x + y * smax;
                         unsigned char lumen = *lm_data;
-                        Uint32 c = (Uint32) Tools::createRGB(lumen / 5, lumen / 5, lumen / 5);
+                        auto c = (Uint32) Tools::createRGB(lumen / 5, lumen / 5, lumen / 5);
                         switch (maps) {
                             case 0:
                                 texture[i] += c;
@@ -369,21 +358,8 @@ void BSPMap::InitializeLightmaps() {
                 }
                 this->lightmaps[surfaceId].numLightmaps++;
             }
-
-            /*Logging::getInstance()->Log(
-                    "InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) +
-                    ", numLightmaps: " + std::to_string(this->lightmaps[surfaceId].numLightmaps) +
-                    ", lightmap w: " + std::to_string(smax) +
-                    ", height: " + std::to_string(tmax) +
-                    ", mins[0]: " + std::to_string(lt->mins[0]) +
-                    ", mins[1]: " + std::to_string(lt->mins[1]) +
-                    ", maxs[0]: " + std::to_string(lt->maxs[0]) +
-                    ", maxs[1]: " + std::to_string(lt->maxs[1])
-            );*/
-
         } else {
             this->lightmaps[surfaceId].setLightMapped(false);
-            //Logging::getInstance()->Log("InitializeLightmaps: surfaceId:  " + std::to_string(surfaceId) + ",  No lightmap");
         }
     }
 }
@@ -724,7 +700,7 @@ void BSPMap::DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces) {
 
 // Traverse the BSP tree to find the leaf containing visible surfaces from a specific position
 dleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft) {
-    dleaf_t *leaf = NULL;
+    dleaf_t *leaf = nullptr;
 
     // Fetch the start node
     dnode_t *node = this->getStartNode();
@@ -937,7 +913,7 @@ Vertex3D BSPMap::getStartMapPosition() {
     return Vertex3D();
 }
 
-bool BSPMap::isCurrentLeafLiquid() {
+bool BSPMap::isCurrentLeafLiquid() const {
     if (currentLeaf == nullptr) {
         return false;
     }

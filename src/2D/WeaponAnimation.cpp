@@ -1,5 +1,7 @@
 
 #include <SDL_image.h>
+
+#include <utility>
 #include "../../headers/2D/WeaponAnimation.h"
 #include "../../headers/EngineSetup.h"
 #include "../../headers/Render/Logging.h"
@@ -14,7 +16,7 @@ WeaponAnimation::WeaponAnimation() {
 void
 WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, int offsetY, bool right, bool stopEnd,
                        int nextAnimationIndex, bool looping, bool projectile) {
-    this->baseFile = file;
+    this->baseFile = std::move(file);
     this->fps = fps;
     this->numFrames = num_frames;
     this->currentFrame = 0;
@@ -66,7 +68,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
                 "hud")->getSurface(1)->h;
     }
 
-    SDL_BlitSurface(this->frames[currentFrame], NULL, dst, &destPos);
+    SDL_BlitSurface(this->frames[currentFrame], nullptr, dst, &destPos);
 }
 
 void WeaponAnimation::updateFrame() {

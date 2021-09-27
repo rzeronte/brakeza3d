@@ -84,29 +84,29 @@ public:
 
     NPCEnemyBody *getEnemyTemplateForClassname(std::string classname);
 
-    void clearDepthBuffer();
+    void clearDepthBuffer() const;
 
-    float getDepthBuffer(int x, int y);
+    float getDepthBuffer(int x, int y) const;
 
-    float getDepthBuffer(int i);
+    float getDepthBuffer(int i) const;
 
-    void setDepthBuffer(const int x, const int y, const float value);
+    void setDepthBuffer(const int x, const int y, const float value) const;
 
-    void setDepthBuffer(const int i, const float value);
+    void setDepthBuffer(const int i, const float value) const;
 
-    float getVideoBuffer(int x, int y);
+    float getVideoBuffer(int x, int y) const;
 
-    void clearVideoBuffer();
+    void clearVideoBuffer() const;
 
-    void setVideoBuffer(const int x, const int y, Uint32 value);
+    void setVideoBuffer(const int x, const int y, Uint32 value) const;
 
-    void setVideoBuffer(const int i, Uint32 value);
+    void setVideoBuffer(const int i, Uint32 value) const;
 
     void flipVideoBufferToSurface(SDL_Surface *);
 
     void makeFireColors();
 
-    void fireShaderSetup();
+    void fireShaderSetup() const;
 };
 
 #endif

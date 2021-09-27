@@ -40,13 +40,13 @@ public:
 
     void getAid(float aid);
 
-    int getStamina() const;
+    [[nodiscard]] int getStamina() const;
 
     void setStamina(int stamina);
 
     void setLives(int lives);
 
-    bool isDead() const;
+    [[nodiscard]] bool isDead() const;
 
     void setDead(bool dead);
 
@@ -54,7 +54,7 @@ public:
 
     void respawnNPCS();
 
-    bool isCrouch() const;
+    [[nodiscard]] bool isCrouch() const;
 
     void setCrouch(bool stooped);
 };

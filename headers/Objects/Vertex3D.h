@@ -9,17 +9,19 @@
 
 class Vertex3D {
 public:
-    Vertex3D operator+(const Vertex3D &pm);
+    Vertex3D();
 
-    Vertex3D operator-(const Vertex3D &pm);
+    Vertex3D operator+(const Vertex3D &pm) const;
 
-    Vertex3D operator%(const Vertex3D &pm);
+    Vertex3D operator-(const Vertex3D &pm) const;
 
-    float operator*(const Vertex3D &pm);
+    Vertex3D operator%(const Vertex3D &pm) const;
 
-    bool operator!=(const Vertex3D &pm);
+    float operator*(const Vertex3D &pm) const;
 
-    bool operator==(const Vertex3D &pm);
+    bool operator!=(const Vertex3D &pm) const;
+
+    bool operator==(const Vertex3D &pm) const;
 
     float x = 0;
     float y = 0;
@@ -29,25 +31,23 @@ public:
     float u;
     float v;
 
-    Vertex3D();
-
     Vertex3D(float, float, float);
 
-    Vertex3D(float[3]);
+    Vertex3D(const float[3]);
 
-    Vertex3D getNormalize();
+    Vertex3D getNormalize() const;
 
-    Vertex3D getInverse();
+    Vertex3D getInverse() const;
 
-    Vertex3D getAbsolute();
+    Vertex3D getAbsolute() const;
 
-    float getModule();
+    float getModule() const;
 
-    float squaredLength();
+    float squaredLength() const;
 
-    Vertex3D getScaled(float);
+    Vertex3D getScaled(float) const;
 
-    Vertex3D getScaled(float xs, float ys, float zs);
+    Vertex3D getScaled(float xs, float ys, float zs) const;
 
     void setScaled(float);
 
@@ -57,11 +57,11 @@ public:
 
     static Vertex3D zero();
 
-    void saveToFloat3(float *v);
+    void saveToFloat3(float *v) const;
 
-    void saveToBtVector3(btVector3 *v);
+    void saveToBtVector3(btVector3 *v) const;
 
-    void consoleInfo(std::string label, bool returnLine);
+    void consoleInfo(const std::string& label, bool returnLine) const;
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

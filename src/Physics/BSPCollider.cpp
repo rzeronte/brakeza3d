@@ -47,16 +47,16 @@ void BSPCollider::resetPlayerModelData() const {
 }
 
 void BSPCollider::LoadModelCollisionForEntities() {
-    unsigned long numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
+    int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
     BSPMap *bspMAP = ComponentsManager::get()->getComponentBSP()->getBSP();
     this->entities.resize(numModels);
 
-    for (int i = 1; i < this->entities.size(); i++) {
+    for (unsigned int i = 1; i < this->entities.size(); i++) {
         this->entities[i] = getModelCollisionFromBSP(i);
     }
 
     model_t *bm;
-    for (int i = 1; i < this->entities.size(); i++) {
+    for (unsigned int i = 1; i < this->entities.size(); i++) {
         bm = bspMAP->getModel(i);
         model_collision_t *mod = this->entities[i];
 
@@ -65,12 +65,12 @@ void BSPCollider::LoadModelCollisionForEntities() {
             mod->hulls[j].firstclipnode = bm->headnode[j];
             mod->hulls[j].lastclipnode = mod->numclipnodes - 1;
 
-            VectorCopy(bm->box.max, mod->hulls[j].clip_maxs);
-            VectorCopy(bm->box.min, mod->hulls[j].clip_mins);
+            VectorCopy(bm->box.max, mod->hulls[j].clip_maxs)
+            VectorCopy(bm->box.min, mod->hulls[j].clip_mins)
         }
 
-        VectorAdd(mod->origin, mod->mins, mod->absmin);
-        VectorAdd(mod->origin, mod->maxs, mod->absmax);
+        VectorAdd(mod->origin, mod->mins, mod->absmin)
+        VectorAdd(mod->origin, mod->maxs, mod->absmax)
 
         Logging::getInstance()->Log("modelindex: " + std::to_string(i));
 
@@ -138,10 +138,10 @@ model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId) {
     Mod_LoadClipnodes_BSP29(model, bspMap->header);
     Mod_MakeDrawHull(model);
 
-    VectorCopy(bspModel->origin, model->origin);
-    VectorCopy(bspModel->box.min, model->mins);
-    VectorCopy(bspModel->box.max, model->maxs);
-    VectorCopy(bspModel->origin, model->oldorigin);
+    VectorCopy(bspModel->origin, model->origin)
+    VectorCopy(bspModel->box.min, model->mins)
+    VectorCopy(bspModel->box.max, model->maxs)
+    VectorCopy(bspModel->origin, model->oldorigin)
 
     return model;
 }
@@ -189,7 +189,7 @@ hull_t *BSPCollider::SV_HullForEntity(model_collision_t *ent, const vec3_t mins,
     // decide which clipping hull to use, based on the size
     // explicit hulls in the BSP model
 
-    VectorSubtract (maxs, mins, size);
+    VectorSubtract (maxs, mins, size)
 
     if (size[0] < 3) {
         hull = &ent->hulls[0];
@@ -199,8 +199,8 @@ hull_t *BSPCollider::SV_HullForEntity(model_collision_t *ent, const vec3_t mins,
         hull = &ent->hulls[2];
     }
     // calculate an offset value to center the origin
-    VectorSubtract (hull->clip_mins, mins, offset);
-    VectorAdd (offset, ent->origin, offset);
+    VectorSubtract (hull->clip_mins, mins, offset)
+    VectorAdd (offset, ent->origin, offset)
 
     return hull;
 }
@@ -331,10 +331,10 @@ bool BSPCollider::SV_RecursiveHullCheck(hull_t *hull, int hullFirstClipNode, flo
     // the other side of the node is solid, this is the impact point
     //==================
     if (!side) {
-        VectorCopy (plane->normal, trace->plane.normal);
+        VectorCopy (plane->normal, trace->plane.normal)
         trace->plane.dist = plane->dist;
     } else {
-        VectorSubtract (vec3_origin, plane->normal, trace->plane.normal);
+        VectorSubtract (vec3_origin, plane->normal, trace->plane.normal)
         trace->plane.dist = -plane->dist;
     }
 
@@ -343,7 +343,7 @@ bool BSPCollider::SV_RecursiveHullCheck(hull_t *hull, int hullFirstClipNode, flo
         frac -= 0.1;
         if (frac < 0) {
             trace->fraction = midf;
-            VectorCopy (mid, trace->endpos);
+            VectorCopy (mid, trace->endpos)
             return false;
         }
         midf = p1f + (p2f - p1f) * frac;
@@ -353,7 +353,7 @@ bool BSPCollider::SV_RecursiveHullCheck(hull_t *hull, int hullFirstClipNode, flo
     }
 
     trace->fraction = midf;
-    VectorCopy (mid, trace->endpos);
+    VectorCopy (mid, trace->endpos)
 
     return false;
 }
@@ -377,19 +377,19 @@ trace_t BSPCollider::SV_ClipMoveToEntity(model_collision_t *ent, const vec3_t st
     memset(&trace, 0, sizeof(trace_t));
     trace.fraction = 1;
     trace.allsolid = true;
-    VectorCopy (end, trace.endpos);
+    VectorCopy (end, trace.endpos)
 
     // get the clipping hull
     hull = SV_HullForEntity(ent, mins, maxs, offset);
 
-    VectorSubtract (start, offset, start_l);
-    VectorSubtract (end, offset, end_l);
+    VectorSubtract (start, offset, start_l)
+    VectorSubtract (end, offset, end_l)
 
     // trace a line through the apropriate clipping hull
     SV_RecursiveHullCheck(hull, hull->firstclipnode, 0, 1, start_l, end_l, &trace);
 
     // fix trace up by the offset
-    if (trace.fraction != 1) VectorAdd (trace.endpos, offset, trace.endpos);
+    if (trace.fraction != 1) VectorAdd (trace.endpos, offset, trace.endpos)
 
     // did we clip the move?
     if (trace.fraction < 1 || trace.startsolid)
@@ -411,8 +411,8 @@ trace_t BSPCollider::SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,
     clip.maxs = maxs;
     clip.type = type;
 
-    VectorCopy (mins, clip.mins);
-    VectorCopy (maxs, clip.maxs);
+    VectorCopy (mins, clip.mins)
+    VectorCopy (maxs, clip.maxs)
 
     // create the bounding box of the entire move
     SV_MoveBounds(start, clip.mins, clip.maxs, end, clip.boxmins, clip.boxmaxs);
@@ -483,9 +483,9 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
     numbumps = 4;
 
     blocked = 0;
-    VectorCopy (ent->velocity, original_velocity);
-    VectorCopy (ent->velocity, primal_velocity);
-    VectorCopy (ent->velocity, new_velocity);
+    VectorCopy (ent->velocity, original_velocity)
+    VectorCopy (ent->velocity, primal_velocity)
+    VectorCopy (ent->velocity, new_velocity)
 
     numplanes = 0;
 
@@ -504,13 +504,13 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
 
         // entity is trapped in another solid
         if (trace.allsolid) {
-            VectorCopy (vec3_origin, ent->velocity);
+            VectorCopy (vec3_origin, ent->velocity)
             return 3;
         }
 
         if (trace.fraction > 0) {    // actually covered some distance
-            VectorCopy (trace.endpos, ent->origin);
-            VectorCopy (ent->velocity, original_velocity);
+            VectorCopy (trace.endpos, ent->origin)
+            VectorCopy (ent->velocity, original_velocity)
             numplanes = 0;
         }
 
@@ -546,11 +546,11 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
 
         // cliped to another plane
         if (numplanes >= MAX_CLIP_PLANES) {    // this shouldn't really happen
-            VectorCopy (vec3_origin, ent->velocity);
+            VectorCopy (vec3_origin, ent->velocity)
             return 3;
         }
 
-        VectorCopy (trace.plane.normal, planes[numplanes]);
+        VectorCopy (trace.plane.normal, planes[numplanes])
         numplanes++;
 
         // modify original_velocity so it parallels all of the clip planes
@@ -566,11 +566,11 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
         }
 
         if (i != numplanes) {    // go along this plane
-            VectorCopy (new_velocity, ent->velocity);
+            VectorCopy (new_velocity, ent->velocity)
         } else {    // go along the crease
             if (numplanes != 2) {
                 printf("clip velocity, numplanes == %i\n", numplanes);
-                VectorCopy (vec3_origin, ent->velocity);
+                VectorCopy (vec3_origin, ent->velocity)
                 return 7;
             }
 
@@ -582,7 +582,7 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
         // if original velocity is against the original velocity, stop dead
         // to avoid tiny occilations in sloping corners
         if (DotProduct (ent->velocity, primal_velocity) <= 0) {
-            VectorCopy (vec3_origin, ent->velocity);
+            VectorCopy (vec3_origin, ent->velocity)
             return blocked;
         }
     }
@@ -594,7 +594,7 @@ trace_t BSPCollider::SV_PushEntity(model_collision_t *ent, vec3_t push) {
     trace_t trace;
     vec3_t end;
 
-    VectorAdd (ent->origin, push, end);
+    VectorAdd (ent->origin, push, end)
 
     /*if (ent->movetype == MOVETYPE_FLYMISSILE)
         trace = SV_Move (ent->origin, ent->mins, ent->maxs, end, MOVE_MISSILE);
@@ -604,7 +604,7 @@ trace_t BSPCollider::SV_PushEntity(model_collision_t *ent, vec3_t push) {
     else*/
     trace = SV_Move(ent->origin, ent->mins, ent->maxs, end, MOVE_NORMAL);
 
-    VectorCopy (trace.endpos, ent->origin);
+    VectorCopy (trace.endpos, ent->origin)
 
     return trace;
 }
@@ -650,7 +650,7 @@ void BSPCollider::SV_WallFriction(model_collision_t *ent, trace_t *trace) {
     // cut the tangential velocity
     i = DotProduct (trace->plane.normal, ent->velocity);
     VectorScale(trace->plane.normal, i, into);
-    VectorSubtract (ent->velocity, into, side);
+    VectorSubtract (ent->velocity, into, side)
 
     ent->velocity[0] = side[0] * (1 + d);
     ent->velocity[1] = side[1] * (1 + d);
@@ -673,8 +673,8 @@ int BSPCollider::SV_TryUnstick(model_collision_t *ent, vec3_t oldvel) {
     int clip;
     trace_t steptrace;
 
-    VectorCopy (ent->origin, oldorg);
-    VectorCopy (vec3_origin, dir);
+    VectorCopy (ent->origin, oldorg)
+    VectorCopy (vec3_origin, dir)
 
     for (i = 0; i < 8; i++) {
         // try pushing a little in an axial direction
@@ -728,10 +728,10 @@ int BSPCollider::SV_TryUnstick(model_collision_t *ent, vec3_t oldvel) {
         }
 
         // go back to the original pos and try again
-        VectorCopy (oldorg, ent->origin);
+        VectorCopy (oldorg, ent->origin)
     }
 
-    VectorCopy (vec3_origin, ent->velocity);
+    VectorCopy (vec3_origin, ent->velocity)
     return 7;        // still not moving
 }
 
@@ -750,8 +750,8 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
     ent->flags = ent->flags & ~FL_ONGROUND;
 
     // Almacena la posición original y la velocidad de la entidad antes de hacerle ningún cambio
-    VectorCopy (ent->origin, oldorg);
-    VectorCopy (ent->velocity, oldvel);
+    VectorCopy (ent->origin, oldorg)
+    VectorCopy (ent->velocity, oldvel)
 
     // Intentamos hacer el movimiento fly completo y almacenamos la traza
     // 1 = floor, 2 = wall / step, 4 = dead stop
@@ -767,14 +767,14 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
         return;        // don't stair up while jumping
     }
 
-    VectorCopy (ent->origin, nosteporg);
-    VectorCopy (ent->velocity, nostepvel);
+    VectorCopy (ent->origin, nosteporg)
+    VectorCopy (ent->velocity, nostepvel)
 
     // try moving up and forward to go up a step
-    VectorCopy (oldorg, ent->origin);    // back to start pos
+    VectorCopy (oldorg, ent->origin)   // back to start pos
 
-    VectorCopy (vec3_origin, upmove);
-    VectorCopy (vec3_origin, downmove);
+    VectorCopy (vec3_origin, upmove)
+    VectorCopy (vec3_origin, downmove)
     upmove[2] = STEPSIZE;
     downmove[2] = -STEPSIZE + oldvel[2] * deltaTime;
 
@@ -814,8 +814,8 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
         // if the push down didn't end up on good ground, use the move without
         // the step up.  This happens near wall / slope combinations, and can
         // cause the player to hop up higher on a slope too steep to climb
-        VectorCopy (nosteporg, ent->origin);
-        VectorCopy (nostepvel, ent->velocity);
+        VectorCopy (nosteporg, ent->origin)
+        VectorCopy (nostepvel, ent->velocity)
     }
 }
 
@@ -898,7 +898,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
     if (!SV_TestEntityPosition(ent)) {
         // caching origin in oldorigin
         //Logging::getInstance()->Log("inside map");
-        VectorCopy (ent->origin, ent->oldorigin);
+        VectorCopy (ent->origin, ent->oldorigin)
         return;
     }
 
@@ -907,8 +907,8 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
 
     // is out of map
     vec3_t org;
-    VectorCopy (ent->origin, org);                  // saving current bad position
-    VectorCopy (ent->oldorigin, ent->origin);   // recover last good position in entity origin
+    VectorCopy (ent->origin, org)                 // saving current bad position
+    VectorCopy (ent->oldorigin, ent->origin)  // recover last good position in entity origin
 
     // Check again
     if (!SV_TestEntityPosition(ent)) {
@@ -932,7 +932,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
         }
     }
 
-    VectorCopy (org, ent->origin);
+    VectorCopy (org, ent->origin)
     Logging::getInstance()->Log("player is stuck.\n");
 }
 
@@ -1165,8 +1165,8 @@ void BSPCollider::SV_ClientThink(model_collision_t *model, float deltaTime) {
     vec3_t origin;
     vec3_t velocity;
 
-    VectorCopy(model->origin, origin);
-    VectorCopy(model->velocity, velocity);
+    VectorCopy(model->origin, origin)
+    VectorCopy(model->velocity, velocity)
 
     DropPunchAngle(model, deltaTime);
 
@@ -1174,10 +1174,10 @@ void BSPCollider::SV_ClientThink(model_collision_t *model, float deltaTime) {
     // angles
     // show 1/3 the pitch angle and all the roll angle
     vec3_t angles;
-    VectorCopy(model->angles, angles);
+    VectorCopy(model->angles, angles)
 
     vec3_t v_angle;
-    VectorAdd (model->v_angle, model->punchangle, v_angle);
+    VectorAdd (model->v_angle, model->punchangle, v_angle)
 
     angles[ROLL] = V_CalcRoll(model->angles, model->velocity) * 4;
 
@@ -1186,7 +1186,7 @@ void BSPCollider::SV_ClientThink(model_collision_t *model, float deltaTime) {
         angles[YAW] = v_angle[YAW];
     }
 
-    VectorCopy(angles, model->angles);
+    VectorCopy(angles, model->angles)
 
     SV_AirMove(model, deltaTime);
 }
@@ -1283,7 +1283,7 @@ float BSPCollider::V_CalcBob(float time, vec3_t velocity) {
 int nanmask = 255 << 23;
 
 void BSPCollider::SV_CheckVelocity(model_collision_t *ent) {
-    float maxvelocity = MAX_VELOCITY;
+    float maxvelocity = MAX_VELOCITY
     float wishspeed = VectorLength(ent->velocity);
 
     float tmp = ent->velocity[2];
@@ -1298,7 +1298,7 @@ void BSPCollider::SV_AirMove(model_collision_t *model, float deltaTime) {
     vec3_t wishvel;
     float fmove, smove;
 
-    float maxvelocity = MAX_VELOCITY;
+    float maxvelocity = MAX_VELOCITY
 
     vec3_t forward, right, up;
     AngleVectors(model->angles, forward, right, up);
@@ -1316,16 +1316,16 @@ void BSPCollider::SV_AirMove(model_collision_t *model, float deltaTime) {
     else
         wishvel[2] = 0;
 
-    VectorCopy (wishvel, model->wishdir);
+    VectorCopy (wishvel, model->wishdir)
     model->wishspeed = VectorNormalize(model->wishdir);
     if (model->wishspeed > maxvelocity) {
         VectorScale(wishvel, maxvelocity / model->wishspeed, wishvel);
-        VectorCopy (wishvel, model->wishdir);
+        VectorCopy (wishvel, model->wishdir)
         model->wishspeed = maxvelocity;
     }
 
     if (model->movetype == MOVETYPE_NOCLIP) {    // noclip
-        VectorCopy (wishvel, model->velocity);
+        VectorCopy (wishvel, model->velocity)
     } else if (onground) {
         SV_UserFriction(model, deltaTime);
         SV_Accelerate(model, deltaTime);

@@ -4,14 +4,10 @@
 
 #include "../headers/ComponentsManager.h"
 
-ComponentsManager *ComponentsManager::instance = 0;
-
-ComponentsManager::ComponentsManager() {
-
-}
+ComponentsManager *ComponentsManager::instance = nullptr;
 
 ComponentsManager *ComponentsManager::get() {
-    if (instance == 0) {
+    if (instance == nullptr) {
         instance = new ComponentsManager();
     }
 

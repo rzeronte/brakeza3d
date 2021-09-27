@@ -6,10 +6,6 @@
 #include "../../headers/EngineSetup.h"
 #include "../../headers/ComponentsManager.h"
 
-BillboardBody::BillboardBody() {
-
-}
-
 void BillboardBody::integrate() {
     if (this->mass == 0) {
         //return;
@@ -24,7 +20,7 @@ void BillboardBody::integrate() {
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion quat = t.getRotation();
+    //btQuaternion quat = t.getRotation();
     //float angle = quat.getAngle();
     //btVector3 axis = quat.getAxis();
 }

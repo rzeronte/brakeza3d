@@ -1,7 +1,6 @@
 
 #include <SDL2/SDL_surface.h>
 #include "../headers/EngineBuffers.h"
-#include "../headers/Misc/cJSON.h"
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
@@ -67,39 +66,39 @@ EngineBuffers::EngineBuffers() {
     gibsTemplate->addAnimation(setup->SPRITES_FOLDER + "gibs/gibs3", 8, 25);
 }
 
-void EngineBuffers::clearDepthBuffer() {
+void EngineBuffers::clearDepthBuffer() const {
     std::fill(depthBuffer, depthBuffer + sizeBuffers, 10000);
 }
 
-float EngineBuffers::getDepthBuffer(int x, int y) {
+float EngineBuffers::getDepthBuffer(int x, int y) const {
     return depthBuffer[y * this->widthVideoBuffer + x];
 }
 
-float EngineBuffers::getDepthBuffer(int i) {
+float EngineBuffers::getDepthBuffer(int i) const {
     return depthBuffer[i];
 }
 
-void EngineBuffers::setDepthBuffer(int x, int y, float value) {
+void EngineBuffers::setDepthBuffer(int x, int y, float value) const {
     depthBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setDepthBuffer(const int i, const float value) {
+void EngineBuffers::setDepthBuffer(const int i, const float value) const {
     depthBuffer[i] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value) {
+void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value) const {
     videoBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int i, Uint32 value) {
+void EngineBuffers::setVideoBuffer(const int i, Uint32 value) const {
     videoBuffer[i] = value;
 }
 
-float EngineBuffers::getVideoBuffer(int x, int y) {
+float EngineBuffers::getVideoBuffer(int x, int y) const {
     return videoBuffer[y * this->widthVideoBuffer + x];
 }
 
-void EngineBuffers::clearVideoBuffer() {
+void EngineBuffers::clearVideoBuffer() const {
     if (EngineSetup::getInstance()->ENABLE_FOG) {
         std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::getInstance()->FOG_COLOR);
         return;
@@ -126,7 +125,7 @@ void EngineBuffers::makeFireColors() {
     }
 }
 
-void EngineBuffers::fireShaderSetup() {
+void EngineBuffers::fireShaderSetup() const {
     // Set whole screen to 0 (color: 0x07,0x07,0x07)
     int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
     int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;

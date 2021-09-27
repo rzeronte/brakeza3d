@@ -1,9 +1,10 @@
 
 #include <SDL_image.h>
+
+#include <utility>
 #include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"
-#include "../../headers/Brakeza3D.h"
 
 ComponentWeapons::ComponentWeapons() {
     this->currentWeaponIndex = SETUP->WeaponsTypes::EMPTY;
@@ -34,20 +35,20 @@ void ComponentWeapons::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
 void ComponentWeapons::addWeaponType(std::string label) {
-    this->weaponTypes.emplace_back(new WeaponType(label));
+    this->weaponTypes.emplace_back(new WeaponType(std::move(label)));
 }
 
-WeaponType *ComponentWeapons::getWeaponTypeByLabel(std::string label) {
+WeaponType *ComponentWeapons::getWeaponTypeByLabel(const std::string& label) {
     for (int i = 0; i < this->weaponTypes.size(); i++) {
         if (this->weaponTypes[i]->label == label) {
             return this->weaponTypes[i];
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
-WeaponType *ComponentWeapons::getWeaponTypeByClassname(std::string classname) {
+WeaponType *ComponentWeapons::getWeaponTypeByClassname(const std::string& classname) {
     for (int i = 0; i < weaponTypes.size(); i++) {
         if (this->weaponTypes[i]->classname == classname) {
             return this->weaponTypes[i];
@@ -61,7 +62,7 @@ WeaponType *ComponentWeapons::getCurrentWeaponType() {
     return this->weaponTypes[currentWeaponIndex];
 }
 
-AmmoType *ComponentWeapons::getAmmoTypeByClassname(std::string classname) {
+AmmoType *ComponentWeapons::getAmmoTypeByClassname(const std::string& classname) {
     for (int i = 0; i < ammoTypes.size(); i++) {
         if (this->ammoTypes[i]->getClassname() == classname) {
             return this->ammoTypes[i];
@@ -88,7 +89,7 @@ void ComponentWeapons::headBob(Vector3D velocity) {
     }
 }
 
-bool ComponentWeapons::isEmptyWeapon() {
+bool ComponentWeapons::isEmptyWeapon() const {
     if (this->currentWeaponIndex >= 0) {
         return false;
     }
@@ -96,14 +97,14 @@ bool ComponentWeapons::isEmptyWeapon() {
     return true;
 }
 
-void ComponentWeapons::setCurrentWeaponIndex(int currentWeaponIndex) {
-    if (currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
+void ComponentWeapons::setCurrentWeaponIndex(int newCurrentWeaponIndex) {
+    if (newCurrentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
         // Si ya teníamos un arma, la deshabilitamos
         if (this->currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
             this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled(false);
         }
 
-        ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
+        ComponentWeapons::currentWeaponIndex = newCurrentWeaponIndex;
 
         // Habilitamos la nueva selección
         this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled(true);
@@ -111,7 +112,7 @@ void ComponentWeapons::setCurrentWeaponIndex(int currentWeaponIndex) {
         return;
     }
 
-    ComponentWeapons::currentWeaponIndex = currentWeaponIndex;
+    ComponentWeapons::currentWeaponIndex = newCurrentWeaponIndex;
 
 }
 

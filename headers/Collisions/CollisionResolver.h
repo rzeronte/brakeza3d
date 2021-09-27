@@ -25,21 +25,19 @@ public:
     CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap,
                       std::vector<Triangle *> &visibleTriangles);
 
-    virtual ~CollisionResolver();
-
     int getTypeCollision();
 
-    bool isSomeCamera();
+    bool isSomeCamera() const;
 
-    bool isSomeNPCEnemy();
+    bool isSomeNPCEnemy() const;
 
-    bool isSomeNPCEnemyPart();
+    bool isSomeNPCEnemyPart() const;
 
-    bool isSomeProjectile();
+    bool isSomeProjectile() const;
 
-    bool isSomeMesh3D();
+    bool isSomeMesh3D() const;
 
-    bool isSomeMesh3DFuncDoor();
+    bool isSomeMesh3DFuncDoor() const;
 
     bool isSomeMesh3DFuncButton();
 
@@ -47,15 +45,15 @@ public:
 
     bool isSomeMesh3DTriggerTeleport();
 
-    bool isSomeItemWeapon();
+    bool isSomeItemWeapon() const;
 
-    bool isSomeItemHealth();
+    bool isSomeItemHealth() const;
 
-    bool isSomeItemAmmo();
+    bool isSomeItemAmmo() const;
 
-    bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query);
+    bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query) const;
 
-    void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId);
+    void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId) const;
 
     int getType() const;
 

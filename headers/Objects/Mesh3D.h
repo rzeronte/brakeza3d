@@ -32,9 +32,6 @@ public:
     Texture *modelTextures;
     Vertex3D *modelVertices;
 
-    vec3_t *verticesTextureCoordsList;
-
-    int numVertices;
     int numTextures;
 
     bool shadowCaster;
@@ -49,17 +46,6 @@ public:
     void AssimpProcessNodes(const aiScene *, aiNode *node);
 
     void AssimpLoadMesh(aiMesh *mesh);
-
-    // OBJ
-    bool loadOBJBlender(const char *name);
-
-    void loadOBJBlenderVertex();
-
-    void loadOBJBlenderTriangles();
-
-    void loadOBJBlenderTextureCoordinates();
-
-    void loadOBJBlenderMaterials();
 
     void sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles);
     //void shadowMapping(LightPoint3D *);
@@ -93,7 +79,7 @@ public:
 
     void buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction);
 
-    void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY);
+    void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY);
 
 private:
     Octree *octree;

@@ -62,11 +62,11 @@ public:
 
     void setBSPMap(BSPMap *bspMap);
 
-    std::vector<Triangle *> &getVisibleTriangles();
+    std::vector<Triangle *> &getVisibleTriangles() const;
 
     void setVisibleTriangles(std::vector<Triangle *> &visibleTriangles);
 
-    bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1);
+    static bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1);
 
     void updatePhysicObjects();
 

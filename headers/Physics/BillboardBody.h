@@ -12,7 +12,7 @@
 class BillboardBody : public Object3D, public Billboard, public Body {
 
 public:
-    BillboardBody();
+    BillboardBody() = default;
 
     void integrate() override;
 

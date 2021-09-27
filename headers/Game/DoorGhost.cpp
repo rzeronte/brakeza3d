@@ -99,7 +99,7 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ) {
     // Si he superado el límite actualizo estado
     if (offsetMoving >= abs(maxMovementSize)) {
 
-        if (reverseMoving == true) {
+        if (reverseMoving) {
             reverseMoving = false;
         } else {
             timer->start();
@@ -133,7 +133,7 @@ Vertex3D DoorGhost::integrateVerticalMovement(float sizeY) {
     }
 
     if (offsetMoving >= abs(sizeY)) {
-        if (reverseMoving == true) {
+        if (reverseMoving) {
             reverseMoving = false;
         } else {
             timer->start();

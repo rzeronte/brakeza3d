@@ -54,7 +54,7 @@ public:
 
     void drawFlat(int, int);
 
-    void drawFlatLightMap(int, int);
+    void drawFlatLightMap(int, int) const;
 
     void loadBMP(const char *file, int);
 

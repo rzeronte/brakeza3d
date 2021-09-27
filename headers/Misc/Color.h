@@ -10,10 +10,6 @@
 
 class Color {
 public:
-    Color();
-
-    virtual ~Color();
-
     static Uint32 white() { return 0xFFFFFF; }
 
     static Uint32 red() { return 0xFF0000; }

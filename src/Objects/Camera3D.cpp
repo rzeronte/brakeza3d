@@ -45,7 +45,7 @@ Camera3D::Camera3D() {
     this->follow_to_position_offset = Vertex3D(10, -15, 0);
 }
 
-float Camera3D::getNearDistance() {
+float Camera3D::getNearDistance() const {
     return (1 / tanf(Maths::degreesToRadians(this->horizontal_fov / 2)));
 }
 
@@ -68,7 +68,7 @@ float Camera3D::calcCanvasNearHeight() {
     return height;
 }
 
-float Camera3D::calcCanvasFarWidth() {
+float Camera3D::calcCanvasFarWidth() const {
     float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * farDistance);
 
     return width;
@@ -80,7 +80,7 @@ float Camera3D::calcCanvasFarHeight() {
     return height;
 }
 
-float Camera3D::getScreenAspectRatio() {
+float Camera3D::getScreenAspectRatio() const {
     return this->aspectRatio;
 }
 
@@ -127,38 +127,38 @@ void Camera3D::Yaw(float yaw) {
     this->yaw -= yaw * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
 }
 
-void Camera3D::PitchUp(void) {
+void Camera3D::PitchUp() {
     pitch += EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
-void Camera3D::PitchDown(void) {
+void Camera3D::PitchDown() {
     pitch -= EngineSetup::getInstance()->PITCH_SPEED;
     limitPitch();
 }
 
-void Camera3D::MoveForward(void) {
+void Camera3D::MoveForward() {
     speed += EngineSetup::getInstance()->WALKING_SPEED;
 }
 
-void Camera3D::MoveBackward(void) {
+void Camera3D::MoveBackward() {
     speed -= EngineSetup::getInstance()->WALKING_SPEED;
 }
 
-void Camera3D::TurnRight(void) {
+void Camera3D::TurnRight() {
     yaw -= EngineSetup::getInstance()->TURN_SPEED;
 }
 
-void Camera3D::TurnLeft(void) {
+void Camera3D::TurnLeft() {
     yaw += EngineSetup::getInstance()->TURN_SPEED;
 }
 
-void Camera3D::StrafeRight(void) {
+void Camera3D::StrafeRight() {
     strafe += EngineSetup::getInstance()->STRAFE_SPEED;
 
 }
 
-void Camera3D::StrafeLeft(void) {
+void Camera3D::StrafeLeft() {
     strafe -= EngineSetup::getInstance()->STRAFE_SPEED;
 }
 
@@ -208,7 +208,7 @@ void Camera3D::setFollowTo(Object3D *followTo) {
     follow_to = followTo;
 }
 
-void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsule) {
+void Camera3D::makeKineticCharacter(const btTransform& transform, btConvexShape *capsule) {
     m_ghostObject = new btPairCachingGhostObject();
     m_ghostObject->setWorldTransform(transform);
 
@@ -216,6 +216,6 @@ void Camera3D::makeKineticCharacter(btTransform transform, btConvexShape *capsul
     m_ghostObject->setUserPointer(this);
 }
 
-btPairCachingGhostObject *Camera3D::getGhostObject() {
+btPairCachingGhostObject *Camera3D::getGhostObject() const {
     return m_ghostObject;
 }

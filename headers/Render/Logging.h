@@ -9,13 +9,11 @@ public:
 
     static Logging *instance;
 
-    Logging();
-
 public:
 
     static Logging *getInstance();
 
-    void Log(std::string message, std::string type);
+    static void Log(std::string message, std::string type);
 
     void Log(std::string message);
 };

@@ -43,7 +43,7 @@ public:
 
     void setStatusFaceAnimation(int id);
 
-    void writeText(int x, int y, const char *, bool bold);
+    void writeText(int x, int y, const char *, bool bold) const;
 
     void writeTextCenter(const char *, bool bold);
 

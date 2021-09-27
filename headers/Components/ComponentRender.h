@@ -27,8 +27,6 @@ struct Fragment {
 class ComponentRender : public Component {
 public:
 
-    ComponentRender();
-
     void onStart();
 
     void preUpdate();

@@ -43,11 +43,11 @@ public:
 
     Camera3D *getCamera() const;
 
-    void updateCameraBSPCollider();
+    void updateCameraBSPCollider() const;
 
-    void drawCheckTrace(std::string o1, std::string o2);
+    static void drawCheckTrace(std::string o1, std::string o2);
 
-    int pointHullContent(vec3_t p);
+    static int pointHullContent(vec3_t p);
 
     bool isFlyMode() const;
 

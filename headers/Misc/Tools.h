@@ -30,9 +30,9 @@ public:
 
     static void SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 
-    static const float getXTextureFromUV(SDL_Surface *surface, float u);
+    static float getXTextureFromUV(SDL_Surface *surface, float u);
 
-    static const float getYTextureFromUV(SDL_Surface *surface, float v);
+    static float getYTextureFromUV(SDL_Surface *surface, float v);
 
     static Uint32 readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v);
 
@@ -81,13 +81,13 @@ public:
 
     static int int_floor(float x);
 
-    static void consoleVec3(vec3_t v, std::string);
+    static void consoleVec3(vec3_t v, const std::string&);
 
     static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
 
     static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
 
-    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PathFinder::PairData> path);
+    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PairData> path);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

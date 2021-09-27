@@ -21,7 +21,7 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
 
     if (recursiveDepth >= MAX_RECURSIVE_DEPTH) {
         for (int i = 0; i < 8; i++) {
-            node->children[i] = NULL;
+            node->children[i] = nullptr;
         }
         return node;
     }
@@ -59,6 +59,8 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
                 break;
             case 7:
                 childOffset = Vertex3D(childSize.x, 0, childSize.z);
+                break;
+            default:
                 break;
         }
 

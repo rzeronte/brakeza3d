@@ -2,10 +2,10 @@
 #include "../headers/EngineSetup.h"
 #include "../headers/Misc/Tools.h"
 
-EngineSetup *EngineSetup::instance = 0;
+EngineSetup *EngineSetup::instance = nullptr;
 
 EngineSetup *EngineSetup::getInstance() {
-    if (instance == 0) {
+    if (instance == nullptr) {
         instance = new EngineSetup();
     }
 

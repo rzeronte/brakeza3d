@@ -434,7 +434,7 @@ public:
 
     unsigned char *getLightmap(int id) { return (unsigned char *) (&bsp[header->lightmaps.offset + id]); }
 
-    bool isCurrentLeafLiquid();
+    bool isCurrentLeafLiquid() const;
 
     static bool isLeafLiquid(int type);
 

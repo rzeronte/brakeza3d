@@ -58,7 +58,7 @@ public:
     static int
     TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle *> &triangles,
                        Object3D *parent, Texture *texture, Texture *lightmap, bool isClipped, bool isBsp,
-                       unsigned char[4]);
+                       const unsigned char[4]);
 
     static bool
     ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int plane_id, Plane *planes);

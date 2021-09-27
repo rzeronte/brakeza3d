@@ -16,7 +16,7 @@ public:
 
     Line2D(int, int, int, int);
 
-    Point2D middlePoint();
+    Point2D middlePoint() const;
 
 };
 

@@ -1,6 +1,5 @@
 
 #include "../headers/Brakeza3D.h"
-#include <thread>
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 

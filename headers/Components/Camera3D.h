@@ -44,13 +44,13 @@ public:
 
     float calcCanvasNearHeight();
 
-    float getScreenAspectRatio();
+    float getScreenAspectRatio() const;
 
-    float calcCanvasFarWidth();
+    float calcCanvasFarWidth() const;
 
     float calcCanvasFarHeight();
 
-    float getNearDistance();
+    float getNearDistance() const;
 
     float getVerticalFOV();
 
@@ -84,11 +84,11 @@ public:
 
     void limitPitch();
 
-    void makeKineticCharacter(btTransform transform, btConvexShape *capsule);
+    void makeKineticCharacter(const btTransform& transform, btConvexShape *capsule);
 
     void consoleInfo();
 
-    btPairCachingGhostObject *getGhostObject();
+    btPairCachingGhostObject *getGhostObject() const;
 };
 
 

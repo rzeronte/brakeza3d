@@ -1,7 +1,8 @@
 
 #include <SDL_image.h>
+
+#include <utility>
 #include "../../headers/Game/WeaponType.h"
-#include "../../headers/Render/Drawable.h"
 #include "../../headers/Brakeza3D.h"
 
 WeaponType::WeaponType() : available(true) {
@@ -23,10 +24,10 @@ WeaponType::WeaponType(std::string label) {
     counterCadence = new Counter();
 }
 
-void WeaponType::addAnimation(std::string label, std::string model, float scale, bool stopEnd) {
-    std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + model;
+void WeaponType::addAnimation(std::string newLabel, std::string newModel, float scale, bool stopEnd) {
+    std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + newModel;
 
-    weaponAnimations->addAnimation(label, model, scale, stopEnd);
+    weaponAnimations->addAnimation(std::move(newLabel), newModel, scale, stopEnd);
     weaponAnimations[this->numAnimations].rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
     this->numAnimations++;
 }
@@ -48,7 +49,7 @@ void WeaponType::setWeaponAnimation(int animationIndex) {
     }
 }
 
-Mesh3DAnimated *WeaponType::getCurrentWeaponAnimation() {
+Mesh3DAnimated *WeaponType::getCurrentWeaponAnimation() const {
     return this->weaponAnimations->getCurrentMesh3DAnimated();
 }
 
@@ -57,7 +58,7 @@ void WeaponType::setSpeed(float speed) {
 }
 
 
-float WeaponType::getDamage() {
+float WeaponType::getDamage() const {
     return this->damage;
 }
 
@@ -85,14 +86,14 @@ int WeaponType::getSpeed() const {
     return speed;
 }
 
-void WeaponType::loadIconHUD(std::string file) {
+void WeaponType::loadIconHUD(const std::string& file) {
     std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + file;
 
     Logging::getInstance()->Log("Loading weapon icon:" + path);
 
     this->iconHUD = IMG_Load(path.c_str());
 
-    if (this->iconHUD == NULL) {
+    if (this->iconHUD == nullptr) {
         Logging::getInstance()->Log("Error loading weapon icon:" + path);
     }
 }
@@ -118,14 +119,14 @@ void WeaponType::setSniper(bool sniper) {
     WeaponType::sniper = sniper;
 }
 
-void WeaponType::loadSniperHUD(std::string file) {
+void WeaponType::loadSniperHUD(const std::string& file) {
     std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/" + file;
 
     Logging::getInstance()->Log("Loading weapon Sniper HUD img:" + path);
 
     this->sniperHUD = IMG_Load(path.c_str());
 
-    if (this->sniperHUD == NULL) {
+    if (this->sniperHUD == nullptr) {
         Logging::getInstance()->Log("Error loading Sniper HUD img:" + path);
     }
 }
@@ -178,7 +179,7 @@ void WeaponType::setDamageRadius(float damageRadius) {
     WeaponType::damageRadius = damageRadius;
 }
 
-Mesh3D *WeaponType::getModel() {
+Mesh3D *WeaponType::getModel() const {
     return model;
 }
 

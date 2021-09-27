@@ -59,7 +59,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
         auto *sprite = dynamic_cast<Sprite3D *> (triangles[i]->parent);
 
         // Decals ignoran sprites
-        if (spriteDirectional != NULL || sprite != NULL) {
+        if (spriteDirectional != nullptr || sprite != nullptr) {
             continue;
         }
 

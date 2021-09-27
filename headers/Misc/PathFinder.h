@@ -14,11 +14,12 @@
 #include "../Objects/Vertex3D.h"
 
 #define FLT_MAX 10
+typedef std::pair<int, int> PairData;
+
 
 class PathFinder {
 public:
     // Creating a shortcut for int, int pair type
-    typedef std::pair<int, int> PairData;
 
     void demo();
 
@@ -34,9 +35,9 @@ public:
 
     void saveGridToPNG(const std::string& filename);
 
-    void loadGridFromPNG(std::string filename);
+    void loadGridFromPNG(const std::string& filename);
 
-    static std::stack<PathFinder::PairData> readPathFromPNG(const std::string& filename);
+    static std::stack<PairData> readPathFromPNG(const std::string& filename);
 
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type
@@ -55,15 +56,15 @@ private:
     const int sizeY;
     int **grid;
 
-    bool isValid(int row, int col);
+    bool isValid(int row, int col) const;
 
-    bool isUnBlocked(int **grid, int row, int col);
+    static bool isUnBlocked(int **grid, int row, int col);
 
-    bool isDestination(int row, int col, PairData dest);
+    static bool isDestination(int row, int col, PairData dest);
 
-    double calculateHValue(int row, int col, PairData dest);
+    static double calculateHValue(int row, int col, PairData dest);
 
-    std::stack<PairData> tracePath(cell **cellDetails, PairData dest);
+    static std::stack<PairData> tracePath(cell **cellDetails, PairData dest);
 
 };
 

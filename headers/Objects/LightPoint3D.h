@@ -11,13 +11,13 @@ public:
 
     LightPoint3D();
 
-    void syncFrustum();
+    void syncFrustum() const;
 
-    void clearShadowMappingBuffer();
+    void clearShadowMappingBuffer() const;
 
-    float getShadowMappingBuffer(int x, int y);
+    float getShadowMappingBuffer(int x, int y) const;
 
-    void setShadowMappingBuffer(int x, int y, float value);
+    void setShadowMappingBuffer(int x, int y, float value) const;
 
     Uint32 color;
 

@@ -13,7 +13,7 @@ Point2D::Point2D(float x, float y) {
     this->y = y;
 }
 
-void Point2D::consoleInfo(std::string label, bool jump) {
+void Point2D::consoleInfo(const std::string& label, bool jump) const {
 
     std::cout << "Point2D " << label << ": " << x << ", " << y << " | ";
 

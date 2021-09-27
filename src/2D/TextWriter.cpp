@@ -38,7 +38,7 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
                     0
             );
 
-            SDL_BlitSurface(sprite, &r, s, NULL);
+            SDL_BlitSurface(sprite, &r, s, nullptr);
             this->characterSurfaces.push_back(s);
         }
     }

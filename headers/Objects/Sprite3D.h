@@ -33,7 +33,7 @@ public:
 
     Billboard *getBillboard() const;
 
-    void addAnimation(std::string, int, int);
+    void addAnimation(const std::string&, int, int);
 
     void setAnimation(int);
 

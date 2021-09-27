@@ -2,17 +2,14 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/EngineSetup.h"
 
-Logging *Logging::instance = 0;
+Logging *Logging::instance = nullptr;
 
 Logging *Logging::getInstance() {
-    if (instance == 0) {
+    if (instance == nullptr) {
         instance = new Logging();
     }
 
     return instance;
-}
-
-Logging::Logging() {
 }
 
 void Logging::Log(std::string message, std::string type) {
@@ -20,13 +17,13 @@ void Logging::Log(std::string message, std::string type) {
 
     if (EngineSetup::getInstance()->LOGGING_TO_FILE) {
         FILE *f = fopen("brakeza.log", "a");
-        if (f == NULL) {
+        if (f == nullptr) {
             std::cout << "Error opening log file!" << std::endl;
             exit(1);
         }
         fprintf(f, "%s\n", message.c_str());
         fclose(f);
-    };
+    }
 
     std::cout << '[' << type << ']' << ' ' << message << std::endl;
 }

@@ -48,14 +48,10 @@ void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end) {
     if (SETUP->MENU_ACTIVE) return;
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
-    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-    ComponentGame *game = ComponentsManager::get()->getComponentGame();
 
-    // jump
     if (keyboard[SDL_SCANCODE_SPACE]) {
         if (event->type == SDL_KEYDOWN) {
         }
-        //player->jump();
     }
 
     // step sounds
@@ -187,13 +183,13 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
     }
 }
 
-void ComponentGameInput::jump(bool checkOnGround, float YForce, bool soundJump) {
+void ComponentGameInput::jump(bool checkOnGround, float YForce, bool soundJump) const {
     if (soundJump) {
         player->jump();
     }
 }
 
-void ComponentGameInput::handleCrouch(SDL_Event *event) {
+void ComponentGameInput::handleCrouch(SDL_Event *event) const {
     if (event->key.keysym.sym == SDLK_TAB) {
 
         if (event->type == SDL_KEYDOWN && !player->isCrouch()) {
@@ -206,7 +202,7 @@ void ComponentGameInput::handleCrouch(SDL_Event *event) {
     }
 }
 
-void ComponentGameInput::handleFire(SDL_Event *event) {
+void ComponentGameInput::handleFire(SDL_Event *event) const {
     if (event->key.keysym.sym == SDLK_q) {
 
         // First keydown
@@ -224,7 +220,7 @@ void ComponentGameInput::handleFire(SDL_Event *event) {
     }
 }
 
-void ComponentGameInput::handleWeaponReload(SDL_Event *event) {
+void ComponentGameInput::handleWeaponReload(SDL_Event *event) const {
     if (event->key.keysym.sym == SDLK_e) {
 
         // First keydown

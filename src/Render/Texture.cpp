@@ -1,6 +1,5 @@
 #include "../../headers/Render/Texture.h"
 #include "../../headers/Misc/Tools.h"
-#include "../../headers/Misc/Color.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/EngineBuffers.h"
 #include "../../headers/Render/Maths.h"
@@ -111,7 +110,7 @@ bool Texture::loadTGA(const char *file, int mip_mapping) {
     return true;
 }
 
-void Texture::drawFlatLightMap(int pos_x, int pos_y) {
+void Texture::drawFlatLightMap(int pos_x, int pos_y) const {
     int width = lightmap->w;
     int height = lightmap->h;
 
@@ -119,7 +118,7 @@ void Texture::drawFlatLightMap(int pos_x, int pos_y) {
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            Uint32 *pixels = (Uint32 *) lightmap->pixels;
+            auto *pixels = (Uint32 *) lightmap->pixels;
             EngineBuffers::getInstance()->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * width + j]);
         }
     }
@@ -133,7 +132,7 @@ void Texture::drawFlat(int pos_x, int pos_y) {
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            Uint32 *pixels = (Uint32 *) mip_mapping_1->pixels;
+            auto *pixels = (Uint32 *) mip_mapping_1->pixels;
             EngineBuffers::getInstance()->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * getSurface(1)->w + j]);
         }
     }

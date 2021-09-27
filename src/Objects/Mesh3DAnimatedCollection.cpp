@@ -2,14 +2,15 @@
 // Created by darkhead on 3/4/20.
 //
 
+#include <utility>
+
 #include "../../headers/Objects/Mesh3DAnimatedCollection.h"
-#include "../../headers/Render/Drawable.h"
 #include "../../headers/ComponentsManager.h"
 
 void
-Mesh3DAnimatedCollection::addAnimation(std::string label, std::string modelFilename, float scale, bool remove_at_end) {
+Mesh3DAnimatedCollection::addAnimation(std::string label, const std::string& modelFilename, float scale, bool remove_at_end) {
     auto *meshObject = new Mesh3DAnimated();
-    meshObject->setLabel(label);
+    meshObject->setLabel(std::move(label));
     meshObject->setParent(this);
 
     if (meshObject->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename)) {

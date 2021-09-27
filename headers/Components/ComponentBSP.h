@@ -40,7 +40,7 @@ public:
 
     void initParallelBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles);
 
-    void setCameraInBSPStartPosition();
+    void setCameraInBSPStartPosition() const;
 
     void setCamera(Camera3D *camera);
 

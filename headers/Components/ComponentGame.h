@@ -81,9 +81,9 @@ public:
 
     void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
 
-    void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
+    static void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
 
-    void startThirdPerson();
+    static void startThirdPerson();
 
     void startFPS();
 

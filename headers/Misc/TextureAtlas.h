@@ -24,14 +24,14 @@ class TextureAtlas {
 public:
     TextureAtlas(int totalWidth, int totalHeight);
 
-    bool addTexture(Texture *texture, bool lightmap, std::string name);
+    bool addTexture(Texture *texture, bool lightmap, const std::string& name);
 
     std::vector<Texture *> textures;
     std::vector<TextureAtlasImageInfo> textures_info;
 
-    TextureAtlasImageInfo getAtlasTextureInfoForName(std::string name);
+    TextureAtlasImageInfo getAtlasTextureInfoForName(const std::string& name);
 
-    void saveJPG(std::string name);
+    void saveJPG(const std::string& name) const;
 
     int total_width;
     int total_height;

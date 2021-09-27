@@ -11,8 +11,6 @@ class GUI_Camera : public GUI {
 public:
     bool show = false;
 
-    virtual ~GUI_Camera() {}
-
     virtual void draw(Camera3D *camera) {
         ImGuiWindowFlags window_flags = 0;
 

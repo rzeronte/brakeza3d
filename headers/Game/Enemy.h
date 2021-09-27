@@ -33,7 +33,7 @@ public:
 
     void takeDamage(float damageTaken);
 
-    bool isTakeHeavyDamage(float damageTaken);
+    bool isTakeHeavyDamage(float damageTaken) const;
 
     float getDamage() const;
 

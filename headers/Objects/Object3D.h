@@ -75,9 +75,9 @@ public:
 
     void setDrawOffset(Vertex3D v);
 
-    Vertex3D getDrawOffset();
+    Vertex3D getDrawOffset() const;
 
-    bool isFollowCamera();
+    bool isFollowCamera() const;
 
     void setFollowCamera(bool followCamera);
 

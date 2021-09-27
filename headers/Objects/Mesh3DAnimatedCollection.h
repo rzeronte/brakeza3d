@@ -19,7 +19,7 @@ public:
 
     void setAnimation(int index);
 
-    void addAnimation(std::string, std::string modelFilename, float scale, bool remove_at_end);
+    void addAnimation(std::string, const std::string& modelFilename, float scale, bool remove_at_end);
 
     void onUpdate();
 

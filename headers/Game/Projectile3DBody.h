@@ -14,17 +14,17 @@ private:
 public:
     Projectile3DBody();
 
-    bool isFromEnemy();
+    bool isFromEnemy() const;
 
     void setFromEnemy(bool isFromEnemy);
 
     float getDamage() const;
 
-    void setDamage(float damage);
+    void setDamage(float newDamage);
 
     float getDamageRadius() const;
 
-    void setDamageRadius(float damageRadius);
+    void setDamageRadius(float newDamageRadius);
 
     btRigidBody *makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam, btDiscreteDynamicsWorld *world,
                                          bool applyCameraImpulse, float forceImpulse, float accuracy);

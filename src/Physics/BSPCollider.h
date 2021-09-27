@@ -43,14 +43,14 @@ typedef unsigned char byte;
 
 #define    MAX_MAP_HULLS        4
 
-#define DotProduct(x, y) (x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
-#define VectorSubtract(a, b, c) {c[0]=a[0]-b[0];c[1]=a[1]-b[1];c[2]=a[2]-b[2];}
-#define VectorAdd(a, b, c) {c[0]=a[0]+b[0];c[1]=a[1]+b[1];c[2]=a[2]+b[2];}
-#define VectorCopy(a, b) {b[0]=a[0];b[1]=a[1];b[2]=a[2];}
+#define DotProduct(x, y) ((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
+#define VectorSubtract(a, b, c) {(c)[0]=(a)[0]-(b)[0];(c)[1]=(a)[1]-(b)[1];(c)[2]=(a)[2]-(b)[2];}
+#define VectorAdd(a, b, c) {(c)[0]=(a)[0]+(b)[0];(c)[1]=(a)[1]+(b)[1];(c)[2]=(a)[2]+(b)[2];}
+#define VectorCopy(a, b) {(b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2];}
 
-#define    CONTENTS_EMPTY        -1
-#define    CONTENTS_SOLID        -2
-#define    CONTENTS_SLIME        -4
+#define    CONTENTS_EMPTY        (-1)
+#define    CONTENTS_SOLID        (-2)
+#define    CONTENTS_SLIME        (-4)
 
 typedef struct mplane_s {
     vec3_t normal;
@@ -267,7 +267,7 @@ public:
     model_collision_t *playermodel;
     std::vector<model_collision_t *> entities;
 
-    vec3_t vec3_origin;
+    vec3_t vec3_origin{};
     float scale;
 
     BSPCollider();

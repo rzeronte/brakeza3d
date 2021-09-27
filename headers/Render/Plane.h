@@ -21,13 +21,13 @@ public:
 
     Plane();
 
-    float distance(const Vertex3D &p);
+    float distance(const Vertex3D &p) const;
 
-    Vertex3D getNormalVector();
+    Vertex3D getNormalVector() const;
 
     void updateNormalVector();
 
-    Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2, float &transition);
+    Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2, float &transition) const;
 
     bool isFrontFacingTo(Vertex3D direction);
 

@@ -1,10 +1,8 @@
 
 #include <SDL2/SDL_surface.h>
-#include <cmath>
 #include <list>
 #include "../../headers/Objects/Triangle3D.h"
 #include "../../headers/Misc/Tools.h"
-#include "../../headers/Objects/Line2D.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Maths.h"
@@ -12,9 +10,9 @@
 #include "../../headers/Brakeza3D.h"
 
 Triangle::Triangle() {
-    texture = NULL;
-    lightmap = NULL;
-    parent = NULL;
+    texture = nullptr;
+    lightmap = nullptr;
+    parent = nullptr;
 }
 
 Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
@@ -24,8 +22,8 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
 
     this->parent = parent;
 
-    texture = NULL;
-    lightmap = NULL;
+    texture = nullptr;
+    lightmap = nullptr;
 
     this->lod = 1;
 }
@@ -63,14 +61,14 @@ void Triangle::updateFullVertexSpaces(Camera3D *cam) {
 }
 
 void Triangle::updateUVCache() {
-    if (getLightmap() != NULL) {
+    if (getLightmap() != nullptr) {
         getLightmapCoordinatesFromUV(light_u1, light_v1, A.u, A.v);
         getLightmapCoordinatesFromUV(light_u2, light_v2, B.u, B.v);
         getLightmapCoordinatesFromUV(light_u3, light_v3, C.u, C.v);
     }
 
     // texture coordinates
-    if (this->getTexture() != NULL) {
+    if (this->getTexture() != nullptr) {
 
         tex_u1 = A.u;
         tex_v1 = A.v;
@@ -82,7 +80,7 @@ void Triangle::updateUVCache() {
         tex_v3 = C.v;
 
         if (parent->isDecal()) {
-            Decal *decalParent = dynamic_cast<Decal *> (parent);
+            auto *decalParent = dynamic_cast<Decal *> (parent);
 
             float decal_As = decalParent->getSCoord(Ao);
             float decal_At = decalParent->getTCoord(Ao);
@@ -136,7 +134,7 @@ void Triangle::updateUVCache() {
     }
 }
 
-void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) {
+void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) const {
     float cu = tex_u;
     float cv = tex_v;
 
@@ -162,7 +160,7 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
 }
 
 void Triangle::updateTextureAnimated() {
-    if (this->getTexture() == NULL) return;
+    if (this->getTexture() == nullptr) return;
     if (!this->getTexture()->animated) return;
 
     this->timerTextureAnimatedFrameControl += Brakeza3D::get()->deltaTime / 1000;
@@ -193,7 +191,7 @@ void Triangle::updateNormal() {
     this->normal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();
 }
 
-Vertex3D Triangle::getNormal() {
+Vertex3D Triangle::getNormal() const {
     return this->normal;
 }
 
@@ -278,7 +276,7 @@ void Triangle::updateBoundingBox() {
 }
 
 void Triangle::updateLightmapFrame() {
-    if (getLightmap() == NULL) return;
+    if (getLightmap() == nullptr) return;
 
     int style;
     int length;
@@ -334,7 +332,7 @@ bool Triangle::isBackFaceCulling(Vertex3D *position) {
     return (v * this->getNormal()) >= 0;
 }
 
-Vertex3D Triangle::getCenterOfMass() {
+Vertex3D Triangle::getCenterOfMass() const {
     Vertex3D At = this->Ao;
     Vertex3D Bt = this->Bo;
     Vertex3D Ct = this->Co;
@@ -613,16 +611,16 @@ void Triangle::setClipped(bool value) {
     this->clipped = value;
 }
 
-bool Triangle::isClipped() {
+bool Triangle::isClipped() const {
     return this->clipped;
 }
 
-bool Triangle::isPointInside(Vertex3D v) {
+bool Triangle::isPointInside(Vertex3D v) const {
     return Maths::PointInTriangle(v, Ao, Bo, Co);
 }
 
-int Triangle::processLOD() {
-    if (getTexture() == NULL) return 0;
+int Triangle::processLOD() const {
+    if (getTexture() == nullptr) return 0;
 
     if (getTexture()->isMipMapped() && EngineSetup::getInstance()->ENABLE_MIPMAPPING) {
         float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
@@ -676,6 +674,6 @@ void Triangle::setId(int id) {
     Triangle::id = id;
 }
 
-Plane Triangle::plane() {
+Plane Triangle::plane() const {
     return Plane(this->Ao, this->Bo, this->Co);
 }

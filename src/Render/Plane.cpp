@@ -29,7 +29,7 @@ void Plane::setNormal(Vertex3D n) {
     this->normal = n;
 }
 
-float Plane::distance(const Vertex3D &p) {
+float Plane::distance(const Vertex3D &p) const {
     Vertex3D n = this->normal;
 
     float D = (n.x * A.x) + (n.y * A.y) + (n.z * A.z);
@@ -47,11 +47,11 @@ void Plane::updateNormalVector() {
     normal = U % V;
 }
 
-Vertex3D Plane::getNormalVector() {
+Vertex3D Plane::getNormalVector() const {
     return this->normal;
 }
 
-Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) {
+Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) const {
 
     // Componentes del vector director
     Vertex3D componente = Vertex3D(

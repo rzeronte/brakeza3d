@@ -1,4 +1,6 @@
 
+#include <utility>
+
 #include "../../headers/2D/TextureAnimation.h"
 #include "../../headers/EngineSetup.h"
 
@@ -10,7 +12,7 @@ TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimati
 
 
 void TextureAnimation::setup(std::string file, int num_frames, int fps) {
-    this->base_file = file;
+    this->base_file = std::move(file);
     this->numFrames = num_frames;
     this->fps = fps;
 

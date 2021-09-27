@@ -45,17 +45,17 @@ public:
 
     void addWeaponType(std::string);
 
-    WeaponType *getWeaponTypeByLabel(std::string label);
+    WeaponType *getWeaponTypeByLabel(const std::string& label);
 
-    void setCurrentWeaponIndex(int currentWeaponIndex);
+    void setCurrentWeaponIndex(int newCurrentWeaponIndex);
 
-    WeaponType *getWeaponTypeByClassname(std::string label);
+    WeaponType *getWeaponTypeByClassname(const std::string& label);
 
     WeaponType *getCurrentWeaponType();
 
-    AmmoType *getAmmoTypeByClassname(std::string label);
+    AmmoType *getAmmoTypeByClassname(const std::string& label);
 
-    bool isEmptyWeapon();
+    bool isEmptyWeapon() const;
 
     void headBob(Vector3D velocity);
 };

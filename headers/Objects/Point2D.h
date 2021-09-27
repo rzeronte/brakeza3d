@@ -9,7 +9,7 @@ public:
 
     Point2D(float x, float y);
 
-    void consoleInfo(std::string a, bool);
+    void consoleInfo(const std::string& a, bool) const;
 
     float x, y;
 };

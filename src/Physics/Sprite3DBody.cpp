@@ -15,9 +15,9 @@ void Sprite3DBody::integrate() {
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion quat = t.getRotation();
-    float angle = quat.getAngle();
-    btVector3 axis = quat.getAxis();
+    //btQuaternion quat = t.getRotation();
+    //float angle = quat.getAngle();
+    //btVector3 axis = quat.getAxis();
 }
 
 btRigidBody *Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
@@ -32,7 +32,7 @@ btRigidBody *Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDy
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);

@@ -41,13 +41,13 @@ public:
 
     void setEnabled(bool enabled);
 
-    void handleWindowEvents(SDL_Event *e, bool &);
+    static void handleWindowEvents(SDL_Event *e, bool &);
 
     void updateKeyboardMapping();
 
     void updateMouseStates(SDL_Event *e);
 
-    void handleKeyboardMovingCamera();
+    void handleKeyboardMovingCamera() const;
 
     void handleMouse(SDL_Event *);
 

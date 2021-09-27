@@ -39,7 +39,7 @@ void ComponentCollisions::initBulletSystem() {
     btVector3 worldMax(50000, 50000, 50000);
 
     auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
-    //this->overlappingPairCache = sweepBP;
+    this->overlappingPairCache = sweepBP;
 
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     this->solver = new btSequentialImpulseConstraintSolver;
@@ -170,7 +170,7 @@ void ComponentCollisions::stepSimulation() {
     }
 }
 
-std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() {
+std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
     return *visibleTriangles;
 }
 

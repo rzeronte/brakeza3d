@@ -109,8 +109,8 @@ void ComponentGame::onUpdate() {
     }
 
     if (SETUP->LOADING) {
-        SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), NULL,
-                        componentWindow->screenSurface, NULL);
+        SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), nullptr,
+                        componentWindow->screenSurface, nullptr);
         componentHUD->writeTextCenter("Loading", false);
         Drawable::drawFireShader();
     }
@@ -349,11 +349,11 @@ void ComponentGame::redScreen() {
 
     for (int y = 0; y < SETUP->screenHeight; y++) {
         for (int x = 0; x < SETUP->screenWidth; x++) {
-            Uint32 currentPixelColor = BUFFERS->getVideoBuffer(x, y);
+            Uint32 currentPixelColor = (Uint32) BUFFERS->getVideoBuffer(x, y);
 
-            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
-            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
-            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor) * intensity_b);
+            int r_light = (int) ((float) Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
+            int g_light = (int) ((float) Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
+            int b_light = (int) ((float) Tools::getBlueValueFromColor(currentPixelColor) * intensity_b);
 
             currentPixelColor = Tools::createRGB(r_light, g_light, b_light);
             BUFFERS->setVideoBuffer(x, y, currentPixelColor);
@@ -493,7 +493,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
 
                     WeaponType *weapon = brakeza3D->getComponentsManager()->getComponentWeapons()->getWeaponTypeByClassname(
                             classname);
-                    if (weapon == NULL) {
+                    if (weapon == nullptr) {
                         Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
                         continue;
                     }
@@ -513,7 +513,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                 std::string s2(classname);
                 if (s2.find("monster") != std::string::npos) {
                     NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname);
-                    if (enemyTemplate == NULL) continue;
+                    if (enemyTemplate == nullptr) continue;
 
                     // Angle Monster
                     int angle = 0;
@@ -599,12 +599,12 @@ void ComponentGame::LoadMapsFromJSON() {
     size_t file_size;
     const char *mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MAPS, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
-    if (myDataJSON == NULL) {
+    if (myDataJSON == nullptr) {
         //Logging::getInstance()->Log("maps.json can't be loaded", "ERROR");
         return;
     }
 
-    cJSON *currentMap = NULL;
+    cJSON *currentMap = nullptr;
     mapsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "maps");
     int sizeMaps = cJSON_GetArraySize(mapsJSONList);
 
@@ -637,7 +637,7 @@ void ComponentGame::LoadWeaponsJSON() {
     const char *mapsFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
-    if (myDataJSON == NULL) {
+    if (myDataJSON == nullptr) {
         Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
         return;
     }
@@ -781,7 +781,7 @@ void ComponentGame::LoadEnemiesJSON() {
     const char *enemiesFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(enemiesFile);
 
-    if (myDataJSON == NULL) {
+    if (myDataJSON == nullptr) {
         Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
         return;
     }

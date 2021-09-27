@@ -25,7 +25,7 @@ PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY) {
 
 // A Utility Function to check whether given cell (row, col)
 // is a valid cell or not.
-bool PathFinder::isValid(int row, int col) {
+bool PathFinder::isValid(int row, int col) const {
     // Returns true if row number and column number
     // is in range
     return (row >= 0) && (row < this->sizeY) && (col >= 0) && (col < this->sizeX);
@@ -52,15 +52,15 @@ bool PathFinder::isDestination(int row, int col, PairData dest) {
 // A Utility Function to calculate the 'h' heuristics.
 double PathFinder::calculateHValue(int row, int col, PairData dest) {
     // Return using the distance formula
-    return ((double) sqrt(
+    return sqrt(
             (row - dest.first) * (row - dest.first)
             + (col - dest.second) * (col - dest.second)
-    ));
+    );
 }
 
 // A Utility Function to trace the path from the source
 // to destination
-std::stack<PathFinder::PairData> PathFinder::tracePath(cell **cellDetails, PairData dest) {
+std::stack<PairData> PathFinder::tracePath(cell **cellDetails, PairData dest) {
     int row = dest.first;
     int col = dest.second;
 
@@ -683,7 +683,7 @@ void PathFinder::saveGridToPNG(const std::string& filename) {
     SDL_FreeSurface(s);
 }
 
-void PathFinder::loadGridFromPNG(std::string filename) {
+void PathFinder::loadGridFromPNG(const std::string& filename) {
     SDL_Surface *s = IMG_Load((filename).c_str());
 
     int sx = s->w;
@@ -691,7 +691,7 @@ void PathFinder::loadGridFromPNG(std::string filename) {
 
     for (int y = 0; y < sy; y++) {
         for (int x = 0; x < sx; x++) {
-            int index = y * sx + x;
+            //int index = y * sx + x;
             Uint32 c = Tools::getSurfacePixel(s, x, y);
             Uint8 pred, pgreen, pblue, palpha;
             SDL_GetRGBA(c, s->format, &pred, &pgreen, &pblue, &palpha);
@@ -704,7 +704,7 @@ void PathFinder::loadGridFromPNG(std::string filename) {
     }
 }
 
-std::stack<PathFinder::PairData> PathFinder::readPathFromPNG(const std::string& filename) {
+std::stack<PairData> PathFinder::readPathFromPNG(const std::string& filename) {
     Logging::getInstance()->Log("PathFinder readPathFromPNG " + filename);
 
     SDL_Surface *surface = IMG_Load((filename).c_str());
@@ -717,7 +717,7 @@ std::stack<PathFinder::PairData> PathFinder::readPathFromPNG(const std::string& 
     // get start and end position
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            int index = y * width + x;
+            //int index = y * width + x;
             Uint32 color = Tools::getSurfacePixel(surface, x, y);
             Uint8 pred, pgreen, pblue, palpha;
             SDL_GetRGBA(color, surface->format, &pred, &pgreen, &pblue, &palpha);
@@ -737,7 +737,7 @@ std::stack<PathFinder::PairData> PathFinder::readPathFromPNG(const std::string& 
     auto *pathfinder = new PathFinder(width, height);
     pathfinder->loadGridFromPNG(filename);
 
-    std::stack<PathFinder::PairData> path;
+    std::stack<PairData> path;
     pathfinder->AStarSearch(src, dest, path);
 
     delete surface;

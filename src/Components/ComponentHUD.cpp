@@ -115,7 +115,7 @@ void ComponentHUD::writeTextCenter(const char *text, bool bold) {
     this->writeText(xPosition, totalH / 2, text, bold);
 }
 
-void ComponentHUD::writeText(int x, int y, const char *text, bool bold) {
+void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const {
     this->textureWriter->writeText(x, y, text, bold);
 }
 

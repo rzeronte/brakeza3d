@@ -41,8 +41,6 @@ struct BoneInfo {
 
 class Mesh3DAnimated : public Mesh3D {
 public:
-    Mesh3DAnimated();
-
     Assimp::Importer importer;
     const aiScene *scene;
     int m_NumBones = 0;
@@ -85,13 +83,13 @@ public:
 
     void ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
 
-    const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string NodeName);
+    static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string NodeName);
 
-    uint FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static uint FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    uint FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static uint FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    uint FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static uint FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
 
     int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
@@ -104,20 +102,20 @@ public:
 
     void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m);
+    static void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m);
 
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
 
     void drawVertexWeights();
 
-    Uint32 processWeigthColor(int weight);
+    static Uint32 processWeigthColor(int weight);
 
     bool isRemoveAtEndAnimation() const;
 
     void setRemoveAtEndAnimation(bool removeAtEnds);
 
 
-    aiNode *getFollowPointNode();
+    aiNode *getFollowPointNode() const;
 
     void setFollowPointNode(aiNode *followPointOrigin);
 
@@ -131,7 +129,7 @@ public:
 
     void setFixedRotation(const M3 &fixedRotation);
 
-    bool isAnimationEnds();
+    bool isAnimationEnds() const;
 };
 
 

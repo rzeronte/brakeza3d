@@ -63,7 +63,7 @@ public:
 
     static void drawGrid3D(Grid3D *);
 
-    static void drawPathInGrid(Grid3D *, std::stack<PathFinder::PairData>);
+    static void drawPathInGrid(Grid3D *, std::stack<PairData>);
 
     static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
 };

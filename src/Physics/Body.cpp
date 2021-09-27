@@ -3,7 +3,6 @@
 //
 
 #include "../../headers/Physics/Body.h"
-#include "../../headers/EngineSetup.h"
 #include "../../headers/Misc/Tools.h"
 
 Body::Body() {

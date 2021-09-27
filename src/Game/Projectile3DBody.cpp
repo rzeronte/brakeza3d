@@ -1,13 +1,13 @@
 
 #include "../../headers/Game/Projectile3DBody.h"
 
-Projectile3DBody::Projectile3DBody() : fromEnemy(false) {
+Projectile3DBody::Projectile3DBody() : fromEnemy(false), damage(0), damageRadius(0) {
 
 }
 
-bool Projectile3DBody::isFromEnemy() {
+bool Projectile3DBody::isFromEnemy() const {
     return fromEnemy;
-};
+}
 
 void Projectile3DBody::setFromEnemy(bool isFromEnemy) {
     fromEnemy = isFromEnemy;
@@ -17,16 +17,16 @@ float Projectile3DBody::getDamage() const {
     return damage;
 }
 
-void Projectile3DBody::setDamage(float damage) {
-    Projectile3DBody::damage = damage;
+void Projectile3DBody::setDamage(float newDamage) {
+    Projectile3DBody::damage = newDamage;
 }
 
 float Projectile3DBody::getDamageRadius() const {
     return damageRadius;
 }
 
-void Projectile3DBody::setDamageRadius(float damageRadius) {
-    Projectile3DBody::damageRadius = damageRadius;
+void Projectile3DBody::setDamageRadius(float newDamageRadius) {
+    Projectile3DBody::damageRadius = newDamageRadius;
 }
 
 
@@ -47,7 +47,7 @@ Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *c
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);
@@ -62,9 +62,9 @@ Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *c
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
-        dir.x += Tools::random(-100 + accuracy, 100 - accuracy);
-        dir.y += Tools::random(-100 + accuracy, 100 - accuracy);
-        dir.z += Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.x += (float) Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.y += (float) Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.z += (float) Tools::random(-100 + accuracy, 100 - accuracy);
 
         btVector3 impulse(dir.x, dir.y, dir.z);
         this->m_body->applyCentralImpulse(impulse);

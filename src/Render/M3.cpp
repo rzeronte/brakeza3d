@@ -102,7 +102,7 @@ M3 M3::getMatrixNULL() {
     return M;
 }
 
-const M3 M3::RX(float degrees) {
+M3 M3::RX(float degrees) {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
             1, 0, 0,
@@ -111,7 +111,7 @@ const M3 M3::RX(float degrees) {
     );
 }
 
-const M3 M3::RY(float degrees) {
+M3 M3::RY(float degrees) {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
             cos(rads), 0, sin(rads),
@@ -120,7 +120,7 @@ const M3 M3::RY(float degrees) {
     );
 }
 
-const M3 M3::RZ(float degrees) {
+M3 M3::RZ(float degrees) {
     float rads = Maths::degreesToRadians(degrees);
     return M3(
             cos(rads), -sin(rads), 0,
@@ -129,7 +129,7 @@ const M3 M3::RZ(float degrees) {
     );
 }
 
-const M3 M3::ScaleMatrix(float scale) {
+M3 M3::ScaleMatrix(float scale) {
     M3 M(
             scale, 0, 0,
             0, scale, 0,
@@ -139,7 +139,7 @@ const M3 M3::ScaleMatrix(float scale) {
     return M;
 }
 
-const M3 M3::ScaleMatrix(float xScale, float yScale, float zScale) {
+M3 M3::ScaleMatrix(float xScale, float yScale, float zScale) {
     M3 M(
             xScale, 0, 0,
             0, yScale, 0,
@@ -149,16 +149,16 @@ const M3 M3::ScaleMatrix(float xScale, float yScale, float zScale) {
     return M;
 }
 
-const float M3::getPitch() {
+float M3::getPitch() {
     return atan2f(m[7], m[8]);
 }
 
-const float M3::getYaw() {
+float M3::getYaw() {
     float c2 = sqrtf(m[7] * m[7] + m[8] * m[8]);
     return atan2f(-m[6], c2);
 }
 
-const float M3::getRoll() {
+float M3::getRoll() {
     return atan2f(m[3], m[0]);
 }
 

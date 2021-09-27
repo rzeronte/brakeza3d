@@ -1,8 +1,6 @@
 
 #include <btBulletDynamicsCommon.h>
-#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 #include "../../headers/Physics/SpriteDirectional3DBody.h"
-#include "../../headers/Render/Transforms.h"
 #include "../../headers/Misc/Tools.h"
 
 void SpriteDirectional3DBody::integrate() {
@@ -19,9 +17,9 @@ void SpriteDirectional3DBody::integrate() {
     this->setPosition(worldPosition);
 
     // Sync rotation
-    btQuaternion quat = t.getRotation();
-    float angle = quat.getAngle();
-    btVector3 axis = quat.getAxis();
+    //btQuaternion quat = t.getRotation();
+    //float angle = quat.getAngle();
+    //btVector3 axis = quat.getAxis();
 }
 
 btRigidBody *SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
@@ -36,7 +34,7 @@ btRigidBody *SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, b
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);
@@ -73,7 +71,7 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);
@@ -118,7 +116,7 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass
 
     btVector3 localInertia(0, 0, 0);
 
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
 
     btVector3 btSize;
     size.saveToBtVector3(&btSize);

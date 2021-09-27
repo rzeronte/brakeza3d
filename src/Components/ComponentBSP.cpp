@@ -3,7 +3,6 @@
 //
 
 #include "../../headers/Components/ComponentBSP.h"
-#include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/ComponentsManager.h"
 
 ComponentBSP::ComponentBSP() {
@@ -54,7 +53,7 @@ void ComponentBSP::initParallelBSP(const char *bspFilename, std::vector<Triangle
 }
 
 
-void ComponentBSP::setCameraInBSPStartPosition() {
+void ComponentBSP::setCameraInBSPStartPosition() const {
     // Load start position from BSP
     Vertex3D bspOriginalPosition = getBSP()->getStartMapPosition();
 

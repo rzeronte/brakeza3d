@@ -106,7 +106,7 @@ void Object3D::setDrawOffset(Vertex3D offset) {
     this->drawOffset = offset;
 }
 
-Vertex3D Object3D::getDrawOffset() {
+Vertex3D Object3D::getDrawOffset() const {
     return this->drawOffset;
 }
 
@@ -118,7 +118,7 @@ void Object3D::setParent(Object3D *parent) {
     Object3D::parent = parent;
 }
 
-bool Object3D::isFollowCamera() {
+bool Object3D::isFollowCamera() const {
     return this->followCamera;
 }
 

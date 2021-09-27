@@ -95,15 +95,15 @@ public:
 
     void updateUVCache();
 
-    void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v);
+    void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) const;
 
     bool isBackFaceCulling(Vertex3D *position);
 
-    Vertex3D getNormal();
+    Vertex3D getNormal() const;
 
     void updateNormal();
 
-    Vertex3D getCenterOfMass();
+    Vertex3D getCenterOfMass() const;
 
     void drawNormal(Camera3D *cam, Uint32 color);
 
@@ -131,15 +131,15 @@ public:
 
     void setClipped(bool);
 
-    bool isClipped();
+    bool isClipped() const;
 
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
 
     //void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
 
-    bool isPointInside(Vertex3D);
+    bool isPointInside(Vertex3D) const;
 
-    int processLOD();
+    int processLOD() const;
 
     void updateFullArea();
 
@@ -151,7 +151,7 @@ public:
 
     void setId(int id);
 
-    Plane plane();
+    Plane plane() const;
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

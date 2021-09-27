@@ -36,17 +36,17 @@ public:
 
     void handleMovingCamera(SDL_Event *, bool &);
 
-    void handleMouse(SDL_Event *);
+    static void handleMouse(SDL_Event *);
 
     void handleInGameInput(SDL_Event *event, bool &end);
 
     void handleSniper(SDL_Event *event);
 
-    void handleCrouch(SDL_Event *event);
+    void handleCrouch(SDL_Event *event) const;
 
-    void handleFire(SDL_Event *event);
+    void handleFire(SDL_Event *event) const;
 
-    void handleWeaponReload(SDL_Event *event);
+    void handleWeaponReload(SDL_Event *event) const;
 
     void handleWeaponSelector();
 
@@ -56,7 +56,7 @@ public:
 
     void handleRespawnAfterDead(SDL_Event *event);
 
-    void jump(bool checkOnGround, float YForce, bool soundJump);
+    void jump(bool checkOnGround, float YForce, bool soundJump) const;
 };
 
 

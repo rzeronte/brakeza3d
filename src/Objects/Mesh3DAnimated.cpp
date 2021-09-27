@@ -3,9 +3,6 @@
 #include "../../headers/Render/Transforms.h"
 
 
-Mesh3DAnimated::Mesh3DAnimated() {
-}
-
 void Mesh3DAnimated::onUpdate() {
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
@@ -160,7 +157,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
         this->modelTriangles.push_back(new Triangle(V1, V2, V3, this));
 
         if (this->numTextures > 0) {
-            if (&this->modelTextures[mesh->mMaterialIndex] != NULL) {
+            if (&this->modelTextures[mesh->mMaterialIndex] != nullptr) {
                 this->modelTriangles[k]->setTexture(&this->modelTextures[mesh->mMaterialIndex]);
             }
         }
@@ -169,7 +166,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
 
 void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData) {
     for (int i = 0; i < mesh->mNumBones; i++) {
-        uint BoneIndex = 0;
+        unsigned int BoneIndex;
         std::string BoneName(mesh->mBones[i]->mName.data);
 
         if (boneMapping.find(BoneName) == boneMapping.end()) {
@@ -269,7 +266,7 @@ const aiNodeAnim *Mesh3DAnimated::FindNodeAnim(const aiAnimation *pAnimation, co
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 uint Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim) {
@@ -475,9 +472,9 @@ void Mesh3DAnimated::drawVertexWeights() {
             int weight2 = this->updateForBone(V2, i, Face.mIndices[1], Transforms);
             int weight3 = this->updateForBone(V3, i, Face.mIndices[2], Transforms);
 
-            Uint32 c1 = this->processWeigthColor(weight1);
-            Uint32 c2 = this->processWeigthColor(weight2);
-            Uint32 c3 = this->processWeigthColor(weight3);
+            Uint32 c1 = Mesh3DAnimated::processWeigthColor(weight1);
+            Uint32 c2 = Mesh3DAnimated::processWeigthColor(weight2);
+            Uint32 c3 = Mesh3DAnimated::processWeigthColor(weight3);
 
             Transforms::objectSpace(V1, V1, this);
             Transforms::objectSpace(V2, V2, this);
@@ -511,6 +508,8 @@ Uint32 Mesh3DAnimated::processWeigthColor(int weight) {
         case 5:
             c = Color::FOGDefault();
             break;
+        default:
+            c = Color::white();
     }
 
     c = Color::white();
@@ -525,7 +524,7 @@ void Mesh3DAnimated::setRemoveAtEndAnimation(bool removeAtEnds) {
     remove_at_end_animation = removeAtEnds;
 }
 
-aiNode *Mesh3DAnimated::getFollowPointNode() {
+aiNode *Mesh3DAnimated::getFollowPointNode() const {
     return follow_me_point_node;
 }
 
@@ -537,12 +536,11 @@ void Mesh3DAnimated::setFollowPointNode(aiNode *followPointOrigin) {
         int BoneIndex = boneMapping.size();
         m_NumBones++;
         BoneInfo bi;
+        bi.BoneOffset = follow_me_point_node->mTransformation;
+        bi.name = BoneName;
         boneInfo.push_back(bi);
-
         boneMapping[BoneName] = BoneIndex;
 
-        boneInfo[BoneIndex].BoneOffset = follow_me_point_node->mTransformation;
-        boneInfo[BoneIndex].name = BoneName;
     }
 }
 
@@ -599,6 +597,6 @@ void Mesh3DAnimated::setFixedRotation(const M3 &fixedRotation) {
     Mesh3DAnimated::fixedRotation = fixedRotation;
 }
 
-bool Mesh3DAnimated::isAnimationEnds() {
+bool Mesh3DAnimated::isAnimationEnds() const {
     return animation_ends;
 }

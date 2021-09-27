@@ -13,7 +13,7 @@ LightPoint3D::LightPoint3D() {
     shadowMappingBuffer = new float[sizeBuffer];
 }
 
-void LightPoint3D::syncFrustum() {
+void LightPoint3D::syncFrustum() const {
     //this->cam->setPosition(*this->getPosition());
     //this->cam->setRotation(*this->getRotation());
 
@@ -27,15 +27,15 @@ void LightPoint3D::syncFrustum() {
     this->cam->frustum->updatePlanes();
 }
 
-void LightPoint3D::clearShadowMappingBuffer() {
+void LightPoint3D::clearShadowMappingBuffer() const {
     std::fill(shadowMappingBuffer, shadowMappingBuffer + sizeBuffer, NULL);
 }
 
-float LightPoint3D::getShadowMappingBuffer(int x, int y) {
+float LightPoint3D::getShadowMappingBuffer(int x, int y) const {
     return shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth) + x];
 }
 
-void LightPoint3D::setShadowMappingBuffer(int x, int y, float value) {
+void LightPoint3D::setShadowMappingBuffer(int x, int y, float value) const {
     shadowMappingBuffer[(y * EngineSetup::getInstance()->screenWidth) + x] = value;
 }
 

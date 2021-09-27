@@ -4,14 +4,11 @@
 #include "../../headers/Objects/Mesh3D.h"
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Brakeza3D.h"
-#include <string>
 
 Mesh3D::Mesh3D() {
     this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];
     this->modelTextures = new Texture[MAX_MESH_TEXTURES];
-    this->verticesTextureCoordsList = new vec3_t[MAX_VERTEX_MODEL];
 
-    this->numVertices = 0;
     this->numTextures = 0;
 
     for (int i = 0; i < MAX_MESH_TEXTURES; i++) {
@@ -22,216 +19,8 @@ Mesh3D::Mesh3D() {
     BSPEntityIndex = -1;
     decal = false;
 
-    this->octree = NULL;
-    this->grid = NULL;
-}
-
-bool Mesh3D::loadOBJBlender(const char *name) {
-    source_file = name;
-
-    if (!Tools::fileExists(source_file)) {
-        Logging::getInstance()->Log("El fichero de modelo solicitado no existe.", "ERROR");
-
-        return false;
-    }
-
-    Logging::getInstance()->Log("Loading OBJ: " + (std::string) name + "", "INFO");
-
-    this->loadOBJBlenderVertex();
-    this->loadOBJBlenderMaterials();
-    this->loadOBJBlenderTextureCoordinates();
-    this->loadOBJBlenderTriangles();
-
-    return true;
-}
-
-void Mesh3D::loadOBJBlenderVertex() {
-    std::vector<std::string> line_chunks;
-    std::string line;
-    float x, y, z;
-
-    int i = 0;
-    std::ifstream myfile(source_file);
-
-    while (!myfile.eof()) {
-        getline(myfile, line);
-
-        //Si empieza por 'v' es un vértice
-        if (line[0] == 'v' && line[1] != 't') {
-            line_chunks = Tools::split(line, ' ');
-
-            x = (float) atof(line_chunks[1].c_str());
-            y = (float) atof(line_chunks[2].c_str());
-            z = (float) atof(line_chunks[3].c_str());
-
-            this->modelVertices[i] = Vertex3D(-x, -y, z);
-            i++;
-        }
-    }
-
-    this->numVertices = i;
-
-    Logging::getInstance()->Log("OBJ Mesh vertex: " + std::to_string(this->numVertices) + "", "INFO");
-
-    return;
-}
-
-void Mesh3D::loadOBJBlenderTextureCoordinates() {
-    std::vector<std::string> line_chunks;
-    std::string line;
-    float u, v;
-    int i = 0;
-
-
-    if (!Tools::fileExists(source_file)) {
-        return;
-    }
-
-    std::ifstream myfile(source_file);
-    while (!myfile.eof()) {
-        getline(myfile, line);
-
-        //Si empieza por 'vt' es una coordenada uv
-        if (line[0] == 'v' && line[1] == 't') {
-            line_chunks = Tools::split(line, ' ');
-
-            u = atof(line_chunks[1].c_str());
-            v = atof(line_chunks[2].c_str());
-
-            this->verticesTextureCoordsList[i][0] = u;
-            this->verticesTextureCoordsList[i][1] = v;
-            //printf("u %f v%f:\r\n", u, v);
-            i++;
-        }
-    }
-
-    Logging::getInstance()->Log("OBJ UV Loaded vertex: " + std::to_string(i) + "", "INFO");
-
-    return;
-}
-
-void Mesh3D::loadOBJBlenderTriangles() {
-    std::string line, v;
-    std::vector<std::string> line_chunks;
-    std::vector<std::string> vertex_chunks;
-
-    int i = 0;
-    int idx1_vertex = -1, idx2_vertex = -1, idx3_vertex;
-    int idx1_uv = -1, idx2_uv = -1, idx3_uv = -1;
-
-    if (!Tools::fileExists(source_file)) {
-        return;
-    }
-
-    std::ifstream myfile(source_file);
-
-    while (!myfile.eof()) {
-        getline(myfile, line);
-
-        //Si empieza por 'f' es un triángulo
-        if (line[0] == 'f') {
-            line_chunks = Tools::split(line, ' ');
-
-            // Example:  f 123//121 312//043 094//234 -> (123, 321, 094)
-            vertex_chunks = Tools::split(line_chunks[1], '/');
-            idx1_vertex = std::stoi(vertex_chunks[0]);
-            if (!vertex_chunks[1].empty()) {
-                idx1_uv = std::stoi(vertex_chunks[1]);
-            }
-
-            vertex_chunks = Tools::split(line_chunks[2], '/');
-            idx2_vertex = std::stoi(vertex_chunks[0]);
-            if (!vertex_chunks[1].empty()) {
-                idx2_uv = std::stoi(vertex_chunks[1]);
-            }
-
-            vertex_chunks = Tools::split(line_chunks[3], '/');
-            idx3_vertex = std::stoi(vertex_chunks[0]);
-            if (!vertex_chunks[1].empty()) {
-                idx3_uv = std::stoi(vertex_chunks[1]);
-            }
-
-            // El Blender el índice empieza en 1, nosotros usamos el 0.
-            idx1_vertex--;
-            idx2_vertex--;
-            idx3_vertex--;
-            idx1_uv--;
-            idx2_uv--;
-            idx3_uv--;
-
-            Vertex3D V1 = this->modelVertices[idx1_vertex];
-            Vertex3D V2 = this->modelVertices[idx2_vertex];
-            Vertex3D V3 = this->modelVertices[idx3_vertex];
-
-            if (idx1_uv >= 0) {
-                V1.u = this->verticesTextureCoordsList[idx1_uv][0];
-                V1.v = this->verticesTextureCoordsList[idx1_uv][1];
-            }
-
-            if (idx2_uv >= 0) {
-                V2.u = this->verticesTextureCoordsList[idx2_uv][0];
-                V2.v = this->verticesTextureCoordsList[idx2_uv][1];
-            }
-
-            if (idx3_uv >= 0) {
-                V3.u = this->verticesTextureCoordsList[idx3_uv][0];
-                V3.v = this->verticesTextureCoordsList[idx3_uv][1];
-            }
-
-            // triangle geometry
-            this->modelTriangles.emplace_back(new Triangle(V1, V2, V3, this));
-
-            // set texture
-            if (this->modelTextures[0].loaded) {
-                this->modelTriangles[i]->setTexture(&this->modelTextures[0]);
-            }
-
-            // set light points
-            //this->modelTriangles[i]->setLightPoints(this->lightPoints);
-
-            // triangle order in mesh
-            this->modelTriangles[i]->order = i;
-
-            i++;
-        }
-    }
-
-    Logging::getInstance()->Log(
-            this->label + ": OBJ Mesh Triangles: " + std::to_string(this->modelTriangles.size()) + "", "INFO");
-}
-
-void Mesh3D::loadOBJBlenderMaterials() {
-    std::string line, v;
-    std::vector<std::string> line_chunks;
-    std::vector<std::string> vertex_chunks;
-
-    int i = 0;
-
-    std::string mlt_filename = source_file;
-    mlt_filename.replace(mlt_filename.end() - 3, mlt_filename.end(), "mtl");
-
-    std::ifstream myfile(mlt_filename);
-
-    int cont_materials = 0;
-
-    if (!Tools::fileExists(mlt_filename)) {
-        return;
-    }
-
-    while (!myfile.eof()) {
-        getline(myfile, line);
-        line_chunks = Tools::split(line, ' ');
-
-        if (line_chunks[0].compare("map_Kd") == 0) {
-            Texture t = Texture();
-            t.loadTGA(line_chunks[1].c_str(), 1);
-            this->modelTextures[i] = t;
-            this->numTextures++;
-            cont_materials++;
-        }
-    }
-
-    Logging::getInstance()->Log("OBJ Materials: " + std::to_string(numTextures) + "", "INFO");
+    this->octree = nullptr;
+    this->grid = nullptr;
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
@@ -320,6 +109,7 @@ void Mesh3D::updateBoundingBox() {
     this->aabb.vertices[2] = Vertex3D(this->aabb.max.x, this->aabb.max.y, this->aabb.min.z);
     this->aabb.vertices[3] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.max.z);
     this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
+    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
     this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
     this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
     this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
@@ -352,22 +142,22 @@ void Mesh3D::copyFrom(Mesh3D *source) {
 void Mesh3D::onUpdate() {
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
-//    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
-//        if (this->octree != NULL) {
-//            Drawable::drawOctree(this->octree, true);
-//        }
-//    }
-//
-//    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
-//        if (this->grid != NULL) {
-//            Drawable::drawGrid3D(this->grid);
-//        }
-//    }
-//
-//    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
-//        this->updateBoundingBox();
-//        Drawable::drawAABB(&this->aabb, Color::white());
-//    }
+    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
+        if (this->octree != nullptr) {
+            Drawable::drawOctree(this->octree, true);
+        }
+    }
+
+    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
+        if (this->grid != nullptr) {
+            Drawable::drawGrid3D(this->grid);
+        }
+    }
+
+    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+        this->updateBoundingBox();
+        Drawable::drawAABB(&this->aabb, Color::white());
+    }
 }
 
 bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
@@ -418,10 +208,10 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
         if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
             this->numTextures++;
             continue;
-        };
+        }
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE)  >= 1) {
         aiString Path;
-        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS) {
             std::string p(Path.data);
 
             std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
@@ -434,7 +224,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
                     EngineSetup::getInstance()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
 
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-            Texture *t = new Texture();
+            auto *t = new Texture();
             if (t->loadTGA(FullPath.c_str(), 1)) {
                 this->modelTextures[this->numTextures] = *t;
                 this->modelTextures[this->numTextures].loaded = true;
@@ -534,7 +324,7 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, std::string filename, int fixedY) {
+void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY) {
     Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(DataImage)");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);

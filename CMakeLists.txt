@@ -33,7 +33,6 @@ add_executable(brakeza3d
         headers/Misc/Tools.h
         src/Objects/Line2D.cpp
         headers/Objects/Line2D.h
-        src/Misc/Color.cpp
         headers/Misc/Color.h
         headers/OpenCL/OCLTriangle.h
         headers/EngineSetup.h
@@ -54,8 +53,6 @@ add_executable(brakeza3d
         src/Render/Transforms.cpp
         src/Render/Drawable.cpp
         headers/Render/Drawable.h
-        src/Objects/BSPEntity3D.cpp
-        headers/Objects/BSPEntity3D.h
         src/Objects/LightPoint3D.cpp
         headers/Objects/LightPoint3D.h
 

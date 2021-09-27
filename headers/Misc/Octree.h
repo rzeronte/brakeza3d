@@ -33,7 +33,7 @@ public:
 
     OctreeNode *BuildOctree(std::vector<Triangle *> &triangles, AABB3D bounds, int recursiveDepth);
 
-    bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
+    static bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
 
 };
 

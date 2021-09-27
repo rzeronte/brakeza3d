@@ -5,22 +5,19 @@
 #include "../../headers/Render/Logging.h"
 #include "../../headers/Render/Maths.h"
 
-Vertex3D::Vertex3D() {
-}
-
 Vertex3D::Vertex3D(float x, float y, float z) {
     this->x = x;
     this->y = y;
     this->z = z;
 }
 
-Vertex3D::Vertex3D(float v[3]) {
+Vertex3D::Vertex3D(const float v[3]) {
     this->x = v[0];
     this->y = v[1];
     this->z = v[2];
 }
 
-Vertex3D Vertex3D::operator+(const Vertex3D &v) {
+Vertex3D Vertex3D::operator+(const Vertex3D &v) const {
     return Vertex3D(
             this->x + v.x,
             this->y + v.y,
@@ -28,7 +25,7 @@ Vertex3D Vertex3D::operator+(const Vertex3D &v) {
     );
 }
 
-Vertex3D Vertex3D::operator-(const Vertex3D &v) {
+Vertex3D Vertex3D::operator-(const Vertex3D &v) const {
     return Vertex3D(
             this->x - v.x,
             this->y - v.y,
@@ -36,7 +33,7 @@ Vertex3D Vertex3D::operator-(const Vertex3D &v) {
     );
 }
 
-Vertex3D Vertex3D::operator%(const Vertex3D &v) {
+Vertex3D Vertex3D::operator%(const Vertex3D &v) const {
     return Vertex3D(
             (this->y * v.z) - (this->z * v.y),
             (this->z * v.x) - (this->x * v.z),
@@ -44,11 +41,11 @@ Vertex3D Vertex3D::operator%(const Vertex3D &v) {
     );
 }
 
-float Vertex3D::operator*(const Vertex3D &v) {
+float Vertex3D::operator*(const Vertex3D &v) const {
     return (this->x * v.x) + (this->y * v.y) + (this->z * v.z);
 }
 
-bool Vertex3D::operator==(const Vertex3D &v) {
+bool Vertex3D::operator==(const Vertex3D &v) const {
     if (this->x == v.x && this->y == v.y && this->z == v.z) {
         return true;
     }
@@ -56,7 +53,7 @@ bool Vertex3D::operator==(const Vertex3D &v) {
     return false;
 }
 
-bool Vertex3D::operator!=(const Vertex3D &v) {
+bool Vertex3D::operator!=(const Vertex3D &v) const {
     if (this->x == v.x && this->y == v.y && this->z == v.z) {
         return false;
     }
@@ -64,7 +61,7 @@ bool Vertex3D::operator!=(const Vertex3D &v) {
     return true;
 }
 
-Vertex3D Vertex3D::getNormalize() {
+Vertex3D Vertex3D::getNormalize() const {
     float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y) + (this->z * this->z)));
 
     float inv_module = 1 / modulo;
@@ -85,7 +82,7 @@ Vertex3D Vertex3D::zero() {
     return Vertex3D(0, 0, 0);
 }
 
-void Vertex3D::consoleInfo(std::string label, bool returnLine) {
+void Vertex3D::consoleInfo(const std::string& label, bool returnLine) const {
     Logging::getInstance()->Log(
             label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z: " + std::to_string(z) + ")",
             "VERTEX");
@@ -94,7 +91,7 @@ void Vertex3D::consoleInfo(std::string label, bool returnLine) {
     }
 }
 
-Vertex3D Vertex3D::getInverse() {
+Vertex3D Vertex3D::getInverse() const {
     Vertex3D t;
 
     t.x = -this->x;
@@ -107,7 +104,7 @@ Vertex3D Vertex3D::getInverse() {
     return t;
 }
 
-Vertex3D Vertex3D::getAbsolute() {
+Vertex3D Vertex3D::getAbsolute() const {
     Vertex3D t;
 
     t.x = abs(this->x);
@@ -120,13 +117,13 @@ Vertex3D Vertex3D::getAbsolute() {
     return t;
 }
 
-float Vertex3D::getModule() {
+float Vertex3D::getModule() const {
     float norm = sqrt((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
 
     return norm;
 }
 
-float Vertex3D::squaredLength() {
+float Vertex3D::squaredLength() const {
     float norm = (this->x * this->x) + (this->y * this->y) + (this->z * this->z);
 
     return norm;
@@ -138,7 +135,7 @@ void Vertex3D::setScaled(float s) {
     this->z *= s;
 }
 
-Vertex3D Vertex3D::getScaled(float s) {
+Vertex3D Vertex3D::getScaled(float s) const {
     Vertex3D v;
 
     v.x = this->x * s;
@@ -148,7 +145,7 @@ Vertex3D Vertex3D::getScaled(float s) {
     return v;
 }
 
-Vertex3D Vertex3D::getScaled(float xs, float ys, float zs) {
+Vertex3D Vertex3D::getScaled(float xs, float ys, float zs) const {
     Vertex3D v;
 
     v.x = this->x * xs;
@@ -172,14 +169,20 @@ float Vertex3D::distance(Vertex3D to) {
     return tmpV.getComponent().getModule();
 }
 
-void Vertex3D::saveToFloat3(float *v) {
+void Vertex3D::saveToFloat3(float *v) const {
     v[0] = this->x;
     v[1] = this->y;
     v[2] = this->z;
 }
 
-void Vertex3D::saveToBtVector3(btVector3 *v) {
+void Vertex3D::saveToBtVector3(btVector3 *v) const {
     v->setX(this->x);
     v->setY(this->y);
     v->setZ(this->z);
+}
+
+Vertex3D::Vertex3D() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
 }

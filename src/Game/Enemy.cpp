@@ -10,7 +10,7 @@ void Enemy::takeDamage(float damageTaken) {
     this->stamina -= damageTaken;
 }
 
-bool Enemy::isTakeHeavyDamage(float damageTaken) {
+bool Enemy::isTakeHeavyDamage(float damageTaken) const {
     if (damageTaken > (startStamina / 4)) {
         return true;
     }

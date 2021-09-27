@@ -1,5 +1,7 @@
 
 #include "../../headers/2D/TextureAnimationDirectional.h"
+
+#include <utility>
 #include "../../headers/EngineSetup.h"
 
 TextureAnimationDirectional::TextureAnimationDirectional() {
@@ -10,11 +12,11 @@ TextureAnimationDirectional::TextureAnimationDirectional() {
     }
 }
 
-void TextureAnimationDirectional::setup(std::string file, int numFrames, int fps, int maxTimes) {
-    this->base_file = file;
-    this->numFrames = numFrames;
-    this->fps = fps;
-    this->maxTimes = maxTimes;
+void TextureAnimationDirectional::setup(std::string file, int newNumFrames, int newFps, int newMaxTimes) {
+    this->base_file = std::move(file);
+    this->numFrames = newNumFrames;
+    this->fps = newFps;
+    this->maxTimes = newMaxTimes;
 }
 
 void TextureAnimationDirectional::loadImages() {

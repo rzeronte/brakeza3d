@@ -25,11 +25,11 @@ public:
     // Identification functions
     int getId() const;
 
-    void setId(int id);
+    void setId(int newId);
 
     const std::string &getLabel() const;
 
-    void setLabel(const std::string &label);
+    void setLabel(const std::string &newLabel);
 
     // Life cycle functions
     virtual void onStart() = 0;
@@ -47,14 +47,14 @@ public:
     // get another components functions
     std::vector<Component *> *getComponents() const;
 
-    Component *getComponentById(int componentId);
+    Component *getComponentById(int componentId) const;
 
-    void setComponents(std::vector<Component *> *components);
+    void setComponents(std::vector<Component *> *newComponent);
 
     // Accesor to scene objects
     std::vector<Object3D *> *getSceneObjects() const;
 
-    void setSceneObjects(std::vector<Object3D *> *sceneObjects);
+    void setSceneObjects(std::vector<Object3D *> *newSceneObjects);
 
     std::vector<Component *> *components;
 

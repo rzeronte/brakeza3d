@@ -39,25 +39,25 @@ public:
 
     void setMatrixRotationForEulerAngles(float x, float y, float z);
 
-    const static M3 RX(float deg);
+    static M3 RX(float deg);
 
-    const static M3 RY(float deg);
+    static M3 RY(float deg);
 
-    const static M3 RZ(float deg);
+    static M3 RZ(float deg);
 
-    const static M3 ScaleMatrix(float scale);
+    static M3 ScaleMatrix(float scale);
 
-    const static M3 ScaleMatrix(float, float, float);
+    static M3 ScaleMatrix(float, float, float);
 
     void setup(float, float, float, float, float, float, float, float, float);
 
     void consoleInfo(std::string label) const;
 
-    const float getPitch();
+    float getPitch();
 
-    const float getYaw();
+    float getYaw();
 
-    const float getRoll();
+    float getRoll();
 
     float getYawDegree();
 
