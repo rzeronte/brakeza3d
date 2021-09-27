@@ -64,7 +64,7 @@ public:
     bool isBSP = false;
     int surfaceBSPIndex = -1;
 
-    int lod;
+    int lod{};
 
     //std::vector<LightPoint3D *> lightPoints;
 
@@ -97,7 +97,7 @@ public:
 
     void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) const;
 
-    bool isBackFaceCulling(Vertex3D *position);
+    bool isBackFaceCulling(Vertex3D *position) const;
 
     Vertex3D getNormal() const;
 
@@ -105,10 +105,10 @@ public:
 
     Vertex3D getCenterOfMass() const;
 
-    void drawNormal(Camera3D *cam, Uint32 color);
+    void drawNormal(Camera3D *cam, Uint32 color) const;
 
 
-    void processPixelTexture(Uint32 &, float, float, bool);
+    void processPixelTexture(Uint32 &, float, float, bool) const;
 
     void processPixelLightmap(Uint32 &, float, float, const Uint8 &, const Uint8 &, const Uint8 &, const Uint8 &);
 

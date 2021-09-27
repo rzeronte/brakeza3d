@@ -13,23 +13,23 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
     node->triangles.resize(0);
     node->bounds = bounds;
 
-    for (int j = 0; j < triangles.size(); j++) {
-        if (isTriangleInsideAABB(triangles[j], bounds)) {
-            node->triangles.push_back(triangles[j]);
+    for (auto & triangle : triangles) {
+        if (isTriangleInsideAABB(triangle, bounds)) {
+            node->triangles.push_back(triangle);
         }
     }
 
     if (recursiveDepth >= MAX_RECURSIVE_DEPTH) {
-        for (int i = 0; i < 8; i++) {
-            node->children[i] = nullptr;
+        for (auto & i : node->children) {
+            i = nullptr;
         }
         return node;
     }
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
-    Logging::getInstance()->Log(
-            "OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()));
+    Logging::Log(
+            "OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()), "Octree");
 
     for (int i = 0; i < 8; i++) {
         AABB3D childBounds;

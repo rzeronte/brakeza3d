@@ -4,9 +4,7 @@
 
 class string;
 
-Vector3D::Vector3D() {
-
-}
+Vector3D::Vector3D() = default;
 
 Vector3D::Vector3D(Vertex3D &A, Vertex3D &B) {
     this->vertex1 = A;

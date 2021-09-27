@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 2/1/20.
-//
-
 #include "../../headers/Game/ItemAmmoGhost.h"
 
 int ItemAmmoGhost::getAmount() const {

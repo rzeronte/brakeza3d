@@ -33,29 +33,29 @@ public:
 
     std::string currentMapName;
 
-    cJSON *mapsJSONList;
-    cJSON *weaponsJSONList;
-    cJSON *ammoTypesJSONList;
-    cJSON *enemiesJSONList;
+    cJSON *mapsJSONList{};
+    cJSON *weaponsJSONList{};
+    cJSON *ammoTypesJSONList{};
+    cJSON *enemiesJSONList{};
 
 
     Player *player;
-    Mesh3DBody *car;
-    Mesh3DBody *character;
-    Mesh3DBody *city;
-    Mesh3DBody *plane;
+    Mesh3DBody *car{};
+    Mesh3DBody *character{};
+    Mesh3DBody *city{};
+    Mesh3DBody *plane{};
 
     bool direction = true;
 
-    PathFinder *pathFinder;
+    PathFinder *pathFinder{};
 
-    Mesh3DBody *npc;
+    Mesh3DBody *npc{};
 
     int kills = 0;
 
     Player *getPlayer() const;
 
-    void onUpdateIA();
+    void onUpdateIA() const;
 
     void resolveCollisions();
 
@@ -73,13 +73,13 @@ public:
 
     void setFirstMapNameFromJSON();
 
-    void createObjects3DFromBSPEntities();
+    static void createObjects3DFromBSPEntities();
 
     void createMesh3DAndGhostsFromHulls();
 
-    void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    static void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
 
-    void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    static void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
 
     static void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
 

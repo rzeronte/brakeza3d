@@ -15,15 +15,15 @@ public:
     std::string baseFile;
 
     int fps = 25;
-    int numFrames;
+    int numFrames{};
     int currentFrame = 0;
 
-    int nextAnimationIndex;
+    int nextAnimationIndex{};
 
-    SDL_Surface *frames[WEAPON_ANIMATION_MAX_FRAMES];
+    SDL_Surface *frames[WEAPON_ANIMATION_MAX_FRAMES]{};
 
     Timer *timer;
-    float last_ticks;
+    float last_ticks{};
     float timerCurrent = 0;
 
     bool stopEnd = false;

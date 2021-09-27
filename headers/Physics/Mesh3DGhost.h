@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 2019-05-31.
-//
-
 #ifndef BRAKEDA3D_MESH3DGHOST_H
 #define BRAKEDA3D_MESH3DGHOST_H
 

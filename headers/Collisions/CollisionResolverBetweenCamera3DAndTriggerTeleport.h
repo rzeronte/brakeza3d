@@ -21,7 +21,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndTriggerTeleport");
+            Logging::Log("CollisionResolverBetweenCamera3DAndTriggerTeleport", "Collision");
         }
 
         int originalEntityId = this->mesh->getBspEntityIndex();

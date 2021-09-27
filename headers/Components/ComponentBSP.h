@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 9/1/20.
-//
-
 #ifndef BRAKEDA3D_COMPONENTBSP_H
 #define BRAKEDA3D_COMPONENTBSP_H
 
@@ -29,10 +25,10 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     BSPMap *bsp;
-    BSPCollider *bspCollider;
+    BSPCollider *bspCollider{};
 
-    Camera3D *camera;
-    std::thread *BSPLoading;
+    Camera3D *camera{};
+    std::thread *BSPLoading{};
 
     BSPMap *getBSP() const;
 

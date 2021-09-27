@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 13/1/20.
-//
-
 #include "../../headers/Components/ComponentGUI.h"
 #include "../../imgui/examples/imgui_impl_opengl2.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"

@@ -84,7 +84,7 @@ public:
 
     bool isAABBInFrustum(AABB3D *aabb);
 
-    void consoleInfo();
+    void consoleInfo() const;
 };
 
 

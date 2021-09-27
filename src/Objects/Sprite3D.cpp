@@ -8,13 +8,13 @@ Sprite3D::Sprite3D() {
     this->billboard = new Billboard();
     this->counter = new Counter();
 
-    for (int i = 0; i < ANIMATEDSPRITE_MAX_ANIMATIONS; i++) {
-        this->animations[i] = new TextureAnimation();
+    for (auto & animation : this->animations) {
+        animation = new TextureAnimation();
     }
 }
 
 void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int fps) {
-    Logging::getInstance()->Log(
+    Logging::Log(
             "Loading TextureAnimation: " + animation2d + " (" + std::to_string(num_frames) + " frames)", "BILLBOARD");
 
     this->animations[this->numAnimations]->setup(animation2d, num_frames, fps);

@@ -30,11 +30,11 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    SDL_GLContext contextOpenGL;
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-    SDL_Surface *screenSurface;
-    SDL_Texture *screenTexture;
+    SDL_GLContext contextOpenGL{};
+    SDL_Window *window{};
+    SDL_Renderer *renderer{};
+    SDL_Surface *screenSurface{};
+    SDL_Texture *screenTexture{};
 
     TTF_Font *fontSmall = NULL;
     TTF_Font *fontDefault = NULL;

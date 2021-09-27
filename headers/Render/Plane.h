@@ -29,7 +29,7 @@ public:
 
     Vertex3D getPointIntersection(Vertex3D v1, Vertex3D v2, float &transition) const;
 
-    bool isFrontFacingTo(Vertex3D direction);
+    bool isFrontFacingTo(Vertex3D direction) const;
 
     bool intersect(Vector3D ray, float &t);
 
@@ -39,7 +39,7 @@ public:
 
     Vertex3D origin() const;
 
-    Vertex3D closest(Vertex3D p);
+    Vertex3D closest(Vertex3D p) const;
 
     static bool isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes);
 

@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 3/4/20.
-//
-
 #include <utility>
 
 #include "../../headers/Objects/Mesh3DAnimatedCollection.h"

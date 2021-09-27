@@ -22,7 +22,7 @@ public:
     int numAnimations = 0;
     int currentAnimationIndex = 0;
 
-    TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
+    TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS]{};
 
     Counter *counter;
     float step = 0;

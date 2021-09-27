@@ -40,7 +40,7 @@ public:
 
     static ComponentsManager *instance;
 
-    void registerComponent(Component *component, std::string label);
+    void registerComponent(Component *component, const std::string& label);
 
     void configureComponents();
 

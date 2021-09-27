@@ -47,7 +47,7 @@ void BSPCollider::resetPlayerModelData() const {
 }
 
 void BSPCollider::LoadModelCollisionForEntities() {
-    int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
+    unsigned int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
     BSPMap *bspMAP = ComponentsManager::get()->getComponentBSP()->getBSP();
     this->entities.resize(numModels);
 
@@ -71,8 +71,6 @@ void BSPCollider::LoadModelCollisionForEntities() {
 
         VectorAdd(mod->origin, mod->mins, mod->absmin)
         VectorAdd(mod->origin, mod->maxs, mod->absmax)
-
-        Logging::getInstance()->Log("modelindex: " + std::to_string(i));
 
         if (mod->flags & FL_ITEM) {
             mod->absmin[0] -= 15;
@@ -100,7 +98,6 @@ void BSPCollider::LoadModelCollisionForEntities() {
 }
 
 void BSPCollider::LoadModelCollisionForWorld() {
-    Logging::getInstance()->Log("LoadModelCollisionForWorld");
 
     this->worldmodel = getModelCollisionFromBSP(0);
     this->playermodel = new model_collision_t;
@@ -120,8 +117,6 @@ model_collision_t *BSPCollider::getPlayerModel() const {
 }
 
 model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId) {
-    Logging::getInstance()->Log("getModelCollisionFromBSP for modelId: " + std::to_string(modelId));
-
     BSPMap *bspMap = ComponentsManager::get()->getComponentBSP()->getBSP();
 
     auto *model = new model_collision_t;           // Destiny
@@ -211,11 +206,6 @@ int BSPCollider::SV_HullPointContents(hull_t *hull, int num, const vec3_t p) {
 
     while (num >= 0) {
         if (num < hull->firstclipnode || num > hull->lastclipnode) {
-            Logging::getInstance()->Log("SV_RecursiveHullCheck: bad node number (" + std::to_string(num) + ")");
-            Logging::getInstance()->Log(
-                    "SV_RecursiveHullCheck: hull->firstclipnode: " + std::to_string(hull->firstclipnode));
-            Logging::getInstance()->Log(
-                    "SV_RecursiveHullCheck: hull->lastclipnode: " + std::to_string(hull->lastclipnode));
             exit(-1);
         }
 
@@ -265,11 +255,6 @@ bool BSPCollider::SV_RecursiveHullCheck(hull_t *hull, int hullFirstClipNode, flo
     }
 
     if (hullFirstClipNode < hull->firstclipnode || hullFirstClipNode > hull->lastclipnode) {
-        Logging::getInstance()->Log(
-                "SV_RecursiveHullCheck: bad node number (" + std::to_string(hullFirstClipNode) + ")");
-        Logging::getInstance()->Log(
-                "SV_RecursiveHullCheck: hull->firstclipnode: " + std::to_string(hull->firstclipnode));
-        Logging::getInstance()->Log("SV_RecursiveHullCheck: hull->lastclipnode: " + std::to_string(hull->lastclipnode));
         exit(-1);
     }
     // find the point distances
@@ -519,7 +504,6 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
         }
 
         if (!trace.ent) {
-            Logging::getInstance()->Log("SV_FlyMove: !trace.ent");
             exit(-1);
         }
 
@@ -590,7 +574,7 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
     return blocked;
 }
 
-trace_t BSPCollider::SV_PushEntity(model_collision_t *ent, vec3_t push) {
+trace_t BSPCollider::SV_PushEntity(model_collision_t *ent, const vec3_t push) {
     trace_t trace;
     vec3_t end;
 
@@ -610,7 +594,7 @@ trace_t BSPCollider::SV_PushEntity(model_collision_t *ent, vec3_t push) {
 }
 
 
-void BSPCollider::AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up) {
+void BSPCollider::AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up) {
     float angle;
     float sr, sp, sy, cr, cp, cy;
 
@@ -666,7 +650,7 @@ Try fixing by pushing one pixel in each direction.
 
 This is a hack, but in the interest of good gameplay...
 */
-int BSPCollider::SV_TryUnstick(model_collision_t *ent, vec3_t oldvel) {
+int BSPCollider::SV_TryUnstick(model_collision_t *ent, const vec3_t oldvel) {
     int i;
     vec3_t oldorg;
     vec3_t dir;
@@ -825,7 +809,7 @@ void BSPCollider::SV_WalkMove(model_collision_t *ent, float deltaTime) {
 BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 */
-int BSPCollider::BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t *p) {
+int BSPCollider::BoxOnPlaneSide(const vec3_t emins, const vec3_t emaxs, mplane_t *p) {
     if ((p)->type < 3) {
         if ((p)->dist <= (emins)[(p)->type]) {
             return 1;
@@ -899,7 +883,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
     // inside map, all right
     if (!SV_TestEntityPosition(ent)) {
         // caching origin in oldorigin
-        //Logging::getInstance()->Log("inside map");
+        //Logging::Log("inside map");
         VectorCopy (ent->origin, ent->oldorigin)
         return;
     }
@@ -914,7 +898,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
 
     // Check again
     if (!SV_TestEntityPosition(ent)) {
-        Logging::getInstance()->Log("Unstucking with last good origin!");
+        Logging::Log("Unstucking with last good origin!", "BspCollider");
         return;
     }
 
@@ -926,7 +910,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
                 ent->origin[1] = org[1] + j;
                 ent->origin[2] = org[2] + z;
                 if (!SV_TestEntityPosition(ent)) {
-                    Logging::getInstance()->Log("Unstuck with swept!\n");
+                    Logging::Log("Unstuck with swept!\n", "BSPCollider");
                     //SV_LinkEdict (ent, true);
                     return;
                 }
@@ -935,7 +919,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
     }
 
     VectorCopy (org, ent->origin)
-    Logging::getInstance()->Log("player is stuck.\n");
+    Logging::Log("player is stuck.\n", "BspCollider");
 }
 
 model_collision_t *BSPCollider::SV_TestEntityPosition(model_collision_t *ent) {
@@ -946,7 +930,7 @@ model_collision_t *BSPCollider::SV_TestEntityPosition(model_collision_t *ent) {
     if (trace.startsolid)
         return getWorldModel();
 
-    return NULL;
+    return nullptr;
 }
 
 void BSPCollider::drawHullAABB(model_collision_t *model, int indexHull) {
@@ -992,14 +976,14 @@ void BSPCollider::Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *
     brushmodel->numleafs = count;
 
     for (i = 0; i < count; i++, in++, out++) {
-        out->efrags = NULL;
+        out->efrags = nullptr;
         out->contents = LittleLong(in->contents);
         out->firstmarksurface = brushmodel->marksurfaces + (uint16_t) LittleShort(in->firstsurf);
         out->nummarksurfaces = (uint16_t) LittleShort(in->numsurf);
 
         visofs = LittleLong(in->vislist);
         if (visofs == -1)
-            out->compressed_vis = NULL;
+            out->compressed_vis = nullptr;
         else
             out->compressed_vis = brushmodel->visdata + visofs;
 
@@ -1134,7 +1118,7 @@ void BSPCollider::Mod_MakeDrawHull(model_collision_t *brushmodel) {
     }
 }
 
-bool BSPCollider::isPlayerOnGround() {
+bool BSPCollider::isPlayerOnGround() const {
     bool onground = this->playermodel->flags & FL_ONGROUND;
 
     return onground;
@@ -1221,7 +1205,7 @@ float BSPCollider::VectorNormalize(vec3_t v) {
 }
 
 
-float BSPCollider::V_CalcRoll(vec3_t angles, vec3_t velocity) {
+float BSPCollider::V_CalcRoll(vec3_t angles, const vec3_t velocity) {
     float sign;
     float side;
     float value;
@@ -1254,7 +1238,7 @@ void BSPCollider::ApplyBob(model_collision_t *model, float deltaTime) {
     model->origin[2] += bob * 0.4;
 }
 
-float BSPCollider::V_CalcBob(float time, vec3_t velocity) {
+float BSPCollider::V_CalcBob(float time, const vec3_t velocity) {
     float cl_bob = 0.02;
     float cl_bobcycle = 0.6;
     float cl_bobup = 0.5;
@@ -1437,7 +1421,7 @@ void BSPCollider::checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_
     Drawable::drawVector3D(ray, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::cyan());
 }
 
-vec_t BSPCollider::VectorLength(vec3_t v) {
+vec_t BSPCollider::VectorLength(const vec3_t v) {
     int i;
     float length;
 

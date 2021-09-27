@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 5/2/21.
-//
 
 #include <SDL_image.h>
 #include "../../headers/2D/TextWriter.h"
@@ -10,7 +7,7 @@
 
 TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
     if (!Tools::fileExists(concharsFile)) {
-        Logging::getInstance()->Log(std::string("Error loading file") + concharsFile);
+        Logging::Log(std::string("Error loading file") + concharsFile, "TextWriter");
         return;
     }
 

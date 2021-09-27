@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 14/1/20.
-//
-
 #ifndef BRAKEDA3D_COMPONENTGAMEINPUT_H
 #define BRAKEDA3D_COMPONENTGAMEINPUT_H
 
@@ -25,7 +21,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    bool enabled;
+    bool enabled{};
     Player *player;
 
     bool isEnabled() const;
@@ -56,7 +52,7 @@ public:
 
     void handleRespawnAfterDead(SDL_Event *event);
 
-    void jump(bool checkOnGround, float YForce, bool soundJump) const;
+    void jump(bool soundJump) const;
 };
 
 

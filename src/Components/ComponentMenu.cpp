@@ -42,7 +42,7 @@ void ComponentMenu::loadMenuOptions() {
     mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
     if (myDataJSON == nullptr) {
-        Logging::getInstance()->Log("menu.json can't be loaded", "ERROR");
+        Logging::Log("menu.json can't be loaded", "ERROR");
         return;
     }
 
@@ -50,7 +50,7 @@ void ComponentMenu::loadMenuOptions() {
     optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options");
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
-    Logging::getInstance()->Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON");
+    Logging::Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON", "Menu");
 
     cJSON_ArrayForEach(currentOption, optionsJSON) {
         cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
@@ -58,8 +58,8 @@ void ComponentMenu::loadMenuOptions() {
         cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
-            Logging::getInstance()->Log("Adding menu option " + std::string(nameOption->valuestring) + "/" +
-                                        std::to_string(actionOption->valueint));
+            Logging::Log("Adding menu option " + std::string(nameOption->valuestring) + "/" +
+                                        std::to_string(actionOption->valueint), "Menu");
             this->options[numOptions] = new MenuOption(nameOption->valuestring, actionOption->valueint);
             this->options[numOptions]->setAlt(altOption->valuestring);
             numOptions++;

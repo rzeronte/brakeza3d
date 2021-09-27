@@ -39,11 +39,11 @@ public:
 
     bool isSomeMesh3DFuncDoor() const;
 
-    bool isSomeMesh3DFuncButton();
+    bool isSomeMesh3DFuncButton() const;
 
-    bool isSomeMesh3DTriggerMultiple();
+    bool isSomeMesh3DTriggerMultiple() const;
 
-    bool isSomeMesh3DTriggerTeleport();
+    bool isSomeMesh3DTriggerTeleport() const;
 
     bool isSomeItemWeapon() const;
 
@@ -51,7 +51,7 @@ public:
 
     bool isSomeItemAmmo() const;
 
-    bool isBSPEntityOfClassName(Mesh3D *oMesh, std::string query) const;
+    bool isBSPEntityOfClassName(Mesh3D *oMesh, const std::string& query) const;
 
     void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId) const;
 

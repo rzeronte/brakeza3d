@@ -1,12 +1,7 @@
-//
-// Created by darkhead on 28/4/18.
-//
-
 #include <iostream>
 #include "../../headers/Objects/Point2D.h"
 
-Point2D::Point2D() {
-}
+Point2D::Point2D() = default;
 
 Point2D::Point2D(float x, float y) {
     this->x = x;

@@ -1,4 +1,6 @@
 
+#include <utility>
+
 #include "../../headers/Render/Logging.h"
 #include "../../headers/EngineSetup.h"
 
@@ -12,7 +14,7 @@ Logging *Logging::getInstance() {
     return instance;
 }
 
-void Logging::Log(std::string message, std::string type) {
+void Logging::Log(const std::string& message, const std::string& type) {
     if (!EngineSetup::getInstance()->LOGGING) return;
 
     if (EngineSetup::getInstance()->LOGGING_TO_FILE) {
@@ -29,5 +31,5 @@ void Logging::Log(std::string message, std::string type) {
 }
 
 void Logging::Log(std::string message) {
-    this->Log(message, "DEBUG");
+    this->Log(std::move(message), "DEBUG");
 }

@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 14/1/20.
-//
-
 #include "../../headers/Components/ComponentGame.h"
 #include "../../headers/Components/ComponentCollisions.h"
 #include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
@@ -95,7 +91,6 @@ void ComponentGame::onUpdate() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup *setup = EngineSetup::getInstance();
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();
-    BSPMap *mapBSP = ComponentsManager::get()->getComponentBSP()->getBSP();
     ComponentWindow *componentWindow = ComponentsManager::get()->getComponentWindow();
     ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
 
@@ -159,7 +154,7 @@ void ComponentGame::setKills(int kills) {
 }
 
 
-void ComponentGame::onUpdateIA() {
+void ComponentGame::onUpdateIA() const {
     if (player->isDead()) return;
 
     std::vector<Object3D *>::iterator itObject3D;
@@ -349,7 +344,7 @@ void ComponentGame::redScreen() {
 
     for (int y = 0; y < SETUP->screenHeight; y++) {
         for (int x = 0; x < SETUP->screenWidth; x++) {
-            Uint32 currentPixelColor = (Uint32) BUFFERS->getVideoBuffer(x, y);
+            auto currentPixelColor = (Uint32) BUFFERS->getVideoBuffer(x, y);
 
             int r_light = (int) ((float) Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
             int g_light = (int) ((float) Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
@@ -366,7 +361,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
     EngineSetup *engineSetup = EngineSetup::getInstance();
     BSPMap *bspMap = ComponentsManager::get()->getComponentBSP()->getBSP();
 
-    Logging::getInstance()->Log("BSP Num Entities: " + std::to_string(bspMap->n_entities), "");
+    Logging::Log("BSP Num Entities: " + std::to_string(bspMap->n_entities), "");
     Brakeza3D *brakeza3D = Brakeza3D::get();
 
     if (bspMap->n_entities > MAX_BSP_ENTITIES) {
@@ -375,9 +370,9 @@ void ComponentGame::createObjects3DFromBSPEntities() {
     }
 
     for (int i = 0; i < bspMap->n_entities; i++) {
-        Logging::getInstance()->Log("BSPEntity: " + std::to_string(bspMap->entities[i].id), "");
+        Logging::Log("BSPEntity: " + std::to_string(bspMap->entities[i].id), "");
         for (int j = 0; j < bspMap->entities[i].num_attributes; j++) {
-            Logging::getInstance()->Log(
+            Logging::Log(
                     "Key: '" + (std::string) bspMap->entities[i].attributes[j].key + "' - Value: '" +
                     (std::string) bspMap->entities[i].attributes[j].value + "'", "");
         }
@@ -494,7 +489,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                     WeaponType *weapon = brakeza3D->getComponentsManager()->getComponentWeapons()->getWeaponTypeByClassname(
                             classname);
                     if (weapon == nullptr) {
-                        Logging::getInstance()->Log("Error loading weapon by classname: " + s1, "ERROR");
+                        Logging::Log("Error loading weapon by classname: " + s1, "ERROR");
                         continue;
                     }
 
@@ -554,7 +549,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                 // armor wildcard
                 std::string s3(classname);
                 if (s2.find("armor") != std::string::npos) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                     o->setPosition(pos);
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (armor)");
                 }
@@ -564,14 +559,14 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                     !strcmp(classname, "info_player_coop") ||
                     !strcmp(classname, "info_player_deathmatch")
                         ) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                     o->setPosition(pos);
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)");
                 }
 
                 // info teleport destination
                 if (!strcmp(classname, "info_teleport_destination")) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                     o->setPosition(pos);
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (teleport_destination)");
                 }
@@ -579,14 +574,14 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                 // light_flame_large_yellow
                 if (!strcmp(classname, "light_flame_large_yellow") ||
                     !strcmp(classname, "light_torch_small_walltorch")) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                     o->setPosition(pos);
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
                 }
 
                 // func_button
                 if (!strcmp(classname, "func_button")) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                     o->setPosition(pos);
                     Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (func_button)");
                 }
@@ -600,7 +595,7 @@ void ComponentGame::LoadMapsFromJSON() {
     const char *mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MAPS, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
     if (myDataJSON == nullptr) {
-        //Logging::getInstance()->Log("maps.json can't be loaded", "ERROR");
+        //Logging::Log("maps.json can't be loaded", "ERROR");
         return;
     }
 
@@ -609,14 +604,14 @@ void ComponentGame::LoadMapsFromJSON() {
     int sizeMaps = cJSON_GetArraySize(mapsJSONList);
 
     if (sizeMaps <= 0) {
-        //Logging::getInstance()->Log("maps.json is empty", "ERROR");
+        //Logging::Log("maps.json is empty", "ERROR");
     }
 
     cJSON_ArrayForEach(currentMap, mapsJSONList) {
         cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(currentMap, "name");
 
         if (cJSON_IsString(nameMap)) {
-            //Logging::getInstance()->Log("Map JSON detected: " + std::string(nameMap->valuestring));
+            //Logging::Log("Map JSON detected: " + std::string(nameMap->valuestring));
         }
     }
 }
@@ -626,7 +621,7 @@ void ComponentGame::setFirstMapNameFromJSON() {
     cJSON *firstMapJSON = cJSON_GetArrayItem(mapsJSONList, 0);
     cJSON *nameMap = cJSON_GetObjectItemCaseSensitive(firstMapJSON, "name");
     this->currentMapName = nameMap->valuestring;
-    Logging::getInstance()->Log(this->currentMapName);
+    Logging::Log(this->currentMapName, "FirstMap");
 }
 
 void ComponentGame::LoadWeaponsJSON() {
@@ -638,7 +633,7 @@ void ComponentGame::LoadWeaponsJSON() {
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
     if (myDataJSON == nullptr) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
@@ -647,9 +642,9 @@ void ComponentGame::LoadWeaponsJSON() {
     int sizeAmmoTypesList = cJSON_GetArraySize(ammoTypesJSONList);
 
     if (sizeAmmoTypesList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeAmmoTypesList) + " ammoTypes", "WEAPONS");
+        Logging::Log(filePath + " have " + std::to_string(sizeAmmoTypesList) + " ammoTypes", "WEAPONS");
     } else {
-        Logging::getInstance()->Log(filePath + " is empty for ammoTypes", "ERROR");
+        Logging::Log(filePath + " is empty for ammoTypes", "ERROR");
     }
 
     cJSON *currentAmmoType;
@@ -671,15 +666,15 @@ void ComponentGame::LoadWeaponsJSON() {
         ammoType->setReloadAmount(startAmmo->valueint);
         ammoType->getModelProjectile()->AssimpLoadAnimation(
                 EngineSetup::getInstance()->MODELS_FOLDER + model_proj->valuestring);
-        ammoType->getModelProjectile()->setScale(scale_proj->valuedouble);
+        ammoType->getModelProjectile()->setScale((float)scale_proj->valuedouble);
         ammoType->getModelBox()->setLabel(std::string(name->valuestring) + "_model_box");
-        ammoType->getModelBox()->setScale(scale_box->valuedouble);
+        ammoType->getModelBox()->setScale((float)scale_box->valuedouble);
         ammoType->getModelBox()->AssimpLoadGeometryFromFile(
                 EngineSetup::getInstance()->MODELS_FOLDER + model_box->valuestring);
 
         weaponManager->ammoTypes.push_back(ammoType);
 
-        Logging::getInstance()->Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
+        Logging::Log("Loading ammoType: " + ammoType->getClassname(), "ERROR");
     }
 
     // Weapons Types
@@ -687,9 +682,9 @@ void ComponentGame::LoadWeaponsJSON() {
     int sizeWeaponsList = cJSON_GetArraySize(weaponsJSONList);
 
     if (sizeWeaponsList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList) + " weapons", "WEAPONS");
+        Logging::Log(filePath + " have " + std::to_string(sizeWeaponsList) + " weapons", "WEAPONS");
     } else {
-        Logging::getInstance()->Log(filePath + " is empty for weapons", "ERROR");
+        Logging::Log(filePath + " is empty for weapons", "ERROR");
     }
 
     // weapons loop
@@ -711,7 +706,7 @@ void ComponentGame::LoadWeaponsJSON() {
         cJSON *scale = cJSON_GetObjectItemCaseSensitive(currentWeapon, "scale");
         cJSON *sndEmptyLabel = cJSON_GetObjectItemCaseSensitive(currentWeapon, "sound_empty_label");
 
-        Logging::getInstance()->Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
+        Logging::Log("Loading weapon " + std::string(name->valuestring), "WEAPONS");
 
         // WeaponType attributes
         weaponManager->addWeaponType(name->valuestring);
@@ -720,17 +715,17 @@ void ComponentGame::LoadWeaponsJSON() {
         weaponType->setClassname(classname->valuestring);
         weaponType->setAmmoType(weaponManager->ammoTypes[ammoIndex->valueint]);
         weaponType->setIndex(index->valueint);
-        weaponType->setDamage(damage->valuedouble);
-        weaponType->setDamageRadius(damageRadius->valuedouble);
+        weaponType->setDamage((float)damage->valuedouble);
+        weaponType->setDamageRadius((float)damageRadius->valuedouble);
         weaponType->setSpeed((float) speed->valuedouble);
-        weaponType->setAccuracy(accuracy->valuedouble);
-        weaponType->setDispersion(dispersion->valueint);
+        weaponType->setAccuracy((float)accuracy->valuedouble);
+        weaponType->setDispersion((float)dispersion->valueint);
         weaponType->loadIconHUD(std::string(name->valuestring) + "/" + std::string(iconHUD->valuestring));
         weaponType->getModel()->setLabel(std::string(name->valuestring) + "_model");
-        weaponType->getModel()->setScale(scale->valuedouble);
+        weaponType->getModel()->setScale((float)scale->valuedouble);
         weaponType->getModel()->AssimpLoadGeometryFromFile(
                 EngineSetup::getInstance()->MODELS_FOLDER + model->valuestring);
-        weaponType->counterCadence->setStep(cadence->valuedouble);
+        weaponType->counterCadence->setStep((float)cadence->valuedouble);
         weaponType->setSoundEmptyLabel(sndEmptyLabel->valuestring);
 
         // WeaponType SniperHUD
@@ -748,21 +743,21 @@ void ComponentGame::LoadWeaponsJSON() {
         cJSON_ArrayForEach(currentWeaponAnimation, weaponAnimationsJSONList) {
             cJSON *status = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "status");
             cJSON *label = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "label");
-            cJSON *model = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "model");
+            cJSON *animationModel = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "animationModel");
             cJSON *scale = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "scale");
             cJSON *stopEnd = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
             cJSON *looping = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
             cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
             cJSON *sound = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "sound");
 
-            Logging::getInstance()->Log(
+            Logging::Log(
                     "Loading JSON Weapon Animation: " + std::string(label->valuestring) + ", status:" +
-                    std::to_string(status->valueint));
+                    std::to_string(status->valueint), "WeaponLoading");
 
             weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                     std::string(label->valuestring),
-                    std::string(model->valuestring),
-                    scale->valuedouble,
+                    std::string(animationModel->valuestring),
+                    (float) scale->valuedouble,
                     stopEnd->valueint
             );
 
@@ -782,17 +777,15 @@ void ComponentGame::LoadEnemiesJSON() {
     cJSON *myDataJSON = cJSON_Parse(enemiesFile);
 
     if (myDataJSON == nullptr) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
     enemiesJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
     int sizeWeaponsList = cJSON_GetArraySize(enemiesJSONList);
 
-    if (sizeWeaponsList > 0) {
-        Logging::getInstance()->Log(filePath + " have " + std::to_string(sizeWeaponsList));
-    } else {
-        Logging::getInstance()->Log(filePath + " is empty", "ERROR");
+    if (sizeWeaponsList <= 0) {
+        Logging::Log(filePath + " is empty", "ERROR");
     }
 
     // weapons loop
@@ -808,7 +801,7 @@ void ComponentGame::LoadEnemiesJSON() {
         cJSON *defaultAnimation = cJSON_GetObjectItemCaseSensitive(currentEnemy, "default_animation");
         cJSON *scale = cJSON_GetObjectItemCaseSensitive(currentEnemy, "scale_mesh");
 
-        NPCEnemyBody *newEnemy = new NPCEnemyBody();
+        auto *newEnemy = new NPCEnemyBody();
         newEnemy->setDamage((float) damage->valuedouble);
         newEnemy->setCadence((float) cadence->valuedouble);
         newEnemy->setRange((float) range->valuedouble);

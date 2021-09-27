@@ -75,7 +75,7 @@ public:
 
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
 
-    void drawWireframe(Triangle *t);
+    static void drawWireframe(Triangle *t);
 
     void processPixelTextureAnimated(Fragment *fragment);
 

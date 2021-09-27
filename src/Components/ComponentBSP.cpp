@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 9/1/20.
-//
-
 #include "../../headers/Components/ComponentBSP.h"
 #include "../../headers/ComponentsManager.h"
 

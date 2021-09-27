@@ -181,44 +181,44 @@ private:
 
     bool LoadBSP(const char *filename);
 
-    primdesc_t *surfacePrimitives;    // Array of surface primitives, contains vertex and texture information for every surface
-    unsigned int *textureObjNames;    // Array of available texture object names, the name is a number
-    int *visibleSurfaces;            // Array of visible surfaces, contains an index to the surfaces
+    primdesc_t *surfacePrimitives{};    // Array of surface primitives, contains vertex and texture information for every surface
+    unsigned int *textureObjNames{};    // Array of available texture object names, the name is a number
+    int *visibleSurfaces{};            // Array of visible surfaces, contains an index to the surfaces
 
-    int numMaxEdgesPerSurface;      // Max edges per surface
+    int numMaxEdgesPerSurface{};      // Max edges per surface
     int numVisibleSurfacesFrame = 0;
 
 public:
     bool loaded = false;
-    Camera3D *camera;
+    Camera3D *camera{};
     std::vector<Triangle *> *frameTriangles;
 
-    int *allSurfaces;                // Array of full surfaces, contains an index to the surfaces
+    int *allSurfaces{};                // Array of full surfaces, contains an index to the surfaces
     int numAllSurfaces = 0;
 
     float scale = 1;
-    dheader_t *header;
+    dheader_t *header{};
 
-    surface_triangles_t *surface_triangles;
+    surface_triangles_t *surface_triangles{};
     std::vector<Triangle *> model_triangles;
 
-    Texture *textures;
+    Texture *textures{};
 
-    entity_t *entities;
-    int n_entities;
+    entity_t *entities{};
+    int n_entities{};
 
-    lightmap_t *surface_lightmaps;   // info surface-lightmap
-    Texture *lightmaps;              // lightmaps textures
+    lightmap_t *surface_lightmaps{};   // info surface-lightmap
+    Texture *lightmaps{};              // lightmaps textures
 
-    unsigned int palette[256];
+    unsigned int palette[256]{};
 
     btTriangleMesh bspBtMesh;
-    btBvhTriangleMeshShape *bspBtShape;
-    btDefaultMotionState *motionState;
-    btRigidBody *bspRigidBody;
+    btBvhTriangleMeshShape *bspBtShape{};
+    btDefaultMotionState *motionState{};
+    btRigidBody *bspRigidBody{};
 
     dleaf_t *currentLeaf = nullptr;
-    char *bsp;
+    char *bsp{};
 
     BSPMap();
 
@@ -383,7 +383,7 @@ public:
 
     void InitializeEntities();
 
-    static float CalculateDistance(vec3_t a, vec3_t b);
+    static float CalculateDistance(const vec3_t a, const vec3_t b);
 
     void CalcSurfaceExtents(int surface, lightmap_t *l);
 
@@ -391,7 +391,7 @@ public:
 
     void DrawSurfaceList(int *visibleSurfaces, int numVisibleSurfaces);
 
-    void DrawVisibleLeaf(Camera3D *Cam);
+    void DrawVisibleLeaf();
 
     void DrawHulls();
 
@@ -408,7 +408,7 @@ public:
     // Get array of edges, contains the index to the start and end vertices in the pV
     char *getEntities() { return (char *) &bsp[header->entities.offset]; }
 
-    char *parseEntities(char *s);
+    void parseEntities(const char *s);
 
     int getNumClipNodes() { return header->clipnodes.size / (sizeof(getClipNodes()[0])); }
 
@@ -426,9 +426,9 @@ public:
 
     char *getEntityValue(int entityId, const std::string&) const;
 
-    bool hasEntityAttribute(int entityId, const std::string&);
+    bool hasEntityAttribute(int entityId, const std::string&) const;
 
-    Vertex3D parsePositionFromEntityAttribute(char *);
+    Vertex3D parsePositionFromEntityAttribute(char *) const;
 
     Vertex3D getStartMapPosition();
 
@@ -438,11 +438,11 @@ public:
 
     static bool isLeafLiquid(int type);
 
-    bool hasTexture(std::string);
+    bool hasTexture(const std::string&);
 
-    int getTextureAnimatedFrames(std::string name);
+    int getTextureAnimatedFrames(const std::string& name);
 
-    Texture *getTexture(std::string name);
+    Texture *getTexture(const std::string& name);
 
     void init(Camera3D *cam);
 

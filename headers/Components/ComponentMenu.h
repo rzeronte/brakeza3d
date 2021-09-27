@@ -29,7 +29,7 @@ public:
 
     ComponentMenu();
 
-    MenuOption *options[MAX_MENU_OPTIONS];
+    MenuOption *options[MAX_MENU_OPTIONS]{};
     int numOptions;
 
     int currentOption;
@@ -42,7 +42,7 @@ public:
     };
 
     // menu.json
-    cJSON *optionsJSON;
+    cJSON *optionsJSON{};
 
     void drawOptions(SDL_Surface *dst);
 

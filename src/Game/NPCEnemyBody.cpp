@@ -68,7 +68,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
 void NPCEnemyBody::doFollowPathfinding(bool raycastResult) {
     if (!raycastResult) return;
 
-    if (this->points.size() > 0) {
+    if (!this->points.empty()) {
         btTransform t = this->getRigidBody()->getWorldTransform();
         btMotionState *mMotionState = this->getRigidBody()->getMotionState();
 
@@ -94,7 +94,7 @@ void NPCEnemyBody::doFollowPathfinding(bool raycastResult) {
 }
 
 void NPCEnemyBody::syncPathFindingRotation() {
-    if (this->points.size() > 0) {
+    if (!this->points.empty()) {
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
@@ -105,7 +105,7 @@ void NPCEnemyBody::syncPathFindingRotation() {
 void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, std::vector<Object3D *> &gameObjects) {
     return;
 
-    Projectile3DBody *projectile = new Projectile3DBody();
+    auto *projectile = new Projectile3DBody();
     projectile->setFromEnemy(true);
     projectile->setPosition(this->getPosition());
     projectile->setLabel("projectile");
@@ -115,7 +115,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
                                                 dynamicsWorld, 700);
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
-    if (this->points.size() > 0) {
+    if (!this->points.empty()) {
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
         M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
@@ -161,7 +161,7 @@ NPCEnemyBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions,
 
     trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
     btVector3 localInertia(0, 0, 0);
-    btDefaultMotionState *myMotionState = new btDefaultMotionState(trans);
+    auto *myMotionState = new btDefaultMotionState(trans);
     btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);

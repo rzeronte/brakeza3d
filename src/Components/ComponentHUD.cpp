@@ -1,22 +1,14 @@
-//
-// Created by darkhead on 12/1/20.
-//
-
 #include "../../headers/Components/ComponentHUD.h"
 #include "../../headers/ComponentsManager.h"
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
-    counterFaceAnimation = new Counter();
-    counterMinReactionTime = new Counter(0.5);
 }
 
 void ComponentHUD::onStart() {
     std::cout << "ComponentHUD onStart" << std::endl;
 
     loadImages();
-    loadStatusFaceImages();
-    setStatusFaceAnimation(StatusFace::STAND);
 
     textureWriter = new TextWriter(
             ComponentsManager::get()->getComponentWindow()->renderer,
@@ -34,27 +26,7 @@ void ComponentHUD::onUpdate() {
             Drawable::drawCrossHair();
         }
 
-        counterFaceAnimation->update();
-        counterMinReactionTime->update();
-
-        if (counterMinReactionTime->isFinished()) {
-            counterMinReactionTime->setEnabled(true);
-            if (ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex !=
-                ComponentHUD::StatusFace::STAND
-                &&
-                ComponentsManager::get()->getComponentHUD()->currentFaceAnimationIndex != ComponentHUD::StatusFace::DEAD
-                    ) {
-                ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::STAND);
-            }
-        }
-
-        if (counterFaceAnimation->isFinished()) {
-            counterFaceAnimation->setEnabled(true);
-            faceAnimations[currentFaceAnimationIndex]->nextFrame();
-        }
-
         drawHUD();
-
     }
 }
 
@@ -78,36 +50,7 @@ void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
 }
 
-void ComponentHUD::loadStatusFaceImages() {
-    Logging::getInstance()->Log("Loading facing status images...");
-
-    auto *faceEvil = new TextureAnimation();
-    auto *faceKill = new TextureAnimation();
-    auto *faceOuch = new TextureAnimation();
-    auto *faceStand = new TextureAnimation();
-    auto *faceDead = new TextureAnimation();
-
-    faceEvil->setup(SETUP->ASSETS_FOLDER + "face/evil", 5, 3);
-    faceKill->setup(SETUP->ASSETS_FOLDER + "face/kill", 5, 3);
-    faceOuch->setup(SETUP->ASSETS_FOLDER + "face/ouch", 5, 3);
-    faceStand->setup(SETUP->ASSETS_FOLDER + "face/stand", 5, 3);
-    faceDead->setup(SETUP->ASSETS_FOLDER + "face/dead", 1, 1);
-
-    this->faceAnimations.push_back(faceEvil);
-    this->faceAnimations.push_back(faceKill);
-    this->faceAnimations.push_back(faceOuch);
-    this->faceAnimations.push_back(faceStand);
-    this->faceAnimations.push_back(faceDead);
-}
-
-void ComponentHUD::setStatusFaceAnimation(int id) {
-    currentFaceAnimationIndex = id;
-    counterMinReactionTime->setEnabled(true);
-    float step = (float) 1 / (float) this->faceAnimations[currentFaceAnimationIndex]->getFps();
-    counterFaceAnimation->setStep(step);
-}
-
-void ComponentHUD::writeTextCenter(const char *text, bool bold) {
+void ComponentHUD::writeTextCenter(const char *text, bool bold) const {
     int totalW = EngineSetup::getInstance()->screenWidth;
     int totalH = EngineSetup::getInstance()->screenHeight;
 

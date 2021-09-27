@@ -70,7 +70,7 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
 int BSPMap::LoadFile(const char *filename, void **bufferptr) {
     struct stat st;
     void *buffer;
-    int length;
+    unsigned int length;
 
     int f = open(filename, O_RDONLY);
     if (f == -1) {
@@ -219,7 +219,7 @@ bool BSPMap::InitializeTextures() {
         }
         textures[i].setMipMapped(true);
 
-        Logging::getInstance()->Log(
+        Logging::Log(
                 "InitializeTextures: " + std::string(mipTexture->name) +
                 " | animated: " + std::to_string(textures[i].animated) +
                 " | liquid: " + std::to_string(textures[i].liquid) +
@@ -236,7 +236,7 @@ bool BSPMap::InitializeTextures() {
             int height_t = mipTexture->height / mip_m;
 
             // Allocate memory for the texture which will be created
-            unsigned int *texture = new unsigned int[width_t * height_t];
+            auto *texture = new unsigned int[width_t * height_t];
 
             // Point to the raw 8-bit texture data
             unsigned char *rawTexture = this->getRawTexture(i, mip_m);
@@ -285,8 +285,8 @@ void BSPMap::InitializeTriangles() {
 
     }
 
-    Logging::getInstance()->Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
-    Logging::getInstance()->Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
+    Logging::Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
+    Logging::Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
 }
 
 void BSPMap::InitializeLightmaps() {
@@ -553,7 +553,7 @@ void BSPMap::CalcSurfaceExtents(int surface, lightmap_t *l) {
 }
 
 // Return the dotproduct of two vectors
-float BSPMap::CalculateDistance(vec3_t a, vec3_t b) {
+float BSPMap::CalculateDistance(const vec3_t a, const vec3_t b) {
     return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
 }
 
@@ -678,7 +678,7 @@ void BSPMap::setVisibleSet(dleaf_t *pLeaf) {
 }
 
 // Calculate which other leaves are visible from the specified leaf, fetch the associated surfaces and draw them
-void BSPMap::DrawVisibleLeaf(Camera3D *cam) {
+void BSPMap::DrawVisibleLeaf() {
     if (this->currentLeaf == nullptr) return;
 
     DrawSurfaceList(visibleSurfaces, numVisibleSurfacesFrame);
@@ -746,15 +746,6 @@ dleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft) {
             if (updateCurrentLeaft) {
                 this->currentLeaf = this->getLeaf(~nextNodeId);
             }
-
-            if (EngineSetup::getInstance()->LOG_LEAF_TYPE) {
-                Logging::getInstance()->Log(
-                        "Leaf type: " + std::to_string(leaf->contents) +
-                        ", numsurf: " + std::to_string(leaf->numsurf) +
-                        ", distance: " + std::to_string(distance) +
-                        ", firstsurf: " + std::to_string(leaf->firstsurf)
-                );
-            }
         }
     }
 
@@ -762,7 +753,7 @@ dleaf_t *BSPMap::FindLeaf(Vertex3D camPosition, bool updateCurrentLeaft) {
 }
 
 // Original Quake source function :_)
-char *BSPMap::parseEntities(char *s) {
+void BSPMap::parseEntities(const char *s) {
     char pkey[512];
     char value[512];
     int i = 0;
@@ -830,6 +821,8 @@ char *BSPMap::getEntityValue(int entityId, const std::string& key) const {
             return this->entities[entityId].attributes[j].value;
         }
     }
+
+    return nullptr;
 }
 
 int BSPMap::getIndexOfFirstEntityByClassname(const std::string& value) {
@@ -884,7 +877,7 @@ int BSPMap::getIndexOfFirstEntityByModel(const char *value) {
     return -1;
 }
 
-bool BSPMap::hasEntityAttribute(int entityId, const std::string& key) {
+bool BSPMap::hasEntityAttribute(int entityId, const std::string& key) const {
     for (int j = 0; j < this->entities[entityId].num_attributes; j++) {
         if (this->entities[entityId].attributes[j].key == key) {
             return true;
@@ -894,7 +887,7 @@ bool BSPMap::hasEntityAttribute(int entityId, const std::string& key) {
     return false;
 }
 
-Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line) {
+Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line) const {
     std::vector<std::string> line_chunks;
     line_chunks = Tools::split(line, ' ');
 
@@ -913,7 +906,7 @@ Vertex3D BSPMap::getStartMapPosition() {
         //parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
     } else {
-        Logging::getInstance()->Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
+        Logging::Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
     }
     return Vertex3D();
 }
@@ -931,7 +924,7 @@ bool BSPMap::isLeafLiquid(int type) {
     return (type < -2);
 }
 
-bool BSPMap::hasTexture(std::string name) {
+bool BSPMap::hasTexture(const std::string& name) {
     for (int i = 0; i < this->getNumTextures(); i++) {
         if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
             return true;
@@ -941,7 +934,7 @@ bool BSPMap::hasTexture(std::string name) {
     return false;
 }
 
-int BSPMap::getTextureAnimatedFrames(std::string name) {
+int BSPMap::getTextureAnimatedFrames(const std::string& name) {
     int count = atoi(name.substr(1, 1).c_str());
     std::string baseName = name.substr(2, name.length());
 
@@ -954,12 +947,10 @@ int BSPMap::getTextureAnimatedFrames(std::string name) {
         count++;
     }
 
-    Logging::getInstance()->Log("[getTextureAnimatedFrames] baseName: " + baseName + ", max: " + std::to_string(count));
-
     return count;
 }
 
-Texture *BSPMap::getTexture(std::string name) {
+Texture *BSPMap::getTexture(const std::string& name) {
     for (int i = 0; i < this->getNumTextures(); i++) {
         if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
             return &textures[i];

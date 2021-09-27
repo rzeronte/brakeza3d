@@ -29,22 +29,22 @@ public:
 
     std::vector<CollisionResolver *> collisions;
 
-    Camera3D *camera;
-    BSPMap *bspMap;
-    std::vector<Triangle *> *visibleTriangles;
-    Mesh3DGhost *triggerCamera;
+    Camera3D *camera{};
+    BSPMap *bspMap{};
+    std::vector<Triangle *> *visibleTriangles{};
+    Mesh3DGhost *triggerCamera{};
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    btDefaultCollisionConfiguration *collisionConfiguration;
+    btDefaultCollisionConfiguration *collisionConfiguration{};
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    btCollisionDispatcher *dispatcher;
+    btCollisionDispatcher *dispatcher{};
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    btBroadphaseInterface *overlappingPairCache;
+    btBroadphaseInterface *overlappingPairCache{};
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver *solver;
+    btSequentialImpulseConstraintSolver *solver{};
     btDiscreteDynamicsWorld *dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver,
                                                                          collisionConfiguration);
-    PhysicsDebugDraw *debugDraw;
+    PhysicsDebugDraw *debugDraw{};
 
     void initBulletSystem();
 

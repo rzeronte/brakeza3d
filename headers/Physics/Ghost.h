@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/2/21.
-//
-
 #ifndef BRAKEDA3D_GHOST_H
 #define BRAKEDA3D_GHOST_H
 

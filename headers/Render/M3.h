@@ -51,7 +51,7 @@ public:
 
     void setup(float, float, float, float, float, float, float, float, float);
 
-    void consoleInfo(std::string label) const;
+    void consoleInfo(const std::string& label) const;
 
     float getPitch();
 

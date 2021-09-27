@@ -37,7 +37,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndNPCEnemy");
+            Logging::Log("CollisionResolverBetweenProjectileAndNPCEnemy", "Collision");
         }
 
         getNPCEnemy()->takeDamage(weaponManager->getCurrentWeaponType()->getDamage());

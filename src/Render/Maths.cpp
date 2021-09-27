@@ -102,8 +102,6 @@ void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C) {
     A = v[0];
     B = v[1];
     C = v[2];
-
-    return;
 }
 
 void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C) {
@@ -126,8 +124,6 @@ void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C) {
     A = v[0];
     B = v[1];
     C = v[2];
-
-    return;
 }
 
 void Maths::sortPointsByY(Point2D &A, Point2D &B, Point2D &C) {
@@ -150,8 +146,6 @@ void Maths::sortPointsByY(Point2D &A, Point2D &B, Point2D &C) {
     A = p[0];
     B = p[1];
     C = p[2];
-
-    return;
 }
 
 void Maths::sortPointsByX(Point2D &A, Point2D &B, Point2D &C) {
@@ -376,7 +370,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv2 = Transforms::objectToLocal(vertices[m1], parent);
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p1], parent);
 
-            Triangle *t = new Triangle(tv1, tv2, tv3, parent);
+            auto *t = new Triangle(tv1, tv2, tv3, parent);
             t->setLightmap(lightmap);
             t->setTexture(texture);
             t->setClipped(clipped);

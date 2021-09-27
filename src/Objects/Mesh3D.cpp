@@ -25,10 +25,10 @@ Mesh3D::Mesh3D() {
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
     // draw triangles of mesh
-    for (unsigned int i = 0; i < this->modelTriangles.size(); i++) {
-        this->modelTriangles[i]->updateTextureAnimated();
-        this->modelTriangles[i]->updateLightmapFrame();
-        frameTriangles->push_back(this->modelTriangles[i]);
+    for (auto & modelTriangle : this->modelTriangles) {
+        modelTriangle->updateTextureAnimated();
+        modelTriangle->updateLightmapFrame();
+        frameTriangles->push_back(modelTriangle);
     }
 }
 
@@ -63,37 +63,37 @@ void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
 void Mesh3D::updateBoundingBox() {
     float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
-    for (int i = 0; i < this->modelTriangles.size(); i++) {
-        this->modelTriangles[i]->updateObjectSpace();
+    for (auto & modelTriangle : this->modelTriangles) {
+        modelTriangle->updateObjectSpace();
 
-        maxX = std::fmax(maxX, this->modelTriangles[i]->Ao.x);
-        minX = std::fmin(minX, this->modelTriangles[i]->Ao.x);
+        maxX = std::fmax(maxX, modelTriangle->Ao.x);
+        minX = std::fmin(minX, modelTriangle->Ao.x);
 
-        maxY = std::fmax(maxY, this->modelTriangles[i]->Ao.y);
-        minY = std::fmin(minY, this->modelTriangles[i]->Ao.y);
+        maxY = std::fmax(maxY, modelTriangle->Ao.y);
+        minY = std::fmin(minY, modelTriangle->Ao.y);
 
-        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Ao.z);
-        minZ = std::fmin(minZ, this->modelTriangles[i]->Ao.z);
-
-        //
-        maxX = std::fmax(maxX, this->modelTriangles[i]->Bo.x);
-        minX = std::fmin(minX, this->modelTriangles[i]->Bo.x);
-
-        maxY = std::fmax(maxY, this->modelTriangles[i]->Bo.y);
-        minY = std::fmin(minY, this->modelTriangles[i]->Bo.y);
-
-        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Bo.z);
-        minZ = std::fmin(minZ, this->modelTriangles[i]->Bo.z);
+        maxZ = std::fmax(maxZ, modelTriangle->Ao.z);
+        minZ = std::fmin(minZ, modelTriangle->Ao.z);
 
         //
-        maxX = std::fmax(maxX, this->modelTriangles[i]->Co.x);
-        minX = std::fmin(minX, this->modelTriangles[i]->Co.x);
+        maxX = std::fmax(maxX, modelTriangle->Bo.x);
+        minX = std::fmin(minX, modelTriangle->Bo.x);
 
-        maxY = std::fmax(maxY, this->modelTriangles[i]->Co.y);
-        minY = std::fmin(minY, this->modelTriangles[i]->Co.y);
+        maxY = std::fmax(maxY, modelTriangle->Bo.y);
+        minY = std::fmin(minY, modelTriangle->Bo.y);
 
-        maxZ = std::fmax(maxZ, this->modelTriangles[i]->Co.z);
-        minZ = std::fmin(minZ, this->modelTriangles[i]->Co.z);
+        maxZ = std::fmax(maxZ, modelTriangle->Bo.z);
+        minZ = std::fmin(minZ, modelTriangle->Bo.z);
+
+        //
+        maxX = std::fmax(maxX, modelTriangle->Co.x);
+        minX = std::fmin(minX, modelTriangle->Co.x);
+
+        maxY = std::fmax(maxY, modelTriangle->Co.y);
+        minY = std::fmin(minY, modelTriangle->Co.y);
+
+        maxZ = std::fmax(maxZ, modelTriangle->Co.z);
+        minZ = std::fmin(minZ, modelTriangle->Co.z);
     }
 
     this->aabb.max.x = maxX;
@@ -116,7 +116,7 @@ void Mesh3D::updateBoundingBox() {
 }
 
 void Mesh3D::copyFrom(Mesh3D *source) {
-    Logging::getInstance()->Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel());
+    Logging::Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel(), "Mesh3D");
 
     // Triangles
     for (auto &modelTriangle : source->modelTriangles) {
@@ -163,7 +163,7 @@ void Mesh3D::onUpdate() {
 bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
     setSourceFile(fileName);
 
-    Logging::getInstance()->Log("AssimpLoadGeometryFromFile for " + fileName);
+    Logging::Log("AssimpLoadGeometryFromFile for " + fileName, "Mesh3D");
 
     const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate |
                                                        aiProcess_JoinIdenticalVertices |
@@ -172,7 +172,7 @@ bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
     );
 
     if (!scene) {
-        Logging::getInstance()->Log("Error import 3D file for ASSIMP");
+        Logging::Log("Error import 3D file for ASSIMP", "Mesh3D");
         exit(-1);
         return false;
     }
@@ -185,7 +185,7 @@ bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
 
 bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename) {
     // Extract the directory part from the file name
-    std::string::size_type SlashIndex = Filename.find_last_of("/");
+    std::string::size_type SlashIndex = Filename.find_last_of('/');
     std::string Dir;
 
     if (SlashIndex == std::string::npos) {
@@ -198,7 +198,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
     bool Ret = true;
 
-    Logging::getInstance()->Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
+    Logging::Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
     for (uint i = 0; i < pScene->mNumMaterials; i++) {
 
@@ -231,7 +231,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
                 this->numTextures++;
             }
         } else {
-            Logging::getInstance()->Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color",
+            Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color",
                                         "Mesh3DAnimated");
         }
         //}
@@ -254,7 +254,7 @@ void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node) {
 void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::getInstance()->Log("Skip mesh non triangle");
+        Logging::Log("Skip mesh non triangle", "Mesh3D");
         return;
     }
 
@@ -308,7 +308,7 @@ Grid3D *Mesh3D::getGrid3D() const {
 }
 
 void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ) {
-    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)");
+    Logging::Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)", "Mesh3D");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
                             Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
@@ -316,7 +316,7 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
 }
 
 void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction) {
-    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)");
+    Logging::Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)", "Mesh3D");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
                             Grid3D::EmptyStrategies::RAY_INTERSECTION);
@@ -325,7 +325,7 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
 }
 
 void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY) {
-    Logging::getInstance()->Log("Building Grid3D for " + this->getLabel() + "(DataImage)");
+    Logging::Log("Building Grid3D for " + this->getLabel() + "(DataImage)", "Mesh3D");
     this->updateBoundingBox();
     this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);
     this->grid->setImageFilename(filename);
@@ -334,7 +334,7 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const st
 }
 
 void Mesh3D::buildOctree() {
-    Logging::getInstance()->Log("Building Octree for " + this->getLabel());
+    Logging::Log("Building Octree for " + this->getLabel(), "Mesh3D");
     this->updateBoundingBox();
     this->octree = new Octree(this->modelTriangles, this->aabb);
 }

@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 3/1/20.
-//
-
 #ifndef BRAKEDA3D_AMMOTYPE_H
 #define BRAKEDA3D_AMMOTYPE_H
 

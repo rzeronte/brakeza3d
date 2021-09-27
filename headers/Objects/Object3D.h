@@ -11,7 +11,7 @@ class Object3D {
     M3 rotation;
 
 public:
-    Object3D *parent;
+    Object3D *parent{};
 
     Object3D *getParent() const;
 
@@ -35,7 +35,7 @@ public:
 
     std::string getLabel() const;
 
-    void setLabel(const std::string label);
+    void setLabel(const std::string& label);
 
     Vertex3D &getPosition();
 

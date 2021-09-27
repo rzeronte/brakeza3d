@@ -22,10 +22,10 @@ struct miptex_t {
 
 class Texture {
 private:
-    SDL_Surface *mip_mapping_1;
-    SDL_Surface *mip_mapping_2;
-    SDL_Surface *mip_mapping_4;
-    SDL_Surface *mip_mapping_8;
+    SDL_Surface *mip_mapping_1{};
+    SDL_Surface *mip_mapping_2{};
+    SDL_Surface *mip_mapping_4{};
+    SDL_Surface *mip_mapping_8{};
 
     bool lightMapped;
     bool mipMapped;

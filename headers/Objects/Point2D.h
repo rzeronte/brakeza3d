@@ -11,7 +11,7 @@ public:
 
     void consoleInfo(const std::string& a, bool) const;
 
-    float x, y;
+    float x{}, y{};
 };
 
 

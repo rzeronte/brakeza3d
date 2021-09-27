@@ -31,7 +31,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndBSPMap");
+            Logging::Log("CollisionResolverBetweenProjectileAndBSPMap", "Collision");
         }
 
         // Remove projectile for check in stepSimulation
@@ -91,7 +91,7 @@ public:
     }
 
     void makeDamageRadius() {
-        Logging::getInstance()->Log("makeDamageRadius");
+        Logging::Log("makeDamageRadius", "Collisions");
         std::vector<Object3D *>::iterator itObject3D;
         int cont = 0;
         for (itObject3D = Brakeza3D::get()->getSceneObjects().begin();
@@ -108,7 +108,7 @@ public:
                 }
             }
         }
-        Logging::getInstance()->Log("makeDamageRadius: make damage for " + std::to_string(cont) + " enemies");
+        Logging::Log("makeDamageRadius: make damage for " + std::to_string(cont) + " enemies", "Collision");
     }
 
     void killEnemy(NPCEnemyBody *enemyBody) {

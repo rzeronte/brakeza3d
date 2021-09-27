@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 13/1/20.
-//
-
 #ifndef BRAKEDA3D_COMPONENTGUI_H
 #define BRAKEDA3D_COMPONENTGUI_H
 
@@ -25,9 +21,9 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-    SDL_GLContext *contextOpenGL;
+    SDL_Window *window{};
+    SDL_Renderer *renderer{};
+    SDL_GLContext *contextOpenGL{};
     GUIManager *managerGUI;
 
     bool &finish;

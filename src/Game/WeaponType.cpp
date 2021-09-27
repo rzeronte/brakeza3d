@@ -8,7 +8,7 @@
 WeaponType::WeaponType() : available(true) {
 }
 
-WeaponType::WeaponType(std::string label) {
+WeaponType::WeaponType(const std::string& label) {
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 
@@ -24,7 +24,7 @@ WeaponType::WeaponType(std::string label) {
     counterCadence = new Counter();
 }
 
-void WeaponType::addAnimation(std::string newLabel, std::string newModel, float scale, bool stopEnd) {
+void WeaponType::addAnimation(std::string newLabel, const std::string& newModel, float scale, bool stopEnd) {
     std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + newModel;
 
     weaponAnimations->addAnimation(std::move(newLabel), newModel, scale, stopEnd);
@@ -45,7 +45,7 @@ void WeaponType::setWeaponAnimation(int animationIndex) {
     this->weaponAnimations->setAnimation(animationIndex);
 
     if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM) {
-        Logging::getInstance()->Log("setWeaponAnimation: " + std::to_string(animationIndex));
+        Logging::Log("setWeaponAnimation: " + std::to_string(animationIndex), "WeaponType");
     }
 }
 
@@ -89,26 +89,15 @@ int WeaponType::getSpeed() const {
 void WeaponType::loadIconHUD(const std::string& file) {
     std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + file;
 
-    Logging::getInstance()->Log("Loading weapon icon:" + path);
-
     this->iconHUD = IMG_Load(path.c_str());
-
-    if (this->iconHUD == nullptr) {
-        Logging::getInstance()->Log("Error loading weapon icon:" + path);
-    }
 }
 
 bool WeaponType::isFiring() const {
     return firing;
 }
 
-void WeaponType::setFiring(bool firing) {
-    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM) {
-        Logging::getInstance()->Log("setFiring: " + std::to_string((int) firing));
-    }
-
-    WeaponType::firing = firing;
-
+void WeaponType::setFiring(bool newFiring) {
+    WeaponType::firing = newFiring;
 }
 
 bool WeaponType::isSniper() const {
@@ -122,13 +111,7 @@ void WeaponType::setSniper(bool sniper) {
 void WeaponType::loadSniperHUD(const std::string& file) {
     std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/" + file;
 
-    Logging::getInstance()->Log("Loading weapon Sniper HUD img:" + path);
-
     this->sniperHUD = IMG_Load(path.c_str());
-
-    if (this->sniperHUD == nullptr) {
-        Logging::getInstance()->Log("Error loading Sniper HUD img:" + path);
-    }
 }
 
 bool WeaponType::isSniperEnabled() const {
@@ -184,8 +167,6 @@ Mesh3D *WeaponType::getModel() const {
 }
 
 void WeaponType::shoot() {
-    Logging::getInstance()->Log("WeaponType shoot!");
-
     if (isFiring()) return;
 
     this->setFiring(true);

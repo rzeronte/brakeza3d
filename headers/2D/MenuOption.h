@@ -15,7 +15,7 @@ private:
 
 public:
 
-    MenuOption(std::string label, int action);
+    MenuOption(const std::string& label, int action);
 
     std::string &getLabel();
 

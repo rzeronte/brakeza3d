@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 13/2/20.
-//
-
 #ifndef BRAKEDA3D_MESH3DANIMATED_H
 #define BRAKEDA3D_MESH3DANIMATED_H
 
@@ -26,7 +22,7 @@ struct VertexBoneData {
                 return;
             }
         }
-        Logging::getInstance()->Log("NUM_BONES_PER_VERTEX reached");
+        Logging::Log("NUM_BONES_PER_VERTEX reached", "Mesh3DAnimated");
         assert(0);
     }
 };
@@ -83,7 +79,7 @@ public:
 
     void ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
 
-    static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string NodeName);
+    static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
 
     static uint FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
@@ -96,19 +92,15 @@ public:
 
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
 
-    void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
     static void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m);
 
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
-
-    void drawVertexWeights();
-
-    static Uint32 processWeigthColor(int weight);
 
     bool isRemoveAtEndAnimation() const;
 

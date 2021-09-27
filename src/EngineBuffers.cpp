@@ -141,7 +141,7 @@ void EngineBuffers::fireShaderSetup() const {
     }
 }
 
-NPCEnemyBody *EngineBuffers::getEnemyTemplateForClassname(std::string classname) {
+NPCEnemyBody *EngineBuffers::getEnemyTemplateForClassname(const std::string& classname) {
     for (NPCEnemyBody *e : this->enemyTemplates) {
         if (e->getClassname() == classname) {
             return e;

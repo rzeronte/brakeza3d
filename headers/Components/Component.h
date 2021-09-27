@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/1/20.
-//
-
 #ifndef BRAKEDA3D_COMPONENT_H
 #define BRAKEDA3D_COMPONENT_H
 
@@ -15,8 +11,8 @@ class ComponentsManager;
 
 class Component {
 private:
-    std::vector<Object3D *> *sceneObjects;
-    int id;
+    std::vector<Object3D *> *sceneObjects{};
+    int id{};
     std::string label;
 public:
 
@@ -56,7 +52,7 @@ public:
 
     void setSceneObjects(std::vector<Object3D *> *newSceneObjects);
 
-    std::vector<Component *> *components;
+    std::vector<Component *> *components{};
 
     // Accessors to Setup and Buffers
     EngineBuffers *BUFFERS;

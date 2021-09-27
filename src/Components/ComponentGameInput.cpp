@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 14/1/20.
-//
-
 #include "../../headers/Components/ComponentGameInput.h"
 #include "../../headers/ComponentsManager.h"
 
@@ -183,7 +179,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
     }
 }
 
-void ComponentGameInput::jump(bool checkOnGround, float YForce, bool soundJump) const {
+void ComponentGameInput::jump(bool soundJump) const {
     if (soundJump) {
         player->jump();
     }
@@ -245,7 +241,6 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
 
         if (event->type == SDL_KEYDOWN) {
             if (ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
-                Logging::getInstance()->Log("Start Snipper");
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(true);
 
                 Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("sniperOn"),
@@ -268,7 +263,6 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
 
         if (event->type == SDL_KEYUP) {
             if (ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
-                Logging::getInstance()->Log("Down Snipper");
 
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false);
 

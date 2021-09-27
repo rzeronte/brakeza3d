@@ -30,32 +30,15 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
-    TextWriter *textureWriter;
-
-    Counter *counterFaceAnimation;
-    Counter *counterMinReactionTime;
-    int currentFaceAnimationIndex = 0;
-    std::vector<TextureAnimation *> faceAnimations;
+    TextWriter *textureWriter{};
 
     void loadImages();
 
-    void loadStatusFaceImages();
-
-    void setStatusFaceAnimation(int id);
-
     void writeText(int x, int y, const char *, bool bold) const;
 
-    void writeTextCenter(const char *, bool bold);
+    void writeTextCenter(const char *, bool bold) const;
 
     void drawHUD();
-
-    enum StatusFace {
-        EVIL = 0,
-        KILL = 1,
-        OUCH = 2,
-        STAND = 3,
-        DEAD = 4
-    };
 
 };
 

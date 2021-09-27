@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 21/5/20.
-//
-
 #include <SDL2/SDL_image.h>
 #include "../../headers/Misc/TextureAtlas.h"
 #include "../../headers/Render/Logging.h"
@@ -36,10 +32,10 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string
         for (int x = 0; x < total_width; x++) {
 
             if (this->checkForAllocate(x, y, texw, texh)) {
-                Logging::getInstance()->Log(
+                Logging::Log(
                         "Add texture to atlas SUCCESS(" + texture->getFilename() + ", x: " + std::to_string(x) +
                         ", y: " + std::to_string(y) + ", width: " + std::to_string(texw) + ", height:" +
-                        std::to_string(texh) + ")!");
+                        std::to_string(texh) + ")", "TextureAtlas");
 
                 TextureAtlasImageInfo t_info;
                 t_info.name = name;
@@ -66,7 +62,7 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string
         }
     }
 
-    Logging::getInstance()->Log("addTexture failed!", "ERROR");
+    Logging::Log("addTexture failed!", "ERROR");
 
     return false;
 }
@@ -77,7 +73,7 @@ bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) {
 
     if (baseOffset + width > max_global_x) {
         //std::string msg = "checkForAllocate hit final line!! w: " + std::to_string(width) + ", h: " + std::to_string(height) + ", baseOffset: " + std::to_string(baseOffset) + ", max_global_x:" + std::to_string(max_global_x);
-        //Logging::getInstance()->Log(msg);
+        //Logging::Log(msg);
         return false;
     }
 

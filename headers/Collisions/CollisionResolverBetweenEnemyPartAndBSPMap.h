@@ -32,7 +32,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenEnemyPartAndBSPMap");
+            Logging::Log("CollisionResolverBetweenEnemyPartAndBSPMap");
         }
 
         if (enemyPart->doneGore) return;

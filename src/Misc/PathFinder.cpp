@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 5/3/21.
-//
-
 #include <SDL_surface.h>
 #include <SDL_image.h>
 #include "../../headers/Misc/PathFinder.h"
@@ -705,7 +701,7 @@ void PathFinder::loadGridFromPNG(const std::string& filename) {
 }
 
 std::stack<PairData> PathFinder::readPathFromPNG(const std::string& filename) {
-    Logging::getInstance()->Log("PathFinder readPathFromPNG " + filename);
+    Logging::Log("PathFinder readPathFromPNG " + filename, "PathFinder");
 
     SDL_Surface *surface = IMG_Load((filename).c_str());
 

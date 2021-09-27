@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/2/21.
-//
-
 #include "Ghost.h"
 #include "../Brakeza3D.h"
 

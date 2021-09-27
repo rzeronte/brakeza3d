@@ -3,7 +3,7 @@
 
 
 void *ParallellInitBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles) {
-    //Logging::getInstance()->Log("Loading BSP Quake map: " + std::string(bspFilename));
+    //Logging::Log("Loading BSP Quake map: " + std::string(bspFilename));
 
     EngineSetup::getInstance()->BULLET_STEP_SIMULATION = true;
 

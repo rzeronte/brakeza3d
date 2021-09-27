@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 12/1/20.
-//
-
 #include "../headers/ComponentsManager.h"
 
 ComponentsManager *ComponentsManager::instance = nullptr;
@@ -14,7 +10,7 @@ ComponentsManager *ComponentsManager::get() {
     return instance;
 }
 
-void ComponentsManager::registerComponent(Component *component, std::string label) {
+void ComponentsManager::registerComponent(Component *component, const std::string& label) {
     component->setComponents(&components);
     component->setId(components.size());
     component->setLabel(label);

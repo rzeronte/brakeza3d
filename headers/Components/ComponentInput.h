@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/1/20.
-//
-
 #ifndef BRAKEDA3D_COMPONENTINPUT_H
 #define BRAKEDA3D_COMPONENTINPUT_H
 
@@ -26,7 +22,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    bool enabled;
+    bool enabled{};
 
     bool debug = true;
     bool click = false;
@@ -51,7 +47,7 @@ public:
 
     void handleMouse(SDL_Event *);
 
-    Uint8 *keyboard;
+    Uint8 *keyboard{};
 };
 
 

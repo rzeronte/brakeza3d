@@ -325,7 +325,7 @@ void Triangle::updateFullArea() {
 }
 
 // (v0 - P) . N
-bool Triangle::isBackFaceCulling(Vertex3D *position) {
+bool Triangle::isBackFaceCulling(Vertex3D *position) const {
     // Camera-triangle vector
     Vertex3D v = this->Ao - *position;
 
@@ -344,7 +344,7 @@ Vertex3D Triangle::getCenterOfMass() const {
     );
 }
 
-void Triangle::drawNormal(Camera3D *cam, Uint32 color) {
+void Triangle::drawNormal(Camera3D *cam, Uint32 color) const {
     Vertex3D normal = this->getNormal();
     Vertex3D origin = this->getCenterOfMass();
 
@@ -442,7 +442,7 @@ void Triangle::drawNormal(Camera3D *cam, Uint32 color) {
     }
 }*/
 
-void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v, bool bilinear) {
+void Triangle::processPixelTexture(Uint32 &pixelColor, float tex_u, float tex_v, bool bilinear) const {
     float ignorablePartInt;
 
     // Check for inversion U
@@ -656,8 +656,8 @@ bool Triangle::testForClipping(Plane *planes, int startPlaneIndex, int endPlaneI
     edges[2] = Vector3D(Co, Ao);
 
     for (int i = startPlaneIndex; i <= endPlaneIndex; i++) {
-        for (int e = 0; e < 3; e++) {
-            if (Maths::isVector3DClippingPlane(planes[i], edges[e]) > 1) {
+        for (auto & edge : edges) {
+            if (Maths::isVector3DClippingPlane(planes[i], edge) > 1) {
                 return true;
             }
         }

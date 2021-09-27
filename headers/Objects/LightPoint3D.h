@@ -19,7 +19,7 @@ public:
 
     void setShadowMappingBuffer(int x, int y, float value) const;
 
-    Uint32 color;
+    Uint32 color{};
 
     float kc = 1;   // constant attenuation
     float kl = 0;   // linear attenuation

@@ -87,7 +87,6 @@ public:
     bool TRIANGLE_MODE_TEXTURIZED = true;
 
     bool DRAW_ANIMATION_BONES = false;
-    bool TRIANGLE_MODE_VERTEX_WEIGHT = false;
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = false;
@@ -208,7 +207,6 @@ public:
     bool DRAW_SPRITES = true;
     bool DRAW_WEAPON = false;
     bool DRAW_HUD = true;
-    bool DRAW_BSP_CAMERA_HULL_CONTENTS = false;
 
     // BSP TEXTURES ANIMATED
     bool TRIANGLE_TEXTURES_ANIMATED = true;
@@ -231,7 +229,6 @@ public:
 
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_WEAPONS_SYSTEM = false;
-    bool LOG_LEAF_TYPE = false;
 
     char *LIGHT_PATTERNS[12];
 

@@ -39,13 +39,13 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     Camera3D *camera;
-    bool is_fly_mode;
+    bool is_fly_mode{};
 
     Camera3D *getCamera() const;
 
     void updateCameraBSPCollider() const;
 
-    static void drawCheckTrace(std::string o1, std::string o2);
+    static void drawCheckTrace(const std::string& o1, const std::string& o2);
 
     static int pointHullContent(vec3_t p);
 

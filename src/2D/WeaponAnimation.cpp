@@ -32,7 +32,7 @@ WeaponAnimation::setup(std::string file, int num_frames, int fps, int offsetX, i
 void WeaponAnimation::loadImages() {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->baseFile + "/" + std::to_string(i) + ".png";
-        Logging::getInstance()->Log("Loading weapon image: " + file);
+        Logging::Log("Loading weapon image: " + file, "WeaponAnimation");
         this->frames[i] = IMG_Load(file.c_str());
     }
 }

@@ -83,11 +83,11 @@ Vertex3D Vertex3D::zero() {
 }
 
 void Vertex3D::consoleInfo(const std::string& label, bool returnLine) const {
-    Logging::getInstance()->Log(
+    Logging::Log(
             label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z: " + std::to_string(z) + ")",
             "VERTEX");
     if (returnLine) {
-        Logging::getInstance()->Log("", "VERTEX");
+        Logging::Log("", "VERTEX");
     }
 }
 

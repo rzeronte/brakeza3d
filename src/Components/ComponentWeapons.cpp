@@ -39,9 +39,9 @@ void ComponentWeapons::addWeaponType(std::string label) {
 }
 
 WeaponType *ComponentWeapons::getWeaponTypeByLabel(const std::string& label) {
-    for (int i = 0; i < this->weaponTypes.size(); i++) {
-        if (this->weaponTypes[i]->label == label) {
-            return this->weaponTypes[i];
+    for (auto & weaponType : this->weaponTypes) {
+        if (weaponType->label == label) {
+            return weaponType;
         }
     }
 
@@ -121,7 +121,7 @@ void ComponentWeapons::shoot() {
         return;
     }
 
-    Logging::getInstance()->Log("ComponentWeapons shoot!");
+    Logging::Log("ComponentWeapons shoot!", "ComponentWeapons");
 
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
         this->getCurrentWeaponType()->shoot();
@@ -136,7 +136,7 @@ void ComponentWeapons::shoot() {
 }
 
 void ComponentWeapons::reload() {
-    Logging::getInstance()->Log("ComponentWeapons reload!");
+    Logging::Log("ComponentWeapons reload!", "Weapons");
 
     if (getCurrentWeaponType()->getAmmoType()->getReloads() > 0) {
         this->getCurrentWeaponType()->reload();

@@ -12,8 +12,8 @@ SpriteDirectional3D::SpriteDirectional3D() {
     this->width = 10; //EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT;
     this->height = 10; //EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT;
 
-    for (int i = 0; i < BILLBOARD3D_MAX_ANIMATIONS; i++) {
-        this->animations[i] = new TextureAnimationDirectional();
+    for (auto & animation : this->animations) {
+        animation = new TextureAnimationDirectional();
     }
 }
 
@@ -30,9 +30,9 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam) {
 }
 
 void
-SpriteDirectional3D::addAnimationDirectional2D(std::string animation_folder, int numFrames, int fps, bool zeroDirection,
+SpriteDirectional3D::addAnimationDirectional2D(const std::string& animation_folder, int numFrames, int fps, bool zeroDirection,
                                                int maxTimes) {
-    Logging::getInstance()->Log(
+    Logging::Log(
             "Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) +
             " animations)", "BILLBOARD");
 

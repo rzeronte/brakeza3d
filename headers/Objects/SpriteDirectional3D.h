@@ -37,19 +37,19 @@ public:
     int numAnimations = 0;
     int currentAnimation = 0;
 
-    TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];
+    TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS]{};
 
     SpriteDirectional3D();
 
     Billboard *getBillboard() const;
 
-    void addAnimationDirectional2D(std::string, int frames, int fps, bool zeroDirection, int maxTimes);
+    void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
 
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
 
     void setAnimation(int);
 
-    int getDirectionForAngle(float enemyAngle);
+    static int getDirectionForAngle(float enemyAngle);
 
     void updateStep();
 

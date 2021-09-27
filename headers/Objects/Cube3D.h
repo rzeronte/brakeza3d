@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 2019-08-27.
-//
-
 #ifndef BRAKEDA3D_CUBE3D_H
 #define BRAKEDA3D_CUBE3D_H
 

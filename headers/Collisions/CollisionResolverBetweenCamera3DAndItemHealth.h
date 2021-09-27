@@ -62,7 +62,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndItemHealth");
+            Logging::Log("CollisionResolverBetweenCamera3DAndItemHealth", "Collision");
         }
 
         // Skipping if max health

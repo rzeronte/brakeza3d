@@ -102,11 +102,11 @@ bool Texture::loadTGA(const char *file, int mip_mapping) {
                 break;
         }
     } else {
-        Logging::getInstance()->Log("Error loading TGA texture '" + std::string(file), "TEXTURES");
+        Logging::Log("Error loading TGA texture '" + std::string(file), "TEXTURES");
         return false;
     }
 
-    Logging::getInstance()->Log("Loading TGA texture '" + std::string(file) + "'", "TEXTURES");
+    Logging::Log("Loading TGA texture '" + std::string(file) + "'", "TEXTURES");
     return true;
 }
 
@@ -139,7 +139,7 @@ void Texture::drawFlat(int pos_x, int pos_y) {
 }
 
 void Texture::consoleInfo() {
-    Logging::getInstance()->Log(
+    Logging::Log(
             "consoleInfo: Texture " + std::to_string(loaded) + "(w: " + std::to_string(mip_mapping_1->w) + ", h: " +
             std::to_string(mip_mapping_1->h), "TEXTURE");
 }

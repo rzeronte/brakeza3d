@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 11/1/20.
-//
-
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include "../../headers/Components/Camera3D.h"
 #include "../../headers/Render/Maths.h"
@@ -49,13 +45,13 @@ float Camera3D::getNearDistance() const {
     return (1 / tanf(Maths::degreesToRadians(this->horizontal_fov / 2)));
 }
 
-float Camera3D::getVerticalFOV() {
+float Camera3D::getVerticalFOV() const {
     float vfov = 2 * atanf(getScreenAspectRatio() / getNearDistance());
 
     return Maths::radiansToDegrees(vfov);
 }
 
-float Camera3D::calcCanvasNearWidth() {
+float Camera3D::calcCanvasNearWidth() const {
     float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * getNearDistance());
 
     return width;

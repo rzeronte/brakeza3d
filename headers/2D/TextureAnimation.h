@@ -13,8 +13,8 @@ public:
 
     int numFrames;
     int currentFrame;
-    int fps;
-    Texture *frames[ANIMATION2D_MAX_FRAMES];
+    int fps{};
+    Texture *frames[ANIMATION2D_MAX_FRAMES]{};
 
     bool endAnimation;
     bool paused;

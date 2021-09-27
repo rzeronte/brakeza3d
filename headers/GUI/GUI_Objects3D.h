@@ -194,7 +194,7 @@ public:
 
                                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                                     pSprite3D->currentAnimation = n;
-                                    Logging::getInstance()->Log(("Changing animation frame to: " + std::to_string(n)));
+                                    Logging::Log(("Changing animation frame to: " + std::to_string(n)), "GUI");
                                 }
                             }
                             ImGui::EndCombo();
@@ -271,8 +271,6 @@ public:
 
                                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                                     oMesh3DAnimatedCollection->currentAnimation = n;
-                                    Logging::getInstance()->Log(
-                                            ("Changing collection animation frame to: " + std::to_string(n)));
                                 }
                             }
                             ImGui::EndCombo();

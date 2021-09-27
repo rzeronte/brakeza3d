@@ -22,7 +22,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndFuncDoor");
+            Logging::Log("CollisionResolverBetweenCamera3DAndFuncDoor", "Collision");
         }
 
         int originalEntityIndex = this->mesh->getBspEntityIndex();

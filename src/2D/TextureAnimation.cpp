@@ -5,8 +5,8 @@
 #include "../../headers/EngineSetup.h"
 
 TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false) {
-    for (int j = 0; j < ANIMATION2D_MAX_FRAMES; j++) {
-        this->frames[j] = new Texture();
+    for (auto & frame : this->frames) {
+        frame = new Texture();
     }
 }
 

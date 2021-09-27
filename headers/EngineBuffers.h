@@ -41,7 +41,7 @@ public:
     std::vector<NPCEnemyBody *> enemyTemplates;
 
     // Fire colors for menu fire effect
-    Uint32 fireColors[37];
+    Uint32 fireColors[37]{};
     int rgbs[111] = {
             0x07, 0x07, 0x07,
             0x1F, 0x07, 0x07,
@@ -82,7 +82,7 @@ public:
             0xFF, 0xFF, 0xFF
     };
 
-    NPCEnemyBody *getEnemyTemplateForClassname(std::string classname);
+    NPCEnemyBody *getEnemyTemplateForClassname(const std::string& classname);
 
     void clearDepthBuffer() const;
 

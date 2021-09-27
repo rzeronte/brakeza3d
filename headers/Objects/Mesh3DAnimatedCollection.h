@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 3/4/20.
-//
-
 #ifndef BRAKEDA3D_MESH3DANIMATEDCOLLECTION_H
 #define BRAKEDA3D_MESH3DANIMATEDCOLLECTION_H
 

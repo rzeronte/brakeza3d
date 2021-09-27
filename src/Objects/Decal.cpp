@@ -16,11 +16,11 @@ void Decal::setupCube(float sizeX, float sizeY, float sizeZ) {
     cube->setDecal(true);
 }
 
-float Decal::getTCoord(Vertex3D Q) {
+float Decal::getTCoord(Vertex3D Q) const {
     return (T * (Q - P) / w) + 0.5f;
 }
 
-float Decal::getSCoord(Vertex3D Q) {
+float Decal::getSCoord(Vertex3D Q) const {
     return B * (Q - P) / h + 0.5f;
 }
 
@@ -47,29 +47,29 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
     int clipped = 0;
     int out = 0;
 
-    for (int i = 0; i < triangles.size(); i++) {
-        if (!triangles[i]->isBSP) continue;
+    for (auto & triangle : triangles) {
+        if (!triangle->isBSP) continue;
 
-        if (triangles[i]->parent->isDecal()) {
+        if (triangle->parent->isDecal()) {
             alreadyDecal++;
             continue;
         }
 
-        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D *> (triangles[i]->parent);
-        auto *sprite = dynamic_cast<Sprite3D *> (triangles[i]->parent);
+        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D *> (triangle->parent);
+        auto *sprite = dynamic_cast<Sprite3D *> (triangle->parent);
 
         // Decals ignoran sprites
         if (spriteDirectional != nullptr || sprite != nullptr) {
             continue;
         }
 
-        triangles[i]->updateNormal();
-        if (triangles[i]->getNormal().getNormalize() * this->N.getNormalize() >= 0) {
+        triangle->updateNormal();
+        if (triangle->getNormal().getNormalize() * this->N.getNormalize() >= 0) {
             continue;
         }
 
-        if (triangles[i]->testForClipping(cube->planes, 0, 5)) {
-            triangles[i]->clipping(
+        if (triangle->testForClipping(cube->planes, 0, 5)) {
+            triangle->clipping(
                     camera,
                     cube->planes,
                     0,
@@ -82,15 +82,15 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
             continue;
         }
 
-        if (!cube->isPointInside(triangles[i]->Ao) &&
-            !cube->isPointInside(triangles[i]->Bo) &&
-            !cube->isPointInside(triangles[i]->Co)
+        if (!cube->isPointInside(triangle->Ao) &&
+            !cube->isPointInside(triangle->Bo) &&
+            !cube->isPointInside(triangle->Co)
                 ) {
             out++;
             continue;
         }
 
-        Triangle *t = triangles[i];
+        Triangle *t = triangle;
         t->parent = this;
         t->isBSP = false;
         t->clipped = true;
@@ -103,10 +103,10 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
 
     // Fix separation for avoid Z-fighting
     float OffsetSeparation = 0.25;
-    for (int i = 0; i < modelTriangles.size(); i++) {
-        modelTriangles[i]->A = modelTriangles[i]->A - N.getScaled(OffsetSeparation);
-        modelTriangles[i]->B = modelTriangles[i]->B - N.getScaled(OffsetSeparation);
-        modelTriangles[i]->C = modelTriangles[i]->C - N.getScaled(OffsetSeparation);
+    for (auto & modelTriangle : modelTriangles) {
+        modelTriangle->A = modelTriangle->A - N.getScaled(OffsetSeparation);
+        modelTriangle->B = modelTriangle->B - N.getScaled(OffsetSeparation);
+        modelTriangle->C = modelTriangle->C - N.getScaled(OffsetSeparation);
     }
 }
 

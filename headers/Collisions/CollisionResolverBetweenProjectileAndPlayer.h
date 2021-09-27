@@ -35,7 +35,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenProjectileAndPlayer");
+            Logging::Log("CollisionResolverBetweenProjectileAndPlayer", "Collision");
         }
 
         // Remove projectile for check in stepSimulation

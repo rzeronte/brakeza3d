@@ -30,7 +30,7 @@ std::string Object3D::getLabel() const {
     return label;
 }
 
-void Object3D::setLabel(const std::string label) {
+void Object3D::setLabel(const std::string& label) {
     Object3D::label = label;
 }
 

@@ -37,7 +37,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndItemAmmo");
+            Logging::Log("CollisionResolverBetweenCamera3DAndItemAmmo", "Collision");
         }
 
         AmmoType *ammoType = weaponManager->getAmmoTypeByClassname(itemAmmo->getAmmoTypeClassname());

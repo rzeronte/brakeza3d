@@ -171,7 +171,7 @@ typedef struct mleaf_s {
     // leaf specific
     byte *compressed_vis;
     efrag_t *efrags;
-
+    
     msurface_t **firstmarksurface;
     int nummarksurfaces;
     int key;            // BSP sequence number for leaf's contents
@@ -267,7 +267,7 @@ public:
     model_collision_t *playermodel;
     std::vector<model_collision_t *> entities;
 
-    vec3_t vec3_origin{};
+    vec3_t vec3_origin;
     float scale;
 
     BSPCollider();
@@ -282,7 +282,7 @@ public:
 
     static void VectorScale(const vec3_t in, vec_t scale, vec3_t out);
 
-    void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+    static void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 
     static void
     SV_MoveBounds(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, vec3_t boxmins,
@@ -301,11 +301,11 @@ public:
 
     trace_t SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type);
 
-    trace_t SV_PushEntity(model_collision_t *ent, vec3_t push);
+    trace_t SV_PushEntity(model_collision_t *ent, const vec3_t push);
 
     void SV_WallFriction(model_collision_t *ent, trace_t *trace);
 
-    int SV_TryUnstick(model_collision_t *ent, vec3_t oldvel);
+    int SV_TryUnstick(model_collision_t *ent, const vec3_t oldvel);
 
     void SV_WalkMove(model_collision_t *ent, float deltaTime);
 
@@ -313,37 +313,37 @@ public:
 
     model_collision_t *getModelCollisionFromBSP(int modelId);
 
-    static int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t *p);
+    static int BoxOnPlaneSide(const vec3_t emins, const vec3_t emaxs, mplane_t *p);
 
-    model_collision_t *getWorldModel() const;
+    [[nodiscard]] model_collision_t *getWorldModel() const;
 
-    model_collision_t *getPlayerModel() const;
+    [[nodiscard]] model_collision_t *getPlayerModel() const;
 
-    void SV_AddGravity(model_collision_t *ent, float deltaTime);
+    static void SV_AddGravity(model_collision_t *ent, float deltaTime);
 
     void SV_CheckStuck(model_collision_t *ent);
 
     model_collision_t *SV_TestEntityPosition(model_collision_t *ent);
 
-    void drawHullAABB(model_collision_t *model, int indexHull);
+    static void drawHullAABB(model_collision_t *model, int indexHull);
 
-    void Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    static void Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header);
 
-    void Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    static void Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
 
     void Mod_LoadClipnodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
 
-    void Mod_MakeClipHulls(model_collision_t *brushmodel);
+    static void Mod_MakeClipHulls(model_collision_t *brushmodel);
 
-    void Mod_MakeDrawHull(model_collision_t *brushmodel);
+    static void Mod_MakeDrawHull(model_collision_t *brushmodel);
 
     void SV_ClientThink(model_collision_t *model, float deltaTime);
 
     void DropPunchAngle(model_collision_t *model, float deltaTime);
 
-    float V_CalcRoll(vec3_t angles, vec3_t velocity);
+    float V_CalcRoll(vec3_t angles, const vec3_t velocity);
 
-    float V_CalcBob(float time, vec3_t velocity);
+    static float V_CalcBob(float time, const vec3_t velocity);
 
     void ApplyBob(model_collision_t *model, float deltaTime);
 
@@ -355,11 +355,11 @@ public:
 
     void SV_AirAccelerate(model_collision_t *model, vec3_t wishveloc, float deltaTime);
 
-    void SV_Accelerate(model_collision_t *model, float deltaTime);
+    static void SV_Accelerate(model_collision_t *model, float deltaTime);
 
-    float VectorNormalize(vec3_t v);
+    static float VectorNormalize(vec3_t v);
 
-    void consoleTrace(trace_t *t);
+    static void consoleTrace(trace_t *t);
 
     static void Vertex3DToVec3(Vertex3D v, vec3_t &dest);
 
@@ -367,9 +367,9 @@ public:
 
     void checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_t maxs);
 
-    vec_t VectorLength(vec3_t v);
+    static vec_t VectorLength(const vec3_t v);
 
-    bool isPlayerOnGround();
+    bool isPlayerOnGround() const;
 
     void SV_ClipToLinks(moveclip_t *clip, trace_t &trace);
 

@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 11/1/20.
-//
-
 #ifndef BRAKEDA3D_CAMERA3D_H
 #define BRAKEDA3D_CAMERA3D_H
 
@@ -17,9 +13,9 @@ public:
     float pitch = 0;        // Neck angle
     float roll = 0;
 
-    float speed;        // Speed along heading
-    float strafe;       // Speed along heading
-    float jump;         // Speed along vertical
+    float speed{};        // Speed along heading
+    float strafe{};       // Speed along heading
+    float jump{};         // Speed along vertical
 
     float horizontal_fov;
     float farDistance;
@@ -32,7 +28,7 @@ public:
     Object3D *follow_to = nullptr;
     Vertex3D follow_to_position_offset;
 
-    btPairCachingGhostObject *m_ghostObject;
+    btPairCachingGhostObject *m_ghostObject{};
 
     Object3D *getFollowTo() const;
 
@@ -40,7 +36,7 @@ public:
 
     Camera3D();
 
-    float calcCanvasNearWidth();
+    float calcCanvasNearWidth() const;
 
     float calcCanvasNearHeight();
 
@@ -52,7 +48,7 @@ public:
 
     float getNearDistance() const;
 
-    float getVerticalFOV();
+    float getVerticalFOV() const;
 
     void UpdateFrustum();
 

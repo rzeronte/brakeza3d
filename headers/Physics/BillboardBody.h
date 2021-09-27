@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 29/12/19.
-//
-
 #ifndef BRAKEDA3D_BILLBOARDBODY_H
 #define BRAKEDA3D_BILLBOARDBODY_H
 

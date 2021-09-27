@@ -16,9 +16,9 @@ class WeaponType {
 public:
     WeaponType();
 
-    WeaponType(std::string label);
+    WeaponType(const std::string& label);
 
-    bool available;
+    bool available{};
     int status = EngineSetup::WeaponsActions::IDLE;
 
     int index; // For related with Enum in Setup
@@ -45,22 +45,22 @@ public:
     int currentAnimationIndex = 0;
 
     // Animations for this weapon
-    Mesh3DAnimatedCollection *weaponAnimations;
+    Mesh3DAnimatedCollection *weaponAnimations{};
 
     // sounds
     std::vector<std::string> weaponSounds;
     std::string soundEmptyLabel;
 
     // mesh for
-    Mesh3D *model;
+    Mesh3D *model{};
 
-    SDL_Surface *iconHUD;
+    SDL_Surface *iconHUD{};
 
     bool sniper;
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
-    void addAnimation(std::string newLabel, std::string newModel, float scale, bool stopEnd);
+    void addAnimation(std::string newLabel, const std::string& newModel, float scale, bool stopEnd);
 
     Mesh3DAnimated *getCurrentWeaponAnimation() const;
 
@@ -98,7 +98,7 @@ public:
 
     bool isFiring() const;
 
-    void setFiring(bool firing);
+    void setFiring(bool newFiring);
 
     bool isSniper() const;
 

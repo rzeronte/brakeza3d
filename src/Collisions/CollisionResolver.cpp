@@ -79,12 +79,12 @@ bool CollisionResolver::isSomeCamera() const {
 }
 
 bool CollisionResolver::isSomeNPCEnemy() const {
-    NPCEnemyBody *objANPC = dynamic_cast<NPCEnemyBody *> (objA);
+    auto *objANPC = dynamic_cast<NPCEnemyBody *> (objA);
     if (objANPC != nullptr) {
         return true;
     }
 
-    NPCEnemyBody *objBNPC = dynamic_cast<NPCEnemyBody *> (objB);
+    auto *objBNPC = dynamic_cast<NPCEnemyBody *> (objB);
     if (objBNPC != nullptr) {
         return true;
     }
@@ -93,12 +93,12 @@ bool CollisionResolver::isSomeNPCEnemy() const {
 }
 
 bool CollisionResolver::isSomeNPCEnemyPart() const {
-    NPCEnemyPartBody *objANPC = dynamic_cast<NPCEnemyPartBody *> (objA);
+    auto *objANPC = dynamic_cast<NPCEnemyPartBody *> (objA);
     if (objANPC != nullptr) {
         return true;
     }
 
-    NPCEnemyPartBody *objBNPC = dynamic_cast<NPCEnemyPartBody *> (objB);
+    auto *objBNPC = dynamic_cast<NPCEnemyPartBody *> (objB);
     if (objBNPC != nullptr) {
         return true;
     }
@@ -107,12 +107,12 @@ bool CollisionResolver::isSomeNPCEnemyPart() const {
 }
 
 bool CollisionResolver::isSomeProjectile() const {
-    Projectile3DBody *objAProjectile = dynamic_cast<Projectile3DBody *> (objA);
+    auto *objAProjectile = dynamic_cast<Projectile3DBody *> (objA);
     if (objAProjectile != nullptr) {
         return true;
     }
 
-    Projectile3DBody *objBProjectile = dynamic_cast<Projectile3DBody *> (objB);
+    auto *objBProjectile = dynamic_cast<Projectile3DBody *> (objB);
     if (objBProjectile != nullptr) {
         return true;
     }
@@ -121,12 +121,12 @@ bool CollisionResolver::isSomeProjectile() const {
 }
 
 bool CollisionResolver::isSomeMesh3D() const {
-    Mesh3D *objAMesh = dynamic_cast<Mesh3D *> (objA);
+    auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
         return true;
     }
 
-    Mesh3D *objBMesh = dynamic_cast<Mesh3D *> (objB);
+    auto *objBMesh = dynamic_cast<Mesh3D *> (objB);
     if (objBMesh != nullptr) {
         return true;
     }
@@ -148,15 +148,15 @@ bool CollisionResolver::isSomeMesh3DFuncDoor() const {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DFuncButton() {
-    Mesh3D *objAMesh = dynamic_cast<Mesh3D *> (objA);
+bool CollisionResolver::isSomeMesh3DFuncButton() const {
+    auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
         if (this->isBSPEntityOfClassName(objAMesh, "func_button")) {
             return true;
         }
     }
 
-    Mesh3D *objBMesh = dynamic_cast<Mesh3D *> (objB);
+    auto *objBMesh = dynamic_cast<Mesh3D *> (objB);
     if (objBMesh != nullptr) {
         if (this->isBSPEntityOfClassName(objBMesh, "func_button")) {
             return true;
@@ -166,7 +166,7 @@ bool CollisionResolver::isSomeMesh3DFuncButton() {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DTriggerMultiple() {
+bool CollisionResolver::isSomeMesh3DTriggerMultiple() const {
     auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
         if (this->isBSPEntityOfClassName(objAMesh, "trigger_multiple")) {
@@ -184,7 +184,7 @@ bool CollisionResolver::isSomeMesh3DTriggerMultiple() {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DTriggerTeleport() {
+bool CollisionResolver::isSomeMesh3DTriggerTeleport() const {
     auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
         if (this->isBSPEntityOfClassName(objAMesh, "trigger_teleport")) {
@@ -245,7 +245,7 @@ bool CollisionResolver::isSomeItemAmmo() const {
     return false;
 }
 
-bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, std::string query) const {
+bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, const std::string& query) const {
     int originalEntityIndex = oMesh->getBspEntityIndex();
 
     if (originalEntityIndex > 0) {

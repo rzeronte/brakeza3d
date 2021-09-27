@@ -33,8 +33,6 @@ void Player::setDead(bool dead) {
                 "playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
-    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::DEAD);
-
     this->dead = dead;
 }
 
@@ -55,8 +53,6 @@ void Player::takeDamage(float dmg) {
     if (dead) return;
 
     this->stamina -= dmg;
-
-    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::OUCH);
 
     if (counterSoundTakeDamage->isFinished()) {
         counterSoundTakeDamage->setEnabled(true);
@@ -92,11 +88,9 @@ void Player::respawn() {
     ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
     if (Tools::isValidVector(
             Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition())) {
-        Logging::getInstance()->Log("error position start");
     }
 
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
-    ComponentsManager::get()->getComponentHUD()->setStatusFaceAnimation(ComponentHUD::StatusFace::STAND);
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(100);
@@ -105,7 +99,6 @@ void Player::respawn() {
 }
 
 void Player::shoot() {
-    Logging::getInstance()->Log("Player shoot!");
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 
@@ -125,7 +118,6 @@ void Player::jump() {
 }
 
 void Player::reload() {
-    Logging::getInstance()->Log("Player reload!");
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->reload();
 }
 

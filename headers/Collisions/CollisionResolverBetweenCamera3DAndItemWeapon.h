@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 1/1/20.
-//
-
 #ifndef BRAKEDA3D_COLLISIONRESOLVERBETWEENCAMERA3DANDITEMWEAPON_H
 #define BRAKEDA3D_COLLISIONRESOLVERBETWEENCAMERA3DANDITEMWEAPON_H
 
@@ -34,7 +30,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::getInstance()->Log("CollisionResolverBetweenCamera3DAndItemWeapon");
+            Logging::Log("CollisionResolverBetweenCamera3DAndItemWeapon", "Collision");
         }
 
         WeaponType *wt = weaponManager->getWeaponTypeByClassname(itemWeaponBody->getWeaponClassname());

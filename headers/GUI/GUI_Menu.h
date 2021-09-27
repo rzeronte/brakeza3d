@@ -210,7 +210,6 @@ public:
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::getInstance()->DRAW_ANIMATION_BONES);
-                ImGui::Checkbox("Draw Vertices Weights", &EngineSetup::getInstance()->TRIANGLE_MODE_VERTEX_WEIGHT);
                 ImGui::Separator();
                 ImGui::Checkbox("Fade Out", &EngineSetup::getInstance()->FADEOUT);
                 ImGui::Checkbox("Fade In", &EngineSetup::getInstance()->FADEIN);
@@ -284,8 +283,6 @@ public:
                 ImGui::Checkbox("Show debug data", &EngineSetup::getInstance()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
                 ImGui::Checkbox("Collision objects", &EngineSetup::getInstance()->LOG_COLLISION_OBJECTS);
-                ImGui::Separator();
-                ImGui::Checkbox("BSP type Leaf", &EngineSetup::getInstance()->LOG_LEAF_TYPE);
                 ImGui::Separator();
                 ImGui::Checkbox("OpenCL kernel time", &EngineSetup::getInstance()->OPENCL_SHOW_TIME_KERNELS);
                 ImGui::Separator();
@@ -390,7 +387,6 @@ public:
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::getInstance()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("BSP Hulls", &EngineSetup::getInstance()->DRAW_BSP_HULLS);
-                ImGui::Checkbox("Camera Hulls contents", &EngineSetup::getInstance()->DRAW_BSP_CAMERA_HULL_CONTENTS);
                 ImGui::Checkbox("Sprites", &EngineSetup::getInstance()->DRAW_SPRITES);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::getInstance()->DRAW_FPS);

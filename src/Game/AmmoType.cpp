@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 3/1/20.
-//
-
 #include "../../headers/Game/AmmoType.h"
 
 AmmoType::AmmoType() {
