@@ -6,7 +6,6 @@
 #include "../../headers/EngineSetup.h"
 
 Frustum::Frustum() {
-    
 }
 
 Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
