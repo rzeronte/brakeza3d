@@ -5,7 +5,6 @@
 #include <SDL_mixer.h>
 #include "../../headers/Components/ComponentSound.h"
 #include "../../headers/Misc/cJSON.h"
-#include <iostream>
 
 ComponentSound::ComponentSound() {
     initSoundSystem();
@@ -42,10 +41,10 @@ void ComponentSound::initSoundSystem() {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
 
-    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, SETUP->SOUND_VOLUME_MENU);
-    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, SETUP->SOUND_VOLUME_PLAYER);
-    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, SETUP->SOUND_VOLUME_ENVIRONMENT);
-    Mix_VolumeMusic(SETUP->SOUND_VOLUME_MUSIC);
+    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, (int) SETUP->SOUND_VOLUME_MENU);
+    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, (int) SETUP->SOUND_VOLUME_PLAYER);
+    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, (int) SETUP->SOUND_VOLUME_ENVIRONMENT);
+    Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
 }
 
 void ComponentSound::loadSoundsJSON() {
@@ -57,7 +56,7 @@ void ComponentSound::loadSoundsJSON() {
     const char *mapsFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
-    if (myDataJSON == NULL) {
+    if (myDataJSON == nullptr) {
         Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
         return;
     }
@@ -70,9 +69,11 @@ void ComponentSound::loadSoundsJSON() {
         cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
         cJSON *type = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
 
-        SoundPackageItemType selectedType;
+        SoundPackageItemType selectedType = SoundPackageItemType::SOUND;
+
         if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
         if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
+
         Logging::getInstance()->Log("Loading file sound " + std::string(file->valuestring), "SOUNDS");
 
         BUFFERS->soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);

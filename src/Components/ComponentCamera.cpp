@@ -71,7 +71,7 @@ void ComponentCamera::drawCheckTrace(std::string o1, std::string o2) {
     );
 }
 
-void ComponentCamera::updateCameraBSPCollider() {
+void ComponentCamera::updateCameraBSPCollider() const {
     BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
     model_collision_t *player = bspCollider->getPlayerModel();
 

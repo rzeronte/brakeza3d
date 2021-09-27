@@ -612,7 +612,7 @@ void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles) {
     }
 
     for (int i = 0; i < 8; i++) {
-        if (node->children[i] != NULL) {
+        if (node->children[i] != nullptr) {
             Drawable::drawOctreeNode(node->children[i], onlyWithTriangles);
         }
     }
@@ -651,7 +651,7 @@ void Drawable::drawGrid3D(Grid3D *grid) {
     }
 }
 
-void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::PairData> path) {
+void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, path);
@@ -662,10 +662,10 @@ void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PathFinder::PairData> pat
 }
 
 void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder) {
-    std::stack<PathFinder::PairData> path;
-    PathFinder::PairData src = std::make_pair(EngineSetup::getInstance()->TESTING_INT1,
+    std::stack<PairData> path;
+    PairData src = std::make_pair(EngineSetup::getInstance()->TESTING_INT1,
                                               EngineSetup::getInstance()->TESTING_INT2);
-    PathFinder::PairData dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3,
+    PairData dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3,
                                                EngineSetup::getInstance()->TESTING_INT4);
 
     CubeGrid3D *cubeStart = grid->getFromPosition(src.first, 0, src.second);
@@ -676,9 +676,9 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
         Drawable::drawPathInGrid(grid, path);
     }
 
-    if (cubeStart != NULL)
+    if (cubeStart != nullptr)
         Drawable::drawAABB(cubeStart->box, Color::green());
 
-    if (cubeDest != NULL)
+    if (cubeDest != nullptr)
         Drawable::drawAABB(cubeDest->box, Color::red());
 }

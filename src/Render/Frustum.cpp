@@ -3,11 +3,11 @@
 //
 
 #include "../../headers/Render/Frustum.h"
-#include "../../headers/Misc/Color.h"
-#include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineSetup.h"
 
-Frustum::Frustum() {}
+Frustum::Frustum() {
+    
+}
 
 Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
                  float Wnear, float farDist, float Hfar, float Wfar) {

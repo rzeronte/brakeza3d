@@ -5,7 +5,6 @@
 #include <SDL2/SDL_image.h>
 #include "../../headers/Misc/TextureAtlas.h"
 #include "../../headers/Render/Logging.h"
-#include "../../headers/Misc/Color.h"
 
 
 TextureAtlas::TextureAtlas(int totalWidth, int totalHeight) :
@@ -23,7 +22,7 @@ SDL_Surface *TextureAtlas::getAtlasSurface() const {
     return atlas_surface;
 }
 
-bool TextureAtlas::addTexture(Texture *texture, bool lightmap, std::string name) {
+bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string& name) {
     SDL_Surface *texture_surface = texture->getSurface(1);
 
     if (lightmap) {
@@ -60,7 +59,7 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, std::string name)
                 r.w = texw;
                 r.h = texh;
 
-                SDL_BlitSurface(texture_surface, NULL, atlas_surface, &r);
+                SDL_BlitSurface(texture_surface, nullptr, atlas_surface, &r);
 
                 return true;
             }
@@ -112,7 +111,7 @@ void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) {
     }
 }
 
-TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(std::string name) {
+TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string& name) {
     for (int i = 0; i < this->textures_info.size(); i++) {
         if (!textures_info[i].name.compare(name)) {
             return textures_info[i];
@@ -121,7 +120,7 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(std::string name)
     return TextureAtlasImageInfo();
 }
 
-void TextureAtlas::saveJPG(std::string name) {
+void TextureAtlas::saveJPG(const std::string& name) const {
     IMG_SavePNG(getAtlasSurface(), name.c_str());
 }
 

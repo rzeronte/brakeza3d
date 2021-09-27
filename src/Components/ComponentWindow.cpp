@@ -3,10 +3,7 @@
 //
 
 #include <SDL.h>
-#include <SDL_syswm.h>
 #include "../../headers/Components/ComponentWindow.h"
-#include "../../imgui/examples/imgui_impl_opengl2.h"
-#include "../../imgui/examples/imgui_impl_sdl.h"
 
 ComponentWindow::ComponentWindow() {
     this->initWindow();
@@ -30,9 +27,9 @@ void ComponentWindow::postUpdate() {
 
     SDL_GL_SwapWindow(this->window);
 
-    SDL_UpdateTexture(this->screenTexture, NULL, BUFFERS->videoBuffer, screenSurface->pitch);
+    SDL_UpdateTexture(this->screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
 
-    SDL_RenderCopy(renderer, this->screenTexture, NULL, NULL);
+    SDL_RenderCopy(renderer, this->screenTexture, nullptr, nullptr);
 }
 
 void ComponentWindow::onEnd() {
@@ -72,7 +69,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
         );
 
-        if (window == NULL) {
+        if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
         } else {

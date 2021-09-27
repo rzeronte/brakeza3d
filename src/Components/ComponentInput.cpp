@@ -3,10 +3,8 @@
 //
 
 #include "../../headers/Components/ComponentInput.h"
-#include "../../imgui/imgui.h"
-#include "../../imgui/examples/imgui_impl_sdl.h"
 #include "../../headers/ComponentsManager.h"
-#include <iostream>
+#include "../../imgui/examples/imgui_impl_sdl.h"
 
 ComponentInput::ComponentInput() {
     setEnabled(true);
@@ -64,7 +62,7 @@ void ComponentInput::handleMouse(SDL_Event *event) {
     }
 }
 
-void ComponentInput::handleKeyboardMovingCamera() {
+void ComponentInput::handleKeyboardMovingCamera() const {
     if (keyboard[SDL_SCANCODE_W]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
     }
@@ -136,7 +134,7 @@ void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {
 }
 
 void ComponentInput::updateKeyboardMapping() {
-    this->keyboard = (unsigned char *) SDL_GetKeyboardState(NULL);
+    this->keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
 
 void ComponentInput::updateMouseStates(SDL_Event *event) {

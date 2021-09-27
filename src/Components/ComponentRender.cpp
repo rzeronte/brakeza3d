@@ -3,13 +3,9 @@
 //
 
 #include "../../headers/Components/ComponentRender.h"
-#include "../../headers/Components/ComponentWindow.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
 #include "../../headers/Brakeza3D.h"
-
-ComponentRender::ComponentRender() {
-}
 
 void ComponentRender::onStart() {
     std::cout << "ComponentRender onStart" << std::endl;
@@ -201,7 +197,7 @@ void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Tria
     }
 
     for (int i = 0; i < 8; i++) {
-        if (node->children[i] != NULL) {
+        if (node->children[i] != nullptr) {
             this->hiddenOctreeRemovalNode(node->children[i], triangles);
         }
     }
@@ -271,7 +267,7 @@ void ComponentRender::drawTriangles(std::vector<Triangle *> &visibleTriangles) {
 
 void ComponentRender::processTriangle(Triangle *t) {
     // degradate
-    if (t->getTexture() != NULL && SETUP->TRIANGLE_MODE_TEXTURIZED) {
+    if (t->getTexture() != nullptr && SETUP->TRIANGLE_MODE_TEXTURIZED) {
         triangleRasterizer(t);
     }
 
@@ -347,7 +343,7 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
                     fragment->texV = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) +
                                       fragment->gamma * (t->tex_v3_Cc_z)) * fragment->affineUV;
 
-                    if (t->getLightmap() != NULL) {
+                    if (t->getLightmap() != nullptr) {
                         fragment->lightU =
                                 (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) +
                                  fragment->gamma * (t->light_u3_Cc_z)) * fragment->affineUV;
@@ -452,8 +448,8 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     }
 
     // Texture
-    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != NULL) {
-        if (t->texture->getSurface(t->lod) == NULL) return;
+    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
+        if (t->texture->getSurface(t->lod) == nullptr) return;
 
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED) {
             // texU and texV are "animated"
@@ -477,7 +473,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
             pixelColor = Tools::alphaBlend(BUFFERS->getVideoBuffer(x, y), pixelColor, alpha);
         }
 
-        if (!t->parent->isDecal() && t->getLightmap() != NULL && !t->getTexture()->liquid &&
+        if (!t->parent->isDecal() && t->getLightmap() != nullptr && !t->getTexture()->liquid &&
             SETUP->ENABLE_LIGHTMAPPING) {
             t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV, red, green, blue, alpha);
         }
