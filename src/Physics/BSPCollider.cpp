@@ -711,6 +711,8 @@ int BSPCollider::SV_TryUnstick(model_collision_t *ent, vec3_t oldvel) {
                 dir[0] = -2;
                 dir[1] = -2;
                 break;
+            default:
+                break;
         }
 
         SV_PushEntity(ent, dir);

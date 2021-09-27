@@ -337,6 +337,8 @@ void BSPMap::InitializeLightmaps() {
                             case 3:
                                 texture4[i] += c;
                                 break;
+                            default:
+                                break;
                         }
                         lm_data++;
                     }
@@ -354,6 +356,9 @@ void BSPMap::InitializeLightmaps() {
                         break;
                     case 3:
                         this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture4, smax, tmax);
+                        break;
+                    default:
+                        this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture, smax, tmax);
                         break;
                 }
                 this->lightmaps[surfaceId].numLightmaps++;
@@ -819,19 +824,19 @@ char *BSPMap::parseEntities(char *s) {
     }
 }
 
-char *BSPMap::getEntityValue(int entityId, char *key) {
+char *BSPMap::getEntityValue(int entityId, const std::string& key) const {
     for (int j = 0; j < this->entities[entityId].num_attributes; j++) {
-        if (!strcmp(this->entities[entityId].attributes[j].key, key)) {
+        if (this->entities[entityId].attributes[j].key == key) {
             return this->entities[entityId].attributes[j].value;
         }
     }
 }
 
-int BSPMap::getIndexOfFirstEntityByClassname(char *value) {
+int BSPMap::getIndexOfFirstEntityByClassname(const std::string& value) {
     for (int i = 0; i <= this->n_entities; i++) {
         if (hasEntityAttribute(i, "classname")) {
             char *v = getEntityValue(i, "classname");
-            if (!strcmp(v, value)) {
+            if (v == value) {
                 return i;
             }
         }
@@ -879,9 +884,9 @@ int BSPMap::getIndexOfFirstEntityByModel(const char *value) {
     return -1;
 }
 
-bool BSPMap::hasEntityAttribute(int entityId, char *key) {
+bool BSPMap::hasEntityAttribute(int entityId, const std::string& key) {
     for (int j = 0; j < this->entities[entityId].num_attributes; j++) {
-        if (!strcmp(this->entities[entityId].attributes[j].key, key)) {
+        if (this->entities[entityId].attributes[j].key == key) {
             return true;
         }
     }

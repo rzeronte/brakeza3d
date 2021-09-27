@@ -394,7 +394,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
 
                 // light
                 if (!strcmp(classname, "light")) {
-                    Object3D *o = new Object3D();
+                    auto *o = new Object3D();
                 }
 
                 // item cells

@@ -15,7 +15,7 @@ void Component::setComponents(std::vector<Component *> *newComponent) {
     Component::components = newComponent;
 }
 
-Component *Component::getComponentById(int componentId) const {
+Component *Component::getComponentById(unsigned int componentId) const {
     return this->components->at(componentId);
 }
 

@@ -416,7 +416,7 @@ public:
 
     dclipnode_t *getClipNode(int id) { return &getClipNodes()[id]; }
 
-    int getIndexOfFirstEntityByClassname(char *);
+    int getIndexOfFirstEntityByClassname(const std::string& value);
 
     int getIndexOfFirstEntityByTargetname(const char *);
 
@@ -424,9 +424,9 @@ public:
 
     int getIndexOfFirstEntityByModel(const char *);
 
-    char *getEntityValue(int entityId, char *);
+    char *getEntityValue(int entityId, const std::string&) const;
 
-    bool hasEntityAttribute(int entityId, char *);
+    bool hasEntityAttribute(int entityId, const std::string&);
 
     Vertex3D parsePositionFromEntityAttribute(char *);
 

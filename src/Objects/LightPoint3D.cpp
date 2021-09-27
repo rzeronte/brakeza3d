@@ -40,13 +40,11 @@ void LightPoint3D::setShadowMappingBuffer(int x, int y, float value) const {
 }
 
 void LightPoint3D::setColor(int r, int g, int b) {
-    Uint32 color = ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+    auto newColor = (Uint32) (((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff));
 
-    LightPoint3D::color = color;
+    LightPoint3D::color = newColor;
 
-    ImVec4 c = ImColor(r, g, b, 255);
-
-    this->imgui_color = c;
+    this->imgui_color = ImColor(r, g, b, 255);;
 }
 
 Uint32 LightPoint3D::mixColor(Uint32 c, Vertex3D Q) {

@@ -47,7 +47,7 @@ public:
     // get another components functions
     std::vector<Component *> *getComponents() const;
 
-    Component *getComponentById(int componentId) const;
+    Component *getComponentById(unsigned int componentId) const;
 
     void setComponents(std::vector<Component *> *newComponent);
 

@@ -1,6 +1,0 @@
-/usr/local/lib/libDebugUtils.VERSION.dylib
-/usr/local/lib/libDebugUtils.dylib
-/usr/local/include/DebugDraw.h
-/usr/local/include/DetourDebugDraw.h
-/usr/local/include/RecastDebugDraw.h
-/usr/local/include/RecastDump.h
