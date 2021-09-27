@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 10/6/18.
-//
-
 #include "../../headers/Misc/Timer.h"
 
 Timer::Timer() {

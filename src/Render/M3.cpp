@@ -76,7 +76,7 @@ M3 M3::operator-(const M3 &v) {
     );
 }
 
-void M3::consoleInfo(std::string label) const {
+void M3::consoleInfo(const std::string& label) const {
     printf("%s: \r\n", label.c_str());
     std::cout << m[0] << " " << m[1] << " " << m[2] << std::endl;
     std::cout << m[3] << " " << m[4] << " " << m[5] << std::endl;

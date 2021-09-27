@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/1/20.
-//
-
 #include "../../headers/Components/ComponentInput.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../imgui/examples/imgui_impl_sdl.h"

@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/1/20.
-//
-
 #include <SDL.h>
 #include "../../headers/Components/ComponentWindow.h"
 
@@ -91,24 +87,24 @@ void ComponentWindow::initWindow() {
 }
 
 void ComponentWindow::initFontsTTF() {
-    Logging::getInstance()->Log("Initializating TTF...", "INFO");
+    Logging::Log("Initializating TTF...", "INFO");
 
     // global font
     if (TTF_Init() < 0) {
-        Logging::getInstance()->Log(TTF_GetError(), "INFO");
+        Logging::Log(TTF_GetError(), "INFO");
     } else {
         std::string pathFont = SETUP->FONTS_FOLDER + "octin.ttf";
-        Logging::getInstance()->Log("Loading FONT: " + pathFont, "INFO");
+        Logging::Log("Loading FONT: " + pathFont, "INFO");
 
         fontDefault = TTF_OpenFont(pathFont.c_str(), 50);
         fontSmall = TTF_OpenFont(pathFont.c_str(), 25);
         fontMedium = TTF_OpenFont(pathFont.c_str(), 70);
         fontBig = TTF_OpenFont(pathFont.c_str(), 200);
 
-        if (!fontDefault) Logging::getInstance()->Log(TTF_GetError(), "INFO");
-        if (!fontSmall) Logging::getInstance()->Log(TTF_GetError(), "INFO");
-        if (!fontMedium) Logging::getInstance()->Log(TTF_GetError(), "INFO");
-        if (!fontBig) Logging::getInstance()->Log(TTF_GetError(), "INFO");
+        if (!fontDefault) Logging::Log(TTF_GetError(), "INFO");
+        if (!fontSmall) Logging::Log(TTF_GetError(), "INFO");
+        if (!fontMedium) Logging::Log(TTF_GetError(), "INFO");
+        if (!fontBig) Logging::Log(TTF_GetError(), "INFO");
     }
 }
 

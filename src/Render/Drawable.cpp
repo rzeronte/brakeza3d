@@ -1,4 +1,6 @@
 
+#include <utility>
+
 #include "../../headers/Render/Drawable.h"
 #include "../../headers/Render/Transforms.h"
 #include "../../headers/EngineBuffers.h"
@@ -465,8 +467,8 @@ void Drawable::fireShaderOnHUDBuffer() {
     //generate the palette
     int r = 255, g = 0, b = 0;
 
-    for (int x = 0; x < 256; x++) {
-        palette[x] = Tools::createRGB(r, g, b);
+    for (unsigned int & x : palette) {
+        x = Tools::createRGB(r, g, b);
         g++;
     }
 
@@ -541,7 +543,7 @@ void Drawable::waterShader(int type) {
             break;
     }
 
-    Uint32 *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
+    auto *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
 
     for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
         for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
@@ -611,9 +613,9 @@ void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles) {
         Drawable::drawAABB(&node->bounds, color);
     }
 
-    for (int i = 0; i < 8; i++) {
-        if (node->children[i] != nullptr) {
-            Drawable::drawOctreeNode(node->children[i], onlyWithTriangles);
+    for (auto & i : node->children) {
+        if (i != nullptr) {
+            Drawable::drawOctreeNode(i, onlyWithTriangles);
         }
     }
 }
@@ -626,26 +628,26 @@ void Drawable::drawOctree(Octree *octree, bool onlyWithTriangles) {
 void Drawable::drawGrid3D(Grid3D *grid) {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    for (int i = 0; i < grid->boxes.size(); i++) {
+    for (auto & boxe : grid->boxes) {
 
-        if (grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY) {
+        if (boxe->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY) {
             Uint32 c = Color::yellow();
             if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(grid->boxes[i]->box, c);
+                Drawable::drawAABB(boxe->box, c);
             }
             if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
-                Drawable::drawVertex(grid->boxes[i]->box->getCenter(), camera, c);
+                Drawable::drawVertex(boxe->box->getCenter(), camera, c);
             }
         }
 
-        if (!grid->boxes[i]->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY) {
+        if (!boxe->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY) {
             Uint32 c = Color::red();
             if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(grid->boxes[i]->box, c);
+                Drawable::drawAABB(boxe->box, c);
             }
             if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
 
-                Drawable::drawVertex(grid->boxes[i]->box->getCenter(), camera, c);
+                Drawable::drawVertex(boxe->box->getCenter(), camera, c);
             }
         }
     }
@@ -654,10 +656,10 @@ void Drawable::drawGrid3D(Grid3D *grid) {
 void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, path);
+    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, std::move(path));
 
-    for (int i = 0; i < pathVertices.size(); i++) {
-        Drawable::drawVertex(pathVertices[i], camera, Color::cyan());
+    for (auto & pathVertice : pathVertices) {
+        Drawable::drawVertex(pathVertice, camera, Color::cyan());
     }
 }
 

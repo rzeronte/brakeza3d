@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 8/1/20.
-//
-
 #include "../../headers/Components/ComponentRender.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Misc/Parallells.h"
@@ -60,18 +56,11 @@ std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
 }
 
 void ComponentRender::onUpdateBSP() {
-    /*ComponentsManager::get()->getComponentBSP()->getBSPCollider()->drawHullAABB(
-            ComponentsManager::get()->getComponentBSP()->getBSPCollider()->getWorldModel(),
-            0
-    );*/
-
     if (!SETUP->RENDER_BSP_TRIANGLES) return;
 
     if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
 
-        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf(
-                ComponentsManager::get()->getComponentCamera()->getCamera()
-        );
+        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf();
 
         if (SETUP->DRAW_BSP_HULLS) {
             ComponentsManager::get()->getComponentBSP()->getBSP()->DrawHulls();
@@ -153,15 +142,15 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
 }
 
 void ComponentRender::hiddenSurfaceRemoval() {
-    for (int i = 0; i < clippedTriangles.size(); i++) {
-        delete clippedTriangles[i];
+    for (auto & clippedTriangle : clippedTriangles) {
+        delete clippedTriangle;
     }
     clippedTriangles.clear();
 
     visibleTriangles.clear();
 
-    for (int i = 0; i < frameTriangles.size(); i++) {
-        this->hiddenSurfaceRemovalTriangle(frameTriangles[i]);
+    for (auto & frameTriangle : frameTriangles) {
+        this->hiddenSurfaceRemovalTriangle(frameTriangle);
     }
 
     visibleTriangles.insert(
@@ -171,8 +160,8 @@ void ComponentRender::hiddenSurfaceRemoval() {
     );
 
     if (SETUP->DEBUG_RENDER_INFO) {
-        Logging::getInstance()->Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) +
-                                    ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()));
+        Logging::Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) +
+                                    ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()), "Render");
     }
 
     frameTriangles.clear();
@@ -191,14 +180,14 @@ void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Tria
                     &node->bounds
             )
             ) {
-        for (int j = 0; j < node->triangles.size(); j++) {
-            triangles.push_back(node->triangles[j]);
+        for (auto & triangle : node->triangles) {
+            triangles.push_back(triangle);
         }
     }
 
-    for (int i = 0; i < 8; i++) {
-        if (node->children[i] != nullptr) {
-            this->hiddenOctreeRemovalNode(node->children[i], triangles);
+    for (auto & i : node->children) {
+        if (i != nullptr) {
+            this->hiddenOctreeRemovalNode(i, triangles);
         }
     }
 }
@@ -246,7 +235,7 @@ void ComponentRender::drawTilesGrid() {
         Tile *t = &this->tiles[j];
         Uint32 color = Color::white();
 
-        if (t->triangleIds.size() > 0) {
+        if (!t->triangleIds.empty()) {
             color = Color::red();
         }
 
@@ -396,7 +385,7 @@ Uint32 ComponentRender::processPixelFog(Fragment *fragment, Uint32 pixelColor) {
 Uint32 ComponentRender::processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor) {
     Vertex3D D;
 
-    if (this->lightpoints.size() > 0) {
+    if (!this->lightpoints.empty()) {
         // Coordenadas del punto que estamos procesando en el mundo (object space)
         float x3d = fragment->alpha * t->Ao.x + fragment->theta * t->Bo.x + fragment->gamma * t->Co.x;
         float y3d = fragment->alpha * t->Ao.y + fragment->theta * t->Bo.y + fragment->gamma * t->Co.y;
@@ -404,13 +393,13 @@ Uint32 ComponentRender::processPixelLights(Triangle *t, Fragment *fragment, Uint
 
         D = Vertex3D(x3d, y3d, z3d); // Object space
 
-        for (int i = 0; i < this->lightpoints.size(); i++) {
-            if (!this->lightpoints[i]->isEnabled()) {
+        for (auto & lightpoint : this->lightpoints) {
+            if (!lightpoint->isEnabled()) {
                 continue;
             }
 
             // Color light apply
-            pixelColor = this->lightpoints[i]->mixColor(pixelColor, D);
+            pixelColor = lightpoint->mixColor(pixelColor, D);
 
             /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
                 Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
@@ -537,10 +526,10 @@ void ComponentRender::initTiles() {
     this->numTiles = tilesWidth * tilesHeight;
     this->tilePixelsBufferSize = this->sizeTileWidth * this->sizeTileHeight;
 
-    Logging::getInstance()->Log(
+    Logging::Log(
             "Tiles: (" + std::to_string(tilesWidth) + "x" + std::to_string(tilesHeight) + "), Size: (" +
             std::to_string(sizeTileWidth) + "x" + std::to_string(sizeTileHeight) + ") - bufferTileSize: " +
-            std::to_string(sizeTileWidth * sizeTileHeight));
+            std::to_string(sizeTileWidth * sizeTileHeight), "Render");
 
     for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
         for (int x = 0; x < SETUP->screenWidth; x += this->sizeTileWidth) {
@@ -557,9 +546,9 @@ void ComponentRender::initTiles() {
             this->tiles.emplace_back(t);
             // Load up the vector with MyClass objects
 
-            Logging::getInstance()->Log(
+            Logging::Log(
                     "Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x) + ", offset_y: " +
-                    std::to_string(y) + ")");
+                    std::to_string(y) + ")", "Render");
         }
     }
 
@@ -629,7 +618,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    Fragment fragment;
+    Fragment fragment{};
     bool bilinear = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY; y < t->maxY; y++) {

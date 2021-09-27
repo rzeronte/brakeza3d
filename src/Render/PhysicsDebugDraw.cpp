@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 2019-05-12.
-//
-
 #include "../../headers/Render/PhysicsDebugDraw.h"
 #include "../../headers/Render/Drawable.h"
 

@@ -241,9 +241,9 @@ typedef struct {
 } parse_buffer;
 
 /* check if the given size is left to read in a given parse buffer (starting with 1) */
-#define can_read(buffer, size) ((buffer != NULL) && (((buffer)->offset + size) <= (buffer)->length))
+#define can_read(buffer, size) (((buffer) != NULL) && (((buffer)->offset + (size)) <= (buffer)->length))
 /* check if the buffer can be accessed at the given index (starting with 0) */
-#define can_access_at_index(buffer, index) ((buffer != NULL) && (((buffer)->offset + index) < (buffer)->length))
+#define can_access_at_index(buffer, index) (((buffer) != NULL) && (((buffer)->offset + (index)) < (buffer)->length))
 #define cannot_access_at_index(buffer, index) (!can_access_at_index(buffer, index))
 /* get a pointer to the buffer at the position */
 #define buffer_at_offset(buffer) ((buffer)->content + (buffer)->offset)
@@ -833,17 +833,17 @@ static cJSON_bool print_string(const cJSON *const item, printbuffer *const p) {
 }
 
 /* Predeclare these prototypes. */
-static cJSON_bool parse_value(cJSON *const item, parse_buffer *const input_buffer);
+static cJSON_bool parse_value(cJSON *item, parse_buffer *input_buffer);
 
-static cJSON_bool print_value(const cJSON *const item, printbuffer *const output_buffer);
+static cJSON_bool print_value(const cJSON *item, printbuffer *output_buffer);
 
-static cJSON_bool parse_array(cJSON *const item, parse_buffer *const input_buffer);
+static cJSON_bool parse_array(cJSON *item, parse_buffer *input_buffer);
 
-static cJSON_bool print_array(const cJSON *const item, printbuffer *const output_buffer);
+static cJSON_bool print_array(const cJSON *item, printbuffer *output_buffer);
 
-static cJSON_bool parse_object(cJSON *const item, parse_buffer *const input_buffer);
+static cJSON_bool parse_object(cJSON *item, parse_buffer *input_buffer);
 
-static cJSON_bool print_object(const cJSON *const item, printbuffer *const output_buffer);
+static cJSON_bool print_object(const cJSON *item, printbuffer *output_buffer);
 
 /* Utility to jump whitespace and cr/lf */
 static parse_buffer *buffer_skip_whitespace(parse_buffer *const buffer) {
@@ -949,7 +949,7 @@ CJSON_PUBLIC(cJSON *)cJSON_Parse(const char *value) {
     return cJSON_ParseWithOpts(value, 0, 0);
 }
 
-#define cjson_min(a, b) ((a < b) ? a : b)
+#define cjson_min(a, b) (((a) < (b)) ? (a) : (b))
 
 static unsigned char *print(const cJSON *const item, cJSON_bool format, const internal_hooks *const hooks) {
     static const size_t default_buffer_size = 256;

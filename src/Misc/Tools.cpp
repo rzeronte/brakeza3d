@@ -23,7 +23,7 @@ std::vector<std::string> Tools::split(const std::string &text, char sep) {
 
 void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
     //Convert the pixels to 32 bit
-    Uint32 *pixels = (Uint32 *) surface->pixels;
+    auto *pixels = (Uint32 *) surface->pixels;
 
     //Set the pixel
     pixels[(y * surface->w) + x] = pixel;
@@ -135,7 +135,7 @@ bool Tools::fileExists(const std::string &name) {
         return true;
     }
 
-    Logging::getInstance()->Log("File " + name + " not found", "ERROR");
+    Logging::Log("File " + name + " not found", "ERROR");
 
     return false;
 }
@@ -147,7 +147,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::getInstance()->Log("File " + name + " can't be loaded!", "ERROR");
+        Logging::Log("File " + name + " can't be loaded!", "ERROR");
         return nullptr;
     }
     char *file_str = (char *) malloc(MAX_SOURCE_SIZE);
@@ -251,7 +251,7 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
 
 void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times) {
     if (chunk == nullptr) {
-        Logging::getInstance()->Log("Error loading chunk sound");
+        Logging::Log("Error loading chunk sound", "Sound");
         return;
     }
 

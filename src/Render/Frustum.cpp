@@ -1,12 +1,7 @@
-//
-// Created by darkhead on 29/5/18.
-//
-
 #include "../../headers/Render/Frustum.h"
 #include "../../headers/EngineSetup.h"
 
-Frustum::Frustum() {
-}
+Frustum::Frustum() = default;
 
 Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
                  float Wnear, float farDist, float Hfar, float Wfar) {
@@ -150,7 +145,7 @@ bool Frustum::isPointInFrustum(Vertex3D &v) {
 }
 
 
-void Frustum::consoleInfo() {
+void Frustum::consoleInfo() const {
 
     printf("Frustum: ");
     this->position.consoleInfo("pos", false);

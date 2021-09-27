@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 9/1/20.
-//
-
 #include <SDL_mixer.h>
 #include "../../headers/Components/ComponentSound.h"
 #include "../../headers/Misc/cJSON.h"
@@ -35,7 +31,7 @@ void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
 void ComponentSound::initSoundSystem() {
-    Logging::getInstance()->Log("Init Sound System");
+    Logging::Log("Init Sound System", "Sound");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
@@ -48,7 +44,7 @@ void ComponentSound::initSoundSystem() {
 }
 
 void ComponentSound::loadSoundsJSON() {
-    Logging::getInstance()->Log("Loading Sounds in package...", "SOUNDS");
+    Logging::Log("Loading Sounds in package...", "SOUNDS");
 
     std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
     size_t file_size;
@@ -57,7 +53,7 @@ void ComponentSound::loadSoundsJSON() {
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 
     if (myDataJSON == nullptr) {
-        Logging::getInstance()->Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
@@ -74,7 +70,7 @@ void ComponentSound::loadSoundsJSON() {
         if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
         if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
 
-        Logging::getInstance()->Log("Loading file sound " + std::string(file->valuestring), "SOUNDS");
+        Logging::Log("Loading file sound " + std::string(file->valuestring), "SOUNDS");
 
         BUFFERS->soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
     }
