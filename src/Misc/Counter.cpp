@@ -14,7 +14,7 @@ Counter::Counter(float step) {
 void Counter::update() {
     if (!isEnabled()) return;
 
-    float ticks = this->timer->getTicks();
+    auto ticks = (float) this->timer->getTicks();
     float deltatime = ticks - this->lastTicks;
     this->lastTicks = ticks;
 

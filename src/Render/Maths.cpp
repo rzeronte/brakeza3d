@@ -245,8 +245,8 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
     int start = 0;
     int p1 = 0;
     int p2 = 1;
-    int m1 = vertexCount - 1;
-    int m2 = vertexCount - 2;
+    int m1 = (int) vertexCount - 1;
+    int m2 = (int) vertexCount - 2;
     bool lastPositive = false;
     for (;;) {
         if (p2 == m2) {

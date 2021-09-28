@@ -34,11 +34,9 @@ public:
 
     void initMap(const char *bspFilename);
 
-    void initParallelBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles);
-
     void setCameraInBSPStartPosition() const;
 
-    void setCamera(Camera3D *camera);
+    void setCamera(Camera3D *newCamera);
 
     BSPCollider *getBSPCollider() const;
 };

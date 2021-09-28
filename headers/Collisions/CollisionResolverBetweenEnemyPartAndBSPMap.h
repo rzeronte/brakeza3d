@@ -10,7 +10,6 @@
 
 class CollisionResolverBetweenEnemyPartAndBSPMap : public CollisionResolver {
 public:
-    BSPMap *bapMap;
     NPCEnemyPartBody *enemyPart;
 
     std::vector<Object3D *> *gameObjects;
@@ -32,7 +31,7 @@ public:
 
     void dispatch() {
         if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-            Logging::Log("CollisionResolverBetweenEnemyPartAndBSPMap");
+            Logging::Log("CollisionResolverBetweenEnemyPartAndBSPMap", "Collision");
         }
 
         if (enemyPart->doneGore) return;
@@ -46,31 +45,31 @@ public:
     }
 
     BSPMap *getBSPMap() {
-        BSPMap *bspMapA = dynamic_cast<BSPMap *> (this->objA);
+        auto *bspMapA = dynamic_cast<BSPMap *> (this->objA);
         if (bspMapA != NULL) {
             return bspMapA;
         }
 
-        BSPMap *bspMapB = dynamic_cast<BSPMap *> (this->objB);
+        auto *bspMapB = dynamic_cast<BSPMap *> (this->objB);
         if (bspMapB != NULL) {
             return bspMapB;
         }
     }
 
     NPCEnemyPartBody *getEnemyPart() {
-        NPCEnemyPartBody *NPCPartA = dynamic_cast<NPCEnemyPartBody *> (this->objA);
+        auto *NPCPartA = dynamic_cast<NPCEnemyPartBody *> (this->objA);
         if (NPCPartA != NULL) {
             return NPCPartA;
         }
 
-        NPCEnemyPartBody *NPCPartB = dynamic_cast<NPCEnemyPartBody *> (this->objB);
+        auto *NPCPartB = dynamic_cast<NPCEnemyPartBody *> (this->objB);
         if (NPCPartB != NULL) {
             return NPCPartB;
         }
     }
 
     void makeGoreDecals() {
-        Decal *decal = new Decal();
+        auto *decal = new Decal();
         decal->setPosition(getEnemyPart()->getPosition());
         decal->setupCube(10, 10, 10);
 

@@ -149,7 +149,7 @@ public:
 
     int getId() const;
 
-    void setId(int id);
+    void setId(unsigned int id);
 
     Plane plane() const;
 };

@@ -38,13 +38,13 @@ public:
 
     float calcCanvasNearWidth() const;
 
-    float calcCanvasNearHeight();
+    float calcCanvasNearHeight() const;
 
     float getScreenAspectRatio() const;
 
     float calcCanvasFarWidth() const;
 
-    float calcCanvasFarHeight();
+    float calcCanvasFarHeight() const;
 
     float getNearDistance() const;
 

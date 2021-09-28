@@ -517,7 +517,7 @@ void ComponentGame::createObjects3DFromBSPEntities() {
                         angle = std::stoi(s_angle);
                     }
 
-                    M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90 - angle, 0);
+                    M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90 - (float) angle, 0);
 
                     auto *enemyBody = new NPCEnemyBody();
                     enemyBody->setScale(enemyTemplate->getScale());
@@ -744,7 +744,7 @@ void ComponentGame::LoadWeaponsJSON() {
             cJSON *status = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "status");
             cJSON *label = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "label");
             cJSON *animationModel = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "animationModel");
-            cJSON *scale = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "scale");
+            cJSON *animationScale = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "animationScale");
             cJSON *stopEnd = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "stop_end");
             cJSON *looping = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "looping");
             cJSON *projectile = cJSON_GetObjectItemCaseSensitive(currentWeaponAnimation, "projectile");
@@ -757,7 +757,7 @@ void ComponentGame::LoadWeaponsJSON() {
             weaponManager->getWeaponTypeByLabel(name->valuestring)->addAnimation(
                     std::string(label->valuestring),
                     std::string(animationModel->valuestring),
-                    (float) scale->valuedouble,
+                    (float) animationScale->valuedouble,
                     stopEnd->valueint
             );
 

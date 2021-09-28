@@ -21,8 +21,8 @@ void Mesh3DAnimated::updateFrameTransformations() {
     // Update running time
     this->animation_ends = false;
     this->runningTime += Brakeza3D::get()->getDeltaTime() * this->animation_speed;
-    float maxTime = this->scene->mAnimations[this->indexCurrentAnimation]->mDuration /
-                    scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond;
+    auto maxTime = (float) (this->scene->mAnimations[this->indexCurrentAnimation]->mDuration /
+                    scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond);
 
     if (runningTime >= maxTime) {
         if (this->isRemoveAtEndAnimation()) {
@@ -197,7 +197,7 @@ void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>
     float TicksPerSecond = scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0
                            ? scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f;
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
-    float AnimationTime = fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration);
+    auto AnimationTime = (float) fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration);
 
     ReadNodeHeirarchy(AnimationTime, scene->mRootNode, Identity);
 

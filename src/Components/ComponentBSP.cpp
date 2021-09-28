@@ -44,11 +44,6 @@ BSPMap *ComponentBSP::getBSP() const {
     return bsp;
 }
 
-void ComponentBSP::initParallelBSP(const char *bspFilename, std::vector<Triangle *> *frameTriangles) {
-    //this->loadingBSP = new std::thread(ParallellInitBSP, bspFilename, frameTriangles);
-}
-
-
 void ComponentBSP::setCameraInBSPStartPosition() const {
     // Load start position from BSP
     Vertex3D bspOriginalPosition = getBSP()->getStartMapPosition();
@@ -60,15 +55,15 @@ void ComponentBSP::setCameraInBSPStartPosition() const {
     char *angle = getBSP()->getEntityValue(entityID, "angle");
     int angleInt = atoi(std::string(angle).c_str());
 
-    camera->yaw = 90 - angleInt;
+    camera->yaw = (float) (90 -angleInt);
     camera->pitch = 0;
     camera->roll = 0;
 
     camera->setPosition(bspOriginalPosition);
 }
 
-void ComponentBSP::setCamera(Camera3D *camera) {
-    ComponentBSP::camera = camera;
+void ComponentBSP::setCamera(Camera3D *newCamera) {
+    ComponentBSP::camera = newCamera;
 }
 
 BSPCollider *ComponentBSP::getBSPCollider() const {

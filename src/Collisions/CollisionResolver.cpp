@@ -17,7 +17,7 @@ CollisionResolver::CollisionResolver(
     this->type = -1;
 }
 
-int CollisionResolver::getTypeCollision() {
+int CollisionResolver::getTypeCollision() const {
     if (isSomeItemAmmo() && isSomeProjectile()) {
         return 0;
     }

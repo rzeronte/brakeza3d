@@ -4,9 +4,9 @@
 #include "../../headers/ComponentsManager.h"
 
 void
-Mesh3DAnimatedCollection::addAnimation(std::string label, const std::string& modelFilename, float scale, bool remove_at_end) {
+Mesh3DAnimatedCollection::addAnimation(const std::string& label, const std::string& modelFilename, float scale, bool remove_at_end) {
     auto *meshObject = new Mesh3DAnimated();
-    meshObject->setLabel(std::move(label));
+    meshObject->setLabel(label);
     meshObject->setParent(this);
 
     if (meshObject->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename)) {

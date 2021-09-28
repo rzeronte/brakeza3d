@@ -34,8 +34,8 @@ void ComponentWeapons::onEnd() {
 void ComponentWeapons::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentWeapons::addWeaponType(std::string label) {
-    this->weaponTypes.emplace_back(new WeaponType(std::move(label)));
+void ComponentWeapons::addWeaponType(const std::string& label) {
+    this->weaponTypes.emplace_back(new WeaponType(label));
 }
 
 WeaponType *ComponentWeapons::getWeaponTypeByLabel(const std::string& label) {

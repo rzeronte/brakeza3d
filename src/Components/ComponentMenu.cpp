@@ -46,16 +46,16 @@ void ComponentMenu::loadMenuOptions() {
         return;
     }
 
-    cJSON *currentOption = nullptr;
+    cJSON *currentLoadingOption;
     optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options");
     int sizeOptions = cJSON_GetArraySize(optionsJSON);
 
     Logging::Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON", "Menu");
 
-    cJSON_ArrayForEach(currentOption, optionsJSON) {
-        cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentOption, "name");
-        cJSON *actionOption = cJSON_GetObjectItemCaseSensitive(currentOption, "action");
-        cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentOption, "alt");
+    cJSON_ArrayForEach(currentLoadingOption, optionsJSON) {
+        cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "name");
+        cJSON *actionOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "action");
+        cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
             Logging::Log("Adding menu option " + std::string(nameOption->valuestring) + "/" +

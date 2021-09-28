@@ -22,13 +22,12 @@ void SoundPackage::addItem(const std::string &srcSound, std::string label, Sound
         default:
             assert(0);
     }
-
     this->items.push_back(item);
 }
 
 Mix_Chunk *SoundPackage::getSoundByLabel(const std::string &label) {
-    for (int i = 0; i < this->items.size(); i++) {
-        if (!items[i]->label.compare(label)) {
+    for (unsigned int i = 0; i < this->items.size(); i++) {
+        if (items[i]->label == label) {
             return items[i]->sound;
         }
     }
@@ -36,8 +35,8 @@ Mix_Chunk *SoundPackage::getSoundByLabel(const std::string &label) {
 }
 
 Mix_Music *SoundPackage::getMusicByLabel(const std::string &label) {
-    for (int i = 0; i < this->items.size(); i++) {
-        if (!items[i]->label.compare(label)) {
+    for (unsigned int i = 0; i < this->items.size(); i++) {
+        if (items[i]->label == label) {
             return items[i]->music;
         }
     }

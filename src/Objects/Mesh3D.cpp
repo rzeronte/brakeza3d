@@ -241,12 +241,12 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 }
 
 void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node) {
-    for (int x = 0; x < node->mNumMeshes; x++) {
-        int idMesh = node->mMeshes[x];
+    for (unsigned int x = 0; x < node->mNumMeshes; x++) {
+        int idMesh = (int) node->mMeshes[x];
         this->AssimpLoadMesh(scene->mMeshes[idMesh]);
     }
 
-    for (int j = 0; j < node->mNumChildren; j++) {
+    for (unsigned int j = 0; j < node->mNumChildren; j++) {
         AssimpProcessNodes(scene, node->mChildren[j]);
     }
 }

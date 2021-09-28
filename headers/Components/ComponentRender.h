@@ -53,7 +53,7 @@ public:
 
     void drawVisibleTriangles();
 
-    void handleTrianglesToTiles(std::vector<Triangle *> &visibleTriangles);
+    void handleTrianglesToTiles(std::vector<Triangle *> &triangles);
 
     void drawTilesGrid();
 

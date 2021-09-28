@@ -15,7 +15,7 @@ public:
 
     static void Log(const std::string& message, const std::string& type);
 
-    void Log(std::string message);
+    void Log(const std::string& message);
 };
 
 #endif //SDL2_3D_ENGINE_LOGGING_H

@@ -57,7 +57,7 @@ float Camera3D::calcCanvasNearWidth() const {
     return width;
 }
 
-float Camera3D::calcCanvasNearHeight() {
+float Camera3D::calcCanvasNearHeight() const {
     float height =
             (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * getNearDistance()) * getScreenAspectRatio();
 
@@ -70,7 +70,7 @@ float Camera3D::calcCanvasFarWidth() const {
     return width;
 }
 
-float Camera3D::calcCanvasFarHeight() {
+float Camera3D::calcCanvasFarHeight() const {
     float height = (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * farDistance) * getScreenAspectRatio();
 
     return height;

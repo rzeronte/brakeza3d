@@ -30,6 +30,6 @@ void Logging::Log(const std::string& message, const std::string& type) {
     std::cout << '[' << type << ']' << ' ' << message << std::endl;
 }
 
-void Logging::Log(std::string message) {
-    this->Log(std::move(message), "DEBUG");
+void Logging::Log(const std::string& message) {
+    this->Log(message, "DEBUG");
 }

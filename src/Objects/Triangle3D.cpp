@@ -670,8 +670,8 @@ int Triangle::getId() const {
     return id;
 }
 
-void Triangle::setId(int id) {
-    Triangle::id = id;
+void Triangle::setId(unsigned int newId) {
+    Triangle::id = newId;
 }
 
 Plane Triangle::plane() const {

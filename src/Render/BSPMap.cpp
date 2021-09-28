@@ -67,8 +67,8 @@ bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Ca
     return true;
 }
 
-int BSPMap::LoadFile(const char *filename, void **bufferptr) {
-    struct stat st;
+unsigned int BSPMap::LoadFile(const char *filename, void **bufferptr) {
+    struct stat st{};
     void *buffer;
     unsigned int length;
 

@@ -27,9 +27,6 @@ public:
     void setDebugMode(int debugMode) override;
 
     int getDebugMode() const override;
-
-    void setCamera(Camera3D *cam) { this->cam = cam; }
 };
-
 
 #endif //BRAKEDA3D_PHYSICSDEBUGDRAW_H

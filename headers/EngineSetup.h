@@ -54,7 +54,7 @@ public:
     bool ENABLE_FOG = true;
     float FOG_DISTANCE = 1000;
     float FOG_INTENSITY = 1;
-    float FOG_COLOR = Color::FOGDefault();
+    Uint32 FOG_COLOR = Color::FOGDefault();
     ImVec4 FOG_IMGUI_COLOR;
     float FRUSTUM_FARPLANE_DISTANCE = 1250;
     float HORIZONTAL_FOV = 90;

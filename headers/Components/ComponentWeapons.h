@@ -43,7 +43,7 @@ public:
     float offsetX = 0;
     float offsetY = 0;
 
-    void addWeaponType(std::string);
+    void addWeaponType(const std::string&);
 
     WeaponType *getWeaponTypeByLabel(const std::string& label);
 

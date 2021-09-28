@@ -175,7 +175,7 @@ typedef struct {
 class BSPMap : public Object3D {
 private:
 
-    static int LoadFile(const char *filename, void **bufferptr);
+    static unsigned int LoadFile(const char *filename, void **bufferptr);
 
     bool LoadPalette(const char *filename);
 

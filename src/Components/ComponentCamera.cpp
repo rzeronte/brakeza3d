@@ -79,7 +79,7 @@ void ComponentCamera::updateCameraBSPCollider() const {
 
     bspCollider->SV_CheckVelocity(player);
     bspCollider->SV_ClientThink(player, deltaTime);
-    bspCollider->SV_AddGravity(player, deltaTime);
+    BSPCollider::SV_AddGravity(player, deltaTime);
     bspCollider->SV_CheckStuck(player);
     bspCollider->SV_WalkMove(player, deltaTime);
 

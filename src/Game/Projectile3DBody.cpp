@@ -62,9 +62,9 @@ Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *c
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
-        dir.x += (float) Tools::random(-100 + accuracy, 100 - accuracy);
-        dir.y += (float) Tools::random(-100 + accuracy, 100 - accuracy);
-        dir.z += (float) Tools::random(-100 + accuracy, 100 - accuracy);
+        dir.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+        dir.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+        dir.z += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
 
         btVector3 impulse(dir.x, dir.y, dir.z);
         this->m_body->applyCentralImpulse(impulse);

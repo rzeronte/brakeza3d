@@ -25,7 +25,7 @@ public:
     CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap,
                       std::vector<Triangle *> &visibleTriangles);
 
-    int getTypeCollision();
+    int getTypeCollision() const;
 
     bool isSomeCamera() const;
 
