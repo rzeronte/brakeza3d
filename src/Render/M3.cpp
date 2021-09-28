@@ -176,7 +176,8 @@ void M3::setMatrixIdentity() {
     this->setup(
             1, 0, 0,
             0, 1, 0,
-            0, 0, 1);
+            0, 0, 1
+    );
 }
 
 void M3::setMatrixNULL() {

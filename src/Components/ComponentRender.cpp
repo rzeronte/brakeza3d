@@ -208,18 +208,18 @@ void ComponentRender::drawVisibleTriangles() {
     this->drawTriangles(visibleTriangles);
 }
 
-void ComponentRender::handleTrianglesToTiles(std::vector<Triangle *> &visibleTriangles) {
+void ComponentRender::handleTrianglesToTiles(std::vector<Triangle *> &triangles) {
     for (int i = 0; i < this->numTiles; i++) {
         this->tiles[i].triangleIds.clear();
     }
 
-    for (int i = 0; i < visibleTriangles.size(); i++) {
-        int tileStartX = std::max((float) (visibleTriangles[i]->minX / this->sizeTileWidth), 0.0f);
-        int tileEndX = std::min((float) (visibleTriangles[i]->maxX / this->sizeTileWidth),
+    for (unsigned int i = 0; i < triangles.size(); i++) {
+        int tileStartX = (int) std::max((float) (triangles[i]->minX / this->sizeTileWidth), 0.0f);
+        int tileEndX = (int) std::min((float) (triangles[i]->maxX / this->sizeTileWidth),
                                 (float) this->tilesWidth - 1);
 
-        int tileStartY = std::max((float) (visibleTriangles[i]->minY / this->sizeTileHeight), 0.0f);
-        int tileEndY = std::min((float) (visibleTriangles[i]->maxY / this->sizeTileHeight),
+        int tileStartY = (int) std::max((float) (triangles[i]->minY / this->sizeTileHeight), 0.0f);
+        int tileEndY = (int) std::min((float) (triangles[i]->maxY / this->sizeTileHeight),
                                 (float) this->tilesHeight - 1);
 
         for (int y = tileStartY; y <= tileEndY; y++) {
@@ -294,13 +294,13 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
     int B12 = (int) (-t->Cs.x + t->Bs.x);
     int B20 = (int) (-t->As.x + t->Cs.x);
 
-    Point2D startP(t->minX, t->minY);
+    Point2D startP((float)t->minX, (float) t->minY);
     int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    auto *fragment = new Fragment();
-    bool bilinear = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
+    Fragment fragment{};
+    bool bilinearInterpolation = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY; y < t->maxY; y++) {
         int w0 = w0_row;
@@ -310,38 +310,38 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
         for (int x = t->minX; x < t->maxX; x++) {
 
             if ((w0 | w1 | w2) > 0) {
-                fragment->alpha = w0 * t->reciprocalFullArea;
-                fragment->theta = w1 * t->reciprocalFullArea;
-                fragment->gamma = 1 - fragment->alpha - fragment->theta;
+                fragment.alpha = (float) w0 * t->reciprocalFullArea;
+                fragment.theta = (float) w1 * t->reciprocalFullArea;
+                fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
-                fragment->depth =
-                        (fragment->alpha * t->An.z) + (fragment->theta * t->Bn.z) + (fragment->gamma * t->Cn.z);
+                fragment.depth =
+                        (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
                 int bufferIndex = (y * SETUP->screenWidth) + x;
 
                 if (t->parent->isDecal()) {
-                    fragment->depth -= 1;
+                    fragment.depth -= 1;
                 }
 
-                if (fragment->depth < BUFFERS->getDepthBuffer(bufferIndex)) {
-                    fragment->affineUV = 1 / (fragment->alpha * (t->persp_correct_Az) +
-                                              fragment->theta * (t->persp_correct_Bz) +
-                                              fragment->gamma * (t->persp_correct_Cz));
-                    fragment->texU = (fragment->alpha * (t->tex_u1_Ac_z) + fragment->theta * (t->tex_u2_Bc_z) +
-                                      fragment->gamma * (t->tex_u3_Cc_z)) * fragment->affineUV;
-                    fragment->texV = (fragment->alpha * (t->tex_v1_Ac_z) + fragment->theta * (t->tex_v2_Bc_z) +
-                                      fragment->gamma * (t->tex_v3_Cc_z)) * fragment->affineUV;
+                if (fragment.depth < BUFFERS->getDepthBuffer(bufferIndex)) {
+                    fragment.affineUV = 1 / (fragment.alpha * (t->persp_correct_Az) +
+                                              fragment.theta * (t->persp_correct_Bz) +
+                                              fragment.gamma * (t->persp_correct_Cz));
+                    fragment.texU = (fragment.alpha * (t->tex_u1_Ac_z) + fragment.theta * (t->tex_u2_Bc_z) +
+                                      fragment.gamma * (t->tex_u3_Cc_z)) * fragment.affineUV;
+                    fragment.texV = (fragment.alpha * (t->tex_v1_Ac_z) + fragment.theta * (t->tex_v2_Bc_z) +
+                                      fragment.gamma * (t->tex_v3_Cc_z)) * fragment.affineUV;
 
                     if (t->getLightmap() != nullptr) {
-                        fragment->lightU =
-                                (fragment->alpha * (t->light_u1_Ac_z) + fragment->theta * (t->light_u2_Bc_z) +
-                                 fragment->gamma * (t->light_u3_Cc_z)) * fragment->affineUV;
-                        fragment->lightV =
-                                (fragment->alpha * (t->light_v1_Ac_z) + fragment->theta * (t->light_v2_Bc_z) +
-                                 fragment->gamma * (t->light_v3_Cc_z)) * fragment->affineUV;
+                        fragment.lightU =
+                                (fragment.alpha * (t->light_u1_Ac_z) + fragment.theta * (t->light_u2_Bc_z) +
+                                 fragment.gamma * (t->light_u3_Cc_z)) * fragment.affineUV;
+                        fragment.lightV =
+                                (fragment.alpha * (t->light_v1_Ac_z) + fragment.theta * (t->light_v2_Bc_z) +
+                                 fragment.gamma * (t->light_v3_Cc_z)) * fragment.affineUV;
                     }
 
-                    this->processPixel(t, bufferIndex, x, y, fragment, bilinear);
+                    this->processPixel(t, bufferIndex, x, y, &fragment, bilinearInterpolation);
                 }
             }
 
@@ -355,8 +355,6 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
         w1_row += B20;
         w2_row += B01;
     }
-
-    delete fragment;
 }
 
 void ComponentRender::processPixelTextureAnimated(Fragment *fragment) {
