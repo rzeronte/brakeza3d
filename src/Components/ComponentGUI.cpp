@@ -44,6 +44,7 @@ void ComponentGUI::onUpdate() {
     );
     ImGui::Render();
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+
 }
 
 void ComponentGUI::postUpdate() {

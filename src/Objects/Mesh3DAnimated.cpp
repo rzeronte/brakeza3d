@@ -203,7 +203,7 @@ void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>
 
     Transforms.resize(this->m_NumBones);
 
-    for (uint i = 0; i < this->m_NumBones; i++) {
+    for (unsigned int i = 0; i < this->m_NumBones; i++) {
         Transforms[i] = boneInfo[i].FinalTransformation;
     }
 }
@@ -242,7 +242,7 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
 
     if (boneMapping.find(NodeName) != boneMapping.end()) {
-        uint BoneIndex = boneMapping[NodeName];
+        unsigned int BoneIndex = boneMapping[NodeName];
         boneInfo[BoneIndex].FinalTransformation =
                 m_GlobalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
     }
@@ -253,7 +253,7 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 }
 
 const aiNodeAnim *Mesh3DAnimated::FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName) {
-    for (uint i = 0; i < pAnimation->mNumChannels; i++) {
+    for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
         const aiNodeAnim *pNodeAnim = pAnimation->mChannels[i];
 
         if (std::string(pNodeAnim->mNodeName.data) == NodeName) {
@@ -264,10 +264,10 @@ const aiNodeAnim *Mesh3DAnimated::FindNodeAnim(const aiAnimation *pAnimation, co
     return nullptr;
 }
 
-uint Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+unsigned int Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim) {
     assert(pNodeAnim->mNumRotationKeys > 0);
 
-    for (uint i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
+    for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
         if (AnimationTime < (float) pNodeAnim->mRotationKeys[i + 1].mTime) {
             return i;
         }
@@ -277,8 +277,8 @@ uint Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAn
     return 0;
 }
 
-uint Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim) {
-    for (uint i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
+unsigned int Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+    for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
         if (AnimationTime < (float) pNodeAnim->mPositionKeys[i + 1].mTime) {
             return i;
         }
@@ -321,10 +321,10 @@ int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::ve
     return numVertexBones;
 }
 
-uint Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+unsigned int Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim) {
     assert(pNodeAnim->mNumScalingKeys > 0);
 
-    for (uint i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
+    for (unsigned int i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
         if (AnimationTime < (float) pNodeAnim->mScalingKeys[i + 1].mTime) {
             return i;
         }
@@ -367,8 +367,8 @@ void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float Animation
         return;
     }
 
-    uint RotationIndex = FindRotation(AnimationTime, pNodeAnim);
-    uint NextRotationIndex = (RotationIndex + 1);
+    unsigned int RotationIndex = FindRotation(AnimationTime, pNodeAnim);
+    unsigned int NextRotationIndex = (RotationIndex + 1);
     //assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
     float DeltaTime = pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime;
     float Factor = (AnimationTime - (float) pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
@@ -387,8 +387,8 @@ void Mesh3DAnimated::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTi
         return;
     }
 
-    uint PositionIndex = FindPosition(AnimationTime, pNodeAnim);
-    uint NextPositionIndex = (PositionIndex + 1);
+    unsigned int PositionIndex = FindPosition(AnimationTime, pNodeAnim);
+    unsigned int NextPositionIndex = (PositionIndex + 1);
     //assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
     auto DeltaTime = (float) (pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
                                pNodeAnim->mPositionKeys[PositionIndex].mTime);
@@ -407,8 +407,8 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTim
         return;
     }
 
-    uint ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
-    uint NextScalingIndex = (ScalingIndex + 1);
+    unsigned int ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
+    unsigned int NextScalingIndex = (ScalingIndex + 1);
     //assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
     auto DeltaTime = (float) (pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
                                pNodeAnim->mScalingKeys[ScalingIndex].mTime);

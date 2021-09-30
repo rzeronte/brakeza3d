@@ -13,9 +13,9 @@ struct VertexBoneData {
     int IDs[NUM_BONES_PER_VERTEX] = {0};
     float Weights[NUM_BONES_PER_VERTEX] = {0};
 
-    void AddBoneData(uint BoneID, float Weight) {
+    void AddBoneData(unsigned int BoneID, float Weight) {
         int end = ARRAY_SIZE_IN_ELEMENTS(IDs);
-        for (uint i = 0; i < end; i++) {
+        for (unsigned int i = 0; i < end; i++) {
             if (Weights[i] == 0.0) {
                 IDs[i] = BoneID;
                 Weights[i] = Weight;
@@ -52,7 +52,7 @@ public:
     float animation_speed = 1;
     bool animation_ends = false;
 
-    std::map<std::string, uint> boneMapping; // maps a bone name to its index
+    std::map<std::string, unsigned int> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo> boneInfo;
 
     aiMatrix4x4 m_GlobalInverseTransform;
@@ -81,11 +81,11 @@ public:
 
     static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
 
-    static uint FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static unsigned int FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    static uint FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static unsigned int FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    static uint FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
 
     int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);

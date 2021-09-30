@@ -28,7 +28,6 @@ void ComponentGame::startThirdPerson() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     Vertex3D originalCameraPosition = Vertex3D(-65, 54, 273);
 
-
     // start cam position
     camera->setPosition(originalCameraPosition);
     camera->yaw = 180;
@@ -36,15 +35,6 @@ void ComponentGame::startThirdPerson() {
     camera->roll = 0;
 
     camera->UpdateRotation();
-
-    auto *mesh = new Mesh3DAnimated();
-    mesh->setLabel("mainCharacter");
-    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx")) {
-        mesh->setScale(0.003);
-        mesh->setPosition(Vertex3D(-65, 97, 141));
-        mesh->setRotation(M3::getMatrixRotationForEulerAngles(180, 90, 0));
-    }
-    Brakeza3D::get()->addObject3D(mesh, "main");
 
     auto *dungeon = new Mesh3D();
     dungeon->setLabel("scene");
@@ -54,7 +44,7 @@ void ComponentGame::startThirdPerson() {
     Brakeza3D::get()->addObject3D(dungeon, "dungeon");
 
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
-
+//
 //    auto *mainCharacter = new Mesh3D();
 //    mainCharacter->setLabel("mainCharacter");
 //    mainCharacter->setPosition(Vertex3D(-65, 97, 141));

@@ -1,5 +1,6 @@
 
 #include <string>
+#include <time.h>
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>

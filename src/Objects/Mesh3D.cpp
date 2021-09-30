@@ -200,7 +200,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
     Logging::Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
 
-    for (uint i = 0; i < pScene->mNumMaterials; i++) {
+    for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
         std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;

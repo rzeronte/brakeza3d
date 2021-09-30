@@ -3,19 +3,35 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(
-        /usr/include/
-        /usr/include/bullet
-        /usr/include/SDL2
+        C:\\Users\\eduar\\Desktop\\
+        C:\\Users\\eduar\\Desktop\\bullet
+        C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include
+        C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include\\SDL2
+
+        C:\\Users\\eduar\\Desktop\\SDL2_ttf-2.0.15\\x86_64-w64-mingw32\\include
+
+        C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include
+        C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include\\SDL2
+
+        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\include\\
+        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\build\\include
+        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\build
+        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\cmake-build-default-mingw\\include
+
+        C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include
+        C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include\\SDL2
+        C:\\Users\\eduar\\Desktop\\glm
 )
 
 add_executable(brakeza3d
+        WIN32
         main.cpp
         src/Components/ComponentCamera.cpp
         headers/Components/ComponentCamera.h
@@ -212,6 +228,10 @@ add_executable(brakeza3d
         src/2D/TextWriter.cpp headers/2D/TextWriter.h headers/Game/DoorGhost.cpp headers/Game/DoorGhost.h headers/Physics/Ghost.cpp headers/Physics/Ghost.h headers/Render/AABB3D.h src/Misc/Octree.cpp headers/Misc/Octree.h headers/Misc/Grid3D.cpp headers/Misc/Grid3D.h src/Misc/PathFinder.cpp headers/Misc/PathFinder.h)
 
 target_link_libraries(brakeza3d
+        mingw32
+        OpenGL32
+        pthread
+        SDL2main
         SDL2
         SDL2_image
         SDL2_ttf
@@ -221,6 +241,5 @@ target_link_libraries(brakeza3d
         BulletCollision
         LinearMath
         assimp
-        GL
-        pthread
+        freeGLUT
         )

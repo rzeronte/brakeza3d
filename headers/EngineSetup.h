@@ -5,7 +5,6 @@
 #include "Objects/Vertex3D.h"
 #include "Misc/Timer.h"
 #include "../imgui/imgui.h"
-#include <any>
 #include <map>
 
 class EngineSetup {
