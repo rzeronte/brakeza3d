@@ -19,13 +19,10 @@ void ComponentWindow::onUpdate() {
 }
 
 void ComponentWindow::postUpdate() {
-    //EBUFFERS->flipVideoBufferToSurface( this->screenSurface );
-
-    SDL_GL_SwapWindow(this->window);
-
     SDL_UpdateTexture(this->screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
-
     SDL_RenderCopy(renderer, this->screenTexture, nullptr, nullptr);
+    //SDL_GL_SwapWindow(this->window);
+    SDL_RenderPresent(renderer);
 }
 
 void ComponentWindow::onEnd() {
@@ -44,6 +41,7 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 }
 
 void ComponentWindow::initWindow() {
+    Logging::Log("Initializating ComponentWindow...", "INFO");
 
     //Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -51,7 +49,9 @@ void ComponentWindow::initWindow() {
         exit(-1);
     } else {
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
@@ -62,7 +62,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
         );
 
         if (window == nullptr) {
@@ -71,8 +71,9 @@ void ComponentWindow::initWindow() {
         } else {
             contextOpenGL = SDL_GL_CreateContext(window);
             screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
+
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
             screenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                                               SDL_TEXTUREACCESS_STATIC,
