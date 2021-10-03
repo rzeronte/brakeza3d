@@ -1,5 +1,5 @@
 
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "../../headers/2D/TextWriter.h"
 #include "../../headers/Misc/Tools.h"
 #include "../../headers/Render/Logging.h"
