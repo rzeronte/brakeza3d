@@ -1,5 +1,5 @@
 
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 #include <utility>
 #include "../../headers/2D/WeaponAnimation.h"

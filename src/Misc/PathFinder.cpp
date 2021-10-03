@@ -1,5 +1,5 @@
-#include <SDL_surface.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_image.h>
 #include "../../headers/Misc/PathFinder.h"
 #include "../../headers/Misc/Color.h"
 #include "../../headers/EngineSetup.h"

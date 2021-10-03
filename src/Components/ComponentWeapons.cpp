@@ -1,7 +1,5 @@
 
-#include <SDL_image.h>
-
-#include <utility>
+#include <SDL2/SDL_image.h>
 #include "../../headers/Components/ComponentWeapons.h"
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"

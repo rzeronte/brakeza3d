@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 4/3/21.
-//
 
 #include "Grid3D.h"
 #include "../EngineSetup.h"
@@ -8,7 +5,7 @@
 #include "Tools.h"
 #include <iostream>
 #include <fstream>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 Grid3D::Grid3D(std::vector<Triangle *> *triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ,
                EmptyStrategies strategy) {

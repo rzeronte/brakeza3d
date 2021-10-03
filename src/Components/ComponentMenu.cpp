@@ -1,5 +1,5 @@
 
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "../../headers/Components/ComponentMenu.h"
 #include "../../headers/Brakeza3D.h"
 

@@ -1,4 +1,4 @@
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include "../../headers/Components/ComponentSound.h"
 #include "../../headers/Misc/cJSON.h"
 

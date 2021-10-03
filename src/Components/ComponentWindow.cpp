@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "../../headers/Components/ComponentWindow.h"
 
 ComponentWindow::ComponentWindow() {
@@ -49,7 +49,7 @@ void ComponentWindow::initWindow() {
         exit(-1);
     } else {
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -62,7 +62,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
 
         if (window == nullptr) {
