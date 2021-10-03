@@ -3,8 +3,8 @@ project(brakeza3d)
 
 set(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra ")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${brakeda3d_SOURCE_DIR}/cmake")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -80,29 +80,6 @@ add_executable(brakeza3d
         src/Render/M3.cpp
         headers/Render/M3.h
 
-        imgui/imconfig.h
-        imgui/imgui.h
-        imgui/imgui.cpp
-        imgui/imgui_demo.cpp
-        imgui/imgui_draw.cpp
-        imgui/imgui_internal.h
-        imgui/imgui_widgets.cpp
-        imgui/imstb_rectpack.h
-        imgui/imstb_textedit.h
-        imgui/imstb_truetype.h
-
-        imgui/examples/imgui_impl_sdl.h
-        imgui/examples/imgui_impl_sdl.cpp
-        imgui/examples/imgui_impl_opengl2.h
-        imgui/examples/imgui_impl_opengl2.cpp
-
-        headers/GUI/GUI.h
-        headers/GUI/GUI_Menu.h
-        headers/GUI/GUI_Objects3D.h
-        headers/GUI/GUIManager.h
-        headers/GUI/GUI_Lights.h
-        headers/GUI/GUI_Tiles.h
-        headers/GUI/GUI_Weapons.h
         src/Render/Logging.cpp
 
         headers/Render/Tile.h
@@ -121,7 +98,6 @@ add_executable(brakeza3d
 
         src/Render/BSPMap.cpp
         headers/Render/BSPMap.h
-        headers/GUI/GUI_Camera.h
         src/Physics/Mesh3DBody.cpp
         headers/Physics/Mesh3DBody.h
         src/Render/PhysicsDebugDraw.cpp
