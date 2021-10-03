@@ -1,6 +1,5 @@
 #include "../../headers/Components/ComponentInput.h"
 #include "../../headers/ComponentsManager.h"
-#include "../../imgui/examples/imgui_impl_sdl.h"
 
 ComponentInput::ComponentInput() {
     setEnabled(true);
@@ -28,8 +27,6 @@ void ComponentInput::onEnd() {
 }
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
-    // Core
-    ImGui_ImplSDL2_ProcessEvent(e);
     updateKeyboardMapping();
     updateMouseStates(e);
     handleWindowEvents(e, finish);
@@ -41,9 +38,6 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
 
 
 void ComponentInput::handleMouse(SDL_Event *event) {
-    ImGuiIO &io = ImGui::GetIO();
-    if (io.WantCaptureMouse) return;
-
     // Camera rotation
     if (MouseMotion && MousePressed) {
         MouseMotion = false;

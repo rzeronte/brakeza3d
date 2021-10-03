@@ -10,7 +10,6 @@
 #include "Component.h"
 #include "ComponentWeapons.h"
 #include "ComponentWindow.h"
-#include "../GUI/GUIManager.h"
 #include "../2D/TextWriter.h"
 
 class ComponentHUD : public Component {

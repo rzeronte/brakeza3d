@@ -43,8 +43,6 @@ void LightPoint3D::setColor(int r, int g, int b) {
     auto newColor = (Uint32) (((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff));
 
     LightPoint3D::color = newColor;
-
-    this->imgui_color = ImColor(r, g, b, 255);
 }
 
 Uint32 LightPoint3D::mixColor(Uint32 c, Vertex3D Q) {

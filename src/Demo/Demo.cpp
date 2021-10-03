@@ -1,6 +1,7 @@
 #include "../../headers/Demo/Demo.h"
 #include "../../headers/Objects/LightPoint3D.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Objects/Decal.h"
 
 Demo::Demo() {
     auto *lp1 = new LightPoint3D();

@@ -25,11 +25,6 @@ EngineSetup::EngineSetup() {
     LIGHT_PATTERNS[9] = "aaaaaaaazzzzzzzz"; // 9 SLOW STROBE (fourth variety)
     LIGHT_PATTERNS[10] = "mmamammmmammamamaaamammma"; // 10 FLUORESCENT FLICKER
     LIGHT_PATTERNS[11] = "abcdefghijklmnopqrrqponmlkjihgfedcba"; // 11 SLOW PULSE NOT FADE TO BLACK
-
-    FOG_IMGUI_COLOR.x = Tools::getRedValueFromColor(this->FOG_COLOR);
-    FOG_IMGUI_COLOR.y = Tools::getGreenValueFromColor(this->FOG_COLOR);
-    FOG_IMGUI_COLOR.z = Tools::getBlueValueFromColor(this->FOG_COLOR);
-
 }
 
 void EngineSetup::setResolution(int w, int h) {

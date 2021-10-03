@@ -5,7 +5,6 @@
 #include "Components/Component.h"
 #include "Components/ComponentCamera.h"
 #include "Components/ComponentCollisions.h"
-#include "GUI/GUIManager.h"
 #include "Components/ComponentBSP.h"
 #include "Components/ComponentHUD.h"
 #include "Components/ComponentGUI.h"

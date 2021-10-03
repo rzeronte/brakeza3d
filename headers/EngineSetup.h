@@ -4,7 +4,6 @@
 #include "Misc/Color.h"
 #include "Objects/Vertex3D.h"
 #include "Misc/Timer.h"
-#include "../imgui/imgui.h"
 #include <map>
 
 class EngineSetup {
@@ -54,7 +53,6 @@ public:
     float FOG_DISTANCE = 1000;
     float FOG_INTENSITY = 1;
     Uint32 FOG_COLOR = Color::FOGDefault();
-    ImVec4 FOG_IMGUI_COLOR;
     float FRUSTUM_FARPLANE_DISTANCE = 1250;
     float HORIZONTAL_FOV = 90;
 

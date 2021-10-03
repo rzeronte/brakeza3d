@@ -10,6 +10,7 @@
 #include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
 #include "../EngineBuffers.h"
+#include "../Objects/Decal.h"
 
 class CollisionResolverBetweenProjectileAndNPCEnemy : public CollisionResolver {
 

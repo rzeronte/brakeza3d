@@ -3,7 +3,6 @@
 
 
 #include "Component.h"
-#include "../GUI/GUIManager.h"
 
 class ComponentGUI : public Component {
 public:
@@ -24,7 +23,6 @@ public:
     SDL_Window *window{};
     SDL_Renderer *renderer{};
     SDL_GLContext *contextOpenGL{};
-    GUIManager *managerGUI;
 
     bool &finish;
 
@@ -39,8 +37,6 @@ public:
     SDL_GLContext *getContextOpenGl() const;
 
     void setContextOpenGl(SDL_GLContext *contextOpenGl);
-
-    GUIManager *getManagerGUI() const;
 
     void setFinish(bool &finish);
 };

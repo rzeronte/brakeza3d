@@ -8,6 +8,7 @@
 #include "../Render/Logging.h"
 #include "../Game/NPCEnemyPartBody.h"
 #include "../Brakeza3D.h"
+#include "../Objects/Decal.h"
 
 class CollisionResolverBetweenProjectileAndBSPMap : public CollisionResolver {
 public:

@@ -8,6 +8,7 @@
 #include "../../headers/Render/Maths.h"
 #include "../../headers/ComponentsManager.h"
 #include "../../headers/Brakeza3D.h"
+#include "../../headers/Objects/Decal.h"
 
 Triangle::Triangle() {
     texture = nullptr;

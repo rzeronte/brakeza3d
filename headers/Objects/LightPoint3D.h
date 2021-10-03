@@ -4,7 +4,6 @@
 #include "Object3D.h"
 #include "../Render/Frustum.h"
 #include "../Components/Camera3D.h"
-#include "../../imgui/imgui.h"
 
 class LightPoint3D : public Object3D {
 public:
@@ -30,8 +29,6 @@ public:
     Camera3D *cam;
     float *shadowMappingBuffer;
     int sizeBuffer;
-
-    ImVec4 imgui_color;
 
     void setColor(int, int, int);
 

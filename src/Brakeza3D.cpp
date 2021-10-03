@@ -65,7 +65,6 @@ void Brakeza3D::start() {
 }
 
 void Brakeza3D::mainLoop() {
-    ImGuiIO &io = ImGui::GetIO();
     SDL_Event e;
 
     engineTimer.start();

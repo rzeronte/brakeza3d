@@ -5,6 +5,7 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../Render/Logging.h"
 #include <cstring>
+#include <cassert>
 
 #define NUM_BONES_PER_VERTEX 6
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
