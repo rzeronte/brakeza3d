@@ -2,36 +2,26 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${Brakeza3D_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#include_directories(
-#        C:\\Users\\eduar\\Desktop\\
-#        C:\\Users\\eduar\\Desktop\\bullet
-#        C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include
-#        C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include\\SDL2
-#
-#        C:\\Users\\eduar\\Desktop\\SDL2_ttf-2.0.15\\x86_64-w64-mingw32\\include
-#
-#        C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include
-#        C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include\\SDL2
-#
-#        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\include\\
-#        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\build\\include
-#        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\build
-#        C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\cmake-build-default-mingw\\include
-#
-#        C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include
-#        C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include\\SDL2
-#        C:\\Users\\eduar\\Desktop\\glm
-#)
-
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_mixer REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(Bullet REQUIRED)
+find_package(Assimp REQUIRED)
 
 include_directories(
+        ${SDL2_INCLUDE_DIRS}
+        ${SDL2_IMAGE_INCLUDE_DIRS}
+        ${SDL_MIXER_INCLUDE_DIRS}
+        ${SDL_TTF_INCLUDE_DIRS}
+        ${BULLET_INCLUDE_DIRS}
+        ${assimp_INCLUDE_DIRS}
         /usr/include/bullet
 )
 
@@ -226,18 +216,14 @@ if (WIN32)
             mingw32
             SDL2main
     )
-
 endif (WIN32)
 
 target_link_libraries(Brakeza3D
         pthread
-        SDL2
-        SDL2_image
-        SDL2_ttf
-        SDL2_mixer
-        BulletSoftBody
-        BulletDynamics
-        BulletCollision
-        LinearMath
-        assimp
+        ${SDL2_LIBRARIES}
+        ${SDL2_IMAGE_LIBRARIES}
+        ${SDL2_TTF_LIBRARIES}
+        ${SDL2_MIXER_LIBRARIES}
+        ${BULLET_LIBRARIES}
+        ${assimp_LIBRARIES}
         )
