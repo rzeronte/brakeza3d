@@ -1,4 +1,4 @@
-#include "../../headers/Misc/Timer.h"
+#include "../../include/Misc/Timer.h"
 
 Timer::Timer() {
     //Initialize the variables

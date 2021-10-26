@@ -4,9 +4,9 @@
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Render/Logging.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 

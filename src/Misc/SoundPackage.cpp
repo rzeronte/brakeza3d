@@ -1,6 +1,6 @@
 
 #include <cassert>
-#include "../../headers/Misc/SoundPackage.h"
+#include "../../include/Misc/SoundPackage.h"
 
 void SoundPackage::addItem(const std::string &srcSound, std::string label, SoundPackageItemType type) {
     auto *item = new SoundPackageItem();

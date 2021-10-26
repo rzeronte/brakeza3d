@@ -1,12 +1,12 @@
-#include "../../headers/Components/ComponentInput.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Components/ComponentInput.h"
+#include "../../include/ComponentsManager.h"
 
 ComponentInput::ComponentInput() {
     setEnabled(true);
 }
 
 void ComponentInput::onStart() {
-    std::cout << "ComponentInput onStart" << std::endl;
+    Logging::Log("ComponentInput onStart", "ComponentInput");
 }
 
 void ComponentInput::preUpdate() {

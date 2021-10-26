@@ -1,10 +1,10 @@
-#include "../../headers/Components/ComponentCollisions.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
+#include "../../include/Components/ComponentCollisions.h"
+#include "../../include/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
 
 ComponentCollisions::ComponentCollisions() = default;
 
 void ComponentCollisions::onStart() {
-    Logging::Log("ComponentCollisions onStart", "Collisions");
+    Logging::Log("ComponentCollisions onStart", "ComponentCollisions");
 }
 
 void ComponentCollisions::preUpdate() {

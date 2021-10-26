@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../../headers/Render/M3.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Maths.h"
+#include "../../include/Render/M3.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Maths.h"
 
 M3::M3() {
     setMatrixIdentity();

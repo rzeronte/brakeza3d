@@ -1,5 +1,5 @@
-#include "../../headers/Render/Frustum.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Render/Frustum.h"
+#include "../../include/EngineSetup.h"
 
 Frustum::Frustum() = default;
 

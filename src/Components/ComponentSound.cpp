@@ -1,13 +1,13 @@
 #include <SDL2/SDL_mixer.h>
-#include "../../headers/Components/ComponentSound.h"
-#include "../../headers/Misc/cJSON.h"
+#include "../../include/Components/ComponentSound.h"
+#include "../../include/Misc/cJSON.h"
 
 ComponentSound::ComponentSound() {
     initSoundSystem();
 }
 
 void ComponentSound::onStart() {
-    std::cout << "ComponentSound onStart" << std::endl;
+    Logging::Log("ComponentSound onStart", "ComponentSound");
     loadSoundsJSON();
 }
 

@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include "../../headers/Components/ComponentWindow.h"
+#include "../../include/Components/ComponentWindow.h"
 
 ComponentWindow::ComponentWindow() {
     this->initWindow();
@@ -7,7 +7,7 @@ ComponentWindow::ComponentWindow() {
 }
 
 void ComponentWindow::onStart() {
-    std::cout << "ComponentWindow onStart" << std::endl;
+    Logging::Log("ComponentWindow onStart", "ComponentWindow");
 }
 
 void ComponentWindow::preUpdate() {

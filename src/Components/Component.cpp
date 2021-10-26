@@ -1,4 +1,4 @@
-#include "../../headers/Components/Component.h"
+#include "../../include/Components/Component.h"
 
 Component::Component() : SETUP(EngineSetup::getInstance()), BUFFERS(EngineBuffers::getInstance()) {
 }

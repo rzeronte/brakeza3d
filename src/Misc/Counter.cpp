@@ -1,6 +1,6 @@
 
-#include "../../headers/Misc/Counter.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Misc/Counter.h"
+#include "../../include/Brakeza3D.h"
 
 Counter::Counter() {
     this->timer = Brakeza3D::get()->getTimer();

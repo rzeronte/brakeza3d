@@ -1,6 +1,6 @@
 #include <SDL2/SDL_image.h>
-#include "../../headers/Misc/TextureAtlas.h"
-#include "../../headers/Render/Logging.h"
+#include "../../include/Misc/TextureAtlas.h"
+#include "../../include/Render/Logging.h"
 
 
 TextureAtlas::TextureAtlas(int totalWidth, int totalHeight) :

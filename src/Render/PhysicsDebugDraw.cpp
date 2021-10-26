@@ -1,5 +1,5 @@
-#include "../../headers/Render/PhysicsDebugDraw.h"
-#include "../../headers/Render/Drawable.h"
+#include "../../include/Render/PhysicsDebugDraw.h"
+#include "../../include/Render/Drawable.h"
 
 PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam) {
     this->cam = cam;

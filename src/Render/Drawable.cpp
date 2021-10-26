@@ -1,10 +1,10 @@
 
 #include <utility>
 
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/EngineBuffers.h"
+#include "../../include/Brakeza3D.h"
 
 void Drawable::drawBox2D(SDL_Rect r) {
     int x = r.x;

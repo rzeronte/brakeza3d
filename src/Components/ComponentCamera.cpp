@@ -1,15 +1,14 @@
 
-#include "../../headers/Components/ComponentCamera.h"
-#include "../../headers/ComponentsManager.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Components/ComponentCamera.h"
+#include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 ComponentCamera::ComponentCamera() {
     this->camera = new Camera3D();
 }
 
 void ComponentCamera::onStart() {
-
-    std::cout << "ComponentCamera onStart" << std::endl;
+    Logging::Log("ComponentCamera onStart", "ComponentCamera");
 }
 
 void ComponentCamera::preUpdate() {
