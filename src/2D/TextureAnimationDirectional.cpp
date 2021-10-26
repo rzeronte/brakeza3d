@@ -1,8 +1,8 @@
 
-#include "../../headers/2D/TextureAnimationDirectional.h"
+#include "../../include/2D/TextureAnimationDirectional.h"
 
 #include <utility>
-#include "../../headers/EngineSetup.h"
+#include "../../include/EngineSetup.h"
 
 TextureAnimationDirectional::TextureAnimationDirectional() {
     for (int d = 0; d <= 8; d++) {

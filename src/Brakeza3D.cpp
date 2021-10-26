@@ -1,5 +1,5 @@
 
-#include "../headers/Brakeza3D.h"
+#include "../include/Brakeza3D.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 

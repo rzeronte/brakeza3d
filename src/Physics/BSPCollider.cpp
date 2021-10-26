@@ -1,5 +1,5 @@
 #include "BSPCollider.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/ComponentsManager.h"
 
 static inline short LittleShort(short s) { return s; }
 

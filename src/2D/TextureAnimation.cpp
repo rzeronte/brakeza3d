@@ -1,8 +1,8 @@
 
 #include <utility>
 
-#include "../../headers/2D/TextureAnimation.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/2D/TextureAnimation.h"
+#include "../../include/EngineSetup.h"
 
 TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false) {
     for (auto & frame : this->frames) {

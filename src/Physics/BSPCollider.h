@@ -2,9 +2,9 @@
 #define BRAKEDA3D_BSPCOLLIDER_H
 
 #include <cmath>
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/BSPMap.h"
-#include "../../headers/Misc/Counter.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Render/BSPMap.h"
+#include "../../include/Misc/Counter.h"
 
 typedef float vec3_t[3];
 

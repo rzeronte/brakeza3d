@@ -1,7 +1,7 @@
 
 #include <SDL2/SDL_image.h>
-#include "../../headers/Components/ComponentMenu.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Components/ComponentMenu.h"
+#include "../../include/Brakeza3D.h"
 
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
@@ -12,6 +12,7 @@ ComponentMenu::ComponentMenu() {
 }
 
 void ComponentMenu::onStart() {
+    Logging::Log("ComponentMenu onStart", "ComponentMenu");
     loadMenuOptions();
 }
 

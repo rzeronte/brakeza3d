@@ -2,9 +2,9 @@
 // Created by darkhead on 29/12/19.
 //
 
-#include "../../headers/Physics/BillboardBody.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Physics/BillboardBody.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/ComponentsManager.h"
 
 void BillboardBody::integrate() {
     if (this->mass == 0) {

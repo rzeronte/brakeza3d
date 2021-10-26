@@ -1,4 +1,4 @@
-#include "../../headers/Game/ItemHealthGhost.h"
+#include "../../include/Game/ItemHealthGhost.h"
 
 void ItemHealthGhost::setAid(float aid) {
     ItemHealthGhost::aid = aid;

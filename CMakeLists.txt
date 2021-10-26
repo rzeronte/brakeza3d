@@ -4,16 +4,26 @@ project(Brakeza3D)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(Bullet REQUIRED)
-find_package(Assimp REQUIRED)
+set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
+set(SDL2_IMAGE_INCLUDE_DIRS /usr/include/SDL2)
+set(SDL_MIXER_INCLUDE_DIRS /usr/include/SDL2)
+set(SDL_TTF_INCLUDE_DIRS /usr/include/SDL2)
+set(BULLET_INCLUDE_DIRS /usr/include/bullet)
+set(ASSIMP_INCLUDE_DIRS /usr/include/assimp)
+set(GLM_INCLUDE_DIRS /usr/include/glm)
+
+if (WIN32)
+    set(SDL2_INCLUDE_DIRS C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include\\)
+    set(SDL2_IMAGE_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include)
+    set(SDL_MIXER_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include)
+    set(SDL_TTF_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_ttf-2.0.15\\x86_64-w64-mingw32\\include)
+    set(BULLET_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\bullet)
+    set(ASSIMP_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\cmake-build-default-mingw\\include)
+    set(GLM_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\glm)
+endif (WIN32)
 
 include_directories(
         ${SDL2_INCLUDE_DIRS}
@@ -21,194 +31,187 @@ include_directories(
         ${SDL_MIXER_INCLUDE_DIRS}
         ${SDL_TTF_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
-        ${assimp_INCLUDE_DIRS}
-        /usr/include/bullet
+        ${ASSIMP_INCLUDE_DIRS}
+        ${GLM_INCLUDE_DIRS}
 )
 
 add_executable(Brakeza3D
-        #        WIN32
+        #WIN32
         main.cpp
         src/Components/ComponentCamera.cpp
-        headers/Components/ComponentCamera.h
+        include/Components/ComponentCamera.h
         src/Objects/Mesh3D.cpp
-        headers/Objects/Mesh3D.h
+        include/Objects/Mesh3D.h
         src/Objects/Triangle3D.cpp
-        headers/Objects/Triangle3D.h
+        include/Objects/Triangle3D.h
         src/Objects/Vertex3D.cpp
-        headers/Objects/Vertex3D.h
+        include/Objects/Vertex3D.h
         src/Objects/Vector3D.cpp
-        headers/Objects/Vector3D.h
+        include/Objects/Vector3D.h
         src/Objects/Point2D.cpp
-        headers/Objects/Point2D.h
+        include/Objects/Point2D.h
         src/Misc/Tools.cpp
-        headers/Misc/Tools.h
+        include/Misc/Tools.h
         src/Objects/Line2D.cpp
-        headers/Objects/Line2D.h
-        headers/Misc/Color.h
-        headers/OpenCL/OCLTriangle.h
-        headers/EngineSetup.h
+        include/Objects/Line2D.h
+        include/Misc/Color.h
+        include/OpenCL/OCLTriangle.h
+        include/EngineSetup.h
         src/EngineSetup.cpp
         src/Render/Texture.cpp
-        headers/Render/Texture.h
-        headers/EngineBuffers.h
+        include/Render/Texture.h
+        include/EngineBuffers.h
         src/EngineBuffers.cpp
         src/Render/Frustum.cpp
-        headers/Render/Frustum.h
+        include/Render/Frustum.h
         src/Render/Plane.cpp
-        headers/Render/Plane.h
+        include/Render/Plane.h
         src/Objects/Object3D.cpp
-        headers/Objects/Object3D.h
+        include/Objects/Object3D.h
         src/Misc/Timer.cpp
-        headers/Misc/Timer.h
-        headers/Render/Transforms.h
+        include/Misc/Timer.h
+        include/Render/Transforms.h
         src/Render/Transforms.cpp
         src/Render/Drawable.cpp
-        headers/Render/Drawable.h
+        include/Render/Drawable.h
         src/Objects/LightPoint3D.cpp
-        headers/Objects/LightPoint3D.h
-
+        include/Objects/LightPoint3D.h
         src/Misc/TextureAtlas.cpp
-        headers/Misc/TextureAtlas.h
-
+        include/Misc/TextureAtlas.h
         src/Render/Billboard.cpp
-        headers/Render/Billboard.h
+        include/Render/Billboard.h
         src/Render/M3.cpp
-        headers/Render/M3.h
-
+        include/Render/M3.h
         src/Render/Logging.cpp
-
-        headers/Render/Tile.h
-
-        headers/Render/Logging.h
+        include/Render/Tile.h
+        include/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp
-        headers/Objects/SpriteDirectional3D.h
+        include/Objects/SpriteDirectional3D.h
         src/2D/TextureAnimationDirectional.cpp
-        headers/2D/TextureAnimationDirectional.h
+        include/2D/TextureAnimationDirectional.h
         src/Objects/Sprite3D.cpp
-        headers/Objects/Sprite3D.h
+        include/Objects/Sprite3D.h
         src/2D/TextureAnimation.cpp
-        headers/2D/TextureAnimation.h
+        include/2D/TextureAnimation.h
         src/Render/Maths.cpp
-        headers/Render/Maths.h
-
+        include/Render/Maths.h
         src/Render/BSPMap.cpp
-        headers/Render/BSPMap.h
+        include/Render/BSPMap.h
         src/Physics/Mesh3DBody.cpp
-        headers/Physics/Mesh3DBody.h
+        include/Physics/Mesh3DBody.h
         src/Render/PhysicsDebugDraw.cpp
-        headers/Render/PhysicsDebugDraw.h
+        include/Render/PhysicsDebugDraw.h
         src/Physics/Mesh3DGhost.cpp
-        headers/Physics/Mesh3DGhost.h
-        headers/Misc/cJSON.h
+        include/Physics/Mesh3DGhost.h
+        include/Misc/cJSON.h
         src/Misc/cJSON.c
         src/Physics/SpriteDirectional3DBody.cpp
-        headers/Physics/SpriteDirectional3DBody.h
+        include/Physics/SpriteDirectional3DBody.h
         src/Components/ComponentWeapons.cpp
-        headers/Components/ComponentWeapons.h
+        include/Components/ComponentWeapons.h
         src/2D/WeaponAnimation.cpp
-        headers/2D/WeaponAnimation.h
+        include/2D/WeaponAnimation.h
         src/Game/WeaponType.cpp
-        headers/Game/WeaponType.h
+        include/Game/WeaponType.h
         src/Components/ComponentMenu.cpp
-        headers/Components/ComponentMenu.h
+        include/Components/ComponentMenu.h
         src/2D/MenuOption.cpp
-        headers/2D/MenuOption.h
+        include/2D/MenuOption.h
         src/Game/Enemy.cpp
-        headers/Game/Enemy.h
+        include/Game/Enemy.h
         src/Brakeza3D.cpp
-        headers/Brakeza3D.h
+        include/Brakeza3D.h
         src/Components/ComponentCollisions.cpp
-        headers/Components/ComponentCollisions.h
+        include/Components/ComponentCollisions.h
         src/Game/NPCEnemyBody.cpp
-        headers/Game/NPCEnemyBody.h
+        include/Game/NPCEnemyBody.h
         src/Collisions/CollisionResolver.cpp
-        headers/Collisions/CollisionResolver.h
+        include/Collisions/CollisionResolver.h
         src/Game/Projectile3DBody.cpp
-        headers/Game/Projectile3DBody.h
-        headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h
-        headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h
-        headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
-        headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
-        headers/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
-        headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h
+        include/Game/Projectile3DBody.h
+        include/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h
+        include/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h
+        include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
+        include/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
+        include/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
+        include/Collisions/CollisionResolverBetweenProjectileAndPlayer.h
         src/Objects/Decal.cpp
-        headers/Objects/Decal.h
+        include/Objects/Decal.h
         src/Game/NPCEnemyPartBody.cpp
-        headers/Game/NPCEnemyPartBody.h
+        include/Game/NPCEnemyPartBody.h
         src/Physics/Sprite3DBody.cpp
-        headers/Physics/Sprite3DBody.h
+        include/Physics/Sprite3DBody.h
         src/Physics/Body.cpp
-        headers/Physics/Body.h
-        headers/Objects/Cube3D.cpp
-        headers/Objects/Cube3D.h
-
-        headers/Game/Player.cpp src/Game/Player.h
-        src/Demo/Demo.cpp headers/Demo/Demo.h
+        include/Physics/Body.h
+        include/Objects/Cube3D.cpp
+        include/Objects/Cube3D.h
+        include/Game/Player.cpp src/Game/Player.h
+        src/Demo/Demo.cpp include/Demo/Demo.h
         src/Misc/Counter.cpp
-        headers/Misc/Counter.h
+        include/Misc/Counter.h
         src/Misc/TexturePackage.cpp
-        headers/Misc/TexturePackage.h
+        include/Misc/TexturePackage.h
         src/Misc/SoundPackage.cpp
-        headers/Misc/SoundPackage.h
-        headers/Misc/Parallells.h
-        headers/Misc/VariablePackage.cpp
-        headers/Misc/VariablePackage.h
+        include/Misc/SoundPackage.h
+        include/Misc/Parallells.h
+        include/Misc/VariablePackage.cpp
+        include/Misc/VariablePackage.h
         src/Physics/BillboardBody.cpp
-        headers/Physics/BillboardBody.h
+        include/Physics/BillboardBody.h
         src/Game/ItemWeaponGhost.cpp
-        headers/Game/ItemWeaponGhost.h
-        headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h
+        include/Game/ItemWeaponGhost.h
+        include/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h
         src/Game/ItemAmmoGhost.cpp
-        headers/Game/ItemAmmoGhost.h
+        include/Game/ItemAmmoGhost.h
         src/Game/ItemHealthGhost.cpp
-        headers/Game/ItemHealthGhost.h
-        headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h
-        headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h
+        include/Game/ItemHealthGhost.h
+        include/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h
+        include/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h
         src/Game/AmmoType.cpp
-        headers/Game/AmmoType.h
+        include/Game/AmmoType.h
         src/Components/Component.cpp
-        headers/Components/Component.h
+        include/Components/Component.h
         src/Components/ComponentRender.cpp
-        headers/Components/ComponentRender.h
+        include/Components/ComponentRender.h
         src/Components/ComponentWindow.cpp
-        headers/Components/ComponentWindow.h
+        include/Components/ComponentWindow.h
         src/Components/ComponentInput.cpp
-        headers/Components/ComponentInput.h
+        include/Components/ComponentInput.h
         src/Components/ComponentSound.cpp
-        headers/Components/ComponentSound.h
+        include/Components/ComponentSound.h
         src/Components/ComponentBSP.cpp
-        headers/Components/ComponentBSP.h
+        include/Components/ComponentBSP.h
         src/Objects/Camera3D.cpp
-        headers/Components/Camera3D.h
+        include/Components/Camera3D.h
         src/Components/ComponentHUD.cpp
-        headers/Components/ComponentHUD.h
+        include/Components/ComponentHUD.h
         src/ComponentsManager.cpp
-        headers/ComponentsManager.h
+        include/ComponentsManager.h
         src/Components/ComponentGUI.cpp
-        headers/Components/ComponentGUI.h
+        include/Components/ComponentGUI.h
         src/Components/ComponentGame.cpp
-        headers/Components/ComponentGame.h
+        include/Components/ComponentGame.h
         src/Components/ComponentGameInput.cpp
-        headers/Components/ComponentGameInput.h
+        include/Components/ComponentGameInput.h
         src/Objects/Mesh3DAnimated.cpp
-        headers/Objects/Mesh3DAnimated.h
+        include/Objects/Mesh3DAnimated.h
         src/Objects/Mesh3DAnimatedCollection.cpp
-        headers/Objects/Mesh3DAnimatedCollection.h
+        include/Objects/Mesh3DAnimatedCollection.h
         src/Physics/BSPCollider.cpp
         src/Physics/BSPCollider.h
         src/2D/TextWriter.cpp
-        headers/2D/TextWriter.h
-        headers/Game/DoorGhost.cpp
-        headers/Game/DoorGhost.h
-        headers/Physics/Ghost.cpp
-        headers/Physics/Ghost.h
-        headers/Render/AABB3D.h
+        include/2D/TextWriter.h
+        include/Game/DoorGhost.cpp
+        include/Game/DoorGhost.h
+        include/Physics/Ghost.cpp
+        include/Physics/Ghost.h
+        include/Render/AABB3D.h
         src/Misc/Octree.cpp
-        headers/Misc/Octree.h
-        headers/Misc/Grid3D.cpp
-        headers/Misc/Grid3D.h
+        include/Misc/Octree.h
+        include/Misc/Grid3D.cpp
+        include/Misc/Grid3D.h
         src/Misc/PathFinder.cpp
-        headers/Misc/PathFinder.h
+        include/Misc/PathFinder.h
         )
 
 if (WIN32)
@@ -220,10 +223,14 @@ endif (WIN32)
 
 target_link_libraries(Brakeza3D
         pthread
-        ${SDL2_LIBRARIES}
-        ${SDL2_IMAGE_LIBRARIES}
-        ${SDL2_TTF_LIBRARIES}
-        ${SDL2_MIXER_LIBRARIES}
-        ${BULLET_LIBRARIES}
-        ${assimp_LIBRARIES}
+        SDL2
+        SDL2_image
+        SDL2_ttf
+        SDL2_mixer
+        BulletSoftBody
+        BulletDynamics
+        BulletCollision
+        LinearMath
+        assimp
         )
+

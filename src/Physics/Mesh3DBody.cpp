@@ -1,6 +1,6 @@
 
 #include <btBulletDynamicsCommon.h>
-#include "../../headers/Physics/Mesh3DBody.h"
+#include "../../include/Physics/Mesh3DBody.h"
 
 Mesh3DBody::Mesh3DBody() {
     mass = 1.f;

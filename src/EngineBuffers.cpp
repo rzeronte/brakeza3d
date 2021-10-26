@@ -1,6 +1,6 @@
 
 #include <SDL2/SDL_surface.h>
-#include "../headers/EngineBuffers.h"
+#include "../include/EngineBuffers.h"
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 

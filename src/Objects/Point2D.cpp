@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../../headers/Objects/Point2D.h"
+#include "../../include/Objects/Point2D.h"
 
 Point2D::Point2D() = default;
 

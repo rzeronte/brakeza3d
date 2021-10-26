@@ -1,5 +1,5 @@
 
-#include "../../headers/Physics/Sprite3DBody.h"
+#include "../../include/Physics/Sprite3DBody.h"
 
 void Sprite3DBody::integrate() {
     if (this->mass == 0) {

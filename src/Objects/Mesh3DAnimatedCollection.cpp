@@ -1,7 +1,7 @@
 #include <utility>
 
-#include "../../headers/Objects/Mesh3DAnimatedCollection.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Objects/Mesh3DAnimatedCollection.h"
+#include "../../include/ComponentsManager.h"
 
 void
 Mesh3DAnimatedCollection::addAnimation(const std::string& label, const std::string& modelFilename, float scale, bool remove_at_end) {

@@ -1,6 +1,6 @@
-#include "../../headers/Misc/Octree.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Misc/Octree.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/EngineSetup.h"
 
 #define MAX_RECURSIVE_DEPTH 1
 

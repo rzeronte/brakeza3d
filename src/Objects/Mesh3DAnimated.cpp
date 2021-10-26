@@ -1,6 +1,6 @@
-#include "../../headers/Objects/Mesh3DAnimated.h"
-#include "../../headers/Brakeza3D.h"
-#include "../../headers/Render/Transforms.h"
+#include "../../include/Objects/Mesh3DAnimated.h"
+#include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
 
 
 void Mesh3DAnimated::onUpdate() {

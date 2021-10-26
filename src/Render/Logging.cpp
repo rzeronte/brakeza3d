@@ -1,8 +1,8 @@
 
 #include <utility>
 
-#include "../../headers/Render/Logging.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/EngineSetup.h"
 
 Logging *Logging::instance = nullptr;
 

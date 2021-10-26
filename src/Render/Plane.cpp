@@ -1,7 +1,7 @@
 
-#include "../../headers/Render/Plane.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Render/Plane.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/EngineSetup.h"
 
 Plane::Plane() = default;
 

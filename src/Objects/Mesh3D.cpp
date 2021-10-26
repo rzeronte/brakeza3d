@@ -1,9 +1,9 @@
 
 #include <fstream>
 #include <vector>
-#include "../../headers/Objects/Mesh3D.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Objects/Mesh3D.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 Mesh3D::Mesh3D() {
     this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];

@@ -1,11 +1,11 @@
-#include "../../headers/Components/ComponentGUI.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Components/ComponentGUI.h"
+#include "../../include/Brakeza3D.h"
 
 ComponentGUI::ComponentGUI(bool &finish) : finish(finish) {
 }
 
 void ComponentGUI::onStart() {
-    std::cout << "ComponentGUI onStart" << std::endl;
+    Logging::Log("ComponentGUI onStart", "ComponentGUI");
 
 }
 

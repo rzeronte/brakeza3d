@@ -1,6 +1,5 @@
 
-#include "../headers/EngineSetup.h"
-#include "../headers/Misc/Tools.h"
+#include "../include/EngineSetup.h"
 
 EngineSetup *EngineSetup::instance = nullptr;
 

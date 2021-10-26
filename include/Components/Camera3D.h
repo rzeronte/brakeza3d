@@ -58,9 +58,9 @@ public:
 
     void UpdateRotation(void);
 
-    void Pitch(float pitch);
+    void Pitch(float newPitch);
 
-    void Yaw(float yaw);
+    void Yaw(float newYaw);
 
     void PitchUp(void);
 
@@ -82,7 +82,7 @@ public:
 
     void makeKineticCharacter(const btTransform& transform, btConvexShape *capsule);
 
-    void consoleInfo();
+    void consoleInfo() const;
 
     btPairCachingGhostObject *getGhostObject() const;
 };

@@ -1,8 +1,8 @@
-#include "../../headers/Render/Texture.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Render/Maths.h"
+#include "../../include/Render/Texture.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/EngineBuffers.h"
+#include "../../include/Render/Maths.h"
 #include <SDL2/SDL_image.h>
 
 Texture::Texture() {

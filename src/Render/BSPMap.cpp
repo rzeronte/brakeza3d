@@ -5,12 +5,12 @@
 #include <sys/stat.h> // stat
 #include <unistd.h> // lseek, read, close
 #include <cstring>
-#include "../../headers/Render/BSPMap.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Render/BSPMap.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);

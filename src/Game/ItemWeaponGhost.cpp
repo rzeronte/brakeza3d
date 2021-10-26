@@ -1,4 +1,4 @@
-#include "../../headers/Game/ItemWeaponGhost.h"
+#include "../../include/Game/ItemWeaponGhost.h"
 
 const std::string &ItemWeaponGhost::getWeaponClassname() const {
     return weaponClassname;

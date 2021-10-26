@@ -1,7 +1,7 @@
 
-#include "../../headers/Render/Maths.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Transforms.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Transforms.h"
 
 float Maths::degreesToRadians(float angleDegrees) {
     return angleDegrees * (float) M_PI / (float) 180.0;

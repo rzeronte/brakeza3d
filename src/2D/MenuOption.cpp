@@ -1,5 +1,5 @@
 
-#include "../../headers/2D/MenuOption.h"
+#include "../../include/2D/MenuOption.h"
 
 MenuOption::MenuOption(const std::string& label, int action) {
     this->label = label;

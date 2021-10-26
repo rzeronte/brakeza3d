@@ -2,10 +2,10 @@
 #include <SDL2/SDL_image.h>
 
 #include <utility>
-#include "../../headers/2D/WeaponAnimation.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/2D/WeaponAnimation.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 WeaponAnimation::WeaponAnimation() {
     timer = new Timer();

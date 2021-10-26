@@ -1,8 +1,8 @@
 
-#include "../../headers/Objects/Sprite3D.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Objects/Sprite3D.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/ComponentsManager.h"
 
 Sprite3D::Sprite3D() {
     this->billboard = new Billboard();
@@ -14,9 +14,6 @@ Sprite3D::Sprite3D() {
 }
 
 void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int fps) {
-    Logging::Log(
-            "Loading TextureAnimation: " + animation2d + " (" + std::to_string(num_frames) + " frames)", "BILLBOARD");
-
     this->animations[this->numAnimations]->setup(animation2d, num_frames, fps);
     this->numAnimations++;
 }

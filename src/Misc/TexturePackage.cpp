@@ -1,4 +1,4 @@
-#include "../../headers/Misc/TexturePackage.h"
+#include "../../include/Misc/TexturePackage.h"
 
 void TexturePackage::addItem(const std::string &srcTexture, std::string label) {
     auto *item = new TexturePackageItem();

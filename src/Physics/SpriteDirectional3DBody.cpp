@@ -1,7 +1,7 @@
 
 #include <btBulletDynamicsCommon.h>
-#include "../../headers/Physics/SpriteDirectional3DBody.h"
-#include "../../headers/Misc/Tools.h"
+#include "../../include/Physics/SpriteDirectional3DBody.h"
+#include "../../include/Misc/Tools.h"
 
 void SpriteDirectional3DBody::integrate() {
     if (this->mass == 0) {

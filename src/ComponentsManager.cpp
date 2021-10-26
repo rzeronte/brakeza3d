@@ -1,4 +1,4 @@
-#include "../headers/ComponentsManager.h"
+#include "../include/ComponentsManager.h"
 
 ComponentsManager *ComponentsManager::instance = nullptr;
 

@@ -1,5 +1,5 @@
-#include "../../headers/Physics/Body.h"
-#include "../../headers/Misc/Tools.h"
+#include "../../include/Physics/Body.h"
+#include "../../include/Misc/Tools.h"
 
 Body::Body() {
     this->m_body = nullptr;

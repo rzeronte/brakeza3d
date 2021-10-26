@@ -2,8 +2,8 @@
 #ifndef BRAKEZA3D_PLAYER_H
 #define BRAKEZA3D_PLAYER_H
 
-#include "../../headers/Objects/Object3D.h"
-#include "../../headers/Misc/Counter.h"
+#include "../../include/Objects/Object3D.h"
+#include "../../include/Misc/Counter.h"
 
 typedef enum {
     LIVE, DEAD, GAMEOVER

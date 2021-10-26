@@ -1,21 +1,23 @@
-#include "../../headers/Components/ComponentGame.h"
-#include "../../headers/Components/ComponentCollisions.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
-#include "../../headers/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerMultiple.h"
-#include "../../headers/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
+#include "../../include/Components/ComponentGame.h"
+#include "../../include/Components/ComponentCollisions.h"
+#include "../../include/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h"
+#include "../../include/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h"
+#include "../../include/Collisions/CollisionResolverBetweenProjectileAndPlayer.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndTriggerMultiple.h"
+#include "../../include/Collisions/CollisionResolverBetweenCamera3DAndTriggerTeleport.h"
 
 ComponentGame::ComponentGame() {
     player = new Player();
 }
 
 void ComponentGame::onStart() {
+    Logging::Log("ComponentGame onStart", "ComponentGame");
+
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     SETUP->MENU_ACTIVE = true;

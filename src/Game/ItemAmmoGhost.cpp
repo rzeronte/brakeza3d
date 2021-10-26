@@ -1,4 +1,4 @@
-#include "../../headers/Game/ItemAmmoGhost.h"
+#include "../../include/Game/ItemAmmoGhost.h"
 
 int ItemAmmoGhost::getAmount() const {
     return amount;

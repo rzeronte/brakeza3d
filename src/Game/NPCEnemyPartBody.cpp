@@ -1,5 +1,5 @@
-#include "../../headers/Game/NPCEnemyPartBody.h"
-#include "../../headers/Misc/Tools.h"
+#include "../../include/Game/NPCEnemyPartBody.h"
+#include "../../include/Misc/Tools.h"
 
 btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
     this->mass = mass;

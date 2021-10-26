@@ -1,9 +1,9 @@
 
 #include <cmath>
-#include "../../headers/Objects/Vertex3D.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Maths.h"
+#include "../../include/Objects/Vertex3D.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Render/Maths.h"
 
 Vertex3D::Vertex3D(float x, float y, float z) {
     this->x = x;

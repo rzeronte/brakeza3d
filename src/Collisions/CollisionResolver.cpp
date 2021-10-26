@@ -1,10 +1,10 @@
 
-#include "../../headers/Collisions/CollisionResolver.h"
-#include "../../headers/Game/NPCEnemyBody.h"
-#include "../../headers/Game/NPCEnemyPartBody.h"
-#include "../../headers/Game/ItemWeaponGhost.h"
-#include "../../headers/Game/ItemHealthGhost.h"
-#include "../../headers/Game/ItemAmmoGhost.h"
+#include "../../include/Collisions/CollisionResolver.h"
+#include "../../include/Game/NPCEnemyBody.h"
+#include "../../include/Game/NPCEnemyPartBody.h"
+#include "../../include/Game/ItemWeaponGhost.h"
+#include "../../include/Game/ItemHealthGhost.h"
+#include "../../include/Game/ItemAmmoGhost.h"
 
 CollisionResolver::CollisionResolver(
         btPersistentManifold *contactManifold,

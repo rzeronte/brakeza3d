@@ -1,8 +1,9 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
-#include "../../headers/Components/Camera3D.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Components/Camera3D.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
 
 Camera3D::Camera3D() {
     // Establecemos el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
@@ -104,23 +105,22 @@ void Camera3D::UpdateFrustum() {
     frustum->vNBpers = Transforms::perspectiveDivision(frustum->vNBs, this);
 }
 
-void Camera3D::consoleInfo() {
-    printf("Camera Aspect Ratio: %f | HFOV: %f | VFOV: %f | NearDistance: %f | Canvas W: %f | Canvas H: %f\r\n",
-           aspectRatio,
-           horizontal_fov,
-           getVerticalFOV(),
-           getNearDistance(),
-           calcCanvasNearWidth(), calcCanvasNearHeight()
-    );
+void Camera3D::consoleInfo() const {
+    Logging::Log("Aspect ratio:" + std::to_string(aspectRatio), "CAMERA");
+    Logging::Log("Horizontal FOV:" + std::to_string(horizontal_fov), "CAMERA");
+    Logging::Log("Vertical FOV:" + std::to_string(getVerticalFOV()), "CAMERA");
+    Logging::Log("Near distance:" + std::to_string(getNearDistance()), "CAMERA");
+    Logging::Log("Canvas width:" + std::to_string(calcCanvasNearWidth()), "CAMERA");
+    Logging::Log("Canvas height:" + std::to_string(calcCanvasNearHeight()), "CAMERA");
 }
 
-void Camera3D::Pitch(float pitch) {
-    this->pitch += pitch * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
+void Camera3D::Pitch(float newPitch) {
+    this->pitch += newPitch * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
     limitPitch();
 }
 
-void Camera3D::Yaw(float yaw) {
-    this->yaw -= yaw * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
+void Camera3D::Yaw(float newYaw) {
+    this->yaw -= newYaw * EngineSetup::getInstance()->MOUSE_SENSITIVITY;
 }
 
 void Camera3D::PitchUp() {
@@ -151,7 +151,6 @@ void Camera3D::TurnLeft() {
 
 void Camera3D::StrafeRight() {
     strafe += EngineSetup::getInstance()->STRAFE_SPEED;
-
 }
 
 void Camera3D::StrafeLeft() {

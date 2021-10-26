@@ -1,14 +1,14 @@
 
 #include <SDL2/SDL_surface.h>
 #include <list>
-#include "../../headers/Objects/Triangle3D.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/ComponentsManager.h"
-#include "../../headers/Brakeza3D.h"
-#include "../../headers/Objects/Decal.h"
+#include "../../include/Objects/Triangle3D.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
+#include "../../include/Objects/Decal.h"
 
 Triangle::Triangle() {
     texture = nullptr;

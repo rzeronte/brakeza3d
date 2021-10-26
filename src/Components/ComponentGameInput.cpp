@@ -1,5 +1,5 @@
-#include "../../headers/Components/ComponentGameInput.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Components/ComponentGameInput.h"
+#include "../../include/ComponentsManager.h"
 
 
 ComponentGameInput::ComponentGameInput(Player *player) {
@@ -8,6 +8,8 @@ ComponentGameInput::ComponentGameInput(Player *player) {
 }
 
 void ComponentGameInput::onStart() {
+    Logging::Log("ComponentGameInput onStart", "ComponentGameInput");
+
     ComponentsManager::get()->getComponentInput()->setEnabled(false);
 }
 

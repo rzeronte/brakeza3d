@@ -1,13 +1,12 @@
-#include "../../headers/Components/ComponentBSP.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Components/ComponentBSP.h"
+#include "../../include/ComponentsManager.h"
 
 ComponentBSP::ComponentBSP() {
     bsp = new BSPMap();
 }
 
 void ComponentBSP::onStart() {
-    std::cout << "ComponentBSP onStart" << std::endl;
-
+    Logging::Log("ComponentBSP onStart", "ComponentBSP");
 }
 
 void ComponentBSP::initMap(const char *bspFilename) {

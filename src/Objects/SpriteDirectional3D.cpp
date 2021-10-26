@@ -1,9 +1,9 @@
 
-#include "../../headers/Objects/SpriteDirectional3D.h"
-#include "../../headers/Render/Drawable.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Objects/SpriteDirectional3D.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/ComponentsManager.h"
 
 SpriteDirectional3D::SpriteDirectional3D() {
     this->billboard = new Billboard();
@@ -32,10 +32,6 @@ void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam) {
 void
 SpriteDirectional3D::addAnimationDirectional2D(const std::string& animation_folder, int numFrames, int fps, bool zeroDirection,
                                                int maxTimes) {
-    Logging::Log(
-            "Loading TextureAnimationDirectional: " + animation_folder + " (" + std::to_string(numFrames) +
-            " animations)", "BILLBOARD");
-
     this->animations[this->numAnimations]->setup(animation_folder, numFrames, fps, maxTimes);
 
     if (!zeroDirection) {
@@ -51,7 +47,7 @@ SpriteDirectional3D::addAnimationDirectional2D(const std::string& animation_fold
 void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam) {
     if (numAnimations == 0) return;
 
-    float enemyAngle = (int) Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
+    float enemyAngle = Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
     int direction = getDirectionForAngle(enemyAngle);
 
     counterAnimations->update();

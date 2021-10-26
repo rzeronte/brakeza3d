@@ -1,7 +1,7 @@
 
-#include "../../headers/Render/Billboard.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/EngineSetup.h"
+#include "../../include/Render/Billboard.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/EngineSetup.h"
 
 Billboard::Billboard() {
     this->texture = new Texture();

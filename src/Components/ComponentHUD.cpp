@@ -1,12 +1,12 @@
-#include "../../headers/Components/ComponentHUD.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Components/ComponentHUD.h"
+#include "../../include/ComponentsManager.h"
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
 }
 
 void ComponentHUD::onStart() {
-    std::cout << "ComponentHUD onStart" << std::endl;
+    Logging::Log("ComponentHUD onStart", "ComponentHUD");
 
     loadImages();
 

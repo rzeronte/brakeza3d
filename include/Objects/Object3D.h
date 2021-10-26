@@ -4,7 +4,7 @@
 #include <string>
 #include "Vertex3D.h"
 #include "Vector3D.h"
-#include "../../headers/Render/M3.h"
+#include "../../include/Render/M3.h"
 
 class Object3D {
     Vertex3D position;

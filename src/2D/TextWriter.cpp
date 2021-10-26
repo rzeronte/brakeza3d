@@ -1,9 +1,9 @@
 
 #include <SDL2/SDL_image.h>
-#include "../../headers/2D/TextWriter.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Logging.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/2D/TextWriter.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
     if (!Tools::fileExists(concharsFile)) {

@@ -1,10 +1,10 @@
-#include "../../headers/Components/ComponentRender.h"
-#include "../../headers/ComponentsManager.h"
-#include "../../headers/Misc/Parallells.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Components/ComponentRender.h"
+#include "../../include/ComponentsManager.h"
+#include "../../include/Misc/Parallells.h"
+#include "../../include/Brakeza3D.h"
 
 void ComponentRender::onStart() {
-    std::cout << "ComponentRender onStart" << std::endl;
+    Logging::Log("ComponentRender onStart", "ComponentRender");
     initTiles();
 }
 

@@ -1,8 +1,8 @@
 
-#include "../../headers/Objects/LightPoint3D.h"
-#include "../../headers/Render/Billboard.h"
-#include "../../headers/EngineBuffers.h"
-#include "../../headers/Render/Maths.h"
+#include "../../include/Objects/LightPoint3D.h"
+#include "../../include/Render/Billboard.h"
+#include "../../include/EngineBuffers.h"
+#include "../../include/Render/Maths.h"
 
 LightPoint3D::LightPoint3D() {
     cam = new Camera3D();

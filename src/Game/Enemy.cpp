@@ -1,5 +1,5 @@
 
-#include "../../headers/Game/Enemy.h"
+#include "../../include/Game/Enemy.h"
 
 Enemy::Enemy() : startStamina(100), stamina(0), dead(false), damage(0), range(0), speed(0), cadence(0) {
     this->stamina = this->startStamina;

@@ -1,5 +1,5 @@
 
-#include "../../headers/Game/Projectile3DBody.h"
+#include "../../include/Game/Projectile3DBody.h"
 
 Projectile3DBody::Projectile3DBody() : fromEnemy(false), damage(0), damageRadius(0) {
 

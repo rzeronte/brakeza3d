@@ -1,8 +1,8 @@
 
-#include "../../headers/Objects/Decal.h"
-#include "../../headers/Render/Transforms.h"
-#include "../../headers/Objects/SpriteDirectional3D.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Objects/Decal.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/Objects/SpriteDirectional3D.h"
+#include "../../include/ComponentsManager.h"
 
 Decal::Decal() : sprite(new Sprite3D()) {
     setDecal(true);

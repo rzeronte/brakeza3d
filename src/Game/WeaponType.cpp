@@ -2,8 +2,8 @@
 #include <SDL2/SDL_image.h>
 
 #include <utility>
-#include "../../headers/Game/WeaponType.h"
-#include "../../headers/Brakeza3D.h"
+#include "../../include/Game/WeaponType.h"
+#include "../../include/Brakeza3D.h"
 
 WeaponType::WeaponType() : available(true) {
 }

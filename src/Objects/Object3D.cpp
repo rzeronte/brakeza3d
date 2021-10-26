@@ -1,9 +1,9 @@
 
 #include <iostream>
-#include "../../headers/Objects/Object3D.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Objects/Object3D.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/ComponentsManager.h"
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
     followCamera = false;

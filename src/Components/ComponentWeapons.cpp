@@ -1,14 +1,15 @@
 
 #include <SDL2/SDL_image.h>
-#include "../../headers/Components/ComponentWeapons.h"
-#include "../../headers/Render/Maths.h"
-#include "../../headers/ComponentsManager.h"
+#include "../../include/Components/ComponentWeapons.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/ComponentsManager.h"
 
 ComponentWeapons::ComponentWeapons() {
     this->currentWeaponIndex = SETUP->WeaponsTypes::EMPTY;
 }
 
 void ComponentWeapons::onStart() {
+    Logging::Log("ComponentWeapons onStart", "ComponentWeapons");
 }
 
 void ComponentWeapons::preUpdate() {

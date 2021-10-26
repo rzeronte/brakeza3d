@@ -1,10 +1,10 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_image.h>
-#include "../../headers/Misc/PathFinder.h"
-#include "../../headers/Misc/Color.h"
-#include "../../headers/EngineSetup.h"
-#include "../../headers/Misc/Tools.h"
-#include "../../headers/Render/Logging.h"
+#include "../../include/Misc/PathFinder.h"
+#include "../../include/Misc/Color.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Logging.h"
 
 PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY) {
     grid = new int *[this->sizeY];

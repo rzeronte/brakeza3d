@@ -1,4 +1,4 @@
-#include "../../headers/Game/AmmoType.h"
+#include "../../include/Game/AmmoType.h"
 
 AmmoType::AmmoType() {
     this->amount = 0;
