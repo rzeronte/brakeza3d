@@ -212,6 +212,15 @@ add_executable(Brakeza3D
         include/Misc/Grid3D.h
         src/Misc/PathFinder.cpp
         include/Misc/PathFinder.h
+
+        console/Command.cpp
+        console/Command.h
+        console/CommandArgument.cpp
+        console/CommandArgument.h
+        console/Prompt.cpp
+        console/Prompt.h
+        console/ConsoleManager.cpp
+        console/ConsoleManager.h
         )
 
 if (WIN32)
