@@ -103,7 +103,7 @@ void ComponentGame::onUpdate() {
     }
 
     if (SETUP->MENU_ACTIVE) {
-        Drawable::drawFireShader();
+        //Drawable::drawFireShader();
     }
 
     if (SETUP->FADEOUT) {
