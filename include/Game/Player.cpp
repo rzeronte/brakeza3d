@@ -78,14 +78,12 @@ void Player::newGame() {
     setLives(defaultLives);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     EngineSetup::getInstance()->MENU_ACTIVE = false;
-    EngineSetup::getInstance()->DRAW_WEAPON = true;
     EngineSetup::getInstance()->DRAW_HUD = true;
 
     this->state = PlayerState::LIVE;
 }
 
 void Player::respawn() {
-    ComponentsManager::get()->getComponentBSP()->setCameraInBSPStartPosition();
     if (Tools::isValidVector(
             Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition())) {
     }
@@ -103,10 +101,6 @@ void Player::shoot() {
 }
 
 void Player::jump() {
-    if (!Brakeza3D::get()->getComponentsManager()->getComponentBSP()->getBSPCollider()->isPlayerOnGround()) {
-        return;
-    }
-
     // sound
     Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump"),
                           EngineSetup::SoundChannels::SND_PLAYER, 0);

@@ -100,7 +100,6 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
             //SDL_SetRelativeMouseMode(SDL_TRUE);
             Mix_HaltMusic();
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
-            SETUP->DRAW_WEAPON = true;
             SETUP->DRAW_HUD = true;
             ComponentsManager::get()->getComponentInput()->setEnabled(true);
         } else {
@@ -109,7 +108,6 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
                                   SETUP->screenHeight / 2);
             Mix_HaltMusic();
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
-            SETUP->DRAW_WEAPON = false;
             SETUP->DRAW_HUD = false;
             ComponentsManager::get()->getComponentInput()->setEnabled(false);
         }
@@ -173,7 +171,6 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
 
             Mix_HaltMusic();
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
-            SETUP->DRAW_WEAPON = true;
             SETUP->DRAW_HUD = true;
 
             SETUP->MENU_ACTIVE = !SETUP->MENU_ACTIVE;

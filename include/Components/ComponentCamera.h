@@ -10,7 +10,6 @@
 #include "../Render/M3.h"
 #include "Component.h"
 #include "ComponentWindow.h"
-#include "ComponentBSP.h"
 #include "Camera3D.h"
 #include "ComponentCollisions.h"
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
@@ -46,8 +45,6 @@ public:
     void updateCameraBSPCollider() const;
 
     static void drawCheckTrace(const std::string& o1, const std::string& o2);
-
-    static int pointHullContent(vec3_t p);
 
     bool isFlyMode() const;
 

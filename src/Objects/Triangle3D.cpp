@@ -160,33 +160,6 @@ void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, f
     lv = cv;
 }
 
-void Triangle::updateTextureAnimated() {
-    if (this->getTexture() == nullptr) return;
-    if (!this->getTexture()->animated) return;
-
-    this->timerTextureAnimatedFrameControl += Brakeza3D::get()->deltaTime / 1000;
-
-    int maxFrames = this->getTexture()->numAnimatedFrames;
-
-    if (currentBSPTextureAnimatedFrame <= maxFrames) {
-        std::string baseName = this->getTexture()->getFilename().substr(2, this->getTexture()->getFilename().length());
-
-        std::string n = "+" + std::to_string(currentBSPTextureAnimatedFrame) + baseName;
-
-        float stepTime = (float) 1 / (float) maxFrames;
-
-        if (this->timerTextureAnimatedFrameControl >= stepTime) {
-            this->setTexture(ComponentsManager::get()->getComponentBSP()->getBSP()->getTexture(n));
-            this->currentBSPTextureAnimatedFrame++;
-            this->timerTextureAnimatedFrameControl = 0;
-        }
-
-        if (currentBSPTextureAnimatedFrame >= maxFrames) {
-            currentBSPTextureAnimatedFrame = 0;
-        }
-    }
-}
-
 void Triangle::updateNormal() {
 
     this->normal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();

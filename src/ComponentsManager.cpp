@@ -22,13 +22,8 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
 }
 
 void ComponentsManager::configureComponents() {
-    getComponentBSP()->setCamera(getComponentCamera()->getCamera());
-
-    getComponentCollisions()->setBSPMap(getComponentBSP()->getBSP());
     getComponentCollisions()->setCamera(getComponentCamera()->getCamera());
     getComponentCollisions()->setVisibleTriangles(getComponentRender()->getVisibleTriangles());
-
-    getComponentBSP()->getBSP()->setFrameTriangles(&getComponentRender()->getFrameTriangles());
 
     getComponentGUI()->setRenderer(getComponentWindow()->renderer);
     getComponentGUI()->setWindow(getComponentWindow()->window);

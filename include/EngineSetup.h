@@ -17,7 +17,6 @@ public:
 
     static void setResolution(int, int);
 
-    std::string LOG_FILE = "brakeza.log";
     bool LOGGING = true;
     bool LOGGING_TO_FILE = false;
 
@@ -45,8 +44,6 @@ public:
     bool BASED_TILE_RENDER = true;
     bool BASED_TILE_RENDER_THREADED = true;
 
-    const int ENGINE_MAX_OCLTRIANGLES = 10240;
-
     float EPSILON = 0.00001f;
 
     bool ENABLE_FOG = true;
@@ -56,8 +53,6 @@ public:
     float FRUSTUM_FARPLANE_DISTANCE = 1250;
     float HORIZONTAL_FOV = 90;
 
-    bool RASTERIZER_OPENCL = false;
-
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
@@ -66,10 +61,7 @@ public:
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
-    bool RENDER_BSP_TRIANGLES = true;
-
     bool DEBUG_RENDER_INFO = false;
-    bool OPENCL_SHOW_TIME_KERNELS = false;
 
     bool MENU_ACTIVE = true;
     bool LOADING = false;
@@ -146,15 +138,6 @@ public:
     float SOUND_VOLUME_ENVIRONMENT = 75;
     float SOUND_VOLUME_MENU = 75;
 
-    // GUI Setup values
-    float GUI_BAR_DEFAULT_MIN_VALUE = -999999999.f;
-    float GUI_BAR_DEFAULT_MAX_VALUE = -999999999.f;
-
-    float GUI_BAR_SENSITIVITY = -0.1f;
-
-    int GUI_MIN_SPRITE3D_FRAMERATE = 1;
-    int GUI_MAX_SPRITE3D_FRAMERATE = 30;
-
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 1.f;
     float BILLBOARD_HEIGHT_DEFAULT = 1.f;
@@ -175,11 +158,8 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
-    float BULLET_STEP_SIMULATION_MULTIPLIER = 1;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
-
-    float PLAYER_SPHERE_RADIUS = 30.f;
 
     Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
 
@@ -188,7 +168,6 @@ public:
     float TESTING_INT2 = 2;
     float TESTING_INT3 = 3;
     float TESTING_INT4 = 4;
-    float TESTING_INT5 = 5;
 
     bool TESTING_BOOL = false;
 
@@ -200,9 +179,6 @@ public:
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
     float LIGHTMAPPING_INTENSITY = 0.75f;
 
-    bool DRAW_BSP_HULLS = false;
-    bool DRAW_SPRITES = true;
-    bool DRAW_WEAPON = false;
     bool DRAW_HUD = true;
 
     // BSP TEXTURES ANIMATED
@@ -214,7 +190,7 @@ public:
     float LAVA_SPEED = 0.5f;
     float LAVA_SCALE = 1.f;
 
-    //LIGHTNING  EFFECT
+    //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;
     float LIGHTNING_OFFSET_REDUCTION = 5.f;
     float LIGHTNING_PROBABILITY_BRANCH = 1.5;
@@ -234,8 +210,6 @@ public:
 
     bool ENABLE_IA = true;
     float ZOOM_FOV = 40;
-
-    bool WEAPON_AUTOSWICH = false;
 
     int GAME_PLAYER_STAMINA_INITIAL = 100;
 

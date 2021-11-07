@@ -13,7 +13,6 @@ void ComponentRender::preUpdate() {
 }
 
 void ComponentRender::onUpdate() {
-    this->onUpdateBSP();
     this->onUpdateSceneObjects();
 
     this->hiddenSurfaceRemoval();
@@ -53,19 +52,6 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
 
 std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
     return lightpoints;
-}
-
-void ComponentRender::onUpdateBSP() {
-    if (!SETUP->RENDER_BSP_TRIANGLES) return;
-
-    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
-
-        ComponentsManager::get()->getComponentBSP()->getBSP()->DrawVisibleLeaf();
-
-        if (SETUP->DRAW_BSP_HULLS) {
-            ComponentsManager::get()->getComponentBSP()->getBSP()->DrawHulls();
-        }
-    }
 }
 
 void ComponentRender::onUpdateSceneObjects() {

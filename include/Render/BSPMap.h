@@ -4,6 +4,7 @@
 #include "../Components/Camera3D.h"
 #include "../Objects/Triangle3D.h"
 #include "btBulletDynamicsCommon.h"
+#include "../Physics/Mesh3DGhost.h"
 
 #define BSP_VERSION        29
 #define MAXLIGHTMAPS    4
@@ -451,6 +452,19 @@ public:
     void drawClipNodes(int i);
 
     void drawClipNode(dnode_t *node);
+
+    void setCameraInBSPStartPosition();
+
+    void updateVisibleSet();
+
+    void initMap(const char *bspFilename);
+
+    void createMesh3DAndGhostsFromHulls();
+    void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
+    void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
+    void createObjects3DFromBSPEntities();
+
 };
 
 #endif

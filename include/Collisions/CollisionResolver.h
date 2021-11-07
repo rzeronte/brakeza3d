@@ -16,13 +16,12 @@ public:
 
     Object3D *objA;
     Object3D *objB;
-    BSPMap *bspMap;
 
     std::vector<Triangle *> *visibleTriangles;
 
     int type;
 
-    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB, BSPMap *bspMap,
+    CollisionResolver(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
                       std::vector<Triangle *> &visibleTriangles);
 
     int getTypeCollision() const;
@@ -39,11 +38,11 @@ public:
 
     bool isSomeMesh3DFuncDoor() const;
 
-    bool isSomeMesh3DFuncButton() const;
+    bool isSomeMesh3DFuncButton(BSPMap *bspMap) const;
 
-    bool isSomeMesh3DTriggerMultiple() const;
+    bool isSomeMesh3DTriggerMultiple(BSPMap *bspMap) const;
 
-    bool isSomeMesh3DTriggerTeleport() const;
+    bool isSomeMesh3DTriggerTeleport(BSPMap *bspMap) const;
 
     bool isSomeItemWeapon() const;
 
@@ -51,9 +50,9 @@ public:
 
     bool isSomeItemAmmo() const;
 
-    bool isBSPEntityOfClassName(Mesh3D *oMesh, const std::string& query) const;
+    bool isBSPEntityOfClassName(BSPMap *bspMap, Mesh3D *oMesh, const std::string& query) const;
 
-    void moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId) const;
+    void moveDoorGhost(BSPMap *bspMap, DoorGhost *oRemoteBody, int targetEntityId) const;
 
     int getType() const;
 

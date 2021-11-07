@@ -270,11 +270,11 @@ public:
     vec3_t vec3_origin;
     float scale;
 
-    BSPCollider();
+    BSPCollider(BSPMap *bsp);
 
-    void LoadModelCollisionForEntities();
+    void LoadModelCollisionForEntities(BSPMap *bsp);
 
-    void LoadModelCollisionForWorld();
+    void LoadModelCollisionForWorld(BSPMap *bsp);
 
     void resetPlayerModelData() const;
 
@@ -311,7 +311,7 @@ public:
 
     static int ClipVelocity(const vec3_t in, const vec3_t normal, vec3_t out, float overbounce);
 
-    model_collision_t *getModelCollisionFromBSP(int modelId);
+    model_collision_t *getModelCollisionFromBSP(BSPMap *bspMap,int modelId);
 
     static int BoxOnPlaneSide(const vec3_t emins, const vec3_t emaxs, mplane_t *p);
 
@@ -327,11 +327,11 @@ public:
 
     static void drawHullAABB(model_collision_t *model, int indexHull);
 
-    static void Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    static void Mod_LoadLeafs_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header);
 
-    static void Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    static void Mod_LoadNodes_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header);
 
-    void Mod_LoadClipnodes_BSP29(model_collision_t *brushmodel, dheader_t *header);
+    void Mod_LoadClipnodes_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header);
 
     static void Mod_MakeClipHulls(model_collision_t *brushmodel);
 

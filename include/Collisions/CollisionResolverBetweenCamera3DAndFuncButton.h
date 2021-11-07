@@ -9,11 +9,12 @@ public:
     Mesh3DBody *mesh;
     ComponentCamera *camera;
     std::vector<Object3D *> *gameObjects;
+    BSPMap *bspMap;
 
     CollisionResolverBetweenCamera3DAndFuncButton(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
-                                                  BSPMap *bspMap, std::vector<Object3D *> *gameObjects,
+                                                  std::vector<Object3D *> *gameObjects,
                                                   std::vector<Triangle *> &visibleTriangles) : CollisionResolver(
-            contactManifold, objA, objB, bspMap, visibleTriangles) {
+            contactManifold, objA, objB, visibleTriangles) {
         this->mesh = this->getMesh3D();
         this->camera = this->getCamera();
         this->gameObjects = gameObjects;
@@ -52,29 +53,6 @@ public:
                     }
                 }
             }
-
-            /*if (!strcmp(classnameRemote, "trigger_counter") ) {
-                // Si el objeto original era un botón
-                if (!strcmp(classname, "func_button")) {
-                    Mesh3DBody *oButton = dynamic_cast<Mesh3DBody*> (getDoorGhost());
-                    if (oButton->active) {
-                        for (int k = 0; k < this->gameObjects->size(); k++) {
-                            Mesh3D *oRemoteMesh = dynamic_cast<Mesh3D*> ((*this->gameObjects)[k]);
-                            if (oRemoteMesh != NULL) {
-                                if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
-
-                                    Mesh3DGhost *oRemoteGhost = dynamic_cast<Mesh3DGhost*> (oRemoteMesh);
-                                    oRemoteGhost->currentTriggerCounter++;
-                                    oButton->active = false;
-                                    if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                        Logging::getInstance()->getInstance()->Log("trigger_counter for BSPEntity: " + std::to_string(targetRemoteEntityId) + "=" + std::to_string(oRemoteGhost->currentTriggerCounter));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         }
     }
 

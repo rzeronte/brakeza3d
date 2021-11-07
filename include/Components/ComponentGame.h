@@ -9,7 +9,6 @@
 #include "Component.h"
 #include "../../src/Game/Player.h"
 #include "../Misc/cJSON.h"
-#include "ComponentBSP.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
@@ -33,23 +32,12 @@ public:
 
     std::string currentMapName;
 
-    cJSON *mapsJSONList{};
-    cJSON *weaponsJSONList{};
-    cJSON *ammoTypesJSONList{};
-    cJSON *enemiesJSONList{};
-
-
     Player *player;
-    Mesh3DBody *car{};
-    Mesh3DBody *character{};
-    Mesh3DBody *city{};
     Mesh3DBody *plane{};
 
     bool direction = true;
 
     PathFinder *pathFinder{};
-
-    Mesh3DBody *npc{};
 
     int kills = 0;
 
@@ -65,27 +53,7 @@ public:
 
     int getKills() const;
 
-    void LoadMapsFromJSON();
-
-    void LoadWeaponsJSON();
-
-    void LoadEnemiesJSON();
-
-    void setFirstMapNameFromJSON();
-
-    static void createObjects3DFromBSPEntities();
-
-    void createMesh3DAndGhostsFromHulls();
-
-    static void makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
-
-    static void makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull);
-
-    static void getTrianglesHull(Mesh3DGhost *mesh, model_t *hull);
-
     static void startThirdPerson();
-
-    void startFPS();
 
 };
 

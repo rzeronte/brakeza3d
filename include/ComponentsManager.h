@@ -5,7 +5,6 @@
 #include "Components/Component.h"
 #include "Components/ComponentCamera.h"
 #include "Components/ComponentCollisions.h"
-#include "Components/ComponentBSP.h"
 #include "Components/ComponentHUD.h"
 #include "Components/ComponentGUI.h"
 #include "Components/ComponentRender.h"
@@ -19,15 +18,14 @@ enum ComponentID {
     COMPONENT_CAMERA = 1,
     COMPONENT_COLLISIONS = 2,
     COMPONENT_INPUT = 3,
-    COMPONENT_BSP = 4,
-    COMPONENT_SOUND = 5,
-    COMPONENT_RENDER = 6,
-    COMPONENT_GUI = 7,
-    COMPONENT_MENU = 8,
-    COMPONENT_WEAPONS = 9,
-    COMPONENT_HUD = 10,
-    COMPONENT_GAME = 11,
-    COMPONENT_GAME_INPUT = 12
+    COMPONENT_SOUND = 4,
+    COMPONENT_RENDER = 5,
+    COMPONENT_GUI = 6,
+    COMPONENT_MENU = 7,
+    COMPONENT_WEAPONS = 8,
+    COMPONENT_HUD = 9,
+    COMPONENT_GAME = 10,
+    COMPONENT_GAME_INPUT = 11
 };
 
 class ComponentsManager {
@@ -57,8 +55,6 @@ public:
 
     ComponentWeapons *
     getComponentWeapons() { return static_cast<ComponentWeapons *>(components[ComponentID::COMPONENT_WEAPONS]); };
-
-    ComponentBSP *getComponentBSP() { return static_cast<ComponentBSP *>(components[ComponentID::COMPONENT_BSP]); };
 
     ComponentHUD *getComponentHUD() { return static_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]); };
 

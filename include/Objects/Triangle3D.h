@@ -91,8 +91,6 @@ public:
 
     void updateScreenSpace();
 
-    void updateTextureAnimated();
-
     void updateUVCache();
 
     void getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) const;

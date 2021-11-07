@@ -5,7 +5,7 @@ static inline short LittleShort(short s) { return s; }
 
 static inline int LittleLong(int l) { return l; }
 
-BSPCollider::BSPCollider() {
+BSPCollider::BSPCollider(BSPMap *bsp) {
     this->worldmodel = nullptr;
     this->playermodel = nullptr;
     this->scale = 1;
@@ -14,8 +14,8 @@ BSPCollider::BSPCollider() {
     this->vec3_origin[1] = 0;
     this->vec3_origin[2] = 0;
 
-    LoadModelCollisionForWorld();
-    LoadModelCollisionForEntities();
+    LoadModelCollisionForWorld(bsp);
+    LoadModelCollisionForEntities(bsp);
 }
 
 void BSPCollider::resetPlayerModelData() const {
@@ -46,18 +46,17 @@ void BSPCollider::resetPlayerModelData() const {
     this->playermodel->oldorigin[2] = 0;
 }
 
-void BSPCollider::LoadModelCollisionForEntities() {
-    unsigned int numModels = ComponentsManager::get()->getComponentBSP()->getBSP()->getNumModels();
-    BSPMap *bspMAP = ComponentsManager::get()->getComponentBSP()->getBSP();
+void BSPCollider::LoadModelCollisionForEntities(BSPMap *bsp) {
+    unsigned int numModels = bsp->getNumModels();
     this->entities.resize(numModels);
 
     for (unsigned int i = 1; i < this->entities.size(); i++) {
-        this->entities[i] = getModelCollisionFromBSP(i);
+        this->entities[i] = getModelCollisionFromBSP(bsp, i);
     }
 
     model_t *bm;
     for (unsigned int i = 1; i < this->entities.size(); i++) {
-        bm = bspMAP->getModel(i);
+        bm = bsp->getModel(i);
         model_collision_t *mod = this->entities[i];
 
         mod->hulls[0].firstclipnode = bm->headnode[0];
@@ -97,9 +96,9 @@ void BSPCollider::LoadModelCollisionForEntities() {
     }
 }
 
-void BSPCollider::LoadModelCollisionForWorld() {
+void BSPCollider::LoadModelCollisionForWorld(BSPMap *bsp) {
 
-    this->worldmodel = getModelCollisionFromBSP(0);
+    this->worldmodel = getModelCollisionFromBSP(bsp, 0);
     this->playermodel = new model_collision_t;
 
     this->playermodel->teleportingCounter.setStep(0.01f);
@@ -116,8 +115,7 @@ model_collision_t *BSPCollider::getPlayerModel() const {
     return this->playermodel;
 }
 
-model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId) {
-    BSPMap *bspMap = ComponentsManager::get()->getComponentBSP()->getBSP();
+model_collision_t *BSPCollider::getModelCollisionFromBSP(BSPMap *bspMap, int modelId) {
 
     auto *model = new model_collision_t;           // Destiny
     model_t *bspModel = bspMap->getModel(modelId); // Source
@@ -128,9 +126,9 @@ model_collision_t *BSPCollider::getModelCollisionFromBSP(int modelId) {
     model->planes = (mplane_s *) bspMap->getPlanes();
     model->numplanes = bspMap->getNumPlanes();
 
-    Mod_LoadLeafs_BSP29(model, bspMap->header);
-    Mod_LoadNodes_BSP29(model, bspMap->header);
-    Mod_LoadClipnodes_BSP29(model, bspMap->header);
+    Mod_LoadLeafs_BSP29(bspMap, model, bspMap->header);
+    Mod_LoadNodes_BSP29(bspMap, model, bspMap->header);
+    Mod_LoadClipnodes_BSP29(bspMap, model, bspMap->header);
     Mod_MakeDrawHull(model);
 
     VectorCopy(bspModel->origin, model->origin)
@@ -960,8 +958,8 @@ void BSPCollider::drawHullAABB(model_collision_t *model, int indexHull) {
     Drawable::drawAABB(&a, Color::white());
 }
 
-void BSPCollider::Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *header) {
-    const lump_t *headerlump = (lump_t *) &ComponentsManager::get()->getComponentBSP()->getBSP()->header->leaves;
+void BSPCollider::Mod_LoadLeafs_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header) {
+    const lump_t *headerlump = (lump_t *) &bsp->header->leaves;
     const dleaf_t *in;
     mleaf_t *out;
     int i, j, count, visofs;
@@ -996,8 +994,8 @@ void BSPCollider::Mod_LoadLeafs_BSP29(model_collision_t *brushmodel, dheader_t *
     }
 }
 
-void BSPCollider::Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *header) {
-    const lump_t *headerlump = (lump_t *) &ComponentsManager::get()->getComponentBSP()->getBSP()->header->nodes;
+void BSPCollider::Mod_LoadNodes_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header) {
+    const lump_t *headerlump = (lump_t *) &bsp->header->nodes;
     const dnode_t *in;
     mnode_t *out;
     int i, j, count;
@@ -1032,8 +1030,8 @@ void BSPCollider::Mod_LoadNodes_BSP29(model_collision_t *brushmodel, dheader_t *
     //Mod_SetParent(brushmodel->nodes, NULL);
 }
 
-void BSPCollider::Mod_LoadClipnodes_BSP29(model_collision_t *brushmodel, dheader_t *header) {
-    const lump_t *headerlump = (lump_t *) &ComponentsManager::get()->getComponentBSP()->getBSP()->header->clipnodes;
+void BSPCollider::Mod_LoadClipnodes_BSP29(BSPMap *bsp, model_collision_t *brushmodel, dheader_t *header) {
+    const lump_t *headerlump = (lump_t *) &bsp->header->clipnodes;
     const dclipnode_t *in;
     dclipnode_t *out;
     int i, j, count;

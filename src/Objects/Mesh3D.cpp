@@ -26,7 +26,6 @@ Mesh3D::Mesh3D() {
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
     // draw triangles of mesh
     for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateTextureAnimated();
         modelTriangle->updateLightmapFrame();
         frameTriangles->push_back(modelTriangle);
     }

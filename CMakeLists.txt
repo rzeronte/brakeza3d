@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -129,12 +129,7 @@ add_executable(Brakeza3D
         include/Collisions/CollisionResolver.h
         src/Game/Projectile3DBody.cpp
         include/Game/Projectile3DBody.h
-        include/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h
-        include/Collisions/CollisionResolverBetweenCamera3DAndFuncDoor.h
         include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
-        include/Collisions/CollisionResolverBetweenProjectileAndBSPMap.h
-        include/Collisions/CollisionResolverBetweenEnemyPartAndBSPMap.h
-        include/Collisions/CollisionResolverBetweenProjectileAndPlayer.h
         src/Objects/Decal.cpp
         include/Objects/Decal.h
         src/Game/NPCEnemyPartBody.cpp
@@ -160,13 +155,10 @@ add_executable(Brakeza3D
         include/Physics/BillboardBody.h
         src/Game/ItemWeaponGhost.cpp
         include/Game/ItemWeaponGhost.h
-        include/Collisions/CollisionResolverBetweenCamera3DAndItemWeapon.h
         src/Game/ItemAmmoGhost.cpp
         include/Game/ItemAmmoGhost.h
         src/Game/ItemHealthGhost.cpp
         include/Game/ItemHealthGhost.h
-        include/Collisions/CollisionResolverBetweenCamera3DAndItemHealth.h
-        include/Collisions/CollisionResolverBetweenCamera3DAndItemAmmo.h
         src/Game/AmmoType.cpp
         include/Game/AmmoType.h
         src/Components/Component.cpp
@@ -179,8 +171,6 @@ add_executable(Brakeza3D
         include/Components/ComponentInput.h
         src/Components/ComponentSound.cpp
         include/Components/ComponentSound.h
-        src/Components/ComponentBSP.cpp
-        include/Components/ComponentBSP.h
         src/Objects/Camera3D.cpp
         include/Components/Camera3D.h
         src/Components/ComponentHUD.cpp

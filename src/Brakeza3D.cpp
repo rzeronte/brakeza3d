@@ -12,7 +12,6 @@ Brakeza3D::Brakeza3D() {
     componentWeapons = nullptr;
     componentCollisions = nullptr;
     componentWindow = nullptr;
-    componentBSP = nullptr;
     componentSound = nullptr;
     componentRender = nullptr;
     componentMenu = nullptr;
@@ -36,7 +35,6 @@ void Brakeza3D::start() {
     componentWeapons = new ComponentWeapons();
     componentCollisions = new ComponentCollisions();
     componentWindow = new ComponentWindow();
-    componentBSP = new ComponentBSP();
     componentSound = new ComponentSound();
     componentRender = new ComponentRender();
     componentMenu = new ComponentMenu();
@@ -49,7 +47,6 @@ void Brakeza3D::start() {
     componentsManager->registerComponent(componentCamera, "ComponentCamera");
     componentsManager->registerComponent(componentCollisions, "ComponentCollisions");
     componentsManager->registerComponent(componentInput, "ComponentInput");
-    componentsManager->registerComponent(componentBSP, "ComponentBSP");
     componentsManager->registerComponent(componentSound, "ComponentSound");
     componentsManager->registerComponent(componentRender, "ComponentRender");
     componentsManager->registerComponent(componentGUI, "ComponentGUI");

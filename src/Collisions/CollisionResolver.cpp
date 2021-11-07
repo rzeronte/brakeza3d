@@ -10,10 +10,9 @@ CollisionResolver::CollisionResolver(
         btPersistentManifold *contactManifold,
         Object3D *objA,
         Object3D *objB,
-        BSPMap *bspMap,
         std::vector<Triangle *> &visibleTriangles
 ) :
-        contactManifold(contactManifold), objA(objA), objB(objB), bspMap(bspMap), visibleTriangles(&visibleTriangles) {
+        contactManifold(contactManifold), objA(objA), objB(objB), visibleTriangles(&visibleTriangles) {
     this->type = -1;
 }
 
@@ -30,21 +29,21 @@ int CollisionResolver::getTypeCollision() const {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY;
     }
 
-    if (isSomeCamera() && isSomeMesh3DTriggerMultiple()) {
-        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE;
-    }
+//    if (isSomeCamera() && isSomeMesh3DTriggerMultiple()) {
+//        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE;
+//    }
 
-    if (isSomeCamera() && isSomeMesh3DTriggerTeleport()) {
-        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT;
-    }
+//    if (isSomeCamera() && isSomeMesh3DTriggerTeleport()) {
+//        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT;
+//    }
 
     if (isSomeCamera() && isSomeMesh3DFuncDoor()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR;
     }
 
-    if (isSomeCamera() && isSomeMesh3DFuncButton()) {
-        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON;
-    }
+//    if (isSomeCamera() && isSomeMesh3DFuncButton()) {
+//        return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON;
+//    }
 
     if (isSomeProjectile() && isSomeCamera()) {
         return EngineSetup::CollisionResolverTypes::COLLISION_RESOLVER_PROJECTILE_AND_CAMERA;
@@ -148,17 +147,17 @@ bool CollisionResolver::isSomeMesh3DFuncDoor() const {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DFuncButton() const {
+bool CollisionResolver::isSomeMesh3DFuncButton(BSPMap *bspMap) const {
     auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objAMesh, "func_button")) {
+        if (this->isBSPEntityOfClassName(bspMap, objAMesh, "func_button")) {
             return true;
         }
     }
 
     auto *objBMesh = dynamic_cast<Mesh3D *> (objB);
     if (objBMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objBMesh, "func_button")) {
+        if (this->isBSPEntityOfClassName(bspMap, objBMesh, "func_button")) {
             return true;
         }
     }
@@ -166,17 +165,17 @@ bool CollisionResolver::isSomeMesh3DFuncButton() const {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DTriggerMultiple() const {
+bool CollisionResolver::isSomeMesh3DTriggerMultiple(BSPMap *bspMap) const {
     auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objAMesh, "trigger_multiple")) {
+        if (this->isBSPEntityOfClassName(bspMap, objAMesh, "trigger_multiple")) {
             return true;
         }
     }
 
     auto *objBMesh = dynamic_cast<Mesh3D *> (objB);
     if (objBMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objBMesh, "trigger_multiple")) {
+        if (this->isBSPEntityOfClassName(bspMap, objBMesh, "trigger_multiple")) {
             return true;
         }
     }
@@ -184,17 +183,17 @@ bool CollisionResolver::isSomeMesh3DTriggerMultiple() const {
     return false;
 }
 
-bool CollisionResolver::isSomeMesh3DTriggerTeleport() const {
+bool CollisionResolver::isSomeMesh3DTriggerTeleport(BSPMap *bspMap) const {
     auto *objAMesh = dynamic_cast<Mesh3D *> (objA);
     if (objAMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objAMesh, "trigger_teleport")) {
+        if (this->isBSPEntityOfClassName(bspMap, objAMesh, "trigger_teleport")) {
             return true;
         }
     }
 
     auto *objBMesh = dynamic_cast<Mesh3D *> (objB);
     if (objBMesh != nullptr) {
-        if (this->isBSPEntityOfClassName(objBMesh, "trigger_teleport")) {
+        if (this->isBSPEntityOfClassName(bspMap, objBMesh, "trigger_teleport")) {
             return true;
         }
     }
@@ -245,7 +244,7 @@ bool CollisionResolver::isSomeItemAmmo() const {
     return false;
 }
 
-bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, const std::string& query) const {
+bool CollisionResolver::isBSPEntityOfClassName(BSPMap *bspMap, Mesh3D *oMesh, const std::string& query) const {
     int originalEntityIndex = oMesh->getBspEntityIndex();
 
     if (originalEntityIndex > 0) {
@@ -260,7 +259,7 @@ bool CollisionResolver::isBSPEntityOfClassName(Mesh3D *oMesh, const std::string&
 }
 
 
-void CollisionResolver::moveDoorGhost(DoorGhost *oRemoteBody, int targetEntityId) const {
+void CollisionResolver::moveDoorGhost(BSPMap *bspMap, DoorGhost *oRemoteBody, int targetEntityId) const {
 
     if (oRemoteBody->isMoving() || oRemoteBody->isReverseMoving() || oRemoteBody->isWaiting()) return;
 

@@ -11,6 +11,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Game/ItemAmmoGhost.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);
@@ -988,3 +989,350 @@ void BSPMap::drawClipNodes(int i) {
     dnode_t *node = this->getStartNode(i);
     this->drawClipNode(node);
 }
+
+void BSPMap::setCameraInBSPStartPosition() {
+    // Load start position from BSP
+    Vertex3D bspOriginalPosition = getStartMapPosition();
+
+    int entityID = getIndexOfFirstEntityByClassname("info_player_start");
+    btTransform initialTransform;
+    initialTransform.setOrigin(btVector3(bspOriginalPosition.x, bspOriginalPosition.y, bspOriginalPosition.z));
+
+    char *angle = getEntityValue(entityID, "angle");
+    int angleInt = atoi(std::string(angle).c_str());
+
+    camera->yaw = (float) (90 -angleInt);
+    camera->pitch = 0;
+    camera->roll = 0;
+
+    camera->setPosition(bspOriginalPosition);
+}
+
+void BSPMap::updateVisibleSet() {
+    if (isLoaded()) {
+        dleaf_t *leaf = FindLeaf(camera->getPosition(), true);
+        setVisibleSet(leaf);
+    }
+}
+
+void BSPMap::initMap(const char *bspFilename) {
+    Initialize(bspFilename, "palette.lmp", camera);
+    setCameraInBSPStartPosition();
+}
+
+
+
+void BSPMap::createMesh3DAndGhostsFromHulls() {
+
+    int numHulls = getNumModels();
+
+    for (int m = 1; m < numHulls; m++) {
+        model_t *hull = getModel(m);
+        int indexModel = m;
+
+        std::string targetName = "*" + std::to_string(indexModel);
+        int entityIndex = getIndexOfFirstEntityByModel(targetName.c_str());
+
+        if (entityIndex >= 1) {
+            char *classname = getEntityValue(entityIndex, "classname");
+            if (!strcmp(classname, "func_door")) {
+                this->makeDoorGhost(m, entityIndex, true, hull);
+                continue;
+            }
+        }
+
+        this->makeMesh3DGhost(m, entityIndex, false, hull);
+    }
+}
+
+void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
+    // Buscamos entidades que figuren con el modelo
+
+    auto *ghost = new DoorGhost();
+    ghost->setEnabled(enabled);
+
+    if (entityIndex >= 1) {
+        ghost->setBspEntityIndex(entityIndex);
+    }
+
+    ghost->setPosition(getPosition());
+    ghost->setRotation(getRotation());
+
+    getTrianglesHull(ghost, hull);
+
+    ghost->makeGhostBody(camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                         true, ghost);
+    ghost->getGhostObject()->setUserPointer(ghost);
+    Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (DoorGhost)");
+}
+
+void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
+    auto *ghost = new Mesh3DGhost();
+    if (entityIndex >= 1) {
+        ghost->setBspEntityIndex(entityIndex);
+    }
+    ghost->setEnabled(enabled);
+    ghost->setPosition(getPosition());
+    ghost->setRotation(getRotation());
+
+    getTrianglesHull(ghost, hull);
+
+    ghost->makeGhostBody(camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                         true, ghost);
+    ghost->getGhostObject()->setUserPointer(ghost);
+    Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (Mesh3DGhost)");
+}
+
+void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
+
+    for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf; surface++) {
+
+        const int offset = this->surface_triangles[surface].offset;
+        const int num = this->surface_triangles[surface].num;
+
+        for (int i = offset; i < offset + num; i++) {
+            Triangle *t = this->model_triangles[i];
+            t->parent = mesh;
+            mesh->modelTriangles.push_back(t);
+        }
+    }
+
+    mesh->updateBoundingBox();
+}
+
+
+void BSPMap::createObjects3DFromBSPEntities() {
+    EngineSetup *engineSetup = EngineSetup::getInstance();
+
+    Logging::Log("BSP Num Entities: " + std::to_string(this->n_entities), "");
+    Brakeza3D *brakeza3D = Brakeza3D::get();
+
+
+
+    if (this->n_entities > MAX_BSP_ENTITIES) {
+        printf("Error: Entities overflow");
+        exit(-1);
+    }
+
+    for (int i = 0; i < this->n_entities; i++) {
+        Logging::Log("BSPEntity: " + std::to_string(this->entities[i].id), "");
+        for (int j = 0; j < this->entities[i].num_attributes; j++) {
+            Logging::Log(
+                    "Key: '" + (std::string) this->entities[i].attributes[j].key + "' - Value: '" +
+                    (std::string) this->entities[i].attributes[j].value + "'", "");
+        }
+    }
+
+    // Create Objects3D from BSP Entities
+    for (int i = 0; i < this->n_entities; i++) {
+
+        if (this->hasEntityAttribute(i, "classname")) {
+            char *classname = this->getEntityValue(i, "classname");
+            if (this->hasEntityAttribute(i, "origin")) {
+                char *value = this->getEntityValue(i, "origin");
+                Vertex3D pos = this->parsePositionFromEntityAttribute(value);
+
+                // light
+                if (!strcmp(classname, "light")) {
+                    auto *o = new Object3D();
+                }
+
+                // item cells
+                if (!strcmp(classname, "item_cells")) {
+                    auto *o = new ItemAmmoGhost();
+                    ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
+                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
+
+                    Mesh3D *oTemplate = weaponManager->getAmmoTypeByClassname(classname)->getModelBox();
+
+                    o->setLabel("ammo_cells");
+                    o->copyFrom(oTemplate);
+                    // Md2 Import for Quake2 axis adjust
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+                    o->setAmmoTypeClassname(classname);
+                    o->setPosition(pos);
+                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
+                                     componentCollisions->getDynamicsWorld(), true, o);
+                    Brakeza3D::get()->addObject3D(o, o->getLabel());
+                }
+
+                // item rockets
+                if (!strcmp(classname, "item_rockets")) {
+                    auto *o = new ItemAmmoGhost();
+                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
+                            classname)->getModelBox();
+                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
+
+                    o->setLabel("ammo_rockets");
+                    o->copyFrom(oTemplate);
+                    // Md2 Import for Quake2 axis adjust
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+                    o->setAmmoTypeClassname(classname);
+                    o->setPosition(pos);
+                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
+                                     componentCollisions->getDynamicsWorld(), true, o);
+                    brakeza3D->addObject3D(o, o->getLabel());
+                }
+
+                // item shells
+                if (!strcmp(classname, "item_shells")) {
+                    auto *o = new ItemAmmoGhost();
+                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
+                            classname)->getModelBox();
+                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
+
+                    o->setLabel("ammo_shells");
+                    o->copyFrom(oTemplate);
+                    // Md2 Import for Quake2 axis adjust
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+                    o->setAmmoTypeClassname(classname);
+                    o->setPosition(pos);
+                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
+                                     componentCollisions->getDynamicsWorld(), true, o);
+                    brakeza3D->addObject3D(o, o->getLabel());
+                }
+
+                // item spikes
+                if (!strcmp(classname, "item_spikes")) {
+                    auto *o = new ItemAmmoGhost();
+                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
+                            classname)->getModelBox();
+                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
+
+                    o->setLabel("ammo_spikes");
+                    o->setAmmoTypeClassname(classname);
+                    o->copyFrom(oTemplate);
+
+                    // Md2 Import for Quake2 axis adjust
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+
+                    o->setPosition(pos);
+                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
+                                     componentCollisions->getDynamicsWorld(), true, o);
+
+
+                    brakeza3D->addObject3D(o, o->getLabel());
+                }
+
+                // item_health
+                /*if (!strcmp(classname, "item_health")) {
+                    auto *o = new ItemHealthGhost();
+                    o->setLabel("health");
+                    o->setPosition( pos );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
+                    o->setDimensions( 3, 3 );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    brakeza3D->addObject3D( o, o->getLabel() );
+                }*/
+
+                // weapon wildcard
+                std::string s1(classname);
+                if (s1.find("weapon") != std::string::npos) {
+                    auto *o = new ItemWeaponGhost();
+                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
+
+                    WeaponType *weapon = brakeza3D->getComponentsManager()->getComponentWeapons()->getWeaponTypeByClassname(
+                            classname);
+                    if (weapon == nullptr) {
+                        Logging::Log("Error loading weapon by classname: " + s1, "ERROR");
+                        continue;
+                    }
+
+                    o->setPosition(pos);
+                    o->setLabel(weapon->label);
+                    o->setWeaponClassname(classname);
+                    o->copyFrom(weapon->getModel());
+                    // Md2 Import for Quake2 axis adjust
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
+                                     componentCollisions->getDynamicsWorld(), true, o);
+                    brakeza3D->addObject3D(o, o->getLabel());
+                }
+
+                // monster wildcard
+                std::string s2(classname);
+                if (s2.find("monster") != std::string::npos) {
+                    NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname);
+                    if (enemyTemplate == nullptr) continue;
+
+                    // Angle Monster
+                    int angle = 0;
+                    if (this->hasEntityAttribute(i, "angle")) {
+                        char *s_angle = this->getEntityValue(i, "angle");
+                        angle = std::stoi(s_angle);
+                    }
+
+                    M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90 - (float) angle, 0);
+
+                    auto *enemyBody = new NPCEnemyBody();
+                    enemyBody->setScale(enemyTemplate->getScale());
+                    enemyBody->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
+                    enemyBody->setPosition(pos);
+                    enemyBody->setRotation(rotMonster);
+                    enemyBody->setRespawnRotation(rotMonster);
+                    enemyBody->setDrawOffset(enemyTemplate->getDrawOffset());
+                    enemyBody->setBoxShapeSize(enemyTemplate->getBoxShapeSize());
+                    enemyBody->setSpeed(enemyTemplate->getSpeed());
+                    enemyBody->setRange(enemyTemplate->getRange());
+                    enemyBody->setCadence(enemyTemplate->getCadence());
+                    enemyBody->setLabel("BSPEntity_" + std::to_string(i) + " (monster)");
+                    enemyBody->addAnimation("swat_idle", "Cubex.fbx", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_walk", "Cubex.fbx", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_fire", "Cubex.fbx", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_injuried", "Cubex.fbx", enemyTemplate->getScale(), false);
+                    enemyBody->addAnimation("swat_dead", "Cubex.fbx", enemyTemplate->getScale(), true);
+                    enemyBody->setAnimation(EngineSetup::SOLDIER_IDLE);
+                    enemyBody->makeSimpleRigidBody(
+                            0,
+                            pos - enemyBody->getDrawOffset(),
+                            enemyBody->getBoxShapeSize(),
+                            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
+                    );
+                    brakeza3D->addObject3D(enemyBody, enemyBody->getLabel());
+                }
+
+                // armor wildcard
+                std::string s3(classname);
+                if (s2.find("armor") != std::string::npos) {
+                    auto *o = new Object3D();
+                    o->setPosition(pos);
+                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (armor)");
+                }
+
+                // info_player_start
+                if (!strcmp(classname, "info_player_start") ||
+                    !strcmp(classname, "info_player_coop") ||
+                    !strcmp(classname, "info_player_deathmatch")
+                        ) {
+                    auto *o = new Object3D();
+                    o->setPosition(pos);
+                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)");
+                }
+
+                // info teleport destination
+                if (!strcmp(classname, "info_teleport_destination")) {
+                    auto *o = new Object3D();
+                    o->setPosition(pos);
+                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (teleport_destination)");
+                }
+
+                // light_flame_large_yellow
+                if (!strcmp(classname, "light_flame_large_yellow") ||
+                    !strcmp(classname, "light_torch_small_walltorch")) {
+                    auto *o = new Object3D();
+                    o->setPosition(pos);
+                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
+                }
+
+                // func_button
+                if (!strcmp(classname, "func_button")) {
+                    auto *o = new Object3D();
+                    o->setPosition(pos);
+                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (func_button)");
+                }
+            }
+        }
+    }
+}
+
+

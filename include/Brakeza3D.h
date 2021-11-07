@@ -11,7 +11,6 @@
 #include "EngineBuffers.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentWindow.h"
-#include "Components/ComponentBSP.h"
 #include "Components/ComponentSound.h"
 #include "Components/ComponentRender.h"
 #include "Components/ComponentHUD.h"
@@ -33,7 +32,6 @@ private:
     ComponentMenu *componentMenu;
     ComponentInput *componentInput;
     ComponentWindow *componentWindow;
-    ComponentBSP *componentBSP;
     ComponentSound *componentSound;
     ComponentRender *componentRender;
     ComponentHUD *componentHUD;
