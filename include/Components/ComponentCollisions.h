@@ -64,7 +64,7 @@ public:
 
     std::vector<Triangle *> &getVisibleTriangles() const;
 
-    void setVisibleTriangles(std::vector<Triangle *> &visibleTriangles);
+    void setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles);
 
     static bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1);
 
@@ -76,7 +76,7 @@ public:
 
     std::vector<CollisionResolver *> &getCollisions();
 
-    void setCollisions(const std::vector<CollisionResolver *> &collisions);
+    void setCollisions(const std::vector<CollisionResolver *> &newCollisions);
 
     void makeGhostForCamera();
 

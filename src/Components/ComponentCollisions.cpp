@@ -1,5 +1,5 @@
 #include "../../include/Components/ComponentCollisions.h"
-#include "../../include/Collisions/CollisionResolverBetweenProjectileAndNPCEnemy.h"
+#include "../../include/Brakeza3D.h"
 
 ComponentCollisions::ComponentCollisions() = default;
 
@@ -118,12 +118,11 @@ void ComponentCollisions::checkCollisionsForAll() {
                     contactManifold,
                     brkObjectA,
                     brkObjectB,
-                    getBspMap(),
                     getVisibleTriangles()
             );
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back(
-                    collisionResolver);
-
+                    collisionResolver
+            );
         }
     }
 }
@@ -173,16 +172,16 @@ std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
     return *visibleTriangles;
 }
 
-void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &visibleTriangles) {
-    ComponentCollisions::visibleTriangles = &visibleTriangles;
+void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles) {
+    ComponentCollisions::visibleTriangles = &newVisibleTriangles;
 }
 
 std::vector<CollisionResolver *> &ComponentCollisions::getCollisions() {
     return collisions;
 }
 
-void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &collisions) {
-    ComponentCollisions::collisions = collisions;
+void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &newCollisions) {
+    ComponentCollisions::collisions = newCollisions;
 }
 
 

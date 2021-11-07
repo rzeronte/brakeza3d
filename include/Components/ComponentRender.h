@@ -15,7 +15,6 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"
-#include "ComponentBSP.h"
 #include "ComponentWindow.h"
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
@@ -38,8 +37,6 @@ public:
     void onEnd();
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
-
-    void onUpdateBSP();
 
     void onUpdateSceneObjects();
 

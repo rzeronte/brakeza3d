@@ -17,83 +17,16 @@ void ComponentCamera::preUpdate() {
 }
 
 void ComponentCamera::onUpdate() {
-
     getCamera()->UpdateVelocity();
-
-    if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
-        updateCameraBSPCollider();
-    }
 }
 
 void ComponentCamera::postUpdate() {
     if (this->is_fly_mode) {
-
         getCamera()->UpdateRotation();
         getCamera()->UpdatePositionForVelocity();
-
-        if (ComponentsManager::get()->getComponentBSP()->getBSP()->isLoaded()) {
-            // BSP teleporting update position
-            BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
-            if (!bspCollider->getPlayerModel()->teleportingCounter.isEnabled()) {
-                getCamera()->UpdatePositionForVelocity();
-            } else {
-                bspCollider->getPlayerModel()->teleportingCounter.update();
-                if (bspCollider->getPlayerModel()->teleportingCounter.isFinished()) {
-                    bspCollider->getPlayerModel()->teleportingCounter.setEnabled(false);
-                }
-            }
-        }
     }
 
     this->getCamera()->UpdateFrustum();
-}
-
-void ComponentCamera::drawCheckTrace(const std::string& o1, const std::string& o2) {
-    vec3_t mins = {1, 1, 1};
-    vec3_t maxs = {1, 1, 1};
-
-    ComponentsManager::get()->getComponentBSP()->getBSPCollider()->checkTrace(
-            Brakeza3D::get()->getObjectByLabel(o1)->getPosition(),
-            Brakeza3D::get()->getObjectByLabel(o2)->getPosition(),
-            mins,
-            maxs
-    );
-}
-
-void ComponentCamera::updateCameraBSPCollider() const {
-    BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
-    model_collision_t *player = bspCollider->getPlayerModel();
-
-    // velocity
-    Vertex3D currentVelocity = BSPCollider::QuakeToVertex3D(player->velocity);
-    Vertex3D velocity = getCamera()->velocity.getComponent() + currentVelocity;
-    BSPCollider::Vertex3DToVec3(velocity, player->velocity);
-
-    // camera position
-    Vertex3D cameraPosition = getCamera()->getPosition();
-    BSPCollider::Vertex3DToVec3(cameraPosition, player->origin);
-
-    // do it!
-    float deltaTime = Brakeza3D::get()->getDeltaTime();
-
-    bspCollider->SV_CheckVelocity(player);
-    bspCollider->SV_ClientThink(player, deltaTime);
-    BSPCollider::SV_AddGravity(player, deltaTime);
-    bspCollider->SV_CheckStuck(player);
-    bspCollider->SV_WalkMove(player, deltaTime);
-
-    //bspCollider->SV_FlyMove(player, deltaTime, NULL);
-
-    // update velocity
-    getCamera()->velocity.vertex2 = BSPCollider::QuakeToVertex3D(player->origin);
-}
-
-int ComponentCamera::pointHullContent(vec3_t p) {
-    BSPCollider *bspCollider = ComponentsManager::get()->getComponentBSP()->getBSPCollider();
-
-    int test = BSPCollider::SV_HullPointContents(&bspCollider->getWorldModel()->hulls[0], 0, p);
-
-    return test;
 }
 
 void ComponentCamera::onEnd() {
