@@ -211,7 +211,7 @@ add_executable(Brakeza3D
         console/Prompt.h
         console/ConsoleManager.cpp
         console/ConsoleManager.h
-        )
+        include/Components/ComponentConsole.cpp include/Components/ComponentConsole.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
