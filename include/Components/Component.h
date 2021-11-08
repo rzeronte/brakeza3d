@@ -57,8 +57,6 @@ public:
     // Accessors to Setup and Buffers
     EngineBuffers *BUFFERS;
     EngineSetup *SETUP;
-
-
 };
 
 

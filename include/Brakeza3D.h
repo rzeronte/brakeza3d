@@ -18,6 +18,7 @@
 #include "Components/ComponentGUI.h"
 #include "Components/ComponentGame.h"
 #include "Components/ComponentGameInput.h"
+#include "Components/ComponentConsole.h"
 #include <thread>
 
 class Brakeza3D {
@@ -38,6 +39,7 @@ private:
     ComponentGUI *componentGUI;
     ComponentGame *componentGame;
     ComponentGameInput *componentGameInput;
+    ComponentConsole *componentConsole;
 
     Timer engineTimer;
 

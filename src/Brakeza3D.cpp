@@ -19,6 +19,7 @@ Brakeza3D::Brakeza3D() {
     componentGUI = nullptr;
     componentGame = nullptr;
     componentGameInput = nullptr;
+    componentConsole = nullptr;
 }
 
 Brakeza3D *Brakeza3D::get() {
@@ -42,12 +43,14 @@ void Brakeza3D::start() {
     componentGUI = new ComponentGUI(finish);
     componentGame = new ComponentGame();
     componentGameInput = new ComponentGameInput(componentGame->getPlayer());
+    componentConsole = new ComponentConsole();
 
     componentsManager->registerComponent(componentWindow, "ComponentWindow");
     componentsManager->registerComponent(componentCamera, "ComponentCamera");
     componentsManager->registerComponent(componentCollisions, "ComponentCollisions");
     componentsManager->registerComponent(componentInput, "ComponentInput");
     componentsManager->registerComponent(componentSound, "ComponentSound");
+    componentsManager->registerComponent(componentConsole, "ComponentConsole");
     componentsManager->registerComponent(componentRender, "ComponentRender");
     componentsManager->registerComponent(componentGUI, "ComponentGUI");
     componentsManager->registerComponent(componentMenu, "ComponentMenu");

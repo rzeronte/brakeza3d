@@ -12,6 +12,7 @@
 #include "Components/ComponentGame.h"
 #include "Components/ComponentGameInput.h"
 #include "Components/ComponentMenu.h"
+#include "Components/ComponentConsole.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
@@ -19,13 +20,14 @@ enum ComponentID {
     COMPONENT_COLLISIONS = 2,
     COMPONENT_INPUT = 3,
     COMPONENT_SOUND = 4,
-    COMPONENT_RENDER = 5,
-    COMPONENT_GUI = 6,
-    COMPONENT_MENU = 7,
-    COMPONENT_WEAPONS = 8,
-    COMPONENT_HUD = 9,
-    COMPONENT_GAME = 10,
-    COMPONENT_GAME_INPUT = 11
+    COMPONENT_CONSOLE = 5,
+    COMPONENT_RENDER = 6,
+    COMPONENT_GUI = 7,
+    COMPONENT_MENU = 8,
+    COMPONENT_WEAPONS = 9,
+    COMPONENT_HUD = 10,
+    COMPONENT_GAME = 11,
+    COMPONENT_GAME_INPUT = 12
 };
 
 class ComponentsManager {
@@ -73,6 +75,10 @@ public:
 
     ComponentGameInput *
     getComponentGameInput() { return static_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]); };
+
+    ComponentConsole *
+    getComponentConsole() { return static_cast<ComponentConsole *>(components[ComponentID::COMPONENT_CONSOLE]); };
+
 };
 
 

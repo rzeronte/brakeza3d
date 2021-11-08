@@ -28,6 +28,9 @@ void ComponentsManager::configureComponents() {
     getComponentGUI()->setRenderer(getComponentWindow()->renderer);
     getComponentGUI()->setWindow(getComponentWindow()->window);
     getComponentGUI()->setContextOpenGl(&getComponentWindow()->contextOpenGL);
+
+    getComponentConsole()->setRenderer(getComponentWindow()->renderer);
+    getComponentConsole()->setTextureRender(getComponentWindow()->screenTexture);
 }
 
 std::vector<Object3D *> *ComponentsManager::getSceneObjects() const {
