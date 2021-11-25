@@ -2,266 +2,18 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="brakeza3d" targetName="brakeza3d" />
+      <config projectName="Brakeza3D" targetName="Brakeza3D" />
     </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_ARMOR1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_ARMOR2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_ARMOR3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BACKPK.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BARREL.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BATT0.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BATT1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BH10.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BH100.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BH25.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_BOMB.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_EXBOX2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_EXPLOB.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_KEY1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_KEY2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_NAIL0.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_NAIL1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_NAIL2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_ROCK0.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_ROCK1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_SHELL0.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/B_SHELL1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM4.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM5.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM6.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM7.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/DM8.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M4.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M5.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M6.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M7.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E1M8.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M4.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M5.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M6.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E2M7.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M4.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M5.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M6.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E3M7.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M1.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M2.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M3.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M4.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M5.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M6.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M7.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/E4M8.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/END.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/START.MAP" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/autosave/E1M1.1.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/autosave/E1M1.2.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/autosave/E1M1.3.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/autosave/E1M1.4.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/autosave/E1M1.5.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/brakeza3d.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/e2m10.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/e2m10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/ese.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/ese.prt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/ese.srf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/gfx/palette.lmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/gnu.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/original_quake_maps/release_readme.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/CMakeFiles/sdl2_3d_engine.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/CMakeFiles/sdl2_3d_engine.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/FindGLM.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/FindGLM.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/Findassimp.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/Findassimp.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Misc/Grid3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/headers/Misc/Grid3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Misc/Grid3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/Misc/Grid3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Objects/Mesh3DAnimated.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/Objects/Mesh3DAnimated.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Recastnavigation/RecastBuildContext.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Recastnavigation/RecastGeometry.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Recastnavigation/RecastGeometryLoader.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/Recastnavigation/RecastWrapper.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DebugUtils/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/src/DebugUtils/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DebugUtils/CMakeFiles/DebugUtils.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/src/DebugUtils/CMakeFiles/DebugUtils.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Demo/Demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Demo/Demo.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CompilerIdC/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/3.14.2/CompilerIdCXX/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourAlloc.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourAssert.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourCommon.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourNavMesh.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourNavMeshBuilder.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourNavMeshQuery.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/Source/DetourNode.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Detour.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/feature_tests.cxx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourAlloc.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourAssert.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourCommon.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourMath.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourNavMesh.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourNavMeshBuilder.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourNavMeshQuery.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourNode.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Include/DetourStatus.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourAlloc.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourAssert.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourCommon.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourNavMesh.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourNavMeshBuilder.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourNavMeshQuery.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/Source/DetourNode.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/install_manifest.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/libDetour.VERSION.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Detour/libDetour.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CompilerIdC/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/3.14.2/CompilerIdCXX/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourCrowd.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourLocalBoundary.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourObstacleAvoidance.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourPathCorridor.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourPathQueue.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/Source/DetourProximityGrid.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/DetourCrowd.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/feature_tests.cxx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourCrowd.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourLocalBoundary.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourObstacleAvoidance.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourPathCorridor.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourPathQueue.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Include/DetourProximityGrid.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourCrowd.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourLocalBoundary.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourObstacleAvoidance.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourPathCorridor.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourPathQueue.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/Source/DetourProximityGrid.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/install_manifest.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/libDetourCrowd.VERSION.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourCrowd/libDetourCrowd.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CompilerIdC/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/3.14.2/CompilerIdCXX/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/Source/DetourTileCache.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/Source/DetourTileCacheBuilder.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/DetourTileCache.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/feature_tests.cxx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/Include/DetourTileCache.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/Include/DetourTileCacheBuilder.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/Source/DetourTileCache.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/Source/DetourTileCacheBuilder.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/install_manifest.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/libDetourTileCache.VERSION.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DetourTileCache/libDetourTileCache.dylib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -313,6 +65,11 @@
     </dirStrings>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -406,29 +163,35 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/doc/images" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/headers" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.brakeza3d">
-    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="brakeza3d" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="brakeza3d" RUN_TARGET_NAME="brakeza3d">
+  <component name="RunManager" selected="CMake Application.Brakeza3D">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="brakeza3d" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="brakeza3d" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="brakeza3d" RUN_TARGET_NAME="brakeza3d">
+    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="CMake Application.Build All" />
-      <item itemvalue="CMake Application.brakeza3d" />
+      <item itemvalue="CMake Application.Brakeza3D" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -473,6 +236,7 @@
       <workItem from="1631133823243" duration="300000" />
       <workItem from="1631134869283" duration="932000" />
       <workItem from="1631139704967" duration="4831000" />
+      <workItem from="1637799349123" duration="1375000" />
     </task>
     <servers />
   </component>
@@ -536,11 +300,28 @@
             </State>
           </value>
         </entry>
-      </map>
-    </option>
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="8ad2f6cc-c136-48fd-b450-73150c687f73" value="TOOL_WINDOW" />
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="RoadToWindows" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
