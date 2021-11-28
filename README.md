@@ -62,11 +62,15 @@ You can download MinGW compiler from https://sourceforge.net/projects/mingw-w64/
 
 You can download MinGW precompiled libraries for SDL, SDL_image, SDL_ttf and SDL_mixer. When you have the files you will have to unzip them in the folder where MinGw is installed. Usually you must to copy a structure with three folders: 'lib', 'bin' and 'include'.
 
+[![BSP Loader](https://github.com/rzeronte/brakeza3d/raw/master/doc/images/libraries_brakeza_windows2.png)](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/cmakelist_windows_sample.png "CMakeList.txt sample")
+
 In addition you will also need to compile specific libraries for Assimp and Bullet Physics compiling for MinGW and when are ready, move this libraries to MinGW compiler folder.
 
 Finally, we need check routes for libraries and includes in CMakeList.txt according to your installation routes.
 
-# Mac compilation
+[![BSP Loader](https://github.com/rzeronte/brakeza3d/raw/master/doc/images/cmakelist_windows_sample.png)](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/cmakelist_windows_sample.png "CMakeList.txt sample")
+
+# OSX compilation
 
 Currently I do not compile for Mac, but the project was started on this system, it should not vary much compared to compiling with Linux, once the dependencies are satisfied.
 
