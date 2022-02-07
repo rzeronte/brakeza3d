@@ -25,29 +25,6 @@ void ComponentGame::startThirdPerson() {
     // start frustum position
     camera->setPosition(originalCameraPosition);
 
-    auto *plane = new Mesh3D();
-    plane->setLabel("plane");
-    plane->setPosition(Vertex3D(1000, 200, 100));
-    plane->setScale(100);
-    plane->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "plane.fbx"));
-    plane->modelTextures[0].loadTGAForNormalMap(std::string(EngineSetup::get()->TEXTURES_FOLDER + "mountain_texture_normal.png").c_str());
-    Brakeza3D::get()->addObject3D(plane, "plane");
-
-    auto *spaceship = new Mesh3D();
-    spaceship->setLabel("spaceship");
-    spaceship->setPosition(Vertex3D(700, 200, 100));
-    spaceship->setScale(1);
-    spaceship->AssimpLoadGeometryFromFile(std::string(
-    EngineSetup::get()->MODELS_FOLDER + "spaceship.fbx"));
-    Brakeza3D::get()->addObject3D(spaceship, "spaceship");
-
-    auto *asteroid = new Mesh3D();
-    asteroid->setLabel("asterpod");
-    asteroid->setPosition(Vertex3D(100, 100, 100));
-    asteroid->setScale(1);
-    asteroid->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "asteroid.fbx"));
-    //Brakeza3D::get()->addObject3D(asteroid, "asteroid");
-
     auto *cubes = new Mesh3D();
     cubes->setLabel("cubes");
     cubes->setPosition(Vertex3D(100, 100, 100));

@@ -47,6 +47,13 @@ void Triangle::updatePerspectiveNDCSpace(Frustum *frustum) {
     Cn = Transforms::PerspectiveNDCSpace(Cc, frustum);
 }
 
+void Triangle::updateOrthographicNDCSpace(Frustum *frustum)
+{
+    An = Transforms::OrthographicNDCSpace(Ac, frustum);
+    Bn = Transforms::OrthographicNDCSpace(Bc, frustum);
+    Cn = Transforms::OrthographicNDCSpace(Cc, frustum);
+}
+
 void Triangle::updateScreenSpace() {
     Transforms::screenSpace(As, An);
     Transforms::screenSpace(Bs, Bn);
