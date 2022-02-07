@@ -91,6 +91,7 @@ public:
     void updateCameraSpace(Object3D *cam);
 
     void updatePerspectiveNDCSpace(Frustum *frustum);
+    void updateOrthographicNDCSpace(Frustum *frustum);
 
     void updateScreenSpace();
 

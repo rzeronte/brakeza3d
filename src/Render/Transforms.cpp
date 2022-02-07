@@ -45,6 +45,26 @@ Vertex3D Transforms::PerspectiveNDCSpace(Vertex3D &V, Frustum *frustum) {
     return R.getInverse();
 }
 
+Vertex3D Transforms::OrthographicNDCSpace(Vertex3D &V, Frustum *frustum)
+{
+    const float f = frustum->farDist;
+    const float n = frustum->nearDist;
+
+    const float l = frustum->vNLs.x;
+    const float r = frustum->vNRs.x;
+
+    const float b = frustum->vNBs.y;
+    const float t = frustum->vNTs.y;
+
+    Vertex3D R(M4::getFrustumOrthographic(f, n, l, r, b, t) * V.createVertex4D());
+
+    R.u = V.u;
+    R.v = V.v;
+    R.z = -V.z;
+
+    return R.getInverse();
+}
+
 void Transforms::screenSpace(Point2D &P, Vertex3D &V) {
     P.x = (int) ((1 + V.x) * EngineSetup::get()->screenWidthHalf);
     P.y = (int) ((1 + V.y) * EngineSetup::get()->screenHeightHalf);

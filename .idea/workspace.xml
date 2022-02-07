@@ -19,243 +19,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/imgui/LICENSE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/docs/CHANGELOG.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/docs/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/docs/TODO.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/imconfig_allegro5.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.m" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/main.m" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/example_apple_metal.xcodeproj/project.pbxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Base.lproj/Main.storyboard" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Default-568h@2x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Info-iOS.plist" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Launch Screen.storyboard" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Base.lproj/Main.storyboard" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Info-macOS.plist" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/example_apple_opengl2.xcodeproj/project.pbxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/main.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win64.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/gen_spv.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.frag" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.vert" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/data/app.icf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/marmalade_example.mkb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_null/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_null/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/build_win32.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj.filters" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_examples.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/glcorearb.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/COPYING.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3native.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-32/glfw3.lib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-64/glfw3.lib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imconfig.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui_demo.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui_draw.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui_internal.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imgui_widgets.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imstb_rectpack.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imstb_textedit.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/imstb_truetype.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/Cousine-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/DroidSans.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/Karla-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/ProggyClean.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/ProggyTiny.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/Roboto-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/fonts/binary_to_compressed_c.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/freetype/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/natvis/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/natvis/imgui.natvis" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Camera.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Lights.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Tiles.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Weapons.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Render/M4.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Render/M4.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/models/cubes.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Objects/Vertex4D.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Render/Fragment.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Render/Fragment.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Objects/Vertex4D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/Camera3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Camera3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentConsole.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/DoorGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/DoorGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Cube3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Cube3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/LightPoint3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/LightPoint3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Point2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Point2D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Vertex3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Vertex3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Ghost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Ghost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Frustum.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Frustum.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/M3.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/M3.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Texture.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Texture.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Render/Transforms.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Transforms.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextWriter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextWriter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/WeaponAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/WeaponAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Component.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Demo/Demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Demo/Demo.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EngineSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyPartBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/NPCEnemyPartBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/PathFinder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/PathFinder.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Decal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Decal.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/LightPoint3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/LightPoint3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimatedCollection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimatedCollection.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Point2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Point2D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Vector3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Vector3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Vertex3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Vertex3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/BillboardBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Physics/BillboardBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Physics/Mesh3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Billboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Billboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Frustum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Frustum.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Logging.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Logging.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/M3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/M3.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/PhysicsDebugDraw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/PhysicsDebugDraw.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Plane.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Plane.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Texture.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -267,6 +44,7 @@
     <option name="formatViaClangd" value="false" />
     <option name="clangWarnings" value="-Wno-unused-variable,-Wno-infinite-recursion,-Werror=implicit-function-declaration,-Wshadow,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wuninitialized,-Wunused-label,-Wunused-lambda-capture,-Wno-writable-strings" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -647,14 +425,44 @@
             <State />
           </value>
         </entry>
+        <entry key="eec8b3c5-0936-4460-a384-e79b03da37cd">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:/home/eduardo/CLionProjects/brakeza3d/assets/models" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
       </map>
     </option>
     <option name="OPEN_GENERIC_TABS">
       <map>
         <entry key="00ec39bd-8884-4832-b457-d4f7b67400ce" value="TOOL_WINDOW" />
         <entry key="8ad2f6cc-c136-48fd-b450-73150c687f73" value="TOOL_WINDOW" />
+        <entry key="eec8b3c5-0936-4460-a384-e79b03da37cd" value="TOOL_WINDOW" />
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="light system" />
+    <option name="LAST_COMMIT_MESSAGE" value="light system" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

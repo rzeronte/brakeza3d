@@ -1,4 +1,4 @@
-cmake-build-debug
-.idea
-assets/maps
-.idea/workspace.xml
+.idea/inspectionProfiles/
+.idea/vcs.xml
+build/
+cmake-build-debug/
