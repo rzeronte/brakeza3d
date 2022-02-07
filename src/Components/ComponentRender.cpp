@@ -82,11 +82,11 @@ void ComponentRender::createLightPointsDepthMappings() {
             this->hiddenSurfaceRemovalTriangleForLight(ft, lightpoint, visibleTrianglesFromLight, clippedTrianglesFromLight);
         }
 
-        visibleTrianglesFromLight.insert(
+        /*visibleTrianglesFromLight.insert(
                 visibleTrianglesFromLight.end(),
                 std::make_move_iterator(clippedTrianglesFromLight.begin()),
                 std::make_move_iterator(clippedTrianglesFromLight.end())
-        );
+        );*/
 
         for (auto & t : visibleTrianglesFromLight) {
             this->triangleRasterizerForDepthMapping(t, lightpoint);
@@ -159,7 +159,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoi
     }
 
     // Clipping (needs objectSpace)
-    if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
+    /*if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
         if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
                 l->frustum,
@@ -173,7 +173,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoi
         }
 
         return;
-    }
+    }*/
 
     // Frustum Culling (needs objectSpace)
     if (!l->frustum->isVertexInside(t->Ao) && !l->frustum->isVertexInside(t->Bo) && !l->frustum->isVertexInside(t->Co) ) {
@@ -181,7 +181,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoi
     }
 
     t->updateCameraSpace(l);
-    t->updatePerspectiveNDCSpace(l->frustum);
+    t->updateOrthographicNDCSpace(l->frustum);
     t->updateScreenSpace();
     t->updateBoundingBox();
     t->updateFullArea();
@@ -560,7 +560,7 @@ Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
 
         if (SETUP->ENABLE_SHADOW_MAPPING && SETUP->CREATE_LIGHT_ZBUFFER) {
             Transforms::cameraSpace(Dl, D, lightpoint);
-            Dl = Transforms::PerspectiveNDCSpace(Dl, lightpoint->frustum);
+            Dl = Transforms::OrthographicNDCSpace(Dl, lightpoint->frustum);
             float depth = Dl.z;
             Transforms::screenSpace(DP, Dl);
 
