@@ -46,13 +46,13 @@ void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin) {
 
     for (int x = 0; x < c->w; x++) {
         for (int y = 0; y < c->h; y++) {
-            Uint32 color = Tools::readSurfacePixel(this->characterSurfaces[ascii], x, y);
+            Color color = Tools::readSurfacePixel(this->characterSurfaces[ascii], x, y);
 
-            if (color == Color::black()) {
+            if (color.getColor() == Color::black().getColor()) {
                 continue;
             }
-            //EngineBuffers::getInstance()->HUDbuffer[(yOrigin + y) * 320 + (xOrigin + x) ] = Tools::random(200, 256);
-            EngineBuffers::getInstance()->setVideoBuffer(xOrigin + x, yOrigin + y, color);
+            //EngineBuffers::get()->HUDbuffer[(yOrigin + y) * 320 + (xOrigin + x) ] = Tools::random(200, 256);
+            EngineBuffers::getInstance()->setVideoBuffer(xOrigin + x, yOrigin + y, color.getColor());
         }
     }
 }

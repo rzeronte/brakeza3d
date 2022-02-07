@@ -56,8 +56,8 @@ btRigidBody *BillboardBody::makeRigidBody(float mass, Vertex3D size, btDiscreteD
 }
 
 void BillboardBody::updateTrianglesCoordinatesAndTexture(Camera3D *cam) {
-    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
+    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
 
     this->updateUnconstrainedQuad(this, up, right);
 

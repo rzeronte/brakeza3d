@@ -141,19 +141,19 @@ void Mesh3D::copyFrom(Mesh3D *source) {
 void Mesh3D::onUpdate() {
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_OCTREE) {
+    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
         if (this->octree != nullptr) {
             Drawable::drawOctree(this->octree, true);
         }
     }
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_GRID) {
+    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
         if (this->grid != nullptr) {
             Drawable::drawGrid3D(this->grid);
         }
     }
 
-    if (EngineSetup::getInstance()->DRAW_MESH3D_AABB) {
+    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
         this->updateBoundingBox();
         Drawable::drawAABB(&this->aabb, Color::white());
     }
@@ -220,7 +220,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             }
 
             std::string FullPath =
-                    EngineSetup::getInstance()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
+                    EngineSetup::get()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
 
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
             auto *t = new Texture();

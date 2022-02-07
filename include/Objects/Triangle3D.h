@@ -11,6 +11,7 @@
 #include <list>
 #include <vector>
 #include "../OpenCL/OCLTriangle.h"
+#include "../Misc/Color.h"
 
 class Triangle {
 
@@ -24,6 +25,8 @@ public:
     Vertex3D Ac, Bc, Cc;
     Vertex3D An, Bn, Cn;
     Point2D As, Bs, Cs;
+
+    Vertex3D Anormal, Bnormal, Cnormal;
 
     float fullArea;
     float reciprocalFullArea;
@@ -81,13 +84,13 @@ public:
 
     Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent);
 
-    void updateFullVertexSpaces(Camera3D *cam);
+    void updateFullVertexSpaces(Frustum *frustum);
 
     void updateObjectSpace();
 
-    void updateCameraSpace(Camera3D *cam);
+    void updateCameraSpace(Object3D *cam);
 
-    void updateNDCSpace(Camera3D *cam);
+    void updatePerspectiveNDCSpace(Frustum *frustum);
 
     void updateScreenSpace();
 
@@ -103,12 +106,12 @@ public:
 
     Vertex3D getCenterOfMass() const;
 
-    void drawNormal(Camera3D *cam, Uint32 color) const;
+    void drawNormal(Camera3D *cam, Color color) const;
 
 
-    void processPixelTexture(Uint32 &, float, float, bool) const;
+    void processPixelTexture(Color &pixelColor, float tex_u, float tex_v, bool bilinear) const;
 
-    void processPixelLightmap(Uint32 &, float, float, const Uint8 &, const Uint8 &, const Uint8 &, const Uint8 &);
+    void processPixelLightmap(Color &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green, const Uint8 &blue, const Uint8 &alpha);
 
     //void shadowMapping(LightPoint3D *lp);
     //void scanVerticesForShadowMapping(LightPoint3D *lp);
@@ -124,7 +127,7 @@ public:
 
     void setLightmap(Texture *texture);
 
-    void clipping(Camera3D *cam, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent,
+    void clipping(Frustum *frustum, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent,
                   std::vector<Triangle *> &triangles, bool isBSP);
 
     void setClipped(bool);

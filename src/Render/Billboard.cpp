@@ -6,7 +6,7 @@
 Billboard::Billboard() {
     this->texture = new Texture();
 
-    EngineSetup *setup = EngineSetup::getInstance();
+    EngineSetup *setup = EngineSetup::get();
     this->width = setup->BILLBOARD_WIDTH_DEFAULT;
     this->height = setup->BILLBOARD_HEIGHT_DEFAULT;
 

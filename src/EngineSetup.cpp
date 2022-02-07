@@ -3,7 +3,7 @@
 
 EngineSetup *EngineSetup::instance = nullptr;
 
-EngineSetup *EngineSetup::getInstance() {
+EngineSetup *EngineSetup::get() {
     if (instance == nullptr) {
         instance = new EngineSetup();
     }
@@ -27,6 +27,6 @@ EngineSetup::EngineSetup() {
 }
 
 void EngineSetup::setResolution(int w, int h) {
-    EngineSetup::getInstance()->screenWidth = w;
-    EngineSetup::getInstance()->screenHeight = h;
+    EngineSetup::get()->screenWidth = w;
+    EngineSetup::get()->screenHeight = h;
 }

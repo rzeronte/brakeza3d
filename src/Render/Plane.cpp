@@ -127,7 +127,7 @@ Vertex3D Plane::closest(Vertex3D p) const {
 bool Plane::isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes) {
     for (auto & plane : planes) {
         float d = plane.distance(v);
-        if (d >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        if (d >= EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }

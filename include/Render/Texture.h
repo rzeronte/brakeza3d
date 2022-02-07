@@ -22,10 +22,12 @@ struct miptex_t {
 
 class Texture {
 private:
-    SDL_Surface *mip_mapping_1{};
-    SDL_Surface *mip_mapping_2{};
-    SDL_Surface *mip_mapping_4{};
-    SDL_Surface *mip_mapping_8{};
+    SDL_Surface *mip_mapping_1;
+    SDL_Surface *mip_mapping_2;
+    SDL_Surface *mip_mapping_4;
+    SDL_Surface *mip_mapping_8;
+    SDL_Surface *normalMap;
+    bool haveNormalMap = false;
 
     bool lightMapped;
     bool mipMapped;
@@ -62,11 +64,14 @@ public:
 
     bool loadTGA(const char *file, int);
 
+    bool loadTGAForNormalMap(const char *file);
+
     void loadFromRaw(unsigned int *texture, int, int, int);
 
     void loadLightmapFromRaw(int frame, unsigned int *texture, int, int);
 
     SDL_Surface *getSurface(int);
+    SDL_Surface *getNormalMap();
 
     void consoleInfo();
 
@@ -83,6 +88,8 @@ public:
     bool isLightMapped() const;
 
     void setLightMapped(bool lightMapped);
+
+    bool haveNormal();
 
 };
 

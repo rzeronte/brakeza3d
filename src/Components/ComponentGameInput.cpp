@@ -31,7 +31,7 @@ void ComponentGameInput::onEnd() {
 void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish) {
     handleMouse(event);
     handleInGameInput(event, finish);
-    handleMovingCamera(event, finish);
+    handleKeyboardMovingCamera(event, finish);
 }
 
 void ComponentGameInput::handleMouse(SDL_Event *event) {
@@ -42,7 +42,7 @@ void ComponentGameInput::handleMouse(SDL_Event *event) {
     }
 }
 
-void ComponentGameInput::handleMovingCamera(SDL_Event *event, bool &end) {
+void ComponentGameInput::handleKeyboardMovingCamera(SDL_Event *event, bool &end) {
     if (SETUP->MENU_ACTIVE) return;
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
@@ -81,12 +81,12 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     if (SETUP->MENU_ACTIVE || SETUP->LOADING) return;
 
-    this->handleZoom(event);
-    this->handleCrouch(event);
-    this->handleFire(event);
-    this->handleWeaponReload(event);
-    this->handleSniper(event);
-    this->handleWeaponSelector();
+    //this->handleZoom(event);
+    //this->handleCrouch(event);
+    //this->handleFire(event);
+    //this->handleWeaponReload(event);
+    //this->handleSniper(event);
+    //this->handleWeaponSelector();
 
 }
 
@@ -245,18 +245,16 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
                 Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("sniperOn"),
                                       EngineSetup::SoundChannels::SND_WEAPON, 0);
 
-                cam->horizontal_fov = SETUP->ZOOM_FOV;
                 cam->frustum->setup(
                         cam->getPosition(),
                         Vertex3D(0, 0, 1),
                         SETUP->up,
                         SETUP->right,
-                        cam->getNearDistance(),
-                        cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
-                        cam->farDistance,
-                        cam->calcCanvasFarHeight(), cam->calcCanvasFarWidth()
+                        EngineSetup::get()->ZOOM_FOV,
+                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
                 );
-                cam->UpdateFrustum();
+                cam->updateFrustum();
             }
         }
 
@@ -265,18 +263,16 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
 
                 ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false);
 
-                cam->horizontal_fov = SETUP->HORIZONTAL_FOV;
                 cam->frustum->setup(
                         cam->getPosition(),
                         Vertex3D(0, 0, 1),
                         SETUP->up,
                         SETUP->right,
-                        cam->getNearDistance(),
-                        cam->calcCanvasNearHeight(), cam->calcCanvasNearWidth(),
-                        cam->farDistance,
-                        cam->calcCanvasFarHeight(), cam->calcCanvasFarWidth()
+                        EngineSetup::get()->HORIZONTAL_FOV,
+                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
                 );
-                cam->UpdateFrustum();
+                cam->updateFrustum();
 
             }
         }
@@ -287,63 +283,31 @@ void ComponentGameInput::handleSniper(SDL_Event *event) {
 }
 
 void ComponentGameInput::handleWeaponSelector() {
-    return;
-    ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
     SoundPackage *soundPackage = BUFFERS->soundPackage;
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
-    if (keyboard[SDL_SCANCODE_1] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::PISTOL]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::PISTOL;
+    if (keyboard[SDL_SCANCODE_1]) {
     }
 
-    if (keyboard[SDL_SCANCODE_2] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::REPEATER]->isAvailable()) {
+    if (keyboard[SDL_SCANCODE_2]) {
         Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::REPEATER;
     }
 
-    if (keyboard[SDL_SCANCODE_3] &&
-        weaponManager->weaponTypes[EngineSetup::WeaponsTypes::STATIC_RIFLE]->isAvailable()) {
+    if (keyboard[SDL_SCANCODE_3] ) {
         Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::STATIC_RIFLE;
-    }
-
-    if (keyboard[SDL_SCANCODE_4] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::HAR]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::HAR;
-    }
-
-    if (keyboard[SDL_SCANCODE_5] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::CHAINGUN]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::CHAINGUN;
-    }
-
-    if (keyboard[SDL_SCANCODE_6] &&
-        weaponManager->weaponTypes[EngineSetup::WeaponsTypes::GAUSS_CANNON]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::GAUSS_CANNON;
-    }
-
-    if (keyboard[SDL_SCANCODE_7] && weaponManager->weaponTypes[EngineSetup::WeaponsTypes::RAILGUN]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::RAILGUN;
-    }
-
-    if (keyboard[SDL_SCANCODE_8] &&
-        weaponManager->weaponTypes[EngineSetup::WeaponsTypes::ROCKETLAUNCHER]->isAvailable()) {
-        Tools::playMixedSound(soundPackage->getSoundByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-        weaponManager->currentWeaponIndex = EngineSetup::WeaponsTypes::ROCKETLAUNCHER;
     }
 }
 
-void ComponentGameInput::handleZoom(SDL_Event *event) {
+void ComponentGameInput::handleZoom(SDL_Event *event)
+{
+    float horizontal_fov = SETUP->HORIZONTAL_FOV;
     if (event->key.keysym.sym == SDLK_z) {
         if (event->type == SDL_KEYDOWN) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = SETUP->ZOOM_FOV;
+            horizontal_fov = SETUP->ZOOM_FOV;
         }
 
         if (event->type == SDL_KEYUP) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->horizontal_fov = SETUP->HORIZONTAL_FOV;
+            horizontal_fov = SETUP->HORIZONTAL_FOV;
         }
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(
@@ -351,15 +315,12 @@ void ComponentGameInput::handleZoom(SDL_Event *event) {
                 Vertex3D(0, 0, 1),
                 SETUP->up,
                 SETUP->right,
-                ComponentsManager::get()->getComponentCamera()->getCamera()->getNearDistance(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasNearHeight(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasNearWidth(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->farDistance,
-                ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasFarHeight(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->calcCanvasFarWidth()
+                horizontal_fov,
+                ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+                EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
         );
 
-        ComponentsManager::get()->getComponentCamera()->getCamera()->UpdateFrustum();
+        ComponentsManager::get()->getComponentCamera()->getCamera()->updateFrustum();
     }
 }
 

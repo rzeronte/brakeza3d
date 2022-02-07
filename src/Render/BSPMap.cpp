@@ -43,8 +43,8 @@ void BSPMap::init(Camera3D *cam) {
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam) {
     this->init(cam);
 
-    std::string bspFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + bspFilename);
-    std::string paletteFilename_str = std::string(EngineSetup::getInstance()->MAPS_FOLDER + paletteFilename);
+    std::string bspFilename_str = std::string(EngineSetup::get()->MAPS_FOLDER + bspFilename);
+    std::string paletteFilename_str = std::string(EngineSetup::get()->MAPS_FOLDER + paletteFilename);
 
     if (!LoadBSP(bspFilename_str.c_str())) {
         printf("[ERROR] Map::Initialize() Error loading bsp file\n");
@@ -324,19 +324,19 @@ void BSPMap::InitializeLightmaps() {
                     for (int x = 0; x < smax; x++) {
                         int i = x + y * smax;
                         unsigned char lumen = *lm_data;
-                        auto c = (Uint32) Tools::createRGB(lumen / 5, lumen / 5, lumen / 5);
+                        auto c = Color(lumen / 5, lumen / 5, lumen / 5);
                         switch (maps) {
                             case 0:
-                                texture[i] += c;
+                                texture[i] += c.getColor();
                                 break;
                             case 1:
-                                texture2[i] += c;
+                                texture2[i] += c.getColor();
                                 break;
                             case 2:
-                                texture3[i] += c;
+                                texture3[i] += c.getColor();
                                 break;
                             case 3:
-                                texture4[i] += c;
+                                texture4[i] += c.getColor();
                                 break;
                             default:
                                 break;
@@ -591,7 +591,7 @@ void BSPMap::createBulletPhysicsShape() {
 
         for (int i = offset; i < offset + num; i++) {
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i]->updateFullVertexSpaces(this->camera);
+            this->model_triangles[i]->updateFullVertexSpaces(this->camera->frustum);
             btVector3 a = btVector3(this->model_triangles[i]->Ao.x, this->model_triangles[i]->Ao.y,
                                     this->model_triangles[i]->Ao.z);
             btVector3 b = btVector3(this->model_triangles[i]->Bo.x, this->model_triangles[i]->Bo.y,
@@ -1102,7 +1102,7 @@ void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
 
 
 void BSPMap::createObjects3DFromBSPEntities() {
-    EngineSetup *engineSetup = EngineSetup::getInstance();
+    EngineSetup *engineSetup = EngineSetup::get();
 
     Logging::Log("BSP Num Entities: " + std::to_string(this->n_entities), "");
     Brakeza3D *brakeza3D = Brakeza3D::get();
@@ -1219,7 +1219,7 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     auto *o = new ItemHealthGhost();
                     o->setLabel("health");
                     o->setPosition( pos );
-                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::getInstance()->ITEM_FIRSTAID_ICON );
+                    o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::get()->ITEM_FIRSTAID_ICON );
                     o->setDimensions( 3, 3 );
                     o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
                     brakeza3D->addObject3D( o, o->getLabel() );

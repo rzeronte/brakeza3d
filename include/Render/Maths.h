@@ -74,6 +74,8 @@ public:
     static float normalizeToRange(float value, float min, float max);
 
     static float sqrt1(const float &n);
+
+    static Vertex3D getHalfwayVector(Vertex3D a, Vertex3D b);
 };
 
 

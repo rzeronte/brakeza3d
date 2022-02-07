@@ -13,7 +13,8 @@ EngineBuffers *EngineBuffers::getInstance() {
 }
 
 EngineBuffers::EngineBuffers() {
-    EngineSetup *setup = EngineSetup::getInstance();
+    EngineSetup *setup = EngineSetup::get();
+    this->fireColors.resize(37);
 
     sizeBuffers = setup->RESOLUTION;
 
@@ -22,8 +23,8 @@ EngineBuffers::EngineBuffers() {
 
     //make sure the fire buffer is zero in the beginning
     HUDbuffer = new Uint32[sizeBuffers];
-    int h = EngineSetup::getInstance()->screenHeight;
-    int w = EngineSetup::getInstance()->screenWidth;
+    int h = EngineSetup::get()->screenHeight;
+    int w = EngineSetup::get()->screenWidth;
 
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
@@ -67,7 +68,7 @@ EngineBuffers::EngineBuffers() {
 }
 
 void EngineBuffers::clearDepthBuffer() const {
-    std::fill(depthBuffer, depthBuffer + sizeBuffers, 10000);
+    std::fill(depthBuffer, depthBuffer + sizeBuffers, 90000);
 }
 
 float EngineBuffers::getDepthBuffer(int x, int y) const {
@@ -99,8 +100,8 @@ float EngineBuffers::getVideoBuffer(int x, int y) const {
 }
 
 void EngineBuffers::clearVideoBuffer() const {
-    if (EngineSetup::getInstance()->ENABLE_FOG) {
-        std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::getInstance()->FOG_COLOR);
+    if (EngineSetup::get()->ENABLE_FOG) {
+        std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::get()->FOG_COLOR.getColor());
         return;
     }
 
@@ -115,20 +116,20 @@ void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
 void EngineBuffers::makeFireColors() {
     // Populate pallete
     for (int i = 0; i < 111 / 3; i++) {
-        fireColors[i] = Tools::createRGB(
+        fireColors[i] = Color(
                 rgbs[i * 3 + 0],
                 rgbs[i * 3 + 1],
                 rgbs[i * 3 + 2]
         );
 
-        videoBuffer[100 * 320 + i] = fireColors[i];
+        videoBuffer[100 * 320 + i] = fireColors[i].getColor();
     }
 }
 
 void EngineBuffers::fireShaderSetup() const {
     // Set whole screen to 0 (color: 0x07,0x07,0x07)
-    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
-    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
+    int FIRE_WIDTH = EngineSetup::get()->FIRE_WIDTH;
+    int FIRE_HEIGHT = EngineSetup::get()->FIRE_HEIGHT;
 
     int firePixelsBufferSize = FIRE_HEIGHT * FIRE_WIDTH;
     for (int i = 0; i < firePixelsBufferSize; i++) {

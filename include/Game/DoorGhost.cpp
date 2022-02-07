@@ -82,7 +82,7 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ) {
     Vertex3D move = Vertex3D::zero();
 
     M3 r = M3::getMatrixRotationForEulerAngles(0, -angleMoving, 0);
-    Vertex3D right = r * EngineSetup::getInstance()->right;
+    Vertex3D right = r * EngineSetup::get()->right;
 
     if (reverseMoving) {
         right = right.getInverse();
@@ -126,7 +126,7 @@ Vertex3D DoorGhost::integrateHorizontalMovement(float sizeX, float sizeZ) {
 
 Vertex3D DoorGhost::integrateVerticalMovement(float sizeY) {
     Vertex3D move;
-    Vertex3D down = EngineSetup::getInstance()->down;
+    Vertex3D down = EngineSetup::get()->down;
 
     if (reverseMoving) {
         down = down.getInverse();

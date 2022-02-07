@@ -27,7 +27,7 @@ public:
 
     Uint32 *HUDbuffer;
 
-    int widthVideoBuffer = EngineSetup::getInstance()->screenWidth;
+    int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
     int *firePixelsBuffer;
 
@@ -41,7 +41,7 @@ public:
     std::vector<NPCEnemyBody *> enemyTemplates;
 
     // Fire colors for menu fire effect
-    Uint32 fireColors[37]{};
+    std::vector<Color> fireColors;
     int rgbs[111] = {
             0x07, 0x07, 0x07,
             0x1F, 0x07, 0x07,

@@ -17,21 +17,23 @@ class Drawable {
 public:
     static void drawBox2D(SDL_Rect r);
 
-    static void drawVertex(Vertex3D v, Camera3D *cam, Uint32 color);
+    static void drawVertex(Vertex3D v, Camera3D *cam, Color color);
 
-    static void drawVector3D(Vector3D V, Camera3D *cam, Uint32 color);
+    static void drawVector3D(Vector3D V, Camera3D *cam, Color color);
 
-    static void drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color);
+    static void drawVector3DZBuffer(Vector3D V, Camera3D *cam, Color color);
 
-    static void drawLine2D(Line2D L, Uint32 color);
+    static void drawLine2D(Line2D L, Color color);
 
-    static void drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_increment);
+    static void drawLinePoints(Vertex3D from, Vertex3D to, Color color);
+
+    static void drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_increment);
 
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
 
     static void drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides);
 
-    static void drawPlane(Plane P, Camera3D *cam, Uint32 color);
+    static void drawPlane(Plane P, Camera3D *cam, Color color);
 
     static void drawMainAxis(Camera3D *cam);
 
@@ -47,15 +49,13 @@ public:
 
     static void waterShader(int type);
 
-    static void fireShaderOnHUDBuffer();
-
     static void drawFadeIn();
 
     static void drawFadeOut();
 
     static void drawFacePercent(float percent);
 
-    static void drawAABB(AABB3D *, Uint32);
+    static void drawAABB(AABB3D *, Color);
 
     static void drawOctree(Octree *, bool onlyWithTriangles);
 
@@ -66,6 +66,8 @@ public:
     static void drawPathInGrid(Grid3D *, std::stack<PairData>);
 
     static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
+
+    static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
 };
 
 

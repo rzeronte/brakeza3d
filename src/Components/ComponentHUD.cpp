@@ -12,7 +12,7 @@ void ComponentHUD::onStart() {
 
     textureWriter = new TextWriter(
             ComponentsManager::get()->getComponentWindow()->renderer,
-            std::string(EngineSetup::getInstance()->SPRITES_FOLDER + "conchars.png").c_str()
+            std::string(EngineSetup::get()->SPRITES_FOLDER + "conchars.png").c_str()
     );
 }
 
@@ -51,8 +51,8 @@ void ComponentHUD::loadImages() {
 }
 
 void ComponentHUD::writeTextCenter(const char *text, bool bold) const {
-    int totalW = EngineSetup::getInstance()->screenWidth;
-    int totalH = EngineSetup::getInstance()->screenHeight;
+    int totalW = EngineSetup::get()->screenWidth;
+    int totalH = EngineSetup::get()->screenHeight;
 
     int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
     this->writeText(xPosition, totalH / 2, text, bold);

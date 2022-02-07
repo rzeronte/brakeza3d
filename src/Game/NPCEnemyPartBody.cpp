@@ -30,7 +30,7 @@ btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
     this->m_body->setCcdSweptSphereRadius(0.02f);
 
 
-    Vertex3D up = EngineSetup::getInstance()->up.getInverse();
+    Vertex3D up = EngineSetup::get()->up.getInverse();
 
     float r1 = ((float) std::rand() / (RAND_MAX)) + 1;
     //double r2 = ((double) rand() / (RAND_MAX)) + 1;

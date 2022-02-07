@@ -19,10 +19,6 @@
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
 
-struct Fragment {
-    float alpha, theta, gamma, depth, affineUV, texU, texV, lightU, lightV;
-};
-
 class ComponentRender : public Component {
 public:
 
@@ -43,6 +39,7 @@ public:
     void hiddenSurfaceRemoval();
 
     void hiddenSurfaceRemovalTriangle(Triangle *t);
+    void hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoint3D *l, std::vector<Triangle *> &visibleTrianglesForLight, std::vector<Triangle *> &clippedTriangles);
 
     void hiddenOctreeRemoval();
 
@@ -56,15 +53,16 @@ public:
 
     void drawTriangles(std::vector<Triangle *> &visibleTriangles);
 
-    void processTriangle(Triangle *t);
+    void render(Triangle *t);
 
     void triangleRasterizer(Triangle *t);
+    void triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint);
 
     void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *, bool bilinear);
 
     void drawTilesTriangles(std::vector<Triangle *> *visibleTriangles);
 
-    void drawSceneObjectsAxis();
+    void drawSceneOverlappingItems();
 
     void initTiles();
 
@@ -76,9 +74,11 @@ public:
 
     void processPixelTextureAnimated(Fragment *fragment);
 
-    Uint32 processPixelFog(Fragment *fragment, Uint32 pixelColor);
+    Color processPixelFog(Fragment *fragment, Color pixelColor);
 
-    Uint32 processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor);
+    Color processPixelLights(Triangle *t, Fragment *f, Color c);
+
+    void updateLights();
 
     void updateFPS(const float deltaTime);
 
@@ -90,6 +90,8 @@ public:
 
     std::vector<Triangle *> &getVisibleTriangles();
 
+    void extractLightPointsFromObjects3D();
+    void createLightPointsDepthMappings();
     std::vector<LightPoint3D *> &getLightPoints();
 
     std::vector<Triangle *> frameTriangles;
@@ -98,8 +100,8 @@ public:
     std::vector<LightPoint3D *> lightpoints;
 
     std::vector<Tile> tiles;
-    int sizeTileWidth = (EngineSetup::getInstance()->screenWidth / 2);
-    int sizeTileHeight = (EngineSetup::getInstance()->screenHeight / 2);
+    int sizeTileWidth = (EngineSetup::get()->screenWidth / 2);
+    int sizeTileHeight = (EngineSetup::get()->screenHeight / 2);
     int tilesWidth;
     int tilesHeight;
     int numTiles;

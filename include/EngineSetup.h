@@ -4,6 +4,7 @@
 #include "Misc/Color.h"
 #include "Objects/Vertex3D.h"
 #include "Misc/Timer.h"
+#include "../imgui/imgui.h"
 #include <map>
 
 class EngineSetup {
@@ -11,7 +12,7 @@ class EngineSetup {
 public:
     EngineSetup();
 
-    static EngineSetup *getInstance();
+    static EngineSetup *get();
 
     static EngineSetup *instance;
 
@@ -36,28 +37,34 @@ public:
     Vertex3D gravity = Vertex3D(0, 10.0f, 0);
 
     // Screen dimension constants
-    int screenWidth = 640;
-    int screenHeight = 480;
+    int screenWidth = 320;
+    int screenHeight = 240;
+
+    float screenWidthHalf = (float) screenWidth / 2;
+    float screenHeightHalf = (float) screenHeight / 2;
 
     int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = true;
+    bool BASED_TILE_RENDER_THREADED = false;
+
+    ImVec4 FOG_IMGUI_COLOR;
 
     float EPSILON = 0.00001f;
 
-    bool ENABLE_FOG = true;
+    bool ENABLE_FOG = false;
     float FOG_DISTANCE = 1000;
     float FOG_INTENSITY = 1;
-    Uint32 FOG_COLOR = Color::FOGDefault();
-    float FRUSTUM_FARPLANE_DISTANCE = 1250;
+    Color FOG_COLOR = Color::FOGDefault();
+    float FRUSTUM_FARPLANE_DISTANCE = 10250;
     float HORIZONTAL_FOV = 90;
 
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
     bool RENDER_MAIN_AXIS = true;
-    bool RENDER_OBJECTS_AXIS = false;
+    bool RENDER_OBJECTS_AXIS = true;
+    float OBJECT_AXIS_SIZE = 10;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
@@ -73,7 +80,8 @@ public:
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = true;
+    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool DRAW_MAIN_DEEP_MAPPING = false;
 
     bool DRAW_ANIMATION_BONES = false;
     bool DRAW_DECAL_WIREFRAMES = false;
@@ -85,6 +93,7 @@ public:
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
 
+
     bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
     bool DRAW_MESH3D_GRID = false;
@@ -94,11 +103,15 @@ public:
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
     // Z BUFFER
-    bool ENABLE_SHADOW_CASTING = false;
-    bool ENABLE_LIGHTS = true;
+    bool CREATE_LIGHT_ZBUFFER = false;
+    bool ENABLE_SHADOW_MAPPING = false;
+    bool ENABLE_LIGHTS = false;
+    bool ENABLE_LIGHTS_SPECULAR = true;
+    bool DRAW_LIGHTS_DIRECTION = false;
+    float LIGHTS_DIRECTION_SIZE = 500;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = false;
+    bool DRAW_FPS = true;
 
     // FRUSTUM PLANES
     int NEAR_PLANE = 0;

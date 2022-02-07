@@ -4,13 +4,16 @@
 #include "Object3D.h"
 #include "../Render/Frustum.h"
 #include "../Components/Camera3D.h"
+#include "../../imgui/imgui.h"
+#include "../Render/Fragment.h"
+#include "../Misc/Color.h"
 
 class LightPoint3D : public Object3D {
 public:
 
     LightPoint3D();
 
-    void syncFrustum() const;
+    void syncFrustum();
 
     void clearShadowMappingBuffer() const;
 
@@ -18,7 +21,11 @@ public:
 
     void setShadowMappingBuffer(int x, int y, float value) const;
 
-    Uint32 color{};
+    Color color;
+    Color specularColor;
+
+    ImVec4 imgui_color;
+    ImVec4 imgui_color_specularity;
 
     float kc = 1;   // constant attenuation
     float kl = 0;   // linear attenuation
@@ -26,14 +33,29 @@ public:
 
     float p = 100;
 
-    Camera3D *cam;
+    Frustum *frustum;
+
     float *shadowMappingBuffer;
     int sizeBuffer;
 
+    float specularComponent = 20;
+
+    bool showDeepMapping;
+    bool showFrustum;
+
     void setColor(int, int, int);
+    void setColorSpecularity(int, int, int);
 
-    Uint32 mixColor(Uint32 c, Vertex3D Q);
+    Color mixColor(Color colorTexture, Vertex3D Q, Fragment *);
 
+    void onUpdate();
+
+    void setPower(float p);
+
+    Vertex3D getHalfWay(Vertex3D v);
+    void setSpecularComponent(float m);
+
+    void drawDeepMap(int pos_x, int pos_y) const;
 };
 
 

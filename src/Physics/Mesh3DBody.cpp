@@ -11,7 +11,7 @@ btRigidBody *Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDyna
     auto *me = new btConvexHullShape();
 
     for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateFullVertexSpaces(cam);
+        modelTriangle->updateFullVertexSpaces(cam->frustum);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {
@@ -139,7 +139,7 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDisc
     this->triangleMesh = new btTriangleMesh();
 
     for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateFullVertexSpaces(cam);
+        modelTriangle->updateFullVertexSpaces(cam->frustum);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {

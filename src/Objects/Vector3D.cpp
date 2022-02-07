@@ -6,32 +6,30 @@ class string;
 
 Vector3D::Vector3D() = default;
 
-Vector3D::Vector3D(Vertex3D &A, Vertex3D &B) {
+Vector3D::Vector3D(Vertex3D &A, Vertex3D &B)
+{
     this->vertex1 = A;
     this->vertex2 = B;
 }
 
 Vertex3D Vector3D::getComponent() const {
-    Vertex3D componente = Vertex3D(
-            this->vertex2.x - this->vertex1.x,
-            this->vertex2.y - this->vertex1.y,
-            this->vertex2.z - this->vertex1.z
+    return Vertex3D(
+        this->vertex2.x - this->vertex1.x,
+        this->vertex2.y - this->vertex1.y,
+        this->vertex2.z - this->vertex1.z
     );
-
-    return componente;
 }
 
 Vertex3D Vector3D::normal() const {
     Vertex3D c = this->getComponent();
 
-    float modulo_v = sqrt((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
-    Vertex3D final_vertex;
+    float modulo = sqrt((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
 
-    final_vertex.x = c.x / modulo_v;
-    final_vertex.y = c.y / modulo_v;
-    final_vertex.z = c.z / modulo_v;
-
-    return final_vertex;
+    return Vertex3D(
+        c.x / modulo,
+        c.y / modulo,
+        c.z / modulo
+    );
 }
 
 Vertex3D Vector3D::origin() const {

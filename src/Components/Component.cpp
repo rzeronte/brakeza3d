@@ -1,6 +1,6 @@
 #include "../../include/Components/Component.h"
 
-Component::Component() : SETUP(EngineSetup::getInstance()), BUFFERS(EngineBuffers::getInstance()) {
+Component::Component() : SETUP(EngineSetup::get()), BUFFERS(EngineBuffers::getInstance()) {
 }
 
 std::vector<Component *> *Component::getComponents() const {

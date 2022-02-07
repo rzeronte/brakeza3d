@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -55,6 +55,7 @@ add_executable(Brakeza3D
         src/Objects/Line2D.cpp
         include/Objects/Line2D.h
         include/Misc/Color.h
+        src/Misc/Color.cpp
         include/OpenCL/OCLTriangle.h
         include/EngineSetup.h
         src/EngineSetup.cpp
@@ -211,7 +212,34 @@ add_executable(Brakeza3D
         console/Prompt.h
         console/ConsoleManager.cpp
         console/ConsoleManager.h
-        include/Components/ComponentConsole.cpp include/Components/ComponentConsole.h)
+        include/Components/ComponentConsole.cpp include/Components/ComponentConsole.h
+
+        include/GUI/GUI.h
+        include/GUI/GUI_Camera.h
+        include/GUI/GUI_Lights.h
+        include/GUI/GUI_Menu.h
+        include/GUI/GUI_Objects3D.h
+        include/GUI/GUI_Tiles.h
+        include/GUI/GUI_Weapons.h
+        include/GUI/GUIManager.h
+
+
+        imgui/imconfig.h
+        imgui/imgui.h
+        imgui/imgui.cpp
+        imgui/imgui_demo.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_internal.h
+        imgui/imgui_widgets.cpp
+        imgui/imstb_rectpack.h
+        imgui/imstb_textedit.h
+        imgui/imstb_truetype.h
+
+        imgui/examples/imgui_impl_sdl.h
+        imgui/examples/imgui_impl_sdl.cpp
+        imgui/examples/imgui_impl_opengl2.h
+        imgui/examples/imgui_impl_opengl2.cpp
+        include/Render/Fragment.cpp include/Render/Fragment.h src/Render/M4.cpp include/Render/M4.h src/Objects/Vertex4D.cpp include/Objects/Vertex4D.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
@@ -231,5 +259,6 @@ target_link_libraries(Brakeza3D
         BulletCollision
         LinearMath
         assimp
+        GL
         )
 

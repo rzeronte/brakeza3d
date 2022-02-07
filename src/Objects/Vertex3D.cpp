@@ -5,6 +5,12 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Render/Maths.h"
 
+Vertex3D::Vertex3D() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
+}
+
 Vertex3D::Vertex3D(float x, float y, float z) {
     this->x = x;
     this->y = y;
@@ -17,19 +23,25 @@ Vertex3D::Vertex3D(const float v[3]) {
     this->z = v[2];
 }
 
+Vertex3D::Vertex3D(Vertex4D v) {
+    this->x = v.x / v.w;
+    this->y = v.y / v.w;
+    this->z = v.z / v.w;
+}
+
 Vertex3D Vertex3D::operator+(const Vertex3D &v) const {
     return Vertex3D(
-            this->x + v.x,
-            this->y + v.y,
-            this->z + v.z
+        this->x + v.x,
+        this->y + v.y,
+        this->z + v.z
     );
 }
 
 Vertex3D Vertex3D::operator-(const Vertex3D &v) const {
     return Vertex3D(
-            this->x - v.x,
-            this->y - v.y,
-            this->z - v.z
+        this->x - v.x,
+        this->y - v.y,
+        this->z - v.z
     );
 }
 
@@ -92,11 +104,7 @@ void Vertex3D::consoleInfo(const std::string& label, bool returnLine) const {
 }
 
 Vertex3D Vertex3D::getInverse() const {
-    Vertex3D t;
-
-    t.x = -this->x;
-    t.y = -this->y;
-    t.z = -this->z;
+    Vertex3D t(-this->x,-this->y,-this->z);
 
     t.u = this->u;
     t.v = this->v;
@@ -181,8 +189,12 @@ void Vertex3D::saveToBtVector3(btVector3 *v) const {
     v->setZ(this->z);
 }
 
-Vertex3D::Vertex3D() {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
+Vertex4D Vertex3D::createVertex4D() {
+    return Vertex4D(
+        this->x,
+        this->y,
+        this->z,
+        1
+    );
 }
+

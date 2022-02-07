@@ -7,7 +7,7 @@
 
 void ComponentConsole::onStart() {
     this->enabled = false;
-    this->backgroundCanvas = IMG_Load(std::string(EngineSetup::getInstance()->TEXTURES_FOLDER + "example_texture.png").c_str());
+    this->backgroundCanvas = IMG_Load(std::string(EngineSetup::get()->TEXTURES_FOLDER + "example_texture.png").c_str());
 }
 
 void ComponentConsole::preUpdate() {

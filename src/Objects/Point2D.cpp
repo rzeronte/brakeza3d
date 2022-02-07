@@ -3,7 +3,7 @@
 
 Point2D::Point2D() = default;
 
-Point2D::Point2D(float x, float y) {
+Point2D::Point2D(int x, int y) {
     this->x = x;
     this->y = y;
 }

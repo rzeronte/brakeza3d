@@ -23,7 +23,7 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             }
 
             if (raycastlength >= this->getRange()) {
-                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+                this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
                 this->state = EnemyState::ENEMY_STATE_STOP;
             }
             break;
@@ -32,27 +32,27 @@ void NPCEnemyBody::evalStatusMachine(bool raycastResult, float raycastlength, Ca
             this->doFollowPathfinding(raycastResult);
 
             if (!raycastResult) {
-                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_IDLE);
+                this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_IDLE);
                 this->state = EnemyState::ENEMY_STATE_STOP;
             } else {
                 if (raycastlength <= this->getRange()) {
                     this->state = EnemyState::ENEMY_STATE_ATTACK;
-                    this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_FIRE);
+                    this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_FIRE);
                 }
             }
             break;
         case EnemyState::ENEMY_STATE_INJURIED:
-            this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_INJURIED);
+            this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_INJURIED);
             if (this->counterInjuried->isFinished()) {
                 this->state = EnemyState::ENEMY_STATE_STOP;
-                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+                this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
 
             }
             break;
         case EnemyState::ENEMY_STATE_STOP:
             if (raycastResult) {
                 this->state = EnemyState::ENEMY_STATE_FOLLOW;
-                this->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+                this->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
                 Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
                         "enemyRage" + std::to_string(Tools::random(1, 5))), EngineSetup::SoundChannels::SND_ENVIRONMENT,
                                       0);
@@ -81,7 +81,7 @@ void NPCEnemyBody::doFollowPathfinding(bool raycastResult) {
             return;
         }
 
-        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
+        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::get()->up);
         this->setRotation(newRot);
         this->setPosition(pos);
         btVector3 dest;
@@ -97,7 +97,7 @@ void NPCEnemyBody::syncPathFindingRotation() {
     if (!this->points.empty()) {
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
-        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
+        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::get()->up);
         this->setRotation(newRot.getTranspose());
     }
 }
@@ -118,7 +118,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     if (!this->points.empty()) {
         Vector3D way = Vector3D(this->points[0], this->points[1]);
 
-        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::getInstance()->up);
+        M3 newRot = M3::getFromVectors(way.getComponent().getNormalize(), EngineSetup::get()->up);
         projectile->setRotation(newRot.getTranspose());
     }
 

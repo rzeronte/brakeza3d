@@ -22,8 +22,8 @@ Billboard *SpriteDirectional3D::getBillboard() const {
 }
 
 void SpriteDirectional3D::updateTrianglesCoordinates(Camera3D *cam) {
-    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
+    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
 
     this->getBillboard()->updateUnconstrainedQuad(this, up, right);
     this->updateTextureFromCameraAngle(this, cam);
@@ -111,7 +111,7 @@ void SpriteDirectional3D::updateStep() {
 }
 
 void SpriteDirectional3D::onUpdate() {
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isPointInFrustum(this->getPosition())) {
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isVertexInside(this->getPosition())) {
         return;
     }
 

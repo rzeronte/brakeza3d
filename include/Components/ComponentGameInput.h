@@ -30,7 +30,7 @@ public:
 
     void handleEscape(SDL_Event *event);
 
-    void handleMovingCamera(SDL_Event *, bool &);
+    void handleKeyboardMovingCamera(SDL_Event *event, bool &end);
 
     static void handleMouse(SDL_Event *);
 

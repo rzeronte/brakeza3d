@@ -7,11 +7,11 @@ class Point2D {
 public:
     Point2D();
 
-    Point2D(float x, float y);
+    Point2D(int x, int y);
 
     void consoleInfo(const std::string& a, bool) const;
 
-    float x{}, y{};
+    int x, y;
 };
 
 

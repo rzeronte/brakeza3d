@@ -44,8 +44,8 @@ void Sprite3D::updateTexture() {
 }
 
 void Sprite3D::updateTrianglesCoordinatesAndTexture(Camera3D *cam) {
-    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::getInstance()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::getInstance()->right;
+    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
+    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
 
     this->getBillboard()->updateUnconstrainedQuad(this, up, right);
     this->updateTexture();

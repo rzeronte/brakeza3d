@@ -1,41 +1,59 @@
 #include "../../include/Render/Frustum.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/Render/Logging.h"
 
-Frustum::Frustum() = default;
+Frustum::Frustum()
+{
+    this->sizeBuffer = EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight;
+    shadowMappingBuffer = new float[sizeBuffer];
+};
 
-Frustum::Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
-                 float Wnear, float farDist, float Hfar, float Wfar) {
-    setup(position, direction, up, right, nearDist, Hnear, Wnear, farDist, Hfar, Wfar);
-}
-
-void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
-                    float Wnear, float farDist, float Hfar, float Wfar) {
-    this->position = position;
+void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float horizontalFOV, float aspectRatio, float farDistance) {
+    // Establecemos posicion, el FOV horizontal, el FOV vertical va en función del ratio y la nearDistance
+    this->setPosition( position);
+    this->horizontal_fov = horizontalFOV;
+    this->aspectRatio = aspectRatio;
+    this->farDist = farDistance;
 
     this->direction = direction;
     this->up = up;
     this->right = right;
 
-    this->nearDist = nearDist;
-    this->farDist = farDist;
+    this->nearDist = getNearDistance();
 
-    this->Hnear = Hnear;
-    this->Wnear = Wnear;
+    this->Hnear = calcCanvasNearHeight();
+    this->Wnear = calcCanvasNearWidth();
 
-    this->Hfar = Hfar;
-    this->Wfar = Wfar;
+    this->Hfar = calcCanvasFarHeight();
+    this->Wfar = calcCanvasFarWidth();
+}
+void Frustum::updateFrustum()
+{
+    updateCenters();
+    updatePoints();
+    updatePlanes();
+
+    // Cacheamos los espacios de coordenadas de las 4 esquinas para reutilizarlos en la transformación NDC
+    Transforms::cameraSpace(vNLs, near_left.vertex1, this);
+    Transforms::cameraSpace(vNRs, near_right.vertex1, this);
+    Transforms::cameraSpace(vNTs, near_top.vertex1, this);
+    Transforms::cameraSpace(vNBs, near_bottom.vertex1, this);
 }
 
 void Frustum::updateCenters() {
+    Vertex3D p = this->getPosition();
+
     // far center
-    fc.x = this->position.x + direction.x * farDist;
-    fc.y = this->position.y + direction.y * farDist;
-    fc.z = this->position.z + direction.z * farDist;
+    fc.x = p.x + direction.x * farDist;
+    fc.y = p.y + direction.y * farDist;
+    fc.z = p.z + direction.z * farDist;
 
     // near center
-    nc.x = this->position.x + direction.x * nearDist;
-    nc.y = this->position.y + direction.y * nearDist;
-    nc.z = this->position.z + direction.z * nearDist;
+    nc.x = p.x + direction.x * nearDist;
+    nc.y = p.y + direction.y * nearDist;
+    nc.z = p.z + direction.z * nearDist;
 }
 
 void Frustum::updatePoints() {
@@ -74,69 +92,54 @@ void Frustum::updatePoints() {
 
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 void Frustum::updatePlanes() {
-
     // near/far plane
-    planes[EngineSetup::getInstance()->NEAR_PLANE] = Plane(ntl, ntr, nbl);   // near
-    planes[EngineSetup::getInstance()->FAR_PLANE] = Plane(ftr, ftl, fbl);   // far
+    planes[EngineSetup::get()->NEAR_PLANE] = Plane(ntl, ntr, nbl);   // near
+    planes[EngineSetup::get()->FAR_PLANE]  = Plane(ftr, ftl, fbl);   // far
 
     // view frustum
-    planes[EngineSetup::getInstance()->LEFT_PLANE] = Plane(position, fbl, ftl);   // left
-    planes[EngineSetup::getInstance()->RIGHT_PLANE] = Plane(position, ftr, fbr);   // right
-    planes[EngineSetup::getInstance()->TOP_PLANE] = Plane(position, ftl, ftr);   // top
-    planes[EngineSetup::getInstance()->BOTTOM_PLANE] = Plane(position, fbr, fbl);   // bottom
+    planes[EngineSetup::get()->LEFT_PLANE]   = Plane(getPosition(), fbl, ftl);   // left
+    planes[EngineSetup::get()->RIGHT_PLANE]  = Plane(getPosition(), ftr, fbr);   // right
+    planes[EngineSetup::get()->TOP_PLANE]    = Plane(getPosition(), ftl, ftr);   // top
+    planes[EngineSetup::get()->BOTTOM_PLANE] = Plane(getPosition(), fbr, fbl);   // bottom
 
-    // Near edges
-    //top
-    Vertex3D top1(ntl.x, ntl.y, ntl.z);
-    Vertex3D top2(ntr.x, ntr.y, ntr.z);
-    this->near_top = Vector3D(top1, top2);
+    // Near Plane Vertices
+    Vertex3D topLn(ntl.x, ntl.y, ntl.z); //top left
+    Vertex3D topRn(ntr.x, ntr.y, ntr.z); // top right
+    Vertex3D bottomLn(nbl.x, nbl.y, nbl.z); // bottom left
+    Vertex3D bottomRn(nbr.x, nbr.y, nbr.z); // bottom right
+    Vertex3D leftTn(ntl.x, ntl.y, ntl.z); // left top
+    Vertex3D leftBn(nbl.x, nbl.y, nbl.z); // left bottom
+    Vertex3D rightTn(ntr.x, ntr.y, ntr.z); // right top
+    Vertex3D rightBn(nbr.x, nbr.y, nbr.z); // right bottom
 
-    // bottom
-    Vertex3D bottom1(nbl.x, nbl.y, nbl.z);
-    Vertex3D bottom2(nbr.x, nbr.y, nbr.z);
-    this->near_bottom = Vector3D(bottom1, bottom2);
+    // Near Planes Vectors
+    this->near_top = Vector3D(topLn, topRn);
+    this->near_bottom = Vector3D(bottomLn, bottomRn);
+    this->near_left = Vector3D(leftTn, leftBn);
+    this->near_right = Vector3D(rightTn, rightBn);
 
-    // left
-    Vertex3D left1(ntl.x, ntl.y, ntl.z);
-    Vertex3D left2(nbl.x, nbl.y, nbl.z);
-    this->near_left = Vector3D(left1, left2);
+    // Far Plane Vertices
+    Vertex3D topLf(ftl.x, ftl.y, ftl.z); // top left
+    Vertex3D topRf(ftr.x, ftr.y, ftr.z); // top right
+    Vertex3D bottomLf(fbl.x, fbl.y, fbl.z); // bottom left
+    Vertex3D bottomRf(fbr.x, fbr.y, fbr.z); // bottom right
+    Vertex3D leftTf(ftl.x, ftl.y, ftl.z); // left top
+    Vertex3D leftBf(fbl.x, fbl.y, fbl.z); // left bottom
+    Vertex3D rightTf(ftr.x, ftr.y, ftr.z); // right top
+    Vertex3D rightBf(fbr.x, fbr.y, fbr.z); // right bottom
 
-    // right
-    Vertex3D right1(ntr.x, ntr.y, ntr.z);
-    Vertex3D right2(nbr.x, nbr.y, nbr.z);
-    this->near_right = Vector3D(right1, right2);
-
-    // Far edges
-    // top
-    Vertex3D top1f(ftl.x, ftl.y, ftl.z);
-    Vertex3D top2f(ftr.x, ftr.y, ftr.z);
-    this->far_top = Vector3D(top1f, top2f);
-
-    // bottom
-    Vertex3D bottom1f(fbl.x, fbl.y, fbl.z);
-    Vertex3D bottom2f(fbr.x, fbr.y, fbr.z);
-    this->far_bottom = Vector3D(bottom1f, bottom2f);
-
-    // left
-    Vertex3D left1f(ftl.x, ftl.y, ftl.z);
-    Vertex3D left2f(fbl.x, fbl.y, fbl.z);
-    this->far_left = Vector3D(left1f, left2f);
-
-    // right
-    Vertex3D right1f(ftr.x, ftr.y, ftr.z);
-    Vertex3D right2f(fbr.x, fbr.y, fbr.z);
-    this->far_right = Vector3D(right1f, right2f);
+    // Far Planes Vectors
+    this->far_top = Vector3D(topLf, topRf);
+    this->far_bottom = Vector3D(bottomLf, bottomRf);
+    this->far_left = Vector3D(leftTf, leftBf);
+    this->far_right = Vector3D(rightTf, rightBf);
 }
 
-void Frustum::updateBounds() {
-
-}
-
-bool Frustum::isPointInFrustum(Vertex3D &v) {
-    EngineSetup *setup = EngineSetup::getInstance();
+bool Frustum::isVertexInside(Vertex3D &v) {
+    EngineSetup *setup = EngineSetup::get();
 
     for (int i = setup->FAR_PLANE; i <= setup->BOTTOM_PLANE; i++) {
-        if (planes[i].distance(v) >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        if (planes[i].distance(v) >= EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }
@@ -147,26 +150,69 @@ bool Frustum::isPointInFrustum(Vertex3D &v) {
 
 void Frustum::consoleInfo() const {
 
-    printf("Frustum: ");
-    this->position.consoleInfo("pos", false);
+    //Logging::get()->Log("Frustum for " + parent->getLabel());
     this->nc.consoleInfo("fnc", false);
-
     printf("\r\n");
+    Logging::Log("Aspect ratio:" + std::to_string(aspectRatio), "CAMERA");
+    Logging::Log("Horizontal FOV:" + std::to_string(horizontal_fov), "CAMERA");
+    Logging::Log("Vertical FOV:" + std::to_string(getVerticalFOV()), "CAMERA");
+    Logging::Log("Near distance:" + std::to_string(getNearDistance()), "CAMERA");
+    Logging::Log("Canvas width:" + std::to_string(calcCanvasNearWidth()), "CAMERA");
+    Logging::Log("Canvas height:" + std::to_string(calcCanvasNearHeight()), "CAMERA");
 }
 
 bool Frustum::isAABBInFrustum(AABB3D *aabb) {
     if (
-            !this->isPointInFrustum(aabb->vertices[0]) &&
-            !this->isPointInFrustum(aabb->vertices[1]) &&
-            !this->isPointInFrustum(aabb->vertices[2]) &&
-            !this->isPointInFrustum(aabb->vertices[3]) &&
-            !this->isPointInFrustum(aabb->vertices[4]) &&
-            !this->isPointInFrustum(aabb->vertices[5]) &&
-            !this->isPointInFrustum(aabb->vertices[6]) &&
-            !this->isPointInFrustum(aabb->vertices[7])
+            !this->isVertexInside(aabb->vertices[0]) &&
+            !this->isVertexInside(aabb->vertices[1]) &&
+            !this->isVertexInside(aabb->vertices[2]) &&
+            !this->isVertexInside(aabb->vertices[3]) &&
+            !this->isVertexInside(aabb->vertices[4]) &&
+            !this->isVertexInside(aabb->vertices[5]) &&
+            !this->isVertexInside(aabb->vertices[6]) &&
+            !this->isVertexInside(aabb->vertices[7])
             ) {
         return false;
     }
 
     return true;
 }
+
+float Frustum::getNearDistance() const {
+    return (1 / tanf(Maths::degreesToRadians(this->horizontal_fov / 2)));
+}
+
+float Frustum::getVerticalFOV() const {
+    float vfov = 2 * atanf(getScreenAspectRatio() / getNearDistance());
+
+    return Maths::radiansToDegrees(vfov);
+}
+
+float Frustum::calcCanvasNearWidth() const {
+    float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * getNearDistance());
+
+    return width;
+}
+
+float Frustum::calcCanvasNearHeight() const {
+    float height = (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * getNearDistance()) * getScreenAspectRatio();
+
+    return height;
+}
+
+float Frustum::calcCanvasFarWidth() const {
+    float width = (2 * tanf(Maths::degreesToRadians(horizontal_fov / 2)) * farDist);
+
+    return width;
+}
+
+float Frustum::calcCanvasFarHeight() const {
+    float height = (2 * tanf(Maths::degreesToRadians(getVerticalFOV() / 2)) * farDist) * getScreenAspectRatio();
+
+    return height;
+}
+
+float Frustum::getScreenAspectRatio() const {
+    return this->aspectRatio;
+}
+

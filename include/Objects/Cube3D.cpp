@@ -98,7 +98,7 @@ bool Cube3D::isPointInside(Vertex3D v) {
     int plane_end = 6;
 
     for (int i = plane_init; i < plane_end; i++) {
-        if (planes[i].distance(v) >= EngineSetup::getInstance()->FRUSTUM_CLIPPING_DISTANCE) {
+        if (planes[i].distance(v) >= EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }

@@ -5,11 +5,14 @@
 #include <SDL2/SDL_surface.h>
 #include <string>
 #include <bullet/LinearMath/btVector3.h>
+#include "Vertex4D.h"
 
 
 class Vertex3D {
 public:
     Vertex3D();
+
+    Vertex3D(Vertex4D v);
 
     Vertex3D operator+(const Vertex3D &pm) const;
 
@@ -23,9 +26,9 @@ public:
 
     bool operator==(const Vertex3D &pm) const;
 
-    float x = 0;
-    float y = 0;
-    float z = 0;
+    float x;
+    float y;
+    float z;
 
     // texture coordenates
     float u;
@@ -62,6 +65,9 @@ public:
     void saveToBtVector3(btVector3 *v) const;
 
     void consoleInfo(const std::string& label, bool returnLine) const;
+
+    Vertex4D createVertex4D();
+
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

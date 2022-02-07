@@ -46,9 +46,9 @@ void ComponentSound::initSoundSystem() {
 void ComponentSound::loadSoundsJSON() {
     Logging::Log("Loading Sounds in package...", "SOUNDS");
 
-    std::string sndPath = EngineSetup::getInstance()->SOUNDS_FOLDER;
+    std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     size_t file_size;
-    std::string filePath = EngineSetup::getInstance()->CONFIG_FOLDER + EngineSetup::getInstance()->CFG_SOUNDS;
+    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
     const char *mapsFile = Tools::readFile(filePath, file_size);
     cJSON *myDataJSON = cJSON_Parse(mapsFile);
 

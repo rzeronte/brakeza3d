@@ -27,56 +27,55 @@ void Drawable::drawBox2D(SDL_Rect r) {
 
 void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides) {
     // Center Near Plane
-    //Drawable::drawVertex( f->fc, cam, Color::red());
-    //Drawable::drawVertex( f->nc, cam, Color::white());
+    Drawable::drawVertex( f->fc, cam, Color::red());
+    Drawable::drawVertex( f->nc, cam, Color::white());
 
-    //Drawable::drawObject3DAxis(screen, f, cam, false, false, true);
 
     if (drawSides) {
-        Drawable::drawPlane(f->planes[EngineSetup::getInstance()->LEFT_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::getInstance()->RIGHT_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::getInstance()->TOP_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::getInstance()->BOTTOM_PLANE], cam, Color::white());
+        Drawable::drawPlane(f->planes[EngineSetup::get()->LEFT_PLANE], cam, Color::white());
+        Drawable::drawPlane(f->planes[EngineSetup::get()->RIGHT_PLANE], cam, Color::white());
+        Drawable::drawPlane(f->planes[EngineSetup::get()->TOP_PLANE], cam, Color::white());
+        Drawable::drawPlane(f->planes[EngineSetup::get()->BOTTOM_PLANE], cam, Color::white());
     }
 
     if (drawFP) {
         // draw FAR PLANE
         Drawable::drawVector3D(f->far_top, cam, Color::red());
-        Drawable::drawVector3D(f->far_bottom, cam, Color::red());
-        Drawable::drawVector3D(f->far_left, cam, Color::red());
-        Drawable::drawVector3D(f->far_right, cam, Color::red());
+        Drawable::drawVector3D(f->far_bottom, cam, Color::green());
+        Drawable::drawVector3D(f->far_left, cam, Color::blue());
+        Drawable::drawVector3D(f->far_right, cam, Color::fuchsia());
     }
 
     if (drawNP) {
         // draw NEAR PLANE
-        Drawable::drawVector3D(f->near_top, cam, Color::pink());
+        Drawable::drawVector3D(f->near_top, cam, Color::red());
         Drawable::drawVector3D(f->near_bottom, cam, Color::green());
         Drawable::drawVector3D(f->near_left, cam, Color::blue());
-        Drawable::drawVector3D(f->near_right, cam, Color::yellow());
+        Drawable::drawVector3D(f->near_right, cam, Color::fuchsia());
     }
 }
 
-void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Uint32 color) {
+void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Vertex3D A;
 
     Transforms::cameraSpace(A, V, cam);
-    A = Transforms::NDCSpace(A, cam);
+    A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
 
     Point2D P1;
     Transforms::screenSpace(P1, A);
 
     if (Tools::isPixelInWindow((int) P1.x, (int) P1.y)) {
-        EngineBuffers::getInstance()->setVideoBuffer((int)P1.x, (int)P1.y, color);
+        EngineBuffers::getInstance()->setVideoBuffer((int)P1.x, (int)P1.y, color.getColor());
     }
 }
 
-void Drawable::drawLine2D(Line2D L, Uint32 color) {
+void Drawable::drawLine2D(Line2D L, Color color) {
     int x1 = L.x1;
     int y1 = L.y1;
     int x2 = L.x2;
     int y2 = L.y2;
 
-    Uint32 col = color;
+    Color col = color;
     int pasoy;
     int pasox;
     int deltaX = (x2 - x1);
@@ -113,7 +112,7 @@ void Drawable::drawLine2D(Line2D L, Uint32 color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
             }
         }
     } else {
@@ -129,13 +128,13 @@ void Drawable::drawLine2D(Line2D L, Uint32 color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
             }
         }
     }
 }
 
-void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_increment) {
+void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_increment) {
     float current_z = z_start;
 
     int x1 = L.x1;
@@ -143,7 +142,7 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
     int x2 = L.x2;
     int y2 = L.y2;
 
-    Uint32 col = color;
+    Color col = color;
     int pasoy;
     int pasox;
     int deltaX = (x2 - x1);
@@ -182,11 +181,11 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
 
             if (Tools::isPixelInWindow(x, y)) {
                 current_z += z_increment;
-                const int buffer_index = (y * EngineSetup::getInstance()->screenWidth) + x;
+                const int buffer_index = (y * EngineSetup::get()->screenWidth) + x;
                 if (current_z >= EngineBuffers::getInstance()->getDepthBuffer(buffer_index)) {
                     continue;
                 }
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
             }
         }
     } else {
@@ -203,24 +202,24 @@ void Drawable::drawLine2DZBuffer(Line2D L, Uint32 color, float z_start, float z_
             }
             if (Tools::isPixelInWindow(x, y)) {
                 current_z += z_increment;
-                const int buffer_index = (y * EngineSetup::getInstance()->screenWidth) + x;
+                const int buffer_index = (y * EngineSetup::get()->screenWidth) + x;
                 if (current_z >= EngineBuffers::getInstance()->getDepthBuffer(buffer_index)) {
                     continue;
                 }
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col);
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
             }
         }
     }
 }
 
-void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color) {
+void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color) {
     // apply view matrix
     Vertex3D V1, V2;
     Transforms::cameraSpace(V1, V.vertex1, cam);
     Transforms::cameraSpace(V2, V.vertex2, cam);
 
-    V1 = Transforms::NDCSpace(V1, cam);
-    V2 = Transforms::NDCSpace(V2, cam);
+    V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
 
     // get 2d coordinates
     Point2D P1;
@@ -233,8 +232,8 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Uint32 color) {
     Drawable::drawLine2D(line, color);
 }
 
-void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color) {
-    if (!cam->frustum->isPointInFrustum(V.vertex1) && !cam->frustum->isPointInFrustum(V.vertex2)) {
+void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Color color) {
+    if (!cam->frustum->isVertexInside(V.vertex1) && !cam->frustum->isVertexInside(V.vertex2)) {
         return;
     }
 
@@ -243,8 +242,8 @@ void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color) {
     Transforms::cameraSpace(V1, V.vertex1, cam);
     Transforms::cameraSpace(V2, V.vertex2, cam);
 
-    V1 = Transforms::NDCSpace(V1, cam);
-    V2 = Transforms::NDCSpace(V2, cam);
+    V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
 
     // get 2d coordinates
     Point2D P1;
@@ -262,7 +261,7 @@ void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Uint32 color) {
 }
 
 
-void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color) {
+void Drawable::drawPlane(Plane plane, Camera3D *cam, Color color) {
     Vector3D AB = Vector3D(plane.A, plane.B);
     Vector3D AC = Vector3D(plane.A, plane.C);
     Vector3D BC = Vector3D(plane.B, plane.C);
@@ -273,7 +272,7 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Uint32 color) {
 }
 
 void Drawable::drawMainAxis(Camera3D *cam) {
-    Point2D fixed_position = Point2D(EngineSetup::getInstance()->screenWidth - 50, 30);
+    Point2D fixed_position = Point2D(EngineSetup::get()->screenWidth - 50, 30);
     Drawable::drawMainAxisOffset(cam, Transforms::Point2DToWorld(fixed_position, cam));
 }
 
@@ -303,13 +302,14 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset) {
 }
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward) {
-    if (!cam->frustum->isPointInFrustum(object->getPosition())) {
+    if (!cam->frustum->isVertexInside(object->getPosition())) {
         return;
     }
 
-    Vertex3D endRight = object->getPosition() + object->AxisRight().getScaled(5);
-    Vertex3D endUp = object->getPosition() + object->AxisUp().getScaled(5);
-    Vertex3D endForward = object->getPosition() + object->AxisForward().getScaled(5);
+    float size = EngineSetup::get()->OBJECT_AXIS_SIZE;
+    Vertex3D endRight = object->getPosition() + object->AxisRight().getScaled(size);
+    Vertex3D endUp = object->getPosition() + object->AxisUp().getScaled(size);
+    Vertex3D endForward = object->getPosition() + object->AxisForward().getScaled(size);
 
     Vector3D vRight = Vector3D(object->getPosition(), endRight);
     Vector3D vUp = Vector3D(object->getPosition(), endUp);
@@ -321,25 +321,25 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 }
 
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangles) {
-    //B->T1.draw( cam );
+    //B->T1.draw( frustum );
     frameTriangles->emplace_back(&B->T1);
     frameTriangles->emplace_back(&B->T2);
 
-    if (EngineSetup::getInstance()->TRIANGLE_MODE_WIREFRAME) {
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
         //Brakeza3D::get()->drawWireframe(&B->T1);
         //Brakeza3D::get()->drawWireframe(&B->T2);
     }
 }
 
 void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B) {
-    float generations = EngineSetup::getInstance()->LIGHTNING_GENERATIONS;
+    float generations = EngineSetup::get()->LIGHTNING_GENERATIONS;
     std::vector<Vector3D> segmentList;
     std::vector<Vector3D> tmpList;
     std::vector<Vector3D> newSegments;
 
-    float offsetAmount = EngineSetup::getInstance()->LIGHTNING_OFFSET_REDUCTION;
-    float multiplier = EngineSetup::getInstance()->LIGHTNING_SEGMENT_SHIFT;
-    float probabilityBranch = EngineSetup::getInstance()->LIGHTNING_PROBABILITY_BRANCH;
+    float offsetAmount = EngineSetup::get()->LIGHTNING_OFFSET_REDUCTION;
+    float multiplier = EngineSetup::get()->LIGHTNING_SEGMENT_SHIFT;
+    float probabilityBranch = EngineSetup::get()->LIGHTNING_PROBABILITY_BRANCH;
 
     segmentList.emplace_back(Vector3D(A, B));
 
@@ -386,10 +386,10 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B) {
 void Drawable::drawCrossHair() {
     int x, y;
 
-    x = EngineSetup::getInstance()->screenWidth / 2;
-    y = EngineSetup::getInstance()->screenHeight / 2;
+    x = EngineSetup::get()->screenWidth / 2;
+    y = EngineSetup::get()->screenHeight / 2;
 
-    Uint32 color = EngineSetup::getInstance()->CROSSHAIR_COLOR;
+    Uint32 color = EngineSetup::get()->CROSSHAIR_COLOR;
     for (int cw = 1; cw < 3; cw++) {
         EngineBuffers::getInstance()->setVideoBuffer(x + cw, y, color);
         EngineBuffers::getInstance()->setVideoBuffer(x - cw, y, color);
@@ -400,8 +400,8 @@ void Drawable::drawCrossHair() {
 
 void Drawable::drawFireShader() {
     // Set whole screen to 0 (color: 0x07,0x07,0x07)
-    int FIRE_WIDTH = EngineSetup::getInstance()->FIRE_WIDTH;
-    int FIRE_HEIGHT = EngineSetup::getInstance()->FIRE_HEIGHT;
+    int FIRE_WIDTH = EngineSetup::get()->FIRE_WIDTH;
+    int FIRE_HEIGHT = EngineSetup::get()->FIRE_HEIGHT;
 
     for (int x = 0; x < FIRE_WIDTH; x++) {
         for (int y = 1; y < FIRE_HEIGHT; y++) {
@@ -425,8 +425,8 @@ void Drawable::drawFireShader() {
             int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
 
             if (fireIndex != 0) {
-                Uint32 fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[index] = fireColor; //::black();
+                Color fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
+                EngineBuffers::getInstance()->videoBuffer[index] = fireColor.getColor(); //::black();
             }
         }
     }
@@ -436,7 +436,7 @@ void Drawable::drawFadeIn() {
     Brakeza3D::get()->currentFadePercent -= 0.01;
     if (Brakeza3D::get()->currentFadePercent < 0) {
         Brakeza3D::get()->currentFadePercent = 0;
-        EngineSetup::getInstance()->FADEIN = false;
+        EngineSetup::get()->FADEIN = false;
     }
     Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
 }
@@ -453,64 +453,9 @@ void Drawable::drawFacePercent(float percent) {
 
     EngineBuffers *buffers = EngineBuffers::getInstance();
     for (int i = 0; i < buffers->sizeBuffers; i++) {
-        buffers->videoBuffer[i] = Tools::mixColor(buffers->videoBuffer[i], Color::black(), percent);
-    }
-}
-
-void Drawable::fireShaderOnHUDBuffer() {
-    //define the width and height of the screen and the buffers
-    const int screenWidth = EngineSetup::getInstance()->screenWidth;
-
-    // Y-coordinate first because we use horizontal scanlines
-    Uint32 palette[256]; //this will contain the color palette
-
-    //generate the palette
-    int r = 255, g = 0, b = 0;
-
-    for (unsigned int & x : palette) {
-        x = Tools::createRGB(r, g, b);
-        g++;
-    }
-
-    //make sure the fire buffer is zero in the beginning
-    int h = EngineSetup::getInstance()->screenHeight;
-    int w = EngineSetup::getInstance()->screenWidth;
-
-    //randomize the bottom row of the fire buffer
-    /*for (int x = 0; x < w; x++)  {
-        int index = (h - 1) * screenWidth + x;
-        EngineBuffers::getInstance()->HUDbuffer[ index ] = abs(32768 + rand()) % 256;
-    }*/
-
-    //do the fire calculations for every pixel, from top to bottom
-    for (int y = 0; y < h - 1; y++) {
-        for (int x = 0; x < w; x++) {
-            int index = y * screenWidth + x;
-
-            int i1 = ((y + 1) % h) * screenWidth + ((x - 1 + w) % w);
-            int i2 = ((y + 1) % h) * screenWidth + ((x) % w);
-            int i3 = ((y + 1) % h) * screenWidth + ((x + 1) % w);
-            int i4 = ((y + 2) % h) * screenWidth + ((x) % w);
-
-            EngineBuffers::getInstance()->HUDbuffer[index] = (
-                                                                     EngineBuffers::getInstance()->HUDbuffer[i1] +
-                                                                     EngineBuffers::getInstance()->HUDbuffer[i2] +
-                                                                     EngineBuffers::getInstance()->HUDbuffer[i3] +
-                                                                     EngineBuffers::getInstance()->HUDbuffer[i4] *
-                                                                     EngineSetup::getInstance()->FIRE_DIVISOR1
-                                                             ) / EngineSetup::getInstance()->FIRE_DIVISOR2;
-        }
-    }
-
-    //set the drawing buffer to the fire buffer, using the palette colors
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            int index = y * screenWidth + x;
-            int fireIndex = EngineBuffers::getInstance()->HUDbuffer[index];
-            if (fireIndex >= 0 && fireIndex <= 256 && fireIndex != 0) {
-                EngineBuffers::getInstance()->videoBuffer[index] = palette[fireIndex];
-            }
-        }
+        Color bufferColor = Color(buffers->videoBuffer[i]);
+        Color mixedColor = Tools::mixColor(bufferColor, Color::black(), percent);
+        buffers->videoBuffer[i] = mixedColor.getColor();
     }
 }
 
@@ -545,15 +490,15 @@ void Drawable::waterShader(int type) {
 
     auto *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
 
-    for (int y = 0; y < EngineSetup::getInstance()->screenHeight; y++) {
-        for (int x = 0; x < EngineSetup::getInstance()->screenWidth; x++) {
-            Uint32 currentPixelColor = EngineBuffers::getInstance()->getVideoBuffer(x, y);
+    for (int y = 0; y < EngineSetup::get()->screenHeight; y++) {
+        for (int x = 0; x < EngineSetup::get()->screenWidth; x++) {
+            Color currentPixelColor = Color(EngineBuffers::getInstance()->getVideoBuffer(x, y));
 
-            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
-            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
-            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor) * intensity_b);
+            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor.getColor()) * intensity_r);
+            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor.getColor()) * intensity_g);
+            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor.getColor()) * intensity_b);
 
-            currentPixelColor = Tools::createRGB(r_light, g_light, b_light);
+            currentPixelColor = Color(r_light, g_light, b_light);
 
             float cache1 = x / LAVA_CLOSENESS;
             float cache2 = y / LAVA_CLOSENESS;
@@ -563,10 +508,10 @@ void Drawable::waterShader(int type) {
             int ny =
                     (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache1)) * LAVA_SCALE;
 
-            int bufferIndex = nx + ny * EngineSetup::getInstance()->screenWidth;
+            int bufferIndex = nx + ny * EngineSetup::get()->screenWidth;
 
             if (Tools::isPixelInWindow(nx, ny)) {
-                newVideoBuffer[bufferIndex] = currentPixelColor;
+                newVideoBuffer[bufferIndex] = currentPixelColor.getColor();
             }
         }
     }
@@ -574,7 +519,7 @@ void Drawable::waterShader(int type) {
     memcpy(&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
-void Drawable::drawAABB(AABB3D *aabb, Uint32 color) {
+void Drawable::drawAABB(AABB3D *aabb, Color color) {
     Vector3D v01(aabb->vertices[0], aabb->vertices[2]);
     Vector3D v02(aabb->vertices[0], aabb->vertices[3]);
     Vector3D v03(aabb->vertices[0], aabb->vertices[4]);
@@ -607,8 +552,9 @@ void Drawable::drawAABB(AABB3D *aabb, Uint32 color) {
     Drawable::drawVertex(aabb->min, camera, Color::green());
 }
 
-void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles) {
-    Uint32 color = Color::white();
+void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
+{
+    Color color = Color::white();
     if (node->isLeaf()) {
         Drawable::drawAABB(&node->bounds, color);
     }
@@ -630,22 +576,22 @@ void Drawable::drawGrid3D(Grid3D *grid) {
 
     for (auto & boxe : grid->boxes) {
 
-        if (boxe->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_EMPTY) {
-            Uint32 c = Color::yellow();
-            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
+        if (boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_EMPTY) {
+            Color c = Color::yellow();
+            if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
                 Drawable::drawAABB(boxe->box, c);
             }
-            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
+            if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
                 Drawable::drawVertex(boxe->box->getCenter(), camera, c);
             }
         }
 
-        if (!boxe->is_empty && EngineSetup::getInstance()->DRAW_MESH3D_GRID_NO_EMPTY) {
-            Uint32 c = Color::red();
-            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_CUBES) {
+        if (!boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_NO_EMPTY) {
+            Color c = Color::red();
+            if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
                 Drawable::drawAABB(boxe->box, c);
             }
-            if (EngineSetup::getInstance()->DRAW_MESH3D_GRID_POINTS) {
+            if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
 
                 Drawable::drawVertex(boxe->box->getCenter(), camera, c);
             }
@@ -665,10 +611,10 @@ void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
 
 void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder) {
     std::stack<PairData> path;
-    PairData src = std::make_pair(EngineSetup::getInstance()->TESTING_INT1,
-                                              EngineSetup::getInstance()->TESTING_INT2);
-    PairData dest = std::make_pair(EngineSetup::getInstance()->TESTING_INT3,
-                                               EngineSetup::getInstance()->TESTING_INT4);
+    PairData src = std::make_pair(EngineSetup::get()->TESTING_INT1,
+                                  EngineSetup::get()->TESTING_INT2);
+    PairData dest = std::make_pair(EngineSetup::get()->TESTING_INT3,
+                                   EngineSetup::get()->TESTING_INT4);
 
     CubeGrid3D *cubeStart = grid->getFromPosition(src.first, 0, src.second);
     CubeGrid3D *cubeDest = grid->getFromPosition(dest.first, 0, dest.second);
@@ -683,4 +629,23 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
 
     if (cubeDest != nullptr)
         Drawable::drawAABB(cubeDest->box, Color::red());
+}
+
+void Drawable::drawLinePoints(Vertex3D from, Vertex3D to, Color color)
+{
+    Vector3D V = Vector3D(from, to);
+    Drawable::drawVector3D(V, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::olive());
+}
+
+void Drawable::drawMainDeepMapFromCamera(int pos_x, int pos_y)
+{
+    int width = EngineSetup::get()->screenWidth;
+    int height = EngineSetup::get()->screenHeight;
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            auto pixelColor = EngineBuffers::getInstance()->getDepthBuffer(j, i);
+            EngineBuffers::getInstance()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor/10, pixelColor/10, pixelColor/10).getColor());
+        }
+    }
 }

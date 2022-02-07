@@ -25,7 +25,7 @@ WeaponType::WeaponType(const std::string& label) {
 }
 
 void WeaponType::addAnimation(std::string newLabel, const std::string& newModel, float scale, bool stopEnd) {
-    std::string full_animation_folder = EngineSetup::getInstance()->MODELS_FOLDER + newModel;
+    std::string full_animation_folder = EngineSetup::get()->MODELS_FOLDER + newModel;
 
     weaponAnimations->addAnimation(std::move(newLabel), newModel, scale, stopEnd);
     weaponAnimations[this->numAnimations].rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 180);
@@ -44,7 +44,7 @@ void WeaponType::setWeaponAnimation(int animationIndex) {
 
     this->weaponAnimations->setAnimation(animationIndex);
 
-    if (EngineSetup::getInstance()->LOG_WEAPONS_SYSTEM) {
+    if (EngineSetup::get()->LOG_WEAPONS_SYSTEM) {
         Logging::Log("setWeaponAnimation: " + std::to_string(animationIndex), "WeaponType");
     }
 }
@@ -87,7 +87,7 @@ int WeaponType::getSpeed() const {
 }
 
 void WeaponType::loadIconHUD(const std::string& file) {
-    std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + file;
+    std::string path = EngineSetup::get()->WEAPONS_FOLDER + file;
 
     this->iconHUD = IMG_Load(path.c_str());
 }
@@ -109,7 +109,7 @@ void WeaponType::setSniper(bool sniper) {
 }
 
 void WeaponType::loadSniperHUD(const std::string& file) {
-    std::string path = EngineSetup::getInstance()->WEAPONS_FOLDER + this->label + "/" + file;
+    std::string path = EngineSetup::get()->WEAPONS_FOLDER + this->label + "/" + file;
 
     this->sniperHUD = IMG_Load(path.c_str());
 }
@@ -189,7 +189,7 @@ void WeaponType::shoot() {
 
         Vertex3D dir =
                 Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getRotation().getTranspose() *
-                EngineSetup::getInstance()->forward;
+                        EngineSetup::get()->forward;
         projectile->setPosition(projectile->getPosition() + dir.getScaled(10));
         projectile->getPosition().x += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;
         projectile->getPosition().y += i * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) / 5;

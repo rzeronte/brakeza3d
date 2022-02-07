@@ -1,41 +1,52 @@
-//
-// Created by darkhead on 28/4/18.
-//
-
 #ifndef SDL2_3D_ENGINE_COLOR_H
 #define SDL2_3D_ENGINE_COLOR_H
 
-
-#include <SDL2/SDL_quit.h>
+#include <vector>
+#include <cstdint>
 
 class Color {
 public:
-    static Uint32 white() { return 0xFFFFFF; }
+    int r;
+    int g;
+    int b;
 
-    static Uint32 red() { return 0xFF0000; }
+    Color();
+    Color(int r, int g, int b);
+    Color(unsigned long v);
 
-    static Uint32 green() { return 0x00FF00; }
+    Color operator+(const Color &pm) const;
+    Color operator-(const Color &pm) const;
+    Color operator*(const Color &pm) const;
+    Color operator*(float s) const;
 
-    static Uint32 blue() { return 0x0000FF; }
+    static Color white() { return Color(255, 255, 255); }
+    static Color red() { return Color(255, 0, 0); }
+    static Color green() { return Color(0, 255, 0); }
+    static Color blue() { return Color(0, 0, 255); }
+    static Color black() { return Color(0, 0, 0); }
+    static Color yellow() { return Color(255, 255, 0); }
+    static Color fuchsia() { return Color(255, 0, 255); }
+    static Color cyan() { return Color(0, 255, 255); }
+    static Color orange() { return Color(0, 0, 0); }
+    static Color olive() { return Color(128, 128, 0); }
+    static Color gray() { return Color(128, 128, 128); }
+    static Color FOGDefault() { return Color(0, 0, 0); }
+    static Color mixColor(Color &c1, Color &c2, float c2Intensity);
 
-    static Uint32 black() { return 0x000000; }
+    void setRed(float v);
+    void setGreen(float v);
+    void setBlue(float v);
 
-    static Uint32 yellow() { return 0xFFFF00; }
+    uint32_t getColor();
+    uint32_t createRGB(int r, int g, int b);
 
-    static Uint32 pink() { return 0xff00bf; }
+    uint8_t getRedValueFromColor(uint32_t);
+    uint8_t getGreenValueFromColor(uint32_t);
+    uint8_t getBlueValueFromColor(uint32_t);
 
-    static Uint32 cyan() { return 0x00FFFF; }
+private:
 
-    static Uint32 orange() { return 0xFF8000; }
-
-    static Uint32 magenta() { return 0xFF00FF; }
-
-    static Uint32 gray() { return 0x323232; }
-
-    static Uint32 darkwhite() { return 0xF5F5F5; }
-
-    static Uint32 FOGDefault() { return Color::black(); }
-
+    uint32_t color;
 };
 
 

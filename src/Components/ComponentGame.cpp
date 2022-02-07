@@ -1,6 +1,7 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/M4.h"
 
 ComponentGame::ComponentGame() {
     player = new Player();
@@ -19,33 +20,64 @@ void ComponentGame::onStart() {
 
 void ComponentGame::startThirdPerson() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Vertex3D originalCameraPosition = Vertex3D(-65, 54, 273);
+    Vertex3D originalCameraPosition = Vertex3D(975, 175, 277);
 
-    // start cam position
+    // start frustum position
     camera->setPosition(originalCameraPosition);
-    camera->yaw = 180;
-    camera->pitch = 0;
-    camera->roll = 0;
 
-    camera->UpdateRotation();
+    auto *plane = new Mesh3D();
+    plane->setLabel("plane");
+    plane->setPosition(Vertex3D(1000, 200, 100));
+    plane->setScale(100);
+    plane->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "plane.fbx"));
+    plane->modelTextures[0].loadTGAForNormalMap(std::string(EngineSetup::get()->TEXTURES_FOLDER + "mountain_texture_normal.png").c_str());
+    Brakeza3D::get()->addObject3D(plane, "plane");
 
-    auto *dungeon = new Mesh3D();
-    dungeon->setLabel("scene");
-    dungeon->setPosition(Vertex3D(100, 100, 100));
-    dungeon->setScale(0.1);
-    dungeon->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "dungeon.fbx"));
-    Brakeza3D::get()->addObject3D(dungeon, "dungeon");
+    auto *spaceship = new Mesh3D();
+    spaceship->setLabel("spaceship");
+    spaceship->setPosition(Vertex3D(700, 200, 100));
+    spaceship->setScale(1);
+    spaceship->AssimpLoadGeometryFromFile(std::string(
+    EngineSetup::get()->MODELS_FOLDER + "spaceship.fbx"));
+    Brakeza3D::get()->addObject3D(spaceship, "spaceship");
+
+    auto *asteroid = new Mesh3D();
+    asteroid->setLabel("asterpod");
+    asteroid->setPosition(Vertex3D(100, 100, 100));
+    asteroid->setScale(1);
+    asteroid->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "asteroid.fbx"));
+    //Brakeza3D::get()->addObject3D(asteroid, "asteroid");
+
+    auto *cubes = new Mesh3D();
+    cubes->setLabel("cubes");
+    cubes->setPosition(Vertex3D(100, 100, 100));
+    cubes->setScale(100);
+    cubes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "cubes.fbx"));
+    Brakeza3D::get()->addObject3D(cubes, "cubes");
+
+    auto *lp1 = new LightPoint3D();
+    lp1->setEnabled(true);
+    lp1->setLabel("lp2");
+    lp1->setPower(40);
+    lp1->setColor(229, 229, 30);
+    lp1->setColorSpecularity(220, 220, 30);
+    lp1->setSpecularComponent(20);
+    lp1->setPosition(Vertex3D(1045, 145, 230));
+    lp1->setColor(255, 255, 255);
+    Brakeza3D::get()->addObject3D(lp1, "lp1");
+
+    auto *lp2 = new LightPoint3D();
+    lp2->setEnabled(true);
+    lp2->setLabel("lp3");
+    lp2->setPower(40);
+    lp2->setColor(229, 229, 30);
+    lp2->setColorSpecularity(220, 220, 30);
+    lp2->setSpecularComponent(20);
+    lp2->setPosition(Vertex3D(100, 500, 120));
+    lp2->setColor(0, 0, 255);
+    Brakeza3D::get()->addObject3D(lp2, "lp2");
 
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
-//
-//    auto *mainCharacter = new Mesh3D();
-//    mainCharacter->setLabel("mainCharacter");
-//    mainCharacter->setPosition(Vertex3D(-65, 97, 141));
-//    mainCharacter->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 270));
-//    mainCharacter->setScale(0.3);
-//    mainCharacter->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "conan.fbx"));
-//    Brakeza3D::get()->addObject3D(mainCharacter, "mainCharacter");
-
 }
 
 void ComponentGame::preUpdate() {
@@ -53,10 +85,17 @@ void ComponentGame::preUpdate() {
 
 void ComponentGame::onUpdate() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    EngineSetup *setup = EngineSetup::getInstance();
+    EngineSetup *setup = EngineSetup::get();
+
     ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();
     ComponentWindow *componentWindow = ComponentsManager::get()->getComponentWindow();
     ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
+
+    Object3D *lp = Brakeza3D::get()->getObjectByLabel("lp2");
+    lp->setRotation( M3::getMatrixRotationForEulerAngles(0, 1.75, 0) * lp->getRotation());
+
+    Object3D *lp1 = Brakeza3D::get()->getObjectByLabel("lp1");
+    lp1->setRotation( M3::getMatrixRotationForEulerAngles(0, 2.75, 0) * lp->getRotation());
 
     // set car rotation
     Vertex3D impulse = camera->velocity.getComponent();
@@ -132,7 +171,7 @@ void ComponentGame::onUpdateIA() const {
 
             enemy->updateCounters();
 
-            if (!Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->isPointInFrustum(
+            if (!Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->isVertexInside(
                     object->getPosition())) {
                 continue;
             }
@@ -178,14 +217,14 @@ void ComponentGame::redScreen() {
 
     for (int y = 0; y < SETUP->screenHeight; y++) {
         for (int x = 0; x < SETUP->screenWidth; x++) {
-            auto currentPixelColor = (Uint32) BUFFERS->getVideoBuffer(x, y);
+            auto currentPixelColor = Color(BUFFERS->getVideoBuffer(x, y));
 
-            int r_light = (int) ((float) Tools::getRedValueFromColor(currentPixelColor) * intensity_r);
-            int g_light = (int) ((float) Tools::getGreenValueFromColor(currentPixelColor) * intensity_g);
-            int b_light = (int) ((float) Tools::getBlueValueFromColor(currentPixelColor) * intensity_b);
+            int r_light = (int) ((float) Tools::getRedValueFromColor(currentPixelColor.getColor()) * intensity_r);
+            int g_light = (int) ((float) Tools::getGreenValueFromColor(currentPixelColor.getColor()) * intensity_g);
+            int b_light = (int) ((float) Tools::getBlueValueFromColor(currentPixelColor.getColor()) * intensity_b);
 
-            currentPixelColor = Tools::createRGB(r_light, g_light, b_light);
-            BUFFERS->setVideoBuffer(x, y, currentPixelColor);
+            currentPixelColor = Color(r_light, g_light, b_light);
+            BUFFERS->setVideoBuffer(x, y, currentPixelColor.getColor());
         }
     }
 }

@@ -11,7 +11,7 @@ void Ghost::makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool us
     auto *me = new btConvexHullShape();
 
     for (int i = 0; i < mesh->modelTriangles.size(); i++) {
-        mesh->modelTriangles[i]->updateFullVertexSpaces(cam);
+        mesh->modelTriangles[i]->updateFullVertexSpaces(cam->frustum);
         btVector3 a, b, c;
         // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
         if (useObjectSpace) {

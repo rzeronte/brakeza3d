@@ -74,7 +74,7 @@ void Mesh3DAnimated::updateFrameTransformations() {
         this->updateFollowObjectPosition(Transforms);
     }
 
-    if (EngineSetup::getInstance()->DRAW_ANIMATION_BONES) {
+    if (EngineSetup::get()->DRAW_ANIMATION_BONES) {
         this->drawBones(scene->mRootNode, Transforms);
     }
 }
@@ -420,8 +420,9 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTim
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms) {
-    Uint32 colorPoints = Color::red();
+void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
+{
+    Color colorPoints = Color::red();
 
     int idCurrentNode;
 

@@ -21,7 +21,7 @@ public:
     }
 
     void dispatch() {
-        if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
+        if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
             Logging::Log("CollisionResolverBetweenCamera3DAndFuncButton", "Collision");
         }
 
@@ -46,8 +46,8 @@ public:
                             auto *oRemoteBody = dynamic_cast<DoorGhost *> (oRemoteMesh);
                             this->moveDoorGhost(oRemoteBody, targetRemoteEntityId);
 
-                            if (EngineSetup::getInstance()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->getInstance()->Log("Moving Door: " + oRemoteBody->getLabel());
+                            if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+                                Logging::getInstance()->get()->Log("Moving Door: " + oRemoteBody->getLabel());
                             }
                         }
                     }
@@ -57,7 +57,7 @@ public:
     }
 
     ComponentCamera *getCamera() {
-        std::string cameraIdentifier = EngineSetup::getInstance()->cameraNameIdentifier;
+        std::string cameraIdentifier = EngineSetup::get()->cameraNameIdentifier;
         if (objA->getLabel() == cameraIdentifier) {
             ComponentCamera *camera = dynamic_cast<ComponentCamera *> (this->objA);
             return camera;

@@ -17,8 +17,15 @@ Texture::Texture(int w, int h) {
     this->mip_mapping_8 = SDL_CreateRGBSurface(0, w / 8, h / 8, 32, 0, 0, 0, 0);
     this->lightmap = SDL_CreateRGBSurface(0, 16, 16, 32, 0, 0, 0, 0);
 
+    this->normalMap = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+
     this->mipMapped = false;
     this->lightMapped = false;
+}
+
+SDL_Surface *Texture::getNormalMap()
+{
+    return this->normalMap;
 }
 
 SDL_Surface *Texture::getSurface(int mip_mapping) {
@@ -107,6 +114,19 @@ bool Texture::loadTGA(const char *file, int mip_mapping) {
     }
 
     Logging::Log("Loading TGA texture '" + std::string(file) + "'", "TEXTURES");
+    return true;
+}
+
+bool Texture::loadTGAForNormalMap(const char *file) {
+    if (Tools::fileExists(file)) {
+        this->normalMap = IMG_Load(file);
+        this->haveNormalMap = true;
+    } else {
+        Logging::Log("Error loading TGA texture in NormalMap'" + std::string(file), "TEXTURES");
+        return false;
+    }
+
+    Logging::Log("Loading TGA texture in NormalMap'" + std::string(file) + "'", "TEXTURES");
     return true;
 }
 
@@ -270,4 +290,9 @@ bool Texture::isLightMapped() const {
 
 void Texture::setLightMapped(bool lightMapped) {
     Texture::lightMapped = lightMapped;
+}
+
+bool Texture::haveNormal()
+{
+    return this->haveNormalMap;
 }

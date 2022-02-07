@@ -46,7 +46,7 @@ Demo::Demo() {
     marine->addAnimationDirectional2D("enemies/soldier/injuried", 1, 20, false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/dead", 5, 20, true, 1);
     marine->addAnimationDirectional2D("enemies/soldier/explosion", 8, 20, true, 1);
-    marine->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+    marine->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(marine, "marine");
 
     // skull (sprite directional)
@@ -54,7 +54,7 @@ Demo::Demo() {
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
-    skull->setAnimation(EngineSetup::getInstance()->SpriteSoldierAnimations::SOLDIER_WALK);
+    skull->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(skull, "skull");
 
     // caco (sprite directional)
@@ -63,7 +63,7 @@ Demo::Demo() {
     caco->setPosition(Vertex3D(20, 0, -10));
     caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);
     caco->addAnimationDirectional2D("enemies/cacodemon/dead", 6, 20, false, -1);
-    caco->setAnimation(EngineSetup::getInstance()->SpriteDoom2CacodemonAnimations::FLY);
+    caco->setAnimation(EngineSetup::get()->SpriteDoom2CacodemonAnimations::FLY);
     Brakeza3D::get()->addObject3D(caco, "caco");
 
 
@@ -90,7 +90,7 @@ Demo::Demo() {
     auto *mesh = new Mesh3DAnimated();
     Brakeza3D::get()->addObject3D(mesh, "hellknight");
 
-    if (mesh->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "hellknight.md5mesh")) {
+    if (mesh->AssimpLoadAnimation(EngineSetup::get()->MODELS_FOLDER + "hellknight.md5mesh")) {
         mesh->setScale(0.25);
         Vertex3D p = Vertex3D(1, 1, 20);
         p.y -= -1;
@@ -102,7 +102,7 @@ Demo::Demo() {
 
     auto *mesh2 = new Mesh3DAnimated();
     Brakeza3D::get()->addObject3D(mesh2, "bob_lamp");
-    if (mesh2->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + "bob/bob_lamp_update.md5mesh")) {
+    if (mesh2->AssimpLoadAnimation(EngineSetup::get()->MODELS_FOLDER + "bob/bob_lamp_update.md5mesh")) {
         mesh2->setScale(1);
         Vertex3D p = Vertex3D(1, 1, 1);
         p.y -= -1;
@@ -122,7 +122,7 @@ Demo::Demo() {
     gun->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
     gun->setFixedRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
     gun->setLabel("hands");
-    gun->AssimpLoad(EngineSetup::getInstance()->MODELS_FOLDER + "glock.Mesh3DBody");
+    gun->AssimpLoad(EngineSetup::get()->MODELS_FOLDER + "glock.Mesh3DBody");
     ComponentsManager::get()->getComponentCamera()->getCamera()->setFollowTo(gun->getFollowMePointObject() );
     */
 
@@ -132,7 +132,7 @@ Demo::Demo() {
     sample->setLabel("mono");
     sample->setPosition(Vertex3D(100, 100, 100));
     sample->setScale(10);
-    sample->AssimpLoadGeometryFromFile(std::string(EngineSetup::getInstance()->MODELS_FOLDER + "mono.obj"));
+    sample->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "mono.obj"));
     sample->buildOctree();
     sample->buildGrid3DForEmptyContainsStrategy(10, 10, 10);
     Brakeza3D::get()->addObject3D(sample, "mono");

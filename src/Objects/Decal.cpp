@@ -70,7 +70,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
 
         if (triangle->testForClipping(cube->planes, 0, 5)) {
             triangle->clipping(
-                    camera,
+                    camera->frustum,
                     cube->planes,
                     0,
                     5,
@@ -119,7 +119,7 @@ void Decal::setSprite(Sprite3D *sprite) {
 }
 
 void Decal::onUpdate() {
-    if (EngineSetup::getInstance()->DRAW_DECAL_WIREFRAMES) {
+    if (EngineSetup::get()->DRAW_DECAL_WIREFRAMES) {
         this->cube->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }
 }

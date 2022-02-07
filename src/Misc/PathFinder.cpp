@@ -659,8 +659,8 @@ void PathFinder::consoleDebugPath(std::stack<PairData> path) {
 void PathFinder::saveGridToPNG(const std::string& filename) {
     SDL_Surface *s = SDL_CreateRGBSurface(0, this->sizeX, this->sizeY, 32, 0, 0, 0, 0);
 
-    Uint32 black = Color::black();
-    Uint32 red = Color::red();
+    Color black = Color::black();
+    Color red = Color::red();
 
     auto *buffer = new Uint32[this->sizeY * this->sizeX];
 
@@ -668,14 +668,14 @@ void PathFinder::saveGridToPNG(const std::string& filename) {
         for (int x = 0; x < this->sizeX; x++) {
             int index = y * this->sizeX + x;
             if (this->grid[y][x] != 0) {
-                buffer[index] = red;
+                buffer[index] = red.getColor();
             } else {
-                buffer[index] = black;
+                buffer[index] = black.getColor();
             }
         }
     }
     memcpy(&s->pixels, &buffer, sizeof(s->pixels));
-    IMG_SavePNG(s, (EngineSetup::getInstance()->GRIDS_FOLDER + filename).c_str());
+    IMG_SavePNG(s, (EngineSetup::get()->GRIDS_FOLDER + filename).c_str());
     SDL_FreeSurface(s);
 }
 

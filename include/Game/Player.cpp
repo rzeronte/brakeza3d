@@ -3,7 +3,7 @@
 #include "../Brakeza3D.h"
 
 Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false),
-                   stamina(EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives),
+                   stamina(EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives),
                    stooped(false) {
     this->counterStep = new Counter(0.30);
     this->counterSoundTakeDamage = new Counter(0.30);
@@ -68,7 +68,7 @@ void Player::takeDamage(float dmg) {
 
         if (lives <= 0) {
             state = PlayerState::GAMEOVER;
-            EngineSetup::getInstance()->MENU_ACTIVE = true;
+            EngineSetup::get()->MENU_ACTIVE = true;
         }
     }
 }
@@ -77,8 +77,8 @@ void Player::newGame() {
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
     setLives(defaultLives);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
-    EngineSetup::getInstance()->MENU_ACTIVE = false;
-    EngineSetup::getInstance()->DRAW_HUD = true;
+    EngineSetup::get()->MENU_ACTIVE = false;
+    EngineSetup::get()->DRAW_HUD = true;
 
     this->state = PlayerState::LIVE;
 }
@@ -106,7 +106,7 @@ void Player::jump() {
                           EngineSetup::SoundChannels::SND_PLAYER, 0);
 
     // apply force
-    Vertex3D jump = EngineSetup::getInstance()->JUMP_FORCE;
+    Vertex3D jump = EngineSetup::get()->JUMP_FORCE;
     Vertex3D current = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2;
     Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2 = current + jump;
 }
@@ -138,7 +138,7 @@ void Player::setCrouch(bool stooped) {
 void Player::getAid(float aid) {
     this->stamina = stamina + aid;
 
-    if (stamina > (float) EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL) {
-        this->stamina = (float) EngineSetup::getInstance()->GAME_PLAYER_STAMINA_INITIAL;
+    if (stamina > (float) EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL) {
+        this->stamina = (float) EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL;
     }
 }

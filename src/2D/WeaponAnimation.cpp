@@ -54,16 +54,16 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
     SDL_Rect destPos;
 
     if (this->right) {
-        destPos.x = EngineSetup::getInstance()->screenWidth - this->getCurrentSurface()->w;
+        destPos.x = EngineSetup::get()->screenWidth - this->getCurrentSurface()->w;
     } else {
-        destPos.x = (EngineSetup::getInstance()->screenWidth / 2) - (this->getCurrentSurface()->w / 2);
+        destPos.x = (EngineSetup::get()->screenWidth / 2) - (this->getCurrentSurface()->w / 2);
     }
     destPos.x += globalOffsetX;
     destPos.x += this->offsetX;
 
-    destPos.y = EngineSetup::getInstance()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
+    destPos.y = EngineSetup::get()->screenHeight - this->getCurrentSurface()->h + globalOffsetY;
 
-    if (EngineSetup::getInstance()->DRAW_HUD) {
+    if (EngineSetup::get()->DRAW_HUD) {
         destPos.y -= Brakeza3D::get()->getComponentsManager()->getComponentHUD()->HUDTextures->getTextureByLabel(
                 "hud")->getSurface(1)->h;
     }

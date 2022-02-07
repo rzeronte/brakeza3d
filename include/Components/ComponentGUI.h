@@ -3,6 +3,7 @@
 
 
 #include "Component.h"
+#include "../GUI/GUIManager.h"
 
 class ComponentGUI : public Component {
 public:
@@ -20,9 +21,10 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    SDL_Window *window{};
-    SDL_Renderer *renderer{};
-    SDL_GLContext *contextOpenGL{};
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_GLContext *contextOpenGL;
+    GUIManager *managerGUI;
 
     bool &finish;
 

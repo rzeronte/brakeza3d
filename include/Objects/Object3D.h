@@ -11,7 +11,8 @@ class Object3D {
     M3 rotation;
 
 public:
-    Object3D *parent{};
+    float rotX, rotY, rotZ; // For easy management from UI
+    Object3D *parent;
 
     Object3D *getParent() const;
 

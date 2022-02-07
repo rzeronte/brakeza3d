@@ -22,7 +22,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    bool enabled{};
+    bool enabled;
 
     bool debug = true;
     bool click = false;
@@ -48,6 +48,7 @@ public:
     void handleMouse(SDL_Event *);
 
     Uint8 *keyboard{};
+
 };
 
 

@@ -9,7 +9,11 @@ class M3 {
 public:
     M3();
 
-    M3(float, float, float, float, float, float, float, float, float);
+    M3(
+       float, float, float,
+       float, float, float,
+       float, float, float
+   );
 
     M3(float, float, float);
 
@@ -23,7 +27,6 @@ public:
 
     M3 operator-(const M3 &pm);
 
-    float m[9];
 
     static M3 getMatrixNULL();
 
@@ -78,6 +81,9 @@ public:
     void setZ(float, float, float);
 
     static M3 getFromVectors(Vertex3D ZAxis, Vertex3D YAxis);
+
+    float m[9];
+
 };
 
 

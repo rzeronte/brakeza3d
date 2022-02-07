@@ -1,6 +1,6 @@
 
 #include <string>
-#include <time.h>
+#include <ctime>
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
@@ -31,16 +31,12 @@ void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
 }
 
 bool Tools::isPixelInWindow(int x, int y) {
-    if (!(x >= 0 && x < EngineSetup::getInstance()->screenWidth && y >= 0 &&
-          y < EngineSetup::getInstance()->screenHeight)) {
+    if (!(x >= 0 && x < EngineSetup::get()->screenWidth && y >= 0 &&
+          y < EngineSetup::get()->screenHeight)) {
         return false;
     }
 
     return true;
-}
-
-unsigned long Tools::createRGB(int r, int g, int b) {
-    return (unsigned long) ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
 uint8_t Tools::getRedValueFromColor(uint32_t c) {
@@ -63,7 +59,7 @@ float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
     return surface->h * v;
 }
 
-Uint32 Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, float v) {
+Color Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, float v) {
     float x = Tools::getXTextureFromUV(surface, u);
     float y = Tools::getYTextureFromUV(surface, v);
 
@@ -82,15 +78,15 @@ Uint32 Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, floa
     Uint8 Q3red, Q3green, Q3blue, Q3alpha;
     Uint8 Q4red, Q4green, Q4blue, Q4alpha;
 
-    Uint32 Q1 = Tools::readSurfacePixel(surface, x1, y1);
-    Uint32 Q3 = Tools::readSurfacePixel(surface, x1, y2);
-    Uint32 Q2 = Tools::readSurfacePixel(surface, x2, y1);
-    Uint32 Q4 = Tools::readSurfacePixel(surface, x2, y2);
+    Color Q1 = Tools::readSurfacePixel(surface, x1, y1);
+    Color Q3 = Tools::readSurfacePixel(surface, x1, y2);
+    Color Q2 = Tools::readSurfacePixel(surface, x2, y1);
+    Color Q4 = Tools::readSurfacePixel(surface, x2, y2);
 
-    SDL_GetRGBA(Q1, surface->format, &Q1red, &Q1green, &Q1blue, &Q1alpha);
-    SDL_GetRGBA(Q2, surface->format, &Q2red, &Q2green, &Q2blue, &Q2alpha);
-    SDL_GetRGBA(Q3, surface->format, &Q3red, &Q3green, &Q3blue, &Q3alpha);
-    SDL_GetRGBA(Q4, surface->format, &Q4red, &Q4green, &Q4blue, &Q4alpha);
+    SDL_GetRGBA(Q1.getColor(), surface->format, &Q1red, &Q1green, &Q1blue, &Q1alpha);
+    SDL_GetRGBA(Q2.getColor(), surface->format, &Q2red, &Q2green, &Q2blue, &Q2alpha);
+    SDL_GetRGBA(Q3.getColor(), surface->format, &Q3red, &Q3green, &Q3blue, &Q3alpha);
+    SDL_GetRGBA(Q4.getColor(), surface->format, &Q4red, &Q4green, &Q4blue, &Q4alpha);
 
     float f1 = (x2 - x) / (x2 - x1);
     float f2 = (x - x1) / (x2 - x1);
@@ -113,10 +109,10 @@ Uint32 Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, floa
     Cgreen = (fy1 * R1green) + (fy2 * R2green);
     Cblue = (fy1 * R1blue) + (fy2 * R2blue);
 
-    return (Uint32) Tools::createRGB(Cred, Cgreen, Cblue);
+    return Color(Cred, Cgreen, Cblue);
 }
 
-Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v) {
+Color Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v) {
     return Tools::readSurfacePixel(
             surface,
             Tools::getXTextureFromUV(surface, u),
@@ -124,10 +120,10 @@ Uint32 Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v) {
     );
 }
 
-Uint32 Tools::readSurfacePixel(SDL_Surface *surface, int x, int y) {
+Color Tools::readSurfacePixel(SDL_Surface *surface, int x, int y) {
     auto *pixels = (Uint32 *) surface->pixels;
 
-    return pixels[y * surface->w + x];
+    return Color(pixels[y * surface->w + x]);
 }
 
 bool Tools::fileExists(const std::string &name) {
@@ -161,10 +157,10 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
 }
 
 float Tools::interpolate(float val, float bound_left, float bound_right) {
-    float Ax = val;                     // componente X de nuestro vértice en PANTALLA2D
-    float vNLx = bound_left;            // Límite Izquierdo de PANTALLA2D
-    float vNRx = bound_right;           // Límite Derecho de PANTALLA2D
-    float tx0 = (Ax - vNLx);            // Distancia entre el límite Izquierdo y nuestro vértice
+    float Ax = val;                   // componente X de nuestro vértice en PANTALLA2D
+    float vNLx = bound_left;          // Límite Izquierdo de PANTALLA2D
+    float vNRx = bound_right;         // Límite Derecho de PANTALLA2D
+    float tx0 = (Ax - vNLx);          // Distancia entre el límite Izquierdo y nuestro vértice
     float tx1 = 1 / (vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
     float xt = (tx0 * tx1) - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
 
@@ -259,63 +255,30 @@ void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times) {
     Mix_PlayChannel(channel, chunk, times);
 }
 
-Uint32 Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
+Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
     Uint32 rb = color1 & 0xff00ff;
     Uint32 g = color1 & 0x00ff00;
     rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
     g += ((color2 & 0x00ff00) - g) * alpha >> 8;
 
-    return (rb & 0xff00ff) | (g & 0xff00);
+    return Color((rb & 0xff00ff) | (g & 0xff00));
 }
 
-Uint32 Tools::mixLightColor(Uint32 color, float distance, LightPoint3D *lp, Vertex3D Q) {
+Color Tools::mixColor(Color color1, Color color2, float color2Intensity) {
 
-    Vertex3D P = lp->getPosition();
-    Vertex3D R = lp->AxisForward();
+    float r_light = color2.r * color2Intensity;
+    float g_light = color2.g * color2Intensity;
+    float b_light = color2.b * color2Intensity;
 
-    Vector3D L = Vector3D(P, Q);
-    Vertex3D Lv = L.normal();
+    float r_original = color1.r * (1 - color2Intensity);
+    float g_original = color1.g * (1 - color2Intensity);
+    float b_original = color1.b * (1 - color2Intensity);
 
-    const float min = R * Lv;
-
-    float p = 100;
-    float max = fmaxf(min, 0);
-    float pow = powf(max, p);
-
-    float intensity = pow / (lp->kc + lp->kl * distance + lp->kq * (distance * distance));
-
-    int r_light = (int) (Tools::getRedValueFromColor(lp->color) * intensity);
-    int g_light = (int) (Tools::getGreenValueFromColor(lp->color) * intensity);
-    int b_light = (int) (Tools::getBlueValueFromColor(lp->color) * intensity);
-
-    int r_original = (int) (Tools::getRedValueFromColor(color) * (1 - intensity));
-    int g_original = (int) (Tools::getGreenValueFromColor(color) * (1 - intensity));
-    int b_original = (int) (Tools::getBlueValueFromColor(color) * (1 - intensity));
-
-    Uint32 c = Tools::createRGB(
-            r_light + r_original,
-            g_light + g_original,
+    return Color(
+            r_light+r_original,
+            g_original+g_original,
             b_light + b_original
-    );
-
-    return c;
-}
-
-Uint32 Tools::mixColor(Uint32 color1, Uint32 color2, float color2Intensity) {
-
-    int r_light = Tools::getRedValueFromColor(color2) * color2Intensity;
-    int g_light = Tools::getGreenValueFromColor(color2) * color2Intensity;
-    int b_light = Tools::getBlueValueFromColor(color2) * color2Intensity;
-
-    int r_original = Tools::getRedValueFromColor(color1) * (1 - color2Intensity);
-    int g_original = Tools::getGreenValueFromColor(color1) * (1 - color2Intensity);
-    int b_original = Tools::getBlueValueFromColor(color1) * (1 - color2Intensity);
-
-    return Tools::createRGB(
-            r_light + r_original,
-            g_light + g_original,
-            b_light + b_original
-    );
+            );
 }
 
 int Tools::int_floor(float x) {

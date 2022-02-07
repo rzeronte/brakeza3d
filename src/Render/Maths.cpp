@@ -38,7 +38,7 @@ Maths::getBarycentricCoordinatesPrecalc(float &alpha, float &theta, float &gamma
  * 3 = vértice B dentro
  */
 int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V) {
-    EngineSetup *SETUP = EngineSetup::getInstance();
+    EngineSetup *SETUP = EngineSetup::get();
 
     float distanceV1 = P.distance(V.vertex1);
     float distanceV2 = P.distance(V.vertex2);
@@ -206,7 +206,7 @@ float Maths::distanceBetweenVertices(Vertex3D v1, Vertex3D v2) {
 
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam) {
     Vertex3D a = cam->getPosition() - object->getPosition();
-    Vertex3D b = object->getRotation() * EngineSetup::getInstance()->forward;
+    Vertex3D b = object->getRotation() * EngineSetup::get()->forward;
 
     a = a.getNormalize();
 
@@ -283,7 +283,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
 
         // Determine whether vp1, vp2, and vm1 form a valid triangles.
         Vertex3D n1 = normal % (vm1 - vp2).getNormalize();
-        if (n1 * (vp1 - vp2) > EngineSetup::getInstance()->EPSILON) {
+        if (n1 * (vp1 - vp2) > EngineSetup::get()->EPSILON) {
             positive = true;
             Vertex3D n2 = (normal % (vp1 - vm1).getNormalize());
             Vertex3D n3 = (normal % (vp2 - vp1).getNormalize());
@@ -291,9 +291,9 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
                 // Look for other vertices inside the triangles.
                 if ((active[a]) && (a != p1) && (a != p2) && (a != m1)) {
                     Vertex3D v = vertices[a];
-                    if ((n1 * (v - vp2).getNormalize() > -EngineSetup::getInstance()->EPSILON)
-                        && (n2 * (v - vm1).getNormalize() > -EngineSetup::getInstance()->EPSILON)
-                        && (n3 * (v - vp1).getNormalize() > -EngineSetup::getInstance()->EPSILON)) {
+                    if ((n1 * (v - vp2).getNormalize() > -EngineSetup::get()->EPSILON)
+                        && (n2 * (v - vm1).getNormalize() > -EngineSetup::get()->EPSILON)
+                        && (n3 * (v - vp1).getNormalize() > -EngineSetup::get()->EPSILON)) {
                         positive = false;
                         break;
                     }
@@ -303,7 +303,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
 
         // Determine whether vm1, vm2, and vp1 form a valid triangles.
         n1 = normal % (vm2 - vp1).getNormalize();
-        if (n1 * (vm1 - vp1) > EngineSetup::getInstance()->EPSILON) {
+        if (n1 * (vm1 - vp1) > EngineSetup::get()->EPSILON) {
             negative = true;
             Vertex3D n2 = (normal % (vm1 - vm2).getNormalize());
             Vertex3D n3 = (normal % (vp1 - vm1).getNormalize());
@@ -311,9 +311,9 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
                 // Look for other vertices inside the triangles.
                 if ((active[a]) && (a != m1) && (a != m2) && (a != p1)) {
                     Vertex3D v = vertices[a];
-                    if ((n1 * (v - vp1).getNormalize() > -EngineSetup::getInstance()->EPSILON)
-                        && (n2 * (v - vm2).getNormalize() > -EngineSetup::getInstance()->EPSILON)
-                        && (n3 * (v - vm1).getNormalize() > -EngineSetup::getInstance()->EPSILON)) {
+                    if ((n1 * (v - vp1).getNormalize() > -EngineSetup::get()->EPSILON)
+                        && (n2 * (v - vm2).getNormalize() > -EngineSetup::get()->EPSILON)
+                        && (n3 * (v - vm1).getNormalize() > -EngineSetup::get()->EPSILON)) {
                         negative = false;
                         break;
                     }
@@ -326,7 +326,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
         if ((positive) && (negative)) {
             float pd = (vp2 - vm1).getNormalize() * (vm2 - vm1).getNormalize();
             float md = (vm2 - vp1).getNormalize() * (vp2 - vp1).getNormalize();
-            if (fabs(pd - md) < EngineSetup::getInstance()->EPSILON) {
+            if (fabs(pd - md) < EngineSetup::get()->EPSILON) {
                 if (lastPositive) positive = false;
                 else negative = false;
             } else {
@@ -510,5 +510,10 @@ float Maths::sqrt1(const float &n) {
     } u;
     u.i = 0x5F375A86 - (*(int *) &n >> 1);
     return (int(3) - n * u.f * u.f) * n * u.f * 0.5f;
+}
+
+Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
+{
+    return (a.getNormalize() + b.getNormalize()).getNormalize();
 }
 

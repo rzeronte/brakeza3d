@@ -7,6 +7,9 @@
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
     followCamera = false;
+    this->rotX = 0;
+    this->rotY = 0;
+    this->rotZ = 0;
 
 }
 
@@ -44,36 +47,36 @@ void Object3D::setEnabled(bool enabled) {
 }
 
 Vertex3D Object3D::AxisUp() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->up;
+    Vertex3D v = getRotation() * EngineSetup::get()->up;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisDown() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->down;
+    Vertex3D v = getRotation() * EngineSetup::get()->down;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisForward() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->forward;
+    Vertex3D v = getRotation() * EngineSetup::get()->forward;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisBackwards() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->backward;
+    Vertex3D v = getRotation() * EngineSetup::get()->backward;
 
     return v.getNormalize();
 
 }
 
 Vertex3D Object3D::AxisRight() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->right;
+    Vertex3D v = getRotation() * EngineSetup::get()->right;
 
     return v.getNormalize();
 
 }
 
 Vertex3D Object3D::AxisLeft() {
-    Vertex3D v = getRotation() * EngineSetup::getInstance()->left;
+    Vertex3D v = getRotation() * EngineSetup::get()->left;
 
     return v.getNormalize();
 }

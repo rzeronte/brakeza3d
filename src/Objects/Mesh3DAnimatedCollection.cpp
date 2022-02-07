@@ -9,7 +9,7 @@ Mesh3DAnimatedCollection::addAnimation(const std::string& label, const std::stri
     meshObject->setLabel(label);
     meshObject->setParent(this);
 
-    if (meshObject->AssimpLoadAnimation(EngineSetup::getInstance()->MODELS_FOLDER + modelFilename)) {
+    if (meshObject->AssimpLoadAnimation(EngineSetup::get()->MODELS_FOLDER + modelFilename)) {
         meshObject->setScale(scale);
         meshObject->setDrawOffset(this->drawOffset);
         meshObject->setPosition(this->getPosition());
