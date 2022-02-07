@@ -9,14 +9,14 @@
 #include "AABB3D.h"
 
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
-class Frustum {
+class Frustum : public Object3D {
 public:
-
-    Vertex3D position;
-
     Vertex3D direction;   // Normalized
     Vertex3D up;
     Vertex3D right;
+
+    float horizontal_fov;
+    float aspectRatio;
 
     float nearDist;     // the distance from the camera to the near plane
     float Hnear;        // the “height” of the near plane
@@ -51,10 +51,7 @@ public:
     Vertex3D vNLs, vNRs;
     Vertex3D vNTs, vNBs;
 
-    Vertex3D vNLpers, vNRpers;
-    Vertex3D vNTpers, vNBpers;
-
-    // Near Plane Edges
+    // Far Plane Edges
     Vector3D far_top = Vector3D();
     Vector3D far_bottom = Vector3D();
     Vector3D far_left = Vector3D();
@@ -63,14 +60,28 @@ public:
     AABB3D bounds;
 
 public:
+    float *shadowMappingBuffer;
+    int sizeBuffer;
+
     Frustum();
 
-    Frustum(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear,
-            float Wnear, float farDist, float Hfar, float Wfar);
+    void setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float horizontalFOV, float aspectRatio, float farDistance);
 
-    void
-    setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float nearDist, float Hnear, float Wnear,
-          float farDist, float Hfar, float Wfar);
+    float calcCanvasNearWidth() const;
+
+    float calcCanvasNearHeight() const;
+
+    float getScreenAspectRatio() const;
+
+    float calcCanvasFarWidth() const;
+
+    float calcCanvasFarHeight() const;
+
+    float getNearDistance() const;
+
+    float getVerticalFOV() const;
+
+    void updateFrustum();
 
     void updateCenters();
 
@@ -78,13 +89,13 @@ public:
 
     void updatePoints();
 
-    void updateBounds();
-
-    bool isPointInFrustum(Vertex3D &v);
+    bool isVertexInside(Vertex3D &v);
 
     bool isAABBInFrustum(AABB3D *aabb);
 
     void consoleInfo() const;
+
+    void fillDeepMapping();
 };
 
 

@@ -46,7 +46,7 @@ M3 M3::operator*(const M3 &v) {
 
 M3 M3::operator*(const float scalar) {
     return M3(
-            m[0] * scalar, m[1] * scalar, m[3] * scalar,
+            m[0] * scalar, m[1] * scalar, m[2] * scalar,
             m[3] * scalar, m[4] * scalar, m[5] * scalar,
             m[6] * scalar, m[7] * scalar, m[8] * scalar
     );
@@ -141,9 +141,9 @@ M3 M3::ScaleMatrix(float scale) {
 
 M3 M3::ScaleMatrix(float xScale, float yScale, float zScale) {
     M3 M(
-            xScale, 0, 0,
-            0, yScale, 0,
-            0, 0, zScale
+        xScale, 0, 0,
+        0, yScale, 0,
+        0, 0, zScale
     );
 
     return M;

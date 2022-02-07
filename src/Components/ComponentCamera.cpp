@@ -26,7 +26,7 @@ void ComponentCamera::postUpdate() {
         getCamera()->UpdatePositionForVelocity();
     }
 
-    this->getCamera()->UpdateFrustum();
+    this->getCamera()->updateFrustum();
 }
 
 void ComponentCamera::onEnd() {

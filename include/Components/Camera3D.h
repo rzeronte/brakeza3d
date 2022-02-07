@@ -13,20 +13,16 @@ public:
     float pitch = 0;        // Neck angle
     float roll = 0;
 
-    float speed{};        // Speed along heading
-    float strafe{};       // Speed along heading
-    float jump{};         // Speed along vertical
-
-    float horizontal_fov;
-    float farDistance;
-    float aspectRatio;
+    float speed;        // Speed along heading
+    float strafe;       // Speed along heading
+    float jump;         // Speed along vertical
 
     Frustum *frustum;
 
     Vector3D velocity;
 
     Object3D *follow_to = nullptr;
-    Vertex3D follow_to_position_offset;
+    Vertex3D followToPositionOffset;
 
     btPairCachingGhostObject *m_ghostObject{};
 
@@ -36,21 +32,7 @@ public:
 
     Camera3D();
 
-    float calcCanvasNearWidth() const;
-
-    float calcCanvasNearHeight() const;
-
-    float getScreenAspectRatio() const;
-
-    float calcCanvasFarWidth() const;
-
-    float calcCanvasFarHeight() const;
-
-    float getNearDistance() const;
-
-    float getVerticalFOV() const;
-
-    void UpdateFrustum();
+    void updateFrustum();
 
     void UpdateVelocity();
 

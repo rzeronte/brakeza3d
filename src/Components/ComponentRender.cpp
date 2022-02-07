@@ -2,6 +2,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
 
 void ComponentRender::onStart() {
     Logging::Log("ComponentRender onStart", "ComponentRender");
@@ -15,15 +16,32 @@ void ComponentRender::preUpdate() {
 void ComponentRender::onUpdate() {
     this->onUpdateSceneObjects();
 
+    if (SETUP->ENABLE_LIGHTS) {
+        this->extractLightPointsFromObjects3D();
+        this->updateLights();
+        if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
+            this->createLightPointsDepthMappings();
+        }
+    }
+
     this->hiddenSurfaceRemoval();
     this->drawVisibleTriangles();
+
+
+    frameTriangles.clear();
 
     if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
     }
 
-    if (SETUP->RENDER_OBJECTS_AXIS) {
-        this->drawSceneObjectsAxis();
+    this->drawSceneOverlappingItems();
+
+    if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
+        for (auto & lightpoint : this->lightpoints) {
+            if (!lightpoint->isEnabled()) {
+                lightpoint->clearShadowMappingBuffer();
+            }
+        }
     }
 
     if (SETUP->RENDER_MAIN_AXIS) {
@@ -50,7 +68,60 @@ std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
     return visibleTriangles;
 }
 
+void ComponentRender::createLightPointsDepthMappings() {
+
+    for (auto & lightpoint : this->lightpoints) {
+        if (!lightpoint->isEnabled()) {
+            continue;
+        }
+
+        std::vector<Triangle *> visibleTrianglesFromLight;
+        std::vector<Triangle *> clippedTrianglesFromLight;
+
+        for (auto & ft : frameTriangles) {
+            this->hiddenSurfaceRemovalTriangleForLight(ft, lightpoint, visibleTrianglesFromLight, clippedTrianglesFromLight);
+        }
+
+        visibleTrianglesFromLight.insert(
+                visibleTrianglesFromLight.end(),
+                std::make_move_iterator(clippedTrianglesFromLight.begin()),
+                std::make_move_iterator(clippedTrianglesFromLight.end())
+        );
+
+        for (auto & t : visibleTrianglesFromLight) {
+            this->triangleRasterizerForDepthMapping(t, lightpoint);
+        }
+
+        if (lightpoint->showDeepMapping) {
+            lightpoint->drawDeepMap(0, 0);
+        }
+
+        if (lightpoint->showFrustum) {
+            Drawable::drawFrustum(
+                    lightpoint->frustum,
+                    ComponentsManager::get()->getComponentCamera()->getCamera(),
+                    true, true, false
+            );
+        }
+    }
+}
+
+void ComponentRender::extractLightPointsFromObjects3D() {
+    this->lightpoints.resize(0);
+
+    std::vector<Object3D *>::iterator it;
+    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end();it++) {
+        Object3D *object = *(it);
+        LightPoint3D *lp = dynamic_cast<LightPoint3D *>(object);
+        if (lp != NULL) {
+            lp->clearShadowMappingBuffer();
+            lightpoints.push_back(lp);
+        }
+    }
+}
+
 std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
+
     return lightpoints;
 }
 
@@ -77,6 +148,47 @@ void ComponentRender::onUpdateSceneObjects() {
     }
 }
 
+void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoint3D *l, std::vector<Triangle *> &visibleTrianglesForLight, std::vector<Triangle *> &clippedTriangles) {
+
+    t->updateObjectSpace();
+    t->updateNormal();
+
+    // back face culling (needs objectSpace)
+    if (t->isBackFaceCulling(&l->getPosition())) {
+        return;
+    }
+
+    // Clipping (needs objectSpace)
+    if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
+        if (SETUP->ENABLE_CLIPPING) {
+            t->clipping(
+                l->frustum,
+                l->frustum->planes,
+                SETUP->LEFT_PLANE,
+                SETUP->BOTTOM_PLANE,
+                t->parent,
+                clippedTriangles,
+                t->isBSP
+            );
+        }
+
+        return;
+    }
+
+    // Frustum Culling (needs objectSpace)
+    if (!l->frustum->isVertexInside(t->Ao) && !l->frustum->isVertexInside(t->Bo) && !l->frustum->isVertexInside(t->Co) ) {
+        return;
+    }
+
+    t->updateCameraSpace(l);
+    t->updatePerspectiveNDCSpace(l->frustum);
+    t->updateScreenSpace();
+    t->updateBoundingBox();
+    t->updateFullArea();
+
+    visibleTrianglesForLight.push_back(t);
+}
+
 void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -92,13 +204,13 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     if (t->testForClipping(cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
         if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
-                    cam,
-                    cam->frustum->planes,
-                    SETUP->LEFT_PLANE,
-                    SETUP->BOTTOM_PLANE,
-                    t->parent,
-                    clippedTriangles,
-                    t->isBSP
+                cam->frustum,
+                cam->frustum->planes,
+                SETUP->LEFT_PLANE,
+                SETUP->BOTTOM_PLANE,
+                t->parent,
+                clippedTriangles,
+                t->isBSP
             );
         }
 
@@ -106,10 +218,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     }
 
     // Frustum Culling (needs objectSpace)
-    if (!cam->frustum->isPointInFrustum(t->Ao) &&
-        !cam->frustum->isPointInFrustum(t->Bo) &&
-        !cam->frustum->isPointInFrustum(t->Co)
-            ) {
+    if (!cam->frustum->isVertexInside(t->Ao) && !cam->frustum->isVertexInside(t->Bo) && !cam->frustum->isVertexInside(t->Co) ) {
         return;
     }
 
@@ -117,7 +226,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     // Estas operaciones las hacemos después de descartar triángulos
     // para optimización en el rasterizador por software
     t->updateCameraSpace(cam);
-    t->updateNDCSpace(cam);
+    t->updatePerspectiveNDCSpace(cam->frustum);
     t->updateScreenSpace();
     t->updateBoundingBox();
     t->updateFullArea();
@@ -150,7 +259,6 @@ void ComponentRender::hiddenSurfaceRemoval() {
                                     ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()), "Render");
     }
 
-    frameTriangles.clear();
 }
 
 void ComponentRender::hiddenOctreeRemoval() {
@@ -219,7 +327,7 @@ void ComponentRender::handleTrianglesToTiles(std::vector<Triangle *> &triangles)
 void ComponentRender::drawTilesGrid() {
     for (int j = 0; j < (this->tilesWidth * this->tilesHeight); j++) {
         Tile *t = &this->tiles[j];
-        Uint32 color = Color::white();
+        Color color = Color::white();
 
         if (!t->triangleIds.empty()) {
             color = Color::red();
@@ -232,15 +340,22 @@ void ComponentRender::drawTilesGrid() {
     }
 }
 
-void ComponentRender::drawTriangles(std::vector<Triangle *> &visibleTriangles) {
+void ComponentRender::drawTriangles(std::vector<Triangle *> &visibleTriangles)
+{
+
     std::vector<Triangle *>::iterator it;
     for (it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
         Triangle *triangle = *(it);
-        processTriangle(triangle);
+        render(triangle);
+    }
+
+    if (SETUP->DRAW_MAIN_DEEP_MAPPING) {
+        Drawable::drawMainDeepMapFromCamera(0, 0);
     }
 }
 
-void ComponentRender::processTriangle(Triangle *t) {
+void ComponentRender::render(Triangle *t)
+{
     // degradate
     if (t->getTexture() != nullptr && SETUP->TRIANGLE_MODE_TEXTURIZED) {
         triangleRasterizer(t);
@@ -264,7 +379,64 @@ void ComponentRender::processTriangle(Triangle *t) {
         Drawable::drawVertex(t->Co, CC, Color::green());
     }
 
+
     t->drawed = true;
+}
+
+void ComponentRender::triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint) {
+    // Triangle setup
+    int A01 = (int) (-t->As.y + t->Bs.y);
+    int A12 = (int) (-t->Bs.y + t->Cs.y);
+    int A20 = (int) (-t->Cs.y + t->As.y);
+
+    int B01 = (int) (-t->Bs.x + t->As.x);
+    int B12 = (int) (-t->Cs.x + t->Bs.x);
+    int B20 = (int) (-t->As.x + t->Cs.x);
+
+    Point2D startP(t->minX, t->minY);
+    int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
+    int w1_row = Maths::orient2d(t->Cs, t->As, startP);
+    int w2_row = Maths::orient2d(t->As, t->Bs, startP);
+
+    Fragment fragment = Fragment();
+
+    for (int y = t->minY; y < t->maxY; y++) {
+        int w0 = w0_row;
+        int w1 = w1_row;
+        int w2 = w2_row;
+
+        for (int x = t->minX; x < t->maxX; x++) {
+
+            if ((w0 | w1 | w2) > 0) {
+
+                fragment.alpha = (float) w0 * t->reciprocalFullArea;
+                fragment.theta = (float) w1 * t->reciprocalFullArea;
+                fragment.gamma = 1 - fragment.alpha - fragment.theta;
+
+                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
+
+                if (Tools::isPixelInWindow(x, y)) {
+                    float buffer_shadowmapping_z = ligthpoint->getShadowMappingBuffer(x, y);
+                    if (buffer_shadowmapping_z != NULL) {
+                        if ( fragment.depth < buffer_shadowmapping_z) {
+                            ligthpoint->setShadowMappingBuffer(x, y, fragment.depth);
+                        }
+                    } else {
+                        ligthpoint->setShadowMappingBuffer( x, y, fragment.depth);
+                    }
+                }
+            }
+
+            // edge function increments
+            w0 += A12;
+            w1 += A20;
+            w2 += A01;
+        }
+
+        w0_row += B12;
+        w1_row += B20;
+        w2_row += B01;
+    }
 }
 
 void ComponentRender::triangleRasterizer(Triangle *t) {
@@ -280,13 +452,13 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
     int B12 = (int) (-t->Cs.x + t->Bs.x);
     int B20 = (int) (-t->As.x + t->Cs.x);
 
-    Point2D startP((float)t->minX, (float) t->minY);
+    Point2D startP(t->minX, t->minY);
     int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    Fragment fragment{};
-    bool bilinearInterpolation = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
+    Fragment fragment = Fragment();
+    bool bilinearInterpolation = EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY; y < t->maxY; y++) {
         int w0 = w0_row;
@@ -354,7 +526,7 @@ void ComponentRender::processPixelTextureAnimated(Fragment *fragment) {
             SETUP->LAVA_SCALE;
 }
 
-Uint32 ComponentRender::processPixelFog(Fragment *fragment, Uint32 pixelColor) {
+Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
     float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE);
 
     if (nZ >= 1) {
@@ -366,54 +538,56 @@ Uint32 ComponentRender::processPixelFog(Fragment *fragment, Uint32 pixelColor) {
     return pixelColor;
 }
 
-Uint32 ComponentRender::processPixelLights(Triangle *t, Fragment *fragment, Uint32 pixelColor) {
-    Vertex3D D;
+Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
+{
+    if (this->lightpoints.empty()) {
+        return c;
+    }
 
-    if (!this->lightpoints.empty()) {
-        // Coordenadas del punto que estamos procesando en el mundo (object space)
-        float x3d = fragment->alpha * t->Ao.x + fragment->theta * t->Bo.x + fragment->gamma * t->Co.x;
-        float y3d = fragment->alpha * t->Ao.y + fragment->theta * t->Bo.y + fragment->gamma * t->Co.y;
-        float z3d = fragment->alpha * t->Ao.z + fragment->theta * t->Bo.z + fragment->gamma * t->Co.z;
+    // object space
+    Vertex3D D = Vertex3D(
+        f->alpha * t->Ao.x + f->theta * t->Bo.x + f->gamma * t->Co.x,
+        f->alpha * t->Ao.y + f->theta * t->Bo.y + f->gamma * t->Co.y,
+        f->alpha * t->Ao.z + f->theta * t->Bo.z + f->gamma * t->Co.z
+    );
 
-        D = Vertex3D(x3d, y3d, z3d); // Object space
+    Vertex3D Dl;
+    Point2D DP;
+    for (auto & lightpoint : this->lightpoints) {
+        if (!lightpoint->isEnabled()) {
+            continue;
+        }
 
-        for (auto & lightpoint : this->lightpoints) {
-            if (!lightpoint->isEnabled()) {
+        if (SETUP->ENABLE_SHADOW_MAPPING && SETUP->CREATE_LIGHT_ZBUFFER) {
+            Transforms::cameraSpace(Dl, D, lightpoint);
+            Dl = Transforms::PerspectiveNDCSpace(Dl, lightpoint->frustum);
+            float depth = Dl.z;
+            Transforms::screenSpace(DP, Dl);
+
+            if (!Tools::isPixelInWindow(DP.x, DP.y)) {
                 continue;
             }
 
-            // Color light apply
-            pixelColor = lightpoint->mixColor(pixelColor, D);
+            float bufferShadowMappingDepth = lightpoint->getShadowMappingBuffer(DP.x,DP.y);
+            if (depth <= bufferShadowMappingDepth + 0.0005) {
+                c = lightpoint->mixColor(c, D, f);
+            }
 
-            /*if (EngineSetup::getInstance()->ENABLE_SHADOW_CASTING) {
-                Mesh3D *isMesh = dynamic_cast<Mesh3D*> (parent);
-
-                if (isMesh != NULL && isMesh->isShadowCaster()) {
-                    // Shadow test
-                    Vertex3D Dl = Transforms::cameraSpace(D, this->lightPoints[i]->cam);
-                    Dl = Transforms::NDCSpace(Dl, this->lightPoints[i]->cam);
-                    const Point2D DP = Transforms::screenSpace(Dl, this->lightPoints[i]->cam);
-
-                    if (Tools::isPixelInWindow(DP.x, DP.y)) {
-                        float buffer_shadowmapping_z = this->lightPoints[i]->getShadowMappingBuffer(DP.x, DP.y);
-                        if ( Dl.z > buffer_shadowmapping_z) {
-                            pixelColor = Color::red();
-                        }
-                    }
-                }
-            }*/
+            continue;
         }
+
+        c = lightpoint->mixColor(c, D, f);
     }
 
-    return pixelColor;
+    return c;
 }
 
-void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment,
-                                   bool bilinear) {
-    Uint32 pixelColor(NULL);
+void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
+{
+    Color pixelColor(0, 0, 0);
 
     if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
-        pixelColor = (Uint32) Tools::createRGB(
+        pixelColor = Color(
                 fragment->alpha * 255,
                 fragment->theta * 255,
                 fragment->gamma * 255
@@ -437,34 +611,27 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
 
-        Uint8 red, green, blue, alpha;
-        SDL_GetRGBA(pixelColor, t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
-
-        if (alpha == 0) {
-            return;
-        } else {
-            pixelColor = Tools::alphaBlend(BUFFERS->getVideoBuffer(x, y), pixelColor, alpha);
-        }
-
-        if (!t->parent->isDecal() && t->getLightmap() != nullptr && !t->getTexture()->liquid &&
-            SETUP->ENABLE_LIGHTMAPPING) {
+        if (!t->parent->isDecal() && t->getLightmap() != nullptr && !t->getTexture()->liquid && SETUP->ENABLE_LIGHTMAPPING) {
+            Uint8 red, green, blue, alpha;
+            SDL_GetRGBA(pixelColor.getColor(), t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
             t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV, red, green, blue, alpha);
         }
+    }
+
+    if (EngineSetup::get()->ENABLE_LIGHTS) {
+        pixelColor = this->processPixelLights(t, fragment, pixelColor);
     }
 
     if (SETUP->ENABLE_FOG) {
         pixelColor = this->processPixelFog(fragment, pixelColor);
     }
 
-    if (EngineSetup::getInstance()->ENABLE_LIGHTS) {
-        pixelColor = this->processPixelLights(t, fragment, pixelColor);
-    }
-
     BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
-    BUFFERS->setVideoBuffer(bufferIndex, pixelColor);
+    BUFFERS->setVideoBuffer(bufferIndex, pixelColor.getColor());
 }
 
-void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangles) {
+void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangles)
+{
     std::vector<std::thread> threads;
     for (int i = 0; i < numTiles; i++) {
         if (!tiles[i].draw) continue;
@@ -483,13 +650,38 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
             }
         }
     }
+
+    if (SETUP->DRAW_MAIN_DEEP_MAPPING) {
+        Drawable::drawMainDeepMapFromCamera(0, 0);
+    }
 }
 
-void ComponentRender::drawSceneObjectsAxis() {
+void ComponentRender::drawSceneOverlappingItems() {
     for (unsigned int i = 0; i < getSceneObjects()->size(); i++) {
         if (getSceneObjects()->operator[](i)->isEnabled()) {
-            Drawable::drawObject3DAxis(getSceneObjects()->operator[](i),
-                                       ComponentsManager::get()->getComponentCamera()->getCamera(), true, true, true);
+            if (SETUP->RENDER_OBJECTS_AXIS) {
+                Drawable::drawObject3DAxis(
+                    getSceneObjects()->operator[](i),
+                    ComponentsManager::get()->getComponentCamera()->getCamera(),
+                    true,
+                    true,
+                    true
+                );
+            }
+
+            // Only for meshes
+            auto *lightpoint = dynamic_cast<LightPoint3D *>(getSceneObjects()->operator[](i));
+            if (lightpoint != nullptr) {
+                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
+                    Drawable::drawLinePoints(
+                        lightpoint->getPosition(),
+                        lightpoint->getPosition() + lightpoint->AxisForward().getNormalize().getScaled(
+                          EngineSetup::get()->LIGHTS_DIRECTION_SIZE
+                        ),
+                       Color::white()
+                    );
+                }
+            }
         }
     }
 }
@@ -541,7 +733,7 @@ void ComponentRender::initTiles() {
 
         this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
         for (int j = 0; j < tilePixelsBufferSize; j++) {
-            this->tiles[i].buffer[j] = Color::red();
+            this->tiles[i].buffer[j] = 0;
         }
 
         this->tiles[i].bufferDepth = new float[tilePixelsBufferSize];
@@ -602,8 +794,11 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
     int w1_row = Maths::orient2d(t->Cs, t->As, startP);
     int w2_row = Maths::orient2d(t->As, t->Bs, startP);
 
-    Fragment fragment{};
-    bool bilinear = EngineSetup::getInstance()->TEXTURES_BILINEAR_INTERPOLATION;
+    Fragment fragment = Fragment();
+
+    Vertex3D normal = t->getNormal().getNormalize();
+
+    bool bilinear = EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION;
 
     for (int y = t->minY; y < t->maxY; y++) {
         int w0 = w0_row;
@@ -619,8 +814,7 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
                     fragment.theta = w1 * t->reciprocalFullArea;
                     fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
-                    fragment.depth =
-                            (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
+                    fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
                     const int bufferIndex = y * SETUP->screenWidth + x;
                     if (fragment.depth < BUFFERS->getDepthBuffer(bufferIndex)) {
@@ -632,6 +826,10 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
                                          (fragment.gamma * t->tex_u3_Cc_z)) * fragment.affineUV;
                         fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) +
                                          (fragment.gamma * t->tex_v3_Cc_z)) * fragment.affineUV;
+
+                        fragment.normalZ = normal.x;
+                        fragment.normalY = normal.y;
+                        fragment.normalZ = normal.z;
 
                         if (t->getLightmap() != nullptr) {
                             fragment.lightU =
@@ -659,14 +857,15 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
     }
 }
 
-void ComponentRender::drawWireframe(Triangle *t) {
+void ComponentRender::drawWireframe(Triangle *t)
+{
     Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), Color::green());
     Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), Color::green());
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
 void ComponentRender::updateFPS(const float deltaTime) {
-    if (!EngineSetup::getInstance()->DRAW_FPS) return;
+    if (!EngineSetup::get()->DRAW_FPS) return;
 
     frameTime += deltaTime;
     ++fpsFrameCounter;
@@ -677,3 +876,15 @@ void ComponentRender::updateFPS(const float deltaTime) {
         fpsFrameCounter = 0;
     }
 }
+
+void ComponentRender::updateLights()
+{
+    for (auto & lightpoint : this->lightpoints) {
+        if (!lightpoint->isEnabled()) {
+            continue;
+        }
+
+        lightpoint->syncFrustum();
+    }
+}
+

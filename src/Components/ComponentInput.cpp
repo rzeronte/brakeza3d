@@ -38,6 +38,9 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
 
 
 void ComponentInput::handleMouse(SDL_Event *event) {
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) return;
+
     // Camera rotation
     if (MouseMotion && MousePressed) {
         MouseMotion = false;
@@ -131,4 +134,3 @@ bool ComponentInput::isEnabled() const {
 void ComponentInput::setEnabled(bool enabled) {
     ComponentInput::enabled = enabled;
 }
-

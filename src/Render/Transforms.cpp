@@ -1,6 +1,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/Render/M4.h"
 
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o) {
     dst = src;
@@ -15,7 +16,7 @@ void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o) {
     dst.v = src.v;
 }
 
-void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Camera3D *cam) {
+void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Object3D *cam) {
     dst = src;
 
     dst = dst - cam->getPosition();
@@ -25,50 +26,35 @@ void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Camera3D *cam) {
     dst.v = src.v;
 }
 
-Vertex3D Transforms::NDCSpace(Vertex3D &V, Camera3D *cam) {
-    Vertex3D vNL = cam->frustum->vNLpers;
-    Vertex3D vNR = cam->frustum->vNRpers;
+Vertex3D Transforms::PerspectiveNDCSpace(Vertex3D &V, Frustum *frustum) {
+    const float f = frustum->farDist;
+    const float n = frustum->nearDist;
 
-    Vertex3D vNT = cam->frustum->vNTpers;
-    Vertex3D vNB = cam->frustum->vNBpers;
+    const float l = frustum->vNLs.x;
+    const float r = frustum->vNRs.x;
 
-    // Perspective projection ( w = 1)
-    Vertex3D A = Transforms::perspectiveDivision(V, cam);
+    const float b = frustum->vNBs.y;
+    const float t = frustum->vNTs.y;
 
-    // NDC
-    float Ax = A.x;                     // componente X de nuestro vértice en PANTALLA2D
-    float vNLx = vNL.x;                 // Límite Izquierdo de PANTALLA2D
-    float vNRx = vNR.x;                 // Límite Derecho de PANTALLA2D
-    float tx0 = (Ax - vNLx);            // Distancia entre el límite Izquierdo y nuestro vértice
-    float tx1 = 2 / (vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
-    float xt = (tx0 * tx1) - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
+    Vertex3D R(M4::getFrustumProjection(f, n, l, r, b, t) * V.createVertex4D());
 
-    float Ay = A.y;
-    float vNBy = vNB.y;
-    float vNTy = vNT.y;
-    float ty0 = (Ay - vNBy);
-    float ty1 = 2 / (vNTy - vNBy);
-    float yt = (ty0 * ty1) - 1;
+    R.u = V.u;
+    R.v = V.v;
+    R.z = -V.z;
 
-    A.x = xt;
-    A.y = yt;
-
-    A.z = V.z; // Almaceno z (deberia ser w)
-
-    return A;
+    return R.getInverse();
 }
 
 void Transforms::screenSpace(Point2D &P, Vertex3D &V) {
-    P.x = (int) ((1 + V.x) * ((float) EngineSetup::getInstance()->screenWidth / 2));
-    P.y = (int) ((1 + V.y) * ((float) EngineSetup::getInstance()->screenHeight / 2));
+    P.x = (int) ((1 + V.x) * EngineSetup::get()->screenWidthHalf);
+    P.y = (int) ((1 + V.y) * EngineSetup::get()->screenHeightHalf);
 }
 
-Vertex3D Transforms::perspectiveDivision(Vertex3D &V, Camera3D *cam) {
+Vertex3D Transforms::perspectiveDivision(Vertex3D &V, float nearDist) {
     Vertex3D A = V;
-    if (V.z != 0 || V.z != -0) {
-        A.x = -((cam->frustum->nearDist * V.x) / V.z);
-        A.y = -((cam->frustum->nearDist * V.y) / V.z);
-    }
+
+    A.x = -(nearDist * V.x) / V.z;
+    A.y = -(nearDist * V.y) / V.z;
 
     return A;
 }
@@ -105,8 +91,8 @@ Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam) {
 
 Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
     // 0 ... 1
-    float xt = Tools::interpolate(p.x, 0, EngineSetup::getInstance()->screenWidth);
-    float yt = Tools::interpolate(p.y, 0, EngineSetup::getInstance()->screenHeight);
+    float xt = Tools::interpolate(p.x, 0, EngineSetup::get()->screenWidth);
+    float yt = Tools::interpolate(p.y, 0, EngineSetup::get()->screenHeight);
 
     //*******
 
