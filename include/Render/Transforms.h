@@ -21,6 +21,7 @@ public:
     static void objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o);
 
     static Vertex3D PerspectiveNDCSpace(Vertex3D &V, Frustum *frustum);
+    static Vertex3D OrthographicNDCSpace(Vertex3D &V, Frustum *frustum);
 
     static void cameraSpace(Vertex3D &dst, Vertex3D &src, Object3D *cam);
 
