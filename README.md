@@ -7,9 +7,9 @@ No 3D graphics libraries such as OpenGL or Direct3D have been used.
 Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
-- BSP Quake Geometry/Texture/Lightmaps/Entities loader
-- Bullet Physics Integration for collisions
-- Triangle rasterizator
+- BSP Quake Geometry/Texture/Light maps/Entities loader
+- Bullet Physics Integration
+- CPU Triangle rasterizer
 - Load models & animations with ASSIMP library
 - 3D Billboard
 - Billboard 3D 8 - directions
@@ -60,12 +60,15 @@ This project has been checked on Windows in a CLion/MinGW setup.
 
 You can download MinGW compiler from https://sourceforge.net/projects/mingw-w64/
 
-You can download precompiled libraries for SDL, SDL_image, SDL_ttf and SDL_mixer. When you have the files you will have to unzip them in the folder where MinGw is installed. Usually you must to copy a structure with three folders: 'lib', 'bin' and 'include'.
+You can download MinGW precompiled libraries for SDL, SDL_image, SDL_ttf and SDL_mixer. When you have the files you will have to unzip them in the folder where MinGw is installed. Usually you must to copy a structure with three folders: 'lib', 'bin' and 'include'.
 
-In addition you will also need to compile specific libraries for Assimp and Bullet Physics compiling for MinGW and at end, move this libraries to MinGW compiler folder.
+In addition you will also need to compile specific libraries for Assimp and Bullet Physics compiling for MinGW and when are ready, move this libraries to MinGW compiler folder.
 
 Finally, we need check routes for libraries and includes in CMakeList.txt according to your installation routes.
 
+# Mac compilation
+
+Currently I do not compile for Mac, but the project was started on this system, it should not vary much compared to compiling with Linux, once the dependencies are satisfied.
 
 # Brakeza3D - Videos
 
