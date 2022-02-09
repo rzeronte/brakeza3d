@@ -8,7 +8,7 @@
 class Counter {
 private:
     bool enabled = true;
-    float step{};
+    float step;
 
     Timer *timer;
     float lastTicks = 0;

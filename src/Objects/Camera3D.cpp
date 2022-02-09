@@ -120,9 +120,7 @@ void Camera3D::UpdateVelocity() {
 }
 
 void Camera3D::UpdateRotation() {
-    M3 im = M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, this->roll);
-
-    this->setRotation(im);
+    this->setRotation(M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, this->roll));
 }
 
 void Camera3D::limitPitch() {

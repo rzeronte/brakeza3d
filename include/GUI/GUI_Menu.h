@@ -56,7 +56,7 @@ public:
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
         const float range_max_sensibility = 999;
-        const float range_min_sensibility = 0;
+        const float range_min_sensibility = -999;
 
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
@@ -264,6 +264,15 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Debug Mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                 ImGui::Checkbox("Check All Pairs", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
+
+                ImGui::Separator();
+                // gravity
+                ImGui::DragScalar("X", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,
+                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,
+                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,
+                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 

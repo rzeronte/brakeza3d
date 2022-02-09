@@ -2,6 +2,7 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/M4.h"
+#include "../../include/Objects/ParticleEmissor.h"
 
 ComponentGame::ComponentGame() {
     player = new Player();
@@ -20,7 +21,7 @@ void ComponentGame::onStart() {
 
 void ComponentGame::startThirdPerson() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Vertex3D originalCameraPosition = Vertex3D(975, 175, 277);
+    Vertex3D originalCameraPosition = Vertex3D(73, -10, 1);
 
     // start frustum position
     camera->setPosition(originalCameraPosition);
@@ -30,7 +31,7 @@ void ComponentGame::startThirdPerson() {
     cubes->setPosition(Vertex3D(100, 100, 100));
     cubes->setScale(100);
     cubes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "cubes.fbx"));
-    Brakeza3D::get()->addObject3D(cubes, "cubes");
+    //Brakeza3D::get()->addObject3D(cubes, "cubes");
 
     auto *lp1 = new LightPoint3D();
     lp1->setEnabled(true);
@@ -41,7 +42,7 @@ void ComponentGame::startThirdPerson() {
     lp1->setSpecularComponent(20);
     lp1->setPosition(Vertex3D(1045, 145, 230));
     lp1->setColor(255, 255, 255);
-    Brakeza3D::get()->addObject3D(lp1, "lp1");
+    //Brakeza3D::get()->addObject3D(lp1, "lp1");
 
     auto *lp2 = new LightPoint3D();
     lp2->setEnabled(true);
@@ -52,7 +53,16 @@ void ComponentGame::startThirdPerson() {
     lp2->setSpecularComponent(20);
     lp2->setPosition(Vertex3D(100, 500, 120));
     lp2->setColor(0, 0, 255);
-    Brakeza3D::get()->addObject3D(lp2, "lp2");
+    //Brakeza3D::get()->addObject3D(lp2, "lp2");
+
+    auto *particles = new ParticleEmissor(true, 20, 10, 0.1, Color::fuchsia());
+    particles->setPosition(Vertex3D(62, 22, 183));
+    Brakeza3D::get()->addObject3D(particles, "particles");
+
+
+    auto *particles2 = new ParticleEmissor(true, 30, 5, 0.1, Color::green());
+    particles2->setPosition(Vertex3D(10, 22, 183));
+    Brakeza3D::get()->addObject3D(particles2, "particles2");
 
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 }
@@ -68,11 +78,8 @@ void ComponentGame::onUpdate() {
     ComponentWindow *componentWindow = ComponentsManager::get()->getComponentWindow();
     ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
 
-    Object3D *lp = Brakeza3D::get()->getObjectByLabel("lp2");
-    lp->setRotation( M3::getMatrixRotationForEulerAngles(0, 1.75, 0) * lp->getRotation());
-
-    Object3D *lp1 = Brakeza3D::get()->getObjectByLabel("lp1");
-    lp1->setRotation( M3::getMatrixRotationForEulerAngles(0, 2.75, 0) * lp->getRotation());
+    Object3D *particles = Brakeza3D::get()->getObjectByLabel("particles");
+    particles->setRotation( M3::getMatrixRotationForEulerAngles(0, 3.75, 0) * particles->getRotation());
 
     // set car rotation
     Vertex3D impulse = camera->velocity.getComponent();

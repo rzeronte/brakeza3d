@@ -167,9 +167,7 @@ M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z) {
     M3 MRY = M3::RY(y);
     M3 MRZ = M3::RZ(z);
 
-    M3 A = (MRX * MRY * MRZ);
-
-    return A;
+    return MRX * MRY * MRZ;
 }
 
 void M3::setMatrixIdentity() {

@@ -15,6 +15,7 @@
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
 #include "../Game/DoorGhost.h"
+#include "../Objects/ParticleEmissor.h"
 
 class GUI_Objects3D : public GUI {
 public:
@@ -317,6 +318,23 @@ public:
                                 );
                             }
                             ImGui::TreePop();
+                        }
+                    }
+
+                    // Only for meshes
+                    ParticleEmissor *pe = dynamic_cast<ParticleEmissor *>(gameObjects[i]);
+                    if (pe != NULL) {
+                        const float step_range_min = 0;
+                        const float step_range_max = 500;
+                        const float  step_range_sensibility = 0.001f;
+                        ImGui::DragScalar("Force", ImGuiDataType_Float, &pe->force, step_range_sensibility,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("TTL", ImGuiDataType_Float, &pe->ttl, step_range_sensibility,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Step", ImGuiDataType_Float, &pe->step, step_range_sensibility,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+                        if (ImGui::IsItemEdited()) {
+                            pe->timer.setStep(pe->step);
                         }
                     }
                 }

@@ -34,7 +34,7 @@ public:
     Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 10.0f, 0);
+    Vertex3D gravity = Vertex3D(0, -10.0f, 0);
 
     // Screen dimension constants
     int screenWidth = 320;
