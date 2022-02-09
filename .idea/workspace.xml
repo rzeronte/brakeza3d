@@ -18,22 +18,20 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/models/cubes.fbx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Objects/Vertex4D.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Render/Fragment.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Render/Fragment.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Objects/Vertex4D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="merge with light system/windows">
+      <change afterPath="$PROJECT_DIR$/include/Objects/Particle.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Objects/ParticleEmissor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Objects/Particle.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Objects/ParticleEmissor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Transforms.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Transforms.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Counter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Counter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/M3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/M3.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,25 +198,25 @@
       <recent name="$PROJECT_DIR$/console" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Objects" />
+      <recent name="$PROJECT_DIR$/include" />
       <recent name="$PROJECT_DIR$/src/Objects" />
       <recent name="$PROJECT_DIR$/include/Render" />
-      <recent name="$PROJECT_DIR$/include" />
       <recent name="$PROJECT_DIR$/extras" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -322,7 +320,16 @@
       <workItem from="1644040258785" duration="37304000" />
       <workItem from="1644179002228" duration="5606000" />
       <workItem from="1644271102240" duration="1000" />
+      <workItem from="1644358039645" duration="13894000" />
     </task>
+    <task id="LOCAL-00001" summary="merge with light system/windows">
+      <created>1644274669396</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1644274669396</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -462,7 +469,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="light system" />
-    <option name="LAST_COMMIT_MESSAGE" value="light system" />
+    <MESSAGE value="merge with light system/windows" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge with light system/windows" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
