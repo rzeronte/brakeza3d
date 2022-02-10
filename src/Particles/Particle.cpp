@@ -1,4 +1,4 @@
-#include "../../include/Objects/Particle.h"
+#include "../../include/Particles/Particle.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/Brakeza3D.h"
 

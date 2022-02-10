@@ -61,6 +61,10 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Transforms::cameraSpace(A, V, cam);
     A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
 
+    if (A.z < 0) {
+        return;
+    }
+
     Point2D P1;
     Transforms::screenSpace(P1, A);
 
@@ -213,22 +217,26 @@ void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_i
 }
 
 void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color) {
-    // apply view matrix
     Vertex3D V1, V2;
     Transforms::cameraSpace(V1, V.vertex1, cam);
     Transforms::cameraSpace(V2, V.vertex2, cam);
 
     V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    if (V1.z < 0) {
+        return;
+    }
+
     V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
+    if (V2.z < 0) {
+        return;
+    }
 
     // get 2d coordinates
-    Point2D P1;
+    Point2D P1, P2;
     Transforms::screenSpace(P1, V1);
-    Point2D P2;
     Transforms::screenSpace(P2, V2);
 
     Line2D line(P1.x, P1.y, P2.x, P2.y);
-
     Drawable::drawLine2D(line, color);
 }
 

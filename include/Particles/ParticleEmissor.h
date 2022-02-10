@@ -7,7 +7,7 @@
 
 
 #include <vector>
-#include "Object3D.h"
+#include "../Objects/Object3D.h"
 #include "Particle.h"
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
@@ -23,15 +23,14 @@ public:
     const Counter &getCounter() const;
     void clear();
     void addParticle(Particle *p);
-    void onUpdate() override;
     bool isActive() const;
+    void onUpdate();
 
     float force;
     float ttl;
     float step;
     Color color;
-    Counter timer;
-private:
+    Counter counter;
     std::vector<Particle*> particles;
     bool active;
 };

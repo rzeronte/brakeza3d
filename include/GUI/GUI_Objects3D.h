@@ -15,7 +15,8 @@
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
 #include "../Game/DoorGhost.h"
-#include "../Objects/ParticleEmissor.h"
+#include "../Particles/ParticleEmissor.h"
+#include "../Physics/SimplePendulum.h"
 
 class GUI_Objects3D : public GUI {
 public:
@@ -321,7 +322,6 @@ public:
                         }
                     }
 
-                    // Only for meshes
                     ParticleEmissor *pe = dynamic_cast<ParticleEmissor *>(gameObjects[i]);
                     if (pe != NULL) {
                         const float step_range_min = 0;
@@ -334,7 +334,29 @@ public:
                         ImGui::DragScalar("Step", ImGuiDataType_Float, &pe->step, step_range_sensibility,
                                           &step_range_min, &step_range_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited()) {
-                            pe->timer.setStep(pe->step);
+                            pe->counter.setStep(pe->step);
+                        }
+                    }
+
+                    SimplePendulum *sp = dynamic_cast<SimplePendulum *>(gameObjects[i]);
+                    if (sp != NULL) {
+                        std::string activeFriction = "Active friction##" + std::to_string(i);
+                        const float step_range_min = 0;
+                        const float step_range_max = 500;
+                        ImGui::DragScalar("AngleX", ImGuiDataType_Float, &sp->angleX, 1,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("AngleZ", ImGuiDataType_Float, &sp->angleZ, 1,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Length", ImGuiDataType_Float, &sp->length, 1,
+                                          &step_range_min, &step_range_max, "%f", 1.0f);
+
+                        ImGui::Checkbox(activeFriction.c_str(), &sp->activeFriction);
+                        if (sp->activeFriction) {
+                            ImGui::DragScalar("Friction", ImGuiDataType_Float, &sp->friction, 0.001f,
+                                              &step_range_min, &step_range_max, "%f", 1.0f);
+                            if (ImGui::IsItemEdited()) {
+                                sp->t = 0;
+                            }
                         }
                     }
                 }

@@ -2,7 +2,7 @@
 #define BRAKEDA3D_PARTICLE_H
 
 
-#include "Object3D.h"
+#include "../Objects/Object3D.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 

@@ -78,7 +78,7 @@ public:
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
-    bool TRIANGLE_MODE_WIREFRAME = false;
+    bool TRIANGLE_MODE_WIREFRAME = true;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
     bool TRIANGLE_MODE_TEXTURIZED = false;
     bool DRAW_MAIN_DEEP_MAPPING = false;

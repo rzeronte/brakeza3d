@@ -70,20 +70,13 @@ void ComponentHUD::drawHUD() {
 
     ComponentsManager *componentManager = ComponentsManager::get();
 
-    // Weapon
-    if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
-        this->textureWriter->writeText(textX, textY, std::string(
-                "Weapon: " + componentManager->getComponentWeapons()->getCurrentWeaponType()->getClassname()).c_str(),
-                                       false);
-    }
-
     textY += stepY;
 
     if (SETUP->DRAW_FPS) {
         componentManager->getComponentHUD()->writeText(
-                1, 10,
-                std::to_string(componentManager->getComponentRender()->fps).c_str(),
-                false
+            1, 10,
+            std::to_string(componentManager->getComponentRender()->fps).c_str(),
+            false
         );
     }
 
@@ -91,24 +84,8 @@ void ComponentHUD::drawHUD() {
     if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
         WeaponType *WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
         if (WeaponType->isAvailable()) {
-            this->textureWriter->writeText(textX, textY, std::string(
-                    "Reloads: " + std::to_string(WeaponType->getAmmoType()->getReloads())).c_str(), false);
-            textY += stepY;
-            this->textureWriter->writeText(textX, textY, std::string(
-                    "Ammo: " + std::to_string(WeaponType->getAmmoType()->getAmount())).c_str(), false);
+            this->textureWriter->writeText(textX, textY, std::string("Welcome!").c_str(), false);
             textY += stepY;
         }
     }
-
-    // Stamina
-    this->textureWriter->writeText(textX, textY, std::string(
-            "Health: " + std::to_string(componentManager->getComponentGame()->getPlayer()->getStamina())).c_str(),
-                                   true);
-
-    textY += stepY;
-
-    // kills
-    this->textureWriter->writeText(textX, textY, std::string(
-            "Kills: " + std::to_string(componentManager->getComponentGame()->getKills())).c_str(), true);
-
 }
