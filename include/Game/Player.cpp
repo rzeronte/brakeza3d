@@ -2,11 +2,10 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 
-Player::Player() : defaultLives(5), state(PlayerState::GAMEOVER), dead(false),
-                   stamina(EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL), lives(defaultLives),
-                   stooped(false) {
-    this->counterStep = new Counter(0.30);
-    this->counterSoundTakeDamage = new Counter(0.30);
+Player::Player() : state(PlayerState::GAMEOVER), dead(false),
+                   stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
+                   stopped(false), power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
+
 }
 
 int Player::getStamina() const {
@@ -28,18 +27,12 @@ bool Player::isDead() const {
 void Player::setDead(bool dead) {
     if (this->dead != dead && dead) {
         ComponentsManager::get()->getComponentInput()->setEnabled(false);
-        int rndPlayerDead = Tools::random(1, 6);
-        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
-                "playerDead" + std::to_string(rndPlayerDead)), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     this->dead = dead;
 }
 
 void Player::evalStatusMachine() {
-
-    this->counterStep->update();
-    this->counterSoundTakeDamage->update();
 
     switch (state) {
         case PlayerState::LIVE:
@@ -53,13 +46,6 @@ void Player::takeDamage(float dmg) {
     if (dead) return;
 
     this->stamina -= dmg;
-
-    if (counterSoundTakeDamage->isFinished()) {
-        counterSoundTakeDamage->setEnabled(true);
-        int rndPlayerPain = Tools::random(1, 4);
-        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel(
-                "playerPain" + std::to_string(rndPlayerPain)), EngineSetup::SoundChannels::SND_PLAYER, 0);
-    }
 
     if (stamina <= 0) {
         state = PlayerState::DEAD;
@@ -75,7 +61,7 @@ void Player::takeDamage(float dmg) {
 
 void Player::newGame() {
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
-    setLives(defaultLives);
+    setLives(INITIAL_LIVES);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     EngineSetup::get()->MENU_ACTIVE = false;
     EngineSetup::get()->DRAW_HUD = true;
@@ -91,9 +77,7 @@ void Player::respawn() {
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
     setDead(false);
     state = PlayerState::LIVE;
-    setStamina(100);
-    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("startGame"),
-                          EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+    setStamina(INITIAL_STAMINA);
 }
 
 void Player::shoot() {
@@ -101,44 +85,40 @@ void Player::shoot() {
 }
 
 void Player::jump() {
-    // sound
-    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("playerJump"),
-                          EngineSetup::SoundChannels::SND_PLAYER, 0);
-
-    // apply force
-    Vertex3D jump = EngineSetup::get()->JUMP_FORCE;
-    Vertex3D current = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2;
-    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->velocity.vertex2 = current + jump;
 }
 
 void Player::reload() {
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->reload();
 }
 
-void Player::respawnNPCS() {
-    std::vector<Object3D *>::iterator it;
-    for (it = Brakeza3D::get()->getSceneObjects().begin(); it != Brakeza3D::get()->getSceneObjects().end(); it++) {
-        Object3D *object = *(it);
-        auto *enemy = dynamic_cast<NPCEnemyBody *> (object);
-
-        if (enemy != NULL) {
-            enemy->respawn();
-        }
-    }
-}
-
-bool Player::isCrouch() const {
-    return stooped;
-}
-
-void Player::setCrouch(bool stooped) {
-    Player::stooped = stooped;
-}
-
 void Player::getAid(float aid) {
     this->stamina = stamina + aid;
 
-    if (stamina > (float) EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL) {
-        this->stamina = (float) EngineSetup::get()->GAME_PLAYER_STAMINA_INITIAL;
+    if (stamina > (float) INITIAL_STAMINA) {
+        this->stamina = (float) INITIAL_STAMINA;
     }
+}
+
+void Player::onUpdate() {
+    Mesh3D::onUpdate();
+
+    if (Tools::isZeroVector(this->velocity)) {
+        return;
+    }
+
+    applyFriction();
+
+    setPosition(getPosition() + this->velocity );
+}
+
+Vertex3D Player::getVelocity() {
+    return this->velocity;
+}
+
+void Player::applyFriction() {
+    velocity = velocity + velocity.getInverse().getScaled(Brakeza3D::get()->getDeltaTime() * friction);
+}
+
+void Player::setVelocity(Vertex3D v) {
+    this->velocity = v;
 }

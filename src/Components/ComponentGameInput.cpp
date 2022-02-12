@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentGameInput.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 
 ComponentGameInput::ComponentGameInput(Player *player) {
@@ -56,16 +57,6 @@ void ComponentGameInput::handleKeyboardMovingCamera(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
         if (event->type == SDL_KEYDOWN) {
         }
-
-        if (player->counterStep->isFinished()) {
-
-            player->counterStep->setEnabled(true);
-
-            if (!Mix_Playing(EngineSetup::SoundChannels::SND_PLAYER_STEPS)) {
-                Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("playerSteps"),
-                                      EngineSetup::SoundChannels::SND_PLAYER_STEPS, 0);
-            }
-        }
     } else {
         Mix_HaltChannel(EngineSetup::SoundChannels::SND_PLAYER_STEPS);
     }
@@ -79,8 +70,11 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     handleMenuKeyboard(end);
 
+    this->handleKeyboardMovingPlayer(event);
+
     if (SETUP->MENU_ACTIVE || SETUP->LOADING) return;
 
+    this->handleKeyboardMovingPlayer(event);
     //this->handleZoom(event);
     //this->handleCrouch(event);
     //this->handleFire(event);
@@ -181,19 +175,6 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
 void ComponentGameInput::jump(bool soundJump) const {
     if (soundJump) {
         player->jump();
-    }
-}
-
-void ComponentGameInput::handleCrouch(SDL_Event *event) const {
-    if (event->key.keysym.sym == SDLK_TAB) {
-
-        if (event->type == SDL_KEYDOWN && !player->isCrouch()) {
-            player->setCrouch(true);
-        }
-
-        if (event->type == SDL_KEYUP && player->isCrouch()) {
-            player->setCrouch(false);
-        }
     }
 }
 
@@ -324,7 +305,6 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
     }
 }
 
-
 void ComponentGameInput::handleRespawnAfterDead(SDL_Event *event) {
     if (player->isDead() && !SETUP->MENU_ACTIVE) {
         if (event->type == SDL_KEYDOWN) {
@@ -341,5 +321,29 @@ bool ComponentGameInput::isEnabled() const {
 
 void ComponentGameInput::setEnabled(bool enabled) {
     ComponentGameInput::enabled = enabled;
+}
+
+void ComponentGameInput::handleKeyboardMovingPlayer(SDL_Event *pEvent) {
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+
+    float speed = player->power * Brakeza3D::get()->getDeltaTime();
+    speed = std::clamp(speed, 0.f, player->maxVelocity);
+
+    if (keyboard[SDL_SCANCODE_A]) {
+        Vertex3D velocity = player->getVelocity() - Vertex3D(speed, 0, 0);
+        player->setVelocity(velocity);
+    }
+    if (keyboard[SDL_SCANCODE_D]) {
+        Vertex3D velocity = player->getVelocity() + Vertex3D(speed, 0, 0);
+        player->setVelocity(velocity);
+    }
+    if (keyboard[SDL_SCANCODE_S]) {
+        Vertex3D velocity = player->getVelocity() - Vertex3D(0, 0, speed);
+        player->setVelocity(velocity);
+    }
+    if (keyboard[SDL_SCANCODE_W]) {
+        Vertex3D velocity = player->getVelocity() + Vertex3D(0, 0, speed);
+        player->setVelocity(velocity);
+    }
 }
 

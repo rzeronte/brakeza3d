@@ -38,8 +38,6 @@ public:
 
     void handleSniper(SDL_Event *event);
 
-    void handleCrouch(SDL_Event *event) const;
-
     void handleFire(SDL_Event *event) const;
 
     void handleWeaponReload(SDL_Event *event) const;
@@ -53,6 +51,8 @@ public:
     void handleRespawnAfterDead(SDL_Event *event);
 
     void jump(bool soundJump) const;
+
+    void handleKeyboardMovingPlayer(SDL_Event *pEvent);
 };
 
 

@@ -14,6 +14,7 @@ SimplePendulum::SimplePendulum(float angleX, float angleZ, float length, float f
     this->activeFriction = true;
     this->friction = friction;
     this->t = 0;
+    this->pendulumRotation = M3::getMatrixIdentity();
 }
 
 void SimplePendulum::onUpdate() {
@@ -33,10 +34,10 @@ void SimplePendulum::onUpdate() {
     Vertex3D start(0, 0, 0);
     Vertex3D end(0, this->length, 0);
 
-    M3 r = getRotation() * M3::getMatrixRotationForEulerAngles(alpha, gamma, theta);
+    pendulumRotation = getRotation() * M3::getMatrixRotationForEulerAngles(alpha, gamma, theta);
 
-    start = getPosition() + (r * start);
-    end = getPosition() + (r * end);
+    start = getPosition() + (pendulumRotation * start);
+    end = getPosition() + (pendulumRotation * end);
 
     Vector3D V(start, end);
     Drawable::drawVector3D(V, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::fuchsia());

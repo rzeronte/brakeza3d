@@ -28,15 +28,13 @@ bool ParticleEmissor::isActive() const {
     return active;
 }
 
-const std::vector<Particle *> &ParticleEmissor::getParticles() const {
-    return particles;
-}
-
 void ParticleEmissor::onUpdate() {
+    Object3D::onUpdate();
 
     if (!active) {
         return;
     }
+
     this->counter.update();
 
     if (this->counter.isFinished()) {

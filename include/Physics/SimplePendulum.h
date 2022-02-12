@@ -16,6 +16,8 @@ public:
     float angleX;
     float angleZ;
 
+    M3 pendulumRotation;
+
     float friction;
     bool activeFriction;
 

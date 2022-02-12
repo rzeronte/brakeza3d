@@ -2,7 +2,6 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Particles/ParticleEmissorGravity.h"
-#include "../../include/Physics/SimplePendulum.h"
 
 ComponentGame::ComponentGame() {
     player = new Player();
@@ -11,67 +10,14 @@ ComponentGame::ComponentGame() {
 void ComponentGame::onStart() {
     Logging::Log("ComponentGame onStart", "ComponentGame");
 
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
-
     SETUP->MENU_ACTIVE = true;
     Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
 
-    startThirdPerson();
-}
-
-void ComponentGame::startThirdPerson() {
-    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Vertex3D originalCameraPosition = Vertex3D(73, -10, 1);
-
-    // start frustum position
-    camera->setPosition(originalCameraPosition);
-
-    auto *cubes = new Mesh3D();
-    cubes->setLabel("cubes");
-    cubes->setPosition(Vertex3D(100, 100, 100));
-    cubes->setScale(100);
-    cubes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "cubes.fbx"));
-    Brakeza3D::get()->addObject3D(cubes, "cubes");
-
-    auto *lp1 = new LightPoint3D();
-    lp1->setEnabled(true);
-    lp1->setLabel("lp2");
-    lp1->setPower(40);
-    lp1->setColor(229, 229, 30);
-    lp1->setColorSpecularity(220, 220, 30);
-    lp1->setSpecularComponent(20);
-    lp1->setPosition(Vertex3D(1045, 145, 230));
-    lp1->setColor(255, 255, 255);
-    Brakeza3D::get()->addObject3D(lp1, "lp1");
-
-    auto *lp2 = new LightPoint3D();
-    lp2->setEnabled(true);
-    lp2->setLabel("lp3");
-    lp2->setPower(40);
-    lp2->setColor(229, 229, 30);
-    lp2->setColorSpecularity(220, 220, 30);
-    lp2->setSpecularComponent(20);
-    lp2->setPosition(Vertex3D(100, 500, 120));
-    lp2->setColor(0, 0, 255);
-    Brakeza3D::get()->addObject3D(lp2, "lp2");
-
-    auto *particles = new ParticleEmissorGravity(true, 10, 10, 0.1, Color::fuchsia());
-    particles->setPosition(Vertex3D(62, 22, 183));
-    Brakeza3D::get()->addObject3D(particles, "particles");
-
-    auto *particles2 = new ParticleEmissorGravity(true, 20, 5, 0.1, Color::green());
-    particles2->setPosition(Vertex3D(10, 22, 183));
-    Brakeza3D::get()->addObject3D(particles2, "particles2");
-
-    auto *pendulum = new SimplePendulum(0, 45, 50, 0.1);
-    pendulum->setPosition(Vertex3D(40, 22, 183));
-    Brakeza3D::get()->addObject3D(pendulum, "pendulum");
-
-    auto *pendulum2 = new SimplePendulum(0, 45, 100, 0.1);
-    pendulum2->setPosition(Vertex3D(70, 22, 183));
-    Brakeza3D::get()->addObject3D(pendulum2, "pendulum2");
-
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(73, -10, 1));
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
+
+    this->loadObjects3D();
 }
 
 void ComponentGame::preUpdate() {
@@ -81,12 +27,24 @@ void ComponentGame::onUpdate() {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup *setup = EngineSetup::get();
 
-    ComponentWeapons *componentWeapons = ComponentsManager::get()->getComponentWeapons();
     ComponentWindow *componentWindow = ComponentsManager::get()->getComponentWindow();
     ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
 
     Object3D *particles = Brakeza3D::get()->getObjectByLabel("particles");
     particles->setRotation( M3::getMatrixRotationForEulerAngles(0, 3.75, 0) * particles->getRotation());
+
+
+    /*Object3D *spaceship = Brakeza3D::get()->getObjectByLabel("player");
+    Object3D *pendulum = Brakeza3D::get()->getObjectByLabel("pendulum2");
+    SimplePendulum *sp = dynamic_cast<SimplePendulum *>(pendulum);
+
+    if (sp != NULL) {
+        spaceship->setRotation( M3::getMatrixRotationForEulerAngles(
+                sp->pendulumRotation.getPitchDegree(),
+                sp->pendulumRotation.getRollDegree(),
+                sp->pendulumRotation.getYawDegree()
+        ));
+    }*/
 
     // set car rotation
     Vertex3D impulse = camera->velocity.getComponent();
@@ -218,6 +176,55 @@ void ComponentGame::redScreen() {
             BUFFERS->setVideoBuffer(x, y, currentPixelColor.getColor());
         }
     }
+}
+
+void ComponentGame::loadObjects3D()
+{
+    player->setLabel("spacehip");
+    player->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+    player->setPosition(Vertex3D(100, 100, 100));
+    player->setScale(10);
+    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship.fbx"));
+    Brakeza3D::get()->addObject3D(player, "player");
+
+    auto *lp1 = new LightPoint3D();
+    lp1->setEnabled(true);
+    lp1->setLabel("lp2");
+    lp1->setPower(40);
+    lp1->setColor(229, 229, 30);
+    lp1->setColorSpecularity(220, 220, 30);
+    lp1->setSpecularComponent(20);
+    lp1->setPosition(Vertex3D(1045, 145, 230));
+    lp1->setColor(255, 255, 255);
+    Brakeza3D::get()->addObject3D(lp1, "lp1");
+
+    auto *lp2 = new LightPoint3D();
+    lp2->setEnabled(true);
+    lp2->setLabel("lp3");
+    lp2->setPower(40);
+    lp2->setColor(229, 229, 30);
+    lp2->setColorSpecularity(220, 220, 30);
+    lp2->setSpecularComponent(20);
+    lp2->setPosition(Vertex3D(100, 500, 120));
+    lp2->setColor(0, 0, 255);
+    Brakeza3D::get()->addObject3D(lp2, "lp2");
+
+    auto *particles = new ParticleEmissorGravity(true, 10, 10, 0.1, Color::fuchsia());
+    particles->setPosition(Vertex3D(62, 22, 183));
+    Brakeza3D::get()->addObject3D(particles, "particles");
+
+    auto *particles2 = new ParticleEmissorGravity(true, 20, 5, 0.1, Color::green());
+    particles2->setPosition(Vertex3D(10, 22, 183));
+    Brakeza3D::get()->addObject3D(particles2, "particles2");
+
+    auto *pendulum = new SimplePendulum(0, 45, 50, 0.1);
+    pendulum->setPosition(Vertex3D(40, 22, 183));
+    Brakeza3D::get()->addObject3D(pendulum, "pendulum");
+
+    auto *pendulum2 = new SimplePendulum(0, 45, 100, 0.1);
+    pendulum2->setPosition(Vertex3D(70, 22, 183));
+    Brakeza3D::get()->addObject3D(pendulum2, "pendulum2");
+
 }
 
 

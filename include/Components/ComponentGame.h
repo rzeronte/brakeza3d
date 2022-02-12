@@ -53,8 +53,7 @@ public:
 
     int getKills() const;
 
-    static void startThirdPerson();
-
+    void loadObjects3D();
 };
 
 

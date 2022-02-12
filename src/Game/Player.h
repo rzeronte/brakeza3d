@@ -4,25 +4,29 @@
 
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Counter.h"
+#include "../../include/Objects/Mesh3D.h"
+
+#define INITIAL_STAMINA 100
+#define INITIAL_LIVES 10
+#define INITIAL_POWER 1
+#define INITIAL_FRICTION 0.5
+#define INITIAL_MAX_VELOCITY 10
 
 typedef enum {
     LIVE, DEAD, GAMEOVER
 } PlayerState;
 
-class Player {
+class Player : public Mesh3D{
 private:
 
     float stamina;
     bool dead;
-    bool stooped;
+    bool stopped;
     int lives;
-    int defaultLives;
+    Vertex3D velocity;
 
 public:
     PlayerState state;
-
-    Counter *counterStep;
-    Counter *counterSoundTakeDamage;
 
     Player();
 
@@ -52,11 +56,16 @@ public:
 
     void evalStatusMachine();
 
-    void respawnNPCS();
+    void onUpdate() override;
 
-    [[nodiscard]] bool isCrouch() const;
+    Vertex3D getVelocity();
+    void setVelocity(Vertex3D v);
 
-    void setCrouch(bool stooped);
+    float power;
+    float friction;
+    float maxVelocity;
+
+    void applyFriction();
 };
 
 

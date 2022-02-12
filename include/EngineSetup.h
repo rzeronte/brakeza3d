@@ -224,8 +224,6 @@ public:
     bool ENABLE_IA = true;
     float ZOOM_FOV = 40;
 
-    int GAME_PLAYER_STAMINA_INITIAL = 100;
-
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 

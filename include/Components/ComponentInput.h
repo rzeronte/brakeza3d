@@ -47,7 +47,7 @@ public:
 
     void handleMouse(SDL_Event *);
 
-    Uint8 *keyboard{};
+    Uint8 *keyboard;
 
 };
 

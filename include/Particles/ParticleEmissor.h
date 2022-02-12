@@ -18,13 +18,11 @@ class ParticleEmissor : public Object3D {
 public:
     ParticleEmissor(bool active, float force, float ttl, float step, Color c);
 
-    const std::vector<Particle *> &getParticles() const;
-
     const Counter &getCounter() const;
     void clear();
     void addParticle(Particle *p);
     bool isActive() const;
-    void onUpdate();
+    void onUpdate() override;
 
     float force;
     float ttl;

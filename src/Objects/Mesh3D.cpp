@@ -31,18 +31,6 @@ void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
     }
 }
 
-/*void Mesh3D::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
-{
-    this->lightPoints = lightPoints;
-}*/
-
-/*void Mesh3D::shadowMapping(LightPoint3D *lp)
-{
-    for (int i = 0; i < this->modelTriangles.size(); i++) {
-        this->modelTriangles[i]->shadowMapping(lp);
-    }
-}*/
-
 bool Mesh3D::isShadowCaster() const {
     return shadowCaster;
 }
@@ -139,6 +127,7 @@ void Mesh3D::copyFrom(Mesh3D *source) {
 }
 
 void Mesh3D::onUpdate() {
+    Object3D::onUpdate();
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
