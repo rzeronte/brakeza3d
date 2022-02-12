@@ -19,22 +19,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="particle system basics">
-      <change afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissorGravity.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Physics/SimplePendulum.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissorGravity.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Particle.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/Particle.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/ParticleEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/SimplePendulum.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/SimplePendulum.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Particle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/Particle.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/ParticleEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -324,7 +322,9 @@
       <workItem from="1644179002228" duration="5606000" />
       <workItem from="1644271102240" duration="1000" />
       <workItem from="1644358039645" duration="14530000" />
-      <workItem from="1644438817813" duration="11771000" />
+      <workItem from="1644438817813" duration="15870000" />
+      <workItem from="1644523271111" duration="1000" />
+      <workItem from="1644605235346" duration="11586000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -340,7 +340,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644376510951</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="particle system basics">
+      <created>1644456930805</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1644456930805</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -491,6 +498,11 @@
           <url>file://$PROJECT_DIR$/src/Render/M4.cpp</url>
           <line>21</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentGame.cpp</url>
+          <line>41</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
