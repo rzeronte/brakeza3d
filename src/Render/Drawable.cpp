@@ -392,10 +392,9 @@ void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B) {
 }
 
 void Drawable::drawCrossHair() {
-    int x, y;
 
-    x = EngineSetup::get()->screenWidth / 2;
-    y = EngineSetup::get()->screenHeight / 2;
+    int x = EngineSetup::get()->screenWidth / 2;
+    int y = EngineSetup::get()->screenHeight / 2;
 
     Uint32 color = EngineSetup::get()->CROSSHAIR_COLOR;
     for (int cw = 1; cw < 3; cw++) {
@@ -403,40 +402,6 @@ void Drawable::drawCrossHair() {
         EngineBuffers::getInstance()->setVideoBuffer(x - cw, y, color);
         EngineBuffers::getInstance()->setVideoBuffer(x, y + cw, color);
         EngineBuffers::getInstance()->setVideoBuffer(x, y - cw, color);
-    }
-}
-
-void Drawable::drawFireShader() {
-    // Set whole screen to 0 (color: 0x07,0x07,0x07)
-    int FIRE_WIDTH = EngineSetup::get()->FIRE_WIDTH;
-    int FIRE_HEIGHT = EngineSetup::get()->FIRE_HEIGHT;
-
-    for (int x = 0; x < FIRE_WIDTH; x++) {
-        for (int y = 1; y < FIRE_HEIGHT; y++) {
-            int src = (y * FIRE_WIDTH + x);
-
-            int pixel = EngineBuffers::getInstance()->firePixelsBuffer[src];
-
-            if (pixel == 0) {
-                EngineBuffers::getInstance()->firePixelsBuffer[src - FIRE_WIDTH] = 0;
-            } else {
-                int randIdx = Tools::random(0, 3) & 3;
-                int dst = src - randIdx + 1;
-                EngineBuffers::getInstance()->firePixelsBuffer[dst - FIRE_WIDTH] = pixel - (randIdx & 1);
-            }
-        }
-    }
-
-    for (int y = 1; y < FIRE_HEIGHT; y++) {
-        for (int x = 0; x < FIRE_WIDTH; x++) {
-            int index = y * FIRE_WIDTH + x;
-            int fireIndex = EngineBuffers::getInstance()->firePixelsBuffer[index];
-
-            if (fireIndex != 0) {
-                Color fireColor = EngineBuffers::getInstance()->fireColors[fireIndex];
-                EngineBuffers::getInstance()->videoBuffer[index] = fireColor.getColor(); //::black();
-            }
-        }
     }
 }
 
@@ -465,66 +430,6 @@ void Drawable::drawFacePercent(float percent) {
         Color mixedColor = Tools::mixColor(bufferColor, Color::black(), percent);
         buffers->videoBuffer[i] = mixedColor.getColor();
     }
-}
-
-void Drawable::waterShader(int type) {
-    //BSP LAVA EFFECT
-    float LAVA_CLOSENESS = 2.35;
-    float LAVA_INTENSITY = 0.45;
-    float LAVA_SPEED = 2.55;
-    float LAVA_SCALE = 2.35;
-
-    // Default config is used in menu mode
-    float intensity_r = 1;
-    float intensity_g = 1;
-    float intensity_b = 1;
-
-    //water = -3 |mud = -4 | lava = -5
-    switch (type) {
-        default:
-        case -3:
-            break;
-        case -4:
-            intensity_r = 0.5;
-            intensity_g = 1;
-            intensity_b = 0.5;
-            break;
-        case -5:
-            intensity_r = 1;
-            intensity_g = 0.5;
-            intensity_b = 0.5;
-            break;
-    }
-
-    auto *newVideoBuffer = new Uint32[EngineBuffers::getInstance()->sizeBuffers];
-
-    for (int y = 0; y < EngineSetup::get()->screenHeight; y++) {
-        for (int x = 0; x < EngineSetup::get()->screenWidth; x++) {
-            Color currentPixelColor = Color(EngineBuffers::getInstance()->getVideoBuffer(x, y));
-
-            int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor.getColor()) * intensity_r);
-            int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor.getColor()) * intensity_g);
-            int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor.getColor()) * intensity_b);
-
-            currentPixelColor = Color(r_light, g_light, b_light);
-
-            float cache1 = x / LAVA_CLOSENESS;
-            float cache2 = y / LAVA_CLOSENESS;
-
-            int nx =
-                    (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache2)) * LAVA_SCALE;
-            int ny =
-                    (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * Brakeza3D::get()->executionTime + cache1)) * LAVA_SCALE;
-
-            int bufferIndex = nx + ny * EngineSetup::get()->screenWidth;
-
-            if (Tools::isPixelInWindow(nx, ny)) {
-                newVideoBuffer[bufferIndex] = currentPixelColor.getColor();
-            }
-        }
-    }
-
-    memcpy(&EngineBuffers::getInstance()->videoBuffer, &newVideoBuffer, sizeof(newVideoBuffer));
 }
 
 void Drawable::drawAABB(AABB3D *aabb, Color color) {

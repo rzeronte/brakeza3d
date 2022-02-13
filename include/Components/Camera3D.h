@@ -67,6 +67,8 @@ public:
     void consoleInfo() const;
 
     btPairCachingGhostObject *getGhostObject() const;
+
+    void setRotationFromEulerAngles(float x, float y, float z);
 };
 
 

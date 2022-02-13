@@ -52,7 +52,7 @@ public:
 
     void jump(bool soundJump) const;
 
-    void handleKeyboardMovingPlayer(SDL_Event *pEvent);
+    void handleKeyboardMovingPlayer();
 };
 
 

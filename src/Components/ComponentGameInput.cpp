@@ -70,11 +70,11 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     handleMenuKeyboard(end);
 
-    this->handleKeyboardMovingPlayer(event);
+    this->handleKeyboardMovingPlayer();
 
     if (SETUP->MENU_ACTIVE || SETUP->LOADING) return;
 
-    this->handleKeyboardMovingPlayer(event);
+    this->handleKeyboardMovingPlayer();
     //this->handleZoom(event);
     //this->handleCrouch(event);
     //this->handleFire(event);
@@ -323,26 +323,29 @@ void ComponentGameInput::setEnabled(bool enabled) {
     ComponentGameInput::enabled = enabled;
 }
 
-void ComponentGameInput::handleKeyboardMovingPlayer(SDL_Event *pEvent) {
+void ComponentGameInput::handleKeyboardMovingPlayer() {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
     if (keyboard[SDL_SCANCODE_A]) {
-        Vertex3D velocity = player->getVelocity() - Vertex3D(speed, 0, 0);
-        player->setVelocity(velocity);
-    }
-    if (keyboard[SDL_SCANCODE_D]) {
         Vertex3D velocity = player->getVelocity() + Vertex3D(speed, 0, 0);
         player->setVelocity(velocity);
     }
-    if (keyboard[SDL_SCANCODE_S]) {
-        Vertex3D velocity = player->getVelocity() - Vertex3D(0, 0, speed);
+
+    if (keyboard[SDL_SCANCODE_D]) {
+        Vertex3D velocity = player->getVelocity() - Vertex3D(speed, 0, 0);
         player->setVelocity(velocity);
     }
-    if (keyboard[SDL_SCANCODE_W]) {
+
+    if (keyboard[SDL_SCANCODE_S]) {
         Vertex3D velocity = player->getVelocity() + Vertex3D(0, 0, speed);
+        player->setVelocity(velocity);
+    }
+
+    if (keyboard[SDL_SCANCODE_W]) {
+        Vertex3D velocity = player->getVelocity() - Vertex3D(0, 0, speed);
         player->setVelocity(velocity);
     }
 }

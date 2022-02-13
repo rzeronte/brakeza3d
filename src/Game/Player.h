@@ -24,6 +24,7 @@ private:
     bool stopped;
     int lives;
     Vertex3D velocity;
+    M3 velocityRotation;
 
 public:
     PlayerState state;

@@ -14,16 +14,22 @@ void ComponentGame::onStart() {
     Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(73, -10, 1));
+    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    camera->setPosition(Vertex3D(0, -500, 0));
+    camera->setRotationFromEulerAngles(90, 180, 0);
+
     ComponentsManager::get()->getComponentCamera()->setIsFlyMode(true);
 
     this->loadObjects3D();
 }
 
 void ComponentGame::preUpdate() {
+
 }
 
 void ComponentGame::onUpdate() {
+
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     EngineSetup *setup = EngineSetup::get();
 
@@ -32,19 +38,6 @@ void ComponentGame::onUpdate() {
 
     Object3D *particles = Brakeza3D::get()->getObjectByLabel("particles");
     particles->setRotation( M3::getMatrixRotationForEulerAngles(0, 3.75, 0) * particles->getRotation());
-
-
-    /*Object3D *spaceship = Brakeza3D::get()->getObjectByLabel("player");
-    Object3D *pendulum = Brakeza3D::get()->getObjectByLabel("pendulum2");
-    SimplePendulum *sp = dynamic_cast<SimplePendulum *>(pendulum);
-
-    if (sp != NULL) {
-        spaceship->setRotation( M3::getMatrixRotationForEulerAngles(
-                sp->pendulumRotation.getPitchDegree(),
-                sp->pendulumRotation.getRollDegree(),
-                sp->pendulumRotation.getYawDegree()
-        ));
-    }*/
 
     // set car rotation
     Vertex3D impulse = camera->velocity.getComponent();
@@ -56,14 +49,12 @@ void ComponentGame::onUpdate() {
     }
 
     if (SETUP->LOADING) {
-        SDL_BlitSurface(componentHUD->HUDTextures->getTextureByLabel("loading")->getSurface(1), nullptr,
-                        componentWindow->screenSurface, nullptr);
         componentHUD->writeTextCenter("Loading", false);
-        Drawable::drawFireShader();
     }
 
     if (SETUP->MENU_ACTIVE) {
-        //Drawable::drawFireShader();
+        shaderFire.onUpdate();
+        shaderWater.onUpdate();
     }
 
     if (SETUP->FADEOUT) {
@@ -216,14 +207,6 @@ void ComponentGame::loadObjects3D()
     auto *particles2 = new ParticleEmissorGravity(true, 20, 5, 0.1, Color::green());
     particles2->setPosition(Vertex3D(10, 22, 183));
     Brakeza3D::get()->addObject3D(particles2, "particles2");
-
-    auto *pendulum = new SimplePendulum(0, 45, 50, 0.1);
-    pendulum->setPosition(Vertex3D(40, 22, 183));
-    Brakeza3D::get()->addObject3D(pendulum, "pendulum");
-
-    auto *pendulum2 = new SimplePendulum(0, 45, 100, 0.1);
-    pendulum2->setPosition(Vertex3D(70, 22, 183));
-    Brakeza3D::get()->addObject3D(pendulum2, "pendulum2");
 
 }
 

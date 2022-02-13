@@ -18,21 +18,28 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="particle system basics">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="simplependulum">
+      <change afterPath="$PROJECT_DIR$/include/Shaders/Shader.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Misc/Shader.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/Camera3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Camera3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/SimplePendulum.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/SimplePendulum.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +181,6 @@
     </panes>
   </component>
   <component name="ProjectViewState">
-    <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
@@ -199,25 +205,25 @@
       <recent name="$PROJECT_DIR$/console" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Shaders" />
+      <recent name="$PROJECT_DIR$/src/Misc" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/Physics" />
       <recent name="$PROJECT_DIR$/include/Particles" />
-      <recent name="$PROJECT_DIR$/src/Particles" />
-      <recent name="$PROJECT_DIR$/include/Objects" />
-      <recent name="$PROJECT_DIR$/include" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -324,7 +330,8 @@
       <workItem from="1644358039645" duration="14530000" />
       <workItem from="1644438817813" duration="15870000" />
       <workItem from="1644523271111" duration="1000" />
-      <workItem from="1644605235346" duration="11586000" />
+      <workItem from="1644605235346" duration="12459000" />
+      <workItem from="1644707630638" duration="13184000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -347,7 +354,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644456930805</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="simplependulum">
+      <created>1644638944707</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1644638944707</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -489,7 +503,8 @@
     <MESSAGE value="light system" />
     <MESSAGE value="merge with light system/windows" />
     <MESSAGE value="particle system basics" />
-    <option name="LAST_COMMIT_MESSAGE" value="particle system basics" />
+    <MESSAGE value="simplependulum" />
+    <option name="LAST_COMMIT_MESSAGE" value="simplependulum" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -498,11 +513,6 @@
           <url>file://$PROJECT_DIR$/src/Render/M4.cpp</url>
           <line>21</line>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentGame.cpp</url>
-          <line>41</line>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

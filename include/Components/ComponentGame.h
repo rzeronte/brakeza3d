@@ -1,6 +1,3 @@
-//
-// Created by darkhead on 14/1/20.
-//
 
 #ifndef BRAKEDA3D_COMPONENTGAME_H
 #define BRAKEDA3D_COMPONENTGAME_H
@@ -13,6 +10,8 @@
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 #include "../Misc/PathFinder.h"
+#include "../Shaders/ShaderWater.h"
+#include "../Shaders/ShaderFire.h"
 
 class ComponentGame : public Component {
 public:
@@ -30,14 +29,12 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    std::string currentMapName;
-
     Player *player;
-    Mesh3DBody *plane{};
+    Mesh3DBody *plane;
 
     bool direction = true;
 
-    PathFinder *pathFinder{};
+    PathFinder *pathFinder;
 
     int kills = 0;
 
@@ -54,6 +51,9 @@ public:
     int getKills() const;
 
     void loadObjects3D();
+
+    ShaderWater shaderWater;
+    ShaderFire shaderFire;
 };
 
 

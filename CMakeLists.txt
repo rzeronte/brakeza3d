@@ -239,7 +239,7 @@ add_executable(Brakeza3D
         imgui/examples/imgui_impl_sdl.cpp
         imgui/examples/imgui_impl_opengl2.h
         imgui/examples/imgui_impl_opengl2.cpp
-        include/Render/Fragment.cpp include/Render/Fragment.h src/Render/M4.cpp include/Render/M4.h src/Objects/Vertex4D.cpp include/Objects/Vertex4D.h src/Particles/ParticleEmissor.cpp include/Particles/ParticleEmissor.h src/Particles/Particle.cpp include/Particles/Particle.h src/Particles/ParticleEmissorGravity.cpp include/Particles/ParticleEmissorGravity.h src/Physics/SimplePendulum.cpp include/Physics/SimplePendulum.h)
+        include/Render/Fragment.cpp include/Render/Fragment.h src/Render/M4.cpp include/Render/M4.h src/Objects/Vertex4D.cpp include/Objects/Vertex4D.h src/Particles/ParticleEmissor.cpp include/Particles/ParticleEmissor.h src/Particles/Particle.cpp include/Particles/Particle.h src/Particles/ParticleEmissorGravity.cpp include/Particles/ParticleEmissorGravity.h src/Physics/SimplePendulum.cpp include/Physics/SimplePendulum.h src/Misc/Shader.cpp include/Shaders/Shader.h include/Shaders/ShaderWater.h include/Shaders/ShaderFire.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

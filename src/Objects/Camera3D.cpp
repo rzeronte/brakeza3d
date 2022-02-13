@@ -13,8 +13,8 @@ Camera3D::Camera3D() {
     frustum->setup(
         this->getPosition(),
         Vertex3D(0, 0, 1),
-        EngineSetup::get()->up,
-        EngineSetup::get()->right,
+        AxisUp(),
+        AxisRight(),
         EngineSetup::get()->HORIZONTAL_FOV,
         ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
         EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
@@ -121,6 +121,13 @@ void Camera3D::UpdateVelocity() {
 
 void Camera3D::UpdateRotation() {
     this->setRotation(M3::getMatrixRotationForEulerAngles(this->pitch, this->yaw, this->roll));
+}
+
+void Camera3D::setRotationFromEulerAngles(float pitch, float yaw, float roll){
+    this->pitch = pitch;
+    this->yaw = yaw;
+    this->roll = roll;
+    UpdateRotation();
 }
 
 void Camera3D::limitPitch() {

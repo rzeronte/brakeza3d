@@ -34,6 +34,9 @@ public:
     Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
+    Vertex3D defaultCameraPosition = Vertex3D(1, 1, 1);
+    Vertex3D defaultCameraAnglesRotation = Vertex3D(190, 0, 0);
+
     Vertex3D gravity = Vertex3D(0, -10.0f, 0);
 
     // Screen dimension constants
@@ -92,6 +95,7 @@ public:
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
     bool DRAW_LIGHTPOINTS_AXIS = true;
+    bool DRAW_PENDULUM_THREAD = false;
 
 
     bool DRAW_MESH3D_AABB = false;
