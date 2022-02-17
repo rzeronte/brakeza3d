@@ -60,9 +60,6 @@ public:
     AABB3D bounds;
 
 public:
-    float *shadowMappingBuffer;
-    int sizeBuffer;
-
     Frustum();
 
     void setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float horizontalFOV, float aspectRatio, float farDistance);

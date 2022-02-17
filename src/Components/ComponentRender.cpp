@@ -595,7 +595,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     }
 
     // Texture
-    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
+    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr && !t->isFlatTextureColor()) {
         if (t->texture->getSurface(t->lod) == nullptr) return;
 
         if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED) {
@@ -618,7 +618,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         }
     }
 
-    if (EngineSetup::get()->ENABLE_LIGHTS) {
+    if (EngineSetup::get()->ENABLE_LIGHTS && t->isEnableLights()) {
         pixelColor = this->processPixelLights(t, fragment, pixelColor);
     }
 
@@ -675,7 +675,7 @@ void ComponentRender::drawSceneOverlappingItems() {
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
                     Drawable::drawLinePoints(
                         lightpoint->getPosition(),
-                        lightpoint->getPosition() + lightpoint->AxisForward().getNormalize().getScaled(
+                        lightpoint->getPosition() + lightpoint->AxisForward().getInverse().getNormalize().getScaled(
                           EngineSetup::get()->LIGHTS_DIRECTION_SIZE
                         ),
                        Color::white()

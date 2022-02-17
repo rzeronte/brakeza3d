@@ -18,28 +18,45 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="simplependulum">
-      <change afterPath="$PROJECT_DIR$/include/Shaders/Shader.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Misc/Shader.cpp" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="refactor shaders">
+      <change afterPath="$PROJECT_DIR$/include/Misc/Image.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/Camera3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Camera3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/menu.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/menu.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Camera.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/AABB3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/AABB3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Frustum.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Frustum.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineSetup.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Frustum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Frustum.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +210,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/QT_SDL-master" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/Shaders" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -202,12 +219,13 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Shaders" />
       <recent name="$PROJECT_DIR$/console" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/include/Shaders" />
       <recent name="$PROJECT_DIR$/src/Misc" />
       <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/include/Shaders" />
       <recent name="$PROJECT_DIR$/src/Physics" />
       <recent name="$PROJECT_DIR$/include/Particles" />
     </key>
@@ -331,7 +349,13 @@
       <workItem from="1644438817813" duration="15870000" />
       <workItem from="1644523271111" duration="1000" />
       <workItem from="1644605235346" duration="12459000" />
-      <workItem from="1644707630638" duration="13184000" />
+      <workItem from="1644707630638" duration="47302000" />
+      <workItem from="1644860954042" duration="926000" />
+      <workItem from="1644943059923" duration="4556000" />
+      <workItem from="1645030882601" duration="5804000" />
+      <workItem from="1645042783359" duration="2000" />
+      <workItem from="1645042945793" duration="4366000" />
+      <workItem from="1645047622170" duration="12187000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -361,7 +385,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644638944707</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactor shaders">
+      <created>1644723888314</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1644723888314</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -504,7 +535,8 @@
     <MESSAGE value="merge with light system/windows" />
     <MESSAGE value="particle system basics" />
     <MESSAGE value="simplependulum" />
-    <option name="LAST_COMMIT_MESSAGE" value="simplependulum" />
+    <MESSAGE value="refactor shaders" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor shaders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -29,6 +29,12 @@ public:
         );
     }
 
+    void setScale(float scale) {
+        min = min - Vertex3D(1, 1, 1).getScaled(scale);
+        max = max + Vertex3D(1, 1, 1).getScaled(scale);
+        updateVertices();
+    }
+
     void updateVertices() {
         this->vertices[0] = this->max;
         this->vertices[1] = this->min;
