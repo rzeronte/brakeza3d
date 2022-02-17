@@ -10,7 +10,6 @@ ComponentGameInput::ComponentGameInput(Player *player) {
 
 void ComponentGameInput::onStart() {
     Logging::Log("ComponentGameInput onStart", "ComponentGameInput");
-
     ComponentsManager::get()->getComponentInput()->setEnabled(false);
 }
 
@@ -19,6 +18,8 @@ void ComponentGameInput::preUpdate() {
 }
 
 void ComponentGameInput::onUpdate() {
+    if (SETUP->MENU_ACTIVE) return;
+    this->handleKeyboardMovingPlayer();
 }
 
 void ComponentGameInput::postUpdate() {
@@ -66,15 +67,10 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     this->handleEscape(event);
 
-    handleRespawnAfterDead(event);
-
     handleMenuKeyboard(end);
-
-    this->handleKeyboardMovingPlayer();
 
     if (SETUP->MENU_ACTIVE || SETUP->LOADING) return;
 
-    this->handleKeyboardMovingPlayer();
     //this->handleZoom(event);
     //this->handleCrouch(event);
     //this->handleFire(event);
@@ -95,7 +91,6 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
             Mix_HaltMusic();
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
             SETUP->DRAW_HUD = true;
-            ComponentsManager::get()->getComponentInput()->setEnabled(true);
         } else {
             //SDL_SetRelativeMouseMode(SDL_FALSE);
             SDL_WarpMouseInWindow(ComponentsManager::get()->getComponentWindow()->window, SETUP->screenWidth / 2,
@@ -103,7 +98,6 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
             Mix_HaltMusic();
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
             SETUP->DRAW_HUD = false;
-            ComponentsManager::get()->getComponentInput()->setEnabled(false);
         }
 
         Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("soundMenuAccept"),
@@ -305,16 +299,6 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleRespawnAfterDead(SDL_Event *event) {
-    if (player->isDead() && !SETUP->MENU_ACTIVE) {
-        if (event->type == SDL_KEYDOWN) {
-            player->respawn();
-        }
-
-        return;
-    }
-}
-
 bool ComponentGameInput::isEnabled() const {
     return enabled;
 }
@@ -330,23 +314,22 @@ void ComponentGameInput::handleKeyboardMovingPlayer() {
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
     if (keyboard[SDL_SCANCODE_A]) {
-        Vertex3D velocity = player->getVelocity() + Vertex3D(speed, 0, 0);
-        player->setVelocity(velocity);
-    }
-
-    if (keyboard[SDL_SCANCODE_D]) {
         Vertex3D velocity = player->getVelocity() - Vertex3D(speed, 0, 0);
         player->setVelocity(velocity);
     }
 
+    if (keyboard[SDL_SCANCODE_D]) {
+        Vertex3D velocity = player->getVelocity() + Vertex3D(speed, 0, 0);
+        player->setVelocity(velocity);
+    }
+
     if (keyboard[SDL_SCANCODE_S]) {
-        Vertex3D velocity = player->getVelocity() + Vertex3D(0, 0, speed);
+        Vertex3D velocity = player->getVelocity() + Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
     }
 
     if (keyboard[SDL_SCANCODE_W]) {
-        Vertex3D velocity = player->getVelocity() - Vertex3D(0, 0, speed);
+        Vertex3D velocity = player->getVelocity() - Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
     }
 }
-

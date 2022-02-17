@@ -150,7 +150,10 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
         Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-        this->modelTriangles.push_back(new Triangle(V1, V2, V3, this));
+        auto t = new Triangle(V1, V2, V3, this);
+        t->setFlatTextureColor(this->isFlatTextureColor());
+        t->setEnableLights(this->isEnableLights());
+        this->modelTriangles.push_back(t);
 
         if (this->numTextures > 0) {
             if (&this->modelTextures[mesh->mMaterialIndex] != nullptr) {

@@ -90,8 +90,7 @@ void ComponentMenu::drawOptions(SDL_Surface *dst) {
             bold = true;
             text = char(13) + text;
         }
-        ComponentsManager::get()->getComponentHUD()->writeText(
-                xPos,
+        ComponentsManager::get()->getComponentHUD()->writeCenterHorizontal(
                 stepY + offsetY,
                 text.c_str(),
                 bold

@@ -1,10 +1,13 @@
 
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
+#include "../Render/Transforms.h"
 
 Player::Player() : state(PlayerState::GAMEOVER), dead(false),
                    stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
                    stopped(false), power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
+
+    autoScrollSpeed = Vertex3D(0, -1.0, 0);
 
 }
 
@@ -25,10 +28,6 @@ bool Player::isDead() const {
 }
 
 void Player::setDead(bool dead) {
-    if (this->dead != dead && dead) {
-        ComponentsManager::get()->getComponentInput()->setEnabled(false);
-    }
-
     this->dead = dead;
 }
 
@@ -60,7 +59,6 @@ void Player::takeDamage(float dmg) {
 }
 
 void Player::newGame() {
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
     setLives(INITIAL_LIVES);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     EngineSetup::get()->MENU_ACTIVE = false;
@@ -74,7 +72,6 @@ void Player::respawn() {
             Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition())) {
     }
 
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
     setDead(false);
     state = PlayerState::LIVE;
     setStamina(INITIAL_STAMINA);
@@ -102,11 +99,15 @@ void Player::getAid(float aid) {
 void Player::onUpdate() {
     Mesh3D::onUpdate();
 
-    if (Tools::isZeroVector(this->velocity)) {
-        return;
-    }
 
     applyFriction();
+
+    float rightRotation = velocity * AxisForward() * Brakeza3D::get()->getDeltaTime();
+    M3 r = M3::getMatrixRotationForEulerAngles(-rightRotation, 0, 0);
+
+    setRotation( getRotation() * r );
+
+    checkCollidingWithAutoScroll();
 
     setPosition(getPosition() + this->velocity );
 }
@@ -116,9 +117,29 @@ Vertex3D Player::getVelocity() {
 }
 
 void Player::applyFriction() {
+    if (Tools::isZeroVector(this->velocity)) {
+        return;
+    }
+
     velocity = velocity + velocity.getInverse().getScaled(Brakeza3D::get()->getDeltaTime() * friction);
 }
 
 void Player::setVelocity(Vertex3D v) {
     this->velocity = v;
+}
+
+void Player::checkCollidingWithAutoScroll() {
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    Vertex3D o;
+    Vertex3D destinyPoint = getPosition() + velocity;
+    Transforms::cameraSpace(o, destinyPoint, camera);
+    o = Transforms::PerspectiveNDCSpace(o, camera->frustum);
+
+    if (o.y > 1) {
+        setPosition(getPosition() + this->autoScrollSpeed );
+        if (velocity.y > 0) {
+            velocity.y = -1;
+        }
+    }
 }

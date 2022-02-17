@@ -15,12 +15,13 @@ Mesh3D::Mesh3D() {
         this->modelTextures[i] = Texture();
     }
 
-    shadowCaster = false;
     BSPEntityIndex = -1;
     decal = false;
 
     this->octree = nullptr;
     this->grid = nullptr;
+    this->flatTextureColor = false;
+    this->enableLights = true;
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
@@ -29,14 +30,6 @@ void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
         modelTriangle->updateLightmapFrame();
         frameTriangles->push_back(modelTriangle);
     }
-}
-
-bool Mesh3D::isShadowCaster() const {
-    return shadowCaster;
-}
-
-void Mesh3D::setShadowCaster(bool shadow_caster) {
-    Mesh3D::shadowCaster = shadow_caster;
 }
 
 int Mesh3D::getBspEntityIndex() const {
@@ -91,15 +84,7 @@ void Mesh3D::updateBoundingBox() {
     this->aabb.min.y = minY;
     this->aabb.min.z = minZ;
 
-    this->aabb.vertices[0] = this->aabb.max;
-    this->aabb.vertices[1] = this->aabb.min;
-    this->aabb.vertices[2] = Vertex3D(this->aabb.max.x, this->aabb.max.y, this->aabb.min.z);
-    this->aabb.vertices[3] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.max.z);
-    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
-    this->aabb.vertices[4] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.max.z);
-    this->aabb.vertices[5] = Vertex3D(this->aabb.max.x, this->aabb.min.y, this->aabb.min.z);
-    this->aabb.vertices[6] = Vertex3D(this->aabb.min.x, this->aabb.max.y, this->aabb.min.z);
-    this->aabb.vertices[7] = Vertex3D(this->aabb.min.x, this->aabb.min.y, this->aabb.max.z);
+    this->aabb.updateVertices();
 }
 
 void Mesh3D::copyFrom(Mesh3D *source) {
@@ -271,7 +256,10 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
         Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-        this->modelTriangles.push_back(new Triangle(V3, V2, V1, this));
+        auto t = new Triangle(V3, V2, V1, this);
+        t->setFlatTextureColor(this->isFlatTextureColor());
+        t->setEnableLights(this->isEnableLights());
+        this->modelTriangles.push_back(t);
 
         if (this->numTextures > 0) {
             this->modelTriangles[k]->setTexture(&this->modelTextures[mesh->mMaterialIndex]);
@@ -326,3 +314,21 @@ void Mesh3D::buildOctree() {
     this->updateBoundingBox();
     this->octree = new Octree(this->modelTriangles, this->aabb);
 }
+
+bool Mesh3D::isFlatTextureColor() const {
+    return flatTextureColor;
+}
+
+void Mesh3D::setFlatTextureColor(bool isFlatTextureColor) {
+    this->flatTextureColor = isFlatTextureColor;
+}
+
+bool Mesh3D::isEnableLights() const {
+    return this->enableLights;
+}
+
+void Mesh3D::setEnableLights(bool enableLights) {
+    this->enableLights = enableLights;
+}
+
+

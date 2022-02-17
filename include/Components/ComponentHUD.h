@@ -35,7 +35,9 @@ public:
 
     void writeText(int x, int y, const char *, bool bold) const;
 
-    void writeTextCenter(const char *, bool bold) const;
+    void writeTextMiddleScreen(const char *, bool bold) const;
+
+    void writeCenterHorizontal(int y, const char *, bool bold) const;
 
     void drawHUD();
 

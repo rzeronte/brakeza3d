@@ -18,7 +18,6 @@ class Triangle {
 public:
     int id;
     bool drawed = false;
-    bool onlyWireframe = false;
 
     Vertex3D A, B, C;
     Vertex3D Ao, Bo, Co;
@@ -30,6 +29,9 @@ public:
 
     float fullArea;
     float reciprocalFullArea;
+
+    bool flatTextureColor;
+    bool enableLights;
 
     Texture *texture;
     Texture *lightmap;
@@ -67,9 +69,7 @@ public:
     bool isBSP = false;
     int surfaceBSPIndex = -1;
 
-    int lod{};
-
-    //std::vector<LightPoint3D *> lightPoints;
+    int lod;
 
     int currentBSPTextureAnimatedFrame = 0;
     float timerTextureAnimatedFrameControl = 0;
@@ -114,12 +114,6 @@ public:
 
     void processPixelLightmap(Color &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green, const Uint8 &blue, const Uint8 &alpha);
 
-    //void shadowMapping(LightPoint3D *lp);
-    //void scanVerticesForShadowMapping(LightPoint3D *lp);
-    //void scanShadowMappingBottomFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
-    //void scanShadowMappingTopFlatTriangle(Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
-    //void scanShadowMappingLine(float x1 , float x2 , int y, Point2D, Point2D, Point2D, Vertex3D, Vertex3D, Vertex3D, LightPoint3D *lp);
-
     Texture *getTexture() const;
 
     void setTexture(Texture *texture);
@@ -137,8 +131,6 @@ public:
 
     bool testForClipping(Plane *planes, int startPlaneIndex, int endPlaneIndex);
 
-    //void setLightPoints(std::vector<LightPoint3D *> &lightPoints);
-
     bool isPointInside(Vertex3D) const;
 
     int processLOD() const;
@@ -154,6 +146,12 @@ public:
     void setId(unsigned int id);
 
     Plane plane() const;
+
+    bool isFlatTextureColor() const;
+    void setFlatTextureColor(bool isFlatTextureColor);
+
+    bool isEnableLights() const;
+    void setEnableLights(bool enableLights);
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

@@ -238,7 +238,7 @@ long Maths::GetPrevActive(long x, long vertexCount, const bool *active) {
 
 int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle *> &triangles,
                               Object3D *parent, Texture *texture, Texture *lightmap, bool clipped, bool isBsp,
-                              const unsigned char lightstyle[4]) {
+                              const unsigned char lightstyle[4], bool isFlattenTextureColor, bool enableLights) {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
     int triangleCount = 0;
@@ -257,6 +257,8 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
 
             auto *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setEnableLights(enableLights);
+            t->setFlatTextureColor(isFlattenTextureColor);
             t->setTexture(texture);
             t->setLightmap(lightmap);
             t->setClipped(clipped);
@@ -344,6 +346,8 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p2], parent);
 
             auto *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setEnableLights(enableLights);
+            t->setFlatTextureColor(isFlattenTextureColor);
             t->setLightmap(lightmap);
             t->setTexture(texture);
             t->setClipped(clipped);
@@ -371,6 +375,8 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             Vertex3D tv3 = Transforms::objectToLocal(vertices[p1], parent);
 
             auto *t = new Triangle(tv1, tv2, tv3, parent);
+            t->setEnableLights(enableLights);
+            t->setFlatTextureColor(isFlattenTextureColor);
             t->setLightmap(lightmap);
             t->setTexture(texture);
             t->setClipped(clipped);

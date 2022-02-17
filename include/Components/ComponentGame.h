@@ -12,6 +12,8 @@
 #include "../Misc/PathFinder.h"
 #include "../Shaders/ShaderWater.h"
 #include "../Shaders/ShaderFire.h"
+#include "../Shaders/ShaderImageBackground.h"
+#include "../Shaders/ShaderTintScreen.h"
 
 class ComponentGame : public Component {
 public:
@@ -29,6 +31,23 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
+    Player *getPlayer() const;
+
+    void onUpdateIA() const;
+
+    void resolveCollisions();
+
+    void loadObjects3D();
+
+    void autoScroll();
+
+    ShaderWater shaderWater;
+    ShaderFire shaderFire;
+    ShaderImageBackground shaderImageBackground;
+    ShaderTintScreen shaderTintScreen;
+
+    float shaderYScroll = 0;
+
     Player *player;
     Mesh3DBody *plane;
 
@@ -36,24 +55,7 @@ public:
 
     PathFinder *pathFinder;
 
-    int kills = 0;
-
-    Player *getPlayer() const;
-
-    void onUpdateIA() const;
-
-    void resolveCollisions();
-
-    void redScreen();
-
-    void setKills(int kills);
-
-    int getKills() const;
-
-    void loadObjects3D();
-
-    ShaderWater shaderWater;
-    ShaderFire shaderFire;
+private:
 };
 
 

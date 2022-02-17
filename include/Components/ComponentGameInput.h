@@ -48,8 +48,6 @@ public:
 
     void handleMenuKeyboard(bool &end);
 
-    void handleRespawnAfterDead(SDL_Event *event);
-
     void jump(bool soundJump) const;
 
     void handleKeyboardMovingPlayer();

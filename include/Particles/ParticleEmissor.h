@@ -21,6 +21,7 @@ public:
     const Counter &getCounter() const;
     void clear();
     void addParticle(Particle *p);
+    void setRotationFrame(float, float, float);
     bool isActive() const;
     void onUpdate() override;
 
@@ -31,6 +32,9 @@ public:
     Counter counter;
     std::vector<Particle*> particles;
     bool active;
+    float rotFrameX;
+    float rotFrameY;
+    float rotFrameZ;
 };
 
 

@@ -9,6 +9,9 @@ ParticleEmissor::ParticleEmissor(bool active, float force, float ttl, float step
     this->step = step;
     this->color = c;
     this->force = force;
+    this->rotFrameX = 0;
+    this->rotFrameY = 0;
+    this->rotFrameZ = 0;
 }
 
 const Counter &ParticleEmissor::getCounter() const {
@@ -23,7 +26,6 @@ void ParticleEmissor::addParticle(Particle *p) {
     this->particles.push_back(p);
 }
 
-
 bool ParticleEmissor::isActive() const {
     return active;
 }
@@ -35,6 +37,8 @@ void ParticleEmissor::onUpdate() {
         return;
     }
 
+    setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
+
     this->counter.update();
 
     if (this->counter.isFinished()) {
@@ -42,3 +46,11 @@ void ParticleEmissor::onUpdate() {
         this->counter.setEnabled(true);
     }
 }
+
+void ParticleEmissor::setRotationFrame(float x, float y, float z) {
+    this->rotFrameX = x;
+    this->rotFrameY = y;
+    this->rotFrameZ = z;
+}
+
+

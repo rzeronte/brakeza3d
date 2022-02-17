@@ -14,6 +14,7 @@ Triangle::Triangle() {
     texture = nullptr;
     lightmap = nullptr;
     parent = nullptr;
+    flatTextureColor = false;
 }
 
 Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
@@ -242,7 +243,9 @@ Triangle::clipping(
                 this->getLightmap(),
                 true,
                 isBSP,
-                this->typelight
+                this->typelight,
+                this->isFlatTextureColor(),
+                this->isEnableLights()
         );
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
@@ -666,3 +669,21 @@ void Triangle::setId(unsigned int newId) {
 Plane Triangle::plane() const {
     return Plane(this->Ao, this->Bo, this->Co);
 }
+
+bool Triangle::isFlatTextureColor() const {
+    return flatTextureColor;
+}
+
+void Triangle::setFlatTextureColor(bool isFlatTextureColor) {
+    this->flatTextureColor = isFlatTextureColor;
+}
+
+
+bool Triangle::isEnableLights() const {
+    return this->enableLights;
+}
+
+void Triangle::setEnableLights(bool enableLights) {
+    this->enableLights = enableLights;
+}
+

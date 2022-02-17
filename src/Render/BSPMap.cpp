@@ -457,7 +457,9 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
             &lightmaps[surface],
             false,
             true,
-            surf->lightstyle
+            surf->lightstyle,
+            false,
+            false
     );
 
     return true;

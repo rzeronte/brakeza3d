@@ -135,3 +135,10 @@ void Object3D::onUpdate() {
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
 }
+
+void Object3D::setRotation(float x, float y, float z) {
+    this->rotX = x;
+    this->rotY = y;
+    this->rotZ = z;
+    this->setRotation(M3::getMatrixRotationForEulerAngles(x, y, z));
+}

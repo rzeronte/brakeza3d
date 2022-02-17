@@ -16,8 +16,6 @@ public:
 
     static EngineSetup *instance;
 
-    static void setResolution(int, int);
-
     bool LOGGING = true;
     bool LOGGING_TO_FILE = false;
 
@@ -40,8 +38,8 @@ public:
     Vertex3D gravity = Vertex3D(0, -10.0f, 0);
 
     // Screen dimension constants
-    int screenWidth = 320;
-    int screenHeight = 240;
+    const int screenWidth = 400;
+    const int screenHeight = 400;
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
@@ -49,7 +47,7 @@ public:
     int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = false;
+    bool BASED_TILE_RENDER_THREADED = true;
 
     ImVec4 FOG_IMGUI_COLOR;
 
@@ -59,7 +57,7 @@ public:
     float FOG_DISTANCE = 1000;
     float FOG_INTENSITY = 1;
     Color FOG_COLOR = Color::FOGDefault();
-    float FRUSTUM_FARPLANE_DISTANCE = 10250;
+    float FRUSTUM_FARPLANE_DISTANCE = 9000000;
     float HORIZONTAL_FOV = 90;
 
     bool DRAW_TILES_GRID = false;
@@ -81,9 +79,9 @@ public:
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
-    bool TRIANGLE_MODE_WIREFRAME = true;
+    bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
-    bool TRIANGLE_MODE_TEXTURIZED = false;
+    bool TRIANGLE_MODE_TEXTURIZED = true;
     bool DRAW_MAIN_DEEP_MAPPING = false;
 
     bool DRAW_ANIMATION_BONES = false;
@@ -109,7 +107,7 @@ public:
     // Z BUFFER
     bool CREATE_LIGHT_ZBUFFER = false;
     bool ENABLE_SHADOW_MAPPING = false;
-    bool ENABLE_LIGHTS = false;
+    bool ENABLE_LIGHTS = true;
     bool ENABLE_LIGHTS_SPECULAR = true;
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 500;
@@ -221,9 +219,6 @@ public:
     bool LOG_WEAPONS_SYSTEM = false;
 
     char *LIGHT_PATTERNS[12];
-
-    int FIRE_WIDTH = 320;
-    int FIRE_HEIGHT = 240;
 
     bool ENABLE_IA = true;
     float ZOOM_FOV = 40;

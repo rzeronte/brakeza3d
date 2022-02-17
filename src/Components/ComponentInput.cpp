@@ -10,6 +10,7 @@ void ComponentInput::onStart() {
 }
 
 void ComponentInput::preUpdate() {
+    updateKeyboardMapping();
 
 }
 
@@ -27,7 +28,6 @@ void ComponentInput::onEnd() {
 }
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
-    updateKeyboardMapping();
     updateMouseStates(e);
     handleWindowEvents(e, finish);
 

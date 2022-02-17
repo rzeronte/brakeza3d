@@ -50,12 +50,19 @@ void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
 }
 
-void ComponentHUD::writeTextCenter(const char *text, bool bold) const {
+void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
     int totalW = EngineSetup::get()->screenWidth;
     int totalH = EngineSetup::get()->screenHeight;
 
     int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
     this->writeText(xPosition, totalH / 2, text, bold);
+}
+
+void ComponentHUD::writeCenterHorizontal(int y, const char *text, bool bold) const {
+    int totalW = EngineSetup::get()->screenWidth;
+
+    int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
+    this->writeText(xPosition, y, text, bold);
 }
 
 void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const {
@@ -73,8 +80,8 @@ void ComponentHUD::drawHUD() {
     textY += stepY;
 
     if (SETUP->DRAW_FPS) {
-        componentManager->getComponentHUD()->writeText(
-            1, 10,
+        writeCenterHorizontal(
+            10,
             std::to_string(componentManager->getComponentRender()->fps).c_str(),
             false
         );

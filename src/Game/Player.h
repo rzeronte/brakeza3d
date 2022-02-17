@@ -8,9 +8,9 @@
 
 #define INITIAL_STAMINA 100
 #define INITIAL_LIVES 10
-#define INITIAL_POWER 1
-#define INITIAL_FRICTION 0.5
-#define INITIAL_MAX_VELOCITY 10
+#define INITIAL_POWER 100
+#define INITIAL_FRICTION 5
+#define INITIAL_MAX_VELOCITY 25
 
 typedef enum {
     LIVE, DEAD, GAMEOVER
@@ -24,7 +24,6 @@ private:
     bool stopped;
     int lives;
     Vertex3D velocity;
-    M3 velocityRotation;
 
 public:
     PlayerState state;
@@ -65,8 +64,11 @@ public:
     float power;
     float friction;
     float maxVelocity;
+    Vertex3D autoScrollSpeed;
 
     void applyFriction();
+
+    void checkCollidingWithAutoScroll();
 };
 
 

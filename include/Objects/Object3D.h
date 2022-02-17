@@ -45,6 +45,7 @@ public:
     void setPosition(Vertex3D p);
 
     void setRotation(M3 r);
+    void setRotation(float, float, float);
 
     bool isEnabled() const;
 

@@ -42,6 +42,9 @@ void ComponentGUI::onUpdate() {
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
     );
+
+    //ImGui::ShowDemoWindow();
+
     ImGui::Render();
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 

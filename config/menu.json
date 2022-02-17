@@ -1,6 +1,6 @@
 {
     "options": [
-        { "name": "new game", "alt": "resume...",  "action": 0 },
+        { "name": "new game", "alt": "resume",  "action": 0 },
         { "name": "credits",  "alt": "",           "action": 1 },
         { "name": "options",  "alt": "",           "action": 2 },
         { "name": "exit",     "alt": "",           "action": 3 }

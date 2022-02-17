@@ -6,8 +6,6 @@
 
 Frustum::Frustum()
 {
-    this->sizeBuffer = EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight;
-    shadowMappingBuffer = new float[sizeBuffer];
 };
 
 void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D right, float horizontalFOV, float aspectRatio, float farDistance) {
@@ -162,19 +160,11 @@ void Frustum::consoleInfo() const {
 }
 
 bool Frustum::isAABBInFrustum(AABB3D *aabb) {
-    if (
-            !this->isVertexInside(aabb->vertices[0]) &&
-            !this->isVertexInside(aabb->vertices[1]) &&
-            !this->isVertexInside(aabb->vertices[2]) &&
-            !this->isVertexInside(aabb->vertices[3]) &&
-            !this->isVertexInside(aabb->vertices[4]) &&
-            !this->isVertexInside(aabb->vertices[5]) &&
-            !this->isVertexInside(aabb->vertices[6]) &&
-            !this->isVertexInside(aabb->vertices[7])
-            ) {
-        return false;
+    for(auto & vertice : aabb->vertices) {
+        if (!this->isVertexInside(vertice)) {
+            return false;
+        }
     }
-
     return true;
 }
 

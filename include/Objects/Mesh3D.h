@@ -29,12 +29,14 @@ public:
     std::vector<Triangle *> modelTriangles;
     AABB3D aabb;
 
+    bool flatTextureColor;
+    bool enableLights = false;
+
     Texture *modelTextures;
     Vertex3D *modelVertices;
 
     int numTextures;
 
-    bool shadowCaster;
     int BSPEntityIndex;
 
     Mesh3D();
@@ -48,12 +50,6 @@ public:
     void AssimpLoadMesh(aiMesh *mesh);
 
     void sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles);
-    //void shadowMapping(LightPoint3D *);
-    //void setLightPoints(std::vector<LightPoint3D*> &);
-
-    bool isShadowCaster() const;
-
-    void setShadowCaster(bool shadow_caster);
 
     int getBspEntityIndex() const;
 
@@ -81,6 +77,11 @@ public:
 
     void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY);
 
+    bool isFlatTextureColor() const;
+    void setFlatTextureColor(bool isFlatTextureColor);
+
+    bool isEnableLights() const;
+    void setEnableLights(bool enableLights);
 private:
     Octree *octree;
     Grid3D *grid;

@@ -25,8 +25,3 @@ EngineSetup::EngineSetup() {
     LIGHT_PATTERNS[10] = "mmamammmmammamamaaamammma"; // 10 FLUORESCENT FLICKER
     LIGHT_PATTERNS[11] = "abcdefghijklmnopqrrqponmlkjihgfedcba"; // 11 SLOW PULSE NOT FADE TO BLACK
 }
-
-void EngineSetup::setResolution(int w, int h) {
-    EngineSetup::get()->screenWidth = w;
-    EngineSetup::get()->screenHeight = h;
-}

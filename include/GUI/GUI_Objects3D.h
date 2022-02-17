@@ -17,6 +17,7 @@
 #include "../Game/DoorGhost.h"
 #include "../Particles/ParticleEmissor.h"
 #include "../Physics/SimplePendulum.h"
+#include "../../src/Game/Player.h"
 
 class GUI_Objects3D : public GUI {
 public:
@@ -31,14 +32,14 @@ public:
         if (show) {
 
             ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 825), ImGuiSetCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Object Inspector (" + std::to_string(gameObjects.size()) + " objects)";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
-            const float range_min = 0;
-            const float range_max = 10000;
+            const float range_min = -90000;
+            const float range_max = 90000;
             const float range_sensibility = 0.5;
 
             const float range_speed_min = 0;
@@ -65,28 +66,30 @@ public:
                 std::string enabled_text = "Enabled##" + std::to_string(i);
                 std::string position_text = "Position##" + std::to_string(i);
                 std::string rotation_text = "Rotation##" + std::to_string(i);
+                std::string options_text = "Options##" + std::to_string(i);
                 std::string animation_text = "Animation##" + std::to_string(i);
                 std::string collection = "Collection##" + std::to_string(i);
                 std::string removed_text = "Removed##" + std::to_string(i);
                 std::string follow_camera_text = "FollowCamera##" + std::to_string(i);
                 std::string draw_offset_text = "DrawOffset##" + std::to_string(i);
+                std::string player_movement_text = "Movement##" + std::to_string(i);
+                std::string rotation_particle_text = "Rotation Frame##" + std::to_string(i);
 
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
+                    // enabled
+                    ImGui::Checkbox(enabled_text.c_str(), &gameObjects[i]->enabled);
+
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition().y, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition().z, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->getPosition().y, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->getPosition().z, range_sensibility,&range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
                     // rotation
                     if (ImGui::TreeNode(rotation_text.c_str())) {
 
-                        // position
                         bool needUpdateRotation = false;
                         ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->rotX, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
@@ -100,33 +103,32 @@ public:
 
                         if (needUpdateRotation) {
                             gameObjects[i]->setRotation(M3::getMatrixRotationForEulerAngles(gameObjects[i]->rotX, gameObjects[i]->rotY, gameObjects[i]->rotZ));
-
                         }
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getPitchDegree()).c_str());
-                        ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getYawDegree()).c_str());
-                        ImGui::SameLine();
-                        ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                           std::to_string(gameObjects[i]->getRotation().getRollDegree()).c_str());
+                        ImGui::TreePop();
+                    }
+
+                    // options
+                    if (ImGui::TreeNode(options_text.c_str())) {
+                        ImGui::Checkbox(follow_camera_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->followCamera);
+
+                        // Only for Mesh3D
+                        auto *oMesh3D = dynamic_cast<Mesh3D *>(gameObjects[i]);
+                        if (oMesh3D != NULL) {
+                            ImGui::Checkbox(std::string("Enable light").c_str(), &oMesh3D->enableLights);
+                        }
+
                         ImGui::TreePop();
                     }
 
                     // drawOffset
                     if (ImGui::TreeNode(draw_offset_text.c_str())) {
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->drawOffset.x, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->drawOffset.y, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility,
-                                          &range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->drawOffset.x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &gameObjects[i]->drawOffset.y, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility,&range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
 
-                    ImGui::Checkbox(removed_text.c_str(), &dynamic_cast<Object3D *>(gameObjects[i])->removed);
-                    ImGui::Checkbox(follow_camera_text.c_str(),
-                                    &dynamic_cast<Object3D *>(gameObjects[i])->followCamera);
+
 
                     // Only for decals
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
@@ -141,9 +143,7 @@ public:
                     SpriteDirectional3D *pSprite3D = dynamic_cast<SpriteDirectional3D *>(gameObjects[i]);
                     if (pSprite3D != NULL) {
                         static ImGuiComboFlags flags = 0;
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,
-                                          &pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,
-                                          &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32,&pSprite3D->getCurrentTextureAnimationDirectional()->fps, 1.f,&range_framerate_min, &range_framerate_max, "%d fps", 1);
                         if (ImGui::IsItemDeactivatedAfterEdit()) {
                             pSprite3D->updateStep();
                         }
@@ -194,12 +194,9 @@ public:
                     // Only for SPRITES
                     Sprite3D *pSprite = dynamic_cast<Sprite3D *>(gameObjects[i]);
                     if (pSprite != NULL) {
-                        ImGui::DragScalar("Framerate", ImGuiDataType_S32, &pSprite->getCurrentTextureAnimation()->fps,
-                                          1.f, &range_framerate_min, &range_framerate_max, "%d fps", 1);
+                        ImGui::DragScalar("Framerate", ImGuiDataType_S32, &pSprite->getCurrentTextureAnimation()->fps,1.f, &range_framerate_min, &range_framerate_max, "%d fps", 1);
                     }
 
-                    // All Objects setup
-                    ImGui::Checkbox(enabled_text.c_str(), &gameObjects[i]->enabled);
 
                     // Only for Mesh3DGhost
                     Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(gameObjects[i]);
@@ -231,9 +228,7 @@ public:
                     // Only for Mesh3DAnimatedCollection
                     auto *oMesh3DAnimatedCollection = dynamic_cast<Mesh3DAnimatedCollection *>(gameObjects[i]);
                     if (oMesh3DAnimatedCollection != NULL) {
-                        ImGui::DragScalar("Speed", ImGuiDataType_Float,
-                                          &oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed,
-                                          range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
+                        ImGui::DragScalar("Speed", ImGuiDataType_Float,&oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->animation_speed,range_speed_sensibility, &range_speed_min, &range_speed_max, "%f", 1.0f);
 
                         std::string animationEndsText = "AnimationEnds: " + std::to_string(
                                 oMesh3DAnimatedCollection->getCurrentMesh3DAnimated()->isAnimationEnds());
@@ -273,7 +268,8 @@ public:
                     // Only for meshes
                     LightPoint3D *lp = dynamic_cast<LightPoint3D *>(gameObjects[i]);
                     if (lp != NULL) {
-                        bool changed_color = false;
+                        std::string color_text = "Color##" + std::to_string(i);
+
                         bool changed_color_specular = false;
                         std::string attenuation_text = "Attenuation##" + std::to_string(i);
                         std::string colorpicker_text = "RGB##" + std::to_string(i);
@@ -286,13 +282,18 @@ public:
                             ImGui::Checkbox(show_frustum_map_text.c_str(), &lp->showFrustum);
                         }
 
-                        changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &lp->imgui_color,misc_flags);
-                        if (changed_color) {
-                            lp->setColor(
-                                    lp->imgui_color.x * 256,
-                                    lp->imgui_color.y * 256,
-                                    lp->imgui_color.z * 256
-                            );
+                        // Color
+                        if (ImGui::TreeNode(color_text.c_str())) {
+                            bool changed_color = false;
+                            changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &lp->imgui_color,misc_flags);
+                            if (changed_color) {
+                                lp->setColor(
+                                        lp->imgui_color.x * 256,
+                                        lp->imgui_color.y * 256,
+                                        lp->imgui_color.z * 256
+                                );
+                            }
+                            ImGui::TreePop();
                         }
 
                         if (ImGui::TreeNode(attenuation_text.c_str())) {
@@ -327,12 +328,18 @@ public:
                         const float step_range_min = 0;
                         const float step_range_max = 500;
                         const float  step_range_sensibility = 0.001f;
-                        ImGui::DragScalar("Force", ImGuiDataType_Float, &pe->force, step_range_sensibility,
-                                          &step_range_min, &step_range_max, "%f", 1.0f);
-                        ImGui::DragScalar("TTL", ImGuiDataType_Float, &pe->ttl, step_range_sensibility,
-                                          &step_range_min, &step_range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Step", ImGuiDataType_Float, &pe->step, step_range_sensibility,
-                                          &step_range_min, &step_range_max, "%f", 1.0f);
+
+                        // rotation frame
+                        if (ImGui::TreeNode(rotation_particle_text.c_str())) {
+                            ImGui::DragScalar("X", ImGuiDataType_Float, &pe->rotFrameX, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                            ImGui::DragScalar("Y", ImGuiDataType_Float, &pe->rotFrameY, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                            ImGui::DragScalar("Z", ImGuiDataType_Float, &pe->rotFrameZ, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                            ImGui::TreePop();
+                        }
+
+                        ImGui::DragScalar("Force", ImGuiDataType_Float, &pe->force, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("TTL", ImGuiDataType_Float, &pe->ttl, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Step", ImGuiDataType_Float, &pe->step, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited()) {
                             pe->counter.setStep(pe->step);
                         }
@@ -359,9 +366,33 @@ public:
                             }
                         }
                     }
+
+                    Player *player = dynamic_cast<Player *>(gameObjects[i]);
+                    if (player != NULL) {
+                        if (ImGui::TreeNode(player_movement_text.c_str())) {
+                            std::string activeFriction = "Active friction##" + std::to_string(i);
+                            const float step_range_min = 0;
+                            const float step_range_max = 50000;
+                            ImGui::DragScalar("Power", ImGuiDataType_Float, &player->power, 1,&step_range_min, &step_range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Friction", ImGuiDataType_Float, &player->friction, 1,&step_range_min, &step_range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Max Vel.", ImGuiDataType_Float, &player->maxVelocity, 1,&step_range_min, &step_range_max, "%f", 1.0f);
+
+                            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),std::to_string(player->getVelocity().x).c_str());
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),std::to_string(player->getVelocity().y).c_str());
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),std::to_string(player->getVelocity().z).c_str());
+
+                            ImGui::TreePop();
+                        }
+                    }
+
+                    ImGui::Button("Remove");
+                    if (ImGui::IsItemClicked()) {
+                        gameObjects[i]->removed = true;
+                    }
                 }
             }
-
             ImGui::End();
         }
     }

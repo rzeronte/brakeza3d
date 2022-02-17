@@ -9,7 +9,7 @@
 
 class GUI_Camera : public GUI {
 public:
-    bool show = true;
+    bool show = false;
 
     virtual void draw(Camera3D *camera) {
         ImGuiWindowFlags window_flags = 0;
