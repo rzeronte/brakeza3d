@@ -18,6 +18,19 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
     SDL_Rect r;
     r.w = CONCHARS_CHARACTER_W;
     r.h = CONCHARS_CHARACTER_H;
+    Uint32 rmask, gmask, bmask, amask;
+
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+    #endif
 
     for (int y = 0; y < CONCHARS_HEIGHT; y += CONCHARS_CHARACTER_H) {
         for (int x = 0; x < CONCHARS_WIDTH; x += CONCHARS_CHARACTER_W) {
@@ -29,10 +42,10 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
                     CONCHARS_CHARACTER_W,
                     CONCHARS_CHARACTER_H,
                     32,
-                    0,
-                    0,
-                    0,
-                    0
+                    rmask,
+                    gmask,
+                    bmask,
+                    amask
             );
 
             SDL_BlitSurface(sprite, &r, s, nullptr);

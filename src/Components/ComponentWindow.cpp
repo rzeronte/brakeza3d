@@ -64,7 +64,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_FULLSCREEN_DESKTOP
         );
 
         if (window == nullptr) {
@@ -75,10 +75,10 @@ void ComponentWindow::initWindow() {
             screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
 
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
             screenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
-                                              SDL_TEXTUREACCESS_STATIC,
+                                              SDL_TEXTUREACCESS_STREAMING,
                                               EngineSetup::get()->screenWidth,
                                               EngineSetup::get()->screenHeight
             );

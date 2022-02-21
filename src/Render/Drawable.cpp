@@ -73,6 +73,26 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     }
 }
 
+void Drawable::drawVertex3D(Vertex3D V, Camera3D *cam, Color color) {
+    Vertex3D A;
+
+    Transforms::cameraSpace(A, V, cam);
+    A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
+
+    if (A.z < 0) {
+        return;
+    }
+
+    Point2D P1;
+    Transforms::screenSpace(P1, A);
+
+    color = color + Color( 255* A.z);
+
+    if (Tools::isPixelInWindow(P1.x, P1.y)) {
+        EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color.getColor());
+    }
+}
+
 void Drawable::drawLine2D(Line2D L, Color color) {
     int x1 = L.x1;
     int y1 = L.y1;
@@ -409,7 +429,6 @@ void Drawable::drawFadeIn() {
     Brakeza3D::get()->currentFadePercent -= 0.01;
     if (Brakeza3D::get()->currentFadePercent < 0) {
         Brakeza3D::get()->currentFadePercent = 0;
-        EngineSetup::get()->FADEIN = false;
     }
     Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
 }

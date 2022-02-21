@@ -18,6 +18,7 @@ public:
     static void drawBox2D(SDL_Rect r);
 
     static void drawVertex(Vertex3D v, Camera3D *cam, Color color);
+    static void drawVertex3D(Vertex3D v, Camera3D *cam, Color color);
 
     static void drawVector3D(Vector3D V, Camera3D *cam, Color color);
 

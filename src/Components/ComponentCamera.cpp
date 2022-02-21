@@ -20,10 +20,14 @@ void ComponentCamera::onUpdate() {
 }
 
 void ComponentCamera::postUpdate() {
-    if (this->is_fly_mode) {
+    if (this->freeLook) {
         getCamera()->UpdateRotation();
         getCamera()->UpdatePositionForVelocity();
     }
+
+    /*if (getCamera()->getFollowTo() != nullptr) {
+        updatePositionForTrackingObject();
+    }*/
 
     this->getCamera()->updateFrustum();
 }
@@ -39,10 +43,19 @@ Camera3D *ComponentCamera::getCamera() const {
     return camera;
 }
 
-bool ComponentCamera::isFlyMode() const {
-    return is_fly_mode;
+bool ComponentCamera::isFreeLookEnabled() const {
+    return freeLook;
 }
 
-void ComponentCamera::setIsFlyMode(bool isFlyMode) {
-    is_fly_mode = isFlyMode;
+void ComponentCamera::setFreeLook(bool value) {
+    freeLook = value;
 }
+
+void ComponentCamera::updatePositionForTrackingObject() {
+    getCamera()->setPosition(getCamera()->getFollowTo()->getPosition() + getCamera()->followToPositionOffset);
+}
+
+
+
+
+
