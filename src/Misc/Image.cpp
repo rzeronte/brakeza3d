@@ -9,18 +9,16 @@ Image::Image() {
 }
 
 Image::Image(std::string filename) {
-    this->filename = filename;
-    loadImage();
-}
-
-bool Image::loadImage() {
     if (Tools::fileExists(filename)) {
         surface = IMG_Load(filename.c_str());
         this->loaded = true;
     } else {
         Logging::Log("Error loading TGA texture '" + std::string(filename), "IMAGE");
-        return false;
     }
+}
+
+bool Image::loadImage() {
+
 }
 
 void Image::drawFlat(int pos_x, int pos_y) const {

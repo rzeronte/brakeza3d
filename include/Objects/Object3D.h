@@ -23,7 +23,8 @@ public:
     bool followCamera;
 
     Vertex3D drawOffset;
-
+    Vertex3D rotationFrame;
+    bool rotationFrameEnabled;
     float scale;
 
     bool decal;     // Decals exclude UV Coordinates out of [0, 1]
@@ -43,6 +44,7 @@ public:
     M3 getRotation();
 
     void setPosition(Vertex3D p);
+    void addToPosition(Vertex3D &);
 
     void setRotation(M3 r);
     void setRotation(float, float, float);
@@ -85,6 +87,9 @@ public:
 
     virtual void onUpdate();
 
+    bool isRotationFrameEnabled();
+    void setRotationFrameEnabled(bool value);
+    void setRotationFrame(Vertex3D v);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

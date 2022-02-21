@@ -39,7 +39,7 @@ void Particle::onUpdate() {
 
     this->setPosition(getPosition() + gravity + velocity);
 
-    Drawable::drawVertex(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), this->color);
+    Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), this->color);
 }
 
 const Vertex3D &Particle::getVelocity() const {

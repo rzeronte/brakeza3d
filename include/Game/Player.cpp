@@ -1,14 +1,27 @@
 
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
-#include "../Render/Transforms.h"
+#include "../Particles/ParticleEmissorGravity.h"
 
 Player::Player() : state(PlayerState::GAMEOVER), dead(false),
                    stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
                    stopped(false), power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
 
-    autoScrollSpeed = Vertex3D(0, -1.0, 0);
+    engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::gray());
+    engineParticles->setRotationFrame(0, 4, 5);
 
+    light = new LightPoint3D();
+    light->setEnabled(true);
+    light->setLabel("lp2");
+    light->setPower(200);
+    light->setColor(255, 255, 255);
+    light->setColorSpecularity(220, 220, 30);
+    light->setSpecularComponent(3);
+    light->setColor(0, 255, 0);
+    light->setRotation(270, 0, 0);
+
+    engineParticlesPositionOffset = Vertex3D(0, 450, 0);
+    lightPositionOffset = Vertex3D(0, -550, 0);
 }
 
 int Player::getStamina() const {
@@ -53,7 +66,7 @@ void Player::takeDamage(float dmg) {
 
         if (lives <= 0) {
             state = PlayerState::GAMEOVER;
-            EngineSetup::get()->MENU_ACTIVE = true;
+            ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
         }
     }
 }
@@ -61,7 +74,7 @@ void Player::takeDamage(float dmg) {
 void Player::newGame() {
     setLives(INITIAL_LIVES);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
-    EngineSetup::get()->MENU_ACTIVE = false;
+    ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
     EngineSetup::get()->DRAW_HUD = true;
 
     this->state = PlayerState::LIVE;
@@ -99,6 +112,8 @@ void Player::getAid(float aid) {
 void Player::onUpdate() {
     Mesh3D::onUpdate();
 
+    updateEngineParticles();
+    updateLight();
 
     applyFriction();
 
@@ -106,8 +121,6 @@ void Player::onUpdate() {
     M3 r = M3::getMatrixRotationForEulerAngles(-rightRotation, 0, 0);
 
     setRotation( getRotation() * r );
-
-    checkCollidingWithAutoScroll();
 
     setPosition(getPosition() + this->velocity );
 }
@@ -128,18 +141,13 @@ void Player::setVelocity(Vertex3D v) {
     this->velocity = v;
 }
 
-void Player::checkCollidingWithAutoScroll() {
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Vertex3D o;
-    Vertex3D destinyPoint = getPosition() + velocity;
-    Transforms::cameraSpace(o, destinyPoint, camera);
-    o = Transforms::PerspectiveNDCSpace(o, camera->frustum);
-
-    if (o.y > 1) {
-        setPosition(getPosition() + this->autoScrollSpeed );
-        if (velocity.y > 0) {
-            velocity.y = -1;
-        }
-    }
+void Player::updateEngineParticles() {
+    engineParticles->setPosition(getPosition() + engineParticlesPositionOffset);
+    engineParticles->onUpdate();
 }
+
+void Player::updateLight() {
+    light->setPosition(getPosition() + lightPositionOffset);
+    light->onUpdate();
+}
+

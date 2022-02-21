@@ -12,7 +12,7 @@
 class Image {
 public:
     Image();
-    Image(std::string filename);
+    explicit Image(std::string filename);
     void drawFlat(int, int) const;
     bool loadImage();
     int width();
@@ -20,9 +20,7 @@ public:
     void* pixels();
     bool isLoaded();
 private:
-    std::string filename;
     SDL_Surface *surface;
-
 
     bool loaded;
 };

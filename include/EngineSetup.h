@@ -38,8 +38,8 @@ public:
     Vertex3D gravity = Vertex3D(0, -10.0f, 0);
 
     // Screen dimension constants
-    const int screenWidth = 400;
-    const int screenHeight = 400;
+    const int screenWidth = 320;
+    const int screenHeight = 240;
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
@@ -64,18 +64,13 @@ public:
 
     // Draw axis
     bool RENDER_MAIN_AXIS = true;
-    bool RENDER_OBJECTS_AXIS = true;
+    bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 10;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
     bool DEBUG_RENDER_INFO = false;
 
-    bool MENU_ACTIVE = true;
-    bool LOADING = false;
-    bool SPLASHING = true;
-    bool FADEIN = false;
-    bool FADEOUT = false;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
@@ -157,9 +152,8 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 1.f;
     float BILLBOARD_HEIGHT_DEFAULT = 1.f;
 
-    Uint32 TEXT_3D_COLOR = 0x00FF00; // GREEN
     Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
-    bool DRAW_CROSSHAIR = true;
+    bool DRAW_CROSSHAIR = false;
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD

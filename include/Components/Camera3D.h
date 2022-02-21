@@ -69,6 +69,8 @@ public:
     btPairCachingGhostObject *getGhostObject() const;
 
     void setRotationFromEulerAngles(float x, float y, float z);
+
+    void setFollowToPositionOffset(Vertex3D v);
 };
 
 

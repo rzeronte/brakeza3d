@@ -5,6 +5,7 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Counter.h"
 #include "../../include/Objects/Mesh3D.h"
+#include "../../include/Particles/ParticleEmissor.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_LIVES 10
@@ -26,6 +27,12 @@ private:
     Vertex3D velocity;
 
 public:
+    ParticleEmissor *engineParticles;
+    Vertex3D engineParticlesPositionOffset;
+
+    LightPoint3D *light;
+    Vertex3D lightPositionOffset;
+
     PlayerState state;
 
     Player();
@@ -64,11 +71,12 @@ public:
     float power;
     float friction;
     float maxVelocity;
-    Vertex3D autoScrollSpeed;
 
     void applyFriction();
 
-    void checkCollidingWithAutoScroll();
+    void updateEngineParticles();
+
+    void updateLight();
 };
 
 

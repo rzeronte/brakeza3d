@@ -15,6 +15,10 @@
 #include "../Shaders/ShaderImageBackground.h"
 #include "../Shaders/ShaderTintScreen.h"
 
+typedef enum {
+    MENU, GAMING, LOADING, SPLASHING, FADEIN, FEADEOUT
+} GameState;
+
 class ComponentGame : public Component {
 public:
     ComponentGame();
@@ -39,14 +43,17 @@ public:
 
     void loadObjects3D();
 
-    void autoScroll();
+    void CameraAutoScroll();
+
+    void checkPlayerCameraScrollCollision();
 
     ShaderWater shaderWater;
     ShaderFire shaderFire;
     ShaderImageBackground shaderImageBackground;
     ShaderTintScreen shaderTintScreen;
 
-    float shaderYScroll = 0;
+    float shaderYScroll;
+    Vertex3D autoScrollSpeed;
 
     Player *player;
     Mesh3DBody *plane;
@@ -55,7 +62,19 @@ public:
 
     PathFinder *pathFinder;
 
+    bool autoScrollEnabled;
+    bool isAutoscrollEnabled();
+    void setAutoScroll(bool value);
+    void setGameState(GameState state);
+    GameState getGameState();
+
+    void createBackgroundDecorationItems();
+    std::vector<Object3D*> backgroundDecorationItems;
 private:
+
+    GameState gameState;
+
+    void setAutoScrollSpeed(Vertex3D speed);
 };
 
 

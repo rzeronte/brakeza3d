@@ -18,6 +18,7 @@ public:
     Color operator-(const Color &pm) const;
     Color operator*(const Color &pm) const;
     Color operator*(float s) const;
+    Color operator/(float s) const;
 
     static Color white() { return Color(255, 255, 255); }
     static Color red() { return Color(255, 0, 0); }

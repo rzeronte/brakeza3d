@@ -207,9 +207,6 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
-                ImGui::Checkbox("Fade Out", &EngineSetup::get()->FADEOUT);
-                ImGui::Checkbox("Fade In", &EngineSetup::get()->FADEIN);
-
                 ImGui::EndMenu();
             }
 
@@ -287,14 +284,6 @@ public:
 
             if (ImGui::BeginMenu("Lights")) {
                 ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
-                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
-                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
-                                      range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                }
-
-                ImGui::Separator();
                 ImGui::Checkbox("Create lights Z-Buffer", &EngineSetup::get()->CREATE_LIGHT_ZBUFFER);
                 if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER) {
                     ImGui::Checkbox("Lights Deep Test", &EngineSetup::get()->ENABLE_SHADOW_MAPPING);
@@ -383,6 +372,14 @@ public:
 
                 }
                 ImGui::Separator();
+                ImGui::Separator();
+                ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
+                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
+                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
+                                      range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                }
+
+                ImGui::Separator();
 
                 ImGui::Checkbox("Draw Mesh3D AABB", &EngineSetup::get()->DRAW_MESH3D_AABB);
                 ImGui::Checkbox("Draw Mesh3D Octree", &EngineSetup::get()->DRAW_MESH3D_OCTREE);
@@ -405,7 +402,6 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
                 ImGui::Separator();
-                ImGui::Checkbox("Show Menu Screen", &EngineSetup::get()->MENU_ACTIVE);
                 ImGui::EndMenu();
             }
 
@@ -418,16 +414,11 @@ public:
             }
 
             if (ImGui::BeginMenu("Developers")) {
-                ImGui::DragScalar("TESTING", ImGuiDataType_Float, &EngineSetup::get()->TESTING,
-                                  range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT1, 1,
-                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT2, 1,
-                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT3, 1,
-                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT4, 1,
-                                  &range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING", ImGuiDataType_Float, &EngineSetup::get()->TESTING,range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT1, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT2, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT3, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
+                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT4, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
                 ImGui::Checkbox("Boolean TEST", &EngineSetup::get()->TESTING_BOOL);
                 ImGui::EndMenu();
             }

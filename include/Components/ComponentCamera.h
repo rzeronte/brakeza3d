@@ -38,7 +38,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     Camera3D *camera;
-    bool is_fly_mode{};
+    bool freeLook{};
 
     Camera3D *getCamera() const;
 
@@ -46,9 +46,12 @@ public:
 
     static void drawCheckTrace(const std::string& o1, const std::string& o2);
 
-    bool isFlyMode() const;
+    bool isFreeLookEnabled() const;
 
-    void setIsFlyMode(bool isFlyMode);
+    void setFreeLook(bool isFlyMode);
+
+    void updatePositionForTrackingObject();
+
 };
 
 

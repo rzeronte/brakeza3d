@@ -33,8 +33,6 @@ Camera3D::Camera3D() {
 
     this->setLabel(EngineSetup::get()->cameraNameIdentifier);
 
-    this->followToPositionOffset = Vertex3D(10, -15, 0);
-
     this->consoleInfo();
 }
 
@@ -157,4 +155,8 @@ void Camera3D::makeKineticCharacter(const btTransform& transform, btConvexShape 
 
 btPairCachingGhostObject *Camera3D::getGhostObject() const {
     return m_ghostObject;
+}
+
+void Camera3D::setFollowToPositionOffset(Vertex3D v) {
+    this->followToPositionOffset = v;
 }

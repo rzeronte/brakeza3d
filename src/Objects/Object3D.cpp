@@ -6,11 +6,11 @@
 #include "../../include/ComponentsManager.h"
 
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
-    followCamera = false;
-    this->rotX = 0;
-    this->rotY = 0;
-    this->rotZ = 0;
-
+    setFollowCamera(false);
+    setRotationFrameEnabled(false);
+    rotX = 0;
+    rotY = 0;
+    rotZ = 0;
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -134,6 +134,10 @@ void Object3D::onUpdate() {
         this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
+
+    if (isRotationFrameEnabled()) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
+    }
 }
 
 void Object3D::setRotation(float x, float y, float z) {
@@ -141,4 +145,20 @@ void Object3D::setRotation(float x, float y, float z) {
     this->rotY = y;
     this->rotZ = z;
     this->setRotation(M3::getMatrixRotationForEulerAngles(x, y, z));
+}
+
+void Object3D::addToPosition(Vertex3D &v) {
+    this->position = this->position + v;
+}
+
+bool Object3D::isRotationFrameEnabled() {
+    return rotationFrameEnabled;
+}
+
+void Object3D::setRotationFrameEnabled(bool value) {
+    this->rotationFrameEnabled = value;
+}
+
+void Object3D::setRotationFrame(Vertex3D r) {
+    this->rotationFrame = r;
 }

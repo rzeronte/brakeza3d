@@ -20,12 +20,10 @@ void ComponentHUD::preUpdate() {
 }
 
 void ComponentHUD::onUpdate() {
-    if (SETUP->DRAW_HUD && !SETUP->MENU_ACTIVE) {
-
+    if (SETUP->DRAW_HUD) {
         if (SETUP->DRAW_CROSSHAIR) {
             Drawable::drawCrossHair();
         }
-
         drawHUD();
     }
 }
