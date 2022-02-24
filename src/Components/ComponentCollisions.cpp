@@ -44,7 +44,7 @@ void ComponentCollisions::initBulletSystem() {
     this->solver = new btSequentialImpulseConstraintSolver;
 
     /// Debug drawer
-    this->debugDraw = new PhysicsDebugDraw(this->camera);
+    this->debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::get()->gravity.y, 0));
@@ -71,14 +71,6 @@ void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *world) {
     ComponentCollisions::dynamicsWorld = world;
 }
 
-Camera3D *ComponentCollisions::getCamera() const {
-    return camera;
-}
-
-void ComponentCollisions::setCamera(Camera3D *cam) {
-    ComponentCollisions::camera = cam;
-}
-
 BSPMap *ComponentCollisions::getBspMap() const {
     return bspMap;
 }
@@ -87,19 +79,9 @@ void ComponentCollisions::setBSPMap(BSPMap *map) {
     ComponentCollisions::bspMap = map;
 }
 
-bool ComponentCollisions::needsCollision(const btCollisionObject *body0, const btCollisionObject *body1) {
-    bool collides = (body0->getBroadphaseHandle()->m_collisionFilterGroup &
-                     body1->getBroadphaseHandle()->m_collisionFilterMask) != 0;
-    collides = collides && (body1->getBroadphaseHandle()->m_collisionFilterGroup &
-                            body0->getBroadphaseHandle()->m_collisionFilterMask);
-
-    return collides;
-}
-
 void ComponentCollisions::checkCollisionsForAll() {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
-    // All frameCollisions pairs
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
 
     for (int i = 0; i < numManifolds; i++) {
@@ -113,8 +95,8 @@ void ComponentCollisions::checkCollisionsForAll() {
             auto *brkObjectA = (Collisionable *) obA->getUserPointer();
             auto *brkObjectB = (Collisionable *) obB->getUserPointer();
 
-            brkObjectA->dispatchCollision(brkObjectB);
-            brkObjectB->dispatchCollision(brkObjectA);
+            brkObjectA->resolveCollision(brkObjectB);
+            brkObjectB->resolveCollision(brkObjectA);
         }
     }
 }
@@ -131,21 +113,14 @@ void ComponentCollisions::updatePhysicObjects() {
 }
 
 void ComponentCollisions::stepSimulation() {
-    // check for frameCollisions
     checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
-        // Bullet Step Simulation
         getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime() * 1000);
 
-        // Physics for meshes
         this->updatePhysicObjects();
 
-        // Sync Ghost with bullet
-        //this->updatePhysicsGhosts();
-
-        //this->syncTriggerGhostCamera();
     }
 }
 
@@ -155,39 +130,4 @@ std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
 
 void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles) {
     ComponentCollisions::visibleTriangles = &newVisibleTriangles;
-}
-
-void ComponentCollisions::syncTriggerGhostCamera() {
-    Vertex3D direction = camera->getRotation().getTranspose() * SETUP->forward;
-    Vertex3D p = camera->getPosition();
-
-    float farDist = 1;
-    p.x = p.x + direction.x * farDist;
-    p.y = p.y + direction.y * farDist;
-    p.z = p.z + direction.z * farDist;
-
-    btTransform t;
-    t.setIdentity();
-    t.setOrigin(btVector3(p.x, p.y, p.z));
-    this->triggerCamera->getGhostObject()->setWorldTransform(t);
-}
-
-Mesh3DGhost *ComponentCollisions::getTriggerCamera() const {
-    return triggerCamera;
-}
-
-void ComponentCollisions::makeGhostForCamera() {
-    triggerCamera = new Mesh3DGhost();
-    triggerCamera->setLabel(SETUP->cameraTriggerNameIdentifier);
-    triggerCamera->setEnabled(true);
-    triggerCamera->setPosition(camera->getPosition());
-    triggerCamera->getGhostObject()->setCollisionShape(getCamera()->getGhostObject()->getCollisionShape());
-    triggerCamera->getGhostObject()->setUserPointer(triggerCamera);
-    dynamicsWorld->addCollisionObject(triggerCamera->getGhostObject(), EngineSetup::collisionGroups::CameraTrigger,
-                                      EngineSetup::collisionGroups::DefaultFilter |
-                                      EngineSetup::collisionGroups::BSPHullTrigger);
-}
-
-void ComponentCollisions::setTriggerCamera(Mesh3DGhost *ghost) {
-    ComponentCollisions::triggerCamera = ghost;
 }
