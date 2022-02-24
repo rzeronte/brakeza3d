@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -194,7 +194,7 @@ add_executable(Brakeza3D
         include/2D/TextWriter.h
         include/Game/DoorGhost.cpp
         include/Game/DoorGhost.h
-        include/Physics/Ghost.cpp
+        src/Physics/Ghost.cpp
         include/Physics/Ghost.h
         include/Render/AABB3D.h
         src/Misc/Octree.cpp
@@ -257,7 +257,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderWater.h
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Physics/Collisionable.cpp src/Physics/Collisionable.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
