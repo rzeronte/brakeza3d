@@ -1,96 +1,41 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "../../include/Physics/Mesh3DBody.h"
+#include "../../include/Render/Logging.h"
 
 Mesh3DBody::Mesh3DBody() {
     mass = 1.f;
     BSPEntityIndex = -1;
 }
 
-btRigidBody *Mesh3DBody::makeRigidBody(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace) {
-    auto *me = new btConvexHullShape();
+btRigidBody *Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
 
-    for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateFullVertexSpaces(cam->frustum);
-        btVector3 a, b, c;
-        // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
-        if (useObjectSpace) {
-            a = btVector3(modelTriangle->Ao.x, modelTriangle->Ao.y, modelTriangle->Ao.z);
-            b = btVector3(modelTriangle->Bo.x, modelTriangle->Bo.y, modelTriangle->Bo.z);
-            c = btVector3(modelTriangle->Co.x, modelTriangle->Co.y, modelTriangle->Co.z);
-        } else {
-            a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
-            b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
-            c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
-        }
-        me->addPoint(a);
-        me->addPoint(b);
-        me->addPoint(c);
-    }
+    setMass(mass);
 
-    this->mass = mass;
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
 
-    btTransform trans;
-    trans.setIdentity();
+    btMatrix3x3 matrixRotation = Tools::M3ToBulletM3(getRotation());
+    btQuaternion rotation;
+    matrixRotation.getRotation(rotation);
 
-    Vertex3D pos = this->getPosition();
-    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
+    btRigidBody::btRigidBodyConstructionInfo cInfo(
+        mass,
+        new btDefaultMotionState(transformation),
+        new btConvexHullShape(*this->getConvexHullShapeFromMesh()),
+        btVector3(0, 0, 0)
+    );
 
-    btVector3 localInertia(0, 0, 0);
-    auto *myMotionState = new btDefaultMotionState(trans);
-    btCollisionShape *shape = new btConvexHullShape(*me);
-    btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setFriction(1);
-    this->m_body->setUserPointer(this);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(dynamic_cast<Body *> (this));
 
-    world->addRigidBody(this->m_body);
-
-    return this->m_body;
+    world->addRigidBody(this->body);
+    return this->body;
 }
 
-
-btRigidBody *
-Mesh3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir, btDiscreteDynamicsWorld *world,
-                                            float forceImpulse) {
-    this->mass = mass;
-
-    btTransform trans;
-    trans.setIdentity();
-
-    Vertex3D pos = this->getPosition();
-
-    pos = pos + dir.getScaled(10); // un poquito delante del NPC
-
-    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
-
-    btVector3 localInertia(0, 0, 0);
-
-    auto *myMotionState = new btDefaultMotionState(trans);
-
-    btVector3 btSize;
-    size.saveToBtVector3(&btSize);
-    btCollisionShape *shape = new btBoxShape(btSize);
-
-    btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
-
-    dir = dir.getScaled(forceImpulse);
-    btVector3 impulse(dir.x, dir.y, dir.z);
-    this->m_body->applyCentralImpulse(impulse);
-
-    world->addRigidBody(this->m_body);
-
-    return this->m_body;
-}
-
-
-btRigidBody *
-Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
-    this->mass = mass;
+btRigidBody *Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
+    setMass(mass);
 
     btTransform trans;
     trans.setIdentity();
@@ -101,16 +46,16 @@ Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, b
     btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->activate(true);
-    //this->m_body->setFriction(1);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(1.f);
-    this->m_body->setCcdSweptSphereRadius(1.f);
+    this->body = new btRigidBody(cInfo);
+    this->body->activate(true);
+    //this->body->setFriction(1);
+    this->body->setUserPointer(dynamic_cast<Body *> (this));
+    this->body->setCcdMotionThreshold(1.f);
+    this->body->setCcdSweptSphereRadius(1.f);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
 }
 
 void Mesh3DBody::integrate() {
@@ -118,39 +63,25 @@ void Mesh3DBody::integrate() {
         return;
     }
 
-    // Sync position
     btTransform t;
-    m_body->getMotionState()->getWorldTransform(t);
+    body->getMotionState()->getWorldTransform(t);
     btVector3 pos = t.getOrigin();
 
     Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
     this->setPosition(worldPosition);
-
-    // Sync rotation
-    //btQuaternion quat = t.getRotation();
-    //float angle = quat.getAngle();
-    //btVector3 axis = quat.getAxis();
-
 }
 
 
-void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDiscreteDynamicsWorld *world,
-                                               bool useObjectSpace) {
+void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world) {
+    setMass(mass);
     this->triangleMesh = new btTriangleMesh();
+    updateBoundingBox();
 
     for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateFullVertexSpaces(cam->frustum);
         btVector3 a, b, c;
-        // Esto solo lo utilizamos para mayas procedentes de triángulos BSP en crudo.
-        if (useObjectSpace) {
-            a = btVector3(modelTriangle->Ao.x, modelTriangle->Ao.y, modelTriangle->Ao.z);
-            b = btVector3(modelTriangle->Bo.x, modelTriangle->Bo.y, modelTriangle->Bo.z);
-            c = btVector3(modelTriangle->Co.x, modelTriangle->Co.y, modelTriangle->Co.z);
-        } else {
-            a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
-            b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
-            c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
-        }
+        a = btVector3(modelTriangle->Ao.x, modelTriangle->Ao.y, modelTriangle->Ao.z);
+        b = btVector3(modelTriangle->Bo.x, modelTriangle->Bo.y, modelTriangle->Bo.z);
+        c = btVector3(modelTriangle->Co.x, modelTriangle->Co.y, modelTriangle->Co.z);
 
         this->triangleMesh.addTriangle(a, b, c, false);
     }
@@ -166,13 +97,41 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, Camera3D *cam, btDisc
     trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
 
     this->motionState = new btDefaultMotionState(trans);
-    btRigidBody::btRigidBodyConstructionInfo info(0.0f, motionState, shape, localInertia);
-    this->m_body = new btRigidBody(info);
-    this->m_body->activate(true);
-    this->m_body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    this->m_body->setCcdMotionThreshold(1.f);
-    this->m_body->setCcdSweptSphereRadius(1.f);
-    this->m_body->setUserPointer(this);
+    btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, shape, localInertia);
 
-    world->addRigidBody(this->m_body);
+    this->body = new btRigidBody(info);
+    this->body->activate(true);
+    this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    this->body->setCcdMotionThreshold(1.f);
+    this->body->setCcdSweptSphereRadius(1.f);
+    this->body->setUserPointer(dynamic_cast<Body *> (this));
+
+    world->addRigidBody(this->body);
+}
+
+void Mesh3DBody::setGravity(Vertex3D g) {
+    btVector3 gravity;
+    Vertex3D(0, 0, 0).saveToBtVector3(&gravity);
+    getRigidBody()->setGravity(gravity);
+}
+
+btConvexHullShape *Mesh3DBody::getConvexHullShapeFromMesh() {
+    auto *convexHull = new btConvexHullShape();
+    for (auto & modelTriangle : this->modelTriangles) {
+
+        btVector3 a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
+        btVector3 b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
+        btVector3 c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
+
+        convexHull->addPoint(a);
+        convexHull->addPoint(b);
+        convexHull->addPoint(c);
+    }
+
+    return convexHull;
+}
+
+void Mesh3DBody::dispatchCollision(Collisionable *with) {
+    auto *object = dynamic_cast<Object3D*> (with);
+    Logging::getInstance()->Log("Collision "  + getLabel() + " with " + object->getLabel());
 }

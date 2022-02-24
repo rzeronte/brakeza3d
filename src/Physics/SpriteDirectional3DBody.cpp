@@ -10,7 +10,7 @@ void SpriteDirectional3DBody::integrate() {
 
     // Sync position
     btTransform t;
-    m_body->getMotionState()->getWorldTransform(t);
+    body->getMotionState()->getWorldTransform(t);
     btVector3 pos = t.getOrigin();
 
     Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
@@ -41,14 +41,14 @@ btRigidBody *SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, b
     btCollisionShape *shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(dynamic_cast<Body *> (this));
+    this->body->setCcdMotionThreshold(0.01f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
 }
 
 btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam,
@@ -79,11 +79,11 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
 
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(this);
 
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body->setCcdMotionThreshold(0.01f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
@@ -92,12 +92,12 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
         dir.z += Tools::random(-100 + accuracy, 100 - accuracy);
 
         btVector3 impulse(dir.x, dir.y, dir.z);
-        this->m_body->applyCentralImpulse(impulse);
+        this->body->applyCentralImpulse(impulse);
     }
 
-    world->addRigidBody(this->m_body, 1, 2);
+    world->addRigidBody(this->body, 1, 2);
 
-    return this->m_body;
+    return this->body;
 }
 
 btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir,
@@ -123,16 +123,16 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass
     btCollisionShape *shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(this);
+    this->body->setCcdMotionThreshold(0.01f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
     dir = dir.getScaled(forceImpulse);
     btVector3 impulse(dir.x, dir.y, dir.z);
-    this->m_body->applyCentralImpulse(impulse);
+    this->body->applyCentralImpulse(impulse);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
 }

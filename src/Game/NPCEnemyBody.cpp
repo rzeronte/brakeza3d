@@ -111,8 +111,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
     Vector3D dir = Vector3D(this->getPosition(), cam->getPosition());
-    projectile->makeProjectileRigidBodyToPlayer(1, Vertex3D(0.5, 0.5, 0.5), dir.getComponent().getNormalize(),
-                                                dynamicsWorld, 700);
+
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
     if (!this->points.empty()) {
@@ -165,13 +164,17 @@ NPCEnemyBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions,
     btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
+    this->body = new btRigidBody(cInfo);
 
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body->setUserPointer(this);
+    this->body->setCcdMotionThreshold(0.01f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
+}
+
+void NPCEnemyBody::dispatchCollision(Collisionable *collisionable) {
+
 }

@@ -55,10 +55,10 @@ Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *c
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
 
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.01f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(this);
+    this->body->setCcdMotionThreshold(0.01f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
     if (applyCameraImpulse) {
         dir = dir.getScaled(forceImpulse);
@@ -67,10 +67,10 @@ Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *c
         dir.z += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
 
         btVector3 impulse(dir.x, dir.y, dir.z);
-        this->m_body->applyCentralImpulse(impulse);
+        this->body->applyCentralImpulse(impulse);
     }
 
-    world->addRigidBody(this->m_body, 1, 2);
+    world->addRigidBody(this->body, 1, 2);
 
-    return this->m_body;
+    return this->body;
 }

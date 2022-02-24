@@ -39,9 +39,7 @@ public:
 
     void onUpdateIA() const;
 
-    void resolveCollisions();
-
-    void loadObjects3D();
+    void loadPlayer();
 
     void CameraAutoScroll();
 

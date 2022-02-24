@@ -15,9 +15,10 @@ public:
     int currentTriggerCounter = 0;
 private:
     void integrate() override;
+    void updateBulletFromMesh();
 
-private:
-
+public:
+    void dispatchCollision(Collisionable *collisionable) override;
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

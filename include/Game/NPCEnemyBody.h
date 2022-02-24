@@ -39,6 +39,8 @@ public:
 
     btRigidBody *makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
 
+    void dispatchCollision(Collisionable *collisionable) override;
+
 };
 
 

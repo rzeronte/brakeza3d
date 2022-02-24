@@ -113,6 +113,7 @@ void Mesh3D::copyFrom(Mesh3D *source) {
 
 void Mesh3D::onUpdate() {
     Object3D::onUpdate();
+
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {

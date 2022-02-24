@@ -53,9 +53,9 @@ public:
 
     float EPSILON = 0.00001f;
 
-    bool ENABLE_FOG = false;
-    float FOG_DISTANCE = 1000;
-    float FOG_INTENSITY = 1;
+    bool ENABLE_FOG = true;
+    float FOG_DISTANCE = 25000;
+    float FOG_INTENSITY = 1.f;
     Color FOG_COLOR = Color::FOGDefault();
     float FRUSTUM_FARPLANE_DISTANCE = 9000000;
     float HORIZONTAL_FOV = 90;
@@ -170,8 +170,6 @@ public:
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
-    Vertex3D JUMP_FORCE = Vertex3D(0, -150, 0);
-
     float TESTING = 64.0;
     float TESTING_INT1 = 1;
     float TESTING_INT2 = 2;
@@ -263,18 +261,6 @@ public:
         IDLE = 0,
         FIRE = 1,
         RELOAD = 2,
-    };
-
-    enum CollisionResolverTypes {
-        COLLISION_RESOLVER_PROJECTILE_AND_NPCENEMY = 1,
-        COLLISION_RESOLVER_CAMERA_AND_FUNCDOOR = 2,
-        COLLISION_RESOLVER_CAMERA_AND_FUNCBUTTON = 3,
-        COLLISION_RESOLVER_CAMERA_AND_TRIGGER_MULTIPLE = 4,
-        COLLISION_RESOLVER_CAMERA_AND_TRIGGER_TELEPORT = 5,
-        COLLISION_RESOLVER_PROJECTILE_AND_CAMERA = 6,
-        COLLISION_RESOLVER_ITEMWEAPON_AND_CAMERA = 7,
-        COLLISION_RESOLVER_ITEMHEALTH_AND_CAMERA = 8,
-        COLLISION_RESOLVER_ITEMAMMO_AND_CAMERA = 9
     };
 
     enum SoundChannels {

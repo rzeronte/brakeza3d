@@ -3,6 +3,7 @@
 #define BRAKEDA3D_COLLISIONRESOLVERBETWEENCAMERA3DANDFUNCBUTTON_H
 
 #include "CollisionResolver.h"
+#include "../Components/ComponentCamera.h"
 
 class CollisionResolverBetweenCamera3DAndFuncButton : public CollisionResolver {
 public:
@@ -11,16 +12,20 @@ public:
     std::vector<Object3D *> *gameObjects;
     BSPMap *bspMap;
 
-    CollisionResolverBetweenCamera3DAndFuncButton(btPersistentManifold *contactManifold, Object3D *objA, Object3D *objB,
-                                                  std::vector<Object3D *> *gameObjects,
-                                                  std::vector<Triangle *> &visibleTriangles) : CollisionResolver(
-            contactManifold, objA, objB, visibleTriangles) {
+    CollisionResolverBetweenCamera3DAndFuncButton(
+            btPersistentManifold *contactManifold,
+            Object3D *objA,
+            Object3D *objB,
+            std::vector<Object3D *> *gameObjects,
+            std::vector<Triangle *> &visibleTriangles
+    ) : CollisionResolver(contactManifold, objA, objB, visibleTriangles)
+    {
         this->mesh = this->getMesh3D();
         this->camera = this->getCamera();
         this->gameObjects = gameObjects;
     }
 
-    void dispatch() {
+    void dispatch() override {
         if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
             Logging::Log("CollisionResolverBetweenCamera3DAndFuncButton", "Collision");
         }
@@ -32,7 +37,6 @@ public:
         int targetRemoteEntityId = bspMap->getIndexOfFirstEntityByTargetname(targetRemote);
 
         auto *originalBody = dynamic_cast<DoorGhost *> (getMesh3D());
-        this->moveDoorGhost(originalBody, originalEntityIndex);
 
         if (targetRemoteEntityId >= 0) {
             char *classnameRemote = bspMap->getEntityValue(targetRemoteEntityId, "classname");
@@ -44,11 +48,6 @@ public:
                         if (oRemoteMesh->getBspEntityIndex() == targetRemoteEntityId) {
 
                             auto *oRemoteBody = dynamic_cast<DoorGhost *> (oRemoteMesh);
-                            this->moveDoorGhost(oRemoteBody, targetRemoteEntityId);
-
-                            if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
-                                Logging::getInstance()->get()->Log("Moving Door: " + oRemoteBody->getLabel());
-                            }
                         }
                     }
                 }

@@ -5,24 +5,16 @@
 #include "BillboardBody.h"
 #include "../Objects/Mesh3D.h"
 
-class Ghost {
+class Ghost: public Collisionable {
 public:
     Ghost();
-
-    bool ghostEnabled = true;
 
     btPairCachingGhostObject *getGhostObject() { return ghostObject; };
     btPairCachingGhostObject *ghostObject;
 
-    void makeGhostBody(Camera3D *cam, btDiscreteDynamicsWorld *world, bool useObjectSpace, Mesh3D *mesh);
+    void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh);
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);
-
-    bool isGhostEnabled();
-
-    void setGhostEnabled(bool enabled);
-
-    virtual void integrate() = 0;
 };
 
 

@@ -1062,8 +1062,7 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                         true, ghost);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (DoorGhost)");
 }
@@ -1079,8 +1078,7 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(camera, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                         true, ghost);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (Mesh3DGhost)");
 }
@@ -1153,8 +1151,7 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
                     o->setAmmoTypeClassname(classname);
                     o->setPosition(pos);
-                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
-                                     componentCollisions->getDynamicsWorld(), true, o);
+                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
                     Brakeza3D::get()->addObject3D(o, o->getLabel());
                 }
 
@@ -1171,8 +1168,8 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
                     o->setAmmoTypeClassname(classname);
                     o->setPosition(pos);
-                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
-                                     componentCollisions->getDynamicsWorld(), true, o);
+                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
+;
                     brakeza3D->addObject3D(o, o->getLabel());
                 }
 
@@ -1189,8 +1186,8 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
                     o->setAmmoTypeClassname(classname);
                     o->setPosition(pos);
-                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
-                                     componentCollisions->getDynamicsWorld(), true, o);
+                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
+
                     brakeza3D->addObject3D(o, o->getLabel());
                 }
 
@@ -1209,8 +1206,8 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
 
                     o->setPosition(pos);
-                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
-                                     componentCollisions->getDynamicsWorld(), true, o);
+                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
+
 
 
                     brakeza3D->addObject3D(o, o->getLabel());
@@ -1246,8 +1243,8 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->copyFrom(weapon->getModel());
                     // Md2 Import for Quake2 axis adjust
                     o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-                    o->makeGhostBody(ComponentsManager::get()->getComponentCamera()->getCamera(),
-                                     componentCollisions->getDynamicsWorld(), true, o);
+                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
+
                     brakeza3D->addObject3D(o, o->getLabel());
                 }
 

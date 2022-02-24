@@ -1,9 +1,7 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include "../../include/Components/Camera3D.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/Render/Transforms.h"
 #include "../../include/EngineSetup.h"
-#include "../../include/Render/Logging.h"
 
 Camera3D::Camera3D() {
 

@@ -4,30 +4,27 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "../Objects/Vertex3D.h"
+#include "../../src/Physics/Collisionable.h"
 
-class Body {
+class Body: public Collisionable {
 
 public:
-
     Body();
 
-    float mass = 0;
-    bool bodyEnabled = true;
+    float mass;
 
-    Vertex3D boxShapeSize = Vertex3D(1, 1, 1);
+    Vertex3D boxShapeSize;
 
-    btRigidBody *m_body;
-    btCollisionObject *m_collider;
+    btRigidBody *body;
+    btCollisionObject *collisionObject;
 
     btTriangleMesh triangleMesh;
     btBvhTriangleMeshShape *shape;
     btDefaultMotionState *motionState;
 
-    btCollisionObject *getCollider() const { return m_collider; }
+    btCollisionObject *getCollisionObject() const;
 
-    btRigidBody *getRigidBody() const { return m_body; }
-
-    void setBodyEnabled(bool state);
+    btRigidBody *getRigidBody() const;
 
     void setBoxShapeSize(Vertex3D size);
 
@@ -35,7 +32,8 @@ public:
 
     void applyImpulse(Vertex3D impulse) const;
 
-    virtual void integrate();
+    void setMass(float m);
+
 };
 
 

@@ -31,7 +31,7 @@ public:
     static Color orange() { return Color(0, 0, 0); }
     static Color olive() { return Color(128, 128, 0); }
     static Color gray() { return Color(128, 128, 128); }
-    static Color FOGDefault() { return Color(0, 0, 0); }
+    static Color FOGDefault() { return Color::black(); }
     static Color mixColor(Color &c1, Color &c2, float c2Intensity);
 
     void setRed(float v);

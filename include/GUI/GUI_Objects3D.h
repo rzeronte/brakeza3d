@@ -89,7 +89,6 @@ public:
 
                     // rotation
                     if (ImGui::TreeNode(rotation_text.c_str())) {
-
                         bool needUpdateRotation = false;
                         ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->rotX, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
@@ -100,7 +99,6 @@ public:
                         ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->rotZ, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
                         if (ImGui::IsItemEdited())
                             needUpdateRotation = true;
-
                         if (needUpdateRotation) {
                             gameObjects[i]->setRotation(M3::getMatrixRotationForEulerAngles(gameObjects[i]->rotX, gameObjects[i]->rotY, gameObjects[i]->rotZ));
                         }
@@ -195,27 +193,6 @@ public:
                     Sprite3D *pSprite = dynamic_cast<Sprite3D *>(gameObjects[i]);
                     if (pSprite != NULL) {
                         ImGui::DragScalar("Framerate", ImGuiDataType_S32, &pSprite->getCurrentTextureAnimation()->fps,1.f, &range_framerate_min, &range_framerate_max, "%d fps", 1);
-                    }
-
-
-                    // Only for Mesh3DGhost
-                    Mesh3DGhost *pMeshGhost = dynamic_cast<Mesh3DGhost *>(gameObjects[i]);
-                    if (pMeshGhost != NULL) {
-                        std::string counterText =
-                                "currentTriggerCounter: " + std::to_string(pMeshGhost->currentTriggerCounter);
-                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), counterText.c_str());
-                    }
-
-                    // Only for Mesh3DBody
-                    DoorGhost *pMeshBody = dynamic_cast<DoorGhost *>(gameObjects[i]);
-                    if (pMeshBody != NULL) {
-                        ImGui::Checkbox("Moving", &dynamic_cast<DoorGhost *>(gameObjects[i])->moving);
-                        ImGui::Checkbox("Reverse moving", &dynamic_cast<DoorGhost *>(gameObjects[i])->reverseMoving);
-                        ImGui::Checkbox("Waiting", &dynamic_cast<DoorGhost *>(gameObjects[i])->waiting);
-                        if (pMeshBody->moving || pMeshBody->reverseMoving) {
-                            std::string offsetText = "OffsetMoving :" + std::to_string(pMeshBody->offsetMoving);
-                            ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), offsetText.c_str());
-                        }
                     }
 
                     // Only for SPRITES

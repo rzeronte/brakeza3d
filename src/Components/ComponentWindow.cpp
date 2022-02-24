@@ -55,7 +55,7 @@ void ComponentWindow::initWindow() {
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
         //Create window
         window = SDL_CreateWindow(
@@ -64,7 +64,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_FULLSCREEN_DESKTOP
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED
         );
 
         if (window == nullptr) {

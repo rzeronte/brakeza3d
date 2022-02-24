@@ -8,7 +8,7 @@ void Sprite3DBody::integrate() {
 
     // Sync position
     btTransform t;
-    m_body->getMotionState()->getWorldTransform(t);
+    body->getMotionState()->getWorldTransform(t);
     btVector3 pos = t.getOrigin();
 
     Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
@@ -39,12 +39,12 @@ btRigidBody *Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDy
     btCollisionShape *shape = new btBoxShape(btSize);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.001f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(dynamic_cast<Body *> (this));
+    this->body->setCcdMotionThreshold(0.001f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
 }

@@ -2,18 +2,12 @@
 #include "../../include/Misc/Tools.h"
 
 Body::Body() {
-    this->m_body = nullptr;
-    this->m_collider = nullptr;
+    this->body = nullptr;
+    this->collisionObject = nullptr;
     this->shape = nullptr;
     this->motionState = nullptr;
-}
-
-void Body::integrate() {
-
-}
-
-void Body::setBodyEnabled(bool state) {
-    this->bodyEnabled = state;
+    setBoxShapeSize(Vertex3D(1, 1, 1));
+    setMass(0);
 }
 
 void Body::setBoxShapeSize(Vertex3D size) {
@@ -26,15 +20,27 @@ Vertex3D Body::getBoxShapeSize() const {
 
 void Body::applyImpulse(Vertex3D impulse) const {
 
-    this->m_body->clearForces();
+    this->body->clearForces();
 
     if (!Tools::isValidVector(impulse)) {
         return;
     }
 
-    btVector3 i(impulse.x, impulse.y, impulse.z);
+    this->body->activate(true);
 
-    this->m_body->activate(true);
-    this->m_body->applyCentralImpulse(i);
+    btVector3 i(impulse.x, impulse.y, impulse.z);
+    this->body->applyCentralImpulse(i);
+}
+
+void Body::setMass(float m) {
+    mass = m;
+}
+
+btCollisionObject *Body::getCollisionObject() const {
+    return collisionObject;
+}
+
+btRigidBody *Body::getRigidBody() const {
+    return body;
 }
 

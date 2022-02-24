@@ -24,10 +24,10 @@ btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
     }
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(this->mass, myMotionState, shape, localInertia);
-    this->m_body = new btRigidBody(cInfo);
-    this->m_body->setUserPointer(this);
-    this->m_body->setCcdMotionThreshold(0.001f);
-    this->m_body->setCcdSweptSphereRadius(0.02f);
+    this->body = new btRigidBody(cInfo);
+    this->body->setUserPointer(this);
+    this->body->setCcdMotionThreshold(0.001f);
+    this->body->setCcdSweptSphereRadius(0.02f);
 
 
     Vertex3D up = EngineSetup::get()->up.getInverse();
@@ -49,9 +49,9 @@ btRigidBody *NPCEnemyPartBody::makeRigidBody(float mass, btDiscreteDynamicsWorld
     dir = dir.getNormalize().getScaled(100);
 
     btVector3 impulse(dir.x, dir.y, dir.z);
-    this->m_body->applyCentralImpulse(impulse);
+    this->body->applyCentralImpulse(impulse);
 
-    world->addRigidBody(this->m_body);
+    world->addRigidBody(this->body);
 
-    return this->m_body;
+    return this->body;
 }

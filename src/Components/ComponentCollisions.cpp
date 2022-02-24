@@ -47,14 +47,12 @@ void ComponentCollisions::initBulletSystem() {
     this->debugDraw = new PhysicsDebugDraw(this->camera);
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, 800, 0));
+    this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::get()->gravity.y, 0));
 
     this->dynamicsWorld->setDebugDrawer(debugDraw);
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
-    /*this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(
-new btGhostPairCallback()
-    );*/
+    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback( new btGhostPairCallback() );
 
     /*this->dynamicsWorld->addCollisionObject(
         this->camera->m_ghostObject,
@@ -101,8 +99,9 @@ bool ComponentCollisions::needsCollision(const btCollisionObject *body0, const b
 void ComponentCollisions::checkCollisionsForAll() {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
-    // All collisions pairs
+    // All frameCollisions pairs
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+
     for (int i = 0; i < numManifolds; i++) {
 
         btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
@@ -111,29 +110,11 @@ void ComponentCollisions::checkCollisionsForAll() {
             const btCollisionObject *obA = contactManifold->getBody0();
             const btCollisionObject *obB = contactManifold->getBody1();
 
-            auto *brkObjectA = (Object3D *) obA->getUserPointer();
-            auto *brkObjectB = (Object3D *) obB->getUserPointer();
+            auto *brkObjectA = (Collisionable *) obA->getUserPointer();
+            auto *brkObjectB = (Collisionable *) obB->getUserPointer();
 
-            auto *collisionResolver = new CollisionResolver(
-                    contactManifold,
-                    brkObjectA,
-                    brkObjectB,
-                    getVisibleTriangles()
-            );
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getCollisions().emplace_back(
-                    collisionResolver
-            );
-        }
-    }
-}
-
-void ComponentCollisions::updatePhysicsGhosts() {
-    std::vector<Object3D *>::iterator it;
-    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
-        auto *ghost = dynamic_cast<Ghost *> (*it);
-        if (ghost != nullptr) {
-            if (!ghost->isGhostEnabled()) continue;
-            ghost->integrate();
+            brkObjectA->dispatchCollision(brkObjectB);
+            brkObjectB->dispatchCollision(brkObjectA);
         }
     }
 }
@@ -141,28 +122,28 @@ void ComponentCollisions::updatePhysicsGhosts() {
 void ComponentCollisions::updatePhysicObjects() {
     std::vector<Object3D *>::iterator it;
     for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
-        Body *body = dynamic_cast<Body *> (*it);
-        if (body != nullptr) {
-            if (!body->bodyEnabled) continue;
-            body->integrate();
+        auto *collisionable = dynamic_cast<Collisionable *> (*it);
+        if (collisionable != nullptr) {
+            if (!collisionable->isCollisionsEnabled()) continue;
+            collisionable->integrate();
         }
     }
 }
 
 void ComponentCollisions::stepSimulation() {
-    // check for collisions
+    // check for frameCollisions
     checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
         // Bullet Step Simulation
-        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime(), 1);
+        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime() * 1000);
 
         // Physics for meshes
         this->updatePhysicObjects();
 
         // Sync Ghost with bullet
-        this->updatePhysicsGhosts();
+        //this->updatePhysicsGhosts();
 
         //this->syncTriggerGhostCamera();
     }
@@ -175,15 +156,6 @@ std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
 void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles) {
     ComponentCollisions::visibleTriangles = &newVisibleTriangles;
 }
-
-std::vector<CollisionResolver *> &ComponentCollisions::getCollisions() {
-    return collisions;
-}
-
-void ComponentCollisions::setCollisions(const std::vector<CollisionResolver *> &newCollisions) {
-    ComponentCollisions::collisions = newCollisions;
-}
-
 
 void ComponentCollisions::syncTriggerGhostCamera() {
     Vertex3D direction = camera->getRotation().getTranspose() * SETUP->forward;

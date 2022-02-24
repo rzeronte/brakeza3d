@@ -4,8 +4,8 @@
 
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Counter.h"
-#include "../../include/Objects/Mesh3D.h"
 #include "../../include/Particles/ParticleEmissor.h"
+#include "../../include/Physics/Mesh3DGhost.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_LIVES 10
@@ -17,7 +17,7 @@ typedef enum {
     LIVE, DEAD, GAMEOVER
 } PlayerState;
 
-class Player : public Mesh3D{
+class Player : public Mesh3DGhost {
 private:
 
     float stamina;

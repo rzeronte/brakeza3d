@@ -19,8 +19,8 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
     shaderImageBackground = ShaderImageBackground(std::string(SETUP->IMAGES_FOLDER + "deep_space.png").c_str());
     shaderImageBackground.setType(ShaderImageBackgroundTypes::PORTION);
@@ -29,7 +29,21 @@ void ComponentGame::onStart() {
 
     createBackgroundDecorationItems();
 
-    loadObjects3D();
+    loadPlayer();
+
+    auto object = new Mesh3DBody();
+    object->setRotation(0, 0, 0);
+    object->setEnabled(true);
+    object->setLabel("test");
+    object->setCollisionsEnabled(true);
+    object->setScale(1);
+    object->setFlatTextureColor(false);
+    object->setPosition(Vertex3D(15, -700, 2600));
+    object->setRotationFrameEnabled(false);
+    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube_02.fbx"));
+    object->makeRigidBody(1, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    Brakeza3D::get()->addObject3D(object, "test");
+
 }
 
 void ComponentGame::preUpdate() {
@@ -68,10 +82,6 @@ void ComponentGame::onUpdate() {
 
     if (state == GameState::FADEIN) {
         Drawable::drawFadeIn();
-    }
-
-    if (player->state != PlayerState::GAMEOVER) {
-        this->resolveCollisions();
     }
 
     if (state == GameState::GAMING) {
@@ -139,20 +149,6 @@ void ComponentGame::onUpdateIA() const {
             );*/
         }
     }
-}
-
-void ComponentGame::resolveCollisions() {
-    ComponentCollisions *cm = Brakeza3D::get()->getComponentsManager()->getComponentCollisions();
-
-    std::vector<CollisionResolver *>::iterator itCollision;
-    for (itCollision = cm->getCollisions().begin(); itCollision != cm->getCollisions().end(); itCollision++) {
-        CollisionResolver *collision = *(itCollision);
-        int collisionType = collision->getTypeCollision();
-
-        if (!collisionType) continue;
-    }
-
-    cm->getCollisions().clear();
 }
 
 void ComponentGame::CameraAutoScroll() {
@@ -232,21 +228,20 @@ GameState ComponentGame::getGameState() {
     return gameState;
 }
 
-
-
-void ComponentGame::loadObjects3D()
+void ComponentGame::loadPlayer()
 {
-    player->setLabel("spacehip");
+    player->setLabel("player");
     player->setEnableLights(false);
-    player->setPosition(Vertex3D(15, -700, 2600));
+    player->setPosition(Vertex3D(1115, -700, 2600));
     player->setRotation(90, 90, 0);
     player->setScale(1);
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
+    player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 }
 
 void ComponentGame::createBackgroundDecorationItems() {
-
+    return;
     int numItems = 50;
 
     for (int i = 0; i < numItems; i++) {

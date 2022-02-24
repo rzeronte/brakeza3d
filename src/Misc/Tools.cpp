@@ -275,10 +275,10 @@ Color Tools::mixColor(Color color1, Color color2, float color2Intensity) {
     float b_original = color1.b * (1 - color2Intensity);
 
     return Color(
-            r_light+r_original,
-            g_original+g_original,
-            b_light + b_original
-            );
+        r_light + r_original,
+        g_light + g_original,
+        b_light + b_original
+    );
 }
 
 int Tools::int_floor(float x) {
@@ -338,4 +338,18 @@ std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::st
     }
 
     return result;
+}
+
+btMatrix3x3 Tools::M3ToBulletM3(M3 m) {
+    return btMatrix3x3(
+            m.m[0],
+            m.m[1],
+            m.m[2],
+            m.m[3],
+            m.m[4],
+            m.m[5],
+            m.m[6],
+            m.m[7],
+            m.m[8]
+    );
 }
