@@ -2,6 +2,11 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+## 2022-02-24
+
+- Remove Collisions Resolvers
+- Each Body/Ghost object are derived from Collisionable now
+ 
 ## 2021-12-24
 
 - Preparing master for merge RoadToWindows
