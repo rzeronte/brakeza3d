@@ -2,13 +2,14 @@
 #include <btBulletDynamicsCommon.h>
 #include "../../include/Physics/Mesh3DBody.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/EngineSetup.h"
 
 Mesh3DBody::Mesh3DBody() {
-    mass = 1.f;
+    setMass(1.f);
     BSPEntityIndex = -1;
 }
 
-btRigidBody *Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
+void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
 
     setMass(mass);
 
@@ -31,34 +32,40 @@ btRigidBody *Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *worl
     this->body->setUserPointer(dynamic_cast<Body *> (this));
 
     world->addRigidBody(this->body);
-    return this->body;
 }
 
-btRigidBody *Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
+void Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
     setMass(mass);
 
-    btTransform trans;
-    trans.setIdentity();
+    btVector3 position;
+    pos.saveToBtVector3(&position);
 
-    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
-    btVector3 localInertia(0, 0, 0);
-    auto *myMotionState = new btDefaultMotionState(trans);
+    btTransform transform;
+    transform.setOrigin(position);
+
+    auto *myMotionState = new btDefaultMotionState(transform);
     btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
 
-    btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo cInfo(
+        mass,
+        myMotionState,
+        shape,
+        btVector3(0, 0, 0)
+    );
+
     this->body = new btRigidBody(cInfo);
     this->body->activate(true);
-    //this->body->setFriction(1);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
-    this->body->setCcdMotionThreshold(1.f);
-    this->body->setCcdSweptSphereRadius(1.f);
 
     world->addRigidBody(this->body);
-
-    return this->body;
 }
 
 void Mesh3DBody::integrate() {
+
+    if (this->body == nullptr) {
+        return;
+    }
+
     if (this->mass == 0) {
         return;
     }
@@ -74,8 +81,9 @@ void Mesh3DBody::integrate() {
 
 void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world) {
     setMass(mass);
-    this->triangleMesh = new btTriangleMesh();
     updateBoundingBox();
+
+    this->triangleMesh = new btTriangleMesh();
 
     for (auto & modelTriangle : this->modelTriangles) {
         btVector3 a, b, c;
@@ -93,11 +101,16 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWor
     this->shape = new btBvhTriangleMeshShape(&triangleMesh, true, true);
     this->shape->calculateLocalInertia(0, localInertia);
 
-    Vertex3D pos = this->getPosition();
-    trans.setOrigin(btVector3(pos.x, pos.y, pos.z));
+    btVector3 position;
+    getPosition().saveToBtVector3(&position);
+    trans.setOrigin(position);
 
-    this->motionState = new btDefaultMotionState(trans);
-    btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, shape, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(trans),
+        shape,
+        localInertia
+    );
 
     this->body = new btRigidBody(info);
     this->body->activate(true);
@@ -131,7 +144,9 @@ btConvexHullShape *Mesh3DBody::getConvexHullShapeFromMesh() {
     return convexHull;
 }
 
-void Mesh3DBody::dispatchCollision(Collisionable *with) {
-    auto *object = dynamic_cast<Object3D*> (with);
-    Logging::getInstance()->Log("Collision "  + getLabel() + " with " + object->getLabel());
+void Mesh3DBody::resolveCollision(Collisionable *with) {
+    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+        auto *object = dynamic_cast<Object3D*> (with);
+        Logging::getInstance()->Log("Mesh3DBody: Collision "  + getLabel() + " with " + object->getLabel());
+    }
 }

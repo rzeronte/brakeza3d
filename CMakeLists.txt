@@ -98,15 +98,15 @@ add_executable(Brakeza3D
         include/Render/Maths.h
         src/Render/BSPMap.cpp
         include/Render/BSPMap.h
-        src/Physics/Mesh3DBody.cpp
+        src/Collisions/Mesh3DBody.cpp
         include/Physics/Mesh3DBody.h
         src/Render/PhysicsDebugDraw.cpp
         include/Render/PhysicsDebugDraw.h
-        src/Physics/Mesh3DGhost.cpp
+        src/Collisions/Mesh3DGhost.cpp
         include/Physics/Mesh3DGhost.h
         include/Misc/cJSON.h
         src/Misc/cJSON.c
-        src/Physics/SpriteDirectional3DBody.cpp
+        src/Collisions/SpriteDirectional3DBody.cpp
         include/Physics/SpriteDirectional3DBody.h
         src/Components/ComponentWeapons.cpp
         include/Components/ComponentWeapons.h
@@ -127,17 +127,14 @@ add_executable(Brakeza3D
         src/Game/NPCEnemyBody.cpp
         include/Game/NPCEnemyBody.h
         src/Collisions/CollisionResolver.cpp
-        include/Collisions/CollisionResolver.h
+        include/Physics/CollisionResolver.h
         src/Game/Projectile3DBody.cpp
         include/Game/Projectile3DBody.h
-        include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h
         src/Objects/Decal.cpp
         include/Objects/Decal.h
-        src/Game/NPCEnemyPartBody.cpp
-        include/Game/NPCEnemyPartBody.h
-        src/Physics/Sprite3DBody.cpp
+        src/Collisions/Sprite3DBody.cpp
         include/Physics/Sprite3DBody.h
-        src/Physics/Body.cpp
+        src/Collisions/Body.cpp
         include/Physics/Body.h
         include/Objects/Cube3D.cpp
         include/Objects/Cube3D.h
@@ -152,7 +149,7 @@ add_executable(Brakeza3D
         include/Misc/Parallells.h
         include/Misc/VariablePackage.cpp
         include/Misc/VariablePackage.h
-        src/Physics/BillboardBody.cpp
+        src/Collisions/BillboardBody.cpp
         include/Physics/BillboardBody.h
         src/Game/ItemWeaponGhost.cpp
         include/Game/ItemWeaponGhost.h
@@ -188,13 +185,13 @@ add_executable(Brakeza3D
         include/Objects/Mesh3DAnimated.h
         src/Objects/Mesh3DAnimatedCollection.cpp
         include/Objects/Mesh3DAnimatedCollection.h
-        src/Physics/BSPCollider.cpp
-        src/Physics/BSPCollider.h
+        src/Collisions/BSPCollider.cpp
+        src/Collisions/BSPCollider.h
         src/2D/TextWriter.cpp
         include/2D/TextWriter.h
         include/Game/DoorGhost.cpp
         include/Game/DoorGhost.h
-        src/Physics/Ghost.cpp
+        src/Collisions/Ghost.cpp
         include/Physics/Ghost.h
         include/Render/AABB3D.h
         src/Misc/Octree.cpp
@@ -250,14 +247,14 @@ add_executable(Brakeza3D
         include/Particles/Particle.h
         src/Particles/ParticleEmissorGravity.cpp
         include/Particles/ParticleEmissorGravity.h
-        src/Physics/SimplePendulum.cpp
+        src/Collisions/SimplePendulum.cpp
         include/Physics/SimplePendulum.h
         src/Misc/Shader.cpp
         include/Shaders/Shader.h
         include/Shaders/ShaderWater.h
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Physics/Collisionable.cpp src/Physics/Collisionable.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

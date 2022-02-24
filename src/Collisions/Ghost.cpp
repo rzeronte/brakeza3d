@@ -67,3 +67,7 @@ bool Ghost::CheckGhost(btPairCachingGhostObject *Ghost) {
     return false;
 }
 
+btPairCachingGhostObject *Ghost::getGhostObject() const {
+     return ghostObject;
+}
+

@@ -77,6 +77,8 @@ public:
     void updateEngineParticles();
 
     void updateLight();
+
+    void resolveCollision(Collisionable *with) override;
 };
 
 

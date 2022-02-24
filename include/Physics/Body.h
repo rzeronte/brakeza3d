@@ -4,7 +4,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "../Objects/Vertex3D.h"
-#include "../../src/Physics/Collisionable.h"
+#include "../../src/Collisions/Collisionable.h"
 
 class Body: public Collisionable {
 

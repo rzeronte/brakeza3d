@@ -8,7 +8,7 @@
 #include "../Physics/Mesh3DGhost.h"
 #include "../Physics/SpriteDirectional3DBody.h"
 #include "ComponentWeapons.h"
-#include "../Collisions/CollisionResolver.h"
+#include "../Physics/CollisionResolver.h"
 #include "Component.h"
 
 class ComponentCollisions : public Component {
@@ -27,10 +27,8 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    Camera3D *camera;
     BSPMap *bspMap;
     std::vector<Triangle *> *visibleTriangles;
-    Mesh3DGhost *triggerCamera;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration *collisionConfiguration{};
@@ -52,10 +50,6 @@ public:
 
     void setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld);
 
-    Camera3D *getCamera() const;
-
-    void setCamera(Camera3D *camera);
-
     BSPMap *getBspMap() const;
 
     void setBSPMap(BSPMap *bspMap);
@@ -64,19 +58,9 @@ public:
 
     void setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles);
 
-    static bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1);
-
     void updatePhysicObjects();
 
     void stepSimulation();
-
-    void makeGhostForCamera();
-
-    Mesh3DGhost *getTriggerCamera() const;
-
-    void setTriggerCamera(Mesh3DGhost *triggerCamera);
-
-    void syncTriggerGhostCamera();
 
 };
 

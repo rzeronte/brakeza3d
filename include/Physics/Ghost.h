@@ -9,7 +9,7 @@ class Ghost: public Collisionable {
 public:
     Ghost();
 
-    btPairCachingGhostObject *getGhostObject() { return ghostObject; };
+    btPairCachingGhostObject *getGhostObject() const;
     btPairCachingGhostObject *ghostObject;
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh);

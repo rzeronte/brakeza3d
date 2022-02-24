@@ -18,7 +18,41 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="autoscroll / tintColorShader" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="improve Collisions Component">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Collisions/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Collisions/CollisionResolver.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/CollisionResolver.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/NPCEnemyBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/NPCEnemyBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/NPCEnemyPartBody.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Body.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Body.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Ghost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Ghost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ComponentsManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ComponentsManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyPartBody.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/BSPCollider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BSPCollider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/BSPCollider.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BSPCollider.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/BillboardBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BillboardBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Body.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Body.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Collisionable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Collisionable.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Ghost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Mesh3DGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/SimplePendulum.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/Sprite3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Sprite3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Physics/SpriteDirectional3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/SpriteDirectional3DBody.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -159,6 +193,7 @@
     </panes>
   </component>
   <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
@@ -171,7 +206,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/Shaders" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -184,20 +219,30 @@
       <recent name="$PROJECT_DIR$/console" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Physics" />
+      <recent name="$PROJECT_DIR$/src/Physics" />
       <recent name="$PROJECT_DIR$/src/Misc" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/include/Shaders" />
-      <recent name="$PROJECT_DIR$/src/Physics" />
-      <recent name="$PROJECT_DIR$/include/Particles" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -314,7 +359,14 @@
       <workItem from="1645047622170" duration="15933000" />
       <workItem from="1645213417661" duration="1654000" />
       <workItem from="1645382516595" duration="23966000" />
-      <workItem from="1645474223877" duration="7123000" />
+      <workItem from="1645474223877" duration="21441000" />
+      <workItem from="1645537571531" duration="151000" />
+      <workItem from="1645537731699" duration="83000" />
+      <workItem from="1645537825739" duration="683000" />
+      <workItem from="1645539642132" duration="3453000" />
+      <workItem from="1645568179729" duration="9591000" />
+      <workItem from="1645651442978" duration="18657000" />
+      <workItem from="1645728677951" duration="5691000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -365,7 +417,21 @@
       <option name="project" value="LOCAL" />
       <updated>1645484779629</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="improve componentGame">
+      <created>1645484795564</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1645484795564</updated>
+    </task>
+    <task id="LOCAL-00009" summary="improve Collisions Component">
+      <created>1645736097688</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1645736097688</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -510,7 +576,9 @@
     <MESSAGE value="simplependulum" />
     <MESSAGE value="refactor shaders" />
     <MESSAGE value="autoscroll / tintColorShader" />
-    <option name="LAST_COMMIT_MESSAGE" value="autoscroll / tintColorShader" />
+    <MESSAGE value="improve componentGame" />
+    <MESSAGE value="improve Collisions Component" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve Collisions Component" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -519,6 +587,11 @@
           <url>file://$PROJECT_DIR$/src/Render/M4.cpp</url>
           <line>21</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp</url>
+          <line>6</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

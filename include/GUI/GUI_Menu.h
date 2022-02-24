@@ -255,21 +255,16 @@ public:
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Physics")) {
+            if (ImGui::BeginMenu("Bullet")) {
                 ImGui::Checkbox("StepSimulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
-
+                ImGui::Checkbox("Collisions between objects", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
                 ImGui::Separator();
-                ImGui::Checkbox("Debug Mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
-                ImGui::Checkbox("Check All Pairs", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
-
+                ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                 ImGui::Separator();
                 // gravity
-                ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,
-                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,
-                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,
-                                  &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::EndMenu();
             }
 

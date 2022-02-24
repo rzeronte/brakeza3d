@@ -22,7 +22,9 @@ void Mesh3DGhost::updateBulletFromMesh() {
     getGhostObject()->setWorldTransform(trans);
 }
 
-void Mesh3DGhost::dispatchCollision(Collisionable *with) {
-    auto *object = dynamic_cast<Object3D*> (with);
-    Logging::getInstance()->Log("Collision "  + getLabel() + " with " + object->getLabel());
+void Mesh3DGhost::resolveCollision(Collisionable *with) {
+    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+        auto *object = dynamic_cast<Object3D*> (with);
+        Logging::getInstance()->Log("Mesh3DGhost: Collision "  + getLabel() + " with " + object->getLabel());
+    }
 }

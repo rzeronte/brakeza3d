@@ -18,7 +18,7 @@ private:
     void updateBulletFromMesh();
 
 public:
-    void dispatchCollision(Collisionable *collisionable) override;
+    void resolveCollision(Collisionable *collisionable) override;
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

@@ -175,6 +175,6 @@ NPCEnemyBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions,
     return this->body;
 }
 
-void NPCEnemyBody::dispatchCollision(Collisionable *collisionable) {
+void NPCEnemyBody::resolveCollision(Collisionable *collisionable) {
 
 }

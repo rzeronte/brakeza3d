@@ -12,7 +12,7 @@ public:
 
     Collisionable();
 
-    virtual void dispatchCollision(Collisionable *collisionable) = 0;
+    virtual void resolveCollision(Collisionable *collisionable) = 0;
     virtual void integrate();
     bool isCollisionsEnabled();
     void setCollisionsEnabled(bool value);

@@ -15,15 +15,15 @@ public:
 
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *);
 
-    btRigidBody *makeRigidBody(float mass, btDiscreteDynamicsWorld *);
+    void makeRigidBody(float mass, btDiscreteDynamicsWorld *);
 
-    btRigidBody *makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
+    void makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
 
     void setGravity(Vertex3D g);
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
 
-    void dispatchCollision(Collisionable *collisionable) override;
+    void resolveCollision(Collisionable *collisionable) override;
 };
 
 
