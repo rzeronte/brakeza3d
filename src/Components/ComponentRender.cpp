@@ -27,7 +27,6 @@ void ComponentRender::onUpdate() {
     this->hiddenSurfaceRemoval();
     this->drawVisibleTriangles();
 
-
     frameTriangles.clear();
 
     if (SETUP->BULLET_DEBUG_MODE) {
@@ -518,21 +517,17 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
 void ComponentRender::processPixelTextureAnimated(Fragment *fragment) {
     float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
     float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
-    fragment->texU =
-            (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2)) *
-            SETUP->LAVA_SCALE;
-    fragment->texV =
-            (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1)) *
-            SETUP->LAVA_SCALE;
+    fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2)) * SETUP->LAVA_SCALE;
+    fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1)) * SETUP->LAVA_SCALE;
 }
 
 Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
-    float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE);
+    float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE*2);
 
-    if (nZ >= 1) {
+    pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, SETUP->FOG_INTENSITY * nZ  );
+
+    if (nZ > 1) {
         pixelColor = SETUP->FOG_COLOR;
-    } else {
-        pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, nZ * SETUP->FOG_INTENSITY);
     }
 
     return pixelColor;
@@ -545,7 +540,7 @@ Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
     }
 
     // object space
-    Vertex3D D = Vertex3D(
+    Vertex3D D(
         f->alpha * t->Ao.x + f->theta * t->Bo.x + f->gamma * t->Co.x,
         f->alpha * t->Ao.y + f->theta * t->Bo.y + f->gamma * t->Co.y,
         f->alpha * t->Ao.z + f->theta * t->Bo.z + f->gamma * t->Co.z
@@ -588,9 +583,9 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
     if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
         pixelColor = Color(
-                fragment->alpha * 255,
-                fragment->theta * 255,
-                fragment->gamma * 255
+            fragment->alpha * 255,
+            fragment->theta * 255,
+            fragment->gamma * 255
         );
     }
 

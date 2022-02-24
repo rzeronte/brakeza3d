@@ -27,12 +27,10 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    std::vector<CollisionResolver *> collisions;
-
-    Camera3D *camera{};
-    BSPMap *bspMap{};
-    std::vector<Triangle *> *visibleTriangles{};
-    Mesh3DGhost *triggerCamera{};
+    Camera3D *camera;
+    BSPMap *bspMap;
+    std::vector<Triangle *> *visibleTriangles;
+    Mesh3DGhost *triggerCamera;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration *collisionConfiguration{};
@@ -70,13 +68,7 @@ public:
 
     void updatePhysicObjects();
 
-    void updatePhysicsGhosts();
-
     void stepSimulation();
-
-    std::vector<CollisionResolver *> &getCollisions();
-
-    void setCollisions(const std::vector<CollisionResolver *> &newCollisions);
 
     void makeGhostForCamera();
 
