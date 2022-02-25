@@ -1,6 +1,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "../../include/Components/ComponentSound.h"
 #include "../../include/Misc/cJSON.h"
+#include "../../include/Components/ComponentWeapons.h"
 
 ComponentSound::ComponentSound() {
     initSoundSystem();

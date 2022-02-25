@@ -12,6 +12,25 @@
 #include "Component.h"
 #include "ComponentCamera.h"
 
+enum WeaponsActions {
+    NONE = -1,
+    IDLE = 0,
+    FIRE = 1,
+    RELOAD = 2,
+};
+
+enum WeaponsTypes {
+    EMPTY = -1,
+    DEFAULT = 0,
+    REPEATER = 1,
+    STATIC_RIFLE = 2,
+    HAR = 3,
+    CHAINGUN = 4,
+    GAUSS_CANNON = 5,
+    RAILGUN = 6,
+    ROCKETLAUNCHER = 7,
+};
+
 class ComponentWeapons : public Component {
 public:
     ComponentWeapons();
@@ -49,11 +68,7 @@ public:
 
     void setCurrentWeaponIndex(int newCurrentWeaponIndex);
 
-    WeaponType *getWeaponTypeByClassname(const std::string& label);
-
     WeaponType *getCurrentWeaponType();
-
-    AmmoType *getAmmoTypeByClassname(const std::string& label);
 
     bool isEmptyWeapon() const;
 

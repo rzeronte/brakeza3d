@@ -18,55 +18,38 @@ public:
 
     WeaponType(const std::string& label);
 
-    bool available{};
-    int status = EngineSetup::WeaponsActions::IDLE;
+    bool available;
+    int status;
 
     int index; // For related with Enum in Setup
 
     std::string label;
-    std::string classname;  // bsp quake map reference
 
-    AmmoType *ammo;
+    AmmoType *ammoType;
 
     float damage;
     float damageRadius;
-
     float accuracy;
-
-    bool firing = false;
-
-    int dispersion = 0;
+    int dispersion;
 
     Counter *counterCadence;
 
-    int speed = 500;
-
-    int numAnimations = 0;
-    int currentAnimationIndex = 0;
-
-    // Animations for this weapon
-    Mesh3DAnimatedCollection *weaponAnimations{};
+    int speed;
 
     // sounds
-    std::vector<std::string> weaponSounds;
+    std::string fireSound;
     std::string soundEmptyLabel;
 
     // mesh for
-    Mesh3D *model{};
+    Mesh3D *model;
 
-    SDL_Surface *iconHUD{};
+    SDL_Surface *iconHUD;
 
     bool sniper;
     bool sniperEnabled = false;
     SDL_Surface *sniperHUD;
 
-    void addAnimation(std::string newLabel, const std::string& newModel, float scale, bool stopEnd);
-
-    Mesh3DAnimated *getCurrentWeaponAnimation() const;
-
     void onUpdate();
-
-    void setWeaponAnimation(int);
 
     bool isAvailable() const;
 
@@ -96,10 +79,6 @@ public:
 
     void setDispersion(float dispersion);
 
-    bool isFiring() const;
-
-    void setFiring(bool newFiring);
-
     bool isSniper() const;
 
     void setSniper(bool sniper);
@@ -107,10 +86,6 @@ public:
     bool isSniperEnabled() const;
 
     void setSniperEnabled(bool sniperEnabled);
-
-    const std::string &getClassname() const;
-
-    void setClassname(const std::string &classname);
 
     int getIndex() const;
 
@@ -126,18 +101,15 @@ public:
 
     Mesh3D *getModel() const;
 
-    Mesh3DAnimatedCollection *getWeaponAnimations() const;
-
-    void setWeaponAnimations(Mesh3DAnimatedCollection *weaponAnimations);
-
-    std::vector<std::string> &getWeaponSounds();
-
-    void setWeaponSounds(const std::vector<std::string> &weaponSounds);
-
     const std::string &getSoundEmptyLabel() const;
 
     void setSoundEmptyLabel(const std::string &soundEmptyLabel);
 
+    void setSoundFire(const std::string &label);
+
+    const std::string &getSoundFire() const;
+
+    const std::string &getLabel() const;
 };
 
 

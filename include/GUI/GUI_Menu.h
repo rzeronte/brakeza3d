@@ -121,20 +121,12 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Frustum Clipping", &EngineSetup::get()->ENABLE_CLIPPING);
                 if (EngineSetup::get()->ENABLE_CLIPPING) {
-                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float,
-                                      &EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE,
-                                      range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,
-                                      &range_max_frustum_clipping_distance, "%f", 1.0f);
-                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::get()->EPSILON,
-                                      range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,
-                                      &range_max_frustum_clipping_distance, "%f", 1.0f);
+                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float,&EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE,range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,&range_max_frustum_clipping_distance, "%f", 1.0f);
+                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::get()->EPSILON,range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,&range_max_frustum_clipping_distance, "%f", 1.0f);
                 }
 
                 ImGui::Separator();
-                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float,
-                                  &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE,
-                                  range_frustum_fardistance_sensibility, &range_min_frustum_fardistance,
-                                  &range_max_frustum_fardistance, "%f", 1.0f);
+                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float,&EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE,range_frustum_fardistance_sensibility, &range_min_frustum_fardistance,&range_max_frustum_fardistance, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
                     cam->frustum->setup(
                             cam->getPosition(),
@@ -164,12 +156,8 @@ public:
 
                 ImGui::Separator();
 
-                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float, &EngineSetup::get()->FOG_INTENSITY,
-                                  range_sensibility_fog_intensity, &range_min_fog_intensity, &range_max_fog_intensity,
-                                  "%f", 1.0f);
-                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float, &EngineSetup::get()->FOG_DISTANCE,
-                                  range_sensibility_fog_distance, &range_min_fog_distance, &range_max_fog_distance,
-                                  "%f", 1.0f);
+                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float, &EngineSetup::get()->FOG_INTENSITY,range_sensibility_fog_intensity, &range_min_fog_intensity, &range_max_fog_intensity,"%f", 1.0f);
+                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float, &EngineSetup::get()->FOG_DISTANCE,range_sensibility_fog_distance, &range_min_fog_distance, &range_max_fog_distance,"%f", 1.0f);
 
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
@@ -220,10 +208,8 @@ public:
                         Mix_VolumeMusic(0);
                     } else {
                         Mix_Volume(EngineSetup::SoundChannels::SND_MENU, EngineSetup::get()->SOUND_VOLUME_MENU);
-                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER,
-                                   EngineSetup::get()->SOUND_VOLUME_PLAYER);
-                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,
-                                   EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER,EngineSetup::get()->SOUND_VOLUME_PLAYER);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT);
                         Mix_VolumeMusic(EngineSetup::get()->SOUND_VOLUME_MUSIC);
                     }
                 }
@@ -265,6 +251,12 @@ public:
                 ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::Separator();
+                ImGui::DragScalar("Projectile Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Projectile Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Projectile Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                ImGui::DragScalar("Projectile TTL", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_TTL, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+
                 ImGui::EndMenu();
             }
 

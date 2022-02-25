@@ -47,7 +47,7 @@ void ComponentCollisions::initBulletSystem() {
     this->debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, EngineSetup::get()->gravity.y, 0));
+    this->dynamicsWorld->setGravity(btVector3(0, -EngineSetup::get()->gravity.y, 0));
 
     this->dynamicsWorld->setDebugDrawer(debugDraw);
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
@@ -117,7 +117,7 @@ void ComponentCollisions::stepSimulation() {
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
-        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime() * 1000);
+        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime());
 
         this->updatePhysicObjects();
 
@@ -131,3 +131,25 @@ std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
 void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles) {
     ComponentCollisions::visibleTriangles = &newVisibleTriangles;
 }
+
+void ComponentCollisions::demoProjectile() {
+    auto *projectile = new Projectile3DBody();
+    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
+    projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube.fbx"));
+    projectile->setRotation(Tools::random(0, 180), Tools::random(0, 180),Tools::random(0, 180));
+    projectile->setFlatTextureColor(true);
+    projectile->setPosition( camera->getPosition());
+    projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectile->setEnabled(true);
+    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
+    projectile->makeProjectileRigidBody(
+        EngineSetup::get()->PROJECTILE_DEMO_MASS,
+        direction,
+        EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
+        EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
+    );
+    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+}
+

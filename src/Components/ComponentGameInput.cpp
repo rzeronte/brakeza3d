@@ -77,7 +77,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     //this->handleZoom(event);
     //this->handleCrouch(event);
-    //this->handleFire(event);
+    this->handleFire(event);
     //this->handleWeaponReload(event);
     //this->handleSniper(event);
     //this->handleWeaponSelector();
@@ -187,7 +187,7 @@ void ComponentGameInput::handleFire(SDL_Event *event) const {
 
         // First keydown
         if (event->type == SDL_KEYDOWN) {
-            player->shoot();
+            //player->shoot();
         }
 
         // Looping keydown

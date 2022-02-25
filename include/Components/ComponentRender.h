@@ -106,6 +106,8 @@ public:
     int tilesHeight;
     int numTiles;
     int tilePixelsBufferSize;
+
+    std::string getUniqueGameObjectLabel();
 };
 
 

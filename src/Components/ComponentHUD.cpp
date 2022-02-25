@@ -43,7 +43,7 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish) {
 void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_health.png", "health");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_ammo.png", "ammo");
+    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_ammo.png", "ammoType");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "hud.png", "hud");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
 }
@@ -87,9 +87,9 @@ void ComponentHUD::drawHUD() {
 
     // Ammo
     if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
-        WeaponType *WeaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
-        if (WeaponType->isAvailable()) {
-            this->textureWriter->writeText(textX, textY, std::string("Welcome!").c_str(), false);
+        WeaponType *weaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
+        if (weaponType->isAvailable()) {
+            this->textureWriter->writeText(textX, textY, weaponType->getLabel().c_str(), false);
             textY += stepY;
         }
     }

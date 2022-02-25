@@ -35,7 +35,7 @@ public:
     Vertex3D defaultCameraPosition = Vertex3D(1, 1, 1);
     Vertex3D defaultCameraAnglesRotation = Vertex3D(190, 0, 0);
 
-    Vertex3D gravity = Vertex3D(0, -10.0f, 0);
+    Vertex3D gravity = Vertex3D(0, -100.0f, 0);
 
     // Screen dimension constants
     const int screenWidth = 320;
@@ -218,6 +218,11 @@ public:
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
+    float PROJECTILE_DEMO_IMPULSE = 1000;
+    float PROJECTILE_DEMO_ACCURACY = 100;
+    float PROJECTILE_DEMO_MASS = 1;
+    float PROJECTILE_DEMO_TTL = 10;
+
     enum collisionGroups {
         DefaultFilter = 1,
         StaticFilter = 2,
@@ -244,24 +249,6 @@ public:
         DEAD = 1
     };
 
-    enum WeaponsTypes {
-        EMPTY = -1,
-        PISTOL = 0,
-        REPEATER = 1,
-        STATIC_RIFLE = 2,
-        HAR = 3,
-        CHAINGUN = 4,
-        GAUSS_CANNON = 5,
-        RAILGUN = 6,
-        ROCKETLAUNCHER = 7,
-    };
-
-    enum WeaponsActions {
-        NONE = -1,
-        IDLE = 0,
-        FIRE = 1,
-        RELOAD = 2,
-    };
 
     enum SoundChannels {
         SND_GLOBAL = -1,

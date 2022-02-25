@@ -22,12 +22,12 @@ void ComponentGame::onStart() {
     ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
+    setupWeapons();
+
     shaderImageBackground = ShaderImageBackground(std::string(SETUP->IMAGES_FOLDER + "deep_space.png").c_str());
     shaderImageBackground.setType(ShaderImageBackgroundTypes::PORTION);
 
     shaderTintScreen.setTintColorIntensity(1, 0, 0);
-
-    createBackgroundDecorationItems();
 
     loadPlayer();
 
@@ -41,9 +41,8 @@ void ComponentGame::onStart() {
     object->setPosition(Vertex3D(15, -700, 2600));
     object->setRotationFrameEnabled(false);
     object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube_02.fbx"));
-    object->makeRigidBody(1, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    object->makeRigidBody(100, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
     Brakeza3D::get()->addObject3D(object, "test");
-
 }
 
 void ComponentGame::preUpdate() {
@@ -123,30 +122,7 @@ void ComponentGame::onUpdateIA() const {
         auto *enemy = dynamic_cast<NPCEnemyBody *> (object);
 
         if (enemy != nullptr) {
-
             enemy->updateCounters();
-
-            if (!Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->frustum->isVertexInside(
-                    object->getPosition())) {
-                continue;
-            }
-
-            if (enemy->isDead()) {
-                continue;
-            }
-
-            Vertex3D A = object->getPosition();
-            Vertex3D B = Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition();
-
-            Vector3D ray = Vector3D(A, B);
-
-            /*enemy->evalStatusMachine(
-                    false,
-                    ray.getComponent().getModule(),
-                    Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
-                    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                    Brakeza3D::get()->getSceneObjects()
-            );*/
         }
     }
 }
@@ -240,34 +216,22 @@ void ComponentGame::loadPlayer()
     Brakeza3D::get()->addObject3D(player, "player");
 }
 
-void ComponentGame::createBackgroundDecorationItems() {
-    return;
-    int numItems = 50;
+void ComponentGame::setupWeapons() {
+    auto *cw = ComponentsManager::get()->getComponentWeapons();
+    cw->addWeaponType("defaultWeapon");
+    WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
+    weaponType->setSpeed(10);
+    weaponType->setDispersion(10);
+    weaponType->setAvailable(true);
+    weaponType->setAccuracy(100);
 
-    for (int i = 0; i < numItems; i++) {
-        std::string name = "backgroundItem_" + std::to_string(i);
-        Vertex3D bornPosition = player->getPosition() + Vertex3D(
-            (float) Tools::random(-4000, 4000),
-            (float) Tools::random(-2000, -2000) + 1000.f *-i,
-            (float) Tools::random(3500, 4000)
-        );
+    auto *ammoType = new AmmoType();
+    ammoType->setName("defaultWeapon_ammoType");
+    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "bullet.fbx"));
+    ammoType->getModelProjectile()->setScale(10);
+    ammoType->getModelProjectile()->setFlatTextureColor(true);
+    ammoType->setAmount(1000);
+    weaponType->setAmmoType(ammoType);
 
-        auto object = new Mesh3D();
-        object->setRotation(0, 0, 0);
-        object->setLabel(name);
-        object->setScale((float) Tools::random(2, 6));
-        object->setFlatTextureColor(false);
-        object->setPosition(bornPosition);
-        object->setRotationFrameEnabled(true);
-        object->setRotationFrame(Vertex3D(
-            1 / (float) Tools::random(0, 10),
-            1 / (float) Tools::random(0, 10),
-            1 / (float) Tools::random(0, 10)
-        ));
-
-        std::string randomNumber = std::to_string(Tools::random(1, 2));
-        object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube_0" + randomNumber + ".fbx"));
-
-        Brakeza3D::get()->addObject3D(object, name);
-    }
+    cw->setCurrentWeaponIndex(WeaponsTypes::DEFAULT);
 }

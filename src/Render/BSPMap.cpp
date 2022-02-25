@@ -1137,81 +1137,10 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     auto *o = new Object3D();
                 }
 
-                // item cells
-                if (!strcmp(classname, "item_cells")) {
-                    auto *o = new ItemAmmoGhost();
-                    ComponentWeapons *weaponManager = ComponentsManager::get()->getComponentWeapons();
-                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
-
-                    Mesh3D *oTemplate = weaponManager->getAmmoTypeByClassname(classname)->getModelBox();
-
-                    o->setLabel("ammo_cells");
-                    o->copyFrom(oTemplate);
-                    // Md2 Import for Quake2 axis adjust
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-                    o->setAmmoTypeClassname(classname);
-                    o->setPosition(pos);
-                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
-                    Brakeza3D::get()->addObject3D(o, o->getLabel());
-                }
-
-                // item rockets
-                if (!strcmp(classname, "item_rockets")) {
-                    auto *o = new ItemAmmoGhost();
-                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
-                            classname)->getModelBox();
-                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
-
-                    o->setLabel("ammo_rockets");
-                    o->copyFrom(oTemplate);
-                    // Md2 Import for Quake2 axis adjust
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-                    o->setAmmoTypeClassname(classname);
-                    o->setPosition(pos);
-                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
-;
-                    brakeza3D->addObject3D(o, o->getLabel());
-                }
-
-                // item shells
-                if (!strcmp(classname, "item_shells")) {
-                    auto *o = new ItemAmmoGhost();
-                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
-                            classname)->getModelBox();
-                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
-
-                    o->setLabel("ammo_shells");
-                    o->copyFrom(oTemplate);
-                    // Md2 Import for Quake2 axis adjust
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-                    o->setAmmoTypeClassname(classname);
-                    o->setPosition(pos);
-                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
-
-                    brakeza3D->addObject3D(o, o->getLabel());
-                }
-
-                // item spikes
-                if (!strcmp(classname, "item_spikes")) {
-                    auto *o = new ItemAmmoGhost();
-                    Mesh3D *oTemplate = brakeza3D->getComponentsManager()->getComponentWeapons()->getAmmoTypeByClassname(
-                            classname)->getModelBox();
-                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
-
-                    o->setLabel("ammo_spikes");
-                    o->setAmmoTypeClassname(classname);
-                    o->copyFrom(oTemplate);
-
-                    // Md2 Import for Quake2 axis adjust
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-
-                    o->setPosition(pos);
-                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
 
 
 
-                    brakeza3D->addObject3D(o, o->getLabel());
-                }
+
 
                 // item_health
                 /*if (!strcmp(classname, "item_health")) {
@@ -1224,71 +1153,9 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     brakeza3D->addObject3D( o, o->getLabel() );
                 }*/
 
-                // weapon wildcard
-                std::string s1(classname);
-                if (s1.find("weapon") != std::string::npos) {
-                    auto *o = new ItemWeaponGhost();
-                    ComponentCollisions *componentCollisions = ComponentsManager::get()->getComponentCollisions();
-
-                    WeaponType *weapon = brakeza3D->getComponentsManager()->getComponentWeapons()->getWeaponTypeByClassname(
-                            classname);
-                    if (weapon == nullptr) {
-                        Logging::Log("Error loading weapon by classname: " + s1, "ERROR");
-                        continue;
-                    }
-
-                    o->setPosition(pos);
-                    o->setLabel(weapon->label);
-                    o->setWeaponClassname(classname);
-                    o->copyFrom(weapon->getModel());
-                    // Md2 Import for Quake2 axis adjust
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-                    o->makeGhostBody(componentCollisions->getDynamicsWorld(), o);
-
-                    brakeza3D->addObject3D(o, o->getLabel());
-                }
 
                 // monster wildcard
                 std::string s2(classname);
-                if (s2.find("monster") != std::string::npos) {
-                    NPCEnemyBody *enemyTemplate = EngineBuffers::getInstance()->getEnemyTemplateForClassname(classname);
-                    if (enemyTemplate == nullptr) continue;
-
-                    // Angle Monster
-                    int angle = 0;
-                    if (this->hasEntityAttribute(i, "angle")) {
-                        char *s_angle = this->getEntityValue(i, "angle");
-                        angle = std::stoi(s_angle);
-                    }
-
-                    M3 rotMonster = M3::getMatrixRotationForEulerAngles(0, 90 - (float) angle, 0);
-
-                    auto *enemyBody = new NPCEnemyBody();
-                    enemyBody->setScale(enemyTemplate->getScale());
-                    enemyBody->rotationFixed = M3::getMatrixRotationForEulerAngles(90, 0, 0);
-                    enemyBody->setPosition(pos);
-                    enemyBody->setRotation(rotMonster);
-                    enemyBody->setRespawnRotation(rotMonster);
-                    enemyBody->setDrawOffset(enemyTemplate->getDrawOffset());
-                    enemyBody->setBoxShapeSize(enemyTemplate->getBoxShapeSize());
-                    enemyBody->setSpeed(enemyTemplate->getSpeed());
-                    enemyBody->setRange(enemyTemplate->getRange());
-                    enemyBody->setCadence(enemyTemplate->getCadence());
-                    enemyBody->setLabel("BSPEntity_" + std::to_string(i) + " (monster)");
-                    enemyBody->addAnimation("swat_idle", "Cubex.fbx", enemyTemplate->getScale(), false);
-                    enemyBody->addAnimation("swat_walk", "Cubex.fbx", enemyTemplate->getScale(), false);
-                    enemyBody->addAnimation("swat_fire", "Cubex.fbx", enemyTemplate->getScale(), false);
-                    enemyBody->addAnimation("swat_injuried", "Cubex.fbx", enemyTemplate->getScale(), false);
-                    enemyBody->addAnimation("swat_dead", "Cubex.fbx", enemyTemplate->getScale(), true);
-                    enemyBody->setAnimation(EngineSetup::SOLDIER_IDLE);
-                    enemyBody->makeSimpleRigidBody(
-                            0,
-                            pos - enemyBody->getDrawOffset(),
-                            enemyBody->getBoxShapeSize(),
-                            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
-                    );
-                    brakeza3D->addObject3D(enemyBody, enemyBody->getLabel());
-                }
 
                 // armor wildcard
                 std::string s3(classname);

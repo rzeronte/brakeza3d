@@ -65,14 +65,13 @@ public:
     void setAutoScroll(bool value);
     void setGameState(GameState state);
     GameState getGameState();
-
-    void createBackgroundDecorationItems();
-    std::vector<Object3D*> backgroundDecorationItems;
 private:
 
     GameState gameState;
 
     void setAutoScrollSpeed(Vertex3D speed);
+
+    void setupWeapons();
 };
 
 

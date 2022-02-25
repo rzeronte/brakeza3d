@@ -62,6 +62,8 @@ public:
 
     void stepSimulation();
 
+    void demoProjectile();
+
 };
 
 

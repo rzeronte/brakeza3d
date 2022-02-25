@@ -78,7 +78,6 @@ void Mesh3DBody::integrate() {
     this->setPosition(worldPosition);
 }
 
-
 void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world) {
     setMass(mass);
     updateBoundingBox();

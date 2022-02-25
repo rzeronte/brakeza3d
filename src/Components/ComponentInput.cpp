@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 ComponentInput::ComponentInput() {
     setEnabled(true);
@@ -34,6 +35,7 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
     if (!isEnabled()) return;
 
     handleMouse(e);
+    handleProjectileDemo(e);
 }
 
 
@@ -133,4 +135,12 @@ bool ComponentInput::isEnabled() const {
 
 void ComponentInput::setEnabled(bool enabled) {
     ComponentInput::enabled = enabled;
+}
+
+void ComponentInput::handleProjectileDemo(SDL_Event *event) {
+    if (event->type == SDL_KEYDOWN) {
+        if (keyboard[SDL_SCANCODE_SPACE]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile();
+        }
+    }
 }

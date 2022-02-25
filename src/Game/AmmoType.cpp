@@ -23,15 +23,7 @@ void AmmoType::setAmount(int amount) {
     AmmoType::amount = amount;
 }
 
-const std::string &AmmoType::getClassname() const {
-    return classname;
-}
-
-void AmmoType::setClassname(const std::string &classname) {
-    AmmoType::classname = classname;
-}
-
-Mesh3DAnimated *AmmoType::getModelProjectile() {
+Mesh3DBody *AmmoType::getModelProjectile() {
     return &model_projectile;
 }
 

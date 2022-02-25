@@ -5,7 +5,7 @@
 #include "../../include/ComponentsManager.h"
 
 ComponentWeapons::ComponentWeapons() {
-    this->currentWeaponIndex = SETUP->WeaponsTypes::EMPTY;
+    this->currentWeaponIndex = WeaponsTypes::EMPTY;
 }
 
 void ComponentWeapons::onStart() {
@@ -17,7 +17,7 @@ void ComponentWeapons::preUpdate() {
 }
 
 void ComponentWeapons::onUpdate() {
-    if (this->currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
+    if (this->currentWeaponIndex != WeaponsTypes::EMPTY) {
         this->getCurrentWeaponType()->onUpdate();
     }
 }
@@ -47,28 +47,8 @@ WeaponType *ComponentWeapons::getWeaponTypeByLabel(const std::string& label) {
     return nullptr;
 }
 
-WeaponType *ComponentWeapons::getWeaponTypeByClassname(const std::string& classname) {
-    for (int i = 0; i < weaponTypes.size(); i++) {
-        if (this->weaponTypes[i]->classname == classname) {
-            return this->weaponTypes[i];
-        }
-    }
-
-    return nullptr;
-}
-
 WeaponType *ComponentWeapons::getCurrentWeaponType() {
     return this->weaponTypes[currentWeaponIndex];
-}
-
-AmmoType *ComponentWeapons::getAmmoTypeByClassname(const std::string& classname) {
-    for (int i = 0; i < ammoTypes.size(); i++) {
-        if (this->ammoTypes[i]->getClassname() == classname) {
-            return this->ammoTypes[i];
-        }
-    }
-
-    return nullptr;
 }
 
 void ComponentWeapons::headBob(Vector3D velocity) {
@@ -97,22 +77,7 @@ bool ComponentWeapons::isEmptyWeapon() const {
 }
 
 void ComponentWeapons::setCurrentWeaponIndex(int newCurrentWeaponIndex) {
-    if (newCurrentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
-        // Si ya teníamos un arma, la deshabilitamos
-        if (this->currentWeaponIndex != EngineSetup::WeaponsTypes::EMPTY) {
-            this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled(false);
-        }
-
-        ComponentWeapons::currentWeaponIndex = newCurrentWeaponIndex;
-
-        // Habilitamos la nueva selección
-        this->getCurrentWeaponType()->getWeaponAnimations()->setEnabled(true);
-
-        return;
-    }
-
     ComponentWeapons::currentWeaponIndex = newCurrentWeaponIndex;
-
 }
 
 void ComponentWeapons::shoot() {
@@ -125,6 +90,7 @@ void ComponentWeapons::shoot() {
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
         this->getCurrentWeaponType()->shoot();
     } else {
+        Logging::Log("vacio!", "ComponentWeapons");
         std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();
         Tools::playMixedSound(
                 EngineBuffers::getInstance()->soundPackage->getSoundByLabel(soundLabel),

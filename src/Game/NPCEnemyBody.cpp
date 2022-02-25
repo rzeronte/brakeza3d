@@ -1,6 +1,6 @@
 
 #include "../../include/Game/NPCEnemyBody.h"
-#include "../../include/Game/Projectile3DBody.h"
+#include "../../include/Physics/Projectile3DBody.h"
 #include "../../include/Brakeza3D.h"
 
 NPCEnemyBody::NPCEnemyBody() : state(EnemyState::ENEMY_STATE_STOP), stepIA(0.25) {
@@ -106,7 +106,6 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
     return;
 
     auto *projectile = new Projectile3DBody();
-    projectile->setFromEnemy(true);
     projectile->setPosition(this->getPosition());
     projectile->setLabel("projectile");
     projectile->setEnabled(true);
@@ -121,8 +120,7 @@ void NPCEnemyBody::shoot(Camera3D *cam, btDiscreteDynamicsWorld *dynamicsWorld, 
         projectile->setRotation(newRot.getTranspose());
     }
 
-    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),
-                          EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+    Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
 }
 
