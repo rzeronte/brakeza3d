@@ -49,6 +49,7 @@ public:
 
     Uint8 *keyboard;
 
+    void handleProjectileDemo(SDL_Event *pEvent);
 };
 
 

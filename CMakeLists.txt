@@ -128,8 +128,8 @@ add_executable(Brakeza3D
         include/Game/NPCEnemyBody.h
         src/Collisions/CollisionResolver.cpp
         include/Physics/CollisionResolver.h
-        src/Game/Projectile3DBody.cpp
-        include/Game/Projectile3DBody.h
+        src/Collisions/Projectile3DBody.cpp
+        include/Physics/Projectile3DBody.h
         src/Objects/Decal.cpp
         include/Objects/Decal.h
         src/Collisions/Sprite3DBody.cpp

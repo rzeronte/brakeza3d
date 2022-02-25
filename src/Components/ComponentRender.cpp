@@ -883,3 +883,7 @@ void ComponentRender::updateLights()
     }
 }
 
+std::string ComponentRender::getUniqueGameObjectLabel() {
+    return std::to_string(getSceneObjects()->size()+1);
+}
+

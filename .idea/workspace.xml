@@ -18,40 +18,35 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="improve Collisions Component">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="cleaning Collisions Component">
+      <change afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Collisions/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Collisions/CollisionResolver.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/CollisionResolver.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Collisions/CollisionResolverBetweenCamera3DAndFuncButton.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/NPCEnemyBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/NPCEnemyBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/NPCEnemyPartBody.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Body.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Body.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Ghost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Ghost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/CollisionResolver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/AmmoType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Projectile3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Projectile3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/WeaponType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/WeaponType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/CollisionResolver.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/CollisionResolver.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ComponentsManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ComponentsManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/AmmoType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/AmmoType.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/NPCEnemyBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/NPCEnemyPartBody.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/BSPCollider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BSPCollider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/BSPCollider.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BSPCollider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/BillboardBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/BillboardBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Body.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Body.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Collisionable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Collisionable.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Ghost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Mesh3DGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/SimplePendulum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/SimplePendulum.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/Sprite3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Sprite3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Physics/SpriteDirectional3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/SpriteDirectional3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Projectile3DBody.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,10 +215,10 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/include/Physics" />
+      <recent name="$PROJECT_DIR$/src/Collisions" />
       <recent name="$PROJECT_DIR$/src/Physics" />
       <recent name="$PROJECT_DIR$/src/Misc" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/include/Shaders" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
@@ -366,7 +361,7 @@
       <workItem from="1645539642132" duration="3453000" />
       <workItem from="1645568179729" duration="9591000" />
       <workItem from="1645651442978" duration="18657000" />
-      <workItem from="1645728677951" duration="5691000" />
+      <workItem from="1645728677951" duration="19094000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -431,7 +426,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645736097688</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="cleaning Collisions Component">
+      <created>1645738255357</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1645738255357</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -578,7 +580,8 @@
     <MESSAGE value="autoscroll / tintColorShader" />
     <MESSAGE value="improve componentGame" />
     <MESSAGE value="improve Collisions Component" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve Collisions Component" />
+    <MESSAGE value="cleaning Collisions Component" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaning Collisions Component" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
