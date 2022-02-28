@@ -236,9 +236,7 @@ long Maths::GetPrevActive(long x, long vertexCount, const bool *active) {
     }
 }
 
-int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle *> &triangles,
-                              Object3D *parent, Texture *texture, Texture *lightmap, bool clipped, bool isBsp,
-                              const unsigned char lightstyle[4], bool isFlattenTextureColor, bool enableLights) {
+int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle *> &triangles, Object3D *parent, Texture *texture, bool clipped, bool isBsp, bool isFlattenTextureColor, bool enableLights) {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
     int triangleCount = 0;
@@ -260,14 +258,9 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->setEnableLights(enableLights);
             t->setFlatTextureColor(isFlattenTextureColor);
             t->setTexture(texture);
-            t->setLightmap(lightmap);
             t->setClipped(clipped);
             t->setId(triangles.size());
             t->isBSP = isBsp;
-            t->typelight[0] = lightstyle[0];
-            t->typelight[1] = lightstyle[1];
-            t->typelight[2] = lightstyle[2];
-            t->typelight[3] = lightstyle[3];
 
             triangles.emplace_back(t);
 
@@ -348,15 +341,10 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             auto *t = new Triangle(tv1, tv2, tv3, parent);
             t->setEnableLights(enableLights);
             t->setFlatTextureColor(isFlattenTextureColor);
-            t->setLightmap(lightmap);
             t->setTexture(texture);
             t->setClipped(clipped);
             t->setId(triangles.size());
             t->isBSP = isBsp;
-            t->typelight[0] = lightstyle[0];
-            t->typelight[1] = lightstyle[1];
-            t->typelight[2] = lightstyle[2];
-            t->typelight[3] = lightstyle[3];
 
             triangles.emplace_back(t);
 
@@ -377,15 +365,10 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             auto *t = new Triangle(tv1, tv2, tv3, parent);
             t->setEnableLights(enableLights);
             t->setFlatTextureColor(isFlattenTextureColor);
-            t->setLightmap(lightmap);
             t->setTexture(texture);
             t->setClipped(clipped);
             t->setId(triangles.size());
             t->isBSP = isBsp;
-            t->typelight[0] = lightstyle[0];
-            t->typelight[1] = lightstyle[1];
-            t->typelight[2] = lightstyle[2];
-            t->typelight[3] = lightstyle[3];
 
             triangles.emplace_back(t);
 

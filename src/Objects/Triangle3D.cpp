@@ -12,7 +12,6 @@
 
 Triangle::Triangle() {
     texture = nullptr;
-    lightmap = nullptr;
     parent = nullptr;
     flatTextureColor = false;
 }
@@ -25,7 +24,6 @@ Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
     this->parent = parent;
 
     texture = nullptr;
-    lightmap = nullptr;
 
     this->lod = 1;
 }
@@ -70,10 +68,8 @@ void Triangle::updateFullVertexSpaces(Frustum *frustum) {
 }
 
 void Triangle::updateUVCache() {
-
     // texture coordinates
     if (this->getTexture() != nullptr) {
-
         tex_u1 = A.u;
         tex_v1 = A.v;
 
@@ -105,25 +101,6 @@ void Triangle::updateUVCache() {
             tex_v3 = decal_Ct;
         }
 
-        /*if (isBSP) {
-            tex_u1 = A.u / getTexture()->getSurface(1)->w;
-            tex_v1 = A.v / getTexture()->getSurface(1)->h;
-
-            tex_u2 = B.u / getTexture()->getSurface(1)->w;
-            tex_v2 = B.v / getTexture()->getSurface(1)->h;
-
-            tex_u3 = C.u / getTexture()->getSurface(1)->w;
-            tex_v3 = C.v / getTexture()->getSurface(1)->h;
-        }*/
-
-        light_u1_Ac_z = light_u1 / Ac.z;
-        light_u2_Bc_z = light_u2 / Bc.z;
-        light_u3_Cc_z = light_u3 / Cc.z;
-
-        light_v1_Ac_z = light_v1 / Ac.z;
-        light_v2_Bc_z = light_v2 / Bc.z;
-        light_v3_Cc_z = light_v3 / Cc.z;
-
         tex_u1_Ac_z = tex_u1 / Ac.z;
         tex_u2_Bc_z = tex_u2 / Bc.z;
         tex_u3_Cc_z = tex_u3 / Cc.z;
@@ -141,36 +118,13 @@ void Triangle::updateUVCache() {
 void Triangle::updateNormal()
 {
     this->normal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();
-
-    this->Anormal = Vector3D(this->Ao, this->Bo).getComponent() % Vector3D(this->Ao, this->Co).getComponent();
-    this->Bnormal = Vector3D(this->Bo, this->Ao).getComponent() % Vector3D(this->Bo, this->Co).getComponent();
-    this->Cnormal = Vector3D(this->Co, this->Ao).getComponent() % Vector3D(this->Co, this->Bo).getComponent();
 }
 
 Vertex3D Triangle::getNormal() const {
     return this->normal;
 }
 
-/*void Triangle::shadowMapping(LightPoint3D *lp)
-{
-    this->updateFullVertexSpaces(lp->frustum);
-
-    if (this->isBackFaceCulling(lp->frustum->getPosition()))  {
-        return;
-    }
-
-    if ( !lp->frustum->frustum->isPointInFrustum(Ao) &&
-         !lp->frustum->frustum->isPointInFrustum(Bo) &&
-         !lp->frustum->frustum->isVertexInside(Co)
-    ) {
-        return;
-    }
-
-    this->scanVerticesForShadowMapping(lp);
-}*/
-
-void
-Triangle::clipping(
+void Triangle::clipping(
         Frustum *frustum,
         Plane *planes,
         int startPlaneIndex,
@@ -210,10 +164,8 @@ Triangle::clipping(
                 triangles,
                 newTrianglesParent,
                 this->getTexture(),
-                this->getLightmap(),
                 true,
                 isBSP,
-                this->typelight,
                 this->isFlatTextureColor(),
                 this->isEnableLights()
         );
@@ -341,14 +293,6 @@ void Triangle::setTexture(Texture *t) {
     texture = t;
 }
 
-Texture *Triangle::getLightmap() const {
-    return lightmap;
-}
-
-void Triangle::setLightmap(Texture *t) {
-    lightmap = t;
-}
-
 /*void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
 {
     this->lightPoints = lightPoints;
@@ -441,4 +385,3 @@ bool Triangle::isEnableLights() const {
 void Triangle::setEnableLights(bool enableLights) {
     this->enableLights = enableLights;
 }
-

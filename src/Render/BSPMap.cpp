@@ -444,10 +444,8 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
             model_triangles,
             this,
             &textures[this->getTextureInfo(surface)->texid],
-            &lightmaps[surface],
             false,
             true,
-            surf->lightstyle,
             false,
             false
     );
