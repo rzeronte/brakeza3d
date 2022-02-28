@@ -56,7 +56,6 @@ add_executable(Brakeza3D
         include/Objects/Line2D.h
         include/Misc/Color.h
         src/Misc/Color.cpp
-        include/OpenCL/OCLTriangle.h
         include/EngineSetup.h
         src/EngineSetup.cpp
         src/Render/Texture.cpp
@@ -254,7 +253,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderWater.h
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
