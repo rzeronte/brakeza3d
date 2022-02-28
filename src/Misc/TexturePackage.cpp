@@ -2,9 +2,7 @@
 
 void TexturePackage::addItem(const std::string &srcTexture, std::string label) {
     auto *item = new TexturePackageItem();
-    auto *t = new Texture();
-
-    t->loadTGA(srcTexture.c_str(), 1);
+    auto *t = new Texture(srcTexture);
 
     item->texture = t;
     item->label = std::move(label);
@@ -19,4 +17,12 @@ Texture *TexturePackage::getTextureByLabel(const std::string &label) {
         }
     }
     return nullptr;
+}
+
+int TexturePackage::size() {
+    return items.size();
+}
+
+Texture *TexturePackage::getTextureByIndex(int i) {
+    return items[i]->texture;
 }

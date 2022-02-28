@@ -139,8 +139,23 @@ void ComponentInput::setEnabled(bool enabled) {
 
 void ComponentInput::handleProjectileDemo(SDL_Event *event) {
     if (event->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_SPACE]) {
-            ComponentsManager::get()->getComponentCollisions()->demoProjectile();
+        if (keyboard[SDL_SCANCODE_1]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(0);
+        }
+        if (keyboard[SDL_SCANCODE_2]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(1);
+        }
+        if (keyboard[SDL_SCANCODE_3]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(2);
+        }
+        if (keyboard[SDL_SCANCODE_4]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(3);
+        }
+        if (keyboard[SDL_SCANCODE_5]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(4);
+        }
+        if (keyboard[SDL_SCANCODE_6]) {
+            ComponentsManager::get()->getComponentCollisions()->demoProjectile(5);
         }
     }
 }

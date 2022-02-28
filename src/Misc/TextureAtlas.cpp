@@ -19,11 +19,7 @@ SDL_Surface *TextureAtlas::getAtlasSurface() const {
 }
 
 bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string& name) {
-    SDL_Surface *texture_surface = texture->getSurface(1);
-
-    if (lightmap) {
-        texture_surface = texture->lightmap;
-    }
+    SDL_Surface *texture_surface = texture->getImage()->getSurface();
 
     int texw = texture_surface->w;
     int texh = texture_surface->h;
@@ -33,7 +29,7 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string
 
             if (this->checkForAllocate(x, y, texw, texh)) {
                 Logging::Log(
-                        "Add texture to atlas SUCCESS(" + texture->getFilename() + ", x: " + std::to_string(x) +
+                        "Add texture to atlas SUCCESS(" + texture->getImage()->getFileName() + ", x: " + std::to_string(x) +
                         ", y: " + std::to_string(y) + ", width: " + std::to_string(texw) + ", height:" +
                         std::to_string(texh) + ")", "TextureAtlas");
 

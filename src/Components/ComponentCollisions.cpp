@@ -37,8 +37,8 @@ void ComponentCollisions::initBulletSystem() {
     btVector3 worldMin(-50000, -50000, -50000);
     btVector3 worldMax(50000, 50000, 50000);
 
-    auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
-    this->overlappingPairCache = sweepBP;
+    //auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
+    //this->overlappingPairCache = sweepBP;
 
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     this->solver = new btSequentialImpulseConstraintSolver;
@@ -53,14 +53,6 @@ void ComponentCollisions::initBulletSystem() {
     this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
     this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback( new btGhostPairCallback() );
-
-    /*this->dynamicsWorld->addCollisionObject(
-        this->camera->m_ghostObject,
-        btBroadphaseProxy::CharacterFilter,
-        btBroadphaseProxy::StaticFilter
-    );*/
-
-    //this->makeGhostForCamera();
 }
 
 btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
@@ -132,11 +124,37 @@ void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibl
     ComponentCollisions::visibleTriangles = &newVisibleTriangles;
 }
 
-void ComponentCollisions::demoProjectile() {
+void ComponentCollisions::demoProjectile(int type) {
+
+    std::string fileName = "basic/cube.fbx";
+
+    switch (type) {
+        case 0:
+            fileName = "basic/cube.fbx";
+            break;
+        case 1:
+            fileName = "basic/cone.fbx";
+            break;
+        case 2:
+            fileName = "basic/torus.fbx";
+            break;
+        case 3:
+            fileName = "basic/cilinder.fbx";
+            break;
+        case 4:
+            fileName = "basic/icosphere.fbx";
+            break;
+        case 5:
+            fileName = "basic/piramid.fbx";
+            break;
+        default:
+            fileName = "basic/cube.fbx";
+
+    }
     auto *projectile = new Projectile3DBody();
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
-    projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube.fbx"));
+    projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(Tools::random(0, 180), Tools::random(0, 180),Tools::random(0, 180));
     projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition());
