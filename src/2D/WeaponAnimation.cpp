@@ -65,7 +65,7 @@ void WeaponAnimation::draw(SDL_Surface *dst, int globalOffsetX, int globalOffset
 
     if (EngineSetup::get()->DRAW_HUD) {
         destPos.y -= Brakeza3D::get()->getComponentsManager()->getComponentHUD()->HUDTextures->getTextureByLabel(
-                "hud")->getSurface(1)->h;
+                "hud")->getImage()->getSurface()->h;
     }
 
     SDL_BlitSurface(this->frames[currentFrame], nullptr, dst, &destPos);

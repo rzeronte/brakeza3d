@@ -484,19 +484,8 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
                     fragment.affineUV = 1 / (fragment.alpha * (t->persp_correct_Az) +
                                               fragment.theta * (t->persp_correct_Bz) +
                                               fragment.gamma * (t->persp_correct_Cz));
-                    fragment.texU = (fragment.alpha * (t->tex_u1_Ac_z) + fragment.theta * (t->tex_u2_Bc_z) +
-                                      fragment.gamma * (t->tex_u3_Cc_z)) * fragment.affineUV;
-                    fragment.texV = (fragment.alpha * (t->tex_v1_Ac_z) + fragment.theta * (t->tex_v2_Bc_z) +
-                                      fragment.gamma * (t->tex_v3_Cc_z)) * fragment.affineUV;
-
-                    if (t->getLightmap() != nullptr) {
-                        fragment.lightU =
-                                (fragment.alpha * (t->light_u1_Ac_z) + fragment.theta * (t->light_u2_Bc_z) +
-                                 fragment.gamma * (t->light_u3_Cc_z)) * fragment.affineUV;
-                        fragment.lightV =
-                                (fragment.alpha * (t->light_v1_Ac_z) + fragment.theta * (t->light_v2_Bc_z) +
-                                 fragment.gamma * (t->light_v3_Cc_z)) * fragment.affineUV;
-                    }
+                    fragment.texU = (fragment.alpha * (t->tex_u1_Ac_z) + fragment.theta * (t->tex_u2_Bc_z) + fragment.gamma * (t->tex_u3_Cc_z)) * fragment.affineUV;
+                    fragment.texV = (fragment.alpha * (t->tex_v1_Ac_z) + fragment.theta * (t->tex_v2_Bc_z) + fragment.gamma * (t->tex_v3_Cc_z)) * fragment.affineUV;
 
                     this->processPixel(t, bufferIndex, x, y, &fragment, bilinearInterpolation);
                 }
@@ -591,12 +580,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
     // Texture
     if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr && !t->isFlatTextureColor()) {
-        if (t->texture->getSurface(t->lod) == nullptr) return;
-
-        if (t->getTexture()->liquid && SETUP->TRIANGLE_TEXTURES_ANIMATED) {
-            // texU and texV are "animated"
-            this->processPixelTextureAnimated(fragment);
-        }
+        if (t->texture->getImage()->getSurface() == nullptr) return;
 
         if (t->parent->isDecal()) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1)) {
@@ -605,12 +589,6 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         }
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
-
-        if (!t->parent->isDecal() && t->getLightmap() != nullptr && !t->getTexture()->liquid && SETUP->ENABLE_LIGHTMAPPING) {
-            Uint8 red, green, blue, alpha;
-            SDL_GetRGBA(pixelColor.getColor(), t->texture->getSurface(t->lod)->format, &red, &green, &blue, &alpha);
-            t->processPixelLightmap(pixelColor, fragment->lightU, fragment->lightV, red, green, blue, alpha);
-        }
     }
 
     if (EngineSetup::get()->ENABLE_LIGHTS && t->isEnableLights()) {
@@ -825,15 +803,6 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
                         fragment.normalZ = normal.x;
                         fragment.normalY = normal.y;
                         fragment.normalZ = normal.z;
-
-                        if (t->getLightmap() != nullptr) {
-                            fragment.lightU =
-                                    ((fragment.alpha * t->light_u1_Ac_z) + (fragment.theta * t->light_u2_Bc_z) +
-                                     (fragment.gamma * t->light_u3_Cc_z)) * fragment.affineUV;
-                            fragment.lightV =
-                                    ((fragment.alpha * t->light_v1_Ac_z) + (fragment.theta * t->light_v2_Bc_z) +
-                                     (fragment.gamma * t->light_v3_Cc_z)) * fragment.affineUV;
-                        }
 
                         processPixel(t, bufferIndex, x, y, &fragment, bilinear);
                     }

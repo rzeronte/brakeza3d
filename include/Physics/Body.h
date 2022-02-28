@@ -18,7 +18,6 @@ public:
     btRigidBody *body;
     btCollisionObject *collisionObject;
 
-    btTriangleMesh triangleMesh;
     btBvhTriangleMeshShape *shape;
     btDefaultMotionState *motionState;
 

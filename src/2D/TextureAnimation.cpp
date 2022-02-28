@@ -22,7 +22,7 @@ void TextureAnimation::setup(std::string file, int num_frames, int fps) {
 void TextureAnimation::loadImages() {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
-        this->frames[i]->loadTGA(file.c_str(), 1);
+        this->frames[i]->getImage()->loadTGA(file.c_str());
     }
 }
 

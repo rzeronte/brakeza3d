@@ -70,11 +70,6 @@ void Triangle::updateFullVertexSpaces(Frustum *frustum) {
 }
 
 void Triangle::updateUVCache() {
-    if (getLightmap() != nullptr) {
-        getLightmapCoordinatesFromUV(light_u1, light_v1, A.u, A.v);
-        getLightmapCoordinatesFromUV(light_u2, light_v2, B.u, B.v);
-        getLightmapCoordinatesFromUV(light_u3, light_v3, C.u, C.v);
-    }
 
     // texture coordinates
     if (this->getTexture() != nullptr) {
@@ -110,7 +105,7 @@ void Triangle::updateUVCache() {
             tex_v3 = decal_Ct;
         }
 
-        if (isBSP) {
+        /*if (isBSP) {
             tex_u1 = A.u / getTexture()->getSurface(1)->w;
             tex_v1 = A.v / getTexture()->getSurface(1)->h;
 
@@ -119,7 +114,7 @@ void Triangle::updateUVCache() {
 
             tex_u3 = C.u / getTexture()->getSurface(1)->w;
             tex_v3 = C.v / getTexture()->getSurface(1)->h;
-        }
+        }*/
 
         light_u1_Ac_z = light_u1 / Ac.z;
         light_u2_Bc_z = light_u2 / Bc.z;
@@ -141,31 +136,6 @@ void Triangle::updateUVCache() {
         persp_correct_Bz = 1 / Bc.z;
         persp_correct_Cz = 1 / Cc.z;
     }
-}
-
-void Triangle::getLightmapCoordinatesFromUV(float &lu, float &lv, float tex_u, float tex_v) const {
-    float cu = tex_u;
-    float cv = tex_v;
-
-    float intpart;
-    if (
-            modf(getLightmap()->minu[0], &intpart) == 0 &&
-            modf(getLightmap()->maxv[0], &intpart) == 0 &&
-            modf(getLightmap()->minu[1], &intpart) == 0 &&
-            modf(getLightmap()->maxv[1], &intpart) == 0
-            ) {
-        cu = cu / getLightmap()->extents[1];
-        cv = cv / getLightmap()->extents[0];
-    } else {
-        cu = cu - getLightmap()->mins[1];
-        cu = cu / getLightmap()->extents[1];
-
-        cv = cv - getLightmap()->mins[0];
-        cv = cv / getLightmap()->extents[0];
-    }
-
-    lu = cu;
-    lv = cv;
 }
 
 void Triangle::updateNormal()
@@ -250,10 +220,6 @@ Triangle::clipping(
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
         for (int i = oldNumTriangles; i < triangles.size(); i++) {
-            triangles[i]->lightmapIndexPattern = this->lightmapIndexPattern;
-            triangles[i]->lightmapIndexPattern2 = this->lightmapIndexPattern2;
-            triangles[i]->lightmapIndexPattern3 = this->lightmapIndexPattern3;
-            triangles[i]->lightmapIndexPattern4 = this->lightmapIndexPattern4;
             triangles[i]->updateFullVertexSpaces(frustum);
             triangles[i]->updateUVCache();
             triangles[i]->updateBoundingBox();
@@ -267,50 +233,6 @@ void Triangle::updateBoundingBox() {
     minX = std::min(As.x, std::min(Bs.x, Cs.x));
     maxY = std::max(As.y, std::max(Bs.y, Cs.y));
     minY = std::min(As.y, std::min(Bs.y, Cs.y));
-}
-
-void Triangle::updateLightmapFrame() {
-    if (getLightmap() == nullptr) return;
-
-    int style;
-    int length;
-
-    for (int nl = 0; nl < getLightmap()->numLightmaps; nl++) {
-        style = typelight[nl];
-        float timeIncrement = Brakeza3D::get()->deltaTime / 100.0f;
-        if (style > 10) continue;
-        switch (nl) {
-            default:
-            case 0:
-                lightmapIndexPattern += timeIncrement;
-                length = strlen(EngineSetup::get()->LIGHT_PATTERNS[style]);
-                if ((int) lightmapIndexPattern >= length) {
-                    lightmapIndexPattern = 0;
-                }
-                break;
-            case 1:
-                lightmapIndexPattern2 += timeIncrement;
-                length = strlen(EngineSetup::get()->LIGHT_PATTERNS[style]);
-                if ((int) lightmapIndexPattern2 >= length) {
-                    lightmapIndexPattern2 = 0;
-                }
-                break;
-            case 2:
-                lightmapIndexPattern3 += timeIncrement;
-                length = strlen(EngineSetup::get()->LIGHT_PATTERNS[style]);
-                if ((int) lightmapIndexPattern3 >= length) {
-                    lightmapIndexPattern3 = 0;
-                }
-                break;
-            case 3:
-                lightmapIndexPattern4 += timeIncrement;
-                length = strlen(EngineSetup::get()->LIGHT_PATTERNS[style]);
-                if ((int) lightmapIndexPattern4 >= length) {
-                    lightmapIndexPattern4 = 0;
-                }
-                break;
-        }
-    }
 }
 
 void Triangle::updateFullArea() {
@@ -347,95 +269,6 @@ void Triangle::drawNormal(Camera3D *cam, Color color) const {
     Drawable::drawVector3D(v, cam, color);
 }
 
-/*void Triangle::scanVerticesForShadowMapping(LightPoint3D *lp)
-{
-    Vertex3D Aos = this->Ao;
-    Vertex3D Bos = this->Bo;
-    Vertex3D Cos = this->Co;
-
-    // Pasamos por la cámara
-    Vertex3D A = Ac;
-    Vertex3D B = Bc;
-    Vertex3D C = Cc;
-
-    A = Transforms::NDCSpace(A, lp->frustum);
-    B = Transforms::NDCSpace(B, lp->frustum);
-    C = Transforms::PerspectiveNDCSpace(C, lp->frustum);
-
-    // y obtenemos los puntos en la proyección 2d
-    Point2D v1 = Transforms::screenSpace(A, lp->frustum);
-    Point2D v2 = Transforms::screenSpace(B, lp->frustum);
-    Point2D v3 = Transforms::screenSpace(C, lp->frustum);
-
-    // Ordenamos los vertices y puntos por su valor en 'y'
-    Maths::sortPointsByY(v1, v2, v3);
-    Maths::sortVerticesByY(A, B, C);
-    Maths::sortVerticesByY(Aos, Bos, Cos);
-
-    if (v2.y == v3.y) {
-        this->scanShadowMappingBottomFlatTriangle(v1, v2, v3, A, B, C, lp);
-    } else if (v1.y == v2.y) {
-        this->scanShadowMappingTopFlatTriangle( v1, v2, v3, A, B, C, lp);
-    } else {
-        // En este caso tenemos vamos a dividir los triángulos
-        // para tener uno que cumpla 'bottomFlat' y el otro 'TopFlat'
-        // y necesitamos un punto extra para separar ambos.
-        const int x = (v1.x + ((v2.y - v1.y) / (v3.y - v1.y)) * (v3.x - v1.x));
-        const int y = v2.y;
-
-        const Point2D v4(x, y);
-
-        // Hayamos las coordenadas baricéntricas del punto v4 respecto al triángulo v1, v2, v3
-        float alpha, theta, gamma;
-        Maths::getBarycentricCoordinates(alpha, theta, gamma, v4.x, v4.y, v1, v2, v3);
-
-        const float u = alpha * A.u + theta * B.u + gamma * C.u;
-        const float v = alpha * A.v + theta * B.v + gamma * C.v;
-
-        // Creamos un nuevo vértice que representa v4 (el nuevo punto creado) en el triángulo original
-        Vertex3D D = Vertex3D(
-                alpha * A.x + theta * B.x + gamma * C.x,
-                alpha * A.y + theta * B.y + gamma * C.y,
-                alpha * A.z + theta * B.z + gamma * C.z
-        );
-
-        D.u = u; D.v = v;
-
-        this->scanShadowMappingBottomFlatTriangle(v1, v2, v4, A, B, D, lp);
-        this->scanShadowMappingTopFlatTriangle(v2, v4, v3, B, D, C, lp);
-    }
-}*/
-
-/*void Triangle::scanShadowMappingTopFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
-{
-    float invslope1 = (pc.x - pa.x) / (pc.y - pa.y);
-    float invslope2 = (pc.x - pb.x) / (pc.y - pb.y);
-
-    float curx1 = pc.x;
-    float curx2 = pc.x;
-
-    for (int scanlineY = pc.y; scanlineY > pa.y; scanlineY--) {
-        this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
-        curx1 -= invslope1;
-        curx2 -= invslope2;
-    }
-}*/
-
-/*void Triangle::scanShadowMappingBottomFlatTriangle(Point2D pa, Point2D pb, Point2D pc, Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
-{
-    float invslope1 = (pb.x - pa.x) / (pb.y - pa.y);
-    float invslope2 = (pc.x - pa.x) / (pc.y - pa.y);
-
-    float curx1 = pa.x;
-    float curx2 = pa.x;
-
-    for (int scanlineY = pa.y; scanlineY <= pb.y; scanlineY++) {
-        this->scanShadowMappingLine(curx1, curx2, scanlineY, pa, pb, pc, A, B, C, lp);
-        curx1 += invslope1;
-        curx2 += invslope2;
-    }
-}*/
-
 void Triangle::processPixelTexture(Color &pixelColor, float tex_u, float tex_v, bool bilinear) const {
     float ignorablePartInt;
 
@@ -454,89 +287,11 @@ void Triangle::processPixelTexture(Color &pixelColor, float tex_u, float tex_v, 
     }
 
     if (bilinear) {
-        pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(lod), tex_u, tex_v);
+        pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getImage()->getSurface(), tex_u, tex_v);
         return;
     }
 
-    pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(lod), tex_u, tex_v);
-}
-
-void
-Triangle::processPixelLightmap(Color &pixelColor, float light_u, float light_v, const Uint8 &red, const Uint8 &green,
-                               const Uint8 &blue, const Uint8 &alpha) {
-    EngineSetup *engineSetup = EngineSetup::get();
-
-    float intpart;
-    // Check for inversion U
-    if (!std::signbit(light_u)) {
-        light_u = modf(light_u, &intpart);
-    } else {
-        light_u = 1 - modf(abs(light_u), &intpart);
-    }
-
-    // Check for inversion V
-    if (!std::signbit(light_v)) {
-        light_v = modf(light_v, &intpart);
-    } else {
-        light_v = 1 - modf(abs(light_v), &intpart);
-    }
-
-    Color lightmap_color = Color(0, 0, 0);
-    Uint8 lightmap_intensity = 0;
-    char c = 1;
-
-    for (int nl = 0; nl < lightmap->numLightmaps; nl++) {
-        int indexPattern;
-        int style = typelight[nl];
-        if (style > 11) continue;
-        switch (nl) {
-            case 0:
-                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap, light_v, light_u);
-                indexPattern = (int) lightmapIndexPattern;
-                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
-                break;
-            case 1:
-                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap2, light_v, light_u);
-                indexPattern = (int) lightmapIndexPattern2;
-                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
-                break;
-            case 2:
-                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap3, light_v, light_u);
-                indexPattern = (int) lightmapIndexPattern3;
-                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
-                break;
-            case 3:
-                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
-                indexPattern = (int) lightmapIndexPattern4;
-                c = engineSetup->LIGHT_PATTERNS[style][indexPattern];
-                break;
-            default:
-                lightmap_color = Tools::readSurfacePixelFromUV(getLightmap()->lightmap4, light_v, light_u);
-        }
-
-        lightmap_intensity += Tools::getRedValueFromColor(lightmap_color.getColor()) + (c & 0xFF00);
-    }
-
-    lightmap_intensity *= engineSetup->LIGHTMAPPING_INTENSITY; // RGB son iguales en un gris
-
-    pixelColor = Color(
-            (int) (red * engineSetup->LIGHTMAPPING_BLEND_INTENSITY),
-            (int) (green * engineSetup->LIGHTMAPPING_BLEND_INTENSITY),
-            (int) (blue * engineSetup->LIGHTMAPPING_BLEND_INTENSITY)
-    );
-
-    pixelColor = pixelColor * lightmap_intensity;
-
-    if (engineSetup->SHOW_LIGHTMAPPING) {
-        Uint8 pred, pgreen, pblue, palpha;
-        SDL_GetRGBA(lightmap_color.getColor(), texture->getSurface(lod)->format, &pred, &pgreen, &pblue, &palpha);
-
-        pixelColor = Color(
-                std::min(int((pred) * lightmap_intensity), (int) c),
-                std::min(int((pgreen) * lightmap_intensity), (int) c),
-                std::min(int((pblue) * lightmap_intensity), (int) c)
-        );
-    }
+    pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getImage()->getSurface(), tex_u, tex_v);
 }
 
 /*void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
@@ -614,9 +369,9 @@ bool Triangle::isPointInside(Vertex3D v) const {
 int Triangle::processLOD() const {
     if (getTexture() == nullptr) return 0;
 
-    if (getTexture()->isMipMapped() && EngineSetup::get()->ENABLE_MIPMAPPING) {
+    if (EngineSetup::get()->ENABLE_MIPMAPPING) {
         float area_screen = Maths::TriangleArea(As.x, As.y, Bs.x, Bs.y, Cs.x, Cs.y);
-        float area_texture = getTexture()->getAreaForVertices(A, B, C, 1);
+        float area_texture = getTexture()->getImage()->getAreaForVertices(A, B, C, 1);
 
         float r = area_texture / area_screen;
 

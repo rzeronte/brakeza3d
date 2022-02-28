@@ -5,7 +5,7 @@
 #include "../../include/EngineSetup.h"
 
 Mesh3DBody::Mesh3DBody() {
-    setMass(1.f);
+    setMass(0.f);
     BSPEntityIndex = -1;
 }
 
@@ -21,15 +21,20 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
     btQuaternion rotation;
     matrixRotation.getRotation(rotation);
 
+    auto *collisionShape = new btConvexHullShape(*this->getConvexHullShapeFromMesh());
+    btVector3 inertia(0, 0, 0);
+    collisionShape->calculateLocalInertia(mass, inertia);
+
     btRigidBody::btRigidBodyConstructionInfo cInfo(
         mass,
         new btDefaultMotionState(transformation),
-        new btConvexHullShape(*this->getConvexHullShapeFromMesh()),
-        btVector3(0, 0, 0)
+        collisionShape,
+        inertia
     );
 
     this->body = new btRigidBody(cInfo);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
+    this->body->setRestitution(0.5);
 
     world->addRigidBody(this->body);
 }
@@ -74,50 +79,40 @@ void Mesh3DBody::integrate() {
     body->getMotionState()->getWorldTransform(t);
     btVector3 pos = t.getOrigin();
 
-    Vertex3D worldPosition = Vertex3D(pos.getX(), pos.getY(), pos.getZ());
-    this->setPosition(worldPosition);
+    this->setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
+
+    auto rotation = t.getRotation();
+    btMatrix3x3 matrixRotation;
+    matrixRotation.setRotation(rotation);
+
+    M3 brakezaRotation = Tools::BulletM3ToM3(matrixRotation);
+    setRotation(brakezaRotation);
 }
+
 
 void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world) {
     setMass(mass);
-    updateBoundingBox();
 
-    this->triangleMesh = new btTriangleMesh();
+    btTransform transformation;
+    transformation.setIdentity();
 
-    for (auto & modelTriangle : this->modelTriangles) {
-        btVector3 a, b, c;
-        a = btVector3(modelTriangle->Ao.x, modelTriangle->Ao.y, modelTriangle->Ao.z);
-        b = btVector3(modelTriangle->Bo.x, modelTriangle->Bo.y, modelTriangle->Bo.z);
-        c = btVector3(modelTriangle->Co.x, modelTriangle->Co.y, modelTriangle->Co.z);
-
-        this->triangleMesh.addTriangle(a, b, c, false);
-    }
-
-    btTransform trans;
-    trans.setIdentity();
-    btVector3 localInertia(0, 0, 0);
-
-    this->shape = new btBvhTriangleMeshShape(&triangleMesh, true, true);
-    this->shape->calculateLocalInertia(0, localInertia);
+    btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh();
 
     btVector3 position;
     getPosition().saveToBtVector3(&position);
-    trans.setOrigin(position);
+    transformation.setOrigin(position);
 
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
-        new btDefaultMotionState(trans),
-        shape,
-        localInertia
+        new btDefaultMotionState(transformation),
+        triangleMeshShape,
+        btVector3(0, 0, 0)
     );
 
     this->body = new btRigidBody(info);
     this->body->activate(true);
     this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    this->body->setCcdMotionThreshold(1.f);
-    this->body->setCcdSweptSphereRadius(1.f);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
-
     world->addRigidBody(this->body);
 }
 
@@ -127,13 +122,29 @@ void Mesh3DBody::setGravity(Vertex3D g) {
     getRigidBody()->setGravity(gravity);
 }
 
+btBvhTriangleMeshShape *Mesh3DBody::getTriangleMeshFromMesh() {
+    auto *triangleMesh = new btTriangleMesh();
+    updateBoundingBox();
+
+    for (auto & modelTriangle : this->modelTriangles) {
+        btVector3 a, b, c;
+        modelTriangle->A.saveToBtVector3(&a);
+        modelTriangle->B.saveToBtVector3(&b);
+        modelTriangle->C.saveToBtVector3(&c);
+
+        triangleMesh->addTriangle(a, b, c, false);
+    }
+
+    return new btBvhTriangleMeshShape(triangleMesh, true, true);
+}
+
 btConvexHullShape *Mesh3DBody::getConvexHullShapeFromMesh() {
     auto *convexHull = new btConvexHullShape();
     for (auto & modelTriangle : this->modelTriangles) {
-
-        btVector3 a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
-        btVector3 b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
-        btVector3 c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
+        btVector3 a, b, c;
+        modelTriangle->A.saveToBtVector3(&a);
+        modelTriangle->B.saveToBtVector3(&b);
+        modelTriangle->C.saveToBtVector3(&c);
 
         convexHull->addPoint(a);
         convexHull->addPoint(b);

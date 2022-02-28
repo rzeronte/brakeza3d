@@ -353,3 +353,11 @@ btMatrix3x3 Tools::M3ToBulletM3(M3 m) {
             m.m[8]
     );
 }
+
+M3 Tools::BulletM3ToM3(btMatrix3x3 m) {
+    return M3(
+        m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
+        m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
+        m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
+    );
+}

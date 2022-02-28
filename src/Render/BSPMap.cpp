@@ -208,27 +208,17 @@ bool BSPMap::InitializeTextures() {
         int width = (int) mipTexture->width;
         int height = (int) mipTexture->height;
 
-        textures[i] = Texture(width, height);
+        //textures[i] = Texture(width, height);
 
-        textures[i].setFilename(std::string(mipTexture->name));
+        //textures[i].setFilename(std::string(mipTexture->name));
 
         if (strncmp(mipTexture->name, "*", 1) == 0) {
-            textures[i].liquid = true;
+            //textures[i].liquid = true;
         }
         if (strncmp(mipTexture->name, "+", 1) == 0) {
-            textures[i].animated = true;
+            //textures[i].animated = true;
         }
-        textures[i].setMipMapped(true);
-
-        Logging::Log(
-                "InitializeTextures: " + std::string(mipTexture->name) +
-                " | animated: " + std::to_string(textures[i].animated) +
-                " | liquid: " + std::to_string(textures[i].liquid) +
-                " | textureId: " + std::to_string(i) + " '" +
-                " | w: " + std::to_string(textures[i].getSurface(1)->w) +
-                " | h: " + std::to_string(textures[i].getSurface(1)->h),
-                "Q1MAP"
-        );
+        //textures[i].setMipMapped(true);
 
         // Guardamos la textura, con sus mip mappings
         for (int mip_m = 1; mip_m <= 8; mip_m = 2 * mip_m) { // 1, 2, 4, 8
@@ -250,7 +240,7 @@ bool BSPMap::InitializeTextures() {
                 }
             }
 
-            textures[i].loadFromRaw(texture, width_t, height_t, mip_m);
+            //textures[i].loadFromRaw(texture, width_t, height_t, mip_m);
             delete texture;
         }
     }
@@ -258,9 +248,9 @@ bool BSPMap::InitializeTextures() {
     // No podemos hacerlo en el bucle superior, pq no estarían rellenados todos los "animations" en cada iteracción
     // Así nos aseguramos de que todos los "+Xname" está cargado en textures[]
     for (int i = 0; i < this->getNumTextures(); i++) {
-        if (textures[i].animated) {
-            textures[i].numAnimatedFrames = getTextureAnimatedFrames(textures[i].getFilename());
-        }
+        //if (textures[i].animated) {
+        //    textures[i].numAnimatedFrames = getTextureAnimatedFrames(textures[i].getFilename());
+        //}
     }
 
     return true;
@@ -297,7 +287,7 @@ void BSPMap::InitializeLightmaps() {
         CalcSurfaceExtents(surfaceId, lt);
 
         if (lt->offset != -1) {
-            this->lightmaps[surfaceId].setLightMapped(true);
+            //this->lightmaps[surfaceId].setLightMapped(true);
 
             int smax = lt->width;
             int tmax = lt->height;
@@ -345,7 +335,7 @@ void BSPMap::InitializeLightmaps() {
                     }
                 }
 
-                switch (maps) {
+                /*switch (maps) {
                     case 0:
                         this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture, smax, tmax);
                         break;
@@ -361,11 +351,11 @@ void BSPMap::InitializeLightmaps() {
                     default:
                         this->lightmaps[surfaceId].loadLightmapFromRaw(maps, texture, smax, tmax);
                         break;
-                }
-                this->lightmaps[surfaceId].numLightmaps++;
+                }*/
+                //this->lightmaps[surfaceId].numLightmaps++;
             }
         } else {
-            this->lightmaps[surfaceId].setLightMapped(false);
+            //this->lightmaps[surfaceId].setLightMapped(false);
         }
     }
 }
@@ -386,7 +376,7 @@ void BSPMap::bindTrianglesLightmaps() {
             this->model_triangles[j]->surfaceBSPIndex = surfaceId;
             this->model_triangles[j]->isBSP = true;
 
-            if (lightmaps[surfaceId].isLightMapped()) {
+            /*if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];
 
                 this->model_triangles[j]->getLightmap()->mins[0] = lt->mins[0];
@@ -403,7 +393,7 @@ void BSPMap::bindTrianglesLightmaps() {
                 this->model_triangles[j]->getLightmap()->extents[0] = abs(lt->maxs[0] - lt->mins[0]);
 
                 this->model_triangles[j]->setLightmap(&lightmaps[surfaceId]);
-            }
+            }*/
         }
     }
 }
@@ -929,9 +919,9 @@ bool BSPMap::isLeafLiquid(int type) {
 
 bool BSPMap::hasTexture(const std::string& name) {
     for (int i = 0; i < this->getNumTextures(); i++) {
-        if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
-            return true;
-        }
+        //if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
+        //    return true;
+        //}
     }
 
     return false;
@@ -955,9 +945,9 @@ int BSPMap::getTextureAnimatedFrames(const std::string& name) {
 
 Texture *BSPMap::getTexture(const std::string& name) {
     for (int i = 0; i < this->getNumTextures(); i++) {
-        if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
-            return &textures[i];
-        }
+        //if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
+        //    return &textures[i];
+        //}
     }
     return nullptr;
 }

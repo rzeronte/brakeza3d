@@ -14,6 +14,17 @@
 #define MAX_BSP_TRIANGLES 50000
 #define MAX_BSP_ENTITIES 5000
 
+// Mip Texture
+struct miptex_t {
+    char name[16];            // Name of the texture
+    unsigned int width;        // Width of the texture, must be a multiple of 8 (converted from long!)
+    unsigned int height;    // Height of the texture, must be a multiple of 8 (converted from long!)
+    unsigned int offset1;    // -> byte texture[width   * height] (converted from long!)
+    unsigned int offset2;    // -> byte texture[width/2 * height/2] (converted from long!)
+    unsigned int offset4;    // -> byte texture[width/4 * height/4] (converted from long!)
+    unsigned int offset8;    // -> byte texture[width/8 * height/8] (converted from long!)
+};
+
 // BSP entries
 struct dentry_t {
     int offset;        // Offset to entry, in bytes, from start of file (converted from long!)

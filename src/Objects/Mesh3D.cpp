@@ -27,7 +27,6 @@ Mesh3D::Mesh3D() {
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
     // draw triangles of mesh
     for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateLightmapFrame();
         frameTriangles->push_back(modelTriangle);
     }
 }
@@ -139,6 +138,12 @@ bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
 
     Logging::Log("AssimpLoadGeometryFromFile for " + fileName, "Mesh3D");
 
+    if (!Tools::fileExists(fileName)) {
+        Logging::Log("Error import 3D file not exist", "Mesh3D");
+        exit(-1);
+        return false;
+    }
+
     const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate |
                                                        aiProcess_JoinIdenticalVertices |
                                                        aiProcess_SortByPType |
@@ -198,12 +203,11 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
                     EngineSetup::get()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
 
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-            auto *t = new Texture();
-            if (t->loadTGA(FullPath.c_str(), 1)) {
-                this->modelTextures[this->numTextures] = *t;
-                this->modelTextures[this->numTextures].loaded = true;
-                this->numTextures++;
-            }
+            auto *t = new Texture(FullPath);
+
+            this->modelTextures[this->numTextures] = *t;
+            this->numTextures++;
+
         } else {
             Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color",
                                         "Mesh3DAnimated");

@@ -38,10 +38,9 @@ void ComponentGame::onStart() {
     object->setCollisionsEnabled(true);
     object->setScale(1);
     object->setFlatTextureColor(false);
-    object->setPosition(Vertex3D(15, -700, 2600));
     object->setRotationFrameEnabled(false);
-    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_cube_02.fbx"));
-    object->makeRigidBody(100, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
+    object->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
     Brakeza3D::get()->addObject3D(object, "test");
 }
 

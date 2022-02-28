@@ -3,6 +3,7 @@
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
+    iconsTextures = new TexturePackage();
 }
 
 void ComponentHUD::onStart() {
@@ -46,6 +47,9 @@ void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_ammo.png", "ammoType");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "hud.png", "hud");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
+
+    iconsTextures->addItem(SETUP->HUD_FOLDER + "flare.png", "flare");
+    iconsTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "plague");
 }
 
 void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
@@ -92,5 +96,11 @@ void ComponentHUD::drawHUD() {
             this->textureWriter->writeText(textX, textY, weaponType->getLabel().c_str(), false);
             textY += stepY;
         }
+    }
+
+    int currentIconsOffsetX=0;
+    for (int i = 0; i < iconsTextures->size(); i++) {
+        iconsTextures->getTextureByLabel("flare")->getImage()->drawFlat(currentIconsOffsetX, 30);
+        currentIconsOffsetX += iconsTextures->getTextureByLabel("flare")->getImage()->getSurface()->w;
     }
 }

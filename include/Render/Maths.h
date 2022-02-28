@@ -60,8 +60,7 @@ public:
                        Object3D *parent, Texture *texture, Texture *lightmap, bool isClipped, bool isBsp,
                        const unsigned char[4], bool isFlattenTextureColor, bool enableLights);
 
-    static bool
-    ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int plane_id, Plane *planes);
+    static bool ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int plane_id, Plane *planes);
 
     static float distancePointVector(Vertex3D, Vector3D);
 

@@ -1,5 +1,6 @@
 
 #include "../../include/Physics/Projectile3DBody.h"
+#include "../../include/ComponentsManager.h"
 
 Projectile3DBody::Projectile3DBody() {
     this->ttl = 0;
@@ -25,6 +26,7 @@ void Projectile3DBody::onUpdate() {
     if (this->ttl != 0) {
         if (this->timeToLive.isFinished()) {
             this->timeToLive.setEnabled(true);
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getRigidBody());
             this->removed = true;
         }
 

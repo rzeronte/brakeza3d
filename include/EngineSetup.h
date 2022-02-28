@@ -35,7 +35,7 @@ public:
     Vertex3D defaultCameraPosition = Vertex3D(1, 1, 1);
     Vertex3D defaultCameraAnglesRotation = Vertex3D(190, 0, 0);
 
-    Vertex3D gravity = Vertex3D(0, -100.0f, 0);
+    Vertex3D gravity = Vertex3D(0, -900.0f, 0);
 
     // Screen dimension constants
     const int screenWidth = 320;
@@ -54,7 +54,7 @@ public:
     float EPSILON = 0.00001f;
 
     bool ENABLE_FOG = true;
-    float FOG_DISTANCE = 25000;
+    float FOG_DISTANCE = 4500;
     float FOG_INTENSITY = 1.f;
     Color FOG_COLOR = Color::FOGDefault();
     float FRUSTUM_FARPLANE_DISTANCE = 9000000;
@@ -157,10 +157,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED = 4.1f;
+    float WALKING_SPEED = 45.0f;
     float TURN_SPEED = 5.f;
     float PITCH_SPEED = 5.f;
-    float STRAFE_SPEED = 4.1f;
+    float STRAFE_SPEED = 45.0f;
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.250;
@@ -218,7 +218,7 @@ public:
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
-    float PROJECTILE_DEMO_IMPULSE = 1000;
+    float PROJECTILE_DEMO_IMPULSE = 4000;
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 1;
     float PROJECTILE_DEMO_TTL = 10;

@@ -29,6 +29,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
+    TexturePackage *iconsTextures;
     TextWriter *textureWriter{};
 
     void loadImages();
