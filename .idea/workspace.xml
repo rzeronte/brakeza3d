@@ -18,143 +18,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="cleaning Collisions Component">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/dead_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/evil_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/evil_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/evil_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/evil_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/evil_4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/god_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/kill_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/kill_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/kill_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/kill_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/kill_4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/ouch_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/ouch_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/ouch_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/ouch_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/ouch_4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/stand_0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/stand_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/stand_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/stand_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/face/stand_4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/func_button.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/info_player_start.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/info_teleport_destination.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/item_health.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/light.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/light_flame.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/monster.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/object3d.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/shield.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_shotgun.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/Cubex.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/Diffuse.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/G18.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/Moon_2K.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/Wolf.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/astroboy.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/big_triangle.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/box.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/box.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/brakeza.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/brakeza.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/car.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/car.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/cat.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/chest.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city_part_1.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city_part_1.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city_plane.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/city_plane.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/cubes.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/dungeon.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/dungeon_fpc/Tile Floor.001_Baked.mcx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/dungeon_fpc/Tile Floor.001_Baked.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/ganster.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/ganster.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/glock.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/glock_fire.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/glock_idle.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/glock_reload.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/hands.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/hands_fire.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/hands_idle.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/hands_reload.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/lowpolybullet.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/lowpolybullet.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/machinegun_idle.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/machinegun_shot.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/mono.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/plane.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/robot.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/robot.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/sand.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/satellite.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spider.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/triangle_2uv.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/triangle_2uv.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/weapon_box.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/weaving.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/wolf.dae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/BuildingsUV0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/Car Texture 1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/Diffuse_2K.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/Dish.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/FullTexture.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud_ammo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud_health.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud_lives.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/Imagen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/SF_Corvette-F3_diffuse.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/Tile Floor.001_Bake1_cyclesbake_COMBINED.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/chessboard.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/first_aid.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_cells.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_rockets.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_shells.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_spikes.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_texture_base.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/sarcophagus.002_Bake1_cyclesbake_COMBINED.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/scene01_combined.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/space.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/spaceship.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Image.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/TexturePackage.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/TexturePackage.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Body.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Body.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/BSPMap.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/BSPMap.h" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="clean assets / refact Texture for desacouple BSP requeriments">
+      <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Texture.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Texture.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimationDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimationDirectional.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/WeaponAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/WeaponAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TexturePackage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TexturePackage.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Billboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Billboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Texture.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -479,7 +348,7 @@
       <workItem from="1645904702503" duration="75000" />
       <workItem from="1645905272629" duration="1000" />
       <workItem from="1645986743536" duration="9881000" />
-      <workItem from="1646000847294" duration="10369000" />
+      <workItem from="1646000847294" duration="10775000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -558,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645753882361</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="clean assets / refact Texture for desacouple BSP requeriments">
+      <created>1646016859172</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1646016859172</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -706,7 +582,8 @@
     <MESSAGE value="improve componentGame" />
     <MESSAGE value="improve Collisions Component" />
     <MESSAGE value="cleaning Collisions Component" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleaning Collisions Component" />
+    <MESSAGE value="clean assets / refact Texture for desacouple BSP requeriments" />
+    <option name="LAST_COMMIT_MESSAGE" value="clean assets / refact Texture for desacouple BSP requeriments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
