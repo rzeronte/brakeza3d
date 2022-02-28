@@ -24,9 +24,6 @@ void BSPMap::init(Camera3D *cam) {
     textureObjNames = nullptr;
     visibleSurfaces = nullptr;
 
-    this->textures = new Texture[MAX_MAP_TEXTURES];
-    this->lightmaps = new Texture[MAX_BSP_TRIANGLES];
-
     // La posición de un mapa ha de ser fija ya que la información cacheada está referida a esta referencia
     // La rotación x = 180, y = 90, es para ajustar los ejes con los que quake1 trabaja. (z la vertical)
     setPosition(Vertex3D(0, 0, 0));
@@ -197,7 +194,6 @@ bool BSPMap::InitializeTextures() {
 
     // Allocate memory for texture names and an array to store the textures we are using
     textureObjNames = new unsigned int[numTotalTextures];
-    textures = new Texture[numTotalTextures];
 
     // Loop through all texture objects to associate them with a texture and calculate mipmaps from it
     for (int i = 0; i < this->getNumTextures(); i++) {
@@ -443,7 +439,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
             normal,
             model_triangles,
             this,
-            &textures[this->getTextureInfo(surface)->texid],
+            textures[this->getTextureInfo(surface)->texid],
             false,
             true,
             false,

@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentHUD.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/2D/ButtonsCallbacks.h"
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
@@ -10,10 +11,11 @@ void ComponentHUD::onStart() {
     Logging::Log("ComponentHUD onStart", "ComponentHUD");
 
     loadImages();
+    loadButtons();
 
     textureWriter = new TextWriter(
-            ComponentsManager::get()->getComponentWindow()->renderer,
-            std::string(EngineSetup::get()->SPRITES_FOLDER + "conchars.png").c_str()
+ComponentsManager::get()->getComponentWindow()->renderer,
+std::string(EngineSetup::get()->SPRITES_FOLDER + EngineSetup::get()->CONCHARS_SPRITE_FILE).c_str()
     );
 }
 
@@ -21,6 +23,7 @@ void ComponentHUD::preUpdate() {
 }
 
 void ComponentHUD::onUpdate() {
+
     if (SETUP->DRAW_HUD) {
         if (SETUP->DRAW_CROSSHAIR) {
             Drawable::drawCrossHair();
@@ -38,7 +41,9 @@ void ComponentHUD::onEnd() {
 }
 
 void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish) {
-
+    for(auto & button : buttons) {
+        button->onUpdate();
+    }
 }
 
 void ComponentHUD::loadImages() {
@@ -49,7 +54,7 @@ void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
 
     iconsTextures->addItem(SETUP->HUD_FOLDER + "flare.png", "flare");
-    iconsTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "plague");
+    iconsTextures->addItem(SETUP->HUD_FOLDER + "plague.png", "plague");
 }
 
 void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
@@ -98,9 +103,21 @@ void ComponentHUD::drawHUD() {
         }
     }
 
-    int currentIconsOffsetX=0;
-    for (int i = 0; i < iconsTextures->size(); i++) {
-        iconsTextures->getTextureByLabel("flare")->getImage()->drawFlat(currentIconsOffsetX, 30);
-        currentIconsOffsetX += iconsTextures->getTextureByLabel("flare")->getImage()->getSurface()->w;
+    for (int i = 0; i < buttons.size(); i++) {
+        buttons[i]->draw();
     }
 }
+
+const std::vector<Button *> &ComponentHUD::getButtons() const {
+    return buttons;
+}
+
+void ComponentHUD::addButton(Button *button) {
+    this->buttons.push_back(button);
+}
+
+void ComponentHUD::loadButtons() {
+    addButton(new Button(0, 208, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));
+    addButton(new Button(32, 208, SETUP->HUD_FOLDER + "plague.png", &callbackPlayerShoot2));
+}
+

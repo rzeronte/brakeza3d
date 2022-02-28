@@ -3,6 +3,7 @@
 #define BRAKEDA3D_TEXTUREANIMATION_H
 
 #include <string>
+#include <vector>
 #include "../Render/Texture.h"
 
 #define ANIMATION2D_MAX_FRAMES 25
@@ -11,10 +12,10 @@ class TextureAnimation {
 public:
     std::string base_file;
 
-    int numFrames;
+    int numberFramesToLoad;
     int currentFrame;
-    int fps{};
-    Texture *frames[ANIMATION2D_MAX_FRAMES]{};
+    int fps;
+    std::vector<Texture*> frames;
 
     bool endAnimation;
     bool paused;

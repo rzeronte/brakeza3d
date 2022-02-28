@@ -6,15 +6,6 @@
 #include "../../include/Brakeza3D.h"
 
 Mesh3D::Mesh3D() {
-    this->modelVertices = new Vertex3D[MAX_VERTEX_MODEL];
-    this->modelTextures = new Texture[MAX_MESH_TEXTURES];
-
-    this->numTextures = 0;
-
-    for (int i = 0; i < MAX_MESH_TEXTURES; i++) {
-        this->modelTextures[i] = Texture();
-    }
-
     BSPEntityIndex = -1;
     decal = false;
 
@@ -104,7 +95,6 @@ void Mesh3D::copyFrom(Mesh3D *source) {
     }
 
     // Textures
-    this->numTextures = source->numTextures;
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
     this->source_file = source->source_file;
@@ -185,7 +175,6 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
         std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
 
         if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
-            this->numTextures++;
             continue;
         }
         //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE)  >= 1) {
@@ -205,12 +194,9 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
             auto *t = new Texture(FullPath);
 
-            this->modelTextures[this->numTextures] = *t;
-            this->numTextures++;
-
+            this->modelTextures.push_back(t);
         } else {
-            Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color",
-                                        "Mesh3DAnimated");
+            Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
         }
         //}
     }
@@ -266,8 +252,8 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
         t->setEnableLights(this->isEnableLights());
         this->modelTriangles.push_back(t);
 
-        if (this->numTextures > 0) {
-            this->modelTriangles[k]->setTexture(&this->modelTextures[mesh->mMaterialIndex]);
+        if (this->modelTriangles.size() > 0) {
+            this->modelTriangles[k]->setTexture(this->modelTextures[mesh->mMaterialIndex]);
         }
     }
 }

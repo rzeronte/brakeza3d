@@ -14,9 +14,6 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-#define MAX_VERTEX_MODEL 250000
-#define MAX_MESH_TEXTURES 512
-
 typedef float vec3_t[3];
 
 class Mesh3D : public Object3D {
@@ -27,16 +24,13 @@ public:
     Assimp::Importer importer;
 
     std::vector<Triangle *> modelTriangles;
+    std::vector<Texture *> modelTextures;
+    std::vector<Vertex3D *> modelVertices;
+
     AABB3D aabb;
 
     bool flatTextureColor;
     bool enableLights = false;
-
-    Texture *modelTextures;
-    Vertex3D *modelVertices;
-
-    int numTextures;
-
     int BSPEntityIndex;
 
     Mesh3D();

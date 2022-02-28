@@ -1,7 +1,7 @@
 MD5Version 10
 commandline ""
 
-numFrames 141
+numberFramesToLoad 141
 numJoints 33
 frameRate 24
 numAnimatedComponents 198

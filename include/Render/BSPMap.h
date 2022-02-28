@@ -209,25 +209,25 @@ public:
     int numAllSurfaces = 0;
 
     float scale = 1;
-    dheader_t *header{};
+    dheader_t *header;
 
-    surface_triangles_t *surface_triangles{};
+    surface_triangles_t *surface_triangles;
     std::vector<Triangle *> model_triangles;
 
-    Texture *textures{};
+    std::vector<Texture*> textures;
 
-    entity_t *entities{};
-    int n_entities{};
+    entity_t *entities;
+    int n_entities;
 
-    lightmap_t *surface_lightmaps{};   // info surface-lightmap
-    Texture *lightmaps{};              // lightmaps textures
+    lightmap_t *surface_lightmaps;   // info surface-lightmap
+    std::vector<Texture *> lightmaps;              // lightmaps textures
 
-    unsigned int palette[256]{};
+    unsigned int palette[256];
 
     btTriangleMesh bspBtMesh;
-    btBvhTriangleMeshShape *bspBtShape{};
-    btDefaultMotionState *motionState{};
-    btRigidBody *bspRigidBody{};
+    btBvhTriangleMeshShape *bspBtShape;
+    btDefaultMotionState *motionState;
+    btRigidBody *bspRigidBody;
 
     dleaf_t *currentLeaf = nullptr;
     char *bsp{};

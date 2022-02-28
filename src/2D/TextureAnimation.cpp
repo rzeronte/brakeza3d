@@ -4,16 +4,13 @@
 #include "../../include/2D/TextureAnimation.h"
 #include "../../include/EngineSetup.h"
 
-TextureAnimation::TextureAnimation() : numFrames(0), currentFrame(0), endAnimation(false), paused(false) {
-    for (auto & frame : this->frames) {
-        frame = new Texture();
-    }
+TextureAnimation::TextureAnimation() : numberFramesToLoad(0), currentFrame(0), endAnimation(false), paused(false) {
 }
 
 
 void TextureAnimation::setup(std::string file, int num_frames, int fps) {
     this->base_file = std::move(file);
-    this->numFrames = num_frames;
+    this->numberFramesToLoad = num_frames;
     this->fps = fps;
 
     this->loadImages();
@@ -22,12 +19,12 @@ void TextureAnimation::setup(std::string file, int num_frames, int fps) {
 void TextureAnimation::loadImages() {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
-        this->frames[i]->getImage()->loadTGA(file.c_str());
+        this->frames.push_back(new Texture(file));
     }
 }
 
 int TextureAnimation::getNumFrames() const {
-    return numFrames;
+    return numberFramesToLoad;
 }
 
 Texture *TextureAnimation::getCurrentFrame() {

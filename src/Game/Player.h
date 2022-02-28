@@ -41,7 +41,7 @@ public:
 
     void respawn();
 
-    void shoot();
+    void * shoot();
 
     void reload();
 

@@ -13,8 +13,6 @@ class Texture {
 private:
     Image *image;
 public:
-    Texture();
-
     Texture(std::string filename);
     Image *getImage() const;
 };

@@ -20,7 +20,7 @@ public:
     int fps = 20;
 
     bool isZeroDirection = false;
-    Texture *frames[9][ANIMATION2D_MAX_FRAMES]{};
+    Texture *frames[9][ANIMATION2D_MAX_FRAMES];
 
     TextureAnimationDirectional();
 

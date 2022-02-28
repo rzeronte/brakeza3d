@@ -19,7 +19,7 @@ public:
     Vertex3D Q3;
     Vertex3D Q4;
 
-    Texture *texture = new Texture();
+    Texture *texture;
 
     Billboard();
 

@@ -19,11 +19,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="clean assets / refact Texture for desacouple BSP requeriments">
+      <change afterPath="$PROJECT_DIR$/include/2D/Button.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/2D/ButtonsCallbacks.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/2D/Button.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/bob/bob_lamp_update.md5anim" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/bob/bob_lamp_update.md5anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5anim" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/hellknight/hellknight2.md5anim" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/hellknight/hellknight2.md5anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimationDirectional.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimationDirectional.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenCL/OCLTriangle.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/BSPMap.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/BSPMap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Billboard.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Billboard.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Texture.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Texture.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimationDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimationDirectional.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Billboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Billboard.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Texture.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,11 +220,11 @@
       <recent name="$PROJECT_DIR$/include/Shaders" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/2D" />
+      <recent name="$PROJECT_DIR$/src/2D" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/include/Physics" />
       <recent name="$PROJECT_DIR$/src/Collisions" />
-      <recent name="$PROJECT_DIR$/src/Physics" />
-      <recent name="$PROJECT_DIR$/src/Misc" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
@@ -207,17 +233,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -348,7 +374,8 @@
       <workItem from="1645904702503" duration="75000" />
       <workItem from="1645905272629" duration="1000" />
       <workItem from="1645986743536" duration="9881000" />
-      <workItem from="1646000847294" duration="10775000" />
+      <workItem from="1646000847294" duration="11648000" />
+      <workItem from="1646074651688" duration="12950000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -434,7 +461,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646016859172</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="clean assets / refact Texture for desacouple BSP requeriments">
+      <created>1646017312464</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1646017312464</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">

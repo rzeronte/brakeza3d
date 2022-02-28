@@ -10,7 +10,6 @@
 #include "../Render/Texture.h"
 #include <list>
 #include <vector>
-#include "../OpenCL/OCLTriangle.h"
 #include "../Misc/Color.h"
 
 class Triangle {

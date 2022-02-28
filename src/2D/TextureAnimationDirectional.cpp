@@ -5,11 +5,6 @@
 #include "../../include/EngineSetup.h"
 
 TextureAnimationDirectional::TextureAnimationDirectional() {
-    for (int d = 0; d <= 8; d++) {
-        for (int j = 0; j < ANIMATION2D_MAX_FRAMES; j++) {
-            this->frames[d][j] = new Texture();
-        }
-    }
 }
 
 void TextureAnimationDirectional::setup(std::string file, int newNumFrames, int newFps, int newMaxTimes) {
@@ -23,7 +18,7 @@ void TextureAnimationDirectional::loadImages() {
     for (int d = 1; d <= 8; d++) {
         for (int i = 0; i < this->getNumFrames(); i++) {
             std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
-            this->frames[d][i]->getImage()->loadTGA(file.c_str());
+            this->frames[d][i] = new Texture(file);
         }
     }
 }
@@ -32,7 +27,7 @@ void TextureAnimationDirectional::loadImagesForZeroDirection() {
     int d = 0;
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
-        this->frames[0][i]->getImage()->loadTGA(file.c_str());
+        this->frames[0][i] = new Texture(file);
     }
 }
 

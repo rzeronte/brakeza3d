@@ -64,10 +64,10 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst) {
 
     for (int i = 0; i < dst->numAnimations; i++) {
         this->animations[i]->base_file = dst->animations[i]->base_file;
-        this->animations[i]->numFrames = dst->animations[i]->numFrames;
+        this->animations[i]->numberFramesToLoad = dst->animations[i]->numberFramesToLoad;
         this->animations[i]->fps = dst->animations[i]->fps;
 
-        for (int j = 0; j < dst->animations[i]->numFrames; j++) {
+        for (int j = 0; j < dst->animations[i]->numberFramesToLoad; j++) {
             this->animations[i]->frames[j] = dst->animations[i]->frames[j];
         }
     }

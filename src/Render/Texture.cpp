@@ -5,11 +5,6 @@
 #include "../../include/Render/Maths.h"
 #include <SDL2/SDL_image.h>
 
-
-Texture::Texture() {
-
-}
-
 Texture::Texture(std::string filename) {
     image = new Image(filename);
 }

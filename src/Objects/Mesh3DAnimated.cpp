@@ -61,8 +61,8 @@ void Mesh3DAnimated::updateFrameTransformations() {
             T->B = V2;
             T->C = V3;
 
-            if (this->numTextures > 0) {
-                T->setTexture(&this->modelTextures[this->scene->mMeshes[i]->mMaterialIndex]);
+            if (this->modelTextures.size() > 0) {
+                T->setTexture(this->modelTextures[this->scene->mMeshes[i]->mMaterialIndex]);
             }
 
             numModelTriangles++;
@@ -155,9 +155,9 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
         t->setEnableLights(this->isEnableLights());
         this->modelTriangles.push_back(t);
 
-        if (this->numTextures > 0) {
-            if (&this->modelTextures[mesh->mMaterialIndex] != nullptr) {
-                this->modelTriangles[k]->setTexture(&this->modelTextures[mesh->mMaterialIndex]);
+        if (this->modelTextures.size() > 0) {
+            if (this->modelTextures[mesh->mMaterialIndex] != nullptr) {
+                this->modelTriangles[k]->setTexture(this->modelTextures[mesh->mMaterialIndex]);
             }
         }
     }

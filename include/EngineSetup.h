@@ -142,6 +142,8 @@ public:
     std::string CFG_ENEMIES = "enemies.json";
     std::string CFG_SOUNDS = "sounds.json";
 
+    std::string CONCHARS_SPRITE_FILE = "conchars.png";
+
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
     float SOUND_VOLUME_PLAYER = 75;

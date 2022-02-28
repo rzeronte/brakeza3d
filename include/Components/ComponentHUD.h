@@ -11,9 +11,12 @@
 #include "ComponentWeapons.h"
 #include "ComponentWindow.h"
 #include "../2D/TextWriter.h"
+#include "../2D/Button.h"
 
 class ComponentHUD : public Component {
+    std::vector<Button*> buttons;
 public:
+
     ComponentHUD();
 
     void onStart();
@@ -42,6 +45,11 @@ public:
 
     void drawHUD();
 
+    void addButton(Button *button);
+
+    const std::vector<Button *> &getButtons() const;
+
+    void loadButtons();
 };
 
 

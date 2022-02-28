@@ -90,7 +90,7 @@ void Player::respawn() {
     setStamina(INITIAL_STAMINA);
 }
 
-void Player::shoot() {
+void * Player::shoot() {
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 
@@ -155,4 +155,3 @@ void Player::resolveCollision(Collisionable *with) {
     Mesh3DGhost::resolveCollision(with);
     Logging::getInstance()->Log("Collision specific for Player");
 }
-
