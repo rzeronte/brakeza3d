@@ -252,6 +252,7 @@ add_executable(Brakeza3D
         include/Shaders/Shader.h
         include/Shaders/ShaderWater.h
         include/Shaders/ShaderFire.h
+        include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
         src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h)
 
