@@ -14,6 +14,7 @@
 #include "../Shaders/ShaderFire.h"
 #include "../Shaders/ShaderImageBackground.h"
 #include "../Shaders/ShaderTintScreen.h"
+#include "../Shaders/ShaderObjectSilhouette.h"
 
 typedef enum {
     MENU, GAMING, LOADING, SPLASHING, FADEIN, FEADEOUT
@@ -46,6 +47,7 @@ public:
     void checkPlayerCameraScrollCollision();
 
     ShaderWater shaderWater;
+    ShaderObjectSilhouette shaderBorder;
     ShaderFire shaderFire;
     ShaderImageBackground shaderImageBackground;
     ShaderTintScreen shaderTintScreen;
@@ -54,7 +56,7 @@ public:
     Vertex3D autoScrollSpeed;
 
     Player *player;
-    Mesh3DBody *plane;
+    Mesh3DBody *axisPlanes;
 
     bool direction = true;
 
@@ -72,6 +74,8 @@ private:
     void setAutoScrollSpeed(Vertex3D speed);
 
     void setupWeapons();
+
+    void loadAxisPlanes() const;
 };
 
 

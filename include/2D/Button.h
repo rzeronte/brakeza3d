@@ -36,6 +36,8 @@ public:
     bool isClicked();
 
     void setCallBack(void (*pFunction)());
+
+    void drawSelectedEffect();
 };
 
 

@@ -19,8 +19,7 @@ typedef float vec3_t[3];
 class Mesh3D : public Object3D {
 
 public:
-    std::string source_file;
-    std::string prefix_texture_folder;
+    std::string sourceFile;
     Assimp::Importer importer;
 
     std::vector<Triangle *> modelTriangles;

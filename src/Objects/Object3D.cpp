@@ -8,6 +8,8 @@
 Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
     setFollowCamera(false);
     setRotationFrameEnabled(false);
+    setStencilBufferEnabled(false);
+    this->stencilBuffer = nullptr;
     rotX = 0;
     rotY = 0;
     rotZ = 0;
@@ -138,6 +140,10 @@ void Object3D::onUpdate() {
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }
+
+    if (isStencilBufferEnabled()) {
+        clearStencilBuffer();
+    }
 }
 
 void Object3D::setRotation(float x, float y, float z) {
@@ -161,4 +167,49 @@ void Object3D::setRotationFrameEnabled(bool value) {
 
 void Object3D::setRotationFrame(Vertex3D r) {
     this->rotationFrame = r;
+}
+
+bool *Object3D::getStencilBuffer() const {
+    return stencilBuffer;
+}
+
+bool Object3D::isStencilBufferEnabled() const {
+    return stencilBufferEnabled;
+}
+
+void Object3D::setStencilBufferEnabled(bool stencilBufferEnabled) {
+    initializeStencilBuffer();
+    Object3D::stencilBufferEnabled = stencilBufferEnabled;
+}
+
+void Object3D::initializeStencilBuffer()
+{
+    const unsigned int bufferSize = EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight;
+    this->stencilBuffer = new bool[bufferSize];
+}
+
+void Object3D::setStencilBuffer(int index, bool value) {
+    this->stencilBuffer[index] = value;
+}
+
+void Object3D::setStencilBuffer(int x, int y, bool value) {
+    this->stencilBuffer[y * EngineSetup::get()->screenWidth + x] = value;
+}
+
+void Object3D::clearStencilBuffer()
+{
+    std::fill(stencilBuffer, stencilBuffer + EngineSetup::get()->RESOLUTION, NULL);
+}
+
+bool Object3D::getStencilBufferValue(int i) const {
+    return this->stencilBuffer[i];
+}
+
+bool Object3D::getStencilBufferValue(int x, int y) const {
+    unsigned int index = y * EngineSetup::get()->screenWidth + x;
+
+    if (index < 0) index = 0;
+    if (index > EngineSetup::get()->RESOLUTION) index = EngineSetup::get()->RESOLUTION - 1;
+
+    return this->stencilBuffer[index];
 }

@@ -34,6 +34,10 @@ void Button::setPressed(bool pressed) {
 
 void Button::draw() {
     getImage()->drawFlat(x, y);
+
+    if (isClicked()) {
+        drawSelectedEffect();
+    }
 }
 
 void Button::onUpdate() {
@@ -68,4 +72,19 @@ bool Button::isClicked() {
 
 void Button::setCallBack(void (*pFunction)()) {
     this->callback = pFunction;
+}
+
+void Button::drawSelectedEffect() {
+    auto *buffer = EngineBuffers::getInstance();
+
+    Color c = Color::green();
+    for (int i = 0; i < getImage()->width(); i++) {
+        buffer->setVideoBuffer(getX() + i, getY(), c.getColor());
+        buffer->setVideoBuffer(getX() + i, getY() + getImage()->height(), c.getColor());
+    }
+    for (int i = 0; i < getImage()->height(); i++) {
+        buffer->setVideoBuffer(getX(), getY() + i, c.getColor());
+        buffer->setVideoBuffer(getX() + getImage()->width() - 1, getY() + i, c.getColor());
+    }
+
 }

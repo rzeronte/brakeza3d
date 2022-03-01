@@ -1,5 +1,4 @@
 
-#include <fstream>
 #include <vector>
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
@@ -97,7 +96,7 @@ void Mesh3D::copyFrom(Mesh3D *source) {
     // Textures
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
-    this->source_file = source->source_file;
+    this->sourceFile = source->sourceFile;
 }
 
 void Mesh3D::onUpdate() {
@@ -188,13 +187,10 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
                 p = p.substr(2, p.size() - 2);
             }
 
-            std::string FullPath =
-                    EngineSetup::get()->TEXTURES_FOLDER + this->prefix_texture_folder + base_filename;
+            std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
 
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-            auto *t = new Texture(FullPath);
-
-            this->modelTextures.push_back(t);
+            this->modelTextures.push_back(new Texture(FullPath));
         } else {
             Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
         }
@@ -259,11 +255,11 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
 }
 
 const std::string &Mesh3D::getSourceFile() const {
-    return source_file;
+    return sourceFile;
 }
 
 void Mesh3D::setSourceFile(const std::string &sourceFile) {
-    source_file = sourceFile;
+    this->sourceFile = sourceFile;
 }
 
 Octree *Mesh3D::getOctree() const {
@@ -321,5 +317,3 @@ bool Mesh3D::isEnableLights() const {
 void Mesh3D::setEnableLights(bool enableLights) {
     this->enableLights = enableLights;
 }
-
-

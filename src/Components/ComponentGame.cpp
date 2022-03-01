@@ -5,6 +5,7 @@
 
 ComponentGame::ComponentGame() {
     player = new Player();
+    axisPlanes = new Mesh3DBody();
 }
 
 void ComponentGame::onStart() {
@@ -19,29 +20,19 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
+    ComponentsManager::get()->getComponentInput()->setEnabled(false);
 
     setupWeapons();
+    loadPlayer();
+    loadAxisPlanes();
 
     shaderImageBackground = ShaderImageBackground(std::string(SETUP->IMAGES_FOLDER + "deep_space.png").c_str());
     shaderImageBackground.setType(ShaderImageBackgroundTypes::PORTION);
-
     shaderTintScreen.setTintColorIntensity(1, 0, 0);
 
-    loadPlayer();
-
-    auto object = new Mesh3DBody();
-    object->setRotation(0, 0, 0);
-    object->setEnabled(true);
-    object->setLabel("test");
-    object->setCollisionsEnabled(true);
-    object->setScale(1);
-    object->setFlatTextureColor(false);
-    object->setRotationFrameEnabled(false);
-    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
-    object->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
-    Brakeza3D::get()->addObject3D(object, "test");
+    shaderBorder.setObject(axisPlanes);
+    shaderBorder.setColor(Color::green());
 }
 
 void ComponentGame::preUpdate() {
@@ -51,6 +42,8 @@ void ComponentGame::preUpdate() {
 
     shaderImageBackground.setupFlatPortion(0, 0, 0, (int) shaderYScroll, 320, 240);
     shaderImageBackground.onUpdate();
+    shaderBorder.onUpdate();
+
 }
 
 void ComponentGame::onUpdate() {
@@ -86,7 +79,7 @@ void ComponentGame::onUpdate() {
         checkPlayerCameraScrollCollision();
 
         if (isAutoscrollEnabled()) {
-            CameraAutoScroll();
+            //CameraAutoScroll();
         }
     }
 
@@ -207,12 +200,39 @@ void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
     player->setEnableLights(false);
-    player->setPosition(Vertex3D(1115, -700, 2600));
+    player->setPosition(Vertex3D(1115, -700, 4500));
     player->setRotation(90, 90, 0);
     player->setScale(1);
+    player->setStencilBufferEnabled(true);
+    player->initializeStencilBuffer();
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
+
+    auto * enemy= new Mesh3DGhost();
+    enemy->setLabel("enemy");
+    enemy->setEnableLights(false);
+    enemy->setPosition(Vertex3D(1115, -3200, 4500));
+    enemy->setRotation(90, -90, 0);
+    enemy->setScale(1);
+    enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
+    enemy->makeGhostBody( ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy);
+    Brakeza3D::get()->addObject3D(enemy, "enemy");
+}
+
+void ComponentGame::loadAxisPlanes() const {
+    axisPlanes->setRotation(0, 0, 0);
+    axisPlanes->initializeStencilBuffer();
+    axisPlanes->setStencilBufferEnabled(true);
+    axisPlanes->setEnabled(true);
+    axisPlanes->setLabel("test");
+    axisPlanes->setCollisionsEnabled(true);
+    axisPlanes->setScale(1);
+    axisPlanes->setFlatTextureColor(false);
+    axisPlanes->setRotationFrameEnabled(false);
+    axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
+    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    Brakeza3D::get()->addObject3D(axisPlanes, "AxisPlanes");
 }
 
 void ComponentGame::setupWeapons() {

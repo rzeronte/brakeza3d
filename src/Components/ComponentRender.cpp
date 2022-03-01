@@ -599,6 +599,10 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         pixelColor = this->processPixelFog(fragment, pixelColor);
     }
 
+    if (t->parent->isStencilBufferEnabled()) {
+        t->parent->setStencilBuffer(bufferIndex, true);
+    }
+
     BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
     BUFFERS->setVideoBuffer(bufferIndex, pixelColor.getColor());
 }

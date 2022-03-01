@@ -9,6 +9,7 @@
 class Object3D {
     Vertex3D position;
     M3 rotation;
+    bool *stencilBuffer;
 
 public:
     float rotX, rotY, rotZ; // For easy management from UI
@@ -20,14 +21,14 @@ public:
 
     bool enabled;
     bool removed;
+    bool decal;         // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
+    bool stencilBufferEnabled;
 
     Vertex3D drawOffset;
     Vertex3D rotationFrame;
     bool rotationFrameEnabled;
     float scale;
-
-    bool decal;     // Decals exclude UV Coordinates out of [0, 1]
 
     std::string label;
 
@@ -90,6 +91,22 @@ public:
     bool isRotationFrameEnabled();
     void setRotationFrameEnabled(bool value);
     void setRotationFrame(Vertex3D v);
+
+    bool *getStencilBuffer() const;
+
+    bool isStencilBufferEnabled() const;
+
+    void setStencilBufferEnabled(bool stencilBufferEnabled);
+
+    void initializeStencilBuffer();
+    void setStencilBuffer(int x, int y, bool value);
+    void setStencilBuffer(int index, bool value);
+
+    void clearStencilBuffer();
+
+    bool getStencilBufferValue(int i) const;
+
+    bool getStencilBufferValue(int x, int y) const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

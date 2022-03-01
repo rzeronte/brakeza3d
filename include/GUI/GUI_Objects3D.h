@@ -54,6 +54,10 @@ public:
             const int range_framerate_max = 100;
 
             for (int i = 0; i < gameObjects.size(); i++) {
+                if (gameObjects[i]->isRemoved()) {
+                    continue;
+                }
+
                 std::string header_text;
                 Mesh3D *pMesh = dynamic_cast<Mesh3D *>(gameObjects[i]);
                 if (pMesh != NULL && !gameObjects[i]->isDecal()) {
@@ -64,6 +68,7 @@ public:
                 }
 
                 std::string enabled_text = "Enabled##" + std::to_string(i);
+                std::string stencilBuffer_text = "StencilBuffer##" + std::to_string(i);
                 std::string position_text = "Position##" + std::to_string(i);
                 std::string rotation_text = "Rotation##" + std::to_string(i);
                 std::string options_text = "Options##" + std::to_string(i);
@@ -78,7 +83,10 @@ public:
                 if (ImGui::CollapsingHeader(header_text.c_str(), false)) {
                     // enabled
                     ImGui::Checkbox(enabled_text.c_str(), &gameObjects[i]->enabled);
-
+                    ImGui::Checkbox(stencilBuffer_text.c_str(), &gameObjects[i]->stencilBufferEnabled);
+                    if (ImGui::IsItemEdited()) {
+                        gameObjects[i]->setStencilBufferEnabled(gameObjects[i]->stencilBufferEnabled);
+                    }
                     // position
                     if (ImGui::TreeNode(position_text.c_str())) {
                         ImGui::DragScalar("X", ImGuiDataType_Float, &gameObjects[i]->getPosition().x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
@@ -114,7 +122,6 @@ public:
                         if (oMesh3D != NULL) {
                             ImGui::Checkbox(std::string("Enable light").c_str(), &oMesh3D->enableLights);
                         }
-
                         ImGui::TreePop();
                     }
 
@@ -125,8 +132,6 @@ public:
                         ImGui::DragScalar("Z", ImGuiDataType_Float, &gameObjects[i]->drawOffset.z, range_sensibility,&range_min, &range_max, "%f", 1.0f);
                         ImGui::TreePop();
                     }
-
-
 
                     // Only for decals
                     Decal *pDecal = dynamic_cast<Decal *>(gameObjects[i]);
