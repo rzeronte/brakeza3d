@@ -300,8 +300,8 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Color color) {
 }
 
 void Drawable::drawMainAxis(Camera3D *cam) {
-    Point2D fixed_position = Point2D(EngineSetup::get()->screenWidth - 50, 30);
-    Drawable::drawMainAxisOffset(cam, Transforms::Point2DToWorld(fixed_position, cam));
+    Point2D fixedPosition = Point2D(EngineSetup::get()->screenWidth - 50, 30);
+    Drawable::drawMainAxisOffset(cam, Transforms::Point2DToWorld(fixedPosition, cam));
 }
 
 void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset) {

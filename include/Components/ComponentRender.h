@@ -18,6 +18,7 @@
 #include "ComponentWindow.h"
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
+#include "../Render/Shader.h"
 
 class ComponentRender : public Component {
 public:
@@ -39,6 +40,7 @@ public:
     void hiddenSurfaceRemoval();
 
     void hiddenSurfaceRemovalTriangle(Triangle *t);
+
     void hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoint3D *l, std::vector<Triangle *> &visibleTrianglesForLight, std::vector<Triangle *> &clippedTriangles);
 
     void hiddenOctreeRemoval();
@@ -56,6 +58,7 @@ public:
     void render(Triangle *t);
 
     void triangleRasterizer(Triangle *t);
+
     void triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint);
 
     void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *, bool bilinear);
@@ -82,16 +85,20 @@ public:
 
     void updateFPS(const float deltaTime);
 
-    int fps = 0;
-    int fpsFrameCounter = 0;
-    float frameTime = 0;
-
     std::vector<Triangle *> &getFrameTriangles();
 
     std::vector<Triangle *> &getVisibleTriangles();
 
     void extractLightPointsFromObjects3D();
+
     void createLightPointsDepthMappings();
+
+    std::string getUniqueGameObjectLabel();
+
+    int fps = 0;
+    int fpsFrameCounter = 0;
+    float frameTime = 0;
+
     std::vector<LightPoint3D *> &getLightPoints();
 
     std::vector<Triangle *> frameTriangles;
@@ -107,7 +114,23 @@ public:
     int numTiles;
     int tilePixelsBufferSize;
 
-    std::string getUniqueGameObjectLabel();
+    Object3D *selectedObject;
+
+    Shader *getShaderByType(int id);
+
+    const std::map<int, Shader *> &getShaders();
+    Object3D *getObjectRaycast();
+
+private:
+    std::map<int, Shader*> shaders;
+    void onUpdatePreUpdateShaders();
+    void onUpdatePostUpdateShaders();
+
+    void addShader(int id, std::string label, Shader *shader);
+
+    void initializeShaders();
+
+    void updateShaderSilhouetteObject();
 };
 
 

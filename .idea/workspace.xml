@@ -18,22 +18,35 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="clean assets / refact Texture for desacouple BSP requeriments">
-      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Stencil Buffer per Mesh / ShaderSilhouette">
+      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/Button.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/Button.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/deep_space.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Sprite3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Sprite3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/Button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Button.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Lights.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Plane.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Plane.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,11 +217,11 @@
       <recent name="$PROJECT_DIR$/src/Render" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Render" />
+      <recent name="$PROJECT_DIR$/src/Render" />
       <recent name="$PROJECT_DIR$/include/2D" />
       <recent name="$PROJECT_DIR$/src/2D" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/include/Physics" />
-      <recent name="$PROJECT_DIR$/src/Collisions" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
@@ -217,17 +230,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -360,7 +373,8 @@
       <workItem from="1645986743536" duration="9881000" />
       <workItem from="1646000847294" duration="11648000" />
       <workItem from="1646074651688" duration="12950000" />
-      <workItem from="1646137133665" duration="13874000" />
+      <workItem from="1646137133665" duration="14093000" />
+      <workItem from="1646253299042" duration="16871000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -453,7 +467,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646017312464</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Stencil Buffer per Mesh / ShaderSilhouette">
+      <created>1646169870393</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1646169870393</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -602,7 +623,8 @@
     <MESSAGE value="improve Collisions Component" />
     <MESSAGE value="cleaning Collisions Component" />
     <MESSAGE value="clean assets / refact Texture for desacouple BSP requeriments" />
-    <option name="LAST_COMMIT_MESSAGE" value="clean assets / refact Texture for desacouple BSP requeriments" />
+    <MESSAGE value="Stencil Buffer per Mesh / ShaderSilhouette" />
+    <option name="LAST_COMMIT_MESSAGE" value="Stencil Buffer per Mesh / ShaderSilhouette" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

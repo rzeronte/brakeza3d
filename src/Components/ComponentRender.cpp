@@ -7,10 +7,12 @@
 void ComponentRender::onStart() {
     Logging::Log("ComponentRender onStart", "ComponentRender");
     initTiles();
+    initializeShaders();
 }
 
 void ComponentRender::preUpdate() {
     this->updateFPS(Brakeza3D::get()->deltaTime);
+    this->onUpdatePreUpdateShaders();
 }
 
 void ComponentRender::onUpdate() {
@@ -26,6 +28,8 @@ void ComponentRender::onUpdate() {
 
     this->hiddenSurfaceRemoval();
     this->drawVisibleTriangles();
+
+    this->onUpdatePostUpdateShaders();
 
     frameTriangles.clear();
 
@@ -56,7 +60,22 @@ void ComponentRender::onEnd() {
 }
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
+    if (SETUP->CLICK_SELECT_OBJECT3D) {
+        updateShaderSilhouetteObject();
+    }
+}
 
+void ComponentRender::updateShaderSilhouetteObject() {
+    selectedObject = getObjectRaycast();
+    if (selectedObject != nullptr) {
+        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+        shader->setObject(selectedObject);
+    } else {
+        if (ComponentsManager::get()->getComponentInput()->isClickLeft()) {
+            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+            shader->setObject(nullptr);
+        }
+    }
 }
 
 std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
@@ -120,7 +139,6 @@ void ComponentRender::extractLightPointsFromObjects3D() {
 }
 
 std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
-
     return lightpoints;
 }
 
@@ -860,3 +878,85 @@ std::string ComponentRender::getUniqueGameObjectLabel() {
     return std::to_string(getSceneObjects()->size()+1);
 }
 
+void ComponentRender::onUpdatePreUpdateShaders() {
+    for (auto shader : shaders) {
+        if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::PREUPDATE) {
+            shader.second->onUpdate();
+        }
+    }
+}
+void ComponentRender::onUpdatePostUpdateShaders() {
+    for (auto shader : shaders) {
+        if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::POSTUPDATE) {
+            shader.second->onUpdate();
+        }
+    }
+}
+void ComponentRender::addShader(int id, std::string label, Shader *shader) {
+    shader->setLabel(label);
+
+    std::pair<int, Shader*> pair;
+    pair.first = id;
+    pair.second = shader;
+    shaders.insert(pair);
+}
+
+Shader* ComponentRender::getShaderByType(int id) {
+    for (auto shader : shaders) {
+        if (shader.first == id) {
+            return shader.second;
+        }
+    }
+}
+
+void ComponentRender::initializeShaders() {
+    addShader(EngineSetup::ShadersAvailables::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject));
+    addShader(EngineSetup::ShadersAvailables::BACKGROUND, "Background", new ShaderImageBackground(
+        std::string(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_SHADER_BACKGROUND_IMAGE).c_str()
+    ));
+    addShader(EngineSetup::ShadersAvailables::WATER, "Water", new ShaderWater());
+    addShader(EngineSetup::ShadersAvailables::FIRE, "Fire", new ShaderFire());
+    addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
+
+    getShaderByType(EngineSetup::ShadersAvailables::SILHOUETTE)->setEnabled(true);
+    getShaderByType(EngineSetup::ShadersAvailables::BACKGROUND)->setEnabled(true);
+}
+
+const std::map<int, Shader *> &ComponentRender::getShaders() {
+    return shaders;
+}
+
+Object3D* ComponentRender::getObjectRaycast() {
+    auto *input = ComponentsManager::get()->getComponentInput();
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    if (!input->isClickLeft()) {
+        return nullptr;
+    }
+
+    Point2D fixedPosition = Point2D(
+            input->getRelativeRendererMouseX(),
+            input->getRelativeRendererMouseY()
+    );
+
+    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
+
+    Vector3D ray(
+            camera->getPosition(),
+            nearPlaneVertex
+    );
+
+    for (auto triangle : getVisibleTriangles()) {
+        auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
+        triangle->updateObjectSpace();
+        float t;
+        if (Maths::isVector3DClippingPlane(*p, ray)) {
+            Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
+            if (triangle->isPointInside(intersectionPoint)) {
+                return triangle->parent;
+            }
+        }
+    }
+
+    return nullptr;
+}
