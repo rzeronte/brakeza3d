@@ -1,7 +1,7 @@
 #ifndef BRAKEDA3D_SHADERIMAGEBACKGROUND_H
 #define BRAKEDA3D_SHADERIMAGEBACKGROUND_H
 
-#include "Shader.h"
+#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../EngineBuffers.h"
 #include "../Misc/Image.h"
@@ -24,7 +24,11 @@ public:
         image = new Image(filename);
     }
 
-    void onUpdate() {
+    void onUpdate() override {
+        if (!isEnabled()) {
+            return;
+        }
+
         if (!image->isLoaded()) {
             return;
         }

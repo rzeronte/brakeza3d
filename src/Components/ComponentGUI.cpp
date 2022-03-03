@@ -36,11 +36,12 @@ void ComponentGUI::onUpdate() {
     this->managerGUI->draw(
             Brakeza3D::get()->getDeltaTime(),
             finish,
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
             Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth,
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->getShaders()
     );
 
     //ImGui::ShowDemoWindow();

@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_SHADEROBJECTSILHOUETTE_H
 #define BRAKEDA3D_SHADEROBJECTSILHOUETTE_H
 
-#include "Shader.h"
+#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
@@ -16,16 +16,21 @@ public:
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->object = nullptr;
-        this->color = Color::white();
+        this->color = Color::green();
     }
 
     ShaderObjectSilhouette(Object3D *o) {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
+        this->color = Color::green();
     }
 
-    void onUpdate() {
+    void onUpdate() override {
+        if (!isEnabled()) {
+            return;
+        }
+
         if (this->object == nullptr) {
             return;
         }

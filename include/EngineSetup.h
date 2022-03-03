@@ -143,6 +143,7 @@ public:
     std::string CFG_SOUNDS = "sounds.json";
 
     std::string CONCHARS_SPRITE_FILE = "conchars.png";
+    std::string DEFAULT_SHADER_BACKGROUND_IMAGE = "background_scrollable.png";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
@@ -225,6 +226,8 @@ public:
     float PROJECTILE_DEMO_MASS = 1;
     float PROJECTILE_DEMO_TTL = 10;
 
+    bool CLICK_SELECT_OBJECT3D = true;
+
     enum collisionGroups {
         DefaultFilter = 1,
         StaticFilter = 2,
@@ -251,7 +254,6 @@ public:
         DEAD = 1
     };
 
-
     enum SoundChannels {
         SND_GLOBAL = -1,
         SND_MENU = 0,
@@ -263,6 +265,19 @@ public:
         SND_WEAPON_LOOP = 6,
         SND_BLOOD_HIT = 7,
         SND_CASINGS = 8
+    };
+
+    enum ShadersAvailables {
+        BACKGROUND = 1,
+        WATER = 2,
+        FIRE = 3,
+        TINT_SCREEN = 4,
+        SILHOUETTE = 5,
+    };
+
+    enum ShadersPhaseRender {
+        PREUPDATE = 1,
+        POSTUPDATE = 2,
     };
 };
 

@@ -46,12 +46,6 @@ public:
 
     void checkPlayerCameraScrollCollision();
 
-    ShaderWater shaderWater;
-    ShaderObjectSilhouette shaderBorder;
-    ShaderFire shaderFire;
-    ShaderImageBackground shaderImageBackground;
-    ShaderTintScreen shaderTintScreen;
-
     float shaderYScroll;
     Vertex3D autoScrollSpeed;
 

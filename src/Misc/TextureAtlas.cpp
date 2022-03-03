@@ -115,4 +115,3 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string
 void TextureAtlas::saveJPG(const std::string& name) const {
     IMG_SavePNG(getAtlasSurface(), name.c_str());
 }
-

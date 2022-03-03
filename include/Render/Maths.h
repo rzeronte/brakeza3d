@@ -24,26 +24,9 @@ public:
 
     static void getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
 
-    static void
-    getBarycentricCoordinatesPrecalc(float &, float &, float &, int, int, Point2D, Point2D, Point2D, float, float,
-                                     float);
-
     static int orient2d(const Point2D &a, const Point2D &b, const Point2D &c);
 
     static Vertex3D getCenterVertices(Vertex3D vertices[], int num_vertices);
-
-    static void sortVerticesByX(Vertex3D *vertexes, int N);
-
-    static void sortVerticesByY(Vertex3D *vertexes, int N);
-
-    static void sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C);
-
-    static void sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C);
-
-
-    static void sortPointsByY(Point2D &A, Point2D &B, Point2D &C);
-
-    static void sortPointsByX(Point2D &A, Point2D &B, Point2D &C);
 
     static void VertexSwap(Vertex3D *vertexes, int i, int j);
 
@@ -55,9 +38,18 @@ public:
 
     static long GetPrevActive(long x, long vertexCount, const bool *active);
 
-    static int
-    TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D normal, std::vector<Triangle *> &triangles,
-                       Object3D *parent, Texture *texture, bool isClipped, bool isBsp, bool isFlattenTextureColor, bool enableLights);
+    static int TriangulatePolygon(
+            long vertexCount,
+            Vertex3D *vertices,
+            Vertex3D normal,
+            std::vector<Triangle *> &triangles,
+            Object3D *parent,
+            Texture *texture,
+            bool isClipped,
+            bool isBsp,
+            bool isFlattenTextureColor,
+            bool enableLights
+    );
 
     static bool ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int plane_id, Plane *planes);
 

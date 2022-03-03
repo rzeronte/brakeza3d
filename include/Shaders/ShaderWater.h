@@ -5,15 +5,19 @@
 #ifndef BRAKEDA3D_SHADERWATER_H
 #define BRAKEDA3D_SHADERWATER_H
 
-#include "Shader.h"
+#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
 
 class ShaderWater: public Shader {
 public:
-    void onUpdate() {
+    void onUpdate() override {
         Shader::onUpdate();
+
+        if (!isEnabled()) {
+            return;
+        }
 
         float LAVA_CLOSENESS = 2.35;
         float LAVA_INTENSITY = 0.45;

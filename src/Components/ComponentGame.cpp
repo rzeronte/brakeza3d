@@ -20,29 +20,21 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
     setupWeapons();
     loadPlayer();
     loadAxisPlanes();
 
-    shaderImageBackground = ShaderImageBackground(std::string(SETUP->IMAGES_FOLDER + "deep_space.png").c_str());
-    shaderImageBackground.setType(ShaderImageBackgroundTypes::PORTION);
-    shaderTintScreen.setTintColorIntensity(1, 0, 0);
-
-    shaderBorder.setObject(axisPlanes);
-    shaderBorder.setColor(Color::green());
+    //ShaderImageBackground *shader = dynamic_cast<ShaderImageBackground *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShadersAvailables::BACKGROUND));
+    //shader->setType(ShaderImageBackgroundTypes::PORTION);
 }
 
 void ComponentGame::preUpdate() {
     if (isAutoscrollEnabled()) {
         shaderYScroll -= autoScrollSpeed.y/ 10;
     }
-
-    shaderImageBackground.setupFlatPortion(0, 0, 0, (int) shaderYScroll, 320, 240);
-    shaderImageBackground.onUpdate();
-    shaderBorder.onUpdate();
 
 }
 
@@ -82,7 +74,6 @@ void ComponentGame::onUpdate() {
             //CameraAutoScroll();
         }
     }
-
 }
 
 void ComponentGame::postUpdate() {
@@ -96,7 +87,11 @@ void ComponentGame::onEnd() {
 }
 
 void ComponentGame::onSDLPollEvent(SDL_Event *event, bool &finish) {
-
+    /*Object3D *o = getObjectRaycast();
+    if (o != nullptr) {
+        Logging::getInstance()->Log("Encontrado! " + o->getLabel());
+        shaderBorder.setObject(o);
+    }*/
 }
 
 Player *ComponentGame::getPlayer() const {
@@ -209,7 +204,7 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto * enemy= new Mesh3DGhost();
+    auto * enemy = new Mesh3DGhost();
     enemy->setLabel("enemy");
     enemy->setEnableLights(false);
     enemy->setPosition(Vertex3D(1115, -3200, 4500));

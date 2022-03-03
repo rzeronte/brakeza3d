@@ -153,5 +153,5 @@ void Player::updateLight() {
 
 void Player::resolveCollision(Collisionable *with) {
     Mesh3DGhost::resolveCollision(with);
-    Logging::getInstance()->Log("Collision specific for Player");
+    //Logging::getInstance()->Log("Collision specific for Player");
 }

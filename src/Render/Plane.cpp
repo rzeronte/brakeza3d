@@ -93,9 +93,9 @@ Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &
 
     // 3) punto de intersección ; sustituimos t en la ecuación de la recta entre 2 puntos
     return Vertex3D(
-            vertex1.x + t * (a),
-            vertex1.y + t * (b),
-            vertex1.z + t * (c)
+            vertex1.x + t * a,
+            vertex1.y + t * b,
+            vertex1.z + t * c
     );
 }
 

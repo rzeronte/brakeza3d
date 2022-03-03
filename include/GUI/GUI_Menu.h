@@ -17,8 +17,15 @@ public:
     virtual ~GUI_Menu() {}
 
     virtual void
-    draw(bool &done, bool &show_window_inspector, bool &show_camera_info,
-         bool &show_window_physics, bool &show_window_weapons, Camera3D *cam) {
+    draw(
+            bool &done,
+            bool &show_window_inspector,
+            bool &show_camera_info,
+            bool &show_window_physics,
+            bool &show_window_weapons,
+            bool &show_window_shaders,
+            Camera3D *cam
+    ) {
 
         bool show_about_window = false;
 
@@ -73,10 +80,6 @@ public:
         const float range_fov_sensibility = 1;
         const float range_min_fov = 20;
         const float range_max_fov = 160;
-
-        const float range_stepsimulation_multiplier_sensibility = 0.01;
-        const float range_min_stepsimulation_multiplier = 0;
-        const float range_max_stepsimulation_multiplier = 1;
 
         bool changedFOGcolor = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
@@ -195,6 +198,7 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
+                ImGui::Checkbox("Internal click selection", &EngineSetup::get()->CLICK_SELECT_OBJECT3D);
                 ImGui::EndMenu();
             }
 
@@ -347,6 +351,7 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Tiles", &show_window_physics);
                 ImGui::Checkbox("Weapons", &show_window_weapons);
+                ImGui::Checkbox("Shaders", &show_window_shaders);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::get()->DRAW_FRUSTUM);
                 ImGui::Separator();
@@ -397,16 +402,6 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Show HUD", &EngineSetup::get()->DRAW_HUD);
                 ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Developers")) {
-                ImGui::DragScalar("TESTING", ImGuiDataType_Float, &EngineSetup::get()->TESTING,range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT1", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT1, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT2", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT2, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT3", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT3, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::DragScalar("TESTING INT4", ImGuiDataType_Float, &EngineSetup::get()->TESTING_INT4, 1,&range_min_test_int, &range_max_test_int, "%f", 1.0f);
-                ImGui::Checkbox("Boolean TEST", &EngineSetup::get()->TESTING_BOOL);
                 ImGui::EndMenu();
             }
 

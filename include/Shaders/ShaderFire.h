@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_SHADERFIRE_H
 #define BRAKEDA3D_SHADERFIRE_H
 
-#include "Shader.h"
+#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../EngineBuffers.h"
 
@@ -89,8 +89,12 @@ public:
         }
     }
 
-    void onUpdate() {
+    void onUpdate() override {
         Shader::onUpdate();
+
+        if (!isEnabled()) {
+            return;
+        }
 
         // Set whole screen to 0 (color: 0x07,0x07,0x07)
         int FIRE_WIDTH = w;

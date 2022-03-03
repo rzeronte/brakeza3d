@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_SHADERTINTSCREEN_H
 #define BRAKEDA3D_SHADERTINTSCREEN_H
 
-#include "Shader.h"
+#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
@@ -26,7 +26,11 @@ public:
 
     }
 
-    void onUpdate() {
+    void onUpdate() override {
+        if (!isEnabled()) {
+            return;
+        }
+
         auto buffer = EngineBuffers::getInstance();
         for (int y = 0; y <screenHeight; y++) {
             for (int x = 0; x < screenWidth; x++) {

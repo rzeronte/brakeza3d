@@ -23,14 +23,6 @@ void Maths::getBarycentricCoordinates(float &alpha, float &theta, float &gamma, 
     gamma = Maths::barycentricSide(x, y, v1, v2) / Maths::barycentricSide(v3.x, v3.y, v1, v2);
 }
 
-void
-Maths::getBarycentricCoordinatesPrecalc(float &alpha, float &theta, float &gamma, int x, int y, Point2D v1, Point2D v2,
-                                        Point2D v3, float r1, float r2, float r3) {
-    alpha = Maths::barycentricSide(x, y, v2, v3) / r1;
-    theta = Maths::barycentricSide(x, y, v3, v1) / r2;
-    gamma = Maths::barycentricSide(x, y, v1, v2) / r3;
-}
-
 /**
  * 0 = dos vértices dentro
  * 1 = ningún vértice dentro
@@ -82,122 +74,10 @@ int Maths::orient2d(const Point2D &a, const Point2D &b, const Point2D &c) {
     return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
 }
 
-void Maths::sortVerticesByY(Vertex3D &A, Vertex3D &B, Vertex3D &C) {
-    const int n = 3;
-    Vertex3D v[3];
-    v[0] = A;
-    v[1] = B;
-    v[2] = C;
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < (n - i); j++) {
-            if (v[j].y > v[j + 1].y) {
-                Vertex3D aux = v[j];
-                v[j] = v[j + 1];
-                v[j + 1] = aux;
-            }
-        }
-    }
-
-    A = v[0];
-    B = v[1];
-    C = v[2];
-}
-
-void Maths::sortVerticesByX(Vertex3D &A, Vertex3D &B, Vertex3D &C) {
-    const int n = 3;
-    Vertex3D v[3];
-    v[0] = A;
-    v[1] = B;
-    v[2] = C;
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < (n - i); j++) {
-            if (v[j].x > v[j + 1].x) {
-                Vertex3D aux = v[j];
-                v[j] = v[j + 1];
-                v[j + 1] = aux;
-            }
-        }
-    }
-
-    A = v[0];
-    B = v[1];
-    C = v[2];
-}
-
-void Maths::sortPointsByY(Point2D &A, Point2D &B, Point2D &C) {
-    const int n = 3;
-    Point2D p[3];
-    p[0] = A;
-    p[1] = B;
-    p[2] = C;
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < (n - i); j++) {
-            if (p[j].y > p[j + 1].y) {
-                Point2D aux = p[j];
-                p[j] = p[j + 1];
-                p[j + 1] = aux;
-            }
-        }
-    }
-
-    A = p[0];
-    B = p[1];
-    C = p[2];
-}
-
-void Maths::sortPointsByX(Point2D &A, Point2D &B, Point2D &C) {
-    const int n = 3;
-    Point2D p[3];
-    p[0] = A;
-    p[1] = B;
-    p[2] = C;
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < (n - i); j++) {
-            if (p[j].x > p[j + 1].x) {
-                Point2D aux = p[j];
-                p[j] = p[j + 1];
-                p[j + 1] = aux;
-            }
-        }
-    }
-
-    A = p[0];
-    B = p[1];
-    C = p[2];
-}
-
 void Maths::VertexSwap(Vertex3D vertexes[], int i, int j) {
     Vertex3D tmp = vertexes[i];
     vertexes[i] = vertexes[j];
     vertexes[j] = tmp;
-}
-
-void Maths::sortVerticesByX(Vertex3D *vertexes, int N) {
-    int i, j, k;
-    for (i = 0; i < N - 1; i++) {
-        for (k = i, j = i + 1; j < N; j++) {
-            if (vertexes[j].x < vertexes[k].x) {
-                k = j;
-            }
-        }
-        Maths::VertexSwap(vertexes, i, k);
-    }
-}
-
-void Maths::sortVerticesByY(Vertex3D *vertexes, int N) {
-    int i, j, k;
-    for (i = 0; i < N - 1; i++) {
-        for (k = i, j = i + 1; j < N; j++) {
-            if (vertexes[j].x < vertexes[k].x) {
-                k = j;
-            }
-        }
-        Maths::VertexSwap(vertexes, i, k);
-    }
 }
 
 float Maths::distanceBetweenVertices(Vertex3D v1, Vertex3D v2) {
