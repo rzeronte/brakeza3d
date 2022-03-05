@@ -12,6 +12,8 @@
 #include "../Misc/Tools.h"
 
 class GUI_Menu : public GUI {
+private:
+    ImVec4 FOG_IMGUI_COLOR;
 public:
 
     virtual ~GUI_Menu() {}
@@ -146,14 +148,13 @@ public:
                 ImGui::Separator();
 
                 ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
-                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float *) &EngineSetup::get()->FOG_IMGUI_COLOR,
+                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float *) &FOG_IMGUI_COLOR,
                                                     misc_flags);
-
                 if (changedFOGcolor) {
                     EngineSetup::get()->FOG_COLOR = Color(
-                            EngineSetup::get()->FOG_IMGUI_COLOR.x * 256,
-                            EngineSetup::get()->FOG_IMGUI_COLOR.y * 256,
-                            EngineSetup::get()->FOG_IMGUI_COLOR.z * 256
+                        FOG_IMGUI_COLOR.x * 256,
+                        FOG_IMGUI_COLOR.y * 256,
+                        FOG_IMGUI_COLOR.z * 256
                     );
                 }
 

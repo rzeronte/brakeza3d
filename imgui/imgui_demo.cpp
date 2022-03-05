@@ -2197,7 +2197,7 @@ void ImGui::ShowDemoWindow(bool *p_open) {
             // NB: As a quirk in this very specific example, we want to differentiate the parent of this menu from the parent of the various popup menus above.
             // To do so we are encloding the items in a PushID()/PopID() block to make them two different menusets. If we don't, opening any popup above and hovering our menu here
             // would open it. This is because once a menu is active, we allow to switch to a sibling menu by just hovering on it, which is the desired behavior for regular menus.
-            ImGui::PushID("foo");
+            ImGui::PushID("comboPhaseType");
             ImGui::MenuItem("Menu item", "CTRL+M");
             if (ImGui::BeginMenu("Menu inside a regular window")) {
                 ShowExampleMenuFile();

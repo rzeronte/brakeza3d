@@ -119,7 +119,7 @@ public:
     Shader *getShaderByType(int id);
 
     const std::map<int, Shader *> &getShaders();
-    Object3D *getObjectRaycast();
+    Object3D *getObject3DFromClickPoint(int xClick, int yClick);
 
 private:
     std::map<int, Shader*> shaders;

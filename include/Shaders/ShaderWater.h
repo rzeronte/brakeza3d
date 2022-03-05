@@ -12,6 +12,16 @@
 
 class ShaderWater: public Shader {
 public:
+    float LAVA_CLOSENESS = 2.35;
+    float LAVA_INTENSITY = 0.45;
+    float LAVA_SPEED = 2.55;
+    float LAVA_SCALE = 2.35;
+
+    // Default config is used in menu mode
+    float intensity_r = 1;
+    float intensity_g = 1;
+    float intensity_b = 1;
+
     void onUpdate() override {
         Shader::onUpdate();
 
@@ -19,15 +29,7 @@ public:
             return;
         }
 
-        float LAVA_CLOSENESS = 2.35;
-        float LAVA_INTENSITY = 0.45;
-        float LAVA_SPEED = 2.55;
-        float LAVA_SCALE = 2.35;
 
-        // Default config is used in menu mode
-        float intensity_r = 1;
-        float intensity_g = 1;
-        float intensity_b = 1;
 
         int type = 1;
         //water = -3 |mud = -4 | lava = -5

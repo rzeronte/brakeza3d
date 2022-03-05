@@ -24,9 +24,6 @@ public:
     Color color;
     Color specularColor;
 
-    ImVec4 imgui_color;
-    ImVec4 imgui_color_specularity;
-
     float kc = 1;   // constant attenuation
     float kl = 0;   // linear attenuation
     float kq = 0;   // quadratic attenuation

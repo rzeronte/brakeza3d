@@ -25,15 +25,9 @@ public:
     Uint32 *videoBuffer;
     int sizeBuffers;
 
-    Uint32 *HUDbuffer;
-
     int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
     SoundPackage *soundPackage;
-
-    std::vector<NPCEnemyBody *> enemyTemplates;
-
-    NPCEnemyBody *getEnemyTemplateForClassname(const std::string& classname);
 
     void clearDepthBuffer() const;
 

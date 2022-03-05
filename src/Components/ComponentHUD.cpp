@@ -117,7 +117,7 @@ void ComponentHUD::addButton(Button *button) {
 }
 
 void ComponentHUD::loadButtons() {
-    const int offsetY =  EngineSetup::get()->screenHeight - 24 - 1;
+    const int offsetY =  EngineSetup::get()->screenHeight - 24;
     const int offsetX = 24;
     int currentX = 0;
     addButton(new Button(currentX + offsetX * 0, offsetY, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));

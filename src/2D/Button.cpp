@@ -80,7 +80,7 @@ void Button::drawSelectedEffect() {
     Color c = Color::green();
     for (int i = 0; i < getImage()->width(); i++) {
         buffer->setVideoBuffer(getX() + i, getY(), c.getColor());
-        buffer->setVideoBuffer(getX() + i, getY() + getImage()->height(), c.getColor());
+        buffer->setVideoBuffer(getX() + i, getY() + getImage()->height() - 1, c.getColor());
     }
     for (int i = 0; i < getImage()->height(); i++) {
         buffer->setVideoBuffer(getX(), getY() + i, c.getColor());

@@ -17,6 +17,7 @@ public:
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->object = nullptr;
         this->color = Color::green();
+        setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     }
 
     ShaderObjectSilhouette(Object3D *o) {
@@ -24,6 +25,7 @@ public:
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->color = Color::green();
+        setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     }
 
     void onUpdate() override {
@@ -65,7 +67,9 @@ private:
     Color color;
 
     bool isBorderPixel(int x, int y) {
-        bool isNotFilled = !this->object->getStencilBufferValue(x, y);
+        bool isFilled = this->object->getStencilBufferValue(x, y);
+
+        if (isFilled) return false;
 
         bool topLeft = this->object->getStencilBufferValue(x-1, y-1);
         bool topMiddle = this->object->getStencilBufferValue(x, y-1);
@@ -78,13 +82,11 @@ private:
         bool bottomMiddle = this->object->getStencilBufferValue(x, y+1);
         bool bottomRight = this->object->getStencilBufferValue(x+1, y+1);
 
-        if (isNotFilled && (
-                topLeft || topMiddle || topRight ||
-                centerLeft || centerRight ||
-                bottomLeft || bottomMiddle || bottomRight
-        )) {
+        if (topLeft || topMiddle || topRight || centerLeft || centerRight ||bottomLeft || bottomMiddle || bottomRight) {
             return true;
         }
+
+        return false;
     }
 };
 

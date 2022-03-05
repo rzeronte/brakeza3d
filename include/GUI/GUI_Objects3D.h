@@ -20,6 +20,10 @@
 #include "../../src/Game/Player.h"
 
 class GUI_Objects3D : public GUI {
+private:
+    ImVec4 imgui_color;
+    ImVec4 imgui_color_specularity;
+
 public:
     bool show = true;
     int misc_flags = ImGuiColorEditFlags_NoOptions;
@@ -172,9 +176,8 @@ public:
                                 item_current = items[4];
                                 break;
                         }
-
-                        if (ImGui::BeginCombo(animation_text.c_str(), item_current,
-                                              flags)) { // The second parameter is the label previewed before opening the combo.
+                        // The second parameter is the label previewed before opening the combo.
+                        if (ImGui::BeginCombo(animation_text.c_str(), item_current, flags)) {
                             for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
                                 bool is_selected = (item_current == items[n]);
                                 if (ImGui::Selectable(items[n], is_selected)) {
@@ -267,12 +270,12 @@ public:
                         // Color
                         if (ImGui::TreeNode(color_text.c_str())) {
                             bool changed_color = false;
-                            changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &lp->imgui_color,misc_flags);
+                            changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imgui_color,misc_flags);
                             if (changed_color) {
                                 lp->setColor(
-                                        lp->imgui_color.x * 256,
-                                        lp->imgui_color.y * 256,
-                                        lp->imgui_color.z * 256
+                                        imgui_color.x * 256,
+                                        imgui_color.y * 256,
+                                        imgui_color.z * 256
                                 );
                             }
                             ImGui::TreePop();
@@ -293,12 +296,12 @@ public:
                         if (ImGui::TreeNode(colorpicker_text_specularity.c_str())) {
                             ImGui::DragScalar("m", ImGuiDataType_Float, &lp->specularComponent, range_potence_sensibility,
                                               &range_potence_min, &range_potence_max, "%f", 1.0f);
-                            changed_color_specular = ImGui::ColorEdit4(specularity_RGB_text.c_str(), (float *) &lp->imgui_color_specularity,misc_flags);
+                            changed_color_specular = ImGui::ColorEdit4(specularity_RGB_text.c_str(), (float *) &imgui_color_specularity,misc_flags);
                             if (changed_color_specular) {
                                 lp->setColorSpecularity(
-                                        lp->imgui_color_specularity.x * 256,
-                                        lp->imgui_color_specularity.y * 256,
-                                        lp->imgui_color_specularity.z * 256
+                                        imgui_color_specularity.x * 256,
+                                        imgui_color_specularity.y * 256,
+                                        imgui_color_specularity.z * 256
                                 );
                             }
                             ImGui::TreePop();

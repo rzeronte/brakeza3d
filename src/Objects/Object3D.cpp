@@ -67,7 +67,6 @@ Vertex3D Object3D::AxisBackwards() {
     Vertex3D v = getRotation() * EngineSetup::get()->backward;
 
     return v.getNormalize();
-
 }
 
 Vertex3D Object3D::AxisRight() {
@@ -196,9 +195,8 @@ void Object3D::setStencilBuffer(int x, int y, bool value) {
     this->stencilBuffer[y * EngineSetup::get()->screenWidth + x] = value;
 }
 
-void Object3D::clearStencilBuffer()
-{
-    std::fill(stencilBuffer, stencilBuffer + EngineSetup::get()->RESOLUTION, NULL);
+void Object3D::clearStencilBuffer() {
+    std::fill(stencilBuffer, stencilBuffer + EngineSetup::get()->RESOLUTION, false);
 }
 
 bool Object3D::getStencilBufferValue(int i) const {
@@ -206,10 +204,9 @@ bool Object3D::getStencilBufferValue(int i) const {
 }
 
 bool Object3D::getStencilBufferValue(int x, int y) const {
-    unsigned int index = y * EngineSetup::get()->screenWidth + x;
+    if (Tools::isPixelInWindow(x, y)) {
+        return this->stencilBuffer[y * EngineSetup::get()->screenWidth + x];
+    }
 
-    if (index < 0) index = 0;
-    if (index > EngineSetup::get()->RESOLUTION) index = EngineSetup::get()->RESOLUTION - 1;
-
-    return this->stencilBuffer[index];
+    return false;
 }

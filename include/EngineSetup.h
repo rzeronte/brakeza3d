@@ -49,8 +49,6 @@ public:
     bool BASED_TILE_RENDER = true;
     bool BASED_TILE_RENDER_THREADED = true;
 
-    ImVec4 FOG_IMGUI_COLOR;
-
     float EPSILON = 0.00001f;
 
     bool ENABLE_FOG = true;
@@ -224,7 +222,7 @@ public:
     float PROJECTILE_DEMO_IMPULSE = 4000;
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 1;
-    float PROJECTILE_DEMO_TTL = 10;
+    float PROJECTILE_DEMO_TTL = 60;
 
     bool CLICK_SELECT_OBJECT3D = true;
 
@@ -273,11 +271,13 @@ public:
         FIRE = 3,
         TINT_SCREEN = 4,
         SILHOUETTE = 5,
+        SMOKE = 6,
+        BLINK = 7,
     };
 
     enum ShadersPhaseRender {
-        PREUPDATE = 1,
-        POSTUPDATE = 2,
+        PREUPDATE = 0,
+        POSTUPDATE = 1,
     };
 };
 

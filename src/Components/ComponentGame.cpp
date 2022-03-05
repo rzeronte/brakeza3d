@@ -87,7 +87,7 @@ void ComponentGame::onEnd() {
 }
 
 void ComponentGame::onSDLPollEvent(SDL_Event *event, bool &finish) {
-    /*Object3D *o = getObjectRaycast();
+    /*Object3D *o = getObject3DFromClickPoint();
     if (o != nullptr) {
         Logging::getInstance()->Log("Encontrado! " + o->getLabel());
         shaderBorder.setObject(o);
@@ -204,7 +204,7 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto * enemy = new Mesh3DGhost();
+    /*auto * enemy = new Mesh3DGhost();
     enemy->setLabel("enemy");
     enemy->setEnableLights(false);
     enemy->setPosition(Vertex3D(1115, -3200, 4500));
@@ -212,7 +212,7 @@ void ComponentGame::loadPlayer()
     enemy->setScale(1);
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
     enemy->makeGhostBody( ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy);
-    Brakeza3D::get()->addObject3D(enemy, "enemy");
+    Brakeza3D::get()->addObject3D(enemy, "enemy");*/
 }
 
 void ComponentGame::loadAxisPlanes() const {

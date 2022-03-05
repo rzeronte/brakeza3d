@@ -9,14 +9,14 @@
 Shader::Shader()
 {
     setEnabled(false);
+    setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+
     h = EngineSetup::get()->screenHeight;
     w = EngineSetup::get()->screenWidth;
 
     videoBuffer = new uint32_t[w*h];
     executionTime = 0;
     t.start();
-
-    phaseRender = EngineSetup::ShadersPhaseRender::PREUPDATE;
 }
 
 void Shader::onUpdate()

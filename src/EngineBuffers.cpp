@@ -20,18 +20,6 @@ EngineBuffers::EngineBuffers() {
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
 
-    //make sure the fire buffer is zero in the beginning
-    HUDbuffer = new Uint32[sizeBuffers];
-    int h = EngineSetup::get()->screenHeight;
-    int w = EngineSetup::get()->screenWidth;
-
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            int index = y * w + x;
-            HUDbuffer[index] = 0;
-        }
-    }
-
     soundPackage = new SoundPackage();
 }
 
@@ -79,15 +67,4 @@ void EngineBuffers::clearVideoBuffer() const {
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
     // buffer -> surface
     memcpy(&surface->pixels, &videoBuffer, sizeof(surface->pixels));
-}
-
-
-NPCEnemyBody *EngineBuffers::getEnemyTemplateForClassname(const std::string& classname) {
-    for (NPCEnemyBody *e : this->enemyTemplates) {
-        if (e->getClassname() == classname) {
-            return e;
-        }
-    }
-
-    return nullptr;
 }
