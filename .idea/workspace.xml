@@ -18,35 +18,30 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Stencil Buffer per Mesh / ShaderSilhouette">
-      <change afterPath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="GUI for new Shaders">
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Shaders/ShaderSmoke.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/deep_space.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_demo.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Lights.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Maths.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Maths.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/LightPoint3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/LightPoint3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/Button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Button.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Plane.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Plane.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -374,7 +369,9 @@
       <workItem from="1646000847294" duration="11648000" />
       <workItem from="1646074651688" duration="12950000" />
       <workItem from="1646137133665" duration="14093000" />
-      <workItem from="1646253299042" duration="16871000" />
+      <workItem from="1646253299042" duration="18412000" />
+      <workItem from="1646330288675" duration="21253000" />
+      <workItem from="1646442401784" duration="12962000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -474,7 +471,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646169870393</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="GUI for new Shaders">
+      <created>1646273818501</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1646273818501</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -624,7 +628,8 @@
     <MESSAGE value="cleaning Collisions Component" />
     <MESSAGE value="clean assets / refact Texture for desacouple BSP requeriments" />
     <MESSAGE value="Stencil Buffer per Mesh / ShaderSilhouette" />
-    <option name="LAST_COMMIT_MESSAGE" value="Stencil Buffer per Mesh / ShaderSilhouette" />
+    <MESSAGE value="GUI for new Shaders" />
+    <option name="LAST_COMMIT_MESSAGE" value="GUI for new Shaders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

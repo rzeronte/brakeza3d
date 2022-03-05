@@ -3,6 +3,8 @@
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
+#include "../../include/Shaders/ShaderSmoke.h"
+#include "../../include/Shaders/ShaderBlink.h"
 
 void ComponentRender::onStart() {
     Logging::Log("ComponentRender onStart", "ComponentRender");
@@ -60,21 +62,41 @@ void ComponentRender::onEnd() {
 }
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
+    auto input = ComponentsManager::get()->getComponentInput();
     if (SETUP->CLICK_SELECT_OBJECT3D) {
+        if (input->isClickRight() && !input->isMouseMotion()) {
+            Logging::getInstance()->Log("Deselect Object3D!");
+            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+            shader->setObject(nullptr);
+        }
+
         updateShaderSilhouetteObject();
     }
 }
 
 void ComponentRender::updateShaderSilhouetteObject() {
-    selectedObject = getObjectRaycast();
+    auto input = ComponentsManager::get()->getComponentInput();
+
+    if (!input->isClickLeft() || input->isMouseMotion()) {
+        return;
+    }
+
+    selectedObject = getObject3DFromClickPoint(
+        input->getRelativeRendererMouseX(),
+        input->getRelativeRendererMouseY()
+    );
+
     if (selectedObject != nullptr) {
-        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-        shader->setObject(selectedObject);
-    } else {
-        if (ComponentsManager::get()->getComponentInput()->isClickLeft()) {
-            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-            shader->setObject(nullptr);
-        }
+        Logging::getInstance()->Log("Selecting Object3D: " + selectedObject->getLabel());
+        auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+        silhouette->setObject(selectedObject);
+
+        auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
+        smoke->setObject(selectedObject);
+
+
+        auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
+        blink->setObject(selectedObject);
     }
 }
 
@@ -917,34 +939,21 @@ void ComponentRender::initializeShaders() {
     addShader(EngineSetup::ShadersAvailables::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShadersAvailables::FIRE, "Fire", new ShaderFire());
     addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
-
-    getShaderByType(EngineSetup::ShadersAvailables::SILHOUETTE)->setEnabled(true);
-    getShaderByType(EngineSetup::ShadersAvailables::BACKGROUND)->setEnabled(true);
+    addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
+    addShader(EngineSetup::ShadersAvailables::SMOKE, "Smoke", new ShaderSmoke());
+    addShader(EngineSetup::ShadersAvailables::BLINK, "Blink", new ShaderBlink());
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {
     return shaders;
 }
 
-Object3D* ComponentRender::getObjectRaycast() {
-    auto *input = ComponentsManager::get()->getComponentInput();
+Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick) {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    if (!input->isClickLeft()) {
-        return nullptr;
-    }
-
-    Point2D fixedPosition = Point2D(
-            input->getRelativeRendererMouseX(),
-            input->getRelativeRendererMouseY()
-    );
-
+    Point2D  fixedPosition = Point2D(xClick,yClick);
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
-
-    Vector3D ray(
-            camera->getPosition(),
-            nearPlaneVertex
-    );
+    Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
     for (auto triangle : getVisibleTriangles()) {
         auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);

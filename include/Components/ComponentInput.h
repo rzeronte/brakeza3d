@@ -15,8 +15,6 @@ public:
     bool mouseMotion = false;
     bool mouseLeftButton = false;
     bool mouseRightButton = false;
-    bool clickLeft = false;
-    bool clickRight = false;
     Uint8 *keyboard;
     Uint32 mouseButtons;
     int mouseX;
@@ -66,6 +64,8 @@ public:
 
     int getRelativeRendererMouseX();
     int getRelativeRendererMouseY();
+
+    bool isMouseMotion() const;
 };
 
 

@@ -45,7 +45,6 @@ void ComponentInput::handleMouse(SDL_Event *event) {
 
     // Camera rotation
     if (mouseMotion && isLeftMouseButtonPressed()) {
-        mouseMotion = false;
         if (event->type == SDL_MOUSEMOTION) {
             ComponentsManager::get()->getComponentCamera()->getCamera()->Yaw(event->motion.xrel);
             ComponentsManager::get()->getComponentCamera()->getCamera()->Pitch(event->motion.yrel);
@@ -103,20 +102,10 @@ void ComponentInput::updateKeyboardMapping() {
 }
 
 void ComponentInput::updateMouseStates(SDL_Event *event) {
-
-    clickLeft = false;
-    clickRight = false;
-
-    if (event->button.button == SDL_BUTTON_LEFT && event->type == SDL_MOUSEBUTTONDOWN) {
-        clickLeft = true;
-    }
-
-    if (event->button.button == SDL_BUTTON_RIGHT && event->type == SDL_MOUSEBUTTONDOWN) {
-        clickRight = false;
-    }
-
     if (event->type == SDL_MOUSEMOTION) {
         mouseMotion = true;
+    } else {
+        mouseMotion = false;
     }
 }
 
@@ -183,11 +172,11 @@ void ComponentInput::updateMouseMapping() {
 }
 
 bool ComponentInput::isClickLeft() const {
-    return clickLeft;
+    return mouseLeftButton;
 }
 
 bool ComponentInput::isClickRight() const {
-    return clickRight;
+    return mouseRightButton;
 }
 
 int ComponentInput::getRelativeRendererMouseX() {
@@ -196,4 +185,8 @@ int ComponentInput::getRelativeRendererMouseX() {
 
 int ComponentInput::getRelativeRendererMouseY() {
     return relativeRendererMouseY;
+}
+
+bool ComponentInput::isMouseMotion() const {
+    return mouseMotion;
 }
