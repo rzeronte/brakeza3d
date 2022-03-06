@@ -27,11 +27,9 @@ void Image::loadTGA(std::string filename) {
 void Image::drawFlat(int pos_x, int pos_y) const {
     auto *buffer = EngineBuffers::getInstance();
     auto *pixels = (Uint32 *) surface->pixels;
-    for (int i = 0; i < surface->h; i++) {
-        for (int j = 0; j < surface->w; j++) {
-            if (Tools::isPixelInWindow(j, i)) {
-                buffer->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * surface->w + j]);
-            }
+    for (int i = 0; i < std::min(EngineSetup::get()->screenHeight, surface->h); i++) {
+        for (int j = 0; j < std::min(EngineSetup::get()->screenWidth, surface->w); j++) {
+            buffer->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * surface->w + j]);
         }
     }
 }

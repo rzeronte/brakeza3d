@@ -135,13 +135,12 @@ void WeaponType::shoot() {
     auto *componentGame = ComponentsManager::get()->getComponentGame();
     auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-    auto ammoType = getAmmoType();
     if (getAmmoType()->getAmount() <= 0) return;
 
     auto *projectile = new Projectile3DBody();
+    projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
     projectile->copyFrom(getAmmoType()->getModelProjectile());
     projectile->setPosition( componentGame->getPlayer()->getPosition() - componentGame->getPlayer()->AxisUp().getScaled(1000));
-    projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         0.1,

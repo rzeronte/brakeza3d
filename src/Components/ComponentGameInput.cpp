@@ -151,10 +151,10 @@ void ComponentGameInput::jump(bool soundJump) const {
 }
 
 void ComponentGameInput::handleFire(SDL_Event *event) const {
-    if (event->key.keysym.sym == SDLK_SPACE) {
-        if (event->type == SDL_KEYDOWN) {
-            player->shoot();
-        }
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+
+    if (keyboard[SDL_SCANCODE_SPACE] && event->type == SDL_KEYDOWN) {
+        player->shoot();
     }
 }
 

@@ -61,7 +61,7 @@ public:
     void setAutoScroll(bool value);
     void setGameState(GameState state);
     GameState getGameState();
-    Object3D *selectClosestObject3DFromPlayer();
+    void selectClosestObject3DFromPlayer();
 private:
 
     GameState gameState;

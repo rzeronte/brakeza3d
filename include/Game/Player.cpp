@@ -92,7 +92,7 @@ void Player::respawn() {
     setStamina(INITIAL_STAMINA);
 }
 
-void * Player::shoot() {
+void Player::shoot() {
     Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
 }
 

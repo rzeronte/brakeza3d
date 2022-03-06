@@ -244,6 +244,7 @@ void ComponentGame::setupWeapons() {
     auto *ammoType = new AmmoType();
     ammoType->setName("defaultWeapon_ammoType");
     ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cube.fbx"));
+    ammoType->getModelProjectile()->setLabel("projectile_template");
     ammoType->getModelProjectile()->setScale(1);
     ammoType->getModelProjectile()->setFlatTextureColor(true);
     ammoType->setAmount(1000);
@@ -253,27 +254,35 @@ void ComponentGame::setupWeapons() {
 }
 
 
-Object3D* ComponentGame::selectClosestObject3DFromPlayer() {
+void ComponentGame::selectClosestObject3DFromPlayer() {
     Object3D *currentClosestObject = nullptr;
     Object3D *currentSelectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
     float currentMinDistance = 0;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (!object->isEnabled())  {
+            continue;
+        }
+
         if (player == object) {
             continue;
         }
+
         if (currentSelectedObject == object) {
             continue;
         }
-        auto *mesh = dynamic_cast<Mesh3D *>(object);
+
+        Mesh3D *mesh = dynamic_cast<Mesh3D *> (object);
         if (mesh == nullptr) {
             continue;
         }
 
         mesh->updateBoundingBox();
-        for (unsigned int i = 0; i < 8; i++) {
-            Vector3D v(player->getPosition(), mesh->aabb.vertices[i]);
+
+        for (auto & vertice : mesh->aabb.vertices) {
+            Vector3D v(player->getPosition(), vertice);
+
             const float distance = v.getComponent().getSquaredLength();
             if (currentClosestObject == nullptr) {
                 currentMinDistance = distance;
