@@ -44,7 +44,7 @@ public:
 
     static char *readFile(const std::string &name, size_t &source_size);
 
-    static bool isPixelInWindow(int x, int y);
+    static bool isPixelInWindow(int &x, int &y);
 
     static uint8_t getRedValueFromColor(uint32_t);
 
