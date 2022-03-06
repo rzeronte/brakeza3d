@@ -142,6 +142,7 @@ void WeaponType::shoot() {
     projectile->copyFrom(getAmmoType()->getModelProjectile());
     projectile->setPosition( componentGame->getPlayer()->getPosition() - componentGame->getPlayer()->AxisUp().getScaled(1000));
     projectile->setEnabled(true);
+    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(
         0.1,
         componentGame->getPlayer()->AxisUp().getInverse(),

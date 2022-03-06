@@ -48,7 +48,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
     int out = 0;
 
     for (auto & triangle : triangles) {
-        if (!triangle->isBSP) continue;
+        if (!triangle->bspTriangle) continue;
 
         if (triangle->parent->isDecal()) {
             alreadyDecal++;
@@ -92,7 +92,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
 
         Triangle *t = triangle;
         t->parent = this;
-        t->isBSP = false;
+        t->bspTriangle = false;
         t->clipped = true;
         t->A = Transforms::objectToLocal(t->Ao, this);
         t->B = Transforms::objectToLocal(t->Bo, this);

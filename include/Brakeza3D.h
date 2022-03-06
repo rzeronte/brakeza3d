@@ -27,19 +27,19 @@ private:
 
     ComponentsManager *componentsManager;
 
-    ComponentCamera *componentCamera;
-    ComponentCollisions *componentCollisions;
-    ComponentWeapons *componentWeapons;
-    ComponentMenu *componentMenu;
-    ComponentInput *componentInput;
-    ComponentWindow *componentWindow;
-    ComponentSound *componentSound;
-    ComponentRender *componentRender;
-    ComponentHUD *componentHUD;
-    ComponentGUI *componentGUI;
-    ComponentGame *componentGame;
-    ComponentGameInput *componentGameInput;
-    ComponentConsole *componentConsole;
+    ComponentCamera *componentCamera = nullptr;
+    ComponentCollisions *componentCollisions = nullptr;
+    ComponentWeapons *componentWeapons = nullptr;
+    ComponentMenu *componentMenu = nullptr;
+    ComponentInput *componentInput = nullptr;
+    ComponentWindow *componentWindow = nullptr;
+    ComponentSound *componentSound = nullptr;
+    ComponentRender *componentRender = nullptr;
+    ComponentHUD *componentHUD = nullptr;
+    ComponentGUI *componentGUI = nullptr;
+    ComponentGame *componentGame = nullptr;
+    ComponentGameInput *componentGameInput = nullptr;
+    ComponentConsole *componentConsole = nullptr;
 
     Timer engineTimer;
 
@@ -88,6 +88,8 @@ public:
     void mainLoop();
 
     ComponentsManager *getComponentsManager() const;
+
+    void initAxisPlane();
 };
 
 

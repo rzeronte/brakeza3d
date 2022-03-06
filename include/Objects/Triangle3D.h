@@ -52,7 +52,7 @@ public:
     bool clipped = false;
     bool clipped_cl = false;
 
-    bool isBSP = false;
+    bool bspTriangle = false;
     int surfaceBSPIndex = -1;
 
     int lod;
@@ -120,6 +120,9 @@ public:
     bool isEnableLights() const;
 
     void setEnableLights(bool enableLights);
+
+    void setBSPTriangle(bool value);
+    bool isBSPTriangle();
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

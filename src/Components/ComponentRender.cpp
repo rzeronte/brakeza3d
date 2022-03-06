@@ -3,8 +3,7 @@
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Shaders/ShaderSmoke.h"
-#include "../../include/Shaders/ShaderBlink.h"
+
 
 void ComponentRender::onStart() {
     Logging::Log("ComponentRender onStart", "ComponentRender");
@@ -80,7 +79,6 @@ void ComponentRender::updateSelectedObject3D() {
     if (!input->isClickLeft() || input->isMouseMotion()) {
         return;
     }
-
     selectedObject = getObject3DFromClickPoint(
         input->getRelativeRendererMouseX(),
         input->getRelativeRendererMouseY()
@@ -206,7 +204,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoi
                 SETUP->BOTTOM_PLANE,
                 t->parent,
                 clippedTriangles,
-                t->isBSP
+                t->bspTriangle
             );
         }
 
@@ -248,7 +246,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
                 SETUP->BOTTOM_PLANE,
                 t->parent,
                 clippedTriangles,
-                t->isBSP
+                t->bspTriangle
             );
         }
 

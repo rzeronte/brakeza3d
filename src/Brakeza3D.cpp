@@ -6,20 +6,6 @@ Brakeza3D *Brakeza3D::instance = nullptr;
 Brakeza3D::Brakeza3D() {
     componentsManager = ComponentsManager::get();
     componentsManager->setSceneObjects(&sceneObjects);
-
-    componentCamera = nullptr;
-    componentInput = nullptr;
-    componentWeapons = nullptr;
-    componentCollisions = nullptr;
-    componentWindow = nullptr;
-    componentSound = nullptr;
-    componentRender = nullptr;
-    componentMenu = nullptr;
-    componentHUD = nullptr;
-    componentGUI = nullptr;
-    componentGame = nullptr;
-    componentGameInput = nullptr;
-    componentConsole = nullptr;
 }
 
 Brakeza3D *Brakeza3D::get() {
@@ -70,6 +56,8 @@ void Brakeza3D::mainLoop() {
     engineTimer.start();
 
     onStartComponents();
+
+    initAxisPlane();
 
     while (!finish) {
         this->updateTimer();
@@ -172,4 +160,21 @@ void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) {
 
 ComponentsManager *Brakeza3D::getComponentsManager() const {
     return componentsManager;
+}
+
+void Brakeza3D::initAxisPlane()
+{
+    auto axisPlanes = new Mesh3DBody();
+    axisPlanes->setRotation(0, 0, 0);
+    axisPlanes->initializeStencilBuffer();
+    axisPlanes->setStencilBufferEnabled(true);
+    axisPlanes->setEnabled(false);
+    axisPlanes->setLabel("test");
+    axisPlanes->setCollisionsEnabled(true);
+    axisPlanes->setScale(1);
+    axisPlanes->setFlatTextureColor(false);
+    axisPlanes->setRotationFrameEnabled(false);
+    axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
+    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    addObject3D(axisPlanes, "AxisPlanes");
 }

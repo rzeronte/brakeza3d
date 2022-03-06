@@ -86,11 +86,10 @@ void ComponentWeapons::shoot() {
     }
 
     Logging::Log("ComponentWeapons shoot!", "ComponentWeapons");
-
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
         this->getCurrentWeaponType()->shoot();
     } else {
-        Logging::Log("vacio!", "ComponentWeapons");
+        Logging::Log("Empty Ammo!", "ComponentWeapons");
         std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();
         Tools::playMixedSound(
                 EngineBuffers::getInstance()->soundPackage->getSoundByLabel(soundLabel),

@@ -370,7 +370,7 @@ void BSPMap::bindTrianglesLightmaps() {
         for (int j = offset; j < offset + num; j++) {
 
             this->model_triangles[j]->surfaceBSPIndex = surfaceId;
-            this->model_triangles[j]->isBSP = true;
+            this->model_triangles[j]->bspTriangle = true;
 
             /*if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];

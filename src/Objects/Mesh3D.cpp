@@ -79,7 +79,6 @@ void Mesh3D::updateBoundingBox() {
 void Mesh3D::copyFrom(Mesh3D *source) {
     Logging::Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel(), "Mesh3D");
 
-    // Triangles
     for (auto &modelTriangle : source->modelTriangles) {
         auto *t = new Triangle(
                 modelTriangle->A,
@@ -89,11 +88,13 @@ void Mesh3D::copyFrom(Mesh3D *source) {
         );
 
         t->setTexture(modelTriangle->getTexture());
+        t->setFlatTextureColor(modelTriangle->isFlatTextureColor());
+        t->setEnableLights(modelTriangle->isEnableLights());
+        t->setBSPTriangle(modelTriangle->isBSPTriangle());
 
         this->modelTriangles.push_back(t);
     }
 
-    // Textures
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
     this->sourceFile = source->sourceFile;

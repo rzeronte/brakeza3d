@@ -18,20 +18,24 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Refine player movement">
-      <change afterPath="$PROJECT_DIR$/include/Game/CMakeLists.txt" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Fix bad pointer functions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Decal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Decal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/BSPMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/BSPMap.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Maths.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Maths.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -362,7 +366,7 @@
       <workItem from="1646253299042" duration="18412000" />
       <workItem from="1646330288675" duration="21253000" />
       <workItem from="1646442401784" duration="19183000" />
-      <workItem from="1646522575863" duration="14593000" />
+      <workItem from="1646522575863" duration="21438000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -483,7 +487,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646535859418</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fix bad pointer functions">
+      <created>1646541754524</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1646541754524</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -636,7 +647,8 @@
     <MESSAGE value="GUI for new Shaders" />
     <MESSAGE value="Added new Shaders / improve shaders" />
     <MESSAGE value="Refine player movement" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refine player movement" />
+    <MESSAGE value="Fix bad pointer functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bad pointer functions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

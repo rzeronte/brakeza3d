@@ -20,12 +20,11 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
     setupWeapons();
     loadPlayer();
-    loadAxisPlanes();
 
     //ShaderImageBackground *shader = dynamic_cast<ShaderImageBackground *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShadersAvailables::BACKGROUND));
     //shader->setType(ShaderImageBackgroundTypes::PORTION);
@@ -193,7 +192,7 @@ void ComponentGame::loadPlayer()
     enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
     Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
 
-    auto * enemyTwo = new Mesh3DGhost();
+    /*auto * enemyTwo = new Mesh3DGhost();
     enemyTwo->setStencilBufferEnabled(true);
     enemyTwo->setLabel("enemyTwo");
     enemyTwo->setEnableLights(false);
@@ -213,23 +212,8 @@ void ComponentGame::loadPlayer()
     enemyThree->setScale(1);
     enemyThree->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
     enemyThree->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
-    Brakeza3D::get()->addObject3D(enemyThree, "enemyThree");
+    Brakeza3D::get()->addObject3D(enemyThree, "enemyThree");*/
 
-}
-
-void ComponentGame::loadAxisPlanes() const {
-    axisPlanes->setRotation(0, 0, 0);
-    axisPlanes->initializeStencilBuffer();
-    axisPlanes->setStencilBufferEnabled(true);
-    axisPlanes->setEnabled(true);
-    axisPlanes->setLabel("test");
-    axisPlanes->setCollisionsEnabled(true);
-    axisPlanes->setScale(1);
-    axisPlanes->setFlatTextureColor(false);
-    axisPlanes->setRotationFrameEnabled(false);
-    axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
-    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
-    Brakeza3D::get()->addObject3D(axisPlanes, "AxisPlanes");
 }
 
 void ComponentGame::setupWeapons() {
@@ -246,7 +230,6 @@ void ComponentGame::setupWeapons() {
     ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cube.fbx"));
     ammoType->getModelProjectile()->setLabel("projectile_template");
     ammoType->getModelProjectile()->setScale(1);
-    ammoType->getModelProjectile()->setFlatTextureColor(true);
     ammoType->setAmount(1000);
     weaponType->setAmmoType(ammoType);
 

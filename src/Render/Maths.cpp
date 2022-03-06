@@ -140,7 +140,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->setTexture(texture);
             t->setClipped(clipped);
             t->setId(triangles.size());
-            t->isBSP = isBsp;
+            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 
@@ -224,7 +224,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->setTexture(texture);
             t->setClipped(clipped);
             t->setId(triangles.size());
-            t->isBSP = isBsp;
+            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 
@@ -248,7 +248,7 @@ int Maths::TriangulatePolygon(long vertexCount, Vertex3D *vertices, Vertex3D nor
             t->setTexture(texture);
             t->setClipped(clipped);
             t->setId(triangles.size());
-            t->isBSP = isBsp;
+            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 

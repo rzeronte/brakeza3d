@@ -246,45 +246,6 @@ void Triangle::processPixelTexture(Color &pixelColor, float tex_u, float tex_v, 
     pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getImage()->getSurface(), tex_u, tex_v);
 }
 
-/*void Triangle::scanShadowMappingLine(float start_x, float end_x, int y,
-                                     Point2D pa, Point2D pb, Point2D pc,
-                                     Vertex3D A, Vertex3D B, Vertex3D C, LightPoint3D *lp)
-{
-    float offset_self_shadow = 0.25f;
-
-    if (start_x == end_x) return;
-
-    // left to right
-    if (start_x > end_x) {
-        int tmp = (int) start_x;
-
-        start_x = end_x;
-        end_x = tmp;
-    }
-
-    float alpha, theta, gamma;
-
-    for (int x = (int) start_x; x < end_x; x++) {
-        const Point2D pointFinal(x, y);
-
-        if (Tools::isPixelInWindow(pointFinal.x, pointFinal.y)) {
-            // Hayamos las coordenadas baricéntricas del punto v4 respecto al triángulo pa, pb, pc
-            Maths::getBarycentricCoordinates(alpha, theta, gamma, x, y, pa, pb, pc);
-
-            float z = alpha * A.z + theta * B.z + gamma * C.z; // Homogeneous clipspace
-
-            float buffer_shadowmap_z = lp->getShadowMappingBuffer(pointFinal.x, pointFinal.y);
-            if (buffer_shadowmap_z != NULL) {
-                if ( z < buffer_shadowmap_z ) {
-                    lp->setShadowMappingBuffer(pointFinal.x, pointFinal.y, z + offset_self_shadow);
-                }
-            }  else {
-                lp->setShadowMappingBuffer(pointFinal.x, pointFinal.y, z + offset_self_shadow);
-            }
-        }
-    }
-}*/
-
 Texture *Triangle::getTexture() const {
     return texture;
 }
@@ -292,11 +253,6 @@ Texture *Triangle::getTexture() const {
 void Triangle::setTexture(Texture *t) {
     texture = t;
 }
-
-/*void Triangle::setLightPoints(std::vector<LightPoint3D *> &lightPoints)
-{
-    this->lightPoints = lightPoints;
-}*/
 
 void Triangle::setClipped(bool value) {
     this->clipped = value;
@@ -384,4 +340,12 @@ bool Triangle::isEnableLights() const {
 
 void Triangle::setEnableLights(bool enableLights) {
     this->enableLights = enableLights;
+}
+
+void Triangle::setBSPTriangle(bool value) {
+    this->bspTriangle = value;
+}
+
+bool Triangle::isBSPTriangle() {
+    return this->bspTriangle;
 }
