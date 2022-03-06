@@ -126,7 +126,7 @@ void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibl
 
 void ComponentCollisions::demoProjectile(int type) {
 
-    std::string fileName = "basic/cube.fbx";
+    std::string fileName;
 
     switch (type) {
         case 0:
@@ -151,11 +151,15 @@ void ComponentCollisions::demoProjectile(int type) {
             fileName = "basic/cube.fbx";
 
     }
-    auto *projectile = new Projectile3DBody();
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
+
+    auto *projectile = new Projectile3DBody();
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
-    projectile->setRotation(Tools::random(0, 180), Tools::random(0, 180),Tools::random(0, 180));
+    projectile->setRotation(
+        (float) Tools::random(0, 180),
+        (float) Tools::random(0, 180),
+        (float)Tools::random(0, 180)
+    );
     projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition());
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -163,7 +167,7 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
-        direction,
+        camera->getRotation().getTranspose() * EngineSetup::get()->forward,
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
