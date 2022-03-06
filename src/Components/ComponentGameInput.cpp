@@ -31,55 +31,23 @@ void ComponentGameInput::onEnd() {
 }
 
 void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish) {
-    handleMouse(event);
     handleInGameInput(event, finish);
-    handleKeyboardMovingCamera(event, finish);
-}
-
-void ComponentGameInput::handleMouse(SDL_Event *event) {
-    if (event->type == SDL_BUTTON_RIGHT) {
-    }
-
-    if (event->type == SDL_BUTTON_LEFT) {
-    }
-}
-
-void ComponentGameInput::handleKeyboardMovingCamera(SDL_Event *event, bool &end) {
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == GameState::MENU) return;
-
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
-
-    if (keyboard[SDL_SCANCODE_SPACE]) {
-        if (event->type == SDL_KEYDOWN) {
-        }
-    }
-
-    // step sounds
-    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_D]) {
-        if (event->type == SDL_KEYDOWN) {
-        }
-    } else {
-        Mix_HaltChannel(EngineSetup::SoundChannels::SND_PLAYER_STEPS);
-    }
 }
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
     this->handleEscape(event);
+    this->handleMenuKeyboard(end);
 
-    handleMenuKeyboard(end);
+    GameState state = ComponentsManager::get()->getComponentGame()->getGameState();
+    if (state == GameState::MENU || state == GameState::LOADING) {
+        return;
+    }
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == GameState::MENU
-    ||
-        ComponentsManager::get()->getComponentGame()->getGameState() == GameState::LOADING
-    ) return;
-
+    this->handleFindClosestObject3D(event);
+    this->handleFire(event);
 
     //this->handleZoom(event);
-    //this->handleCrouch(event);
-    this->handleFire(event);
-    //this->handleWeaponReload(event);
-    //this->handleSniper(event);
     //this->handleWeaponSelector();
 
 }
@@ -183,86 +151,9 @@ void ComponentGameInput::jump(bool soundJump) const {
 }
 
 void ComponentGameInput::handleFire(SDL_Event *event) const {
-    if (event->key.keysym.sym == SDLK_q) {
-
-        // First keydown
+    if (event->key.keysym.sym == SDLK_SPACE) {
         if (event->type == SDL_KEYDOWN) {
-            //player->shoot();
-        }
-
-        // Looping keydown
-        if (event->type == SDL_KEYDOWN) {
-        }
-
-        // keyup
-        if (event->type == SDL_KEYUP) {
-        }
-    }
-}
-
-void ComponentGameInput::handleWeaponReload(SDL_Event *event) const {
-    if (event->key.keysym.sym == SDLK_e) {
-
-        // First keydown
-        if (event->type == SDL_KEYDOWN) {
-            player->reload();
-        }
-
-        // Looping keydown
-        if (event->type == SDL_KEYDOWN) {
-        }
-
-        // keyup
-        if (event->type == SDL_KEYUP) {
-        }
-    }
-}
-
-void ComponentGameInput::handleSniper(SDL_Event *event) {
-    if (event->key.keysym.sym == SDLK_LSHIFT) {
-
-        Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-        if (event->type == SDL_KEYDOWN) {
-            if (ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
-                ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(true);
-
-                Tools::playMixedSound(BUFFERS->soundPackage->getSoundByLabel("sniperOn"),
-                                      EngineSetup::SoundChannels::SND_WEAPON, 0);
-
-                cam->frustum->setup(
-                        cam->getPosition(),
-                        Vertex3D(0, 0, 1),
-                        SETUP->up,
-                        SETUP->right,
-                        EngineSetup::get()->ZOOM_FOV,
-                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-                );
-                cam->updateFrustum();
-            }
-        }
-
-        if (event->type == SDL_KEYUP) {
-            if (ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->isSniper()) {
-
-                ComponentsManager::get()->getComponentWeapons()->getCurrentWeaponType()->setSniperEnabled(false);
-
-                cam->frustum->setup(
-                        cam->getPosition(),
-                        Vertex3D(0, 0, 1),
-                        SETUP->up,
-                        SETUP->right,
-                        EngineSetup::get()->HORIZONTAL_FOV,
-                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-                );
-                cam->updateFrustum();
-
-            }
-        }
-
-        if ((event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)) {
+            player->shoot();
         }
     }
 }
@@ -341,5 +232,14 @@ void ComponentGameInput::handleKeyboardMovingPlayer() {
     if (keyboard[SDL_SCANCODE_W]) {
         Vertex3D velocity = player->getVelocity() - Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
+    }
+}
+
+void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event ) {
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    auto game = ComponentsManager::get()->getComponentGame();
+
+    if (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) {
+        game->selectClosestObject3DFromPlayer();
     }
 }

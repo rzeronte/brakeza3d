@@ -79,6 +79,8 @@ public:
     void updateLight();
 
     void resolveCollision(Collisionable *with) override;
+
+    float autoRotationSelectedObjectSpeed;
 };
 
 

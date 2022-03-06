@@ -131,7 +131,7 @@ float Vertex3D::getModule() const {
     return norm;
 }
 
-float Vertex3D::squaredLength() const {
+float Vertex3D::getSquaredLength() const {
     float norm = (this->x * this->x) + (this->y * this->y) + (this->z * this->z);
 
     return norm;

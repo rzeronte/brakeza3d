@@ -70,11 +70,11 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
             shader->setObject(nullptr);
         }
 
-        updateShaderSilhouetteObject();
+        updateSelectedObject3D();
     }
 }
 
-void ComponentRender::updateShaderSilhouetteObject() {
+void ComponentRender::updateSelectedObject3D() {
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (!input->isClickLeft() || input->isMouseMotion()) {
@@ -93,7 +93,6 @@ void ComponentRender::updateShaderSilhouetteObject() {
 
         auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
         smoke->setObject(selectedObject);
-
 
         auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
         blink->setObject(selectedObject);
@@ -942,6 +941,8 @@ void ComponentRender::initializeShaders() {
     addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
     addShader(EngineSetup::ShadersAvailables::SMOKE, "Smoke", new ShaderSmoke());
     addShader(EngineSetup::ShadersAvailables::BLINK, "Blink", new ShaderBlink());
+
+    getShaderByType(EngineSetup::ShadersAvailables::SILHOUETTE)->setEnabled(true);
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {
@@ -968,4 +969,12 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick) {
     }
 
     return nullptr;
+}
+
+Object3D *ComponentRender::getSelectedObject() {
+    return selectedObject;
+}
+
+void ComponentRender::setSelectedObject(Object3D *o) {
+    this->selectedObject = o;
 }

@@ -119,18 +119,20 @@ public:
     Shader *getShaderByType(int id);
 
     const std::map<int, Shader *> &getShaders();
-    Object3D *getObject3DFromClickPoint(int xClick, int yClick);
-
+    Object3D* getSelectedObject();
+    void setSelectedObject(Object3D *o);
 private:
     std::map<int, Shader*> shaders;
     void onUpdatePreUpdateShaders();
     void onUpdatePostUpdateShaders();
 
+    Object3D *getObject3DFromClickPoint(int xClick, int yClick);
+
     void addShader(int id, std::string label, Shader *shader);
 
     void initializeShaders();
 
-    void updateShaderSilhouetteObject();
+    void updateSelectedObject3D();
 };
 
 

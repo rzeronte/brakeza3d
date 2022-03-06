@@ -361,6 +361,7 @@ public:
                             ImGui::DragScalar("Power", ImGuiDataType_Float, &player->power, 1,&step_range_min, &step_range_max, "%f", 1.0f);
                             ImGui::DragScalar("Friction", ImGuiDataType_Float, &player->friction, 1,&step_range_min, &step_range_max, "%f", 1.0f);
                             ImGui::DragScalar("Max Vel.", ImGuiDataType_Float, &player->maxVelocity, 1,&step_range_min, &step_range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Auto Rotation Speed", ImGuiDataType_Float, &player->autoRotationSelectedObjectSpeed, 1,&step_range_min, &step_range_max, "%f", 1.0f);
 
                             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),std::to_string(player->getVelocity().x).c_str());
                             ImGui::SameLine();

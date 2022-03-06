@@ -21,7 +21,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    bool enabled{};
+    bool enabled;
     Player *player;
 
     bool isEnabled() const;
@@ -30,17 +30,9 @@ public:
 
     void handleEscape(SDL_Event *event);
 
-    void handleKeyboardMovingCamera(SDL_Event *event, bool &end);
-
-    static void handleMouse(SDL_Event *);
-
     void handleInGameInput(SDL_Event *event, bool &end);
 
-    void handleSniper(SDL_Event *event);
-
     void handleFire(SDL_Event *event) const;
-
-    void handleWeaponReload(SDL_Event *event) const;
 
     void handleWeaponSelector();
 
@@ -51,6 +43,8 @@ public:
     void jump(bool soundJump) const;
 
     void handleKeyboardMovingPlayer();
+
+    void handleFindClosestObject3D(SDL_Event *event);
 };
 
 

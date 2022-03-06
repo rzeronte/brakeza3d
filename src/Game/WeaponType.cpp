@@ -140,12 +140,12 @@ void WeaponType::shoot() {
 
     auto *projectile = new Projectile3DBody();
     projectile->copyFrom(getAmmoType()->getModelProjectile());
-    projectile->setPosition( componentGame->getPlayer()->getPosition() + Vertex3D(0, -1000, 0));
+    projectile->setPosition( componentGame->getPlayer()->getPosition() - componentGame->getPlayer()->AxisUp().getScaled(1000));
     projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         0.1,
-        Vertex3D(0, -1, 0),
+        componentGame->getPlayer()->AxisUp().getInverse(),
         (float) getSpeed(),
         getAccuracy(),
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()

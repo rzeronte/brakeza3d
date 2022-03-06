@@ -38,7 +38,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     Camera3D *camera;
-    bool freeLook{};
+    bool freeLook;
 
     Camera3D *getCamera() const;
 

@@ -17,7 +17,7 @@
 #include "../Shaders/ShaderObjectSilhouette.h"
 
 typedef enum {
-    MENU, GAMING, LOADING, SPLASHING, FADEIN, FEADEOUT
+    MENU, GAMING, LOADING, SPLASHING
 } GameState;
 
 class ComponentGame : public Component {
@@ -44,7 +44,7 @@ public:
 
     void CameraAutoScroll();
 
-    void checkPlayerCameraScrollCollision();
+    void blockPlayerPositionInCamera();
 
     float shaderYScroll;
     Vertex3D autoScrollSpeed;
@@ -61,6 +61,7 @@ public:
     void setAutoScroll(bool value);
     void setGameState(GameState state);
     GameState getGameState();
+    Object3D *selectClosestObject3DFromPlayer();
 private:
 
     GameState gameState;

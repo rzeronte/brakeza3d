@@ -20,8 +20,8 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
+    ComponentsManager::get()->getComponentInput()->setEnabled(false);
 
     setupWeapons();
     loadPlayer();
@@ -35,7 +35,6 @@ void ComponentGame::preUpdate() {
     if (isAutoscrollEnabled()) {
         shaderYScroll -= autoScrollSpeed.y/ 10;
     }
-
 }
 
 void ComponentGame::onUpdate() {
@@ -55,20 +54,10 @@ void ComponentGame::onUpdate() {
     }
 
     if (state == GameState::MENU) {
-        //shaderTintScreen.onUpdate();
-        //shaderWater.onUpdate();
-    }
-
-    if (state == GameState::FEADEOUT) {
-        Drawable::drawFadeOut();
-    }
-
-    if (state == GameState::FADEIN) {
-        Drawable::drawFadeIn();
     }
 
     if (state == GameState::GAMING) {
-        checkPlayerCameraScrollCollision();
+        blockPlayerPositionInCamera();
 
         if (isAutoscrollEnabled()) {
             //CameraAutoScroll();
@@ -77,21 +66,13 @@ void ComponentGame::onUpdate() {
 }
 
 void ComponentGame::postUpdate() {
-
     player->evalStatusMachine();
-
 }
 
 void ComponentGame::onEnd() {
-
 }
 
 void ComponentGame::onSDLPollEvent(SDL_Event *event, bool &finish) {
-    /*Object3D *o = getObject3DFromClickPoint();
-    if (o != nullptr) {
-        Logging::getInstance()->Log("Encontrado! " + o->getLabel());
-        shaderBorder.setObject(o);
-    }*/
 }
 
 Player *ComponentGame::getPlayer() const {
@@ -115,11 +96,10 @@ void ComponentGame::onUpdateIA() const {
 }
 
 void ComponentGame::CameraAutoScroll() {
-    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    camera->addToPosition(autoScrollSpeed);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->addToPosition(autoScrollSpeed);
 }
 
-void ComponentGame::checkPlayerCameraScrollCollision() {
+void ComponentGame::blockPlayerPositionInCamera() {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D homogeneousPosition;
@@ -196,23 +176,45 @@ void ComponentGame::loadPlayer()
     player->setLabel("player");
     player->setEnableLights(false);
     player->setPosition(Vertex3D(1115, -700, 4500));
-    player->setRotation(90, 90, 0);
     player->setScale(1);
     player->setStencilBufferEnabled(true);
-    player->initializeStencilBuffer();
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    /*auto * enemy = new Mesh3DGhost();
-    enemy->setLabel("enemy");
-    enemy->setEnableLights(false);
-    enemy->setPosition(Vertex3D(1115, -3200, 4500));
-    enemy->setRotation(90, -90, 0);
-    enemy->setScale(1);
-    enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
-    enemy->makeGhostBody( ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy);
-    Brakeza3D::get()->addObject3D(enemy, "enemy");*/
+    auto * enemyOne = new Mesh3DGhost();
+    enemyOne->setLabel("enemyOne");
+    enemyOne->setEnableLights(false);
+    enemyOne->setPosition(Vertex3D(1515, -3200, 5000));
+    enemyOne->setRotation(90, -90, 0);
+    enemyOne->setStencilBufferEnabled(true);
+    enemyOne->setScale(1);
+    enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
+    enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
+    Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
+
+    auto * enemyTwo = new Mesh3DGhost();
+    enemyTwo->setStencilBufferEnabled(true);
+    enemyTwo->setLabel("enemyTwo");
+    enemyTwo->setEnableLights(false);
+    enemyTwo->setPosition(Vertex3D(-1115, -3200, 5000));
+    enemyTwo->setRotation(90, -90, 0);
+    enemyTwo->setScale(1);
+    enemyTwo->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
+    enemyTwo->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
+    Brakeza3D::get()->addObject3D(enemyTwo, "enemyTwo");
+
+    auto * enemyThree = new Mesh3DGhost();
+    enemyThree->setStencilBufferEnabled(true);
+    enemyThree->setLabel("enemyTwo");
+    enemyThree->setEnableLights(false);
+    enemyThree->setPosition(Vertex3D(-4115, -3200, 5000));
+    enemyThree->setRotation(90, -90, 0);
+    enemyThree->setScale(1);
+    enemyThree->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
+    enemyThree->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
+    Brakeza3D::get()->addObject3D(enemyThree, "enemyThree");
+
 }
 
 void ComponentGame::loadAxisPlanes() const {
@@ -234,18 +236,60 @@ void ComponentGame::setupWeapons() {
     auto *cw = ComponentsManager::get()->getComponentWeapons();
     cw->addWeaponType("defaultWeapon");
     WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
-    weaponType->setSpeed(10);
+    weaponType->setSpeed(500);
     weaponType->setDispersion(10);
     weaponType->setAvailable(true);
     weaponType->setAccuracy(100);
 
     auto *ammoType = new AmmoType();
     ammoType->setName("defaultWeapon_ammoType");
-    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "bullet.fbx"));
-    ammoType->getModelProjectile()->setScale(10);
+    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cube.fbx"));
+    ammoType->getModelProjectile()->setScale(1);
     ammoType->getModelProjectile()->setFlatTextureColor(true);
     ammoType->setAmount(1000);
     weaponType->setAmmoType(ammoType);
 
     cw->setCurrentWeaponIndex(WeaponsTypes::DEFAULT);
+}
+
+
+Object3D* ComponentGame::selectClosestObject3DFromPlayer() {
+    Object3D *currentClosestObject = nullptr;
+    Object3D *currentSelectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+
+    float currentMinDistance = 0;
+
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (player == object) {
+            continue;
+        }
+        if (currentSelectedObject == object) {
+            continue;
+        }
+        auto *mesh = dynamic_cast<Mesh3D *>(object);
+        if (mesh == nullptr) {
+            continue;
+        }
+
+        mesh->updateBoundingBox();
+        for (unsigned int i = 0; i < 8; i++) {
+            Vector3D v(player->getPosition(), mesh->aabb.vertices[i]);
+            const float distance = v.getComponent().getSquaredLength();
+            if (currentClosestObject == nullptr) {
+                currentMinDistance = distance;
+                currentClosestObject = object;
+            } else {
+                if (distance < currentMinDistance) {
+                    currentMinDistance = distance;
+                    currentClosestObject = object;
+                }
+            }
+        }
+    }
+
+    if (currentClosestObject != nullptr) {
+        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+        shader->setObject(currentClosestObject);
+        ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
+    }
 }

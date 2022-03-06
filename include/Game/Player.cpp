@@ -22,6 +22,8 @@ Player::Player() : state(PlayerState::GAMEOVER), dead(false),
 
     engineParticlesPositionOffset = Vertex3D(0, 450, 0);
     lightPositionOffset = Vertex3D(0, -550, 0);
+
+    autoRotationSelectedObjectSpeed = 1;
 }
 
 int Player::getStamina() const {
@@ -114,13 +116,18 @@ void Player::onUpdate() {
 
     updateEngineParticles();
     updateLight();
-
     applyFriction();
 
-    float rightRotation = velocity * AxisForward() * Brakeza3D::get()->getDeltaTime();
-    M3 r = M3::getMatrixRotationForEulerAngles(-rightRotation, 0, 0);
+    auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+    if (selectedObject != nullptr) {
+        Vector3D way(selectedObject->getPosition(), getPosition());
+        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
+        Vertex3D b = getRotation() * EngineSetup::get()->up;
 
-    setRotation( getRotation() * r );
+        const float theta = newRot.X() * b;
+        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->autoRotationSelectedObjectSpeed);
+        setRotation(getRotation() * rotation.getTranspose());
+    }
 
     setPosition(getPosition() + this->velocity );
 }

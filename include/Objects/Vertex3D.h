@@ -46,7 +46,7 @@ public:
 
     float getModule() const;
 
-    float squaredLength() const;
+    float getSquaredLength() const;
 
     Vertex3D getScaled(float) const;
 
