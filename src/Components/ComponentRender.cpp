@@ -929,10 +929,13 @@ Shader* ComponentRender::getShaderByType(int id) {
 }
 
 void ComponentRender::initializeShaders() {
+    auto shaderBackground = new ShaderImageBackground(
+            std::string(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_SHADER_BACKGROUND_IMAGE).c_str()
+    );
+    shaderBackground->setupFlatPortion(0, 0, 0, 0, 320, 240);
+
     addShader(EngineSetup::ShadersAvailables::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject));
-    addShader(EngineSetup::ShadersAvailables::BACKGROUND, "Background", new ShaderImageBackground(
-        std::string(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_SHADER_BACKGROUND_IMAGE).c_str()
-    ));
+    addShader(EngineSetup::ShadersAvailables::BACKGROUND, "Background", shaderBackground);
     addShader(EngineSetup::ShadersAvailables::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShadersAvailables::FIRE, "Fire", new ShaderFire());
     addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
