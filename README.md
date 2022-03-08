@@ -7,20 +7,23 @@ No 3D graphics libraries such as OpenGL or Direct3D have been used.
 Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
+- Easy architecture (Based in components with preUpdate/onUpdate/postUpdate lyfecicle)
 - BSP Quake Geometry/Texture/Light maps/Entities loader
 - Bullet Physics Integration
+- ImGui Integration
 - CPU Triangle rasterizer
 - Load models & animations with ASSIMP library
-- 3D Billboard
-- Billboard 3D 8 - directions
+- 2D Billboard
+- 3D Billboard (8 directions)
 - Decals  
 - UV Mapping
-- Lights/Shadow real time
+- Lights/Specularity/Shadow real time
 - Game Menu Interface
 - Octrees
 - Grid3D
 - Basic component for add sounds
 - Basic component for input management
+- Extensible Shaders
 
 # Dependences
 

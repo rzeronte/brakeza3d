@@ -39,6 +39,16 @@ public:
 
     Camera3D *camera;
     bool freeLook;
+    Vertex3D autoScrollSpeed;
+    bool autoScroll;
+
+    const Vertex3D &getAutoScrollSpeed() const;
+
+    void setAutoScrollSpeed(const Vertex3D &autoScrollSpeed);
+
+    bool isAutoScroll() const;
+
+    void setAutoScroll(bool autoScroll);
 
     Camera3D *getCamera() const;
 

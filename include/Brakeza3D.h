@@ -15,15 +15,16 @@
 #include "Components/ComponentRender.h"
 #include "Components/ComponentHUD.h"
 #include "ComponentsManager.h"
-#include "Components/ComponentGUI.h"
 #include "Components/ComponentGame.h"
 #include "Components/ComponentGameInput.h"
 #include "Components/ComponentConsole.h"
+#include "GUI/GUIManager.h"
 #include <thread>
 
 class Brakeza3D {
 private:
     std::vector<Object3D *> sceneObjects;
+    GUIManager managerGUI;
 
     ComponentsManager *componentsManager;
 
@@ -36,7 +37,6 @@ private:
     ComponentSound *componentSound = nullptr;
     ComponentRender *componentRender = nullptr;
     ComponentHUD *componentHUD = nullptr;
-    ComponentGUI *componentGUI = nullptr;
     ComponentGame *componentGame = nullptr;
     ComponentGameInput *componentGameInput = nullptr;
     ComponentConsole *componentConsole = nullptr;
@@ -89,7 +89,11 @@ public:
 
     ComponentsManager *getComponentsManager() const;
 
-    void initAxisPlane();
+    void AxisPlaneInitialize();
+
+    void ImGuiInitialize();
+
+    void ImGuiOnUpdate();
 };
 
 

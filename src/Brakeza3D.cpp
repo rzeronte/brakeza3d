@@ -1,5 +1,7 @@
 
 #include "../include/Brakeza3D.h"
+#include "../imgui/examples/imgui_impl_opengl2.h"
+#include "../imgui/examples/imgui_impl_sdl.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -17,6 +19,7 @@ Brakeza3D *Brakeza3D::get() {
 }
 
 void Brakeza3D::start() {
+
     componentCamera = new ComponentCamera();
     componentInput = new ComponentInput();
     componentWeapons = new ComponentWeapons();
@@ -26,7 +29,6 @@ void Brakeza3D::start() {
     componentRender = new ComponentRender();
     componentMenu = new ComponentMenu();
     componentHUD = new ComponentHUD();
-    componentGUI = new ComponentGUI(finish);
     componentGame = new ComponentGame();
     componentGameInput = new ComponentGameInput(componentGame->getPlayer());
     componentConsole = new ComponentConsole();
@@ -38,7 +40,6 @@ void Brakeza3D::start() {
     componentsManager->registerComponent(componentSound, "ComponentSound");
     componentsManager->registerComponent(componentConsole, "ComponentConsole");
     componentsManager->registerComponent(componentRender, "ComponentRender");
-    componentsManager->registerComponent(componentGUI, "ComponentGUI");
     componentsManager->registerComponent(componentMenu, "ComponentMenu");
     componentsManager->registerComponent(componentWeapons, "ComponentWeapons");
     componentsManager->registerComponent(componentHUD, "ComponentHUD");
@@ -57,15 +58,21 @@ void Brakeza3D::mainLoop() {
 
     onStartComponents();
 
-    initAxisPlane();
+    ImGuiInitialize();
+
+    AxisPlaneInitialize();
 
     while (!finish) {
         this->updateTimer();
 
+        ImGuiOnUpdate();
+
         preUpdateComponents();
 
-        while (SDL_PollEvent(&e))
+        while (SDL_PollEvent(&e)) {
             onUpdateSDLPollEventComponents(&e, finish);
+            ImGui_ImplSDL2_ProcessEvent(&e);
+        }
 
         onUpdateComponents();
         postUpdateComponents();
@@ -162,7 +169,7 @@ ComponentsManager *Brakeza3D::getComponentsManager() const {
     return componentsManager;
 }
 
-void Brakeza3D::initAxisPlane()
+void Brakeza3D::AxisPlaneInitialize()
 {
     auto axisPlanes = new Mesh3DBody();
     axisPlanes->setRotation(0, 0, 0);
@@ -177,4 +184,49 @@ void Brakeza3D::initAxisPlane()
     axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
     axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
     addObject3D(axisPlanes, "AxisPlanes");
+}
+
+void Brakeza3D::ImGuiOnUpdate() {
+    ImGui_ImplOpenGL2_NewFrame();
+    ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->window);
+
+    ImGui::NewFrame();
+    this->managerGUI.draw(
+            Brakeza3D::get()->getDeltaTime(),
+            finish,
+            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
+            Brakeza3D::get()->getSceneObjects(),
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth,
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->getShaders()
+    );
+
+    //ImGui::ShowDemoWindow();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Brakeza3D::ImGuiInitialize() {
+    std::cout << "ImGuiInitialize" << std::endl;
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGui_ImplSDL2_InitForOpenGL(
+        getComponentsManager()->getComponentWindow()->window,
+        getComponentsManager()->getComponentWindow()->contextOpenGL
+    );
+
+    ImGui_ImplOpenGL2_Init();
+
+    ImGuiIO &io = ImGui::GetIO();
+    io.WantCaptureMouse = false;
+    io.WantCaptureKeyboard = false;
+
+    // Setup style
+    ImGui::StyleColorsDark();
+    ImGuiStyle &style = ImGui::GetStyle();
+    style.FrameBorderSize = 1.0f;
+
 }

@@ -29,7 +29,11 @@ void Image::drawFlat(int pos_x, int pos_y) const {
     auto *pixels = (Uint32 *) surface->pixels;
     for (int i = 0; i < std::min(EngineSetup::get()->screenHeight, surface->h); i++) {
         for (int j = 0; j < std::min(EngineSetup::get()->screenWidth, surface->w); j++) {
-            buffer->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * surface->w + j]);
+            int x = j + pos_x;
+            int y = i + pos_y;
+            if (Tools::isPixelInWindow(x, y)) {
+                buffer->setVideoBuffer(x, y, pixels[i * surface->w + j]);
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ enum ShaderImageBackgroundTypes {
 };
 
 class ShaderImageBackground: public Shader {
+private:
+    Vertex3D autoScrollSpeed;
 
 public:
     ShaderImageBackground() {
@@ -33,6 +35,14 @@ public:
             return;
         }
 
+        if (autoScrollEnabled) {
+            setupFlatPortion(
+                xDrawPos, yDrawPos ,
+                xImage + autoScrollSpeed.x, yImage+ autoScrollSpeed.y,
+                wImage, hImage
+            );
+        }
+
         switch(type) {
             case ShaderImageBackgroundTypes::FULLSCREEN:
                 image->drawFlat(0, 0);
@@ -50,6 +60,10 @@ public:
 
     void setType(int type) {
         this->type = type;
+    }
+
+    int getType() const {
+        return this->type;
     }
 
     void setupFlatPortion(int xDrawPos, int yDrawPos, int xImage, int yImage, int wImage, int hImage) {
@@ -79,17 +93,35 @@ public:
                     const int bufferY = yImage + i;
 
                     const int bufferIndex = bufferY * image->width() + bufferX;
-                    buffer->setVideoBuffer(j + xDrawPos, i + yDrawPos, pixels[bufferIndex]);
+
+                    int x = j + xDrawPos;
+                    int y = i + yDrawPos;
+                    if (Tools::isPixelInWindow(x, y)) {
+                        buffer->setVideoBuffer(x, y, pixels[bufferIndex]);
+
+                    }
                 }
             }
         }
     }
 
+    Vertex3D &getAutoScrollSpeed() {
+        return autoScrollSpeed;
+    }
+
+    int xDrawPos;
+    int yDrawPos;
+    int xImage;
+    int yImage;
+    int wImage;
+    int hImage;
+    bool autoScrollEnabled;
+
+    int autoScrollCursorX = 0;
+    int autoScrollCursorY = 0;
 private:
     Image* image;
     int type;
-
-    int xDrawPos, yDrawPos, xImage, yImage, wImage, hImage;
 
 };
 #endif //BRAKEDA3D_SHADERIMAGEBACKGROUND_H

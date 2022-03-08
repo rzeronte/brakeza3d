@@ -6,7 +6,6 @@
 #include "Components/ComponentCamera.h"
 #include "Components/ComponentCollisions.h"
 #include "Components/ComponentHUD.h"
-#include "Components/ComponentGUI.h"
 #include "Components/ComponentRender.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentGame.h"
@@ -22,12 +21,11 @@ enum ComponentID {
     COMPONENT_SOUND = 4,
     COMPONENT_CONSOLE = 5,
     COMPONENT_RENDER = 6,
-    COMPONENT_GUI = 7,
-    COMPONENT_MENU = 8,
-    COMPONENT_WEAPONS = 9,
-    COMPONENT_HUD = 10,
-    COMPONENT_GAME = 11,
-    COMPONENT_GAME_INPUT = 12
+    COMPONENT_MENU = 7,
+    COMPONENT_WEAPONS = 8,
+    COMPONENT_HUD = 9,
+    COMPONENT_GAME = 10,
+    COMPONENT_GAME_INPUT = 11
 };
 
 class ComponentsManager {
@@ -62,8 +60,6 @@ public:
 
     ComponentWindow *
     getComponentWindow() { return static_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]); };
-
-    ComponentGUI *getComponentGUI() { return static_cast<ComponentGUI *>(components[ComponentID::COMPONENT_GUI]); };
 
     ComponentRender *
     getComponentRender() { return static_cast<ComponentRender *>(components[ComponentID::COMPONENT_RENDER]); };

@@ -10,8 +10,6 @@ ComponentGame::ComponentGame() {
 
 void ComponentGame::onStart() {
     Logging::Log("ComponentGame onStart", "ComponentGame");
-    setAutoScroll(true);
-    setAutoScrollSpeed(Vertex3D(0, -2.0, 0));
     setGameState(GameState::MENU);
 
     Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
@@ -20,20 +18,17 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->setAutoScroll(true);
+    ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -2.0, 0));
+
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
+    ComponentsManager::get()->getComponentInput()->setEnabled(false);
 
     setupWeapons();
     loadPlayer();
-
-    //ShaderImageBackground *shader = dynamic_cast<ShaderImageBackground *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShadersAvailables::BACKGROUND));
-    //shader->setType(ShaderImageBackgroundTypes::PORTION);
 }
 
 void ComponentGame::preUpdate() {
-    if (isAutoscrollEnabled()) {
-        shaderYScroll -= autoScrollSpeed.y/ 10;
-    }
 }
 
 void ComponentGame::onUpdate() {
@@ -57,10 +52,6 @@ void ComponentGame::onUpdate() {
 
     if (state == GameState::GAMING) {
         blockPlayerPositionInCamera();
-
-        if (isAutoscrollEnabled()) {
-            //CameraAutoScroll();
-        }
     }
 }
 
@@ -94,10 +85,6 @@ void ComponentGame::onUpdateIA() const {
     }
 }
 
-void ComponentGame::CameraAutoScroll() {
-    ComponentsManager::get()->getComponentCamera()->getCamera()->addToPosition(autoScrollSpeed);
-}
-
 void ComponentGame::blockPlayerPositionInCamera() {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -108,7 +95,7 @@ void ComponentGame::blockPlayerPositionInCamera() {
 
     // Down (if player collision bottom near camera plane, update his velocity with autoScroll speed
     if (homogeneousPosition.y > 1) {
-        player->setPosition(player->getPosition() + autoScrollSpeed);
+        player->setPosition(player->getPosition()  );
         if (player->getVelocity().y > 0) {
             Vertex3D newVelocity = player->getVelocity();
             newVelocity.y = -1;
@@ -144,23 +131,11 @@ void ComponentGame::blockPlayerPositionInCamera() {
     }
 }
 
-bool ComponentGame::isAutoscrollEnabled() {
-    return autoScrollEnabled;
-}
-
-void ComponentGame::setAutoScroll(bool v) {
-    autoScrollEnabled = v;
-}
-
-void ComponentGame::setAutoScrollSpeed(Vertex3D speed) {
-    autoScrollSpeed = speed;
-}
-
 void ComponentGame::setGameState(GameState state) {
     if (state == GameState::GAMING) {
-        setAutoScroll(true);
+        ComponentsManager::get()->getComponentCamera()->setAutoScroll(true);
     } else {
-        setAutoScroll(false);
+        ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
     }
 
     this->gameState = state;

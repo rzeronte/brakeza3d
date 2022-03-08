@@ -24,10 +24,6 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
 void ComponentsManager::configureComponents() {
     getComponentCollisions()->setVisibleTriangles(getComponentRender()->getVisibleTriangles());
 
-    getComponentGUI()->setRenderer(getComponentWindow()->renderer);
-    getComponentGUI()->setWindow(getComponentWindow()->window);
-    getComponentGUI()->setContextOpenGl(&getComponentWindow()->contextOpenGL);
-
     getComponentConsole()->setRenderer(getComponentWindow()->renderer);
     getComponentConsole()->setTextureRender(getComponentWindow()->screenTexture);
 }

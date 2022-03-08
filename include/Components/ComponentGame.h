@@ -42,12 +42,7 @@ public:
 
     void loadPlayer();
 
-    void CameraAutoScroll();
-
     void blockPlayerPositionInCamera();
-
-    float shaderYScroll;
-    Vertex3D autoScrollSpeed;
 
     Player *player;
     Mesh3DBody *axisPlanes;
@@ -56,9 +51,6 @@ public:
 
     PathFinder *pathFinder;
 
-    bool autoScrollEnabled;
-    bool isAutoscrollEnabled();
-    void setAutoScroll(bool value);
     void setGameState(GameState state);
     GameState getGameState();
     void selectClosestObject3DFromPlayer();
@@ -66,11 +58,7 @@ private:
 
     GameState gameState;
 
-    void setAutoScrollSpeed(Vertex3D speed);
-
     void setupWeapons();
-
-    void loadAxisPlanes() const;
 };
 
 
