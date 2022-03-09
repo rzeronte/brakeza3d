@@ -1,15 +1,16 @@
 #include "../../include/Physics/Mesh3DGhost.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/Physics/Projectile3DBody.h"
 
 Mesh3DGhost::Mesh3DGhost() {
     BSPEntityIndex = -1;
 }
 
 void Mesh3DGhost::integrate() {
-    updateBulletFromMesh();
+    updateBulletFromMesh3D();
 }
 
-void Mesh3DGhost::updateBulletFromMesh() {
+void Mesh3DGhost::updateBulletFromMesh3D() {
     btTransform trans;
     trans.setIdentity();
     trans.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
@@ -26,5 +27,6 @@ void Mesh3DGhost::resolveCollision(Collisionable *with) {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
         Logging::getInstance()->Log("Mesh3DGhost: Collision "  + getLabel() + " with " + object->getLabel());
+
     }
 }

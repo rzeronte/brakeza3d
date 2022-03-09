@@ -1,9 +1,9 @@
 
 #include <SDL2/SDL_image.h>
 
-#include <utility>
 #include "../../include/Game/WeaponType.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Game/AmmoProjectileGhost.h"
 
 WeaponType::WeaponType() : available(true) {
     this->status = WeaponsActions::IDLE;
@@ -21,6 +21,13 @@ WeaponType::WeaponType() : available(true) {
 
 WeaponType::WeaponType(const std::string& label) {
     this->status = WeaponsActions::IDLE;
+    this->damage = 0;
+    this->accuracy = 100;
+    this->damageRadius = 0;
+    this->ammoType = 0;
+    this->speed = 1;
+    this->available = true;
+    this->dispersion = 0;
     this->label = label;
     this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
     this->model = new Mesh3D();
@@ -137,8 +144,9 @@ void WeaponType::shoot() {
 
     if (getAmmoType()->getAmount() <= 0) return;
 
-    auto *projectile = new Projectile3DBody();
+    auto *projectile = new AmmoProjectileGhost();
     projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+    projectile->setWeaponType(this);
     projectile->copyFrom(getAmmoType()->getModelProjectile());
     projectile->setPosition( componentGame->getPlayer()->getPosition() - componentGame->getPlayer()->AxisUp().getScaled(1000));
     projectile->setEnabled(true);

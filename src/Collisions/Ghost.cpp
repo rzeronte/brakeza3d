@@ -71,3 +71,7 @@ btPairCachingGhostObject *Ghost::getGhostObject() const {
      return ghostObject;
 }
 
+void Ghost::removeCollisionObject() const {
+    ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getGhostObject());
+}
+

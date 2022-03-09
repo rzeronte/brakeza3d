@@ -39,3 +39,8 @@ void Projectile3DBody::setTTL(float v) {
     this->timeToLive.setStep(v);
     this->timeToLive.setEnabled(true);
 }
+
+void Projectile3DBody::resolveCollision(Collisionable *collisionable) {
+    this->removeCollisionObject();
+    this->setRemoved(true);
+}

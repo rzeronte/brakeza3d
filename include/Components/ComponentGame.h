@@ -15,6 +15,7 @@
 #include "../Shaders/ShaderImageBackground.h"
 #include "../Shaders/ShaderTintScreen.h"
 #include "../Shaders/ShaderObjectSilhouette.h"
+#include "../Physics/Mesh3DBody.h"
 
 typedef enum {
     MENU, GAMING, LOADING, SPLASHING

@@ -14,8 +14,10 @@ public:
 
     int currentTriggerCounter = 0;
 private:
+    void updateBulletFromMesh3D();
+
+protected:
     void integrate() override;
-    void updateBulletFromMesh();
 
 public:
     void resolveCollision(Collisionable *collisionable) override;

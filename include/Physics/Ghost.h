@@ -13,6 +13,7 @@ public:
     btPairCachingGhostObject *ghostObject;
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh);
+    void removeCollisionObject() const;
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);
 };

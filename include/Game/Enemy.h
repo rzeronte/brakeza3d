@@ -9,21 +9,19 @@
 #include "../Misc/Counter.h"
 #include "../Render/M3.h"
 
+
+typedef enum {
+    ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_INJURIED, ENEMY_STATE_DIE
+} EnemyState;
+
 class Enemy {
 public:
-    std::string classname;  // For BSP classname match
-
-    Vertex3D respawnPosition;
-    M3 respawnRotation;
+    EnemyState state;
 
     float startStamina;
     float stamina;
 
-    bool dead;
-
-    float damage;   // Damage from enemy to others
-
-    float cadence;  // cadence management
+    float cadence;          // cadence management
     Counter *counterCadence;
 
     float range;
@@ -32,12 +30,6 @@ public:
     Enemy();
 
     void takeDamage(float damageTaken);
-
-    bool isTakeHeavyDamage(float damageTaken) const;
-
-    float getDamage() const;
-
-    void setDamage(float damage);
 
     float getRange() const;
 
@@ -51,21 +43,12 @@ public:
 
     void setCadence(float cadence);
 
-    const std::string &getClassname() const;
 
-    void setClassname(const std::string &classname);
+    void evalStatusMachine();
 
-    bool isDead() const;
+    EnemyState getState() const;
 
-    void setDead(bool dead);
-
-    const Vertex3D &getRespawnPosition() const;
-
-    void setRespawnPosition(const Vertex3D &respawnPosition);
-
-    const M3 &getRespawnRotation() const;
-
-    void setRespawnRotation(const M3 &respawnRotation);
+    void setState(EnemyState state);
 };
 
 

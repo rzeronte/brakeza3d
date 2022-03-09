@@ -13,8 +13,6 @@ public:
 
     float mass;
 
-    Vertex3D boxShapeSize;
-
     btRigidBody *body;
     btCollisionObject *collisionObject;
 
@@ -25,13 +23,9 @@ public:
 
     btRigidBody *getRigidBody() const;
 
-    void setBoxShapeSize(Vertex3D size);
-
-    Vertex3D getBoxShapeSize() const;
-
-    void applyImpulse(Vertex3D impulse) const;
-
     void setMass(float m);
+
+    void removeCollisionObject() const;
 
 };
 

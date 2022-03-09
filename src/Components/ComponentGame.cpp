@@ -18,7 +18,7 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
-    ComponentsManager::get()->getComponentCamera()->setAutoScroll(true);
+    ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
     ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -2.0, 0));
 
     ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
@@ -77,10 +77,10 @@ void ComponentGame::onUpdateIA() const {
         itObject3D != Brakeza3D::get()->getSceneObjects().end(); itObject3D++) {
         Object3D *object = *(itObject3D);
 
-        auto *enemy = dynamic_cast<NPCEnemyBody *> (object);
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
 
         if (enemy != nullptr) {
-            enemy->updateCounters();
+
         }
     }
 }
@@ -93,9 +93,8 @@ void ComponentGame::blockPlayerPositionInCamera() {
     Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
     homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->frustum);
 
-    // Down (if player collision bottom near camera plane, update his velocity with autoScroll speed
     if (homogeneousPosition.y > 1) {
-        player->setPosition(player->getPosition()  );
+        player->setPosition(player->getPosition() + ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed());
         if (player->getVelocity().y > 0) {
             Vertex3D newVelocity = player->getVelocity();
             newVelocity.y = -1;
@@ -156,7 +155,7 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto * enemyOne = new Mesh3DGhost();
+    auto * enemyOne = new EnemyGhost();
     enemyOne->setLabel("enemyOne");
     enemyOne->setEnableLights(false);
     enemyOne->setPosition(Vertex3D(1515, -3200, 5000));
@@ -166,29 +165,6 @@ void ComponentGame::loadPlayer()
     enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
     enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
     Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
-
-    /*auto * enemyTwo = new Mesh3DGhost();
-    enemyTwo->setStencilBufferEnabled(true);
-    enemyTwo->setLabel("enemyTwo");
-    enemyTwo->setEnableLights(false);
-    enemyTwo->setPosition(Vertex3D(-1115, -3200, 5000));
-    enemyTwo->setRotation(90, -90, 0);
-    enemyTwo->setScale(1);
-    enemyTwo->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
-    enemyTwo->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
-    Brakeza3D::get()->addObject3D(enemyTwo, "enemyTwo");
-
-    auto * enemyThree = new Mesh3DGhost();
-    enemyThree->setStencilBufferEnabled(true);
-    enemyThree->setLabel("enemyTwo");
-    enemyThree->setEnableLights(false);
-    enemyThree->setPosition(Vertex3D(-4115, -3200, 5000));
-    enemyThree->setRotation(90, -90, 0);
-    enemyThree->setScale(1);
-    enemyThree->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
-    enemyThree->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
-    Brakeza3D::get()->addObject3D(enemyThree, "enemyThree");*/
-
 }
 
 void ComponentGame::setupWeapons() {
@@ -196,13 +172,14 @@ void ComponentGame::setupWeapons() {
     cw->addWeaponType("defaultWeapon");
     WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
     weaponType->setSpeed(500);
+    weaponType->setDamage(10);
     weaponType->setDispersion(10);
     weaponType->setAvailable(true);
     weaponType->setAccuracy(100);
 
     auto *ammoType = new AmmoType();
     ammoType->setName("defaultWeapon_ammoType");
-    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cube.fbx"));
+    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/icosphere.fbx"));
     ammoType->getModelProjectile()->setLabel("projectile_template");
     ammoType->getModelProjectile()->setScale(1);
     ammoType->setAmount(1000);
