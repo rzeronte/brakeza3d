@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "../../include/Components/ComponentWindow.h"
+#include "../../include/Render/Logging.h"
 
 ComponentWindow::ComponentWindow() {
     this->initWindow();
