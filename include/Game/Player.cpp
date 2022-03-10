@@ -119,8 +119,20 @@ void Player::onUpdate() {
     applyFriction();
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
-    if (selectedObject != nullptr && selectedObject != this) {
+    if (selectedObject != this && selectedObject != nullptr) {
         Vector3D way(selectedObject->getPosition(), getPosition());
+        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
+        Vertex3D b = getRotation() * EngineSetup::get()->up;
+
+        const float theta = newRot.X() * b;
+        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->autoRotationSelectedObjectSpeed);
+        setRotation(getRotation() * rotation.getTranspose());
+    }
+
+    if (selectedObject == nullptr) {
+        Vertex3D end = getPosition() + Vertex3D(0, 1, 0);
+        Vector3D way(getPosition(), end);
+
         M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
         Vertex3D b = getRotation() * EngineSetup::get()->up;
 

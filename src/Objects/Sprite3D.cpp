@@ -9,7 +9,7 @@ Sprite3D::Sprite3D() {
     this->counter = new Counter();
 
     for (auto & animation : this->animations) {
-        animation = new TextureAnimation();
+        animation = new TextureAnimated();
     }
 }
 
@@ -20,6 +20,11 @@ void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int 
 
 void Sprite3D::setAnimation(int index_animation) {
     this->currentAnimationIndex = index_animation;
+    updateStep();
+}
+
+void Sprite3D::updateStep()
+{
     this->step = (float) 1 / (float) this->getCurrentTextureAnimation()->getFps();
     this->counter->setStep(step);
 }
@@ -34,6 +39,7 @@ void Sprite3D::updateTexture() {
     counter->update();
 
     if (counter->isFinished()) {
+        counter->setEnabled(true);
         getCurrentTextureAnimation()->nextFrame();
         if (this->isAutoRemoveAfterAnimation() && getCurrentTextureAnimation()->isEndAnimation()) {
             this->setRemoved(true);
@@ -43,9 +49,13 @@ void Sprite3D::updateTexture() {
     this->getBillboard()->setTrianglesTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
-void Sprite3D::updateTrianglesCoordinatesAndTexture(Camera3D *cam) {
-    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
+void Sprite3D::updateTrianglesCoordinatesAndTexture() {
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    M3 rotationTranspose = camera->getRotation().getTranspose();
+
+    Vertex3D up = rotationTranspose * EngineSetup::get()->up;
+    Vertex3D right = rotationTranspose * EngineSetup::get()->right;
 
     this->getBillboard()->updateUnconstrainedQuad(this, up, right);
     this->updateTexture();
@@ -73,16 +83,18 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst) {
     }
 }
 
-TextureAnimation *Sprite3D::getCurrentTextureAnimation() {
+TextureAnimated *Sprite3D::getCurrentTextureAnimation() {
     return this->animations[currentAnimationIndex];
 }
 
 void Sprite3D::onUpdate() {
     Object3D::onUpdate();
+    this->updateTrianglesCoordinatesAndTexture();
 
-    this->updateTrianglesCoordinatesAndTexture(ComponentsManager::get()->getComponentCamera()->getCamera());
-    Drawable::drawBillboard(
-            this->getBillboard(),
-            &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
-    );
+    ComponentsManager::get()->getComponentRender()->getFrameTriangles().emplace_back(&getBillboard()->T1);
+    ComponentsManager::get()->getComponentRender()->getFrameTriangles().emplace_back(&getBillboard()->T2);
+}
+
+Counter *Sprite3D::getCounter() const {
+    return counter;
 }

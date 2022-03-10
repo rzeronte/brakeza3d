@@ -1,14 +1,14 @@
 
 #include <utility>
 
-#include "../../include/2D/TextureAnimation.h"
+#include "../../include/2D/TextureAnimated.h"
 #include "../../include/EngineSetup.h"
 
-TextureAnimation::TextureAnimation() : numberFramesToLoad(0), currentFrame(0), endAnimation(false), paused(false) {
+TextureAnimated::TextureAnimated() : numberFramesToLoad(0), currentFrame(0), endAnimation(false), paused(false) {
 }
 
 
-void TextureAnimation::setup(std::string file, int num_frames, int fps) {
+void TextureAnimated::setup(std::string file, int num_frames, int fps) {
     this->base_file = std::move(file);
     this->numberFramesToLoad = num_frames;
     this->fps = fps;
@@ -16,22 +16,22 @@ void TextureAnimation::setup(std::string file, int num_frames, int fps) {
     this->loadImages();
 }
 
-void TextureAnimation::loadImages() {
+void TextureAnimated::loadImages() {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
         this->frames.push_back(new Texture(file));
     }
 }
 
-int TextureAnimation::getNumFrames() const {
+int TextureAnimated::getNumFrames() const {
     return numberFramesToLoad;
 }
 
-Texture *TextureAnimation::getCurrentFrame() {
+Texture *TextureAnimated::getCurrentFrame() {
     return this->frames[currentFrame];
 }
 
-void TextureAnimation::nextFrame() {
+void TextureAnimated::nextFrame() {
     setEndAnimation(false);
 
     if (!isPaused()) {
@@ -47,28 +47,28 @@ void TextureAnimation::nextFrame() {
     }
 }
 
-bool TextureAnimation::isEndAnimation() const {
+bool TextureAnimated::isEndAnimation() const {
     return endAnimation;
 }
 
-void TextureAnimation::setEndAnimation(bool endAnimation) {
-    TextureAnimation::endAnimation = endAnimation;
+void TextureAnimated::setEndAnimation(bool endAnimation) {
+    TextureAnimated::endAnimation = endAnimation;
 }
 
-bool TextureAnimation::isPaused() const {
+bool TextureAnimated::isPaused() const {
     return paused;
 }
 
-void TextureAnimation::setPaused(bool paused) {
-    TextureAnimation::paused = paused;
+void TextureAnimated::setPaused(bool paused) {
+    TextureAnimated::paused = paused;
 }
 
-int TextureAnimation::getFps() const {
+int TextureAnimated::getFps() const {
     return fps;
 }
 
-void TextureAnimation::setFps(int fps) {
-    TextureAnimation::fps = fps;
+void TextureAnimated::setFps(int fps) {
+    TextureAnimated::fps = fps;
 }
 
 

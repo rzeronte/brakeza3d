@@ -13,7 +13,7 @@ SpriteDirectional3D::SpriteDirectional3D() {
     this->height = 10; //EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT;
 
     for (auto & animation : this->animations) {
-        animation = new TextureAnimationDirectional();
+        animation = new TextureAnimatedDirectional();
     }
 }
 
@@ -81,7 +81,7 @@ void SpriteDirectional3D::linkTexturesTo(SpriteDirectional3D *clone) {
     }
 }
 
-TextureAnimationDirectional *SpriteDirectional3D::getCurrentTextureAnimationDirectional() {
+TextureAnimatedDirectional *SpriteDirectional3D::getCurrentTextureAnimationDirectional() {
     return this->animations[currentAnimation];
 }
 

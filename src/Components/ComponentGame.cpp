@@ -19,10 +19,10 @@ void ComponentGame::onStart() {
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000,0));
 
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
-    ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -2.0, 0));
+    ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -1.0, 0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(false);
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
     setupWeapons();
     loadPlayer();
@@ -155,16 +155,24 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto * enemyOne = new EnemyGhost();
+    auto *enemyOne = new EnemyGhost();
     enemyOne->setLabel("enemyOne");
     enemyOne->setEnableLights(false);
     enemyOne->setPosition(Vertex3D(1515, -3200, 5000));
-    enemyOne->setRotation(90, -90, 0);
+    enemyOne->setRotation(0, 0, 180);
     enemyOne->setStencilBufferEnabled(true);
     enemyOne->setScale(1);
-    enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship_enemy_01.fbx"));
+    enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
     enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
     Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
+
+    auto *sprite = new Sprite3D();
+    sprite->setEnabled(true);
+    sprite->setPosition(Vertex3D(0, -1000, 200));
+    sprite->setScale(500);
+    sprite->addAnimation(EngineSetup::get()->SPRITES_FOLDER + "blood1/blood", 3, 1);
+    sprite->setAnimation(0);
+    Brakeza3D::get()->addObject3D(sprite, "sprite");
 }
 
 void ComponentGame::setupWeapons() {

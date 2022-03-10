@@ -5,7 +5,7 @@
 
 #include "Object3D.h"
 #include "../Misc/Timer.h"
-#include "../2D/TextureAnimationDirectional.h"
+#include "../2D/TextureAnimatedDirectional.h"
 #include "../Components/Camera3D.h"
 #include "../Game/Enemy.h"
 #include "Triangle3D.h"
@@ -37,7 +37,7 @@ public:
     int numAnimations = 0;
     int currentAnimation = 0;
 
-    TextureAnimationDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS]{};
+    TextureAnimatedDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS]{};
 
     SpriteDirectional3D();
 
@@ -57,7 +57,7 @@ public:
 
     void linkTexturesTo(SpriteDirectional3D *clone);
 
-    TextureAnimationDirectional *getCurrentTextureAnimationDirectional();
+    TextureAnimatedDirectional *getCurrentTextureAnimationDirectional();
 
     void onUpdate();
 };

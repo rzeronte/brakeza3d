@@ -1,6 +1,6 @@
 
-#ifndef BRAKEDA3D_TEXTUREANIMATION_H
-#define BRAKEDA3D_TEXTUREANIMATION_H
+#ifndef BRAKEDA3D_TEXTUREANIMATED_H
+#define BRAKEDA3D_TEXTUREANIMATED_H
 
 #include <string>
 #include <vector>
@@ -8,7 +8,7 @@
 
 #define ANIMATION2D_MAX_FRAMES 25
 
-class TextureAnimation {
+class TextureAnimated {
 public:
     std::string base_file;
 
@@ -20,7 +20,7 @@ public:
     bool endAnimation;
     bool paused;
 
-    TextureAnimation();
+    TextureAnimated();
 
     void setup(std::string file, int num_frames, int fps);
 
@@ -46,4 +46,4 @@ public:
 };
 
 
-#endif //BRAKEDA3D_TEXTUREANIMATION_H
+#endif //BRAKEDA3D_TEXTUREANIMATED_H

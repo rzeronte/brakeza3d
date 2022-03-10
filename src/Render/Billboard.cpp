@@ -79,7 +79,6 @@ void Billboard::setTrianglesTexture(Texture *t) {
 
 void Billboard::reassignTexture() {
     setTrianglesTexture(this->texture);
-
 }
 
 void Billboard::setDimensions(float w, float h) {

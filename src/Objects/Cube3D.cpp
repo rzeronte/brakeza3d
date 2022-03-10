@@ -1,7 +1,7 @@
 
-#include "Cube3D.h"
-#include "../Render/Logging.h"
-#include "../Render/Transforms.h"
+#include "../../include/Objects/Cube3D.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Render/Transforms.h"
 
 Cube3D::Cube3D(float size) {
     this->scaleX = size;

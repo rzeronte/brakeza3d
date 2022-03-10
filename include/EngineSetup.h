@@ -150,8 +150,8 @@ public:
     float SOUND_VOLUME_MENU = 75;
 
     // SpriteDirectional3D Default size
-    float BILLBOARD_WIDTH_DEFAULT = 1.f;
-    float BILLBOARD_HEIGHT_DEFAULT = 1.f;
+    float BILLBOARD_WIDTH_DEFAULT = 100.f;
+    float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
     Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
     bool DRAW_CROSSHAIR = false;

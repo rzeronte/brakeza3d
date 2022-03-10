@@ -7,7 +7,7 @@
 #include "../Components/Camera3D.h"
 #include "../EngineSetup.h"
 #include "../Misc/Timer.h"
-#include "../2D/TextureAnimation.h"
+#include "../2D/TextureAnimated.h"
 #include "../Render/Billboard.h"
 #include "../Misc/Counter.h"
 #include <vector>
@@ -25,7 +25,7 @@ public:
     Counter *counter;
     float step = 0;
 
-    TextureAnimation *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
+    TextureAnimated *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
 
     bool autoRemoveAfterAnimation = false;
 
@@ -33,13 +33,13 @@ public:
 
     Billboard *getBillboard() const;
 
-    void addAnimation(const std::string&, int, int);
+    void addAnimation(const std::string&, int numFrames, int fps);
 
     void setAnimation(int);
 
     void updateTexture();
 
-    void updateTrianglesCoordinatesAndTexture(Camera3D *cam);
+    void updateTrianglesCoordinatesAndTexture();
 
     bool isAutoRemoveAfterAnimation() const;
 
@@ -47,9 +47,13 @@ public:
 
     void linkTextureAnimation(Sprite3D *);
 
-    TextureAnimation *getCurrentTextureAnimation();
+    TextureAnimated *getCurrentTextureAnimation();
 
     void onUpdate();
+
+    void updateStep();
+
+    Counter *getCounter() const;
 };
 
 

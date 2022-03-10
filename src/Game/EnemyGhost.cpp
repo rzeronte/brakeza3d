@@ -25,8 +25,6 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
     auto *projectile = dynamic_cast<AmmoProjectileGhost*> (collisionableObject);
     if (projectile != nullptr) {
         this->takeDamage(projectile->getWeaponType()->getDamage());
-        //this->removeCollisionObject();
-        this->setRemoved(true);
     }
 }
 

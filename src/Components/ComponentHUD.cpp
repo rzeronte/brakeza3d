@@ -120,12 +120,12 @@ void ComponentHUD::loadButtons() {
     const int offsetY =  EngineSetup::get()->screenHeight - 16;
     const int offsetX = 16;
     int currentX = 0;
-    /*addButton(new Button(currentX + offsetX * 0, offsetY, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));
+    addButton(new Button(currentX + offsetX * 0, offsetY, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));
     addButton(new Button(currentX + offsetX * 1, offsetY, SETUP->HUD_FOLDER + "plague.png", &callbackPlayerShoot2));
     addButton(new Button(currentX + offsetX * 2, offsetY, SETUP->HUD_FOLDER + "cold-fire.png", &callbackPlayerShoot2));
     addButton(new Button(currentX + offsetX * 3, offsetY, SETUP->HUD_FOLDER + "earth-1.png", &callbackPlayerShoot2));
     addButton(new Button(currentX + offsetX * 4, offsetY, SETUP->HUD_FOLDER + "needles.png", &callbackPlayerShoot2));
     addButton(new Button(currentX + offsetX * 5, offsetY, SETUP->HUD_FOLDER + "nova-mega.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 6, offsetY, SETUP->HUD_FOLDER + "thunder-2.png", &callbackPlayerShoot2));*/
+    addButton(new Button(currentX + offsetX * 6, offsetY, SETUP->HUD_FOLDER + "thunder-2.png", &callbackPlayerShoot2));
 }
 
