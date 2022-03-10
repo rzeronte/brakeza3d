@@ -349,14 +349,8 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 }
 
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangles) {
-    //B->T1.draw( frustum );
     frameTriangles->emplace_back(&B->T1);
     frameTriangles->emplace_back(&B->T2);
-
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
-        //Brakeza3D::get()->drawWireframe(&B->T1);
-        //Brakeza3D::get()->drawWireframe(&B->T2);
-    }
 }
 
 void Drawable::drawLightning(Camera3D *cam, Vertex3D A, Vertex3D B) {

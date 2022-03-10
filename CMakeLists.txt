@@ -87,12 +87,12 @@ add_executable(Brakeza3D
         include/Render/Logging.h
         src/Objects/SpriteDirectional3D.cpp
         include/Objects/SpriteDirectional3D.h
-        src/2D/TextureAnimationDirectional.cpp
-        include/2D/TextureAnimationDirectional.h
+        src/2D/TextureAnimatedDirectional.cpp
+        include/2D/TextureAnimatedDirectional.h
         src/Objects/Sprite3D.cpp
         include/Objects/Sprite3D.h
-        src/2D/TextureAnimation.cpp
-        include/2D/TextureAnimation.h
+        src/2D/TextureAnimated.cpp
+        include/2D/TextureAnimated.h
         src/Render/Maths.cpp
         include/Render/Maths.h
         src/Render/BSPMap.cpp
@@ -135,7 +135,7 @@ add_executable(Brakeza3D
         include/Physics/Sprite3DBody.h
         src/Collisions/Body.cpp
         include/Physics/Body.h
-        include/Objects/Cube3D.cpp
+        src/Objects/Cube3D.cpp
         include/Objects/Cube3D.h
         include/Game/Player.cpp src/Game/Player.h
         src/Demo/Demo.cpp include/Demo/Demo.h

@@ -63,12 +63,6 @@ void ComponentRender::onEnd() {
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
     auto input = ComponentsManager::get()->getComponentInput();
     if (SETUP->CLICK_SELECT_OBJECT3D) {
-        if (input->isClickRight() && !input->isMouseMotion()) {
-            Logging::getInstance()->Log("Deselect Object3D!");
-            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-            shader->setObject(nullptr);
-        }
-
         updateSelectedObject3D();
     }
 }
@@ -76,24 +70,33 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
 void ComponentRender::updateSelectedObject3D() {
     auto input = ComponentsManager::get()->getComponentInput();
 
-    if (!input->isClickLeft() || input->isMouseMotion()) {
-        return;
+    if (input->isClickLeft() && !input->isMouseMotion()) {
+        selectedObject = getObject3DFromClickPoint(
+                input->getRelativeRendererMouseX(),
+                input->getRelativeRendererMouseY()
+        );
+
+        if (selectedObject != nullptr) {
+            Logging::getInstance()->Log("Selecting Object3D: " + selectedObject->getLabel());
+            auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+            silhouette->setObject(selectedObject);
+
+            auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
+            smoke->setObject(selectedObject);
+
+            auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
+            blink->setObject(selectedObject);
+        } else {
+            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+            shader->setObject(nullptr);
+            setSelectedObject(nullptr);
+        }
     }
-    selectedObject = getObject3DFromClickPoint(
-        input->getRelativeRendererMouseX(),
-        input->getRelativeRendererMouseY()
-    );
 
-    if (selectedObject != nullptr) {
-        Logging::getInstance()->Log("Selecting Object3D: " + selectedObject->getLabel());
-        auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-        silhouette->setObject(selectedObject);
-
-        auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
-        smoke->setObject(selectedObject);
-
-        auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
-        blink->setObject(selectedObject);
+    if (input->isClickRight() && !input->isMouseMotion()) {
+        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+        shader->setObject(nullptr);
+        setSelectedObject(nullptr);
     }
 }
 
@@ -603,6 +606,18 @@ Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
     return c;
 }
 
+bool ComponentRender::isPixelFullTransparent(Color &c, SDL_PixelFormat *pixelFormat)
+{
+    Uint8 red, green, blue, alpha;
+    SDL_GetRGBA(c.getColor(), pixelFormat, &red, &green, &blue, &alpha);
+
+    if (alpha == 0) {
+        return true;
+    }
+
+    return false;
+}
+
 void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
 {
     Color pixelColor(0, 0, 0);
@@ -626,6 +641,10 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         }
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
+    }
+
+    if (this->isPixelFullTransparent(pixelColor, t->getTexture()->getImage()->getSurface()->format)) {
+        return;
     }
 
     if (EngineSetup::get()->ENABLE_LIGHTS && t->isEnableLights()) {
