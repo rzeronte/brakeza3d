@@ -20,6 +20,8 @@ public:
     void onUpdate() override;
 
     void integrate() override;
+
+    void remove();
 };
 
 

@@ -3,6 +3,8 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 
+#define FREELOOK false
+
 ComponentGame::ComponentGame() {
     player = new Player();
     axisPlanes = new Mesh3DBody();
@@ -21,8 +23,8 @@ void ComponentGame::onStart() {
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
     ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -1.0, 0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
+    ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
 
     setupWeapons();
     loadPlayer();
@@ -148,8 +150,9 @@ void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
     player->setEnableLights(false);
-    player->setPosition(Vertex3D(1115, -700, 4500));
+    player->setPosition(Vertex3D(1115, -700, 5000));
     player->setScale(1);
+    player->setStamina(100);
     player->setStencilBufferEnabled(true);
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);

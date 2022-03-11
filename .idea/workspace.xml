@@ -18,31 +18,24 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Refactor GUIObject3D / Sprite3D">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_0.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimated.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimationDirectional.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimatedDirectional.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/hud.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Cube3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Cube3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Sprite3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Sprite3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimated.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimationDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Enemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/AmmoProjectileGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/AmmoProjectileGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Enemy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Billboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Billboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,17 +219,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -377,7 +370,8 @@
       <workItem from="1646617787921" duration="1215000" />
       <workItem from="1646693794764" duration="8706000" />
       <workItem from="1646781468687" duration="7050000" />
-      <workItem from="1646859308489" duration="10520000" />
+      <workItem from="1646859308489" duration="16854000" />
+      <workItem from="1646945695517" duration="6116000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -526,7 +520,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646785582065</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Refactor GUIObject3D / Sprite3D">
+      <created>1646873314340</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1646873314340</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -683,7 +684,8 @@
     <MESSAGE value="Fix copyFrom Mesh3D / Improve isPixelInWindow" />
     <MESSAGE value="Separe Camera AutoScroll from Shader AutoScroll" />
     <MESSAGE value="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables" />
+    <MESSAGE value="Refactor GUIObject3D / Sprite3D" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor GUIObject3D / Sprite3D" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -697,16 +699,6 @@
           <url>file://$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp</url>
           <line>6</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/Sprite3D.cpp</url>
-          <line>93</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/Sprite3D.cpp</url>
-          <line>94</line>
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

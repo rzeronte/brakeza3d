@@ -9,6 +9,9 @@ Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0), cadence(0) {
 
 void Enemy::takeDamage(float damageTaken) {
     this->stamina -= damageTaken;
+    if (this->stamina <= 0) {
+        setState(EnemyState::ENEMY_STATE_DIE);
+    }
 }
 
 float Enemy::getRange() const {
@@ -59,4 +62,8 @@ EnemyState Enemy::getState() const {
 
 void Enemy::setState(EnemyState state) {
     Enemy::state = state;
+}
+
+float Enemy::getStamina() const {
+    return stamina;
 }

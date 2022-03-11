@@ -23,9 +23,12 @@ public:
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
 
+    btBvhTriangleMeshShape *getTriangleMeshFromMesh();
+
+protected:
     void resolveCollision(Collisionable *collisionable) override;
 
-    btBvhTriangleMeshShape *getTriangleMeshFromMesh();
+    void remove();
 };
 
 

@@ -72,32 +72,31 @@ void ComponentRender::updateSelectedObject3D() {
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
         selectedObject = getObject3DFromClickPoint(
-                input->getRelativeRendererMouseX(),
-                input->getRelativeRendererMouseY()
+            input->getRelativeRendererMouseX(),
+            input->getRelativeRendererMouseY()
         );
 
-        if (selectedObject != nullptr) {
-            Logging::getInstance()->Log("Selecting Object3D: " + selectedObject->getLabel());
-            auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-            silhouette->setObject(selectedObject);
-
-            auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
-            smoke->setObject(selectedObject);
-
-            auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
-            blink->setObject(selectedObject);
-        } else {
-            auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-            shader->setObject(nullptr);
-            setSelectedObject(nullptr);
-        }
+        updateSelectedObject3DInShaders(selectedObject);
     }
 
     if (input->isClickRight() && !input->isMouseMotion()) {
-        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-        shader->setObject(nullptr);
         setSelectedObject(nullptr);
+        updateSelectedObject3DInShaders(nullptr);
     }
+}
+
+void ComponentRender::updateSelectedObject3DInShaders(Object3D *object) {
+    auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+    shader->setObject(object);
+
+    auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
+    silhouette->setObject(object);
+
+    auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
+    smoke->setObject(object);
+
+    auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
+    blink->setObject(object);
 }
 
 std::vector<Triangle *> &ComponentRender::getFrameTriangles() {

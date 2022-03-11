@@ -43,12 +43,13 @@ public:
 
     void setCadence(float cadence);
 
-
     void evalStatusMachine();
 
     EnemyState getState() const;
 
     void setState(EnemyState state);
+
+    float getStamina() const;
 };
 
 

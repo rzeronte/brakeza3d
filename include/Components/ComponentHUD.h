@@ -33,7 +33,7 @@ public:
 
     TexturePackage *HUDTextures;
     TexturePackage *iconsTextures;
-    TextWriter *textureWriter{};
+    TextWriter *textureWriter;
 
     void loadImages();
 
@@ -50,6 +50,10 @@ public:
     const std::vector<Button *> &getButtons() const;
 
     void loadButtons();
+
+    void drawPlayerStamina(int y);
+
+    void drawEnemyStamina(int y);
 };
 
 

@@ -41,6 +41,5 @@ void Projectile3DBody::setTTL(float v) {
 }
 
 void Projectile3DBody::resolveCollision(Collisionable *collisionable) {
-    this->removeCollisionObject();
-    this->setRemoved(true);
+    Mesh3DBody::resolveCollision(collisionable);
 }

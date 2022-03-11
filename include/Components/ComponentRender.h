@@ -121,6 +121,9 @@ public:
     const std::map<int, Shader *> &getShaders();
     Object3D* getSelectedObject();
     void setSelectedObject(Object3D *o);
+
+    void updateSelectedObject3DInShaders(Object3D *object);
+
 private:
     std::map<int, Shader*> shaders;
     void onUpdatePreUpdateShaders();

@@ -239,8 +239,7 @@ public:
 
             // Color
             if (ImGui::TreeNode(color_text.c_str())) {
-                bool changed_color = false;
-                changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imguiColor, miscFlags);
+                bool changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imguiColor, miscFlags);
                 if (changed_color) {
                     light->setColor(
                             imguiColor.x * 256,

@@ -17,6 +17,8 @@ public:
     WeaponType *getWeaponType() const;
 
     void setWeaponType(WeaponType *weaponType);
+
+    void resolveCollision(Collisionable *collisionable) override;
 };
 
 

@@ -11,3 +11,12 @@ WeaponType *AmmoProjectileGhost::getWeaponType() const {
 void AmmoProjectileGhost::setWeaponType(WeaponType *weaponType) {
     AmmoProjectileGhost::weaponType = weaponType;
 }
+
+void AmmoProjectileGhost::resolveCollision(Collisionable *collisionable) {
+    auto projectile = dynamic_cast<AmmoProjectileGhost*> (collisionable);
+    if (projectile != nullptr) {
+        return;
+    }
+
+    this->remove();
+}
