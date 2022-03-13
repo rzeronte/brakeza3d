@@ -154,6 +154,7 @@ void ComponentCollisions::demoProjectile(int type) {
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     auto *projectile = new Projectile3DBody();
+    projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(
         (float) Tools::random(0, 180),
