@@ -4,7 +4,6 @@ AmmoType::AmmoType() {
     this->amount = 0;
     this->reloads = 0;
     this->reload_amount = 0;
-
 }
 
 const std::string &AmmoType::getName() const {

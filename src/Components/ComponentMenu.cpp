@@ -82,7 +82,7 @@ void ComponentMenu::drawOptions(SDL_Surface *dst) {
         bool bold = false;
 
         if (i == ComponentMenu::MNU_NEW_GAME &&
-            ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::GAMEOVER) {
+            ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::DEAD) {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 

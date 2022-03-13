@@ -57,7 +57,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
 
     GameState gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
-    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN && player->state != PlayerState::GAMEOVER) {
+    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
         if (gameState == GameState::MENU) {
             ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
             //SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -115,7 +115,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
             return;
         }
 
-        if (gameState == GameState::MENU && player->state == PlayerState::GAMEOVER &&
+        if (gameState == GameState::MENU &&
             ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()
                     ->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME
                 ) {
@@ -126,7 +126,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
             player->newGame();
         }
 
-        if (gameState == GameState::MENU && player->state != PlayerState::GAMEOVER &&
+        if (gameState == GameState::MENU && player->state == PlayerState::DEAD &&
             ComponentsManager::get()->getComponentMenu()->options[ComponentsManager::get()
                     ->getComponentMenu()->currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME
                 ) {

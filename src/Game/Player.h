@@ -14,15 +14,13 @@
 #define INITIAL_MAX_VELOCITY 25
 
 typedef enum {
-    LIVE, DEAD, GAMEOVER
+    LIVE, DEAD
 } PlayerState;
 
 class Player : public Mesh3DGhost {
 private:
 
     float stamina;
-    bool dead;
-    bool stopped;
     int lives;
     Vertex3D velocity;
 
@@ -81,6 +79,8 @@ public:
     void resolveCollision(Collisionable *with) override;
 
     float autoRotationSelectedObjectSpeed;
+
+    void setState(PlayerState state);
 };
 
 

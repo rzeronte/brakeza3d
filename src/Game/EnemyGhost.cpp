@@ -8,10 +8,6 @@
 EnemyGhost::EnemyGhost() {
 }
 
-void EnemyGhost::shoot() {
-   Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
-}
-
 void EnemyGhost::onUpdate() {
     Mesh3D::onUpdate();
 
@@ -25,6 +21,8 @@ void EnemyGhost::onUpdate() {
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         remove();
     }
+
+    weaponType->counterCadence->update();
 }
 
 
@@ -49,5 +47,15 @@ void EnemyGhost::remove() {
 
     removeCollisionObject();
     setRemoved(true);
+}
+
+void EnemyGhost::shoot(Object3D *target)
+{
+    Vector3D way(getPosition(), target->getPosition());
+    Enemy::shoot(
+        this,
+        way.getComponent().getNormalize(),
+        getPosition() - AxisUp().getScaled(1000)
+    );
 }
 

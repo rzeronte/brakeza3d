@@ -18,24 +18,32 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Refactor GUIObject3D / Sprite3D">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Added Health Bars in HUD (Player/Enemies) / Improve input shoot">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/hud.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/CMakeLists.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Enemy.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/WeaponType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/WeaponType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/AmmoProjectileGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/AmmoProjectileGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/AmmoType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/AmmoType.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Enemy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,11 +237,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="CMake Application.Build All" />
       <item itemvalue="CMake Application.Brakeza3D" />
@@ -371,7 +374,9 @@
       <workItem from="1646693794764" duration="8706000" />
       <workItem from="1646781468687" duration="7050000" />
       <workItem from="1646859308489" duration="16854000" />
-      <workItem from="1646945695517" duration="6116000" />
+      <workItem from="1646945695517" duration="6892000" />
+      <workItem from="1647134791770" duration="4467000" />
+      <workItem from="1647180631906" duration="9565000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -527,7 +532,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646873314340</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Added Health Bars in HUD (Player/Enemies) / Improve input shoot">
+      <created>1646959538564</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1646959538564</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -685,7 +697,8 @@
     <MESSAGE value="Separe Camera AutoScroll from Shader AutoScroll" />
     <MESSAGE value="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables" />
     <MESSAGE value="Refactor GUIObject3D / Sprite3D" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor GUIObject3D / Sprite3D" />
+    <MESSAGE value="Added Health Bars in HUD (Player/Enemies) / Improve input shoot" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Health Bars in HUD (Player/Enemies) / Improve input shoot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

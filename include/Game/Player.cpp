@@ -2,10 +2,11 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 #include "../Particles/ParticleEmissorGravity.h"
+#include "AmmoProjectileGhost.h"
 
-Player::Player() : state(PlayerState::GAMEOVER), dead(false),
+Player::Player() : state(PlayerState::LIVE),
                    stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
-                   stopped(false), power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
+                   power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
 
     engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::gray());
     engineParticles->setRotationFrame(0, 4, 5);
@@ -38,13 +39,6 @@ void Player::setLives(int lives) {
     Player::lives = lives;
 }
 
-bool Player::isDead() const {
-    return dead;
-}
-
-void Player::setDead(bool dead) {
-    this->dead = dead;
-}
 
 void Player::evalStatusMachine() {
 
@@ -57,17 +51,14 @@ void Player::evalStatusMachine() {
 }
 
 void Player::takeDamage(float dmg) {
-    if (dead) return;
-
     this->stamina -= dmg;
 
     if (stamina <= 0) {
-        state = PlayerState::DEAD;
-        setDead(true);
+        setState(PlayerState::DEAD);
+        ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
         lives--;
 
         if (lives <= 0) {
-            state = PlayerState::GAMEOVER;
             ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
         }
     }
@@ -75,25 +66,21 @@ void Player::takeDamage(float dmg) {
 
 void Player::newGame() {
     setLives(INITIAL_LIVES);
+    setStamina(INITIAL_STAMINA);
     //SDL_SetRelativeMouseMode(SDL_TRUE);
     ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
     EngineSetup::get()->DRAW_HUD = true;
 
-    this->state = PlayerState::LIVE;
+    setState(PlayerState::LIVE);
 }
 
 void Player::respawn() {
-    if (Tools::isValidVector(
-            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera()->getPosition())) {
-    }
-
-    setDead(false);
-    state = PlayerState::LIVE;
+    setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
 }
 
 void Player::shoot() {
-    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->shoot();
+    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->playerShoot();
 }
 
 void Player::jump() {
@@ -171,6 +158,17 @@ void Player::updateLight() {
 }
 
 void Player::resolveCollision(Collisionable *with) {
+    Logging::getInstance()->Log("Collision on Player");
     Mesh3DGhost::resolveCollision(with);
-    //Logging::getInstance()->Log("Collision specific for Player");
+    auto projectile = dynamic_cast<AmmoProjectileGhost*> (with);
+    if (projectile != nullptr) {
+        if (projectile->getParent() != this) {
+            takeDamage(projectile->getWeaponType()->getDamage());
+            projectile->remove();
+        }
+    }
+}
+
+void Player::setState(PlayerState state) {
+    Player::state = state;
 }

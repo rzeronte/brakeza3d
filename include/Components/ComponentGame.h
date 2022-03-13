@@ -18,7 +18,7 @@
 #include "../Physics/Mesh3DBody.h"
 
 typedef enum {
-    MENU, GAMING, LOADING, SPLASHING
+    MENU, GAMING, LOADING
 } GameState;
 
 class ComponentGame : public Component {
@@ -59,7 +59,11 @@ private:
 
     GameState gameState;
 
-    void setupWeapons();
+    void loadPlayerWeapons();
+
+    void evalStatusMachine(EnemyGhost *pGhost) const;
+
+    void loadEnemy();
 };
 
 

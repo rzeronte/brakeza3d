@@ -96,14 +96,15 @@ void ComponentHUD::drawHUD() {
     auto hudTexture= HUDTextures->getTextureByLabel("hud")->getImage();
     hudTexture->drawFlat(0, SETUP->screenHeight - hudTexture->height());
 
-    for (auto & button : buttons) {
-        button->draw();
+    for (int i = 0; i < buttons.size(); i++) {
+        buttons[i]->draw();
+        this->textureWriter->writeText(i * 16 + 2, getButtonsOffsetY() + 1, std::to_string(i).c_str(), false);
     }
 
     if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
         WeaponType *weaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
         if (weaponType->isAvailable()) {
-            this->textureWriter->writeText(200, 220, weaponType->getLabel().c_str(), false);
+            this->textureWriter->writeText(200, 215, weaponType->getLabel().c_str(), false);
         }
     }
 }
@@ -117,10 +118,9 @@ void ComponentHUD::addButton(Button *button) {
 }
 
 void ComponentHUD::loadButtons() {
-    const unsigned int innerMargin = 3;
-    const int offsetY = SETUP->screenHeight - 16 - innerMargin;
+    const int offsetY = getButtonsOffsetY();
     const int offsetX = 16;
-    int currentX = 2;
+    int currentX = 1;
     addButton(new Button(currentX + offsetX * 0, offsetY, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));
     addButton(new Button(currentX + offsetX * 1, offsetY, SETUP->HUD_FOLDER + "plague.png", &callbackPlayerShoot2));
     addButton(new Button(currentX + offsetX * 2, offsetY, SETUP->HUD_FOLDER + "cold-fire.png", &callbackPlayerShoot2));
@@ -173,3 +173,8 @@ void ComponentHUD::drawEnemyStamina(int y) {
     }
 }
 
+int ComponentHUD::getButtonsOffsetY() {
+    const unsigned int innerMargin = 0;
+    const int offsetY = SETUP->screenHeight - 16 - innerMargin;
+    return offsetY;
+}

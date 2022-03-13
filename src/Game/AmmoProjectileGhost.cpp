@@ -15,7 +15,9 @@ void AmmoProjectileGhost::setWeaponType(WeaponType *weaponType) {
 void AmmoProjectileGhost::resolveCollision(Collisionable *collisionable) {
     auto projectile = dynamic_cast<AmmoProjectileGhost*> (collisionable);
     if (projectile != nullptr) {
-        return;
+        if (projectile->getParent() == getParent()) {
+            return;
+        }
     }
 
     this->remove();

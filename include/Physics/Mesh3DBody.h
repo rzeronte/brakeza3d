@@ -20,6 +20,9 @@ public:
     void makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
 
     void setGravity(Vertex3D g);
+
+    void remove();
+
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
 
@@ -28,7 +31,6 @@ private:
 protected:
     void resolveCollision(Collisionable *collisionable) override;
 
-    void remove();
 };
 
 

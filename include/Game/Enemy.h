@@ -8,21 +8,20 @@
 #include "../Physics/Body.h"
 #include "../Misc/Counter.h"
 #include "../Render/M3.h"
+#include "WeaponType.h"
 
 
 typedef enum {
-    ENEMY_STATE_STOP, ENEMY_STATE_FOLLOW, ENEMY_STATE_ATTACK, ENEMY_STATE_INJURIED, ENEMY_STATE_DIE
+    ENEMY_STATE_STOP, ENEMY_STATE_DIE
 } EnemyState;
 
 class Enemy {
 public:
     EnemyState state;
+    WeaponType *weaponType;
 
     float startStamina;
     float stamina;
-
-    float cadence;          // cadence management
-    Counter *counterCadence;
 
     float range;
     float speed;
@@ -39,17 +38,15 @@ public:
 
     void setSpeed(float speed);
 
-    float getCadence() const;
-
-    void setCadence(float cadence);
-
-    void evalStatusMachine();
-
     EnemyState getState() const;
 
     void setState(EnemyState state);
 
     float getStamina() const;
+
+    void setWeaponType(WeaponType *weaponType);
+
+    void shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition);
 };
 
 

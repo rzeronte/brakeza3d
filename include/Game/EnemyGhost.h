@@ -13,8 +13,6 @@ public:
 
     EnemyGhost();
 
-    void shoot();
-
     void resolveCollision(Collisionable *collisionableObject) override;
 
     void onUpdate() override;
@@ -22,6 +20,8 @@ public:
     void integrate() override;
 
     void remove();
+
+    void shoot(Object3D *target);
 };
 
 

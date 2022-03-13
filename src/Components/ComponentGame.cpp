@@ -13,6 +13,7 @@ ComponentGame::ComponentGame() {
 void ComponentGame::onStart() {
     Logging::Log("ComponentGame onStart", "ComponentGame");
     setGameState(GameState::MENU);
+    SETUP->DRAW_HUD = false;
 
     Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
 
@@ -26,8 +27,9 @@ void ComponentGame::onStart() {
     ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
 
-    setupWeapons();
+    loadPlayerWeapons();
     loadPlayer();
+    loadEnemy();
 }
 
 void ComponentGame::preUpdate() {
@@ -37,13 +39,11 @@ void ComponentGame::onUpdate() {
 
     ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
 
-    if (player->state != PlayerState::GAMEOVER) {
-        if (SETUP->ENABLE_IA) {
-            onUpdateIA();
-        }
-    }
-
     GameState state = getGameState();
+
+    if (state == GameState::GAMING) {
+        onUpdateIA();
+    }
 
     if (state == GameState::LOADING) {
         componentHUD->writeTextMiddleScreen("Loading", false);
@@ -72,17 +72,11 @@ Player *ComponentGame::getPlayer() const {
 }
 
 void ComponentGame::onUpdateIA() const {
-    if (player->isDead()) return;
-
-    std::vector<Object3D *>::iterator itObject3D;
-    for (itObject3D = Brakeza3D::get()->getSceneObjects().begin();
-        itObject3D != Brakeza3D::get()->getSceneObjects().end(); itObject3D++) {
-        Object3D *object = *(itObject3D);
-
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
 
         if (enemy != nullptr) {
-
+            evalStatusMachine(enemy);
         }
     }
 }
@@ -158,17 +152,6 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto *enemyOne = new EnemyGhost();
-    enemyOne->setLabel("enemyOne");
-    enemyOne->setEnableLights(false);
-    enemyOne->setPosition(Vertex3D(1515, -3200, 5000));
-    enemyOne->setRotation(0, 0, 180);
-    enemyOne->setStencilBufferEnabled(true);
-    enemyOne->setScale(1);
-    enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
-    enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
-    Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
-
     auto *sprite = new Sprite3D();
     sprite->setEnabled(true);
     sprite->setPosition(Vertex3D(0, -1000, 200));
@@ -178,15 +161,8 @@ void ComponentGame::loadPlayer()
     Brakeza3D::get()->addObject3D(sprite, "sprite");
 }
 
-void ComponentGame::setupWeapons() {
+void ComponentGame::loadPlayerWeapons() {
     auto *cw = ComponentsManager::get()->getComponentWeapons();
-    cw->addWeaponType("defaultWeapon");
-    WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
-    weaponType->setSpeed(500);
-    weaponType->setDamage(10);
-    weaponType->setDispersion(10);
-    weaponType->setAvailable(true);
-    weaponType->setAccuracy(100);
 
     auto *ammoType = new AmmoType();
     ammoType->setName("defaultWeapon_ammoType");
@@ -194,7 +170,17 @@ void ComponentGame::setupWeapons() {
     ammoType->getModelProjectile()->setLabel("projectile_template");
     ammoType->getModelProjectile()->setScale(1);
     ammoType->setAmount(1000);
+
+    cw->addWeaponType("defaultWeapon");
+    WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
+    weaponType->setSpeed(500);
+    weaponType->setDamage(10);
+    weaponType->setDispersion(10);
+    weaponType->setAvailable(true);
+    weaponType->setAccuracy(100);
+    weaponType->setCadenceTime(0.25);
     weaponType->setAmmoType(ammoType);
+    weaponType->setCadenceTime(0.25);
 
     cw->setCurrentWeaponIndex(WeaponsTypes::DEFAULT);
 }
@@ -247,4 +233,45 @@ void ComponentGame::selectClosestObject3DFromPlayer() {
         shader->setObject(currentClosestObject);
         ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
     }
+}
+
+void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const {
+    if (enemy->getState() == EnemyState::ENEMY_STATE_DIE) {
+        return;
+    }
+
+    enemy->shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
+}
+
+void ComponentGame::loadEnemy() {
+
+    auto *enemyOne = new EnemyGhost();
+    enemyOne->setLabel("enemyOne");
+    enemyOne->setEnableLights(false);
+    enemyOne->setPosition(Vertex3D(1515, -3200, 5000));
+    enemyOne->setRotation(0, 0, 180);
+    enemyOne->setStencilBufferEnabled(true);
+    enemyOne->setScale(1);
+    enemyOne->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceship03.fbx"));
+    enemyOne->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemyOne);
+    Brakeza3D::get()->addObject3D(enemyOne, "enemyOne");
+
+    auto *ammoType = new AmmoType();
+    ammoType->setName("enemy_ammoType");
+    ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/icosphere.fbx"));
+    ammoType->getModelProjectile()->setLabel("projectile_enemy_template");
+    ammoType->getModelProjectile()->setScale(1);
+    ammoType->setAmount(1000);
+
+    auto enemyWeaponType = new WeaponType("enemy_weaponDefault");
+    enemyWeaponType->setSpeed(500);
+    enemyWeaponType->setDamage(10);
+    enemyWeaponType->setDispersion(10);
+    enemyWeaponType->setAvailable(true);
+    enemyWeaponType->setAccuracy(100);
+    enemyWeaponType->setCadenceTime(0.25);
+    enemyWeaponType->setAmmoType(ammoType);
+    enemyWeaponType->setCadenceTime(1);
+
+    enemyOne->setWeaponType(enemyWeaponType);
 }

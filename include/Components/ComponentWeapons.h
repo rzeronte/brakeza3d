@@ -47,7 +47,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
-    void shoot();
+    void playerShoot();
 
     void reload();
 

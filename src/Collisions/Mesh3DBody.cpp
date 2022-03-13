@@ -161,7 +161,6 @@ void Mesh3DBody::resolveCollision(Collisionable *with) {
     }
 }
 
-
 void Mesh3DBody::remove() {
     this->removeCollisionObject();
     this->setRemoved(true);

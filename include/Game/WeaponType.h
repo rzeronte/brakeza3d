@@ -10,14 +10,9 @@
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
 
-#define WEAPON_MAX_ANIMATIONS 10
-
 class WeaponType {
 public:
-    WeaponType();
-
     WeaponType(const std::string& label);
-
     bool available;
     int status;
 
@@ -32,6 +27,7 @@ public:
     float accuracy;
     int dispersion;
 
+    float cadenceTime;
     Counter *counterCadence;
 
     int speed;
@@ -43,11 +39,8 @@ public:
     // mesh for
     Mesh3D *model;
 
-    SDL_Surface *iconHUD;
-
     bool sniper;
     bool sniperEnabled = false;
-    SDL_Surface *sniperHUD;
 
     void onUpdate();
 
@@ -66,10 +59,6 @@ public:
     float getDamageRadius() const;
 
     void setDamageRadius(float damageRadius);
-
-    void loadIconHUD(const std::string& file);
-
-    void loadSniperHUD(const std::string& file);
 
     float getAccuracy() const;
 
@@ -95,7 +84,7 @@ public:
 
     void setAmmoType(AmmoType *ammo);
 
-    void shoot();
+    void shoot(Object3D *parent, Vertex3D position, Vertex3D direction);
 
     void reload();
 
@@ -110,6 +99,10 @@ public:
     const std::string &getSoundFire() const;
 
     const std::string &getLabel() const;
+
+    float getCadenceTime() const;
+
+    void setCadenceTime(float cadenceTime);
 };
 
 

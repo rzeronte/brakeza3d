@@ -80,14 +80,18 @@ void ComponentWeapons::setCurrentWeaponIndex(int newCurrentWeaponIndex) {
     ComponentWeapons::currentWeaponIndex = newCurrentWeaponIndex;
 }
 
-void ComponentWeapons::shoot() {
+void ComponentWeapons::playerShoot() {
     if (isEmptyWeapon()) {
         return;
     }
-
-    Logging::Log("ComponentWeapons shoot!", "ComponentWeapons");
+    auto game = ComponentsManager::get()->getComponentGame();
+    Logging::Log("ComponentWeapons playerShoot!", "ComponentWeapons");
     if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
-        this->getCurrentWeaponType()->shoot();
+        this->getCurrentWeaponType()->shoot(
+            game->getPlayer(),
+            game->getPlayer()->getPosition() - game->getPlayer()->AxisUp().getScaled(1000),
+            ComponentsManager::get()->getComponentGame()->getPlayer()->AxisUp().getInverse()
+        );
     } else {
         Logging::Log("Empty Ammo!", "ComponentWeapons");
         std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();

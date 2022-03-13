@@ -54,6 +54,8 @@ public:
     void drawPlayerStamina(int y);
 
     void drawEnemyStamina(int y);
+
+    int getButtonsOffsetY();
 };
 
 

@@ -1,10 +1,10 @@
 
 #include "../../include/Game/Enemy.h"
 
-Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0), cadence(0) {
+Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0) {
     this->stamina = this->startStamina;
-    this->counterCadence = new Counter();
     setState(EnemyState::ENEMY_STATE_STOP);
+    weaponType = new WeaponType("EnemyWeapon");
 }
 
 void Enemy::takeDamage(float damageTaken) {
@@ -30,32 +30,6 @@ void Enemy::setSpeed(float speed) {
     Enemy::speed = speed;
 }
 
-float Enemy::getCadence() const {
-    return cadence;
-}
-
-void Enemy::setCadence(float cadence) {
-    Enemy::cadence = cadence;
-    this->counterCadence->setStep(cadence);
-}
-
-void Enemy::evalStatusMachine() {
-    switch (state) {
-        case EnemyState::ENEMY_STATE_ATTACK:
-            break;
-        case EnemyState::ENEMY_STATE_FOLLOW:
-            break;
-        case EnemyState::ENEMY_STATE_INJURIED:
-            break;
-        case EnemyState::ENEMY_STATE_STOP:
-            break;
-        case EnemyState::ENEMY_STATE_DIE:
-            break;
-        default:
-            assert(0);
-    }
-}
-
 EnemyState Enemy::getState() const {
     return state;
 }
@@ -66,4 +40,12 @@ void Enemy::setState(EnemyState state) {
 
 float Enemy::getStamina() const {
     return stamina;
+}
+
+void Enemy::setWeaponType(WeaponType *weaponType) {
+    Enemy::weaponType = weaponType;
+}
+
+void Enemy::shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition) {
+    weaponType->shoot(parent, projectilePosition, direction);
 }

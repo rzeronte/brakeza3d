@@ -5,20 +5,6 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Game/AmmoProjectileGhost.h"
 
-WeaponType::WeaponType() : available(true) {
-    this->status = WeaponsActions::IDLE;
-    this->damage = 0;
-    this->accuracy = 100;
-    this->damageRadius = 0;
-    this->ammoType = 0;
-    this->speed = 1;
-    this->available = true;
-    this->dispersion = 0;
-    this->model = new Mesh3D();
-    this->counterCadence = new Counter();
-    this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
-}
-
 WeaponType::WeaponType(const std::string& label) {
     this->status = WeaponsActions::IDLE;
     this->damage = 0;
@@ -29,13 +15,14 @@ WeaponType::WeaponType(const std::string& label) {
     this->available = true;
     this->dispersion = 0;
     this->label = label;
-    this->iconHUD = SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
     this->model = new Mesh3D();
-    this->counterCadence = new Counter();
+    this->cadenceTime = 1;
+    this->counterCadence = new Counter(this->cadenceTime);
+    this->counterCadence->setEnabled(true);
 }
 
 void WeaponType::onUpdate() {
-
+    counterCadence->update();
 }
 
 void WeaponType::setSpeed(float speed) {
@@ -71,11 +58,6 @@ int WeaponType::getSpeed() const {
     return speed;
 }
 
-void WeaponType::loadIconHUD(const std::string& file) {
-    std::string path = EngineSetup::get()->WEAPONS_FOLDER + file;
-
-    this->iconHUD = IMG_Load(path.c_str());
-}
 
 bool WeaponType::isSniper() const {
     return sniper;
@@ -83,12 +65,6 @@ bool WeaponType::isSniper() const {
 
 void WeaponType::setSniper(bool sniper) {
     WeaponType::sniper = sniper;
-}
-
-void WeaponType::loadSniperHUD(const std::string& file) {
-    std::string path = EngineSetup::get()->WEAPONS_FOLDER + this->label + "/" + file;
-
-    this->sniperHUD = IMG_Load(path.c_str());
 }
 
 bool WeaponType::isSniperEnabled() const {
@@ -135,34 +111,40 @@ Mesh3D *WeaponType::getModel() const {
     return model;
 }
 
-void WeaponType::shoot() {
-    Logging::Log("WeaponType shoot!", "ComponentWeapons");
+void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
+{
+    const int ammoAmount = getAmmoType()->getAmount();
+    if (ammoAmount <= 0) return;
 
-    auto *weaponsManager = ComponentsManager::get()->getComponentWeapons();
-    auto *componentGame = ComponentsManager::get()->getComponentGame();
-    auto *componentRender = ComponentsManager::get()->getComponentRender();
+    if (counterCadence->isFinished()) {
+        counterCadence->setEnabled(true);
 
-    if (getAmmoType()->getAmount() <= 0) return;
+        auto *weaponsManager = ComponentsManager::get()->getComponentWeapons();
+        auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-    auto *projectile = new AmmoProjectileGhost();
-    projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
-    projectile->setWeaponType(this);
-    projectile->copyFrom(getAmmoType()->getModelProjectile());
-    projectile->setPosition( componentGame->getPlayer()->getPosition() - componentGame->getPlayer()->AxisUp().getScaled(1000));
-    projectile->setEnabled(true);
-    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
-    projectile->makeProjectileRigidBody(
-        0.1,
-        componentGame->getPlayer()->AxisUp().getInverse(),
-        (float) getSpeed(),
-        getAccuracy(),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
-    );
+        Logging::Log("WeaponType shoot!", "ComponentWeapons");
 
-    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+        auto *projectile = new AmmoProjectileGhost();
+        projectile->setParent(parent);
+        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+        projectile->setWeaponType(this);
+        projectile->copyFrom(getAmmoType()->getModelProjectile());
+        projectile->setPosition( position);
+        projectile->setEnabled(true);
+        projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
+        projectile->makeProjectileRigidBody(
+            0.1,
+            direction,
+            (float) getSpeed(),
+            getAccuracy(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
+        );
 
-    int currentWeaponAmmo = weaponsManager->getCurrentWeaponType()->getAmmoType()->getAmount();
-    weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(currentWeaponAmmo - 1);
+        weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(ammoAmount - 1);
+
+        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+    }
 }
 
 void WeaponType::reload() {
@@ -197,4 +179,14 @@ void WeaponType::setSoundFire(const std::string &label) {
 
 const std::string &WeaponType::getLabel() const {
     return label;
+}
+
+float WeaponType::getCadenceTime() const {
+    return cadenceTime;
+}
+
+void WeaponType::setCadenceTime(float cadenceTime) {
+    WeaponType::cadenceTime = cadenceTime;
+    this->counterCadence->setStep(cadenceTime);
+    this->counterCadence->setEnabled(true);
 }
