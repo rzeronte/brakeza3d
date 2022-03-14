@@ -36,6 +36,8 @@ public:
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
+    _SDL_GameController *gameController;
+
     TTF_Font *fontSmall = NULL;
     TTF_Font *fontDefault = NULL;
     TTF_Font *fontMedium = NULL;

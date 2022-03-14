@@ -36,9 +36,11 @@ public:
         }
 
         if (autoScrollEnabled) {
+            autoScrollCursorX += autoScrollSpeed.x;
+            autoScrollCursorY += autoScrollSpeed.y;
             setupFlatPortion(
                 xDrawPos, yDrawPos ,
-                xImage + autoScrollSpeed.x, yImage+ autoScrollSpeed.y,
+                autoScrollCursorX, autoScrollCursorY,
                 wImage, hImage
             );
         }
@@ -117,8 +119,8 @@ public:
     int hImage;
     bool autoScrollEnabled;
 
-    int autoScrollCursorX = 0;
-    int autoScrollCursorY = 0;
+    float autoScrollCursorX = 0;
+    float autoScrollCursorY = 0;
 private:
     Image* image;
     int type;

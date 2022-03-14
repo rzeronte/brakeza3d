@@ -32,13 +32,13 @@ void ComponentGameInput::onEnd() {
 }
 
 void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish) {
-    handleInGameInput(event, finish);
+    this->handleInGameInput(event, finish);
 }
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
+    this->handleMenuKeyboard(event, end);
     this->handleEscape(event);
-    this->handleMenuKeyboard(end);
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() != GameState::GAMING) {
         return;
@@ -79,28 +79,30 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
     }
 }
 
-void ComponentGameInput::handleMenuKeyboard(bool &end) {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
 
     auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
+    auto componentInput = ComponentsManager::get()->getComponentInput();
     auto menuOptions = componentMenu->options;
-    int  currentOption = componentMenu->currentOption;
+
+    int currentOption = componentMenu->currentOption;
+    Uint8 *keyboard = componentInput->keyboard;
 
     if (gameState != GameState::MENU) {
         return;
     }
 
     // Up / Down menu options
-    if (keyboard[SDL_SCANCODE_DOWN]) {
+    if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (componentMenu->currentOption + 1 < componentMenu->numOptions) {
             componentMenu->currentOption++;
             Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuClick"),EngineSetup::SoundChannels::SND_MENU, 0);
         }
     }
 
-    if (keyboard[SDL_SCANCODE_UP]) {
+    if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->currentOption--;
             Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuClick"),EngineSetup::SoundChannels::SND_MENU, 0);
@@ -108,7 +110,7 @@ void ComponentGameInput::handleMenuKeyboard(bool &end) {
     }
 
     // Execute Menu option
-    if (keyboard[SDL_SCANCODE_RETURN]) {
+    if (keyboard[SDL_SCANCODE_RETURN] || componentInput->controllerButtonA) {
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
@@ -137,9 +139,9 @@ void ComponentGameInput::jump(bool soundJump) const {
 }
 
 void ComponentGameInput::handleFire() const {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
-
-    if (keyboard[SDL_SCANCODE_SPACE]) {
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+    Uint8 *keyboard = componentInput->keyboard;
+    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerButtonA) {
         player->shoot();
     }
 }
@@ -195,7 +197,8 @@ void ComponentGameInput::setEnabled(bool enabled) {
 }
 
 void ComponentGameInput::handleKeyboardMovingPlayer() {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+    Uint8 *keyboard = componentInput->keyboard;
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
     speed = std::clamp(speed, 0.f, player->maxVelocity);
@@ -229,3 +232,5 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event ) {
         game->selectClosestObject3DFromPlayer();
     }
 }
+
+

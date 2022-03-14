@@ -38,7 +38,7 @@ public:
 
     void handleZoom(SDL_Event *event);
 
-    void handleMenuKeyboard(bool &end);
+    void handleMenuKeyboard(SDL_Event *event, bool &end);
 
     void jump(bool soundJump) const;
 

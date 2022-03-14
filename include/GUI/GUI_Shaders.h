@@ -249,8 +249,8 @@ public:
 
                 if (shaderBackground->autoScrollEnabled) {
                     if (ImGui::TreeNode(autoScroll_text.c_str())) {
-                        const float range_min = 0;
-                        const float range_max = 1;
+                        const float range_min = -5;
+                        const float range_max = 5;
                         const float range_sensibility = 0.1;
                         ImGui::DragScalar("X", ImGuiDataType_Float, &shaderBackground->getAutoScrollSpeed().x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
                         ImGui::DragScalar("Y", ImGuiDataType_Float, &shaderBackground->getAutoScrollSpeed().y, range_sensibility,&range_min, &range_max, "%f", 1.0f);

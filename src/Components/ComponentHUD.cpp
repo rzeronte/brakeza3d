@@ -107,6 +107,9 @@ void ComponentHUD::drawHUD() {
             this->textureWriter->writeText(200, 215, weaponType->getLabel().c_str(), false);
         }
     }
+
+    //this->textureWriter->writeText(300, 100, std::to_string(componentManager->getComponentInput()->controllerLeft).c_str(), false);
+
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {

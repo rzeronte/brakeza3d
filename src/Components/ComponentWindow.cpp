@@ -48,7 +48,7 @@ void ComponentWindow::initWindow() {
     Logging::Log("Initializating ComponentWindow...", "INFO");
 
     //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
     } else {
@@ -78,14 +78,29 @@ void ComponentWindow::initWindow() {
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-            screenTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
-                                              SDL_TEXTUREACCESS_STREAMING,
-                                              EngineSetup::get()->screenWidth,
-                                              EngineSetup::get()->screenHeight
+            screenTexture = SDL_CreateTexture(
+                renderer,
+                SDL_PIXELFORMAT_RGBA32,
+                SDL_TEXTUREACCESS_STREAMING,
+                EngineSetup::get()->screenWidth,
+                EngineSetup::get()->screenHeight
             );
 
             SDL_GL_SetSwapInterval(1); // Enable vsync
             SDL_GL_SwapWindow(window);
+
+            //Check for joysticks
+            if( SDL_NumJoysticks() < 1 ) {
+                printf( "Warning: No joysticks connected!\n" );
+            } else {
+                gameController = SDL_GameControllerOpen( 0 );
+                if(gameController == nullptr) {
+                    printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
+                } else {
+                    printf("Opened Joystick 0\n");
+                    printf("Name: %s\n", SDL_JoystickNameForIndex(0));
+                }
+            }
         }
     }
 }
