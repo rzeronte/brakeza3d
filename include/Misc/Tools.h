@@ -69,7 +69,7 @@ public:
 
     static bool checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2);
 
-    static void playMixedSound(Mix_Chunk *chunk, int channel, int times);
+    static void playSound(Mix_Chunk *chunk, int channel, int times);
 
     static Color alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);
 

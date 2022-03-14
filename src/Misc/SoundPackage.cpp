@@ -25,7 +25,7 @@ void SoundPackage::addItem(const std::string &srcSound, std::string label, Sound
     this->items.push_back(item);
 }
 
-Mix_Chunk *SoundPackage::getSoundByLabel(const std::string &label) {
+Mix_Chunk *SoundPackage::getByLabel(const std::string &label) {
     for (unsigned int i = 0; i < this->items.size(); i++) {
         if (items[i]->label == label) {
             return items[i]->sound;
