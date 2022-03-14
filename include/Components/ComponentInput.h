@@ -15,7 +15,15 @@ public:
     bool mouseMotion = false;
     bool mouseLeftButton = false;
     bool mouseRightButton = false;
+
     Uint8 *keyboard;
+
+    Uint8 controllerButtonA;
+    Uint8 controllerButtonB;
+    Uint8 controllerButtonX;
+    Uint8 controllerButtonY;
+
+
     Uint32 mouseButtons;
     int mouseX;
     int mouseY;
@@ -62,10 +70,12 @@ public:
 
     bool isClickRight() const;
 
-    int getRelativeRendererMouseX();
-    int getRelativeRendererMouseY();
+    int getRelativeRendererMouseX() const;
+    int getRelativeRendererMouseY() const;
 
     bool isMouseMotion() const;
+
+    void handleJostickAxis();
 };
 
 

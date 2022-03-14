@@ -13,6 +13,7 @@ void ComponentInput::onStart() {
 void ComponentInput::preUpdate() {
     updateKeyboardMapping();
     updateMouseMapping();
+
 }
 
 void ComponentInput::onUpdate() {
@@ -31,6 +32,11 @@ void ComponentInput::onEnd() {
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
     updateMouseStates(e);
     handleWindowEvents(e, finish);
+
+    controllerButtonA = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_A);
+    controllerButtonB = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_B);
+    controllerButtonX = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_X);
+    controllerButtonY = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_Y);
 
     if (!isEnabled()) return;
 
@@ -179,14 +185,21 @@ bool ComponentInput::isClickRight() const {
     return mouseRightButton;
 }
 
-int ComponentInput::getRelativeRendererMouseX() {
+int ComponentInput::getRelativeRendererMouseX() const {
     return relativeRendererMouseX;
 }
 
-int ComponentInput::getRelativeRendererMouseY() {
+int ComponentInput::getRelativeRendererMouseY() const {
     return relativeRendererMouseY;
 }
 
 bool ComponentInput::isMouseMotion() const {
     return mouseMotion;
+}
+
+
+void ComponentInput::handleJostickAxis() {
+    const int JOYSTICK_DEAD_ZONE = 1000;
+
+
 }
