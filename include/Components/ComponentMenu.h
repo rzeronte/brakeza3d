@@ -29,7 +29,7 @@ public:
 
     ComponentMenu();
 
-    MenuOption *options[MAX_MENU_OPTIONS]{};
+    MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
 
     int currentOption;

@@ -7,7 +7,6 @@
 #include "../Render/BSPMap.h"
 #include "Mesh3DBody.h"
 #include "Projectile3DBody.h"
-#include "../Game/DoorGhost.h"
 
 class CollisionResolver {
 

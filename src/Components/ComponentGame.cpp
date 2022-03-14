@@ -26,6 +26,7 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
+    ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND)->setEnabled(true);
 
     loadPlayerWeapons();
     loadPlayer();
@@ -180,7 +181,7 @@ void ComponentGame::loadPlayerWeapons() {
     weaponType->setAccuracy(100);
     weaponType->setCadenceTime(0.25);
     weaponType->setAmmoType(ammoType);
-    weaponType->setCadenceTime(0.25);
+    weaponType->setCadenceTime(0.15);
 
     cw->setCurrentWeaponIndex(WeaponsTypes::DEFAULT);
 }
@@ -193,19 +194,15 @@ void ComponentGame::selectClosestObject3DFromPlayer() {
     float currentMinDistance = 0;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        if (!object->isEnabled())  {
+        if (
+            !object->isEnabled() ||
+            player == object ||
+            currentSelectedObject == object
+        ) {
             continue;
         }
 
-        if (player == object) {
-            continue;
-        }
-
-        if (currentSelectedObject == object) {
-            continue;
-        }
-
-        Mesh3D *mesh = dynamic_cast<Mesh3D *> (object);
+        auto mesh = dynamic_cast<EnemyGhost *>(object);
         if (mesh == nullptr) {
             continue;
         }
@@ -229,9 +226,8 @@ void ComponentGame::selectClosestObject3DFromPlayer() {
     }
 
     if (currentClosestObject != nullptr) {
-        auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-        shader->setObject(currentClosestObject);
         ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
+        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(currentClosestObject);
     }
 }
 
@@ -261,7 +257,7 @@ void ComponentGame::loadEnemy() {
     ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/icosphere.fbx"));
     ammoType->getModelProjectile()->setLabel("projectile_enemy_template");
     ammoType->getModelProjectile()->setScale(1);
-    ammoType->setAmount(1000);
+    ammoType->setAmount(10);
 
     auto enemyWeaponType = new WeaponType("enemy_weaponDefault");
     enemyWeaponType->setSpeed(500);
@@ -269,9 +265,8 @@ void ComponentGame::loadEnemy() {
     enemyWeaponType->setDispersion(10);
     enemyWeaponType->setAvailable(true);
     enemyWeaponType->setAccuracy(100);
-    enemyWeaponType->setCadenceTime(0.25);
     enemyWeaponType->setAmmoType(ammoType);
-    enemyWeaponType->setCadenceTime(1);
+    enemyWeaponType->setCadenceTime(3);
 
     enemyOne->setWeaponType(enemyWeaponType);
 }

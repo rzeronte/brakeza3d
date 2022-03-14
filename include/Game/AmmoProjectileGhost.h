@@ -19,6 +19,8 @@ public:
     void setWeaponType(WeaponType *weaponType);
 
     void resolveCollision(Collisionable *collisionable) override;
+
+    void onUpdate() override;
 };
 
 

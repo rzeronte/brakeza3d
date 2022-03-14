@@ -119,10 +119,9 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
 
-        auto *weaponsManager = ComponentsManager::get()->getComponentWeapons();
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-        Logging::Log("WeaponType shoot!", "ComponentWeapons");
+        Logging::Log("WeaponType shoot from " + parent->getLabel(), "ComponentWeapons");
 
         auto *projectile = new AmmoProjectileGhost();
         projectile->setParent(parent);
@@ -140,10 +139,11 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
         );
 
-        weaponsManager->getCurrentWeaponType()->getAmmoType()->setAmount(ammoAmount - 1);
+        getAmmoType()->setAmount(ammoAmount - 1);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-        Tools::playMixedSound(EngineBuffers::getInstance()->soundPackage->getSoundByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("bulletWhisper"),
+                         EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 }
 
@@ -152,10 +152,10 @@ void WeaponType::reload() {
         getAmmoType()->setAmount(getAmmoType()->getReloadAmount());
         getAmmoType()->setReloads(getAmmoType()->getReloads() - 1);
 
-        Tools::playMixedSound(
-            EngineBuffers::getInstance()->soundPackage->getSoundByLabel(fireSound),
-            EngineSetup::SoundChannels::SND_WEAPON,
-            0
+        Tools::playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel(fireSound),
+                EngineSetup::SoundChannels::SND_WEAPON,
+                0
         );
     }
 }

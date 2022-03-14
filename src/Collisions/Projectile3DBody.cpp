@@ -23,6 +23,10 @@ void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, 
 void Projectile3DBody::onUpdate() {
     Mesh3D::onUpdate();
 
+    if (isRemoved()) {
+        return;
+    }
+
     if (this->ttl != 0) {
         if (this->timeToLive.isFinished()) {
             this->timeToLive.setEnabled(true);

@@ -101,7 +101,7 @@ void ComponentHUD::drawHUD() {
         this->textureWriter->writeText(i * 16 + 2, getButtonsOffsetY() + 1, std::to_string(i).c_str(), false);
     }
 
-    if (!componentManager->getComponentWeapons()->isEmptyWeapon()) {
+    if (!componentManager->getComponentWeapons()->isNoneWeapon()) {
         WeaponType *weaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
         if (weaponType->isAvailable()) {
             this->textureWriter->writeText(200, 215, weaponType->getLabel().c_str(), false);

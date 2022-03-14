@@ -244,7 +244,7 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
     return true;
 }
 
-void Tools::playMixedSound(Mix_Chunk *chunk, int channel, int times) {
+void Tools::playSound(Mix_Chunk *chunk, int channel, int times) {
     if (chunk == nullptr) {
         Logging::Log("Error loading chunk sound", "Sound");
         return;

@@ -32,7 +32,7 @@ public:
 
     void handleInGameInput(SDL_Event *event, bool &end);
 
-    void handleFire(SDL_Event *event) const;
+    void handleFire() const;
 
     void handleWeaponSelector();
 

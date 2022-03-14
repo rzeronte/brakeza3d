@@ -265,7 +265,7 @@ public:
         SND_CASINGS = 8
     };
 
-    enum ShadersAvailables {
+    enum ShaderTypes {
         BACKGROUND = 1,
         WATER = 2,
         FIRE = 3,

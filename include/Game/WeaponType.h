@@ -3,7 +3,6 @@
 #define BRAKEDA3D_WEAPONTYPE_H
 
 #include <SDL2/SDL_mixer.h>
-#include "../2D/WeaponAnimation.h"
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
 #include "AmmoType.h"

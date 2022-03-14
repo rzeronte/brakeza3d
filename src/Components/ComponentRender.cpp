@@ -952,16 +952,16 @@ void ComponentRender::initializeShaders() {
     );
     shaderBackground->setupFlatPortion(0, 0, 0, 0, 320, 240);
 
-    addShader(EngineSetup::ShadersAvailables::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject));
-    addShader(EngineSetup::ShadersAvailables::BACKGROUND, "Background", shaderBackground);
-    addShader(EngineSetup::ShadersAvailables::WATER, "Water", new ShaderWater());
-    addShader(EngineSetup::ShadersAvailables::FIRE, "Fire", new ShaderFire());
-    addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
-    addShader(EngineSetup::ShadersAvailables::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
-    addShader(EngineSetup::ShadersAvailables::SMOKE, "Smoke", new ShaderSmoke());
-    addShader(EngineSetup::ShadersAvailables::BLINK, "Blink", new ShaderBlink());
+    addShader(EngineSetup::ShaderTypes::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject));
+    addShader(EngineSetup::ShaderTypes::BACKGROUND, "Background", shaderBackground);
+    addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
+    addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
+    addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
+    addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
+    addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
+    addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink());
 
-    getShaderByType(EngineSetup::ShadersAvailables::SILHOUETTE)->setEnabled(true);
+    getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE)->setEnabled(true);
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {

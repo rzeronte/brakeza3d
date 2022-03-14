@@ -3,6 +3,7 @@
 //
 
 #include "../../include/Game/AmmoProjectileGhost.h"
+#include "../../include/ComponentsManager.h"
 
 WeaponType *AmmoProjectileGhost::getWeaponType() const {
     return weaponType;
@@ -21,4 +22,12 @@ void AmmoProjectileGhost::resolveCollision(Collisionable *collisionable) {
     }
 
     this->remove();
+}
+
+void AmmoProjectileGhost::onUpdate() {
+    Projectile3DBody::onUpdate();
+    updateBoundingBox();
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
+        this->remove();
+    }
 }

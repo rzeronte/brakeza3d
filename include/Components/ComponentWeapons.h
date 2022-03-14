@@ -5,7 +5,6 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include "../Misc/Timer.h"
-#include "../2D/WeaponAnimation.h"
 #include "../Game/WeaponType.h"
 #include "Camera3D.h"
 #include "../Game/AmmoType.h"
@@ -70,7 +69,7 @@ public:
 
     WeaponType *getCurrentWeaponType();
 
-    bool isEmptyWeapon() const;
+    bool isNoneWeapon() const;
 
     void headBob(Vector3D velocity);
 };

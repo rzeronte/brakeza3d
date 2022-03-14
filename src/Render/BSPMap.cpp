@@ -1034,7 +1034,7 @@ void BSPMap::createMesh3DAndGhostsFromHulls() {
 void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
     // Buscamos entidades que figuren con el modelo
 
-    auto *ghost = new DoorGhost();
+    auto *ghost = new Mesh3DGhost();
     ghost->setEnabled(enabled);
 
     if (entityIndex >= 1) {

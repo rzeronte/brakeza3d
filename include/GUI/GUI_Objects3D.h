@@ -14,7 +14,6 @@
 #include "../Render/Logging.h"
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
-#include "../Game/DoorGhost.h"
 #include "../Particles/ParticleEmissor.h"
 #include "../Physics/SimplePendulum.h"
 #include "../../src/Game/Player.h"

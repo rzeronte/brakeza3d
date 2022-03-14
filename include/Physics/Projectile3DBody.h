@@ -16,7 +16,8 @@ public:
 
     void makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world);
     void setTTL(float v);
-    void onUpdate() override;
+
+    virtual void onUpdate() override;
 
     void resolveCollision(Collisionable *collisionable) override;
 };

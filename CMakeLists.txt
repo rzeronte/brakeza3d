@@ -109,8 +109,6 @@ add_executable(Brakeza3D
         include/Physics/SpriteDirectional3DBody.h
         src/Components/ComponentWeapons.cpp
         include/Components/ComponentWeapons.h
-        src/2D/WeaponAnimation.cpp
-        include/2D/WeaponAnimation.h
         src/Game/WeaponType.cpp
         include/Game/WeaponType.h
         src/Components/ComponentMenu.cpp
@@ -186,8 +184,6 @@ add_executable(Brakeza3D
         src/Collisions/BSPCollider.h
         src/2D/TextWriter.cpp
         include/2D/TextWriter.h
-        include/Game/DoorGhost.cpp
-        include/Game/DoorGhost.h
         src/Collisions/Ghost.cpp
         include/Physics/Ghost.h
         include/Render/AABB3D.h

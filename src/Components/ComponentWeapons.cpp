@@ -68,7 +68,7 @@ void ComponentWeapons::headBob(Vector3D velocity) {
     }
 }
 
-bool ComponentWeapons::isEmptyWeapon() const {
+bool ComponentWeapons::isNoneWeapon() const {
     if (this->currentWeaponIndex >= 0) {
         return false;
     }
@@ -81,26 +81,18 @@ void ComponentWeapons::setCurrentWeaponIndex(int newCurrentWeaponIndex) {
 }
 
 void ComponentWeapons::playerShoot() {
-    if (isEmptyWeapon()) {
+    if (isNoneWeapon()) {
         return;
     }
+    Logging::Log("ComponentWeapons shoot!", "Weapons");
+
     auto game = ComponentsManager::get()->getComponentGame();
-    Logging::Log("ComponentWeapons playerShoot!", "ComponentWeapons");
-    if (getCurrentWeaponType()->getAmmoType()->getAmount() > 0) {
-        this->getCurrentWeaponType()->shoot(
-            game->getPlayer(),
-            game->getPlayer()->getPosition() - game->getPlayer()->AxisUp().getScaled(1000),
-            ComponentsManager::get()->getComponentGame()->getPlayer()->AxisUp().getInverse()
-        );
-    } else {
-        Logging::Log("Empty Ammo!", "ComponentWeapons");
-        std::string soundLabel = getCurrentWeaponType()->getSoundEmptyLabel();
-        Tools::playMixedSound(
-                EngineBuffers::getInstance()->soundPackage->getSoundByLabel(soundLabel),
-                EngineSetup::SoundChannels::SND_WEAPON,
-                0
-        );
-    }
+
+    this->getCurrentWeaponType()->shoot(
+        game->getPlayer(),
+        game->getPlayer()->getPosition() - game->getPlayer()->AxisUp().getScaled(1000),
+        ComponentsManager::get()->getComponentGame()->getPlayer()->AxisUp().getInverse()
+    );
 }
 
 void ComponentWeapons::reload() {

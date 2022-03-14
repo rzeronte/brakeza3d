@@ -22,7 +22,7 @@ class SoundPackage {
 public:
     void addItem(const std::string &srcSound, std::string label, SoundPackageItemType type);
 
-    Mix_Chunk *getSoundByLabel(const std::string &label);
+    Mix_Chunk *getByLabel(const std::string &label);
 
     Mix_Music *getMusicByLabel(const std::string &label);
 };
