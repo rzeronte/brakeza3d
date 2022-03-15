@@ -22,7 +22,8 @@ public:
     Uint8 controllerButtonB;
     Uint8 controllerButtonX;
     Uint8 controllerButtonY;
-
+    float controllerAxisLeftX;
+    float controllerAxisLeftY;
 
     Uint32 mouseButtons;
     int mouseX;
@@ -75,7 +76,7 @@ public:
 
     bool isMouseMotion() const;
 
-    void handleJostickAxis();
+    void updateGamePadStates();
 };
 
 

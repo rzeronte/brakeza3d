@@ -31,12 +31,8 @@ void ComponentInput::onEnd() {
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
     updateMouseStates(e);
+    updateGamePadStates();
     handleWindowEvents(e, finish);
-
-    controllerButtonA = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_A);
-    controllerButtonB = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_B);
-    controllerButtonX = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_X);
-    controllerButtonY = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_Y);
 
     if (!isEnabled()) return;
 
@@ -197,9 +193,12 @@ bool ComponentInput::isMouseMotion() const {
     return mouseMotion;
 }
 
+void ComponentInput::updateGamePadStates() {
+    controllerButtonA = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_A);
+    controllerButtonB = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_B);
+    controllerButtonX = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_X);
+    controllerButtonY = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_Y);
 
-void ComponentInput::handleJostickAxis() {
-    const int JOYSTICK_DEAD_ZONE = 1000;
-
-
+    controllerAxisLeftX = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)0)/32768.0;
+    controllerAxisLeftY = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)1)/32768.0;
 }
