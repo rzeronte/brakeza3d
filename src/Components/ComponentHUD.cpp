@@ -48,8 +48,6 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_health.png", "health");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud_ammo.png", "ammoType");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "hud.png", "hud");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_empty.png", "healthEmptyBar");
@@ -80,7 +78,8 @@ void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const {
 
 void ComponentHUD::drawHUD() {
 
-    ComponentsManager *componentManager = ComponentsManager::get();
+    auto componentManager = ComponentsManager::get();
+    auto componentGame = componentManager->getComponentGame();
 
     drawPlayerStamina(8);
     drawEnemyStamina(8);
@@ -101,8 +100,8 @@ void ComponentHUD::drawHUD() {
         this->textureWriter->writeText(i * 16 + 2, getButtonsOffsetY() + 1, std::to_string(i).c_str(), false);
     }
 
-    if (!componentManager->getComponentWeapons()->isNoneWeapon()) {
-        WeaponType *weaponType = componentManager->getComponentWeapons()->getCurrentWeaponType();
+    if (componentGame->getPlayer()->getWeaponType() != nullptr) {
+        WeaponType *weaponType = componentGame->getPlayer()->getWeaponType();
         if (weaponType->isAvailable()) {
             this->textureWriter->writeText(200, 215, weaponType->getLabel().c_str(), false);
         }
@@ -139,16 +138,20 @@ void ComponentHUD::drawPlayerStamina(int y) {
     const int innerPercentOffsetX = 3;
     const int innerPercentOffsetY = 4;
 
+    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+
     auto backgroundHealthBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
     backgroundHealthBar->drawFlat(offsetX, offsetY);
 
     const int fixedWidth = 118;
-    const int currentPercentage = (ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() * fixedWidth) / INITIAL_STAMINA;
+    const int currentPercentage = (player->getStamina() * fixedWidth) / INITIAL_STAMINA;
 
     auto healthBarStaminaPercent = HUDTextures->getTextureByLabel("healthBarStaminaPercent")->getImage();
     for (int i = 0; i < currentPercentage ; i++) {
         healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
     }
+
+    player->getWeaponType()->getIcon()->drawFlat(offsetX, offsetY + backgroundHealthBar->height() + 1);
 }
 
 void ComponentHUD::drawEnemyStamina(int y) {

@@ -142,6 +142,7 @@ public:
 
     std::string CONCHARS_SPRITE_FILE = "conchars.png";
     std::string DEFAULT_SHADER_BACKGROUND_IMAGE = "background_scrollable.png";
+    std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
@@ -225,6 +226,7 @@ public:
     float PROJECTILE_DEMO_TTL = 60;
 
     bool CLICK_SELECT_OBJECT3D = true;
+    bool GAMEPAD_CONTROLLER_ENABLED = true;
 
     enum collisionGroups {
         DefaultFilter = 1,

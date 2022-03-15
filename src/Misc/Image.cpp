@@ -25,6 +25,8 @@ void Image::loadTGA(std::string filename) {
 }
 
 void Image::drawFlat(int pos_x, int pos_y) const {
+    if (!loaded) return;
+
     auto *buffer = EngineBuffers::getInstance();
     auto *pixels = (Uint32 *) surface->pixels;
     for (int i = 0; i < std::min(EngineSetup::get()->screenHeight, surface->h); i++) {

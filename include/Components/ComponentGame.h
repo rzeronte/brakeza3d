@@ -18,7 +18,7 @@
 #include "../Physics/Mesh3DBody.h"
 
 typedef enum {
-    MENU, GAMING, LOADING
+    MENU, GAMING, LOADING, HELP
 } GameState;
 
 class ComponentGame : public Component {
@@ -48,9 +48,9 @@ public:
     Player *player;
     Mesh3DBody *axisPlanes;
 
-    bool direction = true;
-
     PathFinder *pathFinder;
+
+    Image *imageHelp;
 
     void setGameState(GameState state);
     GameState getGameState();

@@ -6,7 +6,7 @@
 #include "../../include/Game/AmmoProjectileGhost.h"
 
 WeaponType::WeaponType(const std::string& label) {
-    this->status = WeaponsActions::IDLE;
+    this->status = WeaponStatus::IDLE;
     this->damage = 0;
     this->accuracy = 100;
     this->damageRadius = 0;
@@ -58,37 +58,12 @@ int WeaponType::getSpeed() const {
     return speed;
 }
 
-
-bool WeaponType::isSniper() const {
-    return sniper;
-}
-
-void WeaponType::setSniper(bool sniper) {
-    WeaponType::sniper = sniper;
-}
-
-bool WeaponType::isSniperEnabled() const {
-    return sniperEnabled;
-}
-
-void WeaponType::setSniperEnabled(bool sniperEnabled) {
-    WeaponType::sniperEnabled = sniperEnabled;
-}
-
 bool WeaponType::isAvailable() const {
     return available;
 }
 
 void WeaponType::setAvailable(bool available) {
     WeaponType::available = available;
-}
-
-int WeaponType::getIndex() const {
-    return index;
-}
-
-void WeaponType::setIndex(int index) {
-    WeaponType::index = index;
 }
 
 AmmoType *WeaponType::getAmmoType() const {
@@ -142,8 +117,7 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
         getAmmoType()->setAmount(ammoAmount - 1);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-        Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("bulletWhisper"),
-                         EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 }
 
@@ -153,9 +127,9 @@ void WeaponType::reload() {
         getAmmoType()->setReloads(getAmmoType()->getReloads() - 1);
 
         Tools::playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel(fireSound),
-                EngineSetup::SoundChannels::SND_WEAPON,
-                0
+            EngineBuffers::getInstance()->soundPackage->getByLabel(fireSound),
+            EngineSetup::SoundChannels::SND_WEAPON,
+            0
         );
     }
 }
@@ -189,4 +163,12 @@ void WeaponType::setCadenceTime(float cadenceTime) {
     WeaponType::cadenceTime = cadenceTime;
     this->counterCadence->setStep(cadenceTime);
     this->counterCadence->setEnabled(true);
+}
+
+Image *WeaponType::getIcon() const {
+    return icon;
+}
+
+void WeaponType::setIconImage(std::string file) {
+    this->icon = new Image(file);
 }

@@ -15,8 +15,6 @@ public:
     bool available;
     int status;
 
-    int index; // For related with Enum in Setup
-
     std::string label;
 
     AmmoType *ammoType;
@@ -35,11 +33,10 @@ public:
     std::string fireSound;
     std::string soundEmptyLabel;
 
+    Image *icon;
+
     // mesh for
     Mesh3D *model;
-
-    bool sniper;
-    bool sniperEnabled = false;
 
     void onUpdate();
 
@@ -67,18 +64,6 @@ public:
 
     void setDispersion(float dispersion);
 
-    bool isSniper() const;
-
-    void setSniper(bool sniper);
-
-    bool isSniperEnabled() const;
-
-    void setSniperEnabled(bool sniperEnabled);
-
-    int getIndex() const;
-
-    void setIndex(int index);
-
     AmmoType *getAmmoType() const;
 
     void setAmmoType(AmmoType *ammo);
@@ -102,6 +87,10 @@ public:
     float getCadenceTime() const;
 
     void setCadenceTime(float cadenceTime);
+
+    void setIconImage(std::string file);
+
+    Image *getIcon() const;
 };
 
 

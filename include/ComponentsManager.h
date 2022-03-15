@@ -22,10 +22,9 @@ enum ComponentID {
     COMPONENT_CONSOLE = 5,
     COMPONENT_RENDER = 6,
     COMPONENT_MENU = 7,
-    COMPONENT_WEAPONS = 8,
-    COMPONENT_HUD = 9,
-    COMPONENT_GAME = 10,
-    COMPONENT_GAME_INPUT = 11
+    COMPONENT_HUD = 8,
+    COMPONENT_GAME = 9,
+    COMPONENT_GAME_INPUT = 10
 };
 
 class ComponentsManager {
@@ -52,9 +51,6 @@ public:
     getComponentCollisions() { return static_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]); };
 
     ComponentMenu *getComponentMenu() { return static_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]); };
-
-    ComponentWeapons *
-    getComponentWeapons() { return static_cast<ComponentWeapons *>(components[ComponentID::COMPONENT_WEAPONS]); };
 
     ComponentHUD *getComponentHUD() { return static_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]); };
 

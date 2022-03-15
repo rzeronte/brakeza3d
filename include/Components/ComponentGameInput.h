@@ -45,6 +45,8 @@ public:
     void handleKeyboardMovingPlayer();
 
     void handleFindClosestObject3D(SDL_Event *event);
+
+    void handleGamePadMovingPlayer();
 };
 
 

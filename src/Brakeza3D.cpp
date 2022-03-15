@@ -22,7 +22,6 @@ void Brakeza3D::start() {
 
     componentCamera = new ComponentCamera();
     componentInput = new ComponentInput();
-    componentWeapons = new ComponentWeapons();
     componentCollisions = new ComponentCollisions();
     componentWindow = new ComponentWindow();
     componentSound = new ComponentSound();
@@ -41,7 +40,6 @@ void Brakeza3D::start() {
     componentsManager->registerComponent(componentConsole, "ComponentConsole");
     componentsManager->registerComponent(componentRender, "ComponentRender");
     componentsManager->registerComponent(componentMenu, "ComponentMenu");
-    componentsManager->registerComponent(componentWeapons, "ComponentWeapons");
     componentsManager->registerComponent(componentHUD, "ComponentHUD");
     componentsManager->registerComponent(componentGame, "ComponentGame");
     componentsManager->registerComponent(componentGameInput, "ComponentGameInput");

@@ -6,6 +6,7 @@
 #include "../../include/Misc/Counter.h"
 #include "../../include/Particles/ParticleEmissor.h"
 #include "../../include/Physics/Mesh3DGhost.h"
+#include "../../include/Game/WeaponType.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_LIVES 10
@@ -17,12 +18,20 @@ typedef enum {
     LIVE, DEAD
 } PlayerState;
 
+enum WeaponStatus {
+    NONE = -1,
+    IDLE = 0,
+    FIRE = 1,
+    RELOAD = 2,
+};
+
 class Player : public Mesh3DGhost {
 private:
 
     float stamina;
     int lives;
     Vertex3D velocity;
+    WeaponType *weaponType;
 
 public:
     ParticleEmissor *engineParticles;
@@ -32,6 +41,9 @@ public:
     Vertex3D lightPositionOffset;
 
     PlayerState state;
+
+    std::vector<WeaponType *> weaponTypes;
+    std::vector<AmmoType *> ammoTypes;
 
     Player();
 
@@ -55,10 +67,6 @@ public:
 
     void setLives(int lives);
 
-    [[nodiscard]] bool isDead() const;
-
-    void setDead(bool dead);
-
     void evalStatusMachine();
 
     void onUpdate() override;
@@ -81,6 +89,19 @@ public:
     float autoRotationSelectedObjectSpeed;
 
     void setState(PlayerState state);
+
+    WeaponType *getWeaponType() const;
+
+    void setWeaponType(WeaponType *weaponType);
+
+    void updateWeaponType();
+
+    void addWeaponType(const std::string&);
+
+    WeaponType *getWeaponTypeByLabel(const std::string& label);
+
+    void setWeaponTypeByIndex(int i);
+
 };
 
 

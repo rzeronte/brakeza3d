@@ -30,7 +30,6 @@ private:
 
     ComponentCamera *componentCamera = nullptr;
     ComponentCollisions *componentCollisions = nullptr;
-    ComponentWeapons *componentWeapons = nullptr;
     ComponentMenu *componentMenu = nullptr;
     ComponentInput *componentInput = nullptr;
     ComponentWindow *componentWindow = nullptr;

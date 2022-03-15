@@ -15,6 +15,8 @@ void ComponentGame::onStart() {
     setGameState(GameState::MENU);
     SETUP->DRAW_HUD = false;
 
+    imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
+
     Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -55,6 +57,10 @@ void ComponentGame::onUpdate() {
 
     if (state == GameState::GAMING) {
         blockPlayerPositionInCamera();
+    }
+
+    if (state == GameState::HELP) {
+        imageHelp->drawFlat(0, 0);
     }
 }
 
@@ -163,8 +169,6 @@ void ComponentGame::loadPlayer()
 }
 
 void ComponentGame::loadPlayerWeapons() {
-    auto *cw = ComponentsManager::get()->getComponentWeapons();
-
     auto *ammoType = new AmmoType();
     ammoType->setName("defaultWeapon_ammoType");
     ammoType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/icosphere.fbx"));
@@ -172,8 +176,8 @@ void ComponentGame::loadPlayerWeapons() {
     ammoType->getModelProjectile()->setScale(1);
     ammoType->setAmount(1000);
 
-    cw->addWeaponType("defaultWeapon");
-    WeaponType *weaponType = cw->getWeaponTypeByLabel("defaultWeapon");
+    player->addWeaponType("defaultWeapon");
+    WeaponType *weaponType = player->getWeaponTypeByLabel("defaultWeapon");
     weaponType->setSpeed(500);
     weaponType->setDamage(10);
     weaponType->setDispersion(10);
@@ -182,8 +186,21 @@ void ComponentGame::loadPlayerWeapons() {
     weaponType->setCadenceTime(0.25);
     weaponType->setAmmoType(ammoType);
     weaponType->setCadenceTime(0.15);
+    weaponType->setIconImage(SETUP->HUD_FOLDER + "flare.png");
 
-    cw->setCurrentWeaponIndex(WeaponsTypes::DEFAULT);
+    player->addWeaponType("secondaryWeapon");
+    WeaponType *weaponSecondaryType = player->getWeaponTypeByLabel("secondaryWeapon");
+    weaponSecondaryType->setSpeed(700);
+    weaponSecondaryType->setDamage(10);
+    weaponSecondaryType->setDispersion(10);
+    weaponSecondaryType->setAvailable(true);
+    weaponSecondaryType->setAccuracy(100);
+    weaponSecondaryType->setCadenceTime(0.25);
+    weaponSecondaryType->setAmmoType(ammoType);
+    weaponSecondaryType->setCadenceTime(0.05);
+    weaponSecondaryType->setIconImage(SETUP->HUD_FOLDER + "plague.png");
+
+    player->setWeaponType(weaponType);
 }
 
 

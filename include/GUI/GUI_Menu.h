@@ -403,6 +403,8 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Show HUD", &EngineSetup::get()->DRAW_HUD);
                 ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
+                ImGui::Separator();
+                ImGui::Checkbox("XBox One Controller", &EngineSetup::get()->GAMEPAD_CONTROLLER_ENABLED);
                 ImGui::EndMenu();
             }
 

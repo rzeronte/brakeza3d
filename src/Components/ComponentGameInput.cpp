@@ -20,6 +20,7 @@ void ComponentGameInput::onUpdate() {
     if (ComponentsManager::get()->getComponentGame()->getGameState() == GameState::MENU) return;
 
     this->handleKeyboardMovingPlayer();
+    this->handleGamePadMovingPlayer();
     this->handleFire();
 }
 
@@ -45,9 +46,9 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
     }
 
     this->handleFindClosestObject3D(event);
+    this->handleWeaponSelector();
 
-    //this->handleZoom(event);
-    //this->handleWeaponSelector();
+    //this->handlweZoom(event);
 }
 
 void ComponentGameInput::handleEscape(SDL_Event *event) {
@@ -55,7 +56,10 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
 
     GameState gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
-    if (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN ) {
+    if (
+        (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
+        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
+    ) {
         if (gameState == GameState::MENU) {
             ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
             //SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -129,6 +133,11 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
             Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
             SETUP->DRAW_HUD = true;
         }
+
+        if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_HELP) {
+            componentGame->setGameState(GameState::HELP);
+            SETUP->DRAW_HUD = false;
+        }
     }
 }
 
@@ -149,15 +158,19 @@ void ComponentGameInput::handleFire() const {
 void ComponentGameInput::handleWeaponSelector() {
     SoundPackage *soundPackage = BUFFERS->soundPackage;
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    auto game = ComponentsManager::get()->getComponentGame();
 
     if (keyboard[SDL_SCANCODE_1]) {
+        game->getPlayer()->setWeaponTypeByIndex(0);
     }
 
     if (keyboard[SDL_SCANCODE_2]) {
+        game->getPlayer()->setWeaponTypeByIndex(1);
         Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 
     if (keyboard[SDL_SCANCODE_3] ) {
+        game->getPlayer()->setWeaponTypeByIndex(3);
         Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
     }
 }
@@ -175,13 +188,13 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
         }
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(
-                ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-                Vertex3D(0, 0, 1),
-                SETUP->up,
-                SETUP->right,
-                horizontal_fov,
-                ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
+            ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+            Vertex3D(0, 0, 1),
+            SETUP->up,
+            SETUP->right,
+            horizontal_fov,
+            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
         );
 
         ComponentsManager::get()->getComponentCamera()->getCamera()->updateFrustum();
@@ -228,9 +241,23 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event ) {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
     auto game = ComponentsManager::get()->getComponentGame();
 
-    if (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) {
+    if (
+        (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) ||
+        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
+     ) {
         game->selectClosestObject3DFromPlayer();
     }
+}
+
+void ComponentGameInput::handleGamePadMovingPlayer() {
+    if (!EngineSetup::get()->GAMEPAD_CONTROLLER_ENABLED) return;
+
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+
+    float speed = player->power * Brakeza3D::get()->getDeltaTime();
+    speed = std::clamp(speed, 0.f, player->maxVelocity);
+
+    player->setVelocity(player->getVelocity() + Vertex3D(componentInput->controllerAxisLeftX * speed, componentInput->controllerAxisLeftY * speed, 0));
 }
 
 

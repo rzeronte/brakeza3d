@@ -37,7 +37,7 @@ public:
     enum MenuActions {
         MNU_NEW_GAME = 0,
         MNU_CREDITS = 1,
-        MNU_OPTIONS = 2,
+        MNU_HELP = 2,
         MNU_EXIT = 3,
     };
 

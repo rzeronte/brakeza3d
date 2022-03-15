@@ -80,14 +80,32 @@ void Player::respawn() {
 }
 
 void Player::shoot() {
-    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->playerShoot();
+    if (weaponType == nullptr) {
+        return;
+    }
+
+    Logging::Log("ComponentWeapons shoot!", "Weapons");
+
+    weaponType->shoot(
+        this,
+        getPosition() - AxisUp().getScaled(1000),
+        AxisUp().getInverse()
+    );
 }
 
 void Player::jump() {
 }
 
 void Player::reload() {
-    Brakeza3D::get()->getComponentsManager()->getComponentWeapons()->reload();
+    if (weaponType == nullptr) {
+        return;
+    }
+
+    Logging::Log("ComponentWeapons reload!", "Weapons");
+
+    if (weaponType->getAmmoType()->getReloads() > 0) {
+        weaponType->reload();
+    }
 }
 
 void Player::getAid(float aid) {
@@ -103,6 +121,7 @@ void Player::onUpdate() {
 
     updateEngineParticles();
     updateLight();
+    updateWeaponType();
     applyFriction();
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -171,4 +190,42 @@ void Player::resolveCollision(Collisionable *with) {
 
 void Player::setState(PlayerState state) {
     Player::state = state;
+}
+
+WeaponType *Player::getWeaponType() const {
+    return weaponType;
+}
+
+void Player::setWeaponType(WeaponType *weaponType) {
+    Player::weaponType = weaponType;
+    Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("getAmmo"), EngineSetup::SoundChannels::SND_MENU, 0);
+
+}
+
+void Player::updateWeaponType() {
+    if (weaponType != nullptr) {
+        weaponType->onUpdate();
+    }
+}
+
+void Player::addWeaponType(const std::string& label) {
+    this->weaponTypes.emplace_back(new WeaponType(label));
+}
+
+WeaponType *Player::getWeaponTypeByLabel(const std::string& label) {
+    for (auto & weaponType : this->weaponTypes) {
+        if (weaponType->label == label) {
+            return weaponType;
+        }
+    }
+
+    return nullptr;
+}
+
+void Player::setWeaponTypeByIndex(int i) {
+    if (weaponTypes.size() > i) {
+        setWeaponType(weaponTypes[i]);
+    } else {
+        Logging::getInstance()->Log("Weapon not available(" + std::to_string(i) + ")!");
+    }
 }
