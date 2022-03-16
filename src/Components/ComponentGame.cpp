@@ -5,15 +5,24 @@
 
 #define FREELOOK false
 
-ComponentGame::ComponentGame() {
+ComponentGame::ComponentGame()
+{
     player = new Player();
     axisPlanes = new Mesh3DBody();
+    fadeToColor = new ShaderFadeBetweenGameStates(
+        Color::black(),
+        0.04f,
+        EngineSetup::GameState::MENU,
+        true
+    );
 }
 
-void ComponentGame::onStart() {
+void ComponentGame::onStart()
+{
     Logging::Log("ComponentGame onStart", "ComponentGame");
-    setGameState(GameState::MENU);
-    SETUP->DRAW_HUD = false;
+    setGameState(EngineSetup::GameState::MENU);
+
+    shaderAutoScrollSpeed = Vertex3D(0, 0.2, 0);
 
     imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
 
@@ -28,8 +37,8 @@ void ComponentGame::onStart() {
 
     ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
-    ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND)->setEnabled(true);
 
+    loadBackgroundImageShader();
     loadPlayerWeapons();
     loadPlayer();
     loadEnemy();
@@ -38,29 +47,33 @@ void ComponentGame::onStart() {
 void ComponentGame::preUpdate() {
 }
 
-void ComponentGame::onUpdate() {
+void ComponentGame::onUpdate()
+{
+    EngineSetup::GameState state = getGameState();
 
-    ComponentHUD *componentHUD = ComponentsManager::get()->getComponentHUD();
-
-    GameState state = getGameState();
-
-    if (state == GameState::GAMING) {
+    if (state == EngineSetup::GameState::GAMING) {
         onUpdateIA();
     }
 
-    if (state == GameState::LOADING) {
-        componentHUD->writeTextMiddleScreen("Loading", false);
+    if (state == EngineSetup::GameState::LOADING) {
+        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("Loading", false);
     }
 
-    if (state == GameState::MENU) {
+    if (state == EngineSetup::GameState::MENU) {
     }
 
-    if (state == GameState::GAMING) {
+    if (state == EngineSetup::GameState::GAMING) {
         blockPlayerPositionInCamera();
     }
 
-    if (state == GameState::HELP) {
+    if (state == EngineSetup::GameState::HELP) {
         imageHelp->drawFlat(0, 0);
+    }
+
+    fadeToColor->onUpdate();
+    if (fadeToColor->isEndFadeOut()) {
+        fadeToColor->setEndFadeOut(false);
+        setGameState(fadeToColor->getGameStateWhenEnds());
     }
 }
 
@@ -133,17 +146,23 @@ void ComponentGame::blockPlayerPositionInCamera() {
     }
 }
 
-void ComponentGame::setGameState(GameState state) {
-    if (state == GameState::GAMING) {
+void ComponentGame::setGameState(EngineSetup::GameState state) {
+    if (state == EngineSetup::GameState::GAMING) {
         ComponentsManager::get()->getComponentCamera()->setAutoScroll(true);
+        startBackgroundShader();
+        SETUP->DRAW_HUD = true;
+        SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE = true;
     } else {
         ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
+        stopBackgroundShader();
+        SETUP->DRAW_HUD = false;
+        SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE = false;
     }
 
     this->gameState = state;
 }
 
-GameState ComponentGame::getGameState() {
+EngineSetup::GameState ComponentGame::getGameState() {
     return gameState;
 }
 
@@ -286,4 +305,31 @@ void ComponentGame::loadEnemy() {
     enemyWeaponType->setCadenceTime(3);
 
     enemyOne->setWeaponType(enemyWeaponType);
+}
+
+void ComponentGame::loadBackgroundImageShader()
+{
+    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    shaderBackground->setEnabled(true);
+    shaderBackground->setType(ShaderImageBackgroundTypes::PORTION);
+    stopBackgroundShader();
+}
+
+void ComponentGame::stopBackgroundShader()
+{
+    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    shaderBackground->setAutoScrollSpeed(Vertex3D(0, 0, 0));
+    shaderBackground->setAutoScrollEnabled(false);
+    shaderBackground->setEnabled(false);
+}
+
+void ComponentGame::startBackgroundShader()
+{
+    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    shaderBackground->setAutoScrollSpeed(this->shaderAutoScrollSpeed);
+    shaderBackground->setAutoScrollEnabled(true);
+}
+
+ShaderFadeBetweenGameStates *ComponentGame::getFadeToColor() const {
+    return fadeToColor;
 }

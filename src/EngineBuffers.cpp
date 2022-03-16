@@ -51,7 +51,7 @@ void EngineBuffers::setVideoBuffer(const int i, Uint32 value) const {
     videoBuffer[i] = value;
 }
 
-float EngineBuffers::getVideoBuffer(int x, int y) const {
+uint32_t EngineBuffers::getVideoBuffer(int x, int y) const {
     return videoBuffer[y * this->widthVideoBuffer + x];
 }
 

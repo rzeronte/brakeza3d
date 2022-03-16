@@ -34,7 +34,7 @@ public:
 
     void handleFire() const;
 
-    void handleWeaponSelector();
+    void handleWeaponSelector(SDL_Event *event);
 
     void handleZoom(SDL_Event *event);
 

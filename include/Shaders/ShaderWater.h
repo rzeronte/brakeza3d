@@ -29,8 +29,6 @@ public:
             return;
         }
 
-
-
         int type = 1;
         //water = -3 |mud = -4 | lava = -5
         switch (type) {
@@ -54,9 +52,9 @@ public:
             for (int x = 0; x < w; x++) {
                 Color currentPixelColor = Color(EngineBuffers::getInstance()->getVideoBuffer(x, y));
 
-                int r_light = (int) (Tools::getRedValueFromColor(currentPixelColor.getColor()) * intensity_r);
-                int g_light = (int) (Tools::getGreenValueFromColor(currentPixelColor.getColor()) * intensity_g);
-                int b_light = (int) (Tools::getBlueValueFromColor(currentPixelColor.getColor()) * intensity_b);
+                int r_light = (int) (currentPixelColor.r * intensity_r);
+                int g_light = (int) (currentPixelColor.g * intensity_g);
+                int b_light = (int) (currentPixelColor.b * intensity_b);
 
                 currentPixelColor = Color(r_light, g_light, b_light);
 

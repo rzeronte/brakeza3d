@@ -55,11 +55,11 @@ void Player::takeDamage(float dmg) {
 
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
-        ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
+        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::MENU);
         lives--;
 
         if (lives <= 0) {
-            ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::MENU);
         }
     }
 }
@@ -67,10 +67,6 @@ void Player::takeDamage(float dmg) {
 void Player::newGame() {
     setLives(INITIAL_LIVES);
     setStamina(INITIAL_STAMINA);
-    //SDL_SetRelativeMouseMode(SDL_TRUE);
-    ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
-    EngineSetup::get()->DRAW_HUD = true;
-
     setState(PlayerState::LIVE);
 }
 
@@ -199,7 +195,6 @@ WeaponType *Player::getWeaponType() const {
 void Player::setWeaponType(WeaponType *weaponType) {
     Player::weaponType = weaponType;
     Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("getAmmo"), EngineSetup::SoundChannels::SND_MENU, 0);
-
 }
 
 void Player::updateWeaponType() {

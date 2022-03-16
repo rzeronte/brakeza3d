@@ -39,7 +39,7 @@ public:
 
     void setDepthBuffer(const int i, const float value) const;
 
-    float getVideoBuffer(int x, int y) const;
+    uint32_t getVideoBuffer(int x, int y) const;
 
     void clearVideoBuffer() const;
 

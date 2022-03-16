@@ -13,7 +13,7 @@ Color::Color(int r, int g, int b)
     this->color = this->createRGB(r, g, b);
 }
 
-Color::Color(unsigned long v)
+Color::Color(uint32_t v)
 {
     this->color = v;
 
@@ -67,7 +67,7 @@ Color Color::operator/(float s) const
     return Color(this->r / s, this->g / s, this->b / s);
 }
 
-uint32_t Color::createRGB(int b, int g, int r)
+uint32_t Color::createRGB(int r, int g, int b)
 {
     return (unsigned long) ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }

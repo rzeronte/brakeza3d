@@ -20,7 +20,7 @@ void ComponentMenu::preUpdate() {
 }
 
 void ComponentMenu::onUpdate() {
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == GameState::MENU) {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) {
         drawOptions(ComponentsManager::get()->getComponentWindow()->screenSurface);
     }
 }

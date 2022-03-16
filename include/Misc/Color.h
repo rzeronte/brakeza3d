@@ -12,7 +12,7 @@ public:
 
     Color();
     Color(int r, int g, int b);
-    Color(unsigned long v);
+    Color(uint32_t v);
 
     Color operator+(const Color &pm) const;
     Color operator-(const Color &pm) const;

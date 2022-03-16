@@ -111,6 +111,18 @@ public:
         return autoScrollSpeed;
     }
 
+    void setAutoScrollSpeed(const Vertex3D &autoScrollSpeed) {
+        ShaderImageBackground::autoScrollSpeed = autoScrollSpeed;
+    }
+
+    bool isAutoScrollEnabled() const {
+        return autoScrollEnabled;
+    }
+
+    void setAutoScrollEnabled(bool autoScrollEnabled) {
+        ShaderImageBackground::autoScrollEnabled = autoScrollEnabled;
+    }
+
     int xDrawPos;
     int yDrawPos;
     int xImage;

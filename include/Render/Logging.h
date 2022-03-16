@@ -16,6 +16,8 @@ public:
     static void Log(const std::string& message, const std::string& type);
 
     void Log(const std::string& message);
+
+    void Log(float value);
 };
 
 #endif //SDL2_3D_ENGINE_LOGGING_H

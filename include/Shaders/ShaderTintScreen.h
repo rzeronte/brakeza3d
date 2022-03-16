@@ -20,25 +20,27 @@ public:
 
     ShaderTintScreen(float intensityR, float intensityG, float intensityB) : intensity_r(intensityR),
                                                                              intensity_g(intensityG),
-                                                                             intensity_b(intensityB) {
+                                                                             intensity_b(intensityB)
+    {
         screenHeight = EngineSetup::get()->screenHeight;
         screenWidth = EngineSetup::get()->screenWidth;
 
     }
 
-    void onUpdate() override {
+    void onUpdate() override
+    {
         if (!isEnabled()) {
             return;
         }
 
         auto buffer = EngineBuffers::getInstance();
-        for (int y = 0; y <screenHeight; y++) {
+        for (int y = 0; y < screenHeight; y++) {
             for (int x = 0; x < screenWidth; x++) {
                 auto currentPixelColor = Color(buffer->getVideoBuffer(x, y));
 
-                int r_light = (int) ((float) Tools::getRedValueFromColor(currentPixelColor.getColor()) * intensity_r);
-                int g_light = (int) ((float) Tools::getGreenValueFromColor(currentPixelColor.getColor()) * intensity_g);
-                int b_light = (int) ((float) Tools::getBlueValueFromColor(currentPixelColor.getColor()) * intensity_b);
+                int r_light = (int) ((float) currentPixelColor.r * intensity_r);
+                int g_light = (int) ((float) currentPixelColor.g * intensity_g);
+                int b_light = (int) ((float) currentPixelColor.b * intensity_b);
 
                 currentPixelColor = Color(r_light, g_light, b_light);
                 buffer->setVideoBuffer(x, y, currentPixelColor.getColor());
@@ -46,7 +48,8 @@ public:
         }
     }
 
-    void setTintColorIntensity(float r, float g, float b) {
+    void setTintColorIntensity(float r, float g, float b)
+    {
         this->intensity_r = r;
         this->intensity_g = g;
         this->intensity_b = b;

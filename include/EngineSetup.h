@@ -51,7 +51,7 @@ public:
 
     float EPSILON = 0.00001f;
 
-    bool ENABLE_FOG = true;
+    bool ENABLE_FOG = false;
     float FOG_DISTANCE = 4500;
     float FOG_INTENSITY = 1.f;
     Color FOG_COLOR = Color::FOGDefault();
@@ -281,6 +281,14 @@ public:
         PREUPDATE = 0,
         POSTUPDATE = 1,
     };
+
+    typedef enum {
+        MENU = 1,
+        GAMING = 2,
+        LOADING = 3,
+        HELP = 4,
+        FADE = 5
+    } GameState;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

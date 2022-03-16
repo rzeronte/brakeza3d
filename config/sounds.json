@@ -1,6 +1,7 @@
 {
   "sounds": [
-    { "file": "menuMusic.wav", "label": "musicMainMenu", "type": "music" },
+    { "file": "song.mid", "label": "musicMainMenu", "type": "music" },
+    { "file": "menuMusic.wav", "label": "musicMainMenu2", "type": "music" },
     { "file": "menuMusic.wav", "label": "musicBaseLevel0", "type": "music" },
 
     { "file": "start_game.wav", "label": "startGame", "type": "sound" },

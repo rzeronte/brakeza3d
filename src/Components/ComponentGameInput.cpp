@@ -17,7 +17,7 @@ void ComponentGameInput::preUpdate() {
 }
 
 void ComponentGameInput::onUpdate() {
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == GameState::MENU) return;
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
     this->handleKeyboardMovingPlayer();
     this->handleGamePadMovingPlayer();
@@ -41,12 +41,12 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
     this->handleMenuKeyboard(event, end);
     this->handleEscape(event);
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() != GameState::GAMING) {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
         return;
     }
 
     this->handleFindClosestObject3D(event);
-    this->handleWeaponSelector();
+    this->handleWeaponSelector(event);
 
     //this->handlweZoom(event);
 }
@@ -54,32 +54,24 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 void ComponentGameInput::handleEscape(SDL_Event *event) {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
-    GameState gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+    EngineSetup::GameState gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
     if (
         (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
     ) {
-        if (gameState == GameState::MENU) {
-            ComponentsManager::get()->getComponentGame()->setGameState(GameState::GAMING);
-            //SDL_SetRelativeMouseMode(SDL_TRUE);
-            Mix_HaltMusic();
-            Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
-            SETUP->DRAW_HUD = true;
+        if (gameState == EngineSetup::GameState::MENU) {
+            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
         } else {
-            ComponentsManager::get()->getComponentGame()->setGameState(GameState::MENU);
-            //SDL_SetRelativeMouseMode(SDL_FALSE);
+            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::MENU);
+
             SDL_WarpMouseInWindow(
                 ComponentsManager::get()->getComponentWindow()->window,
                 SETUP->screenWidth / 2,
                 SETUP->screenHeight / 2
             );
-            Mix_HaltMusic();
-            Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
             SETUP->DRAW_HUD = false;
         }
-
-        Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU, 0);
     }
 }
 
@@ -94,7 +86,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
     int currentOption = componentMenu->currentOption;
     Uint8 *keyboard = componentInput->keyboard;
 
-    if (gameState != GameState::MENU) {
+    if (gameState != EngineSetup::GameState::MENU) {
         return;
     }
 
@@ -121,22 +113,17 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
-            Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU,0);
-            componentGame->setGameState(GameState::GAMING);
+            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
             player->newGame();
         }
 
         if (player->state == PlayerState::DEAD && menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
             Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU,0);
-            componentGame->setGameState(GameState::GAMING);
-            Mix_HaltMusic();
-            Mix_PlayMusic(BUFFERS->soundPackage->getMusicByLabel("musicBaseLevel0"), -1);
-            SETUP->DRAW_HUD = true;
+            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_HELP) {
-            componentGame->setGameState(GameState::HELP);
-            SETUP->DRAW_HUD = false;
+            componentGame->getFadeToColor()->resetTo(EngineSetup::GameState::HELP);
         }
     }
 }
@@ -155,23 +142,25 @@ void ComponentGameInput::handleFire() const {
     }
 }
 
-void ComponentGameInput::handleWeaponSelector() {
+void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
     SoundPackage *soundPackage = BUFFERS->soundPackage;
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
     auto game = ComponentsManager::get()->getComponentGame();
 
-    if (keyboard[SDL_SCANCODE_1]) {
-        game->getPlayer()->setWeaponTypeByIndex(0);
-    }
+    if (event->type == SDL_KEYDOWN) {
+        if (keyboard[SDL_SCANCODE_1]) {
+            game->getPlayer()->setWeaponTypeByIndex(0);
+        }
 
-    if (keyboard[SDL_SCANCODE_2]) {
-        game->getPlayer()->setWeaponTypeByIndex(1);
-        Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
-    }
+        if (keyboard[SDL_SCANCODE_2]) {
+            game->getPlayer()->setWeaponTypeByIndex(1);
+            Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        }
 
-    if (keyboard[SDL_SCANCODE_3] ) {
-        game->getPlayer()->setWeaponTypeByIndex(3);
-        Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        if (keyboard[SDL_SCANCODE_3] ) {
+            game->getPlayer()->setWeaponTypeByIndex(3);
+            Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        }
     }
 }
 

@@ -16,10 +16,7 @@
 #include "../Shaders/ShaderTintScreen.h"
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
-
-typedef enum {
-    MENU, GAMING, LOADING, HELP
-} GameState;
+#include "../Game/ShaderFadeBetweenGameStates.h"
 
 class ComponentGame : public Component {
 public:
@@ -45,25 +42,33 @@ public:
 
     void blockPlayerPositionInCamera();
 
+    ShaderFadeBetweenGameStates *fadeToColor;
     Player *player;
     Mesh3DBody *axisPlanes;
-
     PathFinder *pathFinder;
-
     Image *imageHelp;
+    Vertex3D shaderAutoScrollSpeed;
 
-    void setGameState(GameState state);
-    GameState getGameState();
+    void setGameState(EngineSetup::GameState state);
+    EngineSetup::GameState getGameState();
     void selectClosestObject3DFromPlayer();
+
+    ShaderFadeBetweenGameStates *getFadeToColor() const;
+
 private:
 
-    GameState gameState;
+    EngineSetup::GameState gameState;
 
     void loadPlayerWeapons();
 
     void evalStatusMachine(EnemyGhost *pGhost) const;
 
     void loadEnemy();
+
+    void loadBackgroundImageShader();
+
+    void stopBackgroundShader();
+    void startBackgroundShader();
 };
 
 
