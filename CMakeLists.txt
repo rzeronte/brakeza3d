@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -247,7 +247,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileGhost.cpp include/Game/AmmoProjectileGhost.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileGhost.cpp include/Game/AmmoProjectileGhost.h include/Game/ShaderFadeBetweenGameStates.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

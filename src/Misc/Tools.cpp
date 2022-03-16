@@ -37,18 +37,6 @@ bool Tools::isPixelInWindow(int &x, int &y) {
     return true;
 }
 
-uint8_t Tools::getRedValueFromColor(uint32_t c) {
-    return ((uint32_t) c >> 16);
-}
-
-uint8_t Tools::getGreenValueFromColor(uint32_t c) {
-    return ((uint16_t) c >> 8);
-}
-
-uint8_t Tools::getBlueValueFromColor(uint32_t c) {
-    return (c);
-}
-
 float Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
     return surface->w * u;
 }

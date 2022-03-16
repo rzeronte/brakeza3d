@@ -18,28 +18,29 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Added Xbox Controller">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Refine Xbox One Controller / Added Help screen">
+      <change afterPath="$PROJECT_DIR$/include/Game/ShaderFadeBetweenGameStates.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/menu.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/menu.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ComponentsManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/ComponentsManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/WeaponType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/WeaponType.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Logging.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Logging.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Logging.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -380,7 +381,9 @@
       <workItem from="1647180631906" duration="10387000" />
       <workItem from="1647218224969" duration="4553000" />
       <workItem from="1647285601831" duration="936000" />
-      <workItem from="1647286788702" duration="16463000" />
+      <workItem from="1647286788702" duration="17931000" />
+      <workItem from="1647378913310" duration="18545000" />
+      <workItem from="1647468626902" duration="363000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -571,7 +574,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647297390910</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Refine Xbox One Controller / Added Help screen">
+      <created>1647305720122</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1647305720122</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -734,7 +744,8 @@
     <MESSAGE value="New Assets" />
     <MESSAGE value="ComponentGameInput refactor" />
     <MESSAGE value="Added Xbox Controller" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Xbox Controller" />
+    <MESSAGE value="Refine Xbox One Controller / Added Help screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refine Xbox One Controller / Added Help screen" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
