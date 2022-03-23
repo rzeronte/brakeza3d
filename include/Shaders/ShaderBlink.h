@@ -11,6 +11,7 @@
 
 #define DEFAULT_BLINK_SECONDS 1
 class ShaderBlink: public Shader {
+    bool blink = false;
 public:
     ShaderBlink() {
         this->screenHeight = EngineSetup::get()->screenHeight;
@@ -47,8 +48,19 @@ public:
             return;
         }
 
-        if (counter.isFinished()) {
-            counter.setEnabled(true);
+        if (blink) {
+            if (counter.isFinished()) {
+                blink = false;
+                counter.setEnabled(true);
+            }
+        } else {
+            if (counter.isFinished()) {
+                blink = true;
+                counter.setEnabled(true);
+            }
+        }
+
+        if (blink) {
             auto buffer = EngineBuffers::getInstance();
             for (int y = 0; y < screenHeight; y++) {
                 for (int x = 0; x < screenWidth; x++) {

@@ -25,7 +25,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     // menu background surface
-    SDL_Surface *menu_background;
+    Image *imageBackground;
 
     ComponentMenu();
 

@@ -17,6 +17,7 @@
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Game/ShaderFadeBetweenGameStates.h"
+#include "../../src/Game/LevelsLoader.h"
 
 class ComponentGame : public Component {
 public:
@@ -42,19 +43,25 @@ public:
 
     void blockPlayerPositionInCamera();
 
-    ShaderFadeBetweenGameStates *fadeToColor;
+    ShaderFadeBetweenGameStates *fadeToGameState;
     Player *player;
     Mesh3DBody *axisPlanes;
     PathFinder *pathFinder;
+
     Image *imageHelp;
+    Image *imageSplash;
+    Counter splashCounter;
+
+    LevelsLoader *levelInfo;
     Vertex3D shaderAutoScrollSpeed;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
     void selectClosestObject3DFromPlayer();
 
-    ShaderFadeBetweenGameStates *getFadeToColor() const;
+    ShaderFadeBetweenGameStates *getFadeToGameState() const;
 
+    int Z_COORDINATE_GAMEPLAY = 10000;
 private:
 
     EngineSetup::GameState gameState;
@@ -63,12 +70,19 @@ private:
 
     void evalStatusMachine(EnemyGhost *pGhost) const;
 
-    void loadEnemy();
+    void loadLevels();
 
     void loadBackgroundImageShader();
 
     void stopBackgroundShader();
     void startBackgroundShader();
+    void startWaterShader();
+    void stopWaterShader();
+
+public:
+    LevelsLoader *getLevelInfo() const;
+
+    void checkForEndLevel() const;
 };
 
 

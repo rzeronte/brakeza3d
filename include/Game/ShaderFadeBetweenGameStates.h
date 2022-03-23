@@ -46,11 +46,6 @@ public:
         screenWidth = EngineSetup::get()->screenWidth;
     }
 
-    void setupForFadeIn() {
-        setProgress(1);
-        setDirection(ShaderFadeToColorDirection::IN);
-    }
-
     void onUpdate() {
 
         if (!isEnabled() || isFinished()) {
@@ -65,7 +60,8 @@ public:
                 buffer->setVideoBuffer(x, y, r.getColor());
             }
         }
-        progress += speed * direction;
+
+        progress += speed/10 * direction;
 
         if (progress <= 0)  {
             setProgress(0);
@@ -78,6 +74,21 @@ public:
             setDirection(ShaderFadeToColorDirection::IN);
             setEndFadeOut(true);
         }
+    }
+
+    void resetTo(EngineSetup::GameState gameState) {
+        setEnabled(true);
+        setProgress(0);
+        setFinished(false);
+        setEndFadeOut(false);
+        setGameStateWhenEnds(gameState);
+        setDirection(ShaderFadeToColorDirection::OUT);
+    }
+
+    void setupForFadeIn() {
+        setProgress(1);
+        setEndFadeOut(true);
+        setDirection(ShaderFadeToColorDirection::IN);
     }
 
     [[nodiscard]] ShaderFadeToColorDirection getDirection() const {
@@ -134,15 +145,6 @@ public:
 
     void setFinished(bool isFinished) {
         ShaderFadeBetweenGameStates::finished = isFinished;
-    }
-
-    void resetTo(EngineSetup::GameState gameState) {
-        setEnabled(true);
-        setProgress(0);
-        setFinished(false);
-        setEndFadeOut(false);
-        setGameStateWhenEnds(gameState);
-        setDirection(ShaderFadeToColorDirection::OUT);
     }
 
     bool isEndFadeOut() const {

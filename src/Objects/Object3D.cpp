@@ -9,6 +9,7 @@ Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)
     setFollowCamera(false);
     setRotationFrameEnabled(false);
     setStencilBufferEnabled(false);
+    setMotion(nullptr);
     this->stencilBuffer = nullptr;
     rotX = 0;
     rotY = 0;
@@ -143,6 +144,10 @@ void Object3D::onUpdate() {
     if (isStencilBufferEnabled()) {
         clearStencilBuffer();
     }
+
+    if (getMotion() != nullptr) {
+        motion->onUpdate(position);
+    }
 }
 
 void Object3D::setRotation(float x, float y, float z) {
@@ -209,4 +214,12 @@ bool Object3D::getStencilBufferValue(int x, int y) const {
     }
 
     return false;
+}
+
+Motion *Object3D::getMotion() const {
+    return motion;
+}
+
+void Object3D::setMotion(Motion *motion) {
+    Object3D::motion = motion;
 }

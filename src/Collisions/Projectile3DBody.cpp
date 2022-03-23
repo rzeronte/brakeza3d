@@ -18,6 +18,7 @@ void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, 
     btVector3 impulse;
     direction.saveToBtVector3(&impulse);
     this->body->applyCentralImpulse(impulse);
+    this->body->setGravity(btVector3(0, 0, 0));
 }
 
 void Projectile3DBody::onUpdate() {

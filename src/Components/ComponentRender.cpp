@@ -13,10 +13,19 @@ void ComponentRender::onStart() {
 
 void ComponentRender::preUpdate() {
     this->updateFPS(Brakeza3D::get()->deltaTime);
+
+    if (!isEnabled()) {
+        return;
+    }
+
     this->onUpdatePreUpdateShaders();
 }
 
 void ComponentRender::onUpdate() {
+    if (!isEnabled()) {
+        return;
+    }
+
     this->onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {
@@ -94,9 +103,6 @@ void ComponentRender::updateSelectedObject3DInShaders(Object3D *object) {
 
     auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
     smoke->setObject(object);
-
-    auto *blink = dynamic_cast<ShaderBlink *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::BLINK));
-    blink->setObject(object);
 }
 
 std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
@@ -170,14 +176,15 @@ void ComponentRender::onUpdateSceneObjects() {
     for (it = getSceneObjects()->begin(); it != getSceneObjects()->end();) {
         Object3D *object = *(it);
 
-        // Check for delete
         if (object->isRemoved()) {
             getSceneObjects()->erase(it);
             continue;
-        } else {
-            it++;
         }
 
+        it++;
+    }
+
+    for (auto object : *getSceneObjects()) {
         if (!object->isEnabled()) {
             continue;
         }

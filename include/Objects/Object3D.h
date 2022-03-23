@@ -5,12 +5,13 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
+#include "../Game/Motion.h"
 
 class Object3D {
     Vertex3D position;
     M3 rotation;
     bool *stencilBuffer;
-
+    Motion *motion;
 public:
     float rotX, rotY, rotZ; // For easy management from UI
     Object3D *parent;
@@ -107,6 +108,10 @@ public:
     bool getStencilBufferValue(int i) const;
 
     bool getStencilBufferValue(int x, int y) const;
+
+    Motion *getMotion() const;
+
+    void setMotion(Motion *motion);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

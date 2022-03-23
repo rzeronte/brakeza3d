@@ -6,9 +6,9 @@
 
 class Color {
 public:
-    int r;
-    int g;
-    int b;
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
 
     Color();
     Color(int r, int g, int b);
@@ -16,6 +16,7 @@ public:
 
     Color operator+(const Color &pm) const;
     Color operator-(const Color &pm) const;
+    bool operator==(const Color &pm) const;
     Color operator*(const Color &pm) const;
     Color operator*(float s) const;
     Color operator/(float s) const;
@@ -39,11 +40,6 @@ public:
     void setBlue(float v);
 
     uint32_t getColor();
-    uint32_t createRGB(int r, int g, int b);
-
-    uint8_t getRedValueFromColor(uint32_t);
-    uint8_t getGreenValueFromColor(uint32_t);
-    uint8_t getBlueValueFromColor(uint32_t);
 
 private:
 

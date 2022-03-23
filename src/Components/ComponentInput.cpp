@@ -202,3 +202,11 @@ void ComponentInput::updateGamePadStates() {
     controllerAxisLeftX = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)0)/32768.0;
     controllerAxisLeftY = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)1)/32768.0;
 }
+
+bool ComponentInput::isAnyControllerButtonPressed() {
+    if (controllerButtonA || controllerButtonB || controllerButtonX || controllerButtonY) {
+        return true;
+    }
+
+    return false;
+}

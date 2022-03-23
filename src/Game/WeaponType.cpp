@@ -1,6 +1,4 @@
 
-#include <SDL2/SDL_image.h>
-
 #include "../../include/Game/WeaponType.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Game/AmmoProjectileGhost.h"
@@ -8,9 +6,9 @@
 WeaponType::WeaponType(const std::string& label) {
     this->status = WeaponStatus::IDLE;
     this->damage = 0;
+    this->ammoAmount = 0;
     this->accuracy = 100;
     this->damageRadius = 0;
-    this->ammoType = 0;
     this->speed = 1;
     this->available = true;
     this->dispersion = 0;
@@ -19,6 +17,7 @@ WeaponType::WeaponType(const std::string& label) {
     this->cadenceTime = 1;
     this->counterCadence = new Counter(this->cadenceTime);
     this->counterCadence->setEnabled(true);
+    this->modelProjectile = new Mesh3DBody();
 }
 
 void WeaponType::onUpdate() {
@@ -66,14 +65,6 @@ void WeaponType::setAvailable(bool available) {
     WeaponType::available = available;
 }
 
-AmmoType *WeaponType::getAmmoType() const {
-    return ammoType;
-}
-
-void WeaponType::setAmmoType(AmmoType *ammo) {
-    WeaponType::ammoType = ammo;
-}
-
 float WeaponType::getDamageRadius() const {
     return damageRadius;
 }
@@ -88,7 +79,7 @@ Mesh3D *WeaponType::getModel() const {
 
 void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
 {
-    const int ammoAmount = getAmmoType()->getAmount();
+    const int ammoAmount = getAmmoAmount();
     if (ammoAmount <= 0) return;
 
     if (counterCadence->isFinished()) {
@@ -102,7 +93,7 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
-        projectile->copyFrom(getAmmoType()->getModelProjectile());
+        projectile->copyFrom(getModelProjectile());
         projectile->setPosition( position);
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
@@ -114,7 +105,7 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
         );
 
-        getAmmoType()->setAmount(ammoAmount - 1);
+        setAmmoAmount(ammoAmount - 1);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
         Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("bulletWhisper"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
@@ -122,16 +113,6 @@ void WeaponType::shoot(Object3D *parent, Vertex3D position, Vertex3D direction)
 }
 
 void WeaponType::reload() {
-    if (getAmmoType()->getReloads() > 0) {
-        getAmmoType()->setAmount(getAmmoType()->getReloadAmount());
-        getAmmoType()->setReloads(getAmmoType()->getReloads() - 1);
-
-        Tools::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel(fireSound),
-            EngineSetup::SoundChannels::SND_WEAPON,
-            0
-        );
-    }
 }
 
 const std::string &WeaponType::getSoundEmptyLabel() const {
@@ -171,4 +152,20 @@ Image *WeaponType::getIcon() const {
 
 void WeaponType::setIconImage(std::string file) {
     this->icon = new Image(file);
+}
+
+int WeaponType::getAmmoAmount() const {
+    return ammoAmount;
+}
+
+void WeaponType::setAmmoAmount(int ammoAmount) {
+    WeaponType::ammoAmount = ammoAmount;
+}
+
+void WeaponType::addAmount(int addAmount) {
+    this->ammoAmount += addAmount;
+}
+
+Mesh3DBody *WeaponType::getModelProjectile(){
+    return modelProjectile;
 }

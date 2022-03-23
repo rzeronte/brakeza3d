@@ -8,7 +8,6 @@
 #include <SDL2/SDL_events.h>
 #include "../Misc/TexturePackage.h"
 #include "Component.h"
-#include "ComponentWeapons.h"
 #include "ComponentWindow.h"
 #include "../2D/TextWriter.h"
 #include "../2D/Button.h"

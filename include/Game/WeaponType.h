@@ -5,7 +5,6 @@
 #include <SDL2/SDL_mixer.h>
 #include "../Objects/SpriteDirectional3D.h"
 #include "../Objects/Sprite3D.h"
-#include "AmmoType.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
 
@@ -17,8 +16,9 @@ public:
 
     std::string label;
 
-    AmmoType *ammoType;
+    Mesh3DBody *modelProjectile;
 
+    int ammoAmount;
     float damage;
     float damageRadius;
     float accuracy;
@@ -64,10 +64,6 @@ public:
 
     void setDispersion(float dispersion);
 
-    AmmoType *getAmmoType() const;
-
-    void setAmmoType(AmmoType *ammo);
-
     void shoot(Object3D *parent, Vertex3D position, Vertex3D direction);
 
     void reload();
@@ -91,6 +87,14 @@ public:
     void setIconImage(std::string file);
 
     Image *getIcon() const;
+
+    int getAmmoAmount() const;
+
+    void setAmmoAmount(int ammoAmount);
+
+    void addAmount(int amount);
+
+    Mesh3DBody *getModelProjectile();
 };
 
 

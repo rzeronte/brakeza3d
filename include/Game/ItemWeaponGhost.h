@@ -7,15 +7,15 @@
 
 
 #include "../Physics/Mesh3DGhost.h"
+#include "WeaponType.h"
 
 class ItemWeaponGhost : public Mesh3DGhost {
-
-    std::string weaponClassname;  // Related with weapon by classname
-
 public:
-    const std::string &getWeaponClassname() const;
+    ItemWeaponGhost(WeaponType *weaponType);
 
-    void setWeaponClassname(const std::string &weaponClassname);
+    WeaponType *weaponType;
+
+    WeaponType *getWeaponType() const;
 };
 
 

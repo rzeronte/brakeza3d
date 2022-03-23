@@ -38,3 +38,11 @@ const std::string &Component::getLabel() const {
 void Component::setLabel(const std::string &newLabel) {
     Component::label = newLabel;
 }
+
+bool Component::isEnabled() const {
+    return enabled;
+}
+
+void Component::setEnabled(bool enabled) {
+    Component::enabled = enabled;
+}

@@ -77,6 +77,8 @@ public:
     bool isMouseMotion() const;
 
     void updateGamePadStates();
+
+    bool isAnyControllerButtonPressed();
 };
 
 

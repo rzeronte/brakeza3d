@@ -7,7 +7,6 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Physics/SpriteDirectional3DBody.h"
-#include "ComponentWeapons.h"
 #include "../Physics/CollisionResolver.h"
 #include "Component.h"
 

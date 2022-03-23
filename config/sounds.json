@@ -1,6 +1,6 @@
 {
   "sounds": [
-    { "file": "song.mid", "label": "musicMainMenu", "type": "music" },
+    { "file": "music.mp3", "label": "musicMainMenu", "type": "music" },
     { "file": "menuMusic.wav", "label": "musicMainMenu2", "type": "music" },
     { "file": "menuMusic.wav", "label": "musicBaseLevel0", "type": "music" },
 

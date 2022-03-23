@@ -7,8 +7,7 @@ ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
     this->numOptions = 0;
 
-    const char *file = std::string(SETUP->IMAGES_FOLDER + "menu_background.png").c_str();
-    menu_background = IMG_Load(file);
+    imageBackground = new Image(SETUP->IMAGES_FOLDER + "menu_background.png");
 }
 
 void ComponentMenu::onStart() {
@@ -17,12 +16,19 @@ void ComponentMenu::onStart() {
 }
 
 void ComponentMenu::preUpdate() {
+    if (!isEnabled()) {
+        return;
+    }
+
+    imageBackground->drawFlat(0, 0);
 }
 
 void ComponentMenu::onUpdate() {
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) {
-        drawOptions(ComponentsManager::get()->getComponentWindow()->screenSurface);
+    if (!isEnabled()) {
+        return;
     }
+
+    drawOptions(ComponentsManager::get()->getComponentWindow()->screenSurface);
 }
 
 void ComponentMenu::postUpdate() {
@@ -59,8 +65,7 @@ void ComponentMenu::loadMenuOptions() {
         cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
-            Logging::Log("Adding menu option " + std::string(nameOption->valuestring) + "/" +
-                                        std::to_string(actionOption->valueint), "Menu");
+            Logging::Log("Adding menu option " + std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint), "Menu");
             this->options[numOptions] = new MenuOption(nameOption->valuestring, actionOption->valueint);
             this->options[numOptions]->setAlt(altOption->valuestring);
             numOptions++;
@@ -69,20 +74,18 @@ void ComponentMenu::loadMenuOptions() {
 }
 
 void ComponentMenu::drawOptions(SDL_Surface *dst) {
-    // Draw back
-    SDL_BlitSurface(menu_background, nullptr, dst, nullptr);
+
+    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+    auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
     int offsetY = 50;
     int stepY = 10;
-
-    int xPos = 100;
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
         bool bold = false;
 
-        if (i == ComponentMenu::MNU_NEW_GAME &&
-            ComponentsManager::get()->getComponentGame()->getPlayer()->state != PlayerState::DEAD) {
+        if (i == ComponentMenu::MNU_NEW_GAME && levelInfo->isLevelStartedToPlay()) {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 

@@ -1,4 +1,5 @@
 
+#include <SDL_events.h>
 #include "../../include/Misc/Color.h"
 
 Color::Color() {
@@ -10,16 +11,18 @@ Color::Color(int r, int g, int b)
     this->g = g;
     this->b = b;
 
-    this->color = this->createRGB(r, g, b);
+    this->color = (b << 16) + (g << 8) + (r);
 }
 
 Color::Color(uint32_t v)
 {
     this->color = v;
 
-    this->r = this->getRedValueFromColor(this->color);
-    this->g = this->getGreenValueFromColor(this->color);
-    this->b = this->getBlueValueFromColor(this->color);
+    auto *colors = (uint8_t*)&v;
+
+    this->r = colors[0];
+    this->g = colors[1];
+    this->b = colors[2];
 }
 
 void Color::setRed(float v)
@@ -52,6 +55,15 @@ Color Color::operator*(const Color &pm) const
     return Color(this->r * pm.r, this->g * pm.g, this->b * pm.b);
 }
 
+bool Color::operator==(const Color &pm) const
+{
+    if (this->r == pm.r && this->g == pm.g && this->b == pm.b) {
+        return true;
+    }
+
+    return false;
+}
+
 uint32_t Color::getColor()
 {
     return this->color;
@@ -67,25 +79,6 @@ Color Color::operator/(float s) const
     return Color(this->r / s, this->g / s, this->b / s);
 }
 
-uint32_t Color::createRGB(int r, int g, int b)
-{
-    return (unsigned long) ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
-
-uint8_t Color::getRedValueFromColor(uint32_t c)
-{
-    return ((uint32_t) c >> 16);
-}
-
-uint8_t Color::getGreenValueFromColor(uint32_t c)
-{
-    return ((uint16_t) c >> 8);
-}
-
-uint8_t Color::getBlueValueFromColor(uint32_t c)
-{
-    return (c);
-}
 
 Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
 {

@@ -37,3 +37,4 @@ void Logging::Log(const std::string& message) {
 void Logging::Log(float value) {
     this->Log(std::to_string(value), "DEBUG");
 }
+

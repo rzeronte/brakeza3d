@@ -3,8 +3,9 @@
 #include "../Brakeza3D.h"
 #include "../Particles/ParticleEmissorGravity.h"
 #include "AmmoProjectileGhost.h"
+#include "ItemWeaponGhost.h"
 
-Player::Player() : state(PlayerState::LIVE),
+Player::Player() : state(PlayerState::EMPTY),
                    stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
                    power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
 
@@ -25,6 +26,10 @@ Player::Player() : state(PlayerState::LIVE),
     lightPositionOffset = Vertex3D(0, -550, 0);
 
     autoRotationSelectedObjectSpeed = 1;
+    killsCounter = 0;
+    levelsCompletedCounter = 0;
+
+    this->counterDamage = new Counter(3);
 }
 
 int Player::getStamina() const {
@@ -53,6 +58,12 @@ void Player::evalStatusMachine() {
 void Player::takeDamage(float dmg) {
     this->stamina -= dmg;
 
+    if (state != PlayerState::GETTING_DAMAGE) {
+        setState(PlayerState::GETTING_DAMAGE);
+        counterDamage->setEnabled(true);
+        startBlinkForPlayer();
+    }
+
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
         ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::MENU);
@@ -64,13 +75,9 @@ void Player::takeDamage(float dmg) {
     }
 }
 
-void Player::newGame() {
-    setLives(INITIAL_LIVES);
-    setStamina(INITIAL_STAMINA);
-    setState(PlayerState::LIVE);
-}
-
 void Player::respawn() {
+    Logging::getInstance()->Log("respawn");
+
     setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
 }
@@ -98,10 +105,6 @@ void Player::reload() {
     }
 
     Logging::Log("ComponentWeapons reload!", "Weapons");
-
-    if (weaponType->getAmmoType()->getReloads() > 0) {
-        weaponType->reload();
-    }
 }
 
 void Player::getAid(float aid) {
@@ -119,6 +122,14 @@ void Player::onUpdate() {
     updateLight();
     updateWeaponType();
     applyFriction();
+
+    if (state == PlayerState::GETTING_DAMAGE) {
+        counterDamage->update();
+        if (counterDamage->isFinished()) {
+            setState(PlayerState::LIVE);
+            stopBlinkForPlayer();
+        }
+    }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     if (selectedObject != this && selectedObject != nullptr) {
@@ -173,7 +184,9 @@ void Player::updateLight() {
 }
 
 void Player::resolveCollision(Collisionable *with) {
-    Logging::getInstance()->Log("Collision on Player");
+    auto *object = dynamic_cast<Object3D*> (with);
+    Logging::getInstance()->Log("Player: Collision "  + getLabel() + " with " + object->getLabel());
+
     Mesh3DGhost::resolveCollision(with);
     auto projectile = dynamic_cast<AmmoProjectileGhost*> (with);
     if (projectile != nullptr) {
@@ -181,6 +194,14 @@ void Player::resolveCollision(Collisionable *with) {
             takeDamage(projectile->getWeaponType()->getDamage());
             projectile->remove();
         }
+    }
+
+    auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
+    if (weapon != nullptr) {
+        this->addWeaponType(weapon->getWeaponType());
+        Logging::getInstance()->Log("Added Weapon to Player:" + weapon->getWeaponType()->getLabel());
+        weapon->removeCollisionObject();
+        weapon->setRemoved(true);
     }
 }
 
@@ -194,7 +215,6 @@ WeaponType *Player::getWeaponType() const {
 
 void Player::setWeaponType(WeaponType *weaponType) {
     Player::weaponType = weaponType;
-    Tools::playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("getAmmo"), EngineSetup::SoundChannels::SND_MENU, 0);
 }
 
 void Player::updateWeaponType() {
@@ -203,8 +223,20 @@ void Player::updateWeaponType() {
     }
 }
 
-void Player::addWeaponType(const std::string& label) {
+void Player::createWeaponType(const std::string& label) {
     this->weaponTypes.emplace_back(new WeaponType(label));
+}
+
+void Player::addWeaponType(WeaponType *weaponType)
+{
+    auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
+    if (weapon != nullptr) {
+        weapon->addAmount(weaponType->getAmmoAmount());
+        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getAmmoAmount()));
+        return;
+    }
+
+    this->weaponTypes.emplace_back(weaponType);
 }
 
 WeaponType *Player::getWeaponTypeByLabel(const std::string& label) {
@@ -223,4 +255,44 @@ void Player::setWeaponTypeByIndex(int i) {
     } else {
         Logging::getInstance()->Log("Weapon not available(" + std::to_string(i) + ")!");
     }
+}
+
+void Player::setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObjectSpeed) {
+    Player::autoRotationSelectedObjectSpeed = autoRotationSelectedObjectSpeed;
+}
+
+void Player::startBlinkForPlayer() {
+    auto shaderBlink = dynamic_cast<ShaderBlink*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BLINK));
+    shaderBlink->setObject(this);
+    shaderBlink->setStep(0.05);
+    shaderBlink->setEnabled(true);
+}
+
+void Player::stopBlinkForPlayer() {
+    auto shaderBlink = dynamic_cast<ShaderBlink*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BLINK));
+    shaderBlink->setEnabled(false);
+}
+
+int Player::getKillsCounter() const {
+    return killsCounter;
+}
+
+void Player::setKillsCounter(int killsCounter) {
+    Player::killsCounter = killsCounter;
+}
+
+void Player::increaseKills() {
+    killsCounter++;
+}
+
+int Player::getLevelCompletedCounter() const {
+    return levelsCompletedCounter;
+}
+
+void Player::setLevelCompletedCounter(int levelCounter) {
+    Player::levelsCompletedCounter = levelCounter;
+}
+
+void Player::increaseLevelsCompleted() {
+    levelsCompletedCounter++;
 }

@@ -10,17 +10,21 @@
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
 
+
+
 class ShaderWater: public Shader {
 public:
-    float LAVA_CLOSENESS = 2.35;
-    float LAVA_INTENSITY = 0.45;
-    float LAVA_SPEED = 2.55;
-    float LAVA_SCALE = 2.35;
+    float scale = 4.0;
+    float speed = 11.0;
+    // the amount of shearing (shifting of a single column or row)
+    // 1.0 = entire screen height offset (to both sides, meaning it's 2.0 in total)
+    float xDistMag = 0.80;
+    float yDistMag = 0.00;
 
-    // Default config is used in menu mode
-    float intensity_r = 1;
-    float intensity_g = 1;
-    float intensity_b = 1;
+    // cycle multiplier for a given screen height
+    // 2*PI = you see a complete sine wave from top..bottom
+    float xSineCycles = 6.28;
+    float ySineCycles = 6.28;
 
     void onUpdate() override {
         Shader::onUpdate();
@@ -29,50 +33,32 @@ public:
             return;
         }
 
-        int type = 1;
-        //water = -3 |mud = -4 | lava = -5
-        switch (type) {
-            default:
-            case -3:
-                break;
-            case -4:
-                intensity_r = 0.5;
-                intensity_g = 1;
-                intensity_b = 0.5;
-                break;
-            case -5:
-                intensity_r = 1;
-                intensity_g = 0.5;
-                intensity_b = 0.5;
-                break;
-        }
-
-
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                Color currentPixelColor = Color(EngineBuffers::getInstance()->getVideoBuffer(x, y));
+                Color currentPixelColor(EngineBuffers::getInstance()->getVideoBuffer(x, y));
 
-                int r_light = (int) (currentPixelColor.r * intensity_r);
-                int g_light = (int) (currentPixelColor.g * intensity_g);
-                int b_light = (int) (currentPixelColor.b * intensity_b);
+                float tx = (float) x / scale;
+                float ty = (float) y / scale;
 
-                currentPixelColor = Color(r_light, g_light, b_light);
+                float time = executionTime *speed;
+                float xAngle = time + ty * ySineCycles;
+                float yAngle = time + tx * xSineCycles;
 
-                float cache1 = x / LAVA_CLOSENESS;
-                float cache2 = y / LAVA_CLOSENESS;
+                float distortOffsetX = sin(xAngle) * xDistMag;
+                float distortOffsetY = sin(yAngle) * yDistMag;
 
-                int nx = (cache1 + LAVA_INTENSITY * sin(LAVA_SPEED * executionTime + cache2)) * LAVA_SCALE;
-                int ny = (cache2 + LAVA_INTENSITY * sin(LAVA_SPEED * executionTime + cache1)) * LAVA_SCALE;
-
+                int nx = (int)(x + distortOffsetX);
+                int ny = (int)(y + distortOffsetY);
 
                 if (Tools::isPixelInWindow(nx, ny)) {
                     int bufferIndex = nx + ny * w;
                     videoBuffer[bufferIndex] = currentPixelColor.getColor();
+                    EngineBuffers::getInstance()->setVideoBuffer(nx, ny, currentPixelColor.getColor());
                 }
             }
         }
 
-        memcpy(&EngineBuffers::getInstance()->videoBuffer, &videoBuffer, sizeof(videoBuffer));
+        //memcpy(&EngineBuffers::getInstance()->videoBuffer, &videoBuffer, sizeof(videoBuffer));
     }
 };
 

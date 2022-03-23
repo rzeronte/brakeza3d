@@ -15,7 +15,7 @@
 #define INITIAL_MAX_VELOCITY 25
 
 typedef enum {
-    LIVE, DEAD
+    EMPTY, LIVE, DEAD, GETTING_DAMAGE
 } PlayerState;
 
 enum WeaponStatus {
@@ -32,7 +32,9 @@ private:
     int lives;
     Vertex3D velocity;
     WeaponType *weaponType;
-
+    Counter *counterDamage;
+    int killsCounter;
+    int levelsCompletedCounter;
 public:
     ParticleEmissor *engineParticles;
     Vertex3D engineParticlesPositionOffset;
@@ -43,11 +45,8 @@ public:
     PlayerState state;
 
     std::vector<WeaponType *> weaponTypes;
-    std::vector<AmmoType *> ammoTypes;
 
     Player();
-
-    void newGame();
 
     void respawn();
 
@@ -96,12 +95,31 @@ public:
 
     void updateWeaponType();
 
-    void addWeaponType(const std::string&);
+    void createWeaponType(const std::string &label);
+
+    void addWeaponType(WeaponType *weaponType);
 
     WeaponType *getWeaponTypeByLabel(const std::string& label);
 
     void setWeaponTypeByIndex(int i);
 
+    void setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
+
+    void startBlinkForPlayer();
+
+    void stopBlinkForPlayer();
+
+    int getKillsCounter() const;
+
+    void setKillsCounter(int killsCounter);
+
+    void increaseKills();
+
+    void increaseLevelsCompleted();
+
+    int getLevelCompletedCounter() const;
+
+    void setLevelCompletedCounter(int levelCounter);
 };
 
 

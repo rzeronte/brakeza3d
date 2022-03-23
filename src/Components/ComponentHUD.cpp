@@ -24,12 +24,15 @@ void ComponentHUD::preUpdate() {
 
 void ComponentHUD::onUpdate() {
 
-    if (SETUP->DRAW_HUD) {
-        if (SETUP->DRAW_CROSSHAIR) {
-            Drawable::drawCrossHair();
-        }
-        drawHUD();
+    if (!isEnabled()) {
+        return;
     }
+
+    if (SETUP->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
+    }
+
+    drawHUD();
 }
 
 void ComponentHUD::postUpdate() {
@@ -152,6 +155,8 @@ void ComponentHUD::drawPlayerStamina(int y) {
     }
 
     player->getWeaponType()->getIcon()->drawFlat(offsetX, offsetY + backgroundHealthBar->height() + 1);
+    this->textureWriter->writeText(offsetX, offsetY, std::to_string(player->getWeaponType()->getAmmoAmount()).c_str(), false);
+
 }
 
 void ComponentHUD::drawEnemyStamina(int y) {

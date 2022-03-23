@@ -19,7 +19,7 @@ public:
     bool LOGGING = true;
     bool LOGGING_TO_FILE = false;
 
-    std::string ENGINE_TITLE = "Brakeza3D v0.6";
+    std::string ENGINE_TITLE = "Brakeza3D v0.9";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -143,6 +143,8 @@ public:
     std::string CONCHARS_SPRITE_FILE = "conchars.png";
     std::string DEFAULT_SHADER_BACKGROUND_IMAGE = "background_scrollable.png";
     std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
+
+    std::string LOGO_BRAKEZA = "brakeza.png";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
@@ -283,11 +285,14 @@ public:
     };
 
     typedef enum {
-        MENU = 1,
-        GAMING = 2,
-        LOADING = 3,
-        HELP = 4,
-        FADE = 5
+        NONE = 0,
+        SPLASH = 1,
+        MENU = 2,
+        PRESSKEY = 3,
+        GAMING = 4,
+        HELP = 5,
+        ENDGAME = 6,
+        CREDITS = 7
     } GameState;
 };
 

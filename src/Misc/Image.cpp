@@ -13,12 +13,13 @@ Image::Image(std::string filename) {
     this->loadTGA(filename);
 }
 
-
 void Image::loadTGA(std::string filename) {
     if (Tools::fileExists(filename)) {
         this->surface = IMG_Load(filename.c_str());
         this->fileName = filename;
         this->loaded = true;
+        Logging::Log("Loading TGA texture '" + std::string(filename), "IMAGE");
+
     } else {
         Logging::Log("Error loading TGA texture '" + std::string(filename), "IMAGE");
     }

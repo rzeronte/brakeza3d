@@ -19,9 +19,13 @@ void ComponentGameInput::preUpdate() {
 void ComponentGameInput::onUpdate() {
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
-    this->handleKeyboardMovingPlayer();
-    this->handleGamePadMovingPlayer();
-    this->handleFire();
+
+
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
+        this->handleKeyboardMovingPlayer();
+        this->handleGamePadMovingPlayer();
+        this->handleFire();
+    }
 }
 
 void ComponentGameInput::postUpdate() {
@@ -38,46 +42,59 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
 
-    this->handleMenuKeyboard(event, end);
     this->handleEscape(event);
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
-        return;
+    auto state = ComponentsManager::get()->getComponentGame()->getGameState();
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+
+    if (state == EngineSetup::GameState::MENU) {
+        this->handleMenuKeyboard(event, end);
+    }
+    if (state == EngineSetup::GameState::PRESSKEY && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
+        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
     }
 
-    this->handleFindClosestObject3D(event);
-    this->handleWeaponSelector(event);
+    if (state == EngineSetup::GameState::ENDGAME && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->getPlayer()->setLevelCompletedCounter(0);
+        ComponentsManager::get()->getComponentGame()->getLevelInfo()->setCurrentLevelIndex(-1);
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->resetTo(EngineSetup::GameState::MENU);
+    }
 
-    //this->handlweZoom(event);
+    if (state == EngineSetup::GameState::GAMING) {
+        this->handleFindClosestObject3D(event);
+        this->handleWeaponSelector(event);
+    }
+
+    //this->handleZoom(event);
 }
 
 void ComponentGameInput::handleEscape(SDL_Event *event) {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
-    EngineSetup::GameState gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto gameState = game->getGameState();
 
     if (
         (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
     ) {
-        if (gameState == EngineSetup::GameState::MENU) {
-            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
+        if (gameState == EngineSetup::GameState::MENU && game->getLevelInfo()->isLevelStartedToPlay()) {
+            game->getFadeToGameState()->resetTo(EngineSetup::GameState::GAMING);
         } else {
-            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::MENU);
+            game->getFadeToGameState()->resetTo(EngineSetup::GameState::MENU);
 
             SDL_WarpMouseInWindow(
                 ComponentsManager::get()->getComponentWindow()->window,
                 SETUP->screenWidth / 2,
                 SETUP->screenHeight / 2
             );
-            SETUP->DRAW_HUD = false;
         }
     }
 }
 
-void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
-
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
+{
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
@@ -86,9 +103,6 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
     int currentOption = componentMenu->currentOption;
     Uint8 *keyboard = componentInput->keyboard;
 
-    if (gameState != EngineSetup::GameState::MENU) {
-        return;
-    }
 
     // Up / Down menu options
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
@@ -113,17 +127,21 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) {
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
-            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
-            player->newGame();
+            if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
+                ComponentsManager::get()->getComponentGame()->getFadeToGameState()->resetTo(EngineSetup::GameState::PRESSKEY);
+                player->respawn();
+            } else {
+                ComponentsManager::get()->getComponentGame()->getFadeToGameState()->resetTo(EngineSetup::GameState::GAMING);
+            }
         }
 
         if (player->state == PlayerState::DEAD && menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
             Tools::playSound(BUFFERS->soundPackage->getByLabel("soundMenuAccept"), EngineSetup::SoundChannels::SND_MENU,0);
-            ComponentsManager::get()->getComponentGame()->getFadeToColor()->resetTo(EngineSetup::GameState::GAMING);
+            ComponentsManager::get()->getComponentGame()->getFadeToGameState()->resetTo(EngineSetup::GameState::GAMING);
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_HELP) {
-            componentGame->getFadeToColor()->resetTo(EngineSetup::GameState::HELP);
+            componentGame->getFadeToGameState()->resetTo(EngineSetup::GameState::HELP);
         }
     }
 }
@@ -158,6 +176,11 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         }
 
         if (keyboard[SDL_SCANCODE_3] ) {
+            game->getPlayer()->setWeaponTypeByIndex(2);
+            Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
+        }
+
+        if (keyboard[SDL_SCANCODE_4] ) {
             game->getPlayer()->setWeaponTypeByIndex(3);
             Tools::playSound(soundPackage->getByLabel("switchWeapon"), EngineSetup::SoundChannels::SND_PLAYER, 0);
         }
@@ -226,7 +249,8 @@ void ComponentGameInput::handleKeyboardMovingPlayer() {
     }
 }
 
-void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event ) {
+void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
+{
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
     auto game = ComponentsManager::get()->getComponentGame();
 
@@ -238,7 +262,8 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event ) {
     }
 }
 
-void ComponentGameInput::handleGamePadMovingPlayer() {
+void ComponentGameInput::handleGamePadMovingPlayer()
+{
     if (!EngineSetup::get()->GAMEPAD_CONTROLLER_ENABLED) return;
 
     auto componentInput = ComponentsManager::get()->getComponentInput();
@@ -246,7 +271,8 @@ void ComponentGameInput::handleGamePadMovingPlayer() {
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
-    player->setVelocity(player->getVelocity() + Vertex3D(componentInput->controllerAxisLeftX * speed, componentInput->controllerAxisLeftY * speed, 0));
+    player->setVelocity(
+        player->getVelocity() +
+        Vertex3D(componentInput->controllerAxisLeftX * speed, componentInput->controllerAxisLeftY * speed, 0)
+    );
 }
-
-

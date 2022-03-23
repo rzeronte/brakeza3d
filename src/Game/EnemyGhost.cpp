@@ -19,6 +19,7 @@ void EnemyGhost::onUpdate() {
     ));
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
+        ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
         remove();
     }
 

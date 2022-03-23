@@ -8,7 +8,6 @@
 #include "../Physics/Mesh3DGhost.h"
 
 class EnemyGhost : public Mesh3DGhost, public Enemy {
-
 public:
 
     EnemyGhost();
@@ -22,6 +21,7 @@ public:
     void remove();
 
     void shoot(Object3D *target);
+
 };
 
 

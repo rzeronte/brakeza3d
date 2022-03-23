@@ -105,24 +105,20 @@ public:
     }
 
     void GuiShaderWater(Shader *shader, int i) {
-        const float range_min = -10;
-        const float range_max = 10;
-        const float range_sensibility = 0.1;
+        const float range_min = -20;
+        const float range_max = 20;
+        const float range_sensibility = 0.01;
 
         std::string rgb_itensity = "RGB Intensity##" + std::to_string(i);
 
         auto shaderWater = dynamic_cast<ShaderWater*> (shader);
         if (shaderWater != nullptr) {
-            ImGui::DragScalar("Closeness", ImGuiDataType_Float, &(shaderWater->LAVA_CLOSENESS), range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Intensity", ImGuiDataType_Float, &(shaderWater->LAVA_INTENSITY), range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Speed", ImGuiDataType_Float, &(shaderWater->LAVA_SPEED), range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Scale", ImGuiDataType_Float, &(shaderWater->LAVA_SCALE), range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            if (ImGui::TreeNode(rgb_itensity.c_str())) {
-                ImGui::DragScalar("R", ImGuiDataType_Float, &shaderWater->intensity_r, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("G", ImGuiDataType_Float, &shaderWater->intensity_g, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                ImGui::DragScalar("B", ImGuiDataType_Float, &shaderWater->intensity_b, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                ImGui::TreePop();
-            }
+            ImGui::DragScalar("xDistMag", ImGuiDataType_Float, &(shaderWater->xDistMag), range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("yDistMag", ImGuiDataType_Float, &(shaderWater->yDistMag), range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Speed", ImGuiDataType_Float, &(shaderWater->speed), range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Scale", ImGuiDataType_Float, &(shaderWater->scale), range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("xSineCycles", ImGuiDataType_Float, &(shaderWater->xSineCycles), range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("ySineCycles", ImGuiDataType_Float, &(shaderWater->ySineCycles), range_sensibility, &range_min, &range_max, "%f", 1.0f);
         }
     }
 

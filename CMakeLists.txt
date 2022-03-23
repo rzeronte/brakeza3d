@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -107,8 +107,6 @@ add_executable(Brakeza3D
         src/Misc/cJSON.c
         src/Collisions/SpriteDirectional3DBody.cpp
         include/Physics/SpriteDirectional3DBody.h
-        src/Components/ComponentWeapons.cpp
-        include/Components/ComponentWeapons.h
         src/Game/WeaponType.cpp
         include/Game/WeaponType.h
         src/Components/ComponentMenu.cpp
@@ -154,8 +152,6 @@ add_executable(Brakeza3D
         include/Game/ItemAmmoGhost.h
         src/Game/ItemHealthGhost.cpp
         include/Game/ItemHealthGhost.h
-        src/Game/AmmoType.cpp
-        include/Game/AmmoType.h
         src/Components/Component.cpp
         include/Components/Component.h
         src/Components/ComponentRender.cpp
@@ -247,7 +243,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileGhost.cpp include/Game/AmmoProjectileGhost.h include/Game/ShaderFadeBetweenGameStates.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileGhost.cpp include/Game/AmmoProjectileGhost.h include/Game/ShaderFadeBetweenGameStates.h src/Game/Motion.cpp include/Game/Motion.h src/Game/MotionLinearRect.cpp include/Game/MotionLinearRect.h src/Game/MotionCircle.cpp include/Game/MotionCircle.h src/Game/MotionSin.cpp include/Game/MotionSin.h src/Game/LevelsLoader.cpp src/Game/LevelsLoader.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

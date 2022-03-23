@@ -78,7 +78,8 @@ public:
         this->hImage = hImage;
 
         if (this->yImage > image->height() - hImage) {
-            this->yImage = image->height() - hImage;
+            //this->yImage = image->height() - hImage;
+            this->autoScrollCursorY = 0;
         }
     }
 

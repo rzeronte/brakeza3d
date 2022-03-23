@@ -1,9 +1,8 @@
 #include "../../include/Game/ItemWeaponGhost.h"
 
-const std::string &ItemWeaponGhost::getWeaponClassname() const {
-    return weaponClassname;
+ItemWeaponGhost::ItemWeaponGhost(WeaponType *weaponType) : weaponType(weaponType) {
 }
 
-void ItemWeaponGhost::setWeaponClassname(const std::string &weaponClassname) {
-    ItemWeaponGhost::weaponClassname = weaponClassname;
+WeaponType *ItemWeaponGhost::getWeaponType() const {
+    return weaponType;
 }
