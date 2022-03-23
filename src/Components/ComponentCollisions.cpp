@@ -11,6 +11,10 @@ void ComponentCollisions::preUpdate() {
 }
 
 void ComponentCollisions::onUpdate() {
+    if (!isEnabled()) {
+        return;
+    }
+
     this->stepSimulation();
 }
 

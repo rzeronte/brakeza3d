@@ -11,9 +11,10 @@ class ComponentsManager;
 
 class Component {
 private:
-    std::vector<Object3D *> *sceneObjects{};
-    int id{};
+    std::vector<Object3D *> *sceneObjects;
+    int id;
     std::string label;
+    bool enabled;
 public:
 
     Component();
@@ -57,6 +58,10 @@ public:
     // Accessors to Setup and Buffers
     EngineBuffers *BUFFERS;
     EngineSetup *SETUP;
+
+    bool isEnabled() const;
+
+    void setEnabled(bool enabled);
 };
 
 
