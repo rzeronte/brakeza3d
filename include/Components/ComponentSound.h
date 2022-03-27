@@ -28,6 +28,12 @@ public:
     void initSoundSystem();
 
     void loadSoundsJSON();
+
+    void playSound(Mix_Chunk *chunk, int channel, int times);
+
+    void playMusic(Mix_Music *music, int loops);
+
+    void stopMusic();
 };
 
 

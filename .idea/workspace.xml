@@ -19,64 +19,101 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Assets">
-      <change afterPath="$PROJECT_DIR$/include/Game/Motion.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/MotionCircle.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/MotionLinearRect.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/MotionSin.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/LevelsLoader.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/LevelsLoader.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/Motion.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/MotionCircle.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/MotionLinearRect.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Game/MotionSin.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/AmmoSmartProjectileBody.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/EnemyBehaviorCircle.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawner.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/AmmoSmartProjectileBody.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/EnemyBehaviorCircle.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/ShaderShield.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/ShaderShield.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/background_scrollable.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/background_scrollable.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/menu_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/menu_background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/level01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/level01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/base_level_0.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/bloodhit1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/bloodhit2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/bloodhit3.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/boot1.flac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/boot2.flac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/boot3.flac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/boot4.flac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemyRage1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemyRage2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemyRage3.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemyRage4.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemyRage5.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemy_dead.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/menuMusic.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead3.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead4.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead5.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerDead6.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerJump.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerLand1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerLand2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerLand3.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerLand4.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerPain1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerPain2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerPain3.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/playerPain4.wav" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/Component.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Component.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentMenu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWeapons.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentSound.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentSound.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ComponentsManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/ComponentsManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoType.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Enemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/ItemHealthGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/ItemHealthGhost.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/ItemWeaponGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/ItemWeaponGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Motion.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyBehavior.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/MotionCircle.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/MotionLinearRect.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyBehaviorPatrol.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/MotionSin.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyBehaviorFollow.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/ShaderFadeBetweenGameStates.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/ShaderFadeBetweenGameStates.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/WeaponType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/WeaponType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/ShaderFadeBetweenGameStates.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/FaderToGameStates.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/WeaponType.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Weapon.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Component.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWeapons.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/AmmoType.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineSetup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/AmmoProjectileGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/AmmoProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Enemy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/ItemHealthGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/ItemHealthGhost.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/ItemWeaponGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/ItemWeaponGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/LevelsLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/LevelsLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Motion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyBehavior.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/MotionCircle.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/MotionLinearRect.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyBehaviorPatrol.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/MotionSin.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyBehaviorFollow.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/WeaponType.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/WeaponType.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Weapon.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Misc/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Logging.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Logging.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -260,17 +297,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -424,6 +461,9 @@
       <workItem from="1647651757074" duration="41728000" />
       <workItem from="1647904329279" duration="10899000" />
       <workItem from="1647991891562" duration="3510000" />
+      <workItem from="1648068047553" duration="15884000" />
+      <workItem from="1648148614443" duration="13885000" />
+      <workItem from="1648231404440" duration="44506000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -816,7 +856,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Game/Player.cpp</url>
-          <line>280</line>
+          <line>354</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>

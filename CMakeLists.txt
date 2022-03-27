@@ -107,8 +107,10 @@ add_executable(Brakeza3D
         src/Misc/cJSON.c
         src/Collisions/SpriteDirectional3DBody.cpp
         include/Physics/SpriteDirectional3DBody.h
-        src/Game/WeaponType.cpp
-        include/Game/WeaponType.h
+        include/Game/EnemyGhostRespawner.h
+        src/Game/EnemyGhostRespawner.cpp
+        src/Game/Weapon.cpp
+        include/Game/Weapon.h
         src/Components/ComponentMenu.cpp
         include/Components/ComponentMenu.h
         src/2D/MenuOption.cpp
@@ -133,7 +135,8 @@ add_executable(Brakeza3D
         include/Physics/Body.h
         src/Objects/Cube3D.cpp
         include/Objects/Cube3D.h
-        include/Game/Player.cpp src/Game/Player.h
+        include/Game/Player.cpp
+        src/Game/Player.h
         src/Demo/Demo.cpp include/Demo/Demo.h
         src/Misc/Counter.cpp
         include/Misc/Counter.h
@@ -243,7 +246,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileGhost.cpp include/Game/AmmoProjectileGhost.h include/Game/ShaderFadeBetweenGameStates.h src/Game/Motion.cpp include/Game/Motion.h src/Game/MotionLinearRect.cpp include/Game/MotionLinearRect.h src/Game/MotionCircle.cpp include/Game/MotionCircle.h src/Game/MotionSin.cpp include/Game/MotionSin.h src/Game/LevelsLoader.cpp src/Game/LevelsLoader.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileBody.cpp include/Game/AmmoProjectileBody.h include/Game/FaderToGameStates.h src/Game/EnemyBehavior.cpp include/Game/EnemyBehavior.h src/Game/EnemyBehaviorPatrol.cpp include/Game/EnemyBehaviorPatrol.h src/Game/EnemyBehaviorCircle.cpp include/Game/EnemyBehaviorCircle.h src/Game/EnemyBehaviorFollow.cpp include/Game/EnemyBehaviorFollow.h src/Game/LevelLoader.cpp src/Game/LevelLoader.h src/Game/AmmoSmartProjectileBody.cpp include/Game/AmmoSmartProjectileBody.h src/Game/ShaderShield.cpp src/Game/ShaderShield.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
