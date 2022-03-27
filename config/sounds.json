@@ -1,58 +1,29 @@
 {
   "sounds": [
     { "file": "music.mp3", "label": "musicMainMenu", "type": "music" },
-    { "file": "menuMusic.wav", "label": "musicMainMenu2", "type": "music" },
-    { "file": "menuMusic.wav", "label": "musicBaseLevel0", "type": "music" },
+    { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
+    { "file": "music_gameover.mp3", "label": "gameOverMusic", "type": "music" },
 
     { "file": "start_game.wav", "label": "startGame", "type": "sound" },
     { "file": "option-click.wav", "label": "soundMenuClick", "type": "sound" },
     { "file": "option-accept.wav", "label": "soundMenuAccept", "type": "sound" },
 
-    { "file": "enemy_dead.wav", "label": "soundEnemyDead", "type": "sound" },
+    { "file": "explosion.wav", "label": "enemyExplosion", "type": "sound" },
     { "file": "body_explode.wav", "label": "bodyExplode", "type": "sound" },
 
-    { "file": "steps.wav", "label": "playerSteps", "type": "sound" },
-
-    { "file": "playerDead1.wav", "label": "playerDead1", "type": "sound" },
-    { "file": "playerDead2.wav", "label": "playerDead2", "type": "sound" },
-    { "file": "playerDead3.wav", "label": "playerDead3", "type": "sound" },
-    { "file": "playerDead4.wav", "label": "playerDead4", "type": "sound" },
-    { "file": "playerDead5.wav", "label": "playerDead5", "type": "sound" },
-    { "file": "playerDead6.wav", "label": "playerDead6", "type": "sound" },
-
-    { "file": "playerPain1.wav", "label": "playerPain1", "type": "sound" },
-    { "file": "playerPain2.wav", "label": "playerPain2", "type": "sound" },
-    { "file": "playerPain3.wav", "label": "playerPain3", "type": "sound" },
-    { "file": "playerPain4.wav", "label": "playerPain4", "type": "sound" },
-
-    { "file": "playerJump.wav", "label": "playerJump", "type": "sound" },
-
-    { "file": "playerLand1.wav", "label": "playerLand1", "type": "sound" },
-    { "file": "playerLand2.wav", "label": "playerLand2", "type": "sound" },
-    { "file": "playerLand3.wav", "label": "playerLand3", "type": "sound" },
-    { "file": "playerLand4.wav", "label": "playerLand4", "type": "sound" },
+    { "file": "dash.wav", "label": "dash", "type": "sound" },
 
     { "file": "teleporting.wav", "label": "teleporting", "type": "sound" },
-
-    { "file": "enemyRage1.wav", "label": "enemyRage1", "type": "sound" },
-    { "file": "enemyRage2.wav", "label": "enemyRage2", "type": "sound" },
-    { "file": "enemyRage3.wav", "label": "enemyRage3", "type": "sound" },
-    { "file": "enemyRage4.wav", "label": "enemyRage4", "type": "sound" },
-    { "file": "enemyRage5.wav", "label": "enemyRage5", "type": "sound" },
 
     { "file": "bulletWhisper.wav", "label": "bulletWhisper", "type": "sound" },
     { "file": "switch_weapon.wav", "label": "switchWeapon", "type": "sound" },
 
     { "file": "sniperOn.wav", "label": "sniperOn", "type": "sound" },
 
-    { "file": "bloodhit1.wav", "label": "bloodHit1", "type": "sound" },
-    { "file": "bloodhit2.wav", "label": "bloodHit2", "type": "sound" },
-    { "file": "bloodhit3.wav", "label": "bloodHit3", "type": "sound" },
-
     { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
     { "file": "get_weapon.wav", "label": "getWeapon", "type": "sound" },
 
-    { "file": "first_aid.wav", "label": "firstAid", "type": "sound" },
+    { "file": "shoot_01.wav", "label": "shoot01", "type": "sound" },
     { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
 
     { "file": "glock_fire.wav",   "label": "glock_fire",   "type": "sound" },

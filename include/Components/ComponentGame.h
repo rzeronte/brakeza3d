@@ -16,8 +16,8 @@
 #include "../Shaders/ShaderTintScreen.h"
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
-#include "../Game/ShaderFadeBetweenGameStates.h"
-#include "../../src/Game/LevelsLoader.h"
+#include "../Game/FaderToGameStates.h"
+#include "../../src/Game/LevelLoader.h"
 
 class ComponentGame : public Component {
 public:
@@ -43,23 +43,26 @@ public:
 
     void blockPlayerPositionInCamera();
 
-    ShaderFadeBetweenGameStates *fadeToGameState;
+    Vertex3D playerStartPosition;
+    FaderToGameStates *fadeToGameState;
     Player *player;
     Mesh3DBody *axisPlanes;
     PathFinder *pathFinder;
 
+    Image *imageCredits;
     Image *imageHelp;
     Image *imageSplash;
     Counter splashCounter;
 
-    LevelsLoader *levelInfo;
+    LevelLoader *levelInfo;
     Vertex3D shaderAutoScrollSpeed;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
     void selectClosestObject3DFromPlayer();
+    Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
 
-    ShaderFadeBetweenGameStates *getFadeToGameState() const;
+    FaderToGameStates *getFadeToGameState() const;
 
     int Z_COORDINATE_GAMEPLAY = 10000;
 private:
@@ -76,13 +79,17 @@ private:
 
     void stopBackgroundShader();
     void startBackgroundShader();
-    void startWaterShader();
-    void stopWaterShader();
+    void startTintScreenShader();
+    void stopTintScreenShader();
 
 public:
-    LevelsLoader *getLevelInfo() const;
+    LevelLoader *getLevelInfo() const;
 
     void checkForEndLevel() const;
+
+    void removeProjectiles() const;
+
+    void makeFadeToGameState(EngineSetup::GameState gameState) const;
 };
 
 

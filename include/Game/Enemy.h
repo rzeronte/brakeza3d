@@ -8,7 +8,7 @@
 #include "../Physics/Body.h"
 #include "../Misc/Counter.h"
 #include "../Render/M3.h"
-#include "WeaponType.h"
+#include "Weapon.h"
 
 
 typedef enum {
@@ -18,7 +18,7 @@ typedef enum {
 class Enemy {
 public:
     EnemyState state;
-    WeaponType *weaponType;
+    Weapon *weaponType;
 
     float startStamina;
     float stamina;
@@ -44,9 +44,17 @@ public:
 
     float getStamina() const;
 
-    void setWeaponType(WeaponType *weaponType);
+    void setWeaponType(Weapon *weaponType);
 
     void shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition);
+
+    Weapon *getWeaponType() const;
+
+    void setStamina(float stamina);
+
+    float getStartStamina() const;
+
+    void setStartStamina(float startStamina);
 };
 
 

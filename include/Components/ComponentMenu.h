@@ -22,10 +22,13 @@ public:
 
     void onEnd();
 
+    void setEnabled(bool enabled);
+
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     // menu background surface
     Image *imageBackground;
+    Mesh3D *spaceship;
 
     ComponentMenu();
 
@@ -42,11 +45,12 @@ public:
     };
 
     // menu.json
-    cJSON *optionsJSON{};
+    cJSON *optionsJSON;
 
     void drawOptions(SDL_Surface *dst);
 
     void loadMenuOptions();
+
 };
 
 

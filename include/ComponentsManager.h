@@ -12,6 +12,7 @@
 #include "Components/ComponentGameInput.h"
 #include "Components/ComponentMenu.h"
 #include "Components/ComponentConsole.h"
+#include "Components/ComponentSound.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
@@ -44,33 +45,49 @@ public:
 
     void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
-    ComponentCamera *
-    getComponentCamera() { return static_cast<ComponentCamera *>(components[ComponentID::COMPONENT_CAMERA]); };
+    ComponentCamera *getComponentCamera() {
+        return static_cast<ComponentCamera *>(components[ComponentID::COMPONENT_CAMERA]);
+    };
 
-    ComponentCollisions *
-    getComponentCollisions() { return static_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]); };
+    ComponentCollisions *getComponentCollisions() {
+        return static_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]);
+    };
 
-    ComponentMenu *getComponentMenu() { return static_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]); };
+    ComponentMenu *getComponentMenu() {
+        return static_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
+    };
 
-    ComponentHUD *getComponentHUD() { return static_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]); };
+    ComponentHUD *getComponentHUD() {
+        return static_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]);
+    };
 
-    ComponentWindow *
-    getComponentWindow() { return static_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]); };
+    ComponentWindow *getComponentWindow() {
+        return static_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]);
+    };
 
-    ComponentRender *
-    getComponentRender() { return static_cast<ComponentRender *>(components[ComponentID::COMPONENT_RENDER]); };
+    ComponentRender *getComponentRender() {
+        return static_cast<ComponentRender *>(components[ComponentID::COMPONENT_RENDER]);
+    };
 
-    ComponentInput *
-    getComponentInput() { return static_cast<ComponentInput *>(components[ComponentID::COMPONENT_INPUT]); };
+    ComponentInput *getComponentInput() {
+        return static_cast<ComponentInput *>(components[ComponentID::COMPONENT_INPUT]);
+    };
 
-    ComponentGame *getComponentGame() { return static_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]); };
+    ComponentGame *getComponentGame() {
+        return static_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]);
+    };
 
-    ComponentGameInput *
-    getComponentGameInput() { return static_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]); };
+    ComponentGameInput *getComponentGameInput() {
+        return static_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]);
+    };
 
-    ComponentConsole *
-    getComponentConsole() { return static_cast<ComponentConsole *>(components[ComponentID::COMPONENT_CONSOLE]); };
+    ComponentConsole *getComponentConsole() {
+        return static_cast<ComponentConsole *>(components[ComponentID::COMPONENT_CONSOLE]);
+    };
 
+    ComponentSound *getComponentSound() {
+        return static_cast<ComponentSound *>(components[ComponentID::COMPONENT_SOUND]);
+    };
 };
 
 

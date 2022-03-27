@@ -232,15 +232,6 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
     return true;
 }
 
-void Tools::playSound(Mix_Chunk *chunk, int channel, int times) {
-    if (chunk == nullptr) {
-        Logging::Log("Error loading chunk sound", "Sound");
-        return;
-    }
-
-    Mix_PlayChannel(channel, chunk, times);
-}
-
 Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
     Uint32 rb = color1 & 0xff00ff;
     Uint32 g = color1 & 0x00ff00;
@@ -251,7 +242,6 @@ Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
 }
 
 Color Tools::mixColor(Color color1, Color color2, float color2Intensity) {
-
     float r_light = color2.r * color2Intensity;
     float g_light = color2.g * color2Intensity;
     float b_light = color2.b * color2Intensity;

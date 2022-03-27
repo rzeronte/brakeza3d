@@ -41,6 +41,8 @@ public:
 
     uint32_t getVideoBuffer(int x, int y) const;
 
+    uint32_t getVideoBuffer(int bufferIndex) const;
+
     void clearVideoBuffer() const;
 
     void setVideoBuffer(const int x, const int y, Uint32 value) const;

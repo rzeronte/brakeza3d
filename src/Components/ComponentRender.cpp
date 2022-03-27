@@ -665,6 +665,11 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         t->parent->setStencilBuffer(bufferIndex, true);
     }
 
+    if (t->parent->isAlphaEnabled()) {
+        const float alpha = t->parent->getAlpha() / 255.0f;
+        pixelColor = Tools::mixColor(Color(BUFFERS->getVideoBuffer(bufferIndex)), pixelColor, alpha);
+    }
+
     BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
     BUFFERS->setVideoBuffer(bufferIndex, pixelColor.getColor());
 }

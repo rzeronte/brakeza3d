@@ -101,7 +101,6 @@ public:
                     int y = i + yDrawPos;
                     if (Tools::isPixelInWindow(x, y)) {
                         buffer->setVideoBuffer(x, y, pixels[bufferIndex]);
-
                     }
                 }
             }

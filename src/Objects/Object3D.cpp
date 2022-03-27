@@ -10,6 +10,8 @@ Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)
     setRotationFrameEnabled(false);
     setStencilBufferEnabled(false);
     setMotion(nullptr);
+    setAlpha(0);
+    setAlphaEnabled(false);
     this->stencilBuffer = nullptr;
     rotX = 0;
     rotY = 0;
@@ -209,17 +211,29 @@ bool Object3D::getStencilBufferValue(int i) const {
 }
 
 bool Object3D::getStencilBufferValue(int x, int y) const {
-    if (Tools::isPixelInWindow(x, y)) {
-        return this->stencilBuffer[y * EngineSetup::get()->screenWidth + x];
-    }
-
-    return false;
+    return this->stencilBuffer[y * EngineSetup::get()->screenWidth + x];
 }
 
-Motion *Object3D::getMotion() const {
+EnemyBehavior *Object3D::getMotion() const {
     return motion;
 }
 
-void Object3D::setMotion(Motion *motion) {
+void Object3D::setMotion(EnemyBehavior *motion) {
     Object3D::motion = motion;
+}
+
+float Object3D::getAlpha() const {
+    return alpha;
+}
+
+void Object3D::setAlpha(float alpha) {
+    Object3D::alpha = alpha;
+}
+
+bool Object3D::isAlphaEnabled() const {
+    return alphaEnabled;
+}
+
+void Object3D::setAlphaEnabled(bool alphaEnabled) {
+    Object3D::alphaEnabled = alphaEnabled;
 }

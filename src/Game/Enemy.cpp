@@ -4,7 +4,7 @@
 Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0) {
     this->stamina = this->startStamina;
     setState(EnemyState::ENEMY_STATE_STOP);
-    weaponType = new WeaponType("EnemyWeapon");
+    weaponType = new Weapon("EnemyWeapon");
 }
 
 void Enemy::takeDamage(float damageTaken) {
@@ -42,10 +42,26 @@ float Enemy::getStamina() const {
     return stamina;
 }
 
-void Enemy::setWeaponType(WeaponType *weaponType) {
+void Enemy::setWeaponType(Weapon *weaponType) {
     Enemy::weaponType = weaponType;
 }
 
 void Enemy::shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition) {
-    weaponType->shoot(parent, projectilePosition, direction);
+    weaponType->shootProjectile(parent, projectilePosition, direction);
+}
+
+Weapon *Enemy::getWeaponType() const {
+    return weaponType;
+}
+
+void Enemy::setStamina(float stamina) {
+    Enemy::stamina = stamina;
+}
+
+float Enemy::getStartStamina() const {
+    return startStamina;
+}
+
+void Enemy::setStartStamina(float startStamina) {
+    Enemy::startStamina = startStamina;
 }

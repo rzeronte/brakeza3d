@@ -6,11 +6,15 @@
 #include "../../include/Misc/Counter.h"
 #include "../../include/Particles/ParticleEmissor.h"
 #include "../../include/Physics/Mesh3DGhost.h"
-#include "../../include/Game/WeaponType.h"
+#include "../../include/Game/Weapon.h"
+#include "ShaderShield.h"
 
 #define INITIAL_STAMINA 100
+#define INITIAL_ENERGY 100
+#define INITIAL_RECOVER_ENERGY 0.01f
 #define INITIAL_LIVES 10
 #define INITIAL_POWER 100
+#define INITIAL_POWERDASH 6000
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 25
 
@@ -29,12 +33,19 @@ class Player : public Mesh3DGhost {
 private:
 
     float stamina;
+    float startStamina;
+    float energy;
+    float startEnergy;
+    float recoverEnergySpeed;
+
     int lives;
     Vertex3D velocity;
-    WeaponType *weaponType;
+    Weapon *weaponType;
     Counter *counterDamage;
     int killsCounter;
     int levelsCompletedCounter;
+    bool shieldEnabled;
+
 public:
     ParticleEmissor *engineParticles;
     Vertex3D engineParticlesPositionOffset;
@@ -44,7 +55,8 @@ public:
 
     PlayerState state;
 
-    std::vector<WeaponType *> weaponTypes;
+    ShaderShield *shield;
+    std::vector<Weapon *> weaponTypes;
 
     Player();
 
@@ -73,6 +85,7 @@ public:
     Vertex3D getVelocity();
     void setVelocity(Vertex3D v);
 
+    float dashPower;
     float power;
     float friction;
     float maxVelocity;
@@ -89,17 +102,17 @@ public:
 
     void setState(PlayerState state);
 
-    WeaponType *getWeaponType() const;
+    Weapon *getWeaponType() const;
 
-    void setWeaponType(WeaponType *weaponType);
+    void setWeaponType(Weapon *weaponType);
 
     void updateWeaponType();
 
     void createWeaponType(const std::string &label);
 
-    void addWeaponType(WeaponType *weaponType);
+    void addWeaponType(Weapon *weaponType);
 
-    WeaponType *getWeaponTypeByLabel(const std::string& label);
+    Weapon *getWeaponTypeByLabel(const std::string& label);
 
     void setWeaponTypeByIndex(int i);
 
@@ -120,6 +133,28 @@ public:
     int getLevelCompletedCounter() const;
 
     void setLevelCompletedCounter(int levelCounter);
+
+    const std::vector<Weapon *> &getWeaponTypes() const;
+
+    bool isShieldEnabled() const;
+
+    void setShieldEnabled(bool shieldEnabled);
+
+    float getEnergy() const;
+
+    void setEnergy(float energy);
+
+    int getStartStamina() const;
+
+    void setStartStamina(int startStamina);
+
+    float getStartEnergy() const;
+
+    void setStartEnergy(float startEnergy);
+
+    float getRecoverEnergySpeed() const;
+
+    void setRecoverEnergySpeed(float recoverEnergySpeed);
 };
 
 

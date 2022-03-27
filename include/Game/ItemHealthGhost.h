@@ -1,7 +1,3 @@
-//
-// Created by darkhead on 2/1/20.
-//
-
 #ifndef BRAKEDA3D_ITEMHEALTHGHOST_H
 #define BRAKEDA3D_ITEMHEALTHGHOST_H
 
@@ -16,6 +12,8 @@ public:
     void setAid(float aid);
 
     float getAid() const;
+
+    void resolveCollision(Collisionable *collisionable) override;
 };
 
 

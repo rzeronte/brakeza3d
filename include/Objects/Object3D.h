@@ -5,13 +5,13 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
-#include "../Game/Motion.h"
+#include "../Game/EnemyBehavior.h"
 
 class Object3D {
     Vertex3D position;
     M3 rotation;
     bool *stencilBuffer;
-    Motion *motion;
+    EnemyBehavior *motion;
 public:
     float rotX, rotY, rotZ; // For easy management from UI
     Object3D *parent;
@@ -109,9 +109,20 @@ public:
 
     bool getStencilBufferValue(int x, int y) const;
 
-    Motion *getMotion() const;
+    EnemyBehavior *getMotion() const;
 
-    void setMotion(Motion *motion);
+    void setMotion(EnemyBehavior *motion);
+
+    float getAlpha() const;
+
+    void setAlpha(float alpha);
+
+    bool isAlphaEnabled() const;
+
+    void setAlphaEnabled(bool alphaEnabled);
+
+    bool alphaEnabled;
+    float alpha;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

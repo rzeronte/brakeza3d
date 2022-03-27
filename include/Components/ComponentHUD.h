@@ -52,9 +52,13 @@ public:
 
     void drawPlayerStamina(int y);
 
+    void drawPlayerEnergy(int y);
+
     void drawEnemyStamina(int y);
 
     int getButtonsOffsetY();
+
+
 };
 
 

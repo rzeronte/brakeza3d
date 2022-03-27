@@ -9,9 +9,10 @@ public:
     unsigned int r;
     unsigned int g;
     unsigned int b;
+    unsigned int a;
 
     Color();
-    Color(int r, int g, int b);
+    Color(int r, int g, int b, int a = 0);
     Color(uint32_t v);
 
     Color operator+(const Color &pm) const;
@@ -41,9 +42,12 @@ public:
 
     uint32_t getColor();
 
-private:
+    unsigned int getA() const;
+
+    void setA(unsigned int a);
 
     uint32_t color;
+
 };
 
 

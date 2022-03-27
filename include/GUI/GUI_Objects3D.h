@@ -73,6 +73,8 @@ public:
         std::string rotation_text = "Rotation##" + std::to_string(i);
         std::string follow_camera_text = "FollowCamera##" + std::to_string(i);
         std::string draw_offset_text = "DrawOffset##" + std::to_string(i);
+        std::string alpha_text = "Alpha Channel##" + std::to_string(i);
+        std::string alpha_value_text = "Alpha Value##" + std::to_string(i);
 
         const float range_min = -90000;
         const float range_max = 90000;
@@ -82,10 +84,15 @@ public:
         const float range_angle_max = 360;
         const float range_angle_sensibility = 0.1;
 
+        const int range_alpha_min = 0;
+        const int range_alpha_max = 255;
+        const int range_alpha_sensibility = 1;
+
         // enabled
         ImGui::Checkbox(enabled_text.c_str(), &object->enabled);
         ImGui::Checkbox(stencilBuffer_text.c_str(), &object->stencilBufferEnabled);
         ImGui::Checkbox(follow_camera_text.c_str(), &object->followCamera);
+        ImGui::Checkbox(alpha_text.c_str(), &object->alphaEnabled);
 
         if (ImGui::IsItemEdited()) {
             object->setStencilBufferEnabled(object->stencilBufferEnabled);
@@ -118,6 +125,13 @@ public:
                 object->setRotation(M3::getMatrixRotationForEulerAngles(object->rotX, object->rotY, object->rotZ));
             }
             ImGui::TreePop();
+        }
+
+        if (object->alphaEnabled) {
+            if (ImGui::TreeNode(alpha_value_text.c_str())) {
+                ImGui::DragScalar("Alpha", ImGuiDataType_Float, &object->alpha, range_alpha_sensibility,&range_alpha_min, &range_alpha_max, "%f", 1.0f);
+                ImGui::TreePop();
+            }
         }
 
         // drawOffset

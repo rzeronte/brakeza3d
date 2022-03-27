@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../include/Components/ComponentMenu.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Game/EnemyBehaviorPatrol.h"
 
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
@@ -12,6 +13,20 @@ ComponentMenu::ComponentMenu() {
 
 void ComponentMenu::onStart() {
     Logging::Log("ComponentMenu onStart", "ComponentMenu");
+
+    spaceship = new Mesh3D();
+    spaceship->setEnabled(true);
+    spaceship->setLabel("spaceshipMenu");
+    spaceship->setEnableLights(true);
+    spaceship->setRotation(90, 0, 0);
+    spaceship->setPosition(Vertex3D(1500, -1150, 2250));
+    spaceship->setStencilBufferEnabled(true);
+    spaceship->setRotationFrameEnabled(true);
+    spaceship->setRotationFrame(Vertex3D(0, 0, 0.1));
+    spaceship->setScale(1);
+    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_spaceship_03.fbx"));
+
+    Brakeza3D::get()->addObject3D(spaceship, spaceship->getLabel());
     loadMenuOptions();
 }
 
@@ -75,7 +90,6 @@ void ComponentMenu::loadMenuOptions() {
 
 void ComponentMenu::drawOptions(SDL_Surface *dst) {
 
-    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
     auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
     int offsetY = 50;
@@ -85,7 +99,7 @@ void ComponentMenu::drawOptions(SDL_Surface *dst) {
         std::string text = this->options[i]->getLabel();
         bool bold = false;
 
-        if (i == ComponentMenu::MNU_NEW_GAME && levelInfo->isLevelStartedToPlay()) {
+        if (i == ComponentMenu::MNU_NEW_GAME && (levelInfo->getCurrentLevelIndex() > 0 || levelInfo->isLevelStartedToPlay())) {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 
@@ -102,3 +116,9 @@ void ComponentMenu::drawOptions(SDL_Surface *dst) {
         offsetY += stepY;
     }
 }
+
+void ComponentMenu::setEnabled(bool value) {
+    Component::setEnabled(value);
+    spaceship->setEnabled(value);
+}
+

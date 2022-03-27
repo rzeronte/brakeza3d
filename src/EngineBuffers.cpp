@@ -55,6 +55,11 @@ uint32_t EngineBuffers::getVideoBuffer(int x, int y) const {
     return videoBuffer[y * this->widthVideoBuffer + x];
 }
 
+uint32_t EngineBuffers::getVideoBuffer(int bufferIndex) const
+{
+    return videoBuffer[bufferIndex];
+}
+
 void EngineBuffers::clearVideoBuffer() const {
     if (EngineSetup::get()->ENABLE_FOG) {
         std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::get()->FOG_COLOR.getColor());

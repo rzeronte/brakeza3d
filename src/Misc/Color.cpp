@@ -5,11 +5,13 @@
 Color::Color() {
 
 }
-Color::Color(int r, int g, int b)
+
+Color::Color(int r, int g, int b, int a)
 {
     this->r = r;
     this->g = g;
     this->b = b;
+    this->a = a;
 
     this->color = (b << 16) + (g << 8) + (r);
 }
@@ -88,4 +90,12 @@ Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
         (c2.g * c2Intensity) + (c1.g * originIntensity),
         (c2.b * c2Intensity) + (c1.b * originIntensity)
     );
+}
+
+unsigned int Color::getA() const {
+    return a;
+}
+
+void Color::setA(unsigned int a) {
+    Color::a = a;
 }

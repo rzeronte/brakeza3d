@@ -76,3 +76,23 @@ void ComponentSound::loadSoundsJSON() {
     }
 }
 
+void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times) {
+    if (chunk == nullptr) {
+        Logging::Log("Error loading chunk sound", "Sound");
+        return;
+    }
+
+    Mix_PlayChannel(channel, chunk, times);
+}
+
+void ComponentSound::playMusic(Mix_Music *music, int loops = -1)
+{
+    Mix_PlayMusic(music, loops);
+
+}
+
+void ComponentSound::stopMusic()
+{
+    Mix_HaltMusic();
+}
+

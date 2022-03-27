@@ -2,13 +2,22 @@
 #include "../../src/Game/Player.h"
 #include "../Brakeza3D.h"
 #include "../Particles/ParticleEmissorGravity.h"
-#include "AmmoProjectileGhost.h"
+#include "AmmoProjectileBody.h"
 #include "ItemWeaponGhost.h"
+#include "ItemHealthGhost.h"
 
 Player::Player() : state(PlayerState::EMPTY),
-                   stamina(INITIAL_STAMINA), lives(INITIAL_LIVES),
-                   power(INITIAL_POWER), friction(INITIAL_FRICTION), maxVelocity(INITIAL_MAX_VELOCITY) {
-
+                   stamina(INITIAL_STAMINA),
+                   startStamina(INITIAL_STAMINA),
+                   energy(INITIAL_ENERGY),
+                   startEnergy(INITIAL_ENERGY),
+                   recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+                   lives(INITIAL_LIVES),
+                   power(INITIAL_POWER),
+                   friction(INITIAL_FRICTION),
+                   maxVelocity(INITIAL_MAX_VELOCITY),
+                   dashPower(INITIAL_POWERDASH)
+{
     engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::gray());
     engineParticles->setRotationFrame(0, 4, 5);
 
@@ -30,6 +39,9 @@ Player::Player() : state(PlayerState::EMPTY),
     levelsCompletedCounter = 0;
 
     this->counterDamage = new Counter(3);
+    this->shield = new ShaderShield(20, 0.2);
+
+    this->shieldEnabled = false;
 }
 
 int Player::getStamina() const {
@@ -56,6 +68,13 @@ void Player::evalStatusMachine() {
 }
 
 void Player::takeDamage(float dmg) {
+
+    if (isShieldEnabled() && getEnergy() > 0) {
+        Logging::getInstance()->Log("ieah");
+        setEnergy(getEnergy() - dmg);
+        return;
+    }
+
     this->stamina -= dmg;
 
     if (state != PlayerState::GETTING_DAMAGE) {
@@ -66,7 +85,7 @@ void Player::takeDamage(float dmg) {
 
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
-        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::MENU);
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
         lives--;
 
         if (lives <= 0) {
@@ -75,25 +94,45 @@ void Player::takeDamage(float dmg) {
     }
 }
 
-void Player::respawn() {
-    Logging::getInstance()->Log("respawn");
+void Player::respawn()
+{
+    Logging::getInstance()->Log("Respawn Player");
 
     setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
 }
 
-void Player::shoot() {
+void Player::shoot()
+{
     if (weaponType == nullptr) {
         return;
     }
 
-    Logging::Log("ComponentWeapons shoot!", "Weapons");
+    Logging::Log("ComponentWeapons shootProjectile!", "Weapons");
 
-    weaponType->shoot(
-        this,
-        getPosition() - AxisUp().getScaled(1000),
-        AxisUp().getInverse()
-    );
+    if (getWeaponType()->getType() == WeaponTypes::WEAPON_PROJECTILE) {
+        weaponType->shootProjectile(
+            this,
+            getPosition() - AxisUp().getScaled(1000),
+            AxisUp().getInverse()
+        );
+    }
+
+    if (getWeaponType()->getType() == WeaponTypes::WEAPON_INSTANT) {
+        auto enemy = dynamic_cast<EnemyGhost*>(ComponentsManager::get()->getComponentRender()->getSelectedObject());
+            weaponType->shootInstant(
+                getPosition(),
+                enemy
+            );
+    }
+
+    if (getWeaponType()->getType() == WeaponTypes::WEAPON_SMART_PROJECTILE) {
+        weaponType->shootSmartProjectile(
+                this,
+                getPosition() - AxisUp().getScaled(1000),
+                AxisUp().getInverse()
+        );
+    }
 }
 
 void Player::jump() {
@@ -115,13 +154,22 @@ void Player::getAid(float aid) {
     }
 }
 
-void Player::onUpdate() {
+void Player::onUpdate()
+{
     Mesh3D::onUpdate();
 
     updateEngineParticles();
     updateLight();
     updateWeaponType();
     applyFriction();
+
+    if (getEnergy() < getStartEnergy()) {
+        setEnergy(std::min(getEnergy() + recoverEnergySpeed, getStartEnergy()));
+    }
+
+    if (isShieldEnabled()) {
+        shield->onUpdate(getPosition());
+    }
 
     if (state == PlayerState::GETTING_DAMAGE) {
         counterDamage->update();
@@ -188,7 +236,7 @@ void Player::resolveCollision(Collisionable *with) {
     Logging::getInstance()->Log("Player: Collision "  + getLabel() + " with " + object->getLabel());
 
     Mesh3DGhost::resolveCollision(with);
-    auto projectile = dynamic_cast<AmmoProjectileGhost*> (with);
+    auto projectile = dynamic_cast<AmmoProjectileBody*> (with);
     if (projectile != nullptr) {
         if (projectile->getParent() != this) {
             takeDamage(projectile->getWeaponType()->getDamage());
@@ -203,17 +251,25 @@ void Player::resolveCollision(Collisionable *with) {
         weapon->removeCollisionObject();
         weapon->setRemoved(true);
     }
+
+    auto health = dynamic_cast<ItemHealthGhost*> (with);
+    if (health != nullptr) {
+        Logging::getInstance()->Log("Health to Player!");
+        getAid(health->getAid());
+        health->removeCollisionObject();
+        health->setRemoved(true);
+    }
 }
 
 void Player::setState(PlayerState state) {
     Player::state = state;
 }
 
-WeaponType *Player::getWeaponType() const {
+Weapon *Player::getWeaponType() const {
     return weaponType;
 }
 
-void Player::setWeaponType(WeaponType *weaponType) {
+void Player::setWeaponType(Weapon *weaponType) {
     Player::weaponType = weaponType;
 }
 
@@ -224,10 +280,10 @@ void Player::updateWeaponType() {
 }
 
 void Player::createWeaponType(const std::string& label) {
-    this->weaponTypes.emplace_back(new WeaponType(label));
+    this->weaponTypes.emplace_back(new Weapon(label));
 }
 
-void Player::addWeaponType(WeaponType *weaponType)
+void Player::addWeaponType(Weapon *weaponType)
 {
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
     if (weapon != nullptr) {
@@ -239,7 +295,7 @@ void Player::addWeaponType(WeaponType *weaponType)
     this->weaponTypes.emplace_back(weaponType);
 }
 
-WeaponType *Player::getWeaponTypeByLabel(const std::string& label) {
+Weapon *Player::getWeaponTypeByLabel(const std::string& label) {
     for (auto & weaponType : this->weaponTypes) {
         if (weaponType->label == label) {
             return weaponType;
@@ -251,6 +307,7 @@ WeaponType *Player::getWeaponTypeByLabel(const std::string& label) {
 
 void Player::setWeaponTypeByIndex(int i) {
     if (weaponTypes.size() > i) {
+        Logging::getInstance()->Log("Weapon changed (" + std::to_string(i) + ")!");
         setWeaponType(weaponTypes[i]);
     } else {
         Logging::getInstance()->Log("Weapon not available(" + std::to_string(i) + ")!");
@@ -277,22 +334,71 @@ int Player::getKillsCounter() const {
     return killsCounter;
 }
 
-void Player::setKillsCounter(int killsCounter) {
+void Player::setKillsCounter(int killsCounter)
+{
     Player::killsCounter = killsCounter;
 }
 
-void Player::increaseKills() {
+void Player::increaseKills()
+{
     killsCounter++;
 }
 
-int Player::getLevelCompletedCounter() const {
+int Player::getLevelCompletedCounter() const
+{
     return levelsCompletedCounter;
 }
 
-void Player::setLevelCompletedCounter(int levelCounter) {
+void Player::setLevelCompletedCounter(int levelCounter)
+{
     Player::levelsCompletedCounter = levelCounter;
 }
 
-void Player::increaseLevelsCompleted() {
+void Player::increaseLevelsCompleted()
+{
     levelsCompletedCounter++;
+}
+
+const std::vector<Weapon *> &Player::getWeaponTypes() const {
+    return weaponTypes;
+}
+
+bool Player::isShieldEnabled() const {
+    return shieldEnabled;
+}
+
+void Player::setShieldEnabled(bool shieldEnabled) {
+    Player::shieldEnabled = shieldEnabled;
+}
+
+float Player::getEnergy() const {
+    return energy;
+}
+
+void Player::setEnergy(float energy) {
+    Player::energy = energy;
+}
+
+int Player::getStartStamina() const {
+    return startStamina;
+}
+
+void Player::setStartStamina(int startStamina) {
+    Player::startStamina = startStamina;
+}
+
+float Player::getStartEnergy() const {
+    return startEnergy;
+}
+
+void Player::setStartEnergy(float startEnergy) {
+    Player::startEnergy = startEnergy;
+}
+
+float Player::getRecoverEnergySpeed() const {
+    return recoverEnergySpeed;
+}
+
+void Player::setRecoverEnergySpeed(float recoverEnergySpeed) {
+    Player::recoverEnergySpeed = recoverEnergySpeed;
 }

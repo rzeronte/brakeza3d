@@ -23,6 +23,7 @@ public:
 
     bool enabled;
     Player *player;
+    int currentWeaponIndex;
 
     bool isEnabled() const;
 
@@ -47,6 +48,10 @@ public:
     void handleFindClosestObject3D(SDL_Event *event);
 
     void handleGamePadMovingPlayer();
+
+    void handleDashMovement(SDL_Event *pEvent);
+
+    void handleShield(SDL_Event *event);
 };
 
 

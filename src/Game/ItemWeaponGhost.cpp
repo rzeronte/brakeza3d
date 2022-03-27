@@ -1,8 +1,8 @@
 #include "../../include/Game/ItemWeaponGhost.h"
 
-ItemWeaponGhost::ItemWeaponGhost(WeaponType *weaponType) : weaponType(weaponType) {
+ItemWeaponGhost::ItemWeaponGhost(Weapon *weaponType) : weaponType(weaponType) {
 }
 
-WeaponType *ItemWeaponGhost::getWeaponType() const {
+Weapon *ItemWeaponGhost::getWeaponType() const {
     return weaponType;
 }

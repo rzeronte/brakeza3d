@@ -2,7 +2,7 @@
 #include "../../include/Game/EnemyGhost.h"
 #include "../../include/Physics/Projectile3DBody.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Game/AmmoProjectileGhost.h"
+#include "../../include/Game/AmmoProjectileBody.h"
 
 
 EnemyGhost::EnemyGhost() {
@@ -20,6 +20,11 @@ void EnemyGhost::onUpdate() {
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("enemyExplosion"),
+            EngineSetup::SoundChannels::SND_ENVIRONMENT,
+            1
+        );
         remove();
     }
 
@@ -34,7 +39,7 @@ void EnemyGhost::integrate() {
 void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
     Mesh3DGhost::resolveCollision(collisionableObject);
 
-    auto *projectile = dynamic_cast<AmmoProjectileGhost*> (collisionableObject);
+    auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionableObject);
     if (projectile != nullptr) {
         this->takeDamage(projectile->getWeaponType()->getDamage());
     }

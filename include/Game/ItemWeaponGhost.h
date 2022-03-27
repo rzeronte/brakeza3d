@@ -7,15 +7,15 @@
 
 
 #include "../Physics/Mesh3DGhost.h"
-#include "WeaponType.h"
+#include "Weapon.h"
 
 class ItemWeaponGhost : public Mesh3DGhost {
 public:
-    ItemWeaponGhost(WeaponType *weaponType);
+    ItemWeaponGhost(Weapon *weaponType);
 
-    WeaponType *weaponType;
+    Weapon *weaponType;
 
-    WeaponType *getWeaponType() const;
+    Weapon *getWeaponType() const;
 };
 
 

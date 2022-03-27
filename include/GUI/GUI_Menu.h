@@ -50,9 +50,9 @@ public:
         const float range_sensibility_lava_min = -5;
         const float range_sensibility_lava_max = 5;
 
-        const float range_sensibility_lightnin = 0.05;
-        const float range_sensibility_lightnin_min = -10;
-        const float range_sensibility_lightnin_max = 10;
+        const float range_sensibility_lightnin = 0.5;
+        const float range_sensibility_lightnin_min = -1000;
+        const float range_sensibility_lightnin_max = 10000;
 
         const float range_sensibility_fire = 1;
         const float range_sensibility_fire_min = 0;

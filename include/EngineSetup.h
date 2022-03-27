@@ -203,9 +203,9 @@ public:
 
     //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;
-    float LIGHTNING_OFFSET_REDUCTION = 5.f;
-    float LIGHTNING_PROBABILITY_BRANCH = 1.5;
-    float LIGHTNING_SEGMENT_SHIFT = 0.7;
+    float LIGHTNING_OFFSET_REDUCTION = 500.f;
+    float LIGHTNING_PROBABILITY_BRANCH = 1.5f;
+    float LIGHTNING_SEGMENT_SHIFT = 2.5f;
 
     //LIGHTNING  EFFECT
     float FIRE_DIVISOR1 = 32;
@@ -213,8 +213,6 @@ public:
 
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_WEAPONS_SYSTEM = false;
-
-    char *LIGHT_PATTERNS[12];
 
     bool ENABLE_IA = true;
     float ZOOM_FOV = 40;
@@ -266,7 +264,7 @@ public:
         SND_WEAPON = 5,
         SND_WEAPON_LOOP = 6,
         SND_BLOOD_HIT = 7,
-        SND_CASINGS = 8
+        SND_ENEMIES = 8
     };
 
     enum ShaderTypes {
@@ -288,11 +286,12 @@ public:
         NONE = 0,
         SPLASH = 1,
         MENU = 2,
-        PRESSKEY = 3,
-        GAMING = 4,
-        HELP = 5,
-        ENDGAME = 6,
-        CREDITS = 7
+        PRESSKEY_NEWLEVEL = 3,
+        PRESSKEY_BY_DEAD = 4,
+        GAMING = 5,
+        HELP = 6,
+        PRESSKEY_GAMEOVER = 7,
+        CREDITS = 8
     } GameState;
 };
 

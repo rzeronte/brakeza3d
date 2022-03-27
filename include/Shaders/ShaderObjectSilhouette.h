@@ -41,12 +41,13 @@ public:
             return;
         }
 
-        auto buffer = EngineBuffers::getInstance();
-        for (int y = 0; y < screenHeight; y++) {
+        Uint32 *videoBuffer = EngineBuffers::getInstance()->videoBuffer;
+        for (int y = 0; y < screenHeight ; y++) {
             for (int x = 0; x < screenWidth; x++) {
-                if (isBorderPixel(x, y)) {
-                    buffer->setVideoBuffer(x, y, this->color.getColor());
+                if (isBorderPixel(x, y) && x < screenWidth-1) {
+                    *videoBuffer = this->color.getColor();
                 }
+                videoBuffer++;
             }
         }
     }
@@ -71,18 +72,18 @@ private:
 
         if (isFilled) return false;
 
-        bool topLeft = this->object->getStencilBufferValue(x-1, y-1);
-        bool topMiddle = this->object->getStencilBufferValue(x, y-1);
-        bool topRight = this->object->getStencilBufferValue(x+1, y-1);
+        bool topLeft = this->object->getStencilBufferValue(std::max(0, x-1), std::max(0, y-1));
+        bool topMiddle = this->object->getStencilBufferValue(x, std::max(0, y-1));
+        bool topRight = this->object->getStencilBufferValue(std::min(screenWidth, x+1), std::max(0, y-1));
 
-        bool centerLeft = this->object->getStencilBufferValue(x-1, y);
-        bool centerRight = this->object->getStencilBufferValue(x+1, y);
+        bool centerLeft = this->object->getStencilBufferValue(std::max(0, x-1), y);
+        bool centerRight = this->object->getStencilBufferValue(std::min(screenWidth, x+1), y);
 
-        bool bottomLeft = this->object->getStencilBufferValue(x-1, y+1);
-        bool bottomMiddle = this->object->getStencilBufferValue(x, y+1);
-        bool bottomRight = this->object->getStencilBufferValue(x+1, y+1);
+        bool bottomLeft = this->object->getStencilBufferValue(std::max(0, x-1), y+1);
+        bool bottomMiddle = this->object->getStencilBufferValue(x, std::min(screenHeight, y+1));
+        bool bottomRight = this->object->getStencilBufferValue(std::min(screenWidth, x+1), std::min(screenHeight, y+1));
 
-        if (topLeft || topMiddle || topRight || centerLeft || centerRight ||bottomLeft || bottomMiddle || bottomRight) {
+        if (topLeft || topMiddle || topRight || centerLeft || centerRight || bottomLeft || bottomMiddle || bottomRight) {
             return true;
         }
 
