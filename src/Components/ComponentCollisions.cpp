@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Physics/Projectile3DBody.h"
 
 ComponentCollisions::ComponentCollisions() = default;
 
@@ -163,7 +164,7 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->setRotation(
         (float) Tools::random(0, 180),
         (float) Tools::random(0, 180),
-        (float)Tools::random(0, 180)
+        (float) Tools::random(0, 180)
     );
     projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition());
@@ -175,7 +176,9 @@ void ComponentCollisions::demoProjectile(int type) {
         camera->getRotation().getTranspose() * EngineSetup::get()->forward,
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::AllFilter
     );
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 }

@@ -9,7 +9,7 @@ Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)
     setFollowCamera(false);
     setRotationFrameEnabled(false);
     setStencilBufferEnabled(false);
-    setMotion(nullptr);
+    setBehavior(nullptr);
     setAlpha(0);
     setAlphaEnabled(false);
     this->stencilBuffer = nullptr;
@@ -147,7 +147,7 @@ void Object3D::onUpdate() {
         clearStencilBuffer();
     }
 
-    if (getMotion() != nullptr) {
+    if (getBehavior() != nullptr) {
         motion->onUpdate(position);
     }
 }
@@ -214,11 +214,11 @@ bool Object3D::getStencilBufferValue(int x, int y) const {
     return this->stencilBuffer[y * EngineSetup::get()->screenWidth + x];
 }
 
-EnemyBehavior *Object3D::getMotion() const {
+EnemyBehavior *Object3D::getBehavior() const {
     return motion;
 }
 
-void Object3D::setMotion(EnemyBehavior *motion) {
+void Object3D::setBehavior(EnemyBehavior *motion) {
     Object3D::motion = motion;
 }
 

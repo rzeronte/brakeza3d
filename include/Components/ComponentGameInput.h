@@ -52,6 +52,8 @@ public:
     void handleDashMovement(SDL_Event *pEvent);
 
     void handleShield(SDL_Event *event);
+
+    void updateWeaponStatus(SDL_Event *event);
 };
 
 

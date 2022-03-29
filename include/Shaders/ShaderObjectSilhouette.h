@@ -44,7 +44,7 @@ public:
         Uint32 *videoBuffer = EngineBuffers::getInstance()->videoBuffer;
         for (int y = 0; y < screenHeight ; y++) {
             for (int x = 0; x < screenWidth; x++) {
-                if (isBorderPixel(x, y) && x < screenWidth-1) {
+                if (isBorderPixel(x, y) && x < screenWidth-1 && y < screenHeight - 1) {
                     *videoBuffer = this->color.getColor();
                 }
                 videoBuffer++;

@@ -18,7 +18,7 @@ typedef enum {
 class Enemy {
 public:
     EnemyState state;
-    Weapon *weaponType;
+    Weapon *weapon;
 
     float startStamina;
     float stamina;
@@ -46,9 +46,7 @@ public:
 
     void setWeaponType(Weapon *weaponType);
 
-    void shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition);
-
-    Weapon *getWeaponType() const;
+    Weapon *getWeapon() const;
 
     void setStamina(float stamina);
 

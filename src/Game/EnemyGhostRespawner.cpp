@@ -25,7 +25,7 @@ void EnemyGhostRespawner::onUpdate()
     object->setAlpha(object->getAlpha() + increase);
 
       if (counter.isFinished()) {
-        object->getWeaponType()->counterCadence->setEnabled(true);
+          object->getWeapon()->counterCadence->setEnabled(true);
         object->setAlphaEnabled(false);
         counter.setEnabled(false);
         this->setRemoved(true);

@@ -1046,7 +1046,7 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (DoorGhost)");
 }
@@ -1062,7 +1062,7 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (Mesh3DGhost)");
 }

@@ -54,11 +54,14 @@ public:
 
     void drawPlayerEnergy(int y);
 
-    void drawEnemyStamina(int y);
+    void drawEnemySelectedStamina(int y);
 
     int getButtonsOffsetY();
 
 
+    void drawEnemies();
+
+    void drawEnemyStats(Point2D screenPoint, float fixedWidth, float value, float startValue, Color c);
 };
 
 

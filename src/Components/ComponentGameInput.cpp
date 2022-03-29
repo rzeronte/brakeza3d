@@ -58,6 +58,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
         ComponentsManager::get()->getComponentSound()->playSound(BUFFERS->soundPackage->getByLabel("startGame"),EngineSetup::SoundChannels::SND_MENU, 0);
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
         ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
+        ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
@@ -70,6 +71,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->getPlayer()->respawn();
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
+        ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
     }
 
     if (state == EngineSetup::GameState::GAMING) {
@@ -77,6 +79,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
         this->handleWeaponSelector(event);
         this->handleDashMovement(event);
         this->handleShield(event);
+        this->updateWeaponStatus(event);
     }
 
     //this->handleZoom(event);
@@ -141,8 +144,10 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
             if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
+                ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.005);
                 ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
                 ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("level01Music"), -1);
+
                 player->respawn();
             } else {
                 ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
@@ -326,7 +331,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
     ) {
         ComponentsManager::get()->getComponentSound()->playSound(
             BUFFERS->soundPackage->getByLabel("dash"),
-            EngineSetup::SoundChannels::SND_ENVIRONMENT,
+            EngineSetup::SoundChannels::SND_PLAYER,
             0
         );
 
@@ -348,5 +353,20 @@ void ComponentGameInput::handleShield(SDL_Event *event) {
 
     if (!componentInput->controllerButtonX) {
         player->setShieldEnabled(false);
+    }
+}
+
+void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
+
+    if (event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+        player->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    }
+
+    if (player->getWeapon()->getStatus() == WeaponStatus::PRESSED) {
+        player->getWeapon()->setStatus(WeaponStatus::SUSTAINED);
+    }
+
+    if (player->getWeapon()->getStatus() == WeaponStatus::RELEASED) {
+        player->getWeapon()->setStatus(WeaponStatus::NONE);
     }
 }

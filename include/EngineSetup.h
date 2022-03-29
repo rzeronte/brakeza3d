@@ -136,8 +136,8 @@ public:
 
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";
-    std::string CFG_WEAPONS = "weapons.json";
-    std::string CFG_ENEMIES = "enemies.json";
+    std::string CFG_WEAPONS = "playerWeapons.json";
+    std::string CFG_ENEMIES = "level01.json";
     std::string CFG_SOUNDS = "sounds.json";
 
     std::string CONCHARS_SPRITE_FILE = "conchars.png";
@@ -229,11 +229,11 @@ public:
     bool GAMEPAD_CONTROLLER_ENABLED = true;
 
     enum collisionGroups {
-        DefaultFilter = 1,
-        StaticFilter = 2,
-        KinematicFilter = 4,
-        DebrisFilter = 8,
-        SensorTrigger = 16,
+        Player = 1,
+        Enemy = 2,
+        Projectile = 4,
+        Health = 8,
+        Weapon = 16,
         CharacterFilter = 32,
         CameraTrigger = 64,
         BSPHullTrigger = 128,

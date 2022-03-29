@@ -13,6 +13,9 @@ void EnemyGhost::onUpdate() {
 
     Vector3D way(ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(), getPosition());
 
+
+    getWeapon()->onUpdate();
+
     setRotation(M3::getFromVectors(
         EngineSetup::get()->forward,
         way.getComponent().getNormalize()
@@ -28,7 +31,7 @@ void EnemyGhost::onUpdate() {
         remove();
     }
 
-    weaponType->counterCadence->update();
+    weapon->counterCadence->update();
 }
 
 
@@ -58,10 +61,38 @@ void EnemyGhost::remove() {
 void EnemyGhost::shoot(Object3D *target)
 {
     Vector3D way(getPosition(), target->getPosition());
-    Enemy::shoot(
-        this,
-        way.getComponent().getNormalize(),
-        getPosition() - AxisUp().getScaled(1000)
-    );
+
+    Vertex3D direction = way.getComponent().getNormalize();
+    Vertex3D positionProjectile = getPosition() - AxisUp().getScaled(1000);
+
+    switch(weapon->getType()) {
+        case WeaponTypes::WEAPON_PROJECTILE: {
+            weapon->shootProjectile(
+                this,
+                positionProjectile,
+                direction,
+                EngineSetup::collisionGroups::Player
+            );
+            break;
+        }
+        case WeaponTypes::WEAPON_INSTANT: {
+            weapon->shootInstant(
+                getPosition(),
+                target
+            );
+            break;
+        }
+        case WeaponTypes::WEAPON_SMART_PROJECTILE: {
+            weapon->shootSmartProjectile(
+                this,
+                positionProjectile,
+                direction,
+                EngineSetup::collisionGroups::Player,
+                target
+            );
+            break;
+        }
+    }
+
 }
 

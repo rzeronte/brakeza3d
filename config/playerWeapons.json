@@ -1,0 +1,55 @@
+{
+  "weapons": [
+    {
+      "index": 0,
+      "name": "Linear",
+      "damage": 50,
+      "amount": 999,
+      "speed": 500,
+      "dispersion": 10,
+      "accuracy": 100,
+      "cadenceTime": 0.15,
+      "stop": false,
+      "stopDuration": 1,
+      "stopEvery": 5,
+      "type": 0,
+      "icon": "flare.png",
+      "modelProjectile": "projectile_weapon_01.fbx",
+      "model": "item_weapon_01.fbx"
+    },
+    {
+      "index": 1,
+      "name": "Instant",
+      "damage": 1.5,
+      "amount": 5000,
+      "speed": 500,
+      "dispersion": 10,
+      "accuracy": 100,
+      "cadenceTime": 0.25,
+      "stop": false,
+      "stopDuration": 0,
+      "stopEvery": 0,
+      "type": 1,
+      "icon": "plague.png",
+      "modelProjectile": "projectile_weapon_02.fbx",
+      "model": "item_weapon_02.fbx"
+    },
+    {
+      "index": 2,
+      "name": "Smart",
+      "damage": 40,
+      "amount": 100,
+      "speed": 100,
+      "dispersion": 10,
+      "accuracy": 100,
+      "cadenceTime": 0.30,
+      "stop": false,
+      "stopDuration": 1,
+      "stopEvery": 5,
+      "type": 2,
+      "icon": "needles.png",
+      "modelProjectile": "projectile_weapon_03.fbx",
+      "model": "item_weapon_03.fbx"
+    }
+  ]
+}

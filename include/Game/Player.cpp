@@ -38,7 +38,7 @@ Player::Player() : state(PlayerState::EMPTY),
     killsCounter = 0;
     levelsCompletedCounter = 0;
 
-    this->counterDamage = new Counter(3);
+    this->counterDamage = new Counter(1);
     this->shield = new ShaderShield(20, 0.2);
 
     this->shieldEnabled = false;
@@ -69,8 +69,11 @@ void Player::evalStatusMachine() {
 
 void Player::takeDamage(float dmg) {
 
+    if (state == PlayerState::GETTING_DAMAGE) {
+        return;
+    }
+
     if (isShieldEnabled() && getEnergy() > 0) {
-        Logging::getInstance()->Log("ieah");
         setEnergy(getEnergy() - dmg);
         return;
     }
@@ -78,26 +81,26 @@ void Player::takeDamage(float dmg) {
     this->stamina -= dmg;
 
     if (state != PlayerState::GETTING_DAMAGE) {
-        setState(PlayerState::GETTING_DAMAGE);
-        counterDamage->setEnabled(true);
-        startBlinkForPlayer();
+        startPlayerBlink();
     }
 
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
         lives--;
-
-        if (lives <= 0) {
-            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::MENU);
-        }
     }
+}
+
+void Player::startPlayerBlink()
+{
+    setState(PlayerState::GETTING_DAMAGE);
+    counterDamage->setEnabled(true);
+    startBlinkShaderForPlayer();
 }
 
 void Player::respawn()
 {
     Logging::getInstance()->Log("Respawn Player");
-
     setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
 }
@@ -108,30 +111,36 @@ void Player::shoot()
         return;
     }
 
-    Logging::Log("ComponentWeapons shootProjectile!", "Weapons");
+    Logging::getInstance()->Log("Player shot!");
 
-    if (getWeaponType()->getType() == WeaponTypes::WEAPON_PROJECTILE) {
-        weaponType->shootProjectile(
-            this,
-            getPosition() - AxisUp().getScaled(1000),
-            AxisUp().getInverse()
-        );
-    }
-
-    if (getWeaponType()->getType() == WeaponTypes::WEAPON_INSTANT) {
-        auto enemy = dynamic_cast<EnemyGhost*>(ComponentsManager::get()->getComponentRender()->getSelectedObject());
+    const int type = getWeapon()->getType();
+    switch(type) {
+        case WeaponTypes::WEAPON_PROJECTILE: {
+            weaponType->shootProjectile(
+                this,
+                getPosition() - AxisUp().getScaled(1000),
+                AxisUp().getInverse(),
+                EngineSetup::collisionGroups::Enemy
+            );
+            break;
+        }
+        case WeaponTypes::WEAPON_INSTANT: {
+            auto enemy = dynamic_cast<EnemyGhost*>(ComponentsManager::get()->getComponentRender()->getSelectedObject());
             weaponType->shootInstant(
                 getPosition(),
                 enemy
             );
-    }
-
-    if (getWeaponType()->getType() == WeaponTypes::WEAPON_SMART_PROJECTILE) {
-        weaponType->shootSmartProjectile(
+            break;
+        }
+        case WeaponTypes::WEAPON_SMART_PROJECTILE: {
+            weaponType->shootSmartProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
-                AxisUp().getInverse()
-        );
+                AxisUp().getInverse(),
+                EngineSetup::collisionGroups::Enemy,
+                nullptr
+            );
+        }
     }
 }
 
@@ -246,7 +255,7 @@ void Player::resolveCollision(Collisionable *with) {
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
     if (weapon != nullptr) {
-        this->addWeaponType(weapon->getWeaponType());
+        this->addWeapon(weapon->getWeaponType());
         Logging::getInstance()->Log("Added Weapon to Player:" + weapon->getWeaponType()->getLabel());
         weapon->removeCollisionObject();
         weapon->setRemoved(true);
@@ -265,7 +274,7 @@ void Player::setState(PlayerState state) {
     Player::state = state;
 }
 
-Weapon *Player::getWeaponType() const {
+Weapon *Player::getWeapon() const {
     return weaponType;
 }
 
@@ -279,16 +288,16 @@ void Player::updateWeaponType() {
     }
 }
 
-void Player::createWeaponType(const std::string& label) {
+void Player::createWeapon(const std::string& label) {
     this->weaponTypes.emplace_back(new Weapon(label));
 }
 
-void Player::addWeaponType(Weapon *weaponType)
+void Player::addWeapon(Weapon *weaponType)
 {
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
     if (weapon != nullptr) {
-        weapon->addAmount(weaponType->getAmmoAmount());
-        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getAmmoAmount()));
+        weapon->addAmount(weaponType->getAmmoAmount() / 4);
+        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount() / 4));
         return;
     }
 
@@ -318,7 +327,7 @@ void Player::setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObject
     Player::autoRotationSelectedObjectSpeed = autoRotationSelectedObjectSpeed;
 }
 
-void Player::startBlinkForPlayer() {
+void Player::startBlinkShaderForPlayer() {
     auto shaderBlink = dynamic_cast<ShaderBlink*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BLINK));
     shaderBlink->setObject(this);
     shaderBlink->setStep(0.05);

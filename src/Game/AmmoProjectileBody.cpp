@@ -4,6 +4,7 @@
 
 #include "../../include/Game/AmmoProjectileBody.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Game/ItemHealthGhost.h"
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
     return weaponType;
@@ -19,6 +20,11 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable) {
         return;
     }
 
+    auto health = dynamic_cast<ItemHealthGhost*> (collisionable);
+    if (health != nullptr) {
+        return;
+    }
+
     auto object = dynamic_cast<Object3D*> (collisionable);
     if (object != nullptr) {
         if (object == getParent()) {
@@ -29,7 +35,8 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable) {
     this->remove();
 }
 
-void AmmoProjectileBody::onUpdate() {
+void AmmoProjectileBody::onUpdate()
+{
     Projectile3DBody::onUpdate();
     updateBoundingBox();
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {

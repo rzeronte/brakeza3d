@@ -5,9 +5,10 @@
 #include "../../include/Game/AmmoSmartProjectileBody.h"
 
 Weapon::Weapon(const std::string& label) {
-    this->status = WeaponStatus::IDLE;
+    this->status = WeaponStatus::NONE;
     this->damage = 0;
     this->ammoAmount = 0;
+    this->startAmmoAmount = 0;
     this->accuracy = 100;
     this->damageRadius = 0;
     this->speed = 1;
@@ -20,10 +21,28 @@ Weapon::Weapon(const std::string& label) {
     this->counterCadence->setEnabled(true);
     this->modelProjectile = new Mesh3DBody();
     this->type = WeaponTypes::WEAPON_PROJECTILE;
+    this->stop = false;
+    this->stopDuration = 0;
+    this->stopEvery = 0;
 }
 
 void Weapon::onUpdate() {
     counterCadence->update();
+
+    if (isStop()) {
+        counterStopEvery->update();
+        counterStopDuration->update();
+
+        if (counterStopEvery->isFinished()) {
+            counterStopDuration->setEnabled(true);
+            counterStopEvery->setEnabled(false);
+        }
+
+        if (counterStopDuration->isFinished()) {
+            counterStopEvery->setEnabled(true);
+            counterStopDuration->setEnabled(false);
+        }
+    }
 }
 
 void Weapon::setSpeed(float speed) {
@@ -79,15 +98,20 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask)
 {
     const int ammoAmount = getAmmoAmount();
 
     if (ammoAmount <= 0) return;
 
+    if (isStop() && counterStopDuration->isEnabled()) {
+        return;
+    }
+
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
 
+        setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
@@ -105,23 +129,29 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
                 direction,
                 (float) getSpeed(),
                 getAccuracy(),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::collisionGroups::Projectile,
+                collisionMask
         );
 
         setAmmoAmount(ammoAmount - 1);
-
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
         ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction) {
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target) {
     const int ammoAmount = getAmmoAmount();
 
     if (ammoAmount <= 0) return;
 
+    if (isStop() && counterStopDuration->isEnabled()) {
+        return;
+    }
+
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
+        setStatus(WeaponStatus::PRESSED);
 
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
@@ -135,12 +165,19 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setPosition( position );
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
+
+        if (target != nullptr) {
+            projectile->setTarget(target);
+        }
+
         projectile->makeProjectileRigidBody(
-                0.1,
-                direction,
-                (float) getSpeed(),
-                getAccuracy(),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()
+            0.1,
+            direction,
+            (float) getSpeed(),
+            getAccuracy(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Projectile,
+            collisionMask
         );
 
         setAmmoAmount(ammoAmount - 1);
@@ -156,12 +193,21 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
 
     if (ammoAmount <= 0) return;
 
+    if (isStop() && counterStopDuration->isEnabled()) {
+        return;
+    }
+
     if (to != nullptr) {
         Drawable::drawLightning(from, to->getPosition());
         setAmmoAmount(ammoAmount - 1);
+        setStatus(WeaponStatus::PRESSED);
         auto enemy = dynamic_cast<EnemyGhost*>(to);
         if (enemy != nullptr) {
             enemy->takeDamage(getDamage());
+        }
+        auto player = dynamic_cast<Player*>(to);
+        if (player != nullptr) {
+            player->takeDamage(getDamage());
         }
     } else {
         auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(from, true, false);
@@ -172,6 +218,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
         if (enemy != nullptr) {
             enemy->takeDamage(getDamage());
             Drawable::drawLightning(from, closestObject->getPosition());
+            setStatus(WeaponStatus::PRESSED);
         }
     }
 }
@@ -241,4 +288,59 @@ int Weapon::getType() const {
 void Weapon::setType(int type) {
     Weapon::type = type;
 }
+
+int Weapon::getStatus() const {
+    return status;
+}
+
+void Weapon::setStatus(int status)
+{
+    if (status == WeaponStatus::PRESSED && getStatus() != PRESSED && getType() == WeaponTypes::WEAPON_INSTANT) {
+        ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),EngineSetup::SoundChannels::SND_ENVIRONMENT, -1);
+    }
+
+    if (status == WeaponStatus::RELEASED) {
+        ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_ENVIRONMENT);
+    }
+
+    Weapon::status = status;
+}
+
+int Weapon::getStartAmmoAmount() const {
+    return startAmmoAmount;
+}
+
+void Weapon::setStartAmmoAmount(int startAmmoAmount) {
+    Weapon::startAmmoAmount = startAmmoAmount;
+}
+
+bool Weapon::isStop() const {
+    return stop;
+}
+
+void Weapon::setStop(bool stop) {
+    Weapon::stop = stop;
+}
+
+float Weapon::getStopDuration() const {
+    return stopDuration;
+}
+
+void Weapon::setStopDuration(float stopDuration)
+{
+    Weapon::stopDuration = stopDuration;
+    this->counterStopDuration = new Counter(stopDuration);
+    this->counterStopDuration->setEnabled(false);
+}
+
+float Weapon::getStopEvery() const {
+    return stopEvery;
+}
+
+void Weapon::setStopEvery(float stopEverySeconds) {
+    Weapon::stopEvery = stopEverySeconds;
+    this->counterStopEvery = new Counter(stopEverySeconds);
+    this->counterStopEvery->setEnabled(true);
+}
+
 

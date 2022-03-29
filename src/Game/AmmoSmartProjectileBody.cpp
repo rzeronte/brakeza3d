@@ -16,12 +16,18 @@ void AmmoSmartProjectileBody::setTarget(Object3D *target) {
 void AmmoSmartProjectileBody::onUpdate() {
     AmmoProjectileBody::onUpdate();
 
-    auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(getPosition(), true, false);
-    if (closestObject == nullptr) {
-        return;
+    Vertex3D to;
+    if (target == nullptr) {
+        auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(getPosition(), true, false);
+        if (closestObject == nullptr) {
+            return;
+        }
+        to = closestObject->getPosition();
+    } else {
+        to = target->getPosition();
     }
 
-    Vector3D direction(getPosition(), closestObject->getPosition());
+    Vector3D direction(getPosition(), to);
 
     btVector3 btDirection;
     direction.getComponent().getNormalize().getScaled(3000).saveToBtVector3(&btDirection);

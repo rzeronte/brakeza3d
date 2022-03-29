@@ -10,8 +10,8 @@
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
-    WEAPON_SMART_PROJECTILE = 1,
-    WEAPON_INSTANT = 2
+    WEAPON_INSTANT = 1,
+    WEAPON_SMART_PROJECTILE = 2,
 };
 
 class Weapon {
@@ -26,6 +26,14 @@ public:
     Mesh3DBody *modelProjectile;
 
     int ammoAmount;
+    int startAmmoAmount;
+
+    Counter *counterStopDuration;
+    Counter *counterStopEvery;
+    bool stop;
+    float stopDuration;
+    float stopEvery;
+
     float damage;
     float damageRadius;
     float accuracy;
@@ -42,7 +50,6 @@ public:
 
     Image *icon;
 
-    // mesh for
     Mesh3D *model;
 
     void onUpdate();
@@ -71,8 +78,8 @@ public:
 
     void setDispersion(float dispersion);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction);
-    void shootSmartProjectile(Object3D *parent, Vertex3D vertex3D, Vertex3D vertex3D1);
+    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask);
+    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target);
     void shootInstant(Vertex3D from,  Object3D *to);
 
     void reload();
@@ -109,6 +116,25 @@ public:
 
     void setType(int type);
 
+    int getStatus() const;
+
+    void setStatus(int status);
+
+    int getStartAmmoAmount() const;
+
+    void setStartAmmoAmount(int startAmmoAmount);
+
+    bool isStop() const;
+
+    void setStop(bool stop);
+
+    float getStopDuration() const;
+
+    void setStopDuration(float stopDuration);
+
+    float getStopEvery() const;
+
+    void setStopEvery(float stopEverySeconds);
 };
 
 

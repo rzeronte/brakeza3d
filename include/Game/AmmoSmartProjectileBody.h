@@ -8,7 +8,7 @@
 
 #include "AmmoProjectileBody.h"
 
-class AmmoSmartProjectileBody : public AmmoProjectileBody{
+class AmmoSmartProjectileBody : public AmmoProjectileBody {
     Object3D *target;
 public:
     Object3D *getTarget() const;

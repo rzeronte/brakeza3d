@@ -14,17 +14,17 @@
 
 class ShaderWater: public Shader {
 public:
-    float scale = 4.0;
-    float speed = 11.0;
+    float scale = 1.5f;
+    float speed = 6.0f;
     // the amount of shearing (shifting of a single column or row)
     // 1.0 = entire screen height offset (to both sides, meaning it's 2.0 in total)
-    float xDistMag = 0.80;
-    float yDistMag = 0.00;
+    float xDistMag = 0.04f;
+    float yDistMag = 0.0f;
 
     // cycle multiplier for a given screen height
     // 2*PI = you see a complete sine wave from top..bottom
-    float xSineCycles = 6.28;
-    float ySineCycles = 6.28;
+    float xSineCycles = 6.28f;
+    float ySineCycles = 6.28f;
 
     void onUpdate() override {
         Shader::onUpdate();

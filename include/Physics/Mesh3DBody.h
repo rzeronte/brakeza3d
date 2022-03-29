@@ -13,11 +13,11 @@ public:
 
     void integrate() override;
 
-    void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *);
+    void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *, int collisionGroup, int collisionMask);
 
-    void makeRigidBody(float mass, btDiscreteDynamicsWorld *);
+    void makeRigidBody(float mass, btDiscreteDynamicsWorld *, int collisionGroup, int collisionMask);
 
-    void makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world);
+    void makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
 
     void setGravity(Vertex3D g);
 

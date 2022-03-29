@@ -12,7 +12,7 @@ public:
     btPairCachingGhostObject *getGhostObject() const;
     btPairCachingGhostObject *ghostObject;
 
-    void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh);
+    void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask);
     void removeCollisionObject() const;
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);

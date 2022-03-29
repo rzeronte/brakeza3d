@@ -1,10 +1,12 @@
 
 #include "../../include/Game/Enemy.h"
+#include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0) {
     this->stamina = this->startStamina;
     setState(EnemyState::ENEMY_STATE_STOP);
-    weaponType = new Weapon("EnemyWeapon");
+    weapon = new Weapon("EnemyWeapon");
 }
 
 void Enemy::takeDamage(float damageTaken) {
@@ -43,15 +45,11 @@ float Enemy::getStamina() const {
 }
 
 void Enemy::setWeaponType(Weapon *weaponType) {
-    Enemy::weaponType = weaponType;
+    Enemy::weapon = weaponType;
 }
 
-void Enemy::shoot(Object3D *parent, Vertex3D direction, Vertex3D projectilePosition) {
-    weaponType->shootProjectile(parent, projectilePosition, direction);
-}
-
-Weapon *Enemy::getWeaponType() const {
-    return weaponType;
+Weapon *Enemy::getWeapon() const {
+    return weapon;
 }
 
 void Enemy::setStamina(float stamina) {

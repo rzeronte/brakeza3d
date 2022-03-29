@@ -68,8 +68,7 @@ public:
 private:
 
     EngineSetup::GameState gameState;
-
-    void loadPlayerWeapons();
+    std::vector<Weapon *> weapons;
 
     void evalStatusMachine(EnemyGhost *pGhost) const;
 
@@ -81,6 +80,10 @@ private:
     void startBackgroundShader();
     void startTintScreenShader();
     void stopTintScreenShader();
+    void startSilhouetteShader();
+    void stopSilhouetteShader();
+    void startWaterShader();
+    void stopWaterShader();
 
 public:
     LevelLoader *getLevelInfo() const;
@@ -90,6 +93,10 @@ public:
     void removeProjectiles() const;
 
     void makeFadeToGameState(EngineSetup::GameState gameState) const;
+
+    void setVisibleInGameObjects(bool value);
+    void removeInGameObjects();
+    void loadWeapons();
 };
 
 

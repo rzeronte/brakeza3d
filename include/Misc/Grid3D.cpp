@@ -125,7 +125,7 @@ void Grid3D::fillEmptiesWithImageData(std::string filename, int fixedY) {
 
     this->numberCubesX = sx;
     this->numberCubesZ = sy;
-    this->numberCubesY = fixedY;    // no height in grids from images
+    this->numberCubesY = fixedY;    // no height in grids from levels
 
     for (int x = 0; x < numberCubesX; x++) {
         for (int z = 0; z < numberCubesZ; z++) {

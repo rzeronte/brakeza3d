@@ -1,0 +1,97 @@
+{
+  "name": "Level01",
+  "enemies": [
+    {
+      "name": "Patrol",
+      "position": { "x": 20, "y": 20 },
+      "model": "green_spaceship_01.fbx",
+      "fireSound": "gun_fire.wav",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 10, "y": 10 },
+        "to": { "x": 100, "y": 100 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "name": "Linear",
+        "damage": 0,
+        "amount": 999,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.15,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 0,
+        "type": 0,
+        "icon": "flare.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Persecutor",
+      "position": { "x": 300, "y": 20 },
+      "model": "red_spaceship_03.fbx",
+      "fireSound": "gun_fire.wav",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 2,
+        "speed": 10,
+        "separation": 5000
+      },
+      "weapon": {
+        "index": 1,
+        "name": "Instant",
+        "damage": 0,
+        "amount": 5000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 2,
+        "type": 1,
+        "icon": "plague.png",
+        "modelProjectile": "projectile_weapon_02.fbx",
+        "model": "item_weapon_02.fbx"
+      }
+    },
+    {
+      "name": "Defender",
+      "position": { "x": 300, "y": 200 },
+      "model": "red_spaceship_03.fbx",
+      "fireSound": "gun_fire.wav",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 3,
+        "center": { "x": 200, "y": 30 },
+        "speed": 1,
+        "radius": 500
+      },
+      "weapon": {
+        "index": 2,
+        "name": "Smart",
+        "damage": 0,
+        "amount": 100,
+        "speed": 100,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.30,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 0,
+        "type": 2,
+        "icon": "needles.png",
+        "modelProjectile": "projectile_weapon_03.fbx",
+        "model": "item_weapon_03.fbx"
+      }
+    }
+  ]
+}

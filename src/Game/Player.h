@@ -24,9 +24,10 @@ typedef enum {
 
 enum WeaponStatus {
     NONE = -1,
-    IDLE = 0,
-    FIRE = 1,
-    RELOAD = 2,
+    PRESSED = 1,
+    SUSTAINED = 2,
+    RELEASED = 3,
+    RELOAD = 4,
 };
 
 class Player : public Mesh3DGhost {
@@ -102,15 +103,15 @@ public:
 
     void setState(PlayerState state);
 
-    Weapon *getWeaponType() const;
+    Weapon *getWeapon() const;
 
     void setWeaponType(Weapon *weaponType);
 
     void updateWeaponType();
 
-    void createWeaponType(const std::string &label);
+    void createWeapon(const std::string &label);
 
-    void addWeaponType(Weapon *weaponType);
+    void addWeapon(Weapon *weaponType);
 
     Weapon *getWeaponTypeByLabel(const std::string& label);
 
@@ -118,7 +119,7 @@ public:
 
     void setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
 
-    void startBlinkForPlayer();
+    void startBlinkShaderForPlayer();
 
     void stopBlinkForPlayer();
 
@@ -155,6 +156,8 @@ public:
     float getRecoverEnergySpeed() const;
 
     void setRecoverEnergySpeed(float recoverEnergySpeed);
+
+    void startPlayerBlink();
 };
 
 

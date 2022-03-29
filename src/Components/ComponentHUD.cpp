@@ -1,6 +1,8 @@
 #include "../../include/Components/ComponentHUD.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/2D/ButtonsCallbacks.h"
+#include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
@@ -33,6 +35,9 @@ void ComponentHUD::preUpdate() {
 }
 
 void ComponentHUD::onUpdate() {
+    if (!isEnabled()) return;
+
+    drawEnemies();
 
 }
 
@@ -89,7 +94,7 @@ void ComponentHUD::drawHUD() {
     drawPlayerStamina(8);
     drawPlayerEnergy(8 + 28 + 1);
 
-    drawEnemyStamina(8);
+    drawEnemySelectedStamina(8);
 
     if (SETUP->DRAW_FPS) {
         writeCenterHorizontal(
@@ -99,23 +104,16 @@ void ComponentHUD::drawHUD() {
         );
     }
 
-    auto hudTexture= HUDTextures->getTextureByLabel("hud")->getImage();
-    hudTexture->drawFlat(0, SETUP->screenHeight - hudTexture->height());
-
     for (int i = 0; i < buttons.size(); i++) {
         buttons[i]->draw();
         this->textureWriter->writeText(i * 16 + 2, getButtonsOffsetY() + 1, std::to_string(i).c_str(), false);
     }
 
-    if (componentGame->getPlayer()->getWeaponType() != nullptr) {
-        Weapon *weaponType = componentGame->getPlayer()->getWeaponType();
+    if (componentGame->getPlayer()->getWeapon() != nullptr) {
+        Weapon *weaponType = componentGame->getPlayer()->getWeapon();
         if (weaponType->isAvailable()) {
-            this->textureWriter->writeText(200, 215, weaponType->getLabel().c_str(), false);
         }
     }
-
-    //this->textureWriter->writeText(300, 100, std::to_string(componentManager->getComponentInput()->controllerLeft).c_str(), false);
-
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {
@@ -158,9 +156,9 @@ void ComponentHUD::drawPlayerStamina(int y) {
         healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
     }
 
-    if (player->getWeaponType() != nullptr) {
-        player->getWeaponType()->getIcon()->drawFlat(offsetX, + 28 + 2 + offsetY + backgroundHealthBar->height() + 1);
-        this->textureWriter->writeText(offsetX, offsetY + 28 + 2, std::to_string(player->getWeaponType()->getAmmoAmount()).c_str(), false);
+    if (player->getWeapon() != nullptr) {
+        player->getWeapon()->getIcon()->drawFlat(offsetX, + 28 + 2 + offsetY + backgroundHealthBar->height() + 1);
+        this->textureWriter->writeText(offsetX, offsetY + 28*2 + 2, std::to_string(player->getWeapon()->getAmmoAmount()).c_str(), false);
     }
 }
 
@@ -186,7 +184,7 @@ void ComponentHUD::drawPlayerEnergy(int y)
 }
 
 
-void ComponentHUD::drawEnemyStamina(int y)
+void ComponentHUD::drawEnemySelectedStamina(int y)
 {
 
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -218,4 +216,32 @@ int ComponentHUD::getButtonsOffsetY() {
     const unsigned int innerMargin = 0;
     const int offsetY = SETUP->screenHeight - 16 - innerMargin;
     return offsetY;
+}
+
+void ComponentHUD::drawEnemies()
+{
+    auto objects = Brakeza3D::get()->getSceneObjects();
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    for (auto object : objects) {
+        auto enemy = dynamic_cast<EnemyGhost*> (object);
+        if (enemy != nullptr) {
+            Vertex3D v = object->getPosition();
+
+            Transforms::cameraSpace(v, v, camera);
+            v = Transforms::PerspectiveNDCSpace(v, camera->frustum);
+
+            Point2D screenPoint;
+            Transforms::screenSpace(screenPoint, v);
+            drawEnemyStats(screenPoint, 15, enemy->getStamina(), enemy->getStartStamina(), Color::red());
+        }
+    }
+}
+
+void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float value, float startValue, Color c) {
+    const int currentPercentage = (int) ((value * fixedWidth) / startValue);
+
+    for (int i = 0; i < currentPercentage; i++) {
+        EngineBuffers::getInstance()->setVideoBuffer(screenPoint.x + i - (fixedWidth*0.5) , screenPoint.y, c.getColor());
+    }
 }

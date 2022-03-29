@@ -14,7 +14,7 @@ private:
 public:
     Projectile3DBody();
 
-    void makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world);
+    void makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void setTTL(float v);
 
     virtual void onUpdate() override;

@@ -7,7 +7,6 @@
 #include "Components/Component.h"
 #include "ComponentsManager.h"
 #include "Components/ComponentCollisions.h"
-#include "Physics/CollisionResolver.h"
 #include "EngineBuffers.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentWindow.h"

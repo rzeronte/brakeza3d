@@ -180,7 +180,7 @@ void Brakeza3D::AxisPlaneInitialize()
     axisPlanes->setFlatTextureColor(false);
     axisPlanes->setRotationFrameEnabled(false);
     axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
-    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld());
+    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), EngineSetup::collisionGroups::AllFilter, EngineSetup::collisionGroups::AllFilter);
     addObject3D(axisPlanes, "AxisPlanes");
 }
 

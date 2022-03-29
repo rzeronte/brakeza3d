@@ -5,7 +5,7 @@ Ghost::Ghost() {
     this->ghostObject = new btPairCachingGhostObject();
 }
 
-void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh) {
+void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask) {
     auto *convexHull = new btConvexHullShape();
 
     mesh->updateBoundingBox();
@@ -28,11 +28,7 @@ void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh) {
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
 
-    world->addCollisionObject(
-        ghostObject,
-        EngineSetup::collisionGroups::AllFilter,
-        EngineSetup::collisionGroups::AllFilter
-    );
+    world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
 
 bool Ghost::CheckGhost(btPairCachingGhostObject *Ghost) {

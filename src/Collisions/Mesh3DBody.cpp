@@ -9,7 +9,31 @@ Mesh3DBody::Mesh3DBody() {
     BSPEntityIndex = -1;
 }
 
-void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
+void Mesh3DBody::integrate() {
+
+    if (this->body == nullptr) {
+        return;
+    }
+
+    if (this->mass == 0) {
+        return;
+    }
+
+    btTransform t;
+    body->getMotionState()->getWorldTransform(t);
+    btVector3 pos = t.getOrigin();
+
+    this->setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
+
+    auto rotation = t.getRotation();
+    btMatrix3x3 matrixRotation;
+    matrixRotation.setRotation(rotation);
+
+    M3 brakezaRotation = Tools::BulletM3ToM3(matrixRotation);
+    setRotation(brakezaRotation);
+}
+
+void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
 
     setMass(mass);
 
@@ -36,10 +60,10 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world) {
     this->body->setUserPointer(dynamic_cast<Body *> (this));
     this->body->setRestitution(0.5);
 
-    world->addRigidBody(this->body);
+    world->addRigidBody(this->body, collisionGroup, collisionMask );
 }
 
-void Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world) {
+void Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
     setMass(mass);
 
     btVector3 position;
@@ -62,35 +86,10 @@ void Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensio
     this->body->activate(true);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
 
-    world->addRigidBody(this->body);
+    world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
 
-void Mesh3DBody::integrate() {
-
-    if (this->body == nullptr) {
-        return;
-    }
-
-    if (this->mass == 0) {
-        return;
-    }
-
-    btTransform t;
-    body->getMotionState()->getWorldTransform(t);
-    btVector3 pos = t.getOrigin();
-
-    this->setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
-
-    auto rotation = t.getRotation();
-    btMatrix3x3 matrixRotation;
-    matrixRotation.setRotation(rotation);
-
-    M3 brakezaRotation = Tools::BulletM3ToM3(matrixRotation);
-    setRotation(brakezaRotation);
-}
-
-
-void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world) {
+void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
     setMass(mass);
 
     btTransform transformation;
@@ -113,7 +112,8 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWor
     this->body->activate(true);
     this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
-    world->addRigidBody(this->body);
+
+    world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
 
 void Mesh3DBody::setGravity(Vertex3D g) {
@@ -154,14 +154,16 @@ btConvexHullShape *Mesh3DBody::getConvexHullShapeFromMesh() {
     return convexHull;
 }
 
-void Mesh3DBody::resolveCollision(Collisionable *with) {
+void Mesh3DBody::resolveCollision(Collisionable *with)
+{
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
         Logging::getInstance()->Log("Mesh3DBody: Collision "  + getLabel() + " with " + object->getLabel());
     }
 }
 
-void Mesh3DBody::remove() {
+void Mesh3DBody::remove()
+{
     this->removeCollisionObject();
     this->setRemoved(true);
 }

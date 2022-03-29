@@ -7,8 +7,8 @@ Projectile3DBody::Projectile3DBody() {
 }
 
 
-void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world) {
-    Mesh3DBody::makeRigidBody(mass, world);
+void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
+    Mesh3DBody::makeRigidBody(mass, world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);
     direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
@@ -17,8 +17,10 @@ void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, 
 
     btVector3 impulse;
     direction.saveToBtVector3(&impulse);
-    this->body->applyCentralImpulse(impulse);
-    this->body->setGravity(btVector3(0, 0, 0));
+    getRigidBody()->applyCentralImpulse(impulse);
+    getRigidBody()->setGravity(btVector3(0, 0, 0));
+    //getRigidBody()->setFlags();
+    //getRigidBody()->setCollisionFlags();
 }
 
 void Projectile3DBody::onUpdate() {

@@ -4,10 +4,11 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Game/AmmoProjectileBody.h"
 #include "../../include/Game/ItemHealthGhost.h"
+#include "../../include/Game/ItemWeaponGhost.h"
 
 #define FREELOOK false
-#define SPLASH_TIME 3.0f
-#define FADE_SPEED 0.03f
+#define SPLASH_TIME 4.0f
+#define FADE_SPEED 0.05f
 
 ComponentGame::ComponentGame()
 {
@@ -21,7 +22,7 @@ void ComponentGame::onStart()
     setGameState(EngineSetup::GameState::NONE);
     fadeToGameState = new FaderToGameStates(
             Color(0, 255, 0),
-        0.05f,
+        0.01f,
         EngineSetup::GameState::SPLASH,
         false
     );
@@ -44,14 +45,13 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
 
     loadBackgroundImageShader();
-    loadPlayerWeapons();
+    loadWeapons();
     loadPlayer();
     loadLevels();
 }
 
 void ComponentGame::preUpdate()
 {
-
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
@@ -111,6 +111,8 @@ void ComponentGame::checkForEndLevel() const
         getLevelInfo()->setLevelStartedToPlay(false);
         removeProjectiles();
         getPlayer()->setPosition(playerStartPosition);
+        getFadeToGameState()->setSpeed(0.005);
+        ComponentsManager::get()->getComponentSound()->playSound(BUFFERS->soundPackage->getByLabel("winLevel"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
 
         if (getPlayer()->getLevelCompletedCounter() >= getLevelInfo()->size()) {
             ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
@@ -124,6 +126,10 @@ void ComponentGame::checkForEndLevel() const
 void ComponentGame::setGameState(EngineSetup::GameState state) {
     Logging::getInstance()->Log("GameState changed to: " + std::to_string(state));
 
+    if (state == EngineSetup::GameState::NONE) {
+        startWaterShader();
+    }
+
     if (getGameState() == EngineSetup::GameState::NONE && state == EngineSetup::GameState::SPLASH) {
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
@@ -132,24 +138,33 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (getGameState() == EngineSetup::GameState::SPLASH && state == EngineSetup::GameState::MENU) {
-        getFadeToGameState()->setSpeed(FADE_SPEED);
         Logging::getInstance()->Log("GameState changed to MENU");
     }
 
     if (state == EngineSetup::GameState::MENU) {
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(true);
+        setVisibleInGameObjects(false);
+        stopSilhouetteShader();
+        startWaterShader();
         player->setEnabled(false);
+        player->stopBlinkForPlayer();
+        player->setShieldEnabled(false);
     }
 
     if (state == EngineSetup::GameState::GAMING) {
+        setVisibleInGameObjects(true);
         player->setEnabled(true);
+        player->startPlayerBlink();
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
         startBackgroundShader();
         stopTintScreenShader();
+        startSilhouetteShader();
+        stopWaterShader();
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.03);
     } else {
         stopBackgroundShader();
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
@@ -161,6 +176,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         startBackgroundShader();
+        stopWaterShader();
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.005);
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
@@ -169,6 +186,15 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         startBackgroundShader();
         startTintScreenShader();
+        stopWaterShader();
+    }
+
+    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
+        setVisibleInGameObjects(false);
+        removeInGameObjects();
+        player->setEnabled(false);
+        player->stopBlinkForPlayer();
+        player->setShieldEnabled(false);
     }
 
     this->gameState = state;
@@ -250,6 +276,7 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
+    player->setFree(true);
     player->setAlpha(200);
     player->setEnableLights(false);
     player->setPosition(playerStartPosition);
@@ -258,7 +285,7 @@ void ComponentGame::loadPlayer()
     player->setStencilBufferEnabled(true);
     player->setAutoRotationSelectedObjectSpeed(5);
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_spaceship_03.fbx"));
-    player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player);
+    player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player, EngineSetup::collisionGroups::Player, EngineSetup::collisionGroups::AllFilter);
     Brakeza3D::get()->addObject3D(player, "player");
 
     auto *sprite = new Sprite3D();
@@ -268,55 +295,6 @@ void ComponentGame::loadPlayer()
     sprite->addAnimation(EngineSetup::get()->SPRITES_FOLDER + "blood1/blood", 3, 1);
     sprite->setAnimation(0);
     Brakeza3D::get()->addObject3D(sprite, "sprite");
-}
-
-void ComponentGame::loadPlayerWeapons()
-{
-
-    player->createWeaponType("defaultWeapon");
-    Weapon *weaponType = player->getWeaponTypeByLabel("defaultWeapon");
-    weaponType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/icosphere.fbx"));
-    weaponType->getModelProjectile()->setLabel("projectile_template");
-    weaponType->setAmmoAmount(999);
-    weaponType->setSpeed(500);
-    weaponType->setDamage(10);
-    weaponType->setDispersion(10);
-    weaponType->setAvailable(true);
-    weaponType->setAccuracy(100);
-    weaponType->setCadenceTime(0.15);
-    weaponType->setType(WeaponTypes::WEAPON_PROJECTILE);
-    weaponType->setIconImage(SETUP->HUD_FOLDER + "flare.png");
-
-    player->createWeaponType("secondaryWeapon");
-    Weapon *weaponSecondaryType = player->getWeaponTypeByLabel("secondaryWeapon");
-    weaponSecondaryType->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cone.fbx"));
-    weaponSecondaryType->getModelProjectile()->setLabel("projectile_template");
-    weaponSecondaryType->setSpeed(500);
-    weaponSecondaryType->setDamage(1);
-    weaponSecondaryType->setAmmoAmount(5000);
-    weaponSecondaryType->setDispersion(10);
-    weaponSecondaryType->setAvailable(true);
-    weaponSecondaryType->setAccuracy(100);
-    weaponSecondaryType->setCadenceTime(0.20);
-    weaponSecondaryType->setType(WeaponTypes::WEAPON_INSTANT);
-    weaponSecondaryType->setIconImage(SETUP->HUD_FOLDER + "plague.png");
-
-
-    player->createWeaponType("thirdWeapon");
-    Weapon *thirdWeapon = player->getWeaponTypeByLabel("thirdWeapon");
-    thirdWeapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cone.fbx"));
-    thirdWeapon->getModelProjectile()->setLabel("projectile_template");
-    thirdWeapon->setSpeed(500);
-    thirdWeapon->setDamage(10);
-    thirdWeapon->setAmmoAmount(5000);
-    thirdWeapon->setDispersion(10);
-    thirdWeapon->setAvailable(true);
-    thirdWeapon->setAccuracy(100);
-    thirdWeapon->setCadenceTime(0.30);
-    thirdWeapon->setType(WeaponTypes::WEAPON_SMART_PROJECTILE);
-    thirdWeapon->setIconImage(SETUP->HUD_FOLDER + "needles.png");
-
-    player->setWeaponType(weaponType);
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -376,7 +354,40 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
 {
     if (enemy->getState() == EnemyState::ENEMY_STATE_DIE) {
-        return;
+        int typePresent = Tools::random(0, 1);
+
+        switch(typePresent) {
+            case 0: {
+                auto *healthItem = new ItemHealthGhost();
+                healthItem->setLabel("item_health");
+                healthItem->setEnableLights(true);
+                healthItem->setPosition(enemy->getPosition());
+                healthItem->setRotationFrameEnabled(true);
+                healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+                healthItem->setStencilBufferEnabled(true);
+                healthItem->setScale(1);
+                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "gem.fbx"));
+                healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
+                Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
+                break;
+            }
+            case 1: {
+                int randomWeapon = Tools::random(0, 2);
+                auto *weaponItem = new ItemWeaponGhost(weapons[randomWeapon]);
+                weaponItem->setLabel("item_weapon");
+                weaponItem->setEnableLights(false);
+                weaponItem->setPosition(enemy->getPosition());
+                weaponItem->setRotation(0, 0, 180);
+                weaponItem->setRotationFrameEnabled(true);
+                weaponItem->setRotationFrame(Vertex3D(0.25, 0.05, 0.01));
+                weaponItem->setStencilBufferEnabled(true);
+                weaponItem->setScale(1);
+                weaponItem->copyFrom(weapons[randomWeapon]->getModel());
+                weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::collisionGroups::Weapon, EngineSetup::collisionGroups::Player);
+                Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
+                break;
+            }
+        }
     }
 
     enemy->shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
@@ -384,34 +395,9 @@ void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->IMAGES_FOLDER + "level01.png");
-    levelInfo->addLevel(EngineSetup::get()->IMAGES_FOLDER + "level02.png");
-    levelInfo->addLevel(EngineSetup::get()->IMAGES_FOLDER + "level03.png");
-
-
-    /*auto *weaponItem = new ItemHealthGhost();
-    weaponItem->setLabel("item_health");
-    weaponItem->setEnableLights(true);
-    weaponItem->setPosition(Vertex3D(-2500, 2800, 10000));
-    weaponItem->setRotationFrameEnabled(true);
-    weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
-    weaponItem->setStencilBufferEnabled(true);
-    weaponItem->setScale(1);
-    weaponItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "gem.fbx"));
-    weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem);
-    Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());*/
-
-    /*auto *weaponItemTwo = new ItemWeaponGhost(enemyWeaponType);
-    weaponItemTwo->setLabel("weaponItemTwo");
-    weaponItemTwo->setEnableLights(false);
-    weaponItemTwo->setPosition(Vertex3D(-2515, -3200, 5000));
-    weaponItemTwo->setRotation(0, 0, 180);
-    weaponItemTwo->setStencilBufferEnabled(true);
-    weaponItemTwo->setScale(1);
-    weaponItemTwo->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "basic/cube.fbx"));
-    weaponItemTwo->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItemTwo);
-    Brakeza3D::get()->addObject3D(weaponItemTwo, "weaponItemTwo");
-    */
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
 }
 
 void ComponentGame::loadBackgroundImageShader()
@@ -454,6 +440,29 @@ void ComponentGame::stopTintScreenShader() {
     tintShader->setEnabled(false);
 }
 
+void ComponentGame::startSilhouetteShader() {
+    auto shader = dynamic_cast<ShaderObjectSilhouette*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE));
+    shader->setColor(Color::red());
+    shader->setEnabled(true);
+}
+
+void ComponentGame::stopSilhouetteShader() {
+    auto shader = dynamic_cast<ShaderObjectSilhouette*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE));
+    shader->setEnabled(false);
+}
+
+
+void ComponentGame::startWaterShader() {
+    auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
+    shader->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+    //shader->setEnabled(true);
+}
+
+void ComponentGame::stopWaterShader() {
+    auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
+    //shader->setEnabled(false);
+}
+
 LevelLoader *ComponentGame::getLevelInfo() const {
     return levelInfo;
 }
@@ -473,4 +482,72 @@ void ComponentGame::makeFadeToGameState(EngineSetup::GameState gameState) const
     ComponentsManager::get()->getComponentGameInput()->setEnabled(false);
 
     getFadeToGameState()->resetTo(gameState);
+}
+
+void ComponentGame::removeInGameObjects()
+{
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+        auto *health = dynamic_cast<ItemHealthGhost *> (object);
+        auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto *projectile = dynamic_cast<Projectile3DBody *> (object);
+
+        if (enemy != nullptr) {
+            enemy->remove();
+        }
+        if (health != nullptr) {
+            health->remove();
+        }
+        if (weapon != nullptr) {
+            weapon->remove();
+        }
+
+        if (projectile != nullptr) {
+            projectile->remove();
+        }
+    }
+}
+
+void ComponentGame::setVisibleInGameObjects(bool value)
+{
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+        auto *health = dynamic_cast<ItemHealthGhost *> (object);
+        auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto *projectile = dynamic_cast<Projectile3DBody *> (object);
+
+        if (enemy != nullptr || health != nullptr || weapon != nullptr || projectile != nullptr) {
+            object->setEnabled(value);
+        }
+    }
+}
+
+void ComponentGame::loadWeapons() {
+    Logging::Log("Loading Weapons for game...", "ComponentGame");
+
+    std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
+
+    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "playerWeapons.json";
+
+    size_t file_size;
+    const char *weaponsFile = Tools::readFile(filePath, file_size);
+    cJSON *myDataJSON = cJSON_Parse(weaponsFile);
+
+    if (myDataJSON == nullptr) {
+        Logging::Log(filePath + " can't be loaded", "ERROR");
+        return;
+    }
+
+    cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons");
+    cJSON *currentWeapon;
+    cJSON_ArrayForEach(currentWeapon, weaponsList) {
+        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
+        weapons.push_back(weapon);
+    }
+
+    for (auto weapon : weapons) {
+        player->addWeapon(weapon);
+    }
+
+    player->setWeaponType(weapons[0]);
 }

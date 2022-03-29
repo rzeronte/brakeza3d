@@ -109,9 +109,9 @@ public:
 
     bool getStencilBufferValue(int x, int y) const;
 
-    EnemyBehavior *getMotion() const;
+    EnemyBehavior *getBehavior() const;
 
-    void setMotion(EnemyBehavior *motion);
+    void setBehavior(EnemyBehavior *motion);
 
     float getAlpha() const;
 
