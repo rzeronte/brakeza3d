@@ -96,3 +96,7 @@ void ComponentSound::stopMusic()
     Mix_HaltMusic();
 }
 
+void ComponentSound::stopChannel(int channel) {
+    Mix_HaltChannel(channel);
+}
+

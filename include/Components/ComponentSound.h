@@ -34,6 +34,8 @@ public:
     void playMusic(Mix_Music *music, int loops);
 
     void stopMusic();
+
+    void stopChannel(int channel);
 };
 
 

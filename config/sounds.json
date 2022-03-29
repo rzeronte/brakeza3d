@@ -5,29 +5,20 @@
     { "file": "music_gameover.mp3", "label": "gameOverMusic", "type": "music" },
 
     { "file": "start_game.wav", "label": "startGame", "type": "sound" },
-    { "file": "option-click.wav", "label": "soundMenuClick", "type": "sound" },
+    { "file": "move_menu_option.wav", "label": "soundMenuClick", "type": "sound" },
     { "file": "option-accept.wav", "label": "soundMenuAccept", "type": "sound" },
+    { "file": "win_level.wav", "label": "winLevel", "type": "sound" },
 
     { "file": "explosion.wav", "label": "enemyExplosion", "type": "sound" },
-    { "file": "body_explode.wav", "label": "bodyExplode", "type": "sound" },
 
     { "file": "dash.wav", "label": "dash", "type": "sound" },
 
-    { "file": "teleporting.wav", "label": "teleporting", "type": "sound" },
-
-    { "file": "bulletWhisper.wav", "label": "bulletWhisper", "type": "sound" },
-    { "file": "switch_weapon.wav", "label": "switchWeapon", "type": "sound" },
-
-    { "file": "sniperOn.wav", "label": "sniperOn", "type": "sound" },
+    { "file": "voltage_loop.wav", "label": "voltageLoop", "type": "sound" },
 
     { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
     { "file": "get_weapon.wav", "label": "getWeapon", "type": "sound" },
 
     { "file": "shoot_01.wav", "label": "shoot01", "type": "sound" },
-    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
-
-    { "file": "glock_fire.wav",   "label": "glock_fire",   "type": "sound" },
-    { "file": "glock_empty.wav",  "label": "glock_empty",  "type": "sound" },
-    { "file": "glock_reload.wav", "label": "glock_reload", "type": "sound" }
+    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" }
   ]
 }

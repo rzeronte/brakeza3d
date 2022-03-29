@@ -129,5 +129,5 @@ struct FreeTypeTest
 
 Using Windows built-in segoeui.ttf font. Open in new browser tabs, view at 1080p+.
 
-![freetype rasterizer](https://raw.githubusercontent.com/wiki/ocornut/imgui_club/images/freetype_20170817.png)
+![freetype rasterizer](https://raw.githubusercontent.com/wiki/ocornut/imgui_club/levels/freetype_20170817.png)
 

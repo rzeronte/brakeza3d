@@ -123,8 +123,6 @@ add_executable(Brakeza3D
         include/Components/ComponentCollisions.h
         src/Game/EnemyGhost.cpp
         include/Game/EnemyGhost.h
-        src/Collisions/CollisionResolver.cpp
-        include/Physics/CollisionResolver.h
         src/Collisions/Projectile3DBody.cpp
         include/Physics/Projectile3DBody.h
         src/Objects/Decal.cpp
