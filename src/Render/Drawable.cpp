@@ -353,7 +353,7 @@ void Drawable::drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangl
     frameTriangles->emplace_back(&B->T2);
 }
 
-void Drawable::drawLightning(Vertex3D A, Vertex3D B) {
+void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     float generations = EngineSetup::get()->LIGHTNING_GENERATIONS;
@@ -401,9 +401,8 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B) {
 
         offsetAmount /= 2;
     }
-
-    for (auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
-        Drawable::drawVector3D(*ir.base(), cam, Color::cyan());
+    for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
+        Drawable::drawVector3D(*ir.base(), cam, color);
     }
 }
 

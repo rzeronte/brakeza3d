@@ -37,9 +37,8 @@ void ComponentSound::initSoundSystem() {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
 
-    Mix_Volume(EngineSetup::SoundChannels::SND_MENU, (int) SETUP->SOUND_VOLUME_MENU);
-    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, (int) SETUP->SOUND_VOLUME_PLAYER);
-    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT, (int) SETUP->SOUND_VOLUME_ENVIRONMENT);
+    Mix_AllocateChannels(16);
+    Mix_Volume(0, (int) 127);
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
 }
 
@@ -88,7 +87,11 @@ void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times) {
 void ComponentSound::playMusic(Mix_Music *music, int loops = -1)
 {
     Mix_PlayMusic(music, loops);
+}
 
+void ComponentSound::fadeInMusic(Mix_Music *music, int loops, int ms)
+{
+    Mix_FadeInMusic(music, loops, ms);
 }
 
 void ComponentSound::stopMusic()

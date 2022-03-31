@@ -637,7 +637,9 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     }
 
     // Texture
-    if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr && !t->isFlatTextureColor()) {
+    if (t->isFlatTextureColor()) {
+        pixelColor = t->flatColor;
+    } else if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
         if (t->texture->getImage()->getSurface() == nullptr) return;
 
         if (t->parent->isDecal()) {
@@ -647,10 +649,10 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         }
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
-    }
 
-    if (this->isPixelFullTransparent(pixelColor, t->getTexture()->getImage()->getSurface()->format)) {
-        return;
+        if (this->isPixelFullTransparent(pixelColor, t->getTexture()->getImage()->getSurface()->format)) {
+            return;
+        }
     }
 
     if (EngineSetup::get()->ENABLE_LIGHTS && t->isEnableLights()) {

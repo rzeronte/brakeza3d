@@ -42,7 +42,7 @@ public:
 
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
 
-    static void drawLightning(Vertex3D, Vertex3D);
+    static void drawLightning(Vertex3D, Vertex3D, Color color);
 
     static void drawCrossHair();
 
