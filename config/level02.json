@@ -1,6 +1,7 @@
 {
   "name": "Level01",
   "backgroundImage": "levels/level_01.png",
+  "music": "level01Music",
   "enemies": [
     {
       "name": "Persecutor",

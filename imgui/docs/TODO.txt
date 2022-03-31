@@ -159,7 +159,7 @@ It's mostly a bunch of personal notes, probably incomplete. Feel free to query i
  - listbox: scrolling should track modified selection.
 
 !- popups/menus: clarify usage of popups id, how MenuItem/Selectable closing parent popups affects the ID, etc. this is quite fishy needs improvement! (#331, #402)
- - popups/modal: make modal title bar blink when trying to click outside the modal
+ - popups/modal: make modal title bar isBlinking when trying to click outside the modal
  - popups: reopening context menu at new position should be the behavior by default? (equivalent to internal OpenPopupEx() with reopen_existing=true) (~#1497)
  - popups: if the popup functions took explicit ImGuiID it would allow the user to manage the scope of those ID. (#331)
  - popups: clicking outside (to close popup) and holding shouldn't drag window below.
@@ -285,7 +285,7 @@ It's mostly a bunch of personal notes, probably incomplete. Feel free to query i
  - inputs/io: backspace and arrows in the context of a text input could use system repeat rate.
  - inputs/io: clarify/standardize/expose repeat rate and repeat delays (#1808)
 
- - misc: idle refresh: expose cursor blink animation timer for backend to be able to lower framerate.
+ - misc: idle refresh: expose cursor isBlinking animation timer for backend to be able to lower framerate.
  - misc: make the ImGuiCond values linear (non-power-of-two). internal storage for ImGuiWindow can use integers to combine into flags (Why?)
  - misc: provide a way to compile out the entire implementation while providing a dummy API (e.g. #define IMGUI_DUMMY_IMPL)
  - misc: PushItemFlag(): add a flag to disable keyboard capture when used with mouse? (#1682)

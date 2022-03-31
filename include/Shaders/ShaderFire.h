@@ -89,8 +89,8 @@ public:
         }
     }
 
-    void onUpdate() override {
-        Shader::onUpdate();
+    void update() override {
+        Shader::update();
 
         if (!isEnabled()) {
             return;

@@ -19,7 +19,7 @@ Shader::Shader()
     t.start();
 }
 
-void Shader::onUpdate()
+void Shader::update()
 {
     current_ticks = (float) this->t.getTicks();
     deltaTime = current_ticks - last_ticks;

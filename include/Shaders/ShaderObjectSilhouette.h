@@ -28,7 +28,7 @@ public:
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     }
 
-    void onUpdate() override {
+    void update() override {
         if (!isEnabled()) {
             return;
         }

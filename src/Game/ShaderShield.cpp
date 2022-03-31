@@ -17,7 +17,7 @@ ShaderShield::ShaderShield(float radius, float speed)
 
 
 void ShaderShield::onUpdate(Vertex3D position) {
-    Shader::onUpdate();
+    Shader::update();
 
     Vertex3D r;
     Transforms::cameraSpace(r, position, ComponentsManager::get()->getComponentCamera()->getCamera());

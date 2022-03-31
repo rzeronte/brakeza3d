@@ -42,7 +42,7 @@ private:
     int lives;
     Vertex3D velocity;
     Weapon *weaponType;
-    Counter *counterDamage;
+    Counter *counterDamageBlink;
     int killsCounter;
     int levelsCompletedCounter;
     bool shieldEnabled;

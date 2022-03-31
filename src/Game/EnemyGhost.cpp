@@ -4,8 +4,15 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Game/AmmoProjectileBody.h"
 
-
 EnemyGhost::EnemyGhost() {
+    blink = new ShaderBlink();
+    blink->setObject(this);
+    blink->setStep(0.05);
+    blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+    blink->setEnabled(false);
+    blink->setColor(Color::red());
+    counterDamageBlink = new Counter(1);
+    counterDamageBlink->setEnabled(false);
 }
 
 void EnemyGhost::onUpdate() {
@@ -38,6 +45,17 @@ void EnemyGhost::onUpdate() {
     weapon->counterCadence->update();
 }
 
+void EnemyGhost::postUpdate() {
+    Object3D::postUpdate();
+
+    if (counterDamageBlink->isEnabled()) {
+        counterDamageBlink->update();
+        getBlink()->update();
+        if (counterDamageBlink->isFinished()) {
+            getBlink()->setEnabled(false);
+        }
+    }
+}
 
 void EnemyGhost::integrate() {
     Mesh3DGhost::integrate();
@@ -53,6 +71,8 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
+        getBlink()->setEnabled(true);
+        counterDamageBlink->setEnabled(true);
         this->takeDamage(projectile->getWeaponType()->getDamage());
     }
 }
@@ -63,8 +83,7 @@ void EnemyGhost::remove() {
         ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 
-    removeCollisionObject();
-    setRemoved(true);
+    Mesh3DGhost::remove();
 }
 
 void EnemyGhost::shoot(Object3D *target)
@@ -104,5 +123,9 @@ void EnemyGhost::shoot(Object3D *target)
         }
     }
 
+}
+
+ShaderBlink *EnemyGhost::getBlink() const {
+    return blink;
 }
 

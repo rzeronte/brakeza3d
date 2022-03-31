@@ -136,8 +136,10 @@ private:
     void initializeShaders();
 
     void updateSelectedObject3D();
+    void onPostUpdateSceneObjects();
 
     bool isPixelFullTransparent(Color &c, SDL_PixelFormat *pixelFormat);
+
 };
 
 

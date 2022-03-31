@@ -7,6 +7,7 @@
 #include "../2D/MenuOption.h"
 #include "../Misc/cJSON.h"
 #include "Component.h"
+#include "../Objects/Mesh3D.h"
 
 #define MAX_MENU_OPTIONS 10
 

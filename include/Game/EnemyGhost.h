@@ -6,10 +6,13 @@
 #include "../../src/Collisions/Collisionable.h"
 #include "Enemy.h"
 #include "../Physics/Mesh3DGhost.h"
+#include "../Shaders/ShaderBlink.h"
 
 class EnemyGhost : public Mesh3DGhost, public Enemy {
 public:
 
+    ShaderBlink *blink;
+    Counter *counterDamageBlink;
     EnemyGhost();
 
     void resolveCollision(Collisionable *collisionableObject) override;
@@ -22,6 +25,9 @@ public:
 
     void shoot(Object3D *target);
 
+    ShaderBlink *getBlink() const;
+
+    void postUpdate() override;
 };
 
 

@@ -7,7 +7,6 @@
 #include <SDL2/SDL_mixer.h>
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
-#include "Game/EnemyGhost.h"
 #include "Misc/SoundPackage.h"
 
 // Singleton

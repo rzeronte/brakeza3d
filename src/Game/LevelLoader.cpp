@@ -92,8 +92,11 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath)
         return;
     }
 
+    setMusic(cJSON_GetObjectItemCaseSensitive(myDataJSON, "music")->valuestring);
+
     std::string levelName = cJSON_GetObjectItemCaseSensitive(myDataJSON, "name")->valuestring;
     std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(myDataJSON, "backgroundImage")->valuestring;
+
 
     auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
@@ -253,4 +256,12 @@ void LevelLoader::startRespawners()
     for (auto respawner : respawners) {
         respawner->startCounter();
     }
+}
+
+const std::string &LevelLoader::getMusic() const {
+    return music;
+}
+
+void LevelLoader::setMusic(const std::string &music) {
+    LevelLoader::music = music;
 }

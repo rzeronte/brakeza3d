@@ -184,6 +184,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         startBackgroundShader();
         stopWaterShader();
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.005);
+        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {

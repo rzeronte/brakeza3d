@@ -26,8 +26,8 @@ public:
     float xSineCycles = 6.28f;
     float ySineCycles = 6.28f;
 
-    void onUpdate() override {
-        Shader::onUpdate();
+    void update() override {
+        Shader::update();
 
         if (!isEnabled()) {
             return;

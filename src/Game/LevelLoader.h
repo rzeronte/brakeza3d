@@ -35,6 +35,7 @@ private:
     std::vector<std::string> levels;
     std::vector<EnemyGhostRespawner*> respawners;
 
+    std::string music;
     int currentLevelIndex;
     bool levelStartedToPlay;
 public:
@@ -53,6 +54,10 @@ public:
     void loadEnemiesFromJSON(std::string filePath);
 
     void startRespawners();
+
+    const std::string &getMusic() const;
+
+    void setMusic(const std::string &music);
 };
 
 

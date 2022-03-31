@@ -38,7 +38,7 @@ Player::Player() : state(PlayerState::EMPTY),
     killsCounter = 0;
     levelsCompletedCounter = 0;
 
-    this->counterDamage = new Counter(1);
+    this->counterDamageBlink = new Counter(1);
     this->shield = new ShaderShield(20, 0.2);
 
     this->shieldEnabled = false;
@@ -99,7 +99,7 @@ void Player::takeDamage(float dmg) {
 void Player::startPlayerBlink()
 {
     setState(PlayerState::GETTING_DAMAGE);
-    counterDamage->setEnabled(true);
+    counterDamageBlink->setEnabled(true);
     startBlinkShaderForPlayer();
 }
 
@@ -187,8 +187,8 @@ void Player::onUpdate()
     }
 
     if (state == PlayerState::GETTING_DAMAGE) {
-        counterDamage->update();
-        if (counterDamage->isFinished()) {
+        counterDamageBlink->update();
+        if (counterDamageBlink->isFinished()) {
             setState(PlayerState::LIVE);
             stopBlinkForPlayer();
         }

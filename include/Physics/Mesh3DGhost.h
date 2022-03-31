@@ -22,7 +22,7 @@ protected:
 public:
     void resolveCollision(Collisionable *collisionable) override;
 
-    void remove();
+    virtual void remove();
 
     bool isFree() const;
 

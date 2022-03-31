@@ -7,7 +7,7 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
-  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+  <component name="CMakeRunConfigurationManager">
     <generated>
       <config projectName="Brakeza3D" targetName="Brakeza3D" />
     </generated>
@@ -18,49 +18,40 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Refine gameplay">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="assets">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/level01.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/level02.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/level03.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/dash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/music.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/music_level_01.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music_level_01.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/shoot_01.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/start_game.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/start_game.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/voltage_loop.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/voltage_loop.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/win_level.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentSound.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentSound.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/docs/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/docs/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentMenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineBuffers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineBuffers.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Enemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhostRespawner.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawner.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Weapon.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Triangle3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderFire.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderSmoke.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderSmoke.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderTintScreen.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderWater.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Enemy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Weapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Triangle3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/ShaderShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/ShaderShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,22 +197,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
-    <property name="SearchEverywhereHistoryKey" value="Line&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Line2D.cpp&#10;Engine.cp&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Engine.cpp&#10;ENGINESETUP&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/headers/EngineSetup.h&#10;EngineSet&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/headers/EngineSetup.h&#10;triangle&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Triangle.cpp&#10;Game&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/Game.cpp&#10;GAME&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/Game.cpp&#10;Engine&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Engine.cpp&#10;main.cp&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/imgui/examples/example_freeglut_opengl2/main.cpp&#10;demo&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/imgui/imgui_demo.cpp&#10;Triangle&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Triangle.cpp&#10;EngineSe&#9;null&#9;null&#10;game&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/Game.cpp&#10;Mesh.cp&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Mesh.cpp&#10;Drawa&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/src/Drawable.cpp&#10;Game.cpp&#9;FILE&#9;file:///Users/darkhead/CLionProjects/brakeza3D/Game.cpp" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="cf.first.check.clang-format" value="false" />
-    <property name="cidr.known.project.marker" value="true" />
-    <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/config" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
-    <property name="structure.view.defaults.are.configured" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "cmake.loaded.for.project": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "structure.view.defaults.are.configured": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/config" />
@@ -242,6 +231,11 @@
     <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -408,7 +402,9 @@
       <workItem from="1648231404440" duration="73218000" />
       <workItem from="1648489431606" duration="21483000" />
       <workItem from="1648583728695" duration="16606000" />
-      <workItem from="1648659352488" duration="12924000" />
+      <workItem from="1648659352488" duration="14191000" />
+      <workItem from="1648746120439" duration="14000" />
+      <workItem from="1648746482822" duration="5812000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -634,7 +630,21 @@
       <option name="project" value="LOCAL" />
       <updated>1648584643162</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Refine gameplay / Sounds channels fix ingame">
+      <created>1648689080942</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1648689080942</updated>
+    </task>
+    <task id="LOCAL-00034" summary="assets">
+      <created>1648689093044</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1648689093044</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -734,7 +744,19 @@
         </entry>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
         <entry key="eec8b3c5-0936-4460-a384-e79b03da37cd">
@@ -764,17 +786,8 @@
         </entry>
       </map>
     </option>
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="00ec39bd-8884-4832-b457-d4f7b67400ce" value="TOOL_WINDOW" />
-        <entry key="8ad2f6cc-c136-48fd-b450-73150c687f73" value="TOOL_WINDOW" />
-        <entry key="eec8b3c5-0936-4460-a384-e79b03da37cd" value="TOOL_WINDOW" />
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="simplependulum" />
-    <MESSAGE value="refactor shaders" />
     <MESSAGE value="autoscroll / tintColorShader" />
     <MESSAGE value="improve componentGame" />
     <MESSAGE value="improve Collisions Component" />
@@ -798,7 +811,9 @@
     <MESSAGE value="FadeInToGameState" />
     <MESSAGE value="Assets" />
     <MESSAGE value="Refine gameplay" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refine gameplay" />
+    <MESSAGE value="Refine gameplay / Sounds channels fix ingame" />
+    <MESSAGE value="assets" />
+    <option name="LAST_COMMIT_MESSAGE" value="assets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

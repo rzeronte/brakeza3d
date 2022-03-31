@@ -26,7 +26,7 @@ public:
         image = new Image(filename);
     }
 
-    void onUpdate() override {
+    void update() override {
         if (!isEnabled()) {
             return;
         }

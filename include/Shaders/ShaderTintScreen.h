@@ -27,7 +27,7 @@ public:
 
     }
 
-    void onUpdate() override
+    void update() override
     {
         if (!isEnabled()) {
             return;

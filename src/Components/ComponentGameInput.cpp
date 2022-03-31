@@ -158,7 +158,6 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
             if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
                 ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.005);
                 ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
-                ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("level01Music"), -1, 3000);
                 ComponentsManager::get()->getComponentSound()->playSound(
                     EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
                     EngineSetup::SoundChannels::SND_GLOBAL,
@@ -192,11 +191,6 @@ void ComponentGameInput::handleFire() const
     Uint8 *keyboard = componentInput->keyboard;
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerButtonA) {
         player->shoot();
-    }
-
-    if (componentInput->controllerButtonY) {
-        ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
-        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 }
 
@@ -330,6 +324,11 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
      ) {
         game->selectClosestObject3DFromPlayer();
+    }
+
+    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
+        ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 }
 

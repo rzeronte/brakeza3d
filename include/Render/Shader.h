@@ -24,7 +24,7 @@ public:
 
     std::string label;
 
-    virtual void onUpdate();
+    virtual void update();
 
     bool isEnabled() const;
 

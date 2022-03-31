@@ -96,7 +96,7 @@ public:
 
             if (ImGui::BeginMenu("Render")) {
 
-                ImGui::Checkbox("onUpdate Objects", &EngineSetup::get()->EXECUTE_GAMEOBJECTS_ONUPDATE);
+                ImGui::Checkbox("update Objects", &EngineSetup::get()->EXECUTE_GAMEOBJECTS_ONUPDATE);
                 ImGui::Checkbox("Draw Main Z-Buffer", &EngineSetup::get()->DRAW_MAIN_DEEP_MAPPING);
 
                 ImGui::Separator();

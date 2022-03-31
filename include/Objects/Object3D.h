@@ -88,6 +88,7 @@ public:
     void setFollowCamera(bool followCamera);
 
     virtual void onUpdate();
+    virtual void postUpdate();
 
     bool isRotationFrameEnabled();
     void setRotationFrameEnabled(bool value);
@@ -123,6 +124,7 @@ public:
 
     bool alphaEnabled;
     float alpha;
+
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

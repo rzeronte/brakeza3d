@@ -152,6 +152,10 @@ void Object3D::onUpdate() {
     }
 }
 
+void Object3D::postUpdate() {
+
+}
+
 void Object3D::setRotation(float x, float y, float z) {
     this->rotX = x;
     this->rotY = y;
