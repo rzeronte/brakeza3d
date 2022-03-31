@@ -29,6 +29,7 @@ public:
     AABB3D aabb;
 
     bool flatTextureColor;
+    Color flatColor;
     bool enableLights = false;
     int BSPEntityIndex;
 
@@ -75,6 +76,9 @@ public:
 
     bool isEnableLights() const;
     void setEnableLights(bool enableLights);
+
+    void setFlatColor(const Color &flatColor);
+
 private:
     Octree *octree;
     Grid3D *grid;

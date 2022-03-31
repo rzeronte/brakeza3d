@@ -24,16 +24,37 @@ Weapon::Weapon(const std::string& label) {
     this->stop = false;
     this->stopDuration = 0;
     this->stopEvery = 0;
+    this->soundChannel = EngineSetup::SoundChannels::SND_GLOBAL;
 }
 
 void Weapon::onUpdate() {
     counterCadence->update();
+
+    if (status == WeaponStatus::PRESSED && getType() == WeaponTypes::WEAPON_INSTANT) {
+        Logging::getInstance()->Log("------------------------------------------------->" + std::to_string(getSoundChannel()));
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
+            getSoundChannel(),
+            -1
+        );
+        setStatus(WeaponStatus::SUSTAINED);
+    }
+
+    if (status == WeaponStatus::RELEASED) {
+        if (getType() == WeaponTypes::WEAPON_INSTANT) {
+            ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
+        }
+        setStatus(WeaponStatus::NONE);
+    }
 
     if (isStop()) {
         counterStopEvery->update();
         counterStopDuration->update();
 
         if (counterStopEvery->isFinished()) {
+            if (getType() == WeaponTypes::WEAPON_INSTANT) {
+                ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
+            }
             counterStopDuration->setEnabled(true);
             counterStopEvery->setEnabled(false);
         }
@@ -41,6 +62,13 @@ void Weapon::onUpdate() {
         if (counterStopDuration->isFinished()) {
             counterStopEvery->setEnabled(true);
             counterStopDuration->setEnabled(false);
+            if (getType() == WeaponTypes::WEAPON_INSTANT) {
+                ComponentsManager::get()->getComponentSound()->playSound(
+                    EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
+                    getSoundChannel(),
+                    -1
+                );
+            }
         }
     }
 }
@@ -98,7 +126,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color)
 {
     const int ammoAmount = getAmmoAmount();
 
@@ -120,22 +148,23 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
+        getModelProjectile()->setFlatColor(color);
         projectile->copyFrom(getModelProjectile());
         projectile->setPosition( position );
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
         projectile->makeProjectileRigidBody(
-                0.1,
-                direction,
-                (float) getSpeed(),
-                getAccuracy(),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::Projectile,
-                collisionMask
+            0.1,
+            direction,
+            (float) getSpeed(),
+            getAccuracy(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Projectile,
+            collisionMask
         );
 
         setAmmoAmount(ammoAmount - 1);
-        ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        //ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 }
@@ -183,7 +212,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         setAmmoAmount(ammoAmount - 1);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-        ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        //ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 }
 
@@ -198,17 +227,18 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
     }
 
     if (to != nullptr) {
-        Drawable::drawLightning(from, to->getPosition());
+        auto color = Color::green();
         setAmmoAmount(ammoAmount - 1);
-        setStatus(WeaponStatus::PRESSED);
         auto enemy = dynamic_cast<EnemyGhost*>(to);
         if (enemy != nullptr) {
             enemy->takeDamage(getDamage());
         }
         auto player = dynamic_cast<Player*>(to);
         if (player != nullptr) {
+            color = Color::red();
             player->takeDamage(getDamage());
         }
+        Drawable::drawLightning(from, to->getPosition(), color);
     } else {
         auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(from, true, false);
         if (closestObject == nullptr) {
@@ -217,8 +247,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
         auto enemy = dynamic_cast<EnemyGhost*>(closestObject);
         if (enemy != nullptr) {
             enemy->takeDamage(getDamage());
-            Drawable::drawLightning(from, closestObject->getPosition());
-            setStatus(WeaponStatus::PRESSED);
+            Drawable::drawLightning(from, closestObject->getPosition(), Color::green());
         }
     }
 }
@@ -295,13 +324,6 @@ int Weapon::getStatus() const {
 
 void Weapon::setStatus(int status)
 {
-    if (status == WeaponStatus::PRESSED && getStatus() != PRESSED && getType() == WeaponTypes::WEAPON_INSTANT) {
-        ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),EngineSetup::SoundChannels::SND_ENVIRONMENT, -1);
-    }
-
-    if (status == WeaponStatus::RELEASED) {
-        ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_ENVIRONMENT);
-    }
 
     Weapon::status = status;
 }
@@ -341,6 +363,14 @@ void Weapon::setStopEvery(float stopEverySeconds) {
     Weapon::stopEvery = stopEverySeconds;
     this->counterStopEvery = new Counter(stopEverySeconds);
     this->counterStopEvery->setEnabled(true);
+}
+
+int Weapon::getSoundChannel() const {
+    return soundChannel;
+}
+
+void Weapon::setSoundChannel(int soundChannel) {
+    Weapon::soundChannel = soundChannel;
 }
 
 

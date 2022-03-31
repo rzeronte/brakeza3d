@@ -30,6 +30,8 @@ public:
     bool flatTextureColor;
     bool enableLights;
 
+    Color flatColor;
+
     Texture *texture;
 
     // texture vertex coordinates
@@ -123,6 +125,8 @@ public:
 
     void setBSPTriangle(bool value);
     bool isBSPTriangle();
+
+    void setFlatColor(const Color &flatColor);
 };
 
 #endif //SDL2_3D_ENGINE_TRIANGLE_H

@@ -13,7 +13,6 @@ void EnemyGhost::onUpdate() {
 
     Vector3D way(ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(), getPosition());
 
-
     getWeapon()->onUpdate();
 
     setRotation(M3::getFromVectors(
@@ -23,10 +22,15 @@ void EnemyGhost::onUpdate() {
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
+
+        if (getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
+            ComponentsManager::get()->getComponentSound()->stopChannel(getWeapon()->getSoundChannel());
+        }
+
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("enemyExplosion"),
-            EngineSetup::SoundChannels::SND_ENVIRONMENT,
-            1
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
         );
         remove();
     }
@@ -44,6 +48,11 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
 
     auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionableObject);
     if (projectile != nullptr) {
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("enemyDamage"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
         this->takeDamage(projectile->getWeaponType()->getDamage());
     }
 }
@@ -71,7 +80,8 @@ void EnemyGhost::shoot(Object3D *target)
                 this,
                 positionProjectile,
                 direction,
-                EngineSetup::collisionGroups::Player
+                EngineSetup::collisionGroups::Player,
+                Color::red()
             );
             break;
         }

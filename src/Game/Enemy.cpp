@@ -63,3 +63,11 @@ float Enemy::getStartStamina() const {
 void Enemy::setStartStamina(float startStamina) {
     Enemy::startStamina = startStamina;
 }
+
+int Enemy::getSoundChannel() const {
+    return soundChannel;
+}
+
+void Enemy::setSoundChannel(int soundChannel) {
+    Enemy::soundChannel = soundChannel;
+}

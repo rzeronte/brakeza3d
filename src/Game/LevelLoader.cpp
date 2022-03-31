@@ -3,8 +3,6 @@
 //
 
 #include "LevelLoader.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Game/EnemyGhostRespawner.h"
@@ -28,7 +26,6 @@ void LevelLoader::load(int levelIndex)
     setLevelStartedToPlay(true);
 
     this->currentLevelIndex = levelIndex;
-    this->numberLevelEnemies = 0;
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
 
@@ -42,7 +39,7 @@ void LevelLoader::addLevel(std::string filename)
 
 int LevelLoader::getNumberLevelEnemies() const
 {
-    return numberLevelEnemies;
+    return respawners.size();
 }
 
 bool LevelLoader::loadNext()
@@ -78,10 +75,13 @@ int LevelLoader::getCurrentLevelIndex() const {
     return currentLevelIndex;
 }
 
-void LevelLoader::loadEnemiesFromJSON(std::string filePath) {
+void LevelLoader::loadEnemiesFromJSON(std::string filePath)
+{
     Logging::Log("Loading Enemies for level...", "LEVEL_LOADER");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
+
+    respawners.resize(0);
 
     size_t file_size;
     const char *weaponsFile = Tools::readFile(filePath, file_size);
@@ -91,6 +91,12 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath) {
         Logging::Log(filePath + " can't be loaded", "ERROR");
         return;
     }
+
+    std::string levelName = cJSON_GetObjectItemCaseSensitive(myDataJSON, "name")->valuestring;
+    std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(myDataJSON, "backgroundImage")->valuestring;
+
+    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
 
     cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
 
@@ -162,7 +168,6 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath) {
             }
         }
 
-
         auto *enemy = new EnemyGhost();
         enemy->setEnabled(true);
         enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -175,15 +180,19 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath) {
         enemy->setStartStamina(stamina);
         enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
         enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
-
+        enemy->setSoundChannel(respawners.size() + 2);
         enemy->setBehavior(behavior);
 
-        enemy->setWeaponType(parseWeaponJSON(weapon));
+        auto weaponType = parseWeaponJSON(weapon);
+        weaponType->setSoundChannel(enemy->getSoundChannel());
 
-        auto respawner = new EnemyGhostRespawner(enemy, (int) Tools::random(1, 4));
+        Logging::getInstance()->Log("Loading enemy soundChannel: " + std::to_string(enemy->getSoundChannel()));
+
+        enemy->setWeaponType(weaponType);
+
+        auto respawner = new EnemyGhostRespawner(enemy, (int) Tools::random(1, 3));
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        numberLevelEnemies++;
-
+        respawners.push_back(respawner);
 
         //Logging::getInstance()->Log(cJSON_GetObjectItemCaseSensitive(position, "y")->valuestring);
         //SoundPackageItemType selectedType = SoundPackageItemType::SOUND;
@@ -212,6 +221,8 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 
     auto weapon = new Weapon(name);
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    weapon->getModelProjectile()->setFlatTextureColor(true);
+    weapon->getModelProjectile()->setFlatColor(Color::fuchsia());
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
     weapon->getModelProjectile()->setLabel("projectile_enemy_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
@@ -235,4 +246,11 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     }
 
     return weapon;
+}
+
+void LevelLoader::startRespawners()
+{
+    for (auto respawner : respawners) {
+        respawner->startCounter();
+    }
 }

@@ -349,3 +349,7 @@ void Triangle::setBSPTriangle(bool value) {
 bool Triangle::isBSPTriangle() {
     return this->bspTriangle;
 }
+
+void Triangle::setFlatColor(const Color &flatColor) {
+    Triangle::flatColor = flatColor;
+}

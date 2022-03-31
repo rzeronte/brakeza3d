@@ -13,6 +13,7 @@ class EnemyGhostRespawner: public Object3D {
 public:
     EnemyGhostRespawner(EnemyGhost *object, float step);
     void onUpdate() override;
+    void startCounter();
 private:
     EnemyGhost *object;
     float step;

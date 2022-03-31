@@ -11,6 +11,7 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Game/Weapon.h"
 #include "../../include/Misc/cJSON.h"
+#include "../../include/Game/EnemyGhostRespawner.h"
 
 typedef enum {
     ENEMY = 0,
@@ -32,9 +33,10 @@ public:
     Weapon *parseWeaponJSON(cJSON *weaponJson);
 private:
     std::vector<std::string> levels;
+    std::vector<EnemyGhostRespawner*> respawners;
+
     int currentLevelIndex;
     bool levelStartedToPlay;
-    int numberLevelEnemies;
 public:
     int getNumberLevelEnemies() const;
 
@@ -49,6 +51,8 @@ public:
     int size();
 
     void loadEnemiesFromJSON(std::string filePath);
+
+    void startRespawners();
 };
 
 

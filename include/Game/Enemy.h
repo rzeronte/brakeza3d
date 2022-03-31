@@ -26,6 +26,8 @@ public:
     float range;
     float speed;
 
+    int soundChannel;
+
     Enemy();
 
     void takeDamage(float damageTaken);
@@ -53,6 +55,10 @@ public:
     float getStartStamina() const;
 
     void setStartStamina(float startStamina);
+
+    int getSoundChannel() const;
+
+    void setSoundChannel(int soundChannel);
 };
 
 

@@ -107,6 +107,10 @@ public:
         }
     }
 
+    void setImage(Image *image) {
+        ShaderImageBackground::image = image;
+    }
+
     Vertex3D &getAutoScrollSpeed() {
         return autoScrollSpeed;
     }

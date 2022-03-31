@@ -226,6 +226,8 @@ void ComponentHUD::drawEnemies()
     for (auto object : objects) {
         auto enemy = dynamic_cast<EnemyGhost*> (object);
         if (enemy != nullptr) {
+            if (enemy->isAlphaEnabled()) return;
+
             Vertex3D v = object->getPosition();
 
             Transforms::cameraSpace(v, v, camera);

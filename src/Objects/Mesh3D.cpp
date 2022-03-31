@@ -88,7 +88,8 @@ void Mesh3D::copyFrom(Mesh3D *source) {
         );
 
         t->setTexture(modelTriangle->getTexture());
-        t->setFlatTextureColor(modelTriangle->isFlatTextureColor());
+        t->setFlatTextureColor(source->isFlatTextureColor());
+        t->setFlatColor(source->flatColor);
         t->setEnableLights(modelTriangle->isEnableLights());
         t->setBSPTriangle(modelTriangle->isBSPTriangle());
 
@@ -247,6 +248,7 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
         auto t = new Triangle(V3, V2, V1, this);
         t->setFlatTextureColor(this->isFlatTextureColor());
         t->setEnableLights(this->isEnableLights());
+        t->setFlatColor(this->flatColor);
         this->modelTriangles.push_back(t);
 
         if (this->modelTriangles.size() > 0) {
@@ -317,4 +319,8 @@ bool Mesh3D::isEnableLights() const {
 
 void Mesh3D::setEnableLights(bool enableLights) {
     this->enableLights = enableLights;
+}
+
+void Mesh3D::setFlatColor(const Color &flatColor) {
+    Mesh3D::flatColor = flatColor;
 }

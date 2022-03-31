@@ -86,6 +86,11 @@ void Player::takeDamage(float dmg) {
 
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("playerDead"),
+            1,
+            0
+        );
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
         lives--;
     }
@@ -120,7 +125,8 @@ void Player::shoot()
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
-                EngineSetup::collisionGroups::Enemy
+                EngineSetup::collisionGroups::Enemy,
+                Color::green()
             );
             break;
         }
@@ -248,6 +254,12 @@ void Player::resolveCollision(Collisionable *with) {
     auto projectile = dynamic_cast<AmmoProjectileBody*> (with);
     if (projectile != nullptr) {
         if (projectile->getParent() != this) {
+            ComponentsManager::get()->getComponentSound()->playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+                1,
+                1
+            );
+
             takeDamage(projectile->getWeaponType()->getDamage());
             projectile->remove();
         }
@@ -263,6 +275,11 @@ void Player::resolveCollision(Collisionable *with) {
 
     auto health = dynamic_cast<ItemHealthGhost*> (with);
     if (health != nullptr) {
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("itemHealth"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
         Logging::getInstance()->Log("Health to Player!");
         getAid(health->getAid());
         health->removeCollisionObject();

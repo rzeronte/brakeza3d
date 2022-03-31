@@ -150,6 +150,7 @@ public:
     float SOUND_VOLUME_MUSIC = 128;
     float SOUND_VOLUME_PLAYER = 75;
     float SOUND_VOLUME_ENVIRONMENT = 75;
+    float SOUND_VOLUME_ENEMIES = 75;
     float SOUND_VOLUME_MENU = 75;
 
     // SpriteDirectional3D Default size
@@ -256,15 +257,6 @@ public:
 
     enum SoundChannels {
         SND_GLOBAL = -1,
-        SND_MENU = 0,
-        SND_PLAYER = 1,
-        SND_PLAYER_STEPS = 2,
-        SND_ENVIRONMENT = 3,
-        SND_EXPLODE_ENEMY = 4,
-        SND_WEAPON = 5,
-        SND_WEAPON_LOOP = 6,
-        SND_BLOOD_HIT = 7,
-        SND_ENEMIES = 8
     };
 
     enum ShaderTypes {

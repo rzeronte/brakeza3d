@@ -112,7 +112,11 @@ void ComponentGame::checkForEndLevel() const
         removeProjectiles();
         getPlayer()->setPosition(playerStartPosition);
         getFadeToGameState()->setSpeed(0.005);
-        ComponentsManager::get()->getComponentSound()->playSound(BUFFERS->soundPackage->getByLabel("winLevel"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+        ComponentsManager::get()->getComponentSound()->playSound(
+            BUFFERS->soundPackage->getByLabel("winLevel"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
 
         if (getPlayer()->getLevelCompletedCounter() >= getLevelInfo()->size()) {
             ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
@@ -134,7 +138,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
         splashCounter.setEnabled(true);
-        ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1);
+        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, SPLASH_TIME * 1000);
     }
 
     if (getGameState() == EngineSetup::GameState::SPLASH && state == EngineSetup::GameState::MENU) {
@@ -172,6 +176,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
+        ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
+        setVisibleInGameObjects(false);
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
@@ -345,7 +351,11 @@ void ComponentGame::selectClosestObject3DFromPlayer()
     auto currentClosestObject = getClosesObject3DFromPosition(player->getPosition(), true, true);
 
     if (currentClosestObject != nullptr) {
-        ComponentsManager::get()->getComponentSound()->playSound(BUFFERS->soundPackage->getByLabel("soundMenuClick"),EngineSetup::SoundChannels::SND_MENU, 0);
+        ComponentsManager::get()->getComponentSound()->playSound(
+            BUFFERS->soundPackage->getByLabel("changedSelectedEnemy"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
         ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
         ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(currentClosestObject);
     }
@@ -526,7 +536,6 @@ void ComponentGame::loadWeapons() {
     Logging::Log("Loading Weapons for game...", "ComponentGame");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
-
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "playerWeapons.json";
 
     size_t file_size;
@@ -542,6 +551,7 @@ void ComponentGame::loadWeapons() {
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, weaponsList) {
         auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
+        weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }
 

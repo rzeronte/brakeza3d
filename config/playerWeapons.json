@@ -15,12 +15,13 @@
       "type": 0,
       "icon": "flare.png",
       "modelProjectile": "projectile_weapon_01.fbx",
-      "model": "item_weapon_01.fbx"
+      "model": "item_weapon_01.fbx",
+      "soundChannel": 0
     },
     {
       "index": 1,
       "name": "Instant",
-      "damage": 1.5,
+      "damage": 0,
       "amount": 5000,
       "speed": 500,
       "dispersion": 10,
@@ -32,7 +33,8 @@
       "type": 1,
       "icon": "plague.png",
       "modelProjectile": "projectile_weapon_02.fbx",
-      "model": "item_weapon_02.fbx"
+      "model": "item_weapon_02.fbx",
+      "soundChannel": 1
     },
     {
       "index": 2,
@@ -49,7 +51,8 @@
       "type": 2,
       "icon": "needles.png",
       "modelProjectile": "projectile_weapon_03.fbx",
-      "model": "item_weapon_03.fbx"
+      "model": "item_weapon_03.fbx",
+      "soundChannel": 0
     }
   ]
 }

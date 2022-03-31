@@ -152,6 +152,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
 
         auto t = new Triangle(V1, V2, V3, this);
         t->setFlatTextureColor(this->isFlatTextureColor());
+        t->setFlatColor(flatColor);
         t->setEnableLights(this->isEnableLights());
         this->modelTriangles.push_back(t);
 

@@ -9,7 +9,7 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
 {
     this->object = object;
     counter.setStep(step);
-    counter.setEnabled(true);
+    counter.setEnabled(false);
     object->setEnabled(true);
     object->setAlphaEnabled(true);
     Brakeza3D::get()->addObject3D(object, object->getLabel());
@@ -18,6 +18,8 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
 void EnemyGhostRespawner::onUpdate()
 {
     Object3D::onUpdate();
+
+    if (!counter.isEnabled()) return;
 
     counter.update();
 
@@ -31,5 +33,10 @@ void EnemyGhostRespawner::onUpdate()
         this->setRemoved(true);
         return;
     }
+}
+
+void EnemyGhostRespawner::startCounter()
+{
+    this->counter.setEnabled(true);
 }
 

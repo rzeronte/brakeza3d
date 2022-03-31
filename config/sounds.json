@@ -4,21 +4,32 @@
     { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
     { "file": "music_gameover.mp3", "label": "gameOverMusic", "type": "music" },
 
-    { "file": "start_game.wav", "label": "startGame", "type": "sound" },
+    { "file": "new_level.mp3", "label": "newLevel", "type": "sound" },
     { "file": "move_menu_option.wav", "label": "soundMenuClick", "type": "sound" },
     { "file": "option-accept.wav", "label": "soundMenuAccept", "type": "sound" },
-    { "file": "win_level.wav", "label": "winLevel", "type": "sound" },
+    { "file": "gong.wav", "label": "winLevel", "type": "sound" },
 
     { "file": "explosion.wav", "label": "enemyExplosion", "type": "sound" },
 
-    { "file": "dash.wav", "label": "dash", "type": "sound" },
+    { "file": "dash.mp3", "label": "dash", "type": "sound" },
 
     { "file": "voltage_loop.wav", "label": "voltageLoop", "type": "sound" },
 
     { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
     { "file": "get_weapon.wav", "label": "getWeapon", "type": "sound" },
 
-    { "file": "shoot_01.wav", "label": "shoot01", "type": "sound" },
-    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" }
+
+    { "file": "enemy_damage.wav", "label": "enemyDamage", "type": "sound" },
+
+    { "file": "player_hit.mp3", "label": "playerDamage", "type": "sound" },
+
+    { "file": "start_game.wav", "label": "startGame", "type": "sound" },
+    { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
+
+    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
+
+    { "file": "item_health.mp3", "label": "itemHealth", "type": "sound" },
+
+    { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" }
   ]
 }

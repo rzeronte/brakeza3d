@@ -20,6 +20,7 @@ public:
     bool available;
     int status;
     int type;
+    int soundChannel;
 
     std::string label;
 
@@ -78,7 +79,7 @@ public:
 
     void setDispersion(float dispersion);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask);
+    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color);
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target);
     void shootInstant(Vertex3D from,  Object3D *to);
 
@@ -135,6 +136,10 @@ public:
     float getStopEvery() const;
 
     void setStopEvery(float stopEverySeconds);
+
+    int getSoundChannel() const;
+
+    void setSoundChannel(int soundChannel);
 };
 
 
