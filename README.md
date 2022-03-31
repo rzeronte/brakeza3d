@@ -7,7 +7,7 @@ No 3D graphics libraries such as OpenGL or Direct3D have been used.
 Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
-- Easy architecture (Based in components with preUpdate/onUpdate/postUpdate lyfecicle)
+- Easy architecture (Based in components with preUpdate/update/postUpdate lyfecicle)
 - BSP Quake Geometry/Texture/Light maps/Entities loader
 - Bullet Physics Integration
 - ImGui Integration

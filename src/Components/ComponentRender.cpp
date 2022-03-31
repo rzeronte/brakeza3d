@@ -40,6 +40,7 @@ void ComponentRender::onUpdate() {
     this->drawVisibleTriangles();
 
     this->onUpdatePostUpdateShaders();
+    this->onPostUpdateSceneObjects();
 
     frameTriangles.clear();
 
@@ -932,14 +933,14 @@ std::string ComponentRender::getUniqueGameObjectLabel() {
 void ComponentRender::onUpdatePreUpdateShaders() {
     for (auto shader : shaders) {
         if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::PREUPDATE) {
-            shader.second->onUpdate();
+            shader.second->update();
         }
     }
 }
 void ComponentRender::onUpdatePostUpdateShaders() {
     for (auto shader : shaders) {
         if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::POSTUPDATE) {
-            shader.second->onUpdate();
+            shader.second->update();
         }
     }
 }
@@ -1010,4 +1011,15 @@ Object3D *ComponentRender::getSelectedObject() {
 
 void ComponentRender::setSelectedObject(Object3D *o) {
     this->selectedObject = o;
+}
+
+void ComponentRender::onPostUpdateSceneObjects()
+{
+    for (auto object : *getSceneObjects()) {
+        if (!object->isEnabled()) {
+            continue;
+        }
+
+        object->postUpdate();
+    }
 }
