@@ -965,9 +965,9 @@ void ComponentRender::initializeShaders() {
     auto shaderBackground = new ShaderImageBackground(
             std::string(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_SHADER_BACKGROUND_IMAGE).c_str()
     );
-    shaderBackground->setupFlatPortion(0, 0, 0, 0, 320, 240);
+    shaderBackground->setupFlatPortion(0, 0, 0, 0, SETUP->screenWidth, SETUP->screenHeight);
 
-    addShader(EngineSetup::ShaderTypes::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject));
+    addShader(EngineSetup::ShaderTypes::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject, ComponentsManager::get()->getComponentCamera()->getCamera()));
     addShader(EngineSetup::ShaderTypes::BACKGROUND, "Background", shaderBackground);
     addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
