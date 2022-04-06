@@ -1,5 +1,6 @@
 
 #include "../../include/Particles/ParticleEmissorGravity.h"
+
 ParticleEmissorGravity::ParticleEmissorGravity(bool active, float force, float ttl, float step, const Color &c)
         : ParticleEmissor(active, force, ttl, step, c) {
 }

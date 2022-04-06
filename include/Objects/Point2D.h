@@ -9,6 +9,12 @@ public:
 
     Point2D(int x, int y);
 
+    float operator*(const Point2D &pm) const;
+    Point2D operator-(const Point2D &pm) const;
+    Point2D operator+(const Point2D &pm) const;
+
+    Point2D getNormalize() const;
+    float getLength();
     void consoleInfo(const std::string& a, bool) const;
 
     int x, y;

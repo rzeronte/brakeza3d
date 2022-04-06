@@ -91,10 +91,10 @@ void ComponentHUD::drawHUD() {
     auto componentManager = ComponentsManager::get();
     auto componentGame = componentManager->getComponentGame();
 
-    drawPlayerStamina(8);
-    drawPlayerEnergy(8 + 28 + 1);
+    drawPlayerStamina(20);
+    drawPlayerEnergy(20 + 2 + 28 + 1);
 
-    drawEnemySelectedStamina(8);
+    drawEnemySelectedStamina(20);
 
     if (SETUP->DRAW_FPS) {
         writeCenterHorizontal(
@@ -114,6 +114,9 @@ void ComponentHUD::drawHUD() {
         if (weaponType->isAvailable()) {
         }
     }
+
+    this->writeCenterHorizontal(20, componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(), false);
+
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {
@@ -138,7 +141,7 @@ void ComponentHUD::loadButtons() {
 }
 
 void ComponentHUD::drawPlayerStamina(int y) {
-    const int offsetX = 2;
+    const int offsetX = 10;
     const int offsetY = y;
     const int innerPercentOffsetX = 3;
     const int innerPercentOffsetY = 4;
@@ -164,7 +167,7 @@ void ComponentHUD::drawPlayerStamina(int y) {
 
 void ComponentHUD::drawPlayerEnergy(int y)
 {
-    const int offsetX = 2;
+    const int offsetX = 10;
     const int offsetY = y;
     const int innerPercentOffsetX = 3;
     const int innerPercentOffsetY = 4;
@@ -244,6 +247,9 @@ void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float v
     const int currentPercentage = (int) ((value * fixedWidth) / startValue);
 
     for (int i = 0; i < currentPercentage; i++) {
-        EngineBuffers::getInstance()->setVideoBuffer(screenPoint.x + i - (fixedWidth*0.5) , screenPoint.y, c.getColor());
+        int x = screenPoint.x + i - (fixedWidth*0.5);
+        int y = screenPoint.y;
+        if (!Tools::isPixelInWindow(x, y)) continue;
+        EngineBuffers::getInstance()->setVideoBuffer(x, y, c.getColor());
     }
 }

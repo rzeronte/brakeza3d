@@ -1,12 +1,12 @@
 {
-  "name": "Level01",
-  "backgroundImage": "levels/level_01.png",
+  "name": "Chapter 01: Let's see what happens",
+  "backgroundImage": "levels/level_02.png",
   "music": "level01Music",
   "enemies": [
     {
       "name": "Persecutor",
       "position": { "x": 300, "y": 20 },
-      "model": "red_spaceship_03.fbx",
+      "model": "spaceships/green_spaceship_02.fbx",
       "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
@@ -18,7 +18,7 @@
       "weapon": {
         "index": 1,
         "name": "Instant",
-        "damage": 0,
+        "damage": 1,
         "amount": 5000,
         "speed": 500,
         "dispersion": 10,

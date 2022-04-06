@@ -6,11 +6,13 @@
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
 #include "../Game/EnemyBehavior.h"
+#include "Point2D.h"
 
 class Object3D {
     Vertex3D position;
     M3 rotation;
     bool *stencilBuffer;
+
     EnemyBehavior *motion;
 public:
     float rotX, rotY, rotZ; // For easy management from UI

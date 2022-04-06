@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -149,8 +149,6 @@ add_executable(Brakeza3D
         include/Physics/BillboardBody.h
         src/Game/ItemWeaponGhost.cpp
         include/Game/ItemWeaponGhost.h
-        src/Game/ItemAmmoGhost.cpp
-        include/Game/ItemAmmoGhost.h
         src/Game/ItemHealthGhost.cpp
         include/Game/ItemHealthGhost.h
         src/Components/Component.cpp
@@ -244,7 +242,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileBody.cpp include/Game/AmmoProjectileBody.h include/Game/FaderToGameStates.h src/Game/EnemyBehavior.cpp include/Game/EnemyBehavior.h src/Game/EnemyBehaviorPatrol.cpp include/Game/EnemyBehaviorPatrol.h src/Game/EnemyBehaviorCircle.cpp include/Game/EnemyBehaviorCircle.h src/Game/EnemyBehaviorFollow.cpp include/Game/EnemyBehaviorFollow.h src/Game/LevelLoader.cpp src/Game/LevelLoader.h src/Game/AmmoSmartProjectileBody.cpp include/Game/AmmoSmartProjectileBody.h src/Game/ShaderShield.cpp src/Game/ShaderShield.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileBody.cpp include/Game/AmmoProjectileBody.h include/Game/FaderToGameStates.h src/Game/EnemyBehavior.cpp include/Game/EnemyBehavior.h src/Game/EnemyBehaviorPatrol.cpp include/Game/EnemyBehaviorPatrol.h src/Game/EnemyBehaviorCircle.cpp include/Game/EnemyBehaviorCircle.h src/Game/EnemyBehaviorFollow.cpp include/Game/EnemyBehaviorFollow.h src/Game/LevelLoader.cpp include/Game/LevelLoader.h src/Game/AmmoSmartProjectileBody.cpp include/Game/AmmoSmartProjectileBody.h src/Game/ShaderShield.cpp include/Game/ShaderShield.h src/Game/ItemEnergyGhost.cpp include/Game/ItemEnergyGhost.h include/Game/GravitationalGhost.cpp include/Game/GravitationalGhost.h include/Game/GravitationalShield.cpp include/Game/GravitationalShield.h src/Particles/ParticleEmissorFireworks.cpp include/Particles/ParticleEmissorFireworks.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

@@ -17,7 +17,8 @@
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Game/FaderToGameStates.h"
-#include "../../src/Game/LevelLoader.h"
+#include "../Game/LevelLoader.h"
+#include "../Particles/ParticleEmissorFireworks.h"
 
 class ComponentGame : public Component {
 public:
@@ -46,7 +47,6 @@ public:
     Vertex3D playerStartPosition;
     FaderToGameStates *fadeToGameState;
     Player *player;
-    Mesh3DBody *axisPlanes;
     PathFinder *pathFinder;
 
     Image *imageCredits;

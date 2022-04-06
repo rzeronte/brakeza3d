@@ -1,7 +1,11 @@
 #include <iostream>
 #include "../../include/Objects/Point2D.h"
+#include "../../include/Render/Maths.h"
 
-Point2D::Point2D() = default;
+Point2D::Point2D() {
+    x = 0;
+    y = 0;
+};
 
 Point2D::Point2D(int x, int y) {
     this->x = x;
@@ -15,4 +19,41 @@ void Point2D::consoleInfo(const std::string& label, bool jump) const {
     if (jump) {
         std::cout << std::endl;
     }
+}
+
+
+float Point2D::operator*(const Point2D &v) const
+{
+    return (float) ((this->x * v.x) + (this->y * v.y));
+}
+
+Point2D Point2D::getNormalize() const
+{
+    float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));
+
+    float inv_module = 1 / modulo;
+
+    return Point2D(
+        this->x * inv_module,
+        this->y * inv_module
+    );
+}
+
+Point2D Point2D::operator-(const Point2D &v) const {
+    return Point2D(
+        this->x - v.x,
+        this->y - v.y
+    );
+}
+
+Point2D Point2D::operator+(const Point2D &v) const {
+    return Point2D(
+        this->x + v.x,
+        this->y+- v.y
+    );
+}
+
+float Point2D::getLength()
+{
+    return sqrt(x * x + y*y);
 }

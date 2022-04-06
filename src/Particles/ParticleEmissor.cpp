@@ -42,15 +42,21 @@ void ParticleEmissor::onUpdate() {
     this->counter.update();
 
     if (this->counter.isFinished()) {
-        this->addParticle(new Particle(this,this->force,this->ttl, this->color));
+        this->addParticle(new Particle(this,this->force,this->ttl, this->color, true));
         this->counter.setEnabled(true);
     }
 }
+
+void ParticleEmissor::postUpdate() {
+    Object3D::postUpdate();
+}
+
 
 void ParticleEmissor::setRotationFrame(float x, float y, float z) {
     this->rotFrameX = x;
     this->rotFrameY = y;
     this->rotFrameZ = z;
 }
+
 
 

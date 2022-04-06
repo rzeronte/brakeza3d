@@ -75,18 +75,19 @@ public:
         std::string draw_offset_text = "DrawOffset##" + std::to_string(i);
         std::string alpha_text = "Alpha Channel##" + std::to_string(i);
         std::string alpha_value_text = "Alpha Value##" + std::to_string(i);
+        std::string alpha_value = "Alpha##" + std::to_string(i);
 
-        const float range_min = -90000;
-        const float range_max = 90000;
+        const float range_min = -10000;
+        const float range_max = 10000;
         const float range_sensibility = 0.5;
 
         const float range_angle_min = -360;
         const float range_angle_max = 360;
         const float range_angle_sensibility = 0.1;
 
-        const int range_alpha_min = 0;
-        const int range_alpha_max = 255;
-        const int range_alpha_sensibility = 1;
+        const float range_alpha_min = 0;
+        const float range_alpha_max = 255;
+        const float range_alpha_sensibility = 1.0;
 
         // enabled
         ImGui::Checkbox(enabled_text.c_str(), &object->enabled);

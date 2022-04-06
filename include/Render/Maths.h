@@ -48,6 +48,7 @@ public:
             bool isClipped,
             bool isBsp,
             bool isFlattenTextureColor,
+            Color flatColor,
             bool enableLights
     );
 

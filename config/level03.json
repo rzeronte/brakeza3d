@@ -1,12 +1,12 @@
 {
-  "name": "Level01",
-  "backgroundImage": "levels/level_01.png",
+  "name": "Chapter 01: End end of start",
+  "backgroundImage": "levels/level_03.png",
   "music": "level01Music",
   "enemies": [
     {
       "name": "Patrol",
       "position": { "x": 20, "y": 20 },
-      "model": "green_spaceship_01.fbx",
+      "model": "spaceships/green_spaceship_01.fbx",
       "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
@@ -37,7 +37,7 @@
     {
       "name": "Persecutor",
       "position": { "x": 300, "y": 20 },
-      "model": "red_spaceship_03.fbx",
+      "model": "spaceships/green_spaceship_02.fbx",
       "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
@@ -67,7 +67,7 @@
     {
       "name": "Defender",
       "position": { "x": 300, "y": 200 },
-      "model": "red_spaceship_03.fbx",
+      "model": "spaceships/green_spaceship_03.fbx",
       "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,

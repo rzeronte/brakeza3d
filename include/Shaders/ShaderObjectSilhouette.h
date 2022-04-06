@@ -9,22 +9,25 @@
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
+#include "../Render/Transforms.h"
 
 class ShaderObjectSilhouette: public Shader {
 public:
-    ShaderObjectSilhouette() {
+    ShaderObjectSilhouette(Camera3D *camera) {
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->object = nullptr;
         this->color = Color::green();
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+        this->camera = camera;
     }
 
-    ShaderObjectSilhouette(Object3D *o) {
+    ShaderObjectSilhouette(Object3D *o, Camera3D *camera) {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->color = Color::green();
+        this->camera = camera;
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     }
 
@@ -41,13 +44,33 @@ public:
             return;
         }
 
-        Uint32 *videoBuffer = EngineBuffers::getInstance()->videoBuffer;
-        for (int y = 0; y < screenHeight ; y++) {
-            for (int x = 0; x < screenWidth; x++) {
+        auto mesh = dynamic_cast<Mesh3D*> (object);
+        if (mesh == nullptr) {
+            return;
+        }
+
+        mesh->updateBoundingBox();
+        Vertex3D min = mesh->aabb.min;
+        Transforms::cameraSpace(min, min, camera);
+        min = Transforms::PerspectiveNDCSpace(min, camera->frustum);
+
+        Point2D DP;
+        Transforms::screenSpace(DP, min);
+
+        Vertex3D max = mesh->aabb.max;
+        Transforms::cameraSpace(max, max, camera);
+        max = Transforms::PerspectiveNDCSpace(max, camera->frustum);
+
+        Point2D DPmax;
+        Transforms::screenSpace(DPmax, max);
+
+        for (int y = DP.y; y < DPmax.y -1 ; y++) {
+            for (int x = DP.x; x < DPmax.x -1 ; x++) {
                 if (isBorderPixel(x, y) && x < screenWidth-1 && y < screenHeight - 1) {
-                    *videoBuffer = this->color.getColor();
+                    if (Tools::isPixelInWindow(x, y)) {
+                        EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                    }
                 }
-                videoBuffer++;
             }
         }
     }
@@ -65,6 +88,7 @@ private:
     int screenHeight;
 
     Object3D* object;
+    Camera3D *camera;
     Color color;
 
     bool isBorderPixel(int x, int y) {

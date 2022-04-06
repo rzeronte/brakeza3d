@@ -15,13 +15,13 @@
       "type": 0,
       "icon": "flare.png",
       "modelProjectile": "projectile_weapon_01.fbx",
-      "model": "item_weapon_01.fbx",
+      "model": "item_weapon_03.fbx",
       "soundChannel": 0
     },
     {
       "index": 1,
       "name": "Instant",
-      "damage": 0,
+      "damage": 1,
       "amount": 5000,
       "speed": 500,
       "dispersion": 10,

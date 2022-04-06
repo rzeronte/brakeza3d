@@ -167,6 +167,7 @@ void Triangle::clipping(
                 true,
                 isBSP,
                 this->isFlatTextureColor(),
+                this->flatColor,
                 this->isEnableLights()
         );
 

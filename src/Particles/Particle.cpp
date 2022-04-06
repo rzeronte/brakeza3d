@@ -2,7 +2,7 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Brakeza3D.h"
 
-Particle::Particle(Object3D *parent, float force, float ttl, Color c) {
+Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affectedByGravity) {
     setParent(parent);
     this->setPosition(parent->getPosition());
     this->setRotation(parent->getRotation());
@@ -13,6 +13,7 @@ Particle::Particle(Object3D *parent, float force, float ttl, Color c) {
     this->timeToLive.setStep(ttl);
     this->timeToLive.setEnabled(true);
     this->color = c;
+    this->affedByGravity = affectedByGravity;
 }
 
 void Particle::onUpdate() {
@@ -24,21 +25,23 @@ void Particle::onUpdate() {
     }
 
     this->timeToLive.update();
-
-    float g = EngineSetup::get()->gravity.y;
-
     velocity = this->AxisForward().getScaled(force * Brakeza3D::get()->getDeltaTime());
 
-    t += Brakeza3D::get()->getDeltaTime() / 1000;
+    addToPosition(velocity);
+    if (affedByGravity) {
+        float g = EngineSetup::get()->gravity.y;
 
-    Vertex3D gravity(
-        EngineSetup::get()->gravity.x * t,
-        EngineSetup::get()->gravity.y * t - (0.5f * g * t * t),
-        EngineSetup::get()->gravity.z * t
-    );
 
-    this->setPosition(getPosition() + gravity + velocity);
+        t += Brakeza3D::get()->getDeltaTime() / 1000;
 
+        Vertex3D gravity(
+                EngineSetup::get()->gravity.x * t,
+                EngineSetup::get()->gravity.y * t - (0.5f * g * t * t),
+                EngineSetup::get()->gravity.z * t
+        );
+
+        this->addToPosition( gravity);
+    }
     Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), this->color);
 }
 

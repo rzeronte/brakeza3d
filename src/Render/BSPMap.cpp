@@ -11,7 +11,6 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Game/ItemAmmoGhost.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);
@@ -443,6 +442,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
             false,
             true,
             false,
+            NULL,
             false
     );
 

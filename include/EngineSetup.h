@@ -38,8 +38,8 @@ public:
     Vertex3D gravity = Vertex3D(0, -900.0f, 0);
 
     // Screen dimension constants
-    const int screenWidth = 320;
-    const int screenHeight = 240;
+    const int screenWidth = 640;
+    const int screenHeight = 480;
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;

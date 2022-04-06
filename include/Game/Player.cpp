@@ -5,6 +5,8 @@
 #include "AmmoProjectileBody.h"
 #include "ItemWeaponGhost.h"
 #include "ItemHealthGhost.h"
+#include "ItemEnergyGhost.h"
+#include "GravitationalShield.h"
 
 Player::Player() : state(PlayerState::EMPTY),
                    stamina(INITIAL_STAMINA),
@@ -39,10 +41,30 @@ Player::Player() : state(PlayerState::EMPTY),
     levelsCompletedCounter = 0;
 
     this->counterDamageBlink = new Counter(1);
-    this->shield = new ShaderShield(20, 0.2);
 
     this->shieldEnabled = false;
+    this->gravityShieldsNumber = 0;
 }
+
+void Player::loadShieldModel() {
+    shieldModel = new Mesh3D();
+    shieldModel->setEnabled(true);
+    shieldModel->setLabel("shieldModel");
+    shieldModel->setPosition(getPosition());
+    shieldModel->setAlpha(200);
+    shieldModel->setAlphaEnabled(true);
+    shieldModel->setEnableLights(true);
+    shieldModel->setScale(1);
+    shieldModel->setStencilBufferEnabled(false);
+    shieldModel->setFlatTextureColor(true);
+    shieldModel->setFlatColor(Color::blue());
+    shieldModel->setRotationFrameEnabled(true);
+    shieldModel->setRotationFrame(Vertex3D(1, 0, 0));
+    shieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
+
+    Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
+}
+
 
 int Player::getStamina() const {
     return stamina;
@@ -69,12 +91,12 @@ void Player::evalStatusMachine() {
 
 void Player::takeDamage(float dmg) {
 
-    if (state == PlayerState::GETTING_DAMAGE) {
+    if (state == PlayerState::GETTING_DAMAGE || state == PlayerState::DEAD) {
         return;
     }
 
     if (isShieldEnabled() && getEnergy() > 0) {
-        setEnergy(getEnergy() - dmg);
+        useEnergy(dmg);
         return;
     }
 
@@ -108,6 +130,39 @@ void Player::respawn()
     Logging::getInstance()->Log("Respawn Player");
     setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
+}
+
+void Player::gravityShield()
+{
+    if (gravityShieldsNumber >= (int) MAX_GRAVITATIONAL_SHIELDS) {
+        return;
+    }
+
+    auto *object = new GravitationalShield(3000, 0.001, 500, 7);
+    object->setParent(parent);
+    object->setLabel("talent_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    object->setPosition(getPosition());
+    object->setEnabled(true);
+    object->setStencilBufferEnabled(true);
+    object->setRotationFrameEnabled(true);
+    object->setRotationFrame(Vertex3D(0, 0.5, 0));
+    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
+    object->makeGhostBody(
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        this,
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
+    );
+
+    Brakeza3D::get()->addObject3D(object, object->getLabel());
+
+    gravityShieldsNumber++;
+
+    ComponentsManager::get()->getComponentSound()->playSound(
+        EngineBuffers::getInstance()->soundPackage->getByLabel("gravitationalShield"),
+        1,
+        0
+    );
 }
 
 void Player::shoot()
@@ -150,22 +205,19 @@ void Player::shoot()
     }
 }
 
-void Player::jump() {
-}
-
-void Player::reload() {
-    if (weaponType == nullptr) {
-        return;
-    }
-
-    Logging::Log("ComponentWeapons reload!", "Weapons");
-}
-
-void Player::getAid(float aid) {
+void Player::receiveAid(float aid) {
     this->stamina = stamina + aid;
 
-    if (stamina > (float) INITIAL_STAMINA) {
-        this->stamina = (float) INITIAL_STAMINA;
+    if (stamina > (float) getStartStamina()) {
+        this->stamina = (float) getStartStamina();
+    }
+}
+void Player::receiveEnergy(float energy)
+{
+    this->energy = energy + energy;
+
+    if (energy > (float) getStartEnergy()) {
+        this->energy = (float) getStartEnergy();
     }
 }
 
@@ -183,7 +235,13 @@ void Player::onUpdate()
     }
 
     if (isShieldEnabled()) {
-        shield->onUpdate(getPosition());
+        shieldModel->setPosition(getPosition());
+        shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() + 2, 0, 127));
+    } else {
+        if (shieldModel->getAlpha() == 0) {
+            shieldModel->setEnabled(false);
+        }
+       shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
     }
 
     if (state == PlayerState::GETTING_DAMAGE) {
@@ -281,9 +339,20 @@ void Player::resolveCollision(Collisionable *with) {
             0
         );
         Logging::getInstance()->Log("Health to Player!");
-        getAid(health->getAid());
-        health->removeCollisionObject();
-        health->setRemoved(true);
+        receiveAid(health->getAid());
+        health->remove();
+    }
+
+    auto energy = dynamic_cast<ItemEnergyGhost*> (with);
+    if (energy != nullptr) {
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("itemHealth"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
+        Logging::getInstance()->Log("Health to Player!");
+        receiveEnergy(energy->getEnergy());
+        energy->remove();
     }
 }
 
@@ -340,7 +409,7 @@ void Player::setWeaponTypeByIndex(int i) {
     }
 }
 
-void Player::setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObjectSpeed) {
+void Player::setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed) {
     Player::autoRotationSelectedObjectSpeed = autoRotationSelectedObjectSpeed;
 }
 
@@ -401,6 +470,11 @@ float Player::getEnergy() const {
     return energy;
 }
 
+void Player::useEnergy(float energy)
+{
+    this->energy -= energy;
+}
+
 void Player::setEnergy(float energy) {
     Player::energy = energy;
 }
@@ -427,4 +501,12 @@ float Player::getRecoverEnergySpeed() const {
 
 void Player::setRecoverEnergySpeed(float recoverEnergySpeed) {
     Player::recoverEnergySpeed = recoverEnergySpeed;
+}
+
+int Player::getGravityShieldsNumber() const {
+    return gravityShieldsNumber;
+}
+
+void Player::setGravityShieldsNumber(int gravityShieldsNumber) {
+    Player::gravityShieldsNumber = gravityShieldsNumber;
 }

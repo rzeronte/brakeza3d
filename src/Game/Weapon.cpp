@@ -148,6 +148,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
+        projectile->setEnableLights(false);
         getModelProjectile()->setFlatColor(color);
         projectile->copyFrom(getModelProjectile());
         projectile->setPosition( position );
@@ -192,6 +193,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setWeaponType(this);
         projectile->copyFrom(getModelProjectile());
         projectile->setPosition( position );
+        projectile->setEnableLights(false);
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
 

@@ -13,21 +13,54 @@ ComponentMenu::ComponentMenu() {
 
 void ComponentMenu::onStart() {
     Logging::Log("ComponentMenu onStart", "ComponentMenu");
-
-    spaceship = new Mesh3D();
-    spaceship->setEnabled(true);
-    spaceship->setLabel("spaceshipMenu");
-    spaceship->setEnableLights(true);
-    spaceship->setRotation(90, 0, 0);
-    spaceship->setPosition(Vertex3D(1500, -1150, 2250));
-    spaceship->setStencilBufferEnabled(true);
-    spaceship->setRotationFrameEnabled(true);
-    spaceship->setRotationFrame(Vertex3D(0, 0, 0.1));
-    spaceship->setScale(1);
-    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_spaceship_03.fbx"));
-
-    Brakeza3D::get()->addObject3D(spaceship, spaceship->getLabel());
+    loadDecorative3DMesh();
     loadMenuOptions();
+
+    auto light = new LightPoint3D();
+    Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 6000);
+    light->setPosition(lightPosition);
+    light->setEnabled(true);
+    light->setLabel("lp2");
+    light->setPower(200);
+    light->setColorSpecularity(220, 220, 30);
+    light->setSpecularComponent(3);
+    light->setColor(0, 255, 0);
+    light->setRotation(270, 0, 0);
+    light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
+    Brakeza3D::get()->addObject3D(light, "lightMenu");
+
+    auto light2 = new LightPoint3D();
+    light2->setPosition(lightPosition);
+    light2->setEnabled(true);
+    light2->setLabel("lp2");
+    light2->setPower(200);
+    light2->setColor(255, 0, 0);
+    light2->setColorSpecularity(220, 220, 30);
+    light2->setSpecularComponent(3);
+    light2->setRotation(270, 0, 0);
+    light2->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(5000, 0, 0), lightPosition + Vertex3D(-5000, 0, 0), 1));
+    Brakeza3D::get()->addObject3D(light2, "light2Menu");
+}
+
+void ComponentMenu::loadDecorative3DMesh() {
+    Vertex3D spaceshipBasePosition(0, 3100, 20000);
+
+    Vertex3D speedRotation(1, 1, 0.5);
+
+    title = new Mesh3D();
+    title->setEnabled(true);
+    title->setLabel("menuTitle");
+    title->setEnableLights(true);
+    //title->setRotation(90, 0, 0);
+    title->setPosition(Vertex3D(-5700, -2600, 6200));
+    title->setStencilBufferEnabled(false);
+    title->setFlatTextureColor(true);
+    title->setFlatColor(Color::blue());
+    title->setRotationFrameEnabled(false);
+    title->setRotationFrame(Vertex3D(0, 0, 0.1));
+    title->setScale(1);
+    title->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "meteorita.fbx"));
+    Brakeza3D::get()->addObject3D(title, title->getLabel());
 }
 
 void ComponentMenu::preUpdate() {
@@ -43,7 +76,7 @@ void ComponentMenu::onUpdate() {
         return;
     }
 
-    drawOptions(ComponentsManager::get()->getComponentWindow()->screenSurface);
+    drawOptions();
 }
 
 void ComponentMenu::postUpdate() {
@@ -88,12 +121,12 @@ void ComponentMenu::loadMenuOptions() {
     }
 }
 
-void ComponentMenu::drawOptions(SDL_Surface *dst) {
+void ComponentMenu::drawOptions() {
 
     auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
-    int offsetY = 50;
-    int stepY = 10;
+    int offsetY = 150;
+    int stepY = 15;
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
@@ -117,8 +150,9 @@ void ComponentMenu::drawOptions(SDL_Surface *dst) {
     }
 }
 
-void ComponentMenu::setEnabled(bool value) {
+void ComponentMenu::setEnabled(bool value)
+{
     Component::setEnabled(value);
-    spaceship->setEnabled(value);
+    title->setEnabled(value);
 }
 

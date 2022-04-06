@@ -1,10 +1,10 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 #include "../../include/Game/AmmoProjectileBody.h"
 #include "../../include/Game/ItemHealthGhost.h"
 #include "../../include/Game/ItemWeaponGhost.h"
+#include "../../include/Game/ItemEnergyGhost.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 4.0f
@@ -13,7 +13,6 @@
 ComponentGame::ComponentGame()
 {
     player = new Player();
-    axisPlanes = new Mesh3DBody();
 }
 
 void ComponentGame::onStart()
@@ -35,7 +34,7 @@ void ComponentGame::onStart()
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
-    playerStartPosition = Vertex3D(1115, -700, Z_COORDINATE_GAMEPLAY);
+    playerStartPosition = Vertex3D(-40, 2990, Z_COORDINATE_GAMEPLAY);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000, -1000));
 
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
@@ -43,10 +42,11 @@ void ComponentGame::onStart()
 
     ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
     loadBackgroundImageShader();
-    loadWeapons();
     loadPlayer();
+    loadWeapons();
     loadLevels();
 }
 
@@ -77,7 +77,7 @@ void ComponentGame::onUpdate() {
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
-        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press key to START...", false);
+        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press a key to START...", false);
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
@@ -110,16 +110,14 @@ void ComponentGame::checkForEndLevel() const
         getPlayer()->setKillsCounter(0);
         getLevelInfo()->setLevelStartedToPlay(false);
         removeProjectiles();
-        getPlayer()->setPosition(playerStartPosition);
-        getFadeToGameState()->setSpeed(0.005);
+        getFadeToGameState()->setSpeed(0.01);
         ComponentsManager::get()->getComponentSound()->playSound(
-            BUFFERS->soundPackage->getByLabel("winLevel"),
+            BUFFERS->soundPackage->getByLabel("levelCompleted"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
 
         if (getPlayer()->getLevelCompletedCounter() >= getLevelInfo()->size()) {
-            ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
             makeFadeToGameState(EngineSetup::PRESSKEY_GAMEOVER);
         } else {
             makeFadeToGameState(EngineSetup::PRESSKEY_NEWLEVEL);
@@ -135,6 +133,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (getGameState() == EngineSetup::GameState::NONE && state == EngineSetup::GameState::SPLASH) {
+
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
         splashCounter.setEnabled(true);
@@ -151,7 +150,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         setVisibleInGameObjects(false);
         stopSilhouetteShader();
         startWaterShader();
-        player->setEnabled(false);
+        //player->setEnabled(false);
         player->stopBlinkForPlayer();
         player->setShieldEnabled(false);
     }
@@ -176,6 +175,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
+        getPlayer()->setGravityShieldsNumber(0);
+        getPlayer()->setPosition(playerStartPosition);
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
         setVisibleInGameObjects(false);
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
@@ -183,7 +184,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         startBackgroundShader();
         stopWaterShader();
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.005);
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.01);
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
 
@@ -197,9 +198,9 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
+        ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
         setVisibleInGameObjects(false);
         removeInGameObjects();
-        player->setEnabled(false);
         player->stopBlinkForPlayer();
         player->setShieldEnabled(false);
     }
@@ -283,25 +284,19 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
-    player->setFree(true);
     player->setAlpha(200);
     player->setEnableLights(false);
     player->setPosition(playerStartPosition);
     player->setScale(1);
     player->setStamina(100);
+    player->setEnableLights(true);
     player->setStencilBufferEnabled(true);
-    player->setAutoRotationSelectedObjectSpeed(5);
-    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_spaceship_03.fbx"));
+    player->setAutoRotationToFacingSelectedObjectSpeed(5);
+    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/red_spaceship_02.fbx"));
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player, EngineSetup::collisionGroups::Player, EngineSetup::collisionGroups::AllFilter);
     Brakeza3D::get()->addObject3D(player, "player");
 
-    auto *sprite = new Sprite3D();
-    sprite->setEnabled(true);
-    sprite->setPosition(Vertex3D(0, -1000, 200));
-    sprite->setScale(500);
-    sprite->addAnimation(EngineSetup::get()->SPRITES_FOLDER + "blood1/blood", 3, 1);
-    sprite->setAnimation(0);
-    Brakeza3D::get()->addObject3D(sprite, "sprite");
+    player->loadShieldModel();
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -365,8 +360,14 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
 {
     if (enemy->getState() == EnemyState::ENEMY_STATE_DIE) {
-        int typePresent = Tools::random(0, 1);
 
+        auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
+        fireworks->setPosition(enemy->getPosition());
+        fireworks->setRotationFrame(0, 4, 5);
+
+        Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+
+        int typePresent = Tools::random(0, 2);
         switch(typePresent) {
             case 0: {
                 auto *healthItem = new ItemHealthGhost();
@@ -377,12 +378,26 @@ void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
                 healthItem->setRotationFrame(Vertex3D(0, 1, 0));
                 healthItem->setStencilBufferEnabled(true);
                 healthItem->setScale(1);
-                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "gem.fbx"));
+                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
                 healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
                 Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
                 break;
             }
             case 1: {
+                auto *healthItem = new ItemEnergyGhost();
+                healthItem->setLabel("item_energy");
+                healthItem->setEnableLights(true);
+                healthItem->setPosition(enemy->getPosition());
+                healthItem->setRotationFrameEnabled(true);
+                healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+                healthItem->setStencilBufferEnabled(true);
+                healthItem->setScale(1);
+                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
+                healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
+                Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
+                break;
+            }
+            case 2: {
                 int randomWeapon = Tools::random(0, 2);
                 auto *weaponItem = new ItemWeaponGhost(weapons[randomWeapon]);
                 weaponItem->setLabel("item_weapon");
@@ -390,7 +405,7 @@ void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
                 weaponItem->setPosition(enemy->getPosition());
                 weaponItem->setRotation(0, 0, 180);
                 weaponItem->setRotationFrameEnabled(true);
-                weaponItem->setRotationFrame(Vertex3D(0.25, 0.05, 0.01));
+                weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
                 weaponItem->setStencilBufferEnabled(true);
                 weaponItem->setScale(1);
                 weaponItem->copyFrom(weapons[randomWeapon]->getModel());
@@ -526,8 +541,10 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
+        auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
+        auto *gravitational = dynamic_cast<GravitationalGhost *> (object);
 
-        if (enemy != nullptr || health != nullptr || weapon != nullptr || projectile != nullptr) {
+        if (enemy != nullptr || health != nullptr || weapon != nullptr || projectile != nullptr || energy != nullptr || gravitational != nullptr) {
             object->setEnabled(value);
         }
     }

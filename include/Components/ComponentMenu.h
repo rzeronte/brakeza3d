@@ -29,7 +29,8 @@ public:
 
     // menu background surface
     Image *imageBackground;
-    Mesh3D *spaceship;
+
+    Mesh3D *title;
 
     ComponentMenu();
 
@@ -48,10 +49,11 @@ public:
     // menu.json
     cJSON *optionsJSON;
 
-    void drawOptions(SDL_Surface *dst);
+    void drawOptions();
 
     void loadMenuOptions();
 
+    void loadDecorative3DMesh();
 };
 
 

@@ -1,17 +1,18 @@
 {
   "sounds": [
-    { "file": "music.mp3", "label": "musicMainMenu", "type": "music" },
-    { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
-    { "file": "music_gameover.mp3", "label": "gameOverMusic", "type": "music" },
-
-    { "file": "new_level.mp3", "label": "newLevel", "type": "sound" },
+    { "file": "menu.mp3", "label": "musicMainMenu", "type": "music" },
+    { "file": "start_game.wav", "label": "startGame", "type": "sound" },
     { "file": "move_menu_option.wav", "label": "soundMenuClick", "type": "sound" },
-    { "file": "option-accept.wav", "label": "soundMenuAccept", "type": "sound" },
-    { "file": "gong.wav", "label": "winLevel", "type": "sound" },
+    { "file": "new_level.wav", "label": "newLevel", "type": "sound" },
+
+    { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
+    { "file": "game_over.mp3", "label": "gameOverMusic", "type": "music" },
+
+    { "file": "level_completed.wav", "label": "levelCompleted", "type": "sound" },
 
     { "file": "explosion.wav", "label": "enemyExplosion", "type": "sound" },
 
-    { "file": "dash.mp3", "label": "dash", "type": "sound" },
+    { "file": "dash.wav", "label": "dash", "type": "sound" },
 
     { "file": "voltage_loop.wav", "label": "voltageLoop", "type": "sound" },
 
@@ -21,10 +22,13 @@
 
     { "file": "enemy_damage.wav", "label": "enemyDamage", "type": "sound" },
 
-    { "file": "player_hit.mp3", "label": "playerDamage", "type": "sound" },
+    { "file": "player_damage.wav", "label": "playerDamage", "type": "sound" },
 
-    { "file": "start_game.wav", "label": "startGame", "type": "sound" },
+
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
+    { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
+
+    { "file": "shield.mp3", "label": "playerShield", "type": "sound" },
 
     { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
 

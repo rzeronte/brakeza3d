@@ -118,7 +118,7 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWor
 
 void Mesh3DBody::setGravity(Vertex3D g) {
     btVector3 gravity;
-    Vertex3D(0, 0, 0).saveToBtVector3(&gravity);
+    Vertex3D(g.x, g.y, g.z).saveToBtVector3(&gravity);
     getRigidBody()->setGravity(gravity);
 }
 

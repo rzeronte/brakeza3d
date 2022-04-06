@@ -41,8 +41,6 @@ public:
 
     void handleMenuKeyboard(SDL_Event *event, bool &end);
 
-    void jump(bool soundJump) const;
-
     void handleKeyboardMovingPlayer();
 
     void handleFindClosestObject3D(SDL_Event *event);
@@ -54,6 +52,8 @@ public:
     void handleShield(SDL_Event *event);
 
     void updateWeaponStatus(SDL_Event *event);
+
+    void handleTalent(SDL_Event *pEvent);
 };
 
 

@@ -25,6 +25,8 @@ public:
     bool isActive() const;
     void onUpdate() override;
 
+    void postUpdate() override;
+
     float force;
     float ttl;
     float step;

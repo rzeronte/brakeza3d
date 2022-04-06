@@ -2,7 +2,7 @@
 // Created by eduardo on 20/3/22.
 //
 
-#include "LevelLoader.h"
+#include "../../include/Game/LevelLoader.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Game/EnemyGhostRespawner.h"
@@ -95,9 +95,9 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath)
     setMusic(cJSON_GetObjectItemCaseSensitive(myDataJSON, "music")->valuestring);
 
     std::string levelName = cJSON_GetObjectItemCaseSensitive(myDataJSON, "name")->valuestring;
+    this->setLevelName(levelName);
+
     std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(myDataJSON, "backgroundImage")->valuestring;
-
-
     auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
 
@@ -181,6 +181,7 @@ void LevelLoader::loadEnemiesFromJSON(std::string filePath)
         enemy->setSpeed(speed);
         enemy->setStamina(stamina);
         enemy->setStartStamina(stamina);
+        enemy->setEnableLights(true);
         enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
         enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
         enemy->setSoundChannel(respawners.size() + 2);
@@ -264,4 +265,12 @@ const std::string &LevelLoader::getMusic() const {
 
 void LevelLoader::setMusic(const std::string &music) {
     LevelLoader::music = music;
+}
+
+const std::string &LevelLoader::getLevelName() const {
+    return levelName;
+}
+
+void LevelLoader::setLevelName(const std::string &levelName) {
+    LevelLoader::levelName = levelName;
 }

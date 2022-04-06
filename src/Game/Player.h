@@ -7,7 +7,8 @@
 #include "../../include/Particles/ParticleEmissor.h"
 #include "../../include/Physics/Mesh3DGhost.h"
 #include "../../include/Game/Weapon.h"
-#include "ShaderShield.h"
+#include "../../include/Game/ShaderShield.h"
+#include "../../include/Game/GravitationalShield.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -17,6 +18,7 @@
 #define INITIAL_POWERDASH 6000
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 25
+#define MAX_GRAVITATIONAL_SHIELDS 3
 
 typedef enum {
     EMPTY, LIVE, DEAD, GETTING_DAMAGE
@@ -46,7 +48,7 @@ private:
     int killsCounter;
     int levelsCompletedCounter;
     bool shieldEnabled;
-
+    int gravityShieldsNumber;
 public:
     ParticleEmissor *engineParticles;
     Vertex3D engineParticlesPositionOffset;
@@ -56,8 +58,9 @@ public:
 
     PlayerState state;
 
-    ShaderShield *shield;
     std::vector<Weapon *> weaponTypes;
+
+    Mesh3D *shieldModel;
 
     Player();
 
@@ -65,13 +68,12 @@ public:
 
     void shoot();
 
-    void reload();
-
-    void jump();
+    void gravityShield();
 
     void takeDamage(float dmg);
 
-    void getAid(float aid);
+    void receiveAid(float aid);
+    void receiveEnergy(float energy);
 
     [[nodiscard]] int getStamina() const;
 
@@ -117,7 +119,7 @@ public:
 
     void setWeaponTypeByIndex(int i);
 
-    void setAutoRotationSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
+    void setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
 
     void startBlinkShaderForPlayer();
 
@@ -143,6 +145,8 @@ public:
 
     float getEnergy() const;
 
+    void useEnergy(float energy);
+
     void setEnergy(float energy);
 
     int getStartStamina() const;
@@ -158,6 +162,12 @@ public:
     void setRecoverEnergySpeed(float recoverEnergySpeed);
 
     void startPlayerBlink();
+
+    int getGravityShieldsNumber() const;
+
+    void setGravityShieldsNumber(int gravityShieldsNumber);
+
+    void loadShieldModel();
 };
 
 

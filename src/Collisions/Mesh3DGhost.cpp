@@ -4,7 +4,6 @@
 
 Mesh3DGhost::Mesh3DGhost() {
     BSPEntityIndex = -1;
-    setFree(true);
 }
 
 void Mesh3DGhost::integrate() {
@@ -32,15 +31,8 @@ void Mesh3DGhost::resolveCollision(Collisionable *with) {
     }
 }
 
-void Mesh3DGhost::remove() {
+void Mesh3DGhost::remove()
+{
     this->removeCollisionObject();
     this->setRemoved(true);
-}
-
-bool Mesh3DGhost::isFree() const {
-    return free;
-}
-
-void Mesh3DGhost::setFree(bool free) {
-    Mesh3DGhost::free = free;
 }

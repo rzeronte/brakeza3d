@@ -2,7 +2,7 @@
 // Created by eduardo on 27/3/22.
 //
 
-#include "ShaderShield.h"
+#include "../../include/Game/ShaderShield.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
@@ -25,11 +25,49 @@ void ShaderShield::onUpdate(Vertex3D position) {
 
     Point2D DP;
     Transforms::screenSpace(DP, r);
-    if (Tools::isPixelInWindow(DP.x, DP.y)) {
-        for (int i = 0; i < radius; i+=1) {
-            drawCircle(DP.x, DP.y, int(radius)-i);
+
+    for (int y = 0; y < this->h; y++) {
+        for (int x = 0; x < this->w; x++) {
+
+            Point2D uv(x, y);
+            Point2D center(DP.x, DP.y);
+
+            Color color;
+
+            float radius = 50.5;
+
+            color = paintCircle(uv,center, radius, 5.1);
+            EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
         }
     }
+}
+
+Color ShaderShield::paintCircle(Point2D uv, Point2D center, float rad, float width)
+{
+    Point2D diff = center - uv;
+    float len = diff.getLength();
+
+    len += variation(diff, Point2D(0.0, 10000.0), 55500.0, 10000.0);
+    len -= variation(diff, Point2D(10000.0, 0.0), 55500.0, 10000.0);
+
+    float circle = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
+
+    return Color(circle*255, circle*255, circle*255);
+}
+
+
+float ShaderShield::variation(Point2D v1, Point2D v2, float strength, float speed) {
+    return (float) sin(
+            v1.getNormalize() * v2.getNormalize() * strength + Brakeza3D::get()->getDeltaTime()*1000 * speed
+    );
+}
+
+float ShaderShield::smoothstep(float edge0, float edge1, float x)
+{
+    // Scale, bias and saturate x to 0..1 range
+    x = std::clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+    // Evaluate polynomial
+    return x * x * (3 - 2 * x);
 }
 
 void ShaderShield::drawCircle(int x0, int y0, int radius)
