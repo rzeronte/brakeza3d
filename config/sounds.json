@@ -17,7 +17,7 @@
     { "file": "voltage_loop.wav", "label": "voltageLoop", "type": "sound" },
 
     { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
-    { "file": "get_weapon.wav", "label": "getWeapon", "type": "sound" },
+    { "file": "get_weapon.wav", "label": "itemWeapon", "type": "sound" },
 
 
     { "file": "enemy_damage.wav", "label": "enemyDamage", "type": "sound" },

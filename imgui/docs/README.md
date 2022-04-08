@@ -205,7 +205,7 @@ References
 The Immediate Mode GUI paradigm may at first appear unusual to some users. This is mainly because "Retained Mode" GUIs have been so widespread and predominant. The following links can give you a better understanding about how Immediate Mode GUIs works. 
 - [Johannes 'johno' Norneby's article](http://www.johno.se/book/imgui.html).
 - [A presentation by Rickard Gustafsson and Johannes Algelind](http://www.cse.chalmers.se/edu/year/2011/course/TDA361/Advanced%20Computer%20Graphics/IMGUI.pdf).
-- [Jari Komppa's tutorial on building an ImGui library](http://iki.fi/sol/imgui/).
+- [Jari Komppa's tutorialImage on building an ImGui library](http://iki.fi/sol/imgui/).
 - [Casey Muratori's original video that popularized the concept](https://mollyrocket.com/861).
 - [Nicolas Guillemot's CppCon'16 flash-talk about Dear ImGui](https://www.youtube.com/watch?v=LSRJ1jZq90k).
 - [Thierry Excoffier's Zero Memory Widget](http://perso.univ-lyon1.fr/thierry.excoffier/ZMW/).
