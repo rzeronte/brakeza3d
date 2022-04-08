@@ -1,13 +1,12 @@
 {
-  "name": "Chapter 01: Let's see what happens",
-  "backgroundImage": "levels/level_02.png",
+  "name": "Level 01",
+  "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
   "enemies": [
     {
       "name": "Persecutor",
       "position": { "x": 300, "y": 20 },
       "model": "spaceships/green_spaceship_02.fbx",
-      "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
       "motion": {
@@ -17,9 +16,11 @@
       },
       "weapon": {
         "index": 1,
+        "available": true,
         "name": "Instant",
         "damage": 1,
         "amount": 5000,
+        "startAmount": 100,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
@@ -28,7 +29,6 @@
         "stopDuration": 3,
         "stopEvery": 2,
         "type": 1,
-        "icon": "plague.png",
         "modelProjectile": "projectile_weapon_02.fbx",
         "model": "item_weapon_02.fbx"
       }

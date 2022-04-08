@@ -123,7 +123,8 @@ void EnemyGhost::shoot(Object3D *target)
                 positionProjectile,
                 direction,
                 EngineSetup::collisionGroups::Player,
-                target
+                target,
+                Color::red()
             );
             break;
         }

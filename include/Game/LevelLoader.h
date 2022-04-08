@@ -12,10 +12,15 @@
 #include "Weapon.h"
 #include "../Misc/cJSON.h"
 #include "EnemyGhostRespawner.h"
+#include "ItemHealthGhost.h"
 
 typedef enum {
-    ENEMY = 0,
-} LevelInfoObjectTypes;
+    ITEM_WEAPON_PROJECTILE = 1,
+    ITEM_WEAPON_INSTANT = 2,
+    ITEM_WEAPON_SMART = 3,
+    ITEM_HEALTH = 4,
+    ITEM_ENERGY = 5
+} LevelInfoItemsTypes;
 
 
 typedef enum {
@@ -31,6 +36,11 @@ public:
     bool loadNext();
     void addLevel(std::string filename);
     Weapon *parseWeaponJSON(cJSON *weaponJson);
+
+    Counter *countDown;
+    Image *tutorialImage;
+    bool hasTutorial;
+
 private:
     std::vector<std::string> levels;
     std::vector<EnemyGhostRespawner*> respawners;
@@ -52,9 +62,9 @@ public:
 
     int size();
 
-    void loadEnemiesFromJSON(std::string filePath);
+    void loadLevelFromJSON(std::string filePath);
 
-    void startRespawners();
+    void startCountDown();
 
     const std::string &getMusic() const;
 
@@ -63,6 +73,18 @@ public:
     const std::string &getLevelName() const;
 
     void setLevelName(const std::string &levelName);
+
+    Counter *getCountDown() const;
+
+    bool isHasTutorial() const;
+
+    Image *getTutorialImage() const;
+
+    static void makeItemHealthGhost(Vertex3D position);
+
+    static void makeItemEnergyGhost(Vertex3D position);
+
+    void makeItemWeapon(int index, Vertex3D position);
 };
 
 

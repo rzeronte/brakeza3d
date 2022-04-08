@@ -40,7 +40,7 @@ Player::Player() : state(PlayerState::EMPTY),
     killsCounter = 0;
     levelsCompletedCounter = 0;
 
-    this->counterDamageBlink = new Counter(1);
+    this->counterDamageBlink = new Counter(0.5);
 
     this->shieldEnabled = false;
     this->gravityShieldsNumber = 0;
@@ -167,7 +167,11 @@ void Player::gravityShield()
 
 void Player::shoot()
 {
-    if (weaponType == nullptr) {
+    if (getWeapon() == nullptr) {
+        return;
+    }
+
+    if (!getWeapon()->isAvailable()) {
         return;
     }
 
@@ -199,7 +203,8 @@ void Player::shoot()
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
-                nullptr
+                nullptr,
+                Color::cyan()
             );
         }
     }
@@ -315,9 +320,8 @@ void Player::resolveCollision(Collisionable *with) {
             ComponentsManager::get()->getComponentSound()->playSound(
                 EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
                 1,
-                1
+                0
             );
-
             takeDamage(projectile->getWeaponType()->getDamage());
             projectile->remove();
         }
@@ -326,6 +330,11 @@ void Player::resolveCollision(Collisionable *with) {
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
     if (weapon != nullptr) {
         this->addWeapon(weapon->getWeaponType());
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("itemWeapon"),
+            1,
+            0
+        );
         Logging::getInstance()->Log("Added Weapon to Player:" + weapon->getWeaponType()->getLabel());
         weapon->removeCollisionObject();
         weapon->setRemoved(true);
@@ -382,8 +391,10 @@ void Player::addWeapon(Weapon *weaponType)
 {
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
     if (weapon != nullptr) {
-        weapon->addAmount(weaponType->getAmmoAmount() / 4);
-        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount() / 4));
+        weapon->addAmount(weaponType->getStartAmmoAmount());
+        weapon->setAvailable(true);
+        setWeaponType(weapon);
+        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount()));
         return;
     }
 

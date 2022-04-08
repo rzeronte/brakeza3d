@@ -133,6 +133,7 @@ public:
     std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
+    std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
 
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";
@@ -280,10 +281,11 @@ public:
         MENU = 2,
         PRESSKEY_NEWLEVEL = 3,
         PRESSKEY_BY_DEAD = 4,
-        GAMING = 5,
-        HELP = 6,
-        PRESSKEY_GAMEOVER = 7,
-        CREDITS = 8
+        COUNTDOWN = 5,
+        GAMING = 6,
+        HELP = 7,
+        PRESSKEY_GAMEOVER = 8,
+        CREDITS = 9
     } GameState;
 };
 

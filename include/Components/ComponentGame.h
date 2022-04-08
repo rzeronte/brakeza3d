@@ -97,6 +97,8 @@ public:
     void setVisibleInGameObjects(bool value);
     void removeInGameObjects();
     void loadWeapons();
+
+    const std::vector<Weapon *> &getWeapons() const;
 };
 
 

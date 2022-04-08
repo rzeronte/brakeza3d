@@ -30,8 +30,7 @@ Weapon::Weapon(const std::string& label) {
 void Weapon::onUpdate() {
     counterCadence->update();
 
-    if (status == WeaponStatus::PRESSED && getType() == WeaponTypes::WEAPON_INSTANT) {
-        Logging::getInstance()->Log("------------------------------------------------->" + std::to_string(getSoundChannel()));
+    if (status == WeaponStatus::PRESSED && getType() == WeaponTypes::WEAPON_INSTANT && isAvailable() && getAmmoAmount() > 0) {
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
             getSoundChannel(),
@@ -40,10 +39,8 @@ void Weapon::onUpdate() {
         setStatus(WeaponStatus::SUSTAINED);
     }
 
-    if (status == WeaponStatus::RELEASED) {
-        if (getType() == WeaponTypes::WEAPON_INSTANT) {
-            ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
-        }
+    if (status == WeaponStatus::RELEASED && getType() == WeaponTypes::WEAPON_INSTANT && isAvailable()) {
+        ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
         setStatus(WeaponStatus::NONE);
     }
 
@@ -170,10 +167,9 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target) {
-    const int ammoAmount = getAmmoAmount();
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color) {
 
-    if (ammoAmount <= 0) return;
+    if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration->isEnabled()) {
         return;
@@ -191,8 +187,9 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
+        getModelProjectile()->setFlatColor(color);
         projectile->copyFrom(getModelProjectile());
-        projectile->setPosition( position );
+        projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);

@@ -80,7 +80,7 @@ public:
     void setDispersion(float dispersion);
 
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color);
-    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target);
+    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c);
     void shootInstant(Vertex3D from,  Object3D *to);
 
     void reload();

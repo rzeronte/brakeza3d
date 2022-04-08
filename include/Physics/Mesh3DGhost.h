@@ -12,7 +12,7 @@ class Mesh3DGhost : public Mesh3D, public Ghost {
 public:
     Mesh3DGhost();
     int currentTriggerCounter = 0;
-private:
+
     void updateBulletFromMesh3D();
 
 protected:

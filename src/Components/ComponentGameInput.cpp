@@ -60,8 +60,8 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
-        ComponentsManager::get()->getComponentGame()->getLevelInfo()->startRespawners();
-        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
+        ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
+        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
         ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
     }
 
@@ -238,13 +238,19 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) {
         if (player->getWeaponTypes().size() - 1 > currentWeaponIndex  ) {
+            if (!game->getPlayer()->getWeaponTypes()[currentWeaponIndex + 1]->isAvailable()) {
+                return;
+            }
             currentWeaponIndex++;
             game->getPlayer()->setWeaponTypeByIndex(currentWeaponIndex);
         }
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) {
-        if (currentWeaponIndex > 0  ) {
+        if (currentWeaponIndex > 0) {
+            if (!game->getPlayer()->getWeaponTypes()[currentWeaponIndex - 1]->isAvailable()) {
+                return;
+            }
             currentWeaponIndex--;
             game->getPlayer()->setWeaponTypeByIndex(currentWeaponIndex);
         }

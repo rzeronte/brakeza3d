@@ -2,11 +2,9 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/2D/ButtonsCallbacks.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 
 ComponentHUD::ComponentHUD() {
     HUDTextures = new TexturePackage();
-    iconsTextures = new TexturePackage();
 }
 
 void ComponentHUD::onStart() {
@@ -31,13 +29,13 @@ void ComponentHUD::preUpdate() {
         Drawable::drawCrossHair();
     }
 
-    drawHUD();
 }
 
 void ComponentHUD::onUpdate() {
     if (!isEnabled()) return;
 
     drawEnemies();
+    drawHUD();
 
 }
 
@@ -62,9 +60,8 @@ void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_empty.png", "healthEmptyBar");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_stamina.png", "healthBarStaminaPercent");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_energy.png", "healthBarEnergyPercent");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "gravitationalShield");
 
-    iconsTextures->addItem(SETUP->HUD_FOLDER + "flare.png", "flare");
-    iconsTextures->addItem(SETUP->HUD_FOLDER + "plague.png", "plague");
 }
 
 void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
@@ -89,7 +86,6 @@ void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const {
 void ComponentHUD::drawHUD() {
 
     auto componentManager = ComponentsManager::get();
-    auto componentGame = componentManager->getComponentGame();
 
     drawPlayerStamina(20);
     drawPlayerEnergy(20 + 2 + 28 + 1);
@@ -104,19 +100,11 @@ void ComponentHUD::drawHUD() {
         );
     }
 
-    for (int i = 0; i < buttons.size(); i++) {
-        buttons[i]->draw();
-        this->textureWriter->writeText(i * 16 + 2, getButtonsOffsetY() + 1, std::to_string(i).c_str(), false);
-    }
-
-    if (componentGame->getPlayer()->getWeapon() != nullptr) {
-        Weapon *weaponType = componentGame->getPlayer()->getWeapon();
-        if (weaponType->isAvailable()) {
-        }
+    for (auto & button : buttons) {
+        button->draw();
     }
 
     this->writeCenterHorizontal(20, componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(), false);
-
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {
@@ -131,22 +119,20 @@ void ComponentHUD::loadButtons() {
     const int offsetY = getButtonsOffsetY();
     const int offsetX = 16;
     int currentX = 1;
-    addButton(new Button(currentX + offsetX * 0, offsetY, SETUP->HUD_FOLDER + "flare.png", &callbackPlayerShoot));
-    addButton(new Button(currentX + offsetX * 1, offsetY, SETUP->HUD_FOLDER + "plague.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 2, offsetY, SETUP->HUD_FOLDER + "cold-fire.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 3, offsetY, SETUP->HUD_FOLDER + "earth-1.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 4, offsetY, SETUP->HUD_FOLDER + "needles.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 5, offsetY, SETUP->HUD_FOLDER + "nova-mega.png", &callbackPlayerShoot2));
-    addButton(new Button(currentX + offsetX * 6, offsetY, SETUP->HUD_FOLDER + "thunder-2.png", &callbackPlayerShoot2));
+    addButton(new Button(currentX + offsetX, offsetY, SETUP->ASSETS_FOLDER + "icons/weapon_instant.png", &callbackPlayerShoot));
+    addButton(new Button(currentX + offsetX * 1, offsetY, SETUP->ASSETS_FOLDER + "icons/weapon_instant.png", &callbackPlayerShoot2));
+    addButton(new Button(currentX + offsetX * 2, offsetY, SETUP->ASSETS_FOLDER + "icons/weapon_instant.png", &callbackPlayerShoot2));
 }
 
-void ComponentHUD::drawPlayerStamina(int y) {
+void ComponentHUD::drawPlayerStamina(int y)
+{
     const int offsetX = 10;
-    const int offsetY = y;
+    int offsetY = y;
     const int innerPercentOffsetX = 3;
     const int innerPercentOffsetY = 4;
 
-    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto player = game->getPlayer();
 
     auto backgroundHealthBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
     backgroundHealthBar->drawFlat(offsetX, offsetY);
@@ -159,9 +145,69 @@ void ComponentHUD::drawPlayerStamina(int y) {
         healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
     }
 
-    if (player->getWeapon() != nullptr) {
-        player->getWeapon()->getIcon()->drawFlat(offsetX, + 28 + 2 + offsetY + backgroundHealthBar->height() + 1);
-        this->textureWriter->writeText(offsetX, offsetY + 28*2 + 2, std::to_string(player->getWeapon()->getAmmoAmount()).c_str(), false);
+    int availablesWeaposCounter = 0;
+    for (int i = 0; i < (int) player->getWeaponTypes().size(); i++) {
+        auto weapon = player->getWeaponTypes()[i];
+        const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaposCounter;
+        const int yIcon = backgroundHealthBar->height() * 2 + 2 + offsetY + availablesWeaposCounter;
+        if (weapon->isAvailable()) {
+            availablesWeaposCounter++;
+            weapon->getIcon()->drawFlat(xIcon, yIcon);
+            if (player->getWeapon() == weapon) {
+                drawSelectedWeaponEffect(xIcon, yIcon, weapon->getIcon()->width(), weapon->getIcon()->height(), Color::green());
+            }
+        }
+    }
+
+    if (availablesWeaposCounter > 0) {
+        this->textureWriter->writeText(
+            offsetX + availablesWeaposCounter * player->getWeapon()->getIcon()->width(),
+            offsetY + backgroundHealthBar->height() * 2 + 4,
+            std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
+            false
+        );
+    } else {
+        this->textureWriter->writeText(
+                offsetX + availablesWeaposCounter * player->getWeapon()->getIcon()->width(),
+                offsetY + backgroundHealthBar->height() * 2 + 4,
+                "Disarmed",
+                false
+        );
+    }
+    offsetY += backgroundHealthBar->height() * 2 + player->getWeapon()->getIcon()->height() + 4;
+
+    auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
+    int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
+    for (int i = 0; i < gravitationalShieldsNumber; i++) {
+        gravitationalShieldImage->drawFlat(offsetX + gravitationalShieldImage->width() * i, offsetY);
+    }
+
+    offsetY += gravitationalShieldImage->height() + 2;
+
+}
+
+void ComponentHUD::drawSelectedWeaponEffect(int x, int y, int width, int height, Color c) {
+    auto *buffer = EngineBuffers::getInstance();
+
+    for (int i = 0; i < width; i++) {
+        buffer->setVideoBuffer(x + i, y, c.getColor());
+        buffer->setVideoBuffer(x + i, y + height - 1, c.getColor());
+    }
+    for (int i = 0; i < height; i++) {
+        buffer->setVideoBuffer(x, y + i, c.getColor());
+        buffer->setVideoBuffer(x + width - 1, y + i, c.getColor());
+    }
+}
+
+void ComponentHUD::drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c) {
+    auto *buffer = EngineBuffers::getInstance();
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            const int finalX = xOrigin + x;
+            const int finalY = yOrigin + y;
+            buffer->setVideoBuffer(finalX, finalY, c.getColor());
+        }
     }
 }
 
@@ -189,7 +235,6 @@ void ComponentHUD::drawPlayerEnergy(int y)
 
 void ComponentHUD::drawEnemySelectedStamina(int y)
 {
-
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
     auto enemy = dynamic_cast<EnemyGhost*> (objectSelected);
@@ -199,7 +244,7 @@ void ComponentHUD::drawEnemySelectedStamina(int y)
 
     auto backgroundHealthBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
 
-    const int offsetX = SETUP->screenWidth - backgroundHealthBar->width() - 2;
+    const int offsetX = SETUP->screenWidth - backgroundHealthBar->width() - 20;
     const int offsetY = y;
     const int innerPercentOffsetX = 3;
     const int innerPercentOffsetY = 4;

@@ -31,7 +31,6 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
-    TexturePackage *iconsTextures;
     TextWriter *textureWriter;
 
     void loadImages();
@@ -62,6 +61,10 @@ public:
     void drawEnemies();
 
     void drawEnemyStats(Point2D screenPoint, float fixedWidth, float value, float startValue, Color c);
+
+    void drawSelectedWeaponEffect(int x, int y, int width, int height, Color c);
+
+    void drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c);
 };
 
 

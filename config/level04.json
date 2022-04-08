@@ -2,24 +2,26 @@
   "name": "Level 01",
   "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
-  "tutorialImage": "tutorials/tutorial01.png",
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 50, "y": 20 },
-      "model": "moon.fbx",
+      "position": { "x": 20, "y": 20 },
+      "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {
-        "type": 0
+        "type": 3,
+        "center": { "x": 200, "y": 30 },
+        "speed": 1,
+        "radius": 2500
       },
       "weapon": {
         "index": 0,
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 0,
-        "startAmount": 100,
+        "amount": 999,
+        "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
@@ -31,28 +33,6 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
       }
-    }
-  ],
-  "items": [
-    {
-      "type": 1,
-      "position": { "x": 10, "y": 20 }
-    },
-    {
-      "type": 2,
-      "position": { "x": 30, "y": 20 }
-    },
-    {
-      "type": 3,
-      "position": { "x": 50, "y": 20 }
-    },
-    {
-      "type": 4,
-      "position": { "x": 70, "y": 20 }
-    },
-    {
-      "type": 5,
-      "position": { "x": 60, "y": 20 }
     }
   ]
 }

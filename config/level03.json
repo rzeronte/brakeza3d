@@ -1,13 +1,12 @@
 {
-  "name": "Chapter 01: End end of start",
-  "backgroundImage": "levels/level_03.png",
+  "name": "Level 01",
+  "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
   "enemies": [
     {
       "name": "Patrol",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
-      "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
       "motion": {
@@ -18,9 +17,11 @@
       },
       "weapon": {
         "index": 0,
+        "available": true,
         "name": "Linear",
         "damage": 10,
         "amount": 999,
+        "startAmount": 100,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
@@ -29,7 +30,6 @@
         "stopDuration": 2,
         "stopEvery": 6,
         "type": 0,
-        "icon": "flare.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
       }
@@ -38,7 +38,6 @@
       "name": "Persecutor",
       "position": { "x": 300, "y": 20 },
       "model": "spaceships/green_spaceship_02.fbx",
-      "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
       "motion": {
@@ -48,9 +47,11 @@
       },
       "weapon": {
         "index": 1,
+        "available": true,
         "name": "Instant",
         "damage": 0,
-        "amount": 5000,
+        "amount": 1000,
+        "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
@@ -59,7 +60,6 @@
         "stopDuration": 3,
         "stopEvery": 2,
         "type": 1,
-        "icon": "plague.png",
         "modelProjectile": "projectile_weapon_02.fbx",
         "model": "item_weapon_02.fbx"
       }
@@ -68,7 +68,6 @@
       "name": "Defender",
       "position": { "x": 300, "y": 200 },
       "model": "spaceships/green_spaceship_03.fbx",
-      "fireSound": "gun_fire.wav",
       "stamina": 1000,
       "speed": 100,
       "motion": {
@@ -78,10 +77,12 @@
         "radius": 500
       },
       "weapon": {
+        "available": true,
         "index": 2,
         "name": "Smart",
         "damage": 0,
         "amount": 100,
+        "startAmount": 100,
         "speed": 100,
         "dispersion": 10,
         "accuracy": 100,
@@ -90,7 +91,6 @@
         "stopDuration": 0,
         "stopEvery": 0,
         "type": 2,
-        "icon": "needles.png",
         "modelProjectile": "projectile_weapon_03.fbx",
         "model": "item_weapon_03.fbx"
       }

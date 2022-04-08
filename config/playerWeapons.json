@@ -2,9 +2,11 @@
   "weapons": [
     {
       "index": 0,
+      "available": false,
       "name": "Linear",
       "damage": 50,
-      "amount": 999,
+      "amount": 0,
+      "startAmount": 100,
       "speed": 500,
       "dispersion": 10,
       "accuracy": 100,
@@ -13,16 +15,17 @@
       "stopDuration": 1,
       "stopEvery": 5,
       "type": 0,
-      "icon": "flare.png",
+      "icon": "icons/weapon_projectile.png",
       "modelProjectile": "projectile_weapon_01.fbx",
-      "model": "item_weapon_03.fbx",
-      "soundChannel": 0
+      "model": "item_weapon_01.fbx"
     },
     {
       "index": 1,
+      "available": false,
       "name": "Instant",
       "damage": 1,
-      "amount": 5000,
+      "amount": 0,
+      "startAmount": 100,
       "speed": 500,
       "dispersion": 10,
       "accuracy": 100,
@@ -31,16 +34,17 @@
       "stopDuration": 0,
       "stopEvery": 0,
       "type": 1,
-      "icon": "plague.png",
+      "icon": "icons/weapon_instant.png",
       "modelProjectile": "projectile_weapon_02.fbx",
-      "model": "item_weapon_02.fbx",
-      "soundChannel": 1
+      "model": "item_weapon_02.fbx"
     },
     {
       "index": 2,
+      "available": false,
       "name": "Smart",
       "damage": 40,
-      "amount": 100,
+      "amount": 0,
+      "startAmount": 100,
       "speed": 100,
       "dispersion": 10,
       "accuracy": 100,
@@ -49,10 +53,9 @@
       "stopDuration": 1,
       "stopEvery": 5,
       "type": 2,
-      "icon": "needles.png",
+      "icon": "icons/weapon_smart.png",
       "modelProjectile": "projectile_weapon_03.fbx",
-      "model": "item_weapon_03.fbx",
-      "soundChannel": 0
+      "model": "item_weapon_03.fbx"
     }
   ]
 }

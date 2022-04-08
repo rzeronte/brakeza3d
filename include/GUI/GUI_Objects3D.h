@@ -24,7 +24,7 @@ private:
     ImVec4 imguiColorSpecularity;
 
 public:
-    bool show = true;
+    bool show = false;
     int miscFlags = ImGuiColorEditFlags_NoOptions;
 
     virtual ~GUI_Objects3D() {}

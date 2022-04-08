@@ -300,24 +300,6 @@ public:
 
 
             if (ImGui::BeginMenu("Effects FX")) {
-                if (ImGui::BeginMenu("Liquid Shader")) {
-                    ImGui::Checkbox("Animated textures", &EngineSetup::get()->TRIANGLE_TEXTURES_ANIMATED);
-                    //if (EngineSetup::get()->TRIANGLE_TEXTURES_ANIMATED) {
-                    ImGui::DragScalar("Liquid Closeness", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LAVA_CLOSENESS, range_sensibility_lava,
-                                      &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Speed", ImGuiDataType_Float, &EngineSetup::get()->LAVA_SPEED,
-                                      range_sensibility_lava, &range_sensibility_lava_min, &range_sensibility_lava_max,
-                                      "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Scale", ImGuiDataType_Float, &EngineSetup::get()->LAVA_SCALE,
-                                      range_sensibility_lava, &range_sensibility_lava_min, &range_sensibility_lava_max,
-                                      "%f", 1.0f);
-                    ImGui::DragScalar("Liquid Intensity", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LAVA_INTENSITY, range_sensibility_lava,
-                                      &range_sensibility_lava_min, &range_sensibility_lava_max, "%f", 1.0f);
-                    //}
-                    ImGui::EndMenu();
-                }
                 if (ImGui::BeginMenu("Lightning")) {
                     ImGui::DragScalar("Generations", ImGuiDataType_Float,
                                       &EngineSetup::get()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,
@@ -335,15 +317,6 @@ public:
                                       &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::EndMenu();
                 }
-
-                if (ImGui::BeginMenu("Fire Effect")) {
-                    ImGui::DragScalar("Divisor1", ImGuiDataType_Float, &EngineSetup::get()->FIRE_DIVISOR1, 1,
-                                      &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
-                    ImGui::DragScalar("Divisor2", ImGuiDataType_Float, &EngineSetup::get()->FIRE_DIVISOR2, 1,
-                                      &range_sensibility_fire_min, &range_sensibility_fire_max, "%f", 1.0f);
-                    ImGui::EndMenu();
-                }
-
                 ImGui::EndMenu();
             }
 
@@ -394,21 +367,12 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::get()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
+                ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
+                ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
                 ImGui::Separator();
                 ImGui::EndMenu();
             }
-
-            if (ImGui::BeginMenu("Game")) {
-                ImGui::Checkbox("Enable IA", &EngineSetup::get()->ENABLE_IA);
-                ImGui::Separator();
-                ImGui::Checkbox("Show HUD", &EngineSetup::get()->DRAW_HUD);
-                ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
-                ImGui::Separator();
-                ImGui::Checkbox("XBox One Controller", &EngineSetup::get()->GAMEPAD_CONTROLLER_ENABLED);
-                ImGui::EndMenu();
-            }
-
             ImGui::EndMainMenuBar();
         }
 

@@ -86,5 +86,4 @@ void Button::drawSelectedEffect() {
         buffer->setVideoBuffer(getX(), getY() + i, c.getColor());
         buffer->setVideoBuffer(getX() + getImage()->width() - 1, getY() + i, c.getColor());
     }
-
 }
