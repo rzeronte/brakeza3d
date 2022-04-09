@@ -28,7 +28,7 @@
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
     { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
 
-    { "file": "shield.mp3", "label": "playerShield", "type": "sound" },
+    { "file": "shield.mp3", "label": "energyShield", "type": "sound" },
 
     { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
 
