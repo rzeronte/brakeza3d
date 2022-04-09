@@ -2,6 +2,8 @@
   "name": "Level 01",
   "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
+  "allowGravitionalShield": false,
+  "allowEnergyShield": false,
   "tutorialImage": "tutorials/tutorial01.png",
   "enemies": [
     {
@@ -36,23 +38,7 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 10, "y": 20 }
-    },
-    {
-      "type": 2,
-      "position": { "x": 30, "y": 20 }
-    },
-    {
-      "type": 3,
-      "position": { "x": 50, "y": 20 }
-    },
-    {
-      "type": 4,
-      "position": { "x": 70, "y": 20 }
-    },
-    {
-      "type": 5,
-      "position": { "x": 60, "y": 20 }
+      "position": { "x": 50, "y": 50 }
     }
   ]
 }

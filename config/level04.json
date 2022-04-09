@@ -1,7 +1,10 @@
 {
-  "name": "Level 01",
+  "name": "Level 04",
   "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
+  "allowGravitionalShield": true,
+  "allowEnergyShield": true,
+  "tutorialImage": "tutorials/tutorial04.png",
   "enemies": [
     {
       "name": "Patrol",
@@ -11,7 +14,7 @@
       "speed": 100,
       "motion": {
         "type": 3,
-        "center": { "x": 200, "y": 30 },
+        "center": { "x": 50, "y": 10 },
         "speed": 1,
         "radius": 2500
       },

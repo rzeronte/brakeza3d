@@ -114,6 +114,12 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
         this->hasTutorial = true;
     }
 
+    bool allowGravitationalShield = cJSON_GetObjectItemCaseSensitive(myDataJSON, "allowGravitionalShield")->valueint;
+    bool allowEnergyShield = cJSON_GetObjectItemCaseSensitive(myDataJSON, "allowEnergyShield")->valueint;
+
+    ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(allowGravitationalShield);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowEnergyShield(allowEnergyShield);
+
     cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
@@ -153,8 +159,8 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
 
                 cJSON *toJSON = cJSON_GetObjectItemCaseSensitive(motion, "to");
                 Point2D fixedToPosition = Point2D(
-                    cJSON_GetObjectItemCaseSensitive(toJSON, "x")->valueint,
-                    cJSON_GetObjectItemCaseSensitive(toJSON,"y")->valueint
+                        (cJSON_GetObjectItemCaseSensitive(toJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100,
+                        (cJSON_GetObjectItemCaseSensitive(toJSON,"y")->valueint * EngineSetup::get()->screenHeight) / 100
                 );
                 Vertex3D nearPlaneToVertex = Transforms::Point2DToWorld(fixedToPosition, camera);
                 Vertex3D to = Vector3D(camera->getPosition(), nearPlaneToVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);

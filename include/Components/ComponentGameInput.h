@@ -49,11 +49,13 @@ public:
 
     void handleDashMovement(SDL_Event *pEvent);
 
-    void handleShield(SDL_Event *event);
+    void handleEnergyShield(SDL_Event *event);
 
     void updateWeaponStatus(SDL_Event *event);
 
-    void handleTalent(SDL_Event *pEvent);
+    void handleMakeGravitationalShields(SDL_Event *event);
+
+    void handlePressKeyGameStates(SDL_Event *event);
 };
 
 

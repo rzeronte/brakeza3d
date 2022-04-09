@@ -26,9 +26,10 @@ void EnemyGhostRespawner::onUpdate()
     const float increase = (Brakeza3D::get()->getDeltaTime() * 255) / counter.getStep();
     object->setAlpha(object->getAlpha() + increase);
 
-      if (counter.isFinished()) {
-          object->getWeapon()->counterCadence->setEnabled(true);
+    if (counter.isFinished()) {
+        object->getWeapon()->counterCadence->setEnabled(true);
         object->setAlphaEnabled(false);
+        object->setAlpha(255);
         counter.setEnabled(false);
         this->setRemoved(true);
         return;

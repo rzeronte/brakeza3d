@@ -1,22 +1,22 @@
 {
-  "name": "Level 03",
+  "name": "Level 05: Start!",
   "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
-  "allowGravitionalShield": false,
+  "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial03.png",
+  "tutorialImage": "tutorials/tutorial05.png",
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 50 },
+      "position": { "x": 20, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {
-        "type": 1,
-        "from": { "x": 10, "y": 10 },
-        "to": { "x": 90, "y": 10 },
-        "speed": 1
+        "type": 3,
+        "center": { "x": 50, "y": 10 },
+        "speed": 1,
+        "radius": 2500
       },
       "weapon": {
         "index": 0,
@@ -24,12 +24,12 @@
         "name": "Linear",
         "damage": 10,
         "amount": 999,
-        "startAmount": 100,
+        "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.30,
-        "stop": true,
+        "cadenceTime": 0.15,
+        "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": 0,

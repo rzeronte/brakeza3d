@@ -99,6 +99,14 @@ public:
     void loadWeapons();
 
     const std::vector<Weapon *> &getWeapons() const;
+
+    void pressedKeyForNewGame();
+
+    void pressedKeyForBeginLevel();
+
+    void pressedKeyForFinishGameAndRestart();
+
+    void pressedKeyByDead();
 };
 
 

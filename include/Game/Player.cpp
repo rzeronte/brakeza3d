@@ -42,8 +42,11 @@ Player::Player() : state(PlayerState::EMPTY),
 
     this->counterDamageBlink = new Counter(0.5);
 
-    this->shieldEnabled = false;
+    this->energyShieldEnabled = false;
     this->gravityShieldsNumber = 0;
+
+    setAllowEnergyShield(true);
+    setAllowGravitationalShields(true);
 }
 
 void Player::loadShieldModel() {
@@ -95,7 +98,7 @@ void Player::takeDamage(float dmg) {
         return;
     }
 
-    if (isShieldEnabled() && getEnergy() > 0) {
+    if (isEnergyShieldEnabled() && getEnergy() > 0) {
         useEnergy(dmg);
         return;
     }
@@ -132,7 +135,7 @@ void Player::respawn()
     setStamina(INITIAL_STAMINA);
 }
 
-void Player::gravityShield()
+void Player::makeGravitationalShield()
 {
     if (gravityShieldsNumber >= (int) MAX_GRAVITATIONAL_SHIELDS) {
         return;
@@ -239,7 +242,7 @@ void Player::onUpdate()
         setEnergy(std::min(getEnergy() + recoverEnergySpeed, getStartEnergy()));
     }
 
-    if (isShieldEnabled()) {
+    if (isEnergyShieldEnabled()) {
         shieldModel->setPosition(getPosition());
         shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() + 2, 0, 127));
     } else {
@@ -412,12 +415,7 @@ Weapon *Player::getWeaponTypeByLabel(const std::string& label) {
 }
 
 void Player::setWeaponTypeByIndex(int i) {
-    if (weaponTypes.size() > i) {
-        Logging::getInstance()->Log("Weapon changed (" + std::to_string(i) + ")!");
-        setWeaponType(weaponTypes[i]);
-    } else {
-        Logging::getInstance()->Log("Weapon not available(" + std::to_string(i) + ")!");
-    }
+    setWeaponType(weaponTypes[i]);
 }
 
 void Player::setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed) {
@@ -465,16 +463,16 @@ void Player::increaseLevelsCompleted()
     levelsCompletedCounter++;
 }
 
-const std::vector<Weapon *> &Player::getWeaponTypes() const {
+const std::vector<Weapon *> &Player::getWeapons() const {
     return weaponTypes;
 }
 
-bool Player::isShieldEnabled() const {
-    return shieldEnabled;
+bool Player::isEnergyShieldEnabled() const {
+    return energyShieldEnabled;
 }
 
-void Player::setShieldEnabled(bool shieldEnabled) {
-    Player::shieldEnabled = shieldEnabled;
+void Player::setEnergyShieldEnabled(bool shieldEnabled) {
+    Player::energyShieldEnabled = shieldEnabled;
 }
 
 float Player::getEnergy() const {
@@ -520,4 +518,50 @@ int Player::getGravityShieldsNumber() const {
 
 void Player::setGravityShieldsNumber(int gravityShieldsNumber) {
     Player::gravityShieldsNumber = gravityShieldsNumber;
+}
+
+void Player::nextWeapon()
+{
+    auto currentWeapon = getWeapon();
+    auto weapons = getWeapons();
+    auto it = std::find(weapons.begin(), weapons.end(), currentWeapon);
+
+    auto nx = std::next(it);
+
+    if (nx != weapons.end()) {
+        if (!(*nx)->isAvailable()) {
+            return;
+        }
+        setWeaponType(*nx);
+    }
+}
+
+void Player::previousWeapon()
+{
+    auto currentWeapon = getWeapon();
+    auto weapons = getWeapons();
+    auto it = std::find(weapons.begin(), weapons.end(), currentWeapon);
+    auto nx = std::prev(it);
+    if (it != weapons.begin()) {
+        if (!(*nx)->isAvailable()) {
+            return;
+        }
+        setWeaponType(*nx);
+    }
+}
+
+void Player::setAllowGravitationalShields(bool allowGravitationalShields) {
+    Player::allowGravitationalShields = allowGravitationalShields;
+}
+
+void Player::setAllowEnergyShield(bool allowEnergyShield) {
+    Player::allowEnergyShield = allowEnergyShield;
+}
+
+bool Player::isAllowGravitationalShields() const {
+    return allowGravitationalShields;
+}
+
+bool Player::isAllowEnergyShield() const {
+    return allowEnergyShield;
 }

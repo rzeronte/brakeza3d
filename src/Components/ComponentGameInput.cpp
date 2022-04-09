@@ -48,47 +48,21 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
     this->handleEscape(event);
 
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    auto componentInput = ComponentsManager::get()->getComponentInput();
 
     if (state == EngineSetup::GameState::MENU) {
         this->handleMenuKeyboard(event, end);
+        return;
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
-        ComponentsManager::get()->getComponentSound()->playSound(
-            BUFFERS->soundPackage->getByLabel("newLevel"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
-        ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
-        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
-        ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
-    }
+    this->handlePressKeyGameStates(event);
 
-    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
-        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, 3000);
-        ComponentsManager::get()->getComponentGame()->getPlayer()->setLevelCompletedCounter(0);
-        ComponentsManager::get()->getComponentGame()->getLevelInfo()->setCurrentLevelIndex(-1);
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::MENU);
-    }
-
-    if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
-        ComponentsManager::get()->getComponentSound()->playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-        );
-        ComponentsManager::get()->getComponentGame()->getPlayer()->respawn();
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
-        ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
-    }
 
     if (state == EngineSetup::GameState::GAMING) {
         this->handleFindClosestObject3D(event);
         this->handleWeaponSelector(event);
         this->handleDashMovement(event);
-        this->handleTalent(event);
-        this->handleShield(event);
+        this->handleMakeGravitationalShields(event);
+        this->handleEnergyShield(event);
         this->updateWeaponStatus(event);
     }
 
@@ -108,6 +82,9 @@ void ComponentGameInput::handleEscape(SDL_Event *event) {
         if (gameState == EngineSetup::GameState::MENU && game->getLevelInfo()->isLevelStartedToPlay()) {
             game->makeFadeToGameState(EngineSetup::GameState::GAMING);
         } else {
+            // can't cancel countdown
+            if (gameState == EngineSetup::GameState::COUNTDOWN || gameState == EngineSetup::GameState::PRESSKEY_NEWLEVEL ) return;
+
             game->makeFadeToGameState(EngineSetup::GameState::MENU);
 
             SDL_WarpMouseInWindow(
@@ -161,18 +138,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
-            if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
-                ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.01);
-                ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
-                ComponentsManager::get()->getComponentSound()->playSound(
-                    EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
-                    EngineSetup::SoundChannels::SND_GLOBAL,
-                    0
-                );
-                player->respawn();
-            } else {
-                ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
-            }
+            ComponentsManager::get()->getComponentGame()->pressedKeyForNewGame();
         }
 
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_HELP) {
@@ -237,23 +203,11 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) {
-        if (player->getWeaponTypes().size() - 1 > currentWeaponIndex  ) {
-            if (!game->getPlayer()->getWeaponTypes()[currentWeaponIndex + 1]->isAvailable()) {
-                return;
-            }
-            currentWeaponIndex++;
-            game->getPlayer()->setWeaponTypeByIndex(currentWeaponIndex);
-        }
+        player->nextWeapon();
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) {
-        if (currentWeaponIndex > 0) {
-            if (!game->getPlayer()->getWeaponTypes()[currentWeaponIndex - 1]->isAvailable()) {
-                return;
-            }
-            currentWeaponIndex--;
-            game->getPlayer()->setWeaponTypeByIndex(currentWeaponIndex);
-        }
+        player->previousWeapon();
     }
 }
 
@@ -385,21 +339,24 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleShield(SDL_Event *event) {
-    auto componentInput = ComponentsManager::get()->getComponentInput();
+void ComponentGameInput::handleEnergyShield(SDL_Event *event) {
 
     if ( event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_X) {
-        player->setShieldEnabled(true);
+        if (!player->isAllowEnergyShield()) {
+            return;
+        }
+
+        player->setEnergyShieldEnabled(true);
         player->shieldModel->setEnabled(true);
         ComponentsManager::get()->getComponentSound()->playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("playerShield"),
+            EngineBuffers::getInstance()->soundPackage->getByLabel("energyShield"),
             1,
             0
         );
     }
 
     if (event->cbutton.type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_X) {
-        player->setShieldEnabled(false);
+        player->setEnergyShieldEnabled(false);
     }
 }
 
@@ -414,10 +371,30 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
     }
 }
 
-void ComponentGameInput::handleTalent(SDL_Event *event)
+void ComponentGameInput::handleMakeGravitationalShields(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonY) {
-        player->gravityShield();
+        if (player->isAllowGravitationalShields()) {
+            player->makeGravitationalShield();
+        }
+    }
+}
+
+void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
+{
+    auto state = ComponentsManager::get()->getComponentGame()->getGameState();
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+
+    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
+    }
+
+    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->pressedKeyForFinishGameAndRestart();
+    }
+
+    if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->pressedKeyByDead();
     }
 }

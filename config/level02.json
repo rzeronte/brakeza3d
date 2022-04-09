@@ -1,25 +1,26 @@
 {
-  "name": "Level 01",
+  "name": "Level 02",
   "backgroundImage": "levels/level_01.png",
   "music": "level01Music",
+  "allowGravitionalShield": false,
+  "allowEnergyShield": false,
+  "tutorialImage": "tutorials/tutorial02.png",
   "enemies": [
     {
       "name": "Persecutor",
-      "position": { "x": 300, "y": 20 },
-      "model": "spaceships/green_spaceship_02.fbx",
+      "position": { "x": 50, "y": 20 },
+      "model": "moon.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {
-        "type": 2,
-        "speed": 10,
-        "separation": 5000
+        "type": 0
       },
       "weapon": {
         "index": 1,
         "available": true,
         "name": "Instant",
         "damage": 1,
-        "amount": 5000,
+        "amount": 0,
         "startAmount": 100,
         "speed": 500,
         "dispersion": 10,
@@ -32,6 +33,20 @@
         "modelProjectile": "projectile_weapon_02.fbx",
         "model": "item_weapon_02.fbx"
       }
+    }
+  ],
+  "items": [
+    {
+      "type": 1,
+      "position": { "x": 30, "y": 55 }
+    },
+    {
+      "type": 2,
+      "position": { "x": 50, "y": 55 }
+    },
+    {
+      "type": 3,
+      "position": { "x": 70, "y": 55 }
     }
   ]
 }

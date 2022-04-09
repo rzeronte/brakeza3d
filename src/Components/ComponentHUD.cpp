@@ -146,8 +146,8 @@ void ComponentHUD::drawPlayerStamina(int y)
     }
 
     int availablesWeaposCounter = 0;
-    for (int i = 0; i < (int) player->getWeaponTypes().size(); i++) {
-        auto weapon = player->getWeaponTypes()[i];
+    for (int i = 0; i < (int) player->getWeapons().size(); i++) {
+        auto weapon = player->getWeapons()[i];
         const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaposCounter;
         const int yIcon = backgroundHealthBar->height() * 2 + 2 + offsetY + availablesWeaposCounter;
         if (weapon->isAvailable()) {
@@ -176,14 +176,13 @@ void ComponentHUD::drawPlayerStamina(int y)
     }
     offsetY += backgroundHealthBar->height() * 2 + player->getWeapon()->getIcon()->height() + 4;
 
-    auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
-    int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
-    for (int i = 0; i < gravitationalShieldsNumber; i++) {
-        gravitationalShieldImage->drawFlat(offsetX + gravitationalShieldImage->width() * i, offsetY);
+    if (player->isAllowGravitationalShields()) {
+        auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
+        int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
+        for (int i = 0; i < gravitationalShieldsNumber; i++) {
+            gravitationalShieldImage->drawFlat(offsetX + gravitationalShieldImage->width() * i, offsetY);
+        }
     }
-
-    offsetY += gravitationalShieldImage->height() + 2;
-
 }
 
 void ComponentHUD::drawSelectedWeaponEffect(int x, int y, int width, int height, Color c) {

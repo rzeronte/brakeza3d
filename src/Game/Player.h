@@ -47,8 +47,11 @@ private:
     Counter *counterDamageBlink;
     int killsCounter;
     int levelsCompletedCounter;
-    bool shieldEnabled;
+    bool energyShieldEnabled;
     int gravityShieldsNumber;
+
+    bool allowGravitationalShields;
+    bool allowEnergyShield;
 public:
     ParticleEmissor *engineParticles;
     Vertex3D engineParticlesPositionOffset;
@@ -68,7 +71,7 @@ public:
 
     void shoot();
 
-    void gravityShield();
+    void makeGravitationalShield();
 
     void takeDamage(float dmg);
 
@@ -137,11 +140,11 @@ public:
 
     void setLevelCompletedCounter(int levelCounter);
 
-    const std::vector<Weapon *> &getWeaponTypes() const;
+    const std::vector<Weapon *> &getWeapons() const;
 
-    bool isShieldEnabled() const;
+    bool isEnergyShieldEnabled() const;
 
-    void setShieldEnabled(bool shieldEnabled);
+    void setEnergyShieldEnabled(bool shieldEnabled);
 
     float getEnergy() const;
 
@@ -168,6 +171,18 @@ public:
     void setGravityShieldsNumber(int gravityShieldsNumber);
 
     void loadShieldModel();
+
+    void nextWeapon();
+
+    void previousWeapon();
+
+    void setAllowGravitationalShields(bool allowGravitationalShields);
+
+    void setAllowEnergyShield(bool allowEnergyShield);
+
+    bool isAllowGravitationalShields() const;
+
+    bool isAllowEnergyShield() const;
 };
 
 

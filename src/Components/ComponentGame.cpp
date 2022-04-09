@@ -8,7 +8,10 @@
 
 #define FREELOOK false
 #define SPLASH_TIME 4.0f
-#define FADE_SPEED 0.05f
+#define FADE_SPEED_START_GAME 0.01
+#define FADE_SPEED_ENDLEVEL 0.01
+#define FADE_SPEED_FROM_MENU_TO_GAMING 0.03
+#define FADE_SPEED_PRESSKEY_NEWLEVEL 0.01
 
 ComponentGame::ComponentGame()
 {
@@ -26,7 +29,7 @@ void ComponentGame::onStart()
         false
     );
 
-    shaderAutoScrollSpeed = Vertex3D(0, 0.2, 0);
+    shaderAutoScrollSpeed = Vertex3D(0, 0.6, 0);
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
     imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
     imageSplash = new Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA);
@@ -122,7 +125,7 @@ void ComponentGame::checkForEndLevel() const
         getPlayer()->setKillsCounter(0);
         getLevelInfo()->setLevelStartedToPlay(false);
         removeProjectiles();
-        getFadeToGameState()->setSpeed(0.01);
+        getFadeToGameState()->setSpeed(FADE_SPEED_ENDLEVEL);
         ComponentsManager::get()->getComponentSound()->playSound(
             BUFFERS->soundPackage->getByLabel("levelCompleted"),
             EngineSetup::SoundChannels::SND_GLOBAL,
@@ -164,7 +167,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         startWaterShader();
         //player->setEnabled(false);
         getPlayer()->stopBlinkForPlayer();
-        getPlayer()->setShieldEnabled(false);
+        getPlayer()->setEnergyShieldEnabled(false);
     }
 
     if (state == EngineSetup::GameState::GAMING) {
@@ -179,7 +182,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         stopTintScreenShader();
         startSilhouetteShader();
         stopWaterShader();
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.03);
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
     } else {
         stopBackgroundShader();
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
@@ -194,7 +197,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
-        getPlayer()->setShieldEnabled(false);
+        getPlayer()->setEnergyShieldEnabled(false);
         getPlayer()->setGravityShieldsNumber(0);
         getPlayer()->setPosition(playerStartPosition);
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
@@ -204,7 +207,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         startBackgroundShader();
         stopWaterShader();
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(0.01);
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
 
     }
@@ -223,7 +226,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state) {
         setVisibleInGameObjects(false);
         removeInGameObjects();
         player->stopBlinkForPlayer();
-        player->setShieldEnabled(false);
+        player->setEnergyShieldEnabled(false);
     }
 
     this->gameState = state;
@@ -445,6 +448,8 @@ void ComponentGame::loadLevels()
     levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
 }
 
 void ComponentGame::loadBackgroundImageShader()
@@ -564,8 +569,16 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *gravitational = dynamic_cast<GravitationalGhost *> (object);
+        auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
 
-        if (enemy != nullptr || health != nullptr || weapon != nullptr || projectile != nullptr || energy != nullptr || gravitational != nullptr) {
+        if (enemy != nullptr ||
+            health != nullptr ||
+            weapon != nullptr ||
+            projectile != nullptr ||
+            energy != nullptr ||
+            gravitational != nullptr ||
+            respawner != nullptr
+        ) {
             object->setEnabled(value);
         }
     }
@@ -603,4 +616,51 @@ void ComponentGame::loadWeapons() {
 
 const std::vector<Weapon *> &ComponentGame::getWeapons() const {
     return weapons;
+}
+
+void ComponentGame::pressedKeyForNewGame() {
+    if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
+        ComponentsManager::get()->getComponentSound()->playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
+        );
+        player->respawn();
+    } else {
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
+    }
+}
+
+void ComponentGame::pressedKeyForBeginLevel()
+{
+    ComponentsManager::get()->getComponentSound()->playSound(
+            BUFFERS->soundPackage->getByLabel("newLevel"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+    );
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
+    ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
+}
+
+void ComponentGame::pressedKeyForFinishGameAndRestart()
+{
+    ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, 3000);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->setLevelCompletedCounter(0);
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->setCurrentLevelIndex(-1);
+    ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::MENU);
+}
+
+void ComponentGame::pressedKeyByDead()
+{
+    ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+    );
+    ComponentsManager::get()->getComponentGame()->getPlayer()->respawn();
+    ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
 }
