@@ -149,7 +149,7 @@ void ComponentHUD::drawPlayerStamina(int y)
     for (int i = 0; i < (int) player->getWeapons().size(); i++) {
         auto weapon = player->getWeapons()[i];
         const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaposCounter;
-        const int yIcon = backgroundHealthBar->height() * 2 + 2 + offsetY + availablesWeaposCounter;
+        const int yIcon = backgroundHealthBar->height() * 2 + 4 + offsetY + availablesWeaposCounter;
         if (weapon->isAvailable()) {
             availablesWeaposCounter++;
             weapon->getIcon()->drawFlat(xIcon, yIcon);

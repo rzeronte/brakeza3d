@@ -49,6 +49,7 @@ private:
     std::string levelName;
     int currentLevelIndex;
     bool levelStartedToPlay;
+    bool levelFinished;
 public:
     int getNumberLevelEnemies() const;
 
@@ -85,6 +86,12 @@ public:
     static void makeItemEnergyGhost(Vertex3D position);
 
     void makeItemWeapon(int index, Vertex3D position);
+
+    bool isLevelFinished() const;
+
+    void setLevelFinished(bool levelFinished);
+
+    EnemyGhost *parseEnemyJSON(cJSON *enemyJSON);
 };
 
 

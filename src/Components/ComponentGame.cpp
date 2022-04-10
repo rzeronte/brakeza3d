@@ -2,9 +2,10 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Game/AmmoProjectileBody.h"
-#include "../../include/Game/ItemHealthGhost.h"
 #include "../../include/Game/ItemWeaponGhost.h"
 #include "../../include/Game/ItemEnergyGhost.h"
+#include "../../include/Game/EnemyGhostRespawnerEmissor.h"
+#include "../../include/Game/EnemyBehaviorCircle.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 4.0f
@@ -51,6 +52,40 @@ void ComponentGame::onStart()
     loadPlayer();
     loadWeapons();
     loadLevels();
+
+    /*auto *projectileEmissor = new AmmoProjectileBodyEmissor(0.25, weapons[2]);
+    projectileEmissor->setPosition(player->getPosition());
+    projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
+    projectileEmissor->setRotationFrameEnabled(true);
+    projectileEmissor->setRotationFrame(Vertex3D(0, 1, 0));
+    projectileEmissor->setStop(true);
+    projectileEmissor->setStopDuration(1);
+    projectileEmissor->setStopEvery(1);
+    projectileEmissor->setLabel("emissor");
+    Brakeza3D::get()->addObject3D(projectileEmissor, projectileEmissor->getLabel());*/
+
+    /*auto *enemy = new EnemyGhost();
+    enemy->setEnabled(true);
+    enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    enemy->setEnableLights(false);
+    enemy->setPosition(player->getPosition());
+    enemy->setStencilBufferEnabled(true);
+    enemy->setScale(1);
+    enemy->setSpeed(10);
+    enemy->setStamina(100);
+    enemy->setStartStamina(1000);
+    enemy->setEnableLights(true);
+    enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/blue_spaceship_03.fbx"));
+    enemy->setBehavior(new EnemyBehaviorCircle(player->getPosition(), 10, 5000));
+    enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    enemy->setSoundChannel(-1);
+
+    auto *projectileEmissor = new EnemyGhostRespawnerEmissor(5, enemy);
+    projectileEmissor->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "enemies_emissor.fbx"));
+    projectileEmissor->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), projectileEmissor, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    projectileEmissor->setPosition(player->getPosition());
+    projectileEmissor->setLabel("emissorEnemies");
+    Brakeza3D::get()->addObject3D(projectileEmissor, projectileEmissor->getLabel());*/
 }
 
 void ComponentGame::preUpdate()
@@ -118,11 +153,27 @@ void ComponentGame::onUpdate() {
     }
 }
 
-void ComponentGame::checkForEndLevel() const
+int ComponentGame::getLiveEnemiesCounter()
 {
-    if (getPlayer()->getKillsCounter() >= getLevelInfo()->getNumberLevelEnemies()) {
+    int cont = 0 ;
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+        auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
+
+        if (enemy != nullptr || respawner != nullptr) {
+            cont++;
+        }
+    }
+
+    return cont;
+}
+
+void ComponentGame::checkForEndLevel()
+{
+    if (getLiveEnemiesCounter() == 0 && !getLevelInfo()->isLevelFinished()) {
         getPlayer()->increaseLevelsCompleted();
         getPlayer()->setKillsCounter(0);
+        getLevelInfo()->setLevelFinished(true);
         getLevelInfo()->setLevelStartedToPlay(false);
         removeProjectiles();
         getFadeToGameState()->setSpeed(FADE_SPEED_ENDLEVEL);
@@ -320,7 +371,9 @@ void ComponentGame::loadPlayer()
     player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player, EngineSetup::collisionGroups::Player, EngineSetup::collisionGroups::AllFilter);
     Brakeza3D::get()->addObject3D(player, "player");
 
+    // load in this point because alpha is not working if is load previous (todo)
     player->loadShieldModel();
+
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -450,6 +503,10 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level08.json");
+
 }
 
 void ComponentGame::loadBackgroundImageShader()

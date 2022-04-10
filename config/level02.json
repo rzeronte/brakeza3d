@@ -1,6 +1,6 @@
 {
   "name": "Level 02",
-  "backgroundImage": "levels/level_01.png",
+  "backgroundImage": "levels/grid_blue.png",
   "music": "level01Music",
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
@@ -14,24 +14,6 @@
       "speed": 100,
       "motion": {
         "type": 0
-      },
-      "weapon": {
-        "index": 1,
-        "available": true,
-        "name": "Instant",
-        "damage": 1,
-        "amount": 0,
-        "startAmount": 100,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.4,
-        "stop": true,
-        "stopDuration": 3,
-        "stopEvery": 2,
-        "type": 1,
-        "modelProjectile": "projectile_weapon_02.fbx",
-        "model": "item_weapon_02.fbx"
       }
     }
   ],

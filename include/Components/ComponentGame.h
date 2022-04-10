@@ -88,7 +88,7 @@ private:
 public:
     LevelLoader *getLevelInfo() const;
 
-    void checkForEndLevel() const;
+    void checkForEndLevel();
 
     void removeProjectiles() const;
 
@@ -107,6 +107,8 @@ public:
     void pressedKeyForFinishGameAndRestart();
 
     void pressedKeyByDead();
+
+    int getLiveEnemiesCounter();
 };
 
 

@@ -35,7 +35,13 @@ void Image::drawFlat(int pos_x, int pos_y) const {
             int x = j + pos_x;
             int y = i + pos_y;
             if (Tools::isPixelInWindow(x, y)) {
-                buffer->setVideoBuffer(x, y, pixels[i * surface->w + j]);
+                const auto pixel = pixels[i * surface->w + j];
+                Uint8 red, green, blue, alpha;
+                SDL_GetRGBA(pixel, surface->format, &red, &green, &blue, &alpha);
+                if (alpha == 0) {
+                    continue;
+                }
+                buffer->setVideoBuffer(x, y, pixel);
             }
         }
     }

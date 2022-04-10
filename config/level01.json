@@ -1,6 +1,6 @@
 {
   "name": "Level 01",
-  "backgroundImage": "levels/level_01.png",
+  "backgroundImage": "levels/grid_blue.png",
   "music": "level01Music",
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
@@ -14,24 +14,6 @@
       "speed": 100,
       "motion": {
         "type": 0
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 0,
-        "startAmount": 100,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.15,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 0,
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx"
       }
     }
   ],
@@ -39,6 +21,28 @@
     {
       "type": 1,
       "position": { "x": 50, "y": 50 }
+    }
+  ],
+  "emissors": [
+    {
+      "name": "Emissor",
+      "model": "enemies_emissor.fbx",
+      "position": { "x": 50, "y": 50 },
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 0
+      },
+      "enemy": {
+        "name": "Patrol",
+        "position": { "x": 50, "y": 20 },
+        "model": "moon.fbx",
+        "stamina": 1000,
+        "speed": 100,
+        "motion": {
+          "type": 0
+        }
+      }
     }
   ]
 }

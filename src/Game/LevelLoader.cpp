@@ -12,6 +12,7 @@
 #include "../../include/Game/ItemHealthGhost.h"
 #include "../../include/Game/ItemEnergyGhost.h"
 #include "../../include/Game/ItemWeaponGhost.h"
+#include "../../include/Game/EnemyGhostRespawnerEmissor.h"
 
 #include <utility>
 
@@ -28,7 +29,9 @@ void LevelLoader::load(int levelIndex)
 {
     Logging::getInstance()->Log("loading level: " + std::to_string(levelIndex));
     setLevelStartedToPlay(true);
+    setLevelFinished(false);
     setCurrentLevelIndex(levelIndex);
+
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
 
     loadLevelFromJSON(levels[levelIndex]);
@@ -120,106 +123,17 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(allowGravitationalShield);
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowEnergyShield(allowEnergyShield);
 
-    cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
+    cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     cJSON *currentEnemy;
-    cJSON_ArrayForEach(currentEnemy, weaponsList) {
-        std::string name = cJSON_GetObjectItemCaseSensitive(currentEnemy, "name")->valuestring;
-        std::string model = cJSON_GetObjectItemCaseSensitive(currentEnemy, "model")->valuestring;
-        int stamina = cJSON_GetObjectItemCaseSensitive(currentEnemy, "stamina")->valueint;
-        int speed = cJSON_GetObjectItemCaseSensitive(currentEnemy, "speed")->valueint;
-        cJSON *motion = cJSON_GetObjectItemCaseSensitive(currentEnemy, "motion");
-        cJSON *position = cJSON_GetObjectItemCaseSensitive(currentEnemy, "position");
-        cJSON *weapon = cJSON_GetObjectItemCaseSensitive(currentEnemy, "weapon");
-
-        int percentX = cJSON_GetObjectItemCaseSensitive(position, "x")->valueint;
-        int percentY = cJSON_GetObjectItemCaseSensitive(position, "y")->valueint;
-
-        int x = (percentX * EngineSetup::get()->screenWidth) / 100;
-        int y = (percentY * EngineSetup::get()->screenHeight) / 100;
-
-        Point2D  fixedPosition = Point2D(x, y);
-        Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
-        Vector3D ray(camera->getPosition(),nearPlaneVertex);
-
-        EnemyBehavior *behavior;
-        const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
-        switch(typeMotion) {
-            case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
-                cJSON *fromJSON = cJSON_GetObjectItemCaseSensitive(motion, "from");
-                Point2D fixedFromPosition = Point2D(
-                    cJSON_GetObjectItemCaseSensitive(fromJSON, "x")->valueint,
-                    cJSON_GetObjectItemCaseSensitive(fromJSON,"y")->valueint
-                );
-                Vertex3D nearPlaneFromVertex = Transforms::Point2DToWorld(fixedFromPosition, camera);
-                Vertex3D from = Vector3D(camera->getPosition(), nearPlaneFromVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
-
-                cJSON *toJSON = cJSON_GetObjectItemCaseSensitive(motion, "to");
-                Point2D fixedToPosition = Point2D(
-                        (cJSON_GetObjectItemCaseSensitive(toJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100,
-                        (cJSON_GetObjectItemCaseSensitive(toJSON,"y")->valueint * EngineSetup::get()->screenHeight) / 100
-                );
-                Vertex3D nearPlaneToVertex = Transforms::Point2DToWorld(fixedToPosition, camera);
-                Vertex3D to = Vector3D(camera->getPosition(), nearPlaneToVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
-
-                float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-                behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
-                break;
-            }
-            case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
-                auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
-                int behaviorSpeed = cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint;
-                int separation = cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint;
-                behavior = new EnemyBehaviorFollow(player, behaviorSpeed, separation);
-                break;
-            }
-            case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
-                cJSON *centerJSON = cJSON_GetObjectItemCaseSensitive(motion, "center");
-
-                Point2D fixedCenterPosition = Point2D(
-                    cJSON_GetObjectItemCaseSensitive(centerJSON, "x")->valueint,
-                    cJSON_GetObjectItemCaseSensitive(centerJSON,"y")->valueint
-                );
-                Vertex3D nearPlaneToVertex = Transforms::Point2DToWorld(fixedCenterPosition, camera);
-                Vertex3D center = Vector3D(camera->getPosition(), nearPlaneToVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
-
-                float speed = cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-                float radius = cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
-                behavior = new EnemyBehaviorCircle(center, speed, radius);
-                break;
-            }
-        }
-
-        auto *enemy = new EnemyGhost();
-        enemy->setEnabled(true);
-        enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        enemy->setEnableLights(false);
-        enemy->setPosition(ray.getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY));
-        enemy->setStencilBufferEnabled(true);
-        enemy->setScale(1);
-        enemy->setSpeed(speed);
-        enemy->setStamina(stamina);
-        enemy->setStartStamina(stamina);
-        enemy->setEnableLights(true);
-        enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-        enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
-        enemy->setSoundChannel(respawners.size() + 2);
-
-        if (typeMotion > 0) {
-            enemy->setBehavior(behavior);
-        }
-
-        auto weaponType = parseWeaponJSON(weapon);
-        weaponType->setSoundChannel(enemy->getSoundChannel());
-
-        Logging::getInstance()->Log("Loading enemy soundChannel: " + std::to_string(enemy->getSoundChannel()));
-
-        enemy->setWeaponType(weaponType);
+    cJSON_ArrayForEach(currentEnemy, enemiesList) {
+        auto enemy = parseEnemyJSON(currentEnemy);
 
         auto respawner = new EnemyGhostRespawner(enemy, (int) Tools::random(1, 3));
+        respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
     }
@@ -263,6 +177,23 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
                 break;
             }
         }
+    }
+
+    cJSON *emissors = cJSON_GetObjectItemCaseSensitive(myDataJSON, "emissors");
+    cJSON *currentEmissor;
+    cJSON_ArrayForEach(currentEmissor, emissors) {
+        auto emissor = parseEnemyJSON(currentEmissor);
+
+        auto enemyGenerated = parseEnemyJSON(cJSON_GetObjectItemCaseSensitive(currentEmissor, "enemy"));
+
+        auto *enemiesEmissor = new EnemyGhostRespawnerEmissor(5, enemyGenerated);
+        enemiesEmissor->copyFrom(emissor);
+        enemiesEmissor->setStamina(emissor->getStamina());
+        enemiesEmissor->setStartStamina(emissor->getStamina());
+        enemiesEmissor->setPosition(emissor->getPosition());
+        enemiesEmissor->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemiesEmissor, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+
+        Brakeza3D::get()->addObject3D(enemiesEmissor, "enemies_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 
@@ -407,4 +338,107 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->updateBulletFromMesh3D();
 
     Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
+}
+
+bool LevelLoader::isLevelFinished() const {
+    return levelFinished;
+}
+
+void LevelLoader::setLevelFinished(bool levelFinished) {
+    LevelLoader::levelFinished = levelFinished;
+}
+
+EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
+{
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
+    std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
+    int stamina = cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
+    int speed = cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
+    cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
+    cJSON *position = cJSON_GetObjectItemCaseSensitive(enemyJSON, "position");
+    cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
+
+    int x = (cJSON_GetObjectItemCaseSensitive(position, "x")->valueint * EngineSetup::get()->screenWidth) / 100;
+    int y = (cJSON_GetObjectItemCaseSensitive(position, "y")->valueint * EngineSetup::get()->screenHeight) / 100;
+
+    Point2D  fixedPosition = Point2D(x, y);
+    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
+    Vector3D ray(camera->getPosition(),nearPlaneVertex);
+
+    EnemyBehavior *behavior;
+    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
+    switch(typeMotion) {
+        case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
+            cJSON *fromJSON = cJSON_GetObjectItemCaseSensitive(motion, "from");
+            Point2D fixedFromPosition = Point2D(
+                    (cJSON_GetObjectItemCaseSensitive(fromJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100,
+                    (cJSON_GetObjectItemCaseSensitive(fromJSON,"y")->valueint * EngineSetup::get()->screenHeight) / 100
+            );
+            Vertex3D nearPlaneFromVertex = Transforms::Point2DToWorld(fixedFromPosition, camera);
+            Vertex3D from = Vector3D(camera->getPosition(), nearPlaneFromVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
+
+            cJSON *toJSON = cJSON_GetObjectItemCaseSensitive(motion, "to");
+            Point2D fixedToPosition = Point2D(
+                    (cJSON_GetObjectItemCaseSensitive(toJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100,
+                    (cJSON_GetObjectItemCaseSensitive(toJSON,"y")->valueint * EngineSetup::get()->screenHeight) / 100
+            );
+            Vertex3D nearPlaneToVertex = Transforms::Point2DToWorld(fixedToPosition, camera);
+            Vertex3D to = Vector3D(camera->getPosition(), nearPlaneToVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
+
+            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
+            auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+            int behaviorSpeed = cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint;
+            int separation = cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint;
+            behavior = new EnemyBehaviorFollow(player, behaviorSpeed, separation);
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
+            cJSON *centerJSON = cJSON_GetObjectItemCaseSensitive(motion, "center");
+
+            Point2D fixedCenterPosition = Point2D(
+                    (cJSON_GetObjectItemCaseSensitive(centerJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100,
+                    (cJSON_GetObjectItemCaseSensitive(centerJSON,"y")->valueint * EngineSetup::get()->screenHeight) / 100
+            );
+            Vertex3D nearPlaneToVertex = Transforms::Point2DToWorld(fixedCenterPosition, camera);
+            Vertex3D center = Vector3D(camera->getPosition(), nearPlaneToVertex).getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
+
+            float speed = cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            float radius = cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
+            behavior = new EnemyBehaviorCircle(center, speed, radius);
+            break;
+        }
+    }
+
+    auto *enemy = new EnemyGhost();
+    enemy->setEnabled(true);
+    enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    enemy->setEnableLights(false);
+    enemy->setPosition(ray.getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY));
+    enemy->setStencilBufferEnabled(true);
+    enemy->setScale(1);
+    enemy->setSpeed(speed);
+    enemy->setStamina(stamina);
+    enemy->setStartStamina(stamina);
+    enemy->setEnableLights(true);
+    enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    enemy->setSoundChannel(respawners.size() + 2);
+
+    if (typeMotion > 0) {
+        enemy->setBehavior(behavior);
+    }
+
+    if (weapon != nullptr) {
+        auto weaponType = parseWeaponJSON(weapon);
+        weaponType->setSoundChannel(enemy->getSoundChannel());
+        enemy->setWeaponType(weaponType);
+    }
+
+    return enemy;
 }

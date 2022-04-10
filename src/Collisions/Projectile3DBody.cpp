@@ -7,7 +7,7 @@ Projectile3DBody::Projectile3DBody() {
 }
 
 
-void Projectile3DBody::makeProjectileRigidBody(float mass,  Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
+void Projectile3DBody::makeProjectileRigidBody(float mass, Vertex3D direction, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
     Mesh3DBody::makeRigidBody(mass, world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);

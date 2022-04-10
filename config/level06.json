@@ -1,10 +1,9 @@
 {
-  "name": "Level 05: Start!",
+  "name": "Level 06",
   "backgroundImage": "levels/grid_blue.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial05.png",
   "enemies": [
     {
       "name": "Patrol",
@@ -15,7 +14,7 @@
       "motion": {
         "type": 1,
         "from": { "x": 20, "y": 10 },
-        "to": { "x": 20, "y": 40 },
+        "to": { "x": 80, "y": 60 },
         "speed": 1
       },
       "weapon": {
@@ -39,14 +38,14 @@
     },
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 20 },
+      "position": { "x": 80, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {
         "type": 1,
         "from": { "x": 80, "y": 10 },
-        "to": { "x": 80, "y": 40 },
+        "to": { "x": 20, "y": 60 },
         "speed": 1
       },
       "weapon": {
