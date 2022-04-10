@@ -18,26 +18,34 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Assets / Refine gameplay">
-      <change afterPath="$PROJECT_DIR$/config/level05.json" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="level for tutorials">
+      <change afterPath="$PROJECT_DIR$/config/level06.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/level07.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/level08.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawnerEmissor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/levels/level_01.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_01.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_02.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_03.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level04.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level04.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level05.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level05.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/LevelLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -398,7 +406,7 @@
       <workItem from="1649193718964" duration="10158000" />
       <workItem from="1649268775436" duration="16463000" />
       <workItem from="1649367975937" duration="10476000" />
-      <workItem from="1649439133160" duration="19307000" />
+      <workItem from="1649439133160" duration="42594000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -659,7 +667,21 @@
       <option name="project" value="LOCAL" />
       <updated>1649381987110</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Game tutorials / Levels tutorial">
+      <created>1649528795287</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1649528795287</updated>
+    </task>
+    <task id="LOCAL-00039" summary="level for tutorials">
+      <created>1649528811343</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1649528811344</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -803,8 +825,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve Collisions Component" />
-    <MESSAGE value="cleaning Collisions Component" />
     <MESSAGE value="clean assets / refact Texture for desacouple BSP requeriments" />
     <MESSAGE value="Stencil Buffer per Mesh / ShaderSilhouette" />
     <MESSAGE value="GUI for new Shaders" />
@@ -828,7 +848,9 @@
     <MESSAGE value="assets" />
     <MESSAGE value="Enemy blink / Music each level / Update controllers XBOX" />
     <MESSAGE value="Assets / Refine gameplay" />
-    <option name="LAST_COMMIT_MESSAGE" value="Assets / Refine gameplay" />
+    <MESSAGE value="Game tutorials / Levels tutorial" />
+    <MESSAGE value="level for tutorials" />
+    <option name="LAST_COMMIT_MESSAGE" value="level for tutorials" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
