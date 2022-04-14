@@ -80,9 +80,10 @@ void AmmoProjectileBodyEmissor::addProjectile()
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     projectile->setWeaponType(this->weaponType);
     projectile->setEnableLights(false);
-    weaponType->getModelProjectile()->setFlatColor(Color::orange());
     projectile->copyFrom(weaponType->getModelProjectile());
     projectile->setPosition( getPosition() );
+    projectile->setFlatTextureColor(weaponType->getModelProjectile()->isFlatTextureColor());
+    projectile->setFlatColor(weaponType->getModelProjectile()->getFlatColor());
     projectile->setEnabled(true);
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(

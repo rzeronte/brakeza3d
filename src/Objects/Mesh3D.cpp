@@ -81,10 +81,10 @@ void Mesh3D::copyFrom(Mesh3D *source) {
 
     for (auto &modelTriangle : source->modelTriangles) {
         auto *t = new Triangle(
-                modelTriangle->A,
-                modelTriangle->B,
-                modelTriangle->C,
-                this
+            modelTriangle->A,
+            modelTriangle->B,
+            modelTriangle->C,
+            this
         );
 
         t->setTexture(modelTriangle->getTexture());
@@ -322,4 +322,8 @@ void Mesh3D::setEnableLights(bool enableLights) {
 
 void Mesh3D::setFlatColor(const Color &flatColor) {
     Mesh3D::flatColor = flatColor;
+}
+
+const Color &Mesh3D::getFlatColor() const {
+    return flatColor;
 }

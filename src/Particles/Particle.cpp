@@ -31,7 +31,6 @@ void Particle::onUpdate() {
     if (affedByGravity) {
         float g = EngineSetup::get()->gravity.y;
 
-
         t += Brakeza3D::get()->getDeltaTime() / 1000;
 
         Vertex3D gravity(
@@ -42,7 +41,7 @@ void Particle::onUpdate() {
 
         this->addToPosition( gravity);
     }
-    Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), this->color);
+    Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), color);
 }
 
 const Vertex3D &Particle::getVelocity() const {

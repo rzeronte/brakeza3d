@@ -386,7 +386,8 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+    if ((state == EngineSetup::GameState::PRESSKEY_NEWLEVEL|| state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) &&
+        (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
     }
 

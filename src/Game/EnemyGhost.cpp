@@ -74,7 +74,7 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        auto fireworks = new ParticleEmissorFireworks(true, 520, 5, 0.01, Color::yellow(), 3, 20);
+        auto fireworks = new ParticleEmissorFireworks(true, 520, 5, 0.01, Color::yellow(), 3, 10);
         fireworks->setPosition(projectile->getPosition());
         fireworks->setRotationFrame(0, 4, 5);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());

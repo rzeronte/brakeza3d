@@ -20,7 +20,7 @@ Player::Player() : state(PlayerState::EMPTY),
                    maxVelocity(INITIAL_MAX_VELOCITY),
                    dashPower(INITIAL_POWERDASH)
 {
-    engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::gray());
+    engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::cyan());
     engineParticles->setRotationFrame(0, 4, 5);
 
     light = new LightPoint3D();
@@ -365,6 +365,11 @@ void Player::resolveCollision(Collisionable *with) {
         Logging::getInstance()->Log("Health to Player!");
         receiveEnergy(energy->getEnergy());
         energy->remove();
+    }
+
+    auto enemy = dynamic_cast<EnemyGhost*> (with);
+    if (enemy != nullptr) {
+        takeDamage(getStartStamina() / 10 );
     }
 }
 

@@ -226,7 +226,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
     }
 
     if (to != nullptr) {
-        auto color = Color::green();
+        auto color = Color::white();
         setAmmoAmount(ammoAmount - 1);
         auto enemy = dynamic_cast<EnemyGhost*>(to);
         if (enemy != nullptr) {
@@ -246,7 +246,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
         auto enemy = dynamic_cast<EnemyGhost*>(closestObject);
         if (enemy != nullptr) {
             enemy->takeDamage(getDamage());
-            Drawable::drawLightning(from, closestObject->getPosition(), Color::green());
+            Drawable::drawLightning(from, closestObject->getPosition(), Color::white());
         }
     }
 }

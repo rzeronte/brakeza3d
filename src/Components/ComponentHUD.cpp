@@ -145,13 +145,13 @@ void ComponentHUD::drawPlayerStamina(int y)
         healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
     }
 
-    int availablesWeaposCounter = 0;
+    int availablesWeaponsCounter = 0;
     for (int i = 0; i < (int) player->getWeapons().size(); i++) {
         auto weapon = player->getWeapons()[i];
-        const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaposCounter;
-        const int yIcon = backgroundHealthBar->height() * 2 + 4 + offsetY + availablesWeaposCounter;
+        const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaponsCounter;
+        const int yIcon = backgroundHealthBar->height() * 2 + 4 + offsetY + availablesWeaponsCounter;
         if (weapon->isAvailable()) {
-            availablesWeaposCounter++;
+            availablesWeaponsCounter++;
             weapon->getIcon()->drawFlat(xIcon, yIcon);
             if (player->getWeapon() == weapon) {
                 drawSelectedWeaponEffect(xIcon, yIcon, weapon->getIcon()->width(), weapon->getIcon()->height(), Color::green());
@@ -159,22 +159,22 @@ void ComponentHUD::drawPlayerStamina(int y)
         }
     }
 
-    if (availablesWeaposCounter > 0) {
+    if (availablesWeaponsCounter > 0) {
         this->textureWriter->writeText(
-            offsetX + availablesWeaposCounter * player->getWeapon()->getIcon()->width(),
+                offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
             offsetY + backgroundHealthBar->height() * 2 + 4,
             std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
             false
         );
     } else {
         this->textureWriter->writeText(
-                offsetX + availablesWeaposCounter * player->getWeapon()->getIcon()->width(),
+                offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
                 offsetY + backgroundHealthBar->height() * 2 + 4,
                 "Disarmed",
                 false
         );
     }
-    offsetY += backgroundHealthBar->height() * 2 + player->getWeapon()->getIcon()->height() + 4;
+    offsetY += backgroundHealthBar->height() * 2 + player->getWeapon()->getIcon()->height() + 6;
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();

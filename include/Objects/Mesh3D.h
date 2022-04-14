@@ -79,6 +79,8 @@ public:
 
     void setFlatColor(const Color &flatColor);
 
+    const Color &getFlatColor() const;
+
 private:
     Octree *octree;
     Grid3D *grid;

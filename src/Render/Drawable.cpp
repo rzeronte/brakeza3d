@@ -86,8 +86,6 @@ void Drawable::drawVertex3D(Vertex3D V, Camera3D *cam, Color color) {
     Point2D P1;
     Transforms::screenSpace(P1, A);
 
-    color = color + Color( 255* A.z);
-
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
         EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color.getColor());
     }

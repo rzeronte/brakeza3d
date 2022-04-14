@@ -205,7 +205,7 @@ public:
 
     //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;
-    float LIGHTNING_OFFSET_REDUCTION = 500.f;
+    float LIGHTNING_OFFSET_REDUCTION = 650.f;
     float LIGHTNING_PROBABILITY_BRANCH = 1.5f;
     float LIGHTNING_SEGMENT_SHIFT = 2.5f;
 
@@ -280,12 +280,13 @@ public:
         SPLASH = 1,
         MENU = 2,
         PRESSKEY_NEWLEVEL = 3,
-        PRESSKEY_BY_DEAD = 4,
-        COUNTDOWN = 5,
-        GAMING = 6,
-        HELP = 7,
-        PRESSKEY_GAMEOVER = 8,
-        CREDITS = 9
+        PRESSKEY_PREVIOUS_LEVEL = 4,
+        PRESSKEY_BY_DEAD = 5,
+        COUNTDOWN = 6,
+        GAMING = 7,
+        HELP = 8,
+        PRESSKEY_GAMEOVER = 9,
+        CREDITS = 10
     } GameState;
 };
 

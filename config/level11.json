@@ -24,5 +24,25 @@
     }
   ],
   "emissors": [
+    {
+      "name": "Emissor",
+      "model": "enemies_emissor.fbx",
+      "position": { "x": 50, "y": 50 },
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 0
+      },
+      "enemy": {
+        "name": "Patrol",
+        "position": { "x": 50, "y": 20 },
+        "model": "moon.fbx",
+        "stamina": 1000,
+        "speed": 100,
+        "motion": {
+          "type": 0
+        }
+      }
+    }
   ]
 }
