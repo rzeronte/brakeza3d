@@ -7,6 +7,7 @@
 
     { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
     { "file": "game_over.mp3", "label": "gameOverMusic", "type": "music" },
+    { "file": "boss_01_music.mp3", "label": "BossMusic01", "type": "music" },
 
     { "file": "level_completed.wav", "label": "levelCompleted", "type": "sound" },
 

@@ -18,34 +18,46 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="level for tutorials">
-      <change afterPath="$PROJECT_DIR$/config/level06.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level07.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level08.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/EnemyGhostRespawnerEmissor.h" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="EnemyEmissor / ProjectilesEmissor">
+      <change afterPath="$PROJECT_DIR$/config/level10.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/level11.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/BossEnemy.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Game/BossEnemy.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_01.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_02.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/levels/level_03.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level04.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level04.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level05.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level05.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Game/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/LevelLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Weapon.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Particles/Particle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/Particle.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,21 +203,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "cmake.loaded.for.project": "true",
-    "last_opened_file_path": "/home/eduardo/CLionProjects/brakeza3d/config",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "structure.view.defaults.are.configured": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cmake.loaded.for.project&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/eduardo/CLionProjects/brakeza3d/config&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/config" />
@@ -234,11 +246,6 @@
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -406,7 +413,8 @@
       <workItem from="1649193718964" duration="10158000" />
       <workItem from="1649268775436" duration="16463000" />
       <workItem from="1649367975937" duration="10476000" />
-      <workItem from="1649439133160" duration="42594000" />
+      <workItem from="1649439133160" duration="54179000" />
+      <workItem from="1649894288587" duration="8462000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -681,7 +689,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649528811344</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="EnemyEmissor / ProjectilesEmissor">
+      <created>1649606240652</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1649606240652</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -825,7 +840,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="clean assets / refact Texture for desacouple BSP requeriments" />
     <MESSAGE value="Stencil Buffer per Mesh / ShaderSilhouette" />
     <MESSAGE value="GUI for new Shaders" />
     <MESSAGE value="Added new Shaders / improve shaders" />
@@ -850,7 +864,8 @@
     <MESSAGE value="Assets / Refine gameplay" />
     <MESSAGE value="Game tutorials / Levels tutorial" />
     <MESSAGE value="level for tutorials" />
-    <option name="LAST_COMMIT_MESSAGE" value="level for tutorials" />
+    <MESSAGE value="EnemyEmissor / ProjectilesEmissor" />
+    <option name="LAST_COMMIT_MESSAGE" value="EnemyEmissor / ProjectilesEmissor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -867,7 +882,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Game/Player.cpp</url>
-          <line>458</line>
+          <line>463</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
