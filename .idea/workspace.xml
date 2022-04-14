@@ -18,47 +18,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="EnemyEmissor / ProjectilesEmissor">
-      <change afterPath="$PROJECT_DIR$/config/level10.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level11.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/BossEnemy.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Game/BossEnemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/EnemyGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/LevelLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Game/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/Weapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Particles/Particle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/Particle.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="GAMEPLAY" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -414,7 +374,7 @@
       <workItem from="1649268775436" duration="16463000" />
       <workItem from="1649367975937" duration="10476000" />
       <workItem from="1649439133160" duration="54179000" />
-      <workItem from="1649894288587" duration="8462000" />
+      <workItem from="1649894288587" duration="8763000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -696,7 +656,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649606240652</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="GAMEPLAY">
+      <created>1649907811731</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1649907811731</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -840,7 +807,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Stencil Buffer per Mesh / ShaderSilhouette" />
     <MESSAGE value="GUI for new Shaders" />
     <MESSAGE value="Added new Shaders / improve shaders" />
     <MESSAGE value="Refine player movement" />
@@ -865,7 +831,8 @@
     <MESSAGE value="Game tutorials / Levels tutorial" />
     <MESSAGE value="level for tutorials" />
     <MESSAGE value="EnemyEmissor / ProjectilesEmissor" />
-    <option name="LAST_COMMIT_MESSAGE" value="EnemyEmissor / ProjectilesEmissor" />
+    <MESSAGE value="GAMEPLAY" />
+    <option name="LAST_COMMIT_MESSAGE" value="GAMEPLAY" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
