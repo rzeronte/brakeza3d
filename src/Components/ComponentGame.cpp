@@ -202,7 +202,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         stopWaterShader();
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
     } else {
-        stopBackgroundShader();
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
         ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
     }
@@ -243,6 +242,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     if (state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) {
         removeInGameObjects();
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadPrevious();
+        getPlayer()->decreaseLevelsCompleted();
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
         getPlayer()->setEnergyShieldEnabled(false);
         getPlayer()->setGravityShieldsNumber(0);
@@ -348,11 +348,10 @@ void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
     player->setAlpha(200);
-    player->setEnableLights(false);
+    player->setEnableLights(true);
     player->setPosition(playerStartPosition);
     player->setScale(1);
     player->setStamina(100);
-    player->setEnableLights(true);
     player->setStencilBufferEnabled(true);
     player->setAutoRotationToFacingSelectedObjectSpeed(5);
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/red_spaceship_02.fbx"));
@@ -600,6 +599,7 @@ void ComponentGame::removeInGameObjects()
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
+        auto *emissorProjectiles = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
@@ -613,6 +613,10 @@ void ComponentGame::removeInGameObjects()
 
         if (projectile != nullptr) {
             projectile->remove();
+        }
+
+        if (emissorProjectiles != nullptr) {
+            emissorProjectiles->setRemoved(true);
         }
     }
 }

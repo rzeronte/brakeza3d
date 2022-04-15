@@ -178,8 +178,6 @@ void Player::shoot()
         return;
     }
 
-    Logging::getInstance()->Log("Player shot!");
-
     const int type = getWeapon()->getType();
     switch(type) {
         case WeaponTypes::WEAPON_PROJECTILE: {
@@ -466,6 +464,13 @@ void Player::setLevelCompletedCounter(int levelCounter)
 void Player::increaseLevelsCompleted()
 {
     levelsCompletedCounter++;
+}
+
+void Player::decreaseLevelsCompleted()
+{
+    if (levelsCompletedCounter > 0) {
+        levelsCompletedCounter--;
+    }
 }
 
 const std::vector<Weapon *> &Player::getWeapons() const {

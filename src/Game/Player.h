@@ -183,6 +183,8 @@ public:
     bool isAllowGravitationalShields() const;
 
     bool isAllowEnergyShield() const;
+
+    void decreaseLevelsCompleted();
 };
 
 

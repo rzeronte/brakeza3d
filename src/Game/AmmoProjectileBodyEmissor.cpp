@@ -1,6 +1,6 @@
-#include "AmmoProjectileBodyEmissor.h"
-#include "../ComponentsManager.h"
-#include "../Brakeza3D.h"
+#include "../../include/Game/AmmoProjectileBodyEmissor.h"
+#include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(float step, Weapon *weaponType) : step(step), weaponType(weaponType)
 {
@@ -80,10 +80,11 @@ void AmmoProjectileBodyEmissor::addProjectile()
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     projectile->setWeaponType(this->weaponType);
     projectile->setEnableLights(false);
-    projectile->copyFrom(weaponType->getModelProjectile());
-    projectile->setPosition( getPosition() );
     projectile->setFlatTextureColor(weaponType->getModelProjectile()->isFlatTextureColor());
     projectile->setFlatColor(weaponType->getModelProjectile()->getFlatColor());
+    weaponType->getModelProjectile()->setEnableLights(false);
+    projectile->copyFrom(weaponType->getModelProjectile());
+    projectile->setPosition( getPosition() );
     projectile->setEnabled(true);
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(

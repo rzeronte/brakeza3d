@@ -13,6 +13,7 @@
 #include "../Misc/cJSON.h"
 #include "EnemyGhostRespawner.h"
 #include "ItemHealthGhost.h"
+#include "AsteroidEnemyGhost.h"
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
@@ -39,6 +40,7 @@ typedef enum {
     BEHAVIOR_PATROL = 1,
     BEHAVIOR_FOLLOW = 2,
     BEHAVIOR_CIRCLE = 3,
+    BEHAVIOR_RANDOM = 4
 } EnemyBehaviorTypes;
 
 class LevelLoader {
@@ -123,6 +125,8 @@ public:
     bool isHaveMusic() const;
 
     void setHasMusic(bool hasMusic);
+
+    AsteroidEnemyGhost*  parseAsteroidJSON(cJSON *asteroidJSON);
 };
 
 

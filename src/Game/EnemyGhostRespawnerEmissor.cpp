@@ -2,9 +2,9 @@
 // Created by eduardo on 10/04/22.
 //
 
-#include "EnemyGhostRespawnerEmissor.h"
-#include "../Brakeza3D.h"
-#include "EnemyBehaviorCircle.h"
+#include "../../include/Game/EnemyGhostRespawnerEmissor.h"
+#include "../../include/Brakeza3D.h"
+#include "../../include/Game/EnemyBehaviorCircle.h"
 
 EnemyGhostRespawnerEmissor::EnemyGhostRespawnerEmissor(float step, EnemyGhost *enemy)
 {

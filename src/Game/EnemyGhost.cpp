@@ -15,7 +15,8 @@ EnemyGhost::EnemyGhost() {
     counterDamageBlink->setEnabled(false);
 }
 
-void EnemyGhost::onUpdate() {
+void EnemyGhost::onUpdate()
+{
     Mesh3D::onUpdate();
 
     Vector3D way(ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(), getPosition());

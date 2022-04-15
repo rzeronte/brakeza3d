@@ -2,8 +2,8 @@
 // Created by eduardo on 3/04/22.
 //
 
-#include "GravitationalGhost.h"
-#include "../Brakeza3D.h"
+#include "../../include/Game/GravitationalGhost.h"
+#include "../../include/Brakeza3D.h"
 
 GravitationalGhost::GravitationalGhost(float force, float factor) : force(force), factor(factor)
 {

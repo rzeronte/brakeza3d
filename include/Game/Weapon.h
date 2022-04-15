@@ -83,8 +83,6 @@ public:
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c);
     void shootInstant(Vertex3D from,  Object3D *to);
 
-    void reload();
-
     Mesh3D *getModel() const;
 
     const std::string &getSoundEmptyLabel() const;
@@ -96,8 +94,6 @@ public:
     const std::string &getSoundFire() const;
 
     const std::string &getLabel() const;
-
-    float getCadenceTime() const;
 
     void setCadenceTime(float cadenceTime);
 

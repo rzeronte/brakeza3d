@@ -14,6 +14,8 @@
 #include "../../include/Game/ItemWeaponGhost.h"
 #include "../../include/Game/EnemyGhostRespawnerEmissor.h"
 #include "../../include/Game/BossEnemy.h"
+#include "../../include/Game/EnemyBehaviorRandom.h"
+#include "../../include/Game/AsteroidEnemyGhost.h"
 
 #include <utility>
 
@@ -167,6 +169,16 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     cJSON_ArrayForEach(currentBoss, bosses) {
         this->parseBossJSON(currentBoss);
     }
+
+    cJSON *asteroids = cJSON_GetObjectItemCaseSensitive(myDataJSON, "asteroids");
+    cJSON *currentAsteroid;
+    cJSON_ArrayForEach(currentAsteroid, asteroids) {
+        auto asteroid = this->parseAsteroidJSON(currentAsteroid);
+        auto respawner = new EnemyGhostRespawner(asteroid, (int) Tools::random(1, 3));
+        respawner->setPosition(asteroid->getPosition());
+        Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        respawners.push_back(respawner);
+    }
 }
 
 Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
@@ -192,6 +204,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     weapon->getModelProjectile()->setFlatTextureColor(true);
     weapon->getModelProjectile()->setFlatColor(Color::cyan());
+    weapon->getModelProjectile()->setEnableLights(false);
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
     weapon->getModelProjectile()->setLabel("projectile_enemy_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
@@ -322,8 +335,6 @@ void LevelLoader::setLevelFinished(bool levelFinished) {
 
 EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 {
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
     std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
     std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
     int stamina = cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
@@ -360,6 +371,11 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
             behavior = new EnemyBehaviorCircle(center, speed, radius);
             break;
         }
+        case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            behavior = new EnemyBehaviorRandom(speed);
+            break;
+        }
     }
 
     auto *enemy = new EnemyGhost();
@@ -372,7 +388,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setSpeed(speed);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
-    enemy->setEnableLights(true);
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
     enemy->setSoundChannel(respawners.size() + 2);
@@ -471,12 +486,11 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             auto weapon = new Weapon("boss_weapon");
             weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setFlatTextureColor(true);
-            weapon->getModelProjectile()->setFlatColor(Color::cyan());
+            weapon->getModelProjectile()->setFlatColor(Color::red());
+            weapon->getModelProjectile()->setEnableLights(false);
             weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             weapon->getModelProjectile()->setScale(1);
-            weapon->getModelProjectile()->setFlatTextureColor(true);
-            weapon->getModelProjectile()->setFlatColor(Color::red());
             weapon->setAmmoAmount(1000);
             weapon->setStartAmmoAmount(1000);
             weapon->setSpeed(100);
@@ -498,7 +512,6 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->setSpeed(10);
             boss->setStamina(10000);
             boss->setStartStamina(10000);
-            boss->setEnableLights(true);
             boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/boss_green_01.fbx"));
             boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
 
@@ -531,7 +544,6 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
             boss->projectileEmissor = projectileEmissor;
 
-
             Brakeza3D::get()->addObject3D(boss, boss->getLabel());
 
             break;
@@ -543,6 +555,81 @@ bool LevelLoader::isHaveMusic() const {
     return hasMusic;
 }
 
-void LevelLoader::setHasMusic(bool hasMusic) {
+void LevelLoader::setHasMusic(bool hasMusic)
+{
     LevelLoader::hasMusic = hasMusic;
+}
+
+AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
+{
+    std::string name = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "name")->valuestring;
+    std::string model = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "model")->valuestring;
+    int stamina = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "stamina")->valueint;
+    bool explode = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "explode")->valueint;
+    int speed = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "speed")->valueint;
+    cJSON *motion = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "motion");
+
+    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(asteroidJSON, "position"));
+
+    EnemyBehavior *behavior;
+    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
+    switch(typeMotion) {
+        case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
+            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
+            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
+
+            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
+            behavior = new EnemyBehaviorFollow(
+                    ComponentsManager::get()->getComponentGame()->getPlayer(),
+                    cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
+                    cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
+            );
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
+            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
+
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
+            behavior = new EnemyBehaviorCircle(center, speed, radius);
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            behavior = new EnemyBehaviorRandom(speed);
+            break;
+        }
+    }
+
+    auto *asteroid = new AsteroidEnemyGhost();
+    asteroid->setEnabled(true);
+    asteroid->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    asteroid->setEnableLights(false);
+    asteroid->setPosition(worldPosition);
+    asteroid->setStencilBufferEnabled(true);
+    asteroid->setScale(1);
+    asteroid->setSpeed(speed);
+    asteroid->setStamina(stamina);
+    asteroid->setStartStamina(stamina);
+    asteroid->setEnableLights(true);
+    asteroid->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    asteroid->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), asteroid, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    asteroid->setSoundChannel(respawners.size() + 2);
+    asteroid->setExplode(explode);
+
+    if (explode) {
+        std::string modelPartitions = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "modelPartitions")->valuestring;
+        auto mesh = new Mesh3D();
+        mesh->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelPartitions));
+        asteroid->setModelPartitions(mesh);
+    }
+    if (typeMotion > 0) {
+        asteroid->setBehavior(behavior);
+    }
+
+    return asteroid;
 }

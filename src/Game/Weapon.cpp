@@ -139,8 +139,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-        Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
-
         auto *projectile = new AmmoProjectileBody();
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
@@ -251,9 +249,6 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
     }
 }
 
-void Weapon::reload() {
-}
-
 const std::string &Weapon::getSoundEmptyLabel() const {
     return soundEmptyLabel;
 }
@@ -273,10 +268,6 @@ void Weapon::setSoundFire(const std::string &label) {
 
 const std::string &Weapon::getLabel() const {
     return label;
-}
-
-float Weapon::getCadenceTime() const {
-    return cadenceTime;
 }
 
 void Weapon::setCadenceTime(float cadenceTime) {
@@ -323,7 +314,6 @@ int Weapon::getStatus() const {
 
 void Weapon::setStatus(int status)
 {
-
     Weapon::status = status;
 }
 
