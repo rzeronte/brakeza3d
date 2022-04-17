@@ -1,0 +1,60 @@
+{
+  "name": "Level 20",
+  "backgroundImage": "levels/grid_red.png",
+  "music": "BossMusic01",
+  "allowGravitionalShield": true,
+  "allowEnergyShield": true,
+  "enemies": [
+  ],
+  "items": [
+  ],
+  "emissors": [
+  ],
+  "bosses": [
+    {
+      "type": 2,
+      "position": { "x": 50, "y": 5 }
+    }
+  ],
+  "asteroids": [
+    {
+      "name": "Asteroid",
+      "position": { "x": 10, "y": 10 },
+      "model": "asteroid_02.fbx",
+      "modelPartitions": "asteroid_02.fbx",
+      "stamina": 500,
+      "speed": 10,
+      "explode": false,
+      "motion": {
+        "type": 4,
+        "speed": 10
+      }
+    },
+    {
+      "name": "Asteroid",
+      "position": { "x": 90, "y": 90 },
+      "model": "asteroid_02.fbx",
+      "modelPartitions": "asteroid_02.fbx",
+      "stamina": 500,
+      "speed": 10,
+      "explode": false,
+      "motion": {
+        "type": 4,
+        "speed": 10
+      }
+    },
+    {
+      "name": "Asteroid",
+      "position": { "x": 50, "y": 50 },
+      "model": "asteroid_02.fbx",
+      "modelPartitions": "asteroid_02.fbx",
+      "stamina": 500,
+      "speed": 10,
+      "explode": false,
+      "motion": {
+        "type": 4,
+        "speed": 10
+      }
+    }
+  ]
+}

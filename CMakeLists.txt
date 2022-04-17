@@ -4,7 +4,6 @@ project(Brakeza3D)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
-
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -107,22 +106,22 @@ add_executable(Brakeza3D
         src/Misc/cJSON.c
         src/Collisions/SpriteDirectional3DBody.cpp
         include/Physics/SpriteDirectional3DBody.h
-        include/Game/EnemyGhostRespawner.h
-        src/Game/EnemyGhostRespawner.cpp
-        src/Game/Weapon.cpp
-        include/Game/Weapon.h
+        darkheaz/include/EnemyGhostRespawner.h
+        darkheaz/EnemyGhostRespawner.cpp
+        darkheaz/Weapon.cpp
+        darkheaz/include/Weapon.h
         src/Components/ComponentMenu.cpp
         include/Components/ComponentMenu.h
         src/2D/MenuOption.cpp
         include/2D/MenuOption.h
-        src/Game/Enemy.cpp
-        include/Game/Enemy.h
+        darkheaz/Enemy.cpp
+        darkheaz/include/Enemy.h
         src/Brakeza3D.cpp
         include/Brakeza3D.h
         src/Components/ComponentCollisions.cpp
         include/Components/ComponentCollisions.h
-        src/Game/EnemyGhost.cpp
-        include/Game/EnemyGhost.h
+        darkheaz/EnemyGhost.cpp
+        darkheaz/include/EnemyGhost.h
         src/Collisions/Projectile3DBody.cpp
         include/Physics/Projectile3DBody.h
         src/Objects/Decal.cpp
@@ -133,8 +132,8 @@ add_executable(Brakeza3D
         include/Physics/Body.h
         src/Objects/Cube3D.cpp
         include/Objects/Cube3D.h
-        include/Game/Player.cpp
-        src/Game/Player.h
+        darkheaz/include/Player.cpp
+        darkheaz/Player.h
         src/Demo/Demo.cpp include/Demo/Demo.h
         src/Misc/Counter.cpp
         include/Misc/Counter.h
@@ -147,10 +146,10 @@ add_executable(Brakeza3D
         include/Misc/VariablePackage.h
         src/Collisions/BillboardBody.cpp
         include/Physics/BillboardBody.h
-        src/Game/ItemWeaponGhost.cpp
-        include/Game/ItemWeaponGhost.h
-        src/Game/ItemHealthGhost.cpp
-        include/Game/ItemHealthGhost.h
+        darkheaz/ItemWeaponGhost.cpp
+        darkheaz/include/ItemWeaponGhost.h
+        darkheaz/ItemHealthGhost.cpp
+        darkheaz/include/ItemHealthGhost.h
         src/Components/Component.cpp
         include/Components/Component.h
         src/Components/ComponentRender.cpp
@@ -188,16 +187,6 @@ add_executable(Brakeza3D
         include/Misc/Grid3D.h
         src/Misc/PathFinder.cpp
         include/Misc/PathFinder.h
-
-        console/Command.cpp
-        console/Command.h
-        console/CommandArgument.cpp
-        console/CommandArgument.h
-        console/Prompt.cpp
-        console/Prompt.h
-        console/ConsoleManager.cpp
-        console/ConsoleManager.h
-        include/Components/ComponentConsole.cpp include/Components/ComponentConsole.h
 
         include/GUI/GUI.h
         include/GUI/GUI_Camera.h
@@ -242,7 +231,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h src/Game/AmmoProjectileBody.cpp include/Game/AmmoProjectileBody.h include/Game/FaderToGameStates.h src/Game/EnemyBehavior.cpp include/Game/EnemyBehavior.h src/Game/EnemyBehaviorPatrol.cpp include/Game/EnemyBehaviorPatrol.h src/Game/EnemyBehaviorCircle.cpp include/Game/EnemyBehaviorCircle.h src/Game/EnemyBehaviorFollow.cpp include/Game/EnemyBehaviorFollow.h src/Game/LevelLoader.cpp include/Game/LevelLoader.h src/Game/AmmoSmartProjectileBody.cpp include/Game/AmmoSmartProjectileBody.h src/Game/ShaderShield.cpp include/Game/ShaderShield.h src/Game/ItemEnergyGhost.cpp include/Game/ItemEnergyGhost.h src/Game/GravitationalGhost.cpp include/Game/GravitationalGhost.h src/Game/GravitationalShield.cpp include/Game/GravitationalShield.h src/Particles/ParticleEmissorFireworks.cpp include/Particles/ParticleEmissorFireworks.h src/Game/AmmoProjectileBodyEmissor.cpp include/Game/AmmoProjectileBodyEmissor.h src/Game/EnemyGhostRespawnerEmissor.cpp include/Game/EnemyGhostRespawnerEmissor.h include/Game/BossEnemy.cpp include/Game/BossEnemy.h src/Game/EnemyBehaviorRandom.cpp include/Game/EnemyBehaviorRandom.h src/Game/AsteroidEnemyGhost.cpp include/Game/AsteroidEnemyGhost.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h darkheaz/AmmoProjectileBody.cpp darkheaz/include/AmmoProjectileBody.h darkheaz/include/FaderToGameStates.h darkheaz/EnemyBehavior.cpp darkheaz/include/EnemyBehavior.h darkheaz/EnemyBehaviorPatrol.cpp darkheaz/include/EnemyBehaviorPatrol.h darkheaz/EnemyBehaviorCircle.cpp darkheaz/include/EnemyBehaviorCircle.h darkheaz/EnemyBehaviorFollow.cpp darkheaz/include/EnemyBehaviorFollow.h darkheaz/LevelLoader.cpp darkheaz/include/LevelLoader.h darkheaz/AmmoSmartProjectileBody.cpp darkheaz/include/AmmoSmartProjectileBody.h darkheaz/ShaderShield.cpp darkheaz/include/ShaderShield.h darkheaz/ItemEnergyGhost.cpp darkheaz/include/ItemEnergyGhost.h darkheaz/GravitationalGhost.cpp darkheaz/include/GravitationalGhost.h darkheaz/GravitationalShield.cpp darkheaz/include/GravitationalShield.h src/Particles/ParticleEmissorFireworks.cpp include/Particles/ParticleEmissorFireworks.h darkheaz/AmmoProjectileBodyEmissor.cpp darkheaz/include/AmmoProjectileBodyEmissor.h darkheaz/EnemyGhostRespawnerEmissor.cpp darkheaz/include/EnemyGhostRespawnerEmissor.h darkheaz/BossEnemy.cpp darkheaz/include/BossEnemy.h darkheaz/EnemyBehaviorRandom.cpp darkheaz/include/EnemyBehaviorRandom.h darkheaz/AsteroidEnemyGhost.cpp darkheaz/include/AsteroidEnemyGhost.h darkheaz/BossLevel10.cpp darkheaz/include/BossLevel10.h darkheaz/BossLevel20.cpp darkheaz/include/BossLevel20.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

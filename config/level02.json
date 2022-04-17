@@ -42,6 +42,7 @@
       "stamina": 1000,
       "speed": 100,
       "explode": true,
+      "numberPartitions": 4,
       "motion": {
         "type": 4,
         "speed": 10
@@ -52,8 +53,8 @@
       "position": { "x": 90, "y": 90 },
       "model": "asteroid_02.fbx",
       "modelPartitions": "asteroid_02.fbx",
-      "stamina": 1000,
-      "speed": 100,
+      "stamina": 500,
+      "speed": 10,
       "explode": false,
       "motion": {
         "type": 4,

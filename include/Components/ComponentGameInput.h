@@ -3,7 +3,7 @@
 
 
 #include "Component.h"
-#include "../../src/Game/Player.h"
+#include "../../darkheaz/Player.h"
 
 class ComponentGameInput : public Component {
 public:

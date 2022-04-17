@@ -30,14 +30,12 @@ void Brakeza3D::start() {
     componentHUD = new ComponentHUD();
     componentGame = new ComponentGame();
     componentGameInput = new ComponentGameInput(componentGame->getPlayer());
-    componentConsole = new ComponentConsole();
 
     componentsManager->registerComponent(componentWindow, "ComponentWindow");
     componentsManager->registerComponent(componentCamera, "ComponentCamera");
     componentsManager->registerComponent(componentCollisions, "ComponentCollisions");
     componentsManager->registerComponent(componentInput, "ComponentInput");
     componentsManager->registerComponent(componentSound, "ComponentSound");
-    componentsManager->registerComponent(componentConsole, "ComponentConsole");
     componentsManager->registerComponent(componentRender, "ComponentRender");
     componentsManager->registerComponent(componentMenu, "ComponentMenu");
     componentsManager->registerComponent(componentHUD, "ComponentHUD");

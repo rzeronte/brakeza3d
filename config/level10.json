@@ -13,8 +13,8 @@
       "speed": 100,
       "motion": {
         "type": 1,
-        "from": { "x": 5, "y": 10 },
-        "to": { "x": 5, "y": 50 },
+        "from": { "x": 1, "y": 10 },
+        "to": { "x": 1, "y": 50 },
         "speed": 1
       },
       "weapon": {
@@ -38,14 +38,14 @@
     },
     {
       "name": "Patrol",
-      "position": { "x": 95, "y": 10 },
+      "position": { "x": 99, "y": 10 },
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 200,
       "motion": {
         "type": 1,
-        "from": { "x": 95, "y": 10 },
-        "to": { "x": 95, "y": 50 },
+        "from": { "x": 99, "y": 10 },
+        "to": { "x": 99, "y": 50 },
         "speed": 1
       },
       "weapon": {
@@ -53,7 +53,7 @@
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 0,
+        "amount": 1000,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,

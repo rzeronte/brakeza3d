@@ -16,7 +16,7 @@
 #include "../Objects/Mesh3DAnimatedCollection.h"
 #include "../Particles/ParticleEmissor.h"
 #include "../Physics/SimplePendulum.h"
-#include "../../src/Game/Player.h"
+#include "../../darkheaz/Player.h"
 
 class GUI_Objects3D : public GUI {
 private:

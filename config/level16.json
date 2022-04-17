@@ -1,0 +1,168 @@
+{
+  "name": "Level 16",
+  "backgroundImage": "levels/grid_purple.png",
+  "music": "level01Music",
+  "allowGravitionalShield": true,
+  "allowEnergyShield": true,
+  "enemies": [
+    {
+      "name": "Patrol",
+      "position": { "x": 10, "y": 5 },
+      "model": "spaceships/green_spaceship_01.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 10, "y": 5 },
+        "to": { "x": 10, "y": 40 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Rayer",
+      "position": { "x": 30, "y": 5 },
+      "model": "spaceships/green_spaceship_03.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 30, "y": 5 },
+        "to": { "x": 30, "y": 50 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 1,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.15,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Purpler",
+      "position": { "x": 50, "y": 5 },
+      "model": "spaceships/purple_spaceship_01.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 50, "y": 20 },
+        "to": { "x": 50, "y": 5 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.75,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 2,
+        "modelProjectile": "projectile_weapon_03.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Rayer",
+      "position": { "x": 70, "y": 5 },
+      "model": "spaceships/green_spaceship_03.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 70, "y": 5 },
+        "to": { "x": 70, "y": 50 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 1,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.15,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Patrol",
+      "position": { "x": 90, "y": 5 },
+      "model": "spaceships/green_spaceship_01.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 90, "y": 5 },
+        "to": { "x": 90, "y": 40 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    }
+  ],
+  "items": [
+  ],
+  "emissors": [
+  ]
+}

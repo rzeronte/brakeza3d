@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../include/Components/ComponentMenu.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Game/EnemyBehaviorPatrol.h"
+#include "../../darkheaz/include/EnemyBehaviorPatrol.h"
 
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
@@ -125,7 +125,7 @@ void ComponentMenu::drawOptions() {
 
     auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
-    int offsetY = 150;
+    int offsetY = 170;
     int stepY = 15;
 
     for (int i = 0; i < numOptions; i++) {

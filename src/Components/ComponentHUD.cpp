@@ -295,5 +295,6 @@ void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float v
         int y = screenPoint.y;
         if (!Tools::isPixelInWindow(x, y)) continue;
         EngineBuffers::getInstance()->setVideoBuffer(x, y, c.getColor());
+        EngineBuffers::getInstance()->setVideoBuffer(x, y+1, c.getColor());
     }
 }

@@ -39,7 +39,7 @@
     {
       "name": "Patrol",
       "position": { "x": 80, "y": 20 },
-      "model": "spaceships/green_spaceship_01.fbx",
+      "model": "spaceships/green_spaceship_02.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {

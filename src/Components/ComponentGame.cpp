@@ -1,10 +1,10 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Game/AmmoProjectileBody.h"
-#include "../../include/Game/ItemWeaponGhost.h"
-#include "../../include/Game/ItemEnergyGhost.h"
-#include "../../include/Game/AmmoProjectileBodyEmissor.h"
+#include "../../darkheaz/include/AmmoProjectileBody.h"
+#include "../../darkheaz/include/ItemWeaponGhost.h"
+#include "../../darkheaz/include/ItemEnergyGhost.h"
+#include "../../darkheaz/include/AmmoProjectileBodyEmissor.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 4.0f
@@ -66,11 +66,11 @@ void ComponentGame::preUpdate()
     }
 }
 
-void ComponentGame::onUpdate() {
+void ComponentGame::onUpdate()
+{
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
-        onUpdateIA();
         blockPlayerPositionInCamera();
         checkForEndLevel();
     }
@@ -165,7 +165,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (getGameState() == EngineSetup::GameState::NONE && state == EngineSetup::GameState::SPLASH) {
-
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
         splashCounter.setEnabled(true);
@@ -174,6 +173,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
 
     if (getGameState() == EngineSetup::GameState::SPLASH && state == EngineSetup::GameState::MENU) {
         Logging::getInstance()->Log("GameState changed to MENU");
+        getPlayer()->setEnabled(true);
     }
 
     if (state == EngineSetup::GameState::MENU) {
@@ -182,7 +182,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         setVisibleInGameObjects(false);
         stopSilhouetteShader();
         startWaterShader();
-        //player->setEnabled(false);
         getPlayer()->stopBlinkForPlayer();
         getPlayer()->setEnergyShieldEnabled(false);
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -237,6 +236,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         startTintScreenShader();
+        silenceInGameObjects();
     }
 
     if (state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) {
@@ -271,7 +271,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
 }
 
 void ComponentGame::postUpdate() {
-    player->evalStatusMachine();
 }
 
 void ComponentGame::onEnd() {
@@ -282,17 +281,6 @@ void ComponentGame::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 Player *ComponentGame::getPlayer() const {
     return player;
-}
-
-void ComponentGame::onUpdateIA() const {
-    auto objects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : objects) {
-        auto *enemy = dynamic_cast<EnemyGhost *> (object);
-
-        if (enemy != nullptr) {
-            evalStatusMachine(enemy);
-        }
-    }
 }
 
 void ComponentGame::blockPlayerPositionInCamera() {
@@ -347,6 +335,7 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
+    player->setEnabled(false);
     player->setAlpha(200);
     player->setEnableLights(true);
     player->setPosition(playerStartPosition);
@@ -420,68 +409,6 @@ void ComponentGame::selectClosestObject3DFromPlayer()
     }
 }
 
-void ComponentGame::evalStatusMachine(EnemyGhost *enemy) const
-{
-    if (enemy->getState() == EnemyState::ENEMY_STATE_DIE) {
-
-        auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
-        fireworks->setPosition(enemy->getPosition());
-        fireworks->setRotationFrame(0, 4, 5);
-
-        Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
-        int typePresent = Tools::random(0, 2);
-        switch(typePresent) {
-            case 0: {
-                auto *healthItem = new ItemHealthGhost();
-                healthItem->setLabel("item_health");
-                healthItem->setEnableLights(true);
-                healthItem->setPosition(enemy->getPosition());
-                healthItem->setRotationFrameEnabled(true);
-                healthItem->setRotationFrame(Vertex3D(0, 1, 0));
-                healthItem->setStencilBufferEnabled(true);
-                healthItem->setScale(1);
-                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
-                healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
-                Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
-                break;
-            }
-            case 1: {
-                auto *healthItem = new ItemEnergyGhost();
-                healthItem->setLabel("item_energy");
-                healthItem->setEnableLights(true);
-                healthItem->setPosition(enemy->getPosition());
-                healthItem->setRotationFrameEnabled(true);
-                healthItem->setRotationFrame(Vertex3D(0, 1, 0));
-                healthItem->setStencilBufferEnabled(true);
-                healthItem->setScale(1);
-                healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
-                healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
-                Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
-                break;
-            }
-            case 2: {
-                int randomWeapon = Tools::random(0, 2);
-                auto *weaponItem = new ItemWeaponGhost(weapons[randomWeapon]);
-                weaponItem->setLabel("item_weapon");
-                weaponItem->setEnableLights(false);
-                weaponItem->setPosition(enemy->getPosition());
-                weaponItem->setRotation(0, 0, 180);
-                weaponItem->setRotationFrameEnabled(true);
-                weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
-                weaponItem->setStencilBufferEnabled(true);
-                weaponItem->setScale(1);
-                weaponItem->copyFrom(weapons[randomWeapon]->getModel());
-                weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::collisionGroups::Weapon, EngineSetup::collisionGroups::Player);
-                Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
-                break;
-            }
-        }
-    }
-
-    enemy->shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
-}
-
 void ComponentGame::loadLevels()
 {
     levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
@@ -493,6 +420,16 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level11.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level12.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level13.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level15.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level16.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
 
 }
 
@@ -554,14 +491,14 @@ void ComponentGame::stopSilhouetteShader()
 
 void ComponentGame::startWaterShader()
 {
-    auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
-    shader->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+    //auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
+    //shader->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     //shader->setEnabled(true);
 }
 
 void ComponentGame::stopWaterShader()
 {
-    auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
+    //auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
     //shader->setEnabled(false);
 }
 
@@ -620,6 +557,16 @@ void ComponentGame::removeInGameObjects()
         }
     }
 }
+void ComponentGame::silenceInGameObjects()
+{
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+
+        if (enemy != nullptr ) {
+            enemy->getWeapon()->stopSoundChannel();
+        }
+    }
+}
 
 void ComponentGame::setVisibleInGameObjects(bool value)
 {
@@ -663,7 +610,7 @@ void ComponentGame::loadWeapons() {
     cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons");
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, weaponsList) {
-        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
+        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon, Color::green());
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }
@@ -672,14 +619,16 @@ void ComponentGame::loadWeapons() {
         player->addWeapon(weapon);
     }
 
-    player->setWeaponType(weapons[0]);
+    player->setWeaponTypeByIndex(0);
 }
 
-const std::vector<Weapon *> &ComponentGame::getWeapons() const {
+const std::vector<Weapon *> &ComponentGame::getWeapons() const
+{
     return weapons;
 }
 
-void ComponentGame::pressedKeyForNewGame() {
+void ComponentGame::pressedKeyForNewGame()
+{
     if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
@@ -697,9 +646,9 @@ void ComponentGame::pressedKeyForNewGame() {
 void ComponentGame::pressedKeyForBeginLevel()
 {
     ComponentsManager::get()->getComponentSound()->playSound(
-            BUFFERS->soundPackage->getByLabel("newLevel"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
+        BUFFERS->soundPackage->getByLabel("newLevel"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
     );
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
     ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
@@ -717,9 +666,9 @@ void ComponentGame::pressedKeyForFinishGameAndRestart()
 void ComponentGame::pressedKeyByDead()
 {
     ComponentsManager::get()->getComponentSound()->playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
+        EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
     );
     ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL);
     ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();

@@ -16,7 +16,6 @@
 #include "ComponentsManager.h"
 #include "Components/ComponentGame.h"
 #include "Components/ComponentGameInput.h"
-#include "Components/ComponentConsole.h"
 #include "GUI/GUIManager.h"
 #include <thread>
 
@@ -37,7 +36,6 @@ private:
     ComponentHUD *componentHUD = nullptr;
     ComponentGame *componentGame = nullptr;
     ComponentGameInput *componentGameInput = nullptr;
-    ComponentConsole *componentConsole = nullptr;
 
     Timer engineTimer;
 

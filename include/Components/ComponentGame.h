@@ -4,7 +4,7 @@
 
 
 #include "Component.h"
-#include "../../src/Game/Player.h"
+#include "../../darkheaz/Player.h"
 #include "../Misc/cJSON.h"
 #include "../Physics/Mesh3DGhost.h"
 #include "../Misc/Octree.h"
@@ -16,8 +16,8 @@
 #include "../Shaders/ShaderTintScreen.h"
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
-#include "../Game/FaderToGameStates.h"
-#include "../Game/LevelLoader.h"
+#include "../../darkheaz/include/FaderToGameStates.h"
+#include "../../darkheaz/include/LevelLoader.h"
 #include "../Particles/ParticleEmissorFireworks.h"
 
 class ComponentGame : public Component {
@@ -37,8 +37,6 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     Player *getPlayer() const;
-
-    void onUpdateIA() const;
 
     void loadPlayer();
 
@@ -70,7 +68,6 @@ private:
     EngineSetup::GameState gameState;
     std::vector<Weapon *> weapons;
 
-    void evalStatusMachine(EnemyGhost *pGhost) const;
 
     void loadLevels();
 
@@ -109,6 +106,8 @@ public:
     void pressedKeyByDead();
 
     int getLiveEnemiesCounter();
+
+    void silenceInGameObjects();
 };
 
 

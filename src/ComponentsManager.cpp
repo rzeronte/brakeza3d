@@ -21,11 +21,9 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
     std::cout << "Register component (" << component->getId() << ")" << std::endl;
 }
 
-void ComponentsManager::configureComponents() {
+void ComponentsManager::configureComponents()
+{
     getComponentCollisions()->setVisibleTriangles(getComponentRender()->getVisibleTriangles());
-
-    getComponentConsole()->setRenderer(getComponentWindow()->renderer);
-    getComponentConsole()->setTextureRender(getComponentWindow()->screenTexture);
 }
 
 std::vector<Object3D *> *ComponentsManager::getSceneObjects() const {

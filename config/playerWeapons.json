@@ -23,7 +23,7 @@
       "index": 1,
       "available": false,
       "name": "Instant",
-      "damage": 1,
+      "damage": 20,
       "amount": 0,
       "startAmount": 2500,
       "speed": 500,

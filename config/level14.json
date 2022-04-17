@@ -1,0 +1,106 @@
+{
+  "name": "Level 14",
+  "backgroundImage": "levels/grid_purple.png",
+  "music": "level01Music",
+  "allowGravitionalShield": true,
+  "allowEnergyShield": true,
+  "enemies": [
+    {
+      "name": "Patrol",
+      "position": { "x": 20, "y": 20 },
+      "model": "spaceships/green_spaceship_01.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 20, "y": 10 },
+        "to": { "x": 20, "y": 40 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Patrol",
+      "position": { "x": 20, "y": 20 },
+      "model": "spaceships/green_spaceship_01.fbx",
+      "stamina": 1000,
+      "speed": 100,
+      "motion": {
+        "type": 1,
+        "from": { "x": 80, "y": 10 },
+        "to": { "x": 80, "y": 40 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    },
+    {
+      "name": "Purpler",
+      "position": { "x": 50,  "y": 1 },
+      "model": "spaceships/purple_spaceship_01.fbx",
+      "stamina": 1500,
+      "speed": 120,
+      "motion": {
+        "type": 2,
+        "speed": 4,
+        "separation": 5000
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.50,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 2,
+        "modelProjectile": "projectile_weapon_03.fbx",
+        "model": "item_weapon_01.fbx"
+      }
+    }
+  ],
+  "items": [
+  ],
+  "emissors": [
+
+  ]
+}

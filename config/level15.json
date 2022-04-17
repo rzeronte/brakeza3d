@@ -1,0 +1,100 @@
+{
+  "name": "Level 15",
+  "backgroundImage": "levels/grid_purple.png",
+  "music": "level01Music",
+  "allowGravitionalShield": true,
+  "allowEnergyShield": true,
+  "enemies": [
+
+  ],
+  "items": [
+  ],
+  "emissors": [
+    {
+      "name": "Emissor",
+      "model": "enemies_emissor.fbx",
+      "cadence": 5,
+      "position": { "x": 50, "y": 30 },
+      "stamina": 1000,
+      "speed": 25,
+      "motion": {
+        "type": 1,
+        "from": { "x": 99, "y": 1 },
+        "to": { "x": 99, "y": 99 },
+        "speed": 1
+      },
+      "enemy": {
+        "name": "Rayer",
+        "position": { "x": 30, "y": 10 },
+        "model": "spaceships/green_spaceship_03.fbx",
+        "stamina": 1000,
+        "speed": 100,
+        "motion": {
+          "type": 4,
+          "speed": 40
+        },
+        "weapon": {
+          "index": 0,
+          "available": true,
+          "name": "Instant",
+          "damage": 1,
+          "amount": 1000,
+          "startAmount": 10000,
+          "speed": 500,
+          "dispersion": 10,
+          "accuracy": 100,
+          "cadenceTime": 0.15,
+          "stop": true,
+          "stopDuration": 1,
+          "stopEvery": 1,
+          "type": 1,
+          "modelProjectile": "projectile_weapon_01.fbx",
+          "model": "item_weapon_01.fbx"
+        }
+      }
+    },
+    {
+      "name": "Emissor2",
+      "model": "enemies_emissor.fbx",
+      "cadence": 10,
+      "position": { "x": 50, "y": 30 },
+      "stamina": 1000,
+      "speed": 25,
+      "motion": {
+        "type": 1,
+        "from": { "x": 1, "y": 1 },
+        "to": { "x": 1, "y": 99 },
+        "speed": 1
+      },
+      "enemy": {
+        "name": "Purpler",
+        "position": { "x": 30, "y": 10 },
+        "model": "spaceships/purple_spaceship_01.fbx",
+        "stamina": 1000,
+        "speed": 100,
+        "motion": {
+          "type": 4,
+          "speed": 10
+        },
+        "weapon": {
+          "index": 0,
+          "available": true,
+          "name": "Instant",
+          "damage": 20,
+          "amount": 1000,
+          "startAmount": 10000,
+          "speed": 500,
+          "dispersion": 10,
+          "accuracy": 100,
+          "cadenceTime": 0.75,
+          "stop": true,
+          "stopDuration": 1,
+          "stopEvery": 1,
+          "type": 2,
+          "modelProjectile": "projectile_weapon_03.fbx",
+          "model": "item_weapon_01.fbx"
+        }
+      }
+    }
+  ]
+}
