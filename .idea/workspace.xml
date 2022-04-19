@@ -18,101 +18,65 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="GAMEPLAY / Assets">
-      <change afterPath="$PROJECT_DIR$/config/level12.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level13.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level14.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level15.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level16.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level17.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level18.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level19.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/level20.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/BossLevel10.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/BossLevel20.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/EnemyGhost.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/include/BossLevel10.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/include/BossLevel20.h" afterDir="false" />
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Move game go application folder / add levels until 20">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/energy_ball.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/energy_ball.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/meteorita.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/meteorita.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/EnergiPill.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/EnergiPill.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/EnergyPack.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/EnergyPack.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level08.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level08.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level10.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level10.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level11.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level11.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/Command.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/Command.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/CommandArgument.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/CommandArgument.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/ConsoleManager.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/ConsoleManager.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/Prompt.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/console/Prompt.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentConsole.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentConsole.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/AmmoProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/AmmoSmartProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/AsteroidEnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/BossEnemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/BossLevel10.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/BossLevel20.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyBehavior.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehavior.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyBehaviorCircle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyBehaviorFollow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyBehaviorPatrol.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyBehaviorRandom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/EnemyGhostRespawnerEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ItemEnergyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ItemHealthGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemHealthGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ItemWeaponGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemWeaponGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/AmmoProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/AmmoSmartProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/AsteroidEnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/BossEnemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/BossLevel10.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/BossLevel20.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyBehavior.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehavior.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorCircle.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehaviorCircle.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorFollow.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehaviorFollow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorPatrol.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehaviorPatrol.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorRandom.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehaviorRandom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyGhostRespawner.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/EnemyGhostRespawnerEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/FaderToGameStates.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/FaderToGameStates.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/GravitationalGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/ItemEnergyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/ItemHealthGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemHealthGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/ItemWeaponGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemWeaponGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/ShaderShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShield.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/include/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ComponentsManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/ComponentsManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Objects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/AmmoProjectileBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/AmmoProjectileBodyEmissor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AmmoSmartProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/AmmoSmartProjectileBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/AsteroidEnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/AsteroidEnemyGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/BossEnemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/BossEnemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/BossEnemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/BossEnemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/Enemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyBehavior.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyBehavior.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyBehaviorCircle.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorCircle.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyBehaviorFollow.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorFollow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyBehaviorPatrol.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorPatrol.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyBehaviorRandom.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyBehaviorRandom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhostRespawner.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyGhostRespawner.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/EnemyGhostRespawnerEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/EnemyGhostRespawnerEmissor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/FaderToGameStates.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/FaderToGameStates.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/GravitationalGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/GravitationalGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/GravitationalShield.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/ItemEnergyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/ItemEnergyGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/ItemHealthGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/ItemHealthGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/ItemWeaponGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/ItemWeaponGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/LevelLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/ShaderShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/ShaderShield.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Game/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/include/Weapon.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Object3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ComponentsManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ComponentsManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/AmmoProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/AmmoProjectileBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/AmmoSmartProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/AmmoSmartProjectileBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/AsteroidEnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/AsteroidEnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Enemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyBehavior.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyBehavior.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyBehaviorCircle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyBehaviorCircle.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyBehaviorFollow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyBehaviorFollow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyBehaviorPatrol.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyBehaviorPatrol.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyBehaviorRandom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyBehaviorRandom.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhost.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyGhostRespawner.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/EnemyGhostRespawnerEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/GravitationalGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/ItemEnergyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ItemEnergyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/ItemHealthGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ItemHealthGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/ItemWeaponGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ItemWeaponGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/ShaderShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShield.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Weapon.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,10 +247,10 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/darkheaz" />
-      <recent name="$PROJECT_DIR$/darkheaz/include" />
-      <recent name="$PROJECT_DIR$/src/Game" />
-      <recent name="$PROJECT_DIR$/src/Particles" />
-      <recent name="$PROJECT_DIR$/include/Game" />
+      <recent name="$PROJECT_DIR$/darkheaz/src/enemies" />
+      <recent name="$PROJECT_DIR$/darkheaz/src/bosses" />
+      <recent name="$PROJECT_DIR$/darkheaz/src/items" />
+      <recent name="$PROJECT_DIR$/darkheaz/src/weapons" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
@@ -295,17 +259,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -476,7 +440,8 @@
       <workItem from="1649439133160" duration="54179000" />
       <workItem from="1649894288587" duration="9386000" />
       <workItem from="1649943745286" duration="1000" />
-      <workItem from="1649975058704" duration="58152000" />
+      <workItem from="1649975058704" duration="63488000" />
+      <workItem from="1650406197749" duration="116000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -779,7 +744,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650034812718</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Move game go application folder / add levels until 20">
+      <created>1650168592465</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1650168592465</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -923,7 +895,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added new Shaders / improve shaders" />
     <MESSAGE value="Refine player movement" />
     <MESSAGE value="Fix bad pointer functions" />
     <MESSAGE value="Fix copyFrom Mesh3D / Improve isPixelInWindow" />
@@ -948,7 +919,8 @@
     <MESSAGE value="EnemyEmissor / ProjectilesEmissor" />
     <MESSAGE value="GAMEPLAY" />
     <MESSAGE value="GAMEPLAY / Assets" />
-    <option name="LAST_COMMIT_MESSAGE" value="GAMEPLAY / Assets" />
+    <MESSAGE value="Move game go application folder / add levels until 20" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move game go application folder / add levels until 20" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -964,7 +936,7 @@
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/darkheaz/include/Player.cpp</url>
+          <url>file://$PROJECT_DIR$/darkheaz/Player.cpp</url>
           <line>464</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>

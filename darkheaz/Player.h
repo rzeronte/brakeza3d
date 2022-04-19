@@ -6,9 +6,9 @@
 #include "../include/Misc/Counter.h"
 #include "../include/Particles/ParticleEmissor.h"
 #include "../include/Physics/Mesh3DGhost.h"
-#include "../darkheaz/include/Weapon.h"
-#include "../darkheaz/include/ShaderShield.h"
-#include "../darkheaz/include/GravitationalShield.h"
+#include "src/weapons/Weapon.h"
+#include "ShaderShield.h"
+#include "GravitationalShield.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100

@@ -2,8 +2,8 @@
 // Created by eduardo on 3/04/22.
 //
 
-#include "include/GravitationalShield.h"
-#include "include/AmmoProjectileBody.h"
+#include "GravitationalShield.h"
+#include "src/weapons/AmmoProjectileBody.h"
 
 GravitationalShield::GravitationalShield(float force, float factor, float stamina, float ttl) : GravitationalGhost(force, factor), stamina(stamina), ttl(ttl) {
     this->startStamina = stamina;

@@ -16,8 +16,8 @@
 #include "../Shaders/ShaderTintScreen.h"
 #include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
-#include "../../darkheaz/include/FaderToGameStates.h"
-#include "../../darkheaz/include/LevelLoader.h"
+#include "../../darkheaz/FaderToGameStates.h"
+#include "../../darkheaz/LevelLoader.h"
 #include "../Particles/ParticleEmissorFireworks.h"
 
 class ComponentGame : public Component {

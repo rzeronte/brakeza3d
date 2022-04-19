@@ -2,22 +2,22 @@
 // Created by eduardo on 20/3/22.
 //
 
-#include "include/LevelLoader.h"
+#include "LevelLoader.h"
 #include "../include/Brakeza3D.h"
 #include "../include/Render/Transforms.h"
-#include "include/EnemyGhostRespawner.h"
-#include "include/EnemyBehaviorCircle.h"
-#include "include/EnemyBehaviorPatrol.h"
-#include "include/EnemyBehaviorFollow.h"
-#include "include/ItemHealthGhost.h"
-#include "include/ItemEnergyGhost.h"
-#include "include/ItemWeaponGhost.h"
-#include "include/EnemyGhostRespawnerEmissor.h"
-#include "include/BossEnemy.h"
-#include "include/EnemyBehaviorRandom.h"
-#include "include/AsteroidEnemyGhost.h"
-#include "include/BossLevel10.h"
-#include "include/BossLevel20.h"
+#include "src/enemies/EnemyGhostRespawner.h"
+#include "src/enemies/EnemyBehaviorCircle.h"
+#include "src/enemies/EnemyBehaviorPatrol.h"
+#include "src/enemies/EnemyBehaviorFollow.h"
+#include "src/items/ItemHealthGhost.h"
+#include "src/items/ItemEnergyGhost.h"
+#include "src/items/ItemWeaponGhost.h"
+#include "src/enemies/EnemyGhostRespawnerEmissor.h"
+#include "src/bosses/BossEnemy.h"
+#include "src/enemies/EnemyBehaviorRandom.h"
+#include "src/enemies/AsteroidEnemyGhost.h"
+#include "src/bosses/BossLevel10.h"
+#include "src/bosses/BossLevel20.h"
 
 #include <utility>
 

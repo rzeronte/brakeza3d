@@ -5,7 +5,7 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
-#include "../../darkheaz/include/EnemyBehavior.h"
+#include "../../darkheaz/src/enemies/EnemyBehavior.h"
 #include "Point2D.h"
 
 class Object3D {

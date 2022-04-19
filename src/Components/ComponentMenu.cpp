@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../include/Components/ComponentMenu.h"
 #include "../../include/Brakeza3D.h"
-#include "../../darkheaz/include/EnemyBehaviorPatrol.h"
+#include "../../darkheaz/src/enemies/EnemyBehaviorPatrol.h"
 
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;

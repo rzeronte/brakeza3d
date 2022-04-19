@@ -1,10 +1,10 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../darkheaz/include/AmmoProjectileBody.h"
-#include "../../darkheaz/include/ItemWeaponGhost.h"
-#include "../../darkheaz/include/ItemEnergyGhost.h"
-#include "../../darkheaz/include/AmmoProjectileBodyEmissor.h"
+#include "../../darkheaz/src/weapons/AmmoProjectileBody.h"
+#include "../../darkheaz/src/items/ItemWeaponGhost.h"
+#include "../../darkheaz/src/items/ItemEnergyGhost.h"
+#include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 4.0f
