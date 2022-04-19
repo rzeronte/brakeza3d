@@ -16,7 +16,8 @@ Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affec
     this->affedByGravity = affectedByGravity;
 }
 
-void Particle::onUpdate() {
+void Particle::onUpdate()
+{
     Object3D::onUpdate();
 
     if (this->timeToLive.isFinished()) {
@@ -34,9 +35,9 @@ void Particle::onUpdate() {
         t += Brakeza3D::get()->getDeltaTime() / 1000;
 
         Vertex3D gravity(
-                EngineSetup::get()->gravity.x * t,
-                EngineSetup::get()->gravity.y * t - (0.5f * g * t * t),
-                EngineSetup::get()->gravity.z * t
+            EngineSetup::get()->gravity.x * t,
+            EngineSetup::get()->gravity.y * t - (0.5f * g * t * t),
+            EngineSetup::get()->gravity.z * t
         );
 
         this->addToPosition( gravity);

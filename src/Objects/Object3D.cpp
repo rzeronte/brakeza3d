@@ -133,7 +133,8 @@ void Object3D::setFollowCamera(bool followCamera) {
     Object3D::followCamera = followCamera;
 }
 
-void Object3D::onUpdate() {
+void Object3D::onUpdate()
+{
     if (this->isFollowCamera()) {
         this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());

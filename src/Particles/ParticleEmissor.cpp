@@ -30,7 +30,8 @@ bool ParticleEmissor::isActive() const {
     return active;
 }
 
-void ParticleEmissor::onUpdate() {
+void ParticleEmissor::onUpdate()
+{
     Object3D::onUpdate();
 
     if (!active) {
