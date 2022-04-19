@@ -106,22 +106,22 @@ add_executable(Brakeza3D
         src/Misc/cJSON.c
         src/Collisions/SpriteDirectional3DBody.cpp
         include/Physics/SpriteDirectional3DBody.h
-        darkheaz/include/EnemyGhostRespawner.h
-        darkheaz/EnemyGhostRespawner.cpp
-        darkheaz/Weapon.cpp
-        darkheaz/include/Weapon.h
+        darkheaz/src/enemies/EnemyGhostRespawner.h
+        darkheaz/src/enemies/EnemyGhostRespawner.cpp
+        darkheaz/src/weapons/Weapon.cpp
+        darkheaz/src/weapons/Weapon.h
         src/Components/ComponentMenu.cpp
         include/Components/ComponentMenu.h
         src/2D/MenuOption.cpp
         include/2D/MenuOption.h
-        darkheaz/Enemy.cpp
-        darkheaz/include/Enemy.h
+        darkheaz/src/enemies/Enemy.cpp
+        darkheaz/src/enemies/Enemy.h
         src/Brakeza3D.cpp
         include/Brakeza3D.h
         src/Components/ComponentCollisions.cpp
         include/Components/ComponentCollisions.h
-        darkheaz/EnemyGhost.cpp
-        darkheaz/include/EnemyGhost.h
+        darkheaz/src/enemies/EnemyGhost.cpp
+        darkheaz/src/enemies/EnemyGhost.h
         src/Collisions/Projectile3DBody.cpp
         include/Physics/Projectile3DBody.h
         src/Objects/Decal.cpp
@@ -132,7 +132,7 @@ add_executable(Brakeza3D
         include/Physics/Body.h
         src/Objects/Cube3D.cpp
         include/Objects/Cube3D.h
-        darkheaz/include/Player.cpp
+        darkheaz/Player.cpp
         darkheaz/Player.h
         src/Demo/Demo.cpp include/Demo/Demo.h
         src/Misc/Counter.cpp
@@ -146,10 +146,10 @@ add_executable(Brakeza3D
         include/Misc/VariablePackage.h
         src/Collisions/BillboardBody.cpp
         include/Physics/BillboardBody.h
-        darkheaz/ItemWeaponGhost.cpp
-        darkheaz/include/ItemWeaponGhost.h
-        darkheaz/ItemHealthGhost.cpp
-        darkheaz/include/ItemHealthGhost.h
+        darkheaz/src/items/ItemWeaponGhost.cpp
+        darkheaz/src/items/ItemWeaponGhost.h
+        darkheaz/src/items/ItemHealthGhost.cpp
+        darkheaz/src/items/ItemHealthGhost.h
         src/Components/Component.cpp
         include/Components/Component.h
         src/Components/ComponentRender.cpp
@@ -231,7 +231,7 @@ add_executable(Brakeza3D
         include/Shaders/ShaderFire.h
         include/Shaders/ShaderObjectSilhouette.h
         include/Shaders/ShaderImageBackground.h
-        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h darkheaz/AmmoProjectileBody.cpp darkheaz/include/AmmoProjectileBody.h darkheaz/include/FaderToGameStates.h darkheaz/EnemyBehavior.cpp darkheaz/include/EnemyBehavior.h darkheaz/EnemyBehaviorPatrol.cpp darkheaz/include/EnemyBehaviorPatrol.h darkheaz/EnemyBehaviorCircle.cpp darkheaz/include/EnemyBehaviorCircle.h darkheaz/EnemyBehaviorFollow.cpp darkheaz/include/EnemyBehaviorFollow.h darkheaz/LevelLoader.cpp darkheaz/include/LevelLoader.h darkheaz/AmmoSmartProjectileBody.cpp darkheaz/include/AmmoSmartProjectileBody.h darkheaz/ShaderShield.cpp darkheaz/include/ShaderShield.h darkheaz/ItemEnergyGhost.cpp darkheaz/include/ItemEnergyGhost.h darkheaz/GravitationalGhost.cpp darkheaz/include/GravitationalGhost.h darkheaz/GravitationalShield.cpp darkheaz/include/GravitationalShield.h src/Particles/ParticleEmissorFireworks.cpp include/Particles/ParticleEmissorFireworks.h darkheaz/AmmoProjectileBodyEmissor.cpp darkheaz/include/AmmoProjectileBodyEmissor.h darkheaz/EnemyGhostRespawnerEmissor.cpp darkheaz/include/EnemyGhostRespawnerEmissor.h darkheaz/BossEnemy.cpp darkheaz/include/BossEnemy.h darkheaz/EnemyBehaviorRandom.cpp darkheaz/include/EnemyBehaviorRandom.h darkheaz/AsteroidEnemyGhost.cpp darkheaz/include/AsteroidEnemyGhost.h darkheaz/BossLevel10.cpp darkheaz/include/BossLevel10.h darkheaz/BossLevel20.cpp darkheaz/include/BossLevel20.h)
+        src/Misc/Image.cpp include/Misc/Image.h include/Shaders/ShaderTintScreen.h src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h src/2D/Button.cpp include/2D/Button.h include/2D/ButtonsCallbacks.h include/GUI/GUI_Shaders.h include/Shaders/ShaderSmoke.h include/Shaders/ShaderBlink.h darkheaz/src/weapons/AmmoProjectileBody.cpp darkheaz/src/weapons/AmmoProjectileBody.h darkheaz/FaderToGameStates.h darkheaz/src/behaviors/EnemyBehavior.cpp darkheaz/src/enemies/EnemyBehavior.h darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp darkheaz/src/enemies/EnemyBehaviorPatrol.h darkheaz/src/behaviors/EnemyBehaviorCircle.cpp darkheaz/src/enemies/EnemyBehaviorCircle.h darkheaz/src/behaviors/EnemyBehaviorFollow.cpp darkheaz/src/enemies/EnemyBehaviorFollow.h darkheaz/LevelLoader.cpp darkheaz/LevelLoader.h darkheaz/src/weapons/AmmoSmartProjectileBody.cpp darkheaz/src/weapons/AmmoSmartProjectileBody.h darkheaz/ShaderShield.cpp darkheaz/ShaderShield.h darkheaz/src/items/ItemEnergyGhost.cpp darkheaz/src/items/ItemEnergyGhost.h darkheaz/GravitationalGhost.cpp darkheaz/GravitationalGhost.h darkheaz/GravitationalShield.cpp darkheaz/GravitationalShield.h src/Particles/ParticleEmissorFireworks.cpp include/Particles/ParticleEmissorFireworks.h darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp darkheaz/src/weapons/AmmoProjectileBodyEmissor.h darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h darkheaz/src/bosses/BossEnemy.cpp darkheaz/src/bosses/BossEnemy.h darkheaz/src/behaviors/EnemyBehaviorRandom.cpp darkheaz/src/enemies/EnemyBehaviorRandom.h darkheaz/src/enemies/AsteroidEnemyGhost.cpp darkheaz/src/enemies/AsteroidEnemyGhost.h darkheaz/src/bosses/BossLevel10.cpp darkheaz/src/bosses/BossLevel10.h darkheaz/src/bosses/BossLevel20.cpp darkheaz/src/bosses/BossLevel20.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
