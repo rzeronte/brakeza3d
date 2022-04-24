@@ -146,10 +146,8 @@ bool Frustum::isVertexInside(Vertex3D &v) {
 }
 
 
-void Frustum::consoleInfo() const {
-
-    //Logging::get()->Log("Frustum for " + parent->getLabel());
-    this->nc.consoleInfo("fnc", false);
+void Frustum::consoleInfo() const
+{
     printf("\r\n");
     Logging::Log("Aspect ratio:" + std::to_string(aspectRatio), "CAMERA");
     Logging::Log("Horizontal FOV:" + std::to_string(horizontal_fov), "CAMERA");

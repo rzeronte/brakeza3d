@@ -2,16 +2,16 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 
-
-void ComponentRender::onStart() {
+void ComponentRender::onStart()
+{
     Logging::Log("ComponentRender onStart", "ComponentRender");
     initTiles();
     initializeShaders();
 }
 
-void ComponentRender::preUpdate() {
+void ComponentRender::preUpdate()
+{
     this->updateFPS(Brakeza3D::get()->deltaTime);
 
     if (!isEnabled()) {
@@ -21,7 +21,8 @@ void ComponentRender::preUpdate() {
     this->onUpdatePreUpdateShaders();
 }
 
-void ComponentRender::onUpdate() {
+void ComponentRender::onUpdate()
+{
     if (!isEnabled()) {
         return;
     }
@@ -31,7 +32,7 @@ void ComponentRender::onUpdate() {
     if (SETUP->ENABLE_LIGHTS) {
         this->extractLightPointsFromObjects3D();
         this->updateLights();
-        if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
+        if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER) {
             this->createLightPointsDepthMappings();
         }
     }
@@ -70,14 +71,15 @@ void ComponentRender::postUpdate() {
 void ComponentRender::onEnd() {
 }
 
-void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish) {
-    auto input = ComponentsManager::get()->getComponentInput();
+void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
+{
     if (SETUP->CLICK_SELECT_OBJECT3D) {
         updateSelectedObject3D();
     }
 }
 
-void ComponentRender::updateSelectedObject3D() {
+void ComponentRender::updateSelectedObject3D()
+{
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
@@ -95,7 +97,8 @@ void ComponentRender::updateSelectedObject3D() {
     }
 }
 
-void ComponentRender::updateSelectedObject3DInShaders(Object3D *object) {
+void ComponentRender::updateSelectedObject3DInShaders(Object3D *object)
+{
     auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
     shader->setObject(object);
 
@@ -170,7 +173,8 @@ std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
     return lightpoints;
 }
 
-void ComponentRender::onUpdateSceneObjects() {
+void ComponentRender::onUpdateSceneObjects()
+{
     if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
     std::vector<Object3D *>::iterator it;
@@ -178,6 +182,7 @@ void ComponentRender::onUpdateSceneObjects() {
         Object3D *object = *(it);
 
         if (object->isRemoved()) {
+            delete object;
             getSceneObjects()->erase(it);
             continue;
         }
@@ -185,7 +190,8 @@ void ComponentRender::onUpdateSceneObjects() {
         it++;
     }
 
-    for (auto object : *getSceneObjects()) {
+    auto sceneObjects = Brakeza3D::get()->sceneObjects;
+    for (auto object : sceneObjects) {
         if (!object->isEnabled()) {
             continue;
         }
@@ -194,7 +200,12 @@ void ComponentRender::onUpdateSceneObjects() {
     }
 }
 
-void ComponentRender::hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoint3D *l, std::vector<Triangle *> &visibleTrianglesForLight, std::vector<Triangle *> &clippedTriangles) {
+void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
+        Triangle *t,
+        LightPoint3D *l,
+        std::vector<Triangle *> &visibleTrianglesForLight,
+        std::vector<Triangle *> &clippedTriangles
+) {
 
     t->updateObjectSpace();
     t->updateNormal();
@@ -487,7 +498,7 @@ void ComponentRender::triangleRasterizerForDepthMapping(Triangle *t, LightPoint3
 
 void ComponentRender::triangleRasterizer(Triangle *t) {
     // LOD determination
-    t->lod = t->processLOD();
+    t->lod = 0; //t->processLOD();
 
     // Triangle setup
     int A01 = (int) (-t->As.y + t->Bs.y);

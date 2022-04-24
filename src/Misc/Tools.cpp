@@ -139,7 +139,6 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
 
     fclose(fp);
     return file_str;
-
 }
 
 float Tools::interpolate(float val, float bound_left, float bound_right) {
