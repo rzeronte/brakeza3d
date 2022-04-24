@@ -14,7 +14,8 @@ void AmmoProjectileBody::setWeaponType(Weapon *weaponType) {
     AmmoProjectileBody::weaponType = weaponType;
 }
 
-void AmmoProjectileBody::resolveCollision(Collisionable *collisionable) {
+void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
+{
     auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
         return;

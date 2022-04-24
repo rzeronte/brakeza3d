@@ -27,7 +27,6 @@ void Mesh3DGhost::resolveCollision(Collisionable *with) {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
         Logging::getInstance()->Log("Mesh3DGhost: Collision "  + getLabel() + " with " + object->getLabel());
-
     }
 }
 
@@ -35,4 +34,8 @@ void Mesh3DGhost::remove()
 {
     this->removeCollisionObject();
     this->setRemoved(true);
+}
+
+Mesh3DGhost::~Mesh3DGhost() {
+    Logging::getInstance()->Log("Delete Mesh3DGhost");
 }

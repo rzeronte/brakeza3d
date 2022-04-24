@@ -70,3 +70,8 @@ int Enemy::getSoundChannel() const {
 void Enemy::setSoundChannel(int soundChannel) {
     Enemy::soundChannel = soundChannel;
 }
+
+Enemy::~Enemy()
+{
+    delete weapon;
+}

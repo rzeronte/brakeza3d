@@ -82,7 +82,7 @@ void AmmoProjectileBodyEmissor::addProjectile()
     projectile->setEnableLights(false);
     projectile->setFlatTextureColor(weaponType->getModelProjectile()->isFlatTextureColor());
     projectile->setFlatColor(weaponType->getModelProjectile()->getFlatColor());
-    projectile->copyFrom(weaponType->getModelProjectile());
+    projectile->clone(weaponType->getModelProjectile());
     projectile->setPosition( getPosition() );
     projectile->setEnabled(true);
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);

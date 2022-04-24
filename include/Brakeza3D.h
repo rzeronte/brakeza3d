@@ -21,7 +21,6 @@
 
 class Brakeza3D {
 private:
-    std::vector<Object3D *> sceneObjects;
     GUIManager managerGUI;
 
     ComponentsManager *componentsManager;
@@ -90,6 +89,8 @@ public:
     void ImGuiInitialize();
 
     void ImGuiOnUpdate();
+
+    std::vector<Object3D *> sceneObjects;
 };
 
 

@@ -11,7 +11,7 @@
 
 class EnemyBehaviorPatrol : public EnemyBehavior {
     Vertex3D origin;
-    Vector3D v;
+    Vector3D direction;
     float speed;
 public:
 

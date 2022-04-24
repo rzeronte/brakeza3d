@@ -9,10 +9,12 @@
 #include "../../../include/Shaders/ShaderBlink.h"
 
 class EnemyGhost : public Mesh3DGhost, public Enemy {
-public:
-
+private:
     ShaderBlink *blink;
     Counter *counterDamageBlink;
+public:
+
+
     EnemyGhost();
 
     void resolveCollision(Collisionable *collisionableObject) override;
@@ -32,6 +34,8 @@ public:
     void rotateToPlayer();
 
     void makeReward();
+
+    ~EnemyGhost() override;
 };
 
 

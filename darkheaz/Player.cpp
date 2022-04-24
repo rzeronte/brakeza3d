@@ -312,9 +312,9 @@ void Player::updateLight() {
     light->onUpdate();
 }
 
-void Player::resolveCollision(Collisionable *with) {
+void Player::resolveCollision(Collisionable *with)
+{
     auto *object = dynamic_cast<Object3D*> (with);
-    Logging::getInstance()->Log("Player: Collision "  + getLabel() + " with " + object->getLabel());
 
     Mesh3DGhost::resolveCollision(with);
     auto projectile = dynamic_cast<AmmoProjectileBody*> (with);

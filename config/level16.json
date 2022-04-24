@@ -43,9 +43,12 @@
       "stamina": 1000,
       "speed": 100,
       "motion": {
-        "type": 1,
-        "from": { "x": 30, "y": 5 },
-        "to": { "x": 30, "y": 50 },
+        "type": 5,
+        "points":  [
+          { "x": 30, "y": 5 },
+          { "x": 30, "y": 50 },
+          { "x": 70, "y": 50 }
+        ],
         "speed": 1
       },
       "weapon": {
@@ -104,6 +107,15 @@
       "model": "spaceships/green_spaceship_03.fbx",
       "stamina": 1000,
       "speed": 100,
+      "motion": {
+        "type": 5,
+        "points":  [
+          { "x": 70, "y": 50 },
+          { "x": 70, "y": 5 },
+          { "x": 30, "y": 5 }
+        ],
+        "speed": 1
+      },
       "motion": {
         "type": 1,
         "from": { "x": 70, "y": 5 },

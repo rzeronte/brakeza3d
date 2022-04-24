@@ -5,15 +5,18 @@
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Maths.h"
 
-Image::Image() {
+Image::Image()
+{
     this->loaded = false;
 }
 
-Image::Image(std::string filename) {
+Image::Image(std::string filename)
+{
     this->loadTGA(filename);
 }
 
-void Image::loadTGA(std::string filename) {
+void Image::loadTGA(std::string filename)
+{
     if (Tools::fileExists(filename)) {
         this->surface = IMG_Load(filename.c_str());
         this->fileName = filename;
@@ -25,7 +28,8 @@ void Image::loadTGA(std::string filename) {
     }
 }
 
-void Image::drawFlat(int pos_x, int pos_y) const {
+void Image::drawFlat(int pos_x, int pos_y) const
+{
     if (!loaded) return;
 
     auto *buffer = EngineBuffers::getInstance();
@@ -47,7 +51,8 @@ void Image::drawFlat(int pos_x, int pos_y) const {
     }
 }
 
-void Image::loadFromRaw(unsigned int *texture, int w, int h) {
+void Image::loadFromRaw(unsigned int *texture, int w, int h)
+{
     this->surface = SDL_CreateRGBSurface(0, h, w, 32, 0, 0, 0, 0);
 
     for (int x = 0; x < w; x++) {
@@ -57,23 +62,29 @@ void Image::loadFromRaw(unsigned int *texture, int w, int h) {
     }
 
 }
-int Image::width() {
+
+int Image::width()
+{
     return surface->w;
 }
 
-int Image::height() {
+int Image::height()
+{
     return surface->h;
 }
 
-void * Image::pixels() {
+void * Image::pixels()
+{
     return surface->pixels;
 }
 
-bool Image::isLoaded() {
+bool Image::isLoaded()
+{
     return loaded;
 }
 
-float Image::getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod) {
+float Image::getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod)
+{
     float tx0 = Tools::getXTextureFromUV(surface, A.u / surface->w);
     float ty0 = Tools::getYTextureFromUV(surface, A.v / surface->h);
 
@@ -94,4 +105,9 @@ SDL_Surface *Image::getSurface() const {
 
 const std::string &Image::getFileName() const {
     return fileName;
+}
+
+Image::~Image()
+{
+    SDL_FreeSurface(surface);
 }

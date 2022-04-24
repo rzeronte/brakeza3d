@@ -14,12 +14,6 @@ public:
     float mass;
 
     btRigidBody *body;
-    btCollisionObject *collisionObject;
-
-    btBvhTriangleMeshShape *shape;
-    btDefaultMotionState *motionState;
-
-    btCollisionObject *getCollisionObject() const;
 
     btRigidBody *getRigidBody() const;
 
@@ -27,6 +21,7 @@ public:
 
     void removeCollisionObject() const;
 
+    virtual ~Body();
 };
 
 

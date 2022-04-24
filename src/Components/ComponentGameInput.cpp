@@ -328,6 +328,11 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
             0
         );
 
+        auto fireworks = new ParticleEmissorFireworks(true, 1520, 1, 0.01, Color::green(), 6, 25);
+        fireworks->setPosition(player->getPosition());
+        fireworks->setRotationFrame(0, 4, 5);
+        Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+
         float speed = player->dashPower * Brakeza3D::get()->getDeltaTime();
 
         player->setVelocity(

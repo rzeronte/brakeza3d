@@ -2,7 +2,8 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Brakeza3D.h"
 
-Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affectedByGravity) {
+Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affectedByGravity)
+{
     setParent(parent);
     this->setPosition(parent->getPosition());
     this->setRotation(parent->getRotation());
@@ -29,8 +30,9 @@ void Particle::onUpdate()
     velocity = this->AxisForward().getScaled(force * Brakeza3D::get()->getDeltaTime());
 
     addToPosition(velocity);
+
     if (affedByGravity) {
-        float g = EngineSetup::get()->gravity.y;
+        const float g = EngineSetup::get()->gravity.y;
 
         t += Brakeza3D::get()->getDeltaTime() / 1000;
 
@@ -42,9 +44,6 @@ void Particle::onUpdate()
 
         this->addToPosition( gravity);
     }
-    Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), color);
-}
 
-const Vertex3D &Particle::getVelocity() const {
-    return velocity;
+    Drawable::drawVertex3D(this->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), color);
 }

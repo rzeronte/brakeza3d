@@ -16,7 +16,8 @@ Triangle::Triangle() {
     flatTextureColor = false;
 }
 
-Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent) {
+Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
+{
     this->A = A;
     this->B = B;
     this->C = C;

@@ -546,16 +546,15 @@ void ComponentGame::removeInGameObjects()
         if (weapon != nullptr) {
             weapon->remove();
         }
-
         if (projectile != nullptr) {
             projectile->remove();
         }
-
         if (emissorProjectiles != nullptr) {
             emissorProjectiles->setRemoved(true);
         }
     }
 }
+
 void ComponentGame::silenceInGameObjects()
 {
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
@@ -591,7 +590,8 @@ void ComponentGame::setVisibleInGameObjects(bool value)
     }
 }
 
-void ComponentGame::loadWeapons() {
+void ComponentGame::loadWeapons()
+{
     Logging::Log("Loading Weapons for game...", "ComponentGame");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;

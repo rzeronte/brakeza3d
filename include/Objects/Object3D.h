@@ -11,12 +11,15 @@
 class Object3D {
     Vertex3D position;
     M3 rotation;
-    bool *stencilBuffer;
 
+protected:
+    bool *stencilBuffer;
     EnemyBehavior *motion;
 public:
     float rotX, rotY, rotZ; // For easy management from UI
     Object3D *parent;
+    bool alphaEnabled;
+    float alpha;
 
     Object3D *getParent() const;
 
@@ -37,7 +40,7 @@ public:
 
     Object3D();
 
-    virtual ~Object3D() = default;
+    virtual ~Object3D();
 
     std::string getLabel() const;
 
@@ -123,9 +126,6 @@ public:
     bool isAlphaEnabled() const;
 
     void setAlphaEnabled(bool alphaEnabled);
-
-    bool alphaEnabled;
-    float alpha;
 
 };
 

@@ -23,6 +23,8 @@ public:
 
     virtual void remove();
 
+    virtual ~Mesh3DGhost();
+
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

@@ -4,7 +4,6 @@
   "music": "level01Music",
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
-  "tutorialImage": "tutorials/tutorial01.png",
   "enemies": [
     {
       "name": "Patrol",

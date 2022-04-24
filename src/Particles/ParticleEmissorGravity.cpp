@@ -1,5 +1,6 @@
 
 #include "../../include/Particles/ParticleEmissorGravity.h"
+#include "../../include/Render/Logging.h"
 
 ParticleEmissorGravity::ParticleEmissorGravity(bool active, float force, float ttl, float step, const Color &c)
         : ParticleEmissor(active, force, ttl, step, c) {
@@ -8,8 +9,8 @@ ParticleEmissorGravity::ParticleEmissorGravity(bool active, float force, float t
 void ParticleEmissorGravity::onUpdate()
 {
     ParticleEmissor::onUpdate();
-    std::vector<Particle *>::iterator it;
-    for (it = particles.begin(); it != particles.end();) {
+
+    for (auto it = particles.begin(); it != particles.end();) {
         Particle *p = *(it);
 
         if (p->isRemoved()) {

@@ -34,6 +34,8 @@ private:
 
 public:
     const std::string &getFileName() const;
+
+    virtual ~Image();
 };
 
 #endif //BRAKEDA3D_IMAGE_H

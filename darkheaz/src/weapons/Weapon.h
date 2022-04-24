@@ -140,6 +140,8 @@ public:
     void stopSoundChannel() const;
 
     void handleInstantWeaponSound();
+
+    virtual ~Weapon();
 };
 
 

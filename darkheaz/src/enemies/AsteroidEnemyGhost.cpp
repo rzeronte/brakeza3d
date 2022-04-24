@@ -34,7 +34,7 @@ void AsteroidEnemyGhost::addAsteroid() {
     asteroid->setStamina(startStamina/this->getExplodeNumberPartitions());
     asteroid->setStartStamina(startStamina);
     asteroid->setEnableLights(true);
-    asteroid->copyFrom(modelPartitions);
+    asteroid->clone(modelPartitions);
     asteroid->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), asteroid, EngineSetup::Enemy, EngineSetup::AllFilter);
     asteroid->setSoundChannel(-1);
     asteroid->setExplode(false);

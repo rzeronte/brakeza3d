@@ -72,7 +72,7 @@ Demo::Demo() {
     // Lighting example
     /*Vertex3D startPoint = Vertex3D(45, -2, 40);
     Vertex3D endPoint   = Vertex3D(70, -2, 40);
-    Drawable::drawLightning(camera, startPoint, endPoint);
+    Drawable::drawLightning(camera, start, endPoint);
      */
 
     auto *mesh = new Mesh3DAnimated();

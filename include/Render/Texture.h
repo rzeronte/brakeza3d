@@ -2,7 +2,6 @@
 #ifndef SDL2_3D_ENGINE_TEXTURE_H
 #define SDL2_3D_ENGINE_TEXTURE_H
 
-
 #include <SDL2/SDL_surface.h>
 #include <string>
 #include "../Objects/Point2D.h"
@@ -13,8 +12,10 @@ class Texture {
 private:
     Image *image;
 public:
-    Texture(std::string filename);
-    Image *getImage() const;
+    explicit Texture(std::string filename);
+    [[nodiscard]] Image *getImage() const;
+
+    virtual ~Texture();
 };
 
 

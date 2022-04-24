@@ -2,10 +2,10 @@
   "weapons": [
     {
       "index": 0,
-      "available": false,
+      "available": true,
       "name": "Linear",
       "damage": 50,
-      "amount": 0,
+      "amount": 1000,
       "startAmount": 500,
       "speed": 500,
       "dispersion": 10,
@@ -21,10 +21,10 @@
     },
     {
       "index": 1,
-      "available": false,
+      "available": true,
       "name": "Instant",
       "damage": 20,
-      "amount": 0,
+      "amount": 1000,
       "startAmount": 2500,
       "speed": 500,
       "dispersion": 10,
@@ -40,10 +40,10 @@
     },
     {
       "index": 2,
-      "available": false,
+      "available": true,
       "name": "Smart",
       "damage": 40,
-      "amount": 0,
+      "amount": 1000,
       "startAmount": 250,
       "speed": 100,
       "dispersion": 10,

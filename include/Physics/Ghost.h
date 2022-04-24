@@ -16,6 +16,8 @@ public:
     void removeCollisionObject() const;
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);
+
+    virtual ~Ghost();
 };
 
 

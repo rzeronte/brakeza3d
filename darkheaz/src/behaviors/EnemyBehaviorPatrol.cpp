@@ -7,29 +7,33 @@ EnemyBehaviorPatrol::EnemyBehaviorPatrol(Vertex3D from, Vertex3D to, float speed
 {
     this->origin = from;
     this->speed = speed;
-    this->v = Vector3D(from, to);
+    this->direction = Vector3D(from, to);
 }
 
-void EnemyBehaviorPatrol::onUpdate(Vertex3D &position) {
+void EnemyBehaviorPatrol::onUpdate(Vertex3D &position)
+{
     EnemyBehavior::onUpdate(position);
 
-    Vertex3D d = v.getComponent().getScaled(abs(Tools::interpolate(sin(getExecutionTime() * speed) , -1, 1)));
-
-    position = origin + d;
+    position = origin + direction.getComponent().getScaled(
+        abs(Tools::interpolate(sin(getExecutionTime() * speed) , -1, 1))
+    );
 }
 
-float EnemyBehaviorPatrol::getSpeed() const {
+float EnemyBehaviorPatrol::getSpeed() const
+{
     return speed;
 }
 
-void EnemyBehaviorPatrol::setSpeed(float speed) {
+void EnemyBehaviorPatrol::setSpeed(float speed)
+{
     EnemyBehaviorPatrol::speed = speed;
 }
 
-EnemyBehavior *EnemyBehaviorPatrol::clone() {
+EnemyBehavior *EnemyBehaviorPatrol::clone()
+{
     return new EnemyBehaviorPatrol(
-        this->v.vertex1,
-        this->v.vertex2,
+        this->direction.vertex1,
+        this->direction.vertex2,
         this->speed
     );
 }

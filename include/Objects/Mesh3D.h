@@ -10,7 +10,7 @@
 #include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
@@ -20,11 +20,13 @@ class Mesh3D : public Object3D {
 
 public:
     std::string sourceFile;
-    Assimp::Importer importer;
+    Assimp::Importer assimpImporter;
 
     std::vector<Triangle *> modelTriangles;
     std::vector<Texture *> modelTextures;
     std::vector<Vertex3D *> modelVertices;
+
+    bool sharedTextures;
 
     AABB3D aabb;
 
@@ -35,7 +37,9 @@ public:
 
     Mesh3D();
 
-    bool AssimpLoadGeometryFromFile(const std::string &fileName);
+    ~Mesh3D() override;
+
+    void AssimpLoadGeometryFromFile(const std::string &fileName);
 
     bool AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
 
@@ -51,13 +55,9 @@ public:
 
     void updateBoundingBox();
 
-    void copyFrom(Mesh3D *source);
+    void clone(Mesh3D *source);
 
     void onUpdate();
-
-    const std::string &getSourceFile() const;
-
-    void setSourceFile(const std::string &sourceFile);
 
     Octree *getOctree() const;
 
@@ -80,6 +80,7 @@ public:
     void setFlatColor(const Color &flatColor);
 
     const Color &getFlatColor() const;
+
 
 private:
     Octree *octree;

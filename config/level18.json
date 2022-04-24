@@ -5,87 +5,105 @@
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
   "enemies": [
-  ],
-  "items": [
-  ],
-  "emissors": [
-    {
-      "name": "Emissor",
-      "model": "enemies_emissor.fbx",
-      "cadence": 6,
-      "position": { "x": 1, "y": 1 },
+      {
+      "name": "Purpler",
+      "position": { "x": 30, "y": 10 },
+        "model": "spaceships/purple_spaceship_01.fbx",
       "stamina": 1000,
-      "speed": 1,
-      "motion": {
-        "type": 4,
-        "speed": 50
-      },
-      "enemy": {
-        "name": "Patrol",
-        "position": { "x": 30, "y": 10 },
-        "model": "spaceships/green_spaceship_01.fbx",
-        "stamina": 1000,
-        "speed": 5,
+      "speed": 2,
         "motion": {
-          "type": 2,
-          "speed": 10,
-          "separation": 1000
+          "type": 5,
+          "points":  [
+            { "x": 1, "y": 90 },
+            { "x": 50, "y": 5 },
+            { "x": 99, "y": 90 }
+          ],
+          "speed": 0.1
         },
         "weapon": {
           "index": 0,
           "available": true,
           "name": "Instant",
-          "damage": 1,
+          "damage": 20,
           "amount": 1000,
           "startAmount": 10000,
           "speed": 500,
           "dispersion": 10,
           "accuracy": 100,
-          "cadenceTime": 0.15,
+          "cadenceTime": 1,
           "stop": true,
           "stopDuration": 1,
           "stopEvery": 1,
-          "type": 0,
-          "modelProjectile": "projectile_weapon_01.fbx",
+          "type": 2,
+          "modelProjectile": "projectile_weapon_03.fbx",
           "model": "item_weapon_01.fbx"
         }
-      }
-    }
-  ],
-  "asteroids": [
+    },
     {
-      "name": "Asteroid",
-      "position": {
-        "x": 10,
-        "y": 10
-      },
-      "model": "asteroid_01.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 1000,
-      "speed": 100,
-      "explode": true,
-      "numberPartitions": 4,
+      "name": "Minier",
+      "position": { "x": 10, "y": 10 },
+      "model": "spaceships/purple_spaceship_03.fbx",
+      "stamina": 500,
+      "speed": 5,
       "motion": {
         "type": 2,
-        "speed": 10
+        "speed": 4,
+        "separation": 3500
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
       }
     },
     {
-      "name": "Asteroid",
-      "position": {
-        "x": 90,
-        "y": 10
-      },
-      "model": "asteroid_01.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 1000,
-      "speed": 100,
-      "explode": true,
-      "numberPartitions": 4,
+      "name": "Minier",
+      "position": { "x": 90, "y": 10 },
+      "model": "spaceships/purple_spaceship_03.fbx",
+      "stamina": 500,
+      "speed": 5,
       "motion": {
         "type": 2,
-        "speed": 10
+        "speed": 4,
+        "separation": 3500
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx"
       }
     }
+  ],
+  "items": [
+  ],
+  "emissors": [
+  ],
+  "asteroids": [
   ]
 }

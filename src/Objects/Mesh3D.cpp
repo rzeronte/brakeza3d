@@ -1,10 +1,12 @@
 
 #include <vector>
+#include <cimport.h>
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
-Mesh3D::Mesh3D() {
+Mesh3D::Mesh3D()
+{
     BSPEntityIndex = -1;
     decal = false;
 
@@ -12,24 +14,28 @@ Mesh3D::Mesh3D() {
     this->grid = nullptr;
     this->flatTextureColor = false;
     this->enableLights = true;
+    this->sharedTextures = false;
 }
 
-void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles) {
-    // draw triangles of mesh
+void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
+{
     for (auto & modelTriangle : this->modelTriangles) {
         frameTriangles->push_back(modelTriangle);
     }
 }
 
-int Mesh3D::getBspEntityIndex() const {
+int Mesh3D::getBspEntityIndex() const
+{
     return BSPEntityIndex;
 }
 
-void Mesh3D::setBspEntityIndex(int bspEntityIndex) {
+void Mesh3D::setBspEntityIndex(int bspEntityIndex)
+{
     BSPEntityIndex = bspEntityIndex;
 }
 
-void Mesh3D::updateBoundingBox() {
+void Mesh3D::updateBoundingBox()
+{
     float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
 
     for (auto & modelTriangle : this->modelTriangles) {
@@ -76,32 +82,27 @@ void Mesh3D::updateBoundingBox() {
     this->aabb.updateVertices();
 }
 
-void Mesh3D::copyFrom(Mesh3D *source) {
-    Logging::Log("Mesh3D: copyFrom " + source->getLabel() + " to " + this->getLabel(), "Mesh3D");
+void Mesh3D::clone(Mesh3D *source)
+{
+    for (auto &triangle : source->modelTriangles) {
+        auto *t = new Triangle(triangle->A,triangle->B,triangle->C,this);
 
-    for (auto &modelTriangle : source->modelTriangles) {
-        auto *t = new Triangle(
-            modelTriangle->A,
-            modelTriangle->B,
-            modelTriangle->C,
-            this
-        );
-
-        t->setTexture(modelTriangle->getTexture());
+        t->setTexture(triangle->getTexture());
         t->setFlatTextureColor(source->isFlatTextureColor());
         t->setFlatColor(source->flatColor);
-        t->setEnableLights(modelTriangle->isEnableLights());
-        t->setBSPTriangle(modelTriangle->isBSPTriangle());
+        t->setEnableLights(triangle->isEnableLights());
+        t->setBSPTriangle(triangle->isBSPTriangle());
 
         this->modelTriangles.push_back(t);
     }
 
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
-    this->sourceFile = source->sourceFile;
+    this->sharedTextures = true;
 }
 
-void Mesh3D::onUpdate() {
+void Mesh3D::onUpdate()
+{
     Object3D::onUpdate();
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
@@ -123,36 +124,31 @@ void Mesh3D::onUpdate() {
     }
 }
 
-bool Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName) {
-    setSourceFile(fileName);
-
+void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
+{
     Logging::Log("AssimpLoadGeometryFromFile for " + fileName, "Mesh3D");
 
     if (!Tools::fileExists(fileName)) {
         Logging::Log("Error import 3D file not exist", "Mesh3D");
         exit(-1);
-        return false;
     }
 
-    const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate |
-                                                       aiProcess_JoinIdenticalVertices |
-                                                       aiProcess_SortByPType |
-                                                       aiProcess_FlipUVs
+    const aiScene *scene = assimpImporter.ReadFile(
+        fileName,
+        aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType | aiProcess_FlipUVs
     );
 
     if (!scene) {
         Logging::Log("Error import 3D file for ASSIMP", "Mesh3D");
         exit(-1);
-        return false;
     }
 
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes(scene, scene->mRootNode);
-
-    return true;
 }
 
-bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename) {
+bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
+{
     // Extract the directory part from the file name
     std::string::size_type SlashIndex = Filename.find_last_of('/');
     std::string Dir;
@@ -201,7 +197,8 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
     return Ret;
 }
 
-void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node) {
+void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
+{
     for (unsigned int x = 0; x < node->mNumMeshes; x++) {
         int idMesh = (int) node->mMeshes[x];
         this->AssimpLoadMesh(scene->mMeshes[idMesh]);
@@ -212,8 +209,8 @@ void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node) {
     }
 }
 
-void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
-
+void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
+{
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Log("Skip mesh non triangle", "Mesh3D");
         return;
@@ -250,18 +247,10 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh) {
         t->setFlatColor(this->flatColor);
         this->modelTriangles.push_back(t);
 
-        if (this->modelTriangles.size() > 0) {
+        if (!this->modelTriangles.empty()) {
             this->modelTriangles[k]->setTexture(this->modelTextures[mesh->mMaterialIndex]);
         }
     }
-}
-
-const std::string &Mesh3D::getSourceFile() const {
-    return sourceFile;
-}
-
-void Mesh3D::setSourceFile(const std::string &sourceFile) {
-    this->sourceFile = sourceFile;
 }
 
 Octree *Mesh3D::getOctree() const {
@@ -272,51 +261,78 @@ Grid3D *Mesh3D::getGrid3D() const {
     return grid;
 }
 
-void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ) {
+void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
+{
     Logging::Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)", "Mesh3D");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
-                            Grid3D::EmptyStrategies::CONTAIN_TRIANGLES);
+    this->grid = new Grid3D(
+        &this->modelTriangles,
+        this->aabb,
+        sizeX,
+        sizeY,
+        sizeZ,
+        Grid3D::EmptyStrategies::CONTAIN_TRIANGLES
+    );
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction) {
+void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
+{
     Logging::Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)", "Mesh3D");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, sizeY, sizeZ,
-                            Grid3D::EmptyStrategies::RAY_INTERSECTION);
+    this->grid = new Grid3D(
+        &this->modelTriangles,
+        this->aabb,
+        sizeX,
+        sizeY,
+        sizeZ,
+Grid3D::EmptyStrategies::RAY_INTERSECTION
+    );
     this->grid->setRayIntersectionDirection(direction);
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY) {
+void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY)
+{
     Logging::Log("Building Grid3D for " + this->getLabel() + "(DataImage)", "Mesh3D");
     this->updateBoundingBox();
-    this->grid = new Grid3D(&this->modelTriangles, this->aabb, sizeX, 1, sizeZ, Grid3D::EmptyStrategies::IMAGE_FILE);
+    this->grid = new Grid3D(
+        &this->modelTriangles,
+        this->aabb,
+        sizeX,
+        1,
+        sizeZ,
+Grid3D::EmptyStrategies::IMAGE_FILE
+    );
     this->grid->setImageFilename(filename);
     this->grid->setFixedYImageData(fixedY);
     this->grid->applyCheckCellEmptyStrategy();
 }
 
-void Mesh3D::buildOctree() {
+void Mesh3D::buildOctree()
+{
     Logging::Log("Building Octree for " + this->getLabel(), "Mesh3D");
     this->updateBoundingBox();
     this->octree = new Octree(this->modelTriangles, this->aabb);
 }
 
-bool Mesh3D::isFlatTextureColor() const {
+bool Mesh3D::isFlatTextureColor() const
+{
     return flatTextureColor;
 }
 
-void Mesh3D::setFlatTextureColor(bool isFlatTextureColor) {
+void Mesh3D::setFlatTextureColor(bool isFlatTextureColor)
+{
     this->flatTextureColor = isFlatTextureColor;
 }
 
-bool Mesh3D::isEnableLights() const {
+bool Mesh3D::isEnableLights() const
+{
     return this->enableLights;
 }
 
-void Mesh3D::setEnableLights(bool enableLights) {
+void Mesh3D::setEnableLights(bool enableLights)
+{
     this->enableLights = enableLights;
 }
 
@@ -326,4 +342,23 @@ void Mesh3D::setFlatColor(const Color &flatColor) {
 
 const Color &Mesh3D::getFlatColor() const {
     return flatColor;
+}
+
+Mesh3D::~Mesh3D()
+{
+    Logging::getInstance()->Log("Delete Mesh3D: " + getLabel());
+
+    for (auto triangle : modelTriangles) {
+        delete triangle;
+    }
+
+    for (auto vertex : modelVertices) {
+        delete vertex;
+    }
+
+    if (!sharedTextures) {
+        for (auto texture : modelTextures) {
+            delete texture;
+        }
+    }
 }

@@ -5,7 +5,8 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
 
-Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false) {
+Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false)
+{
     setFollowCamera(false);
     setRotationFrameEnabled(false);
     setStencilBufferEnabled(false);
@@ -241,4 +242,10 @@ bool Object3D::isAlphaEnabled() const {
 
 void Object3D::setAlphaEnabled(bool alphaEnabled) {
     Object3D::alphaEnabled = alphaEnabled;
+}
+
+Object3D::~Object3D()
+{
+    delete stencilBuffer;
+    delete motion;
 }

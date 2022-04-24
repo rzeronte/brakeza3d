@@ -52,3 +52,8 @@ int Shader::getPhaseRender() const {
     return phaseRender;
 }
 
+Shader::~Shader()
+{
+    delete videoBuffer;
+}
+

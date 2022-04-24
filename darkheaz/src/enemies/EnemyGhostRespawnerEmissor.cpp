@@ -86,7 +86,7 @@ void EnemyGhostRespawnerEmissor::addEnemy()
     if (this->enemy->getBehavior() != nullptr) {
         enemy->setBehavior(this->enemy->getBehavior()->clone());
     }
-    enemy->copyFrom(this->enemy);
+    enemy->clone(this->enemy);
     enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
     enemy->setSoundChannel(-1);
 
@@ -95,7 +95,7 @@ void EnemyGhostRespawnerEmissor::addEnemy()
     weapon->getModelProjectile()->setFlatTextureColor(true);
     weapon->getModelProjectile()->setFlatColor(this->enemy->getWeapon()->getModelProjectile()->getFlatColor());
     weapon->getModelProjectile()->setEnableLights(false);
-    weapon->getModelProjectile()->copyFrom(this->enemy->getWeapon()->getModelProjectile());
+    weapon->getModelProjectile()->clone(this->enemy->getWeapon()->getModelProjectile());
     weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     weapon->getModelProjectile()->setScale(1);
     weapon->setAmmoAmount(this->enemy->getWeapon()->getStartAmmoAmount());

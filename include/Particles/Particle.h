@@ -10,8 +10,6 @@ class Particle: public Object3D {
 public:
     Particle(Object3D *parent, float force, float ttl, Color c, bool affectedByGravity);
 
-    const Vertex3D &getVelocity() const;
-
     void onUpdate() override;
 
 private:

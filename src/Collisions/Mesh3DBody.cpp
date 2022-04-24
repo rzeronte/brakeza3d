@@ -33,8 +33,8 @@ void Mesh3DBody::integrate() {
     setRotation(brakezaRotation);
 }
 
-void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
-
+void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
     setMass(mass);
 
     btTransform transformation;

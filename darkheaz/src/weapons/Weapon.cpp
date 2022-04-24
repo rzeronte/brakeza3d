@@ -25,6 +25,7 @@ Weapon::Weapon(const std::string& label) {
     this->stopDuration = 0;
     this->stopEvery = 0;
     this->soundChannel = EngineSetup::SoundChannels::SND_GLOBAL;
+    this->icon = nullptr;
 }
 
 void Weapon::onUpdate()
@@ -155,7 +156,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setFlatTextureColor(true);
         projectile->setFlatColor(color);
         //getModelProjectile()->setFlatColor(color);
-        projectile->copyFrom(getModelProjectile());
+        projectile->clone(getModelProjectile());
         projectile->setPosition( position );
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
@@ -196,7 +197,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
         getModelProjectile()->setFlatColor(color);
-        projectile->copyFrom(getModelProjectile());
+        projectile->clone(getModelProjectile());
         projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
@@ -376,6 +377,13 @@ int Weapon::getSoundChannel() const {
 
 void Weapon::setSoundChannel(int soundChannel) {
     Weapon::soundChannel = soundChannel;
+}
+
+Weapon::~Weapon()
+{
+    delete modelProjectile;
+    delete model;
+    delete icon;
 }
 
 

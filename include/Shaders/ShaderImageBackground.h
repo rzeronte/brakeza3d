@@ -108,6 +108,9 @@ public:
     }
 
     void setImage(Image *image) {
+        if (image != nullptr) {
+            delete this->image;
+        }
         ShaderImageBackground::image = image;
     }
 

@@ -54,11 +54,11 @@ void EnemyGhost::onUpdate()
     shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
 }
 
-void EnemyGhost::makeReward() {
+void EnemyGhost::makeReward()
+{
     auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
     fireworks->setPosition(getPosition());
     fireworks->setRotationFrame(0, 4, 5);
-
     Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
     auto playerWeapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
@@ -104,7 +104,7 @@ void EnemyGhost::makeReward() {
             weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
             weaponItem->setStencilBufferEnabled(true);
             weaponItem->setScale(1);
-            weaponItem->copyFrom(playerWeapons[randomWeapon]->getModel());
+            weaponItem->clone(playerWeapons[randomWeapon]->getModel());
             weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::Weapon, EngineSetup::Player);
             Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
             break;
@@ -137,7 +137,8 @@ void EnemyGhost::integrate() {
     Mesh3DGhost::integrate();
 }
 
-void EnemyGhost::resolveCollision(Collisionable *collisionableObject) {
+void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
+{
     Mesh3DGhost::resolveCollision(collisionableObject);
 
     auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionableObject);
@@ -206,9 +207,14 @@ void EnemyGhost::shoot(Object3D *target)
             break;
         }
     }
-
 }
 
 ShaderBlink *EnemyGhost::getBlink() const {
     return blink;
+}
+
+EnemyGhost::~EnemyGhost()
+{
+    delete counterDamageBlink;
+    delete blink;
 }

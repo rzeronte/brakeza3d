@@ -18,6 +18,7 @@
 #include "src/enemies/AsteroidEnemyGhost.h"
 #include "src/bosses/BossLevel10.h"
 #include "src/bosses/BossLevel20.h"
+#include "src/enemies/EnemyBehaviorPath.h"
 
 #include <utility>
 
@@ -96,91 +97,91 @@ int LevelLoader::getCurrentLevelIndex() const {
 
 void LevelLoader::loadLevelFromJSON(std::string filePath)
 {
-    Logging::Log("Loading Enemies for level...", "LEVEL_LOADER");
-
-    std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
+    Logging::Log("Loading Enemies for Level: " + filePath, "LEVEL_LOADER");
 
     respawners.resize(0);
+
     hasTutorial = false;
     if (tutorialImage != nullptr) {
-        delete(tutorialImage);
+        delete tutorialImage;
         tutorialImage = new Image();
     }
 
     size_t file_size;
-    const char *weaponsFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(weaponsFile);
+    const char *levelFile = Tools::readFile(filePath, file_size);
+    cJSON *jsonContentFile = cJSON_Parse(levelFile);
 
-    if (myDataJSON == nullptr) {
+    if (jsonContentFile == nullptr) {
         Logging::Log(filePath + " can't be loaded", "ERROR");
         return;
     }
 
-    if (cJSON_GetObjectItemCaseSensitive(myDataJSON, "music") != nullptr) {
-        setMusic(cJSON_GetObjectItemCaseSensitive(myDataJSON, "music")->valuestring);
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "music") != nullptr) {
+        setMusic(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "music")->valuestring);
         this->hasMusic = true;
     }
 
-    setLevelName(cJSON_GetObjectItemCaseSensitive(myDataJSON, "name")->valuestring);
+    setLevelName(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "name")->valuestring);
 
-    std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(myDataJSON, "backgroundImage")->valuestring;
+    std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring;
     auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
 
-    if (cJSON_GetObjectItemCaseSensitive(myDataJSON, "tutorialImage") != nullptr) {
-        std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(myDataJSON, "tutorialImage")->valuestring;
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
+        std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring;
         this->tutorialImage->loadTGA(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
         this->hasTutorial = true;
     }
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(
-        cJSON_GetObjectItemCaseSensitive(myDataJSON, "allowGravitionalShield")->valueint
+        cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowGravitionalShield")->valueint
     );
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowEnergyShield(
-        cJSON_GetObjectItemCaseSensitive(myDataJSON, "allowEnergyShield")->valueint
+        cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowEnergyShield")->valueint
     );
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
-    cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "enemies");
+    cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "enemies");
     cJSON *currentEnemy;
     cJSON_ArrayForEach(currentEnemy, enemiesList) {
         auto enemy = parseEnemyJSON(currentEnemy);
-
-        auto respawner = new EnemyGhostRespawner(enemy, (int) Tools::random(1, 3));
+        auto respawner = new EnemyGhostRespawner(enemy, 1);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
     }
 
-    cJSON *items = cJSON_GetObjectItemCaseSensitive(myDataJSON, "items");
+    cJSON *items = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "items");
     cJSON *currentItem;
     cJSON_ArrayForEach(currentItem, items) {
         this->parseItemJSON(currentItem);
     }
 
-    cJSON *emissors = cJSON_GetObjectItemCaseSensitive(myDataJSON, "emissors");
+    cJSON *emissors = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "emissors");
     cJSON *currentEmissor;
     cJSON_ArrayForEach(currentEmissor, emissors) {
         this->parseEmissorJSON(currentEmissor);
     }
 
-    cJSON *bosses = cJSON_GetObjectItemCaseSensitive(myDataJSON, "bosses");
+    cJSON *bosses = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "bosses");
     cJSON *currentBoss;
     cJSON_ArrayForEach(currentBoss, bosses) {
         this->parseBossJSON(currentBoss);
     }
 
-    cJSON *asteroids = cJSON_GetObjectItemCaseSensitive(myDataJSON, "asteroids");
+    cJSON *asteroids = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "asteroids");
     cJSON *currentAsteroid;
     cJSON_ArrayForEach(currentAsteroid, asteroids) {
         auto asteroid = this->parseAsteroidJSON(currentAsteroid);
-        auto respawner = new EnemyGhostRespawner(asteroid, (int) Tools::random(1, 3));
+        auto respawner = new EnemyGhostRespawner(asteroid, 1);
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
     }
+
+    cJSON_Delete(jsonContentFile);
 }
 
 Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
@@ -204,11 +205,12 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
 
     auto weapon = new Weapon(name);
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    weapon->getModel()->setLabel("weapon_model_template" + std::to_string(index));
     weapon->getModelProjectile()->setFlatTextureColor(true);
     weapon->getModelProjectile()->setFlatColor(c);
     weapon->getModelProjectile()->setEnableLights(false);
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
-    weapon->getModelProjectile()->setLabel("projectile_enemy_template" + std::to_string(index));
+    weapon->getModelProjectile()->setLabel("projectile_weapon_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
     weapon->setAmmoAmount(amount);
     weapon->setStartAmmoAmount(startAmount);
@@ -227,8 +229,6 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
     weapon->setAvailable(available);
 
     if (stop) {
-        Logging::getInstance()->Log("Arma con parada de " +std::to_string(stopDuration)+" cada "  + std::to_string(stopEvery));
-
         weapon->setStopDuration(stopDuration);
         weapon->setStopEvery(stopEvery);
     }
@@ -314,7 +314,7 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
     weaponItem->setLabel("item_weapon_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     weaponItem->setEnableLights(false);
-    weaponItem->copyFrom(weapons[indexWeapon]->getModel());
+    weaponItem->clone(weapons[indexWeapon]->getModel());
     weaponItem->setPosition(position);
     weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::collisionGroups::Weapon, EngineSetup::collisionGroups::Player);
     weaponItem->setRotation(0, 0, 180);
@@ -345,8 +345,8 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
+    auto *enemy = new EnemyGhost();
 
-    EnemyBehavior *behavior;
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
     switch(typeMotion) {
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
@@ -354,15 +354,16 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
             Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
 
             float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
+            enemy->setBehavior(new EnemyBehaviorPatrol(from, to, behaviorSpeed));
+
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
-            behavior = new EnemyBehaviorFollow(
+            enemy->setBehavior(new EnemyBehaviorFollow(
                 ComponentsManager::get()->getComponentGame()->getPlayer(),
                 cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
                 cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
-            );
+            ));
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
@@ -370,33 +371,49 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
-            behavior = new EnemyBehaviorCircle(center, speed, radius);
+            enemy->setBehavior(new EnemyBehaviorCircle(center, speed, radius));
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            behavior = new EnemyBehaviorRandom(speed);
+            enemy->setBehavior(new EnemyBehaviorRandom(speed));
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_PATH: {
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto behavior = new EnemyBehaviorPath(speed);
+
+            auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
+
+            cJSON *currentPoint;
+            cJSON_ArrayForEach(currentPoint, pointsJSON) {
+                Vertex3D position = getVertex3DFromJSONPosition(currentPoint);
+                position.consoleInfo("ieah", false);
+                behavior->addPoint(position);
+            }
+            behavior->start();
+            enemy->setBehavior(behavior);
             break;
         }
     }
 
-    auto *enemy = new EnemyGhost();
     enemy->setEnabled(true);
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     enemy->setEnableLights(false);
     enemy->setPosition(worldPosition);
-    enemy->setStencilBufferEnabled(true);
+    enemy->setStencilBufferEnabled(false);
     enemy->setScale(1);
     enemy->setSpeed(speed);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    enemy->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        enemy,
+        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::AllFilter
+    );
     enemy->setSoundChannel(respawners.size() + 2);
-
-    if (typeMotion > 0) {
-        enemy->setBehavior(behavior);
-    }
 
     if (weapon != nullptr) {
         int type = cJSON_GetObjectItemCaseSensitive(weapon, "type")->valueint;
@@ -482,7 +499,7 @@ void LevelLoader::parseEmissorJSON(cJSON *emissorJSON)
     float step = cJSON_GetObjectItemCaseSensitive(emissorJSON, "cadence")->valuedouble;
 
     auto *enemiesEmissor = new EnemyGhostRespawnerEmissor(step, enemyGenerated);
-    enemiesEmissor->copyFrom(emissor);
+    enemiesEmissor->clone(emissor);
     enemiesEmissor->setStamina(emissor->getStamina());
     enemiesEmissor->setStartStamina(emissor->getStamina());
     enemiesEmissor->setPosition(emissor->getPosition());
@@ -537,7 +554,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
 
             Point2D from = convertPointPercentRelativeToScreen(Point2D(20, 5));
-            Point2D to = convertPointPercentRelativeToScreen(Point2D(70, 5));
+            Point2D to = convertPointPercentRelativeToScreen(Point2D(80, 5));
 
             boss->setBehavior(new EnemyBehaviorPatrol(
                 getWorldPositionFromScreenPoint(from),
@@ -691,18 +708,20 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
         }
         case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
             behavior = new EnemyBehaviorFollow(
-                    ComponentsManager::get()->getComponentGame()->getPlayer(),
-                    cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
-                    cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
+                ComponentsManager::get()->getComponentGame()->getPlayer(),
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
             );
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
             Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
 
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
-            behavior = new EnemyBehaviorCircle(center, speed, radius);
+            behavior = new EnemyBehaviorCircle(
+                center,
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble,
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble
+            );
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {

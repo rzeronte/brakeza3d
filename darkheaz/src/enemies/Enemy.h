@@ -59,6 +59,8 @@ public:
     int getSoundChannel() const;
 
     void setSoundChannel(int soundChannel);
+
+    virtual ~Enemy();
 };
 
 

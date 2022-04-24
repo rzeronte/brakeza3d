@@ -39,6 +39,8 @@ public:
     void setPhaseRender(int type);
 
     int getPhaseRender() const;
+
+    virtual ~Shader();
 };
 
 

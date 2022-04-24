@@ -18,11 +18,15 @@ class EnemyBehavior {
 public:
     EnemyBehavior();
 
+    virtual ~EnemyBehavior();
+
     virtual void onUpdate(Vertex3D &position);
 
     float getExecutionTime() const;
 
     virtual EnemyBehavior *clone() = 0;
+
+    void resetTimer();
 };
 
 

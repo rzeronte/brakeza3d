@@ -71,3 +71,8 @@ void Ghost::removeCollisionObject() const {
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getGhostObject());
 }
 
+Ghost::~Ghost()
+{
+    delete ghostObject;
+}
+
