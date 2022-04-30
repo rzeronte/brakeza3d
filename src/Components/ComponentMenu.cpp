@@ -93,9 +93,8 @@ void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 void ComponentMenu::loadMenuOptions() {
     size_t file_size;
-    const char *mapsFile;
-    mapsFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
-    cJSON *myDataJSON = cJSON_Parse(mapsFile);
+    auto contentFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
     if (myDataJSON == nullptr) {
         Logging::Log("menu.json can't be loaded", "ERROR");
         return;
@@ -119,6 +118,8 @@ void ComponentMenu::loadMenuOptions() {
             numOptions++;
         }
     }
+    free(contentFile);
+    cJSON_Delete(myDataJSON);
 }
 
 void ComponentMenu::drawOptions() {

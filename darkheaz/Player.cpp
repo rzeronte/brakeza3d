@@ -49,9 +49,11 @@ Player::Player() : state(PlayerState::EMPTY),
 
     setAllowEnergyShield(true);
     setAllowGravitationalShields(true);
+
 }
 
-void Player::loadShieldModel() {
+void Player::loadShieldModel()
+{
     shieldModel = new Mesh3D();
     shieldModel->setEnabled(false);
     shieldModel->setLabel("shieldModel");
@@ -126,7 +128,6 @@ void Player::takeDamage(float dmg) {
 void Player::startPlayerBlink()
 {
     setState(PlayerState::GETTING_DAMAGE);
-    counterDamageBlink->setEnabled(true);
     startBlinkShaderForPlayer();
 }
 
@@ -252,13 +253,6 @@ void Player::onUpdate()
        shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
     }
 
-    if (state == PlayerState::GETTING_DAMAGE) {
-        counterDamageBlink->update();
-        if (counterDamageBlink->isFinished()) {
-            setState(PlayerState::LIVE);
-            stopBlinkForPlayer();
-        }
-    }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     if (selectedObject != this && selectedObject != nullptr) {
@@ -284,6 +278,20 @@ void Player::onUpdate()
     }
 
     setPosition(getPosition() + this->velocity );
+}
+
+void Player::postUpdate()
+{
+    Object3D::postUpdate();
+
+    if (counterDamageBlink->isEnabled()) {
+        counterDamageBlink->update();
+        blink->update();
+        if (counterDamageBlink->isFinished()) {
+            setState(PlayerState::LIVE);
+            stopBlinkForPlayer();
+        }
+    }
 }
 
 Vertex3D Player::getVelocity() {
@@ -339,7 +347,6 @@ void Player::resolveCollision(Collisionable *with)
             0
         );
         Logging::getInstance()->Log("Added Weapon to Player:" + weapon->getWeaponType()->getLabel());
-        weapon->removeCollisionObject();
         weapon->setRemoved(true);
     }
 
@@ -428,16 +435,17 @@ void Player::setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelect
     Player::autoRotationSelectedObjectSpeed = autoRotationSelectedObjectSpeed;
 }
 
-void Player::startBlinkShaderForPlayer() {
-    auto shaderBlink = dynamic_cast<ShaderBlink*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BLINK));
-    shaderBlink->setObject(this);
-    shaderBlink->setStep(0.05);
-    shaderBlink->setEnabled(true);
+void Player::startBlinkShaderForPlayer()
+{
+    counterDamageBlink->setEnabled(true);
+    blink->setEnabled(true);
 }
 
-void Player::stopBlinkForPlayer() {
-    auto shaderBlink = dynamic_cast<ShaderBlink*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BLINK));
-    shaderBlink->setEnabled(false);
+void Player::stopBlinkForPlayer()
+{
+    setState(PlayerState::LIVE);
+    counterDamageBlink->setEnabled(false);
+    blink->setEnabled(false);
 }
 
 int Player::getKillsCounter() const {
@@ -583,4 +591,15 @@ bool Player::isAllowGravitationalShields() const {
 
 bool Player::isAllowEnergyShield() const {
     return allowEnergyShield;
+}
+
+void Player::loadBlinkShader()
+{
+    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
+    blink->setObject(this);
+    blink->setStep(0.05);
+    blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+    blink->setEnabled(false);
+    blink->setColor(Color::green());
+    counterDamageBlink->setEnabled(false);
 }

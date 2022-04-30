@@ -104,6 +104,9 @@ void Mesh3D::clone(Mesh3D *source)
 void Mesh3D::onUpdate()
 {
     Object3D::onUpdate();
+
+    if (isRemoved()) return;
+
     this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
@@ -133,6 +136,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
         exit(-1);
     }
 
+    Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
         fileName,
         aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType | aiProcess_FlipUVs

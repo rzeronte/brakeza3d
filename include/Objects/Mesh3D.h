@@ -20,7 +20,6 @@ class Mesh3D : public Object3D {
 
 public:
     std::string sourceFile;
-    Assimp::Importer assimpImporter;
 
     std::vector<Triangle *> modelTriangles;
     std::vector<Texture *> modelTextures;

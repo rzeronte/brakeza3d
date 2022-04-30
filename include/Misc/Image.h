@@ -16,12 +16,12 @@ public:
     explicit Image(std::string filename);
     void drawFlat(int, int) const;
     void loadTGA(std::string filename);
-    int width();
+    int width() const;
     int height();
     void* pixels();
     bool isLoaded();
 
-    SDL_Surface *getSurface() const;
+    [[nodiscard]] SDL_Surface *getSurface() const;
 
     float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);
 

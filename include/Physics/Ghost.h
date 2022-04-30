@@ -9,8 +9,9 @@ class Ghost: public Collisionable {
 public:
     Ghost();
 
-    btPairCachingGhostObject *getGhostObject() const;
+    [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
     btPairCachingGhostObject *ghostObject;
+    btConvexHullShape *convexHullShape;
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask);
     void removeCollisionObject() const;
@@ -18,6 +19,14 @@ public:
     bool CheckGhost(btPairCachingGhostObject *Ghost);
 
     virtual ~Ghost();
+
+    void makeSimpleGhostBody(
+        Vertex3D pos,
+        Vertex3D dimensions,
+        btDiscreteDynamicsWorld *world,
+        int collisionGroup,
+        int collisionMask
+    );
 };
 
 

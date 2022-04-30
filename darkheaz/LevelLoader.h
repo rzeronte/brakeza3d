@@ -52,8 +52,8 @@ public:
     void addLevel(std::string filename);
     Weapon *parseWeaponJSON(cJSON *weaponJson, Color c);
 
-    Counter *countDown;
-    Image *tutorialImage;
+    Counter countDown;
+    Image tutorialImage;
     bool hasTutorial;
 
 private:
@@ -91,11 +91,11 @@ public:
 
     void setLevelName(const std::string &levelName);
 
-    Counter *getCountDown() const;
+    Counter * getCountDown();
 
     bool isHasTutorial() const;
 
-    Image *getTutorialImage() const;
+    Image * getTutorialImage();
 
     static void makeItemHealthGhost(Vertex3D position);
 

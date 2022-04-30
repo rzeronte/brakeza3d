@@ -19,7 +19,7 @@ Weapon::Weapon(const std::string& label) {
     this->cadenceTime = 1;
     this->counterCadence = new Counter(this->cadenceTime);
     this->counterCadence->setEnabled(true);
-    this->modelProjectile = new Mesh3DBody();
+    this->modelProjectile = new Mesh3D();
     this->type = WeaponTypes::WEAPON_PROJECTILE;
     this->stop = false;
     this->stopDuration = 0;
@@ -52,20 +52,20 @@ void Weapon::onUpdate()
 void Weapon::handleInstantWeaponSound()
 {
     if (isStop()) {
-        counterStopEvery->update();
-        counterStopDuration->update();
+        counterStopEvery.update();
+        counterStopDuration.update();
 
-        if (counterStopEvery->isFinished()) {
+        if (counterStopEvery.isFinished()) {
             if (getType() == WEAPON_INSTANT) {
                 stopSoundChannel();
             }
-            counterStopDuration->setEnabled(true);
-            counterStopEvery->setEnabled(false);
+            counterStopDuration.setEnabled(true);
+            counterStopEvery.setEnabled(false);
         }
 
-        if (counterStopDuration->isFinished()) {
-            counterStopEvery->setEnabled(true);
-            counterStopDuration->setEnabled(false);
+        if (counterStopDuration.isFinished()) {
+            counterStopEvery.setEnabled(true);
+            counterStopDuration.setEnabled(false);
             if (getType() == WEAPON_INSTANT) {
                 ComponentsManager::get()->getComponentSound()->playSound(
                         EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
@@ -138,7 +138,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
 
     if (ammoAmount <= 0) return;
 
-    if (isStop() && counterStopDuration->isEnabled()) {
+    if (isStop() && counterStopDuration.isEnabled()) {
         return;
     }
 
@@ -155,7 +155,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setEnableLights(false);
         projectile->setFlatTextureColor(true);
         projectile->setFlatColor(color);
-        //getModelProjectile()->setFlatColor(color);
         projectile->clone(getModelProjectile());
         projectile->setPosition( position );
         projectile->setEnabled(true);
@@ -180,7 +179,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
     if (getAmmoAmount() <= 0) return;
 
-    if (isStop() && counterStopDuration->isEnabled()) {
+    if (isStop() && counterStopDuration.isEnabled()) {
         return;
     }
 
@@ -230,7 +229,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
 
     if (ammoAmount <= 0) return;
 
-    if (isStop() && counterStopDuration->isEnabled()) {
+    if (isStop() && counterStopDuration.isEnabled()) {
         return;
     }
 
@@ -313,7 +312,7 @@ void Weapon::addAmount(int addAmount) {
     this->ammoAmount += addAmount;
 }
 
-Mesh3DBody *Weapon::getModelProjectile(){
+Mesh3D *Weapon::getModelProjectile(){
     return modelProjectile;
 }
 
@@ -357,8 +356,8 @@ float Weapon::getStopDuration() const {
 void Weapon::setStopDuration(float stopDuration)
 {
     Weapon::stopDuration = stopDuration;
-    this->counterStopDuration = new Counter(stopDuration);
-    this->counterStopDuration->setEnabled(false);
+    this->counterStopDuration.setStep(stopDuration);
+    this->counterStopDuration.setEnabled(false);
 }
 
 float Weapon::getStopEvery() const {
@@ -367,8 +366,8 @@ float Weapon::getStopEvery() const {
 
 void Weapon::setStopEvery(float stopEverySeconds) {
     Weapon::stopEvery = stopEverySeconds;
-    this->counterStopEvery = new Counter(stopEverySeconds);
-    this->counterStopEvery->setEnabled(true);
+    this->counterStopEvery.setStep(stopEverySeconds);
+    this->counterStopEvery.setEnabled(true);
 }
 
 int Weapon::getSoundChannel() const {
@@ -384,6 +383,5 @@ Weapon::~Weapon()
     delete modelProjectile;
     delete model;
     delete icon;
+    delete counterCadence;
 }
-
-

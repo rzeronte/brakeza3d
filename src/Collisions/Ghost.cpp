@@ -3,10 +3,10 @@
 
 Ghost::Ghost() {
     this->ghostObject = new btPairCachingGhostObject();
+    this->convexHullShape = new btConvexHullShape();
 }
 
 void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask) {
-    auto *convexHull = new btConvexHullShape();
 
     mesh->updateBoundingBox();
     for (auto & modelTriangle : mesh->modelTriangles) {
@@ -14,21 +14,37 @@ void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int coll
         a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
         b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
         c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
-
-        convexHull->addPoint(a);
-        convexHull->addPoint(b);
-        convexHull->addPoint(c);
+        convexHullShape->addPoint(a);
+        convexHullShape->addPoint(b);
+        convexHullShape->addPoint(c);
     }
 
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(btVector3(0, 0, 0));
 
-    ghostObject->setCollisionShape(new btConvexHullShape(*convexHull));
+    ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
+}
+
+void Ghost::makeSimpleGhostBody(Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(btVector3(0, 0, 0));
+
+    convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(
+            btVector3(dimensions.x, dimensions.y, dimensions.z)));
+
+    ghostObject->setCollisionShape(convexHullShape);
+    ghostObject->setWorldTransform(transformation);
+    ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
+
+    world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
+
 }
 
 bool Ghost::CheckGhost(btPairCachingGhostObject *Ghost) {
@@ -73,6 +89,10 @@ void Ghost::removeCollisionObject() const {
 
 Ghost::~Ghost()
 {
+    if (ghostObject != nullptr) {
+        removeCollisionObject();
+    }
     delete ghostObject;
+    delete convexHullShape;
 }
 

@@ -31,6 +31,11 @@ Camera3D::Camera3D() {
 
     this->setLabel(EngineSetup::get()->cameraNameIdentifier);
 
+    // Reset speed
+    speed = 0;
+    strafe = 0;
+    jump = 0;
+
     this->consoleInfo();
 }
 

@@ -1,6 +1,7 @@
 #include "../../include/Components/Component.h"
 
 Component::Component() : SETUP(EngineSetup::get()), BUFFERS(EngineBuffers::getInstance()) {
+    this->enabled = false;
 }
 
 std::vector<Component *> *Component::getComponents() const {

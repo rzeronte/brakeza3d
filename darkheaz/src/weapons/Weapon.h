@@ -24,13 +24,13 @@ public:
 
     std::string label;
 
-    Mesh3DBody *modelProjectile;
+    Mesh3D *modelProjectile;
 
     int ammoAmount;
     int startAmmoAmount;
 
-    Counter *counterStopDuration;
-    Counter *counterStopEvery;
+    Counter counterStopDuration;
+    Counter counterStopEvery;
     bool stop;
     float stopDuration;
     float stopEvery;
@@ -107,7 +107,7 @@ public:
 
     void addAmount(int amount);
 
-    Mesh3DBody *getModelProjectile();
+    Mesh3D *getModelProjectile();
 
     int getType() const;
 

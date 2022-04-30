@@ -71,7 +71,7 @@ void AmmoProjectileBodyEmissor::setWeapon(Weapon *weaponType) {
 
 void AmmoProjectileBodyEmissor::addProjectile()
 {
-    Logging::getInstance()->Log("addEnemy");
+    Logging::getInstance()->Log("addProjectile");
 
     Vertex3D direction = this->AxisForward().getNormalize();
 
@@ -87,13 +87,13 @@ void AmmoProjectileBodyEmissor::addProjectile()
     projectile->setEnabled(true);
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(
-            0.1,
-            direction,
-            (float) weaponType->getSpeed(),
-            weaponType->getAccuracy(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::Projectile,
-            EngineSetup::collisionGroups::Player
+        0.1,
+        direction,
+        (float) weaponType->getSpeed(),
+        weaponType->getAccuracy(),
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Player
     );
 
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
@@ -134,5 +134,12 @@ float AmmoProjectileBodyEmissor::getStep() const {
 
 void AmmoProjectileBodyEmissor::setStep(float step) {
     AmmoProjectileBodyEmissor::step = step;
+}
+
+AmmoProjectileBodyEmissor::~AmmoProjectileBodyEmissor()
+{
+    delete counterStopDuration;
+    delete counterStopEvery;
+    delete weaponType;
 }
 

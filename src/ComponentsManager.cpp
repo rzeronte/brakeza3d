@@ -34,4 +34,11 @@ void ComponentsManager::setSceneObjects(std::vector<Object3D *> *sceneObjects) {
     ComponentsManager::sceneObjects = sceneObjects;
 }
 
+ComponentsManager::~ComponentsManager()
+{
+    for (auto component : components) {
+        delete component;
+    }
+}
+
 

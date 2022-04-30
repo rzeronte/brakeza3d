@@ -11,7 +11,7 @@ Counter::Counter(float step) {
     this->step = step;
 }
 
-void Counter::update() {
+void Counter::update(){
     if (!isEnabled()) return;
 
     auto ticks = (float) this->timer->getTicks();

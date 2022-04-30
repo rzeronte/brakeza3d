@@ -63,8 +63,7 @@ void Image::loadFromRaw(unsigned int *texture, int w, int h)
 
 }
 
-int Image::width()
-{
+int Image::width() const {
     return surface->w;
 }
 

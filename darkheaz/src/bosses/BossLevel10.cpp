@@ -4,6 +4,10 @@
 
 #include "BossLevel10.h"
 
+BossLevel10::BossLevel10() {
+    this->projectileEmissor = nullptr;
+}
+
 AmmoProjectileBodyEmissor *BossLevel10::getProjectileEmissor() const {
     return projectileEmissor;
 }

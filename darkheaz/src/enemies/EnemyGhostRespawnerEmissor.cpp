@@ -30,7 +30,8 @@ void EnemyGhostRespawnerEmissor::setActive(bool active) {
     EnemyGhostRespawnerEmissor::active = active;
 }
 
-void EnemyGhostRespawnerEmissor::onUpdate() {
+void EnemyGhostRespawnerEmissor::onUpdate()
+{
     EnemyGhost::onUpdate();
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
@@ -70,7 +71,7 @@ void EnemyGhostRespawnerEmissor::onUpdate() {
 
 void EnemyGhostRespawnerEmissor::addEnemy()
 {
-    Logging::getInstance()->Log("addEnemy");
+    Logging::getInstance()->Log("addEnemy from EnemyGhostRespawnerEmissor");
 
     auto *enemy = new EnemyGhost();
     enemy->setEnabled(true);
@@ -79,17 +80,21 @@ void EnemyGhostRespawnerEmissor::addEnemy()
     enemy->setPosition(getPosition());
     enemy->setStencilBufferEnabled(true);
     enemy->setScale(1);
-    enemy->setSpeed(enemy->getSpeed());
-    enemy->setStamina(enemy->getStamina());
-    enemy->setStartStamina(enemy->getStartStamina());
+    enemy->setSpeed(this->enemy->getSpeed());
+    enemy->setStamina(this->enemy->getStamina());
+    enemy->setStartStamina(this->enemy->getStartStamina());
     enemy->setEnableLights(true);
     if (this->enemy->getBehavior() != nullptr) {
         enemy->setBehavior(this->enemy->getBehavior()->clone());
     }
     enemy->clone(this->enemy);
-    enemy->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), enemy, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    enemy->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        enemy,
+        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::AllFilter
+    );
     enemy->setSoundChannel(-1);
-
 
     auto weapon = new Weapon(this->enemy->getWeapon()->getLabel());
     weapon->getModelProjectile()->setFlatTextureColor(true);

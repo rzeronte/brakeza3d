@@ -13,6 +13,8 @@ class BossLevel10 : public BossEnemy {
 private:
     AmmoProjectileBodyEmissor *projectileEmissor;
 public:
+    BossLevel10();
+
     AmmoProjectileBodyEmissor *getProjectileEmissor() const;
 
     void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);

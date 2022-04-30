@@ -65,12 +65,14 @@ Vertex3D Transforms::OrthographicNDCSpace(Vertex3D &V, Frustum *frustum)
     return R.getInverse();
 }
 
-void Transforms::screenSpace(Point2D &P, Vertex3D &V) {
+void Transforms::screenSpace(Point2D &P, Vertex3D &V)
+{
     P.x = (int) ((1 + V.x) * EngineSetup::get()->screenWidthHalf);
     P.y = (int) ((1 + V.y) * EngineSetup::get()->screenHeightHalf);
 }
 
-Vertex3D Transforms::perspectiveDivision(Vertex3D &V, float nearDist) {
+Vertex3D Transforms::perspectiveDivision(Vertex3D &V, float nearDist)
+{
     Vertex3D A = V;
 
     A.x = -(nearDist * V.x) / V.z;
@@ -79,7 +81,8 @@ Vertex3D Transforms::perspectiveDivision(Vertex3D &V, float nearDist) {
     return A;
 }
 
-Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o) {
+Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
+{
     Vertex3D T;
 
     T = V - o->drawOffset;

@@ -4,13 +4,14 @@
 
 #include "GravitationalShield.h"
 #include "src/weapons/AmmoProjectileBody.h"
+#include "../include/ComponentsManager.h"
 
 GravitationalShield::GravitationalShield(float force, float factor, float stamina, float ttl) : GravitationalGhost(force, factor), stamina(stamina), ttl(ttl) {
     this->startStamina = stamina;
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
 
-    blink = new ShaderBlink();
+    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
     blink->setObject(this);
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);

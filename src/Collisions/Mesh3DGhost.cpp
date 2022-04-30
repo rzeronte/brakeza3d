@@ -6,11 +6,13 @@ Mesh3DGhost::Mesh3DGhost() {
     BSPEntityIndex = -1;
 }
 
-void Mesh3DGhost::integrate() {
+void Mesh3DGhost::integrate()
+{
     updateBulletFromMesh3D();
 }
 
-void Mesh3DGhost::updateBulletFromMesh3D() {
+void Mesh3DGhost::updateBulletFromMesh3D()
+{
     btTransform trans;
     trans.setIdentity();
     trans.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
@@ -32,7 +34,6 @@ void Mesh3DGhost::resolveCollision(Collisionable *with) {
 
 void Mesh3DGhost::remove()
 {
-    this->removeCollisionObject();
     this->setRemoved(true);
 }
 

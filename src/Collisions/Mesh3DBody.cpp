@@ -2,14 +2,15 @@
 #include <btBulletDynamicsCommon.h>
 #include "../../include/Physics/Mesh3DBody.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/EngineSetup.h"
 
-Mesh3DBody::Mesh3DBody() {
+Mesh3DBody::Mesh3DBody()
+{
     setMass(0.f);
     BSPEntityIndex = -1;
 }
 
-void Mesh3DBody::integrate() {
+void Mesh3DBody::integrate()
+{
 
     if (this->body == nullptr) {
         return;
@@ -45,7 +46,7 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int c
     btQuaternion rotation;
     matrixRotation.getRotation(rotation);
 
-    auto *collisionShape = new btConvexHullShape(*this->getConvexHullShapeFromMesh());
+    auto *collisionShape = this->getConvexHullShapeFromMesh();
     btVector3 inertia(0, 0, 0);
     collisionShape->calculateLocalInertia(mass, inertia);
 
@@ -63,28 +64,38 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int c
     world->addRigidBody(this->body, collisionGroup, collisionMask );
 }
 
-void Mesh3DBody::makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) {
+void Mesh3DBody::makeSimpleRigidBody(
+        float mass,
+        Vertex3D pos,
+        Vertex3D dimensions,
+        btDiscreteDynamicsWorld *world,
+        int collisionGroup,
+        int collisionMask
+) {
     setMass(mass);
 
     btVector3 position;
     pos.saveToBtVector3(&position);
 
-    btTransform transform;
-    transform.setOrigin(position);
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
 
-    auto *myMotionState = new btDefaultMotionState(transform);
-    btCollisionShape *shape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
+    btCollisionShape *collisionShape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
+    btVector3 inertia(0, 0, 0);
+    collisionShape->calculateLocalInertia(mass, inertia);
 
     btRigidBody::btRigidBodyConstructionInfo cInfo(
         mass,
-        myMotionState,
-        shape,
-        btVector3(0, 0, 0)
+        new btDefaultMotionState(transformation),
+        collisionShape,
+        inertia
     );
 
     this->body = new btRigidBody(cInfo);
     this->body->activate(true);
     this->body->setUserPointer(dynamic_cast<Body *> (this));
+    this->body->setRestitution(0.5);
 
     world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
@@ -164,6 +175,5 @@ void Mesh3DBody::resolveCollision(Collisionable *with)
 
 void Mesh3DBody::remove()
 {
-    this->removeCollisionObject();
     this->setRemoved(true);
 }

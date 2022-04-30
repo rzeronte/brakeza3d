@@ -1,9 +1,14 @@
 
-#include <SDL_events.h>
 #include "../../include/Misc/Color.h"
 
-Color::Color() {
+Color::Color()
+{
+    this->r = 0;
+    this->g = 0;
+    this->b = 0;
+    this->a = 0;
 
+    this->color = (b << 16) + (g << 8) + (r);
 }
 
 Color::Color(int r, int g, int b, int a)

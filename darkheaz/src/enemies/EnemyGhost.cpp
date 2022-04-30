@@ -6,13 +6,15 @@
 #include "../items/ItemEnergyGhost.h"
 #include "../items/ItemWeaponGhost.h"
 
-EnemyGhost::EnemyGhost() {
-    blink = new ShaderBlink();
+EnemyGhost::EnemyGhost()
+{
+    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
     blink->setObject(this);
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
     blink->setColor(Color::red());
+
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 }
@@ -23,19 +25,23 @@ void EnemyGhost::onUpdate()
 
     rotateToPlayer();
 
-    getWeapon()->onUpdate();
+    if (getWeapon() != nullptr) {
+        getWeapon()->onUpdate();
+    }
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
-        if (getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
+        if (getWeapon() != nullptr && getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
             getWeapon()->stopSoundChannel();
         }
         return;
     }
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
+        makeReward();
+
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
-        if (getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
+        if (getWeapon() != nullptr && getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
             getWeapon()->stopSoundChannel();
         }
 
@@ -47,11 +53,9 @@ void EnemyGhost::onUpdate()
         remove();
     }
 
-    if (getState() == EnemyState::ENEMY_STATE_DIE) {
-        makeReward();
+    if (getState() != EnemyState::ENEMY_STATE_DIE) {
+        shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
     }
-
-    shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
 }
 
 void EnemyGhost::makeReward()
@@ -129,6 +133,7 @@ void EnemyGhost::postUpdate() {
         getBlink()->update();
         if (counterDamageBlink->isFinished()) {
             getBlink()->setEnabled(false);
+            counterDamageBlink->setEnabled(false);
         }
     }
 }
@@ -172,6 +177,8 @@ void EnemyGhost::remove()
 
 void EnemyGhost::shoot(Object3D *target)
 {
+    if (getWeapon() == nullptr) return;
+
     Vector3D way(getPosition(), target->getPosition());
 
     Vertex3D direction = way.getComponent().getNormalize();

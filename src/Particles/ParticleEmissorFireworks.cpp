@@ -26,7 +26,6 @@ void ParticleEmissorFireworks::onUpdate() {
         return;
     }
 
-
     if (firesCounter >= maxFires) {
         if ((int)particles.size() == 0) {
             setRemoved(true);

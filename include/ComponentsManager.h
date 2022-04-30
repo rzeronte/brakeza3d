@@ -31,6 +31,8 @@ public:
     std::vector<Component *> components;
     std::vector<Object3D *> *sceneObjects;
 
+    virtual ~ComponentsManager();
+
     static ComponentsManager *get();
 
     static ComponentsManager *instance;

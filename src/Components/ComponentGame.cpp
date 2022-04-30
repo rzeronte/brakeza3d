@@ -16,6 +16,7 @@
 ComponentGame::ComponentGame()
 {
     player = new Player();
+    gameState = EngineSetup::GameState::NONE;
 }
 
 void ComponentGame::onStart()
@@ -344,11 +345,19 @@ void ComponentGame::loadPlayer()
     player->setStencilBufferEnabled(true);
     player->setAutoRotationToFacingSelectedObjectSpeed(5);
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/red_spaceship_02.fbx"));
-    player->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), player, EngineSetup::collisionGroups::Player, EngineSetup::collisionGroups::AllFilter);
+    player->updateBoundingBox();
+    player->makeSimpleGhostBody(
+        player->getPosition(),
+        player->aabb.size().getScaled(0.5),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::AllFilter
+    );
     Brakeza3D::get()->addObject3D(player, "player");
 
     // load in this point because alpha is not working if is load previous (todo)
     player->loadShieldModel();
+    player->loadBlinkShader();
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -411,7 +420,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
@@ -598,8 +607,9 @@ void ComponentGame::loadWeapons()
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "playerWeapons.json";
 
     size_t file_size;
-    const char *weaponsFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(weaponsFile);
+    auto contentFile = Tools::readFile(filePath, file_size);
+
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
         Logging::Log(filePath + " can't be loaded", "ERROR");
@@ -619,6 +629,9 @@ void ComponentGame::loadWeapons()
     }
 
     player->setWeaponTypeByIndex(0);
+
+    free (contentFile);
+    cJSON_Delete(myDataJSON);
 }
 
 const std::vector<Weapon *> &ComponentGame::getWeapons() const

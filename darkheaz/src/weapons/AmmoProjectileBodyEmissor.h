@@ -21,6 +21,8 @@ class AmmoProjectileBodyEmissor: public Object3D {
 public:
     AmmoProjectileBodyEmissor(float step, Weapon *weaponType);
 
+    virtual ~AmmoProjectileBodyEmissor();
+
     const Counter &getCounter() const;
 
     void setCounter(const Counter &counter);

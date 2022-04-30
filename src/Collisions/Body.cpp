@@ -22,5 +22,9 @@ void Body::removeCollisionObject() const {
 
 Body::~Body()
 {
+    if (body != nullptr) {
+        this->removeCollisionObject();
+    }
+    delete body;
 }
 

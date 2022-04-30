@@ -6,7 +6,6 @@ Projectile3DBody::Projectile3DBody() {
     this->ttl = 0;
 }
 
-
 void Projectile3DBody::makeProjectileRigidBody(
         float mass,
         Vertex3D direction,
@@ -16,7 +15,8 @@ void Projectile3DBody::makeProjectileRigidBody(
         int collisionGroup,
         int collisionMask
 ) {
-    Mesh3DBody::makeRigidBody(mass, world, collisionGroup, collisionMask);
+    updateBoundingBox();
+    Mesh3DBody::makeSimpleRigidBody(mass, getPosition(), aabb.size(), world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);
     direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));

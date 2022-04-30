@@ -5,7 +5,7 @@
 Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0) {
     this->stamina = this->startStamina;
     setState(EnemyState::ENEMY_STATE_STOP);
-    weapon = new Weapon("EnemyWeapon");
+    weapon = nullptr;
 }
 
 void Enemy::takeDamage(float damageTaken) {

@@ -45,6 +45,8 @@ private:
     Vertex3D velocity;
     Weapon *weapon;
     Counter *counterDamageBlink;
+    ShaderBlink *blink;
+
     int killsCounter;
     int levelsCompletedCounter;
     bool energyShieldEnabled;
@@ -186,6 +188,10 @@ public:
     bool isAllowEnergyShield() const;
 
     void decreaseLevelsCompleted();
+
+    void loadBlinkShader();
+
+    void postUpdate() override;
 };
 
 

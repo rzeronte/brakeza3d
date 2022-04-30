@@ -820,7 +820,7 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &triangle
                     trianglesToDraw[triangleId]->parent->isDecal() &&
                     SETUP->DRAW_DECAL_WIREFRAMES
             )
-                ) {
+        ) {
             drawWireframe(trianglesToDraw[triangleId]);
         }
 
@@ -836,7 +836,7 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &triangle
 
 void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY) {
     // LOD determination
-    t->lod = t->processLOD();
+    t->lod = 0; //t->processLOD();
 
     // Triangle setup
     int A01 = (int) (-t->As.y + t->Bs.y);
@@ -983,9 +983,8 @@ void ComponentRender::initializeShaders() {
     addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
     addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
-    addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
     addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
-    addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink());
+    addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera()));
 
     getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE)->setEnabled(true);
 }

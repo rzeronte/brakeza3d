@@ -190,7 +190,9 @@ bool Object3D::isStencilBufferEnabled() const {
 }
 
 void Object3D::setStencilBufferEnabled(bool stencilBufferEnabled) {
-    initializeStencilBuffer();
+    if (stencilBufferEnabled) {
+        initializeStencilBuffer();
+    }
     Object3D::stencilBufferEnabled = stencilBufferEnabled;
 }
 
@@ -246,6 +248,6 @@ void Object3D::setAlphaEnabled(bool alphaEnabled) {
 
 Object3D::~Object3D()
 {
-    delete stencilBuffer;
+    delete[] stencilBuffer;
     delete motion;
 }

@@ -27,8 +27,6 @@ LevelLoader::LevelLoader(std::string filename)
     addLevel(filename);
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
-    countDown = new Counter();
-    tutorialImage = new Image();
 }
 
 void LevelLoader::load(int levelIndex)
@@ -102,14 +100,10 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     respawners.resize(0);
 
     hasTutorial = false;
-    if (tutorialImage != nullptr) {
-        delete tutorialImage;
-        tutorialImage = new Image();
-    }
 
     size_t file_size;
-    const char *levelFile = Tools::readFile(filePath, file_size);
-    cJSON *jsonContentFile = cJSON_Parse(levelFile);
+    auto contentFile = Tools::readFile(filePath, file_size);
+    cJSON *jsonContentFile = cJSON_Parse(contentFile);
 
     if (jsonContentFile == nullptr) {
         Logging::Log(filePath + " can't be loaded", "ERROR");
@@ -129,7 +123,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
         std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring;
-        this->tutorialImage->loadTGA(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
+        this->tutorialImage = Image(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
         this->hasTutorial = true;
     }
 
@@ -144,9 +138,9 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
     cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "enemies");
-    cJSON *currentEnemy;
-    cJSON_ArrayForEach(currentEnemy, enemiesList) {
-        auto enemy = parseEnemyJSON(currentEnemy);
+    cJSON *currentEnemyJSON;
+    cJSON_ArrayForEach(currentEnemyJSON, enemiesList) {
+        auto enemy = parseEnemyJSON(currentEnemyJSON);
         auto respawner = new EnemyGhostRespawner(enemy, 1);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -181,6 +175,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
         respawners.push_back(respawner);
     }
 
+    free(contentFile);
     cJSON_Delete(jsonContentFile);
 }
 
@@ -238,8 +233,8 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
 
 void LevelLoader::startCountDown()
 {
-    this->countDown->setStep(3);
-    this->countDown->setEnabled(true);
+    this->countDown.setStep(3);
+    this->countDown.setEnabled(true);
 
     for (auto respawner : respawners) {
         respawner->startCounter();
@@ -262,18 +257,17 @@ void LevelLoader::setLevelName(const std::string &levelName) {
     LevelLoader::levelName = levelName;
 }
 
-Counter *LevelLoader::getCountDown() const {
-    return countDown;
+Counter * LevelLoader::getCountDown() {
+    return &countDown;
 }
 
 bool LevelLoader::isHasTutorial() const {
     return hasTutorial;
 }
 
-Image *LevelLoader::getTutorialImage() const {
-    return tutorialImage;
+Image * LevelLoader::getTutorialImage() {
+    return &tutorialImage;
 }
-
 
 void LevelLoader::makeItemHealthGhost(Vertex3D position)
 {
@@ -401,15 +395,23 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     enemy->setEnableLights(false);
     enemy->setPosition(worldPosition);
-    enemy->setStencilBufferEnabled(false);
+    enemy->setStencilBufferEnabled(true);
     enemy->setScale(1);
     enemy->setSpeed(speed);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    enemy->makeGhostBody(
+    /*enemy->makeGhostBody(
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         enemy,
+        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::AllFilter
+    );*/
+    enemy->updateBoundingBox();
+    enemy->makeSimpleGhostBody(
+        enemy->getPosition(),
+        enemy->aabb.size().getScaled(0.5),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::AllFilter
     );
@@ -521,6 +523,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
     switch(typeBoss) {
         case BossesTypes::BOSS_LEVEL_10: {
+
             auto weapon = new Weapon("boss_weapon");
             weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setFlatTextureColor(true);
@@ -542,7 +545,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
             auto boss = new BossLevel10();
             boss->setEnabled(true);
-            boss->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+            boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             boss->setEnableLights(false);
             boss->setPosition(position);
             boss->setStencilBufferEnabled(true);
@@ -564,7 +567,27 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->setWeapon(weapon);
             boss->setSoundChannel(-1);
 
-            auto projectileEmissor = new AmmoProjectileBodyEmissor(0.25, weapon);
+            auto emissorWeapon = new Weapon("boss_emissor_weapon");
+            emissorWeapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
+            emissorWeapon->getModelProjectile()->setFlatTextureColor(true);
+            emissorWeapon->getModelProjectile()->setFlatColor(Color::fuchsia());
+            emissorWeapon->getModelProjectile()->setEnableLights(false);
+            emissorWeapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
+            emissorWeapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+            emissorWeapon->getModelProjectile()->setScale(1);
+            emissorWeapon->setAmmoAmount(5000);
+            emissorWeapon->setStartAmmoAmount(5000);
+            emissorWeapon->setSpeed(100);
+            emissorWeapon->setDamage(10);
+            emissorWeapon->setDispersion(100);
+            emissorWeapon->setAccuracy(100);
+            emissorWeapon->setCadenceTime(0.40);
+            emissorWeapon->setType(WeaponTypes::WEAPON_PROJECTILE);
+            emissorWeapon->setStop(false);
+            emissorWeapon->setAvailable(true);
+
+
+            auto projectileEmissor = new AmmoProjectileBodyEmissor(0.25, emissorWeapon);
             projectileEmissor->setPosition(boss->getPosition());
             projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
             projectileEmissor->setRotationFrameEnabled(true);
@@ -602,7 +625,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
             auto boss = new BossLevel20();
             boss->setEnabled(true);
-            boss->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+            boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             boss->setEnableLights(false);
             boss->setPosition(position);
             boss->setStencilBufferEnabled(true);
@@ -625,7 +648,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->setSoundChannel(-1);
 
 
-            auto emissorWeapon = new Weapon("emissor_weapon");
+            auto emissorWeapon = new Weapon("boss_emissor_weapon");
             emissorWeapon->getModelProjectile()->setFlatTextureColor(true);
             emissorWeapon->getModelProjectile()->setFlatColor(Color::red());
             emissorWeapon->getModelProjectile()->setEnableLights(false);

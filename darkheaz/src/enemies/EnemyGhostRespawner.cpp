@@ -18,6 +18,16 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
 
 void EnemyGhostRespawner::onUpdate()
 {
+    if (object == nullptr) {
+        return;
+    }
+
+    if (object->isRemoved()) {
+        counter.setEnabled(false);
+        this->setRemoved(true);
+        return;
+    }
+
     Object3D::onUpdate();
 
     if (!counter.isEnabled()) return;
@@ -28,7 +38,9 @@ void EnemyGhostRespawner::onUpdate()
     object->setAlpha(std::fmin(object->getAlpha() + increase, 255));
 
     if (counter.isFinished()) {
-        object->getWeapon()->counterCadence->setEnabled(true);
+        if (object->getWeapon() != nullptr) {
+            object->getWeapon()->counterCadence->setEnabled(true);
+        }
         object->setAlphaEnabled(false);
         object->setAlpha(255);
         counter.setEnabled(false);

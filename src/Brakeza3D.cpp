@@ -56,7 +56,7 @@ void Brakeza3D::mainLoop() {
 
     ImGuiInitialize();
 
-    AxisPlaneInitialize();
+    //AxisPlaneInitialize();
 
     while (!finish) {
         this->updateTimer();
@@ -75,6 +75,8 @@ void Brakeza3D::mainLoop() {
     }
 
     onEndComponents();
+
+    delete componentsManager;
 }
 
 std::vector<Object3D *> &Brakeza3D::getSceneObjects() {
@@ -224,5 +226,4 @@ void Brakeza3D::ImGuiInitialize() {
     ImGui::StyleColorsDark();
     ImGuiStyle &style = ImGui::GetStyle();
     style.FrameBorderSize = 1.0f;
-
 }

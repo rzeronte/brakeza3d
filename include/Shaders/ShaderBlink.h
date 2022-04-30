@@ -8,12 +8,16 @@
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
+#include "../Render/Transforms.h"
+#include "../Render/Drawable.h"
+#include "../Render/Logging.h"
 
 #define DEFAULT_BLINK_SECONDS 1
 class ShaderBlink: public Shader {
     bool isBlinking = false;
+    Camera3D *camera;
 public:
-    ShaderBlink() {
+    ShaderBlink(Camera3D *camera) {
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->object = nullptr;
@@ -22,15 +26,32 @@ public:
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
         this->counter.setStep(step);
         this->counter.setEnabled(true);
+        this->camera = camera;
     }
 
-    ShaderBlink(Object3D *o) {
+    ShaderBlink(Camera3D *camera, Object3D *o) {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->color = Color::green();
         setStep(DEFAULT_BLINK_SECONDS);
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+        this->camera = camera;
+    }
+
+    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
+    {
+        for (int i = 0; i < 8; i++) {
+            Vertex3D vertex = mesh->aabb.vertices[i];
+            Transforms::cameraSpace(vertex, vertex, camera);
+            vertex = Transforms::PerspectiveNDCSpace(vertex, camera->frustum);
+            Point2D screenPoint;
+            Transforms::screenSpace(screenPoint, vertex);
+            min.x = std::fmin(min.x, screenPoint.x);
+            min.y = std::fmin(min.y, screenPoint.y);
+            max.x = std::fmax(max.x, screenPoint.x);
+            max.y = std::fmax(max.y, screenPoint.y);
+        }
     }
 
     void update() {
@@ -61,9 +82,21 @@ public:
         }
 
         if (isBlinking) {
+            auto mesh = dynamic_cast<Mesh3D*> (object);
+            if (mesh == nullptr) {
+                return;
+            }
+
+            mesh->updateBoundingBox();
+
+            Point2D screenMinPoint;
+            Point2D screenMaxPoint;
+
+            this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, mesh);
+
             auto buffer = EngineBuffers::getInstance();
-            for (int y = 0; y < screenHeight; y++) {
-                for (int x = 0; x < screenWidth; x++) {
+            for (int y = screenMinPoint.y; y < screenMaxPoint.y - 1 ; y++) {
+                for (int x = screenMinPoint.x; x < screenMaxPoint.x - 1 ; x++) {
                     if (this->object->getStencilBufferValue(x, y)) {
                         buffer->setVideoBuffer(x, y, this->color.getColor());
                     }
