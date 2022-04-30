@@ -2,7 +2,17 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Physics/Projectile3DBody.h"
 
-ComponentCollisions::ComponentCollisions() = default;
+ComponentCollisions::ComponentCollisions()
+{
+    this->bspMap = nullptr;
+    this->visibleTriangles = nullptr;
+    this->collisionConfiguration = nullptr;
+    this->dispatcher = nullptr;
+    this->overlappingPairCache = nullptr;
+    this->solver = nullptr;
+    this->debugDraw = nullptr;
+    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+}
 
 void ComponentCollisions::onStart() {
     Logging::Log("ComponentCollisions onStart", "ComponentCollisions");
@@ -183,3 +193,14 @@ void ComponentCollisions::demoProjectile(int type) {
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 }
 
+ComponentCollisions::~ComponentCollisions()
+{
+    delete bspMap;
+    delete visibleTriangles;
+    delete collisionConfiguration;
+    delete dispatcher;
+    delete overlappingPairCache;
+    delete solver;
+    delete debugDraw;
+    delete dynamicsWorld;
+}

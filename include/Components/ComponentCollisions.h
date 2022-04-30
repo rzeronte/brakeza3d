@@ -36,7 +36,7 @@ public:
     btBroadphaseInterface *overlappingPairCache;
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     btSequentialImpulseConstraintSolver *solver;
-    btDiscreteDynamicsWorld *dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    btDiscreteDynamicsWorld *dynamicsWorld;
     PhysicsDebugDraw *debugDraw;
 
     void initBulletSystem();
@@ -60,6 +60,8 @@ public:
     void stepSimulation();
 
     void demoProjectile(int type);
+
+    virtual ~ComponentCollisions();
 
 };
 

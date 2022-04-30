@@ -50,8 +50,8 @@ void ComponentSound::loadSoundsJSON() {
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     size_t file_size;
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
-    const char *mapsFile = Tools::readFile(filePath, file_size);
-    cJSON *myDataJSON = cJSON_Parse(mapsFile);
+    auto contentFile = Tools::readFile(filePath, file_size);
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
         Logging::Log(filePath + " can't be loaded", "ERROR");
@@ -75,6 +75,9 @@ void ComponentSound::loadSoundsJSON() {
 
         BUFFERS->soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
     }
+
+    cJSON_Delete(myDataJSON);
+    free(contentFile);
 }
 
 void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times) {

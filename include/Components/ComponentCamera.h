@@ -38,9 +38,9 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     Camera3D *camera;
-    bool freeLook;
+    bool freeLook = false;
     Vertex3D autoScrollSpeed;
-    bool autoScroll;
+    bool autoScroll = false;
 
     const Vertex3D &getAutoScrollSpeed() const;
 
