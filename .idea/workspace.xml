@@ -19,52 +19,23 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Fix mery leaks">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Fix memory leaks / Improve blink shader">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/energy_ball.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/energy_ball.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCamera.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCamera.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ComponentsManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/ComponentsManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Image.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Ghost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Ghost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Body.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Body.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Component.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ComponentsManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ComponentsManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Counter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Counter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Camera3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Object3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Particles/ParticleEmissorFireworks.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissorFireworks.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -271,6 +242,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.Build All" />
       <item itemvalue="CMake Application.Brakeza3D" />
@@ -449,7 +425,8 @@
       <workItem from="1650835038962" duration="1364000" />
       <workItem from="1650905877847" duration="25162000" />
       <workItem from="1651005335010" duration="10489000" />
-      <workItem from="1651282828643" duration="1817000" />
+      <workItem from="1651282828643" duration="8182000" />
+      <workItem from="1651364234358" duration="4157000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -780,7 +757,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650762586063</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Fix memory leaks / Improve blink shader">
+      <created>1651277601453</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1651277601453</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -924,7 +908,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Separe Camera AutoScroll from Shader AutoScroll" />
     <MESSAGE value="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables" />
     <MESSAGE value="Refactor GUIObject3D / Sprite3D" />
     <MESSAGE value="Added Health Bars in HUD (Player/Enemies) / Improve input shoot" />
@@ -949,7 +932,8 @@
     <MESSAGE value="Minor updates" />
     <MESSAGE value="Fix leack in particles" />
     <MESSAGE value="Fix mery leaks" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix mery leaks" />
+    <MESSAGE value="Fix memory leaks / Improve blink shader" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix memory leaks / Improve blink shader" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -968,6 +952,11 @@
           <url>file://$PROJECT_DIR$/darkheaz/Player.cpp</url>
           <line>472</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentGame.cpp</url>
+          <line>85</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
