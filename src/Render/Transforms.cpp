@@ -138,3 +138,14 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
 
     return Transforms::cameraToWorld(v, cam);
 }
+
+Point2D Transforms::WorldToPoint(Vertex3D v, Camera3D *camera)
+{
+    Transforms::cameraSpace(v, v, camera);
+    v = Transforms::PerspectiveNDCSpace(v, camera->frustum);
+
+    Point2D screenPoint;
+    Transforms::screenSpace(screenPoint, v);
+
+    return screenPoint;
+}
