@@ -21,21 +21,14 @@
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Fix memory leaks / Improve blink shader">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/energy_ball.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/energy_ball.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Transforms.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Transforms.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Ghost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DBody.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,11 +235,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="CMake Application.Build All" />
       <item itemvalue="CMake Application.Brakeza3D" />
@@ -427,6 +415,7 @@
       <workItem from="1651005335010" duration="10489000" />
       <workItem from="1651282828643" duration="8182000" />
       <workItem from="1651364234358" duration="4157000" />
+      <workItem from="1651438699762" duration="3775000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>

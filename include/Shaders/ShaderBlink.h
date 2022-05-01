@@ -41,11 +41,13 @@ public:
 
     void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
     {
+        min.x = screenWidth;
+        min.y = screenHeight;
+        max.x = -1;
+        max.y = -1;
+
         for (auto vertex : mesh->aabb.vertices) {
-            Transforms::cameraSpace(vertex, vertex, camera);
-            vertex = Transforms::PerspectiveNDCSpace(vertex, camera->frustum);
-            Point2D screenPoint;
-            Transforms::screenSpace(screenPoint, vertex);
+            Point2D screenPoint = Transforms::WorldToPoint(vertex, camera);
             min.x = std::min(min.x, screenPoint.x);
             min.y = std::min(min.y, screenPoint.y);
             max.x = std::max(max.x, screenPoint.x);
@@ -96,7 +98,6 @@ public:
 
             Point2D screenMinPoint;
             Point2D screenMaxPoint;
-
             this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, mesh);
 
             auto buffer = EngineBuffers::getInstance();

@@ -11,6 +11,7 @@
 #include "ComponentWindow.h"
 #include "../2D/TextWriter.h"
 #include "../2D/Button.h"
+#include "../Objects/Mesh3D.h"
 
 class ComponentHUD : public Component {
     std::vector<Button*> buttons;
@@ -65,6 +66,8 @@ public:
     void drawSelectedWeaponEffect(int x, int y, int width, int height, Color c);
 
     void drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c);
+
+    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera);
 };
 
 

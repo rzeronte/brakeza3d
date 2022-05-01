@@ -273,16 +273,28 @@ void ComponentHUD::drawEnemies()
     for (auto object : objects) {
         auto enemy = dynamic_cast<EnemyGhost*> (object);
         if (enemy != nullptr) {
+
             if (enemy->isAlphaEnabled()) return;
 
-            Vertex3D v = object->getPosition();
+            enemy->updateBoundingBox();
 
-            Transforms::cameraSpace(v, v, camera);
-            v = Transforms::PerspectiveNDCSpace(v, camera->frustum);
+            Point2D screenMinPoint;
+            Point2D screenMaxPoint;
+            this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, enemy, camera);
 
-            Point2D screenPoint;
-            Transforms::screenSpace(screenPoint, v);
-            drawEnemyStats(screenPoint, 15, enemy->getStamina(), enemy->getStartStamina(), Color::red());
+            float sizeWidth = (float) (screenMaxPoint.x - screenMinPoint.x) * 0.5f;
+            Point2D middlePoint(
+                screenMinPoint.x + (int) sizeWidth,
+                screenMinPoint.y
+            );
+
+            drawEnemyStats(
+                middlePoint,
+                sizeWidth,
+                enemy->getStamina(),
+                enemy->getStartStamina(),
+                Color::red()
+            );
         }
     }
 }
@@ -297,4 +309,26 @@ void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float v
         EngineBuffers::getInstance()->setVideoBuffer(x, y, c.getColor());
         EngineBuffers::getInstance()->setVideoBuffer(x, y+1, c.getColor());
     }
+}
+
+
+void ComponentHUD::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera)
+{
+    min.x = EngineSetup::get()->screenWidth;
+    min.y = EngineSetup::get()->screenHeight;
+    max.x = -1;
+    max.y = -1;
+
+    for (auto vertex : mesh->aabb.vertices) {
+        Point2D screenPoint = Transforms::WorldToPoint(vertex, camera);
+        min.x = std::min(min.x, screenPoint.x);
+        min.y = std::min(min.y, screenPoint.y);
+        max.x = std::max(max.x, screenPoint.x);
+        max.y = std::max(max.y, screenPoint.y);
+    }
+
+    min.x = std::clamp(min.x, 0, EngineSetup::get()->screenWidth);
+    min.y = std::clamp(min.y, 0, EngineSetup::get()->screenHeight);
+    max.x = std::clamp(max.x, 0, EngineSetup::get()->screenWidth);
+    max.y = std::clamp(max.y, 0, EngineSetup::get()->screenHeight);
 }

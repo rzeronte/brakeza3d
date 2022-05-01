@@ -29,6 +29,7 @@ public:
 
     static void screenSpace(Point2D &P, Vertex3D &V);
 
+    static Point2D WorldToPoint(Vertex3D V, Camera3D *camera);
 };
 
 

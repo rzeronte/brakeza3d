@@ -243,12 +243,12 @@ void Player::onUpdate()
 
     if (isEnergyShieldEnabled()) {
         shieldModel->setPosition(getPosition());
-        shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() + 2, 0, 127));
+        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() + 5, 0, 127));
     } else {
         if (shieldModel->getAlpha() == 0) {
             shieldModel->setEnabled(false);
         }
-       shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
+       shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
     }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
