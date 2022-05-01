@@ -123,8 +123,8 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
         std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring;
-        this->tutorialImage = Image(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
-        this->hasTutorial = true;
+        tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
+        hasTutorial = true;
     }
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(
@@ -265,8 +265,8 @@ bool LevelLoader::isHasTutorial() const {
     return hasTutorial;
 }
 
-Image * LevelLoader::getTutorialImage() {
-    return &tutorialImage;
+Image* LevelLoader::getTutorialImage() {
+    return tutorialImage;
 }
 
 void LevelLoader::makeItemHealthGhost(Vertex3D position)
@@ -401,12 +401,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    /*enemy->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        enemy,
-        EngineSetup::collisionGroups::Enemy,
-        EngineSetup::collisionGroups::AllFilter
-    );*/
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
         enemy->getPosition(),

@@ -50,22 +50,12 @@ public:
         }
 
         mesh->updateBoundingBox();
-        Vertex3D min = mesh->aabb.min;
-        Transforms::cameraSpace(min, min, camera);
-        min = Transforms::PerspectiveNDCSpace(min, camera->frustum);
+        Point2D screenMinPoint;
+        Point2D screenMaxPoint;
+        getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, mesh);
 
-        Point2D DP;
-        Transforms::screenSpace(DP, min);
-
-        Vertex3D max = mesh->aabb.max;
-        Transforms::cameraSpace(max, max, camera);
-        max = Transforms::PerspectiveNDCSpace(max, camera->frustum);
-
-        Point2D DPmax;
-        Transforms::screenSpace(DPmax, max);
-
-        for (int y = DP.y; y < DPmax.y -1 ; y++) {
-            for (int x = DP.x; x < DPmax.x -1 ; x++) {
+        for (int y = screenMinPoint.y; y < screenMaxPoint.y - 1 ; y++) {
+            for (int x = screenMinPoint.x; x < screenMaxPoint.x - 1 ; x++) {
                 if (isBorderPixel(x, y) && x < screenWidth-1 && y < screenHeight - 1) {
                     if (Tools::isPixelInWindow(x, y)) {
                         EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
@@ -75,6 +65,19 @@ public:
         }
     }
 
+    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
+    {
+        for (auto vertex : mesh->aabb.vertices) {
+            Transforms::cameraSpace(vertex, vertex, camera);
+            vertex = Transforms::PerspectiveNDCSpace(vertex, camera->frustum);
+            Point2D screenPoint;
+            Transforms::screenSpace(screenPoint, vertex);
+            min.x = std::fmin(min.x, screenPoint.x);
+            min.y = std::fmin(min.y, screenPoint.y);
+            max.x = std::fmax(max.x, screenPoint.x);
+            max.y = std::fmax(max.y, screenPoint.y);
+        }
+    }
     void setObject(Object3D *o) {
         this->object = o;
     }

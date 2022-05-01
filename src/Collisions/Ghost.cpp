@@ -44,7 +44,6 @@ void Ghost::makeSimpleGhostBody(Vertex3D pos, Vertex3D dimensions, btDiscreteDyn
     ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
-
 }
 
 bool Ghost::CheckGhost(btPairCachingGhostObject *Ghost) {

@@ -77,7 +77,9 @@ void Weapon::handleInstantWeaponSound()
     }
 }
 
-void Weapon::stopSoundChannel() const { ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel()); }
+void Weapon::stopSoundChannel() const {
+    ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
+}
 
 void Weapon::setSpeed(float speed) {
     this->speed = speed;
@@ -225,9 +227,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
 void Weapon::shootInstant(Vertex3D from, Object3D *to)
 {
-    const int ammoAmount = getAmmoAmount();
-
-    if (ammoAmount <= 0) return;
+    if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration.isEnabled()) {
         return;
@@ -235,7 +235,7 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
 
     if (to != nullptr) {
         auto color = Color::white();
-        setAmmoAmount(ammoAmount - 1);
+        setAmmoAmount(getAmmoAmount() - 1);
         auto enemy = dynamic_cast<EnemyGhost*>(to);
         if (enemy != nullptr) {
             if (counterCadence->isFinished()) {
@@ -259,7 +259,10 @@ void Weapon::shootInstant(Vertex3D from, Object3D *to)
         }
         auto enemy = dynamic_cast<EnemyGhost*>(closestObject);
         if (enemy != nullptr) {
-            enemy->takeDamage(getDamage());
+            if (counterCadence->isFinished()) {
+                counterCadence->setEnabled(true);
+                enemy->takeDamage(getDamage());
+            }
             Drawable::drawLightning(from, closestObject->getPosition(), Color::white());
         }
     }

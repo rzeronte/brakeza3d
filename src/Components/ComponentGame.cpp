@@ -420,7 +420,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
@@ -569,7 +569,7 @@ void ComponentGame::silenceInGameObjects()
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
 
-        if (enemy != nullptr ) {
+        if (enemy != nullptr && enemy->getWeapon() != nullptr) {
             enemy->getWeapon()->stopSoundChannel();
         }
     }

@@ -53,7 +53,7 @@ public:
     Weapon *parseWeaponJSON(cJSON *weaponJson, Color c);
 
     Counter countDown;
-    Image tutorialImage;
+    Image *tutorialImage;
     bool hasTutorial;
 
 private:

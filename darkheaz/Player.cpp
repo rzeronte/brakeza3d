@@ -96,8 +96,8 @@ void Player::evalStatusMachine() {
     }
 }
 
-void Player::takeDamage(float dmg) {
-
+void Player::takeDamage(float dmg)
+{
     if (state == PlayerState::GETTING_DAMAGE || state == PlayerState::DEAD) {
         return;
     }
@@ -109,9 +109,8 @@ void Player::takeDamage(float dmg) {
 
     this->stamina -= dmg;
 
-    if (state != PlayerState::GETTING_DAMAGE) {
-        startPlayerBlink();
-    }
+    setState(PlayerState::GETTING_DAMAGE);
+    startPlayerBlink();
 
     if (stamina <= 0) {
         setState(PlayerState::DEAD);
@@ -127,7 +126,6 @@ void Player::takeDamage(float dmg) {
 
 void Player::startPlayerBlink()
 {
-    setState(PlayerState::GETTING_DAMAGE);
     startBlinkShaderForPlayer();
 }
 
@@ -253,7 +251,6 @@ void Player::onUpdate()
        shieldModel->setAlpha( std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
     }
 
-
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     if (selectedObject != this && selectedObject != nullptr) {
         Vector3D way(selectedObject->getPosition(), getPosition());
@@ -284,11 +281,14 @@ void Player::postUpdate()
 {
     Object3D::postUpdate();
 
+    if (state == PlayerState::DEAD) {
+        return;
+    }
+
     if (counterDamageBlink->isEnabled()) {
         counterDamageBlink->update();
         blink->update();
         if (counterDamageBlink->isFinished()) {
-            setState(PlayerState::LIVE);
             stopBlinkForPlayer();
         }
     }
@@ -322,8 +322,6 @@ void Player::updateLight() {
 
 void Player::resolveCollision(Collisionable *with)
 {
-    auto *object = dynamic_cast<Object3D*> (with);
-
     Mesh3DGhost::resolveCollision(with);
     auto projectile = dynamic_cast<AmmoProjectileBody*> (with);
     if (projectile != nullptr) {
@@ -380,7 +378,9 @@ void Player::resolveCollision(Collisionable *with)
     }
 }
 
-void Player::setState(PlayerState state) {
+void Player::setState(PlayerState state)
+{
+    Logging::getInstance()->Log("Player change state to " + std::to_string(state));
     Player::state = state;
 }
 

@@ -106,7 +106,7 @@ void Mesh3DBody::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWor
     btTransform transformation;
     transformation.setIdentity();
 
-    btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh();
+    btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh3D();
 
     btVector3 position;
     getPosition().saveToBtVector3(&position);
@@ -133,7 +133,7 @@ void Mesh3DBody::setGravity(Vertex3D g) {
     getRigidBody()->setGravity(gravity);
 }
 
-btBvhTriangleMeshShape *Mesh3DBody::getTriangleMeshFromMesh() {
+btBvhTriangleMeshShape *Mesh3DBody::getTriangleMeshFromMesh3D() {
     auto *triangleMesh = new btTriangleMesh();
     updateBoundingBox();
 

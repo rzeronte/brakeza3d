@@ -21,7 +21,10 @@
 #define MAX_GRAVITATIONAL_SHIELDS 3
 
 typedef enum {
-    EMPTY, LIVE, DEAD, GETTING_DAMAGE
+    EMPTY = -1,
+    LIVE = 0,
+    DEAD = 1,
+    GETTING_DAMAGE = 2
 } PlayerState;
 
 enum WeaponStatus {

@@ -41,20 +41,25 @@ public:
 
     void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
     {
-        for (int i = 0; i < 8; i++) {
-            Vertex3D vertex = mesh->aabb.vertices[i];
+        for (auto vertex : mesh->aabb.vertices) {
             Transforms::cameraSpace(vertex, vertex, camera);
             vertex = Transforms::PerspectiveNDCSpace(vertex, camera->frustum);
             Point2D screenPoint;
             Transforms::screenSpace(screenPoint, vertex);
-            min.x = std::fmin(min.x, screenPoint.x);
-            min.y = std::fmin(min.y, screenPoint.y);
-            max.x = std::fmax(max.x, screenPoint.x);
-            max.y = std::fmax(max.y, screenPoint.y);
+            min.x = std::min(min.x, screenPoint.x);
+            min.y = std::min(min.y, screenPoint.y);
+            max.x = std::max(max.x, screenPoint.x);
+            max.y = std::max(max.y, screenPoint.y);
         }
+
+        min.x = std::clamp(min.x, 0, screenWidth);
+        min.y = std::clamp(min.y, 0, screenHeight);
+        max.x = std::clamp(max.x, 0, screenWidth);
+        max.y = std::clamp(max.y, 0, screenHeight);
     }
 
-    void update() {
+    void update()
+    {
         if (!isEnabled()) {
             return;
         }
