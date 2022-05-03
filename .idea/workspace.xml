@@ -19,16 +19,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Fix memory leaks / Improve blink shader">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Improve HUD">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentHUD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Transforms.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Transforms.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderObjectSilhouette.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Point2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Point2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Point2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Point2D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,6 +228,11 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -415,7 +423,10 @@
       <workItem from="1651005335010" duration="10489000" />
       <workItem from="1651282828643" duration="8182000" />
       <workItem from="1651364234358" duration="4157000" />
-      <workItem from="1651438699762" duration="3775000" />
+      <workItem from="1651438699762" duration="4962000" />
+      <workItem from="1651457254227" duration="599000" />
+      <workItem from="1651503805418" duration="314000" />
+      <workItem from="1651514573823" duration="13686000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -753,7 +764,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651277601453</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Improve HUD">
+      <created>1651442830410</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1651442830410</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -897,7 +915,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added EnemyGhost/AmmoProjectileGhost, improve hierarchy of collisionables" />
     <MESSAGE value="Refactor GUIObject3D / Sprite3D" />
     <MESSAGE value="Added Health Bars in HUD (Player/Enemies) / Improve input shoot" />
     <MESSAGE value="Improved Enemy/Player/Projectile relationships / Remove unused old BSP code" />
@@ -922,7 +939,8 @@
     <MESSAGE value="Fix leack in particles" />
     <MESSAGE value="Fix mery leaks" />
     <MESSAGE value="Fix memory leaks / Improve blink shader" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix memory leaks / Improve blink shader" />
+    <MESSAGE value="Improve HUD" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve HUD" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -944,8 +962,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/Components/ComponentGame.cpp</url>
-          <line>85</line>
+          <line>90</line>
           <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp</url>
+          <line>51</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
