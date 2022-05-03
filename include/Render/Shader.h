@@ -12,6 +12,7 @@ public:
     uint32_t *videoBuffer;
     int w;
     int h;
+    int bufferSize;
 
     int phaseRender;
 

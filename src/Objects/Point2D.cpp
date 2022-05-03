@@ -57,3 +57,11 @@ float Point2D::getLength()
 {
     return sqrt(x * x + y*y);
 }
+
+Point2D Point2D::getScaled(float v) const
+{
+    return Point2D(
+        this->x * v,
+        this->y * v
+    );
+}

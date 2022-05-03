@@ -282,7 +282,7 @@ void ComponentHUD::drawEnemies()
             Point2D screenMaxPoint;
             this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, enemy, camera);
 
-            float sizeWidth = (float) (screenMaxPoint.x - screenMinPoint.x) * 0.5f;
+            const float sizeWidth = (float) (screenMaxPoint.x - screenMinPoint.x) * 0.5f;
             Point2D middlePoint(
                 screenMinPoint.x + (int) sizeWidth,
                 screenMinPoint.y
@@ -310,7 +310,6 @@ void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float v
         EngineBuffers::getInstance()->setVideoBuffer(x, y+1, c.getColor());
     }
 }
-
 
 void ComponentHUD::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera)
 {

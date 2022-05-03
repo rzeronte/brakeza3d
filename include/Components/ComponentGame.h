@@ -24,19 +24,19 @@ class ComponentGame : public Component {
 public:
     ComponentGame();
 
-    void onStart();
+    void onStart() override;
 
-    void preUpdate();
+    void preUpdate() override;
 
-    void onUpdate();
+    void onUpdate() override;
 
-    void postUpdate();
+    void postUpdate() override;
 
-    void onEnd();
+    void onEnd() override;
 
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    Player *getPlayer() const;
+    [[nodiscard]] Player *getPlayer() const;
 
     void loadPlayer();
 
@@ -60,14 +60,13 @@ public:
     void selectClosestObject3DFromPlayer();
     Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
 
-    FaderToGameStates *getFadeToGameState() const;
+    [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
 
     int Z_COORDINATE_GAMEPLAY = 10000;
 private:
 
     EngineSetup::GameState gameState;
     std::vector<Weapon *> weapons;
-
 
     void loadLevels();
 
@@ -83,7 +82,7 @@ private:
     void stopWaterShader();
 
 public:
-    LevelLoader *getLevelInfo() const;
+    [[nodiscard]] LevelLoader *getLevelInfo() const;
 
     void checkForEndLevel();
 
@@ -95,7 +94,7 @@ public:
     void removeInGameObjects();
     void loadWeapons();
 
-    const std::vector<Weapon *> &getWeapons() const;
+    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
     void pressedKeyForNewGame();
 

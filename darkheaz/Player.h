@@ -7,7 +7,7 @@
 #include "../include/Particles/ParticleEmissor.h"
 #include "../include/Physics/Mesh3DGhost.h"
 #include "src/weapons/Weapon.h"
-#include "ShaderShield.h"
+#include "ShaderShockWave.h"
 #include "GravitationalShield.h"
 
 #define INITIAL_STAMINA 100
@@ -49,6 +49,7 @@ private:
     Weapon *weapon;
     Counter *counterDamageBlink;
     ShaderBlink *blink;
+    ShaderShockWave *shockWave;
 
     int killsCounter;
     int levelsCompletedCounter;
@@ -146,7 +147,7 @@ public:
 
     void setLevelCompletedCounter(int levelCounter);
 
-    const std::vector<Weapon *> &getWeapons() const;
+    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
     bool isEnergyShieldEnabled() const;
 

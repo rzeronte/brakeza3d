@@ -420,7 +420,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");

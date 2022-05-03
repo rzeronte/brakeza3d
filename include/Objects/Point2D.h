@@ -13,9 +13,11 @@ public:
     Point2D operator-(const Point2D &pm) const;
     Point2D operator+(const Point2D &pm) const;
 
-    Point2D getNormalize() const;
+    [[nodiscard]] Point2D getNormalize() const;
     float getLength();
+    [[nodiscard]] Point2D getScaled(float) const;
     void consoleInfo(const std::string& a, bool) const;
+
 
     int x, y;
 };
