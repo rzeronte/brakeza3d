@@ -21,17 +21,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Improve HUD">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Point2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Point2D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Point2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Point2D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -427,6 +423,8 @@
       <workItem from="1651457254227" duration="599000" />
       <workItem from="1651503805418" duration="314000" />
       <workItem from="1651514573823" duration="13686000" />
+      <workItem from="1651688206252" duration="3491000" />
+      <workItem from="1651775892467" duration="3333000" />
     </task>
     <task id="LOCAL-00001" summary="merge with light system/windows">
       <created>1644274669396</created>
@@ -967,7 +965,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp</url>
-          <line>51</line>
+          <line>67</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
