@@ -3,42 +3,58 @@
 #include "../include/EngineBuffers.h"
 #include "../include/Render/Transforms.h"
 #include "../include/ComponentsManager.h"
+#include "../include/Brakeza3D.h"
 
-ShaderShockWave::ShaderShockWave(float size, float speed)
+ShaderShockWave::ShaderShockWave(float size, float speed, float ttl)
 {
-    this->size = size;
+    this->startSize = size;
+    this->currentSize = size;
     this->waveSpeed = speed;
+    this->ttlWave.setStep(ttl);
+    this->ttlWave.setEnabled(true);
 }
 
 void ShaderShockWave::onUpdate(Vertex3D position)
 {
-    Shader::update();
+    ttlWave.update();
 
     Point2D focalPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
 
-    const float edgecut = fract(this->executionTime * waveSpeed) * (float) this->w;
+    int edgecut = fract(this->ttlWave.getAcumulatedTime() * waveSpeed) * (float) this->w;
 
+    auto engineBuffers = EngineBuffers::getInstance();
+
+    auto b = this->videoBuffer;
     for (int y = 0; y < this->h; y++) {
         for (int x = 0; x < this->w; x++) {
             Point2D uv(x, y);
             Point2D modifiedUV = uv - focalPoint;
-            float res = smoothstep( edgecut - size , edgecut + size,modifiedUV.getLength());
+            const float res = smoothstep( (float) edgecut - currentSize , (float) edgecut + currentSize,modifiedUV.getLength());
 
             const float invertedRes = 1.0f - res;
 
             uv = uv + modifiedUV.getScaled(res * invertedRes);
 
-            if (Tools::isPixelInWindow(uv.x, uv.y)) {
-                this->videoBuffer[y * this->w + x] = EngineBuffers::getInstance()->getVideoBuffer(uv.x, uv.y);
-            }
+            uv.x = std::clamp(uv.x, 0, this->w);
+            uv.y = std::clamp(uv.y, 0, this->h);
+
+            *(++b) = engineBuffers->getVideoBuffer(uv.x, uv.y);
         }
     }
 
-    auto screenBuffer = EngineBuffers::getInstance()->videoBuffer;
+    const float sizeDecreasing = (Brakeza3D::get()->getDeltaTime() * startSize) / ttlWave.getStep();
+    currentSize -= sizeDecreasing;
+
+    auto screenBuffer = engineBuffers->videoBuffer;
     auto currentBuffer = this->videoBuffer;
 
-    for (int i = 0; i < bufferSize ; i++, ++screenBuffer, ++currentBuffer) {
+    for (int i = 0; i < bufferSize; i++, ++screenBuffer, ++currentBuffer) {
         *screenBuffer = *currentBuffer;
+    }
+
+    if (ttlWave.isFinished()) {
+        currentSize = startSize;
+        ttlWave.setEnabled(true);
     }
 }
 

@@ -2,7 +2,7 @@
   "name": "Level 01",
   "backgroundImage": "levels/grid_blue.png",
   "music": "level01Music",
-  "allowGravitionalShield": false,
+  "allowGravitionalShield": true,
   "allowEnergyShield": false,
   "tutorialImage": "tutorials/tutorial01.png",
   "enemies": [

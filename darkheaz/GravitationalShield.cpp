@@ -17,14 +17,20 @@ GravitationalShield::GravitationalShield(float force, float factor, float stamin
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
     blink->setColor(Color::green());
+
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
+
+    shockWave = new ShaderShockWave(40, 0.25f, 1);
 }
 
-void GravitationalShield::onUpdate() {
+void GravitationalShield::onUpdate()
+{
     GravitationalGhost::onUpdate();
 
     timeToLive.update();
+
+    shockWave->onUpdate(getPosition());
 
     if (timeToLive.isFinished()) {
         remove();
@@ -76,4 +82,11 @@ void GravitationalShield::postUpdate() {
             blink->setEnabled(false);
         }
     }
+}
+
+GravitationalShield::~GravitationalShield()
+{
+    delete blink;
+    delete shockWave;
+    delete counterDamageBlink;
 }

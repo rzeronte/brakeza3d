@@ -18,7 +18,6 @@ public:
     [[nodiscard]] Point2D getScaled(float) const;
     void consoleInfo(const std::string& a, bool) const;
 
-
     int x, y;
 };
 

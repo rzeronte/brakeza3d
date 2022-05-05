@@ -9,6 +9,7 @@
 #include "GravitationalGhost.h"
 #include "../include/Misc/Counter.h"
 #include "../include/Shaders/ShaderBlink.h"
+#include "ShaderShockWave.h"
 
 class GravitationalShield : public GravitationalGhost {
 private:
@@ -17,10 +18,13 @@ private:
     Counter timeToLive;
     float ttl;
     ShaderBlink *blink;
+    ShaderShockWave *shockWave;
     Counter *counterDamageBlink;
 
 public:
     GravitationalShield(float force, float factor, float stamina, float ttl);
+
+    virtual ~GravitationalShield();
 
     void onUpdate() override;
 

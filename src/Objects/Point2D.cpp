@@ -29,7 +29,7 @@ float Point2D::operator*(const Point2D &v) const
 
 Point2D Point2D::getNormalize() const
 {
-    float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));
+    const float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));
 
     float inv_module = 1 / modulo;
 
@@ -49,13 +49,13 @@ Point2D Point2D::operator-(const Point2D &v) const {
 Point2D Point2D::operator+(const Point2D &v) const {
     return Point2D(
         this->x + v.x,
-        this->y+- v.y
+        this->y + v.y
     );
 }
 
 float Point2D::getLength()
 {
-    return sqrt(x * x + y*y);
+    return Maths::sqrt1(x * x + y*y);
 }
 
 Point2D Point2D::getScaled(float v) const
