@@ -19,15 +19,39 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="Improve HUD">
+    <list default="true" id="f11806e6-911e-453c-a175-66272ae27123" name="Default Changelist" comment="ShockWave in gravitionalshield">
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Misc/ColorHSV.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Misc/ColorHSV.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Objects/Vector2D.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Objects/Vector2D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_widgets.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_widgets.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Image.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Objects/Point2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Point2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Shader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderImageBackground.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Objects/Point2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Point2D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Shader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,11 +235,11 @@
       <recent name="$PROJECT_DIR$/include/Render" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/darkheaz/src/items" />
+      <recent name="$PROJECT_DIR$/darkheaz/src/shaders" />
       <recent name="$PROJECT_DIR$/darkheaz" />
       <recent name="$PROJECT_DIR$/darkheaz/src/enemies" />
       <recent name="$PROJECT_DIR$/darkheaz/src/bosses" />
-      <recent name="$PROJECT_DIR$/darkheaz/src/items" />
-      <recent name="$PROJECT_DIR$/darkheaz/src/weapons" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Brakeza3D">
@@ -224,17 +248,17 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="brakeza3d" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="brakeza3d">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -424,14 +448,19 @@
       <workItem from="1651503805418" duration="314000" />
       <workItem from="1651514573823" duration="13686000" />
       <workItem from="1651688206252" duration="3491000" />
-      <workItem from="1651775892467" duration="3333000" />
-    </task>
-    <task id="LOCAL-00001" summary="merge with light system/windows">
-      <created>1644274669396</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1644274669396</updated>
+      <workItem from="1651775892467" duration="4131000" />
+      <workItem from="1651790215037" duration="9673000" />
+      <workItem from="1651890538990" duration="1282000" />
+      <workItem from="1652139031166" duration="5387000" />
+      <workItem from="1652204453213" duration="1000" />
+      <workItem from="1652290383964" duration="4288000" />
+      <workItem from="1652302676729" duration="5083000" />
+      <workItem from="1652574260497" duration="14286000" />
+      <workItem from="1652911332656" duration="4618000" />
+      <workItem from="1652983845366" duration="1087000" />
+      <workItem from="1652985087614" duration="10720000" />
+      <workItem from="1653080617068" duration="14338000" />
+      <workItem from="1653254680489" duration="335000" />
     </task>
     <task id="LOCAL-00002" summary="particle system basics">
       <created>1644376510951</created>
@@ -769,7 +798,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651442830410</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="ShockWave in gravitionalshield">
+      <created>1651780119699</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1651780119700</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -867,6 +903,43 @@
             </State>
           </value>
         </entry>
+        <entry key="93630ede-ce1d-4165-8850-fc5879728bc2">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="text">
+                    <value>
+                      <list>
+                        <option value="opencl" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
@@ -875,7 +948,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -911,9 +984,13 @@
         </entry>
       </map>
     </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="93630ede-ce1d-4165-8850-fc5879728bc2" value="TOOL_WINDOW" />
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactor GUIObject3D / Sprite3D" />
     <MESSAGE value="Added Health Bars in HUD (Player/Enemies) / Improve input shoot" />
     <MESSAGE value="Improved Enemy/Player/Projectile relationships / Remove unused old BSP code" />
     <MESSAGE value="New Assets" />
@@ -938,7 +1015,8 @@
     <MESSAGE value="Fix mery leaks" />
     <MESSAGE value="Fix memory leaks / Improve blink shader" />
     <MESSAGE value="Improve HUD" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve HUD" />
+    <MESSAGE value="ShockWave in gravitionalshield" />
+    <option name="LAST_COMMIT_MESSAGE" value="ShockWave in gravitionalshield" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -957,16 +1035,6 @@
           <url>file://$PROJECT_DIR$/darkheaz/Player.cpp</url>
           <line>472</line>
           <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentGame.cpp</url>
-          <line>90</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/darkheaz/ShaderShockWave.cpp</url>
-          <line>67</line>
-          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

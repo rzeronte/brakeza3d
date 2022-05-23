@@ -3,7 +3,7 @@
 //
 
 #include "GravitationalGhost.h"
-#include "../include/Brakeza3D.h"
+#include "../../../include/Brakeza3D.h"
 
 GravitationalGhost::GravitationalGhost(float force, float factor) : force(force), factor(factor)
 {

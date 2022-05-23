@@ -7,8 +7,8 @@
 #include "../include/Particles/ParticleEmissor.h"
 #include "../include/Physics/Mesh3DGhost.h"
 #include "src/weapons/Weapon.h"
-#include "ShaderShockWave.h"
-#include "GravitationalShield.h"
+#include "src/shaders/ShaderShockWave.h"
+#include "src/items/GravitationalShield.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100

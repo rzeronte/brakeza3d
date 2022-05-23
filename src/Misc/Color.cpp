@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include "../../include/Misc/Color.h"
 
 Color::Color()
@@ -8,7 +9,7 @@ Color::Color()
     this->b = 0;
     this->a = 0;
 
-    this->color = (b << 16) + (g << 8) + (r);
+    //this->color = (b << 16) + (g << 8) + (r);
 }
 
 Color::Color(int r, int g, int b, int a)
@@ -71,14 +72,14 @@ bool Color::operator==(const Color &pm) const
     return false;
 }
 
-uint32_t Color::getColor()
+uint32_t Color::getColor() const
 {
     return this->color;
 }
 
 Color Color::operator*(float s) const
 {
-    return Color(this->r * s, this->g * s, this->b * s);
+    return Color(r * s, g * s, b * s);
 }
 
 Color Color::operator/(float s) const
@@ -89,18 +90,13 @@ Color Color::operator/(float s) const
 
 Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
 {
-    float originIntensity = 1 - c2Intensity;
-    return Color(
-        (c2.r * c2Intensity) + (c1.r * originIntensity),
-        (c2.g * c2Intensity) + (c1.g * originIntensity),
-        (c2.b * c2Intensity) + (c1.b * originIntensity)
-    );
+    return (c1 * (1.0f - c2Intensity)) + (c2 * c2Intensity);
 }
 
 unsigned int Color::getA() const {
     return a;
 }
 
-void Color::setA(unsigned int a) {
+void Color::setAlpha(unsigned int a) {
     Color::a = a;
 }

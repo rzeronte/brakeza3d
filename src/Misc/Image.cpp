@@ -110,3 +110,12 @@ Image::~Image()
 {
     SDL_FreeSurface(surface);
 }
+
+Color Image::getColor(int x, int y)
+{
+    uint32_t *pixels = (uint32_t*) this->pixels();
+
+    const int index = y * this->surface->w + x;
+
+    return Color(pixels[index]);
+}

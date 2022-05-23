@@ -6,7 +6,7 @@
 #define BRAKEDA3D_GRAVITATIONALGHOST_H
 
 
-#include "../include/Physics/Mesh3DGhost.h"
+#include "../../../include/Physics/Mesh3DGhost.h"
 
 class GravitationalGhost: public Mesh3DGhost {
 private:

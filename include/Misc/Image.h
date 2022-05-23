@@ -9,6 +9,7 @@
 #include <string>
 #include <SDL_surface.h>
 #include "../Objects/Vertex3D.h"
+#include "Color.h"
 
 class Image {
 public:
@@ -24,6 +25,8 @@ public:
     [[nodiscard]] SDL_Surface *getSurface() const;
 
     float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);
+
+    Color getColor(int x, int y);
 
 private:
     SDL_Surface *surface;

@@ -12,6 +12,7 @@ public:
     float operator*(const Point2D &pm) const;
     Point2D operator-(const Point2D &pm) const;
     Point2D operator+(const Point2D &pm) const;
+    Point2D operator/(const Point2D &pm) const;
 
     [[nodiscard]] Point2D getNormalize() const;
     float getLength();

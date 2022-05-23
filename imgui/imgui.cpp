@@ -1601,7 +1601,7 @@ ImU32 ImGui::ColorConvertFloat4ToU32(const ImVec4 &in) {
     return out;
 }
 
-// Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1]), from Foley & van Dam p592
+// Convert getColorRGB floats ([0-1],[0-1],[0-1]) to getColorHSV floats ([0-1],[0-1],[0-1]), from Foley & van Dam p592
 // Optimized http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
 void ImGui::ColorConvertRGBtoHSV(float r, float g, float b, float &out_h, float &out_s, float &out_v) {
     float K = 0.f;
@@ -1620,7 +1620,7 @@ void ImGui::ColorConvertRGBtoHSV(float r, float g, float b, float &out_h, float 
     out_v = r;
 }
 
-// Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1]), from Foley & van Dam p593
+// Convert getColorHSV floats ([0-1],[0-1],[0-1]) to getColorRGB floats ([0-1],[0-1],[0-1]), from Foley & van Dam p593
 // also http://en.wikipedia.org/wiki/HSL_and_HSV
 void ImGui::ColorConvertHSVtoRGB(float h, float s, float v, float &out_r, float &out_g, float &out_b) {
     if (s == 0.0f) {

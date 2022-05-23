@@ -4,6 +4,11 @@
 
 #include <string>
 #include "../Misc/Timer.h"
+#include "../Objects/Vector2D.h"
+#include "../Objects/Vertex3D.h"
+#include "../Misc/Color.h"
+
+#define PI 3.142857
 
 class Shader {
 public:
@@ -13,6 +18,7 @@ public:
     int w;
     int h;
     int bufferSize;
+    Vector2D resolution;
 
     int phaseRender;
 
@@ -42,6 +48,17 @@ public:
     int getPhaseRender() const;
 
     virtual ~Shader();
+
+    static float fract(float x);
+
+    static float mix(float a, float b, float f);
+    static Vertex3D mix(Vertex3D a, Vertex3D b, float f);
+    static Color mix(Color &a, Color &b, float f);
+
+    static float smoothstep(float edge0, float edge1, float x);
+
+    static float step(float limit, float value);
+
 };
 
 

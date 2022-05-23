@@ -7,9 +7,9 @@
 
 
 #include "GravitationalGhost.h"
-#include "../include/Misc/Counter.h"
-#include "../include/Shaders/ShaderBlink.h"
-#include "ShaderShockWave.h"
+#include "../../../include/Misc/Counter.h"
+#include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderShockWave.h"
 
 class GravitationalShield : public GravitationalGhost {
 private:

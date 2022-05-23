@@ -5,6 +5,8 @@
 #include "../Misc/Color.h"
 #include "../EngineBuffers.h"
 #include "../Misc/Image.h"
+#include "../Misc/Tools.h"
+#include "../Render/Logging.h"
 
 enum ShaderImageBackgroundTypes {
     FULLSCREEN = 0,
@@ -15,14 +17,16 @@ enum ShaderImageBackgroundTypes {
 class ShaderImageBackground: public Shader {
 private:
     Vertex3D autoScrollSpeed;
-
 public:
     ShaderImageBackground() {
         setType(ShaderImageBackgroundTypes::FULLSCREEN);
+        setEnabled(true);
+        setAutoScrollEnabled(false);
     };
 
     ShaderImageBackground(const char *filename) {
         setType(ShaderImageBackgroundTypes::FULLSCREEN);
+        setAutoScrollEnabled(false);
         image = new Image(filename);
     }
 
@@ -35,7 +39,7 @@ public:
             return;
         }
 
-        if (autoScrollEnabled) {
+        /*if (autoScrollEnabled) {
             autoScrollCursorX += autoScrollSpeed.x;
             autoScrollCursorY += autoScrollSpeed.y;
             setupFlatPortion(
@@ -43,20 +47,23 @@ public:
                 autoScrollCursorX, autoScrollCursorY,
                 wImage, hImage
             );
-        }
+        }*/
 
         switch(type) {
-            case ShaderImageBackgroundTypes::FULLSCREEN:
+            case ShaderImageBackgroundTypes::FULLSCREEN: {
                 image->drawFlat(0, 0);
                 break;
-            case ShaderImageBackgroundTypes::PORTION:
+            }
+            case ShaderImageBackgroundTypes::PORTION: {
                 drawFlatPortion();
                 break;
-            case ShaderImageBackgroundTypes::CENTER:
-                int x = EngineSetup::get()->screenWidth/2 - image->width()/2;
-                int y = EngineSetup::get()->screenHeight/2 - image->height()/2;
+            }
+            case ShaderImageBackgroundTypes::CENTER: {
+                int x = EngineSetup::get()->screenWidth / 2 - image->width() / 2;
+                int y = EngineSetup::get()->screenHeight / 2 - image->height() / 2;
                 image->drawFlat(x, y);
                 break;
+            }
         }
     }
 
@@ -89,20 +96,12 @@ public:
 
         auto *pixels = (Uint32 *) image->pixels();
 
-        for (int i = 0; i < hImage; i++) {
-            for (int j = 0; j < wImage; j++) {
-                if (Tools::isPixelInWindow(j, i)) {
-                    const int bufferX = xImage + j;
-                    const int bufferY = yImage + i;
+        for (int i = xDrawPos; i < xDrawPos + std::min(hImage, this->h); i++) {
+            for (int j = yDrawPos; j < yDrawPos + std::min(wImage, this->w); j++) {
+                const int bufferX = std::min(xImage + j, this->w);
+                const int bufferY = std::min(yImage + i, this->h);
 
-                    const int bufferIndex = bufferY * image->width() + bufferX;
-
-                    int x = j + xDrawPos;
-                    int y = i + yDrawPos;
-                    if (Tools::isPixelInWindow(x, y)) {
-                        buffer->setVideoBuffer(x, y, pixels[bufferIndex]);
-                    }
-                }
+                buffer->setVideoBuffer(j, i, pixels[bufferY * image->width() + bufferX]);
             }
         }
     }
@@ -143,6 +142,10 @@ public:
 private:
     Image* image;
     int type;
+public:
+    Image *getImage() const {
+        return image;
+    }
 
 };
 #endif //BRAKEDA3D_SHADERIMAGEBACKGROUND_H

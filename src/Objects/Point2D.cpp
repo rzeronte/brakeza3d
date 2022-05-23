@@ -27,6 +27,13 @@ float Point2D::operator*(const Point2D &v) const
     return (float) ((this->x * v.x) + (this->y * v.y));
 }
 
+Point2D Point2D::operator/(const Point2D &pm) const {
+    return Point2D(
+        this->x / pm.x,
+        this->y / pm.y
+    );
+}
+
 Point2D Point2D::getNormalize() const
 {
     const float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));

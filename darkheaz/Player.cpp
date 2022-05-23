@@ -6,7 +6,7 @@
 #include "src/items/ItemWeaponGhost.h"
 #include "src/items/ItemHealthGhost.h"
 #include "src/items/ItemEnergyGhost.h"
-#include "GravitationalShield.h"
+#include "src/items/GravitationalShield.h"
 
 Player::Player() : state(PlayerState::EMPTY),
                    stamina(INITIAL_STAMINA),

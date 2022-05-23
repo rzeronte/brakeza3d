@@ -3,13 +3,14 @@
 
 #include <vector>
 #include <cstdint>
+#include "ColorHSV.h"
 
 class Color {
 public:
-    unsigned int r;
-    unsigned int g;
-    unsigned int b;
-    unsigned int a;
+    float r;
+    float g;
+    float b;
+    float a;
 
     Color();
     Color(int r, int g, int b, int a = 0);
@@ -33,18 +34,18 @@ public:
     static Color orange() { return Color(100, 82, 42); }
     static Color olive() { return Color(128, 128, 0); }
     static Color gray() { return Color(128, 128, 128); }
-    static Color FOGDefault() { return Color::black(); }
+    static Color FOGDefault() { return Color(128, 128, 128); }
     static Color mixColor(Color &c1, Color &c2, float c2Intensity);
 
     void setRed(float v);
     void setGreen(float v);
     void setBlue(float v);
 
-    uint32_t getColor();
+    uint32_t getColor() const;
 
     unsigned int getA() const;
 
-    void setA(unsigned int a);
+    void setAlpha(unsigned int a);
 
     uint32_t color;
 

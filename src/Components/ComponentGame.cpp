@@ -52,10 +52,14 @@ void ComponentGame::onStart()
     loadPlayer();
     loadWeapons();
     loadLevels();
+
+    shaderBackground = new ShaderBackgroundGame();
 }
 
 void ComponentGame::preUpdate()
 {
+    shaderBackground->update();
+
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
@@ -69,6 +73,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
@@ -117,6 +122,8 @@ void ComponentGame::onUpdate()
     if (getFadeToGameState()->isFinished()) {
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
+
+
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -451,18 +458,18 @@ void ComponentGame::loadBackgroundImageShader()
 
 void ComponentGame::stopBackgroundShader()
 {
-    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    /*auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
     shaderBackground->setAutoScrollSpeed(Vertex3D(0, 0, 0));
     shaderBackground->setAutoScrollEnabled(false);
-    shaderBackground->setEnabled(false);
+    shaderBackground->setEnabled(false);*/
 }
 
 void ComponentGame::startBackgroundShader()
 {
-    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    /*auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
     shaderBackground->setAutoScrollSpeed(this->shaderAutoScrollSpeed);
     shaderBackground->setAutoScrollEnabled(true);
-    shaderBackground->setEnabled(true);
+    shaderBackground->setEnabled(true);*/
 }
 
 FaderToGameStates *ComponentGame::getFadeToGameState() const
