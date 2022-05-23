@@ -4167,7 +4167,7 @@ bool ImGui::ColorPicker4(const char *label, float col[4], ImGuiColorEditFlags fl
     PushItemFlag(ImGuiItemFlags_NoNav, true);
     if (flags & ImGuiColorEditFlags_PickerHueWheel) {
         // Hue wheel + SV triangle logic
-        InvisibleButton("hsv", ImVec2(sv_picker_size + style.ItemInnerSpacing.x + bars_width, sv_picker_size));
+        InvisibleButton("getColorHSV", ImVec2(sv_picker_size + style.ItemInnerSpacing.x + bars_width, sv_picker_size));
         if (IsItemActive()) {
             ImVec2 initial_off = g.IO.MouseClickedPos[0] - wheel_center;
             ImVec2 current_off = g.IO.MousePos - wheel_center;
@@ -4284,14 +4284,14 @@ bool ImGui::ColorPicker4(const char *label, float col[4], ImGuiColorEditFlags fl
                 ImGuiColorEditFlags_AlphaPreviewHalf;
         ImGuiColorEditFlags sub_flags = (flags & sub_flags_to_forward) | ImGuiColorEditFlags_NoPicker;
         if (flags & ImGuiColorEditFlags_RGB || (flags & ImGuiColorEditFlags__InputsMask) == 0)
-            if (ColorEdit4("##rgb", col, sub_flags | ImGuiColorEditFlags_RGB)) {
+            if (ColorEdit4("##getColorRGB", col, sub_flags | ImGuiColorEditFlags_RGB)) {
                 // FIXME: Hackily differenciating using the DragInt (ActiveId != 0 && !ActiveIdAllowOverlap) vs. using the InputText or DropTarget.
                 // For the later we don't want to run the hue-wrap canceling code. If you are well versed in HSV picker please provide your input! (See #2050)
                 value_changed_fix_hue_wrap = (g.ActiveId != 0 && !g.ActiveIdAllowOverlap);
                 value_changed = true;
             }
         if (flags & ImGuiColorEditFlags_HSV || (flags & ImGuiColorEditFlags__InputsMask) == 0)
-            value_changed |= ColorEdit4("##hsv", col, sub_flags | ImGuiColorEditFlags_HSV);
+            value_changed |= ColorEdit4("##getColorHSV", col, sub_flags | ImGuiColorEditFlags_HSV);
         if (flags & ImGuiColorEditFlags_HEX || (flags & ImGuiColorEditFlags__InputsMask) == 0)
             value_changed |= ColorEdit4("##hex", col, sub_flags | ImGuiColorEditFlags_HEX);
         PopItemWidth();

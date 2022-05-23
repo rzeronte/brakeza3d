@@ -80,6 +80,10 @@ public:
     static btMatrix3x3 M3ToBulletM3(M3 m);
 
     static M3 BulletM3ToM3(btMatrix3x3 m);
+
+    static ColorHSV getColorHSV(Color in);
+
+    static Color getColorRGB(ColorHSV in);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
