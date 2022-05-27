@@ -5,6 +5,7 @@
 #ifndef BRAKEDA3D_COMPONENTRENDER_H
 #define BRAKEDA3D_COMPONENTRENDER_H
 
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
 #include <vector>
 #include <mutex>
@@ -19,6 +20,7 @@
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
 #include "../Render/Shader.h"
+#include <CL/cl.h>
 
 class ComponentRender : public Component {
 public:
@@ -116,13 +118,28 @@ public:
 
     Object3D *selectedObject;
 
+    cl_platform_id clPlatformId;
+    cl_device_id clDeviceId;
+    cl_uint ret_num_devices;
+    cl_uint ret_num_platforms;
+    cl_int ret;
+    cl_context clContext;
+
+    cl_command_queue clCommandQueue;
+    cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
+
+
     Shader *getShaderByType(int id);
 
     const std::map<int, Shader *> &getShaders();
+
     Object3D* getSelectedObject();
+
     void setSelectedObject(Object3D *o);
 
     void updateSelectedObject3DInShaders(Object3D *object);
+
+    void initOpenCL();
 
 private:
     std::map<int, Shader*> shaders;
@@ -140,6 +157,7 @@ private:
 
     bool isPixelFullTransparent(Color &c, SDL_PixelFormat *pixelFormat);
 
+    void OpenCLInfo();
 };
 
 

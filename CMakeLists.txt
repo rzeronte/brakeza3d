@@ -252,5 +252,6 @@ target_link_libraries(Brakeza3D
         LinearMath
         assimp
         GL
+        OpenCL
         )
 
