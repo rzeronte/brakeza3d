@@ -135,6 +135,8 @@ public:
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
 
+    std::string DARKHEAZ_CL_SHADERS_FOLDER = "../darkheaz/src/shaders/kernels/";
+
     std::string CFG_MAPS = "maps.json";
     std::string CFG_MENU = "menu.json";
     std::string CFG_WEAPONS = "playerWeapons.json";

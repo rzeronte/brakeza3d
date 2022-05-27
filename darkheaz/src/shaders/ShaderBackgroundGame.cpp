@@ -8,19 +8,64 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Misc/Tools.h"
+#include "../../../include/Brakeza3D.h"
 
-#define TAU 6.2831853071
-
-ShaderBackgroundGame::ShaderBackgroundGame()
-{
+ShaderBackgroundGame::ShaderBackgroundGame(
+        cl_device_id device_id,
+        cl_context context,
+        cl_command_queue command_queue
+) {
     this->channel1 = new Image(
     std::string(EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE)
     );
 
     makeColorPalette();
+
+    this->clDeviceId = device_id;
+    this->clCommandQueue = command_queue;
+
+    initOpenCLProgram(device_id, context);
 }
 
-void ShaderBackgroundGame::makeColorPalette() {
+void ShaderBackgroundGame::initOpenCLProgram(cl_device_id &device_id, cl_context context)
+{
+    size_t source_size;
+    char * source_str= Tools::readFile(
+        EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "plasma.opencl",
+        source_size
+    );
+
+    program = clCreateProgramWithSource(
+        context,
+        1,
+        (const char **)&source_str,
+        (const size_t *)&source_size,
+        &clRet
+    );
+
+    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+
+    kernel = clCreateKernel(program, "onUpdate", &clRet);
+
+    opencl_buffer_video = clCreateBuffer(
+        context,
+        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        &clRet
+    );
+
+    opencl_buffer_palette = clCreateBuffer(
+        context,
+         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        palette,
+        &clRet
+    );
+}
+
+void ShaderBackgroundGame::makeColorPalette()
+{
     palette = new uint32_t[255];
     //generate the palette
     Color colorRGB;
@@ -36,10 +81,71 @@ void ShaderBackgroundGame::update()
 {
     Shader::update();
 
+    demoOpenCL();
+
     //demo01();
     //demo02();
     //demo03();
-    demo04();
+    //demo04();
+}
+
+void ShaderBackgroundGame::demoOpenCL() {
+    clEnqueueWriteBuffer(
+            clCommandQueue,
+            opencl_buffer_video,
+            CL_TRUE,
+            0,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            &EngineBuffers::getInstance()->videoBuffer,
+            0,
+            NULL,
+            NULL
+    );
+
+    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_palette);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video);
+
+    // Process the entire lists
+    size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
+    // Divide work items into groups of 64
+    size_t local_item_size = 12;
+
+    clRet = clEnqueueNDRangeKernel(
+        clCommandQueue,
+        kernel,
+        1,
+        NULL,
+        &global_item_size,
+        &local_item_size,
+        0,
+        NULL,
+        NULL
+    );
+
+    clEnqueueReadBuffer(
+            clCommandQueue,
+            opencl_buffer_video,
+            CL_TRUE,
+            0,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            NULL,
+            NULL
+    );
+
+    if (clRet != CL_SUCCESS) {
+        Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
+
+        char buffer[1024];
+        clGetProgramBuildInfo(program, clDeviceId, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        if (strlen(buffer) > 0 ) {
+            Logging::getInstance()->Log( buffer );
+        }
+    }
 }
 
 void ShaderBackgroundGame::demo01()
