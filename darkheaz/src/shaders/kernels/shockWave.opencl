@@ -38,6 +38,7 @@ __kernel void onUpdate(
     int cx = resultUV.x;
     int cy = resultUV.y;
     int index = cy * screenWidth + cx;
+
     videoShader[i] = video[index];
 }
 

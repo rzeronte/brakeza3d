@@ -71,6 +71,7 @@ void ComponentGame::onStart()
 
 void ComponentGame::preUpdate()
 {
+    shaderShockWave->onUpdate(player->getPosition());
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -85,7 +86,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    shaderShockWave->onUpdate(player->getPosition());
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
