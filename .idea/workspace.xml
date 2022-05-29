@@ -14,26 +14,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/brakeza3d.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shaderBackgroundGame.opencl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/brakeza3D.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="OpenCL kernels">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opencl.cl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,12 +110,35 @@
       <workItem from="1653530054909" duration="1793000" />
       <workItem from="1653531866122" duration="1407000" />
       <workItem from="1653610488451" duration="1798000" />
-      <workItem from="1653612304551" duration="268000" />
+      <workItem from="1653612304551" duration="1163000" />
+      <workItem from="1653614119411" duration="990000" />
+      <workItem from="1653859018900" duration="1119000" />
+      <workItem from="1653853059586" duration="907000" />
     </task>
+    <task id="LOCAL-00001" summary="CL Shaders">
+      <created>1653612711515</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1653612711515</updated>
+    </task>
+    <task id="LOCAL-00002" summary="OpenCL kernels">
+      <created>1653612743446</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1653612743446</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="CL Shaders" />
+    <MESSAGE value="OpenCL kernels" />
+    <option name="LAST_COMMIT_MESSAGE" value="OpenCL kernels" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
