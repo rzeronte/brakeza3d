@@ -2,8 +2,6 @@
 // Created by eduardo on 30/05/22.
 //
 
-#include <utility>
-
 #include "../../include/Render/ShaderOpenCL.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
@@ -14,7 +12,7 @@ ShaderOpenCL::ShaderOpenCL(
         cl_device_id device_id,
         cl_context context,
         cl_command_queue command_queue,
-        std::string kernelFilename
+        const std::string& kernelFilename
 ) {
     this->clDeviceId = device_id;
     this->clCommandQueue = command_queue;
@@ -41,7 +39,7 @@ void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context
         &clRet
     );
 
-    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+    clBuildProgram(program, 1, &device_id, nullptr, nullptr, nullptr);
 
     kernel = clCreateKernel(program, "onUpdate", &clRet);
 

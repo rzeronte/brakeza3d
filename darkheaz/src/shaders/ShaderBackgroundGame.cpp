@@ -15,25 +15,25 @@ ShaderBackgroundGame::ShaderBackgroundGame(
     cl_device_id deviceId,
     cl_context context,
     cl_command_queue commandQueue,
-    std::string kernelFile
+    const std::string& kernelFile
 ) : ShaderOpenCL(
     deviceId,
     context,
     commandQueue,
-    std::move(kernelFile)
+    kernelFile
 ) {
     this->channel1 = new Image(
-    std::string(EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE)
+    EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE
     );
 
     makeColorPalette();
 
     opencl_buffer_palette = clCreateBuffer(
-            context,
-            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            palette,
-            &clRet
+        context,
+        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        palette,
+        &clRet
     );
 }
 
@@ -42,8 +42,7 @@ void ShaderBackgroundGame::makeColorPalette()
     palette = new uint32_t[255];
     //generate the palette
     Color colorRGB;
-    for(int x = 0; x < 256; x++)
-    {
+    for (int x = 0; x < 255; x++) {
         //use HSVtoRGB to vary the Hue of the color through the palette
         colorRGB = Tools::getColorRGB(ColorHSV(x, 1, 1));
         palette[x] = colorRGB.getColor();
@@ -72,8 +71,8 @@ void ShaderBackgroundGame::executeKernelOpenCL()
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
             &EngineBuffers::getInstance()->videoBuffer,
             0,
-            NULL,
-            NULL
+            nullptr,
+            nullptr
     );
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
@@ -91,31 +90,39 @@ void ShaderBackgroundGame::executeKernelOpenCL()
         clCommandQueue,
         kernel,
         1,
-        NULL,
+        nullptr,
         &global_item_size,
         &local_item_size,
         0,
-        NULL,
-        NULL
+        nullptr,
+        nullptr
     );
 
     clEnqueueReadBuffer(
-            clCommandQueue,
-            opencl_buffer_video,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            NULL,
-            NULL
+        clCommandQueue,
+        opencl_buffer_video,
+        CL_TRUE,
+        0,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     if (clRet != CL_SUCCESS) {
         Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
 
         char buffer[1024];
-        clGetProgramBuildInfo(program, clDeviceId, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
+        clGetProgramBuildInfo(
+            program,
+            clDeviceId,
+            CL_PROGRAM_BUILD_LOG,
+            sizeof(buffer),
+            buffer,
+            nullptr
+        );
+
         if (strlen(buffer) > 0 ) {
             Logging::getInstance()->Log( buffer );
         }

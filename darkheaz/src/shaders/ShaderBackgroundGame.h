@@ -23,7 +23,7 @@ public:
         cl_device_id deviceId,
         cl_context context,
         cl_command_queue commandQueue,
-        std::string kernelFile
+        const std::string& kernelFile
     );
 
     void update() override;

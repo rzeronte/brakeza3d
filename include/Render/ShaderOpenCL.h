@@ -12,7 +12,7 @@
 class ShaderOpenCL: public Shader {
 
 public:
-    ShaderOpenCL(cl_device_id device_id, cl_context context, cl_command_queue command_queue, std::string kernelFilename);
+    ShaderOpenCL(cl_device_id device_id, cl_context context, cl_command_queue command_queue, const std::string& kernelFilename);
 
     void initOpenCLProgram(cl_device_id &device_id, cl_context context);
 
