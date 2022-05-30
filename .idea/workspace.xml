@@ -3,21 +3,38 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
-  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
     <generated>
       <config projectName="Brakeza3D" targetName="Brakeza3D" />
     </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="OpenCL kernels">
+      <change afterPath="$PROJECT_DIR$/.idea/brakeza3D.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/tiledRainbow.opencl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Render/ShaderOpenCL.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Render/ShaderOpenCL.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plasma.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plasma.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,36 +57,53 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="29bukhdlRuZlKbMKKSem7r1SkWJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="cf.first.check.clang-format" value="false" />
-    <property name="cidr.known.project.marker" value="true" />
-    <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/kernels",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.fileTypes"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Render" />
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -114,6 +148,7 @@
       <workItem from="1653614119411" duration="990000" />
       <workItem from="1653859018900" duration="1119000" />
       <workItem from="1653853059586" duration="907000" />
+      <workItem from="1653922980697" duration="1588000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -134,6 +169,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CL Shaders" />
