@@ -7,7 +7,7 @@
 #include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
 
 #define FREELOOK false
-#define SPLASH_TIME 4.0f
+#define SPLASH_TIME 0.0f
 #define FADE_SPEED_START_GAME 0.01
 #define FADE_SPEED_ENDLEVEL 0.01
 #define FADE_SPEED_FROM_MENU_TO_GAMING 0.03
@@ -53,12 +53,25 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
 
-    shaderBackground = new ShaderBackgroundGame();
+    shaderBackground = new ShaderBackgroundGame(
+        ComponentsManager::get()->getComponentRender()->clDeviceId,
+        ComponentsManager::get()->getComponentRender()->clContext,
+        ComponentsManager::get()->getComponentRender()->clCommandQueue
+    );
+
+    shaderShockWave = new ShaderShockWave(
+            ComponentsManager::get()->getComponentRender()->clDeviceId,
+            ComponentsManager::get()->getComponentRender()->clContext,
+            ComponentsManager::get()->getComponentRender()->clCommandQueue,
+            50,
+            0.3,
+            2
+    );
 }
 
 void ComponentGame::preUpdate()
 {
-    shaderBackground->update();
+    shaderShockWave->onUpdate(player->getPosition());
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -73,7 +86,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
@@ -122,7 +134,6 @@ void ComponentGame::onUpdate()
     if (getFadeToGameState()->isFinished()) {
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
-
 
 }
 

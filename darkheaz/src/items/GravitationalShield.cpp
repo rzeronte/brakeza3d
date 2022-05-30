@@ -6,7 +6,13 @@
 #include "../weapons/AmmoProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
 
-GravitationalShield::GravitationalShield(float force, float factor, float stamina, float ttl) : GravitationalGhost(force, factor), stamina(stamina), ttl(ttl) {
+GravitationalShield::GravitationalShield(
+        float force,
+        float factor,
+        float stamina,
+        float ttl)
+        : GravitationalGhost(force, factor), stamina(stamina), ttl(ttl)
+{
     this->startStamina = stamina;
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
@@ -21,7 +27,14 @@ GravitationalShield::GravitationalShield(float force, float factor, float stamin
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 
-    shockWave = new ShaderShockWave(60, 0.25f, 1);
+    shockWave = new ShaderShockWave(
+        ComponentsManager::get()->getComponentRender()->clDeviceId,
+        ComponentsManager::get()->getComponentRender()->clContext,
+        ComponentsManager::get()->getComponentRender()->clCommandQueue,
+        60,
+        0.25f,
+        1
+    );
 }
 
 void GravitationalShield::onUpdate()
