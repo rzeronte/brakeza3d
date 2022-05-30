@@ -6,8 +6,8 @@
 #define BRAKEDA3D_ENEMYBEHAVIORPATROL_H
 
 
-#include "EnemyBehavior.h"
-#include "../../../include/Objects/Vector3D.h"
+#include "../EnemyBehavior.h"
+#include "../../../../include/Objects/Vector3D.h"
 
 class EnemyBehaviorPatrol : public EnemyBehavior {
     Vertex3D origin;

@@ -3,8 +3,8 @@
 #define BRAKEDA3D_ENEMYBEHAVIORCIRCLE_H
 
 
-#include "EnemyBehavior.h"
-#include "../../../include/Render/M3.h"
+#include "../EnemyBehavior.h"
+#include "../../../../include/Render/M3.h"
 
 class EnemyBehaviorCircle: public EnemyBehavior {
     float speed;

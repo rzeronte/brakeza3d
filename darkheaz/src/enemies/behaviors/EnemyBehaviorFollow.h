@@ -6,8 +6,8 @@
 #define BRAKEDA3D_ENEMYBEHAVIORFOLLOW_H
 
 
-#include "EnemyBehavior.h"
-#include "../../../include/Objects/Object3D.h"
+#include "../EnemyBehavior.h"
+#include "../../../../include/Objects/Object3D.h"
 
 class EnemyBehaviorFollow : public EnemyBehavior {
     float speed;

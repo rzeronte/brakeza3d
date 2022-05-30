@@ -31,6 +31,7 @@ GravitationalShield::GravitationalShield(
         ComponentsManager::get()->getComponentRender()->clDeviceId,
         ComponentsManager::get()->getComponentRender()->clContext,
         ComponentsManager::get()->getComponentRender()->clCommandQueue,
+        "shockWave.opencl",
         60,
         0.25f,
         1

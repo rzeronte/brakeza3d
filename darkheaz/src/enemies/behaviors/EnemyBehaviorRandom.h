@@ -6,7 +6,7 @@
 #define BRAKEDA3D_ENEMYBEHAVIORRANDOM_H
 
 
-#include "EnemyBehavior.h"
+#include "../EnemyBehavior.h"
 
 class EnemyBehaviorRandom: public EnemyBehavior {
 private:

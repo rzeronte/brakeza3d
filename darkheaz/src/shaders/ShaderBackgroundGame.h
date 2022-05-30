@@ -7,27 +7,24 @@
 
 
 #include <CL/cl.h>
-#include "../../../include/Render/Shader.h"
 #include "../../../include/Misc/Image.h"
 #include "../../../include/Objects/Point2D.h"
 #include "../../../include/Objects/Vector2D.h"
+#include "../../../include/Render/ShaderOpenCL.h"
 
-class ShaderBackgroundGame: public Shader {
+class ShaderBackgroundGame: public ShaderOpenCL {
     Image *channel1;
     uint32_t *palette;
 
-    cl_command_queue clCommandQueue;
-    cl_device_id clDeviceId;
-    cl_int clRet;
-
-    cl_program program;
-    cl_kernel kernel;
-
-    cl_mem opencl_buffer_video;
     cl_mem opencl_buffer_palette;
 
 public:
-    ShaderBackgroundGame(cl_device_id device_id, cl_context context, cl_command_queue command_queue);
+    ShaderBackgroundGame(
+        cl_device_id deviceId,
+        cl_context context,
+        cl_command_queue commandQueue,
+        std::string kernelFile
+    );
 
     void update() override;
 
@@ -47,9 +44,7 @@ public:
 
     void makeColorPalette();
 
-    void demoOpenCL();
-
-    void initOpenCLProgram(cl_device_id &device_id, cl_context context);
+    void executeKernelOpenCL();
 };
 
 

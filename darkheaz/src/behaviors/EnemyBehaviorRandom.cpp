@@ -2,7 +2,7 @@
 // Created by eduardo on 15/04/22.
 //
 
-#include "../enemies/EnemyBehaviorRandom.h"
+#include "../enemies/behaviors/EnemyBehaviorRandom.h"
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/ComponentsManager.h"
 

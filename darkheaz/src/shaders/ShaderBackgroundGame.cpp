@@ -3,6 +3,7 @@
 //
 
 #include <functional>
+#include <utility>
 #include "ShaderBackgroundGame.h"
 #include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
@@ -11,9 +12,15 @@
 #include "../../../include/Brakeza3D.h"
 
 ShaderBackgroundGame::ShaderBackgroundGame(
-        cl_device_id device_id,
-        cl_context context,
-        cl_command_queue command_queue
+    cl_device_id deviceId,
+    cl_context context,
+    cl_command_queue commandQueue,
+    std::string kernelFile
+) : ShaderOpenCL(
+    deviceId,
+    context,
+    commandQueue,
+    std::move(kernelFile)
 ) {
     this->channel1 = new Image(
     std::string(EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE)
@@ -21,46 +28,12 @@ ShaderBackgroundGame::ShaderBackgroundGame(
 
     makeColorPalette();
 
-    this->clDeviceId = device_id;
-    this->clCommandQueue = command_queue;
-
-    initOpenCLProgram(device_id, context);
-}
-
-void ShaderBackgroundGame::initOpenCLProgram(cl_device_id &device_id, cl_context context)
-{
-    size_t source_size;
-    char * source_str= Tools::readFile(
-        EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "plasma.opencl",
-        source_size
-    );
-
-    program = clCreateProgramWithSource(
-        context,
-        1,
-        (const char **)&source_str,
-        (const size_t *)&source_size,
-        &clRet
-    );
-
-    clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
-
-    kernel = clCreateKernel(program, "onUpdate", &clRet);
-
-    opencl_buffer_video = clCreateBuffer(
-        context,
-        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        &clRet
-    );
-
     opencl_buffer_palette = clCreateBuffer(
-        context,
-         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        palette,
-        &clRet
+            context,
+            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            palette,
+            &clRet
     );
 }
 
@@ -81,7 +54,7 @@ void ShaderBackgroundGame::update()
 {
     Shader::update();
 
-    demoOpenCL();
+    executeKernelOpenCL();
 
     //demo01();
     //demo02();
@@ -89,7 +62,8 @@ void ShaderBackgroundGame::update()
     //demo04();
 }
 
-void ShaderBackgroundGame::demoOpenCL() {
+void ShaderBackgroundGame::executeKernelOpenCL()
+{
     clEnqueueWriteBuffer(
             clCommandQueue,
             opencl_buffer_video,

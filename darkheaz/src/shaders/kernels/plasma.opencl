@@ -4,7 +4,7 @@ float plot(float2 st, float pct, float thickness);
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
-    float executionTime,
+    float iTime,
     __global unsigned int *palette,
     __global unsigned int *video
 ) {
@@ -21,7 +21,7 @@ __kernel void onUpdate(
             + 128.0 + (128.0 * sin(sqrt((double)(x * x + y * y)) / 8.0))
     ) / 4;
 
-    int paletteShift = executionTime * 100.0;
+    int paletteShift = iTime * 100.0;
     float color = palette[(intensity + paletteShift) % 256];
 
     video[i] = createRGB( color, color, color);

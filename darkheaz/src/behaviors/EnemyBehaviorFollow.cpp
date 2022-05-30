@@ -2,7 +2,7 @@
 // Created by eduardo on 20/3/22.
 //
 
-#include "../enemies/EnemyBehaviorFollow.h"
+#include "../enemies/behaviors/EnemyBehaviorFollow.h"
 EnemyBehaviorFollow::EnemyBehaviorFollow(Object3D *target, float speed, float separation)
 {
     this->target = target;

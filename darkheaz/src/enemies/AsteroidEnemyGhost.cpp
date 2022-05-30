@@ -5,7 +5,7 @@
 #include "AsteroidEnemyGhost.h"
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
-#include "EnemyBehaviorRandom.h"
+#include "behaviors/EnemyBehaviorRandom.h"
 
 void AsteroidEnemyGhost::onUpdate()
 {

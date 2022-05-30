@@ -1,5 +1,5 @@
 
-#include "../enemies/EnemyBehaviorPatrol.h"
+#include "../enemies/behaviors/EnemyBehaviorPatrol.h"
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Misc/Tools.h"
 

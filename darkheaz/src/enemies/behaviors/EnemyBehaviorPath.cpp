@@ -1,7 +1,7 @@
 
 #include "EnemyBehaviorPath.h"
-#include "../../../include/Render/Logging.h"
-#include "../../../include/Render/Drawable.h"
+#include "../../../../include/Render/Logging.h"
+#include "../../../../include/Render/Drawable.h"
 
 EnemyBehaviorPath::EnemyBehaviorPath(float speed)
 {

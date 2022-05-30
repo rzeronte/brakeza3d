@@ -4,8 +4,8 @@
 
 
 #include <vector>
-#include "EnemyBehavior.h"
-#include "../../../include/Objects/Vector3D.h"
+#include "../EnemyBehavior.h"
+#include "../../../../include/Objects/Vector3D.h"
 
 class EnemyBehaviorPath: public EnemyBehavior {
     std::vector<Vertex3D> path;

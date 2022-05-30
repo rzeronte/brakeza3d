@@ -54,24 +54,16 @@ void ComponentGame::onStart()
     loadLevels();
 
     shaderBackground = new ShaderBackgroundGame(
-        ComponentsManager::get()->getComponentRender()->clDeviceId,
-        ComponentsManager::get()->getComponentRender()->clContext,
-        ComponentsManager::get()->getComponentRender()->clCommandQueue
-    );
-
-    shaderShockWave = new ShaderShockWave(
             ComponentsManager::get()->getComponentRender()->clDeviceId,
             ComponentsManager::get()->getComponentRender()->clContext,
             ComponentsManager::get()->getComponentRender()->clCommandQueue,
-            50,
-            0.3,
-            2
+            "plasma.opencl"
     );
 }
 
 void ComponentGame::preUpdate()
 {
-    shaderShockWave->onUpdate(player->getPosition());
+    shaderBackground->update();
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -86,6 +78,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {

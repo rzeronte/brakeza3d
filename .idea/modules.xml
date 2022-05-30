@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/brakeza3D.iml" filepath="$PROJECT_DIR$/.idea/brakeza3D.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/brakeza3d.iml" filepath="$PROJECT_DIR$/.idea/brakeza3d.iml" />
     </modules>
   </component>
