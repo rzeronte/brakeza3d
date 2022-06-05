@@ -20,8 +20,1153 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="Created ShaderOpenCL for share buffers and better encapsulation">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="Lint / Warnings">
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/cache-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/cmakeFiles-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/codemodel-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/toolchains-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/cache-v2-9d9ada97ddddd0b7ecf0.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/cmakeFiles-v1-a4892f758fb1dbe711f9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/codemodel-v2-eeb71f2408e6cda18be6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/directory-.-Debug-f5ebdc15457944623624.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/index-2022-05-30T02-13-52-0259.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/target-Brakeza3D-Debug-dcfa15240b30b88dc014.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/toolchains-v1-4716425b95883e923406.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D.cbp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/a-CMakeCCompilerId.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/a-CMakeCXXCompilerId.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/compiler_depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/compiler_depend.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.gcno" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.o.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeError.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Makefile2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/progress.marks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/brakeza3D.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/arial.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/assets/fonts/arial.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/doom.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/assets/fonts/doom.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/gravitational_shield.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/gravitational_shield.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_instant.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_smart.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/brakeza.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/brakeza.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/credits.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/credits.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/hud.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/hud.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/levels/grid_green.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/levels/grid_green.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/levels/space_01_1280x720.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/levels/space_01_1280x720.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/menu_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/menu_background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/menu_background.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/menu_background.xcf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial03.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial04.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/tutorials/tutorial05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/xbox_one_controller.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/xbox_one_controller.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/arthas.dae" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/arthas.dae" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/asteroid_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/asteroid_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/asteroid_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/asteroid_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/axisPlanes.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/axisPlanes.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/axis_planes.blend" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/axis_planes.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/axis_planes.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/axis_planes.blend1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/basic_original.blend" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/basic_original.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/basic_original.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/basic_original.blend1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/cilinder.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/cilinder.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/cone.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/cone.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/cube.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/cube.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/icosphere.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/icosphere.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/piramid.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/piramid.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/spaceship_lowpoly.blend" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/spaceship_lowpoly.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/spaceship_lowpoly.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/spaceship_lowpoly.blend1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/basic/torus.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/basic/torus.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/bob/bob_lamp_update.dae" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/bob/bob_lamp_update.dae" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/enemies_emissor.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/enemies_emissor.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/energy_ball.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/energy_ball.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/death.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/death.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/fire.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/fire.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/idle.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/idle.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/injuried.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/injuried.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/pose.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/pose.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gangster/walking.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gangster/walking.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/gem.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/gem.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5anim" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5mesh" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/hellknight/hellknight.md5mesh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/hellknight/hellknight2.md5anim" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/hellknight/hellknight2.md5anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/item_weapon_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/item_weapon_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/meteorita.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/meteorita.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/moon.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/moon.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/pill.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/pill.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/projectile_weapon_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/projectile_weapon_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/projectile_weapon_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/projectile_weapon_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/red_pill.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/red_pill.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/rocket.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/rocket.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/shield.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/shield.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/boss_green_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/boss_green_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/boss_purple_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/boss_purple_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_01.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_02.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/red_spaceship_03.fbx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/beep_hard.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/beep_hard.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/boss_01_music.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/boss_01_music.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/change_selected_enemy.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/change_selected_enemy.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/dash.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/dash.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/enemy_damage.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/explosion.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/explosion.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/game_over.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/game_over.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/get_weapon.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/get_weapon.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/gravitational_shield.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/gravitational_shield.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/item_health.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/item_health.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/level_completed.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/level_completed.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/menu.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/menu.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/move_menu_option.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/move_menu_option.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/music_level_01.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/music_level_01.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/new_level.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/new_level.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/player_damage.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/player_damage.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/player_dead.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/player_dead.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/shield.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/shield.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/start_game.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/start_game.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/switch_weapon.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/switch_weapon.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/todo.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/todo.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/voltage_loop.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/voltage_loop.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sounds/weapon_empty.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/weapon_empty.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_11.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_12.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_13.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_14.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_15.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_15.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_16.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_16.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_17.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_17.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_18.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_18.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood1/blood_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood1/blood_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_11.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_12.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_13.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_14.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_15.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_15.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_16.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_16.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_17.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_17.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood2/blood_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood2/blood_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_11.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_12.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/blood3/blood_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/blood3/blood_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/doom_face/face_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/doom_face/face_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/doom_face/face_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/doom_face/face_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/doom_face/face_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/doom_face/face_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/doom_face/face_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/doom_face/face_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/mancubus/explosion/0_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/nazi/explosion/0_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/1_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/2_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/3_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/4_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/5_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/6_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/7_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/skull/idle/8_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/enemies/soldier/explosion/0_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs1_9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs2_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gibs/gibs3_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore10_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore10_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore11_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore11_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sprites/gore/gore9_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sprites/gore/gore9_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/BoxDiffuse.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/BoxDiffuse.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/Bullet_UV2.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/Bullet_UV2.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/Enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/Enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/EnergiPill.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/EnergiPill.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/EnergyBall.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/EnergyBall.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/EnergyPack.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/EnergyPack.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/FedCruiserDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/FedCruiserDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/FedFrigateDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/FedFrigateDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/health_bar_empty.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/health_bar_empty.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/health_bar_energy.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/health_bar_energy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/health_bar_stamina.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/health_bar_stamina.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/hud.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/hud.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/loading.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/loading.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/HUD/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/HUD/splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/PCruiserDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/PCruiserDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/PFlagshipDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/PFlagshipDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/PFrigateDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/PFrigateDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/Pill.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/Pill.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/RSCruiserDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/RSCruiserDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/RSFlagshipDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/RSFlagshipDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/RSFrigateDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/RSFrigateDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/RedPill.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/RedPill.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/RoadUV0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/RoadUV0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/Rocket.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/Rocket.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/SpaceCube.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/SpaceCube.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/TextureAtlas.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/TextureAtlas.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/TextureLightmapsAtlas.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/TextureLightmapsAtlas.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/UnionCruiserDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/UnionCruiserDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/UnionFlagshipDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/UnionFlagshipDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/UnionFrigateDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/UnionFrigateDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/asteroid_01.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/asteroid_01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/asteroid_02.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/asteroid_02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/barbarian.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/barbarian.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/chessboard.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/chessboard.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/crystal.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/crystal.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/empty.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/empty.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/example_texture.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/example_texture.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_instant.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_projectile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/item_weapon_smart.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/moon.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/moon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/texture_demo_02.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/texture_demo_02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/texture_demo_03.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/texture_demo_03.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/texture_demo_04.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/texture_demo_04.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/texture_demo_06.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/texture_demo_06.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/chaingun.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/chaingun.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/chaingun_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/chaingun_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/ENDING_FIRE/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/GETTING_READY_TO_FIRE/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/LOOPING_FIRE/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/fire/RELOADING/7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/ENDING_FIRE.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/ENDING_FIRE.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/GETTING_READY_TO_FIRE.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/GETTING_READY_TO_FIRE.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/LOOPING_FIRE.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/LOOPING_FIRE.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/RELOADING.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/RELOADING.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/WALKING.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/sounds/WALKING.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/chaingun/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/chaingun/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/shoot/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/10.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/11.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/8.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/fire/starting/9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/gauss.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/gauss.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/gauss_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/gauss_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/sounds/start.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/sounds/start.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/gauss/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/gauss/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/fire/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/fire/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/fire/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/fire/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/fire/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/fire/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/fire/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/fire/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/har.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/har.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/har_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/har_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/sounds/looping.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/sounds/looping.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/har/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/har/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/fire/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/fire/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/fire/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/fire/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/fire/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/fire/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/fire/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/fire/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/fire/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/fire/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/pistol.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/pistol.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/pistol_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/pistol_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/pistol/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/pistol/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/fire/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/fire/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/fire/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/fire/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/fire/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/fire/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/fire/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/fire/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/repeater.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/repeater.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/repeater_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/repeater_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/sounds/looping.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/sounds/looping.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/repeater/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/repeater/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/fire/6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/10.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/11.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/12.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/13.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/14.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/15.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/15.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/16.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/16.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/17.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/17.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/18.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/18.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/19.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/19.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/20.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/20.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/5.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/6.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/7.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/8.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/9.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/fire/start/9.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/rocket.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/rocket.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/rocket_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/rocket_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/sounds/start.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/sounds/start.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/rocket/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/rocket/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/fire/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/static_rifle.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/static_rifle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/static_rifle_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/static_rifle_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/static_rifle/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/static_rifle/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/2_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/2_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/3_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/3_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/4_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/4_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/5_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/5_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/6_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/6_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/7_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/7_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/8_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/bullet/idle/8_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/fire/shot/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/fire/start/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/fire/start/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/sniperHUD.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/sniperHUD.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/sounds/fire.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/sounds/fire.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/sounds/start.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/sounds/start.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/vortex.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/vortex.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/vortex_hd.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/vortex_hd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/weapons/vortex/walk/0.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/weapons/vortex/walk/0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level04.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level04.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level05.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level05.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level06.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level06.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level07.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level07.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level08.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level08.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level10.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level10.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level11.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level11.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level12.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level12.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level13.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level13.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level14.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level14.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level15.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level15.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level16.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level16.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level17.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level17.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level18.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level18.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level19.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level19.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/level20.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level20.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/maps.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/maps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/menu.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/menu.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/FaderToGameStates.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/FaderToGameStates.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehavior.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehavior.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossEnemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel20.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/AsteroidEnemyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehavior.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyBehavior.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/ItemEnergyGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderBackgroundGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plasma.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plasma.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plotColorRGB.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/plotColorRGB.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/rainbowSine.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/rainbowSine.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shaderBackgroundGame.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shaderBackgroundGame.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/shockWave.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/skeletal.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/skeletal.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/tiledRainbow.opencl" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/tiledRainbow.opencl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/images/cmakelist_windows_sample.png" beforeDir="false" afterPath="$PROJECT_DIR$/doc/images/cmakelist_windows_sample.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/LICENSE-embree.txt" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/LICENSE-embree.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/autosave/test.1.map" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/autosave/test.1.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/autosave/test.2.map" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/autosave/test.2.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/autosave/test.3.map" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/autosave/test.3.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/changelog.txt" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/changelog.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/edu.log" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/edu.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/edu.prt" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/edu.prt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/gpl_v3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/gpl_v3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/libembree.2.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/libembree.2.dylib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/libtbb.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/libtbb.dylib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/libtbbmalloc.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/libtbbmalloc.dylib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/light.log" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/light.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/test.bak" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/test.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/test.log" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/test.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/test.map" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/test.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/test.prt" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/test.prt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extras/qbsp/vis.log" beforeDir="false" afterPath="$PROJECT_DIR$/extras/qbsp/vis.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/LICENSE.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/docs/CHANGELOG.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/docs/CHANGELOG.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/docs/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/docs/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/docs/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/docs/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_allegro5/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/example_allegro5.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_allegro5/imconfig_allegro5.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/imconfig_allegro5.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_allegro5/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_allegro5/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.m" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/AppDelegate.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.mm" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/Renderer.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.mm" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/ViewController.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/main.m" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/Shared/main.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/example_apple_metal.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/example_apple_metal.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Base.lproj/Main.storyboard" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Base.lproj/Main.storyboard" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Default-568h@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Default-568h@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Info-iOS.plist" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Info-iOS.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Launch Screen.storyboard" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/iOS/Launch Screen.storyboard" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Base.lproj/Main.storyboard" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Base.lproj/Main.storyboard" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Info-macOS.plist" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_metal/macOS/Info-macOS.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/example_apple_opengl2.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/example_apple_opengl2.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/main.mm" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_apple_opengl2/main.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/example_freeglut_opengl2.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_freeglut_opengl2/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/example_glfw_opengl2.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl2/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/example_glfw_opengl3.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_opengl3/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win64.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/build_win64.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/example_glfw_vulkan.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/gen_spv.sh" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/gen_spv.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.frag" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.vert" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/glsl_shader.vert" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_glfw_vulkan/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_marmalade/data/app.icf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/data/app.icf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_marmalade/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_marmalade/marmalade_example.mkb" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_marmalade/marmalade_example.mkb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_null/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_null/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_null/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_null/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/example_sdl_opengl2.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl2/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/example_sdl_opengl3.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_opengl3/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/example_sdl_vulkan.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_sdl_vulkan/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/example_win32_directx10.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx10/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/example_win32_directx11.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx11/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/example_win32_directx12.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx12/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/build_win32.bat" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/build_win32.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/example_win32_directx9.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/example_win32_directx9/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_examples.sln" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_examples.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_allegro5.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx10.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx11.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx12.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_dx9.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_freeglut.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_glfw.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_marmalade.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.mm" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_metal.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl2.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_opengl3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.mm" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_osx.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_sdl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_vulkan.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/imgui_impl_win32.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.c" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/gl3w.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/glcorearb.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/gl3w/GL/glcorearb.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/glfw/COPYING.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/COPYING.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3native.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/include/GLFW/glfw3native.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-32/glfw3.lib" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-32/glfw3.lib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-64/glfw3.lib" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/glfw/lib-vc2010-64/glfw3.lib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/usynergy/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.c" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/examples/libs/usynergy/uSynergy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imconfig.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imconfig.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_demo.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_draw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_draw.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_internal.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_internal.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imgui_widgets.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imgui_widgets.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imstb_rectpack.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imstb_rectpack.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imstb_textedit.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imstb_textedit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/imstb_truetype.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/imstb_truetype.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/Cousine-Regular.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/Cousine-Regular.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/DroidSans.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/DroidSans.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/Karla-Regular.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/Karla-Regular.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/ProggyClean.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/ProggyClean.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/ProggyTiny.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/ProggyTiny.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/Roboto-Medium.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/Roboto-Medium.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/fonts/binary_to_compressed_c.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/fonts/binary_to_compressed_c.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/freetype/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/freetype/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/freetype/imgui_freetype.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/natvis/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/natvis/README.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/natvis/imgui.natvis" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/natvis/imgui.natvis" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.h" beforeDir="false" afterPath="$PROJECT_DIR$/imgui/misc/stl/imgui_stl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/Button.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/Button.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/ButtonsCallbacks.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/ButtonsCallbacks.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI_Shaders.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/ColorHSV.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/ColorHSV.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/ColorHSV.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/ColorHSV.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Vector2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Vector2D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Vector2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Vector2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Particles/ParticleEmissorFireworks.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Particles/ParticleEmissorFireworks.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Render/ShaderOpenCL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/ShaderOpenCL.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderSmoke.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderSmoke.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/Button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Button.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Collisionable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Collisionable.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Collisionable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Color.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Particles/ParticleEmissorFireworks.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Particles/ParticleEmissorFireworks.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/ShaderOpenCL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/ShaderOpenCL.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +1210,7 @@
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/kernels",
+    "last_opened_file_path": "/home/eduardo/CLionProjects/brakeza3d",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -86,12 +1231,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -136,7 +1281,9 @@
       <workItem from="1653614119411" duration="990000" />
       <workItem from="1653859018900" duration="1119000" />
       <workItem from="1653853059586" duration="907000" />
-      <workItem from="1653922980697" duration="2083000" />
+      <workItem from="1653922980697" duration="3849000" />
+      <workItem from="1653968046206" duration="3175000" />
+      <workItem from="1654466549885" duration="886000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -159,7 +1306,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653924779816</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Lint / Warnings">
+      <created>1653925559730</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1653925559730</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,7 +1334,8 @@
     <MESSAGE value="CL Shaders" />
     <MESSAGE value="OpenCL kernels" />
     <MESSAGE value="Created ShaderOpenCL for share buffers and better encapsulation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created ShaderOpenCL for share buffers and better encapsulation" />
+    <MESSAGE value="Lint / Warnings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint / Warnings" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
