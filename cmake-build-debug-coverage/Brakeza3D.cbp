@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Brakeza3D"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Brakeza3D">
+				<Option output="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Brakeza3D" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/SDL2"/>
+					<Add directory="/usr/include/bullet"/>
+					<Add directory="/usr/include/assimp"/>
+					<Add directory="/usr/include/glm"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 Brakeza3D"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Brakeza3D/fast">
+				<Option output="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Brakeza3D" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/SDL2"/>
+					<Add directory="/usr/include/bullet"/>
+					<Add directory="/usr/include/assimp"/>
+					<Add directory="/usr/include/glm"/>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 Brakeza3D/fast"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/FaderToGameStates.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/LevelLoader.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/LevelLoader.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/Player.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/Player.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/behaviors/EnemyBehavior.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossEnemy.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossEnemy.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossLevel10.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossLevel10.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossLevel20.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/bosses/BossLevel20.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/AsteroidEnemyGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/AsteroidEnemyGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/Enemy.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/Enemy.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehavior.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorCircle.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorFollow.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorPath.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorPath.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorPatrol.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyBehaviorRandom.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhostRespawner.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhostRespawner.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemEnergyGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemEnergyGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemHealthGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemHealthGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemWeaponGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemWeaponGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/ShaderBackgroundGame.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/ShaderBackgroundGame.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/ShaderShockWave.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders/ShaderShockWave.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoProjectileBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoProjectileBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/AmmoSmartProjectileBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/Weapon.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/weapons/Weapon.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/examples/imgui_impl_opengl2.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/examples/imgui_impl_opengl2.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/examples/imgui_impl_sdl.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/examples/imgui_impl_sdl.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imconfig.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui_demo.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui_draw.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui_internal.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imgui_widgets.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imstb_rectpack.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imstb_textedit.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/imgui/imstb_truetype.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/Button.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/ButtonsCallbacks.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/MenuOption.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/TextWriter.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/TextureAnimated.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/2D/TextureAnimatedDirectional.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Brakeza3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/Camera3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/Component.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentCamera.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentCollisions.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentGame.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentGameInput.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentHUD.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentInput.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentMenu.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentRender.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentSound.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Components/ComponentWindow.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/ComponentsManager.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Demo/Demo.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/EngineBuffers.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/EngineSetup.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUIManager.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Camera.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Menu.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Objects3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Shaders.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Tiles.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/GUI/GUI_Weapons.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Color.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/ColorHSV.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/ColorHSV.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Counter.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Grid3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Grid3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Image.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Octree.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Parallells.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/PathFinder.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/SoundPackage.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/TextureAtlas.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/TexturePackage.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Timer.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/Tools.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/VariablePackage.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/VariablePackage.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Misc/cJSON.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Cube3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Decal.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/LightPoint3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Line2D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Mesh3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Mesh3DAnimated.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Mesh3DAnimatedCollection.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Object3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Point2D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Sprite3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/SpriteDirectional3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Triangle3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Vector2D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Vector2D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Vector3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Vertex3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Objects/Vertex4D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Particles/Particle.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Particles/ParticleEmissor.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Particles/ParticleEmissorFireworks.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Particles/ParticleEmissorGravity.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/BillboardBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Body.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Ghost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Mesh3DBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Mesh3DGhost.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Projectile3DBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/SimplePendulum.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/Sprite3DBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Physics/SpriteDirectional3DBody.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/AABB3D.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/BSPMap.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Billboard.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Drawable.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Fragment.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Fragment.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Frustum.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Logging.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/M3.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/M4.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Maths.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/PhysicsDebugDraw.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Plane.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Shader.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Texture.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Tile.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Render/Transforms.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderBlink.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderFire.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderImageBackground.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderObjectSilhouette.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderSmoke.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderTintScreen.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/include/Shaders/ShaderWater.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/main.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/2D/Button.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/2D/MenuOption.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/2D/TextWriter.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/2D/TextureAnimated.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/2D/TextureAnimatedDirectional.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Brakeza3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/BSPCollider.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/BSPCollider.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/BillboardBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Body.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Collisionable.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Collisionable.h">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Ghost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Mesh3DBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Mesh3DGhost.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Projectile3DBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/SimplePendulum.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/Sprite3DBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Collisions/SpriteDirectional3DBody.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/Component.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentCamera.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentCollisions.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentGame.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentGameInput.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentHUD.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentInput.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentMenu.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentRender.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentSound.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Components/ComponentWindow.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/ComponentsManager.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Demo/Demo.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/EngineBuffers.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/EngineSetup.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Color.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Counter.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Image.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Octree.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/PathFinder.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/SoundPackage.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/TextureAtlas.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/TexturePackage.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Timer.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/Tools.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Misc/cJSON.c">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Camera3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Cube3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Decal.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/LightPoint3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Line2D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Mesh3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Mesh3DAnimated.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Mesh3DAnimatedCollection.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Object3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Point2D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Sprite3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/SpriteDirectional3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Triangle3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Vector3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Vertex3D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Objects/Vertex4D.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Particles/Particle.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Particles/ParticleEmissor.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Particles/ParticleEmissorFireworks.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Particles/ParticleEmissorGravity.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/BSPMap.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Billboard.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Drawable.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Frustum.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Logging.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/M3.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/M4.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Maths.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/PhysicsDebugDraw.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Plane.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Shader.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Texture.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/src/Render/Transforms.cpp">
+			<Option target="Brakeza3D"/>
+		</Unit>
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
