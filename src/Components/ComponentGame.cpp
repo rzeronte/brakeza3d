@@ -63,7 +63,7 @@ void ComponentGame::onStart()
 
 void ComponentGame::preUpdate()
 {
-    shaderBackground->update();
+    //shaderBackground->update();
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();

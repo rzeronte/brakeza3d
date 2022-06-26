@@ -216,7 +216,7 @@ void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
 void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Log("Skip mesh non triangle", "Mesh3D");
+        Logging::Log("Skip mesh non triangle: " + std::to_string(mesh->mPrimitiveTypes), "Mesh3D");
         return;
     }
 
