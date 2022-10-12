@@ -5,6 +5,7 @@
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 #include "../../darkheaz/src/items/ItemEnergyGhost.h"
 #include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
+#include "../../include/Misc/VideoPlayer.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 0.0f
@@ -54,11 +55,13 @@ void ComponentGame::onStart()
     loadLevels();
 
     shaderBackground = new ShaderBackgroundGame(
-            ComponentsManager::get()->getComponentRender()->clDeviceId,
-            ComponentsManager::get()->getComponentRender()->clContext,
-            ComponentsManager::get()->getComponentRender()->clCommandQueue,
-            "plasma.opencl"
+        ComponentsManager::get()->getComponentRender()->clDeviceId,
+        ComponentsManager::get()->getComponentRender()->clContext,
+        ComponentsManager::get()->getComponentRender()->clCommandQueue,
+        "plasma.opencl"
     );
+
+    auto *video = new VideoPlayer(EngineSetup::get()->ASSETS_FOLDER + "video.avi");
 }
 
 void ComponentGame::preUpdate()
