@@ -61,11 +61,12 @@ void ComponentGame::onStart()
         "plasma.opencl"
     );
 
-    auto *video = new VideoPlayer(EngineSetup::get()->ASSETS_FOLDER + "video.avi");
+    videoPlayer = new VideoPlayer(EngineSetup::get()->ASSETS_FOLDER + "video.avi");
 }
 
 void ComponentGame::preUpdate()
 {
+    videoPlayer->onUpdate();
     //shaderBackground->update();
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
@@ -81,7 +82,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
