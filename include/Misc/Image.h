@@ -22,6 +22,8 @@ public:
     void* pixels();
     bool isLoaded();
 
+    void setSurface(SDL_Surface *surface);
+
     [[nodiscard]] SDL_Surface *getSurface() const;
 
     float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);

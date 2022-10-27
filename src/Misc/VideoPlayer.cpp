@@ -6,6 +6,7 @@
 #include <string>
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/ComponentsManager.h"
 #include <libavcodec/avcodec.h>
 
 extern "C" {
@@ -15,7 +16,7 @@ extern "C" {
 }
 
 VideoPlayer::VideoPlayer(const std::string &filename) {
-    AVFormatContext *pFormatCtx = NULL;
+    pFormatCtx = NULL;
 
     if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
         Logging::Log("VideoPlayer Couldn't open file", "ERROR");
@@ -32,13 +33,20 @@ VideoPlayer::VideoPlayer(const std::string &filename) {
 
     this->findFirstStream(pFormatCtx);
 
+    bmp = SDL_CreateTexture(
+        ComponentsManager::get()->getComponentWindow()->renderer,
+        SDL_PIXELFORMAT_YV12,
+        SDL_TEXTUREACCESS_STREAMING,
+        pCodecCtx->width,
+        pCodecCtx->height
+    );
 }
 
 void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
 {
 
     // Find the first video stream
-    int videoStream = -1;
+    videoStream = -1;
     Logging::Log("VideoPlayer File Number Streams: (" + std::to_string(pFormatCtx->nb_streams) + ")", "VIDEO");
     for (unsigned int i = 0; i < pFormatCtx->nb_streams; i++) {
         Logging::Log("VideoPlayer AVI stream TypeCoded (" + std::to_string(pFormatCtx->streams[i]->codec->codec_type) + ")", "ERROR");
@@ -55,13 +63,12 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
 
     Logging::Log("VideoPlayer stream found it (" + std::to_string(videoStream) + ")", "ERROR");
 
-    AVCodecContext *pCodecCtxOrig = NULL;
-    AVCodecContext *pCodecCtx = NULL;
+    pCodecCtx = NULL;
 
     // Get a pointer to the codec context for the video stream
     pCodecCtx = pFormatCtx->streams[videoStream]->codec;
 
-    AVCodec *pCodec = nullptr;
+    pCodec = nullptr;
 
     // Find the decoder for the video stream
     pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
@@ -83,8 +90,8 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
         exit(-1); //
     }
 
-    AVFrame *pFrame = NULL;
-    AVFrame *pFrameRGB = NULL;
+    pFrame = NULL;
+    pFrameRGB = NULL;
 
     // Allocate video frame
     pFrame = av_frame_alloc();
@@ -105,26 +112,31 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
     // of AVPicture
     avpicture_fill((AVPicture *)pFrameRGB, buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height);
 
-    struct SwsContext *sws_ctx = NULL;
-    int frameFinished;
-    AVPacket packet;
+    currentFrame = 0;
+
 
     // initialize SWS context for software scaling
     sws_ctx = sws_getContext(
-        pCodecCtx->width,
-        pCodecCtx->height,
-        pCodecCtx->pix_fmt,
-        pCodecCtx->width,
-        pCodecCtx->height,
-        AV_PIX_FMT_RGB24,
-        SWS_BILINEAR,
-        NULL,
-        NULL,
-        NULL
+            pCodecCtx->width,
+            pCodecCtx->height,
+            pCodecCtx->pix_fmt,
+            pCodecCtx->width,
+            pCodecCtx->height,
+            AV_PIX_FMT_RGB24,
+            SWS_BILINEAR,
+            NULL,
+            NULL,
+            NULL
     );
-    int i = 0;
 
-    while(av_read_frame(pFormatCtx, &packet) >= 0) {
+}
+
+void VideoPlayer::onUpdate()
+{
+    AVPacket packet;
+    int frameFinished;
+
+    if (av_read_frame(pFormatCtx, &packet) >= 0) {
         // Is this a packet from the video stream?
         if (packet.stream_index == videoStream) {
             // Decode video frame
@@ -143,21 +155,66 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
                     pFrameRGB->linesize
                 );
 
-                // Save the frame to disk
-                if (++i <= 25)  {
-                    SaveFrame(pFrameRGB, pCodecCtx->width,pCodecCtx->height, i);
-                }
+                currentFrame++;
+
+                SDL_UpdateYUVTexture(
+                    bmp,
+                    NULL,
+                    pFrame->data[0],
+                    pFrame->linesize[0],
+                    pFrame->data[1],
+                    pFrame->linesize[1],
+                    pFrame->data[2],
+                    pFrame->linesize[2]
+                 );
+                SDL_RenderCopy(ComponentsManager::get()->getComponentWindow()->renderer, bmp, NULL, NULL);
             }
         }
 
         // Free the packet that was allocated by av_read_frame
         av_free_packet(&packet);
     }
-
-
 }
 
-void VideoPlayer::SaveFrame(AVFrame *pFrame, int width, int height, int iFrame) {
+void VideoPlayer::renderToScreen(int width, int height, int iFrame)
+{
+    // Write pixel data
+    auto data = pFrameRGB->data[0];
+
+
+    uint8_t *p = pFrameRGB->data[0];
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            auto r = *p++ = x % 255; // R
+            auto g = *p++ = 0; // G
+            auto b = *p++ = 0; // B
+
+            auto color = new Color(r, g, b);
+
+            EngineBuffers::getInstance()->setVideoBuffer(x, y, color->getColor());
+
+        }
+    }
+
+
+    /*for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            int offset = 3 * (x + y * width);
+
+            int r = pFrameRGB->data[0][offset + 0] = x % 255; // R
+            int g = pFrameRGB->data[0][offset + 1] = 0; // G
+            int b = pFrameRGB->data[0][offset + 2] = 0; // B
+
+            auto color = new Color(r, g, b);
+
+            EngineBuffers::getInstance()->setVideoBuffer(x, y, color->getColor());
+        }
+    }*/
+}
+
+void VideoPlayer::SaveFrame(int width, int height, int iFrame)
+{
+    Logging::Log("Guardo", "");
     FILE *pFile;
     char szFilename[32];
     int  y;
@@ -175,8 +232,9 @@ void VideoPlayer::SaveFrame(AVFrame *pFrame, int width, int height, int iFrame) 
     fprintf(pFile, "P6\n%d %d\n255\n", width, height);
 
     // Write pixel data
-    for(y=0; y<height; y++)
-        fwrite(pFrame->data[0]+y*pFrame->linesize[0], 1, width*3, pFile);
+    for(y=0; y<height; y++) {
+        fwrite(pFrameRGB->data[0]+y*pFrameRGB->linesize[0], 1, width*3, pFile);
+    }
 
     // Close file
     fclose(pFile);

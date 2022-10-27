@@ -20,6 +20,7 @@
 #include "../../darkheaz/LevelLoader.h"
 #include "../Particles/ParticleEmissorFireworks.h"
 #include "../../darkheaz/src/shaders/ShaderBackgroundGame.h"
+#include "../Misc/VideoPlayer.h"
 
 class ComponentGame : public Component {
 public:
@@ -57,6 +58,7 @@ public:
     Vertex3D shaderAutoScrollSpeed;
 
     ShaderBackgroundGame *shaderBackground;
+    VideoPlayer *videoPlayer;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

@@ -119,3 +119,7 @@ Color Image::getColor(int x, int y)
 
     return Color(pixels[index]);
 }
+
+void Image::setSurface(SDL_Surface *surface) {
+    Image::surface = surface;
+}
