@@ -21,8 +21,8 @@ class VideoPlayer {
     AVFrame *pFrame = nullptr;
     AVFrame *pFrameRGB = nullptr;
     AVCodecContext *pCodecCtx = nullptr;
-    struct SwsContext *sws_ctx = NULL;
-    SDL_Texture* bmp = NULL;
+    struct SwsContext *sws_ctx = nullptr;
+    SDL_Texture* bmp = nullptr;
 
     AVCodec *pCodec;
     int currentFrame;

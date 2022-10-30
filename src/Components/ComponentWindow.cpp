@@ -16,17 +16,15 @@ void ComponentWindow::preUpdate() {
     BUFFERS->clearVideoBuffer();
 }
 
-void ComponentWindow::onUpdate() {
+void ComponentWindow::onUpdate()
+{
+    SDL_RenderPresent(renderer);
 }
 
-void ComponentWindow::postUpdate() {
-    //SDL_UpdateTexture(this->screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
-    //SDL_RenderCopy(renderer, this->screenTexture, nullptr, nullptr);
-    //SDL_RenderPresent(renderer);
-
-    SDL_GL_SwapWindow( this->window );
-    SDL_UpdateTexture( screenTexture, NULL, BUFFERS->videoBuffer, screenSurface->pitch );
-    //SDL_RenderCopy( renderer, screenTexture, NULL, NULL);
+void ComponentWindow::postUpdate()
+{
+    //SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch );
+    SDL_RenderCopy(renderer,screenTexture, nullptr, nullptr);
 }
 
 void ComponentWindow::onEnd() {
@@ -52,12 +50,6 @@ void ComponentWindow::initWindow() {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
     } else {
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-        //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
         //Create window
         window = SDL_CreateWindow(
                 SETUP->ENGINE_TITLE.c_str(),
@@ -72,7 +64,6 @@ void ComponentWindow::initWindow() {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
         } else {
-            contextOpenGL = SDL_GL_CreateContext(window);
             screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
 
             SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
@@ -105,7 +96,8 @@ void ComponentWindow::initWindow() {
     }
 }
 
-void ComponentWindow::initFontsTTF() {
+void ComponentWindow::initFontsTTF()
+{
     Logging::Log("Initializating TTF...", "INFO");
 
     // global font
