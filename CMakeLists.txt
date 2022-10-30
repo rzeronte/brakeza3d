@@ -13,6 +13,7 @@ set(SDL_TTF_INCLUDE_DIRS /usr/include/SDL2)
 set(BULLET_INCLUDE_DIRS /usr/include/bullet)
 set(ASSIMP_INCLUDE_DIRS /usr/include/assimp)
 set(GLM_INCLUDE_DIRS /usr/include/glm)
+set(DEARIMGUI_INCLUDE_DIRS imgui)
 
 if (WIN32)
     set(SDL2_INCLUDE_DIRS C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include\\)
@@ -32,6 +33,7 @@ include_directories(
         ${BULLET_INCLUDE_DIRS}
         ${ASSIMP_INCLUDE_DIRS}
         ${GLM_INCLUDE_DIRS}
+        ${DEARIMGUI_INCLUDE_DIRS}
 )
 
 add_executable(Brakeza3D
@@ -206,11 +208,13 @@ add_executable(Brakeza3D
         imgui/imstb_rectpack.h
         imgui/imstb_textedit.h
         imgui/imstb_truetype.h
+        imgui/imgui_tables.cpp
 
-        imgui/examples/imgui_impl_sdl.h
-        imgui/examples/imgui_impl_sdl.cpp
-        imgui/examples/imgui_impl_opengl2.h
-        imgui/examples/imgui_impl_opengl2.cpp
+        imgui/backends/imgui_impl_sdl.h
+        imgui/backends/imgui_impl_sdl.cpp
+        imgui/backends/imgui_impl_sdlrenderer.h
+        imgui/backends/imgui_impl_sdlrenderer.cpp
+
         include/Render/Fragment.cpp
         include/Render/Fragment.h
         src/Render/M4.cpp
@@ -251,7 +255,6 @@ target_link_libraries(Brakeza3D
         BulletCollision
         LinearMath
         assimp
-        GL
         OpenCL
         avformat
         avutil

@@ -82,6 +82,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {

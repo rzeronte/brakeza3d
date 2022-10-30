@@ -33,8 +33,8 @@ public:
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
-            ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(2, 22), ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Object Inspector (" + std::to_string(gameObjects.size()) + " objects)";

@@ -32,8 +32,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(10, 650), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(450, 240), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(10, 650), ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(450, 240), ImGuiCond_Once);
 
             std::string title = "Shaders";
             ImGui::Begin(title.c_str(), &show, window_flags);

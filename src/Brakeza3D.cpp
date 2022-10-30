@@ -1,7 +1,7 @@
 
 #include "../include/Brakeza3D.h"
-#include "../imgui/examples/imgui_impl_opengl2.h"
-#include "../imgui/examples/imgui_impl_sdl.h"
+#include "../imgui/backends/imgui_impl_sdl.h"
+#include "../imgui/backends/imgui_impl_sdlrenderer.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -185,7 +185,7 @@ void Brakeza3D::AxisPlaneInitialize()
 }
 
 void Brakeza3D::ImGuiOnUpdate() {
-    ImGui_ImplOpenGL2_NewFrame();
+    ImGui_ImplSDLRenderer_NewFrame();
     ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->window);
 
     ImGui::NewFrame();
@@ -203,7 +203,7 @@ void Brakeza3D::ImGuiOnUpdate() {
     //ImGui::ShowDemoWindow();
 
     ImGui::Render();
-    ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+    ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Brakeza3D::ImGuiInitialize() {
@@ -211,12 +211,12 @@ void Brakeza3D::ImGuiInitialize() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    ImGui_ImplSDL2_InitForOpenGL(
+    ImGui_ImplSDL2_InitForSDLRenderer(
         getComponentsManager()->getComponentWindow()->window,
-        getComponentsManager()->getComponentWindow()->contextOpenGL
+        getComponentsManager()->getComponentWindow()->renderer
     );
 
-    ImGui_ImplOpenGL2_Init();
+    ImGui_ImplSDLRenderer_Init(getComponentsManager()->getComponentWindow()->renderer);
 
     ImGuiIO &io = ImGui::GetIO();
     io.WantCaptureMouse = false;
