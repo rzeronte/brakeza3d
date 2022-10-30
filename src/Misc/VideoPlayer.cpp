@@ -195,21 +195,6 @@ void VideoPlayer::renderToScreen(int width, int height, int iFrame)
 
         }
     }
-
-
-    /*for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
-            int offset = 3 * (x + y * width);
-
-            int r = pFrameRGB->data[0][offset + 0] = x % 255; // R
-            int g = pFrameRGB->data[0][offset + 1] = 0; // G
-            int b = pFrameRGB->data[0][offset + 2] = 0; // B
-
-            auto color = new Color(r, g, b);
-
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, color->getColor());
-        }
-    }*/
 }
 
 void VideoPlayer::SaveFrame(int width, int height, int iFrame)

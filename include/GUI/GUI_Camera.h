@@ -18,8 +18,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(250, 22), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 190), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(250, 22), ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 190), ImGuiCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Camera Inspector";

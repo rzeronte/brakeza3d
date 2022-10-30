@@ -20,8 +20,8 @@ public:
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(2, 608), ImGuiSetCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 240), ImGuiSetCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(2, 608), ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(250, 240), ImGuiCond_Once);
 
             std::string title = "Tiles";
             ImGui::Begin(title.c_str(), &show, window_flags);
