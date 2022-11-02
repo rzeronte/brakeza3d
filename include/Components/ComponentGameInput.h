@@ -56,6 +56,10 @@ public:
     void handleMakeGravitationalShields(SDL_Event *event);
 
     void handlePressKeyGameStates(SDL_Event *event);
+
+    void handlePadConnection(SDL_Event *pEvent);
+
+    void initJostick();
 };
 
 

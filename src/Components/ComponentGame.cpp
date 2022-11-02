@@ -53,22 +53,10 @@ void ComponentGame::onStart()
     loadPlayer();
     loadWeapons();
     loadLevels();
-
-    shaderBackground = new ShaderBackgroundGame(
-        ComponentsManager::get()->getComponentRender()->clDeviceId,
-        ComponentsManager::get()->getComponentRender()->clContext,
-        ComponentsManager::get()->getComponentRender()->clCommandQueue,
-        "plasma.opencl"
-    );
-
-    videoPlayer = new VideoPlayer(EngineSetup::get()->ASSETS_FOLDER + "video.avi");
 }
 
 void ComponentGame::preUpdate()
 {
-    videoPlayer->onUpdate();
-    //shaderBackground->update();
-
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
@@ -82,7 +70,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
