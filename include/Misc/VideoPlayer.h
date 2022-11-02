@@ -23,22 +23,17 @@ class VideoPlayer {
     AVCodecContext *pCodecCtx = nullptr;
     struct SwsContext *sws_ctx = nullptr;
     SDL_Texture* bmp = nullptr;
+    SDL_Surface* surf = nullptr;
 
     AVCodec *pCodec;
-    int currentFrame;
     Counter *fps;
 public:
     VideoPlayer(const std::string &filename);
 
     void findFirstStream(AVFormatContext *pFormatCtx);
     void onUpdate();
-    void flipToVideo(int frame);
-
-    void save_texture(const char* file_name, SDL_Renderer* renderer, SDL_Texture* texture);
-
-    void SaveFrame(int width, int height, int iFrame);
-
-    void renderToScreen(int width, int height, int iFrame);
+    void renderToScreen();
+    void renderToScreenTexture();
 };
 
 

@@ -31,6 +31,8 @@ public:
     int relativeRendererMouseX;
     int relativeRendererMouseY;
 
+    _SDL_GameController *gameController;
+
     ComponentInput();
 
     void onStart();
@@ -79,6 +81,8 @@ public:
     void updateGamePadStates();
 
     bool isAnyControllerButtonPressed();
+
+    void initJostick();
 };
 
 

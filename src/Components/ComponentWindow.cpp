@@ -23,7 +23,7 @@ void ComponentWindow::onUpdate()
 
 void ComponentWindow::postUpdate()
 {
-    //SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch );
+    SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch );
     SDL_RenderCopy(renderer,screenTexture, nullptr, nullptr);
 }
 
@@ -63,36 +63,20 @@ void ComponentWindow::initWindow() {
         if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
-        } else {
-            screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
-
-            SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_NONE);
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-            screenTexture = SDL_CreateTexture(
-                renderer,
-                SDL_PIXELFORMAT_RGBA32,
-                SDL_TEXTUREACCESS_STREAMING,
-                EngineSetup::get()->screenWidth,
-                EngineSetup::get()->screenHeight
-            );
-
-            SDL_GL_SetSwapInterval(1); // Enable vsync
-            SDL_GL_SwapWindow(window);
-
-            //Check for joysticks
-            if( SDL_NumJoysticks() < 1 ) {
-                printf( "Warning: No joysticks connected!\n" );
-            } else {
-                gameController = SDL_GameControllerOpen( 0 );
-                if(gameController == nullptr) {
-                    printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
-                } else {
-                    printf("Opened Joystick 0\n");
-                    printf("Name: %s\n", SDL_JoystickNameForIndex(0));
-                }
-            }
         }
+
+        screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
+
+        SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+        screenTexture = SDL_CreateTexture(
+            renderer,
+            SDL_PIXELFORMAT_RGBA32,
+            SDL_TEXTUREACCESS_TARGET,
+            EngineSetup::get()->screenWidth,
+            EngineSetup::get()->screenHeight
+        );
     }
 }
 
@@ -118,4 +102,3 @@ void ComponentWindow::initFontsTTF()
         if (!fontBig) Logging::Log(TTF_GetError(), "INFO");
     }
 }
-

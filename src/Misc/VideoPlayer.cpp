@@ -104,7 +104,7 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
     uint8_t *buffer = NULL;
     int numBytes;
     // Determine required buffer size and allocate buffer
-    numBytes = avpicture_get_size(AV_PIX_FMT_RGB24, pCodecCtx->width,pCodecCtx->height);
+    numBytes = avpicture_get_size(AV_PIX_FMT_RGB32, pCodecCtx->width,pCodecCtx->height);
     buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
 
     // Assign appropriate parts of buffer to image planes in pFrameRGB
@@ -112,23 +112,19 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
     // of AVPicture
     avpicture_fill((AVPicture *)pFrameRGB, buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height);
 
-    currentFrame = 0;
-
-
     // initialize SWS context for software scaling
     sws_ctx = sws_getContext(
-            pCodecCtx->width,
-            pCodecCtx->height,
-            pCodecCtx->pix_fmt,
-            pCodecCtx->width,
-            pCodecCtx->height,
-            AV_PIX_FMT_RGB24,
-            SWS_BILINEAR,
-            NULL,
-            NULL,
-            NULL
+        pCodecCtx->width,
+        pCodecCtx->height,
+        pCodecCtx->pix_fmt,
+        pCodecCtx->width,
+        pCodecCtx->height,
+        AV_PIX_FMT_BGR32,
+        SWS_FAST_BILINEAR,
+        NULL,
+        NULL,
+        NULL
     );
-
 }
 
 void VideoPlayer::onUpdate()
@@ -155,72 +151,38 @@ void VideoPlayer::onUpdate()
                     pFrameRGB->linesize
                 );
 
-                currentFrame++;
-
-                SDL_UpdateYUVTexture(
-                    bmp,
-                    NULL,
-                    pFrame->data[0],
-                    pFrame->linesize[0],
-                    pFrame->data[1],
-                    pFrame->linesize[1],
-                    pFrame->data[2],
-                    pFrame->linesize[2]
-                 );
-                SDL_RenderCopy(ComponentsManager::get()->getComponentWindow()->renderer, bmp, NULL, NULL);
             }
         }
-
-        // Free the packet that was allocated by av_read_frame
-        av_free_packet(&packet);
+        this->renderToScreen();
+        av_packet_unref(&packet);
     }
 }
 
-void VideoPlayer::renderToScreen(int width, int height, int iFrame)
+void VideoPlayer::renderToScreenTexture()
 {
-    // Write pixel data
-    auto data = pFrameRGB->data[0];
+    SDL_UpdateTexture(
+        ComponentsManager::get()->getComponentWindow()->screenTexture,
+        nullptr,
+        pFrameRGB->data[0],
+        pFrameRGB->linesize[0]
+    );
+}
 
+void VideoPlayer::renderToScreen()
+{
+    uint8_t *data = pFrameRGB->data[0];
 
-    uint8_t *p = pFrameRGB->data[0];
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            auto r = *p++ = x % 255; // R
-            auto g = *p++ = 0; // G
-            auto b = *p++ = 0; // B
+    for(int y = 0; y < pCodecCtx->height; y++) {
+        for(int x = 0; x < pCodecCtx->width; x++) {
+
+            int offset = 4 * x + y * pFrameRGB->linesize[0];
+
+            Uint8 r = data[offset];
+            Uint8 g = data[offset + 1];
+            Uint8 b = data[offset + 2];
 
             auto color = new Color(r, g, b);
-
             EngineBuffers::getInstance()->setVideoBuffer(x, y, color->getColor());
-
         }
     }
-}
-
-void VideoPlayer::SaveFrame(int width, int height, int iFrame)
-{
-    Logging::Log("Guardo", "");
-    FILE *pFile;
-    char szFilename[32];
-    int  y;
-
-    // Open file
-    std::string file = EngineSetup::get()->ASSETS_FOLDER + "frame%d.ppm";
-
-    sprintf(szFilename, file.c_str(), iFrame);
-
-    pFile=fopen(szFilename, "wb");
-    if (pFile == NULL)
-        return;
-
-    // Write header
-    fprintf(pFile, "P6\n%d %d\n255\n", width, height);
-
-    // Write pixel data
-    for(y=0; y<height; y++) {
-        fwrite(pFrameRGB->data[0]+y*pFrameRGB->linesize[0], 1, width*3, pFile);
-    }
-
-    // Close file
-    fclose(pFile);
 }
