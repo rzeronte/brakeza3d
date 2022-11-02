@@ -37,15 +37,17 @@ void ComponentGameInput::onEnd() {
 
 }
 
-void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish) {
+void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
+{
     if (!isEnabled()) return;
 
     this->handleInGameInput(event, finish);
 }
 
-void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end) {
-
+void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
+{
     this->handleEscape(event);
+    this->handlePadConnection(event);
 
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
 
@@ -402,5 +404,17 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->pressedKeyByDead();
+    }
+}
+
+void ComponentGameInput::handlePadConnection(SDL_Event *event)
+{
+    if (event->type == SDL_CONTROLLERDEVICEADDED ) {
+        Logging::getInstance()->Log(std::string("added"));
+        ComponentsManager::get()->getComponentInput()->initJostick();
+    }
+
+    if (event->type == SDL_CONTROLLERDEVICEREMOVED ) {
+        Logging::getInstance()->Log(std::string("removed"));
     }
 }

@@ -58,7 +58,6 @@ public:
     Vertex3D shaderAutoScrollSpeed;
 
     ShaderBackgroundGame *shaderBackground;
-    VideoPlayer *videoPlayer;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

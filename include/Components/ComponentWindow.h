@@ -35,7 +35,6 @@ public:
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
-    _SDL_GameController *gameController;
 
     TTF_Font *fontSmall = NULL;
     TTF_Font *fontDefault = NULL;
@@ -45,6 +44,8 @@ public:
     void initWindow();
 
     void initFontsTTF();
+
+    void initJostick();
 };
 
 

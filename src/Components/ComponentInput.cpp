@@ -2,12 +2,15 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentInput::ComponentInput() {
+ComponentInput::ComponentInput()
+{
     setEnabled(true);
 }
 
-void ComponentInput::onStart() {
+void ComponentInput::onStart()
+{
     Logging::Log("ComponentInput onStart", "ComponentInput");
+    this->initJostick();
 }
 
 void ComponentInput::preUpdate() {
@@ -193,20 +196,39 @@ bool ComponentInput::isMouseMotion() const {
     return mouseMotion;
 }
 
-void ComponentInput::updateGamePadStates() {
-    controllerButtonA = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_A);
-    controllerButtonB = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_B);
-    controllerButtonX = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_X);
-    controllerButtonY = SDL_GameControllerGetButton(ComponentsManager::get()->getComponentWindow()->gameController, SDL_CONTROLLER_BUTTON_Y);
+void ComponentInput::updateGamePadStates()
+{
+    controllerButtonA = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_A);
+    controllerButtonB = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_B);
+    controllerButtonX = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_X);
+    controllerButtonY = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_Y);
 
-    controllerAxisLeftX = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)0)/32768.0;
-    controllerAxisLeftY = SDL_GameControllerGetAxis(ComponentsManager::get()->getComponentWindow()->gameController, (SDL_GameControllerAxis)1)/32768.0;
+    controllerAxisLeftX = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)0)/32768.0;
+    controllerAxisLeftY = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)1)/32768.0;
 }
 
-bool ComponentInput::isAnyControllerButtonPressed() {
+bool ComponentInput::isAnyControllerButtonPressed()
+{
     if (controllerButtonA || controllerButtonB || controllerButtonX || controllerButtonY) {
         return true;
     }
 
     return false;
+}
+
+void ComponentInput::initJostick()
+{
+    //Check for joysticks
+    if ( SDL_NumJoysticks() < 1 ) {
+        printf( "Warning: No joysticks connected!\n" );
+    } else {
+        gameController = SDL_GameControllerOpen( 0 );
+
+        if (gameController == nullptr) {
+            printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
+        }
+
+        printf("Opened Joystick 0\n");
+        printf("Name: %s\n", SDL_JoystickNameForIndex(0));
+    }
 }

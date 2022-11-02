@@ -122,4 +122,5 @@ Color Image::getColor(int x, int y)
 
 void Image::setSurface(SDL_Surface *surface) {
     Image::surface = surface;
+    this->loaded = true;
 }

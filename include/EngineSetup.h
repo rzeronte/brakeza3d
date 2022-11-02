@@ -19,7 +19,7 @@ public:
     bool LOGGING = true;
     bool LOGGING_TO_FILE = false;
 
-    std::string ENGINE_TITLE = "Brakeza3D v0.9";
+    std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
