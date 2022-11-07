@@ -3,6 +3,7 @@ unsigned int createRGB(int r, int g, int b);
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
+    float iTime,
     __global unsigned int *video)
 {
    int i = get_global_id(0);

@@ -1,7 +1,3 @@
-//
-// Created by eduardo on 10/05/22.
-//
-
 #include <functional>
 #include <utility>
 #include "ShaderBackgroundGame.h"
@@ -27,19 +23,11 @@ ShaderBackgroundGame::ShaderBackgroundGame(
     );
 
     makeColorPalette();
-
-    opencl_buffer_palette = clCreateBuffer(
-        context,
-        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        palette,
-        &clRet
-    );
 }
 
 void ShaderBackgroundGame::makeColorPalette()
 {
-    palette = new uint32_t[255];
+    uint32_t *palette = new uint32_t[255];
     //generate the palette
     Color colorRGB;
     for (int x = 0; x < 255; x++) {
@@ -55,6 +43,8 @@ void ShaderBackgroundGame::update()
 
     executeKernelOpenCL();
 
+    this->flipToVideo();
+
     //demo01();
     //demo02();
     //demo03();
@@ -64,12 +54,24 @@ void ShaderBackgroundGame::update()
 void ShaderBackgroundGame::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_video,
+        CL_TRUE,
+        0,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        &EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
+
+    clEnqueueWriteBuffer(
             clCommandQueue,
-            opencl_buffer_video,
+            opencl_buffer_videoShader,
             CL_TRUE,
             0,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &EngineBuffers::getInstance()->videoBuffer,
+            this->videoBuffer,
             0,
             nullptr,
             nullptr
@@ -78,13 +80,13 @@ void ShaderBackgroundGame::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_palette);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_videoShader);
 
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
     // Divide work items into groups of 64
-    size_t local_item_size = 12;
+    size_t local_item_size = 16;
 
     clRet = clEnqueueNDRangeKernel(
         clCommandQueue,
@@ -100,11 +102,11 @@ void ShaderBackgroundGame::executeKernelOpenCL()
 
     clEnqueueReadBuffer(
         clCommandQueue,
-        opencl_buffer_video,
+        opencl_buffer_videoShader,
         CL_TRUE,
         0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
+        this->videoBuffer,
         0,
         nullptr,
         nullptr
@@ -113,7 +115,7 @@ void ShaderBackgroundGame::executeKernelOpenCL()
     if (clRet != CL_SUCCESS) {
         Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
 
-        char buffer[1024];
+        char buffer[2048];
         clGetProgramBuildInfo(
             program,
             clDeviceId,
@@ -195,37 +197,7 @@ void ShaderBackgroundGame::demo02()
 
 void ShaderBackgroundGame::demo03()
 {
-    Color color;
-    int paletteShift = executionTime * 100.0;
 
-    auto b = EngineBuffers::getInstance()->videoBuffer;
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++, b++) {
-            //int intensity = int(128.0 + (128.0 * sin(x / 8.0)));
-            //int intensity = int(128.0 + (128.0 * sin(sqrt((x - w / 2.0) * (x - w / 2.0) + (y - h / 2.0) * (y - h / 2.0)) / 8.0)));
-            /*int intensity = int(
-                128.0 + (128.0 * sin(x / 8.0))
-                + 128.0 + (128.0 * sin(y / 8.0))
-            ) / 2;*/
-
-            /*int intensity = int(
-                    128.0 + (128.0 * sin(x / 16.0))
-                    + 128.0 + (128.0 * sin(y / 8.0))
-                    + 128.0 + (128.0 * sin((x + y) / 16.0))
-                    + 128.0 + (128.0 * sin(sqrt(double(x * x + y * y)) / 8.0))
-            ) / 4;*/
-
-            int intensity = int(
-                    128.0 + (128.0 * sin(x / 16.0))
-                    + 128.0 + (128.0 * sin(y / 32.0))
-                    + 128.0 + (128.0 * sin(sqrt(double((x - w / 2.0)* (x - w / 2.0) + (y - h / 2.0) * (y - h / 2.0))) / 8.0))
-                    + 128.0 + (128.0 * sin(sqrt(double(x * x + y * y)) / 8.0))
-            ) / 4;
-
-            color = Color(palette[(intensity + paletteShift) % 256]);
-            *b = color.getColor();
-        }
-    }
 }
 
 void ShaderBackgroundGame::demo04()
