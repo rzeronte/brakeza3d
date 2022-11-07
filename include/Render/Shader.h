@@ -59,6 +59,7 @@ public:
 
     static float step(float limit, float value);
 
+    void flipToVideo();
 };
 
 

@@ -53,10 +53,20 @@ void ComponentGame::onStart()
     loadPlayer();
     loadWeapons();
     loadLevels();
+
+    shaderBackground = new ShaderBackgroundGame(
+        ComponentsManager::get()->getComponentRender()->clDeviceId,
+        ComponentsManager::get()->getComponentRender()->clContext,
+        ComponentsManager::get()->getComponentRender()->clCommandQueue,
+        "shaderBackgroundGame.opencl"
+    );
+
+    shaderBackground->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
 }
 
 void ComponentGame::preUpdate()
 {
+
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
@@ -70,6 +80,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+    shaderBackground->update();
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {

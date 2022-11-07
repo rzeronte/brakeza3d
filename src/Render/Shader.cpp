@@ -6,6 +6,7 @@
 #include <functional>
 #include "../../include/Render/Shader.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/EngineBuffers.h"
 
 Shader::Shader()
 {
@@ -95,3 +96,16 @@ float Shader::step(float limit, float value)
 
     return 1.0f;
 }
+
+void Shader::flipToVideo()
+{
+    auto engineBuffers = EngineBuffers::getInstance();
+
+    auto screenBuffer = engineBuffers->videoBuffer;
+    auto currentBuffer = this->videoBuffer;
+
+    for (int i = 0; i < bufferSize; i++, ++screenBuffer, ++currentBuffer) {
+        *screenBuffer = *currentBuffer;
+    }
+}
+

@@ -14,9 +14,6 @@
 
 class ShaderBackgroundGame: public ShaderOpenCL {
     Image *channel1;
-    uint32_t *palette;
-
-    cl_mem opencl_buffer_palette;
 
 public:
     ShaderBackgroundGame(
