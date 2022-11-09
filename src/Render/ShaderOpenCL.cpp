@@ -43,7 +43,7 @@ void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context
 
     kernel = clCreateKernel(program, "onUpdate", &clRet);
 
-    opencl_buffer_video = clCreateBuffer(
+    opencl_buffer_video_shader = clCreateBuffer(
             context,
             CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
@@ -51,11 +51,11 @@ void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context
             &clRet
     );
 
-    opencl_buffer_videoShader = clCreateBuffer(
+    opencl_buffer_video_screen = clCreateBuffer(
             context,
-            CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            this->videoBuffer,
+            EngineBuffers::getInstance()->videoBuffer,
             &clRet
     );
 }

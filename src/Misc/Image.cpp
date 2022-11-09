@@ -8,6 +8,7 @@
 Image::Image()
 {
     this->loaded = false;
+    this->offset = 0;
 }
 
 Image::Image(std::string filename)

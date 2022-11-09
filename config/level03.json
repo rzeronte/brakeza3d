@@ -1,6 +1,6 @@
 {
   "name": "Level 03",
-  "backgroundImage": "levels/grid_blue.png",
+  "backgroundImage": "levels/Space_4_1.25x.png",
   "allowGravitionalShield": false,
   "allowEnergyShield": true,
   "tutorialImage": "tutorials/tutorial03.png",

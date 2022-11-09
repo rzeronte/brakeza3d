@@ -32,13 +32,6 @@ void ShaderShockWave::onUpdate(Vertex3D position)
     const float sizeDecreasing = (Brakeza3D::get()->getDeltaTime() * startSize) / ttlWave.getStep();
     currentSize -= sizeDecreasing;
 
-    auto screenBuffer = engineBuffers->videoBuffer;
-    auto currentBuffer = this->videoBuffer;
-
-    for (int i = 0; i < bufferSize; i++, ++screenBuffer, ++currentBuffer) {
-        *screenBuffer = *currentBuffer;
-    }
-
     if (ttlWave.isFinished()) {
         currentSize = startSize;
         ttlWave.setEnabled(true);
@@ -49,27 +42,27 @@ void ShaderShockWave::onUpdate(Vertex3D position)
 void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
 {
     clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_video,
-        CL_TRUE,
-        0,
+            clCommandQueue,
+            opencl_buffer_video_screen,
+            CL_TRUE,
+            0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
     );
 
     clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_videoShader,
-        CL_TRUE,
-        0,
+            clCommandQueue,
+            opencl_buffer_video_shader,
+            CL_TRUE,
+            0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        this->videoBuffer,
-        0,
-        nullptr,
-        nullptr
+            this->videoBuffer,
+            0,
+            nullptr,
+            nullptr
     );
 
     Point2D focalPoint = Transforms::WorldToPoint(
@@ -86,8 +79,8 @@ void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
     clSetKernelArg(kernel, 4, sizeof(int), &focalPoint.x);
     clSetKernelArg(kernel, 5, sizeof(int), &focalPoint.y);
     clSetKernelArg(kernel, 6, sizeof(float), &currentSize);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&opencl_buffer_video);
-    clSetKernelArg(kernel, 8, sizeof(cl_mem), (void *)&opencl_buffer_videoShader);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
+    clSetKernelArg(kernel, 8, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
 
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
@@ -107,27 +100,15 @@ void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
     );
 
     clEnqueueReadBuffer(
-        clCommandQueue,
-        opencl_buffer_video,
-        CL_TRUE,
-        0,
+            clCommandQueue,
+            opencl_buffer_video_shader,
+            CL_TRUE,
+            0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueReadBuffer(
-        clCommandQueue,
-        opencl_buffer_videoShader,
-        CL_TRUE,
-        0,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        this->videoBuffer,
-        0,
-        nullptr,
-        nullptr
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
     );
 
     if (clRet != CL_SUCCESS) {

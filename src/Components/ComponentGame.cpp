@@ -62,10 +62,21 @@ void ComponentGame::onStart()
     );
 
     shaderBackground->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+
+
+    shaderClouds = new ShaderClouds(
+            ComponentsManager::get()->getComponentRender()->clDeviceId,
+            ComponentsManager::get()->getComponentRender()->clContext,
+            ComponentsManager::get()->getComponentRender()->clCommandQueue,
+            "clouds.opencl"
+    );
+
+    shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
 }
 
 void ComponentGame::preUpdate()
 {
+    shaderClouds->update();
 
     if (getGameState() == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -80,7 +91,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    shaderBackground->update();
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {

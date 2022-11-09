@@ -21,6 +21,7 @@
 #include "../Particles/ParticleEmissorFireworks.h"
 #include "../../darkheaz/src/shaders/ShaderBackgroundGame.h"
 #include "../Misc/VideoPlayer.h"
+#include "../../darkheaz/src/shaders/ShaderClouds.h"
 
 class ComponentGame : public Component {
 public:
@@ -58,6 +59,7 @@ public:
     Vertex3D shaderAutoScrollSpeed;
 
     ShaderBackgroundGame *shaderBackground;
+    ShaderClouds *shaderClouds;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

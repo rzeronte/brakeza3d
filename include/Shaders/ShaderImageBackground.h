@@ -90,21 +90,21 @@ public:
         }
     }
 
-    void drawFlatPortion() {
+        void drawFlatPortion() {
 
-        auto *buffer = EngineBuffers::getInstance();
+            auto *buffer = EngineBuffers::getInstance();
 
-        auto *pixels = (Uint32 *) image->pixels();
+            auto *pixels = (Uint32 *) image->pixels();
 
-        for (int i = xDrawPos; i < xDrawPos + std::min(hImage, this->h); i++) {
-            for (int j = yDrawPos; j < yDrawPos + std::min(wImage, this->w); j++) {
-                const int bufferX = std::min(xImage + j, this->w);
-                const int bufferY = std::min(yImage + i, this->h);
+            for (int i = xDrawPos; i < xDrawPos + std::min(hImage, this->h); i++) {
+                for (int j = yDrawPos; j < yDrawPos + std::min(wImage, this->w); j++) {
+                    const int bufferX = std::min(xImage + j, this->w);
+                    const int bufferY = std::min(yImage + i, this->h);
 
-                buffer->setVideoBuffer(j, i, pixels[bufferY * image->width() + bufferX]);
+                    buffer->setVideoBuffer(j, i, pixels[bufferY * image->width() + bufferX]);
+                }
             }
         }
-    }
 
     void setImage(Image *image) {
         if (image != nullptr) {
