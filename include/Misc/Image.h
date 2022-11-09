@@ -34,9 +34,9 @@ private:
     SDL_Surface *surface;
     std::string fileName;
     bool loaded;
+    int offset;
 
     void loadFromRaw(unsigned int *texture, int w, int h);
-
 public:
     const std::string &getFileName() const;
 

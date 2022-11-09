@@ -25,8 +25,8 @@ public:
     cl_program program;
     cl_kernel kernel;
 
-    cl_mem opencl_buffer_video;
-    cl_mem opencl_buffer_videoShader;
+    cl_mem opencl_buffer_video_shader;
+    cl_mem opencl_buffer_video_screen;
 };
 
 

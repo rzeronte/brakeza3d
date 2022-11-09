@@ -1,13 +1,13 @@
 #include <functional>
 #include <utility>
-#include "ShaderBackgroundGame.h"
+#include "ShaderClouds.h"
 #include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderBackgroundGame::ShaderBackgroundGame(
+ShaderClouds::ShaderClouds(
     cl_device_id deviceId,
     cl_context context,
     cl_command_queue commandQueue,
@@ -18,14 +18,22 @@ ShaderBackgroundGame::ShaderBackgroundGame(
     commandQueue,
     kernelFile
 ) {
-    this->channel1 = new Image(
-    EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE
+    this->clouds = new Image(
+    EngineSetup::get()->IMAGES_FOLDER + "cloud.png"
+    );
+
+    opencl_buffer_pixels_image = clCreateBuffer(
+            context,
+            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            this->clouds->pixels(),
+            &clRet
     );
 
     makeColorPalette();
 }
 
-void ShaderBackgroundGame::makeColorPalette()
+void ShaderClouds::makeColorPalette()
 {
     uint32_t *palette = new uint32_t[255];
     //generate the palette
@@ -37,13 +45,14 @@ void ShaderBackgroundGame::makeColorPalette()
     }
 }
 
-void ShaderBackgroundGame::update()
+void ShaderClouds::update()
 {
     Shader::update();
 
     executeKernelOpenCL();
 
     //this->flipToVideo();
+    //this->flipToUI();
 
     //demo01();
     //demo02();
@@ -51,7 +60,7 @@ void ShaderBackgroundGame::update()
     //demo04();
 }
 
-void ShaderBackgroundGame::executeKernelOpenCL()
+void ShaderClouds::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
             clCommandQueue,
@@ -59,19 +68,7 @@ void ShaderBackgroundGame::executeKernelOpenCL()
             CL_TRUE,
             0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
-    );
-
-    clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_video_screen,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &this->videoBuffer,
+            EngineBuffers::getInstance()->videoBuffer,
             0,
             nullptr,
             nullptr
@@ -80,8 +77,9 @@ void ShaderBackgroundGame::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
 
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
@@ -105,8 +103,8 @@ void ShaderBackgroundGame::executeKernelOpenCL()
             opencl_buffer_video_screen,
             CL_TRUE,
             0,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &EngineBuffers::getInstance()->videoBuffer,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
             0,
             nullptr,
             nullptr
@@ -131,7 +129,7 @@ void ShaderBackgroundGame::executeKernelOpenCL()
     }
 }
 
-void ShaderBackgroundGame::demo01()
+void ShaderClouds::demo01()
 {
     float thickness = 0.325;
     Color green = Color::green();
@@ -160,7 +158,7 @@ void ShaderBackgroundGame::demo01()
     }
 }
 
-void ShaderBackgroundGame::demo02()
+void ShaderClouds::demo02()
 {
     Color colorA(255, 0, 0);
     Color colorB(0, 0, 255);
@@ -195,12 +193,12 @@ void ShaderBackgroundGame::demo02()
 }
 
 
-void ShaderBackgroundGame::demo03()
+void ShaderClouds::demo03()
 {
 
 }
 
-void ShaderBackgroundGame::demo04()
+void ShaderClouds::demo04()
 {
     float thickness = 0.425;
     Color baseColor = Color::green();
@@ -221,17 +219,42 @@ void ShaderBackgroundGame::demo04()
     }
 }
 
-float ShaderBackgroundGame::plot(Vector2D st, float thickness)
+float ShaderClouds::plot(Vector2D st, float thickness)
 {
     return smoothstep(thickness, 0.0, abs(st.y - st.x));
 }
 
-float ShaderBackgroundGame::plot(Vector2D st, float pct, float thickness)
+float ShaderClouds::plot(Vector2D st, float pct, float thickness)
 {
     return smoothstep(pct - thickness,pct, st.y) - smoothstep(pct,pct + thickness, st.y);
 }
 
-ShaderBackgroundGame::~ShaderBackgroundGame()
+ShaderClouds::~ShaderClouds()
 {
-    delete channel1;
+    delete clouds;
+}
+
+void ShaderClouds::flipToUI()
+{
+    auto engineBuffers = EngineBuffers::getInstance();
+
+    auto screenBuffer = engineBuffers->videoBuffer;
+    auto currentBuffer = this->videoBuffer;
+
+    int width = EngineSetup::get()->screenWidth;
+
+    SDL_Rect portion;
+    portion.x = 10;portion.y = 390;
+    portion.w = 85; portion.h = 70;
+
+    for (int x = portion.x; x < portion.x + portion.w ; x++) {
+        for (int y = portion.y; y < portion.y + portion.h ; y++) {
+            int index = x + width * y;
+            screenBuffer[index] = currentBuffer[index];
+        }
+    }
+
+    /*for (int i = 0; i < bufferSize; i++, ++screenBuffer, ++currentBuffer) {
+        *screenBuffer = *currentBuffer;
+    }*/
 }
