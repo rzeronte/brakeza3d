@@ -16,12 +16,7 @@ class ShaderBackgroundGame: public ShaderOpenCL {
     Image *channel1;
 
 public:
-    ShaderBackgroundGame(
-        cl_device_id deviceId,
-        cl_context context,
-        cl_command_queue commandQueue,
-        const std::string& kernelFile
-    );
+    ShaderBackgroundGame(const std::string& kernelFile);
 
     void update() override;
 

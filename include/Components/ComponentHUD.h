@@ -12,9 +12,14 @@
 #include "../2D/TextWriter.h"
 #include "../2D/Button.h"
 #include "../Objects/Mesh3D.h"
+#include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
 
 class ComponentHUD : public Component {
     std::vector<Button*> buttons;
+    ShaderHorizontalBar *shaderBar;
+    ShaderHorizontalBar *shaderBarEnergy;
+    ShaderHorizontalBar *shaderSelectedEnemyStamina;
+
 public:
 
     ComponentHUD();
@@ -68,6 +73,10 @@ public:
     void drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c);
 
     void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera);
+
+    void drawShaderBars();
+
+    void drawEnemySelectedShaderStamina();
 };
 
 

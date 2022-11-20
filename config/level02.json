@@ -12,7 +12,7 @@
       "stamina": 1000,
       "speed": 100,
       "motion": {
-        "type": 0
+        "type": 6
       }
     }
   ],

@@ -84,6 +84,8 @@ public:
     static ColorHSV getColorHSV(Color in);
 
     static Color getColorRGB(ColorHSV in);
+
+    static Vertex3D randomVertex();
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

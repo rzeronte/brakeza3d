@@ -27,15 +27,7 @@ GravitationalShield::GravitationalShield(
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 
-    shockWave = new ShaderShockWave(
-        ComponentsManager::get()->getComponentRender()->clDeviceId,
-        ComponentsManager::get()->getComponentRender()->clContext,
-        ComponentsManager::get()->getComponentRender()->clCommandQueue,
-        "shockWave.opencl",
-        60,
-        0.25f,
-        1
-    );
+    shockWave = new ShaderShockWave(60,0.25f,1);
 }
 
 void GravitationalShield::onUpdate()

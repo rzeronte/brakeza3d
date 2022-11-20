@@ -2,7 +2,8 @@
 
 ComponentsManager *ComponentsManager::instance = nullptr;
 
-ComponentsManager *ComponentsManager::get() {
+ComponentsManager *ComponentsManager::get()
+{
     if (instance == nullptr) {
         instance = new ComponentsManager();
     }

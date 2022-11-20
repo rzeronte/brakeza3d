@@ -7,23 +7,21 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
-ShaderOpenCL::ShaderOpenCL(
-        cl_device_id device_id,
-        cl_context context,
-        cl_command_queue command_queue,
-        const std::string& kernelFilename
-) {
-    this->clDeviceId = device_id;
-    this->clCommandQueue = command_queue;
+ShaderOpenCL::ShaderOpenCL(const std::string& kernelFilename)
+{
+    this->clDeviceId = ComponentsManager::get()->getComponentRender()->clDeviceId;
+    this->clCommandQueue = ComponentsManager::get()->getComponentRender()->clCommandQueue;
     this->kernelFilename = kernelFilename;
+    this->context = ComponentsManager::get()->getComponentRender()->clContext;
 
-    initOpenCLProgram(device_id, context);
+    initOpenCLProgram();
 
     Logging::Log("Loading '" + kernelFilename + "' kernel", "OPENCL");
 }
 
-void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context)
+void ShaderOpenCL::initOpenCLProgram()
 {
     size_t source_size;
     char * source_str= Tools::readFile(
@@ -39,7 +37,7 @@ void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context
         &clRet
     );
 
-    clBuildProgram(program, 1, &device_id, nullptr, nullptr, nullptr);
+    clBuildProgram(program, 1, &this->clDeviceId, nullptr, nullptr, nullptr);
 
     kernel = clCreateKernel(program, "onUpdate", &clRet);
 
@@ -58,4 +56,25 @@ void ShaderOpenCL::initOpenCLProgram(cl_device_id &device_id, cl_context context
             EngineBuffers::getInstance()->videoBuffer,
             &clRet
     );
+}
+
+void ShaderOpenCL::debugKernel()
+{
+    if (clRet != CL_SUCCESS) {
+        Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
+
+        char buffer[2048];
+        clGetProgramBuildInfo(
+                program,
+                clDeviceId,
+                CL_PROGRAM_BUILD_LOG,
+                sizeof(buffer),
+                buffer,
+                nullptr
+        );
+
+        if (strlen(buffer) > 0 ) {
+            Logging::getInstance()->Log( buffer );
+        }
+    }
 }

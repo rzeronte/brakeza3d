@@ -15,12 +15,21 @@ void ComponentHUD::onStart() {
 
     textureWriter = new TextWriter(
 ComponentsManager::get()->getComponentWindow()->renderer,
-std::string(SETUP->SPRITES_FOLDER + SETUP->CONCHARS_SPRITE_FILE).c_str()
+std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
+
+    shaderBar = new ShaderHorizontalBar(Color(255, 0, 0),0.90);
+    shaderBar->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+
+    shaderBarEnergy = new ShaderHorizontalBar(Color(0, 255, 0),0.95);
+    shaderBarEnergy->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+
+    shaderSelectedEnemyStamina = new ShaderHorizontalBar(Color(128, 0, 128),0.05);
+    shaderSelectedEnemyStamina->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
 }
 
-void ComponentHUD::preUpdate() {
-
+void ComponentHUD::preUpdate()
+{
     if (!isEnabled()) {
         return;
     }
@@ -28,18 +37,19 @@ void ComponentHUD::preUpdate() {
     if (SETUP->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
     }
-
 }
 
-void ComponentHUD::onUpdate() {
+void ComponentHUD::onUpdate()
+{
     if (!isEnabled()) return;
 
-    drawEnemies();
     drawHUD();
-
+    //drawEnemies();
 }
 
-void ComponentHUD::postUpdate() {
+void ComponentHUD::postUpdate()
+{
+    if (!isEnabled()) return;
 
 }
 
@@ -64,7 +74,8 @@ void ComponentHUD::loadImages() {
 
 }
 
-void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
+void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const
+{
     int totalW = SETUP->screenWidth;
     int totalH = SETUP->screenHeight;
 
@@ -72,25 +83,25 @@ void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const {
     this->writeText(xPosition, totalH / 2, text, bold);
 }
 
-void ComponentHUD::writeCenterHorizontal(int y, const char *text, bool bold) const {
+void ComponentHUD::writeCenterHorizontal(int y, const char *text, bool bold) const
+{
     int totalW = SETUP->screenWidth;
 
     int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
     this->writeText(xPosition, y, text, bold);
 }
 
-void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const {
+void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const
+{
     this->textureWriter->writeText(x, y, text, bold);
 }
 
-void ComponentHUD::drawHUD() {
-
+void ComponentHUD::drawHUD()
+{
     auto componentManager = ComponentsManager::get();
 
-    drawPlayerStamina(20);
-    drawPlayerEnergy(20 + 2 + 28 + 1);
-
-    drawEnemySelectedStamina(20);
+    drawShaderBars();
+    drawEnemySelectedShaderStamina();
 
     if (SETUP->DRAW_FPS) {
         writeCenterHorizontal(
@@ -104,7 +115,7 @@ void ComponentHUD::drawHUD() {
         button->draw();
     }
 
-    this->writeCenterHorizontal(20, componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(), false);
+    this->writeCenterHorizontal(25, componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(), false);
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {
@@ -330,4 +341,33 @@ void ComponentHUD::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max
     min.y = std::clamp(min.y, 0, EngineSetup::get()->screenHeight);
     max.x = std::clamp(max.x, 0, EngineSetup::get()->screenWidth);
     max.y = std::clamp(max.y, 0, EngineSetup::get()->screenHeight);
+}
+
+void ComponentHUD::drawShaderBars()
+{
+    float fixedWidth = 1.0;
+    float health =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartStamina());
+    float energy =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getEnergy() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartEnergy());
+
+    shaderBar->setValue(health);
+    shaderBarEnergy->setValue(energy);
+    shaderBar->update();
+    shaderBarEnergy->update();
+}
+
+void ComponentHUD::drawEnemySelectedShaderStamina()
+{
+    auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+
+    auto enemy = dynamic_cast<EnemyGhost*> (objectSelected);
+    if (enemy == nullptr) {
+        return;
+    }
+
+    float fixedWidth = 1.0;
+    float health =  ((enemy->getStamina() * fixedWidth) / (int) enemy->getStartStamina());
+
+    shaderSelectedEnemyStamina->setValue(health);
+    shaderSelectedEnemyStamina->update();
+
 }

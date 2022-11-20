@@ -14,10 +14,10 @@
 #define INITIAL_ENERGY 100
 #define INITIAL_RECOVER_ENERGY 0.05f
 #define INITIAL_LIVES 10
-#define INITIAL_POWER 100
+#define INITIAL_POWER 400
 #define INITIAL_POWERDASH 6000
 #define INITIAL_FRICTION 5
-#define INITIAL_MAX_VELOCITY 25
+#define INITIAL_MAX_VELOCITY 150
 #define MAX_GRAVITATIONAL_SHIELDS 3
 
 typedef enum {
@@ -49,7 +49,6 @@ private:
     Weapon *weapon;
     Counter *counterDamageBlink;
     ShaderBlink *blink;
-    ShaderShockWave *shockWave;
 
     int killsCounter;
     int levelsCompletedCounter;

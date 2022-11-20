@@ -23,7 +23,9 @@ void EnemyGhost::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    rotateToPlayer();
+    if (!rotationFrameEnabled) {
+        rotateToPlayer();
+    }
 
     if (getWeapon() != nullptr) {
         getWeapon()->onUpdate();
@@ -75,7 +77,7 @@ void EnemyGhost::makeReward()
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
-            healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+            healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
             healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
@@ -89,7 +91,7 @@ void EnemyGhost::makeReward()
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
-            healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+            healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
             healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
@@ -105,7 +107,7 @@ void EnemyGhost::makeReward()
             weaponItem->setPosition(getPosition());
             weaponItem->setRotation(0, 0, 180);
             weaponItem->setRotationFrameEnabled(true);
-            weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
+            weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             weaponItem->setStencilBufferEnabled(true);
             weaponItem->setScale(1);
             weaponItem->clone(playerWeapons[randomWeapon]->getModel());
@@ -116,7 +118,8 @@ void EnemyGhost::makeReward()
     }
 }
 
-void EnemyGhost::rotateToPlayer() {
+void EnemyGhost::rotateToPlayer()
+{
     setRotation(M3::getFromVectors(
         EngineSetup::get()->forward,
         Vector3D(

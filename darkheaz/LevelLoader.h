@@ -42,6 +42,7 @@ typedef enum {
     BEHAVIOR_CIRCLE = 3,
     BEHAVIOR_RANDOM = 4,
     BEHAVIOR_PATH = 5,
+    ROTATE_FRAME = 6
 } EnemyBehaviorTypes;
 
 class LevelLoader {
