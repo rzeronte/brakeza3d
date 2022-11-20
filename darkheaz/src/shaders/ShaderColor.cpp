@@ -17,6 +17,9 @@ ShaderColor::ShaderColor(Color color, float progress) : ShaderOpenCL("color.open
 void ShaderColor::update()
 {
     Shader::update();
+
+    if(!isEnabled()) return;
+
     executeKernelOpenCL();
 }
 

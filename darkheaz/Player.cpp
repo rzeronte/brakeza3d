@@ -120,6 +120,7 @@ void Player::takeDamage(float dmg)
             0
         );
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
+        ComponentsManager::get()->getComponentGame()->shaderColor->setEnabled(true);
         lives--;
     }
 }
