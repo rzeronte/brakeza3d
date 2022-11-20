@@ -1,23 +1,27 @@
-//
-// Created by eduardo on 5/3/22.
-//
 
 #ifndef BRAKEDA3D_SHADERBLINK_H
 #define BRAKEDA3D_SHADERBLINK_H
-#include "../Render/Shader.h"
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
 #include "../EngineBuffers.h"
 #include "../Render/Transforms.h"
 #include "../Render/Drawable.h"
 #include "../Render/Logging.h"
+#include "../Render/ShaderOpenCL.h"
 
 #define DEFAULT_BLINK_SECONDS 1
-class ShaderBlink: public Shader {
+class ShaderBlink : public ShaderOpenCL {
     bool isBlinking = false;
     Camera3D *camera;
+    Image *image;
+    cl_mem opencl_buffer_stencil;
+    int screenWidth;
+    int screenHeight;
+    Object3D* object;
+    Color color;
+    Counter counter;
 public:
-    ShaderBlink(Camera3D *camera) {
+    ShaderBlink(Camera3D *camera) : ShaderOpenCL("blink.opencl") {
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->object = nullptr;
@@ -27,9 +31,19 @@ public:
         this->counter.setStep(step);
         this->counter.setEnabled(true);
         this->camera = camera;
+
+        this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+
+        opencl_buffer_stencil = clCreateBuffer(
+            context,
+            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+            this->image->pixels(),
+            &clRet
+        );
     }
 
-    ShaderBlink(Camera3D *camera, Object3D *o) {
+    ShaderBlink(Camera3D *camera, Object3D *o): ShaderOpenCL("blink.opencl") {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
@@ -37,6 +51,15 @@ public:
         setStep(DEFAULT_BLINK_SECONDS);
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
         this->camera = camera;
+        this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+
+        opencl_buffer_stencil = clCreateBuffer(
+                context,
+                CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+                EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+                this->image->pixels(),
+                &clRet
+        );
     }
 
     void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
@@ -94,20 +117,7 @@ public:
                 return;
             }
 
-            mesh->updateBoundingBox();
-
-            Point2D screenMinPoint;
-            Point2D screenMaxPoint;
-            this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, mesh);
-
-            auto buffer = EngineBuffers::getInstance();
-            for (int y = screenMinPoint.y; y < screenMaxPoint.y - 1 ; y++) {
-                for (int x = screenMinPoint.x; x < screenMaxPoint.x - 1 ; x++) {
-                    if (this->object->getStencilBufferValue(x, y)) {
-                        buffer->setVideoBuffer(x, y, this->color.getColor());
-                    }
-                }
-            }
+           executeKernelOpenCL();
         }
     }
 
@@ -123,6 +133,73 @@ public:
         return this->color;
     }
 
+    void executeKernelOpenCL()
+    {
+        clEnqueueWriteBuffer(
+                clCommandQueue,
+                opencl_buffer_video_shader,
+                CL_TRUE,
+                0,
+                EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+                EngineBuffers::getInstance()->videoBuffer,
+                0,
+                nullptr,
+                nullptr
+        );
+
+        clEnqueueWriteBuffer(
+                clCommandQueue,
+                opencl_buffer_stencil,
+                CL_TRUE,
+                0,
+                EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+                object->getStencilBuffer(),
+                0,
+                nullptr,
+                nullptr
+        );
+
+        clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+        clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
+        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
+        clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
+        clSetKernelArg(kernel, 5, sizeof(float), &this->color.r);
+        clSetKernelArg(kernel, 6, sizeof(float), &this->color.g);
+        clSetKernelArg(kernel, 7, sizeof(float), &this->color.b);
+
+        // Process the entire lists
+        size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
+        // Divide work items into groups of 64
+        size_t local_item_size = 16;
+
+        clRet = clEnqueueNDRangeKernel(
+            clCommandQueue,
+            kernel,
+            1,
+            nullptr,
+            &global_item_size,
+            &local_item_size,
+            0,
+            nullptr,
+            nullptr
+        );
+
+        clEnqueueReadBuffer(
+            clCommandQueue,
+            opencl_buffer_video_screen,
+            CL_TRUE,
+            0,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
+        );
+
+        this->debugKernel();
+    }
+
     void setStep(float s) {
         this->step = s;
         this->counter.setStep(step);
@@ -130,12 +207,5 @@ public:
     }
 
     float step;
-private:
-    int screenWidth;
-    int screenHeight;
-
-    Object3D* object;
-    Color color;
-    Counter counter;
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

@@ -57,12 +57,7 @@ public:
 
     void drawPlayerStamina(int y);
 
-    void drawPlayerEnergy(int y);
-
-    void drawEnemySelectedStamina(int y);
-
     int getButtonsOffsetY();
-
 
     void drawEnemies();
 

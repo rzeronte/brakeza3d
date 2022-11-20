@@ -981,7 +981,6 @@ void ComponentRender::initializeShaders()
 {
     addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
-    addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
     addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
     addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera()));
 }

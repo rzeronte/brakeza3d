@@ -8,11 +8,11 @@
 #include "../../include/Misc/VideoPlayer.h"
 
 #define FREELOOK false
-#define SPLASH_TIME 0.0f
-#define FADE_SPEED_START_GAME 0.01
-#define FADE_SPEED_ENDLEVEL 0.01
-#define FADE_SPEED_FROM_MENU_TO_GAMING 0.01
-#define FADE_SPEED_PRESSKEY_NEWLEVEL 0.01
+#define SPLASH_TIME 3.0f
+#define FADE_SPEED_START_GAME 0.04
+#define FADE_SPEED_ENDLEVEL 0.04
+#define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
+#define FADE_SPEED_PRESSKEY_NEWLEVEL 0.04
 
 ComponentGame::ComponentGame()
 {
@@ -58,6 +58,9 @@ void ComponentGame::onStart()
     shaderBackgroundImage = new ShaderImage();
     shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderBackgroundImage->setEnabled(true);
+
+    shaderColor = new ShaderColor(Color::red(), 0.75);
+    shaderColor->setEnabled(false);
 }
 
 void ComponentGame::preUpdate()
@@ -88,6 +91,7 @@ void ComponentGame::onUpdate()
 {
     EngineSetup::GameState state = getGameState();
     shaderClouds->update();
+    shaderColor->update();
 
     if (state == EngineSetup::GameState::GAMING) {
         blockPlayerPositionInCamera();
@@ -219,8 +223,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
-        startBackgroundShader();
-        stopTintScreenShader();
+        shaderColor->setEnabled(false);
         startSilhouetteShader();
         stopWaterShader();
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
@@ -230,7 +233,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
-        startBackgroundShader();
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
@@ -246,7 +248,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        startBackgroundShader();
         stopWaterShader();
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
         if (getLevelInfo()->isHaveMusic()) {
@@ -259,7 +260,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        startTintScreenShader();
         silenceInGameObjects();
     }
 
@@ -276,8 +276,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        startBackgroundShader();
-        stopTintScreenShader();
+        shaderColor->setEnabled(false);
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
@@ -461,48 +460,15 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
 }
 
-void ComponentGame::loadBackgroundImageShader()
-{
-    this->shaderBackgroundImage->setEnabled(true);
-    stopBackgroundShader();
-}
-
-void ComponentGame::stopBackgroundShader()
-{
-    /*auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
-    shaderBackground->setAutoScrollSpeed(Vertex3D(0, 0, 0));
-    shaderBackground->setAutoScrollEnabled(false);
-    shaderBackground->setEnabled(false);*/
-}
-
-void ComponentGame::startBackgroundShader()
-{
-    /*auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
-    shaderBackground->setAutoScrollSpeed(this->shaderAutoScrollSpeed);
-    shaderBackground->setAutoScrollEnabled(true);
-    shaderBackground->setEnabled(true);*/
-}
 
 FaderToGameStates *ComponentGame::getFadeToGameState() const
 {
     return fadeToGameState;
 }
 
-void ComponentGame::startTintScreenShader()
-{
-    auto tintShader = dynamic_cast<ShaderTintScreen*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::TINT_SCREEN));
-    tintShader->setTintColorIntensity(1, 0, 0);
-    tintShader->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
-    tintShader->setEnabled(true);
-}
 
-void ComponentGame::stopTintScreenShader()
+void ComponentGame::startSilhouetteShader()
 {
-    auto tintShader = dynamic_cast<ShaderTintScreen*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::TINT_SCREEN));
-    tintShader->setEnabled(false);
-}
-
-void ComponentGame::startSilhouetteShader() {
     auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
     shader->setColor(Color::red());
     shader->setEnabled(true);

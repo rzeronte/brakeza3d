@@ -103,6 +103,8 @@ void ComponentHUD::drawHUD()
     drawShaderBars();
     drawEnemySelectedShaderStamina();
 
+    drawPlayerStamina(15);
+
     if (SETUP->DRAW_FPS) {
         writeCenterHorizontal(
             10,
@@ -139,28 +141,15 @@ void ComponentHUD::drawPlayerStamina(int y)
 {
     const int offsetX = 10;
     int offsetY = y;
-    const int innerPercentOffsetX = 3;
-    const int innerPercentOffsetY = 4;
 
     auto game = ComponentsManager::get()->getComponentGame();
     auto player = game->getPlayer();
-
-    auto backgroundHealthBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
-    backgroundHealthBar->drawFlat(offsetX, offsetY);
-
-    const int fixedWidth = 118;
-    const int currentPercentage = (int) ((player->getStamina() * fixedWidth) / (int) player->getStartStamina());
-
-    auto healthBarStaminaPercent = HUDTextures->getTextureByLabel("healthBarStaminaPercent")->getImage();
-    for (int i = 0; i < currentPercentage ; i++) {
-        healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
-    }
 
     int availablesWeaponsCounter = 0;
     for (int i = 0; i < (int) player->getWeapons().size(); i++) {
         auto weapon = player->getWeapons()[i];
         const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaponsCounter;
-        const int yIcon = backgroundHealthBar->height() * 2 + 4 + offsetY + availablesWeaponsCounter;
+        const int yIcon = 2 + 4 + offsetY + availablesWeaponsCounter;
         if (weapon->isAvailable()) {
             availablesWeaponsCounter++;
             weapon->getIcon()->drawFlat(xIcon, yIcon);
@@ -173,19 +162,19 @@ void ComponentHUD::drawPlayerStamina(int y)
     if (availablesWeaponsCounter > 0) {
         this->textureWriter->writeText(
                 offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
-            offsetY + backgroundHealthBar->height() * 2 + 4,
+            offsetY + 4,
             std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
             false
         );
     } else {
         this->textureWriter->writeText(
                 offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
-                offsetY + backgroundHealthBar->height() * 2 + 4,
+                offsetY  + 4,
                 "Disarmed",
                 false
         );
     }
-    offsetY += backgroundHealthBar->height() * 2 + player->getWeapon()->getIcon()->height() + 6;
+    offsetY +=  player->getWeapon()->getIcon()->height() + 6;
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
@@ -218,55 +207,6 @@ void ComponentHUD::drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int wi
             const int finalY = yOrigin + y;
             buffer->setVideoBuffer(finalX, finalY, c.getColor());
         }
-    }
-}
-
-void ComponentHUD::drawPlayerEnergy(int y)
-{
-    const int offsetX = 10;
-    const int offsetY = y;
-    const int innerPercentOffsetX = 3;
-    const int innerPercentOffsetY = 4;
-
-    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
-    auto backgroundEnergyBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
-    backgroundEnergyBar->drawFlat(offsetX, offsetY);
-
-    const int fixedWidth = 118;
-    const int currentPercentage = (int) ((player->getEnergy() * fixedWidth) / player->getStartEnergy());
-
-    auto healthBarEnergyPercent = HUDTextures->getTextureByLabel("healthBarEnergyPercent")->getImage();
-
-    for (int i = 0; i < currentPercentage ; i++) {
-        healthBarEnergyPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
-    }
-}
-
-
-void ComponentHUD::drawEnemySelectedStamina(int y)
-{
-    auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
-
-    auto enemy = dynamic_cast<EnemyGhost*> (objectSelected);
-    if (enemy == nullptr) {
-        return;
-    }
-
-    auto backgroundHealthBar= HUDTextures->getTextureByLabel("healthEmptyBar")->getImage();
-
-    const int offsetX = SETUP->screenWidth - backgroundHealthBar->width() - 20;
-    const int offsetY = y;
-    const int innerPercentOffsetX = 3;
-    const int innerPercentOffsetY = 4;
-
-    backgroundHealthBar->drawFlat(offsetX, offsetY);
-
-    const int fixedWidth = 118;
-    const int currentPercentage = (enemy->getStamina() * fixedWidth) / enemy->getStartStamina();
-
-    auto healthBarStaminaPercent = HUDTextures->getTextureByLabel("healthBarStaminaPercent")->getImage();
-    for (int i = 0; i < currentPercentage ; i++) {
-        healthBarStaminaPercent->drawFlat(offsetX + i + innerPercentOffsetX, offsetY + innerPercentOffsetY);
     }
 }
 
@@ -351,6 +291,7 @@ void ComponentHUD::drawShaderBars()
 
     shaderBar->setValue(health);
     shaderBarEnergy->setValue(energy);
+
     shaderBar->update();
     shaderBarEnergy->update();
 }

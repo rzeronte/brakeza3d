@@ -59,6 +59,7 @@ public:
 
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
+    ShaderColor *shaderColor;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
@@ -75,12 +76,6 @@ private:
 
     void loadLevels();
 
-    void loadBackgroundImageShader();
-
-    void stopBackgroundShader();
-    void startBackgroundShader();
-    void startTintScreenShader();
-    void stopTintScreenShader();
     void startSilhouetteShader();
     void stopSilhouetteShader();
     void startWaterShader();
