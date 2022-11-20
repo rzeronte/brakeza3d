@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -295,7 +295,7 @@ add_executable(Brakeza3D
         include/Render/ShaderOpenCL.h
         src/Misc/VideoPlayer.cpp
         include/Misc/VideoPlayer.h
-        darkheaz/src/shaders/ShaderHorizontalBar.cpp darkheaz/src/shaders/ShaderHorizontalBar.h darkheaz/src/shaders/ShaderBackgroundImage.cpp darkheaz/src/shaders/ShaderBackgroundImage.h darkheaz/src/shaders/ShaderEdgeObject.cpp darkheaz/src/shaders/ShaderEdgeObject.h darkheaz/src/shaders/ShaderColor.cpp darkheaz/src/shaders/ShaderColor.h)
+        darkheaz/src/shaders/ShaderHorizontalBar.cpp darkheaz/src/shaders/ShaderHorizontalBar.h darkheaz/src/shaders/ShaderBackgroundImage.cpp darkheaz/src/shaders/ShaderBackgroundImage.h darkheaz/src/shaders/ShaderEdgeObject.cpp darkheaz/src/shaders/ShaderEdgeObject.h darkheaz/src/shaders/ShaderColor.cpp darkheaz/src/shaders/ShaderColor.h darkheaz/src/shaders/ShaderBlinkObject.cpp darkheaz/src/shaders/ShaderBlinkObject.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
