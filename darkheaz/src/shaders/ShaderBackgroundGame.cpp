@@ -7,17 +7,8 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderBackgroundGame::ShaderBackgroundGame(
-    cl_device_id deviceId,
-    cl_context context,
-    cl_command_queue commandQueue,
-    const std::string& kernelFile
-) : ShaderOpenCL(
-    deviceId,
-    context,
-    commandQueue,
-    kernelFile
-) {
+ShaderBackgroundGame::ShaderBackgroundGame(const std::string& kernelFile) : ShaderOpenCL(kernelFile)
+{
     this->channel1 = new Image(
     EngineSetup::get()->IMAGES_FOLDER + EngineSetup::get()->DEFAULT_SHADER_BACKGROUND_IMAGE
     );

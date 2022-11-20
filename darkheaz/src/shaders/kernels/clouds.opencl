@@ -1,7 +1,8 @@
 unsigned int createRGB(int r, int g, int b);
-float plot(float2, float, float);
+float plot(float, float, float);
 float rand(float2 seed);
 float noise(float2 st);
+float line(float2 A, float2 B, float2 C, float thickness);
 
 __kernel void onUpdate(
     int screenWidth,
@@ -27,29 +28,27 @@ __kernel void onUpdate(
 
     __global unsigned char *s = &image[index];
     __global unsigned char *t = &shader[i];
-    float speed = 1.25;
 
-    unsigned int color;
+    float shadowIntensity = plot(st.x, 0.5, 0.6);
+    float speed = 0.9;
 
-    int entero;
-    st *= 10.0; // Scale the coordinate system by 10
-
+    st *= 7.0;
     st.y = st.y + iTime * speed;
 
-    // Use the noise function
     float n = noise(st);
-    unsigned int output = createRGB(n * 255, n * 255 , n * 255);
+    int noiseIntensity = (int) (n * 90);
 
-    float2 fr = fract(n, &entero);  // get the fractional coords
+    int p1 = shadowIntensity * (t[0] - noiseIntensity);
+    int p2 = shadowIntensity * (t[1] - noiseIntensity);
+    int p3 = shadowIntensity * (t[2] - noiseIntensity);
 
-    int test = (int) (n * 127);
-
-    color = createRGB(
-        max(t[0] - test, 0),
-        max(t[1] - test, 0),
-        max(t[2] - test, 0)
+    unsigned int color = createRGB(
+        max(p1, 0),
+        max(p2, 0),
+        max(p3, 0)
     );
-    video[index] = color;
+
+    video[i] = color;
 }
 
 unsigned int createRGB(int r, int g, int b)
@@ -57,16 +56,15 @@ unsigned int createRGB(int r, int g, int b)
     return (b << 16) + (g << 8) + (r);
 }
 
-float plot(float2 st, float pct, float thickness)
+float plot(float st, float pct, float thickness)
 {
-    return smoothstep(pct - thickness, pct, st[0]) - smoothstep(pct, pct + thickness, st[0]);
+    return smoothstep(pct - thickness, pct, st) - smoothstep(pct, pct + thickness, st);
 }
 
 float rand (float2 seed)
 {
     float2 p = {12.9898, 78.233};
     float intPart;
-
 	return fract (sin (dot (seed, p)) * 137.5453, &intPart);
 }
 
@@ -94,4 +92,18 @@ float noise(float2 st) {
             (c - a) * u.y * (1.0 - u.x) +
             (d - b) * u.x * u.y
     ;
+}
+
+float line(float2 A, float2 B, float2 C, float thickness)
+ {
+	float2 AB = B-A;
+    float2 AC = C-A;
+
+    float t = dot(AC, AB) / dot(AB, AB);
+    t = min(1.0, max(0.0, t));
+
+    float2 Q = A + t * AB;
+
+    float dist = length(Q-C);
+    return smoothstep(-0.01, -dist, -thickness) + smoothstep(-0.02, dist, thickness);
 }

@@ -12,16 +12,16 @@
 #include "../Misc/PathFinder.h"
 #include "../Shaders/ShaderWater.h"
 #include "../Shaders/ShaderFire.h"
-#include "../Shaders/ShaderImageBackground.h"
 #include "../Shaders/ShaderTintScreen.h"
-#include "../Shaders/ShaderObjectSilhouette.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../../darkheaz/FaderToGameStates.h"
 #include "../../darkheaz/LevelLoader.h"
 #include "../Particles/ParticleEmissorFireworks.h"
-#include "../../darkheaz/src/shaders/ShaderBackgroundGame.h"
 #include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderClouds.h"
+#include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
+#include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
+#include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 
 class ComponentGame : public Component {
 public:
@@ -56,10 +56,9 @@ public:
     Counter splashCounter;
 
     LevelLoader *levelInfo;
-    Vertex3D shaderAutoScrollSpeed;
 
-    ShaderBackgroundGame *shaderBackground;
     ShaderClouds *shaderClouds;
+    ShaderImage *shaderBackgroundImage;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

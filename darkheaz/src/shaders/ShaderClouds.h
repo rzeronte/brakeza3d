@@ -17,34 +17,13 @@ class ShaderClouds: public ShaderOpenCL {
     cl_mem opencl_buffer_pixels_image;
 
 public:
-    ShaderClouds(
-        cl_device_id deviceId,
-        cl_context context,
-        cl_command_queue commandQueue,
-        const std::string& kernelFile
-    );
+    ShaderClouds();
 
     void update() override;
 
     ~ShaderClouds() override;
 
-    float plot(Vector2D st, float thickness);
-
-    float plot(Vector2D st, float pct, float thickness);
-
-    void demo01();
-
-    void demo02();
-
-    void demo03();
-
-    void demo04();
-
-    void makeColorPalette();
-
     void executeKernelOpenCL();
-
-    void flipToUI();
 };
 
 

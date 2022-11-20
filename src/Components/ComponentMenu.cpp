@@ -8,7 +8,7 @@ ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
     this->numOptions = 0;
 
-    imageBackground = new Image(SETUP->IMAGES_FOLDER + "menu_background.png");
+
 }
 
 void ComponentMenu::onStart() {
@@ -40,6 +40,11 @@ void ComponentMenu::onStart() {
     light2->setRotation(270, 0, 0);
     light2->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(5000, 0, 0), lightPosition + Vertex3D(-5000, 0, 0), 1));
     Brakeza3D::get()->addObject3D(light2, "light2Menu");
+
+    shaderBackgroundImage = new ShaderImage();
+    shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderBackgroundImage->setEnabled(true);
+    shaderBackgroundImage->setImage(new Image(SETUP->IMAGES_FOLDER + "menu_background.png"));
 }
 
 void ComponentMenu::loadDecorative3DMesh() {
@@ -63,12 +68,13 @@ void ComponentMenu::loadDecorative3DMesh() {
     Brakeza3D::get()->addObject3D(title, title->getLabel());
 }
 
-void ComponentMenu::preUpdate() {
+void ComponentMenu::preUpdate()
+{
     if (!isEnabled()) {
         return;
     }
 
-    imageBackground->drawFlat(0, 0);
+    shaderBackgroundImage->update();
 }
 
 void ComponentMenu::onUpdate() {
@@ -127,7 +133,7 @@ void ComponentMenu::drawOptions() {
     auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
     int offsetY = 170;
-    int stepY = 15;
+    int stepY = 30;
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
@@ -139,7 +145,7 @@ void ComponentMenu::drawOptions() {
 
         if (i == currentOption) {
             bold = true;
-            text = char(13) + text;
+            //text = char(13) + text;
         }
         ComponentsManager::get()->getComponentHUD()->writeCenterHorizontal(
                 stepY + offsetY,

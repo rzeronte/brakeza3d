@@ -11,7 +11,7 @@
 #define SPLASH_TIME 0.0f
 #define FADE_SPEED_START_GAME 0.01
 #define FADE_SPEED_ENDLEVEL 0.01
-#define FADE_SPEED_FROM_MENU_TO_GAMING 0.03
+#define FADE_SPEED_FROM_MENU_TO_GAMING 0.01
 #define FADE_SPEED_PRESSKEY_NEWLEVEL 0.01
 
 ComponentGame::ComponentGame()
@@ -31,7 +31,6 @@ void ComponentGame::onStart()
         false
     );
 
-    shaderAutoScrollSpeed = Vertex3D(0, 0.6, 0);
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
     imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
     imageSplash = new Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA);
@@ -49,36 +48,23 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
-    loadBackgroundImageShader();
     loadPlayer();
     loadWeapons();
     loadLevels();
 
-    shaderBackground = new ShaderBackgroundGame(
-        ComponentsManager::get()->getComponentRender()->clDeviceId,
-        ComponentsManager::get()->getComponentRender()->clContext,
-        ComponentsManager::get()->getComponentRender()->clCommandQueue,
-        "shaderBackgroundGame.opencl"
-    );
-
-    shaderBackground->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
-
-
-    shaderClouds = new ShaderClouds(
-            ComponentsManager::get()->getComponentRender()->clDeviceId,
-            ComponentsManager::get()->getComponentRender()->clContext,
-            ComponentsManager::get()->getComponentRender()->clCommandQueue,
-            "clouds.opencl"
-    );
-
+    shaderClouds = new ShaderClouds();
     shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+
+    shaderBackgroundImage = new ShaderImage();
+    shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderBackgroundImage->setEnabled(true);
 }
 
 void ComponentGame::preUpdate()
 {
-    shaderClouds->update();
+    EngineSetup::GameState state = getGameState();
 
-    if (getGameState() == EngineSetup::GameState::SPLASH) {
+    if (state == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
             splashCounter.setEnabled(false);
@@ -87,11 +73,21 @@ void ComponentGame::preUpdate()
 
         imageSplash->drawFlat(0, 0);
     }
+
+    if (
+        state == EngineSetup::GameState::GAMING ||
+        state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
+        state == EngineSetup::GameState::COUNTDOWN ||
+        state == EngineSetup::GameState::PRESSKEY_BY_DEAD
+    ) {
+        shaderBackgroundImage->update();
+    }
 }
 
 void ComponentGame::onUpdate()
 {
     EngineSetup::GameState state = getGameState();
+    shaderClouds->update();
 
     if (state == EngineSetup::GameState::GAMING) {
         blockPlayerPositionInCamera();
@@ -102,12 +98,6 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("congratulations! END GAME...", false);
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
-        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press a key to START...", false);
-        if (getLevelInfo()->isHasTutorial()) {
-            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
-        }
-    }
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
         int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
@@ -140,6 +130,16 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 
+    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
+        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press a key to START...", false);
+        if (getLevelInfo()->isHasTutorial()) {
+            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
+        }
+    }
+}
+
+void ComponentGame::postUpdate()
+{
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -292,9 +292,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     this->gameState = state;
-}
-
-void ComponentGame::postUpdate() {
 }
 
 void ComponentGame::onEnd() {
@@ -466,9 +463,7 @@ void ComponentGame::loadLevels()
 
 void ComponentGame::loadBackgroundImageShader()
 {
-    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
-    shaderBackground->setEnabled(true);
-    shaderBackground->setType(ShaderImageBackgroundTypes::PORTION);
+    this->shaderBackgroundImage->setEnabled(true);
     stopBackgroundShader();
 }
 
@@ -508,14 +503,14 @@ void ComponentGame::stopTintScreenShader()
 }
 
 void ComponentGame::startSilhouetteShader() {
-    auto shader = dynamic_cast<ShaderObjectSilhouette*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE));
+    auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
     shader->setColor(Color::red());
     shader->setEnabled(true);
 }
 
 void ComponentGame::stopSilhouetteShader()
 {
-    auto shader = dynamic_cast<ShaderObjectSilhouette*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE));
+    auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
     shader->setEnabled(false);
 }
 

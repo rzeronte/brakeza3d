@@ -5,9 +5,9 @@
 #ifndef BRAKEDA3D_FADERTOGAMESTATES_H
 #define BRAKEDA3D_FADERTOGAMESTATES_H
 
-#include "../include/Render/Shader.h"
 #include "../include/Misc/Color.h"
 #include "../include/EngineBuffers.h"
+#include "src/shaders/ShaderColor.h"
 
 enum ShaderFadeToColorDirection {
     STOP = 0,
@@ -27,6 +27,7 @@ private:
     int screenHeight;
     EngineSetup::GameState gameStateWhenEnds;
     ShaderFadeToColorDirection direction;
+    ShaderColor *shader;
 public:
     FaderToGameStates(Color color, float speed, EngineSetup::GameState gameStateWhenEnds, bool onlyFadeIn) {
         setEnabled(true);
@@ -44,6 +45,9 @@ public:
 
         screenHeight = EngineSetup::get()->screenHeight;
         screenWidth = EngineSetup::get()->screenWidth;
+
+        shader = new ShaderColor(Color::black(), 0);
+        shader->setEnabled(true);
     }
 
     void onUpdate() {
@@ -51,15 +55,9 @@ public:
         if (!isEnabled() || isFinished()) {
             return;
         }
+        shader->setProgress(progress);
+        shader->update();
 
-        auto buffer = EngineBuffers::getInstance();
-
-        for (int y = 0; y < screenHeight; y++) {
-            for (int x = 0; x < screenWidth; x++) {
-                Color r = Tools::mixColor(Color(buffer->getVideoBuffer(x, y)), color, progress);
-                buffer->setVideoBuffer(x, y, r.getColor());
-            }
-        }
         progress += speed * direction;
 
         if (progress <= 0)  {

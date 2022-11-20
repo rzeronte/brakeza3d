@@ -20,15 +20,7 @@ class ShaderShockWave: public ShaderOpenCL {
     Counter ttlWave;
 
 public:
-    ShaderShockWave(
-        cl_device_id deviceId,
-        cl_context context,
-        cl_command_queue commandQueue,
-        const char *kernelFilename,
-        float size,
-        float speed,
-        float ttl
-    );
+    ShaderShockWave(float size, float speed, float ttl);
 
     void onUpdate(Vertex3D position);
 

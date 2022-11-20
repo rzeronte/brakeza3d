@@ -10,6 +10,10 @@ void ComponentRender::onStart()
     initTiles();
     initializeShaders();
     initOpenCL();
+    shaderEdge = new ShaderEdgeObject();
+    shaderEdge->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderEdge->setColor(Color::fuchsia());
+    shaderEdge->setEnabled(true);
 }
 
 void ComponentRender::preUpdate()
@@ -21,6 +25,7 @@ void ComponentRender::preUpdate()
     }
 
     this->onUpdatePreUpdateShaders();
+
 }
 
 void ComponentRender::onUpdate()
@@ -65,6 +70,8 @@ void ComponentRender::onUpdate()
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
+
+    shaderEdge->update();
 }
 
 void ComponentRender::postUpdate() {
@@ -101,11 +108,7 @@ void ComponentRender::updateSelectedObject3D()
 
 void ComponentRender::updateSelectedObject3DInShaders(Object3D *object)
 {
-    auto *shader = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-    shader->setObject(object);
-
-    auto *silhouette = dynamic_cast<ShaderObjectSilhouette *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SILHOUETTE));
-    silhouette->setObject(object);
+    shaderEdge->setObject(object);
 
     auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
     smoke->setObject(object);
@@ -974,21 +977,13 @@ Shader* ComponentRender::getShaderByType(int id) {
     }
 }
 
-void ComponentRender::initializeShaders() {
-    auto shaderBackground = new ShaderImageBackground(
-            std::string(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_SHADER_BACKGROUND_IMAGE).c_str()
-    );
-    shaderBackground->setupFlatPortion(0, 0, 0, 0, SETUP->screenWidth, SETUP->screenHeight);
-
-    addShader(EngineSetup::ShaderTypes::SILHOUETTE, "Silhouette", new ShaderObjectSilhouette(selectedObject, ComponentsManager::get()->getComponentCamera()->getCamera()));
-    addShader(EngineSetup::ShaderTypes::BACKGROUND, "Background", shaderBackground);
+void ComponentRender::initializeShaders()
+{
     addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
     addShader(EngineSetup::ShaderTypes::TINT_SCREEN, "TintScreen", new ShaderTintScreen(255, 0, 0));
     addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
     addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera()));
-
-    getShaderByType(EngineSetup::ShaderTypes::SILHOUETTE)->setEnabled(true);
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {

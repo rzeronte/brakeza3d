@@ -15,8 +15,6 @@
 #include "../Shaders/ShaderSmoke.h"
 #include "../Shaders/ShaderBlink.h"
 #include "../Shaders/ShaderTintScreen.h"
-#include "../Shaders/ShaderObjectSilhouette.h"
-#include "../Shaders/ShaderImageBackground.h"
 
 class GUI_Shaders : public GUI {
 private:
@@ -47,15 +45,11 @@ public:
                     ImGui::Checkbox(enabled_text.c_str(), &shader->enabled);
                     comboPhaseType(shader, i);
                     ImGui::Separator();
-                    GuiShaderBackgroundImage(shader, i);
-                    ImGui::Separator();
                     GuiShaderWater(shader, i);
                     ImGui::Separator();
                     GuiShaderSmoke(shader, i);
                     ImGui::Separator();
                     GuiShaderBlink(shader, i);
-                    ImGui::Separator();
-                    GuiShaderSilhouette(shader, i);
                     ImGui::Separator();
                     GuiShaderTint(shader, i);
                 }
@@ -217,102 +211,6 @@ public:
         }
     }
 
-    void GuiShaderSilhouette(Shader *shader, int i) {
-        auto shaderSilhouette = dynamic_cast<ShaderObjectSilhouette*> (shader);
-        if (shaderSilhouette != nullptr) {
-            std::string colorText = "Silhouette Color##" + std::to_string(i);
-            int misc_flags = ImGuiColorEditFlags_NoOptions;
-            bool hasColorChanged = ImGui::ColorEdit4(colorText.c_str(), (float *) &imGuiTintColor, misc_flags);
-            if (hasColorChanged) {
-                shaderSilhouette->setColor(Color(
-                    imGuiTintColor.x * 256,
-                    imGuiTintColor.y * 256,
-                    imGuiTintColor.z * 256
-                ));
-            }
-        }
-    }
-
-    void GuiShaderBackgroundImage(Shader *shader, int i) {
-        auto shaderBackground = dynamic_cast<ShaderImageBackground*> (shader);
-        if (shaderBackground != nullptr) {
-            std::string autoScroll_text = "AutoScroll Speed##" + std::to_string(i);
-
-            comboBackgroundType(shaderBackground, i);
-
-            if (shaderBackground->getType() == ShaderImageBackgroundTypes::PORTION) {
-                ImGui::Checkbox("AutoScroll Enabled", &shaderBackground->autoScrollEnabled);
-
-                if (shaderBackground->autoScrollEnabled) {
-                    if (ImGui::TreeNode(autoScroll_text.c_str())) {
-                        const float range_min = -5;
-                        const float range_max = 5;
-                        const float range_sensibility = 0.1;
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &shaderBackground->getAutoScrollSpeed().x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &shaderBackground->getAutoScrollSpeed().y, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::TreePop();
-                    }
-                }
-
-                std::string portionSetup_text = "Portion Setup##" + std::to_string(i);
-                if (ImGui::TreeNode(portionSetup_text.c_str())) {
-                    const float range_min = 0;
-                    const float range_max = 1024;
-                    const float range_sensibility = 1;
-
-                    ImGui::DragScalar("X Draw Position", ImGuiDataType_S32, &shaderBackground->xDrawPos, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                    ImGui::DragScalar("Y Draw Position", ImGuiDataType_S32, &shaderBackground->yDrawPos, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-
-                    ImGui::DragScalar("X Offset Image", ImGuiDataType_S32, &shaderBackground->xImage, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                    ImGui::DragScalar("Y Offset Image", ImGuiDataType_S32, &shaderBackground->yImage, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-
-                    ImGui::DragScalar("Portion Width", ImGuiDataType_S32, &shaderBackground->wImage, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                    ImGui::DragScalar("Portion Height", ImGuiDataType_S32, &shaderBackground->hImage, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-            }
-        }
-    }
-
-    void comboBackgroundType(ShaderImageBackground *shader, int i) const {
-        std::string comboLabel = "Background Type##" + std::to_string(i);
-
-        const char *items[] = {"Fullscreen", "Portion", "Center"};
-        static const char *item_current;
-
-        switch (shader->getType()) {
-            case ShaderImageBackgroundTypes::FULLSCREEN:
-                item_current = items[0];
-                break;
-            case ShaderImageBackgroundTypes::PORTION:
-                item_current = items[1];
-                break;
-            case ShaderImageBackgroundTypes::CENTER:
-                item_current = items[2];
-                break;
-        }
-        static ImGuiComboFlags flags = 0;
-
-        // The second parameter is the label previewed before opening the combo.
-        if (ImGui::BeginCombo(comboLabel.c_str(), item_current, flags)) {
-            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
-                bool is_selected = (item_current == items[n]);
-                if (ImGui::Selectable(items[n], is_selected)) {
-                    item_current = items[n];
-                }
-
-                if (is_selected) {
-                    ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
-                }
-
-                if (ImGui::IsItemDeactivatedAfterEdit()) {
-                    shader->setType(n);
-                    Logging::Log(("Changing ShaderBackgroundImage type to  " + std::to_string(n)), "GUI");
-                }
-            }
-            ImGui::EndCombo();
-        }
-    }
 };
 
 

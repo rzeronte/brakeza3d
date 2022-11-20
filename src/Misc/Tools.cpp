@@ -429,3 +429,11 @@ Color Tools::getColorRGB(ColorHSV in)
 
     return out;
 }
+
+Vertex3D Tools::randomVertex() {
+    return Vertex3D(
+        Tools::random(1, 2),
+        Tools::random(1, 2),
+        Tools::random(1, 2)
+    );
+}

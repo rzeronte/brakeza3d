@@ -8,6 +8,7 @@
 #include "../Misc/cJSON.h"
 #include "Component.h"
 #include "../Objects/Mesh3D.h"
+#include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
 
 #define MAX_MENU_OPTIONS 10
 
@@ -28,7 +29,7 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     // menu background surface
-    Image *imageBackground;
+    ShaderImage *shaderBackgroundImage;
 
     Mesh3D *title;
 

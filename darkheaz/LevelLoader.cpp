@@ -118,7 +118,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     setLevelName(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "name")->valuestring);
 
     std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring;
-    auto shaderBackground = dynamic_cast<ShaderImageBackground*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::BACKGROUND));
+    auto shaderBackground = ComponentsManager::get()->getComponentGame()->shaderBackgroundImage;
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
@@ -276,7 +276,7 @@ void LevelLoader::makeItemHealthGhost(Vertex3D position)
     healthItem->setEnableLights(true);
     healthItem->setPosition(position);
     healthItem->setRotationFrameEnabled(true);
-    healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+    healthItem->setRotationFrame(Tools::randomVertex());
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
     healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
@@ -293,7 +293,7 @@ void LevelLoader::makeItemEnergyGhost(Vertex3D position)
     healthItem->setEnableLights(true);
     healthItem->setPosition(position);
     healthItem->setRotationFrameEnabled(true);
-    healthItem->setRotationFrame(Vertex3D(0, 1, 0));
+    healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
     healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
@@ -313,7 +313,7 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::collisionGroups::Weapon, EngineSetup::collisionGroups::Player);
     weaponItem->setRotation(0, 0, 180);
     weaponItem->setRotationFrameEnabled(true);
-    weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
+    weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
     weaponItem->setStencilBufferEnabled(true);
     weaponItem->setScale(1);
     weaponItem->updateBulletFromMesh3D();
@@ -343,6 +343,11 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
     switch(typeMotion) {
+        case EnemyBehaviorTypes::ROTATE_FRAME: {
+            enemy->setRotationFrameEnabled(true);
+            enemy->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+            break;
+        }
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
             Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
             Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));

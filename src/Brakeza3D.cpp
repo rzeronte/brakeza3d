@@ -38,8 +38,8 @@ void Brakeza3D::start() {
     componentsManager->registerComponent(componentSound, "ComponentSound");
     componentsManager->registerComponent(componentRender, "ComponentRender");
     componentsManager->registerComponent(componentMenu, "ComponentMenu");
-    componentsManager->registerComponent(componentHUD, "ComponentHUD");
     componentsManager->registerComponent(componentGame, "ComponentGame");
+    componentsManager->registerComponent(componentHUD, "ComponentHUD");
     componentsManager->registerComponent(componentGameInput, "ComponentGameInput");
 
     ComponentsManager::get()->configureComponents();

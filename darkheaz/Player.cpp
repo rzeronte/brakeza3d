@@ -149,7 +149,7 @@ void Player::makeGravitationalShield()
     object->setEnabled(true);
     object->setStencilBufferEnabled(true);
     object->setRotationFrameEnabled(true);
-    object->setRotationFrame(Vertex3D(0, 0.5, 0));
+    object->setRotationFrame(Tools::randomVertex().getScaled(0.5));
     object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
     object->makeGhostBody(
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),

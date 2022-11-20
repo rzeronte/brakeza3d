@@ -6,14 +6,10 @@
 #include "../../../include/Brakeza3D.h"
 
 ShaderShockWave::ShaderShockWave(
-        cl_device_id deviceId,
-        cl_context context,
-        cl_command_queue commandQueue,
-        const char *kernelFilename,
         float size,
         float speed,
         float ttl
-) : ShaderOpenCL(deviceId, context, commandQueue, kernelFilename) {
+) : ShaderOpenCL("shockWave.opencl") {
     this->startSize = size;
     this->currentSize = size;
     this->waveSpeed = speed;
@@ -111,20 +107,5 @@ void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
             nullptr
     );
 
-    if (clRet != CL_SUCCESS) {
-        Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
-
-        char buffer[1024];
-        clGetProgramBuildInfo(
-            program,
-            clDeviceId,
-            CL_PROGRAM_BUILD_LOG,
-            sizeof(buffer),
-            buffer,
-            nullptr
-        );
-        if (strlen(buffer) > 0 ) {
-            Logging::getInstance()->Log( buffer );
-        }
-    }
+    this->debugKernel();
 }

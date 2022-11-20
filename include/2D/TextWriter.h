@@ -7,11 +7,11 @@
 
 #include <vector>
 
-#define CONCHARS_WIDTH 128
-#define CONCHARS_HEIGHT 128
+#define CONCHARS_WIDTH 256
+#define CONCHARS_HEIGHT 256
 
-#define CONCHARS_CHARACTER_W 8
-#define CONCHARS_CHARACTER_H 8
+#define CONCHARS_CHARACTER_W 16
+#define CONCHARS_CHARACTER_H 16
 
 class TextWriter {
 
