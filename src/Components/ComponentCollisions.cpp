@@ -124,7 +124,7 @@ void ComponentCollisions::stepSimulation() {
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
-        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime());
+        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime(), 10);
 
         this->updatePhysicObjects();
 

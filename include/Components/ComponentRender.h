@@ -20,6 +20,7 @@
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
 #include "../Render/Shader.h"
+#include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -126,8 +127,8 @@ public:
     cl_context clContext;
 
     cl_command_queue clCommandQueue;
-    cl_uint* uiInput = NULL; // Mapped Pointer to pinned Host input buffer for host processing
 
+    ShaderEdgeObject *shaderEdge;
 
     Shader *getShaderByType(int id);
 
