@@ -10,7 +10,8 @@ __kernel void onUpdate(
     float iTime,
     __global unsigned int *video,
     __global unsigned int *shader,
-    __global unsigned int *image
+    __global bool *stencil,
+    __global unsigned int *buffer
 )
 {
    int i = get_global_id(0);
@@ -22,33 +23,25 @@ __kernel void onUpdate(
    float2 resolution = { screenWidth, screenHeight};
    float2 st = uv / resolution;
 
-    int cx = uv.x;
-    int cy = uv.y;
-    int index = cy * screenWidth + cx;
+    __global unsigned char *s = &shader[i];
+    __global unsigned char *z = &buffer[i];
 
-    __global unsigned char *s = &image[index];
-    __global unsigned char *t = &shader[i];
+    z[0] *= 0.9;
+    z[1] *= 0.9;
+    z[2] *= 0.9;
 
-    float shadowIntensity = plot(st.x, 0.5, 0.7);
-    float speed = 0.9;
+    //buffer[i] = createRGB(z[0], z[1], z[2]);
 
-    st *= 7.0;
-    st.y = st.y + iTime * speed;
-
-    float n = noise(st);
-    int noiseIntensity = (int) (n * 75);
-
-    int p1 = shadowIntensity * (t[0] - noiseIntensity);
-    int p2 = shadowIntensity * (t[1] - noiseIntensity);
-    int p3 = shadowIntensity * (t[2] - noiseIntensity);
-
-    unsigned int color = createRGB(
-        max(p1, 0),
-        max(p2, 0),
-        max(p3, 0)
-    );
-
-    video[i] = color;
+    if (stencil[i]) {
+        buffer[i] = createRGB(255, 0, 0);
+        video[i] = shader[i];
+    } else {
+        video[i] = createRGB(
+            s[0] + z[0],
+            s[1] + z[1],
+            s[2] + z[2]
+        );
+    }
 }
 
 unsigned int createRGB(int r, int g, int b)
@@ -65,6 +58,7 @@ float rand (float2 seed)
 {
     float2 p = {12.9898, 78.233};
     float intPart;
+
 	return fract (sin (dot (seed, p)) * 137.5453, &intPart);
 }
 

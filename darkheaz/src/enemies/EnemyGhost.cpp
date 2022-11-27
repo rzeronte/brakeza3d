@@ -10,7 +10,7 @@ EnemyGhost::EnemyGhost()
 {
     blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
     blink->setObject(this);
-    blink->setStep(0.05);
+    blink->setStep(0.09);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
     blink->setColor(Color::red());
@@ -159,7 +159,7 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        auto fireworks = new ParticleEmissorFireworks(true, 520, 5, 0.01, Color::yellow(), 3, 10);
+        auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
         fireworks->setPosition(projectile->getPosition());
         fireworks->setRotationFrame(0, 4, 5);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());

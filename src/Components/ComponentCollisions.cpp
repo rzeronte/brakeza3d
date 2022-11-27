@@ -120,7 +120,6 @@ void ComponentCollisions::updatePhysicObjects() {
 }
 
 void ComponentCollisions::stepSimulation() {
-    checkCollisionsForAll();
 
     if (SETUP->BULLET_STEP_SIMULATION) {
 
@@ -129,6 +128,8 @@ void ComponentCollisions::stepSimulation() {
         this->updatePhysicObjects();
 
     }
+
+    checkCollisionsForAll();
 }
 
 std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {

@@ -15,13 +15,13 @@ public:
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask);
     void removeCollisionObject() const;
+    void addCollisionObject() const;
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);
 
     virtual ~Ghost();
 
     void makeSimpleGhostBody(
-        Vertex3D pos,
         Vertex3D dimensions,
         btDiscreteDynamicsWorld *world,
         int collisionGroup,

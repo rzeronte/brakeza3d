@@ -20,9 +20,6 @@ Player::Player() : state(PlayerState::EMPTY),
                    maxVelocity(INITIAL_MAX_VELOCITY),
                    dashPower(INITIAL_POWERDASH)
 {
-    engineParticles = new ParticleEmissorGravity(true, 120, 10, 0.05, Color::cyan());
-    engineParticles->setRotationFrame(0, 4, 5);
-
     light = new LightPoint3D();
     light->setEnabled(true);
     light->setLabel("lp2");
@@ -33,7 +30,6 @@ Player::Player() : state(PlayerState::EMPTY),
     light->setColor(0, 255, 0);
     light->setRotation(270, 0, 0);
 
-    engineParticlesPositionOffset = Vertex3D(0, 450, 0);
     lightPositionOffset = Vertex3D(0, -550, 0);
 
     autoRotationSelectedObjectSpeed = 1;
@@ -72,6 +68,20 @@ void Player::loadShieldModel()
     Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
 }
 
+void Player::loadGravityShieldModel()
+{
+    gravityShieldModel = new GravitationalShield(3000, 0.001, 500, 7);
+    gravityShieldModel->setEnabled(false);
+    gravityShieldModel->setLabel("gravitationalShieldPlayer");
+    gravityShieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
+    gravityShieldModel->setParent(parent);
+    gravityShieldModel->setPosition(getPosition());
+    gravityShieldModel->setStencilBufferEnabled(true);
+    gravityShieldModel->setRotationFrameEnabled(true);
+    gravityShieldModel->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+
+    Brakeza3D::get()->addObject3D(gravityShieldModel, "gravitationalShieldPlayer");
+}
 
 int Player::getStamina() const {
     return stamina;
@@ -143,23 +153,8 @@ void Player::makeGravitationalShield()
         return;
     }
 
-    auto *object = new GravitationalShield(3000, 0.001, 500, 7);
-    object->setParent(parent);
-    object->setLabel("talent_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    object->setPosition(getPosition());
-    object->setEnabled(true);
-    object->setStencilBufferEnabled(true);
-    object->setRotationFrameEnabled(true);
-    object->setRotationFrame(Tools::randomVertex().getScaled(0.5));
-    object->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
-    object->makeGhostBody(
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        object,
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
-    );
-
-    Brakeza3D::get()->addObject3D(object, object->getLabel());
+    gravityShieldModel->setPosition(getPosition());
+    gravityShieldModel->reset();
 
     gravityShieldsNumber++;
 
@@ -233,7 +228,6 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    updateEngineParticles();
     updateLight();
     updateWeaponType();
     applyFriction();
@@ -309,11 +303,6 @@ void Player::applyFriction() {
 
 void Player::setVelocity(Vertex3D v) {
     this->velocity = v;
-}
-
-void Player::updateEngineParticles() {
-    engineParticles->setPosition(getPosition() + engineParticlesPositionOffset);
-    engineParticles->onUpdate();
 }
 
 void Player::updateLight() {

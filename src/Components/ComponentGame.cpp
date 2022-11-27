@@ -61,6 +61,10 @@ void ComponentGame::onStart()
 
     shaderColor = new ShaderColor(Color::red(), 0.75);
     shaderColor->setEnabled(false);
+
+    shaderFireworks = new ShaderTrailObject();
+    shaderFireworks->setObject(getPlayer());
+    shaderFireworks->setEnabled(false);
 }
 
 void ComponentGame::preUpdate()
@@ -94,6 +98,7 @@ void ComponentGame::onUpdate()
     shaderColor->update();
 
     if (state == EngineSetup::GameState::GAMING) {
+        shaderFireworks->update();
         blockPlayerPositionInCamera();
         checkForEndLevel();
     }
@@ -366,7 +371,6 @@ void ComponentGame::loadPlayer()
     player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/red_spaceship_02.fbx"));
     player->updateBoundingBox();
     player->makeSimpleGhostBody(
-        player->getPosition(),
         player->aabb.size().getScaled(0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
@@ -377,6 +381,7 @@ void ComponentGame::loadPlayer()
     // load in this point because alpha is not working if is load previous (todo)
     player->loadShieldModel();
     player->loadBlinkShader();
+    player->loadGravityShieldModel();
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -575,7 +580,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             weapon != nullptr ||
             projectile != nullptr ||
             energy != nullptr ||
-            gravitational != nullptr ||
+            //gravitational != nullptr ||
             respawner != nullptr
         ) {
             object->setEnabled(value);

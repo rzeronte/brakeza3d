@@ -19,7 +19,8 @@ ParticleEmissorFireworks::ParticleEmissorFireworks(
     this->firesCounter = 0;
 }
 
-void ParticleEmissorFireworks::onUpdate() {
+void ParticleEmissorFireworks::onUpdate()
+{
     Object3D::onUpdate();
 
     if (!active) {
