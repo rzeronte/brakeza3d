@@ -15,11 +15,11 @@ class GravitationalShield : public GravitationalGhost {
 private:
     float startStamina;
     float stamina;
-    Counter timeToLive;
     float ttl;
     ShaderBlink *blink;
     ShaderShockWave *shockWave;
     Counter *counterDamageBlink;
+    bool hidden;
 
 public:
     GravitationalShield(float force, float factor, float stamina, float ttl);
@@ -42,6 +42,13 @@ public:
 
     void resolveCollision(Collisionable *collisionable) override;
 
+    Counter timeToLive;
+
+    void reset();
+
+    bool isHidden() const;
+
+    void setHidden(bool hidden);
 };
 
 

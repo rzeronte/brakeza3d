@@ -22,6 +22,7 @@
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
 #include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
+#include "../../darkheaz/src/shaders/ShaderTrailObject.h"
 
 class ComponentGame : public Component {
 public:
@@ -60,6 +61,7 @@ public:
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
+    ShaderTrailObject *shaderFireworks;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

@@ -58,9 +58,6 @@ private:
     bool allowGravitationalShields;
     bool allowEnergyShield;
 public:
-    ParticleEmissor *engineParticles;
-    Vertex3D engineParticlesPositionOffset;
-
     LightPoint3D *light;
     Vertex3D lightPositionOffset;
 
@@ -70,6 +67,7 @@ public:
     int currentWeaponIndex;
 
     Mesh3D *shieldModel;
+    GravitationalShield *gravityShieldModel;
 
     Player();
 
@@ -103,8 +101,6 @@ public:
     float maxVelocity;
 
     void applyFriction();
-
-    void updateEngineParticles();
 
     void updateLight();
 
@@ -195,6 +191,8 @@ public:
     void loadBlinkShader();
 
     void postUpdate() override;
+
+    void loadGravityShieldModel();
 };
 
 

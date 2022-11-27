@@ -408,7 +408,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
-        enemy->getPosition(),
         enemy->aabb.size().getScaled(0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,

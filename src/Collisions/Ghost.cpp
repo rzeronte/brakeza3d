@@ -30,14 +30,15 @@ void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int coll
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
 
-void Ghost::makeSimpleGhostBody(Vertex3D pos, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+void Ghost::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(btVector3(0, 0, 0));
 
     convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(
-            btVector3(dimensions.x, dimensions.y, dimensions.z)));
+        btVector3(dimensions.x, dimensions.y, dimensions.z)
+    ));
 
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
@@ -82,9 +83,15 @@ btPairCachingGhostObject *Ghost::getGhostObject() const {
      return ghostObject;
 }
 
-void Ghost::removeCollisionObject() const {
+void Ghost::removeCollisionObject() const
+{
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getGhostObject());
 }
+
+void Ghost::addCollisionObject() const
+{
+    //ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(getGhostObject());
+};
 
 Ghost::~Ghost()
 {

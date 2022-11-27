@@ -295,7 +295,15 @@ add_executable(Brakeza3D
         include/Render/ShaderOpenCL.h
         src/Misc/VideoPlayer.cpp
         include/Misc/VideoPlayer.h
-        darkheaz/src/shaders/ShaderHorizontalBar.cpp darkheaz/src/shaders/ShaderHorizontalBar.h darkheaz/src/shaders/ShaderBackgroundImage.cpp darkheaz/src/shaders/ShaderBackgroundImage.h darkheaz/src/shaders/ShaderEdgeObject.cpp darkheaz/src/shaders/ShaderEdgeObject.h darkheaz/src/shaders/ShaderColor.cpp darkheaz/src/shaders/ShaderColor.h darkheaz/src/shaders/ShaderBlinkObject.cpp darkheaz/src/shaders/ShaderBlinkObject.h)
+        darkheaz/src/shaders/ShaderHorizontalBar.cpp
+        darkheaz/src/shaders/ShaderHorizontalBar.h
+        darkheaz/src/shaders/ShaderBackgroundImage.cpp
+        darkheaz/src/shaders/ShaderBackgroundImage.h
+        darkheaz/src/shaders/ShaderEdgeObject.cpp
+        darkheaz/src/shaders/ShaderEdgeObject.h
+        darkheaz/src/shaders/ShaderColor.cpp
+        darkheaz/src/shaders/ShaderColor.h
+        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

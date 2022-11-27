@@ -62,27 +62,6 @@ public:
         );
     }
 
-    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
-    {
-        min.x = screenWidth;
-        min.y = screenHeight;
-        max.x = -1;
-        max.y = -1;
-
-        for (auto vertex : mesh->aabb.vertices) {
-            Point2D screenPoint = Transforms::WorldToPoint(vertex, camera);
-            min.x = std::min(min.x, screenPoint.x);
-            min.y = std::min(min.y, screenPoint.y);
-            max.x = std::max(max.x, screenPoint.x);
-            max.y = std::max(max.y, screenPoint.y);
-        }
-
-        min.x = std::clamp(min.x, 0, screenWidth);
-        min.y = std::clamp(min.y, 0, screenHeight);
-        max.x = std::clamp(max.x, 0, screenWidth);
-        max.y = std::clamp(max.y, 0, screenHeight);
-    }
-
     void update()
     {
         if (!isEnabled()) {
