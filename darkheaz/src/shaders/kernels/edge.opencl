@@ -11,11 +11,7 @@ __kernel void onUpdate(
     float iTime,
     __global unsigned int *video,
     __global unsigned int *shader,
-    __global bool *stencil,
-    float minPosX,
-    float minPosY,
-    float maxPosX,
-    float maxPosY
+    __global bool *stencil
 )
 {
    int i = get_global_id(0);

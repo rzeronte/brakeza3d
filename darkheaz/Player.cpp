@@ -108,6 +108,7 @@ void Player::evalStatusMachine() {
 
 void Player::takeDamage(float dmg)
 {
+    return;
     if (state == PlayerState::GETTING_DAMAGE || state == PlayerState::DEAD) {
         return;
     }

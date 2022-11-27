@@ -267,6 +267,8 @@ public:
             }
 
             if (ImGui::BeginMenu("Logging")) {
+                ImGui::Checkbox("Output to Console", &EngineSetup::get()->LOGGING);
+                ImGui::Separator();
                 ImGui::Checkbox("Show debug data", &EngineSetup::get()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
                 ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);

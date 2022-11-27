@@ -86,7 +86,7 @@ void ShaderTrailObject::executeKernelOpenCL()
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
     // Divide work items into groups of 64
-    size_t local_item_size = 16;
+    size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
         clCommandQueue,

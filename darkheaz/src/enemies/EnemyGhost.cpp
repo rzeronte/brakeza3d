@@ -62,10 +62,11 @@ void EnemyGhost::onUpdate()
 
 void EnemyGhost::makeReward()
 {
-    auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
+    /*auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
     fireworks->setPosition(getPosition());
     fireworks->setRotationFrame(0, 4, 5);
     Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    */
 
     auto playerWeapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
@@ -141,7 +142,8 @@ void EnemyGhost::postUpdate() {
     }
 }
 
-void EnemyGhost::integrate() {
+void EnemyGhost::integrate()
+{
     Mesh3DGhost::integrate();
 }
 
@@ -159,11 +161,11 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
+        /*auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
         fireworks->setPosition(projectile->getPosition());
         fireworks->setRotationFrame(0, 4, 5);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
+        */
         this->takeDamage(projectile->getWeaponType()->getDamage());
     }
 }

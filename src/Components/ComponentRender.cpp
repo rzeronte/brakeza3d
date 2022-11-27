@@ -30,7 +30,6 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::onUpdate()
 {
-
     if (!isEnabled()) {
         return;
     }
@@ -70,7 +69,6 @@ void ComponentRender::onUpdate()
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
-
     shaderEdge->update();
 }
 
