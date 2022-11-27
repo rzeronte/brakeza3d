@@ -982,7 +982,6 @@ void ComponentRender::initializeShaders()
     addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
     addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
     addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
-    addShader(EngineSetup::ShaderTypes::BLINK, "Blink", new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera()));
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {
