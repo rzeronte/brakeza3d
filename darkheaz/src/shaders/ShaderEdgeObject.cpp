@@ -40,15 +40,10 @@ void ShaderEdgeObject::update()
         return;
     }
 
-    mesh->updateBoundingBox();
-    Point2D screenMinPoint;
-    Point2D screenMaxPoint;
-    getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, mesh);
-
-    executeKernelOpenCL(screenMinPoint, screenMaxPoint);
+    executeKernelOpenCL();
 }
 
-void ShaderEdgeObject::executeKernelOpenCL(Point2D &screenMinPoint, Point2D &screenMaxPoint)
+void ShaderEdgeObject::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
         clCommandQueue,
@@ -80,38 +75,34 @@ void ShaderEdgeObject::executeKernelOpenCL(Point2D &screenMinPoint, Point2D &scr
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
-    clSetKernelArg(kernel, 6, sizeof(int), &screenMinPoint.x);
-    clSetKernelArg(kernel, 7, sizeof(int), &screenMinPoint.y);
-    clSetKernelArg(kernel, 8, sizeof(int), &screenMaxPoint.x);
-    clSetKernelArg(kernel, 9, sizeof(int), &screenMaxPoint.y);
 
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
     // Divide work items into groups of 64
-    size_t local_item_size = 16;
+    size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
-            clCommandQueue,
-            kernel,
-            1,
-            nullptr,
-            &global_item_size,
-            &local_item_size,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        kernel,
+        1,
+        nullptr,
+        &global_item_size,
+        &local_item_size,
+        0,
+        nullptr,
+        nullptr
     );
 
     clEnqueueReadBuffer(
-            clCommandQueue,
-            opencl_buffer_video_screen,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        opencl_buffer_video_screen,
+        CL_TRUE,
+        0,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     this->debugKernel();
@@ -127,15 +118,4 @@ void ShaderEdgeObject::setObject(Object3D *o) {
 
 void ShaderEdgeObject::setColor(Color c) {
     this->color = c;
-}
-
-void ShaderEdgeObject::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh)
-{
-    for (auto vertex : mesh->aabb.vertices) {
-        Point2D screenPoint = Transforms::WorldToPoint(vertex, ComponentsManager::get()->getComponentCamera()->getCamera());
-        min.x = std::min(min.x, screenPoint.x);
-        min.y = std::min(min.y, screenPoint.y);
-        max.x = std::max(max.x, screenPoint.x);
-        max.y = std::max(max.y, screenPoint.y);
-    }
 }

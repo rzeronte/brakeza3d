@@ -25,13 +25,12 @@ public:
 
     ~ShaderEdgeObject() override;
 
-    void executeKernelOpenCL(Point2D &screenMinPoint, Point2D &screenMaxPoint);
+    void executeKernelOpenCL();
 
     void setObject(Object3D *o);
 
     void setColor(Color c);
 
-    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh);
 };
 
 
