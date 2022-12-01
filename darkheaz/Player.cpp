@@ -45,7 +45,6 @@ Player::Player() : state(PlayerState::EMPTY),
 
     setAllowEnergyShield(true);
     setAllowGravitationalShields(true);
-
 }
 
 void Player::loadShieldModel()
@@ -68,6 +67,12 @@ void Player::loadShieldModel()
     Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
 }
 
+void Player::loaderShaderTrail()
+{
+    shaderTrail = new ShaderTrailObject(this);
+    shaderTrail->setEnabled(true);
+}
+
 void Player::loadGravityShieldModel()
 {
     gravityShieldModel = new GravitationalShield(3000, 0.001, 500, 7);
@@ -84,15 +89,15 @@ void Player::loadGravityShieldModel()
 }
 
 int Player::getStamina() const {
-    return stamina;
+    return (int) stamina;
 }
 
-void Player::setStamina(int stamina) {
-    Player::stamina = stamina;
+void Player::setStamina(int value) {
+    Player::stamina = (float) value;
 }
 
-void Player::setLives(int lives) {
-    Player::lives = lives;
+void Player::setLives(int value) {
+    Player::lives = value;
 }
 
 
@@ -209,16 +214,16 @@ void Player::shoot()
     }
 }
 
-void Player::receiveAid(float aid) {
-    this->stamina = stamina + aid;
+void Player::receiveAid(float value) {
+    this->stamina = stamina + value;
 
     if (stamina > (float) getStartStamina()) {
         this->stamina = (float) getStartStamina();
     }
 }
-void Player::receiveEnergy(float energy)
+void Player::receiveEnergy(float value)
 {
-    this->energy = energy + energy;
+    this->energy = energy + value;
 
     if (energy > (float) getStartEnergy()) {
         this->energy = (float) getStartEnergy();
@@ -275,7 +280,7 @@ void Player::onUpdate()
 
 void Player::postUpdate()
 {
-    Object3D::postUpdate();
+    if (!isEnabled()) return;
 
     if (state == PlayerState::DEAD) {
         return;
@@ -288,6 +293,8 @@ void Player::postUpdate()
             stopBlinkForPlayer();
         }
     }
+
+    shaderTrail->update();
 }
 
 Vertex3D Player::getVelocity() {
@@ -422,8 +429,8 @@ void Player::setWeaponTypeByIndex(int i) {
     this->currentWeaponIndex = i;
 }
 
-void Player::setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed) {
-    Player::autoRotationSelectedObjectSpeed = autoRotationSelectedObjectSpeed;
+void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
+    Player::autoRotationSelectedObjectSpeed = value;
 }
 
 void Player::startBlinkShaderForPlayer()
@@ -443,9 +450,9 @@ int Player::getKillsCounter() const {
     return killsCounter;
 }
 
-void Player::setKillsCounter(int killsCounter)
+void Player::setKillsCounter(int value)
 {
-    Player::killsCounter = killsCounter;
+    Player::killsCounter = value;
 }
 
 void Player::increaseKills()
@@ -491,45 +498,45 @@ float Player::getEnergy() const {
     return energy;
 }
 
-void Player::useEnergy(float energy)
+void Player::useEnergy(float value)
 {
-    this->energy -= energy;
+    this->energy -= value;
 }
 
-void Player::setEnergy(float energy) {
-    Player::energy = energy;
+void Player::setEnergy(float value) {
+    Player::energy = value;
 }
 
 int Player::getStartStamina() const {
     return startStamina;
 }
 
-void Player::setStartStamina(int startStamina) {
-    Player::startStamina = startStamina;
+void Player::setStartStamina(int value) {
+    Player::startStamina = value;
 }
 
 float Player::getStartEnergy() const {
     return startEnergy;
 }
 
-void Player::setStartEnergy(float startEnergy) {
-    Player::startEnergy = startEnergy;
+void Player::setStartEnergy(float value) {
+    Player::startEnergy = value;
 }
 
 float Player::getRecoverEnergySpeed() const {
     return recoverEnergySpeed;
 }
 
-void Player::setRecoverEnergySpeed(float recoverEnergySpeed) {
-    Player::recoverEnergySpeed = recoverEnergySpeed;
+void Player::setRecoverEnergySpeed(float value) {
+    Player::recoverEnergySpeed = value;
 }
 
 int Player::getGravityShieldsNumber() const {
     return gravityShieldsNumber;
 }
 
-void Player::setGravityShieldsNumber(int gravityShieldsNumber) {
-    Player::gravityShieldsNumber = gravityShieldsNumber;
+void Player::setGravityShieldsNumber(int value) {
+    Player::gravityShieldsNumber = value;
 }
 
 void Player::nextWeapon()
@@ -568,12 +575,12 @@ void Player::previousWeapon()
     }
 }
 
-void Player::setAllowGravitationalShields(bool allowGravitationalShields) {
-    Player::allowGravitationalShields = allowGravitationalShields;
+void Player::setAllowGravitationalShields(bool value) {
+    Player::allowGravitationalShields = value;
 }
 
-void Player::setAllowEnergyShield(bool allowEnergyShield) {
-    Player::allowEnergyShield = allowEnergyShield;
+void Player::setAllowEnergyShield(bool value) {
+    Player::allowEnergyShield = value;
 }
 
 bool Player::isAllowGravitationalShields() const {
@@ -586,8 +593,7 @@ bool Player::isAllowEnergyShield() const {
 
 void Player::loadBlinkShader()
 {
-    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
-    blink->setObject(this);
+    blink = new ShaderBlink(this);
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);

@@ -338,7 +338,7 @@ public:
     }
 
     void GuiPlayer(Object3D *object, int i) {
-        auto *player = dynamic_cast<Player *>(object);
+        auto player = dynamic_cast<Player *>(object);
         if (player != nullptr) {
             std::string player_movement_text = "Movement##" + std::to_string(i);
 

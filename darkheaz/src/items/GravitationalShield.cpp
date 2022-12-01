@@ -18,8 +18,7 @@ GravitationalShield::GravitationalShield(
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
 
-    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
-    blink->setObject(this);
+    blink = new ShaderBlink(this);
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);

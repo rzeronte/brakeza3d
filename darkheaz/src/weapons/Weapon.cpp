@@ -194,6 +194,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
 
         auto *projectile = new AmmoSmartProjectileBody();
+        projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);

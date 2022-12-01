@@ -23,6 +23,7 @@ public:
     bool isLoaded();
 
     void setSurface(SDL_Surface *surface);
+    void createEmpty(int w, int h);
 
     [[nodiscard]] SDL_Surface *getSurface() const;
 

@@ -14,6 +14,7 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
     object->setAlphaEnabled(true);
     startCounter();
     Brakeza3D::get()->addObject3D(object, object->getLabel());
+
 }
 
 void EnemyGhostRespawner::onUpdate()

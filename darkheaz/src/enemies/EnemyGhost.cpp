@@ -8,8 +8,7 @@
 
 EnemyGhost::EnemyGhost()
 {
-    blink = new ShaderBlink(ComponentsManager::get()->getComponentCamera()->getCamera());
-    blink->setObject(this);
+    blink = new ShaderBlink(this);
     blink->setStep(0.09);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
@@ -17,6 +16,9 @@ EnemyGhost::EnemyGhost()
 
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
+
+    shaderTrail = new ShaderTrailObject(this);
+    //shaderTrail->setEnabled(true);
 }
 
 void EnemyGhost::onUpdate()
@@ -58,6 +60,7 @@ void EnemyGhost::onUpdate()
     if (getState() != EnemyState::ENEMY_STATE_DIE) {
         shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
     }
+
 }
 
 void EnemyGhost::makeReward()
@@ -129,8 +132,15 @@ void EnemyGhost::rotateToPlayer()
         ));
 }
 
-void EnemyGhost::postUpdate() {
+void EnemyGhost::postUpdate()
+{
     Object3D::postUpdate();
+
+    if (!isEnabled()) {
+        return;
+    }
+
+    shaderTrail->update();
 
     if (counterDamageBlink->isEnabled()) {
         counterDamageBlink->update();
@@ -140,6 +150,7 @@ void EnemyGhost::postUpdate() {
             counterDamageBlink->setEnabled(false);
         }
     }
+
 }
 
 void EnemyGhost::integrate()
@@ -229,4 +240,5 @@ EnemyGhost::~EnemyGhost()
 {
     delete counterDamageBlink;
     delete blink;
+    delete shaderTrail;
 }

@@ -8,7 +8,7 @@
 #include "../../include/Misc/VideoPlayer.h"
 
 #define FREELOOK false
-#define SPLASH_TIME 3.0f
+#define SPLASH_TIME 0.0001f
 #define FADE_SPEED_START_GAME 0.04
 #define FADE_SPEED_ENDLEVEL 0.04
 #define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
@@ -17,6 +17,7 @@
 ComponentGame::ComponentGame()
 {
     player = new Player();
+    player->setEnabled(false);
     gameState = EngineSetup::GameState::NONE;
 }
 
@@ -61,10 +62,6 @@ void ComponentGame::onStart()
 
     shaderColor = new ShaderColor(Color::red(), 0.75);
     shaderColor->setEnabled(false);
-
-    shaderFireworks = new ShaderTrailObject();
-    shaderFireworks->setObject(getPlayer());
-    shaderFireworks->setEnabled(false);
 }
 
 void ComponentGame::preUpdate()
@@ -98,7 +95,6 @@ void ComponentGame::onUpdate()
     shaderColor->update();
 
     if (state == EngineSetup::GameState::GAMING) {
-        shaderFireworks->update();
         blockPlayerPositionInCamera();
         checkForEndLevel();
     }
@@ -382,6 +378,7 @@ void ComponentGame::loadPlayer()
     player->loadShieldModel();
     player->loadBlinkShader();
     player->loadGravityShieldModel();
+    player->loaderShaderTrail();
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)

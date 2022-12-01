@@ -1,37 +1,46 @@
-//
-// Created by eduardo on 26/11/22.
-//
 
 #include "ShaderTrailObject.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderTrailObject::ShaderTrailObject() : ShaderOpenCL("trail.opencl")
+ShaderTrailObject::ShaderTrailObject(Object3D *o) : ShaderOpenCL("trail.opencl")
 {
-    this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    this->object = o;
+    setEnabled(false);
 
     this->color = Color::green();
 
-    opencl_buffer_stencil = clCreateBuffer(
+    opencl_buffer_image = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-        this->image->pixels(),
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        &this->videoBuffer,
         &clRet
     );
 
-    opencl_buffer_image= clCreateBuffer(
-            context,
-            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            this->image->pixels(),
-            &clRet
+    opencl_buffer_stencil = clCreateBuffer(
+        context,
+        CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+        &o->stencilBuffer,
+        &clRet
     );
 }
 
 void ShaderTrailObject::update()
 {
     Shader::update();
+
+    if (!isEnabled()) return;
+
+    if (this->object == nullptr) {
+        return;
+    }
+
+    if (!this->object->isStencilBufferEnabled()) {
+        return;
+    }
+
     executeKernelOpenCL();
 }
 
@@ -52,24 +61,28 @@ void ShaderTrailObject::executeKernelOpenCL()
         nullptr,
         nullptr
     );
+    if(object->stencilBuffer == nullptr){
+        int a = 1;
+    }
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_stencil,
         CL_TRUE,
         0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-        object->getStencilBuffer(),
+        object->stencilBuffer,
         0,
         nullptr,
         nullptr
     );
+
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_image,
         CL_TRUE,
         0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        image->pixels(),
+        this->videoBuffer,
         0,
         nullptr,
         nullptr
@@ -118,7 +131,7 @@ void ShaderTrailObject::executeKernelOpenCL()
         CL_TRUE,
         0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        image->pixels(),
+        this->videoBuffer,
         0,
         nullptr,
         nullptr
@@ -126,9 +139,3 @@ void ShaderTrailObject::executeKernelOpenCL()
 
     this->debugKernel();
 }
-
-void ShaderTrailObject::setObject(Object3D *o)
-{
-    this->object = o;
-}
-
