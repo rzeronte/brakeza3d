@@ -134,7 +134,7 @@ public:
 
     const std::map<int, Shader *> &getShaders();
 
-    Object3D* getSelectedObject();
+    Object3D* getSelectedObject() const;
 
     void setSelectedObject(Object3D *o);
 

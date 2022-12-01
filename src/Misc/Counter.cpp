@@ -2,16 +2,20 @@
 #include "../../include/Misc/Counter.h"
 #include "../../include/Brakeza3D.h"
 
-Counter::Counter() {
+Counter::Counter()
+{
     this->timer = Brakeza3D::get()->getTimer();
+    this->step = 0;
 }
 
-Counter::Counter(float step) {
+Counter::Counter(float step)
+{
     this->timer = Brakeza3D::get()->getTimer();
     this->step = step;
 }
 
-void Counter::update(){
+void Counter::update()
+{
     if (!isEnabled()) return;
 
     auto ticks = (float) this->timer->getTicks();
@@ -28,12 +32,14 @@ void Counter::update(){
     finished = false;
 }
 
-bool Counter::isFinished() const {
+bool Counter::isFinished() const
+{
     return finished;
 }
 
-void Counter::setStep(float step) {
-    this->step = step;
+void Counter::setStep(float value)
+{
+    this->step = value;
     this->acumulatedTime = 0;
     this->finished = false;
     this->lastTicks = 0;
@@ -43,15 +49,18 @@ float Counter::getAcumulatedTime() const {
     return acumulatedTime;
 }
 
-float Counter::getStep() const {
+float Counter::getStep() const
+{
     return step;
 }
 
-bool Counter::isEnabled() const {
+bool Counter::isEnabled() const
+{
     return enabled;
 }
 
-void Counter::setEnabled(bool e) {
+void Counter::setEnabled(bool e)
+{
     Counter::enabled = e;
 
     this->acumulatedTime = 0;

@@ -47,7 +47,7 @@ void ComponentRender::onUpdate()
     this->hiddenSurfaceRemoval();
     this->drawVisibleTriangles();
 
-    this->onUpdatePostUpdateShaders();
+    //this->onUpdatePostUpdateShaders();
     this->onPostUpdateSceneObjects();
 
     frameTriangles.clear();
@@ -69,6 +69,7 @@ void ComponentRender::onUpdate()
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
+
     shaderEdge->update();
 }
 
@@ -108,8 +109,8 @@ void ComponentRender::updateSelectedObject3DInShaders(Object3D *object)
 {
     shaderEdge->setObject(object);
 
-    auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
-    smoke->setObject(object);
+    //auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
+    //smoke->setObject(object);
 }
 
 std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
@@ -977,16 +978,17 @@ Shader* ComponentRender::getShaderByType(int id) {
 
 void ComponentRender::initializeShaders()
 {
-    addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
-    addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
-    addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
+    //addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
+    //addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
+    //addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
 }
 
 const std::map<int, Shader *> &ComponentRender::getShaders() {
     return shaders;
 }
 
-Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick) {
+Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
+{
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Point2D  fixedPosition = Point2D(xClick,yClick);
@@ -1008,7 +1010,8 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick) {
     return nullptr;
 }
 
-Object3D *ComponentRender::getSelectedObject() {
+Object3D *ComponentRender::getSelectedObject() const
+{
     return selectedObject;
 }
 
@@ -1019,7 +1022,7 @@ void ComponentRender::setSelectedObject(Object3D *o) {
 void ComponentRender::onPostUpdateSceneObjects()
 {
     for (auto object : *getSceneObjects()) {
-        if (!object->isEnabled()) {
+        if (!object->isEnabled() || object->isRemoved()) {
             continue;
         }
 
