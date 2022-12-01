@@ -13,7 +13,6 @@ class Object3D {
     M3 rotation;
 
 protected:
-    bool *stencilBuffer;
     EnemyBehavior *motion;
 public:
     float rotX, rotY, rotZ; // For easy management from UI
@@ -127,6 +126,7 @@ public:
 
     void setAlphaEnabled(bool alphaEnabled);
 
+    bool *stencilBuffer;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

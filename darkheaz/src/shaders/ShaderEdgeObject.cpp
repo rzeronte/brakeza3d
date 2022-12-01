@@ -10,13 +10,13 @@
 
 ShaderEdgeObject::ShaderEdgeObject() : ShaderOpenCL("edge.opencl")
 {
-    this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    object = nullptr;
 
     opencl_buffer_stencil = clCreateBuffer(
         context,
-        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+        CL_MEM_READ_ONLY,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-        this->image->pixels(),
+        nullptr,
         &clRet
     );
 }
@@ -63,7 +63,7 @@ void ShaderEdgeObject::executeKernelOpenCL()
         CL_TRUE,
         0,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-        object->getStencilBuffer(),
+        object->stencilBuffer,
         0,
         nullptr,
         nullptr

@@ -44,6 +44,7 @@ void Brakeza3D::start() {
 
     ComponentsManager::get()->configureComponents();
 
+
     mainLoop();
 }
 

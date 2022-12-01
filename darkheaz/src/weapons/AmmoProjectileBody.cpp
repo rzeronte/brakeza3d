@@ -6,6 +6,9 @@
 #include "../../../include/ComponentsManager.h"
 #include "../items/ItemHealthGhost.h"
 
+AmmoProjectileBody::AmmoProjectileBody() {
+}
+
 Weapon *AmmoProjectileBody::getWeaponType() const {
     return weaponType;
 }
@@ -40,7 +43,9 @@ void AmmoProjectileBody::onUpdate()
 {
     Projectile3DBody::onUpdate();
     updateBoundingBox();
+
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
         this->remove();
     }
+
 }

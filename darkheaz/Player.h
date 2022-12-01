@@ -9,6 +9,7 @@
 #include "src/weapons/Weapon.h"
 #include "src/shaders/ShaderShockWave.h"
 #include "src/items/GravitationalShield.h"
+#include "src/shaders/ShaderTrailObject.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -49,6 +50,7 @@ private:
     Weapon *weapon;
     Counter *counterDamageBlink;
     ShaderBlink *blink;
+    ShaderTrailObject *shaderTrail;
 
     int killsCounter;
     int levelsCompletedCounter;
@@ -193,6 +195,8 @@ public:
     void postUpdate() override;
 
     void loadGravityShieldModel();
+
+    void loaderShaderTrail();
 };
 
 

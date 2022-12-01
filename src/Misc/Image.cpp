@@ -11,6 +11,12 @@ Image::Image()
     this->offset = 0;
 }
 
+void Image::createEmpty(int w, int h)
+{
+    this->surface = SDL_CreateRGBSurface(SDL_PIXELFORMAT_RGBA32, w, h, 32, 0, 0, 0, 0);
+    this->loaded = true;
+}
+
 Image::Image(std::string filename)
 {
     this->loadTGA(filename);

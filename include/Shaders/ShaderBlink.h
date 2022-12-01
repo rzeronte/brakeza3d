@@ -12,8 +12,6 @@
 #define DEFAULT_BLINK_SECONDS 1
 class ShaderBlink : public ShaderOpenCL {
     bool isBlinking = false;
-    Camera3D *camera;
-    Image *image;
     cl_mem opencl_buffer_stencil;
     int screenWidth;
     int screenHeight;
@@ -21,44 +19,20 @@ class ShaderBlink : public ShaderOpenCL {
     Color color;
     Counter counter;
 public:
-    ShaderBlink(Camera3D *camera) : ShaderOpenCL("blink.opencl") {
-        this->screenHeight = EngineSetup::get()->screenHeight;
-        this->screenWidth = EngineSetup::get()->screenWidth;
-        this->object = nullptr;
-        this->color = Color::green();
-        setStep(DEFAULT_BLINK_SECONDS);
-        setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
-        this->counter.setStep(step);
-        this->counter.setEnabled(true);
-        this->camera = camera;
-
-        this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-
-        opencl_buffer_stencil = clCreateBuffer(
-            context,
-            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-            this->image->pixels(),
-            &clRet
-        );
-    }
-
-    ShaderBlink(Camera3D *camera, Object3D *o): ShaderOpenCL("blink.opencl") {
+    ShaderBlink(Object3D *o): ShaderOpenCL("blink.opencl") {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->color = Color::green();
         setStep(DEFAULT_BLINK_SECONDS);
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
-        this->camera = camera;
-        this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
         opencl_buffer_stencil = clCreateBuffer(
-                context,
-                CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-                EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-                this->image->pixels(),
-                &clRet
+            context,
+            CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+            this->object->stencilBuffer,
+            &clRet
         );
     }
 
@@ -115,27 +89,27 @@ public:
     void executeKernelOpenCL()
     {
         clEnqueueWriteBuffer(
-                clCommandQueue,
-                opencl_buffer_video_shader,
-                CL_TRUE,
-                0,
-                EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-                EngineBuffers::getInstance()->videoBuffer,
-                0,
-                nullptr,
-                nullptr
+            clCommandQueue,
+            opencl_buffer_video_shader,
+            CL_TRUE,
+            0,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
         );
 
         clEnqueueWriteBuffer(
-                clCommandQueue,
-                opencl_buffer_stencil,
-                CL_TRUE,
-                0,
-                EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-                object->getStencilBuffer(),
-                0,
-                nullptr,
-                nullptr
+            clCommandQueue,
+            opencl_buffer_stencil,
+            CL_TRUE,
+            0,
+            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+            object->stencilBuffer,
+            0,
+            nullptr,
+            nullptr
         );
 
         clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
@@ -150,7 +124,7 @@ public:
         // Process the entire lists
         size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
         // Divide work items into groups of 64
-        size_t local_item_size = 16;
+        size_t local_item_size = 64;
 
         clRet = clEnqueueNDRangeKernel(
             clCommandQueue,

@@ -101,7 +101,7 @@ void ComponentHUD::drawHUD()
     auto componentManager = ComponentsManager::get();
 
     drawShaderBars();
-    drawEnemySelectedShaderStamina();
+    //drawEnemySelectedShaderStamina();
 
     drawPlayerStamina(15);
 

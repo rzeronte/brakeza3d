@@ -61,7 +61,6 @@ public:
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
-    ShaderTrailObject *shaderFireworks;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();

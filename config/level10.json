@@ -1,34 +1,33 @@
 {
-  "name": "Level 05: Start!",
-  "backgroundImage": "levels/grid_blue.png",
-  "music": "level01Music",
+  "name": "Level 10: Leuman!",
+  "backgroundImage": "levels/Space_5.png",
+  "music": "BossMusic01",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial05.png",
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 20 },
+      "position": { "x": 5, "y": 10 },
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
       "motion": {
         "type": 1,
-        "from": { "x": 20, "y": 10 },
-        "to": { "x": 20, "y": 40 },
-        "speed": 3
+        "from": { "x": 1, "y": 10 },
+        "to": { "x": 1, "y": 50 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 999,
+        "amount": 200,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.5,
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -39,14 +38,14 @@
     },
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 20 },
+      "position": { "x": 99, "y": 10 },
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
-      "speed": 100,
+      "speed": 200,
       "motion": {
         "type": 1,
-        "from": { "x": 80, "y": 10 },
-        "to": { "x": 80, "y": 40 },
+        "from": { "x": 99, "y": 10 },
+        "to": { "x": 99, "y": 50 },
         "speed": 1
       },
       "weapon": {
@@ -54,12 +53,12 @@
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 999,
+        "amount": 1000,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.5,
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -67,6 +66,12 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
       }
+    }
+  ],
+  "bosses": [
+    {
+      "type": 1,
+      "position": { "x": 50, "y": 5 }
     }
   ]
 }

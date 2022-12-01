@@ -12,7 +12,6 @@
 #include "../../../include/Objects/Mesh3D.h"
 
 class ShaderEdgeObject : public ShaderOpenCL {
-    Image *image;
     cl_mem opencl_buffer_stencil;
 
     Object3D* object;

@@ -7,13 +7,14 @@
 #include "Enemy.h"
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderTrailObject.h"
 
 class EnemyGhost : public Mesh3DGhost, public Enemy {
 private:
     ShaderBlink *blink;
+    ShaderTrailObject *shaderTrail;
     Counter *counterDamageBlink;
 public:
-
 
     EnemyGhost();
 

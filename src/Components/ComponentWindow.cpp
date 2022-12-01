@@ -19,6 +19,7 @@ void ComponentWindow::preUpdate() {
 void ComponentWindow::onUpdate()
 {
     SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
 }
 
 void ComponentWindow::postUpdate()
@@ -57,7 +58,7 @@ void ComponentWindow::initWindow() {
                 SDL_WINDOWPOS_UNDEFINED,
                 SETUP->screenWidth,
                 SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED
+                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
         );
 
         if (window == nullptr) {
@@ -67,8 +68,10 @@ void ComponentWindow::initWindow() {
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
 
+        //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
+
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         screenTexture = SDL_CreateTexture(
             renderer,
