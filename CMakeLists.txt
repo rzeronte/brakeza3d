@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -270,8 +270,6 @@ add_executable(Brakeza3D
         include/Particles/ParticleEmissorFireworks.h
         darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp
         darkheaz/src/weapons/AmmoProjectileBodyEmissor.h
-        darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp
-        darkheaz/src/enemies/EnemyGhostRespawnerEmissor.h
         darkheaz/src/bosses/BossEnemy.cpp darkheaz/src/bosses/BossEnemy.h
         darkheaz/src/behaviors/EnemyBehaviorRandom.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.h
@@ -303,7 +301,7 @@ add_executable(Brakeza3D
         darkheaz/src/shaders/ShaderEdgeObject.h
         darkheaz/src/shaders/ShaderColor.cpp
         darkheaz/src/shaders/ShaderColor.h
-        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h)
+        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

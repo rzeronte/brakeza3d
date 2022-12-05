@@ -923,7 +923,7 @@ void ComponentRender::updateFPS(const float deltaTime) {
     frameTime += deltaTime;
     ++fpsFrameCounter;
 
-    if (frameTime > 1000) {
+    if (frameTime >= 1000) {
         fps = fpsFrameCounter;
         frameTime = 0;
         fpsFrameCounter = 0;
