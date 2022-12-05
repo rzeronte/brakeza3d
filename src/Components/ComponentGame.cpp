@@ -63,6 +63,10 @@ void ComponentGame::onStart()
 
     shaderColor = new ShaderColor(Color::red(), 0.75);
     shaderColor->setEnabled(false);
+
+    shaderTrailBuffer = new ShaderTrailBuffer();
+    shaderTrailBuffer->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderTrailBuffer->setEnabled(true);
 }
 
 void ComponentGame::preUpdate()
@@ -91,6 +95,9 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+    this->addObjectsToStencilBuffer();
+    shaderTrailBuffer->update();
+
     EngineSetup::GameState state = getGameState();
     shaderClouds->update();
     shaderColor->update();
@@ -379,7 +386,6 @@ void ComponentGame::loadPlayer()
     player->loadShieldModel();
     player->loadBlinkShader();
     player->loadGravityShieldModel();
-    player->loaderShaderTrail();
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -672,4 +678,16 @@ void ComponentGame::pressedKeyByDead()
     );
     ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL);
     ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
+}
+
+void ComponentGame::addObjectsToStencilBuffer()
+{
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+        auto *player = dynamic_cast<Player *> (object);
+
+        if (enemy != nullptr || player != nullptr) {
+            this->shaderTrailBuffer->addStencilBufferObject(object);
+        }
+    }
 }

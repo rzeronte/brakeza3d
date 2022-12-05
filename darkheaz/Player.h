@@ -50,7 +50,6 @@ private:
     Weapon *weapon;
     Counter *counterDamageBlink;
     ShaderBlink *blink;
-    ShaderTrailObject *shaderTrail;
 
     int killsCounter;
     int levelsCompletedCounter;
@@ -195,8 +194,6 @@ public:
     void postUpdate() override;
 
     void loadGravityShieldModel();
-
-    void loaderShaderTrail();
 };
 
 

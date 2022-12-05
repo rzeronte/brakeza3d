@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -301,7 +301,7 @@ add_executable(Brakeza3D
         darkheaz/src/shaders/ShaderEdgeObject.h
         darkheaz/src/shaders/ShaderColor.cpp
         darkheaz/src/shaders/ShaderColor.h
-        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h)
+        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h darkheaz/src/shaders/ShaderTrailBuffer.cpp darkheaz/src/shaders/ShaderTrailBuffer.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

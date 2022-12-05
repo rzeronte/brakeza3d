@@ -89,15 +89,15 @@ public:
     void executeKernelOpenCL()
     {
         clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_video_shader,
-            CL_TRUE,
-            0,
+                clCommandQueue,
+                openClBufferMappedWithVideoInput,
+                CL_TRUE,
+                0,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+                EngineBuffers::getInstance()->videoBuffer,
+                0,
+                nullptr,
+                nullptr
         );
 
         clEnqueueWriteBuffer(
@@ -114,8 +114,8 @@ public:
 
         clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
         clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
-        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
+        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
         clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
         clSetKernelArg(kernel, 5, sizeof(float), &this->color.r);
         clSetKernelArg(kernel, 6, sizeof(float), &this->color.g);
@@ -139,15 +139,15 @@ public:
         );
 
         clEnqueueReadBuffer(
-            clCommandQueue,
-            opencl_buffer_video_screen,
-            CL_TRUE,
-            0,
+                clCommandQueue,
+                openClBufferMappedWithVideoOutput,
+                CL_TRUE,
+                0,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+                EngineBuffers::getInstance()->videoBuffer,
+                0,
+                nullptr,
+                nullptr
         );
 
         this->debugKernel();

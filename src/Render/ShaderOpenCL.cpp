@@ -41,7 +41,7 @@ void ShaderOpenCL::initOpenCLProgram()
 
     kernel = clCreateKernel(program, "onUpdate", &clRet);
 
-    opencl_buffer_video_shader = clCreateBuffer(
+    openClBufferMappedWithVideoInput = clCreateBuffer(
             context,
             CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
@@ -49,7 +49,7 @@ void ShaderOpenCL::initOpenCLProgram()
             &clRet
     );
 
-    opencl_buffer_video_screen = clCreateBuffer(
+    openClBufferMappedWithVideoOutput = clCreateBuffer(
             context,
              CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),

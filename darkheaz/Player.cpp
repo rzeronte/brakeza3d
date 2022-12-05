@@ -67,12 +67,6 @@ void Player::loadShieldModel()
     Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
 }
 
-void Player::loaderShaderTrail()
-{
-    shaderTrail = new ShaderTrailObject(this, Color::green());
-    shaderTrail->setEnabled(true);
-}
-
 void Player::loadGravityShieldModel()
 {
     gravityShieldModel = new GravitationalShield(3000, 0.001, 500, 7);
@@ -287,8 +281,6 @@ void Player::postUpdate()
             stopBlinkForPlayer();
         }
     }
-
-    shaderTrail->update();
 }
 
 Vertex3D Player::getVelocity() {
