@@ -3,12 +3,12 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderTrailObject::ShaderTrailObject(Object3D *o) : ShaderOpenCL("trail.opencl")
+ShaderTrailObject::ShaderTrailObject(Object3D *o, Color c) : ShaderOpenCL("trail.opencl")
 {
     this->object = o;
-    setEnabled(false);
+    this->color = c;
 
-    this->color = Color::green();
+    setEnabled(false);
 
     opencl_buffer_image = clCreateBuffer(
         context,
@@ -61,9 +61,7 @@ void ShaderTrailObject::executeKernelOpenCL()
         nullptr,
         nullptr
     );
-    if(object->stencilBuffer == nullptr){
-        int a = 1;
-    }
+
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_stencil,
@@ -95,6 +93,9 @@ void ShaderTrailObject::executeKernelOpenCL()
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
     clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&opencl_buffer_image);
+    clSetKernelArg(kernel, 7, sizeof(float), &this->color.r);
+    clSetKernelArg(kernel, 8, sizeof(float), &this->color.g);
+    clSetKernelArg(kernel, 9, sizeof(float), &this->color.b);
 
     // Process the entire lists
     size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;

@@ -16,7 +16,7 @@ public:
 
     static EngineSetup *instance;
 
-    bool LOGGING = true;
+    bool LOGGING = false;
     bool LOGGING_TO_FILE = false;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
@@ -43,6 +43,9 @@ public:
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
+
+    bool LIMIT_FRAMERATE = true;
+    int FRAMERATE = 50;
 
     int RESOLUTION = screenWidth * screenHeight;
 

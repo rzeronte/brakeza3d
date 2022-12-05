@@ -20,16 +20,16 @@ float Enemy::getRange() const {
     return range;
 }
 
-void Enemy::setRange(float range) {
-    Enemy::range = range;
+void Enemy::setRange(float value) {
+    Enemy::range = value;
 }
 
 float Enemy::getSpeed() const {
     return speed;
 }
 
-void Enemy::setSpeed(float speed) {
-    Enemy::speed = speed;
+void Enemy::setSpeed(float value) {
+    Enemy::speed = value;
 }
 
 EnemyState Enemy::getState() const {
@@ -52,24 +52,24 @@ Weapon *Enemy::getWeapon() const {
     return weapon;
 }
 
-void Enemy::setStamina(float stamina) {
-    Enemy::stamina = stamina;
+void Enemy::setStamina(float value) {
+    Enemy::stamina = value;
 }
 
 float Enemy::getStartStamina() const {
     return startStamina;
 }
 
-void Enemy::setStartStamina(float startStamina) {
-    Enemy::startStamina = startStamina;
+void Enemy::setStartStamina(float value) {
+    Enemy::startStamina = value;
 }
 
 int Enemy::getSoundChannel() const {
     return soundChannel;
 }
 
-void Enemy::setSoundChannel(int soundChannel) {
-    Enemy::soundChannel = soundChannel;
+void Enemy::setSoundChannel(int value) {
+    Enemy::soundChannel = value;
 }
 
 Enemy::~Enemy()

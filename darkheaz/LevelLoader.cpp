@@ -12,7 +12,6 @@
 #include "src/items/ItemHealthGhost.h"
 #include "src/items/ItemEnergyGhost.h"
 #include "src/items/ItemWeaponGhost.h"
-#include "src/enemies/EnemyGhostRespawnerEmissor.h"
 #include "src/bosses/BossEnemy.h"
 #include "src/enemies/behaviors/EnemyBehaviorRandom.h"
 #include "src/enemies/AsteroidEnemyGhost.h"
@@ -141,7 +140,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     cJSON *currentEnemyJSON;
     cJSON_ArrayForEach(currentEnemyJSON, enemiesList) {
         auto enemy = parseEnemyJSON(currentEnemyJSON);
-        auto respawner = new EnemyGhostRespawner(enemy, 1);
+        auto respawner = new EnemyGhostRespawner(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
@@ -151,12 +150,6 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     cJSON *currentItem;
     cJSON_ArrayForEach(currentItem, items) {
         this->parseItemJSON(currentItem);
-    }
-
-    cJSON *emissors = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "emissors");
-    cJSON *currentEmissor;
-    cJSON_ArrayForEach(currentEmissor, emissors) {
-        this->parseEmissorJSON(currentEmissor);
     }
 
     cJSON *bosses = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "bosses");
@@ -169,7 +162,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     cJSON *currentAsteroid;
     cJSON_ArrayForEach(currentAsteroid, asteroids) {
         auto asteroid = this->parseAsteroidJSON(currentAsteroid);
-        auto respawner = new EnemyGhostRespawner(asteroid, 1);
+        auto respawner = new EnemyGhostRespawner(asteroid, 3);
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
@@ -198,12 +191,17 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
     float stopEvery = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
     bool available = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint;
 
+    Logging::Log("Cargando arma: " + name, "[WEAPONS]");
+
     auto weapon = new Weapon(name);
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     weapon->getModel()->setLabel("weapon_model_template" + std::to_string(index));
     weapon->getModelProjectile()->setFlatTextureColor(true);
+    if (type == WEAPON_BOMB) {
+        weapon->getModelProjectile()->setFlatTextureColor(false);
+    }
     weapon->getModelProjectile()->setFlatColor(c);
-    weapon->getModelProjectile()->setEnableLights(false);
+    weapon->getModelProjectile()->setEnableLights(true);
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
     weapon->getModelProjectile()->setLabel("projectile_weapon_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
@@ -476,42 +474,20 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             this->makeItemHealthGhost(position);
             break;
         }
-        case LevelInfoItemsTypes::ITEM_WEAPON_INSTANT: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_INSTANT, position);
-            break;
-        }
         case LevelInfoItemsTypes::ITEM_WEAPON_PROJECTILE: {
             this->makeItemWeapon(WeaponTypes::WEAPON_PROJECTILE, position);
             break;
         }
+        case LevelInfoItemsTypes::ITEM_WEAPON_BOMB: {
+            this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
+            break;
+        }
+
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
             this->makeItemWeapon(WeaponTypes::WEAPON_SMART_PROJECTILE, position);
             break;
         }
     }
-}
-
-void LevelLoader::parseEmissorJSON(cJSON *emissorJSON)
-{
-    auto emissor = parseEnemyJSON(emissorJSON);
-
-    auto enemyGenerated = parseEnemyJSON(cJSON_GetObjectItemCaseSensitive(emissorJSON, "enemy"));
-    float step = cJSON_GetObjectItemCaseSensitive(emissorJSON, "cadence")->valuedouble;
-
-    auto *enemiesEmissor = new EnemyGhostRespawnerEmissor(step, enemyGenerated);
-    enemiesEmissor->clone(emissor);
-    enemiesEmissor->setStamina(emissor->getStamina());
-    enemiesEmissor->setStartStamina(emissor->getStamina());
-    enemiesEmissor->setPosition(emissor->getPosition());
-    enemiesEmissor->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        enemiesEmissor,
-        EngineSetup::collisionGroups::Enemy,
-        EngineSetup::collisionGroups::AllFilter
-    );
-    enemiesEmissor->setBehavior(emissor->getBehavior());
-    Brakeza3D::get()->addObject3D(enemiesEmissor, "enemies_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
 }
 
 void LevelLoader::parseBossJSON(cJSON *bossJSON)
@@ -532,11 +508,11 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             weapon->getModelProjectile()->setScale(1);
             weapon->setAmmoAmount(5000);
             weapon->setStartAmmoAmount(5000);
-            weapon->setSpeed(100);
+            weapon->setSpeed(600);
             weapon->setDamage(10);
             weapon->setDispersion(100);
             weapon->setAccuracy(100);
-            weapon->setCadenceTime(0.40);
+            weapon->setCadenceTime(0.8);
             weapon->setType(WeaponTypes::WEAPON_PROJECTILE);
             weapon->setStop(false);
             weapon->setAvailable(true);
@@ -575,11 +551,11 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             emissorWeapon->getModelProjectile()->setScale(1);
             emissorWeapon->setAmmoAmount(5000);
             emissorWeapon->setStartAmmoAmount(5000);
-            emissorWeapon->setSpeed(100);
+            emissorWeapon->setSpeed(500);
             emissorWeapon->setDamage(10);
             emissorWeapon->setDispersion(100);
             emissorWeapon->setAccuracy(100);
-            emissorWeapon->setCadenceTime(0.40);
+            emissorWeapon->setCadenceTime(0.8);
             emissorWeapon->setType(WeaponTypes::WEAPON_PROJECTILE);
             emissorWeapon->setStop(false);
             emissorWeapon->setAvailable(true);

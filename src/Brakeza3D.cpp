@@ -44,7 +44,6 @@ void Brakeza3D::start() {
 
     ComponentsManager::get()->configureComponents();
 
-
     mainLoop();
 }
 
@@ -60,6 +59,9 @@ void Brakeza3D::mainLoop() {
     //AxisPlaneInitialize();
 
     while (!finish) {
+        controlFrameRate();
+
+
         this->updateTimer();
 
         ImGuiOnUpdate();
@@ -78,6 +80,17 @@ void Brakeza3D::mainLoop() {
     onEndComponents();
 
     delete componentsManager;
+}
+
+void Brakeza3D::controlFrameRate() const
+{
+    if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
+
+    float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
+
+    if (deltaTime < frameDelay) {
+        SDL_Delay(floor(frameDelay - deltaTime));
+    }
 }
 
 std::vector<Object3D *> &Brakeza3D::getSceneObjects() {

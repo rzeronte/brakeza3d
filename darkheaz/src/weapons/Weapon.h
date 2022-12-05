@@ -10,7 +10,7 @@
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
-    WEAPON_INSTANT = 1,
+    WEAPON_BOMB = 1,
     WEAPON_SMART_PROJECTILE = 2,
 };
 
@@ -81,7 +81,6 @@ public:
 
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color);
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c);
-    void shootInstant(Vertex3D from,  Object3D *to);
 
     Mesh3D *getModel() const;
 
@@ -139,9 +138,9 @@ public:
 
     void stopSoundChannel() const;
 
-    void handleInstantWeaponSound();
-
     virtual ~Weapon();
+
+    void shootBomb(Object3D *parent, Vertex3D position);
 };
 
 

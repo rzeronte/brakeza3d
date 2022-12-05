@@ -3,6 +3,7 @@
 #include "../../../include/Brakeza3D.h"
 #include "AmmoProjectileBody.h"
 #include "AmmoSmartProjectileBody.h"
+#include "../items/ItemBombGhost.h"
 
 Weapon::Weapon(const std::string& label) {
     this->status = WeaponStatus::NONE;
@@ -31,50 +32,6 @@ Weapon::Weapon(const std::string& label) {
 void Weapon::onUpdate()
 {
     counterCadence->update();
-
-    handleInstantWeaponSound();
-
-    if (status == WeaponStatus::PRESSED && getType() == WeaponTypes::WEAPON_INSTANT && isAvailable() && getAmmoAmount() > 0) {
-        ComponentsManager::get()->getComponentSound()->playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
-            getSoundChannel(),
-            -1
-        );
-        setStatus(WeaponStatus::SUSTAINED);
-    }
-
-    if (status == WeaponStatus::RELEASED && getType() == WeaponTypes::WEAPON_INSTANT && isAvailable()) {
-        ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
-        setStatus(WeaponStatus::NONE);
-    }
-}
-
-void Weapon::handleInstantWeaponSound()
-{
-    if (isStop()) {
-        counterStopEvery.update();
-        counterStopDuration.update();
-
-        if (counterStopEvery.isFinished()) {
-            if (getType() == WEAPON_INSTANT) {
-                stopSoundChannel();
-            }
-            counterStopDuration.setEnabled(true);
-            counterStopEvery.setEnabled(false);
-        }
-
-        if (counterStopDuration.isFinished()) {
-            counterStopEvery.setEnabled(true);
-            counterStopDuration.setEnabled(false);
-            if (getType() == WEAPON_INSTANT) {
-                ComponentsManager::get()->getComponentSound()->playSound(
-                        EngineBuffers::getInstance()->soundPackage->getByLabel("voltageLoop"),
-                        getSoundChannel(),
-                        -1
-                );
-            }
-        }
-    }
 }
 
 void Weapon::stopSoundChannel() const {
@@ -156,6 +113,10 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setWeaponType(this);
         projectile->setEnableLights(false);
         projectile->setFlatTextureColor(true);
+        if (getType() == WEAPON_BOMB) {
+            projectile->setRotationFrameEnabled(true);
+            projectile->setRotationFrame(Vertex3D(1, 1, 0));
+        }
         projectile->setFlatColor(color);
         projectile->clone(getModelProjectile());
         projectile->setPosition( position );
@@ -177,7 +138,8 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color) {
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color)
+{
 
     if (getAmmoAmount() <= 0) return;
 
@@ -223,49 +185,6 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
         //ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
-    }
-}
-
-void Weapon::shootInstant(Vertex3D from, Object3D *to)
-{
-    if (getAmmoAmount() <= 0) return;
-
-    if (isStop() && counterStopDuration.isEnabled()) {
-        return;
-    }
-
-    if (to != nullptr) {
-        auto color = Color::white();
-        setAmmoAmount(getAmmoAmount() - 1);
-        auto enemy = dynamic_cast<EnemyGhost*>(to);
-        if (enemy != nullptr) {
-            if (counterCadence->isFinished()) {
-                counterCadence->setEnabled(true);
-                enemy->takeDamage(getDamage());
-            }
-        }
-        auto player = dynamic_cast<Player*>(to);
-        if (player != nullptr) {
-            color = Color::red();
-            if (counterCadence->isFinished()) {
-                counterCadence->setEnabled(true);
-                player->takeDamage(getDamage());
-            }
-        }
-        Drawable::drawLightning(from, to->getPosition(), color);
-    } else {
-        auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(from, true, false);
-        if (closestObject == nullptr) {
-            return;
-        }
-        auto enemy = dynamic_cast<EnemyGhost*>(closestObject);
-        if (enemy != nullptr) {
-            if (counterCadence->isFinished()) {
-                counterCadence->setEnabled(true);
-                enemy->takeDamage(getDamage());
-            }
-            Drawable::drawLightning(from, closestObject->getPosition(), Color::white());
-        }
     }
 }
 
@@ -388,4 +307,46 @@ Weapon::~Weapon()
     delete model;
     delete icon;
     delete counterCadence;
+}
+
+void Weapon::shootBomb(Object3D *parent, Vertex3D position)
+{
+
+    if (getAmmoAmount() <= 0) return;
+
+    if (isStop() && counterStopDuration.isEnabled()) {
+        return;
+    }
+
+    if (counterCadence->isFinished()) {
+        counterCadence->setEnabled(true);
+        setStatus(WeaponStatus::PRESSED);
+
+        auto *componentRender = ComponentsManager::get()->getComponentRender();
+
+        Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
+
+        auto *projectile = new ItemBombGhost(5);
+        projectile->setStencilBufferEnabled(true);
+        projectile->setParent(parent);
+        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+        projectile->clone(getModelProjectile());
+        projectile->setPosition(position);
+        projectile->setEnableLights(false);
+        projectile->setEnabled(true);
+        projectile->setRotationFrame(Tools::randomVertex());
+        projectile->setRotationFrameEnabled(true);
+        projectile->setFlatTextureColor(false);
+        projectile->setDamage(this->getDamage());
+        projectile->makeSimpleGhostBody(
+                Vertex3D(500, 500, 500),
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::collisionGroups::Player,
+                EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
+        );
+
+        setAmmoAmount(ammoAmount - 1);
+
+        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+    }
 }

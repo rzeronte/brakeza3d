@@ -8,7 +8,7 @@
 
 EnemyGhost::EnemyGhost()
 {
-    blink = new ShaderBlink(this);
+    blink = new ShaderBlink(this, Color::red());
     blink->setStep(0.09);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
@@ -17,8 +17,8 @@ EnemyGhost::EnemyGhost()
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 
-    shaderTrail = new ShaderTrailObject(this);
-    //shaderTrail->setEnabled(true);
+    shaderTrail = new ShaderTrailObject(this, Color::red());
+    shaderTrail->setEnabled(true);
 }
 
 void EnemyGhost::onUpdate()
@@ -33,21 +33,10 @@ void EnemyGhost::onUpdate()
         getWeapon()->onUpdate();
     }
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
-        if (getWeapon() != nullptr && getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
-            getWeapon()->stopSoundChannel();
-        }
-        return;
-    }
-
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         makeReward();
 
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
-
-        if (getWeapon() != nullptr && getWeapon()->getType() == WeaponTypes::WEAPON_INSTANT) {
-            getWeapon()->stopSoundChannel();
-        }
 
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("enemyExplosion"),
@@ -65,11 +54,10 @@ void EnemyGhost::onUpdate()
 
 void EnemyGhost::makeReward()
 {
-    /*auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 50);
+    auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 10);
     fireworks->setPosition(getPosition());
     fireworks->setRotationFrame(0, 4, 5);
     Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    */
 
     auto playerWeapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
@@ -172,11 +160,11 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        /*auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
+        auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
         fireworks->setPosition(projectile->getPosition());
         fireworks->setRotationFrame(0, 4, 5);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        */
+
         this->takeDamage(projectile->getWeaponType()->getDamage());
     }
 }
@@ -208,13 +196,6 @@ void EnemyGhost::shoot(Object3D *target)
                 direction,
                 EngineSetup::collisionGroups::Player,
                 getWeapon()->getModelProjectile()->getFlatColor()
-            );
-            break;
-        }
-        case WeaponTypes::WEAPON_INSTANT: {
-            weapon->shootInstant(
-                getPosition(),
-                target
             );
             break;
         }

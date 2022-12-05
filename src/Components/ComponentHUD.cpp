@@ -14,8 +14,8 @@ void ComponentHUD::onStart() {
     loadButtons();
 
     textureWriter = new TextWriter(
-ComponentsManager::get()->getComponentWindow()->renderer,
-std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
+        ComponentsManager::get()->getComponentWindow()->renderer,
+        std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
 
     shaderBar = new ShaderHorizontalBar(Color(255, 0, 0),0.90);
@@ -101,7 +101,7 @@ void ComponentHUD::drawHUD()
     auto componentManager = ComponentsManager::get();
 
     drawShaderBars();
-    //drawEnemySelectedShaderStamina();
+    drawEnemySelectedShaderStamina();
 
     drawPlayerStamina(15);
 
@@ -146,41 +146,15 @@ void ComponentHUD::drawPlayerStamina(int y)
     auto player = game->getPlayer();
 
     int availablesWeaponsCounter = 0;
-    for (int i = 0; i < (int) player->getWeapons().size(); i++) {
-        auto weapon = player->getWeapons()[i];
-        const int xIcon = offsetX + weapon->getIcon()->width() * availablesWeaponsCounter;
-        const int yIcon = 2 + 4 + offsetY + availablesWeaponsCounter;
-        if (weapon->isAvailable()) {
-            availablesWeaponsCounter++;
-            weapon->getIcon()->drawFlat(xIcon, yIcon);
-            if (player->getWeapon() == weapon) {
-                drawSelectedWeaponEffect(xIcon, yIcon, weapon->getIcon()->width(), weapon->getIcon()->height(), Color::green());
-            }
-        }
-    }
 
-    if (availablesWeaponsCounter > 0) {
-        this->textureWriter->writeText(
-                offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
-            offsetY + 4,
-            std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
-            false
-        );
-    } else {
-        this->textureWriter->writeText(
-                offsetX + availablesWeaponsCounter * player->getWeapon()->getIcon()->width(),
-                offsetY  + 4,
-                "Disarmed",
-                false
-        );
-    }
-    offsetY +=  player->getWeapon()->getIcon()->height() + 6;
+    player->getWeapon()->getIcon()->drawFlat(15, 430);
+
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
         int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
         for (int i = 0; i < gravitationalShieldsNumber; i++) {
-            gravitationalShieldImage->drawFlat(offsetX + gravitationalShieldImage->width() * i, offsetY);
+            gravitationalShieldImage->drawFlat(60 + gravitationalShieldImage->width() * i, 400);
         }
     }
 }

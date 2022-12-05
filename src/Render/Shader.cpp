@@ -18,6 +18,8 @@ Shader::Shader()
 
     bufferSize = h * w;
     videoBuffer = new uint32_t[w*h];
+    std::fill(videoBuffer, videoBuffer + bufferSize, 0);
+
     resolution = Vector2D(w, h);
 
     executionTime = 0;
