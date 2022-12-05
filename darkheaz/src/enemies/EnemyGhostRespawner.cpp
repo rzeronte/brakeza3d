@@ -11,8 +11,11 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
     counter.setStep(step);
     counter.setEnabled(false);
     object->setEnabled(true);
+    if (object->getWeapon() != nullptr) {
+        object->getWeapon()->counterCadence->setEnabled(false);
+    }
+    object->setStencilBufferEnabled(false);
     object->setAlphaEnabled(true);
-    startCounter();
     Brakeza3D::get()->addObject3D(object, object->getLabel());
 
 }
@@ -42,6 +45,7 @@ void EnemyGhostRespawner::onUpdate()
         if (object->getWeapon() != nullptr) {
             object->getWeapon()->counterCadence->setEnabled(true);
         }
+        object->setStencilBufferEnabled(true);
         object->setAlphaEnabled(false);
         object->setAlpha(255);
         counter.setEnabled(false);
@@ -52,6 +56,10 @@ void EnemyGhostRespawner::onUpdate()
 
 void EnemyGhostRespawner::startCounter()
 {
+    if (this->isRemoved()) {
+        return;
+    }
+
     this->counter.setEnabled(true);
 }
 

@@ -43,17 +43,7 @@ void Image::drawFlat(int pos_x, int pos_y) const
     auto *pixels = (Uint32 *) surface->pixels;
     for (int i = 0; i < std::min(EngineSetup::get()->screenHeight, surface->h); i++) {
         for (int j = 0; j < std::min(EngineSetup::get()->screenWidth, surface->w); j++) {
-            int x = j + pos_x;
-            int y = i + pos_y;
-            if (Tools::isPixelInWindow(x, y)) {
-                const auto pixel = pixels[i * surface->w + j];
-                Uint8 red, green, blue, alpha;
-                SDL_GetRGBA(pixel, surface->format, &red, &green, &blue, &alpha);
-                if (alpha == 0) {
-                    continue;
-                }
-                buffer->setVideoBuffer(x, y, pixel);
-            }
+            buffer->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * surface->w + j]);
         }
     }
 }

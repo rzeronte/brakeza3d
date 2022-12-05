@@ -6,6 +6,7 @@
 #include "../../darkheaz/src/items/ItemEnergyGhost.h"
 #include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
 #include "../../include/Misc/VideoPlayer.h"
+#include "../../darkheaz/src/items/ItemBombGhost.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 0.0001f
@@ -544,6 +545,7 @@ void ComponentGame::removeInGameObjects()
         if (projectile != nullptr) {
             projectile->remove();
         }
+
         if (emissorProjectiles != nullptr) {
             emissorProjectiles->setRemoved(true);
         }

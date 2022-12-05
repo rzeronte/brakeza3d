@@ -200,6 +200,8 @@ void Object3D::initializeStencilBuffer()
 {
     const unsigned int bufferSize = EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight;
     this->stencilBuffer = new bool[bufferSize];
+    std::fill(stencilBuffer, stencilBuffer + bufferSize, 0);
+
 }
 
 void Object3D::setStencilBuffer(int index, bool value) {

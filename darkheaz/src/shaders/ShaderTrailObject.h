@@ -14,8 +14,9 @@ class ShaderTrailObject: public ShaderOpenCL {
     cl_mem opencl_buffer_stencil;
     cl_mem opencl_buffer_image;
     Object3D* object;
+    Color color;
 public:
-    explicit ShaderTrailObject(Object3D *o);
+    explicit ShaderTrailObject(Object3D *o, Color c);
 
     void update() override;
 
@@ -23,7 +24,6 @@ public:
 
     ~ShaderTrailObject() override;
 
-    Color color;
 };
 
 

@@ -69,7 +69,7 @@ void Player::loadShieldModel()
 
 void Player::loaderShaderTrail()
 {
-    shaderTrail = new ShaderTrailObject(this);
+    shaderTrail = new ShaderTrailObject(this, Color::green());
     shaderTrail->setEnabled(true);
 }
 
@@ -113,7 +113,6 @@ void Player::evalStatusMachine() {
 
 void Player::takeDamage(float dmg)
 {
-    return;
     if (state == PlayerState::GETTING_DAMAGE || state == PlayerState::DEAD) {
         return;
     }
@@ -183,6 +182,9 @@ void Player::shoot()
 
     const int type = getWeapon()->getType();
     switch(type) {
+        case WeaponTypes::WEAPON_BOMB: {
+            weapon->shootBomb(this, getPosition());
+        }
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
                 this,
@@ -190,14 +192,6 @@ void Player::shoot()
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
                 Color::green()
-            );
-            break;
-        }
-        case WeaponTypes::WEAPON_INSTANT: {
-            auto enemy = dynamic_cast<EnemyGhost*>(ComponentsManager::get()->getComponentRender()->getSelectedObject());
-            weapon->shootInstant(
-                getPosition(),
-                enemy
             );
             break;
         }
@@ -593,7 +587,7 @@ bool Player::isAllowEnergyShield() const {
 
 void Player::loadBlinkShader()
 {
-    blink = new ShaderBlink(this);
+    blink = new ShaderBlink(this, Color::green());
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);

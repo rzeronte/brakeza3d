@@ -18,7 +18,7 @@ GravitationalShield::GravitationalShield(
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
 
-    blink = new ShaderBlink(this);
+    blink = new ShaderBlink(this, Color::green());
     blink->setStep(0.05);
     blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
@@ -27,7 +27,7 @@ GravitationalShield::GravitationalShield(
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 
-    shockWave = new ShaderShockWave(60,0.25f,1);
+    shockWave = new ShaderShockWave(60, 0.55f, 1);
 
     makeSimpleGhostBody(
         Vertex3D(500, 500, 500),
@@ -130,7 +130,6 @@ void GravitationalShield::reset()
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
     );
-
 }
 
 bool GravitationalShield::isHidden() const

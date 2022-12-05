@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <SDL_pixels.h>
 #include "../../include/Misc/Color.h"
 
 Color::Color()
@@ -19,7 +20,12 @@ Color::Color(int r, int g, int b, int a)
     this->b = b;
     this->a = a;
 
-    this->color = (b << 16) + (g << 8) + (r);
+    auto s = (unsigned char*) &this->color;
+
+    s[0] = r;
+    s[1] = g;
+    s[2] = b;
+    s[3] = 0;
 }
 
 Color::Color(uint32_t v)

@@ -79,6 +79,10 @@ public:
         const float range_min_frustum_clipping_distance = 0;
         const float range_max_frustum_clipping_distance = 1;
 
+        const int range_framerate_sensibility = 1;
+        const int range_min_framerate_distance = 0;
+        const int range_max_framerate_distance = 500;
+
         const float range_fov_sensibility = 1;
         const float range_min_fov = 20;
         const float range_max_fov = 160;
@@ -95,6 +99,12 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+                ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);
+                if (EngineSetup::get()->LIMIT_FRAMERATE) {
+                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &EngineSetup::get()->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
+
+                }
+                ImGui::Separator();
 
                 ImGui::Checkbox("update Objects", &EngineSetup::get()->EXECUTE_GAMEOBJECTS_ONUPDATE);
                 ImGui::Checkbox("Draw Main Z-Buffer", &EngineSetup::get()->DRAW_MAIN_DEEP_MAPPING);

@@ -14,17 +14,16 @@ ShaderHorizontalBar::ShaderHorizontalBar(Color color,float verticalPosition) : S
 void ShaderHorizontalBar::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_video_shader,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        opencl_buffer_video_shader,
+        CL_TRUE,
+        0,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
-
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
@@ -43,27 +42,27 @@ void ShaderHorizontalBar::executeKernelOpenCL()
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
-            clCommandQueue,
-            kernel,
-            1,
-            nullptr,
-            &global_item_size,
-            &local_item_size,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        kernel,
+        1,
+        nullptr,
+        &global_item_size,
+        &local_item_size,
+        0,
+        nullptr,
+        nullptr
     );
 
     clEnqueueReadBuffer(
-            clCommandQueue,
-            opencl_buffer_video_screen,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        opencl_buffer_video_screen,
+        CL_TRUE,
+        0,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     this->debugKernel();
@@ -79,7 +78,7 @@ float ShaderHorizontalBar::getValue() const {
     return value;
 }
 
-void ShaderHorizontalBar::setValue(float value) {
-    ShaderHorizontalBar::value = value;
+void ShaderHorizontalBar::setValue(float v) {
+    ShaderHorizontalBar::value = v;
 }
 

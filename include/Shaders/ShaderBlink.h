@@ -19,11 +19,11 @@ class ShaderBlink : public ShaderOpenCL {
     Color color;
     Counter counter;
 public:
-    ShaderBlink(Object3D *o): ShaderOpenCL("blink.opencl") {
+    ShaderBlink(Object3D *o, Color c): ShaderOpenCL("blink.opencl") {
         this->object = o;
         this->screenHeight = EngineSetup::get()->screenHeight;
         this->screenWidth = EngineSetup::get()->screenWidth;
-        this->color = Color::green();
+        this->color = c;
         setStep(DEFAULT_BLINK_SECONDS);
         setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
 

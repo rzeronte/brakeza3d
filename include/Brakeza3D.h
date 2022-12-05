@@ -91,6 +91,8 @@ public:
     void ImGuiOnUpdate();
 
     std::vector<Object3D *> sceneObjects;
+
+    void controlFrameRate() const;
 };
 
 

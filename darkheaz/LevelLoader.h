@@ -17,7 +17,7 @@
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
-    ITEM_WEAPON_INSTANT = 2,
+    ITEM_WEAPON_BOMB = 2,
     ITEM_WEAPON_SMART = 3,
     ITEM_HEALTH = 4,
     ITEM_ENERGY = 5
@@ -111,8 +111,6 @@ public:
     EnemyGhost *parseEnemyJSON(cJSON *enemyJSON);
 
     void parseItemJSON(cJSON *itemJSON);
-
-    void parseEmissorJSON(cJSON *emissorJSON);
 
     void parseBossJSON(cJSON *bossJSON);
 

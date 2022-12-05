@@ -7,7 +7,10 @@ __kernel void onUpdate(
     __global unsigned int *video,
     __global unsigned int *shader,
     __global bool *stencil,
-    __global unsigned int *buffer
+    __global unsigned int *buffer,
+    float r,
+    float g,
+    float b
 )
 {
    int i = get_global_id(0);
@@ -27,7 +30,7 @@ __kernel void onUpdate(
     z[2] *= 0.85;
 
     if (stencil[i]) {
-        buffer[i] = createRGB(255, 255, 0);
+        buffer[i] = createRGB(r, g, b);
         video[i]  = shader[i];
         return;
     }

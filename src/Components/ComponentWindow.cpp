@@ -68,8 +68,6 @@ void ComponentWindow::initWindow() {
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
 
-        //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
-
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
