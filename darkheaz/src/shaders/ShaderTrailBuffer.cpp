@@ -1,16 +1,14 @@
-
-#include "ShaderTrailObject.h"
+#include "ShaderTrailBuffer.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderTrailObject::ShaderTrailObject(Object3D *o, Color c) : ShaderOpenCL("trail.opencl")
+ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl")
 {
-    this->object = o;
-    this->color = c;
+    this->stencilObjectsBuffer = new bool[bufferSize];
 
-    setEnabled(false);
+    this->color = Color::olive();
 
-    opencl_buffer_image = clCreateBuffer(
+    openCLBufferResult = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
@@ -18,37 +16,25 @@ ShaderTrailObject::ShaderTrailObject(Object3D *o, Color c) : ShaderOpenCL("trail
         &clRet
     );
 
-    opencl_buffer_stencil = clCreateBuffer(
+    openCLBufferForStencilObjects = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         this->bufferSize * sizeof(bool),
-        &o->stencilBuffer,
+        &this->stencilObjectsBuffer,
         &clRet
     );
 }
 
-void ShaderTrailObject::update()
-{
+void ShaderTrailBuffer::update() {
     Shader::update();
 
     if (!isEnabled()) return;
 
-    if (this->object == nullptr) {
-        return;
-    }
-
-    if (!this->object->isStencilBufferEnabled()) {
-        return;
-    }
-
     executeKernelOpenCL();
+    clearStencilBuffer();
 }
 
-ShaderTrailObject::~ShaderTrailObject() {
-
-}
-
-void ShaderTrailObject::executeKernelOpenCL()
+void ShaderTrailBuffer::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
         clCommandQueue,
@@ -64,11 +50,11 @@ void ShaderTrailObject::executeKernelOpenCL()
 
     clEnqueueWriteBuffer(
         clCommandQueue,
-        opencl_buffer_stencil,
+        openCLBufferForStencilObjects,
         CL_TRUE,
         0,
         this->bufferSize * sizeof(bool),
-        object->stencilBuffer,
+        this->stencilObjectsBuffer,
         0,
         nullptr,
         nullptr
@@ -76,7 +62,7 @@ void ShaderTrailObject::executeKernelOpenCL()
 
     clEnqueueWriteBuffer(
         clCommandQueue,
-        opencl_buffer_image,
+        openCLBufferResult,
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
@@ -91,8 +77,8 @@ void ShaderTrailObject::executeKernelOpenCL()
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
-    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&opencl_buffer_image);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferForStencilObjects);
+    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferResult);
     clSetKernelArg(kernel, 7, sizeof(float), &this->color.r);
     clSetKernelArg(kernel, 8, sizeof(float), &this->color.g);
     clSetKernelArg(kernel, 9, sizeof(float), &this->color.b);
@@ -128,7 +114,7 @@ void ShaderTrailObject::executeKernelOpenCL()
 
     clEnqueueReadBuffer(
         clCommandQueue,
-        opencl_buffer_image,
+        openCLBufferResult,
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
@@ -140,3 +126,19 @@ void ShaderTrailObject::executeKernelOpenCL()
 
     this->debugKernel();
 }
+
+void ShaderTrailBuffer::addStencilBufferObject(Object3D *o)
+{
+    auto stencilObject = o->getStencilBuffer();
+    for (int i = 0 ; i < this->bufferSize ; i++) {
+        if (o->isStencilBufferEnabled()) {
+            this->stencilObjectsBuffer[i] = this->stencilObjectsBuffer[i] || stencilObject[i];
+        }
+    }
+}
+
+void ShaderTrailBuffer::clearStencilBuffer() {
+    std::fill(stencilObjectsBuffer, stencilObjectsBuffer + EngineSetup::get()->RESOLUTION, false);
+}
+
+

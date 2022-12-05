@@ -12,7 +12,6 @@
 class EnemyGhost : public Mesh3DGhost, public Enemy {
 private:
     ShaderBlink *blink;
-    ShaderTrailObject *shaderTrail;
     Counter *counterDamageBlink;
 public:
 

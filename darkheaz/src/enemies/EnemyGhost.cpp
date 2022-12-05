@@ -16,9 +16,6 @@ EnemyGhost::EnemyGhost()
 
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
-
-    shaderTrail = new ShaderTrailObject(this, Color::red());
-    shaderTrail->setEnabled(true);
 }
 
 void EnemyGhost::onUpdate()
@@ -128,8 +125,6 @@ void EnemyGhost::postUpdate()
         return;
     }
 
-    shaderTrail->update();
-
     if (counterDamageBlink->isEnabled()) {
         counterDamageBlink->update();
         getBlink()->update();
@@ -221,5 +216,4 @@ EnemyGhost::~EnemyGhost()
 {
     delete counterDamageBlink;
     delete blink;
-    delete shaderTrail;
 }

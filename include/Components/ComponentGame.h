@@ -23,6 +23,7 @@
 #include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailObject.h"
+#include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
 
 class ComponentGame : public Component {
 public:
@@ -61,6 +62,7 @@ public:
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
+    ShaderTrailBuffer *shaderTrailBuffer;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
@@ -108,6 +110,8 @@ public:
     int getLiveEnemiesCounter();
 
     void silenceInGameObjects();
+
+    void addObjectsToStencilBuffer();
 };
 
 

@@ -45,37 +45,37 @@ void ShaderBackgroundGame::update()
 void ShaderBackgroundGame::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_video_shader,
-            CL_TRUE,
-            0,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoInput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        &EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_video_screen,
-            CL_TRUE,
-            0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            &this->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoOutput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        &this->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_video_shader);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_video_screen);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
 
     // Process the entire lists
-    size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
+    size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
     size_t local_item_size = 64;
 
@@ -93,10 +93,10 @@ void ShaderBackgroundGame::executeKernelOpenCL()
 
     clEnqueueReadBuffer(
             clCommandQueue,
-            opencl_buffer_video_screen,
+            openClBufferMappedWithVideoOutput,
             CL_TRUE,
             0,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+            this->bufferSize * sizeof(Uint32),
             &EngineBuffers::getInstance()->videoBuffer,
             0,
             nullptr,

@@ -26,8 +26,8 @@ public:
     cl_program program;
     cl_kernel kernel;
 
-    cl_mem opencl_buffer_video_shader;
-    cl_mem opencl_buffer_video_screen;
+    cl_mem openClBufferMappedWithVideoInput;
+    cl_mem openClBufferMappedWithVideoOutput;
 
     void debugKernel();
 };
