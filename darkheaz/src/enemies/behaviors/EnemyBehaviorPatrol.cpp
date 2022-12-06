@@ -1,7 +1,7 @@
 
-#include "../enemies/behaviors/EnemyBehaviorPatrol.h"
-#include "../../../include/Render/Logging.h"
-#include "../../../include/Misc/Tools.h"
+#include "EnemyBehaviorPatrol.h"
+#include "../../../../include/Render/Logging.h"
+#include "../../../../include/Misc/Tools.h"
 
 EnemyBehaviorPatrol::EnemyBehaviorPatrol(Vertex3D from, Vertex3D to, float speed)
 {

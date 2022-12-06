@@ -1,6 +1,6 @@
 {
   "name": "Level 10: Leuman!",
-  "backgroundImage": "levels/Space_5.png",
+  "backgroundImage": "levels/10.png",
   "music": "BossMusic01",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,

@@ -2,7 +2,7 @@
 // Created by eduardo on 19/3/22.
 //
 
-#include "../enemies/EnemyBehavior.h"
+#include "../EnemyBehavior.h"
 
 EnemyBehavior::EnemyBehavior()
 {

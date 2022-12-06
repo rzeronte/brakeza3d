@@ -2,7 +2,7 @@
 // Created by eduardo on 19/3/22.
 //
 
-#include "../enemies/behaviors/EnemyBehaviorCircle.h"
+#include "EnemyBehaviorCircle.h"
 
 EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, float radius) : speed(speed), center(center),
                                                                                               radius(radius) {

@@ -1,6 +1,6 @@
 {
   "name": "Level 08",
-  "backgroundImage": "levels/grid_blue.png",
+  "backgroundImage": "levels/08.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,

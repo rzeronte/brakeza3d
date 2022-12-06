@@ -189,11 +189,11 @@ bool Object3D::isStencilBufferEnabled() const {
     return stencilBufferEnabled;
 }
 
-void Object3D::setStencilBufferEnabled(bool stencilBufferEnabled) {
-    if (stencilBufferEnabled) {
+void Object3D::setStencilBufferEnabled(bool value) {
+    if (value) {
         initializeStencilBuffer();
     }
-    Object3D::stencilBufferEnabled = stencilBufferEnabled;
+    Object3D::stencilBufferEnabled = value;
 }
 
 void Object3D::initializeStencilBuffer()

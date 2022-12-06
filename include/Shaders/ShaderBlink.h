@@ -86,8 +86,6 @@ public:
 
     void executeKernelOpenCL()
     {
-        Logging::Log("entro","entro");
-
         clEnqueueWriteBuffer(
             clCommandQueue,
             openClBufferMappedWithVideoInput,

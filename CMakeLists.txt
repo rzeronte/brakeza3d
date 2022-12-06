@@ -241,19 +241,18 @@ add_executable(Brakeza3D
         src/2D/Button.cpp
         include/2D/Button.h
         include/2D/ButtonsCallbacks.h
-        include/GUI/GUI_Shaders.h
         include/Shaders/ShaderSmoke.h
         include/Shaders/ShaderBlink.h
         darkheaz/src/weapons/AmmoProjectileBody.cpp
         darkheaz/src/weapons/AmmoProjectileBody.h
         darkheaz/FaderToGameStates.h
-        darkheaz/src/behaviors/EnemyBehavior.cpp
+        darkheaz/src/enemies/behaviors/EnemyBehavior.cpp
         darkheaz/src/enemies/EnemyBehavior.h
-        darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp
+        darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h
-        darkheaz/src/behaviors/EnemyBehaviorCircle.cpp
+        darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.h
-        darkheaz/src/behaviors/EnemyBehaviorFollow.cpp
+        darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.h
         darkheaz/LevelLoader.cpp darkheaz/LevelLoader.h
         darkheaz/src/weapons/AmmoSmartProjectileBody.cpp
@@ -271,7 +270,7 @@ add_executable(Brakeza3D
         darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp
         darkheaz/src/weapons/AmmoProjectileBodyEmissor.h
         darkheaz/src/bosses/BossEnemy.cpp darkheaz/src/bosses/BossEnemy.h
-        darkheaz/src/behaviors/EnemyBehaviorRandom.cpp
+        darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.h
         darkheaz/src/enemies/AsteroidEnemyGhost.cpp
         darkheaz/src/enemies/AsteroidEnemyGhost.h
@@ -301,7 +300,8 @@ add_executable(Brakeza3D
         darkheaz/src/shaders/ShaderEdgeObject.h
         darkheaz/src/shaders/ShaderColor.cpp
         darkheaz/src/shaders/ShaderColor.h
-        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h darkheaz/src/shaders/ShaderTrailBuffer.cpp darkheaz/src/shaders/ShaderTrailBuffer.h)
+        darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h darkheaz/src/shaders/ShaderTrailBuffer.cpp darkheaz/src/shaders/ShaderTrailBuffer.h
+        )
 
 if (WIN32)
     target_link_libraries(Brakeza3D

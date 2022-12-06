@@ -1,19 +1,15 @@
-//
-// Created by eduardo on 4/12/22.
-//
-
 #include "ItemBombGhost.h"
 #include "../../../include/Brakeza3D.h"
 
 ItemBombGhost::ItemBombGhost(float ttl)
 {
-    ttl = ttl;
+    this->ttl = ttl;
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
-
 }
 
-void ItemBombGhost::onUpdate() {
+void ItemBombGhost::onUpdate()
+{
     Mesh3D::onUpdate();
 
     if (!isEnabled()) return;

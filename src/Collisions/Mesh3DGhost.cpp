@@ -40,3 +40,14 @@ void Mesh3DGhost::remove()
 Mesh3DGhost::~Mesh3DGhost() {
     Logging::getInstance()->Log("Delete Mesh3DGhost");
 }
+
+void Mesh3DGhost::magnetizableTo(Object3D *object)
+{
+    Vertex3D to = object->getPosition();
+    Vector3D direction(getPosition(), to);
+
+    float speed = powf(5000 / getPosition().distance(to), 3) * 0.00075f;
+
+    setPosition(getPosition() + direction.getComponent().getScaled(speed));
+}
+
