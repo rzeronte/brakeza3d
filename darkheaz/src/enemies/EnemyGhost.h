@@ -36,6 +36,8 @@ public:
     void makeReward();
 
     ~EnemyGhost() override;
+
+    void loadBlinkShader();
 };
 
 

@@ -11,7 +11,10 @@ __kernel void onUpdate(
     float iTime,
     __global unsigned int *video,
     __global unsigned int *shader,
-    __global bool *stencil
+    __global bool *stencil,
+    float r,
+    float g,
+    float b
 )
 {
    int i = get_global_id(0);
@@ -24,7 +27,7 @@ __kernel void onUpdate(
    float2 st = uv / resolution;
 
 
-    float size = 2.0;
+    float size = 4.0;
 
     float2 dML = {size, 0.0};
     float2 dMR = {0.0, size};
@@ -67,9 +70,9 @@ __kernel void onUpdate(
         video[i] = shader[i];
     } else {
         video[i] = createRGB(
-            (color[0] * 255) + s[0],
-            (color[1] * 255) + s[1],
-            (color[2] * 255) + s[2]
+            (color[0] * r) + s[0],
+            (color[1] * g) + s[1],
+            (color[2] * b) + s[2]
         );
     }
 }

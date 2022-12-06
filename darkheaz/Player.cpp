@@ -581,8 +581,6 @@ void Player::loadBlinkShader()
 {
     blink = new ShaderBlink(this, Color::green());
     blink->setStep(0.05);
-    blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
     blink->setEnabled(false);
-    blink->setColor(Color::green());
     counterDamageBlink->setEnabled(false);
 }

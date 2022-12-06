@@ -25,7 +25,6 @@ public:
         this->screenWidth = EngineSetup::get()->screenWidth;
         this->color = c;
         setStep(DEFAULT_BLINK_SECONDS);
-        setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
 
         opencl_buffer_stencil = clCreateBuffer(
             context,
@@ -69,8 +68,7 @@ public:
             if (mesh == nullptr) {
                 return;
             }
-
-           executeKernelOpenCL();
+            executeKernelOpenCL();
         }
     }
 
@@ -88,16 +86,18 @@ public:
 
     void executeKernelOpenCL()
     {
+        Logging::Log("entro","entro");
+
         clEnqueueWriteBuffer(
-                clCommandQueue,
-                openClBufferMappedWithVideoInput,
-                CL_TRUE,
-                0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-                EngineBuffers::getInstance()->videoBuffer,
-                0,
-                nullptr,
-                nullptr
+            clCommandQueue,
+            openClBufferMappedWithVideoInput,
+            CL_TRUE,
+            0,
+            this->bufferSize * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
         );
 
         clEnqueueWriteBuffer(
@@ -105,15 +105,15 @@ public:
             opencl_buffer_stencil,
             CL_TRUE,
             0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
+            this->bufferSize * sizeof(bool),
             object->stencilBuffer,
             0,
             nullptr,
             nullptr
         );
 
-        clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
-        clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+        clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
+        clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
         clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
         clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
         clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
@@ -139,15 +139,15 @@ public:
         );
 
         clEnqueueReadBuffer(
-                clCommandQueue,
-                openClBufferMappedWithVideoOutput,
-                CL_TRUE,
-                0,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-                EngineBuffers::getInstance()->videoBuffer,
-                0,
-                nullptr,
-                nullptr
+            clCommandQueue,
+            openClBufferMappedWithVideoOutput,
+            CL_TRUE,
+            0,
+            this->bufferSize * sizeof(Uint32),
+            EngineBuffers::getInstance()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
         );
 
         this->debugKernel();

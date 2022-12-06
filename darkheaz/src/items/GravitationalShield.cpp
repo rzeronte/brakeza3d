@@ -19,10 +19,8 @@ GravitationalShield::GravitationalShield(
     timeToLive.setEnabled(true);
 
     blink = new ShaderBlink(this, Color::green());
-    blink->setStep(0.05);
-    blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
+    blink->setStep(0.01);
     blink->setEnabled(false);
-    blink->setColor(Color::green());
 
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
@@ -30,7 +28,7 @@ GravitationalShield::GravitationalShield(
     shockWave = new ShaderShockWave(60, 0.55f, 1);
 
     makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
+        Vertex3D(600, 600, 600),
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile

@@ -8,14 +8,16 @@
 
 EnemyGhost::EnemyGhost()
 {
-    blink = new ShaderBlink(this, Color::red());
-    blink->setStep(0.09);
-    blink->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
-    blink->setEnabled(false);
-    blink->setColor(Color::red());
-
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
+}
+
+void EnemyGhost::loadBlinkShader()
+{
+    blink = new ShaderBlink(this, Color::red());
+    blink->setStep(0.09);
+    blink->setEnabled(true);
+
 }
 
 void EnemyGhost::onUpdate()
@@ -47,6 +49,24 @@ void EnemyGhost::onUpdate()
         shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
     }
 
+}
+
+void EnemyGhost::postUpdate()
+{
+    Object3D::postUpdate();
+
+    if (!isEnabled()) {
+        return;
+    }
+
+    if (counterDamageBlink->isEnabled()) {
+        counterDamageBlink->update();
+        getBlink()->update();
+        if (counterDamageBlink->isFinished()) {
+            getBlink()->setEnabled(false);
+            counterDamageBlink->setEnabled(false);
+        }
+    }
 }
 
 void EnemyGhost::makeReward()
@@ -115,25 +135,6 @@ void EnemyGhost::rotateToPlayer()
                 ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(),
                 getPosition()).getComponent().getNormalize()
         ));
-}
-
-void EnemyGhost::postUpdate()
-{
-    Object3D::postUpdate();
-
-    if (!isEnabled()) {
-        return;
-    }
-
-    if (counterDamageBlink->isEnabled()) {
-        counterDamageBlink->update();
-        getBlink()->update();
-        if (counterDamageBlink->isFinished()) {
-            getBlink()->setEnabled(false);
-            counterDamageBlink->setEnabled(false);
-        }
-    }
-
 }
 
 void EnemyGhost::integrate()

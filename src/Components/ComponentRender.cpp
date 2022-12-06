@@ -12,7 +12,7 @@ void ComponentRender::onStart()
     initOpenCL();
     shaderEdge = new ShaderEdgeObject();
     shaderEdge->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
-    shaderEdge->setColor(Color::fuchsia());
+    shaderEdge->setColor(Color::green());
     shaderEdge->setEnabled(true);
 }
 

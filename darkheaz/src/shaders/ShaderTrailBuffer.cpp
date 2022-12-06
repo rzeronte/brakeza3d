@@ -129,11 +129,11 @@ void ShaderTrailBuffer::executeKernelOpenCL()
 
 void ShaderTrailBuffer::addStencilBufferObject(Object3D *o)
 {
+    if (!o->isStencilBufferEnabled()) return;
+
     auto stencilObject = o->getStencilBuffer();
     for (int i = 0 ; i < this->bufferSize ; i++) {
-        if (o->isStencilBufferEnabled()) {
-            this->stencilObjectsBuffer[i] = this->stencilObjectsBuffer[i] || stencilObject[i];
-        }
+        this->stencilObjectsBuffer[i] = this->stencilObjectsBuffer[i] || stencilObject[i];
     }
 }
 
