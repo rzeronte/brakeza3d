@@ -14,6 +14,8 @@ public:
     float getAid() const;
 
     void resolveCollision(Collisionable *collisionable) override;
+
+    void onUpdate() override;
 };
 
 

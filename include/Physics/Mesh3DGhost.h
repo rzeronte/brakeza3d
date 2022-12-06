@@ -25,6 +25,7 @@ public:
 
     virtual ~Mesh3DGhost();
 
+    void magnetizableTo(Object3D *object);
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

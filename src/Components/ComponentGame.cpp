@@ -670,8 +670,19 @@ void ComponentGame::addObjectsToStencilBuffer()
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *player = dynamic_cast<Player *> (object);
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
+        auto energy = dynamic_cast<ItemEnergyGhost *> (object);
+        auto health = dynamic_cast<ItemHealthGhost *> (object);
+        auto weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto bomb = dynamic_cast<ItemBombGhost *> (object);
 
-        if (enemy != nullptr || player != nullptr || projectile != nullptr) {
+        if (enemy != nullptr ||
+            player != nullptr ||
+            projectile != nullptr ||
+            energy != nullptr ||
+            weapon != nullptr ||
+            bomb != nullptr ||
+            health != nullptr
+        ) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
         }
     }

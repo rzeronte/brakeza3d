@@ -1,6 +1,6 @@
 {
   "name": "Level 02",
-  "backgroundImage": "levels/Space2_1.25x.png",
+  "backgroundImage": "levels/02.png",
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
   "tutorialImage": "tutorials/tutorial02.png",
@@ -19,15 +19,15 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 30, "y": 55 }
+      "position": { "x": 30, "y": 45 }
     },
     {
       "type": 2,
-      "position": { "x": 50, "y": 55 }
+      "position": { "x": 50, "y": 45 }
     },
     {
       "type": 3,
-      "position": { "x": 70, "y": 55 }
+      "position": { "x": 70, "y": 45 }
     }
   ],
   "asteroids": [

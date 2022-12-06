@@ -157,6 +157,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
 
         auto *projectile = new AmmoSmartProjectileBody();
+        projectile->setTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
@@ -340,10 +341,10 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setFlatTextureColor(false);
         projectile->setDamage(this->getDamage());
         projectile->makeSimpleGhostBody(
-                Vertex3D(500, 500, 500),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::Player,
-                EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
+            Vertex3D(500, 500, 500),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
         );
 
         setAmmoAmount(ammoAmount - 1);

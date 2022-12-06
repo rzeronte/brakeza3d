@@ -15,9 +15,8 @@ EnemyGhost::EnemyGhost()
 void EnemyGhost::loadBlinkShader()
 {
     blink = new ShaderBlink(this, Color::red());
-    blink->setStep(0.09);
+    blink->setStep(0.05);
     blink->setEnabled(true);
-
 }
 
 void EnemyGhost::onUpdate()

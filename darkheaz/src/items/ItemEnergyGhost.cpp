@@ -3,17 +3,26 @@
 //
 
 #include "ItemEnergyGhost.h"
+#include "../../../include/ComponentsManager.h"
+
 ItemEnergyGhost::ItemEnergyGhost() : energy(25)
 {
 
 }
 
-void ItemEnergyGhost::setEnergy(float energy) {
-    this->energy = energy;
+void ItemEnergyGhost::setEnergy(float value) {
+    this->energy = value;
 }
 
 float ItemEnergyGhost::getEnergy() const {
     return this->energy;
+}
+
+void ItemEnergyGhost::onUpdate()
+{
+    Mesh3D::onUpdate();
+
+    this->magnetizableTo(ComponentsManager::get()->getComponentGame()->getPlayer());
 }
 
 void ItemEnergyGhost::resolveCollision(Collisionable *collisionable) {

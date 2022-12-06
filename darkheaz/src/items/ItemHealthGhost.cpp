@@ -1,4 +1,5 @@
 #include "ItemHealthGhost.h"
+#include "../../../include/ComponentsManager.h"
 
 void ItemHealthGhost::setAid(float aid) {
     ItemHealthGhost::aid = aid;
@@ -6,6 +7,13 @@ void ItemHealthGhost::setAid(float aid) {
 
 ItemHealthGhost::ItemHealthGhost() : aid(25) {
 
+}
+
+void ItemHealthGhost::onUpdate()
+{
+    Mesh3D::onUpdate();
+
+    this->magnetizableTo(ComponentsManager::get()->getComponentGame()->getPlayer());
 }
 
 float ItemHealthGhost::getAid() const {

@@ -1,6 +1,6 @@
 {
   "name": "Level 01",
-  "backgroundImage": "levels/space_01_1280x720.png",
+  "backgroundImage": "levels/06.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": false,
@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 50, "y": 20 },
+      "position": { "x": 50, "y": 10 },
       "model": "moon.fbx",
       "stamina": 1000,
       "speed": 100,
@@ -22,7 +22,7 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 50, "y": 50 }
+      "position": { "x": 50, "y": 35 }
     }
   ]
 }

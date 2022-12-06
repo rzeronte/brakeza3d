@@ -18,6 +18,8 @@ public:
     float getEnergy() const;
 
     void resolveCollision(Collisionable *collisionable) override;
+
+    void onUpdate() override;
 };
 
 #endif //BRAKEDA3D_ITEMENERGYGHOST_H

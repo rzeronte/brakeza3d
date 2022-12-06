@@ -9,27 +9,22 @@ Object3D *AmmoSmartProjectileBody::getTarget() const {
     return target;
 }
 
-void AmmoSmartProjectileBody::setTarget(Object3D *target) {
-    AmmoSmartProjectileBody::target = target;
+void AmmoSmartProjectileBody::setTarget(Object3D *o) {
+    AmmoSmartProjectileBody::target = o;
 }
 
-void AmmoSmartProjectileBody::onUpdate() {
+void AmmoSmartProjectileBody::onUpdate()
+{
     AmmoProjectileBody::onUpdate();
 
-    Vertex3D to;
-    if (target == nullptr) {
-        auto closestObject= ComponentsManager::get()->getComponentGame()->getClosesObject3DFromPosition(getPosition(), true, false);
-        if (closestObject == nullptr) {
-            return;
-        }
-        to = closestObject->getPosition();
-    } else {
-        to = target->getPosition();
-    }
+    if (target == nullptr) return;
 
+    Vertex3D to = target->getPosition();
     Vector3D direction(getPosition(), to);
 
+    float speed = powf(5000 / getPosition().distance(to), 3) * 0.75f;
+
     btVector3 btDirection;
-    direction.getComponent().getNormalize().getScaled(3000).saveToBtVector3(&btDirection);
+    direction.getComponent().getScaled(speed).saveToBtVector3(&btDirection);
     getRigidBody()->setLinearVelocity(btDirection);
 }

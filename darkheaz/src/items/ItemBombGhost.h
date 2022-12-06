@@ -8,23 +8,22 @@
 
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Misc/Counter.h"
+#include "../../../include/Shaders/ShaderBlink.h"
 
 class ItemBombGhost: public Mesh3DGhost {
     float damage;
     Counter timeToLive;
     float ttl;
 public:
+    explicit ItemBombGhost(float ttl);
+
     float getTtl() const;
 
     void setTtl(float ttl);
 
-public:
     float getDamage() const;
 
     void setDamage(float damage);
-
-public:
-    ItemBombGhost(float ttl);
 
     void onUpdate() override;
 
