@@ -210,8 +210,7 @@ void Brakeza3D::ImGuiOnUpdate() {
             Brakeza3D::get()->getSceneObjects(),
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
             Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth,
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->getShaders()
+            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
     );
 
     //ImGui::ShowDemoWindow();

@@ -169,7 +169,7 @@ void EnemyGhost::remove()
 {
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
-        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
+        //ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 
     Mesh3DGhost::remove();

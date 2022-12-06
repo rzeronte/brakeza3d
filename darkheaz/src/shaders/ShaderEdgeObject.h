@@ -18,7 +18,7 @@ class ShaderEdgeObject : public ShaderOpenCL {
     Color color;
 
 public:
-    ShaderEdgeObject();
+    ShaderEdgeObject(Color c);
 
     void update() override;
 

@@ -290,7 +290,6 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
-        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 }
 
