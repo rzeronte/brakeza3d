@@ -65,6 +65,8 @@ public:
     static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
 
     static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
+
+    static void drawStencilBuffer(Object3D *o);
 };
 
 

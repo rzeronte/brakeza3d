@@ -108,6 +108,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
         auto *projectile = new AmmoProjectileBody();
+        projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);

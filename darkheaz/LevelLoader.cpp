@@ -205,6 +205,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
     weapon->getModelProjectile()->setLabel("projectile_weapon_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
+    weapon->getModelProjectile()->setStencilBufferEnabled(true);
     weapon->setAmmoAmount(amount);
     weapon->setStartAmmoAmount(startAmount);
     weapon->setSpeed(speed);
@@ -399,6 +400,7 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setEnableLights(false);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
+    enemy->loadBlinkShader();
     enemy->setScale(1);
     enemy->setSpeed(speed);
     enemy->setStamina(stamina);

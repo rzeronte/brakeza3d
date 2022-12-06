@@ -75,6 +75,9 @@ void ShaderEdgeObject::executeKernelOpenCL()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
+    clSetKernelArg(kernel, 6, sizeof(float), &this->color.r);
+    clSetKernelArg(kernel, 7, sizeof(float), &this->color.g);
+    clSetKernelArg(kernel, 8, sizeof(float), &this->color.b);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;

@@ -574,3 +574,14 @@ void Drawable::drawMainDeepMapFromCamera(int pos_x, int pos_y)
         }
     }
 }
+
+void Drawable::drawStencilBuffer(Object3D *o) {
+    if (!o->isStencilBufferEnabled()) return;
+
+    auto stencilObject = o->getStencilBuffer();
+    for (int i = 0 ; i < EngineBuffers::getInstance()->sizeBuffers ; i++) {
+        if (stencilObject[i]) {
+            EngineBuffers::getInstance()->setVideoBuffer(i, Color::red().getColor());
+        }
+    }
+}

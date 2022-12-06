@@ -58,14 +58,12 @@ void ComponentGame::onStart()
     shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
 
     shaderBackgroundImage = new ShaderImage();
-    shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderBackgroundImage->setEnabled(true);
 
     shaderColor = new ShaderColor(Color::red(), 0.75);
     shaderColor->setEnabled(false);
 
     shaderTrailBuffer = new ShaderTrailBuffer();
-    shaderTrailBuffer->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderTrailBuffer->setEnabled(true);
 }
 
@@ -98,9 +96,10 @@ void ComponentGame::onUpdate()
     this->addObjectsToStencilBuffer();
     shaderTrailBuffer->update();
 
-    EngineSetup::GameState state = getGameState();
     shaderClouds->update();
     shaderColor->update();
+
+    EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
         blockPlayerPositionInCamera();
@@ -479,7 +478,6 @@ FaderToGameStates *ComponentGame::getFadeToGameState() const
 void ComponentGame::startSilhouetteShader()
 {
     auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
-    shader->setColor(Color::red());
     shader->setEnabled(true);
 }
 
@@ -685,8 +683,9 @@ void ComponentGame::addObjectsToStencilBuffer()
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *player = dynamic_cast<Player *> (object);
+        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
 
-        if (enemy != nullptr || player != nullptr) {
+        if (enemy != nullptr || player != nullptr || projectile != nullptr) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
         }
     }
