@@ -19,8 +19,6 @@
 #include "ComponentWindow.h"
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
-#include "../Render/Shader.h"
-#include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -128,30 +126,18 @@ public:
 
     cl_command_queue clCommandQueue;
 
-    ShaderEdgeObject *shaderEdge;
-
-    Shader *getShaderByType(int id);
-
-    const std::map<int, Shader *> &getShaders();
-
     Object3D* getSelectedObject() const;
 
     void setSelectedObject(Object3D *o);
 
-    void updateSelectedObject3DInShaders(Object3D *object);
-
     void initOpenCL();
 
+
+
 private:
-    std::map<int, Shader*> shaders;
-    void onUpdatePreUpdateShaders();
-    void onUpdatePostUpdateShaders();
 
     Object3D *getObject3DFromClickPoint(int xClick, int yClick);
 
-    void addShader(int id, std::string label, Shader *shader);
-
-    void initializeShaders();
 
     void updateSelectedObject3D();
     void onPostUpdateSceneObjects();

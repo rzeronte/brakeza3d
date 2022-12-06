@@ -8,7 +8,6 @@
 #include "GUI_Camera.h"
 #include "GUI_Tiles.h"
 #include "GUI_Weapons.h"
-#include "GUI_Shaders.h"
 
 class GUIManager : public GUI {
 public:
@@ -17,7 +16,6 @@ public:
     GUI_Camera *guiCamera;
     GUI_Tiles *guiTiles;
     GUI_Weapons *guiWeapons;
-    GUI_Shaders *guiShaders;
 
     GUIManager() {
         guiMenu = new GUI_Menu();
@@ -25,7 +23,6 @@ public:
         guiCamera = new GUI_Camera();
         guiTiles = new GUI_Tiles();
         guiWeapons = new GUI_Weapons();
-        guiShaders = new GUI_Shaders();
     }
 
     virtual void draw(
@@ -35,8 +32,7 @@ public:
             std::vector<Object3D *> &gameObjects,
             std::vector<LightPoint3D *> &lightPoints,
             std::vector<Tile> &tiles,
-            int numTilesColumns,
-            std::map<int, Shader*> shaders
+            int numTilesColumns
     ) {
         bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
@@ -47,7 +43,6 @@ public:
                 guiCamera->show,
                 guiTiles->show,
                 guiWeapons->show,
-                guiShaders->show,
                 cam
         );
 
@@ -55,7 +50,6 @@ public:
         guiCamera->draw(cam);
         guiTiles->draw(cam, tiles, numTilesColumns);
         guiWeapons->draw();
-        guiShaders->draw(shaders);
     }
 };
 

@@ -8,12 +8,7 @@ void ComponentRender::onStart()
 {
     Logging::Log("ComponentRender onStart", "ComponentRender");
     initTiles();
-    initializeShaders();
     initOpenCL();
-    shaderEdge = new ShaderEdgeObject();
-    shaderEdge->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
-    shaderEdge->setColor(Color::green());
-    shaderEdge->setEnabled(true);
 }
 
 void ComponentRender::preUpdate()
@@ -23,8 +18,6 @@ void ComponentRender::preUpdate()
     if (!isEnabled()) {
         return;
     }
-
-    this->onUpdatePreUpdateShaders();
 
 }
 
@@ -70,7 +63,6 @@ void ComponentRender::onUpdate()
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
 
-    shaderEdge->update();
 }
 
 void ComponentRender::postUpdate() {
@@ -95,23 +87,13 @@ void ComponentRender::updateSelectedObject3D()
             input->getRelativeRendererMouseX(),
             input->getRelativeRendererMouseY()
         );
-
-        updateSelectedObject3DInShaders(selectedObject);
     }
 
     if (input->isClickRight() && !input->isMouseMotion()) {
         setSelectedObject(nullptr);
-        updateSelectedObject3DInShaders(nullptr);
     }
 }
 
-void ComponentRender::updateSelectedObject3DInShaders(Object3D *object)
-{
-    shaderEdge->setObject(object);
-
-    //auto *smoke = dynamic_cast<ShaderSmoke *>(ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::SMOKE));
-    //smoke->setObject(object);
-}
 
 std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
     return frameTriangles;
@@ -943,48 +925,6 @@ void ComponentRender::updateLights()
 
 std::string ComponentRender::getUniqueGameObjectLabel() {
     return std::to_string(getSceneObjects()->size()+1);
-}
-
-void ComponentRender::onUpdatePreUpdateShaders() {
-    for (auto shader : shaders) {
-        if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::PREUPDATE) {
-            shader.second->update();
-        }
-    }
-}
-void ComponentRender::onUpdatePostUpdateShaders() {
-    for (auto shader : shaders) {
-        if (shader.second->getPhaseRender() == EngineSetup::ShadersPhaseRender::POSTUPDATE) {
-            shader.second->update();
-        }
-    }
-}
-void ComponentRender::addShader(int id, std::string label, Shader *shader) {
-    shader->setLabel(label);
-
-    std::pair<int, Shader*> pair;
-    pair.first = id;
-    pair.second = shader;
-    shaders.insert(pair);
-}
-
-Shader* ComponentRender::getShaderByType(int id) {
-    for (auto shader : shaders) {
-        if (shader.first == id) {
-            return shader.second;
-        }
-    }
-}
-
-void ComponentRender::initializeShaders()
-{
-    //addShader(EngineSetup::ShaderTypes::WATER, "Water", new ShaderWater());
-    //addShader(EngineSetup::ShaderTypes::FIRE, "Fire", new ShaderFire());
-    //addShader(EngineSetup::ShaderTypes::SMOKE, "Smoke", new ShaderSmoke());
-}
-
-const std::map<int, Shader *> &ComponentRender::getShaders() {
-    return shaders;
 }
 
 Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)

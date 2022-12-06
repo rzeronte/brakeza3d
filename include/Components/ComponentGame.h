@@ -63,6 +63,7 @@ public:
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
     ShaderTrailBuffer *shaderTrailBuffer;
+    ShaderEdgeObject *shaderEdge;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
@@ -79,8 +80,6 @@ private:
 
     void loadLevels();
 
-    void startSilhouetteShader();
-    void stopSilhouetteShader();
     void startWaterShader();
     void stopWaterShader();
 
@@ -112,6 +111,8 @@ public:
     void silenceInGameObjects();
 
     void addObjectsToStencilBuffer();
+
+    void updateShaders();
 };
 
 

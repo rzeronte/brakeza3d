@@ -25,7 +25,6 @@ public:
             bool &show_camera_info,
             bool &show_window_physics,
             bool &show_window_weapons,
-            bool &show_window_shaders,
             Camera3D *cam
     ) {
 
@@ -338,7 +337,6 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Tiles", &show_window_physics);
                 ImGui::Checkbox("Weapons", &show_window_weapons);
-                ImGui::Checkbox("Shaders", &show_window_shaders);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::get()->DRAW_FRUSTUM);
                 ImGui::Separator();

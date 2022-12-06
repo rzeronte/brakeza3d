@@ -65,6 +65,9 @@ void ComponentGame::onStart()
 
     shaderTrailBuffer = new ShaderTrailBuffer();
     shaderTrailBuffer->setEnabled(true);
+
+    shaderEdge = new ShaderEdgeObject(Color::yellow());
+    shaderEdge->setEnabled(true);
 }
 
 void ComponentGame::preUpdate()
@@ -85,7 +88,8 @@ void ComponentGame::preUpdate()
         state == EngineSetup::GameState::GAMING ||
         state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
         state == EngineSetup::GameState::COUNTDOWN ||
-        state == EngineSetup::GameState::PRESSKEY_BY_DEAD
+        state == EngineSetup::GameState::PRESSKEY_BY_DEAD ||
+        state == EngineSetup::GameState::PRESSKEY_NEWLEVEL
     ) {
         shaderBackgroundImage->update();
     }
@@ -93,11 +97,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    this->addObjectsToStencilBuffer();
-    shaderTrailBuffer->update();
-
-    shaderClouds->update();
-    shaderColor->update();
+    updateShaders();
 
     EngineSetup::GameState state = getGameState();
 
@@ -148,6 +148,7 @@ void ComponentGame::onUpdate()
             getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
         }
     }
+
 }
 
 void ComponentGame::postUpdate()
@@ -216,7 +217,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(true);
         setVisibleInGameObjects(false);
-        stopSilhouetteShader();
+        shaderEdge->setEnabled(false);
         startWaterShader();
         getPlayer()->stopBlinkForPlayer();
         getPlayer()->setEnergyShieldEnabled(false);
@@ -232,7 +233,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
         shaderColor->setEnabled(false);
-        startSilhouetteShader();
+        shaderEdge->setEnabled(true);
         stopWaterShader();
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
     } else {
@@ -441,7 +442,6 @@ void ComponentGame::selectClosestObject3DFromPlayer()
             0
         );
         ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
-        ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(currentClosestObject);
     }
 }
 
@@ -473,20 +473,6 @@ FaderToGameStates *ComponentGame::getFadeToGameState() const
 {
     return fadeToGameState;
 }
-
-
-void ComponentGame::startSilhouetteShader()
-{
-    auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
-    shader->setEnabled(true);
-}
-
-void ComponentGame::stopSilhouetteShader()
-{
-    auto shader = ComponentsManager::get()->getComponentRender()->shaderEdge;
-    shader->setEnabled(false);
-}
-
 
 void ComponentGame::startWaterShader()
 {
@@ -689,4 +675,15 @@ void ComponentGame::addObjectsToStencilBuffer()
             this->shaderTrailBuffer->addStencilBufferObject(object);
         }
     }
+}
+
+void ComponentGame::updateShaders()
+{
+    addObjectsToStencilBuffer();
+    shaderTrailBuffer->update();
+
+    shaderClouds->update();
+    shaderColor->update();
+    shaderEdge->setObject(ComponentsManager::get()->getComponentRender()->getSelectedObject());
+    shaderEdge->update();
 }
