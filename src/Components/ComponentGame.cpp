@@ -516,7 +516,7 @@ void ComponentGame::makeFadeToGameState(EngineSetup::GameState gameState) const
 
 void ComponentGame::removeInGameObjects()
 {
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+    for (auto object : *getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);

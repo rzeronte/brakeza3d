@@ -5,7 +5,7 @@
 AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(float step, Weapon *weaponType) : step(step), weaponType(weaponType)
 {
     setStop(false);
-    setActive(true);
+    setActive(false);
     setStep(step);
     setWeapon(weaponType);
     this->counter.setStep(step);
@@ -15,22 +15,22 @@ const Counter &AmmoProjectileBodyEmissor::getCounter() const {
     return counter;
 }
 
-void AmmoProjectileBodyEmissor::setCounter(const Counter &counter) {
-    AmmoProjectileBodyEmissor::counter = counter;
+void AmmoProjectileBodyEmissor::setCounter(const Counter &c) {
+    AmmoProjectileBodyEmissor::counter = c;
 }
 
 bool AmmoProjectileBodyEmissor::isActive() const {
     return active;
 }
 
-void AmmoProjectileBodyEmissor::setActive(bool active) {
-    AmmoProjectileBodyEmissor::active = active;
+void AmmoProjectileBodyEmissor::setActive(bool value) {
+    AmmoProjectileBodyEmissor::active = value;
 }
 
 void AmmoProjectileBodyEmissor::onUpdate() {
     Object3D::onUpdate();
 
-    if (!active) {
+    if (!isActive()) {
         return;
     }
 
@@ -65,14 +65,12 @@ Weapon *AmmoProjectileBodyEmissor::getWeapon() const {
     return weaponType;
 }
 
-void AmmoProjectileBodyEmissor::setWeapon(Weapon *weaponType) {
-    AmmoProjectileBodyEmissor::weaponType = weaponType;
+void AmmoProjectileBodyEmissor::setWeapon(Weapon *weapon) {
+    AmmoProjectileBodyEmissor::weaponType = weapon;
 }
 
 void AmmoProjectileBodyEmissor::addProjectile()
 {
-    Logging::getInstance()->Log("addProjectile");
-
     Vertex3D direction = this->AxisForward().getNormalize();
 
     auto *projectile = new AmmoProjectileBody();

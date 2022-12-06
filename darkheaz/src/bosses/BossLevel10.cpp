@@ -12,6 +12,6 @@ AmmoProjectileBodyEmissor *BossLevel10::getProjectileEmissor() const {
     return projectileEmissor;
 }
 
-void BossLevel10::setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor) {
-    BossLevel10::projectileEmissor = projectileEmissor;
+void BossLevel10::setProjectileEmissor(AmmoProjectileBodyEmissor *emmissor) {
+    BossLevel10::projectileEmissor = emmissor;
 }
