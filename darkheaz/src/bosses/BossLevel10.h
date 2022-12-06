@@ -15,7 +15,7 @@ private:
 public:
     BossLevel10();
 
-    AmmoProjectileBodyEmissor *getProjectileEmissor() const;
+    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
 
     void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
 };

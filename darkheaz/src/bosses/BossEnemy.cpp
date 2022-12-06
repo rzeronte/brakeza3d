@@ -5,6 +5,7 @@ BossEnemy::BossEnemy()
 {
 }
 
-void BossEnemy::onUpdate() {
+void BossEnemy::onUpdate()
+{
     EnemyGhost::onUpdate();
 }

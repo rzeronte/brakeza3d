@@ -424,6 +424,7 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
         auto weaponType = parseWeaponJSON(weapon, c);
         weaponType->setSoundChannel(enemy->getSoundChannel());
         enemy->setWeapon(weaponType);
+
     }
 
     return enemy;
@@ -508,6 +509,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             weapon->getModelProjectile()->setScale(1);
+
             weapon->setAmmoAmount(5000);
             weapon->setStartAmmoAmount(5000);
             weapon->setSpeed(600);
@@ -519,7 +521,9 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             weapon->setStop(false);
             weapon->setAvailable(true);
 
+
             auto boss = new BossLevel10();
+            boss->loadBlinkShader();
             boss->setEnabled(true);
             boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             boss->setEnableLights(false);
@@ -564,6 +568,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
 
             auto projectileEmissor = new AmmoProjectileBodyEmissor(0.25, emissorWeapon);
+            projectileEmissor->setActive(true);
             projectileEmissor->setPosition(boss->getPosition());
             projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
             projectileEmissor->setRotationFrameEnabled(true);
@@ -572,11 +577,14 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             projectileEmissor->setStopDuration(1);
             projectileEmissor->setStopEvery(1);
             projectileEmissor->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            Brakeza3D::get()->addObject3D(projectileEmissor, projectileEmissor->getLabel());
 
+            Brakeza3D::get()->addObject3D(projectileEmissor, projectileEmissor->getLabel());
             boss->setProjectileEmissor(projectileEmissor);
 
-            Brakeza3D::get()->addObject3D(boss, boss->getLabel());
+            auto respawner = new EnemyGhostRespawner(boss, 3);
+            respawner->setPosition(boss->getPosition());
+            Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+            respawners.push_back(respawner);
 
             break;
         }
