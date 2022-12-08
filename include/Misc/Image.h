@@ -8,6 +8,7 @@
 
 #include <string>
 #include <SDL_surface.h>
+#include <SDL_image.h>
 #include "../Objects/Vertex3D.h"
 #include "Color.h"
 
@@ -33,9 +34,9 @@ public:
 
 private:
     SDL_Surface *surface;
+    SDL_Texture *texture;
     std::string fileName;
     bool loaded;
-    int offset;
 
     void loadFromRaw(unsigned int *texture, int w, int h);
 public:

@@ -37,6 +37,8 @@ void ComponentHUD::preUpdate()
     if (SETUP->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
     }
+
+
 }
 
 void ComponentHUD::onUpdate()
@@ -50,6 +52,7 @@ void ComponentHUD::onUpdate()
 void ComponentHUD::postUpdate()
 {
     if (!isEnabled()) return;
+
 
 }
 
@@ -139,16 +142,10 @@ void ComponentHUD::loadButtons() {
 
 void ComponentHUD::drawPlayerStamina(int y)
 {
-    const int offsetX = 10;
-    int offsetY = y;
-
     auto game = ComponentsManager::get()->getComponentGame();
     auto player = game->getPlayer();
 
-    int availablesWeaponsCounter = 0;
-
     player->getWeapon()->getIcon()->drawFlat(15, 430);
-
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();

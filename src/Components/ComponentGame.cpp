@@ -84,6 +84,13 @@ void ComponentGame::preUpdate()
         imageSplash->drawFlat(0, 0);
     }
 
+    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
+        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press a key to START...", false);
+        if (getLevelInfo()->isHasTutorial()) {
+            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
+        }
+    }
+
     if (
         state == EngineSetup::GameState::GAMING ||
         state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
@@ -93,6 +100,7 @@ void ComponentGame::preUpdate()
     ) {
         shaderBackgroundImage->update();
     }
+
 }
 
 void ComponentGame::onUpdate()
@@ -142,12 +150,7 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
-        ComponentsManager::get()->getComponentHUD()->writeTextMiddleScreen("press a key to START...", false);
-        if (getLevelInfo()->isHasTutorial()) {
-            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
-        }
-    }
+
 
 }
 
