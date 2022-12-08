@@ -20,12 +20,12 @@ void ComponentWindow::onUpdate()
 {
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
 
 void ComponentWindow::postUpdate()
 {
-    SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch );
-    SDL_RenderCopy(renderer,screenTexture, nullptr, nullptr);
+    SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
 }
 
 void ComponentWindow::onEnd() {
