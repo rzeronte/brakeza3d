@@ -23,6 +23,11 @@ public:
     void executeKernelOpenCL();
 
     void setImage(Image *image);
+
+    float offsetX;
+    float offsetY;
+
+    void resetOffsets();
 };
 
 

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -280,8 +280,6 @@ add_executable(Brakeza3D
         darkheaz/src/bosses/BossLevel20.h
         darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h
-        darkheaz/src/shaders/ShaderBackgroundGame.cpp
-        darkheaz/src/shaders/ShaderBackgroundGame.h
         darkheaz/src/shaders/ShaderClouds.cpp
         darkheaz/src/shaders/ShaderClouds.h
         include/Objects/Vector2D.cpp

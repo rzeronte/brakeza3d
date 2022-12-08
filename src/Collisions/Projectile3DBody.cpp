@@ -27,6 +27,8 @@ void Projectile3DBody::makeProjectileRigidBody(
     direction.saveToBtVector3(&impulse);
     getRigidBody()->applyCentralImpulse(impulse);
     getRigidBody()->setGravity(btVector3(0, 0, 0));
+
+    this->direction = direction;
 }
 
 void Projectile3DBody::onUpdate() {

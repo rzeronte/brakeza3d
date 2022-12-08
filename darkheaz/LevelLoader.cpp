@@ -238,6 +238,7 @@ void LevelLoader::startCountDown()
     for (auto respawner : respawners) {
         respawner->startCounter();
     }
+
 }
 
 const std::string &LevelLoader::getMusic() const {
@@ -397,7 +398,7 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 
     enemy->setEnabled(true);
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    enemy->setEnableLights(false);
+    enemy->setEnableLights(true);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
     enemy->loadBlinkShader();

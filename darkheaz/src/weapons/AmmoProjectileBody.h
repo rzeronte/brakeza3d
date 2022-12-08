@@ -11,14 +11,11 @@
 #include "../shaders/ShaderTrailObject.h"
 
 class AmmoProjectileBody: public Projectile3DBody {
-
     Weapon *weaponType;
-
 public:
-
     AmmoProjectileBody();
 
-    Weapon *getWeaponType() const;
+    [[nodiscard]] Weapon *getWeaponType() const;
 
     void setWeaponType(Weapon *weaponType);
 

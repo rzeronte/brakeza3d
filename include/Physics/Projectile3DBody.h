@@ -11,6 +11,8 @@ private:
     Counter timeToLive;
     float ttl;
 
+protected:
+    Vertex3D direction;
 public:
     Projectile3DBody();
 

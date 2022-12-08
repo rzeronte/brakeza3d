@@ -31,7 +31,7 @@ __kernel void onUpdate(
     float length = 0.5;
 
     float2 A = {0.1, positionVertical};
-    float2 B = { max(0.1, 0.1 + health - 0.2), positionVertical};
+    float2 B = { max(0.1, 0.1 + health), positionVertical};
 
     float3 color = {0.0, 0.0, 0.0};
     float3 green = {r, g, b};

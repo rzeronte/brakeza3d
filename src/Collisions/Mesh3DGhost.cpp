@@ -46,7 +46,7 @@ void Mesh3DGhost::magnetizableTo(Object3D *object)
     Vertex3D to = object->getPosition();
     Vector3D direction(getPosition(), to);
 
-    float speed = powf(5000 / getPosition().distance(to), 3) * 0.00075f;
+    float speed = powf(5000 / getPosition().distance(to), 5) * 0.00075f;
 
     setPosition(getPosition() + direction.getComponent().getScaled(speed));
 }
