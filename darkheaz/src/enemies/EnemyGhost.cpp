@@ -70,7 +70,7 @@ void EnemyGhost::postUpdate()
 
 void EnemyGhost::makeReward()
 {
-    auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 10);
+    auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 15);
     fireworks->setPosition(getPosition());
     fireworks->setRotationFrame(0, 4, 5);
     Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -168,7 +168,6 @@ void EnemyGhost::remove()
 {
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
-        //ComponentsManager::get()->getComponentRender()->updateSelectedObject3DInShaders(nullptr);
     }
 
     Mesh3DGhost::remove();

@@ -18,13 +18,6 @@ __kernel void onUpdate(
 {
    int i = get_global_id(0);
 
-   int x = i % screenWidth;
-   int y = i / screenWidth;
-
-   float2 uv = { x, y };
-   float2 resolution = { screenWidth, screenHeight};
-   float2 st = uv / resolution;
-
     __global unsigned char *c = &shader[i];
 
     video[i] = createRGB(

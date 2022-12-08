@@ -248,6 +248,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
+        shaderBackgroundImage->resetOffsets();
+
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
         getPlayer()->setEnergyShieldEnabled(false);
@@ -265,6 +267,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
+        shaderBackgroundImage->resetOffsets();
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
         ComponentsManager::get()->getComponentHUD()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(false);
@@ -372,7 +375,7 @@ void ComponentGame::loadPlayer()
     player->setStamina(100);
     player->setStencilBufferEnabled(true);
     player->setAutoRotationToFacingSelectedObjectSpeed(5);
-    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/red_spaceship_02.fbx"));
+    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
     player->updateBoundingBox();
     player->makeSimpleGhostBody(
         player->aabb.size().getScaled(0.5),
@@ -627,6 +630,7 @@ void ComponentGame::pressedKeyForNewGame()
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
         );
+
         player->respawn();
     } else {
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::GAMING);

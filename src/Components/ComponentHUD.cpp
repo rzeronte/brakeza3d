@@ -259,7 +259,7 @@ void ComponentHUD::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max
 
 void ComponentHUD::drawShaderBars()
 {
-    float fixedWidth = 1.0;
+    float fixedWidth = 0.6;
     float health =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartStamina());
     float energy =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getEnergy() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartEnergy());
 
@@ -279,7 +279,7 @@ void ComponentHUD::drawEnemySelectedShaderStamina()
         return;
     }
 
-    float fixedWidth = 1.0;
+    float fixedWidth = 0.6;
     float health =  ((enemy->getStamina() * fixedWidth) / (int) enemy->getStartStamina());
 
     shaderSelectedEnemyStamina->setValue(health);

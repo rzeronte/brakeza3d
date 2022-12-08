@@ -56,12 +56,35 @@ void ShaderImage::executeKernelOpenCL()
             nullptr
     );
 
+    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
+
+    offsetX += vel.x;
+    offsetY += vel.y;
+
+    if (offsetY < -100) {
+        offsetY = -100;
+    }
+
+    if (offsetY > 100) {
+        offsetY = 100;
+    }
+
+    if (offsetX < -100) {
+        offsetX = -100;
+    }
+
+    if (offsetX > 100) {
+        offsetX = 100;
+    }
+
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
+    clSetKernelArg(kernel, 6, sizeof(float), &offsetX);
+    clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
@@ -93,6 +116,12 @@ void ShaderImage::executeKernelOpenCL()
     );
 
     this->debugKernel();
+}
+
+void ShaderImage::resetOffsets()
+{
+    offsetX = 0;
+    offsetY = 0;
 }
 
 void ShaderImage::setImage(Image *image)

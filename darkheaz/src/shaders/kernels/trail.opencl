@@ -40,7 +40,6 @@ __kernel void onUpdate(
         s[1] + z[1],
         s[2] + z[2]
     );
-
 }
 
 unsigned int createRGB(int r, int g, int b)

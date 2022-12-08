@@ -5,8 +5,10 @@
 #include "AmmoProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
 #include "../items/ItemHealthGhost.h"
+#include "../../../include/Brakeza3D.h"
 
 AmmoProjectileBody::AmmoProjectileBody() {
+
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
@@ -47,5 +49,4 @@ void AmmoProjectileBody::onUpdate()
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
         this->remove();
     }
-
 }
