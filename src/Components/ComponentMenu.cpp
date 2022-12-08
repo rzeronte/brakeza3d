@@ -75,6 +75,7 @@ void ComponentMenu::preUpdate()
     }
 
     shaderBackgroundImage->update();
+    drawOptions();
 }
 
 void ComponentMenu::onUpdate() {
@@ -82,7 +83,6 @@ void ComponentMenu::onUpdate() {
         return;
     }
 
-    drawOptions();
 }
 
 void ComponentMenu::postUpdate() {

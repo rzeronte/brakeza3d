@@ -4,11 +4,11 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Maths.h"
+#include "../../include/ComponentsManager.h"
 
 Image::Image()
 {
     this->loaded = false;
-    this->offset = 0;
 }
 
 void Image::createEmpty(int w, int h)
@@ -26,6 +26,8 @@ void Image::loadTGA(std::string filename)
 {
     if (Tools::fileExists(filename)) {
         this->surface = IMG_Load(filename.c_str());
+        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->renderer, surface);
+
         this->fileName = filename;
         this->loaded = true;
         Logging::Log("Loading TGA texture '" + std::string(filename), "IMAGE");
@@ -39,13 +41,24 @@ void Image::drawFlat(int pos_x, int pos_y) const
 {
     if (!loaded) return;
 
-    auto *buffer = EngineBuffers::getInstance();
-    auto *pixels = (Uint32 *) surface->pixels;
-    for (int i = 0; i < std::min(EngineSetup::get()->screenHeight, surface->h); i++) {
-        for (int j = 0; j < std::min(EngineSetup::get()->screenWidth, surface->w); j++) {
-            buffer->setVideoBuffer(j + pos_x, i + pos_y, pixels[i * surface->w + j]);
-        }
-    }
+    auto renderer = ComponentsManager::get()->getComponentWindow()->renderer;
+
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+
+    SDL_Rect srcRect;
+    srcRect.x = 0;
+    srcRect.y = 0;
+    srcRect.w = surface->w;
+    srcRect.h = surface->h;
+
+    SDL_Rect dstRect;
+    dstRect.x = (pos_x * windowWidth) / EngineSetup::get()->screenWidth;
+    dstRect.y = (pos_y * windowHeight) / EngineSetup::get()->screenHeight;
+    dstRect.w = (surface->w * windowWidth) / EngineSetup::get()->screenWidth;
+    dstRect.h = (surface->h * windowHeight) / EngineSetup::get()->screenHeight;
+
+    SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
 }
 
 void Image::loadFromRaw(unsigned int *texture, int w, int h)

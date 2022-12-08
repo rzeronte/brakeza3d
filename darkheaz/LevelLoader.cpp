@@ -524,12 +524,12 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
 
             auto boss = new BossLevel10();
-            boss->loadBlinkShader();
             boss->setEnabled(true);
             boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             boss->setEnableLights(false);
             boss->setPosition(position);
             boss->setStencilBufferEnabled(true);
+            boss->loadBlinkShader();
             boss->setScale(1);
             boss->setSpeed(10);
             boss->setStamina(10000);

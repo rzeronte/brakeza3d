@@ -64,9 +64,9 @@ void Brakeza3D::mainLoop() {
 
         this->updateTimer();
 
-        ImGuiOnUpdate();
-
         preUpdateComponents();
+
+        ImGuiOnUpdate();
 
         while (SDL_PollEvent(&e)) {
             onUpdateSDLPollEventComponents(&e, finish);
@@ -198,7 +198,8 @@ void Brakeza3D::AxisPlaneInitialize()
     addObject3D(axisPlanes, "AxisPlanes");
 }
 
-void Brakeza3D::ImGuiOnUpdate() {
+void Brakeza3D::ImGuiOnUpdate()
+{
     ImGui_ImplSDLRenderer_NewFrame();
     ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->window);
 
