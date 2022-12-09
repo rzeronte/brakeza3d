@@ -22,25 +22,6 @@
     {
       "index": 1,
       "available": true,
-      "name": "Bomb",
-      "damage": 100,
-      "amount": 1000,
-      "startAmount": 2500,
-      "speed": 0,
-      "dispersion": 10,
-      "accuracy": 100,
-      "cadenceTime": 2,
-      "stop": false,
-      "stopDuration": 0,
-      "stopEvery": 0,
-      "type": 1,
-      "icon": "icons/weapon_instant.png",
-      "modelProjectile": "projectile_weapon_02.fbx",
-      "model": "item_weapon_02.fbx"
-    },
-    {
-      "index": 2,
-      "available": true,
       "name": "Smart",
       "damage": 40,
       "amount": 1000,
@@ -52,10 +33,29 @@
       "stop": false,
       "stopDuration": 1,
       "stopEvery": 5,
-      "type": 2,
+      "type": 1,
       "icon": "icons/weapon_smart.png",
-      "modelProjectile": "projectile_weapon_03.fbx",
+      "modelProjectile": "projectile_weapon_02.fbx",
       "model": "item_weapon_03.fbx"
+    },
+    {
+      "index": 2,
+      "available": true,
+      "name": "Bomb",
+      "damage": 100,
+      "amount": 1000,
+      "startAmount": 2500,
+      "speed": 0,
+      "dispersion": 10,
+      "accuracy": 100,
+      "cadenceTime": 2,
+      "stop": false,
+      "stopDuration": 0,
+      "stopEvery": 0,
+      "type": 2,
+      "icon": "icons/weapon_instant.png",
+      "modelProjectile": "projectile_weapon_03.fbx",
+      "model": "item_weapon_02.fbx"
     }
   ]
 }

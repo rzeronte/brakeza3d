@@ -145,7 +145,7 @@ void ComponentHUD::drawPlayerStamina(int y)
     auto game = ComponentsManager::get()->getComponentGame();
     auto player = game->getPlayer();
 
-    player->getWeapon()->getIcon()->drawFlat(15, 430);
+    player->getWeapon()->getIcon()->drawFlat(5, 417);
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();

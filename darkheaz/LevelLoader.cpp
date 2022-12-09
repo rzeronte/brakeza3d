@@ -197,7 +197,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     weapon->getModel()->setLabel("weapon_model_template" + std::to_string(index));
     weapon->getModelProjectile()->setFlatTextureColor(true);
-    if (type == WEAPON_BOMB) {
+    if (type == WEAPON_BOMB || type == WEAPON_SMART_PROJECTILE) {
         weapon->getModelProjectile()->setFlatTextureColor(false);
     }
     weapon->getModelProjectile()->setFlatColor(c);

@@ -10,8 +10,8 @@
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
-    WEAPON_BOMB = 1,
-    WEAPON_SMART_PROJECTILE = 2,
+    WEAPON_SMART_PROJECTILE = 1,
+    WEAPON_BOMB = 2,
 };
 
 class Weapon {
