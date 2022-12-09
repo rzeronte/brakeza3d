@@ -196,7 +196,7 @@ void Player::shoot()
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
-                Color::cyan()
+                Color::yellow()
             );
         }
     }
