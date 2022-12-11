@@ -13,6 +13,8 @@ class EnemyGhost : public Mesh3DGhost, public Enemy {
 private:
     ShaderBlink *blink;
     Counter *counterDamageBlink;
+    LightPoint3D *light;
+
 public:
 
     EnemyGhost();

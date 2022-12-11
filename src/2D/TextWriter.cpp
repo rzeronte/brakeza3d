@@ -70,6 +70,28 @@ void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin) {
     }
 }
 
+
+void TextWriter::writeCenterHorizontal(int y, const char *text, bool bold)
+{
+    int totalW = EngineSetup::get()->screenWidth;
+
+    int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
+
+    writeText(xPosition, y, text, bold);
+}
+
+
+void TextWriter::writeTextMiddleScreen(const char *text, bool bold)
+{
+    int totalW = EngineSetup::get()->screenWidth;
+    int totalH =EngineSetup::get()->screenHeight;
+
+    int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
+
+    writeText(xPosition, totalH / 2, text, bold);
+}
+
+
 void TextWriter::writeText(int x, int y, const char *text, bool bold) {
     int currentX = x;
 
@@ -84,4 +106,92 @@ void TextWriter::writeText(int x, int y, const char *text, bool bold) {
         this->putCharacter(c, currentX, y);
         currentX += CONCHARS_CHARACTER_W;
     }
+}
+
+void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
+{
+    SDL_Color color;
+
+    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
+
+    color.r = (int) c.r;
+    color.g = (int) c.g;
+    color.b = (int) c.b;
+
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
+
+    SDL_Texture* msg = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    SDL_Rect msgRect;
+    msgRect.x = convertPositionXAspect(x);
+    msgRect.y = convertPositionYAspect(y);
+    msgRect.w = convertPositionXAspect(w);
+    msgRect.h = convertPositionYAspect(h);
+
+    SDL_RenderCopy(renderer, msg, NULL, &msgRect);
+
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(msg);
+}
+
+void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
+{
+    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
+    int w, h;
+    TTF_SizeText(font, text, &w, &h);
+
+    w *= sizeRatio;
+    h *= sizeRatio;
+
+    writeTextTTF(x, y, w, h, text, c);
+}
+
+void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio)
+{
+    int textWidth, textHeight;
+    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
+    TTF_SizeText(font, text, &textWidth, &textHeight);
+
+    textWidth *= sizeRatio;
+    textHeight *= sizeRatio;
+
+    int totalW = EngineSetup::get()->screenWidth;
+    int totalH = EngineSetup::get()->screenHeight;
+
+    int xPosition = (totalW / 2) - textWidth / 2;
+    int yPosition = totalH / 2;
+
+    writeTextTTFAutoSize(xPosition, yPosition, text, c, sizeRatio);
+}
+
+void TextWriter::writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio)
+{
+    int w, h;
+    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
+    TTF_SizeText(font, text, &w, &h);
+
+    w *= sizeRatio;
+    h *= sizeRatio;
+
+    int totalW = EngineSetup::get()->screenWidth;
+
+    int xPosition = (totalW / 2) - w / 2;
+
+    writeTextTTFAutoSize(xPosition, y, text, c, sizeRatio);
+}
+
+int TextWriter::convertPositionXAspect(int value)
+{
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+
+    return (value * windowWidth) / EngineSetup::get()->screenWidth;
+}
+
+int TextWriter::convertPositionYAspect(int value)
+{
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+
+    return (value * windowHeight) / EngineSetup::get()->screenHeight;
 }

@@ -17,6 +17,7 @@ void ItemBombGhost::onUpdate()
     timeToLive.update();
 
     if (timeToLive.isFinished()) {
+        setRemoved(true);
         setEnabled(false);
         removeCollisionObject();
     }

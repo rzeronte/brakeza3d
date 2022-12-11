@@ -106,7 +106,7 @@ public:
     bool ENABLE_LIGHTS = true;
     bool ENABLE_LIGHTS_SPECULAR = true;
     bool DRAW_LIGHTS_DIRECTION = false;
-    float LIGHTS_DIRECTION_SIZE = 500;
+    float LIGHTS_DIRECTION_SIZE = 2500;
 
     bool DRAW_FRUSTUM = false;
     bool DRAW_FPS = true;

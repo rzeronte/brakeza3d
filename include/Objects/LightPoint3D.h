@@ -49,6 +49,10 @@ public:
 
     void setPower(float p);
 
+    void setConstant(float value);
+    void setLinear(float value);
+    void setCuadratic(float value);
+
     Vertex3D getHalfWay(Vertex3D v);
     void setSpecularComponent(float m);
 

@@ -6,6 +6,7 @@
 #define BRAKEDA3D_TEXTWRITER_H
 
 #include <vector>
+#include "../Misc/Color.h"
 
 #define CONCHARS_WIDTH 256
 #define CONCHARS_HEIGHT 256
@@ -22,12 +23,30 @@ public:
 
     void putCharacter(int ascii, int x, int y);
 
+    void writeCenterHorizontal(int y, const char *text, bool bold);
+
+    void writeTextMiddleScreen(const char *text, bool bold);
+
+    void writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio);
+
+    void writeTextTTF(int x, int y, int w, int h, const char *text, Color c);
+
+    void writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio);
+
+    void writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio);
+
+    int convertPositionXAspect(int value);
+
 private:
     SDL_Renderer *renderer;
     SDL_Surface *sprite;
     std::vector<SDL_Surface *> characterSurfaces;
 
+    SDL_Texture *textureTTF;
+    SDL_Surface *surfaceTTF;
 
+
+    int convertPositionYAspect(int value);
 };
 
 

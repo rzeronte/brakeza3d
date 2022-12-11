@@ -10,6 +10,20 @@ EnemyGhost::EnemyGhost()
 {
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
+
+    light = new LightPoint3D();
+    light->setEnabled(true);
+    light->setLabel("lp2");
+    light->setPower(45);
+    light->setConstant(5.7);
+    light->setLinear(0);
+    light->setCuadratic(0);
+    light->setColor(255, 0, 0);
+    light->setColorSpecularity(255, 0, 0);
+    light->setSpecularComponent(9);
+    light->setColor(0, 255, 0);
+    light->setRotation(180, 0, 0);
+    Brakeza3D::get()->addObject3D(light, "enemy_light_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void EnemyGhost::loadBlinkShader()
@@ -22,6 +36,8 @@ void EnemyGhost::loadBlinkShader()
 void EnemyGhost::onUpdate()
 {
     Mesh3D::onUpdate();
+
+    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
 
     if (!rotationFrameEnabled) {
         rotateToPlayer();
@@ -44,10 +60,11 @@ void EnemyGhost::onUpdate()
         remove();
     }
 
-    if (getState() != EnemyState::ENEMY_STATE_DIE) {
+    if (getState() != EnemyState::ENEMY_STATE_DIE && playerState == PlayerState::LIVE) {
         shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
     }
 
+    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 }
 
 void EnemyGhost::postUpdate()
@@ -169,6 +186,7 @@ void EnemyGhost::remove()
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
     }
+    light->setRemoved(true);
 
     Mesh3DGhost::remove();
 }
@@ -200,7 +218,8 @@ void EnemyGhost::shoot(Object3D *target)
                 direction,
                 EngineSetup::collisionGroups::Player,
                 target,
-                getWeapon()->getModelProjectile()->getFlatColor()
+                getWeapon()->getModelProjectile()->getFlatColor(),
+                true
             );
             break;
         }

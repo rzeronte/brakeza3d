@@ -11,39 +11,29 @@ ComponentMenu::ComponentMenu() {
 
 }
 
-void ComponentMenu::onStart() {
+void ComponentMenu::onStart()
+{
     Logging::Log("ComponentMenu onStart", "ComponentMenu");
     loadDecorative3DMesh();
     loadMenuOptions();
 
-    auto light = new LightPoint3D();
-    Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 6000);
+    light = new LightPoint3D();
+    Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 3000);
     light->setPosition(lightPosition);
     light->setEnabled(true);
     light->setLabel("lp2");
     light->setPower(200);
-    light->setColorSpecularity(220, 220, 30);
+    light->setColorSpecularity(255, 0, 0);
     light->setSpecularComponent(3);
-    light->setColor(0, 255, 0);
+    light->setColor(255, 0, 0);
     light->setRotation(270, 0, 0);
     light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
     Brakeza3D::get()->addObject3D(light, "lightMenu");
 
-    auto light2 = new LightPoint3D();
-    light2->setPosition(lightPosition);
-    light2->setEnabled(true);
-    light2->setLabel("lp2");
-    light2->setPower(200);
-    light2->setColor(255, 0, 0);
-    light2->setColorSpecularity(220, 220, 30);
-    light2->setSpecularComponent(3);
-    light2->setRotation(270, 0, 0);
-    light2->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(5000, 0, 0), lightPosition + Vertex3D(-5000, 0, 0), 1));
-    Brakeza3D::get()->addObject3D(light2, "light2Menu");
-
     shaderBackgroundImage = new ShaderImage();
     shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderBackgroundImage->setEnabled(true);
+    shaderBackgroundImage->setUseOffset(false);
     shaderBackgroundImage->setImage(new Image(SETUP->IMAGES_FOLDER + "menu_background.png"));
 }
 
@@ -60,7 +50,7 @@ void ComponentMenu::loadDecorative3DMesh() {
     title->setPosition(Vertex3D(-5700, -2600, 6200));
     title->setStencilBufferEnabled(false);
     title->setFlatTextureColor(true);
-    title->setFlatColor(Color::blue());
+    title->setFlatColor(Color(79, 63, 21, 255));
     title->setRotationFrameEnabled(false);
     title->setRotationFrame(Vertex3D(0, 0, 0.1));
     title->setScale(1);
@@ -143,14 +133,16 @@ void ComponentMenu::drawOptions() {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 
+        auto color = Color::red();
         if (i == currentOption) {
-            bold = true;
-            //text = char(13) + text;
+            color = Color::green();
         }
-        ComponentsManager::get()->getComponentHUD()->writeCenterHorizontal(
-                stepY + offsetY,
-                text.c_str(),
-                bold
+
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTTFCenterHorizontal(
+            stepY + offsetY,
+            text.c_str(),
+            color,
+            0.5
         );
 
         offsetY += stepY;
@@ -160,6 +152,13 @@ void ComponentMenu::drawOptions() {
 void ComponentMenu::setEnabled(bool value)
 {
     Component::setEnabled(value);
+
+    if (value) {
+        light->setEnabled(true);
+    } else {
+        light->setEnabled(false);
+    }
+
     title->setEnabled(value);
 }
 

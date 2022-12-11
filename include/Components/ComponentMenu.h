@@ -32,6 +32,7 @@ public:
     ShaderImage *shaderBackgroundImage;
 
     Mesh3D *title;
+    LightPoint3D *light;
 
     ComponentMenu();
 

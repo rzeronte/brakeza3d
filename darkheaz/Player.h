@@ -194,6 +194,8 @@ public:
     void postUpdate() override;
 
     void loadGravityShieldModel();
+
+    PlayerState getState() const;
 };
 
 

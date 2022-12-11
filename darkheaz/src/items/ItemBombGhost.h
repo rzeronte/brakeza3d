@@ -1,6 +1,3 @@
-//
-// Created by eduardo on 4/12/22.
-//
 
 #ifndef BRAKEZA3D_ITEMBOMBGHOST_H
 #define BRAKEZA3D_ITEMBOMBGHOST_H
@@ -30,7 +27,6 @@ public:
     void postUpdate() override;
 
     void resolveCollision(Collisionable *collisionable) override;
-
 };
 
 
