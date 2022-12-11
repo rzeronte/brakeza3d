@@ -207,7 +207,8 @@ void EnemyGhost::shoot(Object3D *target)
                 positionProjectile,
                 direction,
                 EngineSetup::collisionGroups::Player,
-                getWeapon()->getModelProjectile()->getFlatColor()
+                getWeapon()->getModelProjectile()->getFlatColor(),
+                false
             );
             break;
         }
@@ -219,7 +220,8 @@ void EnemyGhost::shoot(Object3D *target)
                 EngineSetup::collisionGroups::Player,
                 target,
                 getWeapon()->getModelProjectile()->getFlatColor(),
-                true
+                true,
+                false
             );
             break;
         }

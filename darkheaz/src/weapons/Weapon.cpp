@@ -91,7 +91,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color, bool sound)
 {
     const int ammoAmount = getAmmoAmount();
 
@@ -134,12 +134,20 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         );
 
         setAmmoAmount(ammoAmount - 1);
-        //ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
+
+        if (sound) {
+            ComponentsManager::get()->getComponentSound()->playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeOne"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
+            );
+        }
+
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color, bool flat)
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color, bool flat, bool sound)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -185,8 +193,15 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         setAmmoAmount(ammoAmount - 1);
 
+        if (sound) {
+            ComponentsManager::get()->getComponentSound()->playSound(
+                    EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeOne"),
+                    EngineSetup::SoundChannels::SND_GLOBAL,
+                    0
+            );
+        }
+
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-        //ComponentsManager::get()->getComponentSound()->playSound(EngineBuffers::getInstance()->soundPackage->getByLabel("shoot01"),EngineSetup::SoundChannels::SND_ENVIRONMENT, 0);
     }
 }
 
