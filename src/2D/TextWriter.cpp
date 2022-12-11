@@ -11,6 +11,8 @@ TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
         return;
     }
 
+    this->alpha = 255;
+
     this->renderer = renderer;
 
     sprite = IMG_Load(concharsFile);
@@ -64,7 +66,6 @@ void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin) {
             if (color.getColor() == Color::black().getColor()) {
                 continue;
             }
-            //EngineBuffers::get()->HUDbuffer[(yOrigin + y) * 320 + (xOrigin + x) ] = Tools::random(200, 256);
             EngineBuffers::getInstance()->setVideoBuffer(xOrigin + x, yOrigin + y, color.getColor());
         }
     }
@@ -118,9 +119,10 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     color.g = (int) c.g;
     color.b = (int) c.b;
 
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
+    surfaceTTF = TTF_RenderText_Blended(font, text, color);
+    textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
 
-    SDL_Texture* msg = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_SetTextureAlphaMod(textureTTF, (int) alpha);
 
     SDL_Rect msgRect;
     msgRect.x = convertPositionXAspect(x);
@@ -128,17 +130,11 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     msgRect.w = convertPositionXAspect(w);
     msgRect.h = convertPositionYAspect(h);
 
-    /*SDL_BlitSurface(
-        surfaceMessage,
-        nullptr,
-        ComponentsManager::get()->getComponentWindow()->screenSurface,
-        &msgRect
-    );*/
 
-    SDL_RenderCopy(renderer, msg, NULL, &msgRect);
+    SDL_RenderCopy(renderer, textureTTF, NULL, &msgRect);
 
-    SDL_FreeSurface(surfaceMessage);
-    SDL_DestroyTexture(msg);
+    SDL_FreeSurface(surfaceTTF);
+    SDL_DestroyTexture(textureTTF);
 }
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
@@ -202,3 +198,12 @@ int TextWriter::convertPositionYAspect(int value)
 
     return (value * windowHeight) / EngineSetup::get()->screenHeight;
 }
+
+float TextWriter::getAlpha() const {
+    return alpha;
+}
+
+void TextWriter::setAlpha(float alpha) {
+    TextWriter::alpha = alpha;
+}
+
