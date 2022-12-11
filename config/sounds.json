@@ -35,6 +35,9 @@
 
     { "file": "item_health.mp3", "label": "itemHealth", "type": "sound" },
 
-    { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" }
+    { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
+
+    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" }
+
   ]
 }

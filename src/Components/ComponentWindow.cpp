@@ -19,7 +19,6 @@ void ComponentWindow::preUpdate() {
 void ComponentWindow::onUpdate()
 {
     SDL_RenderPresent(renderer);
-    //SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
 

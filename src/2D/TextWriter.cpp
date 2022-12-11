@@ -128,6 +128,13 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     msgRect.w = convertPositionXAspect(w);
     msgRect.h = convertPositionYAspect(h);
 
+    /*SDL_BlitSurface(
+        surfaceMessage,
+        nullptr,
+        ComponentsManager::get()->getComponentWindow()->screenSurface,
+        &msgRect
+    );*/
+
     SDL_RenderCopy(renderer, msg, NULL, &msgRect);
 
     SDL_FreeSurface(surfaceMessage);
