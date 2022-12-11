@@ -10,20 +10,6 @@ EnemyGhost::EnemyGhost()
 {
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
-
-    light = new LightPoint3D();
-    light->setEnabled(true);
-    light->setLabel("lp2");
-    light->setPower(45);
-    light->setConstant(5.7);
-    light->setLinear(0);
-    light->setCuadratic(0);
-    light->setColor(255, 0, 0);
-    light->setColorSpecularity(255, 0, 0);
-    light->setSpecularComponent(9);
-    light->setColor(0, 255, 0);
-    light->setRotation(180, 0, 0);
-    Brakeza3D::get()->addObject3D(light, "enemy_light_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void EnemyGhost::loadBlinkShader()
@@ -63,8 +49,6 @@ void EnemyGhost::onUpdate()
     if (getState() != EnemyState::ENEMY_STATE_DIE && playerState == PlayerState::LIVE) {
         shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
     }
-
-    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 }
 
 void EnemyGhost::postUpdate()
@@ -186,7 +170,6 @@ void EnemyGhost::remove()
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
     }
-    light->setRemoved(true);
 
     Mesh3DGhost::remove();
 }

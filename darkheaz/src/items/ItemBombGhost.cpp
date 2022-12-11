@@ -33,9 +33,12 @@ void ItemBombGhost::resolveCollision(Collisionable *collisionable)
 
     auto *enemy = dynamic_cast<EnemyGhost*> (collisionable);
     if (enemy != nullptr) {
-        enemy->takeDamage(getDamage());
-        setEnabled(false);
         removeCollisionObject();
+
+        setEnabled(false);
+        setRemoved(true);
+
+        enemy->takeDamage(getDamage());
     }
 }
 

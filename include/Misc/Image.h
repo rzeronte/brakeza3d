@@ -17,6 +17,8 @@ public:
     Image();
     explicit Image(std::string filename);
     void drawFlat(int, int) const;
+    void drawFlatAlpha(int pos_x, int pos_y, float alpha);
+
     void loadTGA(std::string filename);
     int width() const;
     int height();
@@ -32,6 +34,7 @@ public:
 
     Color getColor(int x, int y);
 
+    void setTextureAlpha(int value);
 private:
     SDL_Surface *surface;
     SDL_Texture *texture;

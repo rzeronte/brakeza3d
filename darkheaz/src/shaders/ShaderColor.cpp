@@ -86,3 +86,7 @@ void ShaderColor::executeKernelOpenCL()
 void ShaderColor::setProgress(float value) {
     ShaderColor::progress = value;
 }
+
+float ShaderColor::getProgress() const {
+    return progress;
+}

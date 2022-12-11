@@ -9,7 +9,7 @@
 #include "../../darkheaz/src/items/ItemBombGhost.h"
 
 #define FREELOOK false
-#define SPLASH_TIME 0.0001f
+#define SPLASH_TIME 3.0f
 #define FADE_SPEED_START_GAME 0.04
 #define FADE_SPEED_ENDLEVEL 0.04
 #define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
@@ -56,6 +56,7 @@ void ComponentGame::onStart()
 
     shaderClouds = new ShaderClouds();
     shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderClouds->setEnabled(false);
 
     shaderBackgroundImage = new ShaderImage();
     shaderBackgroundImage->setEnabled(true);
@@ -65,7 +66,8 @@ void ComponentGame::onStart()
     shaderColor->setEnabled(false);
 
     shaderTrailBuffer = new ShaderTrailBuffer();
-    shaderTrailBuffer->setEnabled(true);
+    shaderTrailBuffer->setEnabled(false);
+    shaderTrailBuffer->clearStencilBuffer();
 
     shaderEdge = new ShaderEdgeObject(Color(0, 255, 0));
     shaderEdge->setEnabled(true);
@@ -82,7 +84,7 @@ void ComponentGame::preUpdate()
             makeFadeToGameState(EngineSetup::GameState::MENU);
         }
 
-        imageSplash->drawFlat(0, 0);
+        imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
     }
 
     if (
@@ -90,11 +92,11 @@ void ComponentGame::preUpdate()
         state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
         state == EngineSetup::GameState::COUNTDOWN ||
         state == EngineSetup::GameState::PRESSKEY_BY_DEAD ||
-        state == EngineSetup::GameState::PRESSKEY_NEWLEVEL
+        state == EngineSetup::GameState::PRESSKEY_NEWLEVEL ||
+        state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL
     ) {
         shaderBackgroundImage->update();
     }
-
 }
 
 void ComponentGame::onUpdate()
@@ -108,6 +110,7 @@ void ComponentGame::onUpdate()
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
+        getPlayer()->respawn();
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("press a key to START...", Color::green(), 0.5);
         if (getLevelInfo()->isHasTutorial()) {
             getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
@@ -130,15 +133,16 @@ void ComponentGame::onUpdate()
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are died...", Color::red(), 0.5);
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are died...", Color::black(), 0.5);
     }
 
+
     if (state == EngineSetup::GameState::HELP) {
-        imageHelp->drawFlat(0, 0);
+        imageHelp->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
     }
 
     if (state == EngineSetup::GameState::CREDITS) {
-        imageCredits->drawFlat(0, 0);
+        imageCredits->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
     }
 
     getFadeToGameState()->onUpdate();
@@ -156,6 +160,8 @@ void ComponentGame::onUpdate()
 
 void ComponentGame::postUpdate()
 {
+    EngineSetup::GameState state = getGameState();
+
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -208,6 +214,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
         splashCounter.setEnabled(true);
+        shaderClouds->setEnabled(true);
+
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, SPLASH_TIME * 1000);
     }
 
@@ -217,6 +225,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::MENU) {
+        shaderTrailBuffer->setEnabled(false);
         ComponentsManager::get()->getComponentRender()->setEnabled(true);
         ComponentsManager::get()->getComponentMenu()->setEnabled(true);
         setVisibleInGameObjects(false);
@@ -228,6 +237,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::GAMING) {
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
         setVisibleInGameObjects(true);
         getPlayer()->setEnabled(true);
         getPlayer()->startPlayerBlink();
@@ -251,7 +261,9 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
+        shaderTrailBuffer->setEnabled(true);
         shaderBackgroundImage->resetOffsets();
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
 
         ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -303,6 +315,11 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         getPlayer()->stopBlinkForPlayer();
         getPlayer()->setEnergyShieldEnabled(false);
         getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    }
+
+    if (state == EngineSetup::GameState::CREDITS || state == EngineSetup::GameState::HELP) {
+        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+
     }
 
     this->gameState = state;
@@ -506,9 +523,15 @@ void ComponentGame::removeProjectiles() const
         if (projectile != nullptr) {
             projectile->remove();
         }
+
         auto projectileEmissor = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
         if (projectileEmissor != nullptr) {
             projectileEmissor->setRemoved(true);
+        }
+
+        auto bomb = dynamic_cast<ItemBombGhost *> (object);
+        if (bomb != nullptr) {
+            bomb->remove();
         }
     }
 }
@@ -528,6 +551,7 @@ void ComponentGame::removeInGameObjects()
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *emissorProjectiles = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
+        auto bomb = dynamic_cast<ItemBombGhost *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
@@ -544,6 +568,10 @@ void ComponentGame::removeInGameObjects()
 
         if (emissorProjectiles != nullptr) {
             emissorProjectiles->setRemoved(true);
+        }
+
+        if (bomb != nullptr) {
+            bomb->remove();
         }
     }
 }
@@ -569,12 +597,14 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *gravitational = dynamic_cast<GravitationalGhost *> (object);
         auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
+        auto *bomb = dynamic_cast<ItemBombGhost *> (object);
 
         if (enemy != nullptr ||
             health != nullptr ||
             weapon != nullptr ||
             projectile != nullptr ||
             energy != nullptr ||
+            bomb != nullptr ||
             //gravitational != nullptr ||
             respawner != nullptr
         ) {

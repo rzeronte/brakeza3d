@@ -45,8 +45,14 @@ private:
     SDL_Texture *textureTTF;
     SDL_Surface *surfaceTTF;
 
+    float alpha;
 
     int convertPositionYAspect(int value);
+
+public:
+    float getAlpha() const;
+
+    void setAlpha(float alpha);
 };
 
 

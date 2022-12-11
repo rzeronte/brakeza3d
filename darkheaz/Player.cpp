@@ -63,7 +63,7 @@ void Player::loadShieldModel()
     shieldModel->setScale(1);
     shieldModel->setStencilBufferEnabled(false);
     shieldModel->setFlatTextureColor(true);
-    shieldModel->setFlatColor(Color::blue());
+    shieldModel->setFlatColor(Color::green());
     shieldModel->setRotationFrameEnabled(true);
     shieldModel->setRotationFrame(Vertex3D(1, 0, 0));
     shieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
@@ -82,6 +82,7 @@ void Player::loadGravityShieldModel()
     gravityShieldModel->setStencilBufferEnabled(true);
     gravityShieldModel->setRotationFrameEnabled(true);
     gravityShieldModel->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    gravityShieldModel->loadBlinkShader();
 
     Brakeza3D::get()->addObject3D(gravityShieldModel, "gravitationalShieldPlayer");
 }

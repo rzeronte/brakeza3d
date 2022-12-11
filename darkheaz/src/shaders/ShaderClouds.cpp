@@ -23,6 +23,9 @@ ShaderClouds::ShaderClouds() : ShaderOpenCL("clouds.opencl")
 void ShaderClouds::update()
 {
     Shader::update();
+
+    if (!isEnabled()) return;
+
     executeKernelOpenCL();
 }
 

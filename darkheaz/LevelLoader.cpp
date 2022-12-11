@@ -297,7 +297,18 @@ void LevelLoader::makeItemEnergyGhost(Vertex3D position)
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
     healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
-    healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
+    healthItem->makeSimpleGhostBody(
+            Vertex3D(500, 500, 500),
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Weapon,
+            EngineSetup::collisionGroups::Player
+    );
+    /*healthItem->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        healthItem,
+        EngineSetup::collisionGroups::Health,
+        EngineSetup::collisionGroups::Player
+    );*/
     healthItem->updateBulletFromMesh3D();
     Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
 }
@@ -310,7 +321,18 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->setEnableLights(false);
     weaponItem->clone(weapons[indexWeapon]->getModel());
     weaponItem->setPosition(position);
-    weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::collisionGroups::Weapon, EngineSetup::collisionGroups::Player);
+    weaponItem->makeSimpleGhostBody(
+        Vertex3D(500, 500, 500),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Weapon,
+        EngineSetup::collisionGroups::Player
+    );
+    /*weaponItem->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        weaponItem,
+        EngineSetup::collisionGroups::Weapon,
+        EngineSetup::collisionGroups::Player
+    );*/
     weaponItem->setRotation(0, 0, 180);
     weaponItem->setRotationFrameEnabled(true);
     weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));

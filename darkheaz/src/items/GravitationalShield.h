@@ -49,6 +49,9 @@ public:
     bool isHidden() const;
 
     void setHidden(bool hidden);
+
+    void loadBlinkShader();
+
 };
 
 
