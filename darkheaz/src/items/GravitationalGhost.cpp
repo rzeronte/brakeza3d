@@ -17,7 +17,8 @@ void GravitationalGhost::setForce(float force) {
     GravitationalGhost::force = force;
 }
 
-void GravitationalGhost::onUpdate() {
+void GravitationalGhost::onUpdate()
+{
     Mesh3D::onUpdate();
     auto objects = Brakeza3D::get()->getSceneObjects();
 

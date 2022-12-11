@@ -27,6 +27,7 @@ void Image::loadTGA(std::string filename)
     if (Tools::fileExists(filename)) {
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->renderer, surface);
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
         this->fileName = filename;
         this->loaded = true;
@@ -35,6 +36,12 @@ void Image::loadTGA(std::string filename)
     } else {
         Logging::Log("Error loading TGA texture '" + std::string(filename), "IMAGE");
     }
+}
+
+void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
+{
+    setTextureAlpha((int) alpha);
+    drawFlat(pos_x, pos_y);
 }
 
 void Image::drawFlat(int pos_x, int pos_y) const
@@ -133,4 +140,10 @@ Color Image::getColor(int x, int y)
 void Image::setSurface(SDL_Surface *surface) {
     Image::surface = surface;
     this->loaded = true;
+}
+
+void Image::setTextureAlpha(int value)
+{
+    SDL_SetTextureAlphaMod(texture, value);
+
 }

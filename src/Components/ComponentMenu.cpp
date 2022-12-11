@@ -122,12 +122,14 @@ void ComponentMenu::drawOptions() {
 
     auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
 
+    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
+    ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(alpha);
+
     int offsetY = 170;
     int stepY = 30;
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
-        bool bold = false;
 
         if (i == ComponentMenu::MNU_NEW_GAME && (levelInfo->getCurrentLevelIndex() > 0 || levelInfo->isLevelStartedToPlay())) {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();

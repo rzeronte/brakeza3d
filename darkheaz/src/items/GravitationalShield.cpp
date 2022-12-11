@@ -19,7 +19,7 @@ GravitationalShield::GravitationalShield(
     timeToLive.setEnabled(true);
 
     blink = new ShaderBlink(this, Color::green());
-    blink->setStep(0.01);
+    blink->setStep(0.05);
     blink->setEnabled(false);
 
     counterDamageBlink = new Counter(1);
@@ -33,6 +33,7 @@ GravitationalShield::GravitationalShield(
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
     );
+
     removeCollisionObject();
     setHidden(true);
 }
@@ -49,6 +50,22 @@ void GravitationalShield::onUpdate()
         setEnabled(false);
         removeCollisionObject();
         setHidden(true);
+    }
+}
+
+
+void GravitationalShield::postUpdate()
+{
+    Object3D::postUpdate();
+
+    shockWave->onUpdate(getPosition());
+
+    if (counterDamageBlink->isEnabled()) {
+        counterDamageBlink->update();
+        blink->update();
+        if (counterDamageBlink->isFinished()) {
+            blink->setEnabled(false);
+        }
     }
 }
 
@@ -71,6 +88,7 @@ void GravitationalShield::setStamina(float stamina) {
 void GravitationalShield::takeDamage(float damageTaken)
 {
     this->stamina -= damageTaken;
+
     if (this->stamina <= 0) {
         setEnabled(false);
         removeCollisionObject();
@@ -86,22 +104,13 @@ void GravitationalShield::resolveCollision(Collisionable *collisionable)
         blink->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
+        auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
+        fireworks->setPosition(projectile->getPosition());
+        fireworks->setRotationFrame(0, 4, 5);
+        Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+
+
         takeDamage(projectile->getWeaponType()->getDamage());
-    }
-}
-
-void GravitationalShield::postUpdate()
-{
-    Object3D::postUpdate();
-
-    shockWave->onUpdate(getPosition());
-
-    if (counterDamageBlink->isEnabled()) {
-        counterDamageBlink->update();
-        blink->update();
-        if (counterDamageBlink->isFinished()) {
-            blink->setEnabled(false);
-        }
     }
 }
 
@@ -138,4 +147,11 @@ bool GravitationalShield::isHidden() const
 void GravitationalShield::setHidden(bool hidden)
 {
     GravitationalShield::hidden = hidden;
+}
+
+void GravitationalShield::loadBlinkShader()
+{
+    blink = new ShaderBlink(this, Color::red());
+    blink->setStep(0.05);
+    blink->setEnabled(true);
 }
