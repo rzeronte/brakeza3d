@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include "../../../include/Brakeza3D.h"
 
-Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0)
+Enemy::Enemy() : startStamina(100), stamina(0), range(0), speed(0), rewards(false)
 {
     this->stamina = this->startStamina;
     setState(EnemyState::ENEMY_STATE_STOP);
@@ -75,4 +75,12 @@ void Enemy::setSoundChannel(int value) {
 Enemy::~Enemy()
 {
     delete weapon;
+}
+
+bool Enemy::isRewards() const {
+    return rewards;
+}
+
+void Enemy::setRewards(bool rewards) {
+    Enemy::rewards = rewards;
 }

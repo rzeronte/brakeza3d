@@ -28,6 +28,8 @@ public:
 
     int soundChannel;
 
+    bool rewards;
+
     Enemy();
 
     void takeDamage(float damageTaken);
@@ -59,6 +61,10 @@ public:
     int getSoundChannel() const;
 
     void setSoundChannel(int soundChannel);
+
+    bool isRewards() const;
+
+    void setRewards(bool rewards);
 
     virtual ~Enemy();
 };

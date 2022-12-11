@@ -356,12 +356,15 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
     std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
     int stamina = cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
+    int reward = cJSON_GetObjectItemCaseSensitive(enemyJSON, "reward")->valueint;
     int speed = cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
     auto *enemy = new EnemyGhost();
+
+    enemy->setRewards(reward);
 
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
     switch(typeMotion) {
