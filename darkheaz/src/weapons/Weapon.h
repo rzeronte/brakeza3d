@@ -79,8 +79,8 @@ public:
 
     void setDispersion(float dispersion);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color);
-    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c, bool flat);
+    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color, bool sound);
+    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c, bool flat, bool sound);
 
     Mesh3D *getModel() const;
 

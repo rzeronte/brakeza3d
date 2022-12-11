@@ -85,13 +85,6 @@ void ComponentGame::preUpdate()
         imageSplash->drawFlat(0, 0);
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("press a key to START...", Color::green(), 0.5);
-        if (getLevelInfo()->isHasTutorial()) {
-            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
-        }
-    }
-
     if (
         state == EngineSetup::GameState::GAMING ||
         state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
@@ -106,7 +99,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    updateShaders();
 
     EngineSetup::GameState state = getGameState();
 
@@ -114,6 +106,14 @@ void ComponentGame::onUpdate()
         blockPlayerPositionInCamera();
         checkForEndLevel();
     }
+
+    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("press a key to START...", Color::green(), 0.5);
+        if (getLevelInfo()->isHasTutorial()) {
+            getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
+        }
+    }
+
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("congratulations! END GAME...", Color::red(), 0.5);
@@ -151,8 +151,7 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 
-
-
+    updateShaders();
 }
 
 void ComponentGame::postUpdate()

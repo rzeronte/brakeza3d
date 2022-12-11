@@ -189,7 +189,8 @@ void Player::shoot()
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
-                Color::green()
+                Color::green(),
+                true
             );
             break;
         }
@@ -201,8 +202,10 @@ void Player::shoot()
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
                 Color::yellow(),
-                false
+                false,
+                true
             );
+            break;
         }
     }
 }
