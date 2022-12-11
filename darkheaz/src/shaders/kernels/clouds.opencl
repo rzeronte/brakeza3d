@@ -36,7 +36,7 @@ __kernel void onUpdate(
     st.y = st.y + iTime * speed;
 
     float n = noise(st);
-    int noiseIntensity = (int) (n * 75);
+    int noiseIntensity = (int) (n * 50);
 
     int p1 = shadowIntensity * (t[0] - noiseIntensity);
     int p2 = shadowIntensity * (t[1] - noiseIntensity);

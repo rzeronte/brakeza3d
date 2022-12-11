@@ -71,6 +71,8 @@ void EnemyGhost::postUpdate()
 
 void EnemyGhost::makeReward()
 {
+    if (!isRewards()) return;
+
     auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 15);
     fireworks->setPosition(getPosition());
     fireworks->setRotationFrame(0, 4, 5);

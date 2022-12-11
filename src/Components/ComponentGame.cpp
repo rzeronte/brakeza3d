@@ -125,7 +125,7 @@ void ComponentGame::onUpdate()
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
         int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), Color::green(), 0.5);
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), Color::green(), 1.5);
         getLevelInfo()->getCountDown()->update();
         if (getLevelInfo()->getCountDown()->isFinished()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
