@@ -7,7 +7,7 @@
   "enemies": [
     {
       "name": "Persecutor",
-      "position": { "x": 50, "y": 20 },
+      "position": { "x": 50, "y": 15 },
       "model": "moon.fbx",
       "stamina": 1000,
       "speed": 100,
@@ -19,15 +19,15 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 30, "y": 45 }
+      "position": { "x": 30, "y": 40 }
     },
     {
       "type": 2,
-      "position": { "x": 50, "y": 45 }
+      "position": { "x": 50, "y": 40 }
     },
     {
       "type": 3,
-      "position": { "x": 70, "y": 45 }
+      "position": { "x": 70, "y": 40 }
     }
   ],
   "asteroids": [

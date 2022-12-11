@@ -136,3 +136,15 @@ void LightPoint3D::drawDeepMap(int pos_x, int pos_y) const {
         }
     }
 }
+
+void LightPoint3D::setConstant(float value) {
+    this->kc = value;
+}
+
+void LightPoint3D::setLinear(float value) {
+    this->kl = value;
+}
+
+void LightPoint3D::setCuadratic(float value) {
+    this->kq = value;
+}

@@ -139,9 +139,8 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color)
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color, bool flat)
 {
-
     if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration.isEnabled()) {
@@ -163,6 +162,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
         getModelProjectile()->setFlatColor(color);
+        getModelProjectile()->setFlatTextureColor(flat);
         projectile->clone(getModelProjectile());
         projectile->setPosition(position);
         projectile->setEnableLights(false);

@@ -64,16 +64,14 @@ __kernel void onUpdate(
 
     float3 color = { l1, l2, l3 };
 
-    __global unsigned char *s = &shader[i];
-
     if (stencil[i]) {
         video[i] = shader[i];
     } else {
-        video[i] = createRGB(
-            (color[0] * r) + s[0],
-            (color[1] * g) + s[1],
-            (color[2] * b) + s[2]
-        );
+        if (l1 + l2 + l3 > 0) {
+            video[i] = createRGB(r, g, b);
+        } else {
+            video[i] = shader[i];
+        }
     }
 }
 

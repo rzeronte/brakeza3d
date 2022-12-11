@@ -13,6 +13,10 @@
 class ShaderImage: public ShaderOpenCL {
     Image *image;
     cl_mem opencl_buffer_pixels_image;
+    int useOffset;
+
+    float offsetX;
+    float offsetY;
 public:
     ShaderImage();
 
@@ -24,10 +28,12 @@ public:
 
     void setImage(Image *image);
 
-    float offsetX;
-    float offsetY;
-
     void resetOffsets();
+
+    bool isUseOffset() const;
+
+    void setUseOffset(bool useOffset);
+
 };
 
 

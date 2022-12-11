@@ -13,7 +13,7 @@ void ComponentHUD::onStart() {
     loadImages();
     loadButtons();
 
-    textureWriter = new TextWriter(
+    textWriter = new TextWriter(
         ComponentsManager::get()->getComponentWindow()->renderer,
         std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
@@ -46,21 +46,21 @@ void ComponentHUD::onUpdate()
     if (!isEnabled()) return;
 
     drawHUD();
-    //drawEnemies();
 }
 
 void ComponentHUD::postUpdate()
 {
     if (!isEnabled()) return;
 
+}
+
+void ComponentHUD::onEnd()
+{
 
 }
 
-void ComponentHUD::onEnd() {
-
-}
-
-void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish) {
+void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish)
+{
     for(auto & button : buttons) {
         button->onUpdate();
     }
@@ -77,28 +77,6 @@ void ComponentHUD::loadImages() {
 
 }
 
-void ComponentHUD::writeTextMiddleScreen(const char *text, bool bold) const
-{
-    int totalW = SETUP->screenWidth;
-    int totalH = SETUP->screenHeight;
-
-    int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
-    this->writeText(xPosition, totalH / 2, text, bold);
-}
-
-void ComponentHUD::writeCenterHorizontal(int y, const char *text, bool bold) const
-{
-    int totalW = SETUP->screenWidth;
-
-    int xPosition = (totalW / 2) - (int) (strlen(text) * CONCHARS_CHARACTER_W) / 2;
-    this->writeText(xPosition, y, text, bold);
-}
-
-void ComponentHUD::writeText(int x, int y, const char *text, bool bold) const
-{
-    this->textureWriter->writeText(x, y, text, bold);
-}
-
 void ComponentHUD::drawHUD()
 {
     auto componentManager = ComponentsManager::get();
@@ -109,10 +87,11 @@ void ComponentHUD::drawHUD()
     drawPlayerStamina(15);
 
     if (SETUP->DRAW_FPS) {
-        writeCenterHorizontal(
-            10,
+        this->textWriter->writeTTFCenterHorizontal(
+            15,
             std::to_string(componentManager->getComponentRender()->fps).c_str(),
-            false
+            Color::red(),
+            0.5
         );
     }
 
@@ -120,7 +99,14 @@ void ComponentHUD::drawHUD()
         button->draw();
     }
 
-    this->writeCenterHorizontal(25, componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(), false);
+    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
+        this->textWriter->writeTTFCenterHorizontal(
+            40,
+            componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(),
+            Color::red(),
+            0.5
+        );
+    }
 }
 
 const std::vector<Button *> &ComponentHUD::getButtons() const {
@@ -145,7 +131,15 @@ void ComponentHUD::drawPlayerStamina(int y)
     auto game = ComponentsManager::get()->getComponentGame();
     auto player = game->getPlayer();
 
-    player->getWeapon()->getIcon()->drawFlat(5, 417);
+    player->getWeapon()->getIcon()->drawFlat(455, 420);
+
+    textWriter->writeTextTTFAutoSize(
+        510,
+        430,
+        std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
+        Color::green(),
+        0.75
+    );
 
     if (player->isAllowGravitationalShields()) {
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
@@ -156,102 +150,10 @@ void ComponentHUD::drawPlayerStamina(int y)
     }
 }
 
-void ComponentHUD::drawSelectedWeaponEffect(int x, int y, int width, int height, Color c) {
-    auto *buffer = EngineBuffers::getInstance();
-
-    for (int i = 0; i < width; i++) {
-        buffer->setVideoBuffer(x + i, y, c.getColor());
-        buffer->setVideoBuffer(x + i, y + height - 1, c.getColor());
-    }
-    for (int i = 0; i < height; i++) {
-        buffer->setVideoBuffer(x, y + i, c.getColor());
-        buffer->setVideoBuffer(x + width - 1, y + i, c.getColor());
-    }
-}
-
-void ComponentHUD::drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c) {
-    auto *buffer = EngineBuffers::getInstance();
-
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            const int finalX = xOrigin + x;
-            const int finalY = yOrigin + y;
-            buffer->setVideoBuffer(finalX, finalY, c.getColor());
-        }
-    }
-}
-
 int ComponentHUD::getButtonsOffsetY() {
     const unsigned int innerMargin = 0;
     const int offsetY = SETUP->screenHeight - 16 - innerMargin;
     return offsetY;
-}
-
-void ComponentHUD::drawEnemies()
-{
-    auto objects = Brakeza3D::get()->getSceneObjects();
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    for (auto object : objects) {
-        auto enemy = dynamic_cast<EnemyGhost*> (object);
-        if (enemy != nullptr) {
-
-            if (enemy->isAlphaEnabled()) return;
-
-            enemy->updateBoundingBox();
-
-            Point2D screenMinPoint;
-            Point2D screenMaxPoint;
-            this->getScreenCoordinatesForBoundingBox(screenMinPoint, screenMaxPoint, enemy, camera);
-
-            const float sizeWidth = (float) (screenMaxPoint.x - screenMinPoint.x) * 0.5f;
-            Point2D middlePoint(
-                screenMinPoint.x + (int) sizeWidth,
-                screenMinPoint.y
-            );
-
-            drawEnemyStats(
-                middlePoint,
-                sizeWidth,
-                enemy->getStamina(),
-                enemy->getStartStamina(),
-                Color::red()
-            );
-        }
-    }
-}
-
-void ComponentHUD::drawEnemyStats(Point2D screenPoint, float fixedWidth, float value, float startValue, Color c) {
-    const int currentPercentage = (int) ((value * fixedWidth) / startValue);
-
-    for (int i = 0; i < currentPercentage; i++) {
-        int x = screenPoint.x + i - (fixedWidth*0.5);
-        int y = screenPoint.y;
-        if (!Tools::isPixelInWindow(x, y)) continue;
-        EngineBuffers::getInstance()->setVideoBuffer(x, y, c.getColor());
-        EngineBuffers::getInstance()->setVideoBuffer(x, y+1, c.getColor());
-    }
-}
-
-void ComponentHUD::getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera)
-{
-    min.x = EngineSetup::get()->screenWidth;
-    min.y = EngineSetup::get()->screenHeight;
-    max.x = -1;
-    max.y = -1;
-
-    for (auto vertex : mesh->aabb.vertices) {
-        Point2D screenPoint = Transforms::WorldToPoint(vertex, camera);
-        min.x = std::min(min.x, screenPoint.x);
-        min.y = std::min(min.y, screenPoint.y);
-        max.x = std::max(max.x, screenPoint.x);
-        max.y = std::max(max.y, screenPoint.y);
-    }
-
-    min.x = std::clamp(min.x, 0, EngineSetup::get()->screenWidth);
-    min.y = std::clamp(min.y, 0, EngineSetup::get()->screenHeight);
-    max.x = std::clamp(max.x, 0, EngineSetup::get()->screenWidth);
-    max.y = std::clamp(max.y, 0, EngineSetup::get()->screenHeight);
 }
 
 void ComponentHUD::drawShaderBars()
@@ -282,4 +184,8 @@ void ComponentHUD::drawEnemySelectedShaderStamina()
     shaderSelectedEnemyStamina->setValue(health);
     shaderSelectedEnemyStamina->update();
 
+}
+
+TextWriter *ComponentHUD::getTextWriter() const {
+    return textWriter;
 }

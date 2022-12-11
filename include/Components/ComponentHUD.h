@@ -37,15 +37,9 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish);
 
     TexturePackage *HUDTextures;
-    TextWriter *textureWriter;
+    TextWriter *textWriter;
 
     void loadImages();
-
-    void writeText(int x, int y, const char *, bool bold) const;
-
-    void writeTextMiddleScreen(const char *, bool bold) const;
-
-    void writeCenterHorizontal(int y, const char *, bool bold) const;
 
     void drawHUD();
 
@@ -59,19 +53,12 @@ public:
 
     int getButtonsOffsetY();
 
-    void drawEnemies();
-
-    void drawEnemyStats(Point2D screenPoint, float fixedWidth, float value, float startValue, Color c);
-
-    void drawSelectedWeaponEffect(int x, int y, int width, int height, Color c);
-
-    void drawNotAvailableWeaponEffect(int xOrigin, int yOrigin, int width, int height, Color c);
-
-    void getScreenCoordinatesForBoundingBox(Point2D &min, Point2D &max, Mesh3D *mesh, Camera3D *camera);
-
     void drawShaderBars();
 
     void drawEnemySelectedShaderStamina();
+
+    TextWriter *getTextWriter() const;
+
 };
 
 

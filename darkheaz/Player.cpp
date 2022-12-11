@@ -23,12 +23,16 @@ Player::Player() : state(PlayerState::EMPTY),
     light = new LightPoint3D();
     light->setEnabled(true);
     light->setLabel("lp2");
-    light->setPower(200);
-    light->setColor(255, 255, 255);
-    light->setColorSpecularity(220, 220, 30);
-    light->setSpecularComponent(3);
+    light->setPower(45);
+    light->setConstant(5.7);
+    light->setLinear(0);
+    light->setCuadratic(0);
+    light->setColor(0, 255, 255);
+    light->setColorSpecularity(255, 0, 0);
+    light->setSpecularComponent(9);
     light->setColor(0, 255, 0);
-    light->setRotation(270, 0, 0);
+    light->setRotation(180, 0, 0);
+    Brakeza3D::get()->addObject3D(light, "playerLight");
 
     lightPositionOffset = Vertex3D(0, -550, 0);
 
@@ -196,7 +200,8 @@ void Player::shoot()
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
-                Color::yellow()
+                Color::yellow(),
+                false
             );
         }
     }
@@ -222,7 +227,7 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    updateLight();
+    //updateLight();
     updateWeaponType();
     applyFriction();
 
@@ -255,7 +260,7 @@ void Player::onUpdate()
         Vertex3D end = getPosition() + Vertex3D(0, 1, 0);
         Vector3D way(getPosition(), end);
 
-        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
+        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward, way.getComponent().getNormalize());
         Vertex3D b = getRotation() * EngineSetup::get()->up;
 
         const float theta = newRot.X() * b;
@@ -263,7 +268,9 @@ void Player::onUpdate()
         setRotation(getRotation() * rotation.getTranspose());
     }
 
-    setPosition(getPosition() + this->velocity );
+    setPosition(getPosition() + this->velocity);
+
+    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 }
 
 void Player::postUpdate()
@@ -583,4 +590,8 @@ void Player::loadBlinkShader()
     blink->setStep(0.05);
     blink->setEnabled(false);
     counterDamageBlink->setEnabled(false);
+}
+
+PlayerState Player::getState() const {
+    return state;
 }

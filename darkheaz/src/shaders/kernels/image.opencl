@@ -7,6 +7,7 @@ __kernel void onUpdate(
     __global unsigned int *video,
     __global unsigned int *shader,
     __global unsigned int *image,
+    int usingOffset,
     float offsetX,
     float offsetY
 )
@@ -25,8 +26,10 @@ __kernel void onUpdate(
 
     float2 ieah = { offsetX, offsetY };
 
-    st /= 1.75;
-    st += center - offset + ieah;
+    if (usingOffset > 0) {
+        st /= 1.75;
+        st += center - offset + ieah;
+    }
 
     int cx = st.x * screenWidth;
     int cy = st.y * screenHeight;

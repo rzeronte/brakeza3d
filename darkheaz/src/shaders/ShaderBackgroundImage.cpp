@@ -1,7 +1,3 @@
-//
-// Created by eduardo on 14/11/22.
-//
-
 #include "ShaderBackgroundImage.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Render/Logging.h"
@@ -10,6 +6,8 @@
 
 ShaderImage::ShaderImage() : ShaderOpenCL("image.opencl")
 {
+    this->useOffset = true;
+
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
     opencl_buffer_pixels_image = clCreateBuffer(
@@ -83,8 +81,9 @@ void ShaderImage::executeKernelOpenCL()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
-    clSetKernelArg(kernel, 6, sizeof(float), &offsetX);
-    clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
+    clSetKernelArg(kernel, 6, sizeof(int), &useOffset);
+    clSetKernelArg(kernel, 7, sizeof(float), &offsetX);
+    clSetKernelArg(kernel, 8, sizeof(float), &offsetY);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
@@ -133,4 +132,12 @@ void ShaderImage::setImage(Image *image)
 ShaderImage::~ShaderImage()
 {
 
+}
+
+bool ShaderImage::isUseOffset() const {
+    return useOffset;
+}
+
+void ShaderImage::setUseOffset(bool useOffset) {
+    ShaderImage::useOffset = useOffset;
 }
