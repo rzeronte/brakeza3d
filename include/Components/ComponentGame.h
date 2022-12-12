@@ -46,8 +46,12 @@ public:
     void loadPlayer();
 
     void blockPlayerPositionInCamera();
+    void zoomCameraCountDown();
 
     Vertex3D playerStartPosition;
+    Vertex3D cameraCountDownPosition;
+    Vertex3D cameraInGamePosition;
+
     FaderToGameStates *fadeToGameState;
     Player *player;
     PathFinder *pathFinder;

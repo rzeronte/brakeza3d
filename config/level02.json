@@ -4,6 +4,7 @@
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
   "tutorialImage": "tutorials/tutorial02.png",
+  "color": { "r": 0, "g": 0, "b": 0 },
   "enemies": [
     {
       "name": "Persecutor",

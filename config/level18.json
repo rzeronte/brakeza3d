@@ -4,6 +4,7 @@
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
+  "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
       {
       "name": "Purpler",

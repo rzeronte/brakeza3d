@@ -5,6 +5,7 @@
   "allowGravitionalShield": true,
   "allowEnergyShield": false,
   "tutorialImage": "tutorials/tutorial01.png",
+  "color": { "r": 255, "g": 0, "b": 0 },
   "enemies": [
     {
       "name": "Patrol",
