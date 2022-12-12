@@ -134,6 +134,10 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
         cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowEnergyShield")->valueint
     );
 
+    auto c = this->parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
+
+    ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(c.r, c.g, c.b);
+
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
     cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "enemies");
@@ -795,4 +799,13 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
     }
 
     return asteroid;
+}
+
+Color LevelLoader::parseColorJSON(cJSON *color)
+{
+    int r = cJSON_GetObjectItemCaseSensitive(color, "r")->valueint;
+    int g = cJSON_GetObjectItemCaseSensitive(color, "g")->valueint;
+    int b = cJSON_GetObjectItemCaseSensitive(color, "b")->valueint;
+
+    return Color(r, g, b);
 }

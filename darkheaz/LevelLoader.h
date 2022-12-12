@@ -129,6 +129,8 @@ public:
     AsteroidEnemyGhost*  parseAsteroidJSON(cJSON *asteroidJSON);
 
     Point2D convertPointPercentRelativeToScreen(Point2D point);
+
+    Color parseColorJSON(cJSON *color);
 };
 
 

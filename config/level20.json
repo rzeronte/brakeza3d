@@ -4,6 +4,7 @@
   "music": "BossMusic01",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
+  "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
   ],
   "items": [

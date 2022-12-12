@@ -41,7 +41,10 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     playerStartPosition = Vertex3D(-40, 2990, Z_COORDINATE_GAMEPLAY);
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, -1000, -1000));
+
+    cameraCountDownPosition = Vertex3D(0, 3000, 5000);
+    cameraInGamePosition = Vertex3D(0, -1000, -1000);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
     ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
@@ -124,6 +127,7 @@ void ComponentGame::onUpdate()
 
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
+        zoomCameraCountDown();
         int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), Color::green(), 1.5);
         getLevelInfo()->getCountDown()->update();
@@ -261,6 +265,8 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
+        ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+
         shaderTrailBuffer->setEnabled(true);
         shaderBackgroundImage->resetOffsets();
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
@@ -734,4 +740,17 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderEdge->setObject(ComponentsManager::get()->getComponentRender()->getSelectedObject());
     shaderEdge->update();
+}
+
+void ComponentGame::zoomCameraCountDown()
+{
+    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+    Vertex3D to = cameraInGamePosition;
+
+    Vector3D direction(origin, to);
+    auto counter = getLevelInfo()->getCountDown();
+
+    float t = counter->getAcumulatedTime() / counter->getStep();
+
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(origin + direction.getComponent().getScaled(t));
 }
