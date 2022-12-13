@@ -10,6 +10,9 @@ EnemyGhost::EnemyGhost()
 {
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
+
+    counterStucked = new Counter(5);
+    counterStucked->setEnabled(false);
 }
 
 void EnemyGhost::loadBlinkShader()
@@ -43,11 +46,23 @@ void EnemyGhost::onUpdate()
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
+        unstuck();
         remove();
     }
 
     if (getState() != EnemyState::ENEMY_STATE_DIE && playerState == PlayerState::LIVE) {
         shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
+    }
+
+    if (isStucked()) {
+
+        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::white());
+
+        counterStucked->update();
+
+        if (counterStucked->isFinished()) {
+            unstuck();
+        }
     }
 }
 
@@ -221,4 +236,24 @@ EnemyGhost::~EnemyGhost()
 {
     delete counterDamageBlink;
     delete blink;
+}
+
+void EnemyGhost::stuck(float time)
+{
+    counterStucked->setStep(time);
+    setStucked(true);
+    counterStucked->setEnabled(true);
+    if (getBehavior() != nullptr) {
+        this->getBehavior()->setEnabled(false);
+    }
+}
+
+void EnemyGhost::unstuck()
+{
+    setStucked(false);
+    counterStucked->setEnabled(false);
+
+    if (getBehavior() != nullptr) {
+        this->getBehavior()->setEnabled(true);
+    }
 }

@@ -15,6 +15,7 @@ class EnemyBehavior {
     float current_ticks = 0;
     float executionTime = 0;
     Timer timer;
+    bool enabled;
 public:
     EnemyBehavior();
 
@@ -27,6 +28,10 @@ public:
     virtual EnemyBehavior *clone() = 0;
 
     void resetTimer();
+
+    bool isEnabled() const;
+
+    void setEnabled(bool enabled);
 };
 
 

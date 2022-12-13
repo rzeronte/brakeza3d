@@ -13,10 +13,8 @@ class EnemyGhost : public Mesh3DGhost, public Enemy {
 private:
     ShaderBlink *blink;
     Counter *counterDamageBlink;
-    LightPoint3D *light;
-
+    Counter *counterStucked;
 public:
-
     EnemyGhost();
 
     void resolveCollision(Collisionable *collisionableObject) override;
@@ -40,6 +38,11 @@ public:
     ~EnemyGhost() override;
 
     void loadBlinkShader();
+
+    void stuck(float time);
+
+    void unstuck();
+
 };
 
 

@@ -39,6 +39,7 @@ void ItemBombGhost::resolveCollision(Collisionable *collisionable)
         setRemoved(true);
 
         enemy->takeDamage(getDamage());
+        enemy->stuck(5);
     }
 }
 

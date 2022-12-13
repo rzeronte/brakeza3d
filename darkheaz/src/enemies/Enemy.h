@@ -16,6 +16,9 @@ typedef enum {
 } EnemyState;
 
 class Enemy {
+private:
+    bool stucked;
+
 public:
     EnemyState state;
     Weapon *weapon;
@@ -65,6 +68,10 @@ public:
     bool isRewards() const;
 
     void setRewards(bool rewards);
+
+    bool isStucked() const;
+
+    void setStucked(bool value);
 
     virtual ~Enemy();
 };

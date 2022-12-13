@@ -7,10 +7,13 @@
 EnemyBehavior::EnemyBehavior()
 {
     timer.start();
+    setEnabled(true);
 }
 
 void EnemyBehavior::onUpdate(Vertex3D &position)
 {
+    if (!isEnabled()) return;
+
     current_ticks = (float) timer.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
@@ -30,5 +33,13 @@ void EnemyBehavior::resetTimer()
 
 EnemyBehavior::~EnemyBehavior() {
 
+}
+
+bool EnemyBehavior::isEnabled() const {
+    return enabled;
+}
+
+void EnemyBehavior::setEnabled(bool enabled) {
+    EnemyBehavior::enabled = enabled;
 }
 

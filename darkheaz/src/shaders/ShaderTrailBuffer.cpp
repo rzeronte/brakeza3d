@@ -141,4 +141,8 @@ void ShaderTrailBuffer::clearStencilBuffer() {
     std::fill(stencilObjectsBuffer, stencilObjectsBuffer + EngineSetup::get()->RESOLUTION, false);
 }
 
+bool *ShaderTrailBuffer::getStencilObjectsBuffer() const {
+    return stencilObjectsBuffer;
+}
+
 

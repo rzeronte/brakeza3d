@@ -14,6 +14,8 @@ void EnemyBehaviorPatrol::onUpdate(Vertex3D &position)
 {
     EnemyBehavior::onUpdate(position);
 
+    if (!isEnabled()) return;
+
     position = origin + direction.getComponent().getScaled(
         abs(Tools::interpolate(sin(getExecutionTime() * speed) , -1, 1))
     );
