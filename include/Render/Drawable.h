@@ -22,13 +22,13 @@ public:
 
     static void drawVector3D(Vector3D V, Camera3D *cam, Color color);
 
-    static void drawVector3DZBuffer(Vector3D V, Camera3D *cam, Color color);
+    static void drawLightingVector3D(Vector3D V, Camera3D *cam, Color color);
 
     static void drawLine2D(Line2D L, Color color);
 
-    static void drawLinePoints(Vertex3D from, Vertex3D to, Color color);
+    static void drawLineLighting(Line2D L, Color color);
 
-    static void drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_increment);
+    static void drawLinePoints(Vertex3D from, Vertex3D to, Color color);
 
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
 
