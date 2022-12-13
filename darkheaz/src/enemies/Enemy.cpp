@@ -84,3 +84,15 @@ bool Enemy::isRewards() const {
 void Enemy::setRewards(bool rewards) {
     Enemy::rewards = rewards;
 }
+
+
+
+bool Enemy::isStucked() const
+{
+    return stucked;
+}
+
+void Enemy::setStucked(bool value)
+{
+    Enemy::stucked = value;
+}

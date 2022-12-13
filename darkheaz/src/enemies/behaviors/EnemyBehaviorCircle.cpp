@@ -11,8 +11,11 @@ EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, fl
 }
 
 
-void EnemyBehaviorCircle::onUpdate(Vertex3D &position) {
+void EnemyBehaviorCircle::onUpdate(Vertex3D &position)
+{
     EnemyBehavior::onUpdate(position);
+
+    if (!isEnabled()) return;
 
     offset = M3::getMatrixRotationForEulerAngles(0, 0, speed) * offset;
     position = center + offset;

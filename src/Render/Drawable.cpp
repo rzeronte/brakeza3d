@@ -92,14 +92,14 @@ void Drawable::drawVertex3D(Vertex3D V, Camera3D *cam, Color color) {
 }
 
 void Drawable::drawLine2D(Line2D L, Color color) {
+
     int x1 = L.x1;
     int y1 = L.y1;
     int x2 = L.x2;
     int y2 = L.y2;
 
-    Color col = color;
-    int pasoy;
-    int pasox;
+    int pasoy = 0;
+    int pasox = 0;
     int deltaX = (x2 - x1);
     int deltaY = (y2 - y1);
 
@@ -121,6 +121,8 @@ void Drawable::drawLine2D(Line2D L, Color color) {
     int x = x1;
     int y = y1;
 
+    if (x == y) return;
+
     if (deltaX > deltaY) {
         int p = 2 * deltaY - deltaX;
         int incE = 2 * deltaY;
@@ -134,7 +136,8 @@ void Drawable::drawLine2D(Line2D L, Color color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     } else {
@@ -150,23 +153,23 @@ void Drawable::drawLine2D(Line2D L, Color color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     }
 }
 
-void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_increment) {
-    float current_z = z_start;
+void Drawable::drawLineLighting(Line2D L, Color color)
+{
 
     int x1 = L.x1;
     int y1 = L.y1;
     int x2 = L.x2;
     int y2 = L.y2;
 
-    Color col = color;
-    int pasoy;
-    int pasox;
+    int pasoy = 0;
+    int pasox = 0;
     int deltaX = (x2 - x1);
     int deltaY = (y2 - y1);
 
@@ -188,6 +191,8 @@ void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_i
     int x = x1;
     int y = y1;
 
+    if (x == y) return;
+
     if (deltaX > deltaY) {
         int p = 2 * deltaY - deltaX;
         int incE = 2 * deltaY;
@@ -200,14 +205,9 @@ void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_i
                 y = y + pasoy;
                 p = p + incNE;
             }
-
             if (Tools::isPixelInWindow(x, y)) {
-                current_z += z_increment;
-                const int buffer_index = (y * EngineSetup::get()->screenWidth) + x;
-                if (current_z >= EngineBuffers::getInstance()->getDepthBuffer(buffer_index)) {
-                    continue;
-                }
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     } else {
@@ -223,21 +223,31 @@ void Drawable::drawLine2DZBuffer(Line2D L, Color color, float z_start, float z_i
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                current_z += z_increment;
-                const int buffer_index = (y * EngineSetup::get()->screenWidth) + x;
-                if (current_z >= EngineBuffers::getInstance()->getDepthBuffer(buffer_index)) {
-                    continue;
-                }
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, col.getColor());
+                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     }
 }
 
-void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color) {
+void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
+{
+    if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
+        return;
+    }
+
+    if (!cam->frustum->isVertexInside(V.vertex1) && !cam->frustum->isVertexInside(V.vertex2)) {
+        return;
+    }
+
     Vertex3D V1, V2;
+
     Transforms::cameraSpace(V1, V.vertex1, cam);
     Transforms::cameraSpace(V2, V.vertex2, cam);
+
+    if (!Tools::isValidVector(V1) || !Tools::isValidVector(V2)) {
+        return;
+    }
 
     V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
     if (V1.z < 0) {
@@ -258,34 +268,44 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color) {
     Drawable::drawLine2D(line, color);
 }
 
-void Drawable::drawVector3DZBuffer(Vector3D V, Camera3D *cam, Color color) {
+
+void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
+{
+    if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
+        return;
+    }
+
     if (!cam->frustum->isVertexInside(V.vertex1) && !cam->frustum->isVertexInside(V.vertex2)) {
         return;
     }
 
-    // apply view matrix
     Vertex3D V1, V2;
+
     Transforms::cameraSpace(V1, V.vertex1, cam);
     Transforms::cameraSpace(V2, V.vertex2, cam);
 
+    if (!Tools::isValidVector(V1) || !Tools::isValidVector(V2)) {
+        return;
+    }
+
     V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    if (V1.z < 0) {
+        return;
+    }
+
     V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
+    if (V2.z < 0) {
+        return;
+    }
 
     // get 2d coordinates
-    Point2D P1;
+    Point2D P1, P2;
     Transforms::screenSpace(P1, V1);
-    Point2D P2;
     Transforms::screenSpace(P2, V2);
 
     Line2D line(P1.x, P1.y, P2.x, P2.y);
-
-    float z_diff = abs(V1.z - V2.z);
-    float z_increment = z_diff / V.getComponent().getModule();
-
-
-    Drawable::drawLine2DZBuffer(line, color, V1.z, z_increment);
+    Drawable::drawLineLighting(line, color);
 }
-
 
 void Drawable::drawPlane(Plane plane, Camera3D *cam, Color color) {
     Vector3D AB = Vector3D(plane.A, plane.B);
@@ -363,7 +383,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
     float multiplier = EngineSetup::get()->LIGHTNING_SEGMENT_SHIFT;
     float probabilityBranch = EngineSetup::get()->LIGHTNING_PROBABILITY_BRANCH;
 
-    segmentList.emplace_back(Vector3D(A, B));
+    segmentList.push_back(Vector3D(A, B));
 
     for (int i = 0; i < generations; i++) {
         tmpList = segmentList;
@@ -400,7 +420,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
         offsetAmount /= 2;
     }
     for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
-        Drawable::drawVector3D(*ir.base(), cam, color);
+        Drawable::drawLightingVector3D(*ir.base(), cam, color);
     }
 }
 

@@ -205,7 +205,7 @@ bool Tools::isZeroVector(Vertex3D &v) {
 }
 
 bool Tools::isValidVector(Vertex3D &v) {
-    if (isnan(v.x) || isnan(v.y == v.y) || isnan(v.z)) {
+    if (fpclassify(v.x) == FP_NAN || fpclassify(v.y) == FP_NAN || fpclassify(v.z) == FP_NAN) {
         return false;
     }
 

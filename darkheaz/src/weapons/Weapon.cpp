@@ -356,7 +356,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setFlatTextureColor(false);
         projectile->setDamage(this->getDamage());
         projectile->makeSimpleGhostBody(
-            Vertex3D(500, 500, 500),
+            Vertex3D(300, 300, 300),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile

@@ -19,6 +19,8 @@ void EnemyBehaviorPath::onUpdate(Vertex3D &position)
 {
     EnemyBehavior::onUpdate(position);
 
+    if (!isEnabled()) return;
+
     Vertex3D movement = currentDirection.getComponent().getScaled(getExecutionTime() * speed);
     position = this->currentFrom + movement;
 

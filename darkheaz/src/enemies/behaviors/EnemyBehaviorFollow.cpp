@@ -13,6 +13,9 @@ EnemyBehaviorFollow::EnemyBehaviorFollow(Object3D *target, float speed, float se
 void EnemyBehaviorFollow::onUpdate(Vertex3D &position)
 {
     EnemyBehavior::onUpdate(position);
+
+    if (!isEnabled()) return;
+
     Vector3D direction(position, target->getPosition());
 
     if (direction.getComponent().getModule() > this->separation) {

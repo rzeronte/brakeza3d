@@ -1,6 +1,3 @@
-//
-// Created by eduardo on 15/04/22.
-//
 
 #include "EnemyBehaviorRandom.h"
 #include "../../../../include/Misc/Tools.h"
@@ -12,8 +9,11 @@ EnemyBehaviorRandom::EnemyBehaviorRandom(float speed)
     this->direction = Vertex3D(Tools::random(-25 ,25), Tools::random(-25, 25), 0).getNormalize().getScaled(speed);
 }
 
-void EnemyBehaviorRandom::onUpdate(Vertex3D &position) {
+void EnemyBehaviorRandom::onUpdate(Vertex3D &position)
+{
     EnemyBehavior::onUpdate(position);
+
+    if (!isEnabled()) return;
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
