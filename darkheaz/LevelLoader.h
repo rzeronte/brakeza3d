@@ -110,6 +110,8 @@ public:
 
     EnemyGhost *parseEnemyJSON(cJSON *enemyJSON);
 
+    void setBehaviorFromJSON(cJSON *behavior, EnemyGhost *enemy);
+
     void parseItemJSON(cJSON *itemJSON);
 
     void parseBossJSON(cJSON *bossJSON);

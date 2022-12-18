@@ -56,6 +56,21 @@ void ComponentMenu::loadDecorative3DMesh() {
     title->setScale(1);
     title->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "meteorita.fbx"));
     Brakeza3D::get()->addObject3D(title, title->getLabel());
+
+    spaceship = new Mesh3D();
+    spaceship->setLabel("spaceshipMenu");
+    spaceship->setEnabled(true);
+    spaceship->setAlpha(2555);
+    spaceship->setEnableLights(true);
+    spaceship->setPosition(Vertex3D(40, 1000, 20000));
+    spaceship->setRotationFrameEnabled(true);
+    spaceship->setRotationFrame(Vertex3D(0, 0.5, 0));
+    spaceship->setRotation(-30, 0, 0);
+    spaceship->setScale(6);
+    spaceship->setStencilBufferEnabled(true);
+    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
+    spaceship->updateBoundingBox();
+    Brakeza3D::get()->addObject3D(spaceship, "spacheshipMenu");
 }
 
 void ComponentMenu::preUpdate()
@@ -137,7 +152,7 @@ void ComponentMenu::drawOptions() {
 
         auto color = Color::red();
         if (i == currentOption) {
-            color = Color::green();
+            color = Color(0, 0, 0);
         }
 
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTTFCenterHorizontal(
@@ -155,12 +170,8 @@ void ComponentMenu::setEnabled(bool value)
 {
     Component::setEnabled(value);
 
-    if (value) {
-        light->setEnabled(true);
-    } else {
-        light->setEnabled(false);
-    }
-
+    light->setEnabled(value);
     title->setEnabled(value);
+    spaceship->setEnabled(value);
 }
 

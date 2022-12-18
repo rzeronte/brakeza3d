@@ -37,7 +37,8 @@
 
     { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
 
-    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" }
+    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" },
 
+    { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" }
   ]
 }

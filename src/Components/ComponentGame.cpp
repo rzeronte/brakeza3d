@@ -137,7 +137,7 @@ void ComponentGame::onUpdate()
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are died...", Color::black(), 0.5);
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5);
     }
 
 
@@ -164,8 +164,6 @@ void ComponentGame::onUpdate()
 
 void ComponentGame::postUpdate()
 {
-    EngineSetup::GameState state = getGameState();
-
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -225,107 +223,43 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
 
     if (getGameState() == EngineSetup::GameState::SPLASH && state == EngineSetup::GameState::MENU) {
         Logging::getInstance()->Log("GameState changed to MENU");
-        getPlayer()->setEnabled(true);
     }
 
     if (state == EngineSetup::GameState::MENU) {
-        shaderTrailBuffer->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(true);
-        setVisibleInGameObjects(false);
-        shaderEdge->setEnabled(false);
-        startWaterShader();
-        getPlayer()->stopBlinkForPlayer();
-        getPlayer()->setEnergyShieldEnabled(false);
-        getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+        handleMenuGameState();
     }
 
     if (state == EngineSetup::GameState::GAMING) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
-        setVisibleInGameObjects(true);
-        getPlayer()->setEnabled(true);
-        getPlayer()->startPlayerBlink();
-        ComponentsManager::get()->getComponentHUD()->setEnabled(true);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
-        shaderColor->setEnabled(false);
-        shaderEdge->setEnabled(true);
-        stopWaterShader();
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
+        handleGamingGameState();
     } else {
         ComponentsManager::get()->getComponentHUD()->setEnabled(false);
         ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
     }
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
-        ComponentsManager::get()->getComponentHUD()->setEnabled(true);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
+        handleCountDownGameState();
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
-        ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+        handlePressNewLevelKeyGameState();
 
-        shaderTrailBuffer->setEnabled(true);
-        shaderBackgroundImage->resetOffsets();
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
-
-        ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
-        getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-        getPlayer()->setEnergyShieldEnabled(false);
-        getPlayer()->setGravityShieldsNumber(0);
-        getPlayer()->setPosition(playerStartPosition);
-        setVisibleInGameObjects(true);
-        ComponentsManager::get()->getComponentHUD()->setEnabled(false);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        stopWaterShader();
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-        if (getLevelInfo()->isHaveMusic()) {
-            ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
-        }
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
-        shaderBackgroundImage->resetOffsets();
-        getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-        ComponentsManager::get()->getComponentHUD()->setEnabled(true);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        silenceInGameObjects();
+        handlePressKeyByDead();
     }
 
     if (state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) {
-        removeInGameObjects();
-        ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadPrevious();
-        getPlayer()->decreaseLevelsCompleted();
-        getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-        getPlayer()->setEnergyShieldEnabled(false);
-        getPlayer()->setGravityShieldsNumber(0);
-        getPlayer()->setPosition(playerStartPosition);
-        getPlayer()->respawn();
-        setVisibleInGameObjects(true);
-        ComponentsManager::get()->getComponentHUD()->setEnabled(false);
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-        ComponentsManager::get()->getComponentRender()->setEnabled(true);
-        shaderColor->setEnabled(false);
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+        handlePressKeyPreviousLevel();
+
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
-        ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
-        setVisibleInGameObjects(false);
-        removeInGameObjects();
-        getPlayer()->stopBlinkForPlayer();
-        getPlayer()->setEnergyShieldEnabled(false);
-        getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+        handlePressKeyGameOver();
     }
 
     if (state == EngineSetup::GameState::CREDITS || state == EngineSetup::GameState::HELP) {
-        ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-
+        handlePressKeyCredits();
     }
 
     this->gameState = state;
@@ -341,7 +275,8 @@ Player *ComponentGame::getPlayer() const {
     return player;
 }
 
-void ComponentGame::blockPlayerPositionInCamera() {
+void ComponentGame::blockPlayerPositionInCamera()
+{
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D homogeneousPosition;
@@ -394,7 +329,7 @@ void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
     player->setEnabled(false);
-    player->setAlpha(200);
+    player->setAlpha(255);
     player->setEnableLights(true);
     player->setPosition(playerStartPosition);
     player->setScale(1);
@@ -476,8 +411,8 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
+    /*levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
@@ -494,7 +429,7 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");*/
 }
 
 
@@ -753,4 +688,117 @@ void ComponentGame::zoomCameraCountDown()
     float t = counter->getAcumulatedTime() / counter->getStep();
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(origin + direction.getComponent().getScaled(t));
+}
+
+void ComponentGame::handleMenuGameState()
+{
+    getPlayer()->setEnabled(false);
+    shaderTrailBuffer->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(true);
+    setVisibleInGameObjects(false);
+    shaderEdge->setEnabled(false);
+    startWaterShader();
+    getPlayer()->stopBlinkForPlayer();
+    getPlayer()->setEnergyShieldEnabled(false);
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+}
+
+void ComponentGame::handleGamingGameState()
+{
+    getPlayer()->setEnabled(true);
+    ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
+    setVisibleInGameObjects(true);
+    getPlayer()->setEnabled(true);
+    getPlayer()->startPlayerBlink();
+    ComponentsManager::get()->getComponentHUD()->setEnabled(true);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
+    shaderColor->setEnabled(false);
+    shaderEdge->setEnabled(true);
+    stopWaterShader();
+    ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
+}
+
+void ComponentGame::handleCountDownGameState()
+{
+    ComponentsManager::get()->getComponentHUD()->setEnabled(true);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+
+}
+
+void ComponentGame::handlePressNewLevelKeyGameState()
+{
+    getPlayer()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+
+    shaderTrailBuffer->setEnabled(true);
+    shaderBackgroundImage->resetOffsets();
+    ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
+
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadNext();
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    getPlayer()->setEnergyShieldEnabled(false);
+    getPlayer()->setGravityShieldsNumber(0);
+    getPlayer()->setPosition(playerStartPosition);
+    setVisibleInGameObjects(true);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    stopWaterShader();
+    ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
+    if (getLevelInfo()->isHaveMusic()) {
+        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+    }
+}
+
+void ComponentGame::handlePressKeyByDead()
+{
+    shaderBackgroundImage->resetOffsets();
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(true);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    silenceInGameObjects();
+
+}
+
+void ComponentGame::handlePressKeyPreviousLevel()
+{
+    getPlayer()->setEnabled(true);
+    removeInGameObjects();
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadPrevious();
+    getPlayer()->decreaseLevelsCompleted();
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    getPlayer()->setEnergyShieldEnabled(false);
+    getPlayer()->setGravityShieldsNumber(0);
+    getPlayer()->setPosition(playerStartPosition);
+    getPlayer()->respawn();
+    setVisibleInGameObjects(true);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    shaderColor->setEnabled(false);
+    ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
+    ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+}
+
+void ComponentGame::handlePressKeyGameOver()
+{
+    getPlayer()->setEnabled(true);
+    ComponentsManager::get()->getComponentSound()->playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
+    setVisibleInGameObjects(false);
+    removeInGameObjects();
+    getPlayer()->stopBlinkForPlayer();
+    getPlayer()->setEnergyShieldEnabled(false);
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+
+}
+
+void ComponentGame::handlePressKeyCredits()
+{
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+
 }

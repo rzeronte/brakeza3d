@@ -32,6 +32,7 @@ public:
     ShaderImage *shaderBackgroundImage;
 
     Mesh3D *title;
+    Mesh3D *spaceship;
     LightPoint3D *light;
 
     ComponentMenu();

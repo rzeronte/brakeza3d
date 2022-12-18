@@ -12,6 +12,7 @@
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": true,
       "motion": {
         "type": 0
       },
@@ -40,6 +41,7 @@
       "model": "spaceships/green_spaceship_03.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": true,
       "motion": {
         "type": 0
       },
@@ -68,6 +70,7 @@
       "model": "spaceships/purple_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": true,
       "motion": {
         "type": 0
       },
@@ -96,6 +99,7 @@
       "model": "spaceships/green_spaceship_03.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": true,
       "motion": {
         "type": 0
       },
@@ -124,6 +128,7 @@
       "model": "spaceships/green_spaceship_01.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": true,
       "motion": {
         "type": 0
       },
@@ -160,6 +165,7 @@
       "modelPartitions": "asteroid_02.fbx",
       "stamina": 1000,
       "speed": 100,
+      "reward": false,
       "explode": true,
       "numberPartitions": 4,
       "motion": {

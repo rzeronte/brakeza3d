@@ -11,49 +11,26 @@
   ],
   "bosses": [
     {
+      "position": { "x": 50, "y": 5 },
+      "reward": true,
       "type": 2,
-      "position": { "x": 50, "y": 5 }
+      "motion": {
+        "type": 5,
+        "speed": 1,
+        "points":  [
+          { "x": 20, "y": 10},
+          { "x": 50, "y": 10 },
+          { "x": 80, "y": 10 },
+          { "x": 80, "y": 50},
+          { "x": 80, "y": 90},
+          { "x": 50, "y": 90},
+          { "x": 20, "y": 90},
+          { "x": 20, "y": 50},
+          { "x": 20, "y": 10}
+        ]
+      }
     }
   ],
   "asteroids": [
-    {
-      "name": "Asteroid",
-      "position": { "x": 10, "y": 10 },
-      "model": "asteroid_02.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 500,
-      "speed": 10,
-      "explode": false,
-      "motion": {
-        "type": 4,
-        "speed": 10
-      }
-    },
-    {
-      "name": "Asteroid",
-      "position": { "x": 90, "y": 90 },
-      "model": "asteroid_02.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 500,
-      "speed": 10,
-      "explode": false,
-      "motion": {
-        "type": 4,
-        "speed": 10
-      }
-    },
-    {
-      "name": "Asteroid",
-      "position": { "x": 50, "y": 50 },
-      "model": "asteroid_02.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 500,
-      "speed": 10,
-      "explode": false,
-      "motion": {
-        "type": 4,
-        "speed": 10
-      }
-    }
   ]
 }
