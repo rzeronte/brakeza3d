@@ -370,60 +370,7 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 
     enemy->setRewards(reward);
 
-    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
-    switch(typeMotion) {
-        case EnemyBehaviorTypes::ROTATE_FRAME: {
-            enemy->setRotationFrameEnabled(true);
-            enemy->setRotationFrame(Tools::randomVertex().getScaled(0.5));
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
-            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
-            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
-
-            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorPatrol(from, to, behaviorSpeed));
-
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
-            enemy->setBehavior(new EnemyBehaviorFollow(
-                ComponentsManager::get()->getComponentGame()->getPlayer(),
-                cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
-                cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
-            ));
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
-            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
-
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorCircle(center, speed, radius));
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorRandom(speed));
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_PATH: {
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            auto behavior = new EnemyBehaviorPath(speed);
-
-            auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
-
-            cJSON *currentPoint;
-            cJSON_ArrayForEach(currentPoint, pointsJSON) {
-                Vertex3D position = getVertex3DFromJSONPosition(currentPoint);
-                position.consoleInfo("ieah", false);
-                behavior->addPoint(position);
-            }
-            behavior->start();
-            enemy->setBehavior(behavior);
-            break;
-        }
-    }
+    this->setBehaviorFromJSON(motion, enemy);
 
     enemy->setEnabled(true);
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -458,6 +405,65 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     }
 
     return enemy;
+}
+
+void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
+{
+
+    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
+    switch(typeMotion) {
+        case EnemyBehaviorTypes::ROTATE_FRAME: {
+            enemy->setRotationFrameEnabled(true);
+            enemy->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
+            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
+            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
+
+            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            enemy->setBehavior(new EnemyBehaviorPatrol(from, to, behaviorSpeed));
+
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
+            enemy->setBehavior(new EnemyBehaviorFollow(
+                    ComponentsManager::get()->getComponentGame()->getPlayer(),
+                    cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
+                    cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
+            ));
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
+            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
+
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
+            enemy->setBehavior(new EnemyBehaviorCircle(center, speed, radius));
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            enemy->setBehavior(new EnemyBehaviorRandom(speed));
+            break;
+        }
+        case EnemyBehaviorTypes::BEHAVIOR_PATH: {
+            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto behavior = new EnemyBehaviorPath(speed);
+
+            auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
+
+            cJSON *currentPoint;
+            cJSON_ArrayForEach(currentPoint, pointsJSON) {
+                Vertex3D position = getVertex3DFromJSONPosition(currentPoint);
+                position.consoleInfo("ieah", false);
+                behavior->addPoint(position);
+            }
+            behavior->start();
+            enemy->setBehavior(behavior);
+            break;
+        }
+    }
 }
 
 Point2D LevelLoader::parsePositionJSON(cJSON *positionJSON)
@@ -527,6 +533,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 {
     const int typeBoss = cJSON_GetObjectItemCaseSensitive(bossJSON, "type")->valueint;
     Vertex3D position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(bossJSON, "position"));
+    cJSON *motion = cJSON_GetObjectItemCaseSensitive(bossJSON, "motion");
 
     switch(typeBoss) {
         case BossesTypes::BOSS_LEVEL_10: {
@@ -561,7 +568,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->loadBlinkShader();
             boss->setScale(1);
             boss->setSpeed(10);
-            boss->setStamina(10000);
+            boss->setStamina(1000);
             boss->setStartStamina(10000);
             boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/boss_green_01.fbx"));
             boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
@@ -569,11 +576,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             Point2D from = convertPointPercentRelativeToScreen(Point2D(20, 5));
             Point2D to = convertPointPercentRelativeToScreen(Point2D(80, 5));
 
-            boss->setBehavior(new EnemyBehaviorPatrol(
-                getWorldPositionFromScreenPoint(from),
-                getWorldPositionFromScreenPoint(to),
-                1
-            ));
+            this->setBehaviorFromJSON(motion, boss);
             boss->setWeapon(weapon);
             boss->setSoundChannel(-1);
 
@@ -620,19 +623,21 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
         }
         case BossesTypes::BOSS_LEVEL_20: {
             auto weapon = new Weapon("boss_weapon");
+            weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setFlatTextureColor(true);
             weapon->getModelProjectile()->setFlatColor(Color::fuchsia());
             weapon->getModelProjectile()->setEnableLights(false);
             weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
             weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             weapon->getModelProjectile()->setScale(1);
+
             weapon->setAmmoAmount(5000);
             weapon->setStartAmmoAmount(5000);
-            weapon->setSpeed(100);
+            weapon->setSpeed(600);
             weapon->setDamage(10);
             weapon->setDispersion(100);
             weapon->setAccuracy(100);
-            weapon->setCadenceTime(1);
+            weapon->setCadenceTime(0.8);
             weapon->setType(WeaponTypes::WEAPON_SMART_PROJECTILE);
             weapon->setStop(false);
             weapon->setAvailable(true);
@@ -643,67 +648,19 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss->setEnableLights(false);
             boss->setPosition(position);
             boss->setStencilBufferEnabled(true);
+            boss->loadBlinkShader();
             boss->setScale(1);
             boss->setSpeed(10);
             boss->setStamina(10000);
             boss->setStartStamina(10000);
-            boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/boss_purple_01.fbx"));
+            boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
             boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
 
-            Point2D from = convertPointPercentRelativeToScreen(Point2D(10, 5));
-            Point2D to = convertPointPercentRelativeToScreen(Point2D(90, 5));
+            this->setBehaviorFromJSON(motion, boss);
 
-            boss->setBehavior(new EnemyBehaviorPatrol(
-                getWorldPositionFromScreenPoint(from),
-                getWorldPositionFromScreenPoint(to),
-                1
-            ));
             boss->setWeapon(weapon);
             boss->setSoundChannel(-1);
 
-
-            auto emissorWeapon = new Weapon("boss_emissor_weapon");
-            emissorWeapon->getModelProjectile()->setFlatTextureColor(true);
-            emissorWeapon->getModelProjectile()->setFlatColor(Color::red());
-            emissorWeapon->getModelProjectile()->setEnableLights(false);
-            emissorWeapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            emissorWeapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            emissorWeapon->getModelProjectile()->setScale(1);
-            emissorWeapon->setAmmoAmount(5000);
-            emissorWeapon->setStartAmmoAmount(5000);
-            emissorWeapon->setSpeed(100);
-            emissorWeapon->setDamage(10);
-            emissorWeapon->setDispersion(100);
-            emissorWeapon->setAccuracy(100);
-            emissorWeapon->setCadenceTime(1);
-            emissorWeapon->setType(WeaponTypes::WEAPON_PROJECTILE);
-            emissorWeapon->setStop(true);
-            emissorWeapon->setAvailable(true);
-
-            auto projectileEmissorLeft = new AmmoProjectileBodyEmissor(0.25, emissorWeapon);
-            projectileEmissorLeft->setPosition(boss->getPosition());
-            projectileEmissorLeft->setPosition(getWorldPositionFromScreenPoint(convertPointPercentRelativeToScreen(Point2D(10, 10))));
-            projectileEmissorLeft->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-            projectileEmissorLeft->setRotationFrameEnabled(true);
-            projectileEmissorLeft->setRotationFrame(Vertex3D(0, 1, 0));
-            projectileEmissorLeft->setStop(true);
-            projectileEmissorLeft->setStopDuration(1);
-            projectileEmissorLeft->setStopEvery(1);
-            projectileEmissorLeft->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            boss->setProjectileEmissorLeft(projectileEmissorLeft);
-            Brakeza3D::get()->addObject3D(projectileEmissorLeft, projectileEmissorLeft->getLabel());
-
-            auto projectileEmissorRight = new AmmoProjectileBodyEmissor(0.25, emissorWeapon);
-            projectileEmissorRight->setPosition(getWorldPositionFromScreenPoint(convertPointPercentRelativeToScreen(Point2D(90, 10))));
-            projectileEmissorRight->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-            projectileEmissorRight->setRotationFrameEnabled(true);
-            projectileEmissorRight->setRotationFrame(Vertex3D(0, 1, 0));
-            projectileEmissorRight->setStop(true);
-            projectileEmissorRight->setStopDuration(1);
-            projectileEmissorRight->setStopEvery(1);
-            projectileEmissorRight->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            boss->setProjectileEmissorRight(projectileEmissorRight);
-            Brakeza3D::get()->addObject3D(projectileEmissorRight, projectileEmissorRight->getLabel());
 
             Brakeza3D::get()->addObject3D(boss, boss->getLabel());
 

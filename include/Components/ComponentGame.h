@@ -117,6 +117,22 @@ public:
     void addObjectsToStencilBuffer();
 
     void updateShaders();
+
+    void handleMenuGameState();
+
+    void handleGamingGameState();
+
+    void handleCountDownGameState();
+
+    void handlePressNewLevelKeyGameState();
+
+    void handlePressKeyByDead();
+
+    void handlePressKeyPreviousLevel();
+
+    void handlePressKeyGameOver();
+
+    void handlePressKeyCredits();
 };
 
 

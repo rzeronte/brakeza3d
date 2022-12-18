@@ -246,6 +246,13 @@ void EnemyGhost::stuck(float time)
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(false);
     }
+
+    ComponentsManager::get()->getComponentSound()->playSound(
+        EngineBuffers::getInstance()->soundPackage->getByLabel("electricStuck"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
+
 }
 
 void EnemyGhost::unstuck()

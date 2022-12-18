@@ -150,14 +150,11 @@ public:
     std::string DEFAULT_SHADER_BACKGROUND_IMAGE = "background_scrollable.png";
     std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
 
-    std::string LOGO_BRAKEZA = "brakeza.png";
+    std::string LOGO_BRAKEZA = "logo.png";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 128;
-    float SOUND_VOLUME_PLAYER = 75;
-    float SOUND_VOLUME_ENVIRONMENT = 75;
-    float SOUND_VOLUME_ENEMIES = 75;
-    float SOUND_VOLUME_MENU = 75;
+    float SOUND_CHANNEL_GLOBAL = 75;
 
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;

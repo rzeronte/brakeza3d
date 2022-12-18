@@ -10,7 +10,14 @@
   "bosses": [
     {
       "type": 1,
-      "position": { "x": 50, "y": 5 }
+      "position": { "x": 50, "y": 5 },
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from": { "x": 20, "y": 15 },
+        "to": { "x": 80, "y": 15 },
+        "speed": 1
+      }
     }
   ]
 }
