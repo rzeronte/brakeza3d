@@ -10,6 +10,7 @@
       "name": "Persecutor",
       "position": { "x": 50, "y": 15 },
       "model": "moon.fbx",
+      "animated": false,
       "stamina": 1000,
       "speed": 100,
       "reward": false,

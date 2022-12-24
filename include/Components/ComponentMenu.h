@@ -9,6 +9,8 @@
 #include "Component.h"
 #include "../Objects/Mesh3D.h"
 #include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
+#include "../Objects/Mesh3DAnimated.h"
+#include "../Physics/Mesh3DAnimatedGhost.h"
 
 #define MAX_MENU_OPTIONS 10
 

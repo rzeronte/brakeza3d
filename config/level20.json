@@ -1,6 +1,6 @@
 {
   "name": "Level 20",
-  "backgroundImage": "levels/grid_red.png",
+  "backgroundImage": "levels/03.png",
   "music": "BossMusic01",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
@@ -11,23 +11,18 @@
   ],
   "bosses": [
     {
-      "position": { "x": 50, "y": 5 },
-      "reward": true,
       "type": 2,
+      "name": "Tentacle",
+      "position": { "x": 50, "y": 5 },
+      "model": "tentacle.fbx",
+      "animated": true,
+      "stamina": 1000,
+      "speed": 100,
+      "reward": false,
       "motion": {
-        "type": 5,
-        "speed": 1,
-        "points":  [
-          { "x": 20, "y": 10},
-          { "x": 50, "y": 10 },
-          { "x": 80, "y": 10 },
-          { "x": 80, "y": 50},
-          { "x": 80, "y": 90},
-          { "x": 50, "y": 90},
-          { "x": 20, "y": 90},
-          { "x": 20, "y": 50},
-          { "x": 20, "y": 10}
-        ]
+        "type": 2,
+        "separation": 1000,
+        "speed": 5
       }
     }
   ],

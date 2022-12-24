@@ -11,6 +11,7 @@
       "name": "Patrol",
       "position": { "x": 50, "y": 10 },
       "model": "moon.fbx",
+      "animated": false,
       "stamina": 1000,
       "speed": 100,
       "reward": false,

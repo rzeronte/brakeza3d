@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cassert>
 
-#define NUM_BONES_PER_VERTEX 6
+#define NUM_BONES_PER_VERTEX 12
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 struct VertexBoneData {
@@ -39,7 +39,7 @@ struct BoneInfo {
 class Mesh3DAnimated : public Mesh3D {
 public:
     Assimp::Importer importer;
-    const aiScene *scene;
+    const aiScene *scene = nullptr;
     int m_NumBones = 0;
 
     M3 fixedRotation = M3::getMatrixIdentity();

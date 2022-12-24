@@ -8,8 +8,9 @@
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../shaders/ShaderTrailObject.h"
+#include "../../../include/Physics/Mesh3DAnimatedGhost.h"
 
-class EnemyGhost : public Mesh3DGhost, public Enemy {
+class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
     ShaderBlink *blink;
     Counter *counterDamageBlink;
