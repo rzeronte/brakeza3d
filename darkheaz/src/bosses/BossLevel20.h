@@ -15,6 +15,8 @@ private:
     AmmoProjectileBodyEmissor *projectileEmissorRight;
 
 public:
+    BossLevel20(Vertex3D position);
+
     AmmoProjectileBodyEmissor *getProjectileEmissorLeft() const;
 
     void setProjectileEmissorLeft(AmmoProjectileBodyEmissor *projectileEmissorLeft);

@@ -108,7 +108,8 @@ void ComponentCollisions::checkCollisionsForAll() {
     }
 }
 
-void ComponentCollisions::updatePhysicObjects() {
+void ComponentCollisions::updatePhysicObjects()
+{
     std::vector<Object3D *>::iterator it;
     for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
         auto *collisionable = dynamic_cast<Collisionable *> (*it);

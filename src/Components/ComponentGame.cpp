@@ -350,6 +350,7 @@ void ComponentGame::loadPlayer()
     player->loadShieldModel();
     player->loadBlinkShader();
     player->loadGravityShieldModel();
+
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -411,8 +412,8 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
-    /*levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
@@ -429,7 +430,7 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");*/
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
 }
 
 
@@ -702,6 +703,7 @@ void ComponentGame::handleMenuGameState()
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
 }
 
 void ComponentGame::handleGamingGameState()
@@ -726,7 +728,7 @@ void ComponentGame::handleCountDownGameState()
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
-
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 }
 
 void ComponentGame::handlePressNewLevelKeyGameState()
@@ -756,7 +758,11 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
 void ComponentGame::handlePressKeyByDead()
 {
+    ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+
     shaderBackgroundImage->resetOffsets();
+
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
@@ -800,5 +806,4 @@ void ComponentGame::handlePressKeyGameOver()
 void ComponentGame::handlePressKeyCredits()
 {
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-
 }

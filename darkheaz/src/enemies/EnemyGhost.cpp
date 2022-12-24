@@ -13,6 +13,7 @@ EnemyGhost::EnemyGhost()
 
     counterStucked = new Counter(5);
     counterStucked->setEnabled(false);
+    setStucked(false);
 }
 
 void EnemyGhost::loadBlinkShader()
@@ -24,7 +25,7 @@ void EnemyGhost::loadBlinkShader()
 
 void EnemyGhost::onUpdate()
 {
-    Mesh3D::onUpdate();
+    Mesh3DAnimatedGhost::onUpdate();
 
     auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
 
@@ -151,17 +152,18 @@ void EnemyGhost::rotateToPlayer()
         Vector3D(
                 ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(),
                 getPosition()).getComponent().getNormalize()
-        ));
+        )
+    );
 }
 
 void EnemyGhost::integrate()
 {
-    Mesh3DGhost::integrate();
+    Mesh3DAnimatedGhost::integrate();
 }
 
 void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
 {
-    Mesh3DGhost::resolveCollision(collisionableObject);
+    Mesh3DAnimatedGhost::resolveCollision(collisionableObject);
 
     auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionableObject);
     if (projectile != nullptr) {
@@ -188,7 +190,7 @@ void EnemyGhost::remove()
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
     }
 
-    Mesh3DGhost::remove();
+    Mesh3DAnimatedGhost::remove();
 }
 
 void EnemyGhost::shoot(Object3D *target)

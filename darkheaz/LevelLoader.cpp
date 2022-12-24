@@ -362,6 +362,7 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     int stamina = cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
     int reward = cJSON_GetObjectItemCaseSensitive(enemyJSON, "reward")->valueint;
     int speed = cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
+    int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
 
@@ -382,7 +383,11 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setSpeed(speed);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
-    enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    if (animated) {
+        enemy->AssimpLoadAnimation(EngineSetup::get()->MODELS_FOLDER + model);
+    } else {
+        enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
+    }
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
         enemy->aabb.size().getScaled(0.5),
@@ -538,132 +543,27 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
     switch(typeBoss) {
         case BossesTypes::BOSS_LEVEL_10: {
 
-            auto weapon = new Weapon("boss_weapon");
-            weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            weapon->getModelProjectile()->setFlatTextureColor(true);
-            weapon->getModelProjectile()->setFlatColor(Color::fuchsia());
-            weapon->getModelProjectile()->setEnableLights(false);
-            weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            weapon->getModelProjectile()->setScale(1);
-
-            weapon->setAmmoAmount(5000);
-            weapon->setStartAmmoAmount(5000);
-            weapon->setSpeed(600);
-            weapon->setDamage(10);
-            weapon->setDispersion(100);
-            weapon->setAccuracy(100);
-            weapon->setCadenceTime(0.8);
-            weapon->setType(WeaponTypes::WEAPON_PROJECTILE);
-            weapon->setStop(false);
-            weapon->setAvailable(true);
-
-
-            auto boss = new BossLevel10();
-            boss->setEnabled(true);
-            boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            boss->setEnableLights(false);
-            boss->setPosition(position);
-            boss->setStencilBufferEnabled(true);
-            boss->loadBlinkShader();
-            boss->setScale(1);
-            boss->setSpeed(10);
-            boss->setStamina(1000);
-            boss->setStartStamina(10000);
-            boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/boss_green_01.fbx"));
-            boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
-
-            Point2D from = convertPointPercentRelativeToScreen(Point2D(20, 5));
-            Point2D to = convertPointPercentRelativeToScreen(Point2D(80, 5));
-
+            auto boss = new BossLevel10(position);
             this->setBehaviorFromJSON(motion, boss);
-            boss->setWeapon(weapon);
-            boss->setSoundChannel(-1);
-
-            auto emissorWeapon = new Weapon("boss_emissor_weapon");
-            emissorWeapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            emissorWeapon->getModelProjectile()->setFlatTextureColor(true);
-            emissorWeapon->getModelProjectile()->setFlatColor(Color::fuchsia());
-            emissorWeapon->getModelProjectile()->setEnableLights(false);
-            emissorWeapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            emissorWeapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            emissorWeapon->getModelProjectile()->setScale(1);
-            emissorWeapon->setAmmoAmount(5000);
-            emissorWeapon->setStartAmmoAmount(5000);
-            emissorWeapon->setSpeed(500);
-            emissorWeapon->setDamage(10);
-            emissorWeapon->setDispersion(100);
-            emissorWeapon->setAccuracy(100);
-            emissorWeapon->setCadenceTime(0.8);
-            emissorWeapon->setType(WeaponTypes::WEAPON_PROJECTILE);
-            emissorWeapon->setStop(false);
-            emissorWeapon->setAvailable(true);
-
-
-            auto projectileEmissor = new AmmoProjectileBodyEmissor(0.25, emissorWeapon);
-            projectileEmissor->setActive(true);
-            projectileEmissor->setPosition(boss->getPosition());
-            projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(90, 0, 0));
-            projectileEmissor->setRotationFrameEnabled(true);
-            projectileEmissor->setRotationFrame(Vertex3D(0, 1, 0));
-            projectileEmissor->setStop(true);
-            projectileEmissor->setStopDuration(1);
-            projectileEmissor->setStopEvery(1);
-            projectileEmissor->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
-            Brakeza3D::get()->addObject3D(projectileEmissor, projectileEmissor->getLabel());
-            boss->setProjectileEmissor(projectileEmissor);
 
             auto respawner = new EnemyGhostRespawner(boss, 3);
             respawner->setPosition(boss->getPosition());
+
             Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
             respawners.push_back(respawner);
 
             break;
         }
         case BossesTypes::BOSS_LEVEL_20: {
-            auto weapon = new Weapon("boss_weapon");
-            weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            weapon->getModelProjectile()->setFlatTextureColor(true);
-            weapon->getModelProjectile()->setFlatColor(Color::fuchsia());
-            weapon->getModelProjectile()->setEnableLights(false);
-            weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));
-            weapon->getModelProjectile()->setLabel("projectile_enemy_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            weapon->getModelProjectile()->setScale(1);
 
-            weapon->setAmmoAmount(5000);
-            weapon->setStartAmmoAmount(5000);
-            weapon->setSpeed(600);
-            weapon->setDamage(10);
-            weapon->setDispersion(100);
-            weapon->setAccuracy(100);
-            weapon->setCadenceTime(0.8);
-            weapon->setType(WeaponTypes::WEAPON_SMART_PROJECTILE);
-            weapon->setStop(false);
-            weapon->setAvailable(true);
-
-            auto boss = new BossLevel20();
-            boss->setEnabled(true);
-            boss->setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            boss->setEnableLights(false);
-            boss->setPosition(position);
-            boss->setStencilBufferEnabled(true);
-            boss->loadBlinkShader();
-            boss->setScale(1);
-            boss->setSpeed(10);
-            boss->setStamina(10000);
-            boss->setStartStamina(10000);
-            boss->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
-            boss->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), boss, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
-
+            auto boss = new BossLevel20(position);
             this->setBehaviorFromJSON(motion, boss);
 
-            boss->setWeapon(weapon);
-            boss->setSoundChannel(-1);
+            auto respawner = new EnemyGhostRespawner(boss, 3);
+            respawner->setPosition(boss->getPosition());
 
-
-            Brakeza3D::get()->addObject3D(boss, boss->getLabel());
-
+            Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+            respawners.push_back(respawner);
             break;
         }
     }
@@ -673,9 +573,9 @@ bool LevelLoader::isHaveMusic() const {
     return hasMusic;
 }
 
-void LevelLoader::setHasMusic(bool hasMusic)
+void LevelLoader::setHasMusic(bool value)
 {
-    LevelLoader::hasMusic = hasMusic;
+    LevelLoader::hasMusic = value;
 }
 
 AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)

@@ -141,9 +141,6 @@ void Object3D::onUpdate()
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
 
-    if (isRotationFrameEnabled()) {
-        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
-    }
 
     if (isStencilBufferEnabled()) {
         clearStencilBuffer();
@@ -156,6 +153,9 @@ void Object3D::onUpdate()
 
 void Object3D::postUpdate() {
 
+    if (isRotationFrameEnabled()) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
+    }
 }
 
 void Object3D::setRotation(float x, float y, float z) {

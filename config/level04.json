@@ -11,6 +11,7 @@
       "name": "Patrol",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
+      "animated": false,
       "stamina": 1000,
       "speed": 100,
       "reward": true,
@@ -18,14 +19,14 @@
         "type": 3,
         "center": { "x": 50, "y": 10 },
         "speed": 1,
-        "radius": 3000
+        "radius": 1
       },
       "weapon": {
         "index": 0,
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 999,
+        "amount": 0,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,

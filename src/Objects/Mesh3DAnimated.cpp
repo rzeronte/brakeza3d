@@ -3,7 +3,8 @@
 #include "../../include/Render/Transforms.h"
 
 
-void Mesh3DAnimated::onUpdate() {
+void Mesh3DAnimated::onUpdate()
+{
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
     }
@@ -82,10 +83,12 @@ void Mesh3DAnimated::updateFrameTransformations() {
 bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename) {
     Logging::Log("AssimpLoad for " + Filename, "Mesh3DAnimated");
 
-    this->scene = importer.ReadFile(Filename, aiProcess_Triangulate |
-                                              aiProcess_JoinIdenticalVertices |
-                                              aiProcess_SortByPType |
-                                              aiProcess_FlipUVs
+    this->scene = importer.ReadFile(
+        Filename,
+        aiProcess_Triangulate |
+        aiProcess_MakeLeftHanded |
+        aiProcess_SortByPType |
+        aiProcess_FlipUVs
     );
 
     if (!scene) {

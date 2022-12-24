@@ -3,6 +3,7 @@
 #include "../../include/Components/ComponentMenu.h"
 #include "../../include/Brakeza3D.h"
 #include "../../darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h"
+#include "../../include/Physics/Mesh3DAnimatedGhost.h"
 
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
@@ -38,9 +39,6 @@ void ComponentMenu::onStart()
 }
 
 void ComponentMenu::loadDecorative3DMesh() {
-    Vertex3D spaceshipBasePosition(0, 3100, 20000);
-
-    Vertex3D speedRotation(1, 1, 0.5);
 
     title = new Mesh3D();
     title->setEnabled(true);
