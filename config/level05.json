@@ -19,7 +19,7 @@
         "type": 1,
         "from": { "x": 20, "y": 10 },
         "to": { "x": 20, "y": 40 },
-        "speed": 3
+        "speed": 1
       },
       "weapon": {
         "index": 0,
@@ -31,10 +31,10 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
@@ -64,10 +64,10 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"

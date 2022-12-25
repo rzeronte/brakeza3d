@@ -96,7 +96,7 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 2,
+        "cadenceTime": 1,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 2,

@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 20 },
+      "position": { "x": 10, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
       "animated": false,
       "stamina": 1000,
@@ -16,8 +16,8 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 20, "y": 10 },
-        "to": { "x": 20, "y": 80 },
+        "from": { "x": 5, "y": 10 },
+        "to": { "x": 5, "y": 90 },
         "speed": 1
       },
       "weapon": {
@@ -27,13 +27,13 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 700,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
+        "cadenceTime": 0.3,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
@@ -49,8 +49,8 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 80, "y": 10 },
-        "to": { "x": 30, "y": 10 },
+        "from": { "x": 90, "y": 10 },
+        "to": { "x": 15, "y": 10 },
         "speed": 1
       },
       "weapon": {
@@ -60,13 +60,13 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 700,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
+        "cadenceTime": 0.3,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx"
