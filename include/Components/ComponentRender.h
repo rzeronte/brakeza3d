@@ -90,6 +90,8 @@ public:
 
     std::vector<Triangle *> &getVisibleTriangles();
 
+    std::vector<Triangle *> &getSpritesTriangles();
+
     void extractLightPointsFromObjects3D();
 
     void createLightPointsDepthMappings();
@@ -105,6 +107,7 @@ public:
     std::vector<Triangle *> frameTriangles;
     std::vector<Triangle *> clippedTriangles;
     std::vector<Triangle *> visibleTriangles;
+    std::vector<Triangle *> spritesTriangles;
     std::vector<LightPoint3D *> lightpoints;
 
     std::vector<Tile> tiles;
@@ -141,8 +144,6 @@ private:
 
     void updateSelectedObject3D();
     void onPostUpdateSceneObjects();
-
-    bool isPixelFullTransparent(Color &c, SDL_PixelFormat *pixelFormat);
 
     void OpenCLInfo();
 };
