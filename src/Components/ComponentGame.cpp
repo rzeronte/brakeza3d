@@ -351,6 +351,9 @@ void ComponentGame::loadPlayer()
     player->loadBlinkShader();
     player->loadGravityShieldModel();
 
+    explosion = new Sprite3D();
+    explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  11, 24);
+    explosion->setAnimation(0);
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)

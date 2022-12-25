@@ -44,6 +44,7 @@ public:
 
     void unstuck();
 
+    void makeExplosion();
 };
 
 

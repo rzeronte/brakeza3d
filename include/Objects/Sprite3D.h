@@ -50,6 +50,7 @@ public:
     TextureAnimated *getCurrentTextureAnimation();
 
     void onUpdate();
+    void postUpdate() override;
 
     void updateStep();
 

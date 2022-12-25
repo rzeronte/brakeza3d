@@ -3,12 +3,16 @@
 
 #include "../../include/2D/TextureAnimated.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
 
 TextureAnimated::TextureAnimated() : numberFramesToLoad(0), currentFrame(0), endAnimation(false), paused(false) {
 }
 
 
-void TextureAnimated::setup(std::string file, int num_frames, int fps) {
+void TextureAnimated::setup(std::string file, int num_frames, int fps)
+{
+    std::cout << "Importing 2D animation: " << file << std::endl;
+
     this->base_file = std::move(file);
     this->numberFramesToLoad = num_frames;
     this->fps = fps;
@@ -19,6 +23,7 @@ void TextureAnimated::setup(std::string file, int num_frames, int fps) {
 void TextureAnimated::loadImages() {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
+        std::cout << "Importing 2D animation file: " << file << std::endl;
         this->frames.push_back(new Texture(file));
     }
 }
@@ -51,24 +56,24 @@ bool TextureAnimated::isEndAnimation() const {
     return endAnimation;
 }
 
-void TextureAnimated::setEndAnimation(bool endAnimation) {
-    TextureAnimated::endAnimation = endAnimation;
+void TextureAnimated::setEndAnimation(bool value) {
+    TextureAnimated::endAnimation = value;
 }
 
 bool TextureAnimated::isPaused() const {
     return paused;
 }
 
-void TextureAnimated::setPaused(bool paused) {
-    TextureAnimated::paused = paused;
+void TextureAnimated::setPaused(bool value) {
+    TextureAnimated::paused = value;
 }
 
 int TextureAnimated::getFps() const {
     return fps;
 }
 
-void TextureAnimated::setFps(int fps) {
-    TextureAnimated::fps = fps;
+void TextureAnimated::setFps(int value) {
+    TextureAnimated::fps = value;
 }
 
 
