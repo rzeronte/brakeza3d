@@ -138,7 +138,7 @@ void ComponentHUD::drawPlayerStamina(int y)
         430,
         std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
         Color::green(),
-        0.75
+        0.50
     );
 
     if (player->isAllowGravitationalShields()) {

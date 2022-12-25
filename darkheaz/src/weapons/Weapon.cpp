@@ -32,6 +32,21 @@ Weapon::Weapon(const std::string& label) {
 void Weapon::onUpdate()
 {
     counterCadence->update();
+
+    if (isStop()) {
+        counterStopEvery.update();
+        counterStopDuration.update();
+
+        if (counterStopEvery.isFinished()) {
+            counterStopDuration.setEnabled(true);
+            counterStopEvery.setEnabled(false);
+        }
+
+        if (counterStopDuration.isFinished()) {
+            counterStopEvery.setEnabled(true);
+            counterStopDuration.setEnabled(false);
+        }
+    }
 }
 
 void Weapon::stopSoundChannel() const {

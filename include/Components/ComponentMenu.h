@@ -11,6 +11,7 @@
 #include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
 #include "../Objects/Mesh3DAnimated.h"
 #include "../Physics/Mesh3DAnimatedGhost.h"
+#include "../Physics/SimplePendulum.h"
 
 #define MAX_MENU_OPTIONS 10
 
@@ -33,9 +34,10 @@ public:
     // menu background surface
     ShaderImage *shaderBackgroundImage;
 
-    Mesh3D *title;
+    Image *title;
     Mesh3D *spaceship;
     LightPoint3D *light;
+    SimplePendulum *pendulum;
 
     ComponentMenu();
 
@@ -59,6 +61,8 @@ public:
     void loadMenuOptions();
 
     void loadDecorative3DMesh();
+
+    void drawVersion();
 };
 
 

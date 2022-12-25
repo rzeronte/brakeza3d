@@ -27,10 +27,9 @@ Player::Player() : state(PlayerState::EMPTY),
     light->setConstant(5.7);
     light->setLinear(0);
     light->setCuadratic(0);
-    light->setColor(0, 255, 255);
-    light->setColorSpecularity(255, 0, 0);
+    light->setColor(100, 16, 22);
+    light->setColorSpecularity(15, 33, 92);
     light->setSpecularComponent(9);
-    light->setColor(0, 255, 0);
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 

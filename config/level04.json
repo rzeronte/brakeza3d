@@ -17,21 +17,21 @@
       "reward": true,
       "motion": {
         "type": 3,
-        "center": { "x": 50, "y": 10 },
+        "center": { "x": 50, "y": 5 },
         "speed": 1,
-        "radius": 1
+        "radius": 3000
       },
       "weapon": {
         "index": 0,
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 0,
+        "amount": 1000,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.30,
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,

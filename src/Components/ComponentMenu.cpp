@@ -40,28 +40,15 @@ void ComponentMenu::onStart()
 
 void ComponentMenu::loadDecorative3DMesh() {
 
-    title = new Mesh3D();
-    title->setEnabled(true);
-    title->setLabel("menuTitle");
-    title->setEnableLights(true);
-    //title->setRotation(90, 0, 0);
-    title->setPosition(Vertex3D(-5700, -2600, 6200));
-    title->setStencilBufferEnabled(false);
-    title->setFlatTextureColor(true);
-    title->setFlatColor(Color(79, 63, 21, 255));
-    title->setRotationFrameEnabled(false);
-    title->setRotationFrame(Vertex3D(0, 0, 0.1));
-    title->setScale(1);
-    title->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "meteorita.fbx"));
-    Brakeza3D::get()->addObject3D(title, title->getLabel());
+    title = new Image(SETUP->IMAGES_FOLDER + "title.png");
 
     spaceship = new Mesh3D();
     spaceship->setLabel("spaceshipMenu");
     spaceship->setEnabled(true);
     spaceship->setAlpha(2555);
     spaceship->setEnableLights(true);
-    spaceship->setPosition(Vertex3D(40, 1000, 20000));
-    spaceship->setRotationFrameEnabled(true);
+    spaceship->setPosition(Vertex3D(5000, -3000, 15000));
+    spaceship->setRotationFrameEnabled(false);
     spaceship->setRotationFrame(Vertex3D(0, 0.5, 0));
     spaceship->setRotation(-30, 0, 0);
     spaceship->setScale(6);
@@ -69,7 +56,11 @@ void ComponentMenu::loadDecorative3DMesh() {
     spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
     spaceship->updateBoundingBox();
     Brakeza3D::get()->addObject3D(spaceship, "spacheshipMenu");
+
+    pendulum = new SimplePendulum(0, 1, 1000, 0.0);
+    pendulum->setRotation(295, 30, -20);
 }
+
 
 void ComponentMenu::preUpdate()
 {
@@ -78,13 +69,22 @@ void ComponentMenu::preUpdate()
     }
 
     shaderBackgroundImage->update();
+
+    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
+    title->drawFlatAlpha(0, 0, alpha);
+
     drawOptions();
+    drawVersion();
 }
 
-void ComponentMenu::onUpdate() {
+void ComponentMenu::onUpdate()
+{
     if (!isEnabled()) {
         return;
     }
+
+    pendulum->onUpdate();
+    spaceship->setRotation(pendulum->pendulumRotation);
 
 }
 
@@ -138,8 +138,9 @@ void ComponentMenu::drawOptions() {
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(alpha);
 
-    int offsetY = 170;
-    int stepY = 30;
+    int offsetY = 140;
+    int stepY = 35;
+
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
@@ -148,12 +149,13 @@ void ComponentMenu::drawOptions() {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 
-        auto color = Color::red();
+        auto color = ComponentsManager::get()->getComponentGame()->primaryColor;
         if (i == currentOption) {
-            color = Color(0, 0, 0);
+            color = Color::black();
         }
 
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTTFCenterHorizontal(
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
+            30,
             stepY + offsetY,
             text.c_str(),
             color,
@@ -169,7 +171,17 @@ void ComponentMenu::setEnabled(bool value)
     Component::setEnabled(value);
 
     light->setEnabled(value);
-    title->setEnabled(value);
     spaceship->setEnabled(value);
+}
+
+void ComponentMenu::drawVersion()
+{
+    ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
+            500,
+            440,
+            "brakeza.com",
+            ComponentsManager::get()->getComponentGame()->primaryColor,
+            0.4
+    );
 }
 
