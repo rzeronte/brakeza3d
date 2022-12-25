@@ -27,6 +27,7 @@ void ComponentRender::onUpdate()
         return;
     }
 
+
     this->onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {
@@ -38,12 +39,13 @@ void ComponentRender::onUpdate()
     }
 
     this->hiddenSurfaceRemoval();
+
     this->drawVisibleTriangles();
 
-    //this->onUpdatePostUpdateShaders();
     this->onPostUpdateSceneObjects();
 
     frameTriangles.clear();
+    spritesTriangles.clear();
 
     if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
@@ -100,6 +102,10 @@ std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
 
 std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
     return visibleTriangles;
+}
+
+std::vector<Triangle *> &ComponentRender::getSpritesTriangles() {
+    return spritesTriangles;
 }
 
 void ComponentRender::createLightPointsDepthMappings() {
@@ -287,6 +293,10 @@ void ComponentRender::hiddenSurfaceRemoval() {
     visibleTriangles.clear();
 
     for (auto & frameTriangle : frameTriangles) {
+        this->hiddenSurfaceRemovalTriangle(frameTriangle);
+    }
+
+    for (auto & frameTriangle : spritesTriangles) {
         this->hiddenSurfaceRemovalTriangle(frameTriangle);
     }
 
@@ -514,8 +524,7 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
                 fragment.theta = (float) w1 * t->reciprocalFullArea;
                 fragment.gamma = 1 - fragment.alpha - fragment.theta;
 
-                fragment.depth =
-                        (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
+                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
 
                 int bufferIndex = (y * SETUP->screenWidth) + x;
 
@@ -609,18 +618,6 @@ Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
     return c;
 }
 
-bool ComponentRender::isPixelFullTransparent(Color &c, SDL_PixelFormat *pixelFormat)
-{
-    Uint8 red, green, blue, alpha;
-    SDL_GetRGBA(c.getColor(), pixelFormat, &red, &green, &blue, &alpha);
-
-    if (alpha == 0) {
-        return true;
-    }
-
-    return false;
-}
-
 void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
 {
     Color pixelColor(0, 0, 0);
@@ -637,7 +634,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     if (t->isFlatTextureColor()) {
         pixelColor = t->flatColor;
     } else if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
-        if (t->texture->getImage()->getSurface() == nullptr) return;
+        if (t->getTexture()->getImage()->getSurface() == nullptr) return;
 
         if (t->parent->isDecal()) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1)) {
@@ -647,8 +644,19 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
 
-        if (this->isPixelFullTransparent(pixelColor, t->getTexture()->getImage()->getSurface()->format)) {
-            return;
+        auto pixelFormat = t->getTexture()->getImage()->getSurface()->format;
+        Uint8 red, green, blue, alpha;
+        SDL_GetRGBA(pixelColor.getColor(), pixelFormat, &red, &green, &blue, &alpha);
+
+        if (alpha < 255) {
+            Uint8 redOld, greenOld, blueOld, alphaOld;
+            SDL_GetRGBA(BUFFERS->getVideoBuffer(bufferIndex),pixelFormat, &redOld, &greenOld, &blueOld, &alphaOld);
+
+            pixelColor = Tools::alphaBlend(
+                Color(redOld, greenOld, blueOld, alphaOld).getColor(),
+                pixelColor.getColor(),
+                alpha
+            );
         }
     }
 

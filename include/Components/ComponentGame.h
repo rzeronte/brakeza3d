@@ -54,6 +54,7 @@ public:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
+    Sprite3D *explosion;
     PathFinder *pathFinder;
 
     Image *imageCredits;

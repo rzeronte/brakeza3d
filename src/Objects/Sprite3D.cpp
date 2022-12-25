@@ -4,21 +4,42 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/ComponentsManager.h"
 
-Sprite3D::Sprite3D() {
+Sprite3D::Sprite3D()
+{
     this->billboard = new Billboard();
     this->counter = new Counter();
+    this->counter->setEnabled(true);
 
     for (auto & animation : this->animations) {
         animation = new TextureAnimated();
     }
 }
 
-void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int fps) {
+void Sprite3D::onUpdate()
+{
+    Object3D::onUpdate();
+
+    this->updateTrianglesCoordinatesAndTexture();
+
+    if (isRemoved()) return;
+
+    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(&getBillboard()->T1);
+    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(&getBillboard()->T2);
+}
+
+void Sprite3D::postUpdate()
+{
+    Object3D::postUpdate();
+}
+
+void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int fps)
+{
     this->animations[this->numAnimations]->setup(animation2d, num_frames, fps);
     this->numAnimations++;
 }
 
-void Sprite3D::setAnimation(int index_animation) {
+void Sprite3D::setAnimation(int index_animation)
+{
     this->currentAnimationIndex = index_animation;
     updateStep();
 }
@@ -33,7 +54,8 @@ Billboard *Sprite3D::getBillboard() const {
     return billboard;
 }
 
-void Sprite3D::updateTexture() {
+void Sprite3D::updateTexture()
+{
     if (numAnimations == 0) return;
 
     counter->update();
@@ -49,7 +71,8 @@ void Sprite3D::updateTexture() {
     this->getBillboard()->setTrianglesTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
-void Sprite3D::updateTrianglesCoordinatesAndTexture() {
+void Sprite3D::updateTrianglesCoordinatesAndTexture()
+{
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     M3 rotationTranspose = camera->getRotation().getTranspose();
@@ -65,8 +88,8 @@ bool Sprite3D::isAutoRemoveAfterAnimation() const {
     return autoRemoveAfterAnimation;
 }
 
-void Sprite3D::setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation) {
-    Sprite3D::autoRemoveAfterAnimation = autoRemoveAfterAnimation;
+void Sprite3D::setAutoRemoveAfterAnimation(bool value) {
+    Sprite3D::autoRemoveAfterAnimation = value;
 }
 
 void Sprite3D::linkTextureAnimation(Sprite3D *dst) {
@@ -76,23 +99,12 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst) {
         this->animations[i]->base_file = dst->animations[i]->base_file;
         this->animations[i]->numberFramesToLoad = dst->animations[i]->numberFramesToLoad;
         this->animations[i]->fps = dst->animations[i]->fps;
-
-        for (int j = 0; j < dst->animations[i]->numberFramesToLoad; j++) {
-            this->animations[i]->frames[j] = dst->animations[i]->frames[j];
-        }
+        this->animations[i]->frames = dst->animations[i]->frames;
     }
 }
 
 TextureAnimated *Sprite3D::getCurrentTextureAnimation() {
     return this->animations[currentAnimationIndex];
-}
-
-void Sprite3D::onUpdate() {
-    Object3D::onUpdate();
-    this->updateTrianglesCoordinatesAndTexture();
-
-    ComponentsManager::get()->getComponentRender()->getFrameTriangles().emplace_back(&getBillboard()->T1);
-    ComponentsManager::get()->getComponentRender()->getFrameTriangles().emplace_back(&getBillboard()->T2);
 }
 
 Counter *Sprite3D::getCounter() const {

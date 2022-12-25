@@ -39,6 +39,7 @@ void EnemyGhost::onUpdate()
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         makeReward();
+        makeExplosion();
 
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
@@ -265,4 +266,20 @@ void EnemyGhost::unstuck()
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(true);
     }
+}
+
+void EnemyGhost::makeExplosion()
+{
+    auto sprite = new Sprite3D();
+
+    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+
+    Vector3D direction(origin, getPosition());
+    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(150));
+
+    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->explosion);
+    sprite->setAnimation(0);
+    sprite->setAutoRemoveAfterAnimation(true);
+
+    Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
