@@ -263,8 +263,8 @@ add_executable(Brakeza3D
         darkheaz/src/items/ItemEnergyGhost.h
         darkheaz/src/items/GravitationalGhost.cpp
         darkheaz/src/items/GravitationalGhost.h
-        darkheaz/src/items/GravitationalShield.cpp
-        darkheaz/src/items/GravitationalShield.h
+        darkheaz/src/items/PlayerReflection.cpp
+        darkheaz/src/items/PlayerReflection.h
         src/Particles/ParticleEmissorFireworks.cpp
         include/Particles/ParticleEmissorFireworks.h
         darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp

@@ -100,6 +100,7 @@ void ComponentGame::preUpdate()
     ) {
         shaderBackgroundImage->update();
     }
+
 }
 
 void ComponentGame::onUpdate()
@@ -158,6 +159,7 @@ void ComponentGame::onUpdate()
     if (getFadeToGameState()->isFinished()) {
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
+
 
     updateShaders();
 }
@@ -349,7 +351,7 @@ void ComponentGame::loadPlayer()
     // load in this point because alpha is not working if is load previous (todo)
     player->loadShieldModel();
     player->loadBlinkShader();
-    player->loadGravityShieldModel();
+    player->loadReflection();
 
     explosion = new Sprite3D();
     explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  11, 24);
@@ -415,7 +417,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
@@ -578,7 +580,7 @@ void ComponentGame::loadWeapons()
     cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons");
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, weaponsList) {
-        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon, primaryColor);
+        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }
@@ -651,6 +653,7 @@ void ComponentGame::addObjectsToStencilBuffer()
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *player = dynamic_cast<Player *> (object);
+        auto *reflection = dynamic_cast<PlayerReflection *> (object);
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         auto energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto health = dynamic_cast<ItemHealthGhost *> (object);
@@ -663,6 +666,7 @@ void ComponentGame::addObjectsToStencilBuffer()
             energy != nullptr ||
             weapon != nullptr ||
             bomb != nullptr ||
+            reflection != nullptr ||
             health != nullptr
         ) {
             this->shaderTrailBuffer->addStencilBufferObject(object);

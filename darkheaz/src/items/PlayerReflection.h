@@ -11,20 +11,19 @@
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../shaders/ShaderShockWave.h"
 
-class GravitationalShield : public GravitationalGhost {
+class PlayerReflection : public Mesh3DGhost {
 private:
     float startStamina;
     float stamina;
     float ttl;
     ShaderBlink *blink;
-    ShaderShockWave *shockWave;
     Counter *counterDamageBlink;
     bool hidden;
 
 public:
-    GravitationalShield(float force, float factor, float stamina, float ttl);
+    PlayerReflection(float stamina, float ttl);
 
-    virtual ~GravitationalShield();
+    virtual ~PlayerReflection();
 
     void onUpdate() override;
 
@@ -52,6 +51,7 @@ public:
 
     void loadBlinkShader();
 
+    void makeExplosion();
 };
 
 

@@ -106,7 +106,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color, bool sound)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, bool sound)
 {
     const int ammoAmount = getAmmoAmount();
 
@@ -127,13 +127,15 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
-        projectile->setEnableLights(false);
-        projectile->setFlatTextureColor(true);
+        projectile->setEnableLights(getModelProjectile()->isEnableLights());
+        projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());
+        projectile->setFlatColor(getModelProjectile()->getFlatColor());
+
         if (getType() == WEAPON_BOMB) {
             projectile->setRotationFrameEnabled(true);
             projectile->setRotationFrame(Vertex3D(1, 1, 0));
         }
-        projectile->setFlatColor(color);
+
         projectile->clone(getModelProjectile());
         projectile->setPosition( position );
         projectile->setEnabled(true);
@@ -162,7 +164,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color color, bool flat, bool sound)
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, bool flat, bool sound)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -184,11 +186,13 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
         projectile->setWeaponType(this);
-        getModelProjectile()->setFlatColor(color);
-        getModelProjectile()->setFlatTextureColor(flat);
+
+        projectile->setEnableLights(getModelProjectile()->isEnableLights());
+        projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());
+        projectile->setFlatColor(getModelProjectile()->getFlatColor());
+
         projectile->clone(getModelProjectile());
         projectile->setPosition(position);
-        projectile->setEnableLights(false);
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
 
@@ -210,7 +214,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         if (sound) {
             ComponentsManager::get()->getComponentSound()->playSound(
-                    EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeOne"),
+                    EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeTwo"),
                     EngineSetup::SoundChannels::SND_GLOBAL,
                     0
             );
@@ -378,6 +382,12 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         );
 
         setAmmoAmount(ammoAmount - 1);
+
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeThree"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }

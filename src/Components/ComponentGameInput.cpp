@@ -47,7 +47,7 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 {
     this->handleEscape(event);
-    this->handlePadConnection(event);
+    this->handleCheckPadConnection(event);
 
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
 
@@ -297,6 +297,8 @@ void ComponentGameInput::handleGamePadMovingPlayer()
 {
     if (!EngineSetup::get()->GAMEPAD_CONTROLLER_ENABLED) return;
 
+    if (player->isStucked()) return;
+
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
@@ -310,6 +312,8 @@ void ComponentGameInput::handleGamePadMovingPlayer()
 
 void ComponentGameInput::handleDashMovement(SDL_Event *event)
 {
+    if (player->isStucked()) return;
+
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
     auto input = ComponentsManager::get()->getComponentInput();
 
@@ -406,14 +410,14 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handlePadConnection(SDL_Event *event)
+void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
 {
-    if (event->type == SDL_CONTROLLERDEVICEADDED ) {
+    if (pEvent->type == SDL_CONTROLLERDEVICEADDED ) {
         Logging::getInstance()->Log(std::string("added"));
         ComponentsManager::get()->getComponentInput()->initJostick();
     }
 
-    if (event->type == SDL_CONTROLLERDEVICEREMOVED ) {
+    if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
         Logging::getInstance()->Log(std::string("removed"));
     }
 }

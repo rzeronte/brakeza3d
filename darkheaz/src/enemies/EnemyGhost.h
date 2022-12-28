@@ -9,12 +9,16 @@
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../shaders/ShaderTrailObject.h"
 #include "../../../include/Physics/Mesh3DAnimatedGhost.h"
+#include "../weapons/AmmoProjectileBodyEmissor.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
     ShaderBlink *blink;
     Counter *counterDamageBlink;
     Counter *counterStucked;
+
+    AmmoProjectileBodyEmissor *projectileEmissor;
+
 public:
     EnemyGhost();
 
@@ -32,7 +36,7 @@ public:
 
     void postUpdate() override;
 
-    void rotateToPlayer();
+    void rotateToTarget();
 
     void makeReward();
 
@@ -45,6 +49,10 @@ public:
     void unstuck();
 
     void makeExplosion();
+
+    Object3D *getTarget();
+
+    void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
 };
 
 

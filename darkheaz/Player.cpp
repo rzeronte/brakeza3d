@@ -6,7 +6,7 @@
 #include "src/items/ItemWeaponGhost.h"
 #include "src/items/ItemHealthGhost.h"
 #include "src/items/ItemEnergyGhost.h"
-#include "src/items/GravitationalShield.h"
+#include "src/items/PlayerReflection.h"
 
 Player::Player() : state(PlayerState::EMPTY),
                    stamina(INITIAL_STAMINA),
@@ -48,6 +48,10 @@ Player::Player() : state(PlayerState::EMPTY),
 
     setAllowEnergyShield(true);
     setAllowGravitationalShields(true);
+
+    counterStucked = new Counter(5);
+    counterStucked->setEnabled(false);
+    setStucked(false);
 }
 
 void Player::loadShieldModel()
@@ -60,30 +64,31 @@ void Player::loadShieldModel()
     shieldModel->setAlphaEnabled(true);
     shieldModel->setEnableLights(true);
     shieldModel->setScale(1);
-    shieldModel->setStencilBufferEnabled(false);
-    shieldModel->setFlatTextureColor(true);
+    shieldModel->setStencilBufferEnabled(true);
+    shieldModel->setFlatTextureColor(false);
     shieldModel->setFlatColor(Color::green());
     shieldModel->setRotationFrameEnabled(true);
-    shieldModel->setRotationFrame(Vertex3D(1, 0, 0));
+    shieldModel->setRotationFrame(Vertex3D(0, 0, 1));
     shieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
 
     Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
 }
 
-void Player::loadGravityShieldModel()
+void Player::loadReflection()
 {
-    gravityShieldModel = new GravitationalShield(3000, 0.001, 500, 7);
-    gravityShieldModel->setEnabled(false);
-    gravityShieldModel->setLabel("gravitationalShieldPlayer");
-    gravityShieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
-    gravityShieldModel->setParent(parent);
-    gravityShieldModel->setPosition(getPosition());
-    gravityShieldModel->setStencilBufferEnabled(true);
-    gravityShieldModel->setRotationFrameEnabled(true);
-    gravityShieldModel->setRotationFrame(Tools::randomVertex().getScaled(0.5));
-    gravityShieldModel->loadBlinkShader();
+    reflection = new PlayerReflection(getStartStamina(), 5);
+    reflection->setEnabled(false);
+    reflection->setLabel("gravitationalShieldPlayer");
+    reflection->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
+    reflection->setParent(parent);
+    reflection->setFlatTextureColor(false);
+    reflection->setPosition(getPosition());
+    reflection->setStencilBufferEnabled(true);
+    reflection->setRotationFrameEnabled(true);
+    reflection->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    reflection->loadBlinkShader();
 
-    Brakeza3D::get()->addObject3D(gravityShieldModel, "gravitationalShieldPlayer");
+    Brakeza3D::get()->addObject3D(reflection, "gravitationalShieldPlayer");
 }
 
 int Player::getStamina() const {
@@ -111,7 +116,7 @@ void Player::evalStatusMachine() {
 
 void Player::takeDamage(float dmg)
 {
-    if (state == PlayerState::GETTING_DAMAGE || state == PlayerState::DEAD) {
+    if ((state == PlayerState::GETTING_DAMAGE && !isStucked())|| state == PlayerState::DEAD) {
         return;
     }
 
@@ -156,8 +161,8 @@ void Player::makeGravitationalShield()
         return;
     }
 
-    gravityShieldModel->setPosition(getPosition());
-    gravityShieldModel->reset();
+    reflection->setPosition(getPosition());
+    reflection->reset();
 
     gravityShieldsNumber++;
 
@@ -189,7 +194,6 @@ void Player::shoot()
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
-                Color::green(),
                 true
             );
             break;
@@ -201,7 +205,6 @@ void Player::shoot()
                 AxisUp().getInverse(),
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
-                Color::yellow(),
                 false,
                 true
             );
@@ -230,6 +233,17 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
+    if (isStucked()) {
+        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
+        counterStucked->update();
+
+        if (counterStucked->isFinished()) {
+            unstuck();
+            startPlayerBlink();
+            Logging::Log("unstuck","");
+        }
+    }
+
     //updateLight();
     updateWeaponType();
     applyFriction();
@@ -240,12 +254,12 @@ void Player::onUpdate()
 
     if (isEnergyShieldEnabled()) {
         shieldModel->setPosition(getPosition());
-        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() + 5, 0, 127));
+        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() + 10, 0, 255));
     } else {
         if (shieldModel->getAlpha() == 0) {
             shieldModel->setEnabled(false);
         }
-       shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 2, 0, 127));
+       shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 25, 0, 255));
     }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -597,4 +611,40 @@ void Player::loadBlinkShader()
 
 PlayerState Player::getState() const {
     return state;
+}
+
+void Player::stuck(float time)
+{
+    counterStucked->setStep(time);
+    counterStucked->setEnabled(true);
+
+    setStucked(true);
+
+
+    velocity = Vertex3D(0, 0, 0);
+
+    setState(PlayerState::GETTING_DAMAGE);
+
+    ComponentsManager::get()->getComponentSound()->playSound(
+        EngineBuffers::getInstance()->soundPackage->getByLabel("electricStuck"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
+
+}
+
+bool Player::isStucked() const
+{
+    return stucked;
+}
+
+void Player::setStucked(bool value)
+{
+    Player::stucked = value;
+}
+
+void Player::unstuck()
+{
+    setStucked(false);
+    counterStucked->setEnabled(false);
 }

@@ -13,6 +13,9 @@ EnemyGhost::EnemyGhost()
 
     counterStucked = new Counter(5);
     counterStucked->setEnabled(false);
+
+    projectileEmissor = nullptr;
+
     setStucked(false);
 }
 
@@ -30,7 +33,12 @@ void EnemyGhost::onUpdate()
     auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
 
     if (!rotationFrameEnabled) {
-        rotateToPlayer();
+        rotateToTarget();
+    }
+
+    if (projectileEmissor != nullptr) {
+        projectileEmissor->setPosition(getPosition());
+        projectileEmissor->onUpdate();
     }
 
     if (getWeapon() != nullptr) {
@@ -52,19 +60,19 @@ void EnemyGhost::onUpdate()
         remove();
     }
 
-    if (getState() != EnemyState::ENEMY_STATE_DIE && playerState == PlayerState::LIVE) {
-        shoot(ComponentsManager::get()->getComponentGame()->getPlayer());
-    }
-
     if (isStucked()) {
 
-        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::white());
+        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
 
         counterStucked->update();
 
         if (counterStucked->isFinished()) {
             unstuck();
         }
+    }
+
+    if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE)) {
+        shoot(getTarget());
     }
 }
 
@@ -74,6 +82,10 @@ void EnemyGhost::postUpdate()
 
     if (!isEnabled()) {
         return;
+    }
+
+    if (projectileEmissor != nullptr) {
+        projectileEmissor->postUpdate();
     }
 
     if (counterDamageBlink->isEnabled()) {
@@ -146,13 +158,13 @@ void EnemyGhost::makeReward()
     }
 }
 
-void EnemyGhost::rotateToPlayer()
+void EnemyGhost::rotateToTarget()
 {
     setRotation(M3::getFromVectors(
         EngineSetup::get()->forward,
         Vector3D(
-                ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition(),
-                getPosition()).getComponent().getNormalize()
+            getTarget()->getPosition(),
+            getPosition()).getComponent().getNormalize()
         )
     );
 }
@@ -210,7 +222,6 @@ void EnemyGhost::shoot(Object3D *target)
                 positionProjectile,
                 direction,
                 EngineSetup::collisionGroups::Player,
-                getWeapon()->getModelProjectile()->getFlatColor(),
                 false
             );
             break;
@@ -222,10 +233,25 @@ void EnemyGhost::shoot(Object3D *target)
                 direction,
                 EngineSetup::collisionGroups::Player,
                 target,
-                getWeapon()->getModelProjectile()->getFlatColor(),
                 true,
                 false
             );
+            break;
+        }
+        case WeaponTypes::SHOCK: {
+
+            auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+
+            if (getPosition().distance(player->getPosition()) < 6000) {
+                Drawable::drawLightning(getPosition(), target->getPosition(), Color::yellow());
+
+                if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
+                    break;
+                }
+
+                player->stuck(4.0);
+            }
+
             break;
         }
     }
@@ -255,7 +281,6 @@ void EnemyGhost::stuck(float time)
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
-
 }
 
 void EnemyGhost::unstuck()
@@ -282,4 +307,20 @@ void EnemyGhost::makeExplosion()
     sprite->setAutoRemoveAfterAnimation(true);
 
     Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+}
+
+Object3D *EnemyGhost::getTarget()
+{
+    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+
+    Object3D *target = player;
+    if (!player->reflection->isHidden()) {
+        target = player->reflection;
+    }
+
+    return target;
+}
+
+void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmissor *emissor) {
+    EnemyGhost::projectileEmissor = emissor;
 }

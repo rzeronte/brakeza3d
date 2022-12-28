@@ -27,7 +27,6 @@ public:
     float stamina;
 
     float range;
-    float speed;
 
     int soundChannel;
 
@@ -41,11 +40,7 @@ public:
 
     void setRange(float range);
 
-    float getSpeed() const;
-
-    void setSpeed(float speed);
-
-    EnemyState getState() const;
+    [[nodiscard]] EnemyState getState() const;
 
     void setState(EnemyState state);
 

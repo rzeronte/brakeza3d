@@ -138,8 +138,8 @@ void ComponentMenu::drawOptions() {
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(alpha);
 
-    int offsetY = 140;
-    int stepY = 35;
+    int offsetY = 120;
+    int stepY = 45;
 
 
     for (int i = 0; i < numOptions; i++) {

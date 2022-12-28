@@ -1,18 +1,12 @@
-//
-// Created by eduardo on 3/04/22.
-//
-
-#include "GravitationalShield.h"
+#include "PlayerReflection.h"
 #include "../weapons/AmmoProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-GravitationalShield::GravitationalShield(
-        float force,
-        float factor,
-        float stamina,
-        float ttl
-) : GravitationalGhost(force, factor), stamina(stamina), ttl(ttl)
+PlayerReflection::PlayerReflection(
+    float stamina,
+    float ttl
+)
 {
     this->startStamina = stamina;
     timeToLive.setStep(ttl);
@@ -25,8 +19,6 @@ GravitationalShield::GravitationalShield(
     counterDamageBlink = new Counter(1);
     counterDamageBlink->setEnabled(false);
 
-    shockWave = new ShaderShockWave(60, 0.55f, 1);
-
     makeSimpleGhostBody(
         Vertex3D(600, 600, 600),
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
@@ -38,27 +30,19 @@ GravitationalShield::GravitationalShield(
     setHidden(true);
 }
 
-void GravitationalShield::onUpdate()
+void PlayerReflection::onUpdate()
 {
     if (!isEnabled()) return;
 
-    GravitationalGhost::onUpdate();
+    Mesh3DGhost::onUpdate();
 
     timeToLive.update();
-
-    if (timeToLive.isFinished()) {
-        setEnabled(false);
-        removeCollisionObject();
-        setHidden(true);
-    }
 }
 
 
-void GravitationalShield::postUpdate()
+void PlayerReflection::postUpdate()
 {
     Object3D::postUpdate();
-
-    shockWave->onUpdate(getPosition());
 
     if (counterDamageBlink->isEnabled()) {
         counterDamageBlink->update();
@@ -67,36 +51,45 @@ void GravitationalShield::postUpdate()
             blink->setEnabled(false);
         }
     }
-}
-
-float GravitationalShield::getStartStamina() const {
-    return startStamina;
-}
-
-void GravitationalShield::setStartStamina(float startStamina) {
-    GravitationalShield::startStamina = startStamina;
-}
-
-float GravitationalShield::getStamina() const {
-    return stamina;
-}
-
-void GravitationalShield::setStamina(float stamina) {
-    GravitationalShield::stamina = stamina;
-}
-
-void GravitationalShield::takeDamage(float damageTaken)
-{
-    this->stamina -= damageTaken;
-
-    if (this->stamina <= 0) {
+    if (timeToLive.isFinished()) {
+        makeExplosion();
+        setStencilBufferEnabled(false);
         setEnabled(false);
         removeCollisionObject();
         setHidden(true);
     }
 }
 
-void GravitationalShield::resolveCollision(Collisionable *collisionable)
+float PlayerReflection::getStartStamina() const {
+    return startStamina;
+}
+
+void PlayerReflection::setStartStamina(float value) {
+    PlayerReflection::startStamina = value;
+}
+
+float PlayerReflection::getStamina() const {
+    return stamina;
+}
+
+void PlayerReflection::setStamina(float value) {
+    PlayerReflection::stamina = value;
+}
+
+void PlayerReflection::takeDamage(float damageTaken)
+{
+    this->stamina -= damageTaken;
+
+    if (this->stamina <= 0) {
+        makeExplosion();
+        setEnabled(false);
+        removeCollisionObject();
+        setHidden(true);
+        setStencilBufferEnabled(false);
+    }
+}
+
+void PlayerReflection::resolveCollision(Collisionable *collisionable)
 {
     Mesh3DGhost::resolveCollision(collisionable);
     auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
@@ -114,19 +107,19 @@ void GravitationalShield::resolveCollision(Collisionable *collisionable)
     }
 }
 
-GravitationalShield::~GravitationalShield()
+PlayerReflection::~PlayerReflection()
 {
     delete blink;
-    delete shockWave;
     delete counterDamageBlink;
 }
 
-void GravitationalShield::reset()
+void PlayerReflection::reset()
 {
     setEnabled(true);
     setHidden(false);
     timeToLive.setEnabled(true);
     setStamina(getStartStamina());
+    setStencilBufferEnabled(true);
 
     if (!isHidden()) {
         removeCollisionObject();
@@ -139,19 +132,36 @@ void GravitationalShield::reset()
     );
 }
 
-bool GravitationalShield::isHidden() const
+bool PlayerReflection::isHidden() const
 {
     return hidden;
 }
 
-void GravitationalShield::setHidden(bool hidden)
+void PlayerReflection::setHidden(bool value)
 {
-    GravitationalShield::hidden = hidden;
+    PlayerReflection::hidden = value;
 }
 
-void GravitationalShield::loadBlinkShader()
+void PlayerReflection::loadBlinkShader()
 {
     blink = new ShaderBlink(this, Color::red());
     blink->setStep(0.05);
     blink->setEnabled(true);
+}
+
+
+void PlayerReflection::makeExplosion()
+{
+    auto sprite = new Sprite3D();
+
+    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+
+    Vector3D direction(origin, getPosition());
+    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(150));
+
+    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->explosion);
+    sprite->setAnimation(0);
+    sprite->setAutoRemoveAfterAnimation(true);
+
+    Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }

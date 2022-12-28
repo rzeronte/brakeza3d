@@ -3,7 +3,7 @@
   "backgroundImage": "levels/01.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
-  "allowEnergyShield": false,
+  "allowEnergyShield": true,
   "tutorialImage": "tutorials/tutorial01.png",
   "color": { "r": 255, "g": 0, "b": 0 },
   "enemies": [
@@ -13,7 +13,6 @@
       "model": "moon.fbx",
       "animated": false,
       "stamina": 1000,
-      "speed": 100,
       "reward": false,
       "motion": {
         "type": 6

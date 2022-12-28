@@ -8,7 +8,7 @@
 #include "../include/Physics/Mesh3DGhost.h"
 #include "src/weapons/Weapon.h"
 #include "src/shaders/ShaderShockWave.h"
-#include "src/items/GravitationalShield.h"
+#include "src/items/PlayerReflection.h"
 #include "src/shaders/ShaderTrailObject.h"
 
 #define INITIAL_STAMINA 100
@@ -25,7 +25,7 @@ typedef enum {
     EMPTY = -1,
     LIVE = 0,
     DEAD = 1,
-    GETTING_DAMAGE = 2
+    GETTING_DAMAGE = 2,
 } PlayerState;
 
 enum WeaponStatus {
@@ -44,11 +44,13 @@ private:
     float energy;
     float startEnergy;
     float recoverEnergySpeed;
+    bool stucked;
 
     int lives;
     Vertex3D velocity;
     Weapon *weapon;
     Counter *counterDamageBlink;
+    Counter *counterStucked;
     ShaderBlink *blink;
 
     int killsCounter;
@@ -68,7 +70,7 @@ public:
     int currentWeaponIndex;
 
     Mesh3D *shieldModel;
-    GravitationalShield *gravityShieldModel;
+    PlayerReflection *reflection;
 
     Player();
 
@@ -193,9 +195,17 @@ public:
 
     void postUpdate() override;
 
-    void loadGravityShieldModel();
+    void loadReflection();
 
     PlayerState getState() const;
+
+    void stuck(float time);
+
+    bool isStucked() const;
+
+    void setStucked(bool value);
+
+    void unstuck();
 };
 
 

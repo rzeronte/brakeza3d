@@ -22,9 +22,9 @@ void AmmoSmartProjectileBody::onUpdate()
     Vertex3D to = target->getPosition();
     Vector3D direction(getPosition(), to);
 
-    float speed = powf(5000 / getPosition().distance(to), 3) * 0.75f;
+    float speed = powf(7000 / getPosition().distance(to), 3) * 0.075f;
 
     btVector3 btDirection;
     direction.getComponent().getScaled(speed).saveToBtVector3(&btDirection);
-    getRigidBody()->setLinearVelocity(btDirection);
+    getRigidBody()->applyCentralForce(btDirection);
 }

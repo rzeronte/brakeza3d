@@ -15,7 +15,6 @@ BossLevel20::BossLevel20(Vertex3D position)
     setStencilBufferEnabled(true);
     loadBlinkShader();
     setScale(1);
-    setSpeed(10);
     setStamina(10000);
     setStartStamina(10000);
     AssimpLoadAnimation(std::string(EngineSetup::get()->MODELS_FOLDER + "tentacle.fbx"));

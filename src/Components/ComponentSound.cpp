@@ -40,9 +40,11 @@ void ComponentSound::initSoundSystem() {
     }
 
     Mix_AllocateChannels(16);
-    Mix_Volume(0, (int) 127);
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
+    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
+
 }
+
 
 void ComponentSound::loadSoundsJSON() {
     Logging::Log("Loading Sounds in package...", "SOUNDS");
