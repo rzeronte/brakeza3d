@@ -1500,19 +1500,19 @@ CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalGhost.cpp.s: cmake_forc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalGhost.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalGhost.cpp -o CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalGhost.cpp.s
 
-CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o: CMakeFiles/Brakeza3D.dir/flags.make
-CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o: ../darkheaz/src/items/GravitationalShield.cpp
-CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o: CMakeFiles/Brakeza3D.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/CMakeFiles --progress-num=$(CMAKE_PROGRESS_103) "Building CXX object CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o -MF CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o.d -o CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o -c /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.cpp
+CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o: CMakeFiles/Brakeza3D.dir/flags.make
+CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o: ../darkheaz/src/items/PlayerReflection.cpp
+CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o: CMakeFiles/Brakeza3D.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/eduardo/CLionProjects/brakeza3d/cmake-build-debug-coverage/CMakeFiles --progress-num=$(CMAKE_PROGRESS_103) "Building CXX object CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o -MF CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o.d -o CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o -c /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/PlayerReflection.cpp
 
-CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.cpp > CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.i
+CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/PlayerReflection.cpp > CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.i
 
-CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.cpp -o CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.s
+CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/PlayerReflection.cpp -o CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.s
 
 CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o: CMakeFiles/Brakeza3D.dir/flags.make
 CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o: ../src/Particles/ParticleEmissorFireworks.cpp
@@ -1786,7 +1786,7 @@ Brakeza3D_OBJECTS = \
 "CMakeFiles/Brakeza3D.dir/darkheaz/src/shaders/ShaderShockWave.cpp.o" \
 "CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o" \
 "CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalGhost.cpp.o" \
-"CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o" \
+"CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o" \
 "CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o" \
 "CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o" \
 "CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o" \
@@ -1905,7 +1905,7 @@ Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody
 Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/shaders/ShaderShockWave.cpp.o
 Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o
 Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalGhost.cpp.o
-Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/items/GravitationalShield.cpp.o
+Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/items/PlayerReflection.cpp.o
 Brakeza3D: CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o
 Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o
 Brakeza3D: CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o

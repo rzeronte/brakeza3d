@@ -13,11 +13,10 @@
     {
       "type": 2,
       "name": "Tentacle",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 0 },
       "model": "tentacle.fbx",
       "animated": true,
       "stamina": 1000,
-      "speed": 100,
       "reward": false,
       "motion": {
         "type": 2,

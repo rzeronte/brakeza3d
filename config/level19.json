@@ -19,7 +19,6 @@
       "model": "asteroid_01.fbx",
       "modelPartitions": "asteroid_02.fbx",
       "stamina": 1000,
-      "speed": 100,
       "reward": false,
       "explode": true,
       "numberPartitions": 4,

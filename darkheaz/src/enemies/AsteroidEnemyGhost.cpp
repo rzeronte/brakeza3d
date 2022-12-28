@@ -30,7 +30,6 @@ void AsteroidEnemyGhost::addAsteroid() {
     asteroid->setPosition(getPosition());
     asteroid->setStencilBufferEnabled(true);
     asteroid->setScale(1);
-    asteroid->setSpeed(speed);
     asteroid->setStamina(startStamina/this->getExplodeNumberPartitions());
     asteroid->setStartStamina(startStamina);
     asteroid->setEnableLights(true);

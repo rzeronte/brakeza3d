@@ -26,6 +26,7 @@ LevelLoader::LevelLoader(std::string filename)
     addLevel(filename);
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
+
 }
 
 void LevelLoader::load(int levelIndex)
@@ -92,7 +93,7 @@ int LevelLoader::getCurrentLevelIndex() const {
     return currentLevelIndex;
 }
 
-void LevelLoader::loadLevelFromJSON(std::string filePath)
+void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 {
     Logging::Log("Loading Enemies for Level: " + filePath, "LEVEL_LOADER");
 
@@ -176,7 +177,7 @@ void LevelLoader::loadLevelFromJSON(std::string filePath)
     cJSON_Delete(jsonContentFile);
 }
 
-Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
+Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 {
     int index = cJSON_GetObjectItemCaseSensitive(weaponJson, "index")->valueint;
     std::string name = cJSON_GetObjectItemCaseSensitive(weaponJson, "name")->valuestring;
@@ -194,22 +195,27 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson, Color c)
     float stopDuration = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble;
     float stopEvery = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
     bool available = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint;
+    bool isFlatTexture = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "flatTexture")->valueint;
+    bool enableLights = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "enableLights")->valueint;
+    cJSON *colorJSON = cJSON_GetObjectItemCaseSensitive(weaponJson, "color");
 
     Logging::Log("Cargando arma: " + name, "[WEAPONS]");
 
     auto weapon = new Weapon(name);
     weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     weapon->getModel()->setLabel("weapon_model_template" + std::to_string(index));
-    weapon->getModelProjectile()->setFlatTextureColor(true);
-    if (type == WEAPON_BOMB || type == WEAPON_SMART_PROJECTILE) {
-        weapon->getModelProjectile()->setFlatTextureColor(false);
-    }
-    weapon->getModelProjectile()->setFlatColor(c);
-    weapon->getModelProjectile()->setEnableLights(true);
+    weapon->getModelProjectile()->setFlatTextureColor(isFlatTexture);
+    weapon->getModelProjectile()->setEnableLights(enableLights);
     weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
     weapon->getModelProjectile()->setLabel("projectile_weapon_template" + std::to_string(index));
     weapon->getModelProjectile()->setScale(1);
     weapon->getModelProjectile()->setStencilBufferEnabled(true);
+
+    if (colorJSON != nullptr) {
+        auto color = parseColorJSON(colorJSON);
+        weapon->getModelProjectile()->setFlatColor(color);
+    }
+
     weapon->setAmmoAmount(amount);
     weapon->setStartAmmoAmount(startAmount);
     weapon->setSpeed(speed);
@@ -359,12 +365,13 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
 {
     std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
     std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
-    int stamina = cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
+    auto stamina = (float) cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
+    auto speed = (float) cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
     int reward = cJSON_GetObjectItemCaseSensitive(enemyJSON, "reward")->valueint;
-    int speed = cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
     int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
+    cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
     auto *enemy = new EnemyGhost();
@@ -380,7 +387,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setStencilBufferEnabled(true);
     enemy->loadBlinkShader();
     enemy->setScale(1);
-    enemy->setSpeed(speed);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
     if (animated) {
@@ -398,15 +404,13 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     enemy->setSoundChannel(respawners.size() + 2);
 
     if (weapon != nullptr) {
-        int type = cJSON_GetObjectItemCaseSensitive(weapon, "type")->valueint;
-        Color c = Color::red();
-        if (type == WeaponTypes::WEAPON_SMART_PROJECTILE) {
-            c = Color::fuchsia();
-        }
-        auto weaponType = parseWeaponJSON(weapon, c);
+        auto weaponType = parseWeaponJSON(weapon);
         weaponType->setSoundChannel(enemy->getSoundChannel());
         enemy->setWeapon(weaponType);
+    }
 
+    if (emitter != nullptr) {
+        this->setProjectileEmissorForEnemy(emitter, enemy);
     }
 
     return enemy;
@@ -476,6 +480,43 @@ Point2D LevelLoader::parsePositionJSON(cJSON *positionJSON)
     const int x = (cJSON_GetObjectItemCaseSensitive(positionJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100;
     const int y = (cJSON_GetObjectItemCaseSensitive(positionJSON, "y")->valueint * EngineSetup::get()->screenHeight) / 100;
     return Point2D(x, y);
+}
+
+void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy)
+{
+    cJSON *rotation = cJSON_GetObjectItemCaseSensitive(emitter, "rotation");
+    cJSON *rotationFrame = cJSON_GetObjectItemCaseSensitive(emitter, "rotationFrame");
+    auto step = (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble;
+    bool stop = (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint;
+    float stopDuration = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble;
+    float stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
+
+    auto projectileEmissor = new AmmoProjectileBodyEmissor(step, enemy->getWeapon());
+
+    projectileEmissor->setActive(true);
+
+    projectileEmissor->setPosition(enemy->getPosition());
+
+    projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(
+        (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valueint
+    ));
+
+    projectileEmissor->setRotationFrameEnabled(true);
+    projectileEmissor->setRotationFrame(Vertex3D(
+        (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "x")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "y")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "z")->valueint
+    ));
+
+    projectileEmissor->setStop(stop);
+    projectileEmissor->setStopDuration(stopDuration);
+    projectileEmissor->setStopEvery(stopEvery);
+
+    projectileEmissor->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+
+    enemy->setProjectileEmissor(projectileEmissor);
 }
 
 Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)
@@ -632,7 +673,6 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
     asteroid->setPosition(worldPosition);
     asteroid->setStencilBufferEnabled(true);
     asteroid->setScale(1);
-    asteroid->setSpeed(speed);
     asteroid->setStamina(stamina);
     asteroid->setStartStamina(stamina);
     asteroid->setEnableLights(true);

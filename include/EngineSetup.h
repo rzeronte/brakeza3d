@@ -153,8 +153,8 @@ public:
     std::string LOGO_BRAKEZA = "logo.png";
 
     bool SOUND_ENABLED = true;
-    float SOUND_VOLUME_MUSIC = 128;
-    float SOUND_CHANNEL_GLOBAL = 75;
+    float SOUND_VOLUME_MUSIC = 20;
+    float SOUND_CHANNEL_GLOBAL = 25;
 
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;

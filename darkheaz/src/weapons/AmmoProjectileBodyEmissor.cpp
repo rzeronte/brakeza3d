@@ -77,10 +77,12 @@ void AmmoProjectileBodyEmissor::addProjectile()
     projectile->setParent(this);
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     projectile->setWeaponType(this->weaponType);
-    projectile->setEnableLights(false);
-    projectile->setFlatTextureColor(weaponType->getModelProjectile()->isFlatTextureColor());
-    projectile->setFlatColor(weaponType->getModelProjectile()->getFlatColor());
     projectile->clone(weaponType->getModelProjectile());
+    projectile->setStencilBufferEnabled(true);
+    projectile->setEnableLights(getWeapon()->getModelProjectile()->isEnableLights());
+    projectile->setFlatTextureColor(getWeapon()->getModelProjectile()->isFlatTextureColor());
+    projectile->setFlatColor(getWeapon()->getModelProjectile()->getFlatColor());
+
     projectile->setPosition( getPosition() );
     projectile->setEnabled(true);
     projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
@@ -101,17 +103,17 @@ bool AmmoProjectileBodyEmissor::isStop() const {
     return stop;
 }
 
-void AmmoProjectileBodyEmissor::setStop(bool stop) {
-    AmmoProjectileBodyEmissor::stop = stop;
+void AmmoProjectileBodyEmissor::setStop(bool value) {
+    AmmoProjectileBodyEmissor::stop = value;
 }
 
 float AmmoProjectileBodyEmissor::getStopDuration() const {
     return stopDuration;
 }
 
-void AmmoProjectileBodyEmissor::setStopDuration(float stopDuration)
+void AmmoProjectileBodyEmissor::setStopDuration(float value)
 {
-    AmmoProjectileBodyEmissor::stopDuration = stopDuration;
+    AmmoProjectileBodyEmissor::stopDuration = value;
     this->counterStopDuration = new Counter(stopDuration);
     this->counterStopDuration->setEnabled(false);
 }
@@ -130,8 +132,8 @@ float AmmoProjectileBodyEmissor::getStep() const {
     return step;
 }
 
-void AmmoProjectileBodyEmissor::setStep(float step) {
-    AmmoProjectileBodyEmissor::step = step;
+void AmmoProjectileBodyEmissor::setStep(float value) {
+    AmmoProjectileBodyEmissor::step = value;
 }
 
 AmmoProjectileBodyEmissor::~AmmoProjectileBodyEmissor()

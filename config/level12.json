@@ -1,6 +1,6 @@
 {
   "name": "Level 12",
-  "backgroundImage": "levels/grid_purple.png",
+  "backgroundImage": "levels/12.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
@@ -9,13 +9,15 @@
     {
       "name": "Purpler",
       "position": { "x": 50,  "y": 10 },
-      "model": "spaceships/purple_spaceship_01.fbx",
-      "animated": false,
+      "model": "spaceships/purple_spaceship_02.fbx",
+      "animated": true,
       "stamina": 1500,
-      "speed": 120,
       "reward": true,
       "motion": {
-        "type": 0
+        "type": 1,
+        "from":  { "x": 50,  "y": 10 },
+        "to":  { "x": 50,  "y": 20 },
+        "speed": 0.5
       },
       "weapon": {
         "index": 0,
@@ -28,27 +30,29 @@
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.50,
-        "stop": true,
+        "stop": false,
         "stopDuration": 1,
         "stopEvery": 1,
-        "type": 2,
+        "type": 3,
         "modelProjectile": "projectile_weapon_03.fbx",
-        "model": "item_weapon_01.fbx"
+        "model": "item_weapon_01.fbx",
+        "flatTexture": false,
+        "enableLights": true,
+        "color": { "r": 0, "g": 255, "b": 0 }
       }
     },
     {
       "name": "Patrol",
-      "position": { "x": 50, "y": 10 },
+      "position": { "x": 20, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
       "animated": false,
       "stamina": 1000,
-      "speed": 100,
       "reward": true,
       "motion": {
-        "type": 3,
-        "center": { "x": 50, "y": 10 },
-        "speed": 1,
-        "radius": 4500
+        "type": 1,
+        "from": { "x": 10, "y": 10 },
+        "to": { "x": 10, "y": 40 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,
@@ -56,17 +60,55 @@
         "name": "Linear",
         "damage": 10,
         "amount": 999,
-        "startAmount": 100,
-        "speed": 500,
+        "startAmount": 1000,
+        "speed": 700,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx"
+        "model": "item_weapon_01.fbx",
+        "flatTexture": false,
+        "enableLights": true,
+        "color": { "r": 0, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "Patrol",
+      "position": { "x": 20, "y": 20 },
+      "model": "spaceships/green_spaceship_01.fbx",
+      "animated": false,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from": { "x": 90, "y": 10 },
+        "to": { "x": 90, "y": 40 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 700,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.30,
+        "stop": true,
+        "stopDuration": 3,
+        "stopEvery": 3,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": false,
+        "enableLights": true,
+        "color": { "r": 0, "g": 255, "b": 0 }
       }
     }
   ],

@@ -101,7 +101,7 @@ void ComponentHUD::drawHUD()
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
         this->textWriter->writeTTFCenterHorizontal(
-            40,
+            60,
             componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(),
             Color::red(),
             0.5

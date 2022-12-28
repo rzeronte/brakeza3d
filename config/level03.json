@@ -12,7 +12,6 @@
       "model": "spaceships/green_spaceship_01.fbx",
       "animated": false,
       "stamina": 1000,
-      "speed": 100,
       "reward": true,
       "motion": {
         "type": 1,
@@ -36,7 +35,10 @@
         "stopEvery": 6,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx"
+        "model": "item_weapon_01.fbx",
+        "flatTexture": false,
+        "enableLights": true,
+        "color": { "r": 0, "g": 255, "b": 0 }
       }
     }
   ]

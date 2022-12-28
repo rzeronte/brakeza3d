@@ -195,10 +195,10 @@
 		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalGhost.h">
 			<Option target="Brakeza3D"/>
 		</Unit>
-		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.cpp">
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/PlayerReflection.cpp">
 			<Option target="Brakeza3D"/>
 		</Unit>
-		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/GravitationalShield.h">
+		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/PlayerReflection.h">
 			<Option target="Brakeza3D"/>
 		</Unit>
 		<Unit filename="/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/items/ItemEnergyGhost.cpp">

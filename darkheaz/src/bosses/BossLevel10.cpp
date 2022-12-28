@@ -9,6 +9,7 @@
 BossLevel10::BossLevel10(Vertex3D position)
 {
     this->projectileEmissor = nullptr;
+
     setEnabled(true);
     setLabel("boss_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     setEnableLights(false);
@@ -16,8 +17,7 @@ BossLevel10::BossLevel10(Vertex3D position)
     setStencilBufferEnabled(true);
     loadBlinkShader();
     setScale(1);
-    setSpeed(10);
-    setStamina(1000);
+    setStamina(10000);
     setStartStamina(10000);
     AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/boss_green_01.fbx"));
     makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), this, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
@@ -45,7 +45,6 @@ BossLevel10::BossLevel10(Vertex3D position)
     setWeapon(weapon);
 
     setSoundChannel(-1);
-
 
     auto weaponForEmissor = new Weapon("boss_emissor_weapon");
     weaponForEmissor->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "projectile_weapon_01.fbx"));

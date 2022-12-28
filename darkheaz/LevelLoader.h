@@ -51,7 +51,7 @@ public:
     void load(int levelIndex);
     bool loadNext();
     void addLevel(std::string filename);
-    Weapon *parseWeaponJSON(cJSON *weaponJson, Color c);
+    Weapon *parseWeaponJSON(cJSON *weaponJson);
 
     Counter countDown;
     Image *tutorialImage;
@@ -80,7 +80,7 @@ public:
 
     int size();
 
-    void loadLevelFromJSON(std::string filePath);
+    void loadLevelFromJSON(const std::string& filePath);
 
     void startCountDown();
 
@@ -117,6 +117,8 @@ public:
     void parseBossJSON(cJSON *bossJSON);
 
     Point2D parsePositionJSON(cJSON *positionJSON);
+
+    void setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy);
 
     Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON);
 

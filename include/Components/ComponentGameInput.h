@@ -57,7 +57,7 @@ public:
 
     void handlePressKeyGameStates(SDL_Event *event);
 
-    void handlePadConnection(SDL_Event *pEvent);
+    void handleCheckPadConnection(SDL_Event *pEvent);
 
     void initJostick();
 };

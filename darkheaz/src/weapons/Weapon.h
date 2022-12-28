@@ -12,6 +12,8 @@ enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
     WEAPON_SMART_PROJECTILE = 1,
     WEAPON_BOMB = 2,
+    SHOCK = 3,
+
 };
 
 class Weapon {
@@ -79,8 +81,8 @@ public:
 
     void setDispersion(float dispersion);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Color color, bool sound);
-    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, Color c, bool flat, bool sound);
+    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, bool sound);
+    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, bool flat, bool sound);
 
     Mesh3D *getModel() const;
 

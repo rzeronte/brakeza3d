@@ -4,7 +4,6 @@
 
 #include "../../../include/Objects/Object3D.h"
 #include "AmmoProjectileBody.h"
-#include "../enemies/EnemyGhost.h"
 
 class AmmoProjectileBodyEmissor: public Object3D {
     Counter counter;
