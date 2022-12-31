@@ -108,7 +108,7 @@ public:
 
     void setLevelFinished(bool levelFinished);
 
-    EnemyGhost *parseEnemyJSON(cJSON *enemyJSON);
+    void parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy);
 
     void setBehaviorFromJSON(cJSON *behavior, EnemyGhost *enemy);
 
@@ -135,6 +135,8 @@ public:
     Point2D convertPointPercentRelativeToScreen(Point2D point);
 
     Color parseColorJSON(cJSON *color);
+
+    const std::vector<std::string> &getLevels() const;
 };
 
 

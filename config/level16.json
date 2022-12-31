@@ -1,96 +1,20 @@
 {
   "name": "Level 16",
-  "backgroundImage": "levels/grid_purple.png",
+  "backgroundImage": "levels/16.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Patrol",
-      "position": { "x": 10, "y": 5 },
-      "model": "spaceships/green_spaceship_01.fbx",
+      "name": "Shocker",
+      "position": { "x": 25,  "y": 20 },
+      "model": "spaceships/purple_spaceship_02.fbx",
       "animated": false,
-      "stamina": 1000,
+      "stamina": 1500,
       "reward": true,
       "motion": {
-        "type": 1,
-        "from": { "x": 10, "y": 5 },
-        "to": { "x": 10, "y": 40 },
-        "speed": 1
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 999,
-        "startAmount": 100,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.30,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 0,
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": false,
-        "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "Rayer",
-      "position": { "x": 30, "y": 5 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "animated": false,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 5,
-        "points":  [
-          { "x": 30, "y": 5 },
-          { "x": 30, "y": 50 },
-          { "x": 70, "y": 50 }
-        ],
-        "speed": 1
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Instant",
-        "damage": 1,
-        "amount": 1000,
-        "startAmount": 10000,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.15,
-        "stop": true,
-        "stopDuration": 1,
-        "stopEvery": 1,
-        "type": 1,
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": false,
-        "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "Purpler",
-      "position": { "x": 50, "y": 5 },
-      "model": "spaceships/purple_spaceship_01.fbx",
-      "animated": false,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 1,
-        "from": { "x": 50, "y": 20 },
-        "to": { "x": 50, "y": 5 },
-        "speed": 1
+        "type": 0
       },
       "weapon": {
         "index": 0,
@@ -102,33 +26,62 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.75,
-        "stop": true,
+        "cadenceTime": 0.50,
+        "stop": false,
         "stopDuration": 1,
         "stopEvery": 1,
-        "type": 2,
+        "type": 3,
         "modelProjectile": "projectile_weapon_03.fbx",
         "model": "item_weapon_01.fbx",
-        "flatTexture": false,
+        "flatTexture": true,
         "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Shocker",
+      "position": { "x": 75,  "y": 20 },
+      "model": "spaceships/purple_spaceship_02.fbx",
+      "animated": false,
+      "stamina": 1500,
+      "reward": true,
+      "motion": {
+        "type": 0
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.50,
+        "stop": false,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 3,
+        "modelProjectile": "projectile_weapon_03.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 0, "b": 0 }
       }
     },
     {
       "name": "Rayer",
-      "position": { "x": 70, "y": 5 },
+      "position": { "x": 5, "y": 5 },
       "model": "spaceships/green_spaceship_03.fbx",
-      "animated": false,
+      "animated": true,
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 5,
-        "points":  [
-          { "x": 70, "y": 50 },
-          { "x": 70, "y": 5 },
-          { "x": 30, "y": 5 }
-        ],
-        "speed": 1
+        "type": 3,
+        "center": { "x": 5, "y": 5 },
+        "speed": 1,
+        "radius": 750
       },
       "weapon": {
         "index": 0,
@@ -140,30 +93,30 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.15,
+        "cadenceTime": 0.40,
         "stop": true,
         "stopDuration": 1,
         "stopEvery": 1,
         "type": 1,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
-        "flatTexture": false,
+        "flatTexture": true,
         "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 0, "b": 255 }
       }
     },
     {
       "name": "Patrol",
-      "position": { "x": 90, "y": 5 },
+      "position": { "x": 50, "y": 10 },
       "model": "spaceships/green_spaceship_01.fbx",
-      "animated": false,
+      "animated": true,
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
-        "from": { "x": 90, "y": 5 },
-        "to": { "x": 90, "y": 40 },
-        "speed": 1
+        "type": 3,
+        "center": { "x": 50, "y": 10 },
+        "speed": 1,
+        "radius": 750
       },
       "weapon": {
         "index": 0,
@@ -182,9 +135,44 @@
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
-        "flatTexture": false,
+        "flatTexture": true,
         "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Rayer",
+      "position": { "x": 95, "y": 5 },
+      "model": "spaceships/green_spaceship_03.fbx",
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 3,
+        "center": { "x": 95, "y": 5 },
+        "speed": 1,
+        "radius": 750
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 1,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.40,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 0, "b": 255 }
       }
     }
   ],

@@ -208,7 +208,7 @@ void EnemyGhost::remove()
 
 void EnemyGhost::shoot(Object3D *target)
 {
-    if (getWeapon() == nullptr) return;
+    if (getWeapon() == nullptr || !getWeapon()->isAvailable()) return;
 
     Vector3D way(getPosition(), target->getPosition());
 
@@ -242,7 +242,7 @@ void EnemyGhost::shoot(Object3D *target)
 
             auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
-            if (getPosition().distance(player->getPosition()) < 6000) {
+            if (getPosition().distance(player->getPosition()) < 5000) {
                 Drawable::drawLightning(getPosition(), target->getPosition(), Color::yellow());
 
                 if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
@@ -323,4 +323,8 @@ Object3D *EnemyGhost::getTarget()
 
 void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmissor *emissor) {
     EnemyGhost::projectileEmissor = emissor;
+}
+
+AmmoProjectileBodyEmissor *EnemyGhost::getProjectileEmissor() const {
+    return projectileEmissor;
 }

@@ -11,13 +11,10 @@
 
 class BossLevel10 : public BossEnemy {
 private:
-    AmmoProjectileBodyEmissor *projectileEmissor;
+
 public:
-    BossLevel10(Vertex3D position);
+    explicit BossLevel10();
 
-    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
-
-    void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
 };
 
 

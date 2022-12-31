@@ -6,26 +6,130 @@
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
+    {
+      "name": "Colossus",
+      "position": { "x": 5, "y": 40},
+      "model": "spaceships/blue_spaceship_01.fbx",
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from":  { "x": 5,  "y": 40 },
+        "to":  { "x": 40,  "y": 10 },
+        "speed": 0.5
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
+        "cadenceTime": 3.0,
+        "type": 1,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9
+      }
+    },
+    {
+      "name": "Colossus",
+      "position": { "x": 95, "y": 40 },
+      "model": "spaceships/blue_spaceship_01.fbx",
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from":  { "x": 95,  "y": 40 },
+        "to":  { "x": 65,  "y": 10 },
+        "speed": 0.5
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
+        "cadenceTime": 3.0,
+        "type": 1,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9
+      }
+    },
+    {
+      "name": "Shocker",
+      "position": { "x": 50,  "y": 5 },
+      "model": "spaceships/purple_spaceship_02.fbx",
+      "animated": false,
+      "stamina": 1500,
+      "reward": true,
+      "motion": {
+        "type": 0
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 20,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.50,
+        "stop": false,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 3,
+        "modelProjectile": "projectile_weapon_03.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    }
   ],
   "items": [
   ],
   "asteroids": [
-    {
-      "name": "Asteroid",
-      "position": {
-        "x": 10,
-        "y": 10
-      },
-      "model": "asteroid_01.fbx",
-      "modelPartitions": "asteroid_02.fbx",
-      "stamina": 1000,
-      "reward": false,
-      "explode": true,
-      "numberPartitions": 4,
-      "motion": {
-        "type": 3,
-        "speed": 10
-      }
-    }
+
   ]
 }

@@ -11,19 +11,9 @@
 
 class BossLevel20 : public BossEnemy {
 private:
-    AmmoProjectileBodyEmissor *projectileEmissorLeft;
-    AmmoProjectileBodyEmissor *projectileEmissorRight;
 
 public:
-    BossLevel20(Vertex3D position);
-
-    AmmoProjectileBodyEmissor *getProjectileEmissorLeft() const;
-
-    void setProjectileEmissorLeft(AmmoProjectileBodyEmissor *projectileEmissorLeft);
-
-    AmmoProjectileBodyEmissor *getProjectileEmissorRight() const;
-
-    void setProjectileEmissorRight(AmmoProjectileBodyEmissor *projectileEmissorRight);
+    BossLevel20();
 };
 
 

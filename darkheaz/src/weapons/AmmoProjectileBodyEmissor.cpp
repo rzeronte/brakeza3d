@@ -2,12 +2,11 @@
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(float step, Weapon *weaponType) : step(step), weaponType(weaponType)
+AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType) : type(type), step(step), weaponType(weaponType)
 {
     setStop(false);
     setActive(false);
-    setStep(step);
-    setWeapon(weaponType);
+
     this->counter.setStep(step);
 }
 
@@ -27,7 +26,8 @@ void AmmoProjectileBodyEmissor::setActive(bool value) {
     AmmoProjectileBodyEmissor::active = value;
 }
 
-void AmmoProjectileBodyEmissor::onUpdate() {
+void AmmoProjectileBodyEmissor::onUpdate()
+{
     Object3D::onUpdate();
 
     if (!isActive()) {
@@ -71,32 +71,16 @@ void AmmoProjectileBodyEmissor::setWeapon(Weapon *weapon) {
 
 void AmmoProjectileBodyEmissor::addProjectile()
 {
-    Vertex3D direction = this->AxisForward().getNormalize();
-
-    auto *projectile = new AmmoProjectileBody();
-    projectile->setParent(this);
-    projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    projectile->setWeaponType(this->weaponType);
-    projectile->clone(weaponType->getModelProjectile());
-    projectile->setStencilBufferEnabled(true);
-    projectile->setEnableLights(getWeapon()->getModelProjectile()->isEnableLights());
-    projectile->setFlatTextureColor(getWeapon()->getModelProjectile()->isFlatTextureColor());
-    projectile->setFlatColor(getWeapon()->getModelProjectile()->getFlatColor());
-
-    projectile->setPosition( getPosition() );
-    projectile->setEnabled(true);
-    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
-    projectile->makeProjectileRigidBody(
-        0.1,
-        direction,
-        (float) weaponType->getSpeed(),
-        weaponType->getAccuracy(),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Player
-    );
-
-    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+    switch(getType()) {
+        case ProjectileBodyEmmissorType::UNIQUE_PROJECTILE: {
+            launchUniqueProjectile();
+            break;
+        }
+        case ProjectileBodyEmmissorType::CIRCLE_PROJECTILE: {
+            launchCircleProjectiles();
+            break;
+        }
+    }
 }
 
 bool AmmoProjectileBodyEmissor::isStop() const {
@@ -141,5 +125,52 @@ AmmoProjectileBodyEmissor::~AmmoProjectileBodyEmissor()
     delete counterStopDuration;
     delete counterStopEvery;
     delete weaponType;
+}
+
+ProjectileBodyEmmissorType AmmoProjectileBodyEmissor::getType() const {
+    return type;
+}
+
+void AmmoProjectileBodyEmissor::setType(ProjectileBodyEmmissorType value) {
+    AmmoProjectileBodyEmissor::type = value;
+}
+
+void AmmoProjectileBodyEmissor::launchUniqueProjectile()
+{
+    Vertex3D direction = this->AxisForward().getNormalize();
+
+    auto *projectile = new AmmoProjectileBody();
+    projectile->setParent(this);
+    projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectile->setWeaponType(this->weaponType);
+    projectile->clone(weaponType->getModelProjectile());
+    projectile->setStencilBufferEnabled(true);
+    projectile->setEnableLights(getWeapon()->getModelProjectile()->isEnableLights());
+    projectile->setFlatTextureColor(getWeapon()->getModelProjectile()->isFlatTextureColor());
+    projectile->setFlatColor(getWeapon()->getModelProjectile()->getFlatColor());
+
+    projectile->setPosition( getPosition() );
+    projectile->setEnabled(true);
+    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
+    projectile->makeProjectileRigidBody(
+        0.1,
+        direction,
+        (float) weaponType->getSpeed(),
+        weaponType->getAccuracy(),
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Player
+    );
+
+    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+}
+
+void AmmoProjectileBodyEmissor::launchCircleProjectiles()
+{
+    float shoots = 8;
+    for (int i = 0; i < (int) shoots; i++) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/shoots, 0));
+        launchUniqueProjectile();
+    }
 }
 

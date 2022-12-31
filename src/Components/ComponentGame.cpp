@@ -417,13 +417,14 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
+    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level08.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level11.json");
@@ -530,6 +531,17 @@ void ComponentGame::silenceInGameObjects()
 
         if (enemy != nullptr && enemy->getWeapon() != nullptr) {
             enemy->getWeapon()->stopSoundChannel();
+        }
+    }
+}
+
+void ComponentGame::setEnemyWeaponsEnabled(bool value)
+{
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+
+        if (enemy != nullptr && enemy->getProjectileEmissor() != nullptr){
+            enemy->getProjectileEmissor()->setActive(value);
         }
     }
 }
@@ -718,6 +730,7 @@ void ComponentGame::handleGamingGameState()
     getPlayer()->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
     setVisibleInGameObjects(true);
+    setEnemyWeaponsEnabled(true);
     getPlayer()->setEnabled(true);
     getPlayer()->startPlayerBlink();
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
@@ -761,6 +774,40 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     if (getLevelInfo()->isHaveMusic()) {
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
+}
+
+
+void ComponentGame::reloadLevel(int level)
+{
+    removeInGameObjects();
+    getPlayer()->respawn();
+    getPlayer()->setEnabled(true);
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
+
+    shaderTrailBuffer->setEnabled(true);
+    shaderBackgroundImage->resetOffsets();
+    ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
+
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->load(level);
+    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    getPlayer()->setEnergyShieldEnabled(false);
+    getPlayer()->setGravityShieldsNumber(0);
+    getPlayer()->setPosition(playerStartPosition);
+    setVisibleInGameObjects(true);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(true);
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setEnabled(true);
+    stopWaterShader();
+
+    if (getLevelInfo()->isHaveMusic()) {
+        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+    }
+    setGameState(EngineSetup::COUNTDOWN);
+
+    ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
+    ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
+
 }
 
 void ComponentGame::handlePressKeyByDead()

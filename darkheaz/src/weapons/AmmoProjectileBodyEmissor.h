@@ -5,6 +5,11 @@
 #include "../../../include/Objects/Object3D.h"
 #include "AmmoProjectileBody.h"
 
+enum ProjectileBodyEmmissorType {
+    UNIQUE_PROJECTILE = 0,
+    CIRCLE_PROJECTILE = 1
+};
+
 class AmmoProjectileBodyEmissor: public Object3D {
     Counter counter;
     float step;
@@ -16,9 +21,10 @@ class AmmoProjectileBodyEmissor: public Object3D {
     bool stop;
     float stopDuration;
     float stopEvery;
+    ProjectileBodyEmmissorType type;
 
 public:
-    AmmoProjectileBodyEmissor(float step, Weapon *weaponType);
+    AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType);
 
     virtual ~AmmoProjectileBodyEmissor();
 
@@ -53,6 +59,14 @@ public:
     float getStep() const;
 
     void setStep(float step);
+
+    ProjectileBodyEmmissorType getType() const;
+
+    void setType(ProjectileBodyEmmissorType type);
+
+    void launchUniqueProjectile();
+
+    void launchCircleProjectiles();
 };
 
 

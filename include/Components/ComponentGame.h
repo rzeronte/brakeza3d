@@ -48,6 +48,8 @@ public:
     void blockPlayerPositionInCamera();
     void zoomCameraCountDown();
 
+    void reloadLevel(int level);
+
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
@@ -98,6 +100,8 @@ public:
     void makeFadeToGameState(EngineSetup::GameState gameState) const;
 
     void setVisibleInGameObjects(bool value);
+    void setEnemyWeaponsEnabled(bool value);
+
     void removeInGameObjects();
     void loadWeapons();
 
