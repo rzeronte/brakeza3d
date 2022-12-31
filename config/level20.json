@@ -12,16 +12,47 @@
   "bosses": [
     {
       "type": 2,
-      "name": "Tentacle",
-      "position": { "x": 50, "y": 0 },
+      "name": "Octscar",
+      "position": { "x": 50, "y": 5 },
       "model": "tentacle.fbx",
       "animated": true,
       "stamina": 1000,
-      "reward": false,
+      "reward": true,
       "motion": {
-        "type": 2,
-        "separation": 1000,
-        "speed": 5
+        "type": 1,
+        "from": { "x": 80, "y": 10 },
+        "to": { "x": 80, "y": 40 },
+        "speed": 0.5
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 0,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": true,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
+        "cadenceTime": 3.0,
+        "type": 1,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9
       }
     }
   ],

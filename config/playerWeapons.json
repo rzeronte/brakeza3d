@@ -18,7 +18,7 @@
       "icon": "icons/weapon_projectile.png",
       "modelProjectile": "projectile_weapon_01.fbx",
       "model": "item_weapon_01.fbx",
-      "flatTexture": false,
+      "flatTexture": true,
       "enableLights": true,
       "color": { "r": 0, "g": 255, "b": 0 }
     },
@@ -42,7 +42,7 @@
       "model": "item_weapon_03.fbx",
       "flatTexture": false,
       "enableLights": true,
-      "color": { "r": 0, "g": 255, "b": 0 }
+      "color": { "r": 0, "g": 0, "b": 255 }
     },
     {
       "index": 2,

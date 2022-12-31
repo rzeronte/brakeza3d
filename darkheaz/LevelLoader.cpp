@@ -144,7 +144,9 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     cJSON *enemiesList = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "enemies");
     cJSON *currentEnemyJSON;
     cJSON_ArrayForEach(currentEnemyJSON, enemiesList) {
-        auto enemy = parseEnemyJSON(currentEnemyJSON);
+        auto enemy = new EnemyGhost();
+        parseEnemyJSON(currentEnemyJSON, enemy);
+
         auto respawner = new EnemyGhostRespawner(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -361,12 +363,11 @@ void LevelLoader::setLevelFinished(bool levelFinished) {
     LevelLoader::levelFinished = levelFinished;
 }
 
-EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
+void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 {
     std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
     std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
-    auto speed = (float) cJSON_GetObjectItemCaseSensitive(enemyJSON, "speed")->valueint;
     int reward = cJSON_GetObjectItemCaseSensitive(enemyJSON, "reward")->valueint;
     int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
@@ -374,7 +375,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
-    auto *enemy = new EnemyGhost();
 
     enemy->setRewards(reward);
 
@@ -412,8 +412,6 @@ EnemyGhost * LevelLoader::parseEnemyJSON(cJSON *enemyJSON)
     if (emitter != nullptr) {
         this->setProjectileEmissorForEnemy(emitter, enemy);
     }
-
-    return enemy;
 }
 
 void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
@@ -486,14 +484,25 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
 {
     cJSON *rotation = cJSON_GetObjectItemCaseSensitive(emitter, "rotation");
     cJSON *rotationFrame = cJSON_GetObjectItemCaseSensitive(emitter, "rotationFrame");
+    int type = cJSON_GetObjectItemCaseSensitive(emitter, "type")->valueint;
     auto step = (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble;
     bool stop = (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint;
-    float stopDuration = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble;
-    float stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
+    auto stopDuration = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble;
+    auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
 
-    auto projectileEmissor = new AmmoProjectileBodyEmissor(step, enemy->getWeapon());
+    auto projectileEmissor = new AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType::UNIQUE_PROJECTILE, step, enemy->getWeapon());
 
-    projectileEmissor->setActive(true);
+    projectileEmissor->setActive(false);
+    switch(type) {
+        case ProjectileBodyEmmissorType::CIRCLE_PROJECTILE: {
+            projectileEmissor->setType(ProjectileBodyEmmissorType::CIRCLE_PROJECTILE);
+            break;
+        }
+        case ProjectileBodyEmmissorType::UNIQUE_PROJECTILE: {
+            projectileEmissor->setType(ProjectileBodyEmmissorType::UNIQUE_PROJECTILE);
+            break;
+        }
+    }
 
     projectileEmissor->setPosition(enemy->getPosition());
 
@@ -578,36 +587,27 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
 void LevelLoader::parseBossJSON(cJSON *bossJSON)
 {
     const int typeBoss = cJSON_GetObjectItemCaseSensitive(bossJSON, "type")->valueint;
-    Vertex3D position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(bossJSON, "position"));
-    cJSON *motion = cJSON_GetObjectItemCaseSensitive(bossJSON, "motion");
 
+    BossEnemy *boss;
     switch(typeBoss) {
+        default:
         case BossesTypes::BOSS_LEVEL_10: {
-
-            auto boss = new BossLevel10(position);
-            this->setBehaviorFromJSON(motion, boss);
-
-            auto respawner = new EnemyGhostRespawner(boss, 3);
-            respawner->setPosition(boss->getPosition());
-
-            Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            respawners.push_back(respawner);
-
+            boss = new BossLevel10();
             break;
         }
         case BossesTypes::BOSS_LEVEL_20: {
-
-            auto boss = new BossLevel20(position);
-            this->setBehaviorFromJSON(motion, boss);
-
-            auto respawner = new EnemyGhostRespawner(boss, 3);
-            respawner->setPosition(boss->getPosition());
-
-            Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-            respawners.push_back(respawner);
+            boss = new BossLevel20();
             break;
         }
     }
+
+    parseEnemyJSON(bossJSON, boss);
+
+    auto respawner = new EnemyGhostRespawner(boss, 3);
+    respawner->setPosition(boss->getPosition());
+
+    Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    respawners.push_back(respawner);
 }
 
 bool LevelLoader::isHaveMusic() const {
@@ -705,4 +705,8 @@ Color LevelLoader::parseColorJSON(cJSON *color)
     int b = cJSON_GetObjectItemCaseSensitive(color, "b")->valueint;
 
     return Color(r, g, b);
+}
+
+const std::vector<std::string> &LevelLoader::getLevels() const {
+    return levels;
 }

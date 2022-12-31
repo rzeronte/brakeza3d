@@ -53,6 +53,8 @@ public:
     Object3D *getTarget();
 
     void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
+
+    AmmoProjectileBodyEmissor *getProjectileEmissor() const;
 };
 
 

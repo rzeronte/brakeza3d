@@ -7,10 +7,10 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Rayer",
+      "name": "Colossus",
       "position": { "x": 10, "y": 10 },
       "model": "spaceships/blue_spaceship_01.fbx",
-      "animated": false,
+      "animated": true,
       "stamina": 1000,
       "reward": true,
       "motion": {
@@ -29,49 +29,24 @@
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.25,
-        "stop": false,
+        "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
-        "flatTexture": false,
+        "flatTexture": true,
         "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "Rayer",
-      "position": { "x": 90, "y": 10 },
-      "model": "spaceships/blue_spaceship_01.fbx",
-      "animated": false,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 2,
-        "speed": 15,
-        "separation": 1000
+        "color": { "r": 255, "g": 0, "b": 0 }
       },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 999,
-        "startAmount": 1000,
-        "speed": 900,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.15,
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
+        "cadenceTime": 3.0,
+        "type": 1,
         "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 0,
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": false,
-        "enableLights": true,
-        "color": { "r": 0, "g": 255, "b": 0 }
+        "stopDuration": 0,
+        "stopEvery": 9
       }
     }
   ]

@@ -1,12 +1,143 @@
 {
   "name": "Level 15",
-  "backgroundImage": "levels/grid_purple.png",
+  "backgroundImage": "levels/15.png",
   "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "color": { "r": 0, "g": 255, "b": 0 },
-  "enemies": [
-  ],
-  "items": [
-  ]
-}
+    "color": { "r": 0, "g": 255, "b": 0 },
+    "enemies": [
+      {
+        "name": "Colossus",
+        "position": { "x": 50, "y": 0 },
+        "model": "spaceships/blue_spaceship_01.fbx",
+        "animated": true,
+        "stamina": 1000,
+        "reward": true,
+        "motion": {
+          "type": 2,
+          "speed": 10,
+          "separation": 1000
+        },
+        "weapon": {
+          "index": 0,
+          "available": true,
+          "name": "Linear",
+          "damage": 10,
+          "amount": 999,
+          "startAmount": 1000,
+          "speed": 500,
+          "dispersion": 10,
+          "accuracy": 100,
+          "cadenceTime": 0.25,
+          "stop": true,
+          "stopDuration": 2,
+          "stopEvery": 6,
+          "type": 0,
+          "modelProjectile": "projectile_weapon_01.fbx",
+          "model": "item_weapon_01.fbx",
+          "flatTexture": true,
+          "enableLights": true,
+          "color": { "r": 255, "g": 0, "b": 0 }
+        },
+        "emitter": {
+          "rotation": { "x": 90, "y": 0, "z": 0 },
+          "rotationFrame": { "x": 0, "y": 316, "z": 0 },
+          "cadenceTime": 3.0,
+          "type": 1,
+          "stop": false,
+          "stopDuration": 0,
+          "stopEvery": 9
+        }
+      },
+      {
+        "name": "Blupincher",
+        "position": { "x": 90,  "y": 10 },
+        "model": "spaceships/blue_spaceship_02.fbx",
+        "animated": true,
+        "stamina": 1250,
+        "reward": true,
+        "motion": {
+          "type": 1,
+          "from": { "x": 10, "y": 30 },
+          "to": { "x": 10, "y": 60 },
+          "speed": 0.5
+        },
+        "weapon": {
+          "index": 0,
+          "available": false,
+          "name": "Linear",
+          "damage": 20,
+          "amount": 999,
+          "startAmount": 100,
+          "speed": 500,
+          "dispersion": 10,
+          "accuracy": 100,
+          "cadenceTime": 1.0,
+          "stop": false,
+          "stopDuration": 2,
+          "stopEvery": 6,
+          "type": 1,
+          "modelProjectile": "projectile_weapon_01.fbx",
+          "model": "item_weapon_02.fbx",
+          "flatTexture": true,
+          "enableLights": true,
+          "color": { "r": 255, "g": 255, "b": 0 }
+        },
+        "emitter": {
+          "rotation": { "x": 90, "y": 0, "z": 0 },
+          "rotationFrame": { "x": 0, "y": 16, "z": 0 },
+          "cadenceTime": 0.30,
+          "type": 0,
+          "stop": true,
+          "stopDuration": 2,
+          "stopEvery": 4
+        }
+      },
+      {
+        "name": "Blupincher",
+        "position": { "x": 90,  "y": 10 },
+        "model": "spaceships/blue_spaceship_02.fbx",
+        "animated": true,
+        "stamina": 1250,
+        "reward": true,
+        "motion": {
+          "type": 1,
+          "from": { "x": 90, "y": 30 },
+          "to": { "x": 90, "y": 60 },
+          "speed": 0.5
+        },
+        "weapon": {
+          "index": 0,
+          "available": false,
+          "name": "Linear",
+          "damage": 20,
+          "amount": 999,
+          "startAmount": 100,
+          "speed": 500,
+          "dispersion": 10,
+          "accuracy": 100,
+          "cadenceTime": 1.0,
+          "stop": false,
+          "stopDuration": 2,
+          "stopEvery": 6,
+          "type": 1,
+          "modelProjectile": "projectile_weapon_01.fbx",
+          "model": "item_weapon_02.fbx",
+          "flatTexture": true,
+          "enableLights": true,
+          "color": { "r": 255, "g": 255, "b": 0 }
+        },
+        "emitter": {
+          "rotation": { "x": 90, "y": 0, "z": 0 },
+          "rotationFrame": { "x": 0, "y": 16, "z": 0 },
+          "cadenceTime": 0.30,
+          "type": 0,
+          "stop": true,
+          "stopDuration": 2,
+          "stopEvery": 4
+        }
+      }
+    ],
+    "items": [
+    ]
+  }

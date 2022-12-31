@@ -29,7 +29,7 @@ __kernel void onUpdate(
     __global unsigned char *s = &image[index];
     __global unsigned char *t = &shader[i];
 
-    float shadowIntensity = plot(st.x, 0.5, 0.9);
+    float shadowIntensity = plot(st.x, 0.5, 0.95);
     float speed = 0.9;
 
     st *= 7.0;
