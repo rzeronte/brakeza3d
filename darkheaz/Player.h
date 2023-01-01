@@ -54,7 +54,6 @@ private:
     ShaderBlink *blink;
 
     int killsCounter;
-    int levelsCompletedCounter;
     bool energyShieldEnabled;
     int gravityShieldsNumber;
 
@@ -139,12 +138,6 @@ public:
 
     void increaseKills();
 
-    void increaseLevelsCompleted();
-
-    int getLevelCompletedCounter() const;
-
-    void setLevelCompletedCounter(int levelCounter);
-
     [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
     bool isEnergyShieldEnabled() const;
@@ -188,8 +181,6 @@ public:
     bool isAllowGravitationalShields() const;
 
     bool isAllowEnergyShield() const;
-
-    void decreaseLevelsCompleted();
 
     void loadBlinkShader();
 

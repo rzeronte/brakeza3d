@@ -27,4 +27,8 @@ void AmmoSmartProjectileBody::onUpdate()
     btVector3 btDirection;
     direction.getComponent().getScaled(speed).saveToBtVector3(&btDirection);
     getRigidBody()->applyCentralForce(btDirection);
+
+    direction.getComponent().saveToBtVector3(&btDirection);
+
+    getRigidBody()->applyTorque(btDirection);
 }

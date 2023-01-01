@@ -84,7 +84,7 @@
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/boss_green_01.fbx",
       "animated": true,
-      "stamina": 1000,
+      "stamina": 3000,
       "reward": true,
       "motion": {
         "type": 1,

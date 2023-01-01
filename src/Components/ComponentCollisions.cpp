@@ -186,6 +186,7 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
         camera->getRotation().getTranspose() * EngineSetup::get()->forward,
+        M3::getMatrixIdentity(),
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),

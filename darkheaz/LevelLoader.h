@@ -56,6 +56,7 @@ public:
     Counter countDown;
     Image *tutorialImage;
     bool hasTutorial;
+    bool endLevel;
 
 private:
     std::vector<std::string> levels;
@@ -137,6 +138,10 @@ public:
     Color parseColorJSON(cJSON *color);
 
     const std::vector<std::string> &getLevels() const;
+
+    bool isEndLevel() const;
+
+    void setEndLevel(bool endLevel);
 };
 
 

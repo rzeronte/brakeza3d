@@ -38,11 +38,11 @@
       "stopEvery": 5,
       "type": 1,
       "icon": "icons/weapon_smart.png",
-      "modelProjectile": "projectile_weapon_02.fbx",
+      "modelProjectile": "projectile_weapon_01.fbx",
       "model": "item_weapon_03.fbx",
-      "flatTexture": false,
+      "flatTexture": true,
       "enableLights": true,
-      "color": { "r": 0, "g": 0, "b": 255 }
+      "color": { "r": 255, "g": 255, "b": 0 }
     },
     {
       "index": 2,
