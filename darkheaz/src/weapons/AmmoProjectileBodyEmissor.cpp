@@ -155,6 +155,7 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
     projectile->makeProjectileRigidBody(
         0.1,
         direction,
+        M3::getMatrixIdentity(),
         (float) weaponType->getSpeed(),
         weaponType->getAccuracy(),
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),

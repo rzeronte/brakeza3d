@@ -117,6 +117,11 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     setLevelName(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "name")->valuestring);
 
+    setEndLevel(false);
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel") != nullptr) {
+        setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel"));
+    }
+
     std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring;
     auto shaderBackground = ComponentsManager::get()->getComponentGame()->shaderBackgroundImage;
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
@@ -429,16 +434,20 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
 
             float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorPatrol(from, to, behaviorSpeed));
+            auto behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
+            //behavior->setEnabled(false);
+            enemy->setBehavior(behavior);
 
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
-            enemy->setBehavior(new EnemyBehaviorFollow(
+            auto behavior = new EnemyBehaviorFollow(
                     ComponentsManager::get()->getComponentGame()->getPlayer(),
                     cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
                     cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
-            ));
+            );
+            behavior->setEnabled(false);
+            enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
@@ -446,17 +455,24 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
 
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorCircle(center, speed, radius));
+
+            auto behavior = new EnemyBehaviorCircle(center, speed, radius);
+            //behavior->setEnabled(false);
+            enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            enemy->setBehavior(new EnemyBehaviorRandom(speed));
+
+            auto behavior = new EnemyBehaviorRandom(speed);
+            //behavior->setEnabled(false);
+            enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATH: {
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPath(speed);
+            //behavior->setEnabled(false);
 
             auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
 
@@ -709,4 +725,12 @@ Color LevelLoader::parseColorJSON(cJSON *color)
 
 const std::vector<std::string> &LevelLoader::getLevels() const {
     return levels;
+}
+
+bool LevelLoader::isEndLevel() const {
+    return endLevel;
+}
+
+void LevelLoader::setEndLevel(bool endLevel) {
+    LevelLoader::endLevel = endLevel;
 }

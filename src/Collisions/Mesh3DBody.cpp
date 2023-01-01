@@ -67,6 +67,8 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int c
 void Mesh3DBody::makeSimpleRigidBody(
         float mass,
         Vertex3D pos,
+        Vertex3D direction,
+        M3 rotation,
         Vertex3D dimensions,
         btDiscreteDynamicsWorld *world,
         int collisionGroup,
@@ -80,6 +82,12 @@ void Mesh3DBody::makeSimpleRigidBody(
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
+
+    btMatrix3x3 brakezaRotation = Tools::M3ToBulletM3(rotation);
+    btQuaternion qRotation;
+    brakezaRotation.getRotation(qRotation);
+
+    transformation.setRotation(qRotation);
 
     btCollisionShape *collisionShape = new btBoxShape(btVector3(dimensions.x, dimensions.y, dimensions.z));
     btVector3 inertia(0, 0, 0);

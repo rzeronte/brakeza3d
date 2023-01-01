@@ -221,6 +221,7 @@ void EnemyGhost::shoot(Object3D *target)
                 this,
                 positionProjectile,
                 direction,
+                getRotation(),
                 EngineSetup::collisionGroups::Player,
                 false
             );
@@ -231,9 +232,9 @@ void EnemyGhost::shoot(Object3D *target)
                 this,
                 positionProjectile,
                 direction,
+                getRotation(),
                 EngineSetup::collisionGroups::Player,
                 target,
-                true,
                 false
             );
             break;

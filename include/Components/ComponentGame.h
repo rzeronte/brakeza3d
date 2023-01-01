@@ -87,9 +87,6 @@ private:
 
     void loadLevels();
 
-    void startWaterShader();
-    void stopWaterShader();
-
 public:
     [[nodiscard]] LevelLoader *getLevelInfo() const;
 

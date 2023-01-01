@@ -8,7 +8,8 @@ Projectile3DBody::Projectile3DBody() {
 
 void Projectile3DBody::makeProjectileRigidBody(
         float mass,
-        Vertex3D direction,
+        Vertex3D projectileDirection,
+        M3 rotation,
         float forceImpulse,
         float accuracy,
         btDiscreteDynamicsWorld *world,
@@ -16,20 +17,19 @@ void Projectile3DBody::makeProjectileRigidBody(
         int collisionMask
 ) {
     updateBoundingBox();
-    Mesh3DBody::makeSimpleRigidBody(mass, getPosition(), aabb.size(), world, collisionGroup, collisionMask);
+    Mesh3DBody::makeSimpleRigidBody(mass, getPosition(), projectileDirection, rotation, aabb.size(), world, collisionGroup, collisionMask);
 
-    direction = direction.getScaled(forceImpulse);
-    direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
-    direction.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
-    direction.z += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+    projectileDirection = projectileDirection.getScaled(forceImpulse);
+    projectileDirection.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+    projectileDirection.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+    projectileDirection.z += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
 
     btVector3 impulse;
-    direction.saveToBtVector3(&impulse);
+    projectileDirection.saveToBtVector3(&impulse);
     getRigidBody()->applyCentralImpulse(impulse);
-    getRigidBody()->applyTorque(impulse * 5000);
     getRigidBody()->setGravity(btVector3(0, 0, 0));
 
-    this->direction = direction;
+    this->direction = projectileDirection;
 }
 
 void Projectile3DBody::onUpdate() {

@@ -37,7 +37,6 @@ Player::Player() : state(PlayerState::EMPTY),
 
     autoRotationSelectedObjectSpeed = 1;
     killsCounter = 0;
-    levelsCompletedCounter = 0;
 
     this->counterDamageBlink = new Counter(0.45);
 
@@ -138,6 +137,7 @@ void Player::takeDamage(float dmg)
             0
         );
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
+        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
         ComponentsManager::get()->getComponentGame()->shaderColor->setEnabled(true);
         lives--;
     }
@@ -193,6 +193,7 @@ void Player::shoot()
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
+                getRotation(),
                 EngineSetup::collisionGroups::Enemy,
                 true
             );
@@ -203,9 +204,9 @@ void Player::shoot()
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
+                getRotation(),
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
-                false,
                 true
             );
             break;
@@ -468,28 +469,6 @@ void Player::setKillsCounter(int value)
 void Player::increaseKills()
 {
     killsCounter++;
-}
-
-int Player::getLevelCompletedCounter() const
-{
-    return levelsCompletedCounter;
-}
-
-void Player::setLevelCompletedCounter(int levelCounter)
-{
-    Player::levelsCompletedCounter = levelCounter;
-}
-
-void Player::increaseLevelsCompleted()
-{
-    levelsCompletedCounter++;
-}
-
-void Player::decreaseLevelsCompleted()
-{
-    if (levelsCompletedCounter > 0) {
-        levelsCompletedCounter--;
-    }
 }
 
 const std::vector<Weapon *> &Player::getWeapons() const {

@@ -139,6 +139,7 @@ void ComponentGame::onUpdate()
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5);
+        shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50);
     }
 
 
@@ -186,7 +187,6 @@ int ComponentGame::getLiveEnemiesCounter()
 void ComponentGame::checkForEndLevel()
 {
     if (getLiveEnemiesCounter() == 0 && !getLevelInfo()->isLevelFinished()) {
-        getPlayer()->increaseLevelsCompleted();
         getPlayer()->setKillsCounter(0);
         getLevelInfo()->setLevelFinished(true);
         getLevelInfo()->setLevelStartedToPlay(false);
@@ -198,7 +198,7 @@ void ComponentGame::checkForEndLevel()
             0
         );
 
-        if (getPlayer()->getLevelCompletedCounter() >= getLevelInfo()->size()) {
+        if (getLevelInfo()->isEndLevel()) {
             makeFadeToGameState(EngineSetup::PRESSKEY_GAMEOVER);
         } else {
             makeFadeToGameState(EngineSetup::PRESSKEY_NEWLEVEL);
@@ -209,10 +209,6 @@ void ComponentGame::checkForEndLevel()
 void ComponentGame::setGameState(EngineSetup::GameState state)
 {
     Logging::getInstance()->Log("GameState changed to: " + std::to_string(state));
-
-    if (state == EngineSetup::GameState::NONE) {
-        startWaterShader();
-    }
 
     if (getGameState() == EngineSetup::GameState::NONE && state == EngineSetup::GameState::SPLASH) {
         Logging::getInstance()->Log("GameState changed to SPLASH");
@@ -445,19 +441,6 @@ FaderToGameStates *ComponentGame::getFadeToGameState() const
     return fadeToGameState;
 }
 
-void ComponentGame::startWaterShader()
-{
-    //auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
-    //shader->setPhaseRender(EngineSetup::ShadersPhaseRender::POSTUPDATE);
-    //shader->setEnabled(true);
-}
-
-void ComponentGame::stopWaterShader()
-{
-    //auto shader = dynamic_cast<ShaderWater*> (ComponentsManager::get()->getComponentRender()->getShaderByType(EngineSetup::ShaderTypes::WATER));
-    //shader->setEnabled(false);
-}
-
 LevelLoader *ComponentGame::getLevelInfo() const
 {
     return levelInfo;
@@ -540,8 +523,14 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
 
-        if (enemy != nullptr && enemy->getProjectileEmissor() != nullptr){
-            enemy->getProjectileEmissor()->setActive(value);
+        if (enemy != nullptr) {
+            if (enemy->getProjectileEmissor() != nullptr) {
+                enemy->getProjectileEmissor()->setActive(value);
+            }
+
+            if (enemy->getBehavior() != nullptr) {
+                enemy->getBehavior()->setEnabled(true);
+            }
         }
     }
 }
@@ -644,7 +633,6 @@ void ComponentGame::pressedKeyForBeginLevel()
 void ComponentGame::pressedKeyForFinishGameAndRestart()
 {
     ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, 3000);
-    ComponentsManager::get()->getComponentGame()->getPlayer()->setLevelCompletedCounter(0);
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->setCurrentLevelIndex(-1);
     ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::MENU);
 }
@@ -718,7 +706,6 @@ void ComponentGame::handleMenuGameState()
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
     setVisibleInGameObjects(false);
     shaderEdge->setEnabled(false);
-    startWaterShader();
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -739,7 +726,6 @@ void ComponentGame::handleGamingGameState()
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
     shaderColor->setEnabled(false);
     shaderEdge->setEnabled(true);
-    stopWaterShader();
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
 }
 
@@ -769,7 +755,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
-    stopWaterShader();
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
     if (getLevelInfo()->isHaveMusic()) {
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
@@ -797,7 +782,6 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
-    stopWaterShader();
 
     if (getLevelInfo()->isHaveMusic()) {
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
@@ -830,7 +814,6 @@ void ComponentGame::handlePressKeyPreviousLevel()
     getPlayer()->setEnabled(true);
     removeInGameObjects();
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->loadPrevious();
-    getPlayer()->decreaseLevelsCompleted();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setGravityShieldsNumber(0);

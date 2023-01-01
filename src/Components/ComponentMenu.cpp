@@ -47,7 +47,7 @@ void ComponentMenu::loadDecorative3DMesh() {
     spaceship->setEnabled(true);
     spaceship->setAlpha(2555);
     spaceship->setEnableLights(true);
-    spaceship->setPosition(Vertex3D(5000, -3000, 15000));
+    spaceship->setPosition(Vertex3D(2500, -3000, 15000));
     spaceship->setRotationFrameEnabled(false);
     spaceship->setRotationFrame(Vertex3D(0, 0.5, 0));
     spaceship->setRotation(-30, 0, 0);
@@ -138,9 +138,8 @@ void ComponentMenu::drawOptions() {
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(alpha);
 
-    int offsetY = 120;
-    int stepY = 45;
-
+    int offsetY = 100;
+    int stepY = 50;
 
     for (int i = 0; i < numOptions; i++) {
         std::string text = this->options[i]->getLabel();
@@ -177,11 +176,11 @@ void ComponentMenu::setEnabled(bool value)
 void ComponentMenu::drawVersion()
 {
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
-            500,
-            440,
+            560,
+            450,
             "brakeza.com",
             ComponentsManager::get()->getComponentGame()->primaryColor,
-            0.4
+            0.2
     );
 }
 

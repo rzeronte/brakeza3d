@@ -106,7 +106,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, bool sound)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, int collisionMask, bool sound)
 {
     const int ammoAmount = getAmmoAmount();
 
@@ -143,6 +143,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->makeProjectileRigidBody(
             0.1,
             direction,
+            rotation,
             (float) getSpeed(),
             getAccuracy(),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
@@ -164,7 +165,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, int collisionMask, Object3D *target, bool flat, bool sound)
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, int collisionMask, Object3D *target, bool sound)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -203,6 +204,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->makeProjectileRigidBody(
             0.1,
             direction,
+            rotation,
             (float) getSpeed(),
             getAccuracy(),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
