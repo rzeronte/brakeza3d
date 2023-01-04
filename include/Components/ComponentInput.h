@@ -24,6 +24,8 @@ public:
     Uint8 controllerButtonY;
     float controllerAxisLeftX;
     float controllerAxisLeftY;
+    float controllerAxisTriggerLeft;
+    float controllerAxisTriggerRight;
 
     Uint32 mouseButtons;
     int mouseX;
