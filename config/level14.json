@@ -37,7 +37,7 @@
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": true,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
@@ -46,7 +46,8 @@
         "type": 1,
         "stop": false,
         "stopDuration": 0,
-        "stopEvery": 9
+        "stopEvery": 9,
+        "color": { "r": 255, "g": 0, "b": 0 }
       }
     },
     {

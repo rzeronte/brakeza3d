@@ -136,8 +136,8 @@ public:
 
     void handlePressKeyCredits();
 
-    Color primaryColor = Color(200, 10, 40);
-    Color secondaryColor = Color(20, 145, 52);
+    Color primaryColor = Color(179, 0, 40);
+    Color secondaryColor = Color(0, 179, 52);
     Color thirdColor = Color(0, 0, 255);
 };
 

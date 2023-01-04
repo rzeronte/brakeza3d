@@ -10,9 +10,9 @@
     {
       "name": "Patrol",
       "position": { "x": 50, "y": 10 },
-      "model": "moon.fbx",
+      "model": "spaceShuttle.fbx",
       "animated": false,
-      "stamina": 1000,
+      "stamina": 500,
       "reward": false,
       "motion": {
         "type": 6

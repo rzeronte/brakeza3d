@@ -56,6 +56,8 @@ public:
 
     void clone(Mesh3D *source);
 
+    void cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLights, Color color);
+
     void onUpdate();
 
     Octree *getOctree() const;

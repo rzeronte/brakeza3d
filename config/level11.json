@@ -51,7 +51,7 @@
       "motion": {
         "type": 5,
         "points":  [
-          { "x": 50, "y": 25 },
+          { "x": 50, "y": 20 },
           { "x": 50, "y": 50 },
           { "x": 20, "y": 50 },
           { "x": 60, "y": 50 },
@@ -88,7 +88,8 @@
         "type": 0,
         "stop": true,
         "stopDuration": 2,
-        "stopEvery": 4
+        "stopEvery": 4,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],

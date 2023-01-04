@@ -66,8 +66,8 @@ void Player::loadShieldModel()
     shieldModel->setStencilBufferEnabled(true);
     shieldModel->setFlatTextureColor(false);
     shieldModel->setFlatColor(Color::green());
-    shieldModel->setRotationFrameEnabled(true);
-    shieldModel->setRotationFrame(Vertex3D(0, 0, 1));
+    //shieldModel->setRotationFrameEnabled(true);
+    //shieldModel->setRotationFrame(Vertex3D(0, 0, 1));
     shieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
 
     Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
@@ -78,7 +78,7 @@ void Player::loadReflection()
     reflection = new PlayerReflection(getStartStamina(), 5);
     reflection->setEnabled(false);
     reflection->setLabel("gravitationalShieldPlayer");
-    reflection->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
+    reflection->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
     reflection->setParent(parent);
     reflection->setFlatTextureColor(false);
     reflection->setPosition(getPosition());
@@ -173,7 +173,7 @@ void Player::makeGravitationalShield()
     );
 }
 
-void Player::shoot()
+void Player::shoot(float intensity)
 {
     if (getWeapon() == nullptr) {
         return;
@@ -194,6 +194,7 @@ void Player::shoot()
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 getRotation(),
+                intensity,
                 EngineSetup::collisionGroups::Enemy,
                 true
             );
@@ -205,6 +206,7 @@ void Player::shoot()
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 getRotation(),
+                intensity,
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
                 true
@@ -255,12 +257,15 @@ void Player::onUpdate()
 
     if (isEnergyShieldEnabled()) {
         shieldModel->setPosition(getPosition());
+        shieldModel->setRotation(getRotation());
         shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() + 10, 0, 255));
     } else {
         if (shieldModel->getAlpha() == 0) {
             shieldModel->setEnabled(false);
         }
-       shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 25, 0, 255));
+        shieldModel->setRotation(getRotation());
+        shieldModel->setPosition(getPosition());
+        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 25, 0, 255));
     }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -417,7 +422,6 @@ void Player::addWeapon(Weapon *weaponType)
     if (weapon != nullptr) {
         weapon->addAmount(weaponType->getStartAmmoAmount());
         weapon->setAvailable(true);
-        setWeapon(weapon);
         Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount()));
         return;
     }
@@ -626,4 +630,10 @@ void Player::unstuck()
 {
     setStucked(false);
     counterStucked->setEnabled(false);
+}
+
+void Player::setEnabled(bool value)
+{
+    Object3D::setEnabled(value);
+    this->light->setEnabled(value);
 }

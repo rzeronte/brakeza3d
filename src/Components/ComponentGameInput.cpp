@@ -156,9 +156,10 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 void ComponentGameInput::handleFire() const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
+
     Uint8 *keyboard = componentInput->keyboard;
-    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerButtonA) {
-        player->shoot();
+    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > 0.20) {
+        player->shoot(componentInput->controllerAxisTriggerRight);
     }
 }
 
@@ -204,11 +205,11 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         }
     }
 
-    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) {
+    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
         player->nextWeapon();
     }
 
-    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) {
+    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER) {
         player->previousWeapon();
     }
 }
@@ -283,12 +284,12 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
     if (
         (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) ||
-        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
+        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
      ) {
         game->selectClosestObject3DFromPlayer();
     }
 
-    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
+    if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
     }
 }
@@ -333,10 +334,10 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
             0
         );
 
-        auto fireworks = new ParticleEmissorFireworks(true, 1520, 1, 0.01, Color::green(), 6, 25);
-        fireworks->setPosition(player->getPosition());
-        fireworks->setRotationFrame(0, 4, 5);
-        Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(
+            new ParticleEmissorFireworks(player->getPosition(), Vertex3D(0, 4, 5), true, 1520, 1, 0.01, Color::green(), 6, 25),
+            "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        );
 
         float speed = player->dashPower * Brakeza3D::get()->getDeltaTime();
 
@@ -349,9 +350,11 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleEnergyShield(SDL_Event *event) {
+void ComponentGameInput::handleEnergyShield(SDL_Event *event)
+{
+    auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    if ( event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_X) {
+    if (componentInput->controllerAxisTriggerLeft > 0.20 && !player->isEnergyShieldEnabled()) {
         if (!player->isAllowEnergyShield()) {
             return;
         }
@@ -365,7 +368,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event) {
         );
     }
 
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_X) {
+    if (componentInput->controllerAxisTriggerLeft < 0.20 && player->isEnergyShieldEnabled()) {
         player->setEnergyShieldEnabled(false);
     }
 }
@@ -384,7 +387,7 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
 void ComponentGameInput::handleMakeGravitationalShields(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonY) {
+    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonA) {
         if (player->isAllowGravitationalShields()) {
             player->makeGravitationalShield();
         }

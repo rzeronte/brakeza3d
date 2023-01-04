@@ -75,7 +75,7 @@ public:
 
     void respawn();
 
-    void shoot();
+    void shoot(float intensity);
 
     void makeGravitationalShield();
 
@@ -197,6 +197,8 @@ public:
     void setStucked(bool value);
 
     void unstuck();
+
+    void setEnabled(bool value);
 };
 
 

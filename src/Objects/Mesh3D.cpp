@@ -82,14 +82,33 @@ void Mesh3D::updateBoundingBox()
     this->aabb.updateVertices();
 }
 
+void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLights, Color color)
+{
+    for (auto &triangle : source->modelTriangles) {
+        auto *t = new Triangle(triangle->A, triangle->B, triangle->C, this);
+
+        t->setTexture(triangle->getTexture());
+        t->setFlatTextureColor(isFlatTextureColor);
+        t->setFlatColor(color);
+        t->setEnableLights(isEnableLights);
+        t->setBSPTriangle(false);
+
+        this->modelTriangles.push_back(t);
+    }
+
+    this->modelTextures = source->modelTextures;
+    this->scale = source->scale;
+    this->sharedTextures = true;
+}
+
 void Mesh3D::clone(Mesh3D *source)
 {
     for (auto &triangle : source->modelTriangles) {
-        auto *t = new Triangle(triangle->A,triangle->B,triangle->C,this);
+        auto *t = new Triangle(triangle->A, triangle->B, triangle->C,this);
 
         t->setTexture(triangle->getTexture());
         t->setFlatTextureColor(source->isFlatTextureColor());
-        t->setFlatColor(source->flatColor);
+        t->setFlatColor(source->getFlatColor());
         t->setEnableLights(triangle->isEnableLights());
         t->setBSPTriangle(triangle->isBSPTriangle());
 

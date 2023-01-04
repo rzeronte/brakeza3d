@@ -505,6 +505,7 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
     bool stop = (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint;
     auto stopDuration = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble;
     auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
+    auto color = parseColorJSON(cJSON_GetObjectItemCaseSensitive(emitter, "color"));
 
     auto projectileEmissor = new AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType::UNIQUE_PROJECTILE, step, enemy->getWeapon());
 
@@ -538,7 +539,7 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
     projectileEmissor->setStop(stop);
     projectileEmissor->setStopDuration(stopDuration);
     projectileEmissor->setStopEvery(stopEvery);
-
+    projectileEmissor->setColor(color);
     projectileEmissor->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
     enemy->setProjectileEmissor(projectileEmissor);
