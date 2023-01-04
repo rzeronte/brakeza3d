@@ -6,6 +6,8 @@
 #include "../../include/Misc/Tools.h"
 
 ParticleEmissorFireworks::ParticleEmissorFireworks(
+        Vertex3D position,
+        Vertex3D rotationFrame,
         bool active,
         float force,
         float ttl,
@@ -16,6 +18,7 @@ ParticleEmissorFireworks::ParticleEmissorFireworks(
                                maxFires(maxFires),
                                particlesByFire(particlesByFire)
 {
+    setPosition(position);
     this->firesCounter = 0;
 }
 

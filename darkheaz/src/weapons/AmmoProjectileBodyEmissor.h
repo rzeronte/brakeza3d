@@ -22,6 +22,7 @@ class AmmoProjectileBodyEmissor: public Object3D {
     float stopDuration;
     float stopEvery;
     ProjectileBodyEmmissorType type;
+    Color color;
 
 public:
     AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType);
@@ -67,6 +68,10 @@ public:
     void launchUniqueProjectile();
 
     void launchCircleProjectiles();
+
+    const Color &getColor() const;
+
+    void setColor(const Color &color);
 };
 
 

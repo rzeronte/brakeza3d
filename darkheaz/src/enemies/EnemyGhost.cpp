@@ -21,7 +21,7 @@ EnemyGhost::EnemyGhost()
 
 void EnemyGhost::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, Color::red());
+    blink = new ShaderBlink(this, ComponentsManager::get()->getComponentGame()->primaryColor);
     blink->setStep(0.05);
     blink->setEnabled(true);
 }
@@ -102,10 +102,10 @@ void EnemyGhost::makeReward()
 {
     if (!isRewards()) return;
 
-    auto fireworks = new ParticleEmissorFireworks(true, 520, 10, 0.01, Color::red(), 6, 15);
-    fireworks->setPosition(getPosition());
-    fireworks->setRotationFrame(0, 4, 5);
-    Brakeza3D::get()->addObject3D(fireworks, "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(
+        new ParticleEmissorFireworks(getPosition(), Vertex3D(0, 4, 5), true, 520, 10, 0.01, Color::red(), 6, 15),
+        "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+    );
 
     auto playerWeapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
@@ -188,9 +188,7 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        auto fireworks = new ParticleEmissorFireworks(true, 1000, 1, 0.02, Color::green(), 1, 4);
-        fireworks->setPosition(projectile->getPosition());
-        fireworks->setRotationFrame(0, 4, 5);
+        auto fireworks = new ParticleEmissorFireworks(getPosition(), Vertex3D(0, 4, 5), true, 1000, 1, 0.02, Color::green(), 1, 4);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
         this->takeDamage(projectile->getWeaponType()->getDamage());
@@ -222,6 +220,7 @@ void EnemyGhost::shoot(Object3D *target)
                 positionProjectile,
                 direction,
                 getRotation(),
+                1.0,
                 EngineSetup::collisionGroups::Player,
                 false
             );
@@ -233,6 +232,7 @@ void EnemyGhost::shoot(Object3D *target)
                 positionProjectile,
                 direction,
                 getRotation(),
+                1.0,
                 EngineSetup::collisionGroups::Player,
                 target,
                 false
@@ -301,7 +301,7 @@ void EnemyGhost::makeExplosion()
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
     Vector3D direction(origin, getPosition());
-    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(150));
+    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(350));
 
     sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->explosion);
     sprite->setAnimation(0);

@@ -8,10 +8,32 @@
   "enemies": [
     {
       "name": "Persecutor",
-      "position": { "x": 50, "y": 15 },
-      "model": "moon.fbx",
+      "position": { "x": 15, "y": 12 },
+      "model": "spaceShuttle.fbx",
       "animated": false,
-      "stamina": 1000,
+      "stamina": 500,
+      "reward": false,
+      "motion": {
+        "type": 6
+      }
+    },
+    {
+      "name": "Persecutor",
+      "position": { "x": 50, "y": 12 },
+      "model": "spaceShuttle.fbx",
+      "animated": false,
+      "stamina": 500,
+      "reward": false,
+      "motion": {
+        "type": 6
+      }
+    },
+    {
+      "name": "Persecutor",
+      "position": { "x": 85, "y": 12 },
+      "model": "spaceShuttle.fbx",
+      "animated": false,
+      "stamina": 500,
       "reward": false,
       "motion": {
         "type": 6

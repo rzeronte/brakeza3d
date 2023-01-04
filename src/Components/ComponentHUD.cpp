@@ -80,6 +80,7 @@ void ComponentHUD::loadImages() {
 void ComponentHUD::drawHUD()
 {
     auto componentManager = ComponentsManager::get();
+    auto color = componentManager->getComponentGame()->primaryColor;
 
     drawShaderBars();
     drawEnemySelectedShaderStamina();
@@ -90,22 +91,13 @@ void ComponentHUD::drawHUD()
         this->textWriter->writeTTFCenterHorizontal(
             15,
             std::to_string(componentManager->getComponentRender()->fps).c_str(),
-            Color::red(),
+            color,
             0.5
         );
     }
 
     for (auto & button : buttons) {
         button->draw();
-    }
-
-    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GameState::GAMING) {
-        this->textWriter->writeTTFCenterHorizontal(
-            60,
-            componentManager->getComponentGame()->getLevelInfo()->getLevelName().c_str(),
-            Color::red(),
-            0.5
-        );
     }
 }
 
@@ -137,8 +129,16 @@ void ComponentHUD::drawPlayerStamina(int y)
         510,
         430,
         std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
-        Color::green(),
+        game->secondaryColor,
         0.50
+    );
+
+    textWriter->writeTextTTFAutoSize(
+        513,
+        460,
+        game->getLevelInfo()->getLevelName().c_str(),
+        game->primaryColor,
+        0.25
     );
 
     if (player->isAllowGravitationalShields()) {

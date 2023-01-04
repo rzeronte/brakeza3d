@@ -27,7 +27,7 @@ __kernel void onUpdate(
    float2 st = uv / resolution;
 
 
-    float size = 2.0;
+    float size = 1.0;
 
     float2 dML = {size, 0.0};
     float2 dMR = {0.0, size};

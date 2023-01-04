@@ -2,7 +2,7 @@
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType) : type(type), step(step), weaponType(weaponType)
+AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType) : step(step), weaponType(weaponType), type(type)
 {
     setStop(false);
     setActive(false);
@@ -143,11 +143,13 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
     projectile->setParent(this);
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     projectile->setWeaponType(this->weaponType);
-    projectile->clone(weaponType->getModelProjectile());
+    projectile->cloneParts(
+        weaponType->getModelProjectile(),
+        true,
+        false,
+        getColor()
+    );
     projectile->setStencilBufferEnabled(true);
-    projectile->setEnableLights(getWeapon()->getModelProjectile()->isEnableLights());
-    projectile->setFlatTextureColor(getWeapon()->getModelProjectile()->isFlatTextureColor());
-    projectile->setFlatColor(getWeapon()->getModelProjectile()->getFlatColor());
 
     projectile->setPosition( getPosition() );
     projectile->setEnabled(true);
@@ -173,5 +175,13 @@ void AmmoProjectileBodyEmissor::launchCircleProjectiles()
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/shoots, 0));
         launchUniqueProjectile();
     }
+}
+
+const Color &AmmoProjectileBodyEmissor::getColor() const {
+    return color;
+}
+
+void AmmoProjectileBodyEmissor::setColor(const Color &color) {
+    AmmoProjectileBodyEmissor::color = color;
 }
 

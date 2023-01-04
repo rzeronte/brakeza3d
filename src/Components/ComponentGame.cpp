@@ -115,7 +115,7 @@ void ComponentGame::onUpdate()
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
         getPlayer()->respawn();
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("press a key to START...", primaryColor, 0.5);
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
         if (getLevelInfo()->isHasTutorial()) {
             getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
         }
@@ -130,7 +130,7 @@ void ComponentGame::onUpdate()
     if (state == EngineSetup::GameState::COUNTDOWN) {
         zoomCameraCountDown();
         int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 0.5);
+        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 1);
         getLevelInfo()->getCountDown()->update();
         if (getLevelInfo()->getCountDown()->isFinished()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
@@ -334,10 +334,10 @@ void ComponentGame::loadPlayer()
     player->setStamina(100);
     player->setStencilBufferEnabled(true);
     player->setAutoRotationToFacingSelectedObjectSpeed(5);
-    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/purple_spaceship_03.fbx"));
+    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
     player->updateBoundingBox();
     player->makeSimpleGhostBody(
-        player->aabb.size().getScaled(0.5),
+        Vertex3D(500, 500, 500),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::AllFilter
@@ -350,7 +350,7 @@ void ComponentGame::loadPlayer()
     player->loadReflection();
 
     explosion = new Sprite3D();
-    explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  11, 24);
+    explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  12, 30);
     explosion->setAnimation(0);
 }
 

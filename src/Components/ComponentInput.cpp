@@ -205,6 +205,8 @@ void ComponentInput::updateGamePadStates()
 
     controllerAxisLeftX = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)0)/32768.0;
     controllerAxisLeftY = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)1)/32768.0;
+    controllerAxisTriggerLeft = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)4) / 32768.0;
+    controllerAxisTriggerRight = SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)5) / 32768.0;
 }
 
 bool ComponentInput::isAnyControllerButtonPressed()

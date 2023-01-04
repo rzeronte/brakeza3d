@@ -46,7 +46,8 @@
           "type": 1,
           "stop": false,
           "stopDuration": 0,
-          "stopEvery": 9
+          "stopEvery": 9,
+          "color": { "r": 255, "g": 255, "b": 0 }
         }
       },
       {
@@ -90,7 +91,8 @@
           "type": 0,
           "stop": true,
           "stopDuration": 2,
-          "stopEvery": 4
+          "stopEvery": 4,
+          "color": { "r": 255, "g": 255, "b": 0 }
         }
       },
       {
@@ -134,7 +136,8 @@
           "type": 0,
           "stop": true,
           "stopDuration": 2,
-          "stopEvery": 4
+          "stopEvery": 4,
+          "color": { "r": 255, "g": 255, "b": 0 }
         }
       }
     ],

@@ -106,7 +106,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, int collisionMask, bool sound)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound)
 {
     const int ammoAmount = getAmmoAmount();
 
@@ -117,10 +117,13 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
     }
 
     if (counterCadence->isFinished()) {
-        counterCadence->setEnabled(true);
+        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        this->counterCadence->setStep(t);
+        this->counterCadence->setEnabled(true);
 
         setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
+        auto *componentGame = ComponentsManager::get()->getComponentGame();
 
         auto *projectile = new AmmoProjectileBody();
         projectile->setStencilBufferEnabled(true);
@@ -137,7 +140,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         projectile->clone(getModelProjectile());
-        projectile->setPosition( position );
+        projectile->setPosition(position);
         projectile->setEnabled(true);
         projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
         projectile->makeProjectileRigidBody(
@@ -162,10 +165,15 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+
+        Brakeza3D::get()->addObject3D(
+            new ParticleEmissorFireworks(position, Vertex3D(0, 4, 5), true, 520, 3, 0.02, getModelProjectile()->getFlatColor(), 3, 2),
+            "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        );
     }
 }
 
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, int collisionMask, Object3D *target, bool sound)
+void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -174,7 +182,10 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
     }
 
     if (counterCadence->isFinished()) {
-        counterCadence->setEnabled(true);
+        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        this->counterCadence->setStep(t);
+        this->counterCadence->setEnabled(true);
+
         setStatus(WeaponStatus::PRESSED);
 
         auto *componentRender = ComponentsManager::get()->getComponentRender();
@@ -223,6 +234,12 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         }
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+
+        Brakeza3D::get()->addObject3D(
+            new ParticleEmissorFireworks(position, Vertex3D(0, 4, 5), true, 520, 3, 0.03, getModelProjectile()->getFlatColor(), 3, 2),
+            "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        );
+
     }
 }
 
@@ -349,7 +366,6 @@ Weapon::~Weapon()
 
 void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 {
-
     if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration.isEnabled()) {
@@ -377,7 +393,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setFlatTextureColor(false);
         projectile->setDamage(this->getDamage());
         projectile->makeSimpleGhostBody(
-            Vertex3D(300, 300, 300),
+            Vertex3D(400, 400, 00),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
