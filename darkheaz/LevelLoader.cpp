@@ -18,6 +18,7 @@
 #include "src/bosses/BossLevel10.h"
 #include "src/bosses/BossLevel20.h"
 #include "src/enemies/behaviors/EnemyBehaviorPath.h"
+#include "src/bosses/BossLevel30.h"
 
 #include <utility>
 
@@ -372,6 +373,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 {
     std::string name = cJSON_GetObjectItemCaseSensitive(enemyJSON, "name")->valuestring;
     std::string model = cJSON_GetObjectItemCaseSensitive(enemyJSON, "model")->valuestring;
+    bool enableLights = (bool) cJSON_GetObjectItemCaseSensitive(enemyJSON, "enableLights")->valueint;
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(enemyJSON, "stamina")->valueint;
     int reward = cJSON_GetObjectItemCaseSensitive(enemyJSON, "reward")->valueint;
     int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
@@ -387,7 +389,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
     enemy->setEnabled(true);
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    enemy->setEnableLights(true);
+    enemy->setEnableLights(enableLights);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
     enemy->loadBlinkShader();
@@ -426,7 +428,7 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
     switch(typeMotion) {
         case EnemyBehaviorTypes::ROTATE_FRAME: {
             enemy->setRotationFrameEnabled(true);
-            enemy->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+            enemy->setRotationFrame(Tools::randomVertex().getScaled(0.1));
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
@@ -614,6 +616,11 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
         }
         case BossesTypes::BOSS_LEVEL_20: {
             boss = new BossLevel20();
+            break;
+        }
+        case BossesTypes::BOSS_LEVEL_30: {
+            boss = new BossLevel30();
+            boss->load();
             break;
         }
     }

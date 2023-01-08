@@ -9,3 +9,7 @@ void BossEnemy::onUpdate()
 {
     EnemyGhost::onUpdate();
 }
+
+void BossEnemy::load() {
+
+}
