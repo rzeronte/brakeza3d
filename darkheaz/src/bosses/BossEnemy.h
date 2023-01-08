@@ -15,6 +15,8 @@ public:
     BossEnemy();
 
     void onUpdate() override;
+
+    virtual void load();
 };
 
 

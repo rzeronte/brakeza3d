@@ -433,6 +433,7 @@ void ComponentGame::loadLevels()
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
     levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
+    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level30.json");
 }
 
 

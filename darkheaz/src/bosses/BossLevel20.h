@@ -1,7 +1,3 @@
-//
-// Created by eduardo on 17/04/22.
-//
-
 #ifndef BRAKEDA3D_BOSSLEVEL20_H
 #define BRAKEDA3D_BOSSLEVEL20_H
 

@@ -11,6 +11,7 @@
       "name": "Patrol",
       "position": { "x": 50, "y": 10 },
       "model": "spaceShuttle.fbx",
+      "enableLights": true,
       "animated": false,
       "stamina": 500,
       "reward": false,
