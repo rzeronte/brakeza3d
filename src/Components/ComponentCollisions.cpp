@@ -127,7 +127,6 @@ void ComponentCollisions::stepSimulation() {
         getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime(), 30);
 
         this->updatePhysicObjects();
-
     }
 
     checkCollisionsForAll();
