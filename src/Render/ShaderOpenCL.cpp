@@ -51,7 +51,7 @@ void ShaderOpenCL::initOpenCLProgram()
 
     openClBufferMappedWithVideoOutput = clCreateBuffer(
             context,
-             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+             CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
             EngineBuffers::getInstance()->videoBuffer,
             &clRet

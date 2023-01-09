@@ -684,6 +684,7 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderEdge->setObject(ComponentsManager::get()->getComponentRender()->getSelectedObject());
     shaderEdge->update();
+
 }
 
 void ComponentGame::zoomCameraCountDown()

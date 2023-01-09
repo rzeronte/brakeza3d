@@ -24,6 +24,7 @@
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
+#include "../../darkheaz/src/shaders/ShaderLaser.h"
 
 class ComponentGame : public Component {
 public:

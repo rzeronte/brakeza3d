@@ -403,7 +403,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
-        enemy->aabb.size().getScaled(0.5),
+        enemy->aabb.size().getScaled(0.3),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::AllFilter

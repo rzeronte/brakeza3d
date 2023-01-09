@@ -12,8 +12,8 @@ enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
     WEAPON_SMART_PROJECTILE = 1,
     WEAPON_BOMB = 2,
-    SHOCK = 3,
-
+    WEAPON_LASER = 3,
+    SHOCK = 4
 };
 
 class Weapon {
