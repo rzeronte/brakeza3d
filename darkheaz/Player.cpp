@@ -213,6 +213,13 @@ void Player::shoot(float intensity)
             );
             break;
         }
+
+        case WeaponTypes::WEAPON_LASER: {
+            shaderLaser->setDamage(getWeapon()->getDamage());
+            shaderLaser->setEnabled(true);
+            shaderLaser->setIntensity(intensity);
+            break;
+        }
     }
 }
 
@@ -294,6 +301,7 @@ void Player::onUpdate()
     setPosition(getPosition() + this->velocity);
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
+    shaderLaser->update();
 }
 
 void Player::postUpdate()
@@ -403,6 +411,7 @@ Weapon *Player::getWeapon() const {
 }
 
 void Player::setWeapon(Weapon *weaponType) {
+    Logging::Log("Set Player Weapon to" + weaponType->getLabel(), "");
     Player::weapon = weaponType;
 }
 
@@ -590,6 +599,9 @@ void Player::loadBlinkShader()
     blink->setStep(0.05);
     blink->setEnabled(false);
     counterDamageBlink->setEnabled(false);
+
+    shaderLaser = new ShaderLaser();
+    shaderLaser->setEnabled(false);
 }
 
 PlayerState Player::getState() const {

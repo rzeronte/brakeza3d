@@ -156,9 +156,12 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 void ComponentGameInput::handleFire() const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+
+    componentGame->getPlayer()->shaderLaser->setEnabled(false);
 
     Uint8 *keyboard = componentInput->keyboard;
-    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > 0.20) {
+    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > 0.10) {
         player->shoot(componentInput->controllerAxisTriggerRight);
     }
 }

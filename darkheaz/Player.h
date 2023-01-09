@@ -10,6 +10,7 @@
 #include "src/shaders/ShaderShockWave.h"
 #include "src/items/PlayerReflection.h"
 #include "src/shaders/ShaderTrailObject.h"
+#include "src/shaders/ShaderLaser.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -199,6 +200,8 @@ public:
     void unstuck();
 
     void setEnabled(bool value);
+
+    ShaderLaser *shaderLaser;
 };
 
 
