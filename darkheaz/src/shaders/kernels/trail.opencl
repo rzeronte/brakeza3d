@@ -5,7 +5,6 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *shader,
     __global bool *stencil,
     __global unsigned int *buffer,
     float r,
@@ -22,7 +21,7 @@ __kernel void onUpdate(
    float2 resolution = { screenWidth, screenHeight};
    float2 st = uv / resolution;
 
-    __global unsigned char *s = &shader[i];
+    __global unsigned char *s = &video[i];
     __global unsigned char *z = &buffer[i];
 
     z[0] *= 0.9;
@@ -31,7 +30,7 @@ __kernel void onUpdate(
 
     if (stencil[i]) {
         buffer[i] = createRGB(r, g, b);
-        video[i]  = shader[i];
+        video[i]  = video[i];
         return;
     }
 

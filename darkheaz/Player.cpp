@@ -8,17 +8,17 @@
 #include "src/items/ItemEnergyGhost.h"
 #include "src/items/PlayerReflection.h"
 
-Player::Player() : state(PlayerState::EMPTY),
-                   stamina(INITIAL_STAMINA),
+Player::Player() : stamina(INITIAL_STAMINA),
                    startStamina(INITIAL_STAMINA),
                    energy(INITIAL_ENERGY),
                    startEnergy(INITIAL_ENERGY),
                    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
                    lives(INITIAL_LIVES),
+                   state(PlayerState::EMPTY),
+                   dashPower(INITIAL_POWERDASH),
                    power(INITIAL_POWER),
                    friction(INITIAL_FRICTION),
-                   maxVelocity(INITIAL_MAX_VELOCITY),
-                   dashPower(INITIAL_POWERDASH)
+                   maxVelocity(INITIAL_MAX_VELOCITY)
 {
     light = new LightPoint3D();
     light->setEnabled(true);
@@ -121,6 +121,8 @@ void Player::takeDamage(float dmg)
 
     if (isEnergyShieldEnabled() && getEnergy() > 0) {
         useEnergy(dmg);
+        setState(PlayerState::GETTING_DAMAGE);
+        startPlayerBlink();
         return;
     }
 
@@ -213,11 +215,8 @@ void Player::shoot(float intensity)
             );
             break;
         }
-
         case WeaponTypes::WEAPON_LASER: {
-            shaderLaser->setDamage(getWeapon()->getDamage());
-            shaderLaser->setEnabled(true);
-            shaderLaser->setIntensity(intensity);
+            weapon->shootLaser(shaderLaser, intensity);
             break;
         }
     }
@@ -255,7 +254,8 @@ void Player::onUpdate()
     }
 
     //updateLight();
-    updateWeaponType();
+
+
     applyFriction();
 
     if (getEnergy() < getStartEnergy()) {
@@ -301,11 +301,13 @@ void Player::onUpdate()
     setPosition(getPosition() + this->velocity);
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
-    shaderLaser->update();
+
 }
 
 void Player::postUpdate()
 {
+    //shaderLaser->update();
+
     if (!isEnabled()) return;
 
     if (state == PlayerState::DEAD) {
@@ -318,6 +320,10 @@ void Player::postUpdate()
         if (counterDamageBlink->isFinished()) {
             stopBlinkForPlayer();
         }
+    }
+
+    if (weapon != nullptr) {
+        weapon->onUpdate();
     }
 }
 
@@ -413,12 +419,6 @@ Weapon *Player::getWeapon() const {
 void Player::setWeapon(Weapon *weaponType) {
     Logging::Log("Set Player Weapon to" + weaponType->getLabel(), "");
     Player::weapon = weaponType;
-}
-
-void Player::updateWeaponType() {
-    if (weapon != nullptr) {
-        weapon->onUpdate();
-    }
 }
 
 void Player::createWeapon(const std::string& label) {
@@ -601,6 +601,8 @@ void Player::loadBlinkShader()
     counterDamageBlink->setEnabled(false);
 
     shaderLaser = new ShaderLaser();
+    shaderLaser->setTarget(this);
+    shaderLaser->setSpeed(1000);
     shaderLaser->setEnabled(false);
 }
 
@@ -614,7 +616,6 @@ void Player::stuck(float time)
     counterStucked->setEnabled(true);
 
     setStucked(true);
-
 
     velocity = Vertex3D(0, 0, 0);
 
@@ -648,4 +649,33 @@ void Player::setEnabled(bool value)
 {
     Object3D::setEnabled(value);
     this->light->setEnabled(value);
+}
+
+
+void Player::updateWeaponInteractionStatus()
+{
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+    auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
+    auto weaponStatus = getWeapon()->getStatus();
+
+    if (weaponStatus == WeaponStatus::SUSTAINED && componentInput->controllerAxisTriggerRight < componentGameInput->controllerAxisThreshold) {
+        getWeapon()->setStatus(WeaponStatus::RELEASED);
+    }
+
+    if (weaponStatus == WeaponStatus::NONE && componentInput->controllerAxisTriggerRight >= componentGameInput->controllerAxisThreshold) {
+        getWeapon()->setStatus(WeaponStatus::PRESSED);
+    }
+}
+
+void Player::updateWeaponAutomaticStatus()
+{
+    if (getWeapon()->getStatus() == PRESSED) {
+        getWeapon()->setStatus(SUSTAINED);
+    }
+
+    if (getWeapon()->getStatus() == RELEASED) {
+        shaderLaser->setReach(0);
+        ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SND_LASER);
+        getWeapon()->setStatus(NONE);
+    }
 }

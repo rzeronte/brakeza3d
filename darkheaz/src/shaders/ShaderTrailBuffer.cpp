@@ -75,13 +75,12 @@ void ShaderTrailBuffer::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferForStencilObjects);
-    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferResult);
-    clSetKernelArg(kernel, 7, sizeof(float), &this->color.r);
-    clSetKernelArg(kernel, 8, sizeof(float), &this->color.g);
-    clSetKernelArg(kernel, 9, sizeof(float), &this->color.b);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openCLBufferForStencilObjects);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferResult);
+    clSetKernelArg(kernel, 6, sizeof(float), &this->color.r);
+    clSetKernelArg(kernel, 7, sizeof(float), &this->color.g);
+    clSetKernelArg(kernel, 8, sizeof(float), &this->color.b);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
@@ -102,7 +101,7 @@ void ShaderTrailBuffer::executeKernelOpenCL()
 
     clEnqueueReadBuffer(
         clCommandQueue,
-        openClBufferMappedWithVideoOutput,
+        openClBufferMappedWithVideoInput,
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),

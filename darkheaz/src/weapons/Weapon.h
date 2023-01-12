@@ -7,6 +7,7 @@
 #include "../../../include/Objects/Sprite3D.h"
 #include "../../../include/Objects/Mesh3D.h"
 #include "../../../include/Objects/Mesh3DAnimatedCollection.h"
+#include "../shaders/ShaderLaser.h"
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
@@ -84,15 +85,15 @@ public:
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound);
 
-    Mesh3D *getModel() const;
+    [[nodiscard]] Mesh3D *getModel() const;
 
-    const std::string &getSoundEmptyLabel() const;
+    [[nodiscard]] const std::string &getSoundEmptyLabel() const;
 
     void setSoundEmptyLabel(const std::string &soundEmptyLabel);
 
     void setSoundFire(const std::string &label);
 
-    const std::string &getSoundFire() const;
+    [[nodiscard]] const std::string &getSoundFire() const;
 
     const std::string &getLabel() const;
 
@@ -143,6 +144,8 @@ public:
     virtual ~Weapon();
 
     void shootBomb(Object3D *parent, Vertex3D position);
+
+    void shootLaser(ShaderLaser *shaderLaser, float intensity);
 };
 
 

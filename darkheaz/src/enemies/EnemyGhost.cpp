@@ -24,6 +24,12 @@ void EnemyGhost::loadBlinkShader()
     blink = new ShaderBlink(this, ComponentsManager::get()->getComponentGame()->primaryColor);
     blink->setStep(0.05);
     blink->setEnabled(true);
+
+    laser = new ShaderLaser();
+    laser->setColor(ComponentsManager::get()->getComponentGame()->primaryColor);
+    laser->setTarget(this);
+    laser->setSpeed(1000);
+    laser->setEnabled(false);
 }
 
 void EnemyGhost::onUpdate()
@@ -31,6 +37,7 @@ void EnemyGhost::onUpdate()
     Mesh3DAnimatedGhost::onUpdate();
 
     auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
+    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
     if (!rotationFrameEnabled) {
         rotateToTarget();
@@ -71,7 +78,7 @@ void EnemyGhost::onUpdate()
         }
     }
 
-    if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE)) {
+    if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) && gameState == EngineSetup::GAMING) {
         shoot(getTarget());
     }
 }
@@ -96,6 +103,7 @@ void EnemyGhost::postUpdate()
             counterDamageBlink->setEnabled(false);
         }
     }
+
 }
 
 void EnemyGhost::makeReward()
@@ -216,26 +224,26 @@ void EnemyGhost::shoot(Object3D *target)
     switch(weapon->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
-                this,
-                positionProjectile,
-                direction,
-                getRotation(),
-                1.0,
-                EngineSetup::collisionGroups::Player,
-                false
+                    this,
+                    positionProjectile,
+                    direction,
+                    getRotation(),
+                    1.0,
+                    EngineSetup::collisionGroups::Player,
+                    false
             );
             break;
         }
         case WeaponTypes::WEAPON_SMART_PROJECTILE: {
             weapon->shootSmartProjectile(
-                this,
-                positionProjectile,
-                direction,
-                getRotation(),
-                1.0,
-                EngineSetup::collisionGroups::Player,
-                target,
-                false
+                    this,
+                    positionProjectile,
+                    direction,
+                    getRotation(),
+                    1.0,
+                    EngineSetup::collisionGroups::Player,
+                    target,
+                    false
             );
             break;
         }
@@ -253,6 +261,11 @@ void EnemyGhost::shoot(Object3D *target)
                 player->stuck(4.0);
             }
 
+            break;
+        }
+        case WeaponTypes::WEAPON_LASER: {
+            laser->setEnabled(true);
+            weapon->shootLaser(laser, 1.0);
             break;
         }
     }

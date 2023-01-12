@@ -260,6 +260,7 @@ public:
 
     enum SoundChannels {
         SND_GLOBAL = -1,
+        SND_LASER = 10,
     };
 
     enum ShaderTypes {

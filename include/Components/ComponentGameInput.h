@@ -5,7 +5,9 @@
 #include "Component.h"
 #include "../../darkheaz/Player.h"
 
+
 class ComponentGameInput : public Component {
+
 public:
     ComponentGameInput(Player *player);
 
@@ -23,7 +25,6 @@ public:
 
     bool enabled;
     Player *player;
-    int currentWeaponIndex;
 
     bool isEnabled() const;
 
@@ -51,8 +52,6 @@ public:
 
     void handleEnergyShield(SDL_Event *event);
 
-    void updateWeaponStatus(SDL_Event *event);
-
     void handleMakeGravitationalShields(SDL_Event *event);
 
     void handlePressKeyGameStates(SDL_Event *event);
@@ -60,6 +59,10 @@ public:
     void handleCheckPadConnection(SDL_Event *pEvent);
 
     void initJostick();
+
+    void setPlayer(Player *player);
+
+    float controllerAxisThreshold;
 };
 
 

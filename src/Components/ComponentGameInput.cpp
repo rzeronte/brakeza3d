@@ -2,18 +2,19 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
+#define PAD_AXIS_THRESHOLD 0.05f;
 
-ComponentGameInput::ComponentGameInput(Player *player) {
-    this->player = player;
-    setEnabled(true);
-    currentWeaponIndex = 0;
+ComponentGameInput::ComponentGameInput(Player *player): enabled(true), player(player)
+{
+    this->controllerAxisThreshold = 0.05;
 }
 
 void ComponentGameInput::onStart() {
     Logging::Log("ComponentGameInput onStart", "ComponentGameInput");
 }
 
-void ComponentGameInput::preUpdate() {
+void ComponentGameInput::preUpdate()
+{
     if (!isEnabled()) return;
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
@@ -65,7 +66,6 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         this->handleDashMovement(event);
         this->handleMakeGravitationalShields(event);
         this->handleEnergyShield(event);
-        this->updateWeaponStatus(event);
     }
 
     //this->handleZoom(event);
@@ -161,7 +161,7 @@ void ComponentGameInput::handleFire() const
     componentGame->getPlayer()->shaderLaser->setEnabled(false);
 
     Uint8 *keyboard = componentInput->keyboard;
-    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > 0.10) {
+    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > this->controllerAxisThreshold) {
         player->shoot(componentInput->controllerAxisTriggerRight);
     }
 }
@@ -173,12 +173,10 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
 
     if (event->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_1]) {
-            currentWeaponIndex = 0;
             game->getPlayer()->setWeaponTypeByIndex(0);
         }
 
         if (keyboard[SDL_SCANCODE_2]) {
-            currentWeaponIndex = 1;
             game->getPlayer()->setWeaponTypeByIndex(1);
             ComponentsManager::get()->getComponentSound()->playSound(
                 soundPackage->getByLabel("switchWeapon"),
@@ -188,7 +186,6 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         }
 
         if (keyboard[SDL_SCANCODE_3] ) {
-            currentWeaponIndex = 2;
             game->getPlayer()->setWeaponTypeByIndex(2);
             ComponentsManager::get()->getComponentSound()->playSound(
                 soundPackage->getByLabel("switchWeapon"),
@@ -198,7 +195,6 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         }
 
         if (keyboard[SDL_SCANCODE_4] ) {
-            currentWeaponIndex = 3;
             game->getPlayer()->setWeaponTypeByIndex(3);
             ComponentsManager::get()->getComponentSound()->playSound(
                 soundPackage->getByLabel("switchWeapon"),
@@ -376,16 +372,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
 
-    if (event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
-        player->getWeapon()->setStatus(WeaponStatus::RELEASED);
-    }
-
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
-        player->getWeapon()->setStatus(WeaponStatus::PRESSED);
-    }
-}
 
 void ComponentGameInput::handleMakeGravitationalShields(SDL_Event *event)
 {
@@ -426,4 +413,8 @@ void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
     if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
         Logging::getInstance()->Log(std::string("removed"));
     }
+}
+
+void ComponentGameInput::setPlayer(Player *player) {
+    ComponentGameInput::player = player;
 }

@@ -130,8 +130,8 @@ bool Object3D::isFollowCamera() const {
     return this->followCamera;
 }
 
-void Object3D::setFollowCamera(bool followCamera) {
-    Object3D::followCamera = followCamera;
+void Object3D::setFollowCamera(bool value) {
+    Object3D::followCamera = value;
 }
 
 void Object3D::onUpdate()
@@ -140,7 +140,6 @@ void Object3D::onUpdate()
         this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
-
 
     if (isStencilBufferEnabled()) {
         clearStencilBuffer();
@@ -151,7 +150,8 @@ void Object3D::onUpdate()
     }
 }
 
-void Object3D::postUpdate() {
+void Object3D::postUpdate()
+{
 
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));

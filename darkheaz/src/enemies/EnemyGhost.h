@@ -14,6 +14,7 @@
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
     ShaderBlink *blink;
+    ShaderLaser *laser;
     Counter *counterDamageBlink;
     Counter *counterStucked;
 

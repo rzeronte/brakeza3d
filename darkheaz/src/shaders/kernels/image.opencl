@@ -5,7 +5,6 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *shader,
     __global unsigned int *image,
     int usingOffset,
     float offsetX,

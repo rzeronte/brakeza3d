@@ -94,6 +94,7 @@ public:
     void evalStatusMachine();
 
     void onUpdate() override;
+    void postUpdate();
 
     Vertex3D getVelocity();
     void setVelocity(Vertex3D v);
@@ -116,8 +117,6 @@ public:
     Weapon *getWeapon() const;
 
     void setWeapon(Weapon *weaponType);
-
-    void updateWeaponType();
 
     void createWeapon(const std::string &label);
 
@@ -185,8 +184,6 @@ public:
 
     void loadBlinkShader();
 
-    void postUpdate() override;
-
     void loadReflection();
 
     PlayerState getState() const;
@@ -201,7 +198,11 @@ public:
 
     void setEnabled(bool value);
 
+    void updateWeaponInteractionStatus();
+
     ShaderLaser *shaderLaser;
+
+    void updateWeaponAutomaticStatus();
 };
 
 
