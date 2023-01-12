@@ -9,7 +9,6 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *shader,
     __global unsigned int *image
 )
 {
@@ -22,33 +21,30 @@ __kernel void onUpdate(
    float2 resolution = { screenWidth, screenHeight};
    float2 st = uv / resolution;
 
-    int cx = uv.x;
-    int cy = uv.y;
-    int index = cy * screenWidth + cx;
-
-    __global unsigned char *s = &image[index];
-    __global unsigned char *t = &shader[i];
+    __global unsigned char *t = &video[i];
 
     float shadowIntensity = plot(st.x, 0.5, 0.95);
-    float speed = 0.9;
+    float speed = 0.075;
 
-    st *= 7.0;
-    st.y = st.y + iTime * speed;
+    float2 dir = {0.0, 1.0};
+    float2 offset = dir * iTime * speed;
+    st += offset;
 
-    float n = noise(st);
-    int noiseIntensity = (int) (n * 60);
+    float intPart;
+	st.x = fract(st.x, &intPart);
+	st.y = fract(st.y, &intPart);
 
-    int p1 = shadowIntensity * (t[0] - noiseIntensity);
-    int p2 = shadowIntensity * (t[1] - noiseIntensity);
-    int p3 = shadowIntensity * (t[2] - noiseIntensity);
+    int cx = st.x * screenWidth;
+    int cy = st.y * screenHeight;
+    int index = cy * screenWidth + cx;
 
-    unsigned int color = createRGB(
-        max(p1, 0),
-        max(p2, 0),
-        max(p3, 0)
+    __global unsigned char *ci = &image[index];
+
+    video[i] = createRGB(
+        t[0] * ci[0]/255,
+        t[1] * ci[1]/255,
+        t[2] * ci[2]/255
     );
-
-    video[i] = color;
 }
 
 unsigned int createRGB(int r, int g, int b)

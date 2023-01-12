@@ -9,9 +9,11 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *shader,
+    __global unsigned int *image,
     int x1, int y1,
-    int x2, int y2
+    int x2, int y2,
+    float intensity,
+    float r, float g, float b
 )
 {
    int i = get_global_id(0);
@@ -26,26 +28,53 @@ __kernel void onUpdate(
     float2 A = { x1, y1 };
     float2 B = { x2, y2 };
 
+    float2 dir = normalize(A-B);
+
     A = A / resolution;
     B = B / resolution;
 
-    float l = line(A, B, st, 0.0055);
+    float l = line(A, B, st, 0.015 * intensity);
 
-    float speed = 10.0;
+    float rad  = 0.0015;
+    float len = length(B-st);
+    float width = 0.1;
+    float circle = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
 
-    st *= 10;
-    st = st * (B-A) + iTime * speed;
+    len = length(A-st);
+    float circleStart = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
 
-    float n = noise(st);
+    float speed = 1.5;
 
-    float3 colorLine = { 0, l * 255 * n, 0 };
+    float2 offset = normalize(A-B) * iTime * speed;
+    st += offset;
 
-    __global unsigned char *t = &shader[i];
+    float intPart;
+	st.x = fract(st.x, &intPart);
+	st.y = fract(st.y, &intPart);
+
+    int cx = st.x * screenWidth;
+    int cy = st.y * screenHeight;
+    int index = cy * screenWidth + cx;
+
+    __global unsigned char *ci = &image[index];
+
+    float n = ci[0];
+
+    float3 colorLine = {
+        (r/255) * l * n,
+        (g/255) * l * n,
+        (b/255) * l * n
+    };
+
+    float3 colorCircle = { circle * 255, circle * 255, 0 };
+    float3 colorCircleStart = { circleStart * 255, circleStart * 255, 0 };
+
+    __global unsigned char *t = &video[i];
 
     video[i] = createRGB(
-        min(colorLine[0] + t[0], 255.0),
-        min(colorLine[1] + t[1], 255.0),
-        min(colorLine[2] + t[2], 255.0)
+        min(colorCircleStart[0] + colorCircle[0] + colorLine[0] + t[0], 255.0),
+        min(colorCircleStart[1] + colorCircle[1] + colorLine[1] + t[1], 255.0),
+        min(colorCircleStart[2] + colorCircle[2] + colorLine[2] + t[2], 255.0)
     );
 }
 

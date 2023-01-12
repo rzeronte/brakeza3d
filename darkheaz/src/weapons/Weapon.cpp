@@ -19,7 +19,7 @@ Weapon::Weapon(const std::string& label) {
     this->model = new Mesh3D();
     this->cadenceTime = 1;
     this->counterCadence = new Counter(this->cadenceTime);
-    this->counterCadence->setEnabled(true);
+    this->counterCadence->setEnabled(false);
     this->modelProjectile = new Mesh3D();
     this->type = WeaponTypes::WEAPON_PROJECTILE;
     this->stop = false;
@@ -53,8 +53,8 @@ void Weapon::stopSoundChannel() const {
     ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
 }
 
-void Weapon::setSpeed(float speed) {
-    this->speed = speed;
+void Weapon::setSpeed(float value) {
+    this->speed = value;
 }
 
 
@@ -298,18 +298,19 @@ int Weapon::getType() const {
     return type;
 }
 
-void Weapon::setType(int type) {
-    Weapon::type = type;
+void Weapon::setType(int value) {
+    Weapon::type = value;
 }
 
 int Weapon::getStatus() const {
     return status;
 }
 
-void Weapon::setStatus(int status)
+void Weapon::setStatus(int value)
 {
-    Weapon::status = status;
+    Weapon::status = value;
 }
+
 
 int Weapon::getStartAmmoAmount() const {
     return startAmmoAmount;
@@ -409,4 +410,29 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
+}
+
+void Weapon::shootLaser(ShaderLaser *shaderLaser, float intensity)
+{
+    if (getAmmoAmount() <= 0) return;
+
+    if (isStop() && counterStopDuration.isEnabled()) {
+        return;
+    }
+
+    setAmmoAmount(ammoAmount - 1);
+
+    shaderLaser->setDamage(getDamage());
+    shaderLaser->setEnabled(true);
+    shaderLaser->setIntensity(intensity);
+
+    if (getStatus() == PRESSED) {
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("laser"),
+            EngineSetup::SND_LASER,
+            -1
+        );
+    }
+
+    shaderLaser->update();
 }

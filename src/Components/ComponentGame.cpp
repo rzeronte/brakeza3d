@@ -101,6 +101,8 @@ void ComponentGame::preUpdate()
         shaderBackgroundImage->update();
     }
 
+    getPlayer()->updateWeaponInteractionStatus();
+
 }
 
 void ComponentGame::onUpdate()
@@ -142,7 +144,6 @@ void ComponentGame::onUpdate()
         shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50);
     }
 
-
     if (state == EngineSetup::GameState::HELP) {
         imageHelp->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
     }
@@ -161,12 +162,12 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 
-
     updateShaders();
 }
 
 void ComponentGame::postUpdate()
 {
+    player->updateWeaponAutomaticStatus();
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -742,6 +743,7 @@ void ComponentGame::handleCountDownGameState()
 void ComponentGame::handlePressNewLevelKeyGameState()
 {
     getPlayer()->setEnabled(true);
+    getPlayer()->shaderLaser->setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     shaderTrailBuffer->setEnabled(true);
