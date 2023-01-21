@@ -5,19 +5,14 @@
 
 #include "Mesh3DBody.h"
 #include "../Misc/Counter.h"
+#include "Projectile.h"
 
-class Projectile3DBody : public Mesh3DBody {
-private:
-    Counter timeToLive;
-    float ttl;
-
+class Projectile3DBody : public Projectile, public Mesh3DBody {
 protected:
-    Vertex3D direction;
 public:
-    Projectile3DBody();
+    Projectile3DBody(float ttl, const Vertex3D &direction);
 
     void makeProjectileRigidBody(float mass, Vertex3D projectileDirection, M3 rotation, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
-    void setTTL(float v);
 
     virtual void onUpdate() override;
 

@@ -157,7 +157,7 @@ void Player::respawn()
     setStamina(INITIAL_STAMINA);
 }
 
-void Player::makeGravitationalShield()
+void Player::makeReflection()
 {
     if (gravityShieldsNumber >= (int) MAX_GRAVITATIONAL_SHIELDS) {
         return;
@@ -191,6 +191,16 @@ void Player::shoot(float intensity)
             weapon->shootBomb(this, getPosition());
         }
         case WeaponTypes::WEAPON_PROJECTILE: {
+            weapon->shootLaserProjectile(
+                    this,
+                    getPosition() - AxisUp().getScaled(1000),
+                    AxisUp().getInverse(),
+                    getRotation(),
+                    intensity,
+                    EngineSetup::collisionGroups::Enemy,
+                    true
+            );
+            
             weapon->shootProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
@@ -430,7 +440,6 @@ void Player::addWeapon(Weapon *weaponType)
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
     if (weapon != nullptr) {
         weapon->addAmount(weaponType->getStartAmmoAmount());
-        weapon->setAvailable(true);
         Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount()));
         return;
     }

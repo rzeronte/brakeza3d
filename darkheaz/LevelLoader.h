@@ -19,6 +19,7 @@ typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
     ITEM_WEAPON_BOMB = 2,
     ITEM_WEAPON_SMART = 3,
+    ITEM_WEAPON_LASER = 6,
     ITEM_HEALTH = 4,
     ITEM_ENERGY = 5
 } LevelInfoItemsTypes;

@@ -595,7 +595,10 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
             break;
         }
-
+        case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
+            this->makeItemWeapon(WeaponTypes::WEAPON_LASER, position);
+            break;
+        }
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
             this->makeItemWeapon(WeaponTypes::WEAPON_SMART_PROJECTILE, position);
             break;

@@ -5,6 +5,16 @@
 #include "AmmoSmartProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
 
+AmmoSmartProjectileBody::AmmoSmartProjectileBody(
+    float ttl,
+    const Vertex3D &direction,
+    Object3D *target
+) : AmmoProjectileBody(ttl, direction), target(target)
+{
+
+}
+
+
 Object3D *AmmoSmartProjectileBody::getTarget() const {
     return target;
 }

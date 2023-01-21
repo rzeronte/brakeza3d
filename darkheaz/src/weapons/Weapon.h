@@ -12,8 +12,8 @@
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
     WEAPON_SMART_PROJECTILE = 1,
-    WEAPON_BOMB = 2,
-    WEAPON_LASER = 3,
+    WEAPON_LASER = 2,
+    WEAPON_BOMB = 3,
     SHOCK = 4
 };
 
@@ -84,6 +84,7 @@ public:
 
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound);
+    void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
 
     [[nodiscard]] Mesh3D *getModel() const;
 
@@ -95,7 +96,7 @@ public:
 
     [[nodiscard]] const std::string &getSoundFire() const;
 
-    const std::string &getLabel() const;
+    [[nodiscard]] const std::string &getLabel() const;
 
     void setCadenceTime(float cadenceTime);
 

@@ -2,8 +2,11 @@
 #include "../../include/Physics/Projectile3DBody.h"
 #include "../../include/ComponentsManager.h"
 
-Projectile3DBody::Projectile3DBody() {
-    this->ttl = 0;
+Projectile3DBody::Projectile3DBody(
+    float ttl,
+    const Vertex3D &direction
+) : Projectile(ttl, direction)
+{
 }
 
 void Projectile3DBody::makeProjectileRigidBody(
@@ -39,21 +42,15 @@ void Projectile3DBody::onUpdate() {
         return;
     }
 
-    if (this->ttl != 0) {
-        if (this->timeToLive.isFinished()) {
-            this->timeToLive.setEnabled(true);
+    if (this->getTTL() != 0) {
+        if (this->getTimeToLive()->isFinished()) {
+            this->getTimeToLive()->setEnabled(true);
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getRigidBody());
             this->removed = true;
         }
 
-        this->timeToLive.update();
+        this->getTimeToLive()->update();
     }
-}
-
-void Projectile3DBody::setTTL(float v) {
-    this->ttl = v;
-    this->timeToLive.setStep(v);
-    this->timeToLive.setEnabled(true);
 }
 
 void Projectile3DBody::resolveCollision(Collisionable *collisionable) {

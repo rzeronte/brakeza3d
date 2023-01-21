@@ -78,7 +78,7 @@ public:
 
     void shoot(float intensity);
 
-    void makeGravitationalShield();
+    void makeReflection();
 
     void takeDamage(float dmg);
 

@@ -52,7 +52,7 @@ public:
 
     void handleEnergyShield(SDL_Event *event);
 
-    void handleMakeGravitationalShields(SDL_Event *event);
+    void handleMakeReflection(SDL_Event *event);
 
     void handlePressKeyGameStates(SDL_Event *event);
 
@@ -63,6 +63,8 @@ public:
     void setPlayer(Player *player);
 
     float controllerAxisThreshold;
+
+    void handleBomb(SDL_Event *pEvent);
 };
 
 
