@@ -169,7 +169,9 @@ void ComponentCollisions::demoProjectile(int type) {
     }
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    auto *projectile = new Projectile3DBody();
+    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
+
+    auto *projectile = new Projectile3DBody(EngineSetup::get()->PROJECTILE_DEMO_TTL, direction);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(
@@ -181,10 +183,9 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->setPosition( camera->getPosition());
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     projectile->setEnabled(true);
-    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
-        camera->getRotation().getTranspose() * EngineSetup::get()->forward,
+        direction,
         M3::getMatrixIdentity(),
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
@@ -192,6 +193,7 @@ void ComponentCollisions::demoProjectile(int type) {
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::AllFilter
     );
+
     Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 }
 

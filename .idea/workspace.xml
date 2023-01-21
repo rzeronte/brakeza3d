@@ -21,68 +21,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(video): video decodec feature">
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLasers.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLasers.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/lasers.opencl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Physics/Projectile.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Physics/ProjectileRay.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Physics/RayCollisionable.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Collisions/ProjectileRay.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Collisions/RayCollisionable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/levels/09.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/levels/09.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/shield.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/shield.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_01.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/blue_spaceship_02.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/green_spaceship_02.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_01.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_01.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_02.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/spaceships/purple_spaceship_02.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/electric_stuck.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/electric_stuck.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/explosion.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/explosion.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/move_menu_option.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/move_menu_option.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/new_level.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/new_level.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/projectile_type_01.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/projectile_type_01.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/sounds/start_game.wav" beforeDir="false" afterPath="$PROJECT_DIR$/assets/sounds/start_game.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level01.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level01.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_instant.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_laser.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_laser.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_smart.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level04.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level04.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level05.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level05.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level06.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level06.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level07.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level07.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level08.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level08.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level09.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level09.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level10.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level10.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level11.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level11.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level12.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level12.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level13.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level13.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level14.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level14.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level16.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level16.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level17.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level17.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level18.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level18.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level19.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level19.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level20.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level20.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/bosses/BossLevel10.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/Enemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/PlayerReflection.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/items/GravitationalShield.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/items/PlayerReflection.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Projectile3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Projectile3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentMenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,11 +70,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
   }
-}]]></component>
+}</component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -159,15 +133,16 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
+      <recent name="$PROJECT_DIR$/config" />
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/Physics" />
       <recent name="$PROJECT_DIR$/src/Collisions" />
       <recent name="$PROJECT_DIR$/darkheaz/src/enemies/behaviors" />
       <recent name="$PROJECT_DIR$/src/Misc" />
       <recent name="$PROJECT_DIR$/include/Misc" />
-      <recent name="$PROJECT_DIR$/include/Render" />
     </key>
   </component>
   <component name="RunManager">
@@ -300,7 +275,25 @@
       <workItem from="1672066262670" duration="17098000" />
       <workItem from="1672097586596" duration="7038000" />
       <workItem from="1672187328060" duration="7604000" />
-      <workItem from="1672240502346" duration="3922000" />
+      <workItem from="1672240502346" duration="24247000" />
+      <workItem from="1672362665430" duration="1090000" />
+      <workItem from="1672440208420" duration="48574000" />
+      <workItem from="1672687329777" duration="14423000" />
+      <workItem from="1672786770025" duration="7449000" />
+      <workItem from="1672849483209" duration="4987000" />
+      <workItem from="1672871520509" duration="6356000" />
+      <workItem from="1672957409267" duration="6445000" />
+      <workItem from="1673185867335" duration="20721000" />
+      <workItem from="1673274323766" duration="850000" />
+      <workItem from="1673311281537" duration="7235000" />
+      <workItem from="1673382301522" duration="13303000" />
+      <workItem from="1673444863897" duration="16786000" />
+      <workItem from="1673535563988" duration="142000" />
+      <workItem from="1673699354908" duration="748000" />
+      <workItem from="1673831593117" duration="5295000" />
+      <workItem from="1674070798840" duration="11645000" />
+      <workItem from="1674161304662" duration="1543000" />
+      <workItem from="1674253515738" duration="16188000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -371,9 +364,98 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="4f644507-b2b0-4902-9bf3-55bbb9bc3513">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="text">
+                    <value>
+                      <list>
+                        <option value="OCL" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="508f6d96-fe70-46ce-8af9-a77a9199e69d">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
+          </value>
+        </entry>
+        <entry key="cab30992-3e14-44fb-b270-88496f51e6ed">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="text">
+                    <value>
+                      <list>
+                        <option value="opencl" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
         <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986">
@@ -396,6 +478,13 @@
                       </list>
                     </value>
                   </entry>
+                  <entry key="text">
+                    <value>
+                      <list>
+                        <option value="OpenCL" />
+                      </list>
+                    </value>
+                  </entry>
                 </map>
               </option>
             </State>
@@ -405,6 +494,9 @@
     </option>
     <option name="OPEN_GENERIC_TABS">
       <map>
+        <entry key="4f644507-b2b0-4902-9bf3-55bbb9bc3513" value="TOOL_WINDOW" />
+        <entry key="508f6d96-fe70-46ce-8af9-a77a9199e69d" value="TOOL_WINDOW" />
+        <entry key="cab30992-3e14-44fb-b270-88496f51e6ed" value="TOOL_WINDOW" />
         <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986" value="TOOL_WINDOW" />
       </map>
     </option>
@@ -434,8 +526,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Components/ComponentGame.h</url>
-          <line>55</line>
+          <line>61</line>
           <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/darkheaz/Player.cpp</url>
+          <line>335</line>
+          <option name="timeStamp" value="44" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
