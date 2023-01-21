@@ -25,6 +25,9 @@
 #include "../../darkheaz/src/shaders/ShaderTrailObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
 #include "../../darkheaz/src/shaders/ShaderLaser.h"
+#include "../Physics/RayCollisionable.h"
+#include "../Physics/ProjectileRay.h"
+#include "../../darkheaz/src/shaders/ShaderLasers.h"
 
 class ComponentGame : public Component {
 public:
@@ -57,6 +60,9 @@ public:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
+    ProjectileRay *ray;
+    ShaderLasers *shaderLasers;
+
     Sprite3D *explosion;
     PathFinder *pathFinder;
 

@@ -64,7 +64,8 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         this->handleFindClosestObject3D(event);
         this->handleWeaponSelector(event);
         this->handleDashMovement(event);
-        this->handleMakeGravitationalShields(event);
+        this->handleMakeReflection(event);
+        this->handleBomb(event);
         this->handleEnergyShield(event);
     }
 
@@ -374,12 +375,12 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 
 
 
-void ComponentGameInput::handleMakeGravitationalShields(SDL_Event *event)
+void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonA) {
         if (player->isAllowGravitationalShields()) {
-            player->makeGravitationalShield();
+            player->makeReflection();
         }
     }
 }
@@ -417,4 +418,15 @@ void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
 
 void ComponentGameInput::setPlayer(Player *player) {
     ComponentGameInput::player = player;
+}
+
+void ComponentGameInput::handleBomb(SDL_Event *event)
+{
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+
+    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonX) {
+        auto weapon = player->getWeaponTypeByLabel("Bomb");
+        weapon->onUpdate();
+        weapon->shootBomb(player, player->getPosition());
+    }
 }

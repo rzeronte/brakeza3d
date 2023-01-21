@@ -7,6 +7,7 @@
 #include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
 #include "../../include/Misc/VideoPlayer.h"
 #include "../../darkheaz/src/items/ItemBombGhost.h"
+#include "../../include/Physics/ProjectileRay.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 3.0f
@@ -74,11 +75,19 @@ void ComponentGame::onStart()
 
     shaderEdge = new ShaderEdgeObject(primaryColor);
     shaderEdge->setEnabled(true);
+
+    ray = new ProjectileRay(10, Vertex3D(0, 1, 0), Vertex3D(0, 2000, 0), 1, Color::cyan());
+    ray->setPosition(Vertex3D(0, -1000, 10000));
+    Brakeza3D::get()->addObject3D(ray, "ray");
+
+    shaderLasers = new ShaderLasers();
+    shaderLasers->setEnabled(true);
 }
 
 void ComponentGame::preUpdate()
 {
     EngineSetup::GameState state = getGameState();
+
 
     if (state == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -657,6 +666,7 @@ void ComponentGame::addObjectsToStencilBuffer()
         auto *player = dynamic_cast<Player *> (object);
         auto *reflection = dynamic_cast<PlayerReflection *> (object);
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
+        auto ray = dynamic_cast<ProjectileRay *> (object);
         auto energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto health = dynamic_cast<ItemHealthGhost *> (object);
         auto weapon = dynamic_cast<ItemWeaponGhost *> (object);
@@ -673,6 +683,10 @@ void ComponentGame::addObjectsToStencilBuffer()
         ) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
         }
+
+        if (ray != nullptr) {
+            shaderLasers->addLaserFromRay(ray);
+        }
     }
 }
 
@@ -685,6 +699,7 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderEdge->setObject(ComponentsManager::get()->getComponentRender()->getSelectedObject());
     shaderEdge->update();
+    shaderLasers->update();
 
 }
 

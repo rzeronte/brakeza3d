@@ -9,8 +9,11 @@
 #include "AmmoProjectileBody.h"
 
 class AmmoSmartProjectileBody : public AmmoProjectileBody {
+
     Object3D *target;
 public:
+    AmmoSmartProjectileBody(float ttl, const Vertex3D &direction, Object3D *target);
+
     Object3D *getTarget() const;
 
     void setTarget(Object3D *target);

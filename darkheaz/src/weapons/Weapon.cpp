@@ -90,16 +90,16 @@ bool Weapon::isAvailable() const {
     return available;
 }
 
-void Weapon::setAvailable(bool available) {
-    Weapon::available = available;
+void Weapon::setAvailable(bool value) {
+    Weapon::available = value;
 }
 
 float Weapon::getDamageRadius() const {
     return damageRadius;
 }
 
-void Weapon::setDamageRadius(float damageRadius) {
-    Weapon::damageRadius = damageRadius;
+void Weapon::setDamageRadius(float value) {
+    Weapon::damageRadius = value;
 }
 
 Mesh3D *Weapon::getModel() const {
@@ -108,9 +108,7 @@ Mesh3D *Weapon::getModel() const {
 
 void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound)
 {
-    const int ammoAmount = getAmmoAmount();
-
-    if (ammoAmount <= 0) return;
+    if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration.isEnabled()) {
         return;
@@ -123,9 +121,8 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
 
         setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
-        auto *componentGame = ComponentsManager::get()->getComponentGame();
 
-        auto *projectile = new AmmoProjectileBody();
+        auto *projectile = new AmmoProjectileBody(0, direction);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
@@ -154,7 +151,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             collisionMask
         );
 
-        setAmmoAmount(ammoAmount - 1);
+        setAmmoAmount(getAmmoAmount() - 1);
 
         if (sound) {
             ComponentsManager::get()->getComponentSound()->playSound(
@@ -192,7 +189,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
 
-        auto *projectile = new AmmoSmartProjectileBody();
+        auto *projectile = new AmmoSmartProjectileBody(0, direction, target);
         projectile->setTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
@@ -240,6 +237,41 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
             "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
         );
 
+    }
+}
+
+void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound)
+{
+    if (getAmmoAmount() <= 0) return;
+
+    if (isStop() && counterStopDuration.isEnabled()) {
+        return;
+    }
+
+    if (counterCadence->isFinished()) {
+        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        this->counterCadence->setStep(t);
+        this->counterCadence->setEnabled(true);
+
+        setStatus(WeaponStatus::PRESSED);
+
+        auto *projectile = new ProjectileRay(
+            EngineSetup::get()->PROJECTILE_DEMO_TTL,
+            direction,
+            direction.getNormalize().getScaled(1000),
+            getSpeed(),
+            Color::green()
+        );
+
+        auto *componentRender = ComponentsManager::get()->getComponentRender();
+
+        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+        projectile->setParent(parent);
+        projectile->setPosition(position);
+
+        setAmmoAmount(getAmmoAmount() - 1);
+
+        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 }
 
@@ -394,7 +426,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setFlatTextureColor(false);
         projectile->setDamage(this->getDamage());
         projectile->makeSimpleGhostBody(
-            Vertex3D(400, 400, 00),
+            Vertex3D(600, 600, 600),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
