@@ -23,6 +23,18 @@ ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl")
         &this->stencilObjectsBuffer,
         &clRet
     );
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        openCLBufferResult,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        this->videoBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 void ShaderTrailBuffer::update() {
@@ -39,7 +51,7 @@ void ShaderTrailBuffer::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -51,22 +63,10 @@ void ShaderTrailBuffer::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openCLBufferForStencilObjects,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(bool),
         this->stencilObjectsBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        openCLBufferResult,
-        CL_TRUE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        this->videoBuffer,
         0,
         nullptr,
         nullptr

@@ -6,10 +6,12 @@
 #define BRAKEZA3D_RAYCOLLISIONABLE_H
 
 
+#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 #include "../../src/Collisions/Collisionable.h"
 
 class RayCollisionable: public Object3D, public Collisionable {
 private:
+    btCollisionWorld::ClosestRayResultCallback *rayCallback;
     Vertex3D ray;
     Vertex3D hitPosition;
 
@@ -22,13 +24,15 @@ public:
 
     void onUpdate() override;
 
-    [[nodiscard]] const Vector3D &getRay() const;
+    [[nodiscard]] const Vertex3D &getHitPosition() const;
 
-    void setRay(const Vector3D &ray);
+    void setHitPosition(const Vertex3D &value);
 
-    const Vertex3D &getHitPosition() const;
+    virtual void hasHit();
 
-    void setHitPosition(const Vertex3D &hitPosition);
+    [[nodiscard]] btCollisionWorld::ClosestRayResultCallback *getRayCallback() const;
+
+    const Vertex3D &getRay() const;
 };
 
 

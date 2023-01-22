@@ -9,11 +9,12 @@
 #include "../../../include/Physics/Projectile3DBody.h"
 #include "Weapon.h"
 #include "../shaders/ShaderTrailObject.h"
+#include "AmmoProjectile.h"
 
-class AmmoProjectileBody: public Projectile3DBody {
+class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     Weapon *weaponType;
 public:
-    AmmoProjectileBody(float ttl, const Vertex3D &direction);
+    AmmoProjectileBody(float damage, float ttl, const Vertex3D &direction);
 
     [[nodiscard]] Weapon *getWeaponType() const;
 

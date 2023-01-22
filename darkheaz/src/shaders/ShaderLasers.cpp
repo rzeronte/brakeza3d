@@ -15,6 +15,17 @@ ShaderLasers::ShaderLasers() : ShaderOpenCL("lasers.opencl")
             &clRet
     );
 
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        image->pixels(),
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 void ShaderLasers::update()
@@ -23,19 +34,12 @@ void ShaderLasers::update()
 
     if (!isEnabled()) return;
 
-
     executeKernelOpenCL();
 }
 
 void ShaderLasers::executeKernelOpenCL()
 {
     int numberLasers = (int) lasers.size();
-
-    auto objects = new OCLaser[numberLasers];
-    for (int i = 0; i < numberLasers; i++) {
-        OCLaser ocl = lasers[i];
-        objects[i] = ocl;
-    }
 
     opencl_buffer_lasers = clCreateBuffer(
         context,
@@ -48,10 +52,10 @@ void ShaderLasers::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_lasers,
-        CL_TRUE,
+        CL_FALSE,
         0,
         numberLasers * sizeof(OCLaser),
-        objects,
+        lasers.data(),
         0,
         nullptr,
         nullptr
@@ -60,22 +64,10 @@ void ShaderLasers::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_pixels_image,
-        CL_TRUE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        image->pixels(),
         0,
         nullptr,
         nullptr
@@ -119,10 +111,11 @@ void ShaderLasers::executeKernelOpenCL()
     );
 
     this->lasers.clear();
+
     this->debugKernel();
 }
 
-void ShaderLasers::addLaser(float x1, float y1, float x2, float y2, int r, int g, int b, float intensity)
+void ShaderLasers::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
 {
     OCLaser laser;
 
@@ -133,23 +126,25 @@ void ShaderLasers::addLaser(float x1, float y1, float x2, float y2, int r, int g
     laser.r = r;
     laser.g = g;
     laser.b = b;
-    laser.intensity = intensity;
+    laser.intensity = i;
 
     this->lasers.push_back(laser);
 }
 
 void ShaderLasers::addLaserFromRay(ProjectileRay *ray)
 {
-    Vertex3D start = ray->getPosition() - ray->getDirection().getScaled(1000);
-    Point2D screenPoint = Transforms::WorldToPoint(start, ComponentsManager::get()->getComponentCamera()->getCamera());
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto color = ray->getColor();
 
-    Vertex3D end = ray->getPosition() + ray->getDirection().getScaled(ray->getSpeed());
-    Point2D middlePoint = Transforms::WorldToPoint(end, ComponentsManager::get()->getComponentCamera()->getCamera());
+    Point2D screenPoint = Transforms::WorldToPoint(ray->getPosition(), camera);
+
+    Vertex3D end = ray->getPosition() + ray->getRay();
+    Point2D middlePoint = Transforms::WorldToPoint(end, camera);
 
     this->addLaser(
         screenPoint.x, screenPoint.y,
         middlePoint.x, middlePoint.y,
-        0, 255, 0,
-        0.3
+        (int) color.r, (int) color.g, (int) color.b,
+        0.1
     );
 }

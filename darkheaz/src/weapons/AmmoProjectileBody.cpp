@@ -7,10 +7,7 @@
 #include "../items/ItemHealthGhost.h"
 #include "../../../include/Brakeza3D.h"
 
-AmmoProjectileBody::AmmoProjectileBody(
-    float ttl,
-    const Vertex3D &direction
-) : Projectile3DBody(ttl, direction)
+AmmoProjectileBody::AmmoProjectileBody(float damage, float ttl, const Vertex3D &direction) : Projectile3DBody(ttl,direction), AmmoProjectile(damage)
 {
 
 }

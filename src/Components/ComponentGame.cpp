@@ -76,10 +76,6 @@ void ComponentGame::onStart()
     shaderEdge = new ShaderEdgeObject(primaryColor);
     shaderEdge->setEnabled(true);
 
-    ray = new ProjectileRay(10, Vertex3D(0, 1, 0), Vertex3D(0, 2000, 0), 1, Color::cyan());
-    ray->setPosition(Vertex3D(0, -1000, 10000));
-    Brakeza3D::get()->addObject3D(ray, "ray");
-
     shaderLasers = new ShaderLasers();
     shaderLasers->setEnabled(true);
 }
@@ -478,11 +474,11 @@ void ComponentGame::removeProjectiles() const
     }
 }
 
-void ComponentGame::makeFadeToGameState(EngineSetup::GameState gameState) const
+void ComponentGame::makeFadeToGameState(EngineSetup::GameState value) const
 {
     ComponentsManager::get()->getComponentGameInput()->setEnabled(false);
 
-    getFadeToGameState()->resetTo(gameState);
+    getFadeToGameState()->resetTo(value);
 }
 
 void ComponentGame::removeInGameObjects()

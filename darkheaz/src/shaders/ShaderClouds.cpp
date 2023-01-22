@@ -18,6 +18,19 @@ ShaderClouds::ShaderClouds() : ShaderOpenCL("clouds.opencl")
         this->clouds->pixels(),
         &clRet
     );
+
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        clouds->pixels(),
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 void ShaderClouds::update()
@@ -41,18 +54,6 @@ void ShaderClouds::executeKernelOpenCL()
         0,
         nullptr,
         nullptr
-    );
-
-    clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_pixels_image,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            clouds->pixels(),
-            0,
-            nullptr,
-            nullptr
     );
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);

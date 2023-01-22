@@ -12,7 +12,7 @@ class AmmoSmartProjectileBody : public AmmoProjectileBody {
 
     Object3D *target;
 public:
-    AmmoSmartProjectileBody(float ttl, const Vertex3D &direction, Object3D *target);
+    AmmoSmartProjectileBody(float damage, float ttl, const Vertex3D &direction, Object3D *target);
 
     Object3D *getTarget() const;
 

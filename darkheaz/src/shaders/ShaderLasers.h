@@ -13,10 +13,10 @@
 
 struct OCLaser
 {
-    float x1;
-    float y1;
-    float x2;
-    float y2;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
     int r;
     int g;
     int b;
@@ -40,7 +40,7 @@ public:
 
     void update() override;
 
-    void addLaser(float x1, float y1, float x2, float y2, int r, int g, int b, float intensity);
+    void addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float intensity);
     void addLaserFromRay(ProjectileRay *pRay);
 
     void executeKernelOpenCL();

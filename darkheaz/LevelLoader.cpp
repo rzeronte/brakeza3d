@@ -193,8 +193,8 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     std::string model = cJSON_GetObjectItemCaseSensitive(weaponJson, "model")->valuestring;
     int amount = cJSON_GetObjectItemCaseSensitive(weaponJson, "amount")->valueint;
     int startAmount = cJSON_GetObjectItemCaseSensitive(weaponJson, "startAmount")->valueint;
-    float speed = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valuedouble;
-    float dispersion = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "dispersion")->valuedouble;
+    int speed = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valueint;
+    int dispersion = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "dispersion")->valueint;
     float accuracy = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "accuracy")->valuedouble;
     float damage = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "damage")->valuedouble;
     int type = cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint;

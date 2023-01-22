@@ -14,7 +14,7 @@ enum WeaponTypes {
     WEAPON_SMART_PROJECTILE = 1,
     WEAPON_LASER = 2,
     WEAPON_BOMB = 3,
-    SHOCK = 4
+    SHOCK = 4,
 };
 
 class Weapon {
@@ -62,13 +62,13 @@ public:
 
     void setAvailable(bool available);
 
-    void setSpeed(float speed);
+    void setSpeed(int speed);
 
     int getSpeed() const;
 
     float getDamage() const;
 
-    void setDamage(float damage);
+    void setDamage(float value);
 
     float getDamageRadius() const;
 
@@ -76,15 +76,15 @@ public:
 
     float getAccuracy() const;
 
-    void setAccuracy(float accuracy);
+    void setAccuracy(float value);
 
     int getDispersion() const;
 
-    void setDispersion(float dispersion);
+    void setDispersion(int value);
 
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
     void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound);
-    void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
+    void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color);
 
     [[nodiscard]] Mesh3D *getModel() const;
 
