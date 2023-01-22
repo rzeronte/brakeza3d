@@ -187,20 +187,7 @@ void Player::shoot(float intensity)
 
     const int type = getWeapon()->getType();
     switch(type) {
-        case WeaponTypes::WEAPON_BOMB: {
-            weapon->shootBomb(this, getPosition());
-        }
         case WeaponTypes::WEAPON_PROJECTILE: {
-            weapon->shootLaserProjectile(
-                    this,
-                    getPosition() - AxisUp().getScaled(1000),
-                    AxisUp().getInverse(),
-                    getRotation(),
-                    intensity,
-                    EngineSetup::collisionGroups::Enemy,
-                    true
-            );
-            
             weapon->shootProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
@@ -213,7 +200,15 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_SMART_PROJECTILE: {
-            weapon->shootSmartProjectile(
+            weapon->shootLaserProjectile(
+                    this,
+                    getPosition() - AxisUp().getScaled(1000),
+                    AxisUp().getInverse(),
+                    intensity,
+                    true,
+                    Color::green()
+            );
+            /*weapon->shootSmartProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
@@ -222,7 +217,11 @@ void Player::shoot(float intensity)
                 EngineSetup::collisionGroups::Enemy,
                 nullptr,
                 true
-            );
+            );*/
+            break;
+        }
+        case WeaponTypes::WEAPON_BOMB: {
+            weapon->shootBomb(this, getPosition());
             break;
         }
         case WeaponTypes::WEAPON_LASER: {
@@ -372,6 +371,17 @@ void Player::resolveCollision(Collisionable *with)
             takeDamage(projectile->getWeaponType()->getDamage());
             projectile->remove();
         }
+    }
+
+    auto laser = dynamic_cast<ProjectileRay*> (with);
+    if (laser != nullptr) {
+        ComponentsManager::get()->getComponentSound()->playSound(
+            EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+            1,
+            0
+        );
+        takeDamage(laser->getDamage());
+        laser->setRemoved(true);
     }
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);

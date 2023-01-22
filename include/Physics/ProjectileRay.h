@@ -10,13 +10,14 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 #include "Projectile.h"
+#include "../../darkheaz/src/weapons/AmmoProjectile.h"
 
-class ProjectileRay: public Projectile, public RayCollisionable {
+class ProjectileRay: public Projectile, public RayCollisionable, public AmmoProjectile {
 private:
     Color color;
-    float speed;
+    int speed;
 public:
-    ProjectileRay(float ttl, const Vertex3D &direction, const Vertex3D &ray, float speed, const Color &color);
+    ProjectileRay(float ttl, float damage, const Vertex3D &direction, const Vertex3D &ray, int speed, const Color &color);
 
     void onUpdate() override;
 
@@ -24,9 +25,17 @@ public:
 
     void resolveCollision(Collisionable *collisionable) override;
 
-    float getSpeed() const;
+    [[nodiscard]] int getSpeed() const;
 
-    void setSpeed(float speed);
+    void setSpeed(int value);
+
+    void integrate() override;
+
+    void hasHit() override;
+
+    [[nodiscard]] const Color &getColor() const;
+
+    void setColor(const Color &value);
 };
 
 

@@ -17,6 +17,18 @@ ShaderLaser::ShaderLaser() : ShaderOpenCL("laser.opencl")
         this->image->pixels(),
         &clRet
     );
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        image->pixels(),
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 void ShaderLaser::update()
@@ -33,27 +45,15 @@ void ShaderLaser::update()
 void ShaderLaser::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
-    );
-
-    clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_pixels_image,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            image->pixels(),
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoInput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     Vertex3D start = target->getPosition() + target->AxisDown().getScaled(1000);

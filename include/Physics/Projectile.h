@@ -11,12 +11,11 @@ private:
     Counter *timeToLive;
     float ttl;
 public:
-    Projectile(float ttl, const Vertex3D &direction) :  ttl(ttl), direction(direction)
+    Projectile(float ttl, const Vertex3D &direction) : ttl(ttl), direction(direction)
     {
         timeToLive = new Counter(ttl);
         timeToLive->setEnabled(true);
     }
-
 
 protected:
     Vertex3D direction;
@@ -40,10 +39,9 @@ public:
         Projectile::direction = value;
     }
 
-    Counter *getTimeToLive() const {
+    [[nodiscard]] Counter *getTimeToLive() const {
         return timeToLive;
     }
-
 };
 
 

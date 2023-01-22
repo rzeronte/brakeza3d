@@ -60,7 +60,6 @@ public:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
-    ProjectileRay *ray;
     ShaderLasers *shaderLasers;
 
     Sprite3D *explosion;
@@ -101,7 +100,7 @@ public:
 
     void removeProjectiles() const;
 
-    void makeFadeToGameState(EngineSetup::GameState gameState) const;
+    void makeFadeToGameState(EngineSetup::GameState value) const;
 
     void setVisibleInGameObjects(bool value);
     void setEnemyWeaponsEnabled(bool value);

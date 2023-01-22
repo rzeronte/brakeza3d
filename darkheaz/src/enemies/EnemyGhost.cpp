@@ -5,6 +5,7 @@
 #include "../weapons/AmmoProjectileBody.h"
 #include "../items/ItemEnergyGhost.h"
 #include "../items/ItemWeaponGhost.h"
+#include "../weapons/AmmoProjectile.h"
 
 EnemyGhost::EnemyGhost()
 {
@@ -186,7 +187,7 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
 {
     Mesh3DAnimatedGhost::resolveCollision(collisionableObject);
 
-    auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionableObject);
+    auto *projectile = dynamic_cast<AmmoProjectile*> (collisionableObject);
     if (projectile != nullptr) {
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("enemyDamage"),
@@ -196,10 +197,22 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
         getBlink()->setEnabled(true);
         counterDamageBlink->setEnabled(true);
 
-        auto fireworks = new ParticleEmissorFireworks(getPosition(), Vertex3D(0, 4, 5), true, 1000, 1, 0.02, Color::green(), 1, 4);
-        Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(
+            new ParticleEmissorFireworks(
+                getPosition(),
+                Vertex3D(0, 4, 5),
+                true,
+                1000,
+                1,
+                0.02,
+                Color::green(),
+                1,
+                4
+            ),
+            ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        );
 
-        this->takeDamage(projectile->getWeaponType()->getDamage());
+        this->takeDamage((float) projectile->getDamage());
     }
 }
 
@@ -224,18 +237,26 @@ void EnemyGhost::shoot(Object3D *target)
     switch(weapon->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
-                    this,
-                    positionProjectile,
-                    direction,
-                    getRotation(),
-                    1.0,
-                    EngineSetup::collisionGroups::Player,
-                    false
+                this,
+                positionProjectile,
+                direction,
+                getRotation(),
+                1.0,
+                EngineSetup::collisionGroups::Player,
+                false
             );
             break;
         }
         case WeaponTypes::WEAPON_SMART_PROJECTILE: {
-            weapon->shootSmartProjectile(
+            weapon->shootLaserProjectile(
+                this,
+                getPosition() - AxisUp().getScaled(1000),
+                AxisUp().getInverse(),
+                0.3,
+                true,
+                Color::red()
+            );
+            /*weapon->shootSmartProjectile(
                     this,
                     positionProjectile,
                     direction,
@@ -244,7 +265,7 @@ void EnemyGhost::shoot(Object3D *target)
                     EngineSetup::collisionGroups::Player,
                     target,
                     false
-            );
+            );*/
             break;
         }
         case WeaponTypes::SHOCK: {

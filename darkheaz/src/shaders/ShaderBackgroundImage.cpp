@@ -17,6 +17,18 @@ ShaderImage::ShaderImage() : ShaderOpenCL("image.opencl")
         this->image->pixels(),
         &clRet
     );
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        image->pixels(),
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 void ShaderImage::update()
@@ -31,27 +43,15 @@ void ShaderImage::update()
 void ShaderImage::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
-    );
-
-    clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_pixels_image,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            image->pixels(),
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoInput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
@@ -90,27 +90,27 @@ void ShaderImage::executeKernelOpenCL()
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
-            clCommandQueue,
-            kernel,
-            1,
-            nullptr,
-            &global_item_size,
-            &local_item_size,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        kernel,
+        1,
+        nullptr,
+        &global_item_size,
+        &local_item_size,
+        0,
+        nullptr,
+        nullptr
     );
 
     clEnqueueReadBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoInput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     this->debugKernel();
@@ -122,10 +122,25 @@ void ShaderImage::resetOffsets()
     offsetY = 0;
 }
 
-void ShaderImage::setImage(Image *image)
+void ShaderImage::setImage(Image *value)
 {
-    ShaderImage::image = image;
+    ShaderImage::image = value;
+    refreshBufferImage();
+}
 
+void ShaderImage::refreshBufferImage()
+{
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        image->pixels(),
+        0,
+        nullptr,
+        nullptr
+    );
 }
 
 ShaderImage::~ShaderImage()
@@ -137,6 +152,6 @@ bool ShaderImage::isUseOffset() const {
     return useOffset;
 }
 
-void ShaderImage::setUseOffset(bool useOffset) {
-    ShaderImage::useOffset = useOffset;
+void ShaderImage::setUseOffset(bool value) {
+    ShaderImage::useOffset = value;
 }

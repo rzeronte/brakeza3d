@@ -4,6 +4,13 @@
 
 RayCollisionable::RayCollisionable(const Vertex3D &ray) : ray(ray)
 {
+    Vertex3D start = getPosition();
+    Vertex3D end = start + this->ray;
+
+    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
+        btVector3(start.x, start.y, start.z),
+        btVector3(end.x, end.y, end.z)
+    );
 
 }
 
@@ -14,7 +21,7 @@ void RayCollisionable::integrate()
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
 
-    btCollisionWorld::ClosestRayResultCallback rayCallback(
+    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z)
     );
@@ -22,13 +29,18 @@ void RayCollisionable::integrate()
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z),
-        rayCallback
+        *rayCallback
     );
 
-    if (rayCallback.hasHit()) {
-        auto *collisionable = (Collisionable *) rayCallback.m_collisionObject->getUserPointer();
+    hasHit();
+}
 
-        btVector3 rayHitPosition = rayCallback.m_hitPointWorld;
+void RayCollisionable::hasHit()
+{
+    if (rayCallback->hasHit()) {
+        auto *collisionable = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
+
+        btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
 
         collisionable->resolveCollision(this);
 
@@ -49,8 +61,8 @@ const Vertex3D &RayCollisionable::getHitPosition() const {
     return hitPosition;
 }
 
-void RayCollisionable::setHitPosition(const Vertex3D &hitPosition) {
-    RayCollisionable::hitPosition = hitPosition;
+void RayCollisionable::setHitPosition(const Vertex3D &value) {
+    RayCollisionable::hitPosition = value;
 }
 
 void RayCollisionable::onUpdate()
@@ -62,6 +74,14 @@ void RayCollisionable::onUpdate()
         auto vector = Vector3D(getPosition(), end);
         Drawable::drawVector3D(vector, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::green());
     }
+}
+
+btCollisionWorld::ClosestRayResultCallback *RayCollisionable::getRayCallback() const {
+    return rayCallback;
+}
+
+const Vertex3D &RayCollisionable::getRay() const {
+    return ray;
 }
 
 

@@ -26,14 +26,15 @@ public:
 
     void executeKernelOpenCL();
 
-    void setImage(Image *image);
+    void setImage(Image *value);
 
     void resetOffsets();
 
     bool isUseOffset() const;
 
-    void setUseOffset(bool useOffset);
+    void setUseOffset(bool value);
 
+    void refreshBufferImage();
 };
 
 

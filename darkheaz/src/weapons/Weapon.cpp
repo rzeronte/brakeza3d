@@ -53,7 +53,7 @@ void Weapon::stopSoundChannel() const {
     ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
 }
 
-void Weapon::setSpeed(float value) {
+void Weapon::setSpeed(int value) {
     this->speed = value;
 }
 
@@ -62,24 +62,24 @@ float Weapon::getDamage() const {
     return this->damage;
 }
 
-void Weapon::setDamage(float damage) {
-    this->damage = damage;
+void Weapon::setDamage(float value) {
+    this->damage = value;
 }
 
 float Weapon::getAccuracy() const {
     return accuracy;
 }
 
-void Weapon::setAccuracy(float accuracy) {
-    Weapon::accuracy = accuracy;
+void Weapon::setAccuracy(float value) {
+    Weapon::accuracy = value;
 }
 
 int Weapon::getDispersion() const {
     return dispersion;
 }
 
-void Weapon::setDispersion(float dispersion) {
-    Weapon::dispersion = dispersion;
+void Weapon::setDispersion(int value) {
+    Weapon::dispersion = value;
 }
 
 int Weapon::getSpeed() const {
@@ -122,7 +122,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-        auto *projectile = new AmmoProjectileBody(0, direction);
+        auto *projectile = new AmmoProjectileBody(getDamage(), EngineSetup::get()->PROJECTILE_DEMO_TTL, direction);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
@@ -139,7 +139,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         projectile->clone(getModelProjectile());
         projectile->setPosition(position);
         projectile->setEnabled(true);
-        projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
         projectile->makeProjectileRigidBody(
             0.1,
             direction,
@@ -189,7 +188,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
 
-        auto *projectile = new AmmoSmartProjectileBody(0, direction, target);
+        auto *projectile = new AmmoSmartProjectileBody(getDamage(), EngineSetup::get()->PROJECTILE_DEMO_TTL, direction, target);
         projectile->setTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
@@ -203,7 +202,6 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->clone(getModelProjectile());
         projectile->setPosition(position);
         projectile->setEnabled(true);
-        projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
 
         if (target != nullptr) {
             projectile->setTarget(target);
@@ -224,9 +222,9 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         if (sound) {
             ComponentsManager::get()->getComponentSound()->playSound(
-                    EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeTwo"),
-                    EngineSetup::SoundChannels::SND_GLOBAL,
-                    0
+                EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeTwo"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
             );
         }
 
@@ -240,7 +238,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
     }
 }
 
-void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound)
+void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -257,10 +255,11 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         auto *projectile = new ProjectileRay(
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
+            getDamage(),
             direction,
-            direction.getNormalize().getScaled(1000),
+            direction.getNormalize().getScaled((float) getSpeed()),
             getSpeed(),
-            Color::green()
+            color
         );
 
         auto *componentRender = ComponentsManager::get()->getComponentRender();

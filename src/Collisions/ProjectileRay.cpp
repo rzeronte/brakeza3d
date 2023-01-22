@@ -1,13 +1,16 @@
 #include "../../include/Physics/ProjectileRay.h"
+#include "../../darkheaz/src/weapons/AmmoProjectileBody.h"
+#include "../../darkheaz/src/items/ItemHealthGhost.h"
 
 
 ProjectileRay::ProjectileRay(
     float ttl,
+    float damage,
     const Vertex3D &direction,
     const Vertex3D &ray,
-    float speed,
+    int speed,
     const Color &color
-) : Projectile(ttl, direction), RayCollisionable(ray), color(color), speed(speed) {
+) : Projectile(ttl, direction), RayCollisionable(ray), AmmoProjectile(damage), color(color), speed(speed) {
 
 }
 
@@ -28,13 +31,58 @@ void ProjectileRay::moveDirection()
 void ProjectileRay::resolveCollision(Collisionable *collisionable)
 {
     RayCollisionable::resolveCollision(collisionable);
+
+    auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
+    if (projectile != nullptr) {
+        return;
+    }
+
+    auto health = dynamic_cast<ItemHealthGhost*> (collisionable);
+    if (health != nullptr) {
+        return;
+    }
+
+    auto object = dynamic_cast<Object3D*> (collisionable);
+    if (object != nullptr) {
+        if (object == getParent()) {
+            return;
+        }
+    }
+
     this->setRemoved(true);
 }
 
-float ProjectileRay::getSpeed() const {
+int ProjectileRay::getSpeed() const {
     return speed;
 }
 
-void ProjectileRay::setSpeed(float speed) {
-    ProjectileRay::speed = speed;
+void ProjectileRay::setSpeed(int value) {
+    ProjectileRay::speed = value;
+}
+
+void ProjectileRay::integrate() {
+    RayCollisionable::integrate();
+}
+
+void ProjectileRay::hasHit()
+{
+    if (getRayCallback()->hasHit()) {
+        auto *collisionable = (Collisionable *) getRayCallback()->m_collisionObject->getUserPointer();
+
+        btVector3 rayHitPosition = getRayCallback()->m_hitPointWorld;
+
+        collisionable->resolveCollision(this);
+
+        setHitPosition(Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z()));
+
+        this->resolveCollision(collisionable);
+    }
+}
+
+const Color &ProjectileRay::getColor() const {
+    return color;
+}
+
+void ProjectileRay::setColor(const Color &value) {
+    ProjectileRay::color = value;
 }
