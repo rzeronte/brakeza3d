@@ -34,11 +34,11 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 3,
+        "type": 0,
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       }
     }

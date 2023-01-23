@@ -11,8 +11,8 @@
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
-    WEAPON_SMART_PROJECTILE = 1,
-    WEAPON_LASER = 2,
+    WEAPON_LASER_PROJECTILE = 1,
+    WEAPON_LASER_RAY = 2,
     WEAPON_BOMB = 3,
     SHOCK = 4,
 };
@@ -20,6 +20,7 @@ enum WeaponTypes {
 class Weapon {
 public:
     Weapon(const std::string& label);
+
     bool available;
     int status;
     int type;
@@ -90,15 +91,15 @@ public:
 
     [[nodiscard]] const std::string &getSoundEmptyLabel() const;
 
-    void setSoundEmptyLabel(const std::string &soundEmptyLabel);
+    void setSoundEmptyLabel(const std::string &value);
 
-    void setSoundFire(const std::string &label);
+    void setSoundFire(const std::string &value);
 
     [[nodiscard]] const std::string &getSoundFire() const;
 
     [[nodiscard]] const std::string &getLabel() const;
 
-    void setCadenceTime(float cadenceTime);
+    void setCadenceTime(float value);
 
     void setIconImage(std::string file);
 
@@ -106,7 +107,7 @@ public:
 
     int getAmmoAmount() const;
 
-    void setAmmoAmount(int ammoAmount);
+    void setAmmoAmount(int value);
 
     void addAmount(int amount);
 
@@ -122,15 +123,15 @@ public:
 
     int getStartAmmoAmount() const;
 
-    void setStartAmmoAmount(int startAmmoAmount);
+    void setStartAmmoAmount(int value);
 
     bool isStop() const;
 
-    void setStop(bool stop);
+    void setStop(bool value);
 
     float getStopDuration() const;
 
-    void setStopDuration(float stopDuration);
+    void setStopDuration(float value);
 
     float getStopEvery() const;
 
@@ -138,7 +139,7 @@ public:
 
     int getSoundChannel() const;
 
-    void setSoundChannel(int soundChannel);
+    void setSoundChannel(int value);
 
     void stopSoundChannel() const;
 
@@ -146,7 +147,7 @@ public:
 
     void shootBomb(Object3D *parent, Vertex3D position);
 
-    void shootLaser(ShaderLaser *shaderLaser, float intensity);
+    void shootLaserRay(ShaderLaser *shaderLaser, float intensity);
 };
 
 

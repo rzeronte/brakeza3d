@@ -42,6 +42,8 @@
     { "file": "projectile_type_03.wav", "label": "projectileTypeThree", "type": "sound" },
 
     { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
+
+    { "file": "laser-shoot.wav", "label": "laserShoot", "type": "sound" },
     { "file": "laser.wav", "label": "laser", "type": "sound" }
   ]
 }

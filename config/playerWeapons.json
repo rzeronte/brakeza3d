@@ -19,7 +19,7 @@
       "modelProjectile": "projectile_weapon_01.fbx",
       "model": "item_weapon_01.fbx",
       "flatTexture": true,
-      "enableLights": true,
+      "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
     },
     {
@@ -41,7 +41,7 @@
       "modelProjectile": "projectile_weapon_01.fbx",
       "model": "item_weapon_02.fbx",
       "flatTexture": true,
-      "enableLights": true,
+      "enableLights": false,
       "color": { "r": 255, "g": 255, "b": 0 }
     },
     {
@@ -50,7 +50,7 @@
       "name": "Thunder",
       "damage": 2,
       "amount": 0,
-      "startAmount": 2500,
+      "startAmount": 5000,
       "speed": 0,
       "dispersion": 10,
       "accuracy": 100,
@@ -63,7 +63,7 @@
       "modelProjectile": "projectile_weapon_03.fbx",
       "model": "item_weapon_03.fbx",
       "flatTexture": false,
-      "enableLights": true,
+      "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
     },
     {
@@ -72,7 +72,7 @@
       "name": "Bomb",
       "damage": 400,
       "amount": 1000,
-      "startAmount": 2500,
+      "startAmount": 10,
       "speed": 0,
       "dispersion": 10,
       "accuracy": 100,
@@ -85,7 +85,7 @@
       "modelProjectile": "projectile_weapon_03.fbx",
       "model": "item_weapon_02.fbx",
       "flatTexture": false,
-      "enableLights": true,
+      "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
     }
   ]

@@ -247,13 +247,13 @@ void EnemyGhost::shoot(Object3D *target)
             );
             break;
         }
-        case WeaponTypes::WEAPON_SMART_PROJECTILE: {
+        case WeaponTypes::WEAPON_LASER_PROJECTILE: {
             weapon->shootLaserProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 0.3,
-                true,
+                false,
                 Color::red()
             );
             /*weapon->shootSmartProjectile(
@@ -284,9 +284,9 @@ void EnemyGhost::shoot(Object3D *target)
 
             break;
         }
-        case WeaponTypes::WEAPON_LASER: {
+        case WeaponTypes::WEAPON_LASER_RAY: {
             laser->setEnabled(true);
-            weapon->shootLaser(laser, 1.0);
+            weapon->shootLaserRay(laser, 1.0);
             break;
         }
     }

@@ -18,14 +18,8 @@ void ComponentHUD::onStart() {
         std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
 
-    shaderBar = new ShaderHorizontalBar(Color(255, 0, 0),0.90);
-    shaderBar->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
-
-    shaderBarEnergy = new ShaderHorizontalBar(Color(0, 255, 0),0.95);
-    shaderBarEnergy->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
-
-    shaderSelectedEnemyStamina = new ShaderHorizontalBar(Color(128, 0, 128),0.05);
-    shaderSelectedEnemyStamina->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    shaderLasers = new ShaderLasers();
+    shaderLasers->setEnabled(true);
 }
 
 void ComponentHUD::preUpdate()
@@ -82,10 +76,8 @@ void ComponentHUD::drawHUD()
     auto componentManager = ComponentsManager::get();
     auto color = componentManager->getComponentGame()->primaryColor;
 
-    drawShaderBars();
-    drawEnemySelectedShaderStamina();
-
-    drawPlayerStamina(15);
+    drawShaderLasers();
+    drawIconWeaponAndLevelName();
 
     if (SETUP->DRAW_FPS) {
         this->textWriter->writeTTFCenterHorizontal(
@@ -118,24 +110,24 @@ void ComponentHUD::loadButtons() {
     //addButton(new Button(currentX + offsetX * 2, offsetY, SETUP->ASSETS_FOLDER + "icons/weapon_instant.png", &callbackPlayerShoot2));
 }
 
-void ComponentHUD::drawPlayerStamina(int y)
+void ComponentHUD::drawIconWeaponAndLevelName()
 {
     auto game = ComponentsManager::get()->getComponentGame();
     auto player = game->getPlayer();
 
-    player->getWeapon()->getIcon()->drawFlat(455, 420);
+    player->getWeapon()->getIcon()->drawFlat(470, 440);
 
     textWriter->writeTextTTFAutoSize(
         510,
-        430,
+        435,
         std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
         game->secondaryColor,
         0.50
     );
 
     textWriter->writeTextTTFAutoSize(
-        513,
-        460,
+        510,
+        462,
         game->getLevelInfo()->getLevelName().c_str(),
         game->primaryColor,
         0.25
@@ -145,7 +137,7 @@ void ComponentHUD::drawPlayerStamina(int y)
         auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
         int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
         for (int i = 0; i < gravitationalShieldsNumber; i++) {
-            gravitationalShieldImage->drawFlat(60 + gravitationalShieldImage->width() * i, 400);
+            gravitationalShieldImage->drawFlat(60 + gravitationalShieldImage->width() * i, 418);
         }
     }
 }
@@ -156,35 +148,49 @@ int ComponentHUD::getButtonsOffsetY() {
     return offsetY;
 }
 
-void ComponentHUD::drawShaderBars()
+void ComponentHUD::drawShaderLasers()
 {
-    float fixedWidth = 0.6;
-    float health =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getStamina() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartStamina());
-    float energy =  ((ComponentsManager::get()->getComponentGame()->getPlayer()->getEnergy() * fixedWidth) / (int) ComponentsManager::get()->getComponentGame()->getPlayer()->getStartEnergy());
+    const auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+    const float fixedWidth = 1.0;
+    const float health = (player->getStamina() * fixedWidth) / player->getStartStamina();
+    const float energy = (player->getEnergy() * fixedWidth) / player->getStartEnergy();
 
-    shaderBar->setValue(health);
-    shaderBarEnergy->setValue(energy);
+    const int startPositionX = 60;
+    const int width = 450;
+    const float stroke = 0.05;
 
-    shaderBar->update();
-    shaderBarEnergy->update();
-}
+    shaderLasers->addLaser(
+        startPositionX, 445,
+        width * health, 445 ,
+        255, 0, 0,
+        stroke
+    );
 
-void ComponentHUD::drawEnemySelectedShaderStamina()
-{
+    shaderLasers->addLaser(
+        startPositionX, 465,
+        width * energy, 465,
+        0, 255, 0,
+        stroke
+    );
+
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
     auto enemy = dynamic_cast<EnemyGhost*> (objectSelected);
-    if (enemy == nullptr) {
-        return;
+    if (enemy != nullptr) {
+        const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
+
+        shaderLasers->addLaser(
+                startPositionX, 25,
+                width * enemyHealth, 25,
+                255, 0, 255,
+                stroke
+        );
     }
 
-    float fixedWidth = 0.6;
-    float health =  ((enemy->getStamina() * fixedWidth) / (int) enemy->getStartStamina());
 
-    shaderSelectedEnemyStamina->setValue(health);
-    shaderSelectedEnemyStamina->update();
-
+    shaderLasers->update();
 }
+
 
 TextWriter *ComponentHUD::getTextWriter() const {
     return textWriter;

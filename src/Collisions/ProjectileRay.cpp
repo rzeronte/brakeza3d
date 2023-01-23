@@ -1,6 +1,7 @@
 #include "../../include/Physics/ProjectileRay.h"
 #include "../../darkheaz/src/weapons/AmmoProjectileBody.h"
 #include "../../darkheaz/src/items/ItemHealthGhost.h"
+#include "../../darkheaz/src/items/ItemWeaponGhost.h"
 
 
 ProjectileRay::ProjectileRay(
@@ -39,6 +40,11 @@ void ProjectileRay::resolveCollision(Collisionable *collisionable)
 
     auto health = dynamic_cast<ItemHealthGhost*> (collisionable);
     if (health != nullptr) {
+        return;
+    }
+
+    auto weapon = dynamic_cast<ItemWeaponGhost*> (collisionable);
+    if (weapon != nullptr) {
         return;
     }
 

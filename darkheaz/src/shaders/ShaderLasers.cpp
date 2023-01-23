@@ -145,6 +145,6 @@ void ShaderLasers::addLaserFromRay(ProjectileRay *ray)
         screenPoint.x, screenPoint.y,
         middlePoint.x, middlePoint.y,
         (int) color.r, (int) color.g, (int) color.b,
-        0.1
+        0.05
     );
 }
