@@ -509,7 +509,11 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
     auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
     auto color = parseColorJSON(cJSON_GetObjectItemCaseSensitive(emitter, "color"));
 
-    auto projectileEmissor = new AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType::UNIQUE_PROJECTILE, step, enemy->getWeapon());
+    auto projectileEmissor = new AmmoProjectileBodyEmissor(
+        ProjectileBodyEmmissorType::UNIQUE_PROJECTILE,
+        step,
+        enemy->getWeapon()
+    );
 
     projectileEmissor->setActive(false);
     switch(type) {
@@ -596,11 +600,11 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_LASER, position);
+            this->makeItemWeapon(WeaponTypes::WEAPON_LASER_RAY, position);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_SMART_PROJECTILE, position);
+            this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
             break;
         }
     }

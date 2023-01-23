@@ -91,8 +91,6 @@ public:
 
     void setLives(int lives);
 
-    void evalStatusMachine();
-
     void onUpdate() override;
     void postUpdate();
 

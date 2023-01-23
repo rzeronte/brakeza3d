@@ -16,8 +16,8 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 1, "y": 10 },
-        "to": { "x": 1, "y": 50 },
+        "from": { "x": 5, "y": 10 },
+        "to": { "x": 5, "y": 50 },
         "speed": 1
       },
       "weapon": {
@@ -38,7 +38,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       }
     },
@@ -74,7 +74,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       }
     }
@@ -113,7 +113,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       },
       "emitter": {

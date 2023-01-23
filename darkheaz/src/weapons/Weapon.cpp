@@ -1,5 +1,7 @@
 
 #include "Weapon.h"
+
+#include <utility>
 #include "../../../include/Brakeza3D.h"
 #include "AmmoProjectileBody.h"
 #include "AmmoSmartProjectileBody.h"
@@ -271,6 +273,14 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         setAmmoAmount(getAmmoAmount() - 1);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+
+        if (sound) {
+            ComponentsManager::get()->getComponentSound()->playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel("laserShoot"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
+            );
+        }
     }
 }
 
@@ -278,8 +288,8 @@ const std::string &Weapon::getSoundEmptyLabel() const {
     return soundEmptyLabel;
 }
 
-void Weapon::setSoundEmptyLabel(const std::string &label) {
-    Weapon::soundEmptyLabel = label;
+void Weapon::setSoundEmptyLabel(const std::string &value) {
+    Weapon::soundEmptyLabel = value;
 }
 
 
@@ -287,17 +297,17 @@ const std::string &Weapon::getSoundFire() const {
     return fireSound;
 }
 
-void Weapon::setSoundFire(const std::string &label) {
-    Weapon::fireSound = label;
+void Weapon::setSoundFire(const std::string &value) {
+    Weapon::fireSound = value;
 }
 
 const std::string &Weapon::getLabel() const {
     return label;
 }
 
-void Weapon::setCadenceTime(float cadenceTime) {
-    Weapon::cadenceTime = cadenceTime;
-    this->counterCadence->setStep(cadenceTime);
+void Weapon::setCadenceTime(float value) {
+    Weapon::cadenceTime = value;
+    this->counterCadence->setStep(value);
     this->counterCadence->setEnabled(true);
 }
 
@@ -306,15 +316,15 @@ Image *Weapon::getIcon() const {
 }
 
 void Weapon::setIconImage(std::string file) {
-    this->icon = new Image(file);
+    this->icon = new Image(std::move(file));
 }
 
 int Weapon::getAmmoAmount() const {
     return ammoAmount;
 }
 
-void Weapon::setAmmoAmount(int ammoAmount) {
-    Weapon::ammoAmount = ammoAmount;
+void Weapon::setAmmoAmount(int value) {
+    Weapon::ammoAmount = value;
 }
 
 void Weapon::addAmount(int addAmount) {
@@ -347,26 +357,26 @@ int Weapon::getStartAmmoAmount() const {
     return startAmmoAmount;
 }
 
-void Weapon::setStartAmmoAmount(int startAmmoAmount) {
-    Weapon::startAmmoAmount = startAmmoAmount;
+void Weapon::setStartAmmoAmount(int value) {
+    Weapon::startAmmoAmount = value;
 }
 
 bool Weapon::isStop() const {
     return stop;
 }
 
-void Weapon::setStop(bool stop) {
-    Weapon::stop = stop;
+void Weapon::setStop(bool value) {
+    Weapon::stop = value;
 }
 
 float Weapon::getStopDuration() const {
     return stopDuration;
 }
 
-void Weapon::setStopDuration(float stopDuration)
+void Weapon::setStopDuration(float value)
 {
-    Weapon::stopDuration = stopDuration;
-    this->counterStopDuration.setStep(stopDuration);
+    Weapon::stopDuration = value;
+    this->counterStopDuration.setStep(value);
     this->counterStopDuration.setEnabled(false);
 }
 
@@ -384,8 +394,8 @@ int Weapon::getSoundChannel() const {
     return soundChannel;
 }
 
-void Weapon::setSoundChannel(int soundChannel) {
-    Weapon::soundChannel = soundChannel;
+void Weapon::setSoundChannel(int value) {
+    Weapon::soundChannel = value;
 }
 
 Weapon::~Weapon()
@@ -443,7 +453,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
     }
 }
 
-void Weapon::shootLaser(ShaderLaser *shaderLaser, float intensity)
+void Weapon::shootLaserRay(ShaderLaser *shaderLaser, float intensity)
 {
     if (getAmmoAmount() <= 0) return;
 

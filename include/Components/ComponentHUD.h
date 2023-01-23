@@ -13,13 +13,11 @@
 #include "../2D/Button.h"
 #include "../Objects/Mesh3D.h"
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
+#include "../../darkheaz/src/shaders/ShaderLasers.h"
 
 class ComponentHUD : public Component {
     std::vector<Button*> buttons;
-    ShaderHorizontalBar *shaderBar;
-    ShaderHorizontalBar *shaderBarEnergy;
-    ShaderHorizontalBar *shaderSelectedEnemyStamina;
-
+    ShaderLasers *shaderLasers;
 public:
 
     ComponentHUD();
@@ -49,13 +47,11 @@ public:
 
     void loadButtons();
 
-    void drawPlayerStamina(int y);
+    void drawIconWeaponAndLevelName();
 
     int getButtonsOffsetY();
 
-    void drawShaderBars();
-
-    void drawEnemySelectedShaderStamina();
+    void drawShaderLasers();
 
     TextWriter *getTextWriter() const;
 

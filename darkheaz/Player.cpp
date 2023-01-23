@@ -102,17 +102,6 @@ void Player::setLives(int value) {
     Player::lives = value;
 }
 
-
-void Player::evalStatusMachine() {
-
-    switch (state) {
-        case PlayerState::LIVE:
-            break;
-        case PlayerState::DEAD:
-            break;
-    }
-}
-
 void Player::takeDamage(float dmg)
 {
     if ((state == PlayerState::GETTING_DAMAGE && !isStucked())|| state == PlayerState::DEAD) {
@@ -199,7 +188,7 @@ void Player::shoot(float intensity)
             );
             break;
         }
-        case WeaponTypes::WEAPON_SMART_PROJECTILE: {
+        case WeaponTypes::WEAPON_LASER_PROJECTILE: {
             weapon->shootLaserProjectile(
                     this,
                     getPosition() - AxisUp().getScaled(1000),
@@ -224,8 +213,8 @@ void Player::shoot(float intensity)
             weapon->shootBomb(this, getPosition());
             break;
         }
-        case WeaponTypes::WEAPON_LASER: {
-            weapon->shootLaser(shaderLaser, intensity);
+        case WeaponTypes::WEAPON_LASER_RAY: {
+            weapon->shootLaserRay(shaderLaser, intensity);
             break;
         }
     }
@@ -315,8 +304,6 @@ void Player::onUpdate()
 
 void Player::postUpdate()
 {
-    //shaderLaser->update();
-
     if (!isEnabled()) return;
 
     if (state == PlayerState::DEAD) {

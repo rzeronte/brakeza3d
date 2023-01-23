@@ -37,7 +37,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       },
       "emitter": {
@@ -80,7 +80,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0}
       },
       "emitter": {
@@ -123,7 +123,7 @@
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
         "flatTexture": true,
-        "enableLights": true,
+        "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0}
       },
       "emitter": {
