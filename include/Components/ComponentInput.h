@@ -22,8 +22,13 @@ public:
     Uint8 controllerButtonB;
     Uint8 controllerButtonX;
     Uint8 controllerButtonY;
+
     float controllerAxisLeftX;
     float controllerAxisLeftY;
+
+    float controllerAxisRightX;
+    float controllerAxisRightY;
+
     float controllerAxisTriggerLeft;
     float controllerAxisTriggerRight;
 

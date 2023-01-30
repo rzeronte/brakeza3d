@@ -34,6 +34,7 @@ void ComponentGame::onStart()
         false
     );
 
+    imageCrossFire = new Image(SETUP->IMAGES_FOLDER + "crossfire.png");
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
     imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
     imageSplash = new Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA);
@@ -112,7 +113,6 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-
     EngineSetup::GameState state = getGameState();
 
     if (state == EngineSetup::GameState::GAMING) {
@@ -168,11 +168,32 @@ void ComponentGame::onUpdate()
     }
 
     updateShaders();
+    updateCrossFire();
+
 }
 
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
+
+}
+
+void ComponentGame::updateCrossFire() {
+    auto selected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+
+    if (selected != nullptr) {
+        auto direction = selected->getPosition() - spaceCrossFirePosition;
+
+        const float speed = 0.4f;
+        spaceCrossFirePosition = spaceCrossFirePosition + direction.getScaled(speed);
+
+        imageCrossFireScreenPosition = Transforms::WorldToPoint(spaceCrossFirePosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+
+        imageCrossFireScreenPosition.x -= imageCrossFire->width() / 2;
+        imageCrossFireScreenPosition.y -= imageCrossFire->height() / 2;
+
+        imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y);
+    };
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -358,6 +379,48 @@ void ComponentGame::loadPlayer()
     explosion = new Sprite3D();
     explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  12, 30);
     explosion->setAnimation(0);
+}
+
+Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const
+{
+    Object3D *currentClosestObject = nullptr;
+    float currentMinDistance = 0;
+
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (!object->isEnabled() || player == object) {
+            continue;
+        }
+
+        if (skipPlayer && player == object) {
+            continue;
+        }
+
+        if (skipCurrentSelected && ComponentsManager::get()->getComponentRender()->getSelectedObject() == object) {
+            continue;
+        }
+
+        auto enemy = dynamic_cast<EnemyGhost *>(object);
+        if (enemy == nullptr) {
+            continue;
+        }
+
+        Vertex3D to = (enemy->getPosition() - from);
+
+        if (direction * to > 0) {
+            const float distance = to.getSquaredLength();
+            if (currentClosestObject == nullptr) {
+                currentMinDistance = distance;
+                currentClosestObject = object;
+            } else {
+                if (distance < currentMinDistance) {
+                    currentMinDistance = distance;
+                    currentClosestObject = object;
+                }
+            }
+        }
+    }
+
+    return currentClosestObject;
 }
 
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
@@ -690,11 +753,8 @@ void ComponentGame::updateShaders()
 {
     addObjectsToStencilBuffer();
     shaderTrailBuffer->update();
-
     shaderClouds->update();
     shaderColor->update();
-    shaderEdge->setObject(ComponentsManager::get()->getComponentRender()->getSelectedObject());
-    shaderEdge->update();
     shaderLasers->update();
 
 }

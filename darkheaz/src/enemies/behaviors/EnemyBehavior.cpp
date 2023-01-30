@@ -3,6 +3,7 @@
 //
 
 #include "../EnemyBehavior.h"
+#include "../include/Render/Logging.h"
 
 EnemyBehavior::EnemyBehavior()
 {
@@ -39,7 +40,12 @@ bool EnemyBehavior::isEnabled() const {
     return enabled;
 }
 
-void EnemyBehavior::setEnabled(bool enabled) {
-    EnemyBehavior::enabled = enabled;
+void EnemyBehavior::setEnabled(bool value) {
+    EnemyBehavior::enabled = value;
+    if (!value) {
+        timer.pause();
+    } else {
+        timer.unpause();
+    }
 }
 

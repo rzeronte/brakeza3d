@@ -42,7 +42,7 @@ public:
 
     [[nodiscard]] EnemyState getState() const;
 
-    void setState(EnemyState state);
+    void setState(EnemyState value);
 
     float getStamina() const;
 
@@ -62,7 +62,7 @@ public:
 
     bool isRewards() const;
 
-    void setRewards(bool rewards);
+    void setRewards(bool value);
 
     bool isStucked() const;
 

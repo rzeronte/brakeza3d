@@ -62,11 +62,7 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "hud.png", "hud");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_empty.png", "healthEmptyBar");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_stamina.png", "healthBarStaminaPercent");
-    HUDTextures->addItem(SETUP->HUD_FOLDER + "health_bar_energy.png", "healthBarEnergyPercent");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "gravitationalShield");
 
 }

@@ -6,7 +6,7 @@ ShaderLaser::ShaderLaser() : ShaderOpenCL("laser.opencl")
 {
     setIntensity(0.0);
     setReach(0);
-    setColor(Color::green());
+    setColor(Color::fuchsia());
 
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
@@ -81,9 +81,9 @@ void ShaderLaser::executeKernelOpenCL()
 
         btVector3 rayHitPosition = rayCallback.m_hitPointWorld;
         auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
-        middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
         if (player != nullptr) {
+            middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
             player->takeDamage(getDamage());
             Brakeza3D::get()->addObject3D(
                 new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
@@ -92,6 +92,7 @@ void ShaderLaser::executeKernelOpenCL()
         }
 
         if (enemy != nullptr) {
+            middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
             enemy->takeDamage(getDamage());
             Brakeza3D::get()->addObject3D(
                 new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
@@ -120,27 +121,27 @@ void ShaderLaser::executeKernelOpenCL()
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
-            clCommandQueue,
-            kernel,
-            1,
-            nullptr,
-            &global_item_size,
-            &local_item_size,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        kernel,
+        1,
+        nullptr,
+        &global_item_size,
+        &local_item_size,
+        0,
+        nullptr,
+        nullptr
     );
 
     clEnqueueReadBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
+        clCommandQueue,
+        openClBufferMappedWithVideoInput,
+        CL_TRUE,
+        0,
+        this->bufferSize * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
     );
 
     this->debugKernel();
