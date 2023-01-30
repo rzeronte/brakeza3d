@@ -31,7 +31,7 @@ public:
 
     bool isEnabled() const;
 
-    void setEnabled(bool enabled);
+    void setEnabled(bool value);
 };
 
 

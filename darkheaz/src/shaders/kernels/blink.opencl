@@ -9,7 +9,6 @@ __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
     __global unsigned int *video,
-    __global unsigned int *shader,
     __global bool *stencil,
     float r,
     float g,
@@ -18,16 +17,7 @@ __kernel void onUpdate(
 {
    int i = get_global_id(0);
 
-   int x = i % screenWidth;
-   int y = i / screenWidth;
-
-   float2 uv = { x, y };
-   float2 resolution = { screenWidth, screenHeight};
-   float2 st = uv / resolution;
-
-    if (!stencil[i]) {
-        video[i] = shader[i];
-    } else {
+    if (stencil[i]) {
         video[i] = createRGB(r, g, b);
     }
 }

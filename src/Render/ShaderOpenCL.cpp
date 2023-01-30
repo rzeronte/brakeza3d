@@ -60,6 +60,8 @@ void ShaderOpenCL::initOpenCLProgram()
 
 void ShaderOpenCL::debugKernel()
 {
+    if (!EngineSetup::get()->LOGGING) return;
+
     if (clRet != CL_SUCCESS) {
         Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
 

@@ -77,11 +77,15 @@ public:
     ShaderColor *shaderColor;
     ShaderTrailBuffer *shaderTrailBuffer;
     ShaderEdgeObject *shaderEdge;
+    Image *imageCrossFire;
+    Vertex3D spaceCrossFirePosition;
+    Point2D imageCrossFireScreenPosition;
 
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
     void selectClosestObject3DFromPlayer();
     Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
+    Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
 
     [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
 
@@ -145,6 +149,8 @@ public:
     Color primaryColor = Color(179, 0, 40);
     Color secondaryColor = Color(0, 179, 52);
     Color thirdColor = Color(0, 0, 255);
+
+    void updateCrossFire();
 };
 
 

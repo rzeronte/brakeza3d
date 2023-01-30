@@ -89,7 +89,7 @@ public:
         clEnqueueWriteBuffer(
             clCommandQueue,
             openClBufferMappedWithVideoInput,
-            CL_TRUE,
+            CL_FALSE,
             0,
             this->bufferSize * sizeof(Uint32),
             EngineBuffers::getInstance()->videoBuffer,
@@ -101,7 +101,7 @@ public:
         clEnqueueWriteBuffer(
             clCommandQueue,
             opencl_buffer_stencil,
-            CL_TRUE,
+            CL_FALSE,
             0,
             this->bufferSize * sizeof(bool),
             object->stencilBuffer,
@@ -112,12 +112,11 @@ public:
 
         clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
         clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
-        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
-        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
-        clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
-        clSetKernelArg(kernel, 5, sizeof(float), &this->color.r);
-        clSetKernelArg(kernel, 6, sizeof(float), &this->color.g);
-        clSetKernelArg(kernel, 7, sizeof(float), &this->color.b);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
+        clSetKernelArg(kernel, 4, sizeof(float), &this->color.r);
+        clSetKernelArg(kernel, 5, sizeof(float), &this->color.g);
+        clSetKernelArg(kernel, 6, sizeof(float), &this->color.b);
 
         // Process the entire lists
         size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
@@ -138,7 +137,7 @@ public:
 
         clEnqueueReadBuffer(
             clCommandQueue,
-            openClBufferMappedWithVideoOutput,
+            openClBufferMappedWithVideoInput,
             CL_TRUE,
             0,
             this->bufferSize * sizeof(Uint32),

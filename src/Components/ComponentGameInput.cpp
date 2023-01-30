@@ -6,7 +6,8 @@
 
 ComponentGameInput::ComponentGameInput(Player *player): enabled(true), player(player)
 {
-    this->controllerAxisThreshold = 0.05;
+    this->controllerAxisThreshold = 0.1;
+    this->lockRightStick = false;
 }
 
 void ComponentGameInput::onStart() {
@@ -281,7 +282,8 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
     auto game = ComponentsManager::get()->getComponentGame();
-
+    auto input = ComponentsManager::get()->getComponentInput();
+    auto render = ComponentsManager::get()->getComponentRender();
     if (
         (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
@@ -291,6 +293,23 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+        lockRightStick = false;
+    }
+
+    auto rightStickDirection = Vertex3D(input->controllerAxisRightX, input->controllerAxisRightY, 0);
+
+    if (render->getSelectedObject() != nullptr && !lockRightStick && rightStickDirection.getModule() > 0.5) {
+        lockRightStick = true;
+
+        auto currentClosestObject = game->getClosesObject3DDirection(player->getPosition(), rightStickDirection, true, true);
+
+        if (currentClosestObject != nullptr) {
+            ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
+        }
+    }
+
+    if (rightStickDirection.getModule() < 0.5 && lockRightStick) {
+        lockRightStick = false;
     }
 }
 

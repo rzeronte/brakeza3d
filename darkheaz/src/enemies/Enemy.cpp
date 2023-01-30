@@ -28,8 +28,8 @@ EnemyState Enemy::getState() const {
     return state;
 }
 
-void Enemy::setState(EnemyState state) {
-    Enemy::state = state;
+void Enemy::setState(EnemyState value) {
+    Enemy::state = value;
 }
 
 float Enemy::getStamina() const {
@@ -73,8 +73,8 @@ bool Enemy::isRewards() const {
     return rewards;
 }
 
-void Enemy::setRewards(bool rewards) {
-    Enemy::rewards = rewards;
+void Enemy::setRewards(bool value) {
+    Enemy::rewards = value;
 }
 
 bool Enemy::isStucked() const

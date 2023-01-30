@@ -5,10 +5,14 @@
 #include "Component.h"
 #include "../../darkheaz/Player.h"
 
-
 class ComponentGameInput : public Component {
 
 public:
+    float controllerAxisThreshold;
+    bool enabled;
+    bool lockRightStick;
+    Player *player;
+
     ComponentGameInput(Player *player);
 
     void onStart();
@@ -22,9 +26,6 @@ public:
     void onEnd();
 
     void onSDLPollEvent(SDL_Event *event, bool &finish);
-
-    bool enabled;
-    Player *player;
 
     bool isEnabled() const;
 
@@ -61,8 +62,6 @@ public:
     void initJostick();
 
     void setPlayer(Player *player);
-
-    float controllerAxisThreshold;
 
     void handleBomb(SDL_Event *pEvent);
 };
