@@ -75,7 +75,7 @@ void Player::loadShieldModel()
 
 void Player::loadReflection()
 {
-    reflection = new PlayerReflection(getStartStamina(), 5);
+    reflection = new PlayerReflection((float) getStartStamina(), 5);
     reflection->setEnabled(false);
     reflection->setLabel("gravitationalShieldPlayer");
     reflection->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
@@ -148,7 +148,7 @@ void Player::respawn()
 
 void Player::makeReflection()
 {
-    if (gravityShieldsNumber >= (int) MAX_GRAVITATIONAL_SHIELDS) {
+    if (gravityShieldsNumber >= (int) MAX_REFLECTIONS) {
         return;
     }
 
@@ -426,6 +426,12 @@ Weapon *Player::getWeapon() const {
 void Player::setWeapon(Weapon *weaponType) {
     Logging::Log("Set Player Weapon to" + weaponType->getLabel(), "");
     Player::weapon = weaponType;
+
+    ComponentsManager::get()->getComponentSound()->playSound(
+        EngineBuffers::getInstance()->soundPackage->getByLabel("switchWeapon"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
 }
 
 void Player::createWeapon(const std::string& label) {
@@ -584,15 +590,15 @@ void Player::previousWeapon()
 }
 
 void Player::setAllowGravitationalShields(bool value) {
-    Player::allowGravitationalShields = value;
+    Player::allowMakeReflections = value;
 }
 
 void Player::setAllowEnergyShield(bool value) {
     Player::allowEnergyShield = value;
 }
 
-bool Player::isAllowGravitationalShields() const {
-    return allowGravitationalShields;
+bool Player::isAllowedMakeReflections() const {
+    return allowMakeReflections;
 }
 
 bool Player::isAllowEnergyShield() const {
@@ -606,7 +612,7 @@ void Player::loadBlinkShader()
     blink->setEnabled(false);
     counterDamageBlink->setEnabled(false);
 
-    shaderLaser = new ShaderLaser();
+    shaderLaser = new ShaderLaser(this);
     shaderLaser->setTarget(this);
     shaderLaser->setSpeed(1000);
     shaderLaser->setEnabled(false);

@@ -6,11 +6,12 @@
 #include "../../../include/ComponentsManager.h"
 
 AmmoSmartProjectileBody::AmmoSmartProjectileBody(
+    Weapon *weapon,
     float damage,
     float ttl,
     const Vertex3D &direction,
     Object3D *target
-) : AmmoProjectileBody(damage, ttl, direction), target(target)
+) : AmmoProjectileBody(weapon, damage, ttl, direction), target(target)
 {
 
 }

@@ -58,7 +58,7 @@ public:
 
     void addObject3D(Object3D *obj, const std::string &label);
 
-    std::vector<Object3D *> &getSceneObjects();
+    const std::vector<Object3D *> &getSceneObjects() const;
 
     Object3D *getObjectByLabel(const std::string &label);
 

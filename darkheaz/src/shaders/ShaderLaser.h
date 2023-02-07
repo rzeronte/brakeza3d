@@ -18,12 +18,13 @@ class ShaderLaser : public ShaderOpenCL {
 
     Color color;
     Object3D* target;
+    Object3D* parent;
 
     Image *image;
 
     cl_mem opencl_buffer_pixels_image;
 public:
-    explicit ShaderLaser();
+    explicit ShaderLaser(Object3D *parent);
 
     void update() override;
     void executeKernelOpenCL();
@@ -48,11 +49,11 @@ public:
 
     Object3D *getTarget() const;
 
-    void setTarget(Object3D *target);
+    void setTarget(Object3D *object);
 
     const Color &getColor() const;
 
-    void setColor(const Color &color);
+    void setColor(const Color &c);
 };
 
 

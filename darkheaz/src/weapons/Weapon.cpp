@@ -124,11 +124,15 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         setStatus(WeaponStatus::PRESSED);
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-        auto *projectile = new AmmoProjectileBody(getDamage(), EngineSetup::get()->PROJECTILE_DEMO_TTL, direction);
+        auto *projectile = new AmmoProjectileBody(
+            this,
+            getDamage(),
+            EngineSetup::get()->PROJECTILE_DEMO_TTL,
+            direction
+        );
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
-        projectile->setWeaponType(this);
         projectile->setEnableLights(getModelProjectile()->isEnableLights());
         projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());
         projectile->setFlatColor(getModelProjectile()->getFlatColor());
@@ -190,12 +194,17 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
 
-        auto *projectile = new AmmoSmartProjectileBody(getDamage(), EngineSetup::get()->PROJECTILE_DEMO_TTL, direction, target);
+        auto *projectile = new AmmoSmartProjectileBody(
+            this,
+            getDamage(),
+            EngineSetup::get()->PROJECTILE_DEMO_TTL,
+            direction,
+            target
+        );
         projectile->setTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
-        projectile->setWeaponType(this);
 
         projectile->setEnableLights(getModelProjectile()->isEnableLights());
         projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());

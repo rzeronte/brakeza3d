@@ -284,6 +284,7 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
     auto game = ComponentsManager::get()->getComponentGame();
     auto input = ComponentsManager::get()->getComponentInput();
     auto render = ComponentsManager::get()->getComponentRender();
+
     if (
         (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
@@ -305,6 +306,12 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
         if (currentClosestObject != nullptr) {
             ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
+
+            ComponentsManager::get()->getComponentSound()->playSound(
+                BUFFERS->soundPackage->getByLabel("tic"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
+            );
         }
     }
 
@@ -398,7 +405,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonA) {
-        if (player->isAllowGravitationalShields()) {
+        if (player->isAllowedMakeReflections()) {
             player->makeReflection();
         }
     }

@@ -25,7 +25,7 @@
         "index": 0,
         "available": true,
         "name": "Linear",
-        "damage": 10,
+        "damage": 25,
         "amount": 1000,
         "startAmount": 1000,
         "speed": 500,

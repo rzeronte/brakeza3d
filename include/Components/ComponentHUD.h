@@ -36,14 +36,13 @@ public:
 
     TexturePackage *HUDTextures;
     TextWriter *textWriter;
-
     void loadImages();
 
     void drawHUD();
 
     void addButton(Button *button);
 
-    const std::vector<Button *> &getButtons() const;
+    [[nodiscard]] const std::vector<Button *> &getButtons() const;
 
     void loadButtons();
 

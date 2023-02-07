@@ -2,7 +2,7 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLaser::ShaderLaser() : ShaderOpenCL("laser.opencl")
+ShaderLaser::ShaderLaser(Object3D *parent) : ShaderOpenCL("laser.opencl"), parent(parent)
 {
     setIntensity(0.0);
     setReach(0);
@@ -37,8 +37,6 @@ void ShaderLaser::update()
 
     if (!isEnabled()) return;
 
-    increaseReach();
-
     executeKernelOpenCL();
 }
 
@@ -47,7 +45,7 @@ void ShaderLaser::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -67,38 +65,55 @@ void ShaderLaser::executeKernelOpenCL()
         btVector3(end.x, end.y, end.z)
     );
 
+    rayCallback.m_collisionFilterGroup = EngineSetup::collisionGroups::Player;
+    rayCallback.m_collisionFilterMask = EngineSetup::collisionGroups::Enemy;
+
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z),
         rayCallback
     );
 
+    bool increase = true;
+
     if (rayCallback.hasHit()) {
         auto *brkObjectA = (Collisionable *) rayCallback.m_collisionObject->getUserPointer();
 
+        auto *object = dynamic_cast<Object3D*> (brkObjectA);
         auto *enemy = dynamic_cast<EnemyGhost*> (brkObjectA);
         auto *player = dynamic_cast<Player*> (brkObjectA);
 
-        btVector3 rayHitPosition = rayCallback.m_hitPointWorld;
-        auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+        if (object != this->parent) {
+            if (player != nullptr) {
+                btVector3 rayHitPosition = rayCallback.m_hitPointWorld;
+                auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
-        if (player != nullptr) {
-            middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
-            player->takeDamage(getDamage());
-            Brakeza3D::get()->addObject3D(
-                new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
-                "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-            );
-        }
+                player->takeDamage(getDamage());
+                Brakeza3D::get()->addObject3D(
+                    new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
+                    "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+                );
+                increase = false;
+            }
 
-        if (enemy != nullptr) {
-            middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
-            enemy->takeDamage(getDamage());
-            Brakeza3D::get()->addObject3D(
-                new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
-                "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-            );
+            if (enemy != nullptr) {
+                btVector3 rayHitPosition = rayCallback.m_hitPointWorld;
+                auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+
+                enemy->takeDamage(getDamage());
+                Brakeza3D::get()->addObject3D(
+                        new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
+                        "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+                );
+                increase = false;
+            }
         }
+    }
+
+    if (increase){
+        increaseReach();
     }
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
@@ -187,15 +202,15 @@ Object3D *ShaderLaser::getTarget() const {
     return target;
 }
 
-void ShaderLaser::setTarget(Object3D *target) {
-    ShaderLaser::target = target;
+void ShaderLaser::setTarget(Object3D *object) {
+    ShaderLaser::target = object;
 }
 
 const Color &ShaderLaser::getColor() const {
     return color;
 }
 
-void ShaderLaser::setColor(const Color &color) {
-    ShaderLaser::color = color;
+void ShaderLaser::setColor(const Color &c) {
+    ShaderLaser::color = c;
 }
 

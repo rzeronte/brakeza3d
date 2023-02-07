@@ -10,6 +10,16 @@ struct OCLaser
     float intensity;
 };
 
+struct OCProjectile
+{
+    int x;
+    int y;
+    int r;
+    int g;
+    int b;
+    float intensity;
+};
+
 unsigned int createRGB(int r, int g, int b);
 float plot(float, float, float);
 float rand(float2 seed);
@@ -22,7 +32,9 @@ __kernel void onUpdate(
     __global unsigned int *video,
     __global unsigned int *image,
     __global struct OCLaser *lasers,
-    int numberLasers
+    int numberLasers,
+    __global struct OCProjectile *projectiles,
+    int numberProjectiles
 )
 {
     int i = get_global_id(0);
@@ -35,6 +47,32 @@ __kernel void onUpdate(
     float2 st = uv / resolution;
 
     unsigned int mixedColor = video[i];
+
+    for (int j = 0; j < numberProjectiles; j++) {
+        struct OCProjectile projectile = projectiles[j];
+        float2 A = { projectile.x, projectile.y };
+
+        A = A / resolution;
+
+        float rad  = 0.0015;
+        float len = length(A-st);
+        float width = projectile.intensity * 0.050;
+        float circle = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
+        float3 colorCircle = {
+            circle * projectile.r,
+            circle * projectile.g,
+            circle * projectile.b
+        };
+
+        unsigned char *mi = &mixedColor;
+
+        mixedColor = createRGB(
+            min(colorCircle[0] + mi[0], 255.0),
+            min(colorCircle[1] + mi[1], 255.0),
+            min(colorCircle[2] + mi[2], 255.0)
+        );
+    }
+
     for (int j = 0; j < numberLasers; j++) {
         struct OCLaser laser = lasers[j];
         float2 A = { laser.x1, laser.y1 };

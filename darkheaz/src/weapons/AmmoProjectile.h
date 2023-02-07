@@ -7,8 +7,9 @@
 
 class AmmoProjectile {
     float damage;
+    Color color;
 public:
-    explicit AmmoProjectile(float damage) : damage(damage) {
+    explicit AmmoProjectile(Color color, float damage) : damage(damage), color(color) {
 
     }
 
@@ -18,6 +19,10 @@ public:
 
     void setDamage(float value) {
         AmmoProjectile::damage = value;
+    }
+
+    const Color &getColor() const {
+        return color;
     }
 };
 

@@ -93,7 +93,7 @@ void Brakeza3D::controlFrameRate() const
     }
 }
 
-std::vector<Object3D *> &Brakeza3D::getSceneObjects() {
+const std::vector<Object3D *> &Brakeza3D::getSceneObjects() const {
     return sceneObjects;
 }
 

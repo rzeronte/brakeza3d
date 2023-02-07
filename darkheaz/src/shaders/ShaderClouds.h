@@ -15,15 +15,18 @@
 class ShaderClouds: public ShaderOpenCL {
     Image *clouds;
     cl_mem opencl_buffer_pixels_image;
+    Color color;
 
 public:
-    ShaderClouds();
+    ShaderClouds(Color c);
 
     void update() override;
 
     ~ShaderClouds() override;
 
     void executeKernelOpenCL();
+
+    void setColor(const Color &v);
 };
 
 

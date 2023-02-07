@@ -11,7 +11,7 @@ ProjectileRay::ProjectileRay(
     const Vertex3D &ray,
     int speed,
     const Color &color
-) : Projectile(ttl, direction), RayCollisionable(ray), AmmoProjectile(damage), color(color), speed(speed) {
+) : Projectile(ttl, direction), RayCollisionable(ray), AmmoProjectile(color, damage), speed(speed) {
 
 }
 
@@ -85,10 +85,3 @@ void ProjectileRay::hasHit()
     }
 }
 
-const Color &ProjectileRay::getColor() const {
-    return color;
-}
-
-void ProjectileRay::setColor(const Color &value) {
-    ProjectileRay::color = value;
-}

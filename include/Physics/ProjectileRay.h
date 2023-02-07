@@ -32,10 +32,6 @@ public:
     void integrate() override;
 
     void hasHit() override;
-
-    [[nodiscard]] const Color &getColor() const;
-
-    void setColor(const Color &value);
 };
 
 

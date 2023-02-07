@@ -126,7 +126,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring;
     auto shaderBackground = ComponentsManager::get()->getComponentGame()->shaderBackgroundImage;
     shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
-
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
         std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring;
         tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
@@ -142,6 +141,8 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     auto c = this->parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
+
+    ComponentsManager::get()->getComponentGame()->shaderClouds->setColor(c);
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(c.r, c.g, c.b);
 
@@ -193,15 +194,15 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     std::string model = cJSON_GetObjectItemCaseSensitive(weaponJson, "model")->valuestring;
     int amount = cJSON_GetObjectItemCaseSensitive(weaponJson, "amount")->valueint;
     int startAmount = cJSON_GetObjectItemCaseSensitive(weaponJson, "startAmount")->valueint;
-    int speed = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valueint;
-    int dispersion = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "dispersion")->valueint;
-    float accuracy = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "accuracy")->valuedouble;
-    float damage = (float)cJSON_GetObjectItemCaseSensitive(weaponJson, "damage")->valuedouble;
+    int speed = cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valueint;
+    int dispersion = cJSON_GetObjectItemCaseSensitive(weaponJson, "dispersion")->valueint;
+    auto accuracy = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "accuracy")->valuedouble;
+    auto damage = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "damage")->valuedouble;
     int type = cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint;
-    float cadenceTime = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "cadenceTime")->valuedouble;
+    auto cadenceTime = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "cadenceTime")->valuedouble;
     bool stop = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "stop")->valueint;
-    float stopDuration = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble;
-    float stopEvery = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
+    auto stopDuration = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble;
+    auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
     bool available = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint;
     bool isFlatTexture = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "flatTexture")->valueint;
     bool enableLights = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "enableLights")->valueint;
@@ -403,7 +404,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
-        enemy->aabb.size().getScaled(0.3),
+        enemy->aabb.size().getScaled(0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::AllFilter
