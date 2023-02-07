@@ -9,7 +9,8 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *image
+    __global unsigned int *image,
+    float r, float g, float b
 )
 {
    int i = get_global_id(0);
@@ -23,9 +24,7 @@ __kernel void onUpdate(
 
     __global unsigned char *t = &video[i];
 
-    float shadowIntensity = plot(st.x, 0.5, 0.95);
     float speed = 0.075;
-
     float2 dir = {0.0, 1.0};
     float2 offset = dir * iTime * speed;
     st += offset;
@@ -40,10 +39,18 @@ __kernel void onUpdate(
 
     __global unsigned char *ci = &image[index];
 
+    float n = ci[0] * 0.25;
+
+    float3 colorLine = {
+        (r/255) * n,
+        (g/255) * n,
+        (b/255) * n
+    };
+
     video[i] = createRGB(
-        t[0] * ci[0]/255,
-        t[1] * ci[1]/255,
-        t[2] * ci[2]/255
+        min(t[0] + colorLine[0], 255.0),
+        min(t[1] + colorLine[1], 255.0),
+        min(t[2] + colorLine[2], 255.0)
     );
 }
 

@@ -29,7 +29,7 @@ public:
             float timedelta,
             bool &finish,
             Camera3D *cam,
-            std::vector<Object3D *> &gameObjects,
+            const std::vector<Object3D *> &gameObjects,
             std::vector<LightPoint3D *> &lightPoints,
             std::vector<Tile> &tiles,
             int numTilesColumns

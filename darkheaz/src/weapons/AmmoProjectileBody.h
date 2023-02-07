@@ -14,11 +14,9 @@
 class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     Weapon *weaponType;
 public:
-    AmmoProjectileBody(float damage, float ttl, const Vertex3D &direction);
+    AmmoProjectileBody(Weapon *weaponType, float damage, float ttl, const Vertex3D &direction);
 
     [[nodiscard]] Weapon *getWeaponType() const;
-
-    void setWeaponType(Weapon *weapon);
 
     void resolveCollision(Collisionable *collisionable) override;
 

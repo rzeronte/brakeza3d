@@ -63,8 +63,8 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish)
 void ComponentHUD::loadImages() {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
-    HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "gravitationalShield");
-
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "reflectionIcon");
+    HUDTextures->addItem(SETUP->IMAGES_FOLDER + "hud_background.png", "hudBackground");
 }
 
 void ComponentHUD::drawHUD()
@@ -74,6 +74,7 @@ void ComponentHUD::drawHUD()
 
     drawShaderLasers();
     drawIconWeaponAndLevelName();
+    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
 
     if (SETUP->DRAW_FPS) {
         this->textWriter->writeTTFCenterHorizontal(
@@ -129,11 +130,11 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         0.25
     );
 
-    if (player->isAllowGravitationalShields()) {
-        auto gravitationalShieldImage = HUDTextures->getTextureByLabel("gravitationalShield")->getImage();
-        int gravitationalShieldsNumber = MAX_GRAVITATIONAL_SHIELDS - (int) player->getGravityShieldsNumber();
-        for (int i = 0; i < gravitationalShieldsNumber; i++) {
-            gravitationalShieldImage->drawFlat(60 + gravitationalShieldImage->width() * i, 418);
+    if (player->isAllowedMakeReflections()) {
+        auto reflectionImage = HUDTextures->getTextureByLabel("reflectionIcon")->getImage();
+        int reflectionsNumber = MAX_REFLECTIONS - (int) player->getGravityShieldsNumber();
+        for (int i = 0; i < reflectionsNumber; i++) {
+            reflectionImage->drawFlat(5 + reflectionImage->width() * i, 440);
         }
     }
 }
@@ -151,20 +152,22 @@ void ComponentHUD::drawShaderLasers()
     const float health = (player->getStamina() * fixedWidth) / player->getStartStamina();
     const float energy = (player->getEnergy() * fixedWidth) / player->getStartEnergy();
 
-    const int startPositionX = 60;
-    const int width = 450;
+    const int startPositionX = 110;
+    const int width = 350;
     const float stroke = 0.05;
+
+    Logging::Log(std::to_string(health), "");
 
     shaderLasers->addLaser(
         startPositionX, 445,
-        width * health, 445 ,
+        startPositionX + (width * health), 445 ,
         255, 0, 0,
         stroke
     );
 
     shaderLasers->addLaser(
         startPositionX, 465,
-        width * energy, 465,
+        startPositionX + (width * energy), 465,
         0, 255, 0,
         stroke
     );
@@ -176,10 +179,10 @@ void ComponentHUD::drawShaderLasers()
         const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
 
         shaderLasers->addLaser(
-                startPositionX, 25,
-                width * enemyHealth, 25,
-                255, 0, 255,
-                stroke
+            startPositionX, 25,
+            startPositionX + (width * enemyHealth), 25,
+            255, 0, 255,
+            stroke
         );
     }
 

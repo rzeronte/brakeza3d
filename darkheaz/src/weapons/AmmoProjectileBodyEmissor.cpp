@@ -139,10 +139,9 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
 {
     Vertex3D direction = this->AxisForward().getNormalize();
 
-    auto *projectile = new AmmoProjectileBody(weaponType->getDamage(), 0, direction);
+    auto *projectile = new AmmoProjectileBody(weaponType, weaponType->getDamage(), 0, direction);
     projectile->setParent(this);
     projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    projectile->setWeaponType(this->weaponType);
     projectile->cloneParts(
         weaponType->getModelProjectile(),
         true,

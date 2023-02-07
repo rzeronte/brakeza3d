@@ -12,6 +12,8 @@ RayCollisionable::RayCollisionable(const Vertex3D &ray) : ray(ray)
         btVector3(end.x, end.y, end.z)
     );
 
+    rayCallback->m_collisionFilterGroup = EngineSetup::collisionGroups::Player;
+    rayCallback->m_collisionFilterMask = EngineSetup::collisionGroups::Enemy;
 }
 
 void RayCollisionable::integrate()
@@ -21,16 +23,15 @@ void RayCollisionable::integrate()
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
 
-    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
-        btVector3(start.x, start.y, start.z),
-        btVector3(end.x, end.y, end.z)
-    );
+    rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
+    rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z),
         *rayCallback
     );
+
 
     hasHit();
 }

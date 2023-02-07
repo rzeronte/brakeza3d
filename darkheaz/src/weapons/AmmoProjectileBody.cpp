@@ -7,17 +7,17 @@
 #include "../items/ItemHealthGhost.h"
 #include "../../../include/Brakeza3D.h"
 
-AmmoProjectileBody::AmmoProjectileBody(float damage, float ttl, const Vertex3D &direction) : Projectile3DBody(ttl,direction), AmmoProjectile(damage)
+AmmoProjectileBody::AmmoProjectileBody(
+        Weapon *weaponType,
+        float damage,
+        float ttl,
+        const Vertex3D &direction) : Projectile3DBody(ttl, direction), AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage), weaponType(weaponType)
 {
 
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
     return weaponType;
-}
-
-void AmmoProjectileBody::setWeaponType(Weapon *weapon) {
-    AmmoProjectileBody::weaponType = weapon;
 }
 
 void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)

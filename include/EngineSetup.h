@@ -154,7 +154,7 @@ public:
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 20;
-    float SOUND_CHANNEL_GLOBAL = 25;
+    float SOUND_CHANNEL_GLOBAL = 50;
 
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;

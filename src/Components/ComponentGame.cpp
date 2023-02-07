@@ -59,7 +59,7 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
 
-    shaderClouds = new ShaderClouds();
+    shaderClouds = new ShaderClouds(Color::black());
     shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderClouds->setEnabled(false);
 
@@ -241,7 +241,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         Logging::getInstance()->Log("GameState changed to SPLASH");
 
         splashCounter.setEnabled(true);
-        shaderClouds->setEnabled(true);
+        shaderClouds->setEnabled(false);
 
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, SPLASH_TIME * 1000);
     }
@@ -472,7 +472,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
     if (currentClosestObject != nullptr) {
         ComponentsManager::get()->getComponentSound()->playSound(
-            BUFFERS->soundPackage->getByLabel("changedSelectedEnemy"),
+            BUFFERS->soundPackage->getByLabel("tic"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -721,26 +721,18 @@ void ComponentGame::pressedKeyByDead()
 void ComponentGame::addObjectsToStencilBuffer()
 {
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        auto *enemy = dynamic_cast<EnemyGhost *> (object);
-        auto *player = dynamic_cast<Player *> (object);
-        auto *reflection = dynamic_cast<PlayerReflection *> (object);
-        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
-        auto ray = dynamic_cast<ProjectileRay *> (object);
-        auto energy = dynamic_cast<ItemEnergyGhost *> (object);
-        auto health = dynamic_cast<ItemHealthGhost *> (object);
-        auto weapon = dynamic_cast<ItemWeaponGhost *> (object);
-        auto bomb = dynamic_cast<ItemBombGhost *> (object);
+        if (object->isRemoved()) continue;
 
-        if (enemy != nullptr ||
-            player != nullptr ||
-            projectile != nullptr ||
-            energy != nullptr ||
-            weapon != nullptr ||
-            bomb != nullptr ||
-            reflection != nullptr ||
-            health != nullptr
-        ) {
+        auto projectile = dynamic_cast<AmmoProjectile *> (object);
+        auto ray = dynamic_cast<ProjectileRay *> (object);
+
+        if (projectile != nullptr) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
+            shaderLasers->addProjectile(
+                object->getPosition(),
+                projectile->getColor(),
+                projectile->getDamage()
+            );
         }
 
         if (ray != nullptr) {
@@ -756,7 +748,6 @@ void ComponentGame::updateShaders()
     shaderClouds->update();
     shaderColor->update();
     shaderLasers->update();
-
 }
 
 void ComponentGame::zoomCameraCountDown()

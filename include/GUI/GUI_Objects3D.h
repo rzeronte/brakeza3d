@@ -29,7 +29,7 @@ public:
 
     virtual ~GUI_Objects3D() {}
 
-    virtual void draw(std::vector<Object3D *> &gameObjects) {
+    virtual void draw(const std::vector<Object3D *> &gameObjects) {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {

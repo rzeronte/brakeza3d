@@ -24,9 +24,9 @@ __kernel void onUpdate(
     __global unsigned char *s = &video[i];
     __global unsigned char *z = &buffer[i];
 
-    z[0] *= 0.95;
-    z[1] *= 0.95;
-    z[2] *= 0.95;
+    z[0] *= 0.85;
+    z[1] *= 0.85;
+    z[2] *= 0.85;
 
     if (stencil[i]) {
         buffer[i] = createRGB(r, g, b);

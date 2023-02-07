@@ -1,5 +1,3 @@
-#include <functional>
-#include <utility>
 #include "ShaderClouds.h"
 #include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
@@ -7,9 +5,9 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderClouds::ShaderClouds() : ShaderOpenCL("clouds.opencl")
+ShaderClouds::ShaderClouds(Color c) : ShaderOpenCL("clouds.opencl"), color(c)
 {
-    this->clouds = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    this->clouds = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud2.png");
 
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
@@ -19,11 +17,10 @@ ShaderClouds::ShaderClouds() : ShaderOpenCL("clouds.opencl")
         &clRet
     );
 
-
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_pixels_image,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         clouds->pixels(),
@@ -47,7 +44,7 @@ void ShaderClouds::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -61,6 +58,9 @@ void ShaderClouds::executeKernelOpenCL()
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
+    clSetKernelArg(kernel, 5, sizeof(float), (void *)&color.r);
+    clSetKernelArg(kernel, 6, sizeof(float), (void *)&color.g);
+    clSetKernelArg(kernel, 7, sizeof(float), (void *)&color.b);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
@@ -82,7 +82,7 @@ void ShaderClouds::executeKernelOpenCL()
     clEnqueueReadBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -91,10 +91,14 @@ void ShaderClouds::executeKernelOpenCL()
         nullptr
     );
 
-    this->debugKernel();
+    //this->debugKernel();
 }
 
 ShaderClouds::~ShaderClouds()
 {
     delete clouds;
+}
+
+void ShaderClouds::setColor(const Color &v) {
+    ShaderClouds::color = v;
 }

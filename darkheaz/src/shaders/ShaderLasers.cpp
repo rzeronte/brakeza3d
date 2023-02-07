@@ -8,11 +8,11 @@ ShaderLasers::ShaderLasers() : ShaderOpenCL("lasers.opencl")
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
     opencl_buffer_pixels_image = clCreateBuffer(
-            context,
-            CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-            this->bufferSize * sizeof(Uint32),
-            this->image->pixels(),
-            &clRet
+        context,
+        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
+        this->bufferSize * sizeof(Uint32),
+        this->image->pixels(),
+        &clRet
     );
 
     clEnqueueWriteBuffer(
@@ -39,7 +39,8 @@ void ShaderLasers::update()
 
 void ShaderLasers::executeKernelOpenCL()
 {
-    int numberLasers = (int) lasers.size();
+    const int numberLasers = (int) lasers.size();
+    const int numberProjectiles = (int) projectiles.size();
 
     opencl_buffer_lasers = clCreateBuffer(
         context,
@@ -61,6 +62,27 @@ void ShaderLasers::executeKernelOpenCL()
         nullptr
     );
 
+    opencl_buffer_projectiles = clCreateBuffer(
+        context,
+        CL_MEM_READ_ONLY,
+        numberProjectiles * sizeof(OCProjectile),
+        nullptr,
+        nullptr
+    );
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_projectiles,
+        CL_FALSE,
+        0,
+        numberProjectiles * sizeof(OCProjectile),
+        projectiles.data(),
+        0,
+        nullptr,
+        nullptr
+    );
+
+
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
@@ -80,7 +102,8 @@ void ShaderLasers::executeKernelOpenCL()
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_lasers);
     clSetKernelArg(kernel, 6, sizeof(int), &numberLasers);
-
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&opencl_buffer_projectiles);
+    clSetKernelArg(kernel, 8, sizeof(int), &numberProjectiles);
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
@@ -111,14 +134,17 @@ void ShaderLasers::executeKernelOpenCL()
     );
 
     this->lasers.clear();
+    this->projectiles.clear();
 
     this->debugKernel();
+
+    clReleaseMemObject(opencl_buffer_projectiles);
+    clReleaseMemObject(opencl_buffer_lasers);
 }
 
 void ShaderLasers::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
 {
     OCLaser laser;
-
     laser.x1 = x1;
     laser.y1 = y1;
     laser.x2 = x2;
@@ -147,4 +173,19 @@ void ShaderLasers::addLaserFromRay(ProjectileRay *ray)
         (int) color.r, (int) color.g, (int) color.b,
         0.05
     );
+}
+
+void ShaderLasers::addProjectile(Vertex3D position, Color color, float i)
+{
+    Point2D screenPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
+
+    OCProjectile projectile;
+    projectile.x = screenPoint.x;
+    projectile.y = screenPoint.y;
+    projectile.r = (int) color.r;
+    projectile.g = (int) color.g;
+    projectile.b = (int) color.b;
+    projectile.intensity = i * 0.0050;
+
+    this->projectiles.push_back(projectile);
 }

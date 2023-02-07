@@ -20,7 +20,7 @@
 #define INITIAL_POWERDASH 9000
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 150
-#define MAX_GRAVITATIONAL_SHIELDS 3
+#define MAX_REFLECTIONS 3
 
 typedef enum {
     EMPTY = -1,
@@ -58,7 +58,7 @@ private:
     bool energyShieldEnabled;
     int gravityShieldsNumber;
 
-    bool allowGravitationalShields;
+    bool allowMakeReflections;
     bool allowEnergyShield;
 public:
     LightPoint3D *light;
@@ -176,7 +176,7 @@ public:
 
     void setAllowEnergyShield(bool allowEnergyShield);
 
-    bool isAllowGravitationalShields() const;
+    bool isAllowedMakeReflections() const;
 
     bool isAllowEnergyShield() const;
 
