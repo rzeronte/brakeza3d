@@ -43,7 +43,11 @@
 
     { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
 
+    { "file": "switch_weapon.wav", "label": "switchWeapon", "type": "sound" },
+
     { "file": "laser-shoot.wav", "label": "laserShoot", "type": "sound" },
-    { "file": "laser.wav", "label": "laser", "type": "sound" }
+    { "file": "laser.wav", "label": "laser", "type": "sound" },
+
+    { "file": "tic.wav", "label": "tic", "type": "sound" }
   ]
 }

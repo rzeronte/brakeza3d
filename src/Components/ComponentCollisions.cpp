@@ -110,9 +110,10 @@ void ComponentCollisions::checkCollisionsForAll() {
 
 void ComponentCollisions::updatePhysicObjects()
 {
-    std::vector<Object3D *>::iterator it;
-    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end(); it++) {
-        auto *collisionable = dynamic_cast<Collisionable *> (*it);
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (object->isRemoved()) continue;
+        
+        auto *collisionable = dynamic_cast<Collisionable *> (object);
         if (collisionable != nullptr) {
             if (!collisionable->isCollisionsEnabled()) continue;
             collisionable->integrate();
