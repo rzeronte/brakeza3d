@@ -80,7 +80,7 @@ public:
 
     void makeReflection();
 
-    void takeDamage(float dmg);
+    bool takeDamage(float dmg);
 
     void receiveAid(float aid);
     void receiveEnergy(float energy);

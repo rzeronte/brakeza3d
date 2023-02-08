@@ -9,10 +9,18 @@ ProjectileRay::ProjectileRay(
     float damage,
     const Vertex3D &direction,
     const Vertex3D &ray,
+    int filterGroup,
+    int filterMask,
     int speed,
-    const Color &color
-) : Projectile(ttl, direction), RayCollisionable(ray), AmmoProjectile(color, damage), speed(speed) {
-
+    const Color &color,
+    bool indestructible
+) :
+    Projectile(ttl, direction),
+    RayCollisionable(ray, filterGroup, filterMask),
+    AmmoProjectile(color, damage),
+    speed(speed),
+    indestructible(indestructible)
+{
 }
 
 void ProjectileRay::onUpdate()
@@ -55,7 +63,9 @@ void ProjectileRay::resolveCollision(Collisionable *collisionable)
         }
     }
 
-    this->setRemoved(true);
+    if (!indestructible) {
+        this->setRemoved(true);
+    }
 }
 
 int ProjectileRay::getSpeed() const {

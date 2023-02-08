@@ -82,6 +82,16 @@ void EnemyGhost::onUpdate()
     if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) && gameState == EngineSetup::GAMING) {
         shoot(getTarget());
     }
+
+    updateLasers();
+}
+
+void EnemyGhost::updateLasers()
+{
+    for (auto ray : rays) {
+        ray->setRay(getRotation() * ray->getDirection().getScaled(ray->getRay().getModule()));
+        ray->setPosition(getPosition());
+    }
 }
 
 void EnemyGhost::postUpdate()
@@ -254,18 +264,10 @@ void EnemyGhost::shoot(Object3D *target)
                 AxisUp().getInverse(),
                 0.3,
                 false,
-                Color::red()
+                Color::red(),
+                EngineSetup::collisionGroups::Enemy,
+                EngineSetup::collisionGroups::Player
             );
-            /*weapon->shootSmartProjectile(
-                    this,
-                    positionProjectile,
-                    direction,
-                    getRotation(),
-                    1.0,
-                    EngineSetup::collisionGroups::Player,
-                    target,
-                    false
-            );*/
             break;
         }
         case WeaponTypes::SHOCK: {
@@ -300,6 +302,10 @@ EnemyGhost::~EnemyGhost()
 {
     delete counterDamageBlink;
     delete blink;
+
+    for (auto ray : rays) {
+        ray->setRemoved(true);
+    }
 }
 
 void EnemyGhost::stuck(float time)
@@ -362,4 +368,10 @@ void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmissor *emissor) {
 
 AmmoProjectileBodyEmissor *EnemyGhost::getProjectileEmissor() const {
     return projectileEmissor;
+}
+
+void EnemyGhost::addLaser(ProjectileRay *ray)
+{
+    rays.push_back(ray);
+    Brakeza3D::get()->addObject3D(ray, getLabel() + "_ray1");
 }

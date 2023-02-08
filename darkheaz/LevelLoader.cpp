@@ -381,12 +381,14 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
     cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
+    cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
 
     enemy->setRewards(reward);
 
     this->setBehaviorFromJSON(motion, enemy);
+    this->setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
     enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -424,12 +426,18 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
 void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
 {
-
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
+
     switch(typeMotion) {
         case EnemyBehaviorTypes::ROTATE_FRAME: {
             enemy->setRotationFrameEnabled(true);
+
+            cJSON *rotationJSON = cJSON_GetObjectItemCaseSensitive(motion, "rotation");
             enemy->setRotationFrame(Tools::randomVertex().getScaled(0.1));
+            if (rotationJSON != nullptr) {
+                Vertex3D rotation = parseVertex3DJSON(rotationJSON);
+                enemy->setRotationFrame(rotation);
+            }
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
@@ -438,7 +446,6 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
 
             float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
-            //behavior->setEnabled(false);
             enemy->setBehavior(behavior);
 
             break;
@@ -460,7 +467,6 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
 
             auto behavior = new EnemyBehaviorCircle(center, speed, radius);
-            //behavior->setEnabled(false);
             enemy->setBehavior(behavior);
             break;
         }
@@ -468,14 +474,12 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
 
             auto behavior = new EnemyBehaviorRandom(speed);
-            //behavior->setEnabled(false);
             enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATH: {
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPath(speed);
-            //behavior->setEnabled(false);
 
             auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
 
@@ -496,7 +500,44 @@ Point2D LevelLoader::parsePositionJSON(cJSON *positionJSON)
 {
     const int x = (cJSON_GetObjectItemCaseSensitive(positionJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100;
     const int y = (cJSON_GetObjectItemCaseSensitive(positionJSON, "y")->valueint * EngineSetup::get()->screenHeight) / 100;
+
     return Point2D(x, y);
+}
+
+Vertex3D LevelLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
+{
+    const auto x = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "x")->valuedouble;
+    const auto y = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "y")->valuedouble;
+    const auto z = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "z")->valuedouble;
+
+    return Vertex3D(x, y, z);
+}
+
+void LevelLoader::setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy)
+{
+    if (lasers == nullptr) {
+        return;
+    }
+
+    cJSON *currentLaserJSON;
+    cJSON_ArrayForEach(currentLaserJSON, lasers) {
+        addLasersForEnemy(currentLaserJSON, enemy);
+    }
+}
+
+void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
+{
+    enemy->addLaser(new ProjectileRay(
+        100,
+        (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
+        parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(laser, "direction")),
+        Vertex3D((float) cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint, 0, 0),
+        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::Player,
+        0,
+        parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
+        true
+    ));
 }
 
 void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy)

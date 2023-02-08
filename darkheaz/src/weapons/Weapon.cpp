@@ -249,7 +249,7 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
     }
 }
 
-void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color)
+void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -269,8 +269,11 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
             getDamage(),
             direction,
             direction.getNormalize().getScaled((float) getSpeed()),
+            filterGroup,
+            filterMask,
             getSpeed(),
-            color
+            color,
+            false
         );
 
         auto *componentRender = ComponentsManager::get()->getComponentRender();
@@ -291,23 +294,6 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
             );
         }
     }
-}
-
-const std::string &Weapon::getSoundEmptyLabel() const {
-    return soundEmptyLabel;
-}
-
-void Weapon::setSoundEmptyLabel(const std::string &value) {
-    Weapon::soundEmptyLabel = value;
-}
-
-
-const std::string &Weapon::getSoundFire() const {
-    return fireSound;
-}
-
-void Weapon::setSoundFire(const std::string &value) {
-    Weapon::fireSound = value;
 }
 
 const std::string &Weapon::getLabel() const {
