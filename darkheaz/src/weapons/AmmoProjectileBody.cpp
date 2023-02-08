@@ -32,6 +32,11 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
         return;
     }
 
+    auto ray = dynamic_cast<ProjectileRay*> (collisionable);
+    if (ray != nullptr) {
+        return;
+    }
+
     auto object = dynamic_cast<Object3D*> (collisionable);
     if (object != nullptr) {
         if (object == getParent()) {

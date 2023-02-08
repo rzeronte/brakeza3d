@@ -156,8 +156,6 @@ void ComponentHUD::drawShaderLasers()
     const int width = 350;
     const float stroke = 0.05;
 
-    Logging::Log(std::to_string(health), "");
-
     shaderLasers->addLaser(
         startPositionX, 445,
         startPositionX + (width * health), 445 ,

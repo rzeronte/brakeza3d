@@ -726,8 +726,24 @@ void ComponentGame::addObjectsToStencilBuffer()
         auto projectile = dynamic_cast<AmmoProjectile *> (object);
         auto ray = dynamic_cast<ProjectileRay *> (object);
 
-        if (projectile != nullptr) {
+        auto reflection = dynamic_cast<PlayerReflection *> (object);
+        auto energy = dynamic_cast<ItemEnergyGhost *> (object);
+        auto health = dynamic_cast<ItemHealthGhost *> (object);
+        auto weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto bomb = dynamic_cast<ItemBombGhost *> (object);
+
+        if (
+            projectile != nullptr ||
+            reflection != nullptr ||
+            bomb != nullptr ||
+            health != nullptr ||
+            weapon != nullptr ||
+            energy != nullptr
+        ) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
+        }
+
+        if (projectile != nullptr) {
             shaderLasers->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),

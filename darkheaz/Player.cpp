@@ -102,17 +102,17 @@ void Player::setLives(int value) {
     Player::lives = value;
 }
 
-void Player::takeDamage(float dmg)
+bool Player::takeDamage(float dmg)
 {
-    if ((state == PlayerState::GETTING_DAMAGE && !isStucked())|| state == PlayerState::DEAD) {
-        return;
+    if ((state == PlayerState::GETTING_DAMAGE && !isStucked()) || state == PlayerState::DEAD) {
+        return false;
     }
 
     if (isEnergyShieldEnabled() && getEnergy() > 0) {
         useEnergy(dmg);
         setState(PlayerState::GETTING_DAMAGE);
         startPlayerBlink();
-        return;
+        return false;
     }
 
     this->stamina -= dmg;
@@ -132,6 +132,8 @@ void Player::takeDamage(float dmg)
         ComponentsManager::get()->getComponentGame()->shaderColor->setEnabled(true);
         lives--;
     }
+
+    return true;
 }
 
 void Player::startPlayerBlink()
@@ -195,18 +197,10 @@ void Player::shoot(float intensity)
                     AxisUp().getInverse(),
                     intensity,
                     true,
-                    Color::green()
+                    Color::green(),
+                    EngineSetup::collisionGroups::Player,
+                    EngineSetup::collisionGroups::Enemy
             );
-            /*weapon->shootSmartProjectile(
-                this,
-                getPosition() - AxisUp().getScaled(1000),
-                AxisUp().getInverse(),
-                getRotation(),
-                intensity,
-                EngineSetup::collisionGroups::Enemy,
-                nullptr,
-                true
-            );*/
             break;
         }
         case WeaponTypes::WEAPON_BOMB: {
@@ -350,25 +344,26 @@ void Player::resolveCollision(Collisionable *with)
     auto projectile = dynamic_cast<AmmoProjectileBody*> (with);
     if (projectile != nullptr) {
         if (projectile->getParent() != this) {
-            ComponentsManager::get()->getComponentSound()->playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
-                1,
-                0
-            );
-            takeDamage(projectile->getWeaponType()->getDamage());
+            if (takeDamage(projectile->getWeaponType()->getDamage())) {
+                ComponentsManager::get()->getComponentSound()->playSound(
+                    EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+                    1,
+                    0
+               );
+            }
             projectile->remove();
         }
     }
 
     auto laser = dynamic_cast<ProjectileRay*> (with);
     if (laser != nullptr) {
-        ComponentsManager::get()->getComponentSound()->playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
-            1,
-            0
-        );
-        takeDamage(laser->getDamage());
-        laser->setRemoved(true);
+        if (takeDamage(laser->getDamage())) {
+            ComponentsManager::get()->getComponentSound()->playSound(
+                EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+                1,
+                0
+            );
+        }
     }
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);

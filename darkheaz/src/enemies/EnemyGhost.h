@@ -10,6 +10,8 @@
 #include "../shaders/ShaderTrailObject.h"
 #include "../../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../weapons/AmmoProjectileBodyEmissor.h"
+#include "../../../include/Physics/RayCollisionable.h"
+#include "../../../include/Physics/ProjectileRay.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
@@ -17,9 +19,9 @@ private:
     ShaderLaser *laser;
     Counter *counterDamageBlink;
     Counter *counterStucked;
-
     AmmoProjectileBodyEmissor *projectileEmissor;
 
+    std::vector<ProjectileRay *> rays;
 public:
     EnemyGhost();
 
@@ -55,7 +57,11 @@ public:
 
     void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
 
-    AmmoProjectileBodyEmissor *getProjectileEmissor() const;
+    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
+
+    void addLaser(ProjectileRay *ray);
+
+    void updateLasers();
 };
 
 

@@ -7,61 +7,25 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Patrol",
-      "position": { "x": 20, "y": 50 },
-      "model": "spaceships/green_spaceship_01.fbx",
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 1,
-        "from": { "x": 10, "y": 5 },
-        "to": { "x": 90, "y": 5 },
-        "speed": 0.5
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 999,
-        "startAmount": 100,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.40,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 0,
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 0 }
-      }
-    },
-    {
       "name": "Blupincher",
-      "position": { "x": 90,  "y": 10 },
+      "position": { "x": 90,  "y": 30 },
       "model": "spaceships/blue_spaceship_02.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1250,
       "reward": true,
       "motion": {
-        "type": 5,
-        "points":  [
-          { "x": 50, "y": 20 },
-          { "x": 50, "y": 50 },
-          { "x": 20, "y": 50 },
-          { "x": 60, "y": 50 },
-          { "x": 50, "y": 50 },
-          { "x": 50, "y": 25 }
-        ],
-        "speed": 0.2
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": 1 }
       },
+      "lasers": [
+        {
+          "damage": 50,
+          "length": 8000,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -86,7 +50,59 @@
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 16, "z": 0 },
-        "cadenceTime": 0.30,
+        "cadenceTime": 0.20,
+        "type": 0,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 4,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "Blupincher",
+      "position": { "x": 10,  "y": 30 },
+      "model": "spaceships/blue_spaceship_02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": -1 }
+      },
+      "lasers": [
+        {
+          "damage": 50,
+          "length": 8000,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 16, "z": 0 },
+        "cadenceTime": 0.20,
         "type": 0,
         "stop": true,
         "stopDuration": 2,
