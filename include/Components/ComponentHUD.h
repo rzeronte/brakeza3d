@@ -13,11 +13,11 @@
 #include "../2D/Button.h"
 #include "../Objects/Mesh3D.h"
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
-#include "../../darkheaz/src/shaders/ShaderLasers.h"
+#include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 
 class ComponentHUD : public Component {
     std::vector<Button*> buttons;
-    ShaderLasers *shaderLasers;
+    ShaderProjectiles *shaderLasers;
 public:
 
     ComponentHUD();

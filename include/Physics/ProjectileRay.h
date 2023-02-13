@@ -16,8 +16,19 @@ class ProjectileRay: public Projectile, public RayCollisionable, public AmmoProj
 private:
     Color color;
     int speed;
+    bool indestructible;
 public:
-    ProjectileRay(float ttl, float damage, const Vertex3D &direction, const Vertex3D &ray, int speed, const Color &color);
+    ProjectileRay(
+        float ttl,
+        float damage,
+        const Vertex3D &direction,
+        const Vertex3D &ray,
+        int filterGroup,
+        int filterMask,
+        int speed,
+        const Color &color,
+        bool indestructible
+    );
 
     void onUpdate() override;
 

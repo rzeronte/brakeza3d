@@ -27,7 +27,6 @@ void ComponentRender::onUpdate()
         return;
     }
 
-
     this->onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {

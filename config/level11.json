@@ -9,7 +9,7 @@
     {
       "name": "Blupincher",
       "position": { "x": 90,  "y": 30 },
-      "model": "spaceships/blue_spaceship_02.fbx",
+      "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1250,
@@ -61,7 +61,7 @@
     {
       "name": "Blupincher",
       "position": { "x": 10,  "y": 30 },
-      "model": "spaceships/blue_spaceship_02.fbx",
+      "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1250,

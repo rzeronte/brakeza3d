@@ -126,7 +126,9 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    if (isRender()) {
+        this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    }
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
         if (this->octree != nullptr) {
@@ -384,4 +386,12 @@ Mesh3D::~Mesh3D()
             delete texture;
         }
     }
+}
+
+bool Mesh3D::isRender() const {
+    return render;
+}
+
+void Mesh3D::setRender(bool render) {
+    Mesh3D::render = render;
 }

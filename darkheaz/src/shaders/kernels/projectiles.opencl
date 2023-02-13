@@ -54,18 +54,23 @@ __kernel void onUpdate(
 
         A = A / resolution;
 
-        float rad  = 0.0015;
+        float rad  = 0.0035 * projectile.intensity;
         float len = length(A-st);
-        float width = projectile.intensity * 0.050;
-        float circle = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
-        float3 colorCircle = {
-            circle * projectile.r,
-            circle * projectile.g,
-            circle * projectile.b
-        };
+        float width =  0.12;
+        float circle = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+
 
         unsigned char *mi = &mixedColor;
 
+        __global unsigned char *ci = &image[i];
+
+        float n = ci[0] * 3;
+
+        float3 colorCircle = {
+            (circle * (projectile.r/255)) * n,
+            (circle * (projectile.g/255)) * n,
+            (circle * (projectile.b/255)) * n
+        };
         mixedColor = createRGB(
             min(colorCircle[0] + mi[0], 255.0),
             min(colorCircle[1] + mi[1], 255.0),
@@ -75,6 +80,7 @@ __kernel void onUpdate(
 
     for (int j = 0; j < numberLasers; j++) {
         struct OCLaser laser = lasers[j];
+
         float2 A = { laser.x1, laser.y1 };
         float2 B = { laser.x2, laser.y2 };
 

@@ -27,7 +27,7 @@
 #include "../../darkheaz/src/shaders/ShaderLaser.h"
 #include "../Physics/RayCollisionable.h"
 #include "../Physics/ProjectileRay.h"
-#include "../../darkheaz/src/shaders/ShaderLasers.h"
+#include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 
 class ComponentGame : public Component {
 public:
@@ -60,7 +60,7 @@ public:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
-    ShaderLasers *shaderLasers;
+    ShaderProjectiles *shaderLasers;
 
     Sprite3D *explosion;
     PathFinder *pathFinder;

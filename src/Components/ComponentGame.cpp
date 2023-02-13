@@ -1,13 +1,10 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../darkheaz/src/weapons/AmmoProjectileBody.h"
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 #include "../../darkheaz/src/items/ItemEnergyGhost.h"
-#include "../../darkheaz/src/weapons/AmmoProjectileBodyEmissor.h"
 #include "../../include/Misc/VideoPlayer.h"
 #include "../../darkheaz/src/items/ItemBombGhost.h"
-#include "../../include/Physics/ProjectileRay.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 3.0f
@@ -77,7 +74,7 @@ void ComponentGame::onStart()
     shaderEdge = new ShaderEdgeObject(primaryColor);
     shaderEdge->setEnabled(true);
 
-    shaderLasers = new ShaderLasers();
+    shaderLasers = new ShaderProjectiles();
     shaderLasers->setEnabled(true);
 }
 
@@ -404,7 +401,7 @@ Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D dire
             continue;
         }
 
-        Vertex3D to = (enemy->getPosition() - from);
+        const Vertex3D to = (enemy->getPosition() - from);
 
         if (direction * to > 0) {
             const float distance = to.getSquaredLength();
@@ -613,7 +610,6 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
-        auto *gravitational = dynamic_cast<GravitationalGhost *> (object);
         auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
         auto *bomb = dynamic_cast<ItemBombGhost *> (object);
 
@@ -623,7 +619,6 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             projectile != nullptr ||
             energy != nullptr ||
             bomb != nullptr ||
-            //gravitational != nullptr ||
             respawner != nullptr
         ) {
             object->setEnabled(value);
@@ -723,7 +718,7 @@ void ComponentGame::addObjectsToStencilBuffer()
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
 
-        auto projectile = dynamic_cast<AmmoProjectile *> (object);
+        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         auto ray = dynamic_cast<ProjectileRay *> (object);
 
         auto reflection = dynamic_cast<PlayerReflection *> (object);
@@ -747,7 +742,7 @@ void ComponentGame::addObjectsToStencilBuffer()
             shaderLasers->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),
-                projectile->getDamage()
+                projectile->getWeaponType()->getSpeed()
             );
         }
 

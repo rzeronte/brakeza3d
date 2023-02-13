@@ -18,7 +18,7 @@ void ComponentHUD::onStart() {
         std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
 
-    shaderLasers = new ShaderLasers();
+    shaderLasers = new ShaderProjectiles();
     shaderLasers->setEnabled(true);
 }
 
