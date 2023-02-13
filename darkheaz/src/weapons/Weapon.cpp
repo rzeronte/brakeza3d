@@ -130,6 +130,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
             direction
         );
+        projectile->setRender(false);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());

@@ -32,6 +32,7 @@ public:
     bool flatTextureColor;
     Color flatColor;
     bool enableLights = false;
+    bool render = true;
     int BSPEntityIndex;
 
     Mesh3D();
@@ -82,6 +83,9 @@ public:
 
     const Color &getFlatColor() const;
 
+    bool isRender() const;
+
+    void setRender(bool render);
 
 private:
     Octree *octree;

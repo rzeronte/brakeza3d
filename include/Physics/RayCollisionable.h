@@ -18,7 +18,7 @@ private:
 public:
     void integrate() override;
 
-    explicit RayCollisionable(const Vertex3D &ray);
+    explicit RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask);
 
     void resolveCollision(Collisionable *collisionable) override;
 
@@ -33,6 +33,8 @@ public:
     [[nodiscard]] btCollisionWorld::ClosestRayResultCallback *getRayCallback() const;
 
     const Vertex3D &getRay() const;
+
+    void setRay(const Vertex3D &ray);
 };
 
 

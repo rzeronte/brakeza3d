@@ -1,9 +1,9 @@
-#include "ShaderLasers.h"
+#include "ShaderProjectiles.h"
 #include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLasers::ShaderLasers() : ShaderOpenCL("lasers.opencl")
+ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
 {
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
@@ -28,7 +28,7 @@ ShaderLasers::ShaderLasers() : ShaderOpenCL("lasers.opencl")
     );
 }
 
-void ShaderLasers::update()
+void ShaderProjectiles::update()
 {
     Shader::update();
 
@@ -37,7 +37,7 @@ void ShaderLasers::update()
     executeKernelOpenCL();
 }
 
-void ShaderLasers::executeKernelOpenCL()
+void ShaderProjectiles::executeKernelOpenCL()
 {
     const int numberLasers = (int) lasers.size();
     const int numberProjectiles = (int) projectiles.size();
@@ -142,7 +142,7 @@ void ShaderLasers::executeKernelOpenCL()
     clReleaseMemObject(opencl_buffer_lasers);
 }
 
-void ShaderLasers::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
+void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
 {
     OCLaser laser;
     laser.x1 = x1;
@@ -157,7 +157,7 @@ void ShaderLasers::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b,
     this->lasers.push_back(laser);
 }
 
-void ShaderLasers::addLaserFromRay(ProjectileRay *ray)
+void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
 {
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto color = ray->getColor();
@@ -175,7 +175,7 @@ void ShaderLasers::addLaserFromRay(ProjectileRay *ray)
     );
 }
 
-void ShaderLasers::addProjectile(Vertex3D position, Color color, float i)
+void ShaderProjectiles::addProjectile(Vertex3D position, Color color, float i)
 {
     Point2D screenPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
 

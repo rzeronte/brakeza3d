@@ -2,8 +2,8 @@
 // Created by eduardo on 19/01/23.
 //
 
-#ifndef BRAKEZA3D_SHADERLASERS_H
-#define BRAKEZA3D_SHADERLASERS_H
+#ifndef BRAKEZA3D_SHADERPROJECTILES_H
+#define BRAKEZA3D_SHADERPROJECTILES_H
 
 
 #include <CL/cl.h>
@@ -33,7 +33,7 @@ struct OCProjectile
     float intensity;
 };
 
-class ShaderLasers : public ShaderOpenCL {
+class ShaderProjectiles : public ShaderOpenCL {
 private:
     float reach;
     float speed;
@@ -47,7 +47,7 @@ private:
     std::vector<OCLaser> lasers;
     std::vector<OCProjectile> projectiles;
 public:
-    ShaderLasers();
+    ShaderProjectiles();
 
     void update() override;
 
@@ -59,4 +59,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_SHADERLASERS_H
+#endif //BRAKEZA3D_SHADERPROJECTILES_H
