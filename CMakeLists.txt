@@ -299,7 +299,7 @@ add_executable(Brakeza3D
         darkheaz/src/shaders/ShaderColor.cpp
         darkheaz/src/shaders/ShaderColor.h
         darkheaz/src/shaders/ShaderTrailObject.cpp darkheaz/src/shaders/ShaderTrailObject.h darkheaz/src/items/ItemBombGhost.cpp darkheaz/src/items/ItemBombGhost.h darkheaz/src/shaders/ShaderTrailBuffer.cpp darkheaz/src/shaders/ShaderTrailBuffer.h
-        src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h darkheaz/src/bosses/BossLevel30.cpp darkheaz/src/bosses/BossLevel30.h darkheaz/src/shaders/ShaderLaser.cpp darkheaz/src/shaders/ShaderLaser.h src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h src/Collisions/ProjectileRay.cpp include/Physics/ProjectileRay.h include/Physics/Projectile.h darkheaz/src/shaders/ShaderLasers.cpp darkheaz/src/shaders/ShaderLasers.h darkheaz/src/weapons/AmmoProjectile.h)
+        src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h darkheaz/src/bosses/BossLevel30.cpp darkheaz/src/bosses/BossLevel30.h darkheaz/src/shaders/ShaderLaser.cpp darkheaz/src/shaders/ShaderLaser.h src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h src/Collisions/ProjectileRay.cpp include/Physics/ProjectileRay.h include/Physics/Projectile.h darkheaz/src/shaders/ShaderProjectiles.cpp darkheaz/src/shaders/ShaderProjectiles.h darkheaz/src/weapons/AmmoProjectile.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
