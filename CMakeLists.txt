@@ -292,8 +292,8 @@ add_executable(Brakeza3D
         include/Misc/VideoPlayer.h
         darkheaz/src/shaders/ShaderHorizontalBar.cpp
         darkheaz/src/shaders/ShaderHorizontalBar.h
-        darkheaz/src/shaders/ShaderBackgroundImage.cpp
-        darkheaz/src/shaders/ShaderBackgroundImage.h
+        darkheaz/src/shaders/ShaderImage.cpp
+        darkheaz/src/shaders/ShaderImage.h
         darkheaz/src/shaders/ShaderEdgeObject.cpp
         darkheaz/src/shaders/ShaderEdgeObject.h
         darkheaz/src/shaders/ShaderColor.cpp
