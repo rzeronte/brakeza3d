@@ -20,7 +20,7 @@
 #include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderClouds.h"
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
-#include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
+#include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
@@ -74,9 +74,10 @@ public:
 
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
-    ShaderColor *shaderColor;
     ShaderTrailBuffer *shaderTrailBuffer;
     ShaderEdgeObject *shaderEdge;
+
+    ShaderColor *shaderColor;
     Image *imageCrossFire;
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;

@@ -1,6 +1,3 @@
-//
-// Created by eduardo on 9/3/22.
-//
 
 #include "AmmoProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
@@ -13,7 +10,12 @@ AmmoProjectileBody::AmmoProjectileBody(
         float ttl,
         const Vertex3D &direction) : Projectile3DBody(ttl, direction), AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage), weaponType(weaponType)
 {
+    particleEmissor = new ParticleEmissor(true, 1000, 1, 0.0005, weaponType->getModelProjectile()->getFlatColor());
+    particleEmissor->setRotationFrame(0, 25, 33);
+    particleEmissor->setPosition(getPosition());
 
+
+    Brakeza3D::get()->addObject3D(particleEmissor, "emissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
@@ -45,6 +47,8 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     this->remove();
+    particleEmissor->setActiveAdding(false);
+
 }
 
 void AmmoProjectileBody::onUpdate()
@@ -52,7 +56,13 @@ void AmmoProjectileBody::onUpdate()
     Projectile3DBody::onUpdate();
     updateBoundingBox();
 
+    particleEmissor->setPosition(getPosition());
+
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
         this->remove();
+        particleEmissor->setActiveAdding(false);
     }
+}
+
+AmmoProjectileBody::~AmmoProjectileBody() {
 }

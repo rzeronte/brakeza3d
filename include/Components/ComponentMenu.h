@@ -8,7 +8,7 @@
 #include "../Misc/cJSON.h"
 #include "Component.h"
 #include "../Objects/Mesh3D.h"
-#include "../../darkheaz/src/shaders/ShaderBackgroundImage.h"
+#include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../Objects/Mesh3DAnimated.h"
 #include "../Physics/Mesh3DAnimatedGhost.h"
 #include "../Physics/SimplePendulum.h"

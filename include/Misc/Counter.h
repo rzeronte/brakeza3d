@@ -7,14 +7,14 @@
 
 class Counter {
 private:
-    bool enabled = true;
+    bool enabled;
     float step;
 
     Timer *timer;
     float lastTicks = 0;
     float acumulatedTime = 0;
 
-    bool finished = false;
+    bool finished;
 public:
 
     Counter();
