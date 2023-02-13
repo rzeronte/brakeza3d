@@ -1,4 +1,4 @@
-#include "ShaderBackgroundImage.h"
+#include "ShaderImage.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Brakeza3D.h"

@@ -5,12 +5,13 @@
 #ifndef BRAKEZA3D_AMMOPROJECTILE_H
 #define BRAKEZA3D_AMMOPROJECTILE_H
 
+#include "../../../include/Particles/ParticleEmissor.h"
+
 class AmmoProjectile {
     float damage;
     Color color;
 public:
     explicit AmmoProjectile(Color color, float damage) : damage(damage), color(color) {
-
     }
 
     [[nodiscard]] float getDamage() const {

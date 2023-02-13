@@ -18,7 +18,7 @@ class ParticleEmissor : public Object3D {
 public:
     ParticleEmissor(bool active, float force, float ttl, float step, Color c);
 
-    const Counter &getCounter() const;
+    [[nodiscard]] const Counter &getCounter() const;
     void clear();
     void addParticle(Particle *p);
     void setRotationFrame(float, float, float);
@@ -32,11 +32,21 @@ public:
     float step;
     Color color;
     Counter counter;
+    Counter lifeCounter;
     std::vector<Particle*> particles;
     bool active;
+    bool activeAdding;
     float rotFrameX;
     float rotFrameY;
     float rotFrameZ;
+
+    void updateParticles();
+
+    void setActive(bool value);
+
+    bool isActiveAdding() const;
+
+    void setActiveAdding(bool activeAdding);
 };
 
 

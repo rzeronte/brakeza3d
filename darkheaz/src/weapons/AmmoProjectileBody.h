@@ -13,6 +13,7 @@
 
 class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     Weapon *weaponType;
+    ParticleEmissor *particleEmissor;
 public:
     AmmoProjectileBody(Weapon *weaponType, float damage, float ttl, const Vertex3D &direction);
 
@@ -21,6 +22,8 @@ public:
     void resolveCollision(Collisionable *collisionable) override;
 
     void onUpdate() override;
+
+    ~AmmoProjectileBody() override;
 };
 
 

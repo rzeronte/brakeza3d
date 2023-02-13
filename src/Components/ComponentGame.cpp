@@ -549,6 +549,7 @@ void ComponentGame::removeInGameObjects()
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *emissorProjectiles = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
+        auto *particleEmissor = dynamic_cast<ParticleEmissor *> (object);
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
 
         if (enemy != nullptr) {
@@ -566,6 +567,10 @@ void ComponentGame::removeInGameObjects()
 
         if (emissorProjectiles != nullptr) {
             emissorProjectiles->setRemoved(true);
+        }
+
+        if (particleEmissor) {
+            particleEmissor->setRemoved(true);
         }
 
         if (bomb != nullptr) {

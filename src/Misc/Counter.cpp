@@ -6,6 +6,8 @@ Counter::Counter()
 {
     this->timer = Brakeza3D::get()->getTimer();
     this->step = 0;
+    this->enabled = true;
+    this->finished = false;
 }
 
 Counter::Counter(float step)

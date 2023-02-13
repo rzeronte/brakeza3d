@@ -26,7 +26,7 @@ void ParticleEmissorFireworks::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (!active) {
+    if (!isActive()) {
         return;
     }
 
