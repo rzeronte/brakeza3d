@@ -7,14 +7,13 @@
 
 ParticleEmissorFireworks::ParticleEmissorFireworks(
         Vertex3D position,
-        Vertex3D rotationFrame,
-        bool active,
+        float ttlEmitter,
         float force,
         float ttl,
         float step,
         const Color &c,
         int maxFires,
-        int particlesByFire) : ParticleEmissor(active, force, ttl, step, c),
+        int particlesByFire) : ParticleEmissor(this, ttlEmitter, force, ttl, step, c),
                                maxFires(maxFires),
                                particlesByFire(particlesByFire)
 {
@@ -30,21 +29,23 @@ void ParticleEmissorFireworks::onUpdate()
         return;
     }
 
-    if (firesCounter >= maxFires) {
-        if ((int)particles.size() == 0) {
-            setRemoved(true);
+    if (firesCounter < maxFires) {
+        this->getTimeToNetParticleCounter().update();
+        if (this->getTimeToNetParticleCounter().isFinished()) {
+            this->addFire();
+            this->getTimeToNetParticleCounter().setEnabled(true);
         }
-        return;
     }
 
-    this->counter.update();
-    if (this->counter.isFinished()) {
-        this->addFire();
-        this->counter.setEnabled(true);
+    lifeCounter.update();
+    if (this->lifeCounter.isFinished()) {
+        setRemoved(true);
+        return;
     }
 }
 
-void ParticleEmissorFireworks::postUpdate() {
+void ParticleEmissorFireworks::postUpdate()
+{
     ParticleEmissor::postUpdate();
     updateFireWorksParticles();
 }
@@ -64,24 +65,16 @@ void ParticleEmissorFireworks::addFire()
             Tools::random(0, 360)
         ));
 
-
-        this->addParticle(new Particle(this,this->force,Tools::random(0, this->ttl), this->color, false));
+        particles.emplace_back(new Particle(this, this->force, Tools::random(0, this->ttl), this->color, false));
     }
+
     firesCounter++;
 }
 
 void ParticleEmissorFireworks::updateFireWorksParticles()
 {
-    std::vector<Particle *>::iterator it;
-    for (it = particles.begin(); it != particles.end();) {
-        Particle *p = *(it);
-
-        if (p->isRemoved()) {
-            particles.erase(it);
-            continue;
-        } else {
-            it++;
-        }
+    for (auto p : getParticles()) {
+        if (p->isRemoved()) continue;
 
         p->onUpdate();
     }

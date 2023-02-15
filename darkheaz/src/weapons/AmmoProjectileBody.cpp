@@ -1,7 +1,6 @@
 
 #include "AmmoProjectileBody.h"
 #include "../../../include/ComponentsManager.h"
-#include "../items/ItemHealthGhost.h"
 #include "../../../include/Brakeza3D.h"
 
 AmmoProjectileBody::AmmoProjectileBody(
@@ -10,10 +9,8 @@ AmmoProjectileBody::AmmoProjectileBody(
         float ttl,
         const Vertex3D &direction) : Projectile3DBody(ttl, direction), AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage), weaponType(weaponType)
 {
-    particleEmissor = new ParticleEmissor(true, 1000, 1, 0.0005, weaponType->getModelProjectile()->getFlatColor());
+    particleEmissor = new ParticleEmissor(this, 5, 1000, 1, 0.0005, weaponType->getModelProjectile()->getFlatColor());
     particleEmissor->setRotationFrame(0, 25, 33);
-    particleEmissor->setPosition(getPosition());
-
 
     Brakeza3D::get()->addObject3D(particleEmissor, "emissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
@@ -47,16 +44,15 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     this->remove();
-    particleEmissor->setActiveAdding(false);
-
+    getParticleEmissor()->setActive(false);
 }
 
 void AmmoProjectileBody::onUpdate()
 {
     Projectile3DBody::onUpdate();
-    updateBoundingBox();
 
     particleEmissor->setPosition(getPosition());
+    updateBoundingBox();
 
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
         this->remove();
@@ -64,5 +60,6 @@ void AmmoProjectileBody::onUpdate()
     }
 }
 
-AmmoProjectileBody::~AmmoProjectileBody() {
+ParticleEmissor *AmmoProjectileBody::getParticleEmissor() {
+    return particleEmissor;
 }

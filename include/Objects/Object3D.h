@@ -22,7 +22,7 @@ public:
 
     Object3D *getParent() const;
 
-    void setParent(Object3D *parent);
+    void setParent(Object3D *object);
 
     bool enabled;
     bool removed;
@@ -50,7 +50,7 @@ public:
     M3 getRotation();
 
     void setPosition(Vertex3D p);
-    void addToPosition(Vertex3D &);
+    void addToPosition(Vertex3D p);
 
     void setRotation(M3 r);
     void setRotation(float, float, float);
@@ -73,15 +73,15 @@ public:
 
     float getScale() const;
 
-    void setScale(float scale);
+    void setScale(float value);
 
     bool isRemoved() const;
 
-    void setRemoved(bool removed);
+    void setRemoved(bool value);
 
     bool isDecal() const;
 
-    void setDecal(bool decal);
+    void setDecal(bool value);
 
     void setDrawOffset(Vertex3D v);
 

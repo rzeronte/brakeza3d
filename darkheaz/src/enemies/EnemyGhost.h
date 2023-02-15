@@ -27,7 +27,7 @@ public:
 
     void resolveCollision(Collisionable *collisionableObject) override;
 
-    virtual void onUpdate() override;
+    void onUpdate() override;
 
     void integrate() override;
 

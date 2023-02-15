@@ -2,29 +2,27 @@
 #include "../../include/Particles/ParticleEmissor.h"
 #include "../../include/Render/Logging.h"
 
-ParticleEmissor::ParticleEmissor(bool active, float force, float ttl, float step, Color c): active(active), activeAdding(true) {
-    this->counter.setStep(step);
-    this->lifeCounter.setStep(5);
+ParticleEmissor::ParticleEmissor(Object3D *parent, float ttlEmitter, float force, float ttl, float step, Color c):
+    force(force),
+    ttl(ttl),
+    step(step),
+    color(c),
+    active(true),
+    activeAdding(true),
+    rotFrameX(0),
+    rotFrameY(0),
+    rotFrameZ(0)
+{
+    setParent(parent);
+    setEnabled(true);
+    setPosition(parent->getPosition());
+    this->timeToNextParticleCounter.setStep(step);
+    this->lifeCounter.setStep(ttlEmitter);
     this->lifeCounter.setEnabled(true);
-    this->ttl = ttl;
-    this->step = step;
-    this->color = c;
-    this->force = force;
-    this->rotFrameX = 0;
-    this->rotFrameY = 0;
-    this->rotFrameZ = 0;
 }
 
-const Counter &ParticleEmissor::getCounter() const {
-    return counter;
-}
-
-void ParticleEmissor::clear() {
-    this->particles.resize(0);
-}
-
-void ParticleEmissor::addParticle(Particle *p) {
-    this->particles.push_back(p);
+Counter &ParticleEmissor::getTimeToNetParticleCounter() {
+    return timeToNextParticleCounter;
 }
 
 bool ParticleEmissor::isActive() const {
@@ -35,50 +33,42 @@ void ParticleEmissor::onUpdate()
 {
     Object3D::onUpdate();
 
+    if (isRemoved()) return;
+
     updateParticles();
 
-    if (!isActive()) {
-        return;
-    }
     lifeCounter.update();
-
-    setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
-
-    this->counter.update();
-
-    if (this->counter.isFinished() && isActiveAdding()) {
-        this->addParticle(new Particle(this, this->force, this->ttl, this->color, false));
-        this->counter.setEnabled(true);
-    }
-
     if (this->lifeCounter.isFinished()) {
         setRemoved(true);
     }
 
-}
+    if (!isActive()) return;
 
-void ParticleEmissor::updateParticles() {
-    std::vector<Particle *>::iterator it;
-    for (it = particles.begin(); it != particles.end();) {
-        Particle *p = *(it);
+    setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 
-        if (p->isRemoved()) {
-            particles.erase(it);
-            continue;
-        } else {
-            it++;
-        }
-
-        p->onUpdate();
+    timeToNextParticleCounter.update();
+    if (timeToNextParticleCounter.isFinished() && isActiveAdding()) {
+        particles.emplace_back(new Particle(this, this->force, this->ttl, this->color, false));
+        timeToNextParticleCounter.setEnabled(true);
     }
 }
 
-void ParticleEmissor::postUpdate() {
+void ParticleEmissor::updateParticles()
+{
+    for (auto p : particles) {
+        if (!p->isRemoved()) {
+            p->onUpdate();
+        }
+    }
+}
+
+void ParticleEmissor::postUpdate()
+{
     Object3D::postUpdate();
 }
 
-
-void ParticleEmissor::setRotationFrame(float x, float y, float z) {
+void ParticleEmissor::setRotationFrame(float x, float y, float z)
+{
     this->rotFrameX = x;
     this->rotFrameY = y;
     this->rotFrameZ = z;
@@ -92,9 +82,16 @@ bool ParticleEmissor::isActiveAdding() const {
     return activeAdding;
 }
 
-void ParticleEmissor::setActiveAdding(bool activeAdding) {
-    ParticleEmissor::activeAdding = activeAdding;
+void ParticleEmissor::setActiveAdding(bool value) {
+    ParticleEmissor::activeAdding = value;
 }
 
+std::vector<Particle *> &ParticleEmissor::getParticles() {
+    return particles;
+}
 
-
+ParticleEmissor::~ParticleEmissor() {
+    for (auto p : particles) {
+        delete p;
+    }
+}

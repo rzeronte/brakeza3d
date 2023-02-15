@@ -168,11 +168,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-
-        Brakeza3D::get()->addObject3D(
-            new ParticleEmissorFireworks(position, Vertex3D(0, 4, 5), true, 520, 3, 0.02, getModelProjectile()->getFlatColor(), 3, 2),
-            "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-        );
     }
 }
 
@@ -241,12 +236,6 @@ void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         }
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-
-        Brakeza3D::get()->addObject3D(
-            new ParticleEmissorFireworks(position, Vertex3D(0, 4, 5), true, 520, 3, 0.03, getModelProjectile()->getFlatColor(), 3, 2),
-            "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-        );
-
     }
 }
 
@@ -277,9 +266,7 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
             false
         );
 
-        auto *componentRender = ComponentsManager::get()->getComponentRender();
-
-        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+        projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         projectile->setParent(parent);
         projectile->setPosition(position);
 

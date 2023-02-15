@@ -73,15 +73,13 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     }
 }
 
-void Drawable::drawVertex3D(Vertex3D V, Camera3D *cam, Color color) {
+void Drawable::drawVertex3D(Vertex3D V, Color color)
+{
     Vertex3D A;
 
-    Transforms::cameraSpace(A, V, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
-
-    if (A.z < 0) {
-        return;
-    }
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    Transforms::cameraSpace(A, V, camera);
+    A = Transforms::PerspectiveNDCSpace(A, camera->frustum);
 
     Point2D P1;
     Transforms::screenSpace(P1, A);

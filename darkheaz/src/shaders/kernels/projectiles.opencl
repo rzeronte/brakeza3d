@@ -47,6 +47,7 @@ __kernel void onUpdate(
     float2 st = uv / resolution;
 
     unsigned int mixedColor = video[i];
+    unsigned char *mi = &mixedColor;
 
     for (int j = 0; j < numberProjectiles; j++) {
         struct OCProjectile projectile = projectiles[j];
@@ -59,18 +60,18 @@ __kernel void onUpdate(
         float width =  0.12;
         float circle = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
 
-
-        unsigned char *mi = &mixedColor;
-
         __global unsigned char *ci = &image[i];
 
         float n = ci[0] * 3;
 
         float3 colorCircle = {
-            (circle * (projectile.r/255)) * n,
-            (circle * (projectile.g/255)) * n,
-            (circle * (projectile.b/255)) * n
+            (circle * (projectile.r/255)),
+            (circle * (projectile.g/255)),
+            (circle * (projectile.b/255))
         };
+
+        colorCircle *= n;
+
         mixedColor = createRGB(
             min(colorCircle[0] + mi[0], 255.0),
             min(colorCircle[1] + mi[1], 255.0),
@@ -84,17 +85,13 @@ __kernel void onUpdate(
         float2 A = { laser.x1, laser.y1 };
         float2 B = { laser.x2, laser.y2 };
 
-        float2 dir = normalize(A-B);
-
         A = A / resolution;
         B = B / resolution;
 
         float l = line(A, B, st, 0.015 * laser.intensity);
 
-        float speed = 1.5;
-
         float2 nst = st;
-        float2 offset = normalize(A-B) * iTime * speed;
+        float2 offset = normalize(A-B) * iTime * 1.50;
         nst += offset;
 
         float intPart;
@@ -106,7 +103,6 @@ __kernel void onUpdate(
         int index = cy * screenWidth + cx;
 
         __global unsigned char *ci = &image[index];
-        unsigned char *mi = &mixedColor;
 
         float n = ci[0];
 
