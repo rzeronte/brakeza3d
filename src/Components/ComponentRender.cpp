@@ -191,10 +191,10 @@ void ComponentRender::onUpdateSceneObjects()
 }
 
 void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
-        Triangle *t,
-        LightPoint3D *l,
-        std::vector<Triangle *> &visibleTrianglesForLight,
-        std::vector<Triangle *> &clippedTriangles
+    Triangle *t,
+    LightPoint3D *l,
+    std::vector<Triangle *> &visibleTrianglesForLight,
+    std::vector<Triangle *> &clippedTriangles
 ) {
 
     t->updateObjectSpace();
