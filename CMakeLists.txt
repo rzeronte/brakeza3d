@@ -225,8 +225,6 @@ add_executable(Brakeza3D
         include/Particles/ParticleEmissor.h
         src/Particles/Particle.cpp
         include/Particles/Particle.h
-        src/Particles/ParticleEmissorGravity.cpp
-        include/Particles/ParticleEmissorGravity.h
         src/Collisions/SimplePendulum.cpp
         include/Physics/SimplePendulum.h
         src/Render/Shader.cpp

@@ -5,7 +5,7 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
 
-Object3D::Object3D() : enabled(true), removed(false), position(Vertex3D(1, 1, 1)), scale(1), decal(false)
+Object3D::Object3D() : position(Vertex3D(1, 1, 1)), parent(nullptr), enabled(true), removed(false), decal(false), scale(1)
 {
     setFollowCamera(false);
     setRotationFrameEnabled(false);
@@ -90,24 +90,24 @@ float Object3D::getScale() const {
     return scale;
 }
 
-void Object3D::setScale(float scale) {
-    Object3D::scale = scale;
+void Object3D::setScale(float value) {
+    Object3D::scale = value;
 }
 
 bool Object3D::isRemoved() const {
     return removed;
 }
 
-void Object3D::setRemoved(bool removed) {
-    Object3D::removed = removed;
+void Object3D::setRemoved(bool value) {
+    Object3D::removed = value;
 }
 
 bool Object3D::isDecal() const {
     return decal;
 }
 
-void Object3D::setDecal(bool decal) {
-    Object3D::decal = decal;
+void Object3D::setDecal(bool value) {
+    Object3D::decal = value;
 }
 
 void Object3D::setDrawOffset(Vertex3D offset) {
@@ -122,8 +122,8 @@ Object3D *Object3D::getParent() const {
     return parent;
 }
 
-void Object3D::setParent(Object3D *parent) {
-    Object3D::parent = parent;
+void Object3D::setParent(Object3D *object) {
+    Object3D::parent = object;
 }
 
 bool Object3D::isFollowCamera() const {
@@ -165,7 +165,7 @@ void Object3D::setRotation(float x, float y, float z) {
     this->setRotation(M3::getMatrixRotationForEulerAngles(x, y, z));
 }
 
-void Object3D::addToPosition(Vertex3D &v) {
+void Object3D::addToPosition(Vertex3D v) {
     this->position = this->position + v;
 }
 

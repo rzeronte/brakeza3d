@@ -1,7 +1,6 @@
 
 #include "Player.h"
 #include "../include/Brakeza3D.h"
-#include "../include/Particles/ParticleEmissorGravity.h"
 #include "src/weapons/AmmoProjectileBody.h"
 #include "src/items/ItemWeaponGhost.h"
 #include "src/items/ItemHealthGhost.h"
@@ -246,7 +245,6 @@ void Player::onUpdate()
     }
 
     //updateLight();
-
 
     applyFriction();
 

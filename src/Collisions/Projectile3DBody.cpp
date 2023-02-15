@@ -35,7 +35,8 @@ void Projectile3DBody::makeProjectileRigidBody(
     this->direction = projectileDirection;
 }
 
-void Projectile3DBody::onUpdate() {
+void Projectile3DBody::onUpdate()
+{
     Mesh3D::onUpdate();
 
     if (isRemoved()) {
@@ -46,7 +47,7 @@ void Projectile3DBody::onUpdate() {
         if (this->getTimeToLive()->isFinished()) {
             this->getTimeToLive()->setEnabled(true);
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getRigidBody());
-            this->removed = true;
+            setRemoved(true);
         }
 
         this->getTimeToLive()->update();

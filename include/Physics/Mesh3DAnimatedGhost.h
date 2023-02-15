@@ -15,7 +15,7 @@ private:
 protected:
     void integrate() override;
 
-    void remove();
+    virtual void remove();
 
     void onUpdate() override;
 

@@ -820,6 +820,7 @@ void ComponentGame::handleCountDownGameState()
 
 void ComponentGame::handlePressNewLevelKeyGameState()
 {
+    removeInGameObjects();
     getPlayer()->setEnabled(true);
     getPlayer()->shaderLaser->setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);

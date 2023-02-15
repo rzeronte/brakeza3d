@@ -91,7 +91,7 @@ void ShaderLaser::executeKernelOpenCL()
 
                 player->takeDamage(getDamage());
                 Brakeza3D::get()->addObject3D(
-                    new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
+                    new ParticleEmissorFireworks(hitPosition, 1, 520, 3, 0.02, Color::green(), 2, 2),
                     "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
                 );
                 increase = false;
@@ -104,7 +104,7 @@ void ShaderLaser::executeKernelOpenCL()
 
                 enemy->takeDamage(getDamage());
                 Brakeza3D::get()->addObject3D(
-                        new ParticleEmissorFireworks(hitPosition, Vertex3D(0, 4, 5), true, 520, 3, 0.02, Color::green(), 2, 2),
+                        new ParticleEmissorFireworks(hitPosition, 1, 520, 3, 0.02, Color::green(), 2, 2),
                         "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
                 );
                 increase = false;

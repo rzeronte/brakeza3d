@@ -312,7 +312,7 @@ public:
             ImGui::DragScalar("TTL", ImGuiDataType_Float, &emissor->ttl, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
             ImGui::DragScalar("Step", ImGuiDataType_Float, &emissor->step, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
             if (ImGui::IsItemEdited()) {
-                emissor->counter.setStep(emissor->step);
+                emissor->getTimeToNetParticleCounter().setStep(emissor->step);
             }
         }
     }

@@ -14,15 +14,17 @@
 #include "../Misc/Color.h"
 
 class ParticleEmissor : public Object3D {
-
+private:
+    Counter timeToNextParticleCounter;
+protected:
+    std::vector<Particle*> particles;
+    Counter lifeCounter;
 public:
-    ParticleEmissor(bool active, float force, float ttl, float step, Color c);
+    ParticleEmissor(Object3D *parent, float ttlEmitter, float force, float ttl, float step, Color c);
 
-    [[nodiscard]] const Counter &getCounter() const;
-    void clear();
-    void addParticle(Particle *p);
+    [[nodiscard]] Counter &getTimeToNetParticleCounter();
     void setRotationFrame(float, float, float);
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
     void onUpdate() override;
 
     void postUpdate() override;
@@ -31,9 +33,6 @@ public:
     float ttl;
     float step;
     Color color;
-    Counter counter;
-    Counter lifeCounter;
-    std::vector<Particle*> particles;
     bool active;
     bool activeAdding;
     float rotFrameX;
@@ -44,9 +43,13 @@ public:
 
     void setActive(bool value);
 
-    bool isActiveAdding() const;
+    [[nodiscard]] bool isActiveAdding() const;
 
-    void setActiveAdding(bool activeAdding);
+    void setActiveAdding(bool value);
+
+    [[nodiscard]] std::vector<Particle *> &getParticles();
+
+    ~ParticleEmissor() override;
 };
 
 

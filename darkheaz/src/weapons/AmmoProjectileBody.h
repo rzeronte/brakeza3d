@@ -23,7 +23,7 @@ public:
 
     void onUpdate() override;
 
-    ~AmmoProjectileBody() override;
+    [[nodiscard]] ParticleEmissor *getParticleEmissor();
 };
 
 
