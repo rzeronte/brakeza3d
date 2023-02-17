@@ -116,8 +116,6 @@ public:
 
     void setWeapon(Weapon *weaponType);
 
-    void createWeapon(const std::string &label);
-
     void addWeapon(Weapon *weaponType);
 
     Weapon *getWeaponTypeByLabel(const std::string& label);

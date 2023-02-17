@@ -760,7 +760,7 @@ void ComponentGame::addObjectsToStencilBuffer()
 void ComponentGame::updateShaders()
 {
     addObjectsToStencilBuffer();
-    shaderTrailBuffer->update();
+    //shaderTrailBuffer->update();
     shaderClouds->update();
     shaderColor->update();
     shaderLasers->update();

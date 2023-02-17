@@ -65,7 +65,7 @@ void ParticleEmissorFireworks::addFire()
             Tools::random(0, 360)
         ));
 
-        particles.emplace_back(new Particle(this, this->force, Tools::random(0, this->ttl), this->color, false));
+        particles.emplace_back(new Particle(this, this->force, Tools::random(0, this->ttl), this->color));
     }
 
     firesCounter++;

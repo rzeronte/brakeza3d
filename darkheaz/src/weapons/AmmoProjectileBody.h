@@ -15,7 +15,20 @@ class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     Weapon *weaponType;
     ParticleEmissor *particleEmissor;
 public:
-    AmmoProjectileBody(Weapon *weaponType, float damage, float ttl, const Vertex3D &direction);
+    AmmoProjectileBody(
+        Vertex3D position,
+        Object3D *parent,
+        Weapon *weaponType,
+        M3 rotation,
+        const Vertex3D &sizeCollision,
+        const Vertex3D &direction,
+        float damage,
+        float speed,
+        float accuracy,
+        float ttl,
+        int collisionGroup,
+        int collisionMask
+    );
 
     [[nodiscard]] Weapon *getWeaponType() const;
 

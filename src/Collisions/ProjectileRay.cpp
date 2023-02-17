@@ -15,8 +15,8 @@ ProjectileRay::ProjectileRay(
     const Color &color,
     bool indestructible
 ) :
-    Projectile(ttl, direction),
     RayCollisionable(ray, filterGroup, filterMask),
+    Projectile(ttl, direction),
     AmmoProjectile(color, damage),
     speed(speed),
     indestructible(indestructible)

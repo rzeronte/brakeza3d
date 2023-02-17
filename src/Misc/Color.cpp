@@ -103,6 +103,6 @@ unsigned int Color::getA() const {
     return a;
 }
 
-void Color::setAlpha(unsigned int a) {
-    Color::a = a;
+void Color::setAlpha(unsigned int value) {
+    Color::a = value;
 }

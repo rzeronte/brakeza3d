@@ -9,7 +9,7 @@
   "enemies": [
     {
       "name": "Patrol",
-      "position": { "x": 20, "y": 20 },
+      "position": { "x": 20, "y": 30 },
       "model": "spaceships/green_spaceship_01.fbx",
       "enableLights": true,
       "animated": true,
@@ -31,11 +31,12 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.50,
+        "cadenceTime": 0.75,
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": 0,
+        "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,

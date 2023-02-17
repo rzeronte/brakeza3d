@@ -4,15 +4,45 @@
 #include "../../../include/Brakeza3D.h"
 
 AmmoProjectileBody::AmmoProjectileBody(
-        Weapon *weaponType,
-        float damage,
-        float ttl,
-        const Vertex3D &direction) : Projectile3DBody(ttl, direction), AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage), weaponType(weaponType)
+    Vertex3D position,
+    Object3D *parent,
+    Weapon *weaponType,
+    M3 rotation,
+    const Vertex3D &sizeCollision,
+    const Vertex3D &direction,
+    float damage,
+    float speed,
+    float accuracy,
+    float ttl,
+    int collisionGroup,
+    int collisionMask
+) :
+    Projectile3DBody(ttl, direction),
+    AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
+    weaponType(weaponType)
 {
-    particleEmissor = new ParticleEmissor(this, 5, 1000, 1, 0.0005, weaponType->getModelProjectile()->getFlatColor());
-    particleEmissor->setRotationFrame(0, 25, 33);
+    setPosition(position);
+    setEnabled(true);
+    setParent(parent);
+    setRender(false);
+    setStencilBufferEnabled(true);
 
-    Brakeza3D::get()->addObject3D(particleEmissor, "emissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    makeProjectileRigidBody(
+        0.1,
+        sizeCollision,
+        direction,
+        rotation,
+        speed,
+        accuracy,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        collisionGroup,
+        collisionMask
+    );
+
+    particleEmissor = new ParticleEmissor(this, 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
+    particleEmissor->setRotationFrame(0, 25, 25);
+
+    Brakeza3D::get()->addObject3D(particleEmissor, "emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
@@ -52,9 +82,8 @@ void AmmoProjectileBody::onUpdate()
     Projectile3DBody::onUpdate();
 
     particleEmissor->setPosition(getPosition());
-    updateBoundingBox();
 
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(&this->aabb)) {
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isVertexInside(getPosition())) {
         this->remove();
         particleEmissor->setActiveAdding(false);
     }

@@ -24,7 +24,7 @@
 
 LevelLoader::LevelLoader(std::string filename)
 {
-    addLevel(filename);
+    addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
 
@@ -50,7 +50,7 @@ void LevelLoader::addLevel(std::string filename)
 
 int LevelLoader::getNumberLevelEnemies() const
 {
-    return respawners.size();
+    return (int) respawners.size();
 }
 
 void LevelLoader::loadPrevious()
@@ -140,7 +140,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowEnergyShield")->valueint
     );
 
-    auto c = this->parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
+    auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
     ComponentsManager::get()->getComponentGame()->shaderClouds->setColor(c);
 
@@ -202,56 +202,44 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     auto cadenceTime = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "cadenceTime")->valuedouble;
     bool stop = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "stop")->valueint;
     auto stopDuration = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble;
-    auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
+    auto stopEver = (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble;
     bool available = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint;
     bool isFlatTexture = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "flatTexture")->valueint;
     bool enableLights = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "enableLights")->valueint;
+    auto icon = cJSON_GetObjectItemCaseSensitive(weaponJson, "icon")->valuestring;
     cJSON *colorJSON = cJSON_GetObjectItemCaseSensitive(weaponJson, "color");
+    auto color = parseColorJSON(colorJSON);
 
     Logging::Log("Cargando arma: " + name, "[WEAPONS]");
 
-    auto weapon = new Weapon(name);
-    weapon->getModel()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    weapon->getModel()->setLabel("weapon_model_template" + std::to_string(index));
-    weapon->getModelProjectile()->setFlatTextureColor(isFlatTexture);
-    weapon->getModelProjectile()->setEnableLights(enableLights);
-    weapon->getModelProjectile()->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile));
-    weapon->getModelProjectile()->setLabel("projectile_weapon_template" + std::to_string(index));
-    weapon->getModelProjectile()->setScale(1);
-    weapon->getModelProjectile()->setStencilBufferEnabled(true);
-
-    if (colorJSON != nullptr) {
-        auto color = parseColorJSON(colorJSON);
-        weapon->getModelProjectile()->setFlatColor(color);
-    }
-
-    weapon->setAmmoAmount(amount);
-    weapon->setStartAmmoAmount(startAmount);
-    weapon->setSpeed(speed);
-    weapon->setDamage(damage);
-    weapon->setDispersion(dispersion);
-    weapon->setAccuracy(accuracy);
-    weapon->setCadenceTime(cadenceTime);
-    weapon->setType(type);
-
-    if (cJSON_GetObjectItemCaseSensitive(weaponJson, "icon") != nullptr) {
-        weapon->setIconImage(EngineSetup::get()->ASSETS_FOLDER + cJSON_GetObjectItemCaseSensitive(weaponJson, "icon")->valuestring);
-    }
-
-    weapon->setStop(stop);
-    weapon->setAvailable(available);
-
-    if (stop) {
-        weapon->setStopDuration(stopDuration);
-        weapon->setStopEvery(stopEvery);
-    }
+    auto weapon = new Weapon(
+        name,
+        std::string(EngineSetup::get()->MODELS_FOLDER + model),
+        std::string(EngineSetup::get()->MODELS_FOLDER + modelProjectile),
+        EngineSetup::get()->ASSETS_FOLDER + icon,
+        color,
+        isFlatTexture,
+        enableLights,
+        amount,
+        startAmount,
+        damage,
+        speed,
+        dispersion,
+        accuracy,
+        cadenceTime,
+        stop,
+        stopEver,
+        stopDuration,
+        type,
+        available
+    );
 
     return weapon;
 }
 
 void LevelLoader::startCountDown()
 {
-    this->countDown.setStep(3);
+    this->countDown.setStep(COUNTDOWN_TO_START);
     this->countDown.setEnabled(true);
 
     for (auto respawner : respawners) {
@@ -264,16 +252,16 @@ const std::string &LevelLoader::getMusic() const {
     return music;
 }
 
-void LevelLoader::setMusic(const std::string &music) {
-    LevelLoader::music = music;
+void LevelLoader::setMusic(const std::string &value) {
+    LevelLoader::music = value;
 }
 
 const std::string &LevelLoader::getLevelName() const {
     return levelName;
 }
 
-void LevelLoader::setLevelName(const std::string &levelName) {
-    LevelLoader::levelName = levelName;
+void LevelLoader::setLevelName(const std::string &value) {
+    LevelLoader::levelName = value;
 }
 
 Counter * LevelLoader::getCountDown() {
@@ -284,7 +272,7 @@ bool LevelLoader::isHasTutorial() const {
     return hasTutorial;
 }
 
-Image* LevelLoader::getTutorialImage() {
+Image* LevelLoader::getTutorialImage() const {
     return tutorialImage;
 }
 
@@ -322,12 +310,7 @@ void LevelLoader::makeItemEnergyGhost(Vertex3D position)
             EngineSetup::collisionGroups::Weapon,
             EngineSetup::collisionGroups::Player
     );
-    /*healthItem->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        healthItem,
-        EngineSetup::collisionGroups::Health,
-        EngineSetup::collisionGroups::Player
-    );*/
+
     healthItem->updateBulletFromMesh3D();
     Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
 }
@@ -346,12 +329,6 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
     );
-    /*weaponItem->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        weaponItem,
-        EngineSetup::collisionGroups::Weapon,
-        EngineSetup::collisionGroups::Player
-    );*/
     weaponItem->setRotation(0, 0, 180);
     weaponItem->setRotationFrameEnabled(true);
     weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
@@ -366,8 +343,8 @@ bool LevelLoader::isLevelFinished() const {
     return levelFinished;
 }
 
-void LevelLoader::setLevelFinished(bool levelFinished) {
-    LevelLoader::levelFinished = levelFinished;
+void LevelLoader::setLevelFinished(bool value) {
+    LevelLoader::levelFinished = value;
 }
 
 void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
@@ -527,7 +504,7 @@ void LevelLoader::setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy)
 
 void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
 {
-    enemy->addLaser(new ProjectileRay(
+    enemy->addFixedLaser(new ProjectileRay(
         100,
         (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
         parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(laser, "direction")),
@@ -596,8 +573,8 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
 Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)
 {
     return Point2D(
-    ( point.x * EngineSetup::get()->screenWidth) / 100,
-    ( point.y * EngineSetup::get()->screenHeight) / 100
+        ( point.x * EngineSetup::get()->screenWidth) / 100,
+        ( point.y * EngineSetup::get()->screenHeight) / 100
     );
 }
 
@@ -773,11 +750,11 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
 
 Color LevelLoader::parseColorJSON(cJSON *color)
 {
-    int r = cJSON_GetObjectItemCaseSensitive(color, "r")->valueint;
-    int g = cJSON_GetObjectItemCaseSensitive(color, "g")->valueint;
-    int b = cJSON_GetObjectItemCaseSensitive(color, "b")->valueint;
-
-    return Color(r, g, b);
+    return Color(
+        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
+    );
 }
 
 const std::vector<std::string> &LevelLoader::getLevels() const {
@@ -788,6 +765,6 @@ bool LevelLoader::isEndLevel() const {
     return endLevel;
 }
 
-void LevelLoader::setEndLevel(bool endLevel) {
-    LevelLoader::endLevel = endLevel;
+void LevelLoader::setEndLevel(bool value) {
+    LevelLoader::endLevel = value;
 }

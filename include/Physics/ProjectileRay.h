@@ -12,7 +12,7 @@
 #include "Projectile.h"
 #include "../../darkheaz/src/weapons/AmmoProjectile.h"
 
-class ProjectileRay: public Projectile, public RayCollisionable, public AmmoProjectile {
+class ProjectileRay: public RayCollisionable, public Projectile,  public AmmoProjectile {
 private:
     Color color;
     int speed;

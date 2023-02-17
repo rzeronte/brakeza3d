@@ -19,7 +19,27 @@ enum WeaponTypes {
 
 class Weapon {
 public:
-    Weapon(const std::string& label);
+    Weapon(
+        const std::string& name,
+        const std::string& weaponModel,
+        const std::string& projectileModel,
+        const std::string& icon,
+        Color projectileColor,
+        bool projectileFlatTexture,
+        bool projectileEnableLights,
+        int ammoAmount,
+        int startAmmoAmount,
+        float damage,
+        int speed,
+        int dispersion,
+        float accuracy,
+        float cadenceTime,
+        bool stop,
+        float stopEver,
+        float stopDuration,
+        int type,
+        bool available
+    );
 
     bool available;
     int status;
@@ -80,7 +100,6 @@ public:
     void setDispersion(int value);
 
     void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
-    void shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound);
     void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask);
 
     [[nodiscard]] Mesh3D *getModel() const;
@@ -91,9 +110,9 @@ public:
 
     void setIconImage(std::string file);
 
-    Image *getIcon() const;
+    [[nodiscard]] Image *getIcon() const;
 
-    int getAmmoAmount() const;
+    [[nodiscard]] int getAmmoAmount() const;
 
     void setAmmoAmount(int value);
 
@@ -101,31 +120,31 @@ public:
 
     Mesh3D *getModelProjectile();
 
-    int getType() const;
+    [[nodiscard]] int getType() const;
 
     void setType(int type);
 
-    int getStatus() const;
+    [[nodiscard]] int getStatus() const;
 
     void setStatus(int status);
 
-    int getStartAmmoAmount() const;
+    [[nodiscard]] int getStartAmmoAmount() const;
 
     void setStartAmmoAmount(int value);
 
-    bool isStop() const;
+    [[nodiscard]] bool isStop() const;
 
     void setStop(bool value);
 
-    float getStopDuration() const;
+    [[nodiscard]] float getStopDuration() const;
 
     void setStopDuration(float value);
 
-    float getStopEvery() const;
+    [[nodiscard]] float getStopEvery() const;
 
     void setStopEvery(float stopEverySeconds);
 
-    int getSoundChannel() const;
+    [[nodiscard]] int getSoundChannel() const;
 
     void setSoundChannel(int value);
 
@@ -136,6 +155,8 @@ public:
     void shootBomb(Object3D *parent, Vertex3D position);
 
     void shootLaserRay(ShaderLaser *shaderLaser, float intensity);
+
+    void setLabel(const std::string &value);
 };
 
 
