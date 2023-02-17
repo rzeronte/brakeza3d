@@ -46,6 +46,8 @@ typedef enum {
     ROTATE_FRAME = 6
 } EnemyBehaviorTypes;
 
+#define COUNTDOWN_TO_START 3
+
 class LevelLoader {
 public:
     LevelLoader(std::string filename);
@@ -98,7 +100,7 @@ public:
 
     bool isHasTutorial() const;
 
-    Image * getTutorialImage();
+    Image * getTutorialImage() const;
 
     static void makeItemHealthGhost(Vertex3D position);
 
@@ -106,7 +108,7 @@ public:
 
     void makeItemWeapon(int index, Vertex3D position);
 
-    bool isLevelFinished() const;
+    [[nodiscard]] bool isLevelFinished() const;
 
     void setLevelFinished(bool levelFinished);
 
@@ -132,7 +134,7 @@ public:
 
     void loadPrevious();
 
-    bool isHaveMusic() const;
+    [[nodiscard]] bool isHaveMusic() const;
 
     void setHasMusic(bool hasMusic);
 
@@ -140,13 +142,13 @@ public:
 
     Point2D convertPointPercentRelativeToScreen(Point2D point);
 
-    Color parseColorJSON(cJSON *color);
+    static Color parseColorJSON(cJSON *color);
 
-    const std::vector<std::string> &getLevels() const;
+    [[nodiscard]] const std::vector<std::string> &getLevels() const;
 
-    bool isEndLevel() const;
+    [[nodiscard]] bool isEndLevel() const;
 
-    void setEndLevel(bool endLevel);
+    void setEndLevel(bool value);
 };
 
 

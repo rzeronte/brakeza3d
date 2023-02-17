@@ -48,7 +48,7 @@ void ParticleEmissor::onUpdate()
 
     timeToNextParticleCounter.update();
     if (timeToNextParticleCounter.isFinished() && isActiveAdding()) {
-        particles.emplace_back(new Particle(this, this->force, this->ttl, this->color, false));
+        particles.emplace_back(new Particle(this, this->force, this->ttl, this->color));
         timeToNextParticleCounter.setEnabled(true);
     }
 }

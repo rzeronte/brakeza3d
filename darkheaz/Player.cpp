@@ -427,10 +427,6 @@ void Player::setWeapon(Weapon *weaponType) {
     );
 }
 
-void Player::createWeapon(const std::string& label) {
-    this->weaponTypes.emplace_back(new Weapon(label));
-}
-
 void Player::addWeapon(Weapon *weaponType)
 {
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());

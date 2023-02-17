@@ -88,7 +88,7 @@ void EnemyGhost::onUpdate()
 
 void EnemyGhost::updateLasers()
 {
-    for (auto ray : rays) {
+    for (auto ray : fixedLasers) {
         ray->setRay(getRotation() * ray->getDirection().getScaled(ray->getRay().getModule()));
         ray->setPosition(getPosition());
     }
@@ -302,7 +302,7 @@ EnemyGhost::~EnemyGhost()
     delete counterDamageBlink;
     delete blink;
 
-    for (auto ray : rays) {
+    for (auto ray : fixedLasers) {
         ray->setRemoved(true);
     }
 }
@@ -369,8 +369,8 @@ AmmoProjectileBodyEmissor *EnemyGhost::getProjectileEmissor() const {
     return projectileEmissor;
 }
 
-void EnemyGhost::addLaser(ProjectileRay *ray)
+void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
-    rays.push_back(ray);
+    fixedLasers.push_back(ray);
     Brakeza3D::get()->addObject3D(ray, getLabel() + "_ray1");
 }

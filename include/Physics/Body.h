@@ -15,7 +15,7 @@ public:
 
     btRigidBody *body;
 
-    btRigidBody *getRigidBody() const;
+    [[nodiscard]] btRigidBody *getRigidBody() const;
 
     void setMass(float m);
 

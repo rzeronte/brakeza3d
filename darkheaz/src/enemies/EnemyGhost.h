@@ -21,7 +21,7 @@ private:
     Counter *counterStucked;
     AmmoProjectileBodyEmissor *projectileEmissor;
 
-    std::vector<ProjectileRay *> rays;
+    std::vector<ProjectileRay *> fixedLasers;
 public:
     EnemyGhost();
 
@@ -31,11 +31,11 @@ public:
 
     void integrate() override;
 
-    void remove();
+    void remove() override;
 
     void shoot(Object3D *target);
 
-    ShaderBlink *getBlink() const;
+    [[nodiscard]] ShaderBlink *getBlink() const;
 
     void postUpdate() override;
 
@@ -59,7 +59,7 @@ public:
 
     [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
 
-    void addLaser(ProjectileRay *ray);
+    void addFixedLaser(ProjectileRay *ray);
 
     void updateLasers();
 };

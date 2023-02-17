@@ -4,31 +4,65 @@
 #include <utility>
 #include "../../../include/Brakeza3D.h"
 #include "AmmoProjectileBody.h"
-#include "AmmoSmartProjectileBody.h"
 #include "../items/ItemBombGhost.h"
 
-Weapon::Weapon(const std::string& label) {
-    this->status = WeaponStatus::NONE;
-    this->damage = 0;
-    this->ammoAmount = 0;
-    this->startAmmoAmount = 0;
-    this->accuracy = 100;
-    this->damageRadius = 0;
-    this->speed = 1;
-    this->available = true;
-    this->dispersion = 0;
-    this->label = label;
+
+Weapon::Weapon(
+    const std::string& name,
+    const std::string& weaponModel,
+    const std::string& projectileModel,
+    const std::string& icon,
+    Color projectileColor,
+    bool projectileFlatTexture,
+    bool projectileEnableLights,
+    int ammoAmount,
+    int startAmmoAmount,
+    float damage,
+    int speed,
+    int dispersion,
+    float accuracy,
+    float cadenceTime,
+    bool stop,
+    float stopEver,
+    float stopDuration,
+    int type,
+    bool available
+) {
+    setLabel(name);
+    setStatus(WeaponStatus::NONE);
+
     this->model = new Mesh3D();
-    this->cadenceTime = 1;
     this->counterCadence = new Counter(this->cadenceTime);
     this->counterCadence->setEnabled(false);
     this->modelProjectile = new Mesh3D();
-    this->type = WeaponTypes::WEAPON_PROJECTILE;
-    this->stop = false;
-    this->stopDuration = 0;
-    this->stopEvery = 0;
     this->soundChannel = EngineSetup::SoundChannels::SND_GLOBAL;
-    this->icon = nullptr;
+
+    getModel()->AssimpLoadGeometryFromFile(weaponModel);
+    getModelProjectile()->setFlatTextureColor(projectileFlatTexture);
+    getModelProjectile()->setEnableLights(projectileEnableLights);
+    getModelProjectile()->AssimpLoadGeometryFromFile(projectileModel);
+    getModelProjectile()->setLabel("projectile_weapon_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    getModelProjectile()->setFlatColor(projectileColor);
+    getModelProjectile()->setScale(1);
+
+    setIconImage(icon);
+
+    setAmmoAmount(ammoAmount);
+    setStartAmmoAmount(startAmmoAmount);
+    setSpeed(speed);
+    setDamage(damage);
+    setDispersion(dispersion);
+    setAccuracy(accuracy);
+    setCadenceTime(cadenceTime);
+    setType(type);
+
+    setStop(stop);
+    setAvailable(available);
+
+    if (stop) {
+        setStopDuration(stopDuration);
+        setStopEvery(stopEver);
+    }
 }
 
 void Weapon::onUpdate()
@@ -122,40 +156,26 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         this->counterCadence->setEnabled(true);
 
         setStatus(WeaponStatus::PRESSED);
-        auto *componentRender = ComponentsManager::get()->getComponentRender();
 
         auto *projectile = new AmmoProjectileBody(
+            position,
+            parent,
             this,
+            rotation,
+            Vertex3D(50, 50, 50),
+            direction,
             getDamage(),
+            (float) getSpeed(),
+            getAccuracy(),
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
-            direction
+            EngineSetup::collisionGroups::Projectile,
+            collisionMask
         );
-        projectile->setRender(false);
-        projectile->setStencilBufferEnabled(true);
-        projectile->setParent(parent);
-        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
-        projectile->setEnableLights(getModelProjectile()->isEnableLights());
-        projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());
-        projectile->setFlatColor(getModelProjectile()->getFlatColor());
 
         if (getType() == WEAPON_BOMB) {
             projectile->setRotationFrameEnabled(true);
             projectile->setRotationFrame(Vertex3D(1, 1, 0));
         }
-
-        projectile->clone(getModelProjectile());
-        projectile->setPosition(position);
-        projectile->setEnabled(true);
-        projectile->makeProjectileRigidBody(
-            0.1,
-            direction,
-            rotation,
-            (float) getSpeed(),
-            getAccuracy(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::Projectile,
-            collisionMask
-        );
 
         setAmmoAmount(getAmmoAmount() - 1);
 
@@ -167,75 +187,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             );
         }
 
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
-    }
-}
-
-void Weapon::shootSmartProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, Object3D *target, bool sound)
-{
-    if (getAmmoAmount() <= 0) return;
-
-    if (isStop() && counterStopDuration.isEnabled()) {
-        return;
-    }
-
-    if (counterCadence->isFinished()) {
-        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
-        this->counterCadence->setStep(t);
-        this->counterCadence->setEnabled(true);
-
-        setStatus(WeaponStatus::PRESSED);
-
-        auto *componentRender = ComponentsManager::get()->getComponentRender();
-
-        Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
-
-        auto *projectile = new AmmoSmartProjectileBody(
-            this,
-            getDamage(),
-            EngineSetup::get()->PROJECTILE_DEMO_TTL,
-            direction,
-            target
-        );
-        projectile->setTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
-        projectile->setStencilBufferEnabled(true);
-        projectile->setParent(parent);
-        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
-
-        projectile->setEnableLights(getModelProjectile()->isEnableLights());
-        projectile->setFlatTextureColor(getModelProjectile()->isFlatTextureColor());
-        projectile->setFlatColor(getModelProjectile()->getFlatColor());
-
-        projectile->clone(getModelProjectile());
-        projectile->setPosition(position);
-        projectile->setEnabled(true);
-
-        if (target != nullptr) {
-            projectile->setTarget(target);
-        }
-
-        projectile->makeProjectileRigidBody(
-            0.1,
-            direction,
-            rotation,
-            (float) getSpeed(),
-            getAccuracy(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::Projectile,
-            collisionMask
-        );
-
-        setAmmoAmount(ammoAmount - 1);
-
-        if (sound) {
-            ComponentsManager::get()->getComponentSound()->playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeTwo"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
-        }
-
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+        Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 
@@ -409,7 +361,9 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+
         projectile->clone(getModelProjectile());
+
         projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
@@ -460,3 +414,8 @@ void Weapon::shootLaserRay(ShaderLaser *shaderLaser, float intensity)
 
     shaderLaser->update();
 }
+
+void Weapon::setLabel(const std::string &value) {
+    Weapon::label = value;
+}
+

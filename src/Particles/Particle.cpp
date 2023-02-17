@@ -2,8 +2,8 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Brakeza3D.h"
 
-Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affectedByGravity)
-    : force(force), t(0), color(c), affedByGravity(affectedByGravity)
+Particle::Particle(Object3D *parent, float force, float ttl, Color c)
+    : force(force), color(c)
 {
     setParent(parent);
     this->setPosition(parent->getPosition());
@@ -16,6 +16,7 @@ Particle::Particle(Object3D *parent, float force, float ttl, Color c, bool affec
 
 void Particle::onUpdate()
 {
+
     if (this->timeToLive.isFinished()) {
         this->timeToLive.setEnabled(true);
         setRemoved(true);
@@ -26,18 +27,11 @@ void Particle::onUpdate()
     velocity = this->AxisForward().getScaled(force * Brakeza3D::get()->getDeltaTime());
 
     addToPosition(velocity);
-
-    if (affedByGravity) {
-        const float g = EngineSetup::get()->gravity.y;
-
-        t += Brakeza3D::get()->getDeltaTime() / 1000;
-
-        this->addToPosition(Vertex3D(
-            EngineSetup::get()->gravity.x * t,
-            EngineSetup::get()->gravity.y * t - (0.5f * g * t * t),
-            EngineSetup::get()->gravity.z * t
-        ));
-    }
+    color = (Color::red() * timeToLive.getAcumulatedTime()) + color;
 
     Drawable::drawVertex3D(getPosition(), color);
+}
+
+void Particle::postUpdate() {
+
 }

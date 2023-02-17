@@ -139,32 +139,22 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
 {
     Vertex3D direction = this->AxisForward().getNormalize();
 
-    auto *projectile = new AmmoProjectileBody(weaponType, weaponType->getDamage(), 0, direction);
-    projectile->setParent(this);
-    projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    projectile->cloneParts(
-        weaponType->getModelProjectile(),
-        true,
-        false,
-        getColor()
-    );
-    projectile->setStencilBufferEnabled(true);
-
-    projectile->setPosition( getPosition() );
-    projectile->setEnabled(true);
-    projectile->setTTL(EngineSetup::get()->PROJECTILE_DEMO_TTL);
-    projectile->makeProjectileRigidBody(
-        0.1,
-        direction,
+    auto *projectile = new AmmoProjectileBody(
+        getPosition(),
+        this,
+        weaponType,
         M3::getMatrixIdentity(),
+        Vertex3D(50, 50, 50),
+        direction,
+        weaponType->getDamage(),
         (float) weaponType->getSpeed(),
-        weaponType->getAccuracy(),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        100,
+        EngineSetup::get()->PROJECTILE_DEMO_TTL,
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::Player
     );
 
-    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+    Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void AmmoProjectileBodyEmissor::launchCircleProjectiles()

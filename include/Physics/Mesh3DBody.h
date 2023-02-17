@@ -17,7 +17,7 @@ public:
 
     void makeRigidBody(float mass, btDiscreteDynamicsWorld *, int collisionGroup, int collisionMask);
 
-    void makeSimpleRigidBody(float mass, Vertex3D pos, Vertex3D direction, M3 rotation, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    void makeSimpleRigidBody(float mass, Vertex3D pos, M3 rotation, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
 
     void setGravity(Vertex3D g);
 

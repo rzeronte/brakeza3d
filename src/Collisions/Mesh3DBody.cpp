@@ -67,7 +67,6 @@ void Mesh3DBody::makeRigidBody(float mass, btDiscreteDynamicsWorld *world, int c
 void Mesh3DBody::makeSimpleRigidBody(
         float mass,
         Vertex3D pos,
-        Vertex3D direction,
         M3 rotation,
         Vertex3D dimensions,
         btDiscreteDynamicsWorld *world,
