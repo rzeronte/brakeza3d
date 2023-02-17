@@ -186,6 +186,7 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
+        Vertex3D(50, 50, 50),
         direction,
         M3::getMatrixIdentity(),
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,

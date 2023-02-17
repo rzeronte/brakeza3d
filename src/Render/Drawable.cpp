@@ -61,10 +61,6 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Transforms::cameraSpace(A, V, cam);
     A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
 
-    if (A.z < 0) {
-        return;
-    }
-
     Point2D P1;
     Transforms::screenSpace(P1, A);
 

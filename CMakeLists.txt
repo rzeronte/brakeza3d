@@ -253,8 +253,6 @@ add_executable(Brakeza3D
         darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.cpp
         darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.h
         darkheaz/LevelLoader.cpp darkheaz/LevelLoader.h
-        darkheaz/src/weapons/AmmoSmartProjectileBody.cpp
-        darkheaz/src/weapons/AmmoSmartProjectileBody.h
         darkheaz/src/shaders/ShaderShockWave.cpp
         darkheaz/src/shaders/ShaderShockWave.h
         darkheaz/src/items/ItemEnergyGhost.cpp
