@@ -16,7 +16,6 @@
 ComponentGame::ComponentGame()
 {
     player = new Player();
-    player->setEnabled(false);
     gameState = EngineSetup::GameState::NONE;
 }
 
@@ -102,7 +101,6 @@ void ComponentGame::preUpdate()
     }
 
     getPlayer()->updateWeaponInteractionStatus();
-
 }
 
 void ComponentGame::onUpdate()
@@ -121,7 +119,6 @@ void ComponentGame::onUpdate()
             getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
         }
     }
-
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
         ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);

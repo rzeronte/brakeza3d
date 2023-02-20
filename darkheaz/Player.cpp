@@ -7,49 +7,38 @@
 #include "src/items/ItemEnergyGhost.h"
 #include "src/items/PlayerReflection.h"
 
-Player::Player() : stamina(INITIAL_STAMINA),
-                   startStamina(INITIAL_STAMINA),
-                   energy(INITIAL_ENERGY),
-                   startEnergy(INITIAL_ENERGY),
-                   recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-                   lives(INITIAL_LIVES),
-                   state(PlayerState::EMPTY),
-                   dashPower(INITIAL_POWERDASH),
-                   power(INITIAL_POWER),
-                   friction(INITIAL_FRICTION),
-                   maxVelocity(INITIAL_MAX_VELOCITY)
+Player::Player() :
+    stamina(INITIAL_STAMINA),
+    startStamina(INITIAL_STAMINA),
+    energy(INITIAL_ENERGY),
+    startEnergy(INITIAL_ENERGY),
+    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+    stucked(false),
+    lives(INITIAL_LIVES),
+    killsCounter(0),
+    energyShieldEnabled(false),
+    gravityShieldsNumber(0),
+    lightPositionOffset(Vertex3D(0, -550, 0)),
+    state(PlayerState::EMPTY),
+    currentWeaponIndex(0),
+    dashPower(INITIAL_POWERDASH),
+    power(INITIAL_POWER),
+    friction(INITIAL_FRICTION),
+    maxVelocity(INITIAL_MAX_VELOCITY),
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
-    light = new LightPoint3D();
+    light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setEnabled(true);
-    light->setLabel("lp2");
-    light->setPower(45);
-    light->setConstant(5.7);
-    light->setLinear(0);
-    light->setCuadratic(0);
-    light->setColor(100, 16, 22);
-    light->setColorSpecularity(15, 33, 92);
-    light->setSpecularComponent(9);
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    lightPositionOffset = Vertex3D(0, -550, 0);
-
-    autoRotationSelectedObjectSpeed = 1;
-    killsCounter = 0;
-
-    this->counterDamageBlink = new Counter(0.45);
-
-    this->energyShieldEnabled = false;
-    this->gravityShieldsNumber = 0;
-
-    this->currentWeaponIndex = 0;
+    counterDamageBlink = new Counter(0.45);
 
     setAllowEnergyShield(true);
     setAllowGravitationalShields(true);
 
     counterStucked = new Counter(5);
     counterStucked->setEnabled(false);
-    setStucked(false);
 }
 
 void Player::loadShieldModel()
@@ -273,7 +262,7 @@ void Player::onUpdate()
         Vertex3D b = getRotation() * EngineSetup::get()->up;
 
         const float theta = newRot.X() * b;
-        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->autoRotationSelectedObjectSpeed);
+        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->rotationToTargetSpeed);
         setRotation(getRotation() * rotation.getTranspose());
     }
 
@@ -285,7 +274,7 @@ void Player::onUpdate()
         Vertex3D b = getRotation() * EngineSetup::get()->up;
 
         const float theta = newRot.X() * b;
-        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->autoRotationSelectedObjectSpeed);
+        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->rotationToTargetSpeed);
         setRotation(getRotation() * rotation.getTranspose());
     }
 
@@ -456,7 +445,7 @@ void Player::setWeaponTypeByIndex(int i) {
 }
 
 void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
-    Player::autoRotationSelectedObjectSpeed = value;
+    Player::rotationToTargetSpeed = value;
 }
 
 void Player::startBlinkShaderForPlayer()
@@ -653,8 +642,7 @@ void Player::setEnabled(bool value)
     this->light->setEnabled(value);
 }
 
-
-void Player::updateWeaponInteractionStatus()
+void Player::updateWeaponInteractionStatus() const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
@@ -669,7 +657,7 @@ void Player::updateWeaponInteractionStatus()
     }
 }
 
-void Player::updateWeaponAutomaticStatus()
+void Player::updateWeaponAutomaticStatus() const
 {
     if (getWeapon()->getStatus() == PRESSED) {
         getWeapon()->setStatus(SUSTAINED);

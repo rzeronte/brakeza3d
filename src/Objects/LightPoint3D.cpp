@@ -5,7 +5,15 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 
-LightPoint3D::LightPoint3D() {
+LightPoint3D::LightPoint3D(
+    float power,
+    float kc,
+    float kl,
+    float kq,
+    float specularComponent,
+    Color c,
+    Color specularityColor
+) :color(c), specularColor(specularityColor), kc(kc), kl(kl), kq(kq), p(power), specularComponent(specularComponent)  {
     frustum = new Frustum();
     frustum->setParent(this);
     frustum->setup(
@@ -51,12 +59,12 @@ void LightPoint3D::setShadowMappingBuffer(int x, int y, float value) const {
     shadowMappingBuffer[(y * EngineSetup::get()->screenWidth) + x] = value;
 }
 
-void LightPoint3D::setColor(int r, int g, int b) {
-    this->color = Color(r, g, b);
+void LightPoint3D::setColor(Color value) {
+    this->color = value;
 }
 
-void LightPoint3D::setColorSpecularity(int r, int g, int b) {
-    LightPoint3D::specularColor = Color(r, g, b);
+void LightPoint3D::setColorSpecularity(Color value) {
+    LightPoint3D::specularColor = value;
 }
 
 Color LightPoint3D::mixColor(Color colorTexture, Vertex3D Q, Fragment *fragment)

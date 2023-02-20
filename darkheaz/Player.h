@@ -21,6 +21,7 @@
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 150
 #define MAX_REFLECTIONS 3
+#define PLAYER_ROTATION_TARGET_SPEED 1
 
 typedef enum {
     EMPTY = -1,
@@ -108,11 +109,11 @@ public:
 
     void resolveCollision(Collisionable *with) override;
 
-    float autoRotationSelectedObjectSpeed;
+    float rotationToTargetSpeed;
 
     void setState(PlayerState state);
 
-    Weapon *getWeapon() const;
+    [[nodiscard]] Weapon *getWeapon() const;
 
     void setWeapon(Weapon *weaponType);
 
@@ -128,7 +129,7 @@ public:
 
     void stopBlinkForPlayer();
 
-    int getKillsCounter() const;
+    [[nodiscard]] int getKillsCounter() const;
 
     void setKillsCounter(int killsCounter);
 
@@ -136,31 +137,31 @@ public:
 
     [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
-    bool isEnergyShieldEnabled() const;
+    [[nodiscard]] bool isEnergyShieldEnabled() const;
 
     void setEnergyShieldEnabled(bool shieldEnabled);
 
-    float getEnergy() const;
+    [[nodiscard]] float getEnergy() const;
 
     void useEnergy(float energy);
 
     void setEnergy(float energy);
 
-    int getStartStamina() const;
+    [[nodiscard]] int getStartStamina() const;
 
     void setStartStamina(int startStamina);
 
-    float getStartEnergy() const;
+    [[nodiscard]] float getStartEnergy() const;
 
     void setStartEnergy(float startEnergy);
 
-    float getRecoverEnergySpeed() const;
+    [[nodiscard]] float getRecoverEnergySpeed() const;
 
     void setRecoverEnergySpeed(float recoverEnergySpeed);
 
     void startPlayerBlink();
 
-    int getGravityShieldsNumber() const;
+    [[nodiscard]] int getGravityShieldsNumber() const;
 
     void setGravityShieldsNumber(int gravityShieldsNumber);
 
@@ -174,31 +175,31 @@ public:
 
     void setAllowEnergyShield(bool allowEnergyShield);
 
-    bool isAllowedMakeReflections() const;
+    [[nodiscard]] bool isAllowedMakeReflections() const;
 
-    bool isAllowEnergyShield() const;
+    [[nodiscard]] bool isAllowEnergyShield() const;
 
     void loadBlinkShader();
 
     void loadReflection();
 
-    PlayerState getState() const;
+    [[nodiscard]] PlayerState getState() const;
 
     void stuck(float time);
 
-    bool isStucked() const;
+    [[nodiscard]] bool isStucked() const;
 
     void setStucked(bool value);
 
     void unstuck();
 
-    void setEnabled(bool value);
+    void setEnabled(bool value) override;
 
-    void updateWeaponInteractionStatus();
+    void updateWeaponInteractionStatus() const;
 
     ShaderLaser *shaderLaser;
 
-    void updateWeaponAutomaticStatus();
+    void updateWeaponAutomaticStatus() const;
 };
 
 

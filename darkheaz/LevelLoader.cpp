@@ -144,7 +144,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     ComponentsManager::get()->getComponentGame()->shaderClouds->setColor(c);
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(c.r, c.g, c.b);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(Color(c.r, c.g, c.b));
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
