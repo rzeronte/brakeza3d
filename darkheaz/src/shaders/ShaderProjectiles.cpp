@@ -42,7 +42,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     const int numberLasers = (int) lasers.size();
     const int numberProjectiles = (int) projectiles.size();
 
-    opencl_buffer_lasers = clCreateBuffer(
+    auto opencl_buffer_lasers = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY,
         numberLasers * sizeof(OCLaser),
@@ -53,7 +53,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_lasers,
-        CL_FALSE,
+        CL_TRUE,
         0,
         numberLasers * sizeof(OCLaser),
         lasers.data(),
@@ -62,7 +62,7 @@ void ShaderProjectiles::executeKernelOpenCL()
         nullptr
     );
 
-    opencl_buffer_projectiles = clCreateBuffer(
+    auto opencl_buffer_projectiles = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY,
         numberProjectiles * sizeof(OCProjectile),
@@ -82,11 +82,10 @@ void ShaderProjectiles::executeKernelOpenCL()
         nullptr
     );
 
-
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_FALSE,
+        CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -107,7 +106,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
-    size_t local_item_size = 64;
+    size_t local_item_size = 16;
 
     clRet = clEnqueueNDRangeKernel(
         clCommandQueue,

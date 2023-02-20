@@ -114,12 +114,10 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    this->stamina -= dmg;
-
-    setState(PlayerState::GETTING_DAMAGE);
-    startPlayerBlink();
+    //this->stamina -= dmg;
 
     if (stamina <= 0) {
+        stamina = 0;
         setState(PlayerState::DEAD);
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("playerDead"),
@@ -131,6 +129,9 @@ bool Player::takeDamage(float dmg)
         ComponentsManager::get()->getComponentGame()->shaderColor->setEnabled(true);
         lives--;
     }
+
+    setState(PlayerState::GETTING_DAMAGE);
+    startPlayerBlink();
 
     return true;
 }

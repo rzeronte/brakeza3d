@@ -11,7 +11,6 @@
 
 class RayCollisionable: public Object3D, public Collisionable {
 private:
-    btCollisionWorld::ClosestRayResultCallback *rayCallback;
     Vertex3D ray;
     Vertex3D hitPosition;
 
@@ -28,13 +27,14 @@ public:
 
     void setHitPosition(const Vertex3D &value);
 
-    virtual void hasHit();
+    virtual void hasHit(btCollisionWorld::ClosestRayResultCallback *rayCallback);
 
-    [[nodiscard]] btCollisionWorld::ClosestRayResultCallback *getRayCallback() const;
-
-    const Vertex3D &getRay() const;
+    [[nodiscard]] const Vertex3D &getRay() const;
 
     void setRay(const Vertex3D &ray);
+
+    int filterGroup;
+    int filterMask;
 };
 
 

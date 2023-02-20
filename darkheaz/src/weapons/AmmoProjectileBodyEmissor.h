@@ -27,41 +27,41 @@ class AmmoProjectileBodyEmissor: public Object3D {
 public:
     AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType);
 
-    virtual ~AmmoProjectileBodyEmissor();
+    ~AmmoProjectileBodyEmissor() override;
 
-    const Counter &getCounter() const;
+    [[nodiscard]] const Counter &getCounter() const;
 
     void setCounter(const Counter &counter);
 
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     void setActive(bool active);
 
     void onUpdate() override;
 
-    Weapon *getWeapon() const;
+    [[nodiscard]] Weapon *getWeapon() const;
 
     void setWeapon(Weapon *weapon);
 
     void addProjectile();
 
-    bool isStop() const;
+    [[nodiscard]] bool isStop() const;
 
     void setStop(bool stop);
 
-    float getStopDuration() const;
+    [[nodiscard]] float getStopDuration() const;
 
     void setStopDuration(float stopDuration);
 
-    float getStopEvery() const;
+    [[nodiscard]] float getStopEvery() const;
 
     void setStopEvery(float stopEverySeconds);
 
-    float getStep() const;
+    [[nodiscard]] float getStep() const;
 
     void setStep(float step);
 
-    ProjectileBodyEmmissorType getType() const;
+    [[nodiscard]] ProjectileBodyEmmissorType getType() const;
 
     void setType(ProjectileBodyEmmissorType type);
 
@@ -69,7 +69,7 @@ public:
 
     void launchCircleProjectiles();
 
-    const Color &getColor() const;
+    [[nodiscard]] const Color &getColor() const;
 
     void setColor(const Color &color);
 };

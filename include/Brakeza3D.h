@@ -41,6 +41,8 @@ private:
 public:
     Brakeza3D();
 
+    virtual ~Brakeza3D();
+
     static Brakeza3D *get();
 
     static Brakeza3D *instance;
@@ -54,11 +56,13 @@ public:
 
     float currentFadePercent = 1;
 
+    std::vector<Object3D *> sceneObjects;
+
     void start();
 
     void addObject3D(Object3D *obj, const std::string &label);
 
-    const std::vector<Object3D *> &getSceneObjects() const;
+    [[nodiscard]] const std::vector<Object3D *> &getSceneObjects() const;
 
     Object3D *getObjectByLabel(const std::string &label);
 
@@ -66,7 +70,7 @@ public:
 
     void updateTimer();
 
-    float getDeltaTime() const;
+    [[nodiscard]] float getDeltaTime() const;
 
     void onStartComponents();
 
@@ -82,15 +86,13 @@ public:
 
     void mainLoop();
 
-    ComponentsManager *getComponentsManager() const;
+    [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
     void AxisPlaneInitialize();
 
-    void ImGuiInitialize();
+    void ImGuiInitialize() const;
 
     void ImGuiOnUpdate();
-
-    std::vector<Object3D *> sceneObjects;
 
     void controlFrameRate() const;
 };

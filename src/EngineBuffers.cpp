@@ -66,7 +66,7 @@ void EngineBuffers::clearVideoBuffer() const {
         return;
     }
 
-    std::fill(videoBuffer, videoBuffer + sizeBuffers, NULL);
+    std::fill(videoBuffer, videoBuffer + sizeBuffers, Color::black().getColor());
 }
 
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {

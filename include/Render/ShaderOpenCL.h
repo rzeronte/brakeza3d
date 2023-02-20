@@ -29,7 +29,7 @@ public:
     cl_mem openClBufferMappedWithVideoInput;
     cl_mem openClBufferMappedWithVideoOutput;
 
-    void debugKernel();
+    void debugKernel() const;
 };
 
 

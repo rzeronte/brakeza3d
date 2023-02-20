@@ -205,13 +205,13 @@ void Brakeza3D::ImGuiOnUpdate()
 
     ImGui::NewFrame();
     this->managerGUI.draw(
-            Brakeza3D::get()->getDeltaTime(),
-            finish,
-            Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
-            Brakeza3D::get()->getSceneObjects(),
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
-            Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
+        Brakeza3D::get()->getDeltaTime(),
+        finish,
+        Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
+        Brakeza3D::get()->getSceneObjects(),
+        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
+        Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
+        Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
     );
 
     //ImGui::ShowDemoWindow();
@@ -220,7 +220,8 @@ void Brakeza3D::ImGuiOnUpdate()
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Brakeza3D::ImGuiInitialize() {
+void Brakeza3D::ImGuiInitialize() const
+{
     std::cout << "ImGuiInitialize" << std::endl;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -240,4 +241,18 @@ void Brakeza3D::ImGuiInitialize() {
     ImGui::StyleColorsDark();
     ImGuiStyle &style = ImGui::GetStyle();
     style.FrameBorderSize = 1.0f;
+}
+
+Brakeza3D::~Brakeza3D()
+{
+    delete componentCamera;
+    delete componentInput;
+    delete componentCollisions;
+    delete componentWindow;
+    delete componentSound;
+    delete componentRender;
+    delete componentMenu;
+    delete componentHUD;
+    delete componentGame;
+    delete componentGameInput;
 }
