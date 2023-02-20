@@ -11,13 +11,21 @@
 class LightPoint3D : public Object3D {
 public:
 
-    LightPoint3D();
+    LightPoint3D(
+        float power,
+        float kc,
+        float kl,
+        float kq,
+        float specularComponent,
+        Color c,
+        Color specularityColor
+    );
 
     void syncFrustum();
 
     void clearShadowMappingBuffer() const;
 
-    float getShadowMappingBuffer(int x, int y) const;
+    [[nodiscard]] float getShadowMappingBuffer(int x, int y) const;
 
     void setShadowMappingBuffer(int x, int y, float value) const;
 
@@ -40,8 +48,8 @@ public:
     bool showDeepMapping;
     bool showFrustum;
 
-    void setColor(int, int, int);
-    void setColorSpecularity(int, int, int);
+    void setColor(Color c);
+    void setColorSpecularity(Color c);
 
     Color mixColor(Color colorTexture, Vertex3D Q, Fragment *);
 

@@ -4,25 +4,6 @@
 #include "../../include/Objects/Decal.h"
 
 Demo::Demo() {
-    auto *lp1 = new LightPoint3D();
-    lp1->setEnabled(false);
-    lp1->setLabel("LightPoint1");
-    lp1->setPosition(Vertex3D(1, 1.5f, -1));
-    lp1->setColor(255, 0, 0);
-
-    auto *lp2 = new LightPoint3D();
-    lp2->setEnabled(false);
-    lp2->setLabel("LightPoint2");
-    lp2->setPosition(Vertex3D(-0.4, 1, -1));
-    lp2->setColor(0, 255, 0);
-
-    auto *lp3 = new LightPoint3D();
-    lp3->setEnabled(false);
-    lp3->setLabel("LightPoint3");
-    lp3->setPosition(Vertex3D(2, 1, -1));
-    lp3->setColor(0, 0, 255);
-
-
 
     // marine (sprite directional)
     auto *marine = new SpriteDirectional3D();

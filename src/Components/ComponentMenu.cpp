@@ -18,15 +18,12 @@ void ComponentMenu::onStart()
     loadDecorative3DMesh();
     loadMenuOptions();
 
-    light = new LightPoint3D();
     Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 3000);
+
+    light = new LightPoint3D(200, 1, 0, 0, 10, Color(255, 0, 0), Color(255, 0, 0));
     light->setPosition(lightPosition);
     light->setEnabled(true);
-    light->setLabel("lp2");
-    light->setPower(200);
-    light->setColorSpecularity(255, 0, 0);
-    light->setSpecularComponent(3);
-    light->setColor(255, 0, 0);
+    light->setLabel("lightMenu");
     light->setRotation(270, 0, 0);
     light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
     Brakeza3D::get()->addObject3D(light, "lightMenu");
