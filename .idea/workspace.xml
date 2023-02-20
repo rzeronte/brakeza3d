@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
@@ -17,46 +20,433 @@
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug-Coverage" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(video): video decodec feature">
-      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLasers.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLasers.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/darkheaz/src/shaders/kernels/lasers.opencl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Physics/Projectile.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Physics/ProjectileRay.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Physics/RayCollisionable.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Collisions/ProjectileRay.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Collisions/RayCollisionable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_instant.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_instant.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_laser.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_laser.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_projectile.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/weapon_smart.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/weapon_smart.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/projectile_weapon_03.fbx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level02.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level02.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/level03.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/level03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/playerWeapons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/playerWeapons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/LevelLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/LevelLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/cache-v2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/cmakeFiles-v1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/codemodel-v2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/query/toolchains-v1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/cache-v2-9d9ada97ddddd0b7ecf0.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/cmakeFiles-v1-a4892f758fb1dbe711f9.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/codemodel-v2-eeb71f2408e6cda18be6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/directory-.-Debug-f5ebdc15457944623624.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/index-2022-05-30T02-13-52-0259.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/target-Brakeza3D-Debug-dcfa15240b30b88dc014.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/.cmake/api/v1/reply/toolchains-v1-4716425b95883e923406.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/Brakeza3D.cbp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeCache.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/a-CMakeCCompilerId.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdC/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/a-CMakeCXXCompilerId.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/3.22.3/CompilerIdCXX/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/DependInfo.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/build.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/cmake_clean.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/compiler_depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/compiler_depend.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/GravitationalShield.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/LevelLoader.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/Player.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/ShaderShield.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehavior.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorCircle.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorFollow.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorPatrol.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/behaviors/EnemyBehaviorRandom.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossEnemy.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel10.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/bosses/BossLevel20.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/AsteroidEnemyGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/Enemy.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyBehaviorPath.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawner.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/enemies/EnemyGhostRespawnerEmissor.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemEnergyGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemHealthGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/items/ItemWeaponGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/darkheaz/src/weapons/Weapon.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/depend.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/flags.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_opengl2.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/examples/imgui_impl_sdl.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_demo.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_draw.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/imgui/imgui_widgets.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/Grid3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Misc/VariablePackage.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/include/Render/Fragment.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/link.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/main.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/progress.make" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/Button.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/MenuOption.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextWriter.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimated.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/2D/TextureAnimatedDirectional.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Brakeza3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BSPCollider.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/BillboardBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Body.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Collisionable.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Ghost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Mesh3DGhost.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Projectile3DBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SimplePendulum.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/Sprite3DBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Collisions/SpriteDirectional3DBody.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/Component.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCamera.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentCollisions.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGame.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentGameInput.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentHUD.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentInput.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentMenu.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentRender.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentSound.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Components/ComponentWindow.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/ComponentsManager.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Demo/Demo.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineBuffers.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/EngineSetup.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Color.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Counter.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Image.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Octree.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/PathFinder.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/SoundPackage.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TextureAtlas.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/TexturePackage.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Timer.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/Tools.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Misc/cJSON.c.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Camera3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Cube3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Decal.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/LightPoint3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Line2D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimated.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Mesh3DAnimatedCollection.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Object3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Point2D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Sprite3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/SpriteDirectional3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Triangle3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vector3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex3D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Objects/Vertex4D.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/Particle.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissor.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorFireworks.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Particles/ParticleEmissorGravity.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/BSPMap.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Billboard.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Drawable.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Frustum.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Logging.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M3.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/M4.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Maths.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/PhysicsDebugDraw.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Plane.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Shader.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Texture.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.gcno" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Brakeza3D.dir/src/Render/Transforms.cpp.o.d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeError.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/CMakeOutput.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Makefile.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/Makefile2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/clion-environment.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/clion-log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/cmake.check_cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/CMakeFiles/progress.marks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/Testing/Temporary/LastTest.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-coverage/cmake_install.cmake" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/Player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/Player.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/Player.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/enemies/EnemyGhostRespawner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderClouds.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderClouds.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderColor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderColor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderEdgeObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderEdgeObject.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderHorizontalBar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderHorizontalBar.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderImage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderImage.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLaser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderLaser.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderProjectiles.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderProjectiles.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderProjectiles.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderProjectiles.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderShockWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderTrailBuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderTrailBuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderTrailObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/shaders/ShaderTrailObject.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoSmartProjectileBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/Weapon.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" beforeDir="false" afterPath="$PROJECT_DIR$/darkheaz/src/weapons/AmmoProjectileBodyEmissor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/TextWriter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextWriter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Brakeza3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGameInput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Projectile3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Projectile3DBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Projectile3DBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWindow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/EngineSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/EngineSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/ProjectileRay.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/ProjectileRay.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/RayCollisionable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/RayCollisionable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/ShaderOpenCL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/ShaderOpenCL.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Shaders/ShaderBlink.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/TextWriter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextWriter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/ProjectileRay.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/ProjectileRay.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/RayCollisionable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/RayCollisionable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EngineBuffers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/EngineBuffers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/ShaderOpenCL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/ShaderOpenCL.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +455,7 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+    <option name="clangWarnings" value="-Wno-unused-variable,-Wno-infinite-recursion,-Wno-array-bounds,-Werror=implicit-function-declaration,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wuninitialized,-Wunused-label,-Wunused-lambda-capture,-Wno-shadow" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
@@ -101,6 +492,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="29bukhdlRuZlKbMKKSem7r1SkWJ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -125,7 +519,8 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.intentionPowerPack&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;dynamic.analysis.tools.valgrind&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -146,12 +541,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -293,7 +688,33 @@
       <workItem from="1673831593117" duration="5295000" />
       <workItem from="1674070798840" duration="11645000" />
       <workItem from="1674161304662" duration="1543000" />
-      <workItem from="1674253515738" duration="16188000" />
+      <workItem from="1674253515738" duration="31821000" />
+      <workItem from="1674426184686" duration="11690000" />
+      <workItem from="1674759367515" duration="5853000" />
+      <workItem from="1675028980186" duration="13595000" />
+      <workItem from="1675056341072" duration="3000" />
+      <workItem from="1675104597392" duration="14336000" />
+      <workItem from="1675210084148" duration="3577000" />
+      <workItem from="1675609611623" duration="19264000" />
+      <workItem from="1675723234549" duration="9917000" />
+      <workItem from="1675799148876" duration="3025000" />
+      <workItem from="1675812232110" duration="8920000" />
+      <workItem from="1675865598838" duration="161000" />
+      <workItem from="1676231076259" duration="182000" />
+      <workItem from="1676231265288" duration="15192000" />
+      <workItem from="1676316463838" duration="24104000" />
+      <workItem from="1676402866974" duration="13754000" />
+      <workItem from="1676423329165" duration="1000" />
+      <workItem from="1676423571672" duration="4759000" />
+      <workItem from="1676593454310" duration="8164000" />
+      <workItem from="1676686106486" duration="4885000" />
+      <workItem from="1676690999679" duration="1000" />
+      <workItem from="1676691051143" duration="2466000" />
+      <workItem from="1676743024918" duration="5340000" />
+      <workItem from="1676750657165" duration="3145000" />
+      <workItem from="1676770359613" duration="3625000" />
+      <workItem from="1676774001456" duration="1000" />
+      <workItem from="1676774245601" duration="34632000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -520,19 +941,9 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/darkheaz/src/items/PlayerReflection.cpp</url>
-          <line>50</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Components/ComponentGame.h</url>
           <line>61</line>
           <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/darkheaz/Player.cpp</url>
-          <line>335</line>
-          <option name="timeStamp" value="44" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -543,14 +954,12 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="midPoint" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="../../../CLionProjects/brakeza3d/cmake-build-debug-coverage" NAME="Brakeza3D Coverage Results" MODIFIED="1676773668961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
