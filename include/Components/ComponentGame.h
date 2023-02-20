@@ -75,7 +75,6 @@ public:
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderTrailBuffer *shaderTrailBuffer;
-    ShaderEdgeObject *shaderEdge;
 
     ShaderColor *shaderColor;
     Image *imageCrossFire;

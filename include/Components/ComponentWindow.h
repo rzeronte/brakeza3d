@@ -35,17 +35,11 @@ public:
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
 
-
-    TTF_Font *fontSmall = NULL;
-    TTF_Font *fontDefault = NULL;
-    TTF_Font *fontMedium = NULL;
-    TTF_Font *fontBig = NULL;
+    TTF_Font *fontDefault;
 
     void initWindow();
 
     void initFontsTTF();
-
-    void initJostick();
 };
 
 

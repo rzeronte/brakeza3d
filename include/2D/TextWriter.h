@@ -6,6 +6,7 @@
 #define BRAKEDA3D_TEXTWRITER_H
 
 #include <vector>
+#include <SDL_ttf.h>
 #include "../Misc/Color.h"
 
 #define CONCHARS_WIDTH 256
@@ -17,7 +18,7 @@
 class TextWriter {
 
 public:
-    TextWriter(SDL_Renderer *renderer, const char *concharsFile);
+    TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *concharsFile);
 
     void writeText(int x, int y, const char *text, bool bold);
 
@@ -42,15 +43,13 @@ private:
     SDL_Surface *sprite;
     std::vector<SDL_Surface *> characterSurfaces;
 
-    SDL_Texture *textureTTF;
-    SDL_Surface *surfaceTTF;
-
+    TTF_Font *font;
     float alpha;
 
     int convertPositionYAspect(int value);
 
 public:
-    float getAlpha() const;
+    [[nodiscard]] float getAlpha() const;
 
     void setAlpha(float alpha);
 };

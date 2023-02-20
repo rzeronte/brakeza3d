@@ -71,9 +71,6 @@ void ComponentGame::onStart()
     shaderTrailBuffer->setEnabled(false);
     shaderTrailBuffer->clearStencilBuffer();
 
-    shaderEdge = new ShaderEdgeObject(primaryColor);
-    shaderEdge->setEnabled(true);
-
     shaderLasers = new ShaderProjectiles();
     shaderLasers->setEnabled(true);
 }
@@ -760,7 +757,7 @@ void ComponentGame::addObjectsToStencilBuffer()
 void ComponentGame::updateShaders()
 {
     addObjectsToStencilBuffer();
-    //shaderTrailBuffer->update();
+    shaderTrailBuffer->update();
     shaderClouds->update();
     shaderColor->update();
     shaderLasers->update();
@@ -786,7 +783,6 @@ void ComponentGame::handleMenuGameState()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
     setVisibleInGameObjects(false);
-    shaderEdge->setEnabled(false);
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -806,7 +802,6 @@ void ComponentGame::handleGamingGameState()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
     shaderColor->setEnabled(false);
-    shaderEdge->setEnabled(true);
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
 }
 

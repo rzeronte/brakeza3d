@@ -249,7 +249,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
 
     // Clipping (needs objectSpace)
     if (t->testForClipping(cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
-        if (SETUP->ENABLE_CLIPPING) {
+        /*if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
                 cam->frustum,
                 cam->frustum->planes,
@@ -259,7 +259,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
                 clippedTriangles,
                 t->bspTriangle
             );
-        }
+        }*/
 
         return;
     }
@@ -299,11 +299,11 @@ void ComponentRender::hiddenSurfaceRemoval() {
         this->hiddenSurfaceRemovalTriangle(frameTriangle);
     }
 
-    visibleTriangles.insert(
+    /*visibleTriangles.insert(
             visibleTriangles.end(),
             std::make_move_iterator(clippedTriangles.begin()),
             std::make_move_iterator(clippedTriangles.end())
-    );
+    );*/
 
     if (SETUP->DEBUG_RENDER_INFO) {
         Logging::Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) +
@@ -687,7 +687,7 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
         if (!tiles[i].draw) continue;
 
         if (SETUP->BASED_TILE_RENDER_THREADED) {
-            threads.emplace_back(std::thread(ParallellDrawTileTriangles, i, visibleTriangles));
+            threads.push_back(std::thread(ParallellDrawTileTriangles, i, visibleTriangles));
         } else {
             this->drawTileTriangles(i, *visibleTriangles);
         }

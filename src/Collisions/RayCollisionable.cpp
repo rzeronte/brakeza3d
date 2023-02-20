@@ -2,18 +2,9 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
 
-RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask) : ray(ray)
+RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask) : ray(ray), filterGroup(filterGroup), filterMask(filterMask)
 {
     Vertex3D start = getPosition();
-    Vertex3D end = start + this->ray;
-
-    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
-        btVector3(start.x, start.y, start.z),
-        btVector3(end.x, end.y, end.z)
-    );
-
-    rayCallback->m_collisionFilterGroup = filterGroup;
-    rayCallback->m_collisionFilterMask = filterMask;
 }
 
 void RayCollisionable::integrate()
@@ -23,10 +14,13 @@ void RayCollisionable::integrate()
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
 
-    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
-            btVector3(start.x, start.y, start.z),
-            btVector3(end.x, end.y, end.z)
+    auto *rayCallback = new btCollisionWorld::ClosestRayResultCallback(
+        btVector3(start.x, start.y, start.z),
+        btVector3(end.x, end.y, end.z)
     );
+
+    rayCallback->m_collisionFilterGroup = filterGroup;
+    rayCallback->m_collisionFilterMask = filterMask;
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
@@ -34,10 +28,10 @@ void RayCollisionable::integrate()
         *rayCallback
     );
 
-    hasHit();
+    hasHit(rayCallback);
 }
 
-void RayCollisionable::hasHit()
+void RayCollisionable::hasHit(btCollisionWorld::ClosestRayResultCallback *rayCallback)
 {
     if (rayCallback->hasHit()) {
         auto *collisionable = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
@@ -50,15 +44,11 @@ void RayCollisionable::hasHit()
 
         this->resolveCollision(collisionable);
     }
-
-    delete rayCallback;
 }
 
 void RayCollisionable::resolveCollision(Collisionable *collisionable)
 {
     Logging::Log("Collision with ray!", "");
-
-    //this->setRemoved(true);
 }
 
 const Vertex3D &RayCollisionable::getHitPosition() const {
@@ -78,10 +68,6 @@ void RayCollisionable::onUpdate()
         auto vector = Vector3D(getPosition(), end);
         Drawable::drawVector3D(vector, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());
     }
-}
-
-btCollisionWorld::ClosestRayResultCallback *RayCollisionable::getRayCallback() const {
-    return rayCallback;
 }
 
 const Vertex3D &RayCollisionable::getRay() const {

@@ -82,16 +82,5 @@ void ProjectileRay::integrate() {
 
 void ProjectileRay::hasHit()
 {
-    if (getRayCallback()->hasHit()) {
-        auto *collisionable = (Collisionable *) getRayCallback()->m_collisionObject->getUserPointer();
-
-        btVector3 rayHitPosition = getRayCallback()->m_hitPointWorld;
-
-        collisionable->resolveCollision(this);
-
-        setHitPosition(Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z()));
-
-        this->resolveCollision(collisionable);
-    }
 }
 

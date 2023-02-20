@@ -24,7 +24,7 @@ ShaderOpenCL::ShaderOpenCL(const std::string& kernelFilename)
 void ShaderOpenCL::initOpenCLProgram()
 {
     size_t source_size;
-    char * source_str= Tools::readFile(
+    char * source_str = Tools::readFile(
         EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + this->kernelFilename,
         source_size
     );
@@ -42,23 +42,25 @@ void ShaderOpenCL::initOpenCLProgram()
     kernel = clCreateKernel(program, "onUpdate", &clRet);
 
     openClBufferMappedWithVideoInput = clCreateBuffer(
-            context,
-            CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            &clRet
+        context,
+        CL_MEM_USE_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        &clRet
     );
 
     openClBufferMappedWithVideoOutput = clCreateBuffer(
-            context,
-             CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            &clRet
+        context,
+         CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::getInstance()->videoBuffer,
+        &clRet
     );
+
+    free(source_str);
 }
 
-void ShaderOpenCL::debugKernel()
+void ShaderOpenCL::debugKernel() const
 {
     if (!EngineSetup::get()->LOGGING) return;
 
@@ -67,12 +69,12 @@ void ShaderOpenCL::debugKernel()
 
         char buffer[2048];
         clGetProgramBuildInfo(
-                program,
-                clDeviceId,
-                CL_PROGRAM_BUILD_LOG,
-                sizeof(buffer),
-                buffer,
-                nullptr
+            program,
+            clDeviceId,
+            CL_PROGRAM_BUILD_LOG,
+            sizeof(buffer),
+            buffer,
+            nullptr
         );
 
         if (strlen(buffer) > 0 ) {

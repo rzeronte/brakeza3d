@@ -50,7 +50,7 @@ public:
     int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = true;
+    bool BASED_TILE_RENDER_THREADED = false;
 
     float EPSILON = 0.00001f;
 

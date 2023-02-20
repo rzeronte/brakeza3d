@@ -16,7 +16,7 @@ void ShaderHorizontalBar::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_FALSE,
+        CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -39,7 +39,7 @@ void ShaderHorizontalBar::executeKernelOpenCL()
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
-    size_t local_item_size = 64;
+    size_t local_item_size = 16;
 
     clRet = clEnqueueNDRangeKernel(
         clCommandQueue,

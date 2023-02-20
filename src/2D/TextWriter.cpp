@@ -5,15 +5,11 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
-TextWriter::TextWriter(SDL_Renderer *renderer, const char *concharsFile) {
+TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *concharsFile): renderer(renderer), font(font), alpha(255) {
     if (!Tools::fileExists(concharsFile)) {
         Logging::Log(std::string("Error loading file") + concharsFile, "TextWriter");
         return;
     }
-
-    this->alpha = 255;
-
-    this->renderer = renderer;
 
     sprite = IMG_Load(concharsFile);
 
@@ -113,14 +109,12 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 {
     SDL_Color color;
 
-    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
-
     color.r = (int) c.r;
     color.g = (int) c.g;
     color.b = (int) c.b;
 
-    surfaceTTF = TTF_RenderText_Blended(font, text, color);
-    textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
+    auto *surfaceTTF = TTF_RenderText_Blended(font, text, color);
+    auto *textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
 
     SDL_SetTextureAlphaMod(textureTTF, (int) alpha);
 
@@ -131,7 +125,7 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     msgRect.h = convertPositionYAspect(h);
 
 
-    SDL_RenderCopy(renderer, textureTTF, NULL, &msgRect);
+    SDL_RenderCopy(renderer, textureTTF, nullptr, &msgRect);
 
     SDL_FreeSurface(surfaceTTF);
     SDL_DestroyTexture(textureTTF);
@@ -139,9 +133,8 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
 {
-    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
     int w, h;
-    TTF_SizeText(font, text, &w, &h);
+    TTF_SizeUTF8(font, text, &w, &h);
 
     w *= sizeRatio;
     h *= sizeRatio;
@@ -152,8 +145,7 @@ void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, f
 void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio)
 {
     int textWidth, textHeight;
-    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
-    TTF_SizeText(font, text, &textWidth, &textHeight);
+    TTF_SizeUTF8(font, text, &textWidth, &textHeight);
 
     textWidth *= sizeRatio;
     textHeight *= sizeRatio;
@@ -170,8 +162,7 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeR
 void TextWriter::writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio)
 {
     int w, h;
-    auto font = ComponentsManager::get()->getComponentWindow()->fontDefault;
-    TTF_SizeText(font, text, &w, &h);
+    TTF_SizeUTF8(font, text, &w, &h);
 
     w *= sizeRatio;
     h *= sizeRatio;
@@ -193,10 +184,10 @@ int TextWriter::convertPositionXAspect(int value)
 
 int TextWriter::convertPositionYAspect(int value)
 {
-    int windowWidth, windowHeight;
-    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+    int w, h;
+    SDL_GetRendererOutputSize(renderer, &w, &h);
 
-    return (value * windowHeight) / EngineSetup::get()->screenHeight;
+    return (value * h) / EngineSetup::get()->screenHeight;
 }
 
 float TextWriter::getAlpha() const {

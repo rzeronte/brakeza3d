@@ -11,7 +11,8 @@ void ComponentWindow::onStart() {
     Logging::Log("ComponentWindow onStart", "ComponentWindow");
 }
 
-void ComponentWindow::preUpdate() {
+void ComponentWindow::preUpdate()
+{
     BUFFERS->clearDepthBuffer();
     BUFFERS->clearVideoBuffer();
 }
@@ -29,9 +30,6 @@ void ComponentWindow::postUpdate()
 
 void ComponentWindow::onEnd() {
     TTF_CloseFont(fontDefault);
-    TTF_CloseFont(fontSmall);
-    TTF_CloseFont(fontBig);
-    TTF_CloseFont(fontMedium);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
@@ -84,21 +82,17 @@ void ComponentWindow::initFontsTTF()
 {
     Logging::Log("Initializating TTF...", "INFO");
 
-    // global font
     if (TTF_Init() < 0) {
         Logging::Log(TTF_GetError(), "INFO");
-    } else {
-        std::string pathFont = SETUP->FONTS_FOLDER + "kremlin.ttf";
-        Logging::Log("Loading FONT: " + pathFont, "INFO");
+        exit(-1);
+    }
+    std::string pathFont = SETUP->FONTS_FOLDER + "kremlin.ttf";
+    Logging::Log("Loading FONT: " + pathFont, "INFO");
 
-        fontDefault = TTF_OpenFont(pathFont.c_str(), 50);
-        fontSmall = TTF_OpenFont(pathFont.c_str(), 25);
-        fontMedium = TTF_OpenFont(pathFont.c_str(), 70);
-        fontBig = TTF_OpenFont(pathFont.c_str(), 200);
+    fontDefault = TTF_OpenFont(pathFont.c_str(), 50);
 
-        if (!fontDefault) Logging::Log(TTF_GetError(), "INFO");
-        if (!fontSmall) Logging::Log(TTF_GetError(), "INFO");
-        if (!fontMedium) Logging::Log(TTF_GetError(), "INFO");
-        if (!fontBig) Logging::Log(TTF_GetError(), "INFO");
+    if (!fontDefault)  {
+        Logging::Log(TTF_GetError(), "INFO");
+        exit(-1);
     }
 }

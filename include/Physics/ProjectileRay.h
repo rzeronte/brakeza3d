@@ -42,7 +42,7 @@ public:
 
     void integrate() override;
 
-    void hasHit() override;
+    void hasHit();
 };
 
 

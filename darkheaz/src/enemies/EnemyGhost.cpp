@@ -44,11 +44,6 @@ void EnemyGhost::onUpdate()
         rotateToTarget();
     }
 
-    if (projectileEmissor != nullptr) {
-        projectileEmissor->setPosition(getPosition());
-        projectileEmissor->onUpdate();
-    }
-
     if (getWeapon() != nullptr) {
         getWeapon()->onUpdate();
     }
@@ -80,6 +75,11 @@ void EnemyGhost::onUpdate()
     }
 
     if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) && gameState == EngineSetup::GAMING) {
+        if (projectileEmissor != nullptr) {
+            projectileEmissor->setPosition(getPosition());
+            projectileEmissor->onUpdate();
+        }
+
         shoot(getTarget());
     }
 
@@ -300,6 +300,7 @@ ShaderBlink *EnemyGhost::getBlink() const {
 EnemyGhost::~EnemyGhost()
 {
     delete counterDamageBlink;
+    delete counterStucked,
     delete blink;
 
     for (auto ray : fixedLasers) {

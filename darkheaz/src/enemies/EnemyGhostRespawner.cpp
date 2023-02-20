@@ -5,9 +5,8 @@
 #include "EnemyGhostRespawner.h"
 #include "../../../include/Brakeza3D.h"
 
-EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
+EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step): object(object)
 {
-    this->object = object;
     counter.setStep(step);
     counter.setEnabled(false);
     object->setEnabled(true);
@@ -17,7 +16,6 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step)
     object->setStencilBufferEnabled(false);
     object->setAlphaEnabled(true);
     Brakeza3D::get()->addObject3D(object, object->getLabel());
-
 }
 
 void EnemyGhostRespawner::onUpdate()

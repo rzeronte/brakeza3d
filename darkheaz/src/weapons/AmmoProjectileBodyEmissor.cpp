@@ -2,7 +2,11 @@
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType) : step(step), weaponType(weaponType), type(type)
+AmmoProjectileBodyEmissor::AmmoProjectileBodyEmissor(
+    ProjectileBodyEmmissorType type,
+    float step,
+    Weapon *weaponType
+) : step(step), weaponType(weaponType), type(type)
 {
     setStop(false);
     setActive(false);
@@ -30,9 +34,9 @@ void AmmoProjectileBodyEmissor::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (!isActive()) {
-        return;
-    }
+    if (isRemoved()) return;
+
+    if (!isActive())  return;
 
     this->counter.update();
 
@@ -106,7 +110,8 @@ float AmmoProjectileBodyEmissor::getStopEvery() const {
     return stopEvery;
 }
 
-void AmmoProjectileBodyEmissor::setStopEvery(float stopEverySeconds) {
+void AmmoProjectileBodyEmissor::setStopEvery(float stopEverySeconds)
+{
     AmmoProjectileBodyEmissor::stopEvery = stopEverySeconds;
     this->counterStopEvery = new Counter(stopEverySeconds);
     this->counterStopEvery->setEnabled(true);
