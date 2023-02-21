@@ -13,7 +13,15 @@ LightPoint3D::LightPoint3D(
     float specularComponent,
     Color c,
     Color specularityColor
-) :color(c), specularColor(specularityColor), kc(kc), kl(kl), kq(kq), p(power), specularComponent(specularComponent)  {
+) :
+    color(c),
+    specularColor(specularityColor),
+    kc(kc),
+    kl(kl),
+    kq(kq),
+    p(power),
+    specularComponent(specularComponent)
+{
     frustum = new Frustum();
     frustum->setParent(this);
     frustum->setup(
@@ -25,8 +33,6 @@ LightPoint3D::LightPoint3D(
         ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
         100000
     );
-
-    frustum->consoleInfo();
 
     this->showDeepMapping = false;
     this->showFrustum = false;

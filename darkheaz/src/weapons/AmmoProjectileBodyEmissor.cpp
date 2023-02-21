@@ -142,31 +142,29 @@ void AmmoProjectileBodyEmissor::setType(ProjectileBodyEmmissorType value) {
 
 void AmmoProjectileBodyEmissor::launchUniqueProjectile()
 {
-    Vertex3D direction = this->AxisForward().getNormalize();
+    if (isRemoved()) return;
 
-    auto *projectile = new AmmoProjectileBody(
+    Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
         getPosition(),
         this,
         weaponType,
         M3::getMatrixIdentity(),
         Vertex3D(50, 50, 50),
-        direction,
+        this->AxisForward().getNormalize(),
         weaponType->getDamage(),
         (float) weaponType->getSpeed(),
         100,
         EngineSetup::get()->PROJECTILE_DEMO_TTL,
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::Player
-    );
-
-    Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    ), "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void AmmoProjectileBodyEmissor::launchCircleProjectiles()
 {
-    float shoots = 8;
-    for (int i = 0; i < (int) shoots; i++) {
-        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/shoots, 0));
+    int shoots = 8;
+    for (int i = 0; i < shoots; i++) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/(float) shoots, 0));
         launchUniqueProjectile();
     }
 }

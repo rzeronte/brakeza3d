@@ -28,7 +28,7 @@ public:
 
         opencl_buffer_stencil = clCreateBuffer(
             context,
-            CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            CL_MEM_READ_ONLY,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
             this->object->stencilBuffer,
             &clRet
@@ -101,7 +101,7 @@ public:
         clEnqueueWriteBuffer(
             clCommandQueue,
             opencl_buffer_stencil,
-            CL_FALSE,
+            CL_TRUE,
             0,
             this->bufferSize * sizeof(bool),
             object->stencilBuffer,

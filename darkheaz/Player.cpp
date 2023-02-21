@@ -8,37 +8,39 @@
 #include "src/items/PlayerReflection.h"
 
 Player::Player() :
-    stamina(INITIAL_STAMINA),
-    startStamina(INITIAL_STAMINA),
-    energy(INITIAL_ENERGY),
-    startEnergy(INITIAL_ENERGY),
-    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-    stucked(false),
-    lives(INITIAL_LIVES),
-    killsCounter(0),
-    energyShieldEnabled(false),
-    gravityShieldsNumber(0),
-    lightPositionOffset(Vertex3D(0, -550, 0)),
-    state(PlayerState::EMPTY),
-    currentWeaponIndex(0),
-    dashPower(INITIAL_POWERDASH),
-    power(INITIAL_POWER),
-    friction(INITIAL_FRICTION),
-    maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
+        stamina(INITIAL_STAMINA),
+        startStamina(INITIAL_STAMINA),
+        energy(INITIAL_ENERGY),
+        startEnergy(INITIAL_ENERGY),
+        recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+        stuck(false),
+        lives(INITIAL_LIVES),
+        killsCounter(0),
+        energyShieldEnabled(false),
+        gravityShieldsNumber(0),
+        allowMakeReflections(false),
+        allowEnergyShield(false),
+        lightPositionOffset(Vertex3D(0, -550, 0)),
+        state(PlayerState::EMPTY),
+        currentWeaponIndex(0),
+        dashPower(INITIAL_POWERDASH),
+        power(INITIAL_POWER),
+        friction(INITIAL_FRICTION),
+        maxVelocity(INITIAL_MAX_VELOCITY),
+        rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setEnabled(true);
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    counterDamageBlink = new Counter(0.45);
+    counterDamageBlink = Counter(0.45);
 
     setAllowEnergyShield(true);
     setAllowGravitationalShields(true);
 
-    counterStucked = new Counter(5);
-    counterStucked->setEnabled(false);
+    counterStucked = Counter(5);
+    counterStucked.setEnabled(false);
 }
 
 void Player::loadShieldModel()
@@ -225,12 +227,12 @@ void Player::onUpdate()
 
     if (isStucked()) {
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
-        counterStucked->update();
+        counterStucked.update();
 
-        if (counterStucked->isFinished()) {
-            unstuck();
+        if (counterStucked.isFinished()) {
+            unStuck();
             startPlayerBlink();
-            Logging::Log("unstuck","");
+            Logging::Log("unStuck","");
         }
     }
 
@@ -292,10 +294,10 @@ void Player::postUpdate()
         return;
     }
 
-    if (counterDamageBlink->isEnabled()) {
-        counterDamageBlink->update();
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
         blink->update();
-        if (counterDamageBlink->isFinished()) {
+        if (counterDamageBlink.isFinished()) {
             stopBlinkForPlayer();
         }
     }
@@ -450,14 +452,14 @@ void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
 
 void Player::startBlinkShaderForPlayer()
 {
-    counterDamageBlink->setEnabled(true);
+    counterDamageBlink.setEnabled(true);
     blink->setEnabled(true);
 }
 
 void Player::stopBlinkForPlayer()
 {
     setState(PlayerState::LIVE);
-    counterDamageBlink->setEnabled(false);
+    counterDamageBlink.setEnabled(false);
     blink->setEnabled(false);
 }
 
@@ -589,7 +591,7 @@ void Player::loadBlinkShader()
     blink = new ShaderBlink(this, Color::green());
     blink->setStep(0.05);
     blink->setEnabled(false);
-    counterDamageBlink->setEnabled(false);
+    counterDamageBlink.setEnabled(false);
 
     shaderLaser = new ShaderLaser(this);
     shaderLaser->setTarget(this);
@@ -601,10 +603,10 @@ PlayerState Player::getState() const {
     return state;
 }
 
-void Player::stuck(float time)
+void Player::makeStuck(float time)
 {
-    counterStucked->setStep(time);
-    counterStucked->setEnabled(true);
+    counterStucked.setStep(time);
+    counterStucked.setEnabled(true);
 
     setStucked(true);
 
@@ -622,18 +624,18 @@ void Player::stuck(float time)
 
 bool Player::isStucked() const
 {
-    return stucked;
+    return stuck;
 }
 
 void Player::setStucked(bool value)
 {
-    Player::stucked = value;
+    Player::stuck = value;
 }
 
-void Player::unstuck()
+void Player::unStuck()
 {
     setStucked(false);
-    counterStucked->setEnabled(false);
+    counterStucked.setEnabled(false);
 }
 
 void Player::setEnabled(bool value)

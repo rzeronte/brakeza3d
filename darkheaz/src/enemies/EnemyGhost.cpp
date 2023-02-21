@@ -9,11 +9,11 @@
 
 EnemyGhost::EnemyGhost()
 {
-    counterDamageBlink = new Counter(1);
-    counterDamageBlink->setEnabled(false);
+    counterDamageBlink = Counter(1);
+    counterDamageBlink.setEnabled(false);
 
-    counterStucked = new Counter(5);
-    counterStucked->setEnabled(false);
+    counterStucked = Counter(5);
+    counterStucked.setEnabled(false);
 
     projectileEmissor = nullptr;
 
@@ -67,9 +67,9 @@ void EnemyGhost::onUpdate()
 
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
 
-        counterStucked->update();
+        counterStucked.update();
 
-        if (counterStucked->isFinished()) {
+        if (counterStucked.isFinished()) {
             unstuck();
         }
     }
@@ -106,12 +106,12 @@ void EnemyGhost::postUpdate()
         projectileEmissor->postUpdate();
     }
 
-    if (counterDamageBlink->isEnabled()) {
-        counterDamageBlink->update();
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
         getBlink()->update();
-        if (counterDamageBlink->isFinished()) {
+        if (counterDamageBlink.isFinished()) {
             getBlink()->setEnabled(false);
-            counterDamageBlink->setEnabled(false);
+            counterDamageBlink.setEnabled(false);
         }
     }
 
@@ -205,7 +205,7 @@ void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
             0
         );
         getBlink()->setEnabled(true);
-        counterDamageBlink->setEnabled(true);
+        counterDamageBlink.setEnabled(true);
 
         Brakeza3D::get()->addObject3D(
             new ParticleEmissorFireworks(
@@ -280,7 +280,7 @@ void EnemyGhost::shoot(Object3D *target)
                     break;
                 }
 
-                player->stuck(4.0);
+                player->makeStuck(4.0);
             }
 
             break;
@@ -299,8 +299,6 @@ ShaderBlink *EnemyGhost::getBlink() const {
 
 EnemyGhost::~EnemyGhost()
 {
-    delete counterDamageBlink;
-    delete counterStucked,
     delete blink;
 
     for (auto ray : fixedLasers) {
@@ -310,9 +308,9 @@ EnemyGhost::~EnemyGhost()
 
 void EnemyGhost::stuck(float time)
 {
-    counterStucked->setStep(time);
+    counterStucked.setStep(time);
     setStucked(true);
-    counterStucked->setEnabled(true);
+    counterStucked.setEnabled(true);
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(false);
     }
@@ -327,7 +325,7 @@ void EnemyGhost::stuck(float time)
 void EnemyGhost::unstuck()
 {
     setStucked(false);
-    counterStucked->setEnabled(false);
+    counterStucked.setEnabled(false);
 
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(true);
@@ -373,5 +371,5 @@ AmmoProjectileBodyEmissor *EnemyGhost::getProjectileEmissor() const {
 void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
     fixedLasers.push_back(ray);
-    Brakeza3D::get()->addObject3D(ray, getLabel() + "_ray1");
+    Brakeza3D::get()->addObject3D(ray, "fixed_ray" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }

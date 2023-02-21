@@ -11,6 +11,9 @@
 #include "../../../include/Render/ShaderOpenCL.h"
 #include "../../../include/Physics/ProjectileRay.h"
 
+#define MAX_PROJECTILES 250
+#define MAX_LASERS 100
+
 struct OCLaser
 {
     int x1;
@@ -42,6 +45,9 @@ private:
     Image *image;
 
     cl_mem opencl_buffer_pixels_image;
+    cl_mem opencl_buffer_lasers;
+    cl_mem opencl_buffer_projectiles;
+
     std::vector<OCLaser> lasers;
     std::vector<OCProjectile> projectiles;
 public:

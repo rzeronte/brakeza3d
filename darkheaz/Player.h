@@ -46,13 +46,13 @@ private:
     float energy;
     float startEnergy;
     float recoverEnergySpeed;
-    bool stucked;
+    bool stuck;
 
     int lives;
     Vertex3D velocity;
     Weapon *weapon;
-    Counter *counterDamageBlink;
-    Counter *counterStucked;
+    Counter counterDamageBlink;
+    Counter counterStucked;
     ShaderBlink *blink;
 
     int killsCounter;
@@ -93,7 +93,7 @@ public:
     void setLives(int lives);
 
     void onUpdate() override;
-    void postUpdate();
+    void postUpdate() override;
 
     Vertex3D getVelocity();
     void setVelocity(Vertex3D v);
@@ -185,13 +185,13 @@ public:
 
     [[nodiscard]] PlayerState getState() const;
 
-    void stuck(float time);
+    void makeStuck(float time);
 
     [[nodiscard]] bool isStucked() const;
 
     void setStucked(bool value);
 
-    void unstuck();
+    void unStuck();
 
     void setEnabled(bool value) override;
 

@@ -107,6 +107,16 @@ void TextWriter::writeText(int x, int y, const char *text, bool bold) {
 
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
+    if (font == nullptr) {
+        Logging::Log("Error en la font TTF", "TTF");
+        exit(-1);
+    }
+
+    if (renderer == nullptr) {
+        Logging::Log("Error en el renderer", "TTF");
+        exit(-1);
+    }
+
     SDL_Color color;
 
     color.r = (int) c.r;
@@ -124,7 +134,6 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     msgRect.w = convertPositionXAspect(w);
     msgRect.h = convertPositionYAspect(h);
 
-
     SDL_RenderCopy(renderer, textureTTF, nullptr, &msgRect);
 
     SDL_FreeSurface(surfaceTTF);
@@ -133,6 +142,11 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
 {
+    if (font == nullptr) {
+        Logging::Log("Error en la font TTF", "");
+        exit(-1);
+    }
+
     int w, h;
     TTF_SizeUTF8(font, text, &w, &h);
 

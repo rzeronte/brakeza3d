@@ -63,7 +63,7 @@ void ShaderTrailBuffer::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openCLBufferForStencilObjects,
-        CL_FALSE,
+        CL_TRUE,
         0,
         this->bufferSize * sizeof(bool),
         this->stencilObjectsBuffer,

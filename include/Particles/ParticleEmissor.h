@@ -17,7 +17,7 @@ class ParticleEmissor : public Object3D {
 private:
     Counter timeToNextParticleCounter;
 protected:
-    std::vector<Particle*> particles;
+    std::vector<Particle> particles;
     Counter lifeCounter;
 public:
     ParticleEmissor(Object3D *parent, float ttlEmitter, float force, float ttl, float step, Color c);
@@ -47,9 +47,7 @@ public:
 
     void setActiveAdding(bool value);
 
-    [[nodiscard]] std::vector<Particle *> &getParticles();
-
-    ~ParticleEmissor() override;
+    [[nodiscard]] std::vector<Particle> &getParticles();
 };
 
 

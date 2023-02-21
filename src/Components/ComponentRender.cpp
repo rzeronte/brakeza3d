@@ -941,7 +941,7 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    for (auto triangle : getVisibleTriangles()) {
+    for (auto &triangle : getVisibleTriangles()) {
         auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
         triangle->updateObjectSpace();
         float t;
@@ -967,7 +967,7 @@ void ComponentRender::setSelectedObject(Object3D *o) {
 
 void ComponentRender::onPostUpdateSceneObjects()
 {
-    for (auto object : *getSceneObjects()) {
+    for (auto &object : *getSceneObjects()) {
         if (!object->isEnabled() || object->isRemoved()) {
             continue;
         }
