@@ -17,8 +17,8 @@ class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
     ShaderBlink *blink;
     ShaderLaser *laser;
-    Counter *counterDamageBlink;
-    Counter *counterStucked;
+    Counter counterDamageBlink;
+    Counter counterStucked;
     AmmoProjectileBodyEmissor *projectileEmissor;
 
     std::vector<ProjectileRay *> fixedLasers;

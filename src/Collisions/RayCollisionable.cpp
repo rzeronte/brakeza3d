@@ -2,9 +2,18 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
 
-RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask) : ray(ray), filterGroup(filterGroup), filterMask(filterMask)
+RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask): ray(ray)
 {
     Vertex3D start = getPosition();
+    Vertex3D end = start + this->ray;
+
+    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
+        btVector3(start.x, start.y, start.z),
+        btVector3(end.x, end.y, end.z)
+    );
+
+    rayCallback->m_collisionFilterGroup = filterGroup;
+    rayCallback->m_collisionFilterMask = filterMask;
 }
 
 void RayCollisionable::integrate()
@@ -14,13 +23,10 @@ void RayCollisionable::integrate()
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
 
-    auto *rayCallback = new btCollisionWorld::ClosestRayResultCallback(
+    rayCallback = new btCollisionWorld::ClosestRayResultCallback(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z)
     );
-
-    rayCallback->m_collisionFilterGroup = filterGroup;
-    rayCallback->m_collisionFilterMask = filterMask;
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
@@ -28,10 +34,10 @@ void RayCollisionable::integrate()
         *rayCallback
     );
 
-    hasHit(rayCallback);
+    hasHit();
 }
 
-void RayCollisionable::hasHit(btCollisionWorld::ClosestRayResultCallback *rayCallback)
+void RayCollisionable::hasHit()
 {
     if (rayCallback->hasHit()) {
         auto *collisionable = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
@@ -78,5 +84,7 @@ void RayCollisionable::setRay(const Vertex3D &ray) {
     RayCollisionable::ray = ray;
 }
 
-
+btCollisionWorld::ClosestRayResultCallback *RayCollisionable::getRayCallback() const {
+    return rayCallback;
+}
 

@@ -250,6 +250,6 @@ void Object3D::setAlphaEnabled(bool alphaEnabled) {
 
 Object3D::~Object3D()
 {
-    delete[] stencilBuffer;
+    if (stencilBufferEnabled) delete[] stencilBuffer;
     delete motion;
 }

@@ -20,7 +20,7 @@ public:
     bool alphaEnabled;
     float alpha;
 
-    Object3D *getParent() const;
+    [[nodiscard]] Object3D *getParent() const;
 
     void setParent(Object3D *object);
 
@@ -41,7 +41,7 @@ public:
 
     virtual ~Object3D();
 
-    std::string getLabel() const;
+    [[nodiscard]] std::string getLabel() const;
 
     void setLabel(const std::string& label);
 
@@ -55,7 +55,7 @@ public:
     void setRotation(M3 r);
     void setRotation(float, float, float);
 
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     virtual void setEnabled(bool enabled);
 
@@ -71,23 +71,23 @@ public:
 
     Vertex3D AxisLeft();
 
-    float getScale() const;
+    [[nodiscard]] float getScale() const;
 
     void setScale(float value);
 
-    bool isRemoved() const;
+    [[nodiscard]] bool isRemoved() const;
 
     void setRemoved(bool value);
 
-    bool isDecal() const;
+    [[nodiscard]] bool isDecal() const;
 
     void setDecal(bool value);
 
     void setDrawOffset(Vertex3D v);
 
-    Vertex3D getDrawOffset() const;
+    [[nodiscard]] Vertex3D getDrawOffset() const;
 
-    bool isFollowCamera() const;
+    [[nodiscard]] bool isFollowCamera() const;
 
     void setFollowCamera(bool followCamera);
 
@@ -98,9 +98,9 @@ public:
     void setRotationFrameEnabled(bool value);
     void setRotationFrame(Vertex3D v);
 
-    bool *getStencilBuffer() const;
+    [[nodiscard]] bool *getStencilBuffer() const;
 
-    bool isStencilBufferEnabled() const;
+    [[nodiscard]] bool isStencilBufferEnabled() const;
 
     void setStencilBufferEnabled(bool stencilBufferEnabled);
 
@@ -110,19 +110,19 @@ public:
 
     void clearStencilBuffer();
 
-    bool getStencilBufferValue(int i) const;
+    [[nodiscard]] bool getStencilBufferValue(int i) const;
 
-    bool getStencilBufferValue(int x, int y) const;
+    [[nodiscard]] bool getStencilBufferValue(int x, int y) const;
 
-    EnemyBehavior *getBehavior() const;
+    [[nodiscard]] EnemyBehavior *getBehavior() const;
 
     void setBehavior(EnemyBehavior *motion);
 
-    float getAlpha() const;
+    [[nodiscard]] float getAlpha() const;
 
     void setAlpha(float alpha);
 
-    bool isAlphaEnabled() const;
+    [[nodiscard]] bool isAlphaEnabled() const;
 
     void setAlphaEnabled(bool alphaEnabled);
 

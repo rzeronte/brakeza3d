@@ -3,9 +3,8 @@
 #include "../../include/Brakeza3D.h"
 
 Particle::Particle(Object3D *parent, float force, float ttl, Color c)
-    : force(force), color(c)
+    : parent(parent), active(true), force(force), color(c)
 {
-    setParent(parent);
     this->setPosition(parent->getPosition());
     this->setRotation(parent->getRotation());
 
@@ -16,22 +15,53 @@ Particle::Particle(Object3D *parent, float force, float ttl, Color c)
 
 void Particle::onUpdate()
 {
+    if (!isActive()) return;
 
     if (this->timeToLive.isFinished()) {
-        this->timeToLive.setEnabled(true);
-        setRemoved(true);
+        setActive(false);
+        return;
     };
 
     this->timeToLive.update();
 
-    velocity = this->AxisForward().getScaled(force * Brakeza3D::get()->getDeltaTime());
+    Vertex3D forward = rotation * EngineSetup::get()->forward;
 
-    addToPosition(velocity);
+    velocity = forward.getScaled(force * Brakeza3D::get()->getDeltaTime());
+
+    position = position + velocity;
     color = (Color::red() * timeToLive.getAcumulatedTime()) + color;
 
     Drawable::drawVertex3D(getPosition(), color);
 }
 
-void Particle::postUpdate() {
+const Vertex3D &Particle::getPosition() const {
+    return position;
+}
 
+void Particle::setPosition(const Vertex3D &position) {
+    Particle::position = position;
+}
+
+const M3 &Particle::getRotation() const {
+    return rotation;
+}
+
+void Particle::setRotation(const M3 &rotation) {
+    Particle::rotation = rotation;
+}
+
+bool Particle::isActive() const {
+    return active;
+}
+
+void Particle::setActive(bool active) {
+    Particle::active = active;
+}
+
+Object3D *Particle::getParent() const {
+    return parent;
+}
+
+void Particle::setParent(Object3D *parent) {
+    Particle::parent = parent;
 }

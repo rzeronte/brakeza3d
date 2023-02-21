@@ -18,7 +18,7 @@ public:
     float w = 5;
     float h = 5;
 
-    Cube3D *cube{};
+    Cube3D *cube;
     Sprite3D *sprite;
 
     bool drawWireframe = false;
@@ -33,15 +33,15 @@ public:
 
     void getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera);
 
-    float getSCoord(Vertex3D v) const;
+    [[nodiscard]] float getSCoord(Vertex3D v) const;
 
-    float getTCoord(Vertex3D v) const;
+    [[nodiscard]] float getTCoord(Vertex3D v) const;
 
-    Sprite3D *getSprite() const;
+    [[nodiscard]] Sprite3D *getSprite() const;
 
     void setSprite(Sprite3D *sprite);
 
-    void onUpdate();
+    void onUpdate() override;
 };
 
 

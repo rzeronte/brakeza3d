@@ -26,6 +26,22 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
         nullptr,
         nullptr
     );
+
+    opencl_buffer_lasers = clCreateBuffer(
+        context,
+        CL_MEM_READ_ONLY,
+        MAX_LASERS * sizeof(OCLaser),
+        lasers.data(),
+        nullptr
+    );
+
+    opencl_buffer_projectiles = clCreateBuffer(
+        context,
+        CL_MEM_READ_ONLY,
+        MAX_PROJECTILES * sizeof(OCProjectile),
+        projectiles.data(),
+        nullptr
+    );
 }
 
 void ShaderProjectiles::update()
@@ -42,14 +58,6 @@ void ShaderProjectiles::executeKernelOpenCL()
     const int numberLasers = (int) lasers.size();
     const int numberProjectiles = (int) projectiles.size();
 
-    auto opencl_buffer_lasers = clCreateBuffer(
-        context,
-        CL_MEM_READ_ONLY,
-        numberLasers * sizeof(OCLaser),
-        nullptr,
-        nullptr
-    );
-
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_lasers,
@@ -62,18 +70,10 @@ void ShaderProjectiles::executeKernelOpenCL()
         nullptr
     );
 
-    auto opencl_buffer_projectiles = clCreateBuffer(
-        context,
-        CL_MEM_READ_ONLY,
-        numberProjectiles * sizeof(OCProjectile),
-        nullptr,
-        nullptr
-    );
-
     clEnqueueWriteBuffer(
         clCommandQueue,
         opencl_buffer_projectiles,
-        CL_FALSE,
+        CL_TRUE,
         0,
         numberProjectiles * sizeof(OCProjectile),
         projectiles.data(),
@@ -136,24 +136,11 @@ void ShaderProjectiles::executeKernelOpenCL()
     this->projectiles.clear();
 
     this->debugKernel();
-
-    clReleaseMemObject(opencl_buffer_projectiles);
-    clReleaseMemObject(opencl_buffer_lasers);
 }
 
 void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
 {
-    OCLaser laser;
-    laser.x1 = x1;
-    laser.y1 = y1;
-    laser.x2 = x2;
-    laser.y2 = y2;
-    laser.r = r;
-    laser.g = g;
-    laser.b = b;
-    laser.intensity = i;
-
-    this->lasers.push_back(laser);
+    this->lasers.emplace_back(OCLaser {x1, y1, x2, y2, r, g, b, i });
 }
 
 void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
@@ -178,13 +165,12 @@ void ShaderProjectiles::addProjectile(Vertex3D position, Color color, float i)
 {
     Point2D screenPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
 
-    OCProjectile projectile;
-    projectile.x = screenPoint.x;
-    projectile.y = screenPoint.y;
-    projectile.r = (int) color.r;
-    projectile.g = (int) color.g;
-    projectile.b = (int) color.b;
-    projectile.intensity = i * 0.0050;
-
-    this->projectiles.push_back(projectile);
+    this->projectiles.emplace_back(OCProjectile {
+        screenPoint.x,
+        screenPoint.y,
+        (int) color.r,
+        (int) color.g,
+        (int) color.b,
+        i * 0.0050f
+    });
 }

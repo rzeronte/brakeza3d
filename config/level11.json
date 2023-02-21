@@ -1,14 +1,13 @@
 {
   "name": "Level 11",
   "backgroundImage": "levels/11.png",
-  "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
       "name": "Blupincher",
-      "position": { "x": 90,  "y": 30 },
+      "position": { "x": 70,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
@@ -21,7 +20,7 @@
       "lasers": [
         {
           "damage": 50,
-          "length": 8000,
+          "length": 4000,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }
@@ -61,7 +60,7 @@
     },
     {
       "name": "Blupincher",
-      "position": { "x": 10,  "y": 30 },
+      "position": { "x": 30,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
@@ -74,7 +73,7 @@
       "lasers": [
         {
           "damage": 50,
-          "length": 8000,
+          "length": 4000,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }

@@ -34,7 +34,7 @@
         "stop": false,
         "stopDuration": 1,
         "stopEvery": 1,
-        "type": 3,
+        "type": 4,
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_03.fbx",
         "model": "item_weapon_01.fbx",

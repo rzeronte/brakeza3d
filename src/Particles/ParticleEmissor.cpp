@@ -14,7 +14,6 @@ ParticleEmissor::ParticleEmissor(Object3D *parent, float ttlEmitter, float force
     rotFrameZ(0)
 {
     setParent(parent);
-    setEnabled(true);
     setPosition(parent->getPosition());
     this->timeToNextParticleCounter.setStep(step);
     this->lifeCounter.setStep(ttlEmitter);
@@ -48,17 +47,15 @@ void ParticleEmissor::onUpdate()
 
     timeToNextParticleCounter.update();
     if (timeToNextParticleCounter.isFinished() && isActiveAdding()) {
-        particles.emplace_back(new Particle(this, this->force, this->ttl, this->color));
+        particles.emplace_back(this, this->force, this->ttl, this->color);
         timeToNextParticleCounter.setEnabled(true);
     }
 }
 
 void ParticleEmissor::updateParticles()
 {
-    for (auto p : particles) {
-        if (!p->isRemoved()) {
-            p->onUpdate();
-        }
+    for (auto &p : particles) {
+        p.onUpdate();
     }
 }
 
@@ -75,7 +72,7 @@ void ParticleEmissor::setRotationFrame(float x, float y, float z)
 }
 
 void ParticleEmissor::setActive(bool value) {
-    ParticleEmissor::active = value;
+    this->active = value;
 }
 
 bool ParticleEmissor::isActiveAdding() const {
@@ -86,12 +83,6 @@ void ParticleEmissor::setActiveAdding(bool value) {
     ParticleEmissor::activeAdding = value;
 }
 
-std::vector<Particle *> &ParticleEmissor::getParticles() {
+std::vector<Particle> &ParticleEmissor::getParticles() {
     return particles;
-}
-
-ParticleEmissor::~ParticleEmissor() {
-    for (auto p : particles) {
-        delete p;
-    }
 }
