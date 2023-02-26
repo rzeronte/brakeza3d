@@ -236,6 +236,7 @@ void EnemyGhost::remove()
 
 void EnemyGhost::shoot(Object3D *target)
 {
+    return;
     if (getWeapon() == nullptr || !getWeapon()->isAvailable()) return;
 
     Vector3D way(getPosition(), target->getPosition());

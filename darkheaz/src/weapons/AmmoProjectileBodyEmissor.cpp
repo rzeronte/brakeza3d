@@ -144,20 +144,27 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
 {
     if (isRemoved()) return;
 
-    Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
-        getPosition(),
-        this,
-        weaponType,
-        M3::getMatrixIdentity(),
-        Vertex3D(50, 50, 50),
-        this->AxisForward().getNormalize(),
-        weaponType->getDamage(),
-        (float) weaponType->getSpeed(),
-        100,
-        EngineSetup::get()->PROJECTILE_DEMO_TTL,
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Player
-    ), "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    auto *projectile = new AmmoProjectileBody(
+            getPosition(),
+            this,
+            weaponType,
+            M3::getMatrixIdentity(),
+            Vertex3D(50, 50, 50),
+            this->AxisForward().getNormalize(),
+            weaponType->getDamage(),
+            (float) weaponType->getSpeed(),
+            100,
+            EngineSetup::get()->PROJECTILE_DEMO_TTL,
+            EngineSetup::collisionGroups::Projectile,
+            EngineSetup::collisionGroups::Player,
+            nullptr
+    );
+
+    auto *projectileParticleEmissor = new ParticleEmissor(projectile, getPosition(), 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
+    projectileParticleEmissor->setRotationFrame(0, 25, 25);
+
+    Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(projectileParticleEmissor, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void AmmoProjectileBodyEmissor::launchCircleProjectiles()

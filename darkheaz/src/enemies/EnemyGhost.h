@@ -7,7 +7,6 @@
 #include "Enemy.h"
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Shaders/ShaderBlink.h"
-#include "../shaders/ShaderTrailObject.h"
 #include "../../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../weapons/AmmoProjectileBodyEmissor.h"
 #include "../../../include/Physics/RayCollisionable.h"

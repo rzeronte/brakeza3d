@@ -15,14 +15,15 @@ AmmoProjectileBody::AmmoProjectileBody(
     float accuracy,
     float ttl,
     int collisionGroup,
-    int collisionMask
+    int collisionMask,
+    ParticleEmissor *particleEmissor
 ) :
+    particleEmissor(particleEmissor),
     Projectile3DBody(ttl, direction),
     AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
     weaponType(weaponType)
 {
     setPosition(position);
-    setEnabled(true);
     setParent(parent);
     setRender(false);
     setStencilBufferEnabled(true);
@@ -38,11 +39,6 @@ AmmoProjectileBody::AmmoProjectileBody(
         collisionGroup,
         collisionMask
     );
-
-    particleEmissor = new ParticleEmissor(this, 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
-    particleEmissor->setRotationFrame(0, 25, 25);
-
-    Brakeza3D::get()->addObject3D(particleEmissor, "emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
@@ -74,21 +70,28 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     this->remove();
-    getParticleEmissor()->setActive(false);
+
+    if (particleEmissor != nullptr) {
+        particleEmissor->setActive(false);
+    }
 }
 
 void AmmoProjectileBody::onUpdate()
 {
     Projectile3DBody::onUpdate();
 
-    particleEmissor->setPosition(getPosition());
+    if (particleEmissor != nullptr) {
+        particleEmissor->setPosition(getPosition());
+    }
 
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isVertexInside(getPosition())) {
         this->remove();
-        particleEmissor->setActiveAdding(false);
+        if (particleEmissor != nullptr) {
+            particleEmissor->setActiveAdding(false);
+        }
     }
 }
 
-ParticleEmissor *AmmoProjectileBody::getParticleEmissor() {
-    return particleEmissor;
+void AmmoProjectileBody::setParticleEmissor(ParticleEmissor *particleEmissor) {
+    AmmoProjectileBody::particleEmissor = particleEmissor;
 }

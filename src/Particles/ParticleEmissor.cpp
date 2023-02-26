@@ -2,7 +2,7 @@
 #include "../../include/Particles/ParticleEmissor.h"
 #include "../../include/Render/Logging.h"
 
-ParticleEmissor::ParticleEmissor(Object3D *parent, float ttlEmitter, float force, float ttl, float step, Color c):
+ParticleEmissor::ParticleEmissor(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c):
     force(force),
     ttl(ttl),
     step(step),
@@ -14,7 +14,8 @@ ParticleEmissor::ParticleEmissor(Object3D *parent, float ttlEmitter, float force
     rotFrameZ(0)
 {
     setParent(parent);
-    setPosition(parent->getPosition());
+    setPosition(position);
+
     this->timeToNextParticleCounter.setStep(step);
     this->lifeCounter.setStep(ttlEmitter);
     this->lifeCounter.setEnabled(true);
@@ -30,9 +31,13 @@ bool ParticleEmissor::isActive() const {
 
 void ParticleEmissor::onUpdate()
 {
+    if (isRemoved()) return;
+
     Object3D::onUpdate();
 
-    if (isRemoved()) return;
+    if (parent != nullptr) {
+        setPosition(parent->getPosition());
+    }
 
     updateParticles();
 
