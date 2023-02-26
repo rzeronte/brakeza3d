@@ -24,7 +24,7 @@ class ShaderLaser : public ShaderOpenCL {
 
     cl_mem opencl_buffer_pixels_image;
 public:
-    explicit ShaderLaser(Object3D *parent);
+    explicit ShaderLaser(Object3D *parent, Color c);
 
     void update() override;
     void executeKernelOpenCL();

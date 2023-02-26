@@ -8,39 +8,32 @@
 #include "src/items/PlayerReflection.h"
 
 Player::Player() :
-        stamina(INITIAL_STAMINA),
-        startStamina(INITIAL_STAMINA),
-        energy(INITIAL_ENERGY),
-        startEnergy(INITIAL_ENERGY),
-        recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-        stuck(false),
-        lives(INITIAL_LIVES),
-        killsCounter(0),
-        energyShieldEnabled(false),
-        gravityShieldsNumber(0),
-        allowMakeReflections(false),
-        allowEnergyShield(false),
-        lightPositionOffset(Vertex3D(0, -550, 0)),
-        state(PlayerState::EMPTY),
-        currentWeaponIndex(0),
-        dashPower(INITIAL_POWERDASH),
-        power(INITIAL_POWER),
-        friction(INITIAL_FRICTION),
-        maxVelocity(INITIAL_MAX_VELOCITY),
-        rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
+    stamina(INITIAL_STAMINA),
+    startStamina(INITIAL_STAMINA),
+    energy(INITIAL_ENERGY),
+    startEnergy(INITIAL_ENERGY),
+    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+    stuck(false),
+    lives(INITIAL_LIVES),
+    counterDamageBlink (Counter(0.45)),
+    counterStucked(Counter(5)),
+    killsCounter(0),
+    energyShieldEnabled(false),
+    gravityShieldsNumber(0),
+    allowMakeReflections(false),
+    allowEnergyShield(false),
+    lightPositionOffset(Vertex3D(0, -550, 0)),
+    state(PlayerState::EMPTY),
+    currentWeaponIndex(0),
+    dashPower(INITIAL_POWERDASH),
+    power(INITIAL_POWER),
+    friction(INITIAL_FRICTION),
+    maxVelocity(INITIAL_MAX_VELOCITY),
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
-    light->setEnabled(true);
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
-
-    counterDamageBlink = Counter(0.45);
-
-    setAllowEnergyShield(true);
-    setAllowGravitationalShields(true);
-
-    counterStucked = Counter(5);
-    counterStucked.setEnabled(false);
 }
 
 void Player::loadShieldModel()
@@ -105,7 +98,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    //this->stamina -= dmg;
+    this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
@@ -168,7 +161,7 @@ void Player::shoot(float intensity)
     }
 
     const int type = getWeapon()->getType();
-    switch(type) {
+    switch (type) {
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
                 this,
@@ -176,6 +169,7 @@ void Player::shoot(float intensity)
                 AxisUp().getInverse(),
                 getRotation(),
                 intensity,
+                EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy,
                 true
             );
@@ -183,14 +177,14 @@ void Player::shoot(float intensity)
         }
         case WeaponTypes::WEAPON_LASER_PROJECTILE: {
             weapon->shootLaserProjectile(
-                    this,
-                    getPosition() - AxisUp().getScaled(1000),
-                    AxisUp().getInverse(),
-                    intensity,
-                    true,
-                    Color::green(),
-                    EngineSetup::collisionGroups::Player,
-                    EngineSetup::collisionGroups::Enemy
+                this,
+                getPosition() - AxisUp().getScaled(1000),
+                AxisUp().getInverse(),
+                intensity,
+                true,
+                Color::green(),
+                EngineSetup::collisionGroups::Projectile,
+                EngineSetup::collisionGroups::Enemy
             );
             break;
         }
@@ -202,6 +196,8 @@ void Player::shoot(float intensity)
             weapon->shootLaserRay(shaderLaser, intensity);
             break;
         }
+        default:
+            Logging::Log("Not weapon type shoot!", "ERROR");
     }
 }
 
@@ -593,7 +589,7 @@ void Player::loadBlinkShader()
     blink->setEnabled(false);
     counterDamageBlink.setEnabled(false);
 
-    shaderLaser = new ShaderLaser(this);
+    shaderLaser = new ShaderLaser(this, Color::green());
     shaderLaser->setTarget(this);
     shaderLaser->setSpeed(1000);
     shaderLaser->setEnabled(false);

@@ -236,12 +236,10 @@ public:
         Player = 1,
         Enemy = 2,
         Projectile = 4,
-        Health = 8,
-        Weapon = 16,
-        CharacterFilter = 32,
-        CameraTrigger = 64,
-        BSPHullTrigger = 128,
-        BillboardsTrigger = 256,
+        ProjectileEnemy = 8,
+        Health = 16,
+        Weapon = 32,
+        CharacterFilter = 64,
         AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
 

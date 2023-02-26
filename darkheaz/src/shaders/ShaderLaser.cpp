@@ -2,11 +2,10 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLaser::ShaderLaser(Object3D *parent) : ShaderOpenCL("laser.opencl"), parent(parent)
+ShaderLaser::ShaderLaser(Object3D *parent, Color c): ShaderOpenCL("laser.opencl"), color(c), parent(parent)
 {
     setIntensity(0.0);
     setReach(0);
-    setColor(Color::fuchsia());
 
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 

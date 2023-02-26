@@ -7,7 +7,7 @@
   "enemies": [
     {
       "name": "Blupincher",
-      "position": { "x": 70,  "y": 30 },
+      "position": { "x": 80,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
@@ -60,7 +60,7 @@
     },
     {
       "name": "Blupincher",
-      "position": { "x": 30,  "y": 30 },
+      "position": { "x": 20,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,

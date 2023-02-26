@@ -66,7 +66,7 @@ __kernel void onUpdate(
         (b/255) * l * n
     };
 
-    float3 colorCircle = { circle * 255, circle * 255, 0 };
+    float3 colorCircle = { circle * r, circle * g, circle * b };
     float3 colorCircleStart = { circleStart * 255, circleStart * 255, 0 };
 
     __global unsigned char *t = &video[i];

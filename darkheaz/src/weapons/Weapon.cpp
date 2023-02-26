@@ -142,7 +142,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound)
+void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int filterGroup, int filterMask, bool sound)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -168,8 +168,8 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             (float) getSpeed(),
             getAccuracy(),
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
-            EngineSetup::collisionGroups::Projectile,
-            collisionMask,
+            filterGroup,
+            filterMask,
             nullptr
         );
 
