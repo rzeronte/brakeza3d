@@ -28,14 +28,14 @@ public:
 
         opencl_buffer_stencil = clCreateBuffer(
             context,
-            CL_MEM_READ_ONLY,
+            CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
             this->object->stencilBuffer,
             &clRet
         );
     }
 
-    void update()
+    void update() override
     {
         if (!isEnabled()) {
             return;

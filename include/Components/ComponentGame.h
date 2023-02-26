@@ -22,7 +22,6 @@
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
-#include "../../darkheaz/src/shaders/ShaderTrailObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
 #include "../../darkheaz/src/shaders/ShaderLaser.h"
 #include "../Physics/RayCollisionable.h"

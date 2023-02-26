@@ -29,7 +29,7 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
 
     opencl_buffer_lasers = clCreateBuffer(
         context,
-        CL_MEM_READ_ONLY,
+        CL_MEM_READ_WRITE,
         MAX_LASERS * sizeof(OCLaser),
         lasers.data(),
         nullptr
@@ -37,7 +37,7 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
 
     opencl_buffer_projectiles = clCreateBuffer(
         context,
-        CL_MEM_READ_ONLY,
+        CL_MEM_READ_WRITE,
         MAX_PROJECTILES * sizeof(OCProjectile),
         projectiles.data(),
         nullptr

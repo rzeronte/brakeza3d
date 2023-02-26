@@ -15,7 +15,7 @@ ParticleEmissorFireworks::ParticleEmissorFireworks(
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmissor(this, ttlEmitter, force, ttl, step, c),
+    ParticleEmissor(this, position, ttlEmitter, force, ttl, step, c),
     maxFires(maxFires),
     particlesByFire(particlesByFire)
 {

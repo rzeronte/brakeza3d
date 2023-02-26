@@ -169,8 +169,13 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             getAccuracy(),
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
             EngineSetup::collisionGroups::Projectile,
-            collisionMask
+            collisionMask,
+            nullptr
         );
+
+        auto *projectileParticleEmissor = new ParticleEmissor(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
+        projectileParticleEmissor->setRotationFrame(0, 25, 25);
+        projectile->setParticleEmissor(projectileParticleEmissor);
 
         if (getType() == WEAPON_BOMB) {
             projectile->setRotationFrameEnabled(true);
@@ -188,6 +193,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(projectileParticleEmissor, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 

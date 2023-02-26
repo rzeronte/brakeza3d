@@ -8,7 +8,6 @@
 
 #include "../../../include/Physics/Projectile3DBody.h"
 #include "Weapon.h"
-#include "../shaders/ShaderTrailObject.h"
 #include "AmmoProjectile.h"
 
 class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
@@ -27,7 +26,8 @@ public:
         float accuracy,
         float ttl,
         int collisionGroup,
-        int collisionMask
+        int collisionMask,
+        ParticleEmissor *particleEmissor
     );
 
     [[nodiscard]] Weapon *getWeaponType() const;
@@ -36,7 +36,7 @@ public:
 
     void onUpdate() override;
 
-    [[nodiscard]] ParticleEmissor *getParticleEmissor();
+    void setParticleEmissor(ParticleEmissor *particleEmissor);
 };
 
 
