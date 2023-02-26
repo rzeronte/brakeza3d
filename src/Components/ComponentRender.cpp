@@ -207,7 +207,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
     }
 
     // Clipping (needs objectSpace)
-    /*if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
+    if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
         if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
                 l->frustum,
@@ -221,7 +221,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
         }
 
         return;
-    }*/
+    }
 
     // Frustum Culling (needs objectSpace)
     if (!l->frustum->isVertexInside(t->Ao) && !l->frustum->isVertexInside(t->Bo) && !l->frustum->isVertexInside(t->Co) ) {
@@ -250,7 +250,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
 
     // Clipping (needs objectSpace)
     if (t->testForClipping(cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
-        /*if (SETUP->ENABLE_CLIPPING) {
+        if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
                 cam->frustum,
                 cam->frustum->planes,
@@ -260,7 +260,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
                 clippedTriangles,
                 t->bspTriangle
             );
-        }*/
+        }
 
         return;
     }
@@ -300,11 +300,11 @@ void ComponentRender::hiddenSurfaceRemoval() {
         this->hiddenSurfaceRemovalTriangle(frameTriangle);
     }
 
-    /*visibleTriangles.insert(
+    visibleTriangles.insert(
             visibleTriangles.end(),
             std::make_move_iterator(clippedTriangles.begin()),
             std::make_move_iterator(clippedTriangles.end())
-    );*/
+    );
 
     if (SETUP->DEBUG_RENDER_INFO) {
         Logging::Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) +
