@@ -147,7 +147,7 @@ void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, f
         exit(-1);
     }
 
-    int w, h;
+    int w = 0, h = 0;
     TTF_SizeUTF8(font, text, &w, &h);
 
     w *= sizeRatio;

@@ -4,7 +4,8 @@
 #include "../../include/Brakeza3D.h"
 
 
-void ComponentRender::onStart()
+void ComponentRender::
+onStart()
 {
     Logging::Log("ComponentRender onStart", "ComponentRender");
     initTiles();
