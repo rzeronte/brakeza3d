@@ -358,7 +358,10 @@ void ComponentGame::loadPlayer()
         Vertex3D(500, 500, 500),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::AllFilter
+        EngineSetup::collisionGroups::ProjectileEnemy |
+        EngineSetup::collisionGroups::Enemy |
+        EngineSetup::collisionGroups::Health|
+        EngineSetup::collisionGroups::Weapon
     );
     Brakeza3D::get()->addObject3D(player, "player");
 

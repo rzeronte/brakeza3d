@@ -42,12 +42,12 @@
       "model": "item_weapon_02.fbx",
       "flatTexture": true,
       "enableLights": false,
-      "color": { "r": 255, "g": 255, "b": 0 }
+      "color": { "r": 0, "g": 255, "b": 0 }
     },
     {
       "index": 2,
       "available": true,
-      "name": "Thunder",
+      "name": "LaserProjectile",
       "damage": 2,
       "amount": 0,
       "startAmount": 1500,

@@ -99,7 +99,7 @@ public:
 
     void setDispersion(int value);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int collisionMask, bool sound);
+    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int filterGroup, int filterMask, bool sound);
     void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask);
 
     [[nodiscard]] Mesh3D *getModel() const;

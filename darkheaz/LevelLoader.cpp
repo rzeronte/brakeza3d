@@ -288,7 +288,12 @@ void LevelLoader::makeItemHealthGhost(Vertex3D position)
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
     healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
-    healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::collisionGroups::Health, EngineSetup::collisionGroups::Player);
+    healthItem->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        healthItem,
+        EngineSetup::collisionGroups::Health,
+        EngineSetup::collisionGroups::Player
+    );
     healthItem->updateBulletFromMesh3D();
 
     Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
@@ -728,7 +733,12 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
     asteroid->setStartStamina(stamina);
     asteroid->setEnableLights(true);
     asteroid->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    asteroid->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), asteroid, EngineSetup::collisionGroups::Enemy, EngineSetup::collisionGroups::AllFilter);
+    asteroid->makeGhostBody(
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        asteroid,
+        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::Player
+    );
     asteroid->setSoundChannel(respawners.size() + 2);
     asteroid->setExplode(explode);
 

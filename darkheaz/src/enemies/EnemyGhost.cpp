@@ -26,8 +26,7 @@ void EnemyGhost::loadBlinkShader()
     blink->setStep(0.05);
     blink->setEnabled(true);
 
-    laser = new ShaderLaser(this);
-    laser->setColor(ComponentsManager::get()->getComponentGame()->primaryColor);
+    laser = new ShaderLaser(this, ComponentsManager::get()->getComponentGame()->primaryColor);
     laser->setTarget(this);
     laser->setSpeed(1000);
     laser->setEnabled(false);
@@ -140,7 +139,12 @@ void EnemyGhost::makeReward()
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
             healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
-            healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::Health, EngineSetup::Player);
+            healthItem->makeGhostBody(
+                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+                healthItem,
+                EngineSetup::Health,
+                EngineSetup::Player
+            );
             Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
             break;
         }
@@ -154,7 +158,12 @@ void EnemyGhost::makeReward()
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
             healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
-            healthItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), healthItem, EngineSetup::Health, EngineSetup::Player);
+            healthItem->makeGhostBody(
+                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+                healthItem,
+                EngineSetup::Health,
+                EngineSetup::Player
+            );
             Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
             break;
         }
@@ -170,7 +179,12 @@ void EnemyGhost::makeReward()
             weaponItem->setStencilBufferEnabled(true);
             weaponItem->setScale(1);
             weaponItem->clone(playerWeapons[randomWeapon]->getModel());
-            weaponItem->makeGhostBody(ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), weaponItem, EngineSetup::Weapon, EngineSetup::Player);
+            weaponItem->makeGhostBody(
+                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+                weaponItem,
+                EngineSetup::Weapon,
+                EngineSetup::Player
+            );
             Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
             break;
         }
@@ -236,7 +250,6 @@ void EnemyGhost::remove()
 
 void EnemyGhost::shoot(Object3D *target)
 {
-    return;
     if (getWeapon() == nullptr || !getWeapon()->isAvailable()) return;
 
     Vector3D way(getPosition(), target->getPosition());
@@ -252,6 +265,7 @@ void EnemyGhost::shoot(Object3D *target)
                 direction,
                 getRotation(),
                 1.0,
+                EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player,
                 false
             );
@@ -265,13 +279,12 @@ void EnemyGhost::shoot(Object3D *target)
                 0.3,
                 false,
                 Color::red(),
-                EngineSetup::collisionGroups::Enemy,
+                EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player
             );
             break;
         }
         case WeaponTypes::SHOCK: {
-
             auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
             if (getPosition().distance(player->getPosition()) < 5000) {
