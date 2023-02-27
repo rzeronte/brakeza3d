@@ -16,9 +16,19 @@
 #define CONCHARS_CHARACTER_H 16
 
 class TextWriter {
+private:
+    SDL_Renderer *renderer;
+    SDL_Surface *sprite;
+    std::vector<SDL_Surface *> characterSurfaces;
 
+    TTF_Font *font;
+    float alpha;
 public:
     TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *concharsFile);
+
+    virtual ~TextWriter();
+
+    int convertPositionYAspect(int value);
 
     void writeText(int x, int y, const char *text, bool bold);
 
@@ -37,21 +47,10 @@ public:
     void writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio);
 
     int convertPositionXAspect(int value);
-
-private:
-    SDL_Renderer *renderer;
-    SDL_Surface *sprite;
-    std::vector<SDL_Surface *> characterSurfaces;
-
-    TTF_Font *font;
-    float alpha;
-
-    int convertPositionYAspect(int value);
-
-public:
     [[nodiscard]] float getAlpha() const;
 
     void setAlpha(float alpha);
+
 };
 
 

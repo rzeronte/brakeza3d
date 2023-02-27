@@ -17,23 +17,20 @@ private:
     float stamina;
     float ttl;
     ShaderBlink *blink;
-    Counter *counterDamageBlink;
+    Counter counterDamageBlink;
     bool hidden;
-
 public:
     PlayerReflection(float stamina, float ttl);
-
-    virtual ~PlayerReflection();
 
     void onUpdate() override;
 
     void postUpdate() override;
 
-    float getStartStamina() const;
+    [[nodiscard]] float getStartStamina() const;
 
     void setStartStamina(float startStamina);
 
-    float getStamina() const;
+    [[nodiscard]] float getStamina() const;
 
     void setStamina(float stamina);
 
@@ -45,13 +42,13 @@ public:
 
     void reset();
 
-    bool isHidden() const;
+    [[nodiscard]] bool isHidden() const;
 
     void setHidden(bool hidden);
 
-    void loadBlinkShader();
-
     void makeExplosion();
+
+    void loadBlinkShader();
 };
 
 

@@ -9,7 +9,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOpenCL::ShaderOpenCL(const std::string& kernelFilename)
+ShaderOpenCL::ShaderOpenCL(const std::string kernelFilename)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
     this->clCommandQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();

@@ -52,7 +52,9 @@ private:
     Weapon *weapon;
     Counter counterDamageBlink;
     Counter counterStucked;
+
     ShaderBlink *blink;
+    ShaderLaser *shaderLaser;
 
     int killsCounter;
     bool energyShieldEnabled;
@@ -60,7 +62,8 @@ private:
 
     bool allowMakeReflections;
     bool allowEnergyShield;
-public:
+
+
     LightPoint3D *light;
     Vertex3D lightPositionOffset;
 
@@ -69,10 +72,13 @@ public:
     std::vector<Weapon *> weaponTypes;
     int currentWeaponIndex;
 
-    Mesh3D *shieldModel;
-    PlayerReflection *reflection;
+    Mesh3D shieldModel;
+    PlayerReflection reflection;
+public:
 
     Player();
+
+    ~Player() override;
 
     void respawn();
 
@@ -196,9 +202,15 @@ public:
 
     void updateWeaponInteractionStatus() const;
 
-    ShaderLaser *shaderLaser;
+    void updateWeaponAutomaticStatus();
 
-    void updateWeaponAutomaticStatus() const;
+    [[nodiscard]] ShaderLaser *getShaderLaser();
+
+    [[nodiscard]] Mesh3D *getShieldModel();
+
+    [[nodiscard]] PlayerReflection *getReflection();
+
+    [[nodiscard]] LightPoint3D *getLight() const;
 };
 
 

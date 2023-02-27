@@ -4,14 +4,12 @@
 #include "../../include/Brakeza3D.h"
 
 ComponentHUD::ComponentHUD() {
-    HUDTextures = new TexturePackage();
 }
 
 void ComponentHUD::onStart() {
     Logging::Log("ComponentHUD onStart", "ComponentHUD");
 
-    loadImages();
-    loadButtons();
+    HUDTextures = new TexturePackage();
 
     textWriter = new TextWriter(
         ComponentsManager::get()->getComponentWindow()->getRenderer(),
@@ -21,6 +19,9 @@ void ComponentHUD::onStart() {
 
     shaderLasers = new ShaderProjectiles();
     shaderLasers->setEnabled(true);
+
+    loadImages();
+    loadButtons();
 }
 
 void ComponentHUD::preUpdate()
@@ -61,7 +62,8 @@ void ComponentHUD::onSDLPollEvent(SDL_Event *event, bool &finish)
     }
 }
 
-void ComponentHUD::loadImages() {
+void ComponentHUD::loadImages()
+{
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "reflectionIcon");
@@ -191,4 +193,11 @@ void ComponentHUD::drawShaderLasers()
 
 TextWriter *ComponentHUD::getTextWriter() const {
     return textWriter;
+}
+
+ComponentHUD::~ComponentHUD()
+{
+    delete shaderLasers;
+    delete textWriter;
+    delete HUDTextures;
 }

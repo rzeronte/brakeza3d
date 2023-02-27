@@ -144,7 +144,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
     ComponentsManager::get()->getComponentGame()->getShaderClouds()->setColor(c);
-    ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(Color(c.r, c.g, c.b));
+    ComponentsManager::get()->getComponentGame()->getPlayer()->getLight()->setColorSpecularity(c);
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
     cJSON *currentEnemyJSON;

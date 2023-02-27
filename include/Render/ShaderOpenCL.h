@@ -12,7 +12,7 @@
 class ShaderOpenCL: public Shader {
 
 public:
-     ShaderOpenCL(const std::string& kernelFilename);
+     explicit ShaderOpenCL(std::string kernelFilename);
 
     void initOpenCLProgram();
 

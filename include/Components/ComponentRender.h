@@ -54,6 +54,8 @@ private:
     cl_command_queue clCommandQueue;
 public:
 
+    virtual ~ComponentRender();
+
     void onStart() override;
 
     void preUpdate() override;

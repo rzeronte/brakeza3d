@@ -821,7 +821,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 {
     removeInGameObjects();
     getPlayer()->setEnabled(true);
-    getPlayer()->shaderLaser->setEnabled(false);
+    getPlayer()->getShaderLaser()->setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     shaderTrailBuffer->setEnabled(true);
@@ -952,5 +952,19 @@ ShaderClouds *ComponentGame::getShaderClouds() const {
 
 ComponentGame::~ComponentGame()
 {
+    delete player;
+
+    delete fadeToGameState;
+    delete levelInfo;
+
+    delete shaderLasers;
+    delete shaderBackgroundImage;
+    delete shaderClouds;
+    delete shaderColor;
+
     delete explosionSpriteTemplate;
+    delete imageCrossFire;
+    delete imageCredits;
+    delete imageHelp;
+    delete imageSplash;
 }

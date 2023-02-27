@@ -1,6 +1,5 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Physics/Projectile3DBody.h"
 
 ComponentCollisions::ComponentCollisions()
 {
@@ -10,6 +9,7 @@ ComponentCollisions::ComponentCollisions()
     this->overlappingPairCache = nullptr;
     this->solver = nullptr;
     this->debugDraw = nullptr;
+    this->ghostPairCallback = nullptr;
     this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 }
 
@@ -38,43 +38,38 @@ void ComponentCollisions::onEnd() {
 void ComponentCollisions::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentCollisions::initBulletSystem() {
+void ComponentCollisions::initBulletSystem()
+{
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    this->collisionConfiguration = new btDefaultCollisionConfiguration();
+    collisionConfiguration = new btDefaultCollisionConfiguration();
 
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    dispatcher = new btCollisionDispatcher(collisionConfiguration);
 
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    this->overlappingPairCache = new btDbvtBroadphase();
+    overlappingPairCache = new btDbvtBroadphase();
 
-    btVector3 worldMin(-50000, -50000, -50000);
-    btVector3 worldMax(50000, 50000, 50000);
-
-    //auto *sweepBP = new btAxisSweep3(worldMin, worldMax);
+    //auto *sweepBP = new btAxisSweep3(btVector3(-50000, -50000, -50000), btVector3(50000, 50000, 50000));
     //this->overlappingPairCache = sweepBP;
 
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    this->solver = new btSequentialImpulseConstraintSolver;
+    solver = new btSequentialImpulseConstraintSolver;
 
     /// Debug drawer
-    this->debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
+    debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
 
-    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this->dynamicsWorld->setGravity(btVector3(0, -EngineSetup::get()->gravity.y, 0));
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    dynamicsWorld->setGravity(btVector3(0, -EngineSetup::get()->gravity.y, 0));
 
-    this->dynamicsWorld->setDebugDrawer(debugDraw);
-    this->dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+    dynamicsWorld->setDebugDrawer(debugDraw);
+    dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
 
-    this->overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback( new btGhostPairCallback() );
+    ghostPairCallback = new btGhostPairCallback();
+    overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 }
 
 btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
     return dynamicsWorld;
-}
-
-void ComponentCollisions::setDynamicsWorld(btDiscreteDynamicsWorld *world) {
-    ComponentCollisions::dynamicsWorld = world;
 }
 
 BSPMap *ComponentCollisions::getBspMap() const {
@@ -85,7 +80,8 @@ void ComponentCollisions::setBSPMap(BSPMap *map) {
     ComponentCollisions::bspMap = map;
 }
 
-void ComponentCollisions::checkCollisionsForAll() {
+void ComponentCollisions::checkCollisionsForAll()
+{
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
     int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -123,10 +119,12 @@ void ComponentCollisions::updatePhysicObjects()
 void ComponentCollisions::stepSimulation() {
 
     if (SETUP->BULLET_STEP_SIMULATION) {
-
-        getDynamicsWorld()->stepSimulation(Brakeza3D::get()->getDeltaTime(), 1 , btScalar(1.) / btScalar(20.));
-
-        this->updatePhysicObjects();
+        getDynamicsWorld()->stepSimulation(
+            Brakeza3D::get()->getDeltaTime(),
+            1,
+            btScalar(1.) / btScalar(20.)
+        );
+        updatePhysicObjects();
     }
 
     checkCollisionsForAll();
@@ -199,4 +197,5 @@ ComponentCollisions::~ComponentCollisions()
     delete solver;
     delete debugDraw;
     delete dynamicsWorld;
+    delete ghostPairCallback;
 }

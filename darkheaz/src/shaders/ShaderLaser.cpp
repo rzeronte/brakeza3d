@@ -2,11 +2,13 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLaser::ShaderLaser(Object3D *parent, Color c): ShaderOpenCL("laser.opencl"), color(c), parent(parent)
+ShaderLaser::ShaderLaser(Object3D *parent, Color c):
+    ShaderOpenCL("laser.opencl"),
+    intensity(0),
+    reach(0),
+    color(c),
+    parent(parent)
 {
-    setIntensity(0.0);
-    setReach(0);
-
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
 
     opencl_buffer_pixels_image = clCreateBuffer(
@@ -173,8 +175,8 @@ float ShaderLaser::getReach() const {
     return reach;
 }
 
-void ShaderLaser::setReach(float value) {
-    ShaderLaser::reach = value;
+void ShaderLaser::resetReach() {
+    this->reach = 0;
 }
 
 float ShaderLaser::getDamage() const {
