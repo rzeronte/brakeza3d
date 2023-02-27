@@ -5,7 +5,6 @@
 ComponentCollisions::ComponentCollisions()
 {
     this->bspMap = nullptr;
-    this->visibleTriangles = nullptr;
     this->collisionConfiguration = nullptr;
     this->dispatcher = nullptr;
     this->overlappingPairCache = nullptr;
@@ -133,14 +132,6 @@ void ComponentCollisions::stepSimulation() {
     checkCollisionsForAll();
 }
 
-std::vector<Triangle *> &ComponentCollisions::getVisibleTriangles() const {
-    return *visibleTriangles;
-}
-
-void ComponentCollisions::setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles) {
-    ComponentCollisions::visibleTriangles = &newVisibleTriangles;
-}
-
 void ComponentCollisions::demoProjectile(int type) {
 
     std::string fileName;
@@ -202,7 +193,6 @@ void ComponentCollisions::demoProjectile(int type) {
 ComponentCollisions::~ComponentCollisions()
 {
     delete bspMap;
-    delete visibleTriangles;
     delete collisionConfiguration;
     delete dispatcher;
     delete overlappingPairCache;

@@ -201,7 +201,7 @@ void Brakeza3D::AxisPlaneInitialize()
 void Brakeza3D::ImGuiOnUpdate()
 {
     ImGui_ImplSDLRenderer_NewFrame();
-    ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->window);
+    ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->getWindow());
 
     ImGui::NewFrame();
     this->managerGUI.draw(
@@ -210,8 +210,8 @@ void Brakeza3D::ImGuiOnUpdate()
         Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
         Brakeza3D::get()->getSceneObjects(),
         Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
-        Brakeza3D::get()->getComponentsManager()->getComponentRender()->tiles,
-        Brakeza3D::get()->getComponentsManager()->getComponentRender()->tilesWidth
+        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getTiles(),
+        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getTilesWidth()
     );
 
     //ImGui::ShowDemoWindow();
@@ -227,11 +227,11 @@ void Brakeza3D::ImGuiInitialize() const
     ImGui::CreateContext();
 
     ImGui_ImplSDL2_InitForSDLRenderer(
-        getComponentsManager()->getComponentWindow()->window,
-        getComponentsManager()->getComponentWindow()->renderer
+        getComponentsManager()->getComponentWindow()->getWindow(),
+        getComponentsManager()->getComponentWindow()->getRenderer()
     );
 
-    ImGui_ImplSDLRenderer_Init(getComponentsManager()->getComponentWindow()->renderer);
+    ImGui_ImplSDLRenderer_Init(getComponentsManager()->getComponentWindow()->getRenderer());
 
     ImGuiIO &io = ImGui::GetIO();
     io.WantCaptureMouse = false;
@@ -245,14 +245,8 @@ void Brakeza3D::ImGuiInitialize() const
 
 Brakeza3D::~Brakeza3D()
 {
-    delete componentCamera;
-    delete componentInput;
-    delete componentCollisions;
-    delete componentWindow;
-    delete componentSound;
-    delete componentRender;
-    delete componentMenu;
-    delete componentHUD;
-    delete componentGame;
-    delete componentGameInput;
+}
+
+float &Brakeza3D::getExecutionTime() {
+    return executionTime;
 }

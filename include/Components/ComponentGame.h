@@ -28,9 +28,48 @@
 #include "../Physics/ProjectileRay.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 
+#define Z_COORDINATE_GAMEPLAY 10000
+
 class ComponentGame : public Component {
+private:
+    Vertex3D playerStartPosition;
+    Vertex3D cameraCountDownPosition;
+    Vertex3D cameraInGamePosition;
+
+    FaderToGameStates *fadeToGameState;
+    Player *player;
+    ShaderProjectiles *shaderLasers;
+
+    Sprite3D *explosionSpriteTemplate;
+    PathFinder *pathFinder;
+
+    Image *imageCredits;
+    Image *imageHelp;
+    Image *imageSplash;
+    Counter splashCounter;
+
+    LevelLoader *levelInfo;
+
+    ShaderClouds *shaderClouds;
+    ShaderImage *shaderBackgroundImage;
+    ShaderTrailBuffer *shaderTrailBuffer;
+
+    ShaderColor *shaderColor;
+    Image *imageCrossFire;
+    Vertex3D spaceCrossFirePosition;
+    Point2D imageCrossFireScreenPosition;
+
+    EngineSetup::GameState gameState;
+    std::vector<Weapon *> weapons;
+
+    Color primaryColor = Color(179, 0, 40);
+    Color secondaryColor = Color(0, 179, 52);
+    Color thirdColor = Color(0, 0, 255);
+
 public:
     ComponentGame();
+
+    virtual ~ComponentGame();
 
     void onStart() override;
 
@@ -53,50 +92,16 @@ public:
 
     void reloadLevel(int level);
 
-    Vertex3D playerStartPosition;
-    Vertex3D cameraCountDownPosition;
-    Vertex3D cameraInGamePosition;
-
-    FaderToGameStates *fadeToGameState;
-    Player *player;
-    ShaderProjectiles *shaderLasers;
-
-    Sprite3D *explosion;
-    PathFinder *pathFinder;
-
-    Image *imageCredits;
-    Image *imageHelp;
-    Image *imageSplash;
-    Counter splashCounter;
-
-    LevelLoader *levelInfo;
-
-    ShaderClouds *shaderClouds;
-    ShaderImage *shaderBackgroundImage;
-    ShaderTrailBuffer *shaderTrailBuffer;
-
-    ShaderColor *shaderColor;
-    Image *imageCrossFire;
-    Vertex3D spaceCrossFirePosition;
-    Point2D imageCrossFireScreenPosition;
-
     void setGameState(EngineSetup::GameState state);
     EngineSetup::GameState getGameState();
     void selectClosestObject3DFromPlayer();
     Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
-    Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
+    [[nodiscard]] Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
 
     [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
 
-    int Z_COORDINATE_GAMEPLAY = 10000;
-private:
-
-    EngineSetup::GameState gameState;
-    std::vector<Weapon *> weapons;
-
     void loadLevels();
 
-public:
     [[nodiscard]] LevelLoader *getLevelInfo() const;
 
     void checkForEndLevel();
@@ -145,11 +150,19 @@ public:
 
     void handlePressKeyCredits();
 
-    Color primaryColor = Color(179, 0, 40);
-    Color secondaryColor = Color(0, 179, 52);
-    Color thirdColor = Color(0, 0, 255);
-
     void updateCrossFire();
+
+    [[nodiscard]] const Color &getPrimaryColor() const;
+
+    [[nodiscard]] const Color &getSecondaryColor() const;
+
+    [[nodiscard]] Sprite3D *getExplosionSpriteTemplate() const;
+
+    [[nodiscard]] ShaderColor *getShaderColor() const;
+
+    [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
+
+    [[nodiscard]] ShaderClouds *getShaderClouds() const;
 };
 
 

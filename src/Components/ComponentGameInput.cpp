@@ -4,7 +4,7 @@
 
 #define PAD_AXIS_THRESHOLD 0.05f;
 
-ComponentGameInput::ComponentGameInput(Player *player): enabled(true), player(player)
+ComponentGameInput::ComponentGameInput(Player *player): player(player)
 {
     this->controllerAxisThreshold = 0.1;
     this->lockRightStick = false;
@@ -75,7 +75,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
 void ComponentGameInput::handleEscape(SDL_Event *event)
 {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
 
     auto game = ComponentsManager::get()->getComponentGame();
     auto gameState = game->getGameState();
@@ -93,7 +93,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             game->makeFadeToGameState(EngineSetup::GameState::MENU);
 
             SDL_WarpMouseInWindow(
-                ComponentsManager::get()->getComponentWindow()->window,
+                ComponentsManager::get()->getComponentWindow()->getWindow(),
                 SETUP->screenWidth / 2,
                 SETUP->screenHeight / 2
             );
@@ -106,16 +106,16 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
-    auto menuOptions = componentMenu->options;
+    auto menuOptions = componentMenu->getOptions();
 
-    int currentOption = componentMenu->currentOption;
-    Uint8 *keyboard = componentInput->keyboard;
+    int currentOption = componentMenu->getCurrentOption();
+    Uint8 *keyboard = componentInput->getKeyboard();
 
 
     // Up / Down menu options
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-        if (componentMenu->currentOption + 1 < componentMenu->numOptions) {
-            componentMenu->currentOption++;
+        if (currentOption + 1 < componentMenu->getNumOptions()) {
+            componentMenu->increaseMenuOption();
             ComponentsManager::get()->getComponentSound()->playSound(
                 BUFFERS->soundPackage->getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
@@ -126,7 +126,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 
     if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
-            componentMenu->currentOption--;
+            componentMenu->decreaseMenuOption();
             ComponentsManager::get()->getComponentSound()->playSound(
                 BUFFERS->soundPackage->getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
@@ -136,7 +136,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     }
 
     // Execute Menu option
-    if (keyboard[SDL_SCANCODE_RETURN] || componentInput->controllerButtonA) {
+    if (keyboard[SDL_SCANCODE_RETURN] || componentInput->getControllerButtonA()) {
         if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
@@ -163,15 +163,15 @@ void ComponentGameInput::handleFire() const
 
     componentGame->getPlayer()->shaderLaser->setEnabled(false);
 
-    Uint8 *keyboard = componentInput->keyboard;
-    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->controllerAxisTriggerRight > this->controllerAxisThreshold) {
-        player->shoot(componentInput->controllerAxisTriggerRight);
+    Uint8 *keyboard = componentInput->getKeyboard();
+    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
+        player->shoot(componentInput->getControllerAxisTriggerRight());
     }
 }
 
 void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
     SoundPackage *soundPackage = BUFFERS->soundPackage;
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto game = ComponentsManager::get()->getComponentGame();
 
     if (event->type == SDL_KEYDOWN) {
@@ -242,17 +242,9 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
     }
 }
 
-bool ComponentGameInput::isEnabled() const {
-    return enabled;
-}
-
-void ComponentGameInput::setEnabled(bool enabled) {
-    ComponentGameInput::enabled = enabled;
-}
-
 void ComponentGameInput::handleKeyboardMovingPlayer() {
     auto componentInput = ComponentsManager::get()->getComponentInput();
-    Uint8 *keyboard = componentInput->keyboard;
+    Uint8 *keyboard = componentInput->getKeyboard();
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
     speed = std::clamp(speed, 0.f, player->maxVelocity);
@@ -281,7 +273,7 @@ void ComponentGameInput::handleKeyboardMovingPlayer() {
 
 void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 {
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto game = ComponentsManager::get()->getComponentGame();
     auto input = ComponentsManager::get()->getComponentInput();
     auto render = ComponentsManager::get()->getComponentRender();
@@ -298,7 +290,7 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
         lockRightStick = false;
     }
 
-    auto rightStickDirection = Vertex3D(input->controllerAxisRightX, input->controllerAxisRightY, 0);
+    auto rightStickDirection = Vertex3D(input->getControllerAxisRightX(), input->getControllerAxisRightY(), 0);
 
     if (render->getSelectedObject() != nullptr && !lockRightStick && rightStickDirection.getModule() > 0.5) {
         lockRightStick = true;
@@ -334,7 +326,7 @@ void ComponentGameInput::handleGamePadMovingPlayer()
 
     player->setVelocity(
         player->getVelocity() +
-        Vertex3D(componentInput->controllerAxisLeftX * speed, componentInput->controllerAxisLeftY * speed, 0)
+        Vertex3D(componentInput->getControllerAxisLeftX() * speed, componentInput->getControllerAxisLeftY() * speed, 0)
     );
 }
 
@@ -342,12 +334,12 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
 {
     if (player->isStucked()) return;
 
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (
         (keyboard[SDL_SCANCODE_BACKSPACE] && event->type == SDL_KEYDOWN) ||
-        (event->type == SDL_CONTROLLERBUTTONDOWN && input->controllerButtonB)
+        (event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB())
     ) {
         const float dashEnergyCost = 10;
 
@@ -370,7 +362,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
 
         player->setVelocity(
             player->getVelocity() +
-            Vertex3D(input->controllerAxisLeftX * speed, input->controllerAxisLeftY * speed, 0)
+            Vertex3D(input->getControllerAxisLeftX() * speed, input->getControllerAxisLeftY() * speed, 0)
         );
 
         player->useEnergy(dashEnergyCost);
@@ -381,7 +373,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    if (componentInput->controllerAxisTriggerLeft > 0.20 && !player->isEnergyShieldEnabled()) {
+    if (componentInput->getControllerAxisTriggerLeft() > 0.20 && !player->isEnergyShieldEnabled()) {
         if (!player->isAllowEnergyShield()) {
             return;
         }
@@ -395,7 +387,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
         );
     }
 
-    if (componentInput->controllerAxisTriggerLeft < 0.20 && player->isEnergyShieldEnabled()) {
+    if (componentInput->getControllerAxisTriggerLeft() < 0.20 && player->isEnergyShieldEnabled()) {
         player->setEnergyShieldEnabled(false);
     }
 }
@@ -405,7 +397,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonA) {
+    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA()) {
         if (player->isAllowedMakeReflections()) {
             player->makeReflection();
         }
@@ -451,9 +443,13 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->controllerButtonX) {
+    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX()) {
         auto weapon = player->getWeaponTypeByLabel("Bomb");
         weapon->onUpdate();
         weapon->shootBomb(player, player->getPosition());
     }
+}
+
+float ComponentGameInput::getControllerAxisThreshold() const {
+    return controllerAxisThreshold;
 }

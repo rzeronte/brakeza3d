@@ -26,21 +26,21 @@ public:
 
     void loadImages();
 
-    int getNumFrames() const;
+    [[nodiscard]] int getNumFrames() const;
 
     void nextFrame();
 
     Texture *getCurrentFrame();
 
-    bool isEndAnimation() const;
+    [[nodiscard]] bool isEndAnimation() const;
 
     void setEndAnimation(bool endAnimation);
 
-    bool isPaused() const;
+    [[nodiscard]] bool isPaused() const;
 
     void setPaused(bool paused);
 
-    int getFps() const;
+    [[nodiscard]] int getFps() const;
 
     void setFps(int fps);
 };

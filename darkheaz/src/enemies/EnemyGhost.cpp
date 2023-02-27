@@ -22,11 +22,11 @@ EnemyGhost::EnemyGhost()
 
 void EnemyGhost::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, ComponentsManager::get()->getComponentGame()->primaryColor);
+    blink = new ShaderBlink(this, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
     blink->setStep(0.05);
     blink->setEnabled(true);
 
-    laser = new ShaderLaser(this, ComponentsManager::get()->getComponentGame()->primaryColor);
+    laser = new ShaderLaser(this, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
     laser->setTarget(this);
     laser->setSpeed(1000);
     laser->setEnabled(false);
@@ -354,7 +354,7 @@ void EnemyGhost::makeExplosion()
     Vector3D direction(origin, getPosition());
     sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(350));
 
-    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->explosion);
+    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
     sprite->setAnimation(0);
     sprite->setAutoRemoveAfterAnimation(true);
 

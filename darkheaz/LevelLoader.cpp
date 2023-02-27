@@ -123,13 +123,13 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel"));
     }
 
-    std::string backgroundImage = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring;
-    auto shaderBackground = ComponentsManager::get()->getComponentGame()->shaderBackgroundImage;
-    shaderBackground->setImage(new Image(EngineSetup::get()->IMAGES_FOLDER + backgroundImage));
+    ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->setImage(
+        new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring)
+    );
+
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        std::string tutorialImagePath = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring;
         delete tutorialImage;
-        tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + tutorialImagePath);
+        tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
         hasTutorial = true;
     }
 
@@ -143,7 +143,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
-    ComponentsManager::get()->getComponentGame()->shaderClouds->setColor(c);
+    ComponentsManager::get()->getComponentGame()->getShaderClouds()->setColor(c);
     ComponentsManager::get()->getComponentGame()->getPlayer()->light->setColorSpecularity(Color(c.r, c.g, c.b));
     ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->updateFrustum();
 
@@ -207,7 +207,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble,
         cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint,
         (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint
-    );;
+    );
 }
 
 void LevelLoader::startCountDown()
@@ -580,7 +580,7 @@ Vertex3D LevelLoader::getWorldPositionFromScreenPoint(Point2D fixedPosition)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    return ray.getComponent().getScaled(ComponentsManager::get()->getComponentGame()->Z_COORDINATE_GAMEPLAY);
+    return ray.getComponent().getScaled(Z_COORDINATE_GAMEPLAY);
 }
 
 void LevelLoader::parseItemJSON(cJSON *itemJSON)
@@ -613,6 +613,10 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
             this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
             break;
+        }
+        default: {
+            Logging::Log("Item not found in parsing JSON", "ERROR");
+            exit(-1);
         }
     }
 }

@@ -72,15 +72,15 @@ private:
     bool levelStartedToPlay;
     bool levelFinished;
 public:
-    int getNumberLevelEnemies() const;
+    [[nodiscard]] int getNumberLevelEnemies() const;
 
-    bool isLevelStartedToPlay() const;
+    [[nodiscard]] bool isLevelStartedToPlay() const;
 
     void setLevelStartedToPlay(bool levelStartedToPlay);
 
     void setCurrentLevelIndex(int currentLevelIndex);
 
-    int getCurrentLevelIndex() const;
+    [[nodiscard]] int getCurrentLevelIndex() const;
 
     int size();
 
@@ -88,19 +88,19 @@ public:
 
     void startCountDown();
 
-    const std::string &getMusic() const;
+    [[nodiscard]] const std::string &getMusic() const;
 
     void setMusic(const std::string &music);
 
-    const std::string &getLevelName() const;
+    [[nodiscard]] const std::string &getLevelName() const;
 
     void setLevelName(const std::string &levelName);
 
     Counter * getCountDown();
 
-    bool isHasTutorial() const;
+    [[nodiscard]] bool isHasTutorial() const;
 
-    Image * getTutorialImage() const;
+    [[nodiscard]] Image * getTutorialImage() const;
 
     static void makeItemHealthGhost(Vertex3D position);
 

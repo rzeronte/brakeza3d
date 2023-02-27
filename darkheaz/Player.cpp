@@ -110,7 +110,7 @@ bool Player::takeDamage(float dmg)
         );
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
-        ComponentsManager::get()->getComponentGame()->shaderColor->setEnabled(true);
+        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
         lives--;
     }
 
@@ -646,11 +646,11 @@ void Player::updateWeaponInteractionStatus() const
     auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
     auto weaponStatus = getWeapon()->getStatus();
 
-    if (weaponStatus == WeaponStatus::SUSTAINED && componentInput->controllerAxisTriggerRight < componentGameInput->controllerAxisThreshold) {
+    if (weaponStatus == WeaponStatus::SUSTAINED && componentInput->getControllerAxisTriggerRight() < componentGameInput->getControllerAxisThreshold()) {
         getWeapon()->setStatus(WeaponStatus::RELEASED);
     }
 
-    if (weaponStatus == WeaponStatus::NONE && componentInput->controllerAxisTriggerRight >= componentGameInput->controllerAxisThreshold) {
+    if (weaponStatus == WeaponStatus::NONE && componentInput->getControllerAxisTriggerRight() >= componentGameInput->getControllerAxisThreshold()) {
         getWeapon()->setStatus(WeaponStatus::PRESSED);
     }
 }

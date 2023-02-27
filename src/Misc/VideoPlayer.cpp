@@ -34,7 +34,7 @@ VideoPlayer::VideoPlayer(const std::string &filename) {
     this->findFirstStream(pFormatCtx);
 
     bmp = SDL_CreateTexture(
-        ComponentsManager::get()->getComponentWindow()->renderer,
+        ComponentsManager::get()->getComponentWindow()->getRenderer(),
         SDL_PIXELFORMAT_YV12,
         SDL_TEXTUREACCESS_STREAMING,
         pCodecCtx->width,
@@ -161,7 +161,7 @@ void VideoPlayer::onUpdate()
 void VideoPlayer::renderToScreenTexture()
 {
     SDL_UpdateTexture(
-        ComponentsManager::get()->getComponentWindow()->screenTexture,
+        ComponentsManager::get()->getComponentWindow()->getScreenTexture(),
         nullptr,
         pFrameRGB->data[0],
         pFrameRGB->linesize[0]

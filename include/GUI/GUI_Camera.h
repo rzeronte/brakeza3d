@@ -90,13 +90,13 @@ public:
             ImGui::Separator();
 
             if (ImGui::TreeNode(autoscrollSpeed_text.c_str())) {
-                ImGui::Checkbox("AutoScroll Enabled", &ComponentsManager::get()->getComponentCamera()->autoScroll);
+                ImGui::Checkbox("AutoScroll Enabled", &ComponentsManager::get()->getComponentCamera()->isAutoScroll());
                 const float range_autoscroll_sensibility = 0.1;
                 const float range_autoscroll_min = 0;
                 const float range_autoscroll_max = 0;
-                ImGui::DragScalar("Speed X", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->autoScrollSpeed.x,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
-                ImGui::DragScalar("Speed Y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->autoScrollSpeed.y,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
-                ImGui::DragScalar("Speed Z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->autoScrollSpeed.z,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
+                ImGui::DragScalar("Speed X", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().x,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
+                ImGui::DragScalar("Speed Y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().y,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
+                ImGui::DragScalar("Speed Z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().z,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
                 ImGui::TreePop();
             }
             ImGui::Separator();

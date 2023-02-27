@@ -14,8 +14,8 @@ void ComponentHUD::onStart() {
     loadButtons();
 
     textWriter = new TextWriter(
-        ComponentsManager::get()->getComponentWindow()->renderer,
-        ComponentsManager::get()->getComponentWindow()->fontDefault,
+        ComponentsManager::get()->getComponentWindow()->getRenderer(),
+        ComponentsManager::get()->getComponentWindow()->getFontDefault(),
         std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
     );
 
@@ -80,8 +80,8 @@ void ComponentHUD::drawHUD()
     if (SETUP->DRAW_FPS) {
         this->textWriter->writeTTFCenterHorizontal(
             15,
-            std::to_string(componentManager->getComponentRender()->fps).c_str(),
-            componentManager->getComponentGame()->primaryColor,
+            std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
+            componentManager->getComponentGame()->getPrimaryColor(),
             0.5
         );
     }
@@ -119,7 +119,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         510,
         435,
         std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
-        game->secondaryColor,
+        game->getSecondaryColor(),
         0.50
     );
 
@@ -127,7 +127,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         510,
         462,
         game->getLevelInfo()->getLevelName().c_str(),
-        game->primaryColor,
+        game->getPrimaryColor(),
         0.25
     );
 

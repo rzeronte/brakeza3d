@@ -8,8 +8,6 @@
 ComponentMenu::ComponentMenu() {
     this->currentOption = 0;
     this->numOptions = 0;
-
-
 }
 
 void ComponentMenu::onStart()
@@ -97,7 +95,8 @@ void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
-void ComponentMenu::loadMenuOptions() {
+void ComponentMenu::loadMenuOptions()
+{
     size_t file_size;
     auto contentFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(contentFile);
@@ -107,12 +106,7 @@ void ComponentMenu::loadMenuOptions() {
     }
 
     cJSON *currentLoadingOption;
-    optionsJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "options");
-    int sizeOptions = cJSON_GetArraySize(optionsJSON);
-
-    Logging::Log("menu.json have " + std::to_string(sizeOptions) + " optionsJSON", "Menu");
-
-    cJSON_ArrayForEach(currentLoadingOption, optionsJSON) {
+    cJSON_ArrayForEach(currentLoadingOption, cJSON_GetObjectItemCaseSensitive(myDataJSON, "options")) {
         cJSON *nameOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "name");
         cJSON *actionOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "action");
         cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "alt");
@@ -145,7 +139,7 @@ void ComponentMenu::drawOptions() {
             text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
         }
 
-        auto color = ComponentsManager::get()->getComponentGame()->primaryColor;
+        auto color = ComponentsManager::get()->getComponentGame()->getPrimaryColor();
         if (i == currentOption) {
             color = Color::black();
         }
@@ -173,11 +167,46 @@ void ComponentMenu::setEnabled(bool value)
 void ComponentMenu::drawVersion()
 {
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
-            520,
-            455,
-            "brakeza.com",
-            ComponentsManager::get()->getComponentGame()->secondaryColor,
-            0.3
+        520,
+        455,
+        "brakeza.com",
+        ComponentsManager::get()->getComponentGame()->getSecondaryColor(),
+        0.3
     );
+}
+
+int ComponentMenu::getCurrentOption() const {
+    return currentOption;
+}
+
+int ComponentMenu::getNumOptions() const {
+    return numOptions;
+}
+
+void ComponentMenu::increaseMenuOption()
+{
+    currentOption++;
+}
+
+void ComponentMenu::decreaseMenuOption()
+{
+    currentOption--;
+}
+
+ComponentMenu::~ComponentMenu()
+{
+    delete shaderBackgroundImage;
+    delete title;
+    delete spaceship;
+    delete light;
+    delete pendulum;
+
+    for (int i = 0; i < numOptions; i++) {
+        delete options[i];
+    }
+}
+
+MenuOption *const *ComponentMenu::getOptions() const {
+    return options;
 }
 

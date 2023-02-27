@@ -14,12 +14,11 @@ onStart()
 
 void ComponentRender::preUpdate()
 {
-    this->updateFPS(Brakeza3D::get()->deltaTime);
+    this->updateFPS(Brakeza3D::get()->getDeltaTime());
 
     if (!isEnabled()) {
         return;
     }
-
 }
 
 void ComponentRender::onUpdate()
@@ -181,7 +180,7 @@ void ComponentRender::onUpdateSceneObjects()
         it++;
     }
 
-    auto sceneObjects = Brakeza3D::get()->sceneObjects;
+    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         if (!object->isEnabled()) {
             continue;
@@ -558,8 +557,8 @@ void ComponentRender::triangleRasterizer(Triangle *t) {
 void ComponentRender::processPixelTextureAnimated(Fragment *fragment) {
     float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
     float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
-    fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache2)) * SETUP->LAVA_SCALE;
-    fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->executionTime + cache1)) * SETUP->LAVA_SCALE;
+    fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->getExecutionTime() + cache2)) * SETUP->LAVA_SCALE;
+    fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->getExecutionTime() + cache1)) * SETUP->LAVA_SCALE;
 }
 
 Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
@@ -1068,4 +1067,40 @@ void ComponentRender::OpenCLInfo()
     }
 
     free(platforms);
+}
+
+std::vector<Tile> &ComponentRender::getTiles() {
+    return tiles;
+}
+
+int ComponentRender::getTilesWidth() const {
+    return tilesWidth;
+}
+
+int ComponentRender::getTilesHeight() const {
+    return tilesHeight;
+}
+
+int ComponentRender::getNumTiles() const {
+    return numTiles;
+}
+
+int ComponentRender::getFps() const {
+    return fps;
+}
+
+_cl_platform_id *ComponentRender::getClPlatformId(){
+    return clPlatformId;
+}
+
+_cl_device_id *ComponentRender::getClDeviceId() {
+    return clDeviceId;
+}
+
+_cl_context *ComponentRender::getClContext() {
+    return clContext;
+}
+
+_cl_command_queue *ComponentRender::getClCommandQueue() {
+    return clCommandQueue;
 }

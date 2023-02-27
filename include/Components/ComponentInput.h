@@ -7,8 +7,7 @@
 #include "ComponentCamera.h"
 
 class ComponentInput : public Component {
-public:
-    bool enabled;
+private:
     bool debug = true;
     bool click = false;
     bool mousePressed = false;
@@ -39,24 +38,20 @@ public:
     int relativeRendererMouseY;
 
     _SDL_GameController *gameController;
-
+public:
     ComponentInput();
 
-    void onStart();
+    void onStart() override;
 
-    void preUpdate();
+    void preUpdate() override;
 
-    void onUpdate();
+    void onUpdate() override;
 
-    void postUpdate();
+    void postUpdate() override;
 
-    void onEnd();
+    void onEnd() override;
 
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
-    bool isEnabled() const;
-
-    void setEnabled(bool enabled);
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     static void handleWindowEvents(SDL_Event *e, bool &);
 
@@ -70,26 +65,48 @@ public:
 
     void handleProjectileDemo(SDL_Event *pEvent);
 
-    bool isLeftMouseButtonPressed() const;
+    [[nodiscard]] bool isLeftMouseButtonPressed() const;
 
-    bool isRightMouseButtonPressed() const;
+    [[nodiscard]] bool isRightMouseButtonPressed() const;
 
     void updateMouseMapping();
 
-    bool isClickLeft() const;
+    [[nodiscard]] bool isClickLeft() const;
 
-    bool isClickRight() const;
+    [[nodiscard]] bool isClickRight() const;
 
-    int getRelativeRendererMouseX() const;
-    int getRelativeRendererMouseY() const;
+    [[nodiscard]] int getRelativeRendererMouseX() const;
+    [[nodiscard]] int getRelativeRendererMouseY() const;
 
-    bool isMouseMotion() const;
+    [[nodiscard]] bool isMouseMotion() const;
 
     void updateGamePadStates();
 
     bool isAnyControllerButtonPressed();
 
     void initJostick();
+
+    [[nodiscard]] float getControllerAxisTriggerLeft() const;
+
+    [[nodiscard]] float getControllerAxisTriggerRight() const;
+
+    [[nodiscard]] Uint8 *getKeyboard() const;
+
+    [[nodiscard]] Uint8 getControllerButtonA() const;
+
+    [[nodiscard]] Uint8 getControllerButtonB() const;
+
+    [[nodiscard]] Uint8 getControllerButtonX() const;
+
+    [[nodiscard]] Uint8 getControllerButtonY() const;
+
+    float getControllerAxisLeftX() const;
+
+    float getControllerAxisLeftY() const;
+
+    float getControllerAxisRightX() const;
+
+    float getControllerAxisRightY() const;
 };
 
 
