@@ -58,7 +58,7 @@ void ComponentCamera::updatePositionForTrackingObject() {
     getCamera()->setPosition(getCamera()->getFollowTo()->getPosition() + getCamera()->followToPositionOffset);
 }
 
-const Vertex3D &ComponentCamera::getAutoScrollSpeed() const {
+Vertex3D &ComponentCamera::getAutoScrollSpeed() {
     return autoScrollSpeed;
 }
 
@@ -66,7 +66,7 @@ void ComponentCamera::setAutoScrollSpeed(const Vertex3D &autoScrollSpeed) {
     ComponentCamera::autoScrollSpeed = autoScrollSpeed;
 }
 
-bool ComponentCamera::isAutoScroll() const {
+bool &ComponentCamera::isAutoScroll(){
     return autoScroll;
 }
 

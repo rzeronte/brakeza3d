@@ -19,48 +19,43 @@
 
 typedef float vec3_t[3];
 
-class ComponentWeapons;
-
 class ComponentCamera : public Component {
-public:
-    ComponentCamera();
-
-    void onStart();
-
-    void preUpdate();
-
-    void onUpdate();
-
-    void postUpdate();
-
-    void onEnd();
-
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
+private:
     Camera3D *camera;
     bool freeLook = false;
     Vertex3D autoScrollSpeed;
     bool autoScroll = false;
+public:
+    ComponentCamera();
 
-    const Vertex3D &getAutoScrollSpeed() const;
+    void onStart() override;
+
+    void preUpdate() override;
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void onEnd() override;
+
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
+
+    [[nodiscard]] Vertex3D &getAutoScrollSpeed();
 
     void setAutoScrollSpeed(const Vertex3D &autoScrollSpeed);
 
-    bool isAutoScroll() const;
+    [[nodiscard]] bool &isAutoScroll();
 
     void setAutoScroll(bool autoScroll);
 
-    Camera3D *getCamera() const;
+    [[nodiscard]] Camera3D *getCamera() const;
 
-    void updateCameraBSPCollider() const;
-
-    static void drawCheckTrace(const std::string& o1, const std::string& o2);
-
-    bool isFreeLookEnabled() const;
+    [[nodiscard]] bool isFreeLookEnabled() const;
 
     void setFreeLook(bool isFlyMode);
 
     void updatePositionForTrackingObject();
+
 
 };
 

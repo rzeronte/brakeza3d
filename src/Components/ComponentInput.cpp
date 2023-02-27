@@ -114,14 +114,6 @@ void ComponentInput::updateMouseStates(SDL_Event *event) {
     }
 }
 
-bool ComponentInput::isEnabled() const {
-    return enabled;
-}
-
-void ComponentInput::setEnabled(bool enabled) {
-    ComponentInput::enabled = enabled;
-}
-
 void ComponentInput::handleProjectileDemo(SDL_Event *event) {
     if (event->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_1]) {
@@ -171,7 +163,7 @@ void ComponentInput::updateMouseMapping() {
     }
 
     int windowWidth, windowHeight;
-    SDL_GetRendererOutputSize(window->renderer, &windowWidth, &windowHeight);
+    SDL_GetRendererOutputSize(window->getRenderer(), &windowWidth, &windowHeight);
     relativeRendererMouseX = (EngineSetup::get()->screenWidth * mouseX ) / windowWidth;
     relativeRendererMouseY = (EngineSetup::get()->screenHeight * mouseY) / windowHeight;
 }
@@ -237,4 +229,48 @@ void ComponentInput::initJostick()
         printf("Opened Joystick 0\n");
         printf("Name: %s\n", SDL_JoystickNameForIndex(0));
     }
+}
+
+float ComponentInput::getControllerAxisTriggerLeft() const {
+    return controllerAxisTriggerLeft;
+}
+
+float ComponentInput::getControllerAxisTriggerRight() const {
+    return controllerAxisTriggerRight;
+}
+
+Uint8 *ComponentInput::getKeyboard() const {
+    return keyboard;
+}
+
+Uint8 ComponentInput::getControllerButtonA() const {
+    return controllerButtonA;
+}
+
+Uint8 ComponentInput::getControllerButtonB() const {
+    return controllerButtonB;
+}
+
+Uint8 ComponentInput::getControllerButtonX() const {
+    return controllerButtonX;
+}
+
+Uint8 ComponentInput::getControllerButtonY() const {
+    return controllerButtonY;
+}
+
+float ComponentInput::getControllerAxisLeftX() const {
+    return controllerAxisLeftX;
+}
+
+float ComponentInput::getControllerAxisLeftY() const {
+    return controllerAxisLeftY;
+}
+
+float ComponentInput::getControllerAxisRightX() const {
+    return controllerAxisRightX;
+}
+
+float ComponentInput::getControllerAxisRightY() const {
+    return controllerAxisRightY;
 }

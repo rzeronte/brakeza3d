@@ -46,12 +46,6 @@ public:
 
     static void drawCrossHair();
 
-    static void drawFadeIn();
-
-    static void drawFadeOut();
-
-    static void drawFacePercent(float percent);
-
     static void drawAABB(AABB3D *, Color);
 
     static void drawOctree(Octree *, bool onlyWithTriangles);

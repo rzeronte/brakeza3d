@@ -13,33 +13,41 @@
 
 
 class ComponentWindow : public Component {
-
-public:
-
-    ComponentWindow();
-
-    void onStart();
-
-    void preUpdate();
-
-    void onUpdate();
-
-    void postUpdate();
-
-    void onEnd();
-
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
+private:
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
-
     TTF_Font *fontDefault;
+public:
+
+    ComponentWindow();
+
+    void onStart() override;
+
+    void preUpdate() override;
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void onEnd() override;
+
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     void initWindow();
 
     void initFontsTTF();
+
+    [[nodiscard]] SDL_Window *getWindow() const;
+
+    [[nodiscard]] SDL_Renderer *getRenderer() const;
+
+    [[nodiscard]] SDL_Surface *getScreenSurface() const;
+
+    [[nodiscard]] SDL_Texture *getScreenTexture() const;
+
+    [[nodiscard]] TTF_Font *getFontDefault() const;
 };
 
 

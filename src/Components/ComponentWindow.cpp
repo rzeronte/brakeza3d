@@ -31,6 +31,9 @@ void ComponentWindow::postUpdate()
 void ComponentWindow::onEnd() {
     TTF_CloseFont(fontDefault);
     SDL_DestroyWindow(window);
+    SDL_DestroyTexture(screenTexture);
+    SDL_FreeSurface(screenSurface);
+    SDL_DestroyRenderer(renderer);
     SDL_Quit();
 
     std::cout << std::endl << "Brakeza3D exit, good bye ;)" << std::endl;
@@ -95,4 +98,24 @@ void ComponentWindow::initFontsTTF()
         Logging::Log(TTF_GetError(), "INFO");
         exit(-1);
     }
+}
+
+SDL_Window *ComponentWindow::getWindow() const {
+    return window;
+}
+
+SDL_Renderer *ComponentWindow::getRenderer() const {
+    return renderer;
+}
+
+SDL_Surface *ComponentWindow::getScreenSurface() const {
+    return screenSurface;
+}
+
+SDL_Texture *ComponentWindow::getScreenTexture() const {
+    return screenTexture;
+}
+
+TTF_Font *ComponentWindow::getFontDefault() const {
+    return fontDefault;
 }

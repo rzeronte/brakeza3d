@@ -13,17 +13,17 @@ class ComponentSound : public Component {
 public:
     ComponentSound();
 
-    void onStart();
+    void onStart() override;
 
-    void preUpdate();
+    void preUpdate() override;
 
-    void onUpdate();
+    void onUpdate() override;
 
-    void postUpdate();
+    void postUpdate() override;
 
-    void onEnd();
+    void onEnd() override;
 
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     void initSoundSystem();
 

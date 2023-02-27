@@ -61,7 +61,7 @@ public:
 
     bool isEnabled() const;
 
-    void setEnabled(bool enabled);
+    virtual void setEnabled(bool enabled);
 };
 
 
