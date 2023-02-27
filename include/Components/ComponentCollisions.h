@@ -19,6 +19,9 @@ private:
     btCollisionDispatcher *dispatcher;
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     btBroadphaseInterface *overlappingPairCache;
+
+    btGhostPairCallback *ghostPairCallback;
+
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     btSequentialImpulseConstraintSolver *solver;
     btDiscreteDynamicsWorld *dynamicsWorld;
@@ -44,8 +47,6 @@ public:
     void checkCollisionsForAll();
 
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
-
-    void setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld);
 
     [[nodiscard]] BSPMap *getBspMap() const;
 
