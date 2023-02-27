@@ -6,30 +6,25 @@
 #include "../../darkheaz/Player.h"
 
 class ComponentGameInput : public Component {
-
-public:
+private:
     float controllerAxisThreshold;
-    bool enabled;
     bool lockRightStick;
     Player *player;
+public:
 
-    ComponentGameInput(Player *player);
+    explicit ComponentGameInput(Player *player);
 
-    void onStart();
+    void onStart() override;
 
-    void preUpdate();
+    void preUpdate() override;
 
-    void onUpdate();
+    void onUpdate() override;
 
-    void postUpdate();
+    void postUpdate() override;
 
-    void onEnd();
+    void onEnd() override;
 
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
-    bool isEnabled() const;
-
-    void setEnabled(bool enable);
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     void handleEscape(SDL_Event *event);
 
@@ -59,11 +54,11 @@ public:
 
     void handleCheckPadConnection(SDL_Event *pEvent);
 
-    void initJostick();
-
     void setPlayer(Player *player);
 
     void handleBomb(SDL_Event *pEvent);
+
+    [[nodiscard]] float getControllerAxisThreshold() const;
 };
 
 

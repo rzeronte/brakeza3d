@@ -11,10 +11,10 @@
 
 ShaderOpenCL::ShaderOpenCL(const std::string& kernelFilename)
 {
-    this->clDeviceId = ComponentsManager::get()->getComponentRender()->clDeviceId;
-    this->clCommandQueue = ComponentsManager::get()->getComponentRender()->clCommandQueue;
+    this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
+    this->clCommandQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
     this->kernelFilename = kernelFilename;
-    this->context = ComponentsManager::get()->getComponentRender()->clContext;
+    this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
     initOpenCLProgram();
 

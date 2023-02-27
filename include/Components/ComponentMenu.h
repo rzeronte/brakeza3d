@@ -16,45 +16,36 @@
 #define MAX_MENU_OPTIONS 10
 
 class ComponentMenu : public Component {
-public:
-    void onStart();
-
-    void preUpdate();
-
-    void onUpdate();
-
-    void postUpdate();
-
-    void onEnd();
-
-    void setEnabled(bool enabled);
-
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
-    // menu background surface
+private:
     ShaderImage *shaderBackgroundImage;
-
     Image *title;
     Mesh3D *spaceship;
     LightPoint3D *light;
     SimplePendulum *pendulum;
-
-    ComponentMenu();
 
     MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
 
     int currentOption;
 
-    enum MenuActions {
-        MNU_NEW_GAME = 0,
-        MNU_CREDITS = 1,
-        MNU_HELP = 2,
-        MNU_EXIT = 3,
-    };
+public:
+    ComponentMenu();
 
-    // menu.json
-    cJSON *optionsJSON;
+    virtual ~ComponentMenu();
+
+    void onStart() override;
+
+    void preUpdate() override;
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void onEnd() override;
+
+    void setEnabled(bool enabled) override;
+
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     void drawOptions();
 
@@ -63,6 +54,23 @@ public:
     void loadDecorative3DMesh();
 
     void drawVersion();
+
+    MenuOption *const *getOptions() const;
+
+    [[nodiscard]] int getCurrentOption() const;
+
+    [[nodiscard]] int getNumOptions() const;
+
+    void increaseMenuOption();
+
+    void decreaseMenuOption();
+
+    enum MenuActions {
+        MNU_NEW_GAME = 0,
+        MNU_CREDITS = 1,
+        MNU_HELP = 2,
+        MNU_EXIT = 3,
+    };
 };
 
 

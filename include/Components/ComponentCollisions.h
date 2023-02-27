@@ -10,23 +10,8 @@
 #include "Component.h"
 
 class ComponentCollisions : public Component {
-public:
-    ComponentCollisions();
-
-    void onStart();
-
-    void preUpdate();
-
-    void onUpdate();
-
-    void postUpdate();
-
-    void onEnd();
-
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
-
+private:
     BSPMap *bspMap;
-    std::vector<Triangle *> *visibleTriangles;
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     btDefaultCollisionConfiguration *collisionConfiguration;
@@ -39,21 +24,32 @@ public:
     btDiscreteDynamicsWorld *dynamicsWorld;
     PhysicsDebugDraw *debugDraw;
 
+public:
+    ComponentCollisions();
+
+    void onStart() override;
+
+    void preUpdate() override;
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void onEnd() override;
+
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
+
     void initBulletSystem();
 
     void checkCollisionsForAll();
 
-    btDiscreteDynamicsWorld *getDynamicsWorld() const;
+    [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
 
     void setDynamicsWorld(btDiscreteDynamicsWorld *dynamicsWorld);
 
-    BSPMap *getBspMap() const;
+    [[nodiscard]] BSPMap *getBspMap() const;
 
     void setBSPMap(BSPMap *bspMap);
-
-    std::vector<Triangle *> &getVisibleTriangles() const;
-
-    void setVisibleTriangles(std::vector<Triangle *> &newVisibleTriangles);
 
     void updatePhysicObjects();
 
@@ -62,7 +58,6 @@ public:
     void demoProjectile(int type);
 
     virtual ~ComponentCollisions();
-
 };
 
 

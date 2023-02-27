@@ -43,7 +43,7 @@ void ShaderColor::executeKernelOpenCL()
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->executionTime);
+    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
     clSetKernelArg(kernel, 5, sizeof(float), &this->color.r);

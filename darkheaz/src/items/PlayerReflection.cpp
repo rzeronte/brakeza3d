@@ -157,7 +157,7 @@ void PlayerReflection::makeExplosion()
     Vector3D direction(origin, getPosition());
     sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(150));
 
-    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->explosion);
+    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
     sprite->setAnimation(0);
     sprite->setAutoRemoveAfterAnimation(true);
 

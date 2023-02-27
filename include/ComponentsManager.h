@@ -41,48 +41,48 @@ public:
 
     void configureComponents();
 
-    std::vector<Object3D *> *getSceneObjects() const;
+    [[nodiscard]] std::vector<Object3D *> *getSceneObjects() const;
 
     void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
     ComponentCamera *getComponentCamera() {
-        return static_cast<ComponentCamera *>(components[ComponentID::COMPONENT_CAMERA]);
+        return dynamic_cast<ComponentCamera *>(components[ComponentID::COMPONENT_CAMERA]);
     };
 
     ComponentCollisions *getComponentCollisions() {
-        return static_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]);
+        return dynamic_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]);
     };
 
     ComponentMenu *getComponentMenu() {
-        return static_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
+        return dynamic_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
     };
 
     ComponentHUD *getComponentHUD() {
-        return static_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]);
+        return dynamic_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]);
     };
 
     ComponentWindow *getComponentWindow() {
-        return static_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]);
+        return dynamic_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]);
     };
 
     ComponentRender *getComponentRender() {
-        return static_cast<ComponentRender *>(components[ComponentID::COMPONENT_RENDER]);
+        return dynamic_cast<ComponentRender *>(components[ComponentID::COMPONENT_RENDER]);
     };
 
     ComponentInput *getComponentInput() {
-        return static_cast<ComponentInput *>(components[ComponentID::COMPONENT_INPUT]);
+        return dynamic_cast<ComponentInput *>(components[ComponentID::COMPONENT_INPUT]);
     };
 
     ComponentGame *getComponentGame() {
-        return static_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]);
+        return dynamic_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]);
     };
 
     ComponentGameInput *getComponentGameInput() {
-        return static_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]);
+        return dynamic_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]);
     };
 
     ComponentSound *getComponentSound() {
-        return static_cast<ComponentSound *>(components[ComponentID::COMPONENT_SOUND]);
+        return dynamic_cast<ComponentSound *>(components[ComponentID::COMPONENT_SOUND]);
     };
 };
 

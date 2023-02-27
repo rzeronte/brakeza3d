@@ -24,7 +24,6 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
 
 void ComponentsManager::configureComponents()
 {
-    getComponentCollisions()->setVisibleTriangles(getComponentRender()->getVisibleTriangles());
 }
 
 std::vector<Object3D *> *ComponentsManager::getSceneObjects() const {

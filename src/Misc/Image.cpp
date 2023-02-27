@@ -26,7 +26,7 @@ void Image::loadTGA(std::string filename)
 {
     if (Tools::fileExists(filename)) {
         this->surface = IMG_Load(filename.c_str());
-        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->renderer, surface);
+        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
         this->fileName = filename;
@@ -48,7 +48,7 @@ void Image::drawFlat(int pos_x, int pos_y) const
 {
     if (!loaded) return;
 
-    auto renderer = ComponentsManager::get()->getComponentWindow()->renderer;
+    auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
 
     int windowWidth, windowHeight;
     SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);

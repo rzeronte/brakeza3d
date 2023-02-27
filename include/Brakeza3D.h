@@ -38,15 +38,6 @@ private:
 
     Timer engineTimer;
 
-public:
-    Brakeza3D();
-
-    virtual ~Brakeza3D();
-
-    static Brakeza3D *get();
-
-    static Brakeza3D *instance;
-
     bool finish = false;
 
     float deltaTime = 0;
@@ -57,6 +48,14 @@ public:
     float currentFadePercent = 1;
 
     std::vector<Object3D *> sceneObjects;
+public:
+    Brakeza3D();
+
+    virtual ~Brakeza3D();
+
+    static Brakeza3D *get();
+
+    static Brakeza3D *instance;
 
     void start();
 
@@ -95,6 +94,8 @@ public:
     void ImGuiOnUpdate();
 
     void controlFrameRate() const;
+
+    float &getExecutionTime();
 };
 
 

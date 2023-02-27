@@ -16,26 +16,28 @@
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 
 class ComponentHUD : public Component {
+private:
+
     std::vector<Button*> buttons;
     ShaderProjectiles *shaderLasers;
+    TexturePackage *HUDTextures;
+    TextWriter *textWriter;
 public:
 
     ComponentHUD();
 
-    void onStart();
+    void onStart() override;
 
-    void preUpdate();
+    void preUpdate() override;
 
-    void onUpdate();
+    void onUpdate() override;
 
-    void postUpdate();
+    void postUpdate() override;
 
-    void onEnd();
+    void onEnd() override;
 
-    void onSDLPollEvent(SDL_Event *event, bool &finish);
+    void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    TexturePackage *HUDTextures;
-    TextWriter *textWriter;
     void loadImages();
 
     void drawHUD();
@@ -52,8 +54,7 @@ public:
 
     void drawShaderLasers();
 
-    TextWriter *getTextWriter() const;
-
+    [[nodiscard]] TextWriter *getTextWriter() const;
 };
 
 

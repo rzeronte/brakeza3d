@@ -154,7 +154,6 @@ void Drawable::drawLine2D(Line2D L, Color color) {
 
 void Drawable::drawLineLighting(Line2D L, Color color)
 {
-
     int x1 = L.x1;
     int y1 = L.y1;
     int x2 = L.x2;
@@ -199,7 +198,6 @@ void Drawable::drawLineLighting(Line2D L, Color color)
             }
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
-                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     } else {
@@ -216,7 +214,6 @@ void Drawable::drawLineLighting(Line2D L, Color color)
             }
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
-                ComponentsManager::get()->getComponentGame()->shaderTrailBuffer->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     }
@@ -430,33 +427,8 @@ void Drawable::drawCrossHair() {
     }
 }
 
-void Drawable::drawFadeIn() {
-    Brakeza3D::get()->currentFadePercent -= 0.01;
-    if (Brakeza3D::get()->currentFadePercent < 0) {
-        Brakeza3D::get()->currentFadePercent = 0;
-    }
-    Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
-}
-
-void Drawable::drawFadeOut() {
-    Brakeza3D::get()->currentFadePercent += 0.01;
-    if (Brakeza3D::get()->currentFadePercent > 1) {
-        Brakeza3D::get()->currentFadePercent = 1;
-    }
-    Drawable::drawFacePercent(Brakeza3D::get()->currentFadePercent);
-}
-
-void Drawable::drawFacePercent(float percent) {
-
-    EngineBuffers *buffers = EngineBuffers::getInstance();
-    for (int i = 0; i < buffers->sizeBuffers; i++) {
-        Color bufferColor = Color(buffers->videoBuffer[i]);
-        Color mixedColor = Tools::mixColor(bufferColor, Color::black(), percent);
-        buffers->videoBuffer[i] = mixedColor.getColor();
-    }
-}
-
-void Drawable::drawAABB(AABB3D *aabb, Color color) {
+void Drawable::drawAABB(AABB3D *aabb, Color color)
+{
     Vector3D v01(aabb->vertices[0], aabb->vertices[2]);
     Vector3D v02(aabb->vertices[0], aabb->vertices[3]);
     Vector3D v03(aabb->vertices[0], aabb->vertices[4]);

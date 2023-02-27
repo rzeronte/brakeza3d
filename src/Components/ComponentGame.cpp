@@ -360,9 +360,9 @@ void ComponentGame::loadPlayer()
     player->loadBlinkShader();
     player->loadReflection();
 
-    explosion = new Sprite3D();
-    explosion->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"),  12, 30);
-    explosion->setAnimation(0);
+    explosionSpriteTemplate = new Sprite3D();
+    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 30);
+    explosionSpriteTemplate->setAnimation(0);
 }
 
 Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const
@@ -924,4 +924,33 @@ void ComponentGame::handlePressKeyGameOver()
 void ComponentGame::handlePressKeyCredits()
 {
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+}
+
+const Color &ComponentGame::getPrimaryColor() const {
+    return primaryColor;
+}
+
+Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
+    return explosionSpriteTemplate;
+}
+
+const Color &ComponentGame::getSecondaryColor() const {
+    return secondaryColor;
+}
+
+ShaderColor *ComponentGame::getShaderColor() const {
+    return shaderColor;
+}
+
+ShaderImage *ComponentGame::getShaderBackgroundImage() const {
+    return shaderBackgroundImage;
+}
+
+ShaderClouds *ComponentGame::getShaderClouds() const {
+    return shaderClouds;
+}
+
+ComponentGame::~ComponentGame()
+{
+    delete explosionSpriteTemplate;
 }
