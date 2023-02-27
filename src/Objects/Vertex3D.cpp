@@ -126,9 +126,7 @@ Vertex3D Vertex3D::getAbsolute() const {
 }
 
 float Vertex3D::getModule() const {
-    float norm = sqrt((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
-
-    return norm;
+    return sqrt((this->x * this->x) + (this->y * this->y) + (this->z * this->z));;
 }
 
 float Vertex3D::getSquaredLength() const {

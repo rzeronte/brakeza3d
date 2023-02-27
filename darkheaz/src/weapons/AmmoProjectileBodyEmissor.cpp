@@ -155,7 +155,7 @@ void AmmoProjectileBodyEmissor::launchUniqueProjectile()
             (float) weaponType->getSpeed(),
             100,
             EngineSetup::get()->PROJECTILE_DEMO_TTL,
-            EngineSetup::collisionGroups::Projectile,
+            EngineSetup::collisionGroups::ProjectileEnemy,
             EngineSetup::collisionGroups::Player,
             nullptr
     );
