@@ -10,7 +10,7 @@ Enemy::Enemy() : startStamina(100), stamina(0), range(0), rewards(false)
 }
 
 void Enemy::takeDamage(float damageTaken) {
-    this->stamina -= damageTaken;
+    //this->stamina -= damageTaken;
     if (this->stamina <= 0) {
         setState(EnemyState::ENEMY_STATE_DIE);
     }

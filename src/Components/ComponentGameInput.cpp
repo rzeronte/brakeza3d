@@ -73,7 +73,8 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
     //this->handleZoom(event);
 }
 
-void ComponentGameInput::handleEscape(SDL_Event *event) {
+void ComponentGameInput::handleEscape(SDL_Event *event)
+{
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->keyboard;
 
     auto game = ComponentsManager::get()->getComponentGame();

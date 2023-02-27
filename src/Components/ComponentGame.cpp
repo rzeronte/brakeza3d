@@ -237,19 +237,12 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, SPLASH_TIME * 1000);
     }
 
-    if (getGameState() == EngineSetup::GameState::SPLASH && state == EngineSetup::GameState::MENU) {
-        Logging::getInstance()->Log("GameState changed to MENU");
-    }
-
     if (state == EngineSetup::GameState::MENU) {
         handleMenuGameState();
     }
 
     if (state == EngineSetup::GameState::GAMING) {
         handleGamingGameState();
-    } else {
-        ComponentsManager::get()->getComponentHUD()->setEnabled(false);
-        ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
     }
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
@@ -358,10 +351,7 @@ void ComponentGame::loadPlayer()
         Vertex3D(500, 500, 500),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::ProjectileEnemy |
-        EngineSetup::collisionGroups::Enemy |
-        EngineSetup::collisionGroups::Health|
-        EngineSetup::collisionGroups::Weapon
+        EngineSetup::collisionGroups::AllFilter
     );
     Brakeza3D::get()->addObject3D(player, "player");
 
@@ -614,6 +604,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
         auto *bomb = dynamic_cast<ItemBombGhost *> (object);
+        auto *particleEmissor = dynamic_cast<ParticleEmissor *> (object);
 
         if (enemy != nullptr ||
             health != nullptr ||
@@ -624,6 +615,10 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             respawner != nullptr
         ) {
             object->setEnabled(value);
+        }
+
+        if (particleEmissor != nullptr) {
+            particleEmissor->setRemoved(true);
         }
     }
 }
@@ -717,6 +712,8 @@ void ComponentGame::pressedKeyByDead()
 
 void ComponentGame::addObjectsToStencilBuffer()
 {
+    if (getGameState() != EngineSetup::GAMING) return;
+
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
 
@@ -778,20 +775,26 @@ void ComponentGame::zoomCameraCountDown()
 
 void ComponentGame::handleMenuGameState()
 {
-    getPlayer()->setEnabled(false);
-    shaderTrailBuffer->setEnabled(false);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
-    setVisibleInGameObjects(false);
+
+    getPlayer()->setEnabled(false);
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
+
+    setVisibleInGameObjects(false);
+    shaderLasers->setEnabled(false);
+    //shaderTrailBuffer->setEnabled(false);
 }
 
 void ComponentGame::handleGamingGameState()
 {
     getPlayer()->setEnabled(true);
+    shaderLasers->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
     setVisibleInGameObjects(true);
     setEnemyWeaponsEnabled(true);
@@ -807,6 +810,7 @@ void ComponentGame::handleGamingGameState()
 
 void ComponentGame::handleCountDownGameState()
 {
+    shaderLasers->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
@@ -864,7 +868,6 @@ void ComponentGame::reloadLevel(int level)
     if (getLevelInfo()->isHaveMusic()) {
         ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
-    setGameState(EngineSetup::COUNTDOWN);
 
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
     ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);

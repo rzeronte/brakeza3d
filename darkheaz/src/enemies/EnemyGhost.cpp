@@ -88,7 +88,7 @@ void EnemyGhost::onUpdate()
 void EnemyGhost::updateLasers()
 {
     for (auto ray : fixedLasers) {
-        ray->setRay(getRotation() * ray->getDirection().getScaled(ray->getRay().getModule()));
+        ray->setRay(getRotation() * ray->getDirection());
         ray->setPosition(getPosition());
     }
 }
@@ -113,7 +113,6 @@ void EnemyGhost::postUpdate()
             counterDamageBlink.setEnabled(false);
         }
     }
-
 }
 
 void EnemyGhost::makeReward()
