@@ -161,7 +161,7 @@ void ComponentGameInput::handleFire() const
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
 
-    componentGame->getPlayer()->shaderLaser->setEnabled(false);
+    componentGame->getPlayer()->getShaderLaser()->setEnabled(false);
 
     Uint8 *keyboard = componentInput->getKeyboard();
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
@@ -379,7 +379,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
         }
 
         player->setEnergyShieldEnabled(true);
-        player->shieldModel->setEnabled(true);
+        player->getShieldModel()->setEnabled(true);
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("energyShield"),
             1,

@@ -350,7 +350,6 @@ void EnemyGhost::makeExplosion()
     auto sprite = new Sprite3D();
 
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-
     Vector3D direction(origin, getPosition());
     sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(350));
 
@@ -366,8 +365,8 @@ Object3D *EnemyGhost::getTarget()
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
     Object3D *target = player;
-    if (!player->reflection->isHidden()) {
-        target = player->reflection;
+    if (!player->getReflection()->isHidden()) {
+        target = (Object3D *) player->getReflection();
     }
 
     return target;

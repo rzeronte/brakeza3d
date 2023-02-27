@@ -20,11 +20,7 @@ public:
     bool endAnimation;
     bool paused;
 
-    TextureAnimated();
-
-    void setup(std::string file, int num_frames, int fps);
-
-    void loadImages();
+    TextureAnimated(std::string baseFile, int numFrames, int fps);
 
     [[nodiscard]] int getNumFrames() const;
 

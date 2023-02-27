@@ -5,23 +5,15 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Render/Logging.h"
 
-TextureAnimated::TextureAnimated() : numberFramesToLoad(0), currentFrame(0), endAnimation(false), paused(false) {
-}
-
-
-void TextureAnimated::setup(std::string file, int num_frames, int fps)
+TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
+    base_file(std::move(baseFile)),
+    numberFramesToLoad(numFrames),
+    currentFrame(0),
+    fps(fps),
+    endAnimation(false),
+    paused(false)
 {
-    std::cout << "Importing 2D animation: " << file << std::endl;
-
-    this->base_file = std::move(file);
-    this->numberFramesToLoad = num_frames;
-    this->fps = fps;
-
-    this->loadImages();
-}
-
-void TextureAnimated::loadImages() {
-    for (int i = 0; i < this->getNumFrames(); i++) {
+    for (int i = 0; i < numberFramesToLoad; i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
         std::cout << "Importing 2D animation file: " << file << std::endl;
         this->frames.push_back(new Texture(file));

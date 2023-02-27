@@ -25,6 +25,8 @@ Player::Player() :
     lightPositionOffset(Vertex3D(0, -550, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
+    shieldModel(Mesh3D()),
+    reflection(PlayerReflection((float) stamina, 5)),
     dashPower(INITIAL_POWERDASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
@@ -38,39 +40,36 @@ Player::Player() :
 
 void Player::loadShieldModel()
 {
-    shieldModel = new Mesh3D();
-    shieldModel->setEnabled(false);
-    shieldModel->setLabel("shieldModel");
-    shieldModel->setPosition(getPosition());
-    shieldModel->setAlpha(200);
-    shieldModel->setAlphaEnabled(true);
-    shieldModel->setEnableLights(true);
-    shieldModel->setScale(1);
-    shieldModel->setStencilBufferEnabled(true);
-    shieldModel->setFlatTextureColor(false);
-    shieldModel->setFlatColor(Color::green());
+    shieldModel.setEnabled(false);
+    shieldModel.setLabel("shieldModel");
+    shieldModel.setPosition(getPosition());
+    shieldModel.setAlpha(200);
+    shieldModel.setAlphaEnabled(true);
+    shieldModel.setEnableLights(true);
+    shieldModel.setScale(1);
+    shieldModel.setStencilBufferEnabled(true);
+    shieldModel.setFlatTextureColor(false);
+    shieldModel.setFlatColor(Color::green());
     //shieldModel->setRotationFrameEnabled(true);
     //shieldModel->setRotationFrame(Vertex3D(0, 0, 1));
-    shieldModel->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
+    shieldModel.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
 
-    Brakeza3D::get()->addObject3D(shieldModel, "shieldPlayer");
+    Brakeza3D::get()->addObject3D(&shieldModel, "shieldPlayer");
 }
 
 void Player::loadReflection()
 {
-    reflection = new PlayerReflection((float) getStartStamina(), 5);
-    reflection->setEnabled(false);
-    reflection->setLabel("gravitationalShieldPlayer");
-    reflection->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
-    reflection->setParent(parent);
-    reflection->setFlatTextureColor(false);
-    reflection->setPosition(getPosition());
-    reflection->setStencilBufferEnabled(true);
-    reflection->setRotationFrameEnabled(true);
-    reflection->setRotationFrame(Tools::randomVertex().getScaled(0.5));
-    reflection->loadBlinkShader();
+    reflection.setEnabled(false);
+    reflection.setLabel("gravitationalShieldPlayer");
+    reflection.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
+    reflection.setParent(parent);
+    reflection.setFlatTextureColor(false);
+    reflection.setPosition(getPosition());
+    reflection.setStencilBufferEnabled(true);
+    reflection.setRotationFrameEnabled(true);
+    reflection.setRotationFrame(Tools::randomVertex().getScaled(0.5));
 
-    Brakeza3D::get()->addObject3D(reflection, "gravitationalShieldPlayer");
+    Brakeza3D::get()->addObject3D(&reflection, "gravitationalShieldPlayer");
 }
 
 int Player::getStamina() const {
@@ -138,8 +137,8 @@ void Player::makeReflection()
         return;
     }
 
-    reflection->setPosition(getPosition());
-    reflection->reset();
+    reflection.setPosition(getPosition());
+    reflection.reset();
 
     gravityShieldsNumber++;
 
@@ -241,16 +240,16 @@ void Player::onUpdate()
     }
 
     if (isEnergyShieldEnabled()) {
-        shieldModel->setPosition(getPosition());
-        shieldModel->setRotation(getRotation());
-        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() + 10, 0, 255));
+        shieldModel.setPosition(getPosition());
+        shieldModel.setRotation(getRotation());
+        shieldModel.setAlpha( (float) std::clamp((int)shieldModel.getAlpha() + 10, 0, 255));
     } else {
-        if (shieldModel->getAlpha() == 0) {
-            shieldModel->setEnabled(false);
+        if (shieldModel.getAlpha() == 0) {
+            shieldModel.setEnabled(false);
         }
-        shieldModel->setRotation(getRotation());
-        shieldModel->setPosition(getPosition());
-        shieldModel->setAlpha( (float) std::clamp((int)shieldModel->getAlpha() - 25, 0, 255));
+        shieldModel.setRotation(getRotation());
+        shieldModel.setPosition(getPosition());
+        shieldModel.setAlpha( (float) std::clamp((int)shieldModel.getAlpha() - 25, 0, 255));
     }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -593,6 +592,8 @@ void Player::loadBlinkShader()
     shaderLaser->setTarget(this);
     shaderLaser->setSpeed(1000);
     shaderLaser->setEnabled(false);
+
+    reflection.loadBlinkShader();
 }
 
 PlayerState Player::getState() const {
@@ -655,15 +656,43 @@ void Player::updateWeaponInteractionStatus() const
     }
 }
 
-void Player::updateWeaponAutomaticStatus() const
+void Player::updateWeaponAutomaticStatus()
 {
     if (getWeapon()->getStatus() == PRESSED) {
         getWeapon()->setStatus(SUSTAINED);
     }
 
     if (getWeapon()->getStatus() == RELEASED) {
-        shaderLaser->setReach(0);
+        shaderLaser->resetReach();
         ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SND_LASER);
         getWeapon()->setStatus(NONE);
+    }
+}
+
+ShaderLaser *Player::getShaderLaser(){
+    return shaderLaser;
+}
+
+LightPoint3D *Player::getLight() const {
+    return light;
+}
+
+Mesh3D *Player::getShieldModel() {
+    return &shieldModel;
+}
+
+PlayerReflection *Player::getReflection() {
+    return &reflection;
+}
+
+Player::~Player()
+{
+    delete light;
+
+    delete blink;
+    delete shaderLaser;
+
+    for (auto w: weaponTypes) {
+        delete weapon;
     }
 }

@@ -1,17 +1,20 @@
+#include <utility>
+
 #include "../../include/Misc/TexturePackage.h"
 
-void TexturePackage::addItem(const std::string &srcTexture, std::string label) {
-    auto *item = new TexturePackageItem();
-    auto *t = new Texture(srcTexture);
-
-    item->texture = t;
-    item->label = std::move(label);
-
-    this->items.push_back(item);
+TexturePackageItem::TexturePackageItem(Texture *texture, std::string label) : texture(texture), label(std::move(label)) {
 }
 
-Texture *TexturePackage::getTextureByLabel(const std::string &label) {
-    for (int i = 0; i < this->items.size(); i++) {
+
+void TexturePackage::addItem(const std::string &srcTexture, const std::string& label) {
+    this->items.emplace_back(
+        new TexturePackageItem(new Texture(srcTexture), label)
+    );
+}
+
+Texture *TexturePackage::getTextureByLabel(const std::string &label)
+{
+    for (int i = 0; i < (int) this->items.size(); i++) {
         if (items[i]->label == label) {
             return items[i]->texture;
         }
@@ -20,9 +23,16 @@ Texture *TexturePackage::getTextureByLabel(const std::string &label) {
 }
 
 int TexturePackage::size() {
-    return items.size();
+    return (int) items.size();
 }
 
 Texture *TexturePackage::getTextureByIndex(int i) {
     return items[i]->texture;
+}
+
+TexturePackage::~TexturePackage()
+{
+    for (auto &item : items) {
+        delete item;
+    }
 }

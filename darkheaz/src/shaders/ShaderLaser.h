@@ -29,29 +29,29 @@ public:
     void update() override;
     void executeKernelOpenCL();
 
-    float getIntensity() const;
+    [[nodiscard]] float getIntensity() const;
 
     void setIntensity(float intensity);
 
-    float getReach() const;
+    [[nodiscard]] float getReach() const;
 
-    void setReach(float reach);
+    void resetReach();
 
-    float getDamage() const;
+    [[nodiscard]] float getDamage() const;
 
     void setDamage(float damage);
 
     void increaseReach();
 
-    float getSpeed() const;
+    [[nodiscard]] float getSpeed() const;
 
     void setSpeed(float speed);
 
-    Object3D *getTarget() const;
+    [[nodiscard]] Object3D *getTarget() const;
 
     void setTarget(Object3D *object);
 
-    const Color &getColor() const;
+    [[nodiscard]] const Color &getColor() const;
 
     void setColor(const Color &c);
 };

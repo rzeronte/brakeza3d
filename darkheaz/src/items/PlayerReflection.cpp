@@ -6,28 +6,15 @@
 PlayerReflection::PlayerReflection(
     float stamina,
     float ttl
-)
+):
+    startStamina(stamina),
+    counterDamageBlink(Counter(1))
 {
-    this->startStamina = stamina;
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
 
-    blink = new ShaderBlink(this, Color::green());
-    blink->setStep(0.05);
-    blink->setEnabled(false);
+    counterDamageBlink.setEnabled(false);
 
-    counterDamageBlink = new Counter(1);
-    counterDamageBlink->setEnabled(false);
-
-    makeSimpleGhostBody(
-        Vertex3D(600, 600, 600),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
-    );
-
-    removeCollisionObject();
-    setHidden(true);
 }
 
 void PlayerReflection::onUpdate()
@@ -44,10 +31,10 @@ void PlayerReflection::postUpdate()
 {
     Object3D::postUpdate();
 
-    if (counterDamageBlink->isEnabled()) {
-        counterDamageBlink->update();
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
         blink->update();
-        if (counterDamageBlink->isFinished()) {
+        if (counterDamageBlink.isFinished()) {
             blink->setEnabled(false);
         }
     }
@@ -95,7 +82,7 @@ void PlayerReflection::resolveCollision(Collisionable *collisionable)
     auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
         blink->setEnabled(true);
-        counterDamageBlink->setEnabled(true);
+        counterDamageBlink.setEnabled(true);
 
         auto fireworks = new ParticleEmissorFireworks(getPosition(), 5, 1000, 1, 0.02, Color::green(), 1, 4);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -105,11 +92,6 @@ void PlayerReflection::resolveCollision(Collisionable *collisionable)
     }
 }
 
-PlayerReflection::~PlayerReflection()
-{
-    delete blink;
-    delete counterDamageBlink;
-}
 
 void PlayerReflection::reset()
 {
@@ -145,8 +127,16 @@ void PlayerReflection::loadBlinkShader()
     blink = new ShaderBlink(this, Color::red());
     blink->setStep(0.05);
     blink->setEnabled(true);
-}
 
+    makeSimpleGhostBody(
+        Vertex3D(600, 600, 600),
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
+    );
+    removeCollisionObject();
+    setHidden(true);
+}
 
 void PlayerReflection::makeExplosion()
 {

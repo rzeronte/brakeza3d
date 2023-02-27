@@ -145,16 +145,15 @@ void ComponentRender::createLightPointsDepthMappings() {
     }
 }
 
-void ComponentRender::extractLightPointsFromObjects3D() {
-    this->lightpoints.resize(0);
-
-    std::vector<Object3D *>::iterator it;
-    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end();it++) {
-        Object3D *object = *(it);
-        LightPoint3D *lp = dynamic_cast<LightPoint3D *>(object);
-        if (lp != NULL) {
+void ComponentRender::extractLightPointsFromObjects3D()
+{
+    this->lightpoints.clear();
+    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto &object : sceneObjects) {
+        auto *lp = dynamic_cast<LightPoint3D *>(object);
+        if (lp != nullptr) {
             lp->clearShadowMappingBuffer();
-            lightpoints.push_back(lp);
+            lightpoints.emplace_back(lp);
         }
     }
 }
@@ -1103,4 +1102,23 @@ _cl_context *ComponentRender::getClContext() {
 
 _cl_command_queue *ComponentRender::getClCommandQueue() {
     return clCommandQueue;
+}
+
+ComponentRender::~ComponentRender()
+{
+    for (auto &l : lightpoints) {
+        delete l;
+    }
+
+    for (auto &l : clippedTriangles) {
+        delete l;
+    }
+
+    for (auto &l : visibleTriangles) {
+        delete l;
+    }
+
+    for (auto &l : frameTriangles) {
+        delete l;
+    }
 }

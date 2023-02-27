@@ -17,7 +17,6 @@
 
 class ComponentHUD : public Component {
 private:
-
     std::vector<Button*> buttons;
     ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
@@ -25,6 +24,8 @@ private:
 public:
 
     ComponentHUD();
+
+    virtual ~ComponentHUD();
 
     void onStart() override;
 

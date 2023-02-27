@@ -212,3 +212,10 @@ void TextWriter::setAlpha(float alpha) {
     TextWriter::alpha = alpha;
 }
 
+TextWriter::~TextWriter()
+{
+    for (auto characterSurface: characterSurfaces) {
+        SDL_FreeSurface(characterSurface);
+    }
+}
+

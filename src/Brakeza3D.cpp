@@ -5,7 +5,8 @@
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
-Brakeza3D::Brakeza3D() {
+Brakeza3D::Brakeza3D()
+{
     componentsManager = ComponentsManager::get();
     componentsManager->setSceneObjects(&sceneObjects);
 }
@@ -18,8 +19,8 @@ Brakeza3D *Brakeza3D::get() {
     return instance;
 }
 
-void Brakeza3D::start() {
-
+void Brakeza3D::start()
+{
     componentCamera = new ComponentCamera();
     componentInput = new ComponentInput();
     componentCollisions = new ComponentCollisions();
@@ -60,7 +61,6 @@ void Brakeza3D::mainLoop() {
 
     while (!finish) {
         controlFrameRate();
-
 
         this->updateTimer();
 
@@ -245,6 +245,9 @@ void Brakeza3D::ImGuiInitialize() const
 
 Brakeza3D::~Brakeza3D()
 {
+    for (auto o : sceneObjects) {
+        delete o;
+    }
 }
 
 float &Brakeza3D::getExecutionTime() {

@@ -16,22 +16,31 @@
 
 class Sprite3D : public Object3D {
     Billboard *billboard;
+private:
+    int currentAnimationIndex;
+    float step;
 
+    Counter counter;
+    std::vector<TextureAnimated*> animations;
+
+    bool autoRemoveAfterAnimation;
+    bool sharedTextures;
 public:
-
-    int numAnimations = 0;
-    int currentAnimationIndex = 0;
-
-    Counter *counter;
-    float step = 0;
-
-    TextureAnimated *animations[ANIMATEDSPRITE_MAX_ANIMATIONS];
-
-    bool autoRemoveAfterAnimation = false;
-
     Sprite3D();
 
-    Billboard *getBillboard() const;
+    ~Sprite3D() override;
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void updateStep();
+
+    void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
+
+    void linkTextureAnimation(Sprite3D *);
+
+    TextureAnimated *getCurrentTextureAnimation();
 
     void addAnimation(const std::string&, int numFrames, int fps);
 
@@ -41,20 +50,7 @@ public:
 
     void updateTrianglesCoordinatesAndTexture();
 
-    bool isAutoRemoveAfterAnimation() const;
-
-    void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
-
-    void linkTextureAnimation(Sprite3D *);
-
-    TextureAnimated *getCurrentTextureAnimation();
-
-    void onUpdate();
-    void postUpdate() override;
-
-    void updateStep();
-
-    Counter *getCounter() const;
+    [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
 };
 
 
