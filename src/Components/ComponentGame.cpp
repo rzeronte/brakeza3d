@@ -86,7 +86,6 @@ ComponentGame::~ComponentGame()
     delete shaderClouds;
     delete shaderColor;
     delete shaderTrailBuffer,
-    delete shaderLasers;
 
     delete explosionSpriteTemplate;
     delete imageCrossFire;
@@ -381,7 +380,7 @@ void ComponentGame::loadPlayer()
     player->loadBlinkShader();
     player->loadReflection();
 
-    explosionSpriteTemplate = new Sprite3D();
+    explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 30);
     explosionSpriteTemplate->setAnimation(0);
 }
@@ -762,7 +761,7 @@ void ComponentGame::addObjectsToStencilBuffer()
             shaderLasers->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),
-                projectile->getWeaponType()->getSpeed()
+                (float) projectile->getWeaponType()->getSpeed()
             );
         }
 

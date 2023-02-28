@@ -69,8 +69,8 @@ void ShaderLaser::executeKernelOpenCL()
         btVector3(end.x, end.y, end.z)
     );
 
-    rayCallback.m_collisionFilterGroup = this->filterGroup; //;
-    rayCallback.m_collisionFilterMask = this->filterMask; //EngineSetup::collisionGroups::Enemy;
+    rayCallback.m_collisionFilterGroup = this->filterGroup;
+    rayCallback.m_collisionFilterMask = this->filterMask;
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
@@ -94,10 +94,6 @@ void ShaderLaser::executeKernelOpenCL()
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
                 player->takeDamage(getDamage());
-                Brakeza3D::get()->addObject3D(
-                    new ParticleEmissorFireworks(hitPosition, 1, 520, 3, 0.02, Color::green(), 2, 2),
-                    "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-                );
                 increase = false;
             }
 
@@ -107,10 +103,6 @@ void ShaderLaser::executeKernelOpenCL()
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
                 enemy->takeDamage(getDamage());
-                Brakeza3D::get()->addObject3D(
-                        new ParticleEmissorFireworks(hitPosition, 1, 520, 3, 0.02, Color::green(), 2, 2),
-                        "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-                );
                 increase = false;
             }
         }
@@ -137,7 +129,7 @@ void ShaderLaser::executeKernelOpenCL()
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
-    size_t local_item_size = 16;
+    size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(
         clCommandQueue,

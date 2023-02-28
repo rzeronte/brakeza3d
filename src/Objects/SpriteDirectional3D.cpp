@@ -5,12 +5,10 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 
-SpriteDirectional3D::SpriteDirectional3D() {
-    this->billboard = new Billboard();
+SpriteDirectional3D::SpriteDirectional3D(float width, float height): width(width), height(height)
+{
+    this->billboard = new Billboard(width, height);
     this->counterAnimations = new Counter();
-
-    this->width = 10; //EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT;
-    this->height = 10; //EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT;
 
     for (auto & animation : this->animations) {
         animation = new TextureAnimatedDirectional();

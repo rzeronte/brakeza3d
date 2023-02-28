@@ -38,9 +38,9 @@ public:
 
     TextureAnimatedDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS]{};
 
-    SpriteDirectional3D();
+    SpriteDirectional3D(float width, float height);
 
-    Billboard *getBillboard() const;
+    [[nodiscard]] Billboard *getBillboard() const;
 
     void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
 
