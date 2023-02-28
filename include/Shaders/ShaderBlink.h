@@ -30,7 +30,7 @@ public:
             context,
             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-            this->object->stencilBuffer,
+            this->object->getStencilBuffer(),
             &clRet
         );
     }
@@ -104,7 +104,7 @@ public:
             CL_TRUE,
             0,
             this->bufferSize * sizeof(bool),
-            object->stencilBuffer,
+            object->getStencilBuffer(),
             0,
             nullptr,
             nullptr
