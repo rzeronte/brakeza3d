@@ -6,7 +6,7 @@
 Demo::Demo() {
 
     // marine (sprite directional)
-    auto *marine = new SpriteDirectional3D();
+    auto *marine = new SpriteDirectional3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     marine->setEnabled(true);
     marine->setPosition(Vertex3D(2, 0, 10));
     marine->setRotation(M3(0, -90, 0));
@@ -19,7 +19,7 @@ Demo::Demo() {
     Brakeza3D::get()->addObject3D(marine, "marine");
 
     // skull (sprite directional)
-    auto *skull = new SpriteDirectional3D();
+    auto *skull = new SpriteDirectional3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
@@ -27,7 +27,7 @@ Demo::Demo() {
     Brakeza3D::get()->addObject3D(skull, "skull");
 
     // caco (sprite directional)
-    auto *caco = new SpriteDirectional3D();
+    auto *caco = new SpriteDirectional3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     caco->setEnabled(false);
     caco->setPosition(Vertex3D(20, 0, -10));
     caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);

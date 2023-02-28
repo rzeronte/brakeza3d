@@ -21,13 +21,11 @@ private:
 
     Texture *texture;
 public:
-    Billboard();
-
-    virtual ~Billboard();
+    Billboard(float width, float height);
 
     void updateUnconstrainedQuad(Object3D *o, Vertex3D &up, Vertex3D &right);
 
-    void loadTexture(const std::string &&);
+    void loadTexture(const std::string &name);
 
     void setTrianglesTexture(Texture *);
 

@@ -41,8 +41,6 @@ public:
 
     virtual ~Object3D();
 
-    [[nodiscard]] std::string getLabel() const;
-
     void setLabel(const std::string& label);
 
     Vertex3D &getPosition();
@@ -50,12 +48,12 @@ public:
     M3 getRotation();
 
     void setPosition(Vertex3D p);
+
     void addToPosition(Vertex3D p);
 
     void setRotation(M3 r);
-    void setRotation(float, float, float);
 
-    [[nodiscard]] bool isEnabled() const;
+    void setRotation(float, float, float);
 
     virtual void setEnabled(bool enabled);
 
@@ -71,44 +69,39 @@ public:
 
     Vertex3D AxisLeft();
 
-    [[nodiscard]] float getScale() const;
-
     void setScale(float value);
 
-    [[nodiscard]] bool isRemoved() const;
-
     void setRemoved(bool value);
-
-    [[nodiscard]] bool isDecal() const;
 
     void setDecal(bool value);
 
     void setDrawOffset(Vertex3D v);
 
-    [[nodiscard]] Vertex3D getDrawOffset() const;
-
-    [[nodiscard]] bool isFollowCamera() const;
-
     void setFollowCamera(bool followCamera);
 
     virtual void onUpdate();
+
     virtual void postUpdate();
 
     bool isRotationFrameEnabled();
     void setRotationFrameEnabled(bool value);
     void setRotationFrame(Vertex3D v);
 
-    [[nodiscard]] bool *getStencilBuffer() const;
-
-    [[nodiscard]] bool isStencilBufferEnabled() const;
-
     void setStencilBufferEnabled(bool stencilBufferEnabled);
 
     void initializeStencilBuffer();
+
     void setStencilBuffer(int x, int y, bool value);
+
     void setStencilBuffer(int index, bool value);
 
     void clearStencilBuffer();
+
+    void setAlpha(float alpha);
+
+    void setAlphaEnabled(bool alphaEnabled);
+
+    void setBehavior(EnemyBehavior *motion);
 
     [[nodiscard]] bool getStencilBufferValue(int i) const;
 
@@ -116,15 +109,27 @@ public:
 
     [[nodiscard]] EnemyBehavior *getBehavior() const;
 
-    void setBehavior(EnemyBehavior *motion);
-
     [[nodiscard]] float getAlpha() const;
-
-    void setAlpha(float alpha);
 
     [[nodiscard]] bool isAlphaEnabled() const;
 
-    void setAlphaEnabled(bool alphaEnabled);
+    [[nodiscard]] bool *getStencilBuffer() const;
+
+    [[nodiscard]] bool isStencilBufferEnabled() const;
+
+    [[nodiscard]] Vertex3D getDrawOffset() const;
+
+    [[nodiscard]] bool isFollowCamera() const;
+
+    [[nodiscard]] bool isDecal() const;
+
+    [[nodiscard]] float getScale() const;
+
+    [[nodiscard]] bool isRemoved() const;
+
+    [[nodiscard]] bool isEnabled() const;
+
+    [[nodiscard]] std::string getLabel() const;
 
     bool *stencilBuffer;
 };

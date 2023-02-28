@@ -140,7 +140,7 @@ void PlayerReflection::loadBlinkShader()
 
 void PlayerReflection::makeExplosion()
 {
-    auto sprite = new Sprite3D();
+    auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
 
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 

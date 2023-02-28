@@ -4,7 +4,9 @@
 #include "../../include/Objects/SpriteDirectional3D.h"
 #include "../../include/ComponentsManager.h"
 
-Decal::Decal() : sprite(new Sprite3D()) {
+Decal::Decal() :
+    sprite(new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
+{
     setDecal(true);
 }
 

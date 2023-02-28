@@ -26,7 +26,7 @@ private:
     bool autoRemoveAfterAnimation;
     bool sharedTextures;
 public:
-    Sprite3D();
+    Sprite3D(float width, float height);
 
     ~Sprite3D() override;
 
