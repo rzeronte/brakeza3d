@@ -9,7 +9,7 @@ void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, cons
     Vertex3D a = Vertex3D(from.x(), from.y(), from.z());
     Vertex3D b = Vertex3D(to.x(), to.y(), to.z());
 
-    if (cam->frustum->isVertexInside(a) && cam->frustum->isVertexInside(b)) {
+    if (cam->getFrustum()->isVertexInside(a) && cam->getFrustum()->isVertexInside(b)) {
         Drawable::drawVector3D(Vector3D(a, b), cam, Color::red());
     }
 }

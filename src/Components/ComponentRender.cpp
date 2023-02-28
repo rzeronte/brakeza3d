@@ -247,11 +247,11 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     }
 
     // Clipping (needs objectSpace)
-    if (t->testForClipping(cam->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
+    if (t->testForClipping(cam->getFrustum()->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
         if (SETUP->ENABLE_CLIPPING) {
             t->clipping(
-                cam->frustum,
-                cam->frustum->planes,
+                cam->getFrustum(),
+                cam->getFrustum()->planes,
                 SETUP->LEFT_PLANE,
                 SETUP->BOTTOM_PLANE,
                 t->parent,
@@ -264,7 +264,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     }
 
     // Frustum Culling (needs objectSpace)
-    if (!cam->frustum->isVertexInside(t->Ao) && !cam->frustum->isVertexInside(t->Bo) && !cam->frustum->isVertexInside(t->Co) ) {
+    if (!cam->getFrustum()->isVertexInside(t->Ao) && !cam->getFrustum()->isVertexInside(t->Bo) && !cam->getFrustum()->isVertexInside(t->Co) ) {
         return;
     }
 
@@ -272,7 +272,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     // Estas operaciones las hacemos después de descartar triángulos
     // para optimización en el rasterizador por software
     t->updateCameraSpace(cam);
-    t->updatePerspectiveNDCSpace(cam->frustum);
+    t->updatePerspectiveNDCSpace(cam->getFrustum());
     t->updateScreenSpace();
     t->updateBoundingBox();
     t->updateFullArea();
@@ -317,10 +317,11 @@ void ComponentRender::hiddenOctreeRemoval() {
     this->frameTriangles = newFrameTriangles;
 }
 
-void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles) {
+void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles)
+{
     if (
             node->isLeaf() &&
-            ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isAABBInFrustum(
+            ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isAABBInFrustum(
                     &node->bounds
             )
             ) {

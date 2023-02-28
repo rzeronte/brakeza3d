@@ -114,13 +114,13 @@ Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam) {
 
 Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
     // 0 ... 1
-    float xt = Tools::interpolate(p.x, 0, EngineSetup::get()->screenWidth);
-    float yt = Tools::interpolate(p.y, 0, EngineSetup::get()->screenHeight);
+    float xt = Tools::interpolate(p.x, 0, (float) EngineSetup::get()->screenWidth);
+    float yt = Tools::interpolate(p.y, 0, (float) EngineSetup::get()->screenHeight);
 
-    Vertex3D vNLs = cam->frustum->vNLs;
-    Vertex3D vNRs = cam->frustum->vNRs;
-    Vertex3D vNTs = cam->frustum->vNTs;
-    Vertex3D vNBs = cam->frustum->vNBs;
+    Vertex3D vNLs = cam->getFrustum()->vNLs;
+    Vertex3D vNRs = cam->getFrustum()->vNRs;
+    Vertex3D vNTs = cam->getFrustum()->vNTs;
+    Vertex3D vNBs = cam->getFrustum()->vNBs;
 
     float vNLx = vNLs.x;
     float vNRx = vNRs.x;
@@ -133,7 +133,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
     Vertex3D v(
         vNRx + tx1,
         vNTy + ty1,
-        cam->frustum->nearDist
+        cam->getFrustum()->nearDist
     );
 
     return Transforms::cameraToWorld(v, cam);
@@ -142,7 +142,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
 Point2D Transforms::WorldToPoint(Vertex3D v, Camera3D *camera)
 {
     Transforms::cameraSpace(v, v, camera);
-    v = Transforms::PerspectiveNDCSpace(v, camera->frustum);
+    v = Transforms::PerspectiveNDCSpace(v, camera->getFrustum());
 
     Point2D screenPoint;
     Transforms::screenSpace(screenPoint, v);
