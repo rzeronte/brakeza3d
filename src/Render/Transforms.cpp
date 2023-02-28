@@ -3,14 +3,15 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Render/M4.h"
 
-void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o) {
+void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
+{
     dst = src;
-    dst.setScaled(o->scale);
+    dst.setScaled(o->getScale());
 
     dst = o->getRotation() * dst;
     dst = dst + o->getPosition();
 
-    dst = dst + o->drawOffset;
+    dst = dst + o->getDrawOffset();
 
     dst.u = src.u;
     dst.v = src.v;
@@ -85,14 +86,14 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 {
     Vertex3D T;
 
-    T = V - o->drawOffset;
+    T = V - o->getDrawOffset();
 
     T = T - o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
-    T.x /= o->scale;
-    T.y /= o->scale;
-    T.z /= o->scale;
+    T.x /= o->getScale();
+    T.y /= o->getScale();
+    T.z /= o->getScale();
 
     T.u = V.u;
     T.v = V.v;
