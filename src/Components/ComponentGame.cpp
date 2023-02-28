@@ -311,7 +311,7 @@ void ComponentGame::blockPlayerPositionInCamera()
     Vertex3D homogeneousPosition;
     Vertex3D destinyPoint = player->getPosition() + player->getVelocity();
     Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
-    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->frustum);
+    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
 
     if (homogeneousPosition.y > 1) {
         player->setPosition(player->getPosition() + ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed());

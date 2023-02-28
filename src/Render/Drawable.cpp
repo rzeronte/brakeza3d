@@ -59,7 +59,7 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Vertex3D A;
 
     Transforms::cameraSpace(A, V, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->frustum);
+    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
 
     Point2D P1;
     Transforms::screenSpace(P1, A);
@@ -75,7 +75,7 @@ void Drawable::drawVertex3D(Vertex3D V, Color color)
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     Transforms::cameraSpace(A, V, camera);
-    A = Transforms::PerspectiveNDCSpace(A, camera->frustum);
+    A = Transforms::PerspectiveNDCSpace(A, camera->getFrustum());
 
     Point2D P1;
     Transforms::screenSpace(P1, A);
@@ -225,7 +225,7 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
         return;
     }
 
-    if (!cam->frustum->isVertexInside(V.vertex1) && !cam->frustum->isVertexInside(V.vertex2)) {
+    if (!cam->getFrustum()->isVertexInside(V.vertex1) && !cam->getFrustum()->isVertexInside(V.vertex2)) {
         return;
     }
 
@@ -238,12 +238,12 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
         return;
     }
 
-    V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    V1 = Transforms::PerspectiveNDCSpace(V1, cam->getFrustum());
     if (V1.z < 0) {
         return;
     }
 
-    V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
+    V2 = Transforms::PerspectiveNDCSpace(V2, cam->getFrustum());
     if (V2.z < 0) {
         return;
     }
@@ -264,7 +264,7 @@ void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
         return;
     }
 
-    if (!cam->frustum->isVertexInside(V.vertex1) && !cam->frustum->isVertexInside(V.vertex2)) {
+    if (!cam->getFrustum()->isVertexInside(V.vertex1) && !cam->getFrustum()->isVertexInside(V.vertex2)) {
         return;
     }
 
@@ -277,12 +277,12 @@ void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
         return;
     }
 
-    V1 = Transforms::PerspectiveNDCSpace(V1, cam->frustum);
+    V1 = Transforms::PerspectiveNDCSpace(V1, cam->getFrustum());
     if (V1.z < 0) {
         return;
     }
 
-    V2 = Transforms::PerspectiveNDCSpace(V2, cam->frustum);
+    V2 = Transforms::PerspectiveNDCSpace(V2, cam->getFrustum());
     if (V2.z < 0) {
         return;
     }
@@ -337,7 +337,7 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset) {
 }
 
 void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward) {
-    if (!cam->frustum->isVertexInside(object->getPosition())) {
+    if (!cam->getFrustum()->isVertexInside(object->getPosition())) {
         return;
     }
 

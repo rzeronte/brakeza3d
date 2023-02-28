@@ -108,8 +108,9 @@ void SpriteDirectional3D::updateStep() {
     this->counterAnimations->setStep(step);
 }
 
-void SpriteDirectional3D::onUpdate() {
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isVertexInside(this->getPosition())) {
+void SpriteDirectional3D::onUpdate()
+{
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(this->getPosition())) {
         return;
     }
 

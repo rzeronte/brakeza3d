@@ -57,9 +57,9 @@ public:
 
             // rotation
             if (ImGui::TreeNode(rotation_text.c_str())) {
-                ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->yaw, range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-                ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->pitch, range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-                ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->roll, range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+                ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
                 ImGui::TreePop();
             }
 
@@ -75,9 +75,9 @@ public:
             ImGui::Separator();
 
             if (ImGui::TreeNode(std::string("Velocity").c_str())) {
-                ImGui::Text((std::string("X: ") + std::to_string(camera->velocity.getComponent().x)).c_str());
-                ImGui::Text((std::string("Y: ") + std::to_string(camera->velocity.getComponent().y)).c_str());
-                ImGui::Text((std::string("Z: ") + std::to_string(camera->velocity.getComponent().z)).c_str());
+                ImGui::Text("%s", (std::string("X: ") + std::to_string(camera->getVelocity().getComponent().x)).c_str());
+                ImGui::Text("%s", (std::string("Y: ") + std::to_string(camera->getVelocity().getComponent().y)).c_str());
+                ImGui::Text("%s", (std::string("Z: ") + std::to_string(camera->getVelocity().getComponent().z)).c_str());
                 ImGui::TreePop();
             }
             ImGui::Separator();

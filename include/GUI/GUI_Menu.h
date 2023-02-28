@@ -113,14 +113,14 @@ public:
                                   range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
 
                 if (ImGui::IsItemEdited()) {
-                    cam->frustum->setup(
-                            cam->getPosition(),
-                            Vertex3D(0, 0, 1),
-                            EngineSetup::get()->up,
-                            EngineSetup::get()->right,
-                            EngineSetup::get()->HORIZONTAL_FOV,
-                            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
+                    cam->getFrustum()->setup(
+                        cam->getPosition(),
+                        Vertex3D(0, 0, 1),
+                        EngineSetup::get()->up,
+                        EngineSetup::get()->right,
+                        EngineSetup::get()->HORIZONTAL_FOV,
+                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
                     );
                     cam->updateFrustum();
                 }
@@ -142,14 +142,14 @@ public:
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float,&EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE,range_frustum_fardistance_sensibility, &range_min_frustum_fardistance,&range_max_frustum_fardistance, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
-                    cam->frustum->setup(
-                            cam->getPosition(),
-                            Vertex3D(0, 0, 1),
-                            EngineSetup::get()->up,
-                            EngineSetup::get()->right,
-                            EngineSetup::get()->HORIZONTAL_FOV,
-                            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
+                    cam->getFrustum()->setup(
+                        cam->getPosition(),
+                        Vertex3D(0, 0, 1),
+                        EngineSetup::get()->up,
+                        EngineSetup::get()->right,
+                        EngineSetup::get()->HORIZONTAL_FOV,
+                        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
+                        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
                     );
                     cam->updateFrustum();
                 }

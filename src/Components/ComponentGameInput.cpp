@@ -228,7 +228,7 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
             horizontal_fov = SETUP->HORIZONTAL_FOV;
         }
 
-        ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->setup(
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->setup(
             ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
             Vertex3D(0, 0, 1),
             SETUP->up,

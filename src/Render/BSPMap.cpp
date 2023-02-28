@@ -577,7 +577,7 @@ void BSPMap::createBulletPhysicsShape() {
 
         for (int i = offset; i < offset + num; i++) {
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i]->updateFullVertexSpaces(this->camera->frustum);
+            this->model_triangles[i]->updateFullVertexSpaces(this->camera->getFrustum());
             btVector3 a = btVector3(this->model_triangles[i]->Ao.x, this->model_triangles[i]->Ao.y,
                                     this->model_triangles[i]->Ao.z);
             btVector3 b = btVector3(this->model_triangles[i]->Bo.x, this->model_triangles[i]->Bo.y,
@@ -987,9 +987,9 @@ void BSPMap::setCameraInBSPStartPosition() {
     char *angle = getEntityValue(entityID, "angle");
     int angleInt = atoi(std::string(angle).c_str());
 
-    camera->yaw = (float) (90 -angleInt);
-    camera->pitch = 0;
-    camera->roll = 0;
+    camera->getYaw() = (float) (90 - angleInt);
+    camera->getPitch() = 0;
+    camera->getRoll() = 0;
 
     camera->setPosition(bspOriginalPosition);
 }

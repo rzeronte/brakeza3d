@@ -3,7 +3,8 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/EngineSetup.h"
 
-Camera3D::Camera3D() {
+Camera3D::Camera3D()
+{
 
     // Inicializamos el frustum que acompañará a la cámara
     frustum = new Frustum();
@@ -162,4 +163,28 @@ btPairCachingGhostObject *Camera3D::getGhostObject() const {
 
 void Camera3D::setFollowToPositionOffset(Vertex3D v) {
     this->followToPositionOffset = v;
+}
+
+Frustum *Camera3D::getFrustum() const {
+    return frustum;
+}
+
+float &Camera3D::getYaw() {
+    return yaw;
+}
+
+float &Camera3D::getPitch() {
+    return pitch;
+}
+
+float &Camera3D::getRoll() {
+    return roll;
+}
+
+Vector3D &Camera3D::getVelocity() {
+    return velocity;
+}
+
+const Vertex3D &Camera3D::getFollowToPositionOffset() const {
+    return followToPositionOffset;
 }
