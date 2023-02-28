@@ -14,7 +14,7 @@ onStart()
 
 void ComponentRender::preUpdate()
 {
-    this->updateFPS(Brakeza3D::get()->getDeltaTime());
+    this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
 
     if (!isEnabled()) {
         return;
@@ -1084,7 +1084,7 @@ int ComponentRender::getNumTiles() const {
     return numTiles;
 }
 
-int ComponentRender::getFps() const {
+int ComponentRender::getFps(){
     return fps;
 }
 

@@ -21,7 +21,7 @@ public:
 
     void setLabel(const std::string &label);
 
-    int getAction() const;
+    [[nodiscard]] int getAction() const;
 
     void setAction(int action);
 

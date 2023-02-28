@@ -2,11 +2,14 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLaser::ShaderLaser(Object3D *parent, Color c):
+ShaderLaser::ShaderLaser(Object3D *parent, Color c, int filterGroup, int filterMask):
     ShaderOpenCL("laser.opencl"),
     intensity(0),
     reach(0),
+    filterGroup(filterGroup),
+    filterMask(filterMask),
     color(c),
+    target(parent),
     parent(parent)
 {
     this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
@@ -66,8 +69,8 @@ void ShaderLaser::executeKernelOpenCL()
         btVector3(end.x, end.y, end.z)
     );
 
-    rayCallback.m_collisionFilterGroup = EngineSetup::collisionGroups::Player;
-    rayCallback.m_collisionFilterMask = EngineSetup::collisionGroups::Enemy;
+    rayCallback.m_collisionFilterGroup = this->filterGroup; //;
+    rayCallback.m_collisionFilterMask = this->filterMask; //EngineSetup::collisionGroups::Enemy;
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),

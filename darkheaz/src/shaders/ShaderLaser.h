@@ -16,6 +16,9 @@ class ShaderLaser : public ShaderOpenCL {
     float speed;
     float damage;
 
+    int filterGroup;
+    int filterMask;
+
     Color color;
     Object3D* target;
     Object3D* parent;
@@ -24,7 +27,7 @@ class ShaderLaser : public ShaderOpenCL {
 
     cl_mem opencl_buffer_pixels_image;
 public:
-    explicit ShaderLaser(Object3D *parent, Color c);
+    explicit ShaderLaser(Object3D *parent, Color c, int filterGroup, int filterMask);
 
     void update() override;
     void executeKernelOpenCL();

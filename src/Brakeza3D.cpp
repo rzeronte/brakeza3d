@@ -129,6 +129,10 @@ float Brakeza3D::getDeltaTime() const {
     return this->deltaTime / 1000;
 }
 
+float Brakeza3D::getDeltaTimeMicro() const {
+    return this->deltaTime;
+}
+
 void Brakeza3D::onStartComponents() {
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {

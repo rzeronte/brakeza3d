@@ -5,9 +5,21 @@
 #include "../../darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h"
 #include "../../include/Physics/Mesh3DAnimatedGhost.h"
 
-ComponentMenu::ComponentMenu() {
-    this->currentOption = 0;
-    this->numOptions = 0;
+ComponentMenu::ComponentMenu(): numOptions(0), currentOption(0)
+{
+}
+
+ComponentMenu::~ComponentMenu()
+{
+    delete shaderBackgroundImage;
+    delete title;
+    delete spaceship;
+    delete light;
+    delete pendulum;
+
+    for (int i = 0; i < numOptions; i++) {
+        delete options[i];
+    }
 }
 
 void ComponentMenu::onStart()
@@ -118,8 +130,11 @@ void ComponentMenu::loadMenuOptions()
             numOptions++;
         }
     }
+
     free(contentFile);
+
     cJSON_Delete(myDataJSON);
+    cJSON_Delete(currentLoadingOption);
 }
 
 void ComponentMenu::drawOptions() {
@@ -191,19 +206,6 @@ void ComponentMenu::increaseMenuOption()
 void ComponentMenu::decreaseMenuOption()
 {
     currentOption--;
-}
-
-ComponentMenu::~ComponentMenu()
-{
-    delete shaderBackgroundImage;
-    delete title;
-    delete spaceship;
-    delete light;
-    delete pendulum;
-
-    for (int i = 0; i < numOptions; i++) {
-        delete options[i];
-    }
 }
 
 MenuOption *const *ComponentMenu::getOptions() const {

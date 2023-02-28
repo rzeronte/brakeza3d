@@ -85,3 +85,16 @@ void Billboard::setDimensions(float w, float h) {
     this->width = w;
     this->height = h;
 }
+
+Billboard::~Billboard()
+{
+    delete texture;
+}
+
+Triangle *Billboard::getT1() {
+    return &T1;
+}
+
+Triangle *Billboard::getT2() {
+    return &T2;
+}

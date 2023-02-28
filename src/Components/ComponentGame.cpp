@@ -74,6 +74,27 @@ void ComponentGame::onStart()
     shaderLasers->setEnabled(true);
 }
 
+ComponentGame::~ComponentGame()
+{
+    delete player;
+
+    delete fadeToGameState;
+    delete levelInfo;
+
+    delete shaderLasers;
+    delete shaderBackgroundImage;
+    delete shaderClouds;
+    delete shaderColor;
+    delete shaderTrailBuffer,
+    delete shaderLasers;
+
+    delete explosionSpriteTemplate;
+    delete imageCrossFire;
+    delete imageCredits;
+    delete imageHelp;
+    delete imageSplash;
+}
+
 void ComponentGame::preUpdate()
 {
     EngineSetup::GameState state = getGameState();
@@ -935,7 +956,7 @@ Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
 }
 
 const Color &ComponentGame::getSecondaryColor() const {
-    return secondaryColor;
+    return secondaryColor;explosionSpriteTemplate;
 }
 
 ShaderColor *ComponentGame::getShaderColor() const {
@@ -950,21 +971,3 @@ ShaderClouds *ComponentGame::getShaderClouds() const {
     return shaderClouds;
 }
 
-ComponentGame::~ComponentGame()
-{
-    delete player;
-
-    delete fadeToGameState;
-    delete levelInfo;
-
-    delete shaderLasers;
-    delete shaderBackgroundImage;
-    delete shaderClouds;
-    delete shaderColor;
-
-    delete explosionSpriteTemplate;
-    delete imageCrossFire;
-    delete imageCredits;
-    delete imageHelp;
-    delete imageSplash;
-}

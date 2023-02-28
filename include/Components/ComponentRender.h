@@ -154,7 +154,7 @@ public:
 
     [[nodiscard]] int getNumTiles() const;
 
-    [[nodiscard]] int getFps() const;
+    [[nodiscard]] int getFps();
 
     _cl_platform_id *getClPlatformId();
 
