@@ -8,7 +8,7 @@
 #include "../Objects/Vector3D.h"
 
 class Camera3D : public Object3D {
-public:
+private:
     float yaw = 0;        // Direction of travel
     float pitch = 0;        // Neck angle
     float roll = 0;
@@ -24,9 +24,10 @@ public:
     Object3D *follow_to = nullptr;
     Vertex3D followToPositionOffset;
 
-    btPairCachingGhostObject *m_ghostObject{};
+    btPairCachingGhostObject *m_ghostObject;
+public:
 
-    Object3D *getFollowTo() const;
+    [[nodiscard]] Object3D *getFollowTo() const;
 
     void setFollowTo(Object3D *followTo);
 
@@ -38,27 +39,27 @@ public:
 
     void UpdatePositionForVelocity();
 
-    void UpdateRotation(void);
+    void UpdateRotation();
 
     void Pitch(float newPitch);
 
     void Yaw(float newYaw);
 
-    void PitchUp(void);
+    void PitchUp();
 
-    void PitchDown(void);
+    void PitchDown();
 
-    void MoveForward(void);
+    void MoveForward();
 
-    void MoveBackward(void);
+    void MoveBackward();
 
-    void TurnRight(void);
+    void TurnRight();
 
-    void TurnLeft(void);
+    void TurnLeft();
 
-    void StrafeRight(void);
+    void StrafeRight();
 
-    void StrafeLeft(void);
+    void StrafeLeft();
 
     void limitPitch();
 
@@ -66,11 +67,23 @@ public:
 
     void consoleInfo() const;
 
-    btPairCachingGhostObject *getGhostObject() const;
+    [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
 
     void setRotationFromEulerAngles(float x, float y, float z);
 
     void setFollowToPositionOffset(Vertex3D v);
+
+    [[nodiscard]] Frustum *getFrustum() const;
+
+    float &getYaw();
+
+    float &getPitch();
+
+    float &getRoll();
+
+    Vector3D &getVelocity();
+
+    const Vertex3D &getFollowToPositionOffset() const;
 };
 
 

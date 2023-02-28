@@ -72,13 +72,13 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
 
         if (triangle->testForClipping(cube->planes, 0, 5)) {
             triangle->clipping(
-                    camera->frustum,
-                    cube->planes,
-                    0,
-                    5,
-                    this,
-                    this->modelTriangles,
-                    false
+                camera->getFrustum(),
+                cube->planes,
+                0,
+                5,
+                this,
+                this->modelTriangles,
+                false
             );
             clipped++;
             continue;

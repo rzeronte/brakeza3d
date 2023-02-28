@@ -84,7 +84,7 @@ void AmmoProjectileBody::onUpdate()
         particleEmissor->setPosition(getPosition());
     }
 
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->frustum->isVertexInside(getPosition())) {
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->remove();
         if (particleEmissor != nullptr) {
             particleEmissor->setActiveAdding(false);
