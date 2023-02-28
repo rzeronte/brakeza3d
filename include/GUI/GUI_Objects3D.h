@@ -90,13 +90,13 @@ public:
         const float range_alpha_sensibility = 1.0;
 
         // enabled
-        ImGui::Checkbox(enabled_text.c_str(), &object->enabled);
-        ImGui::Checkbox(stencilBuffer_text.c_str(), &object->stencilBufferEnabled);
-        ImGui::Checkbox(follow_camera_text.c_str(), &object->followCamera);
-        ImGui::Checkbox(alpha_text.c_str(), &object->alphaEnabled);
+        ImGui::Checkbox(enabled_text.c_str(), &object->isEnabled());
+        ImGui::Checkbox(stencilBuffer_text.c_str(), &object->isStencilBufferEnabled());
+        ImGui::Checkbox(follow_camera_text.c_str(), &object->isFollowCamera());
+        ImGui::Checkbox(alpha_text.c_str(), &object->isAlphaEnabled());
 
         if (ImGui::IsItemEdited()) {
-            object->setStencilBufferEnabled(object->stencilBufferEnabled);
+            object->setStencilBufferEnabled(true);
         }
 
         // position
@@ -110,42 +110,42 @@ public:
         // rotation
         if (ImGui::TreeNode(rotation_text.c_str())) {
             bool needUpdateRotation = false;
-            ImGui::DragScalar("X", ImGuiDataType_Float, &object->rotX, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            ImGui::DragScalar("X", ImGuiDataType_Float, &object->getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
             if (ImGui::IsItemEdited()) {
                 needUpdateRotation = true;
             }
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &object->rotY, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &object->getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
             if (ImGui::IsItemEdited()) {
                 needUpdateRotation = true;
             }
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &object->rotZ, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &object->getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
             if (ImGui::IsItemEdited()) {
                 needUpdateRotation = true;
             }
             if (needUpdateRotation) {
-                object->setRotation(M3::getMatrixRotationForEulerAngles(object->rotX, object->rotY, object->rotZ));
+                object->setRotation(M3::getMatrixRotationForEulerAngles(object->getRotX(), object->getRotY(), object->getRotZ()));
             }
             ImGui::TreePop();
         }
 
-        if (object->alphaEnabled) {
+        if (object->isAlphaEnabled()) {
             if (ImGui::TreeNode(alpha_value_text.c_str())) {
-                ImGui::DragScalar("Alpha", ImGuiDataType_Float, &object->alpha, range_alpha_sensibility,&range_alpha_min, &range_alpha_max, "%f", 1.0f);
+                ImGui::DragScalar("Alpha", ImGuiDataType_Float, &object->getAlpha(), range_alpha_sensibility,&range_alpha_min, &range_alpha_max, "%f", 1.0f);
                 ImGui::TreePop();
             }
         }
 
         // drawOffset
         if (ImGui::TreeNode(draw_offset_text.c_str())) {
-            ImGui::DragScalar("X", ImGuiDataType_Float, &object->drawOffset.x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &object->drawOffset.y, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &object->drawOffset.z, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("X", ImGuiDataType_Float, &object->getDrawOffset().x, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &object->getDrawOffset().y, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &object->getDrawOffset().z, range_sensibility,&range_min, &range_max, "%f", 1.0f);
             ImGui::TreePop();
         }
 
         ImGui::Button("Remove");
         if (ImGui::IsItemClicked()) {
-            object->removed = true;
+            object->setRemoved(true);
         }
     }
 

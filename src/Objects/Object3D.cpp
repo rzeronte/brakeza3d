@@ -5,18 +5,24 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
 
-Object3D::Object3D() : position(Vertex3D(1, 1, 1)), parent(nullptr), enabled(true), removed(false), decal(false), scale(1)
+Object3D::Object3D() :
+    position(Vertex3D(1, 1, 1)),
+    rotX(0),
+    rotY(0),
+    rotZ(0),
+    parent(nullptr),
+    enabled(true),
+    removed(false),
+    decal(false),
+    scale(1),
+    stencilBuffer(nullptr),
+    followCamera(false),
+    rotationFrameEnabled(false),
+    stencilBufferEnabled(false),
+    motion(nullptr),
+    alpha(0),
+    alphaEnabled(false)
 {
-    setFollowCamera(false);
-    setRotationFrameEnabled(false);
-    setStencilBufferEnabled(false);
-    setBehavior(nullptr);
-    setAlpha(0);
-    setAlphaEnabled(false);
-    this->stencilBuffer = nullptr;
-    rotX = 0;
-    rotY = 0;
-    rotZ = 0;
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -43,8 +49,7 @@ void Object3D::setLabel(const std::string& label) {
     Object3D::label = label;
 }
 
-
-bool Object3D::isEnabled() const {
+bool &Object3D::isEnabled() {
     return enabled;
 }
 
@@ -114,7 +119,7 @@ void Object3D::setDrawOffset(Vertex3D offset) {
     this->drawOffset = offset;
 }
 
-Vertex3D Object3D::getDrawOffset() const {
+Vertex3D &Object3D::getDrawOffset() {
     return this->drawOffset;
 }
 
@@ -126,7 +131,7 @@ void Object3D::setParent(Object3D *object) {
     Object3D::parent = object;
 }
 
-bool Object3D::isFollowCamera() const {
+bool &Object3D::isFollowCamera() {
     return this->followCamera;
 }
 
@@ -185,7 +190,7 @@ bool *Object3D::getStencilBuffer() const {
     return stencilBuffer;
 }
 
-bool Object3D::isStencilBufferEnabled() const {
+bool &Object3D::isStencilBufferEnabled() {
     return stencilBufferEnabled;
 }
 
@@ -232,7 +237,7 @@ void Object3D::setBehavior(EnemyBehavior *motion) {
     Object3D::motion = motion;
 }
 
-float Object3D::getAlpha() const {
+float &Object3D::getAlpha() {
     return alpha;
 }
 
@@ -240,7 +245,7 @@ void Object3D::setAlpha(float alpha) {
     Object3D::alpha = alpha;
 }
 
-bool Object3D::isAlphaEnabled() const {
+bool &Object3D::isAlphaEnabled() {
     return alphaEnabled;
 }
 
@@ -252,4 +257,16 @@ Object3D::~Object3D()
 {
     if (stencilBufferEnabled) delete[] stencilBuffer;
     delete motion;
+}
+
+float &Object3D::getRotX() {
+    return rotX;
+}
+
+float &Object3D::getRotY() {
+    return rotY;
+}
+
+float &Object3D::getRotZ() {
+    return rotZ;
 }

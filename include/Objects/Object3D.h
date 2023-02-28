@@ -9,21 +9,12 @@
 #include "Point2D.h"
 
 class Object3D {
+
+protected:
     Vertex3D position;
     M3 rotation;
 
-protected:
     EnemyBehavior *motion;
-public:
-    float rotX, rotY, rotZ; // For easy management from UI
-    Object3D *parent;
-    bool alphaEnabled;
-    float alpha;
-
-    [[nodiscard]] Object3D *getParent() const;
-
-    void setParent(Object3D *object);
-
     bool enabled;
     bool removed;
     bool decal;         // Decals exclude UV Coordinates out of [0, 1]
@@ -37,9 +28,19 @@ public:
 
     std::string label;
 
+    float rotX, rotY, rotZ; // For easy management from UI
+    Object3D *parent;
+    bool alphaEnabled;
+    float alpha;
+
+    bool *stencilBuffer;
+public:
+
     Object3D();
 
     virtual ~Object3D();
+
+    void setParent(Object3D *object);
 
     void setLabel(const std::string& label);
 
@@ -84,7 +85,9 @@ public:
     virtual void postUpdate();
 
     bool isRotationFrameEnabled();
+
     void setRotationFrameEnabled(bool value);
+
     void setRotationFrame(Vertex3D v);
 
     void setStencilBufferEnabled(bool stencilBufferEnabled);
@@ -103,23 +106,29 @@ public:
 
     void setBehavior(EnemyBehavior *motion);
 
+    float &getRotX();
+
+    float &getRotY();
+
+    float &getRotZ();
+
     [[nodiscard]] bool getStencilBufferValue(int i) const;
 
     [[nodiscard]] bool getStencilBufferValue(int x, int y) const;
 
     [[nodiscard]] EnemyBehavior *getBehavior() const;
 
-    [[nodiscard]] float getAlpha() const;
-
-    [[nodiscard]] bool isAlphaEnabled() const;
+    [[nodiscard]] bool &isAlphaEnabled();
 
     [[nodiscard]] bool *getStencilBuffer() const;
 
-    [[nodiscard]] bool isStencilBufferEnabled() const;
+    [[nodiscard]] bool &isStencilBufferEnabled();
 
-    [[nodiscard]] Vertex3D getDrawOffset() const;
+    [[nodiscard]] Vertex3D &getDrawOffset();
 
-    [[nodiscard]] bool isFollowCamera() const;
+    [[nodiscard]] float &getAlpha();
+
+    [[nodiscard]] bool &isFollowCamera();
 
     [[nodiscard]] bool isDecal() const;
 
@@ -127,11 +136,13 @@ public:
 
     [[nodiscard]] bool isRemoved() const;
 
-    [[nodiscard]] bool isEnabled() const;
+    [[nodiscard]] bool &isEnabled();
 
     [[nodiscard]] std::string getLabel() const;
 
-    bool *stencilBuffer;
+    [[nodiscard]] Object3D *getParent() const;
+
+
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
