@@ -7,7 +7,7 @@
 #include "../Objects/Triangle3D.h"
 
 class Billboard {
-public:
+private:
     float width;
     float height;
 
@@ -20,8 +20,10 @@ public:
     Vertex3D Q4;
 
     Texture *texture;
-
+public:
     Billboard();
+
+    virtual ~Billboard();
 
     void updateUnconstrainedQuad(Object3D *o, Vertex3D &up, Vertex3D &right);
 
@@ -32,6 +34,10 @@ public:
     void reassignTexture();
 
     void setDimensions(float w, float h);
+
+    Triangle *getT1();
+
+    Triangle *getT2();
 };
 
 

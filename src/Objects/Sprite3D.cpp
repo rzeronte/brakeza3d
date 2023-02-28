@@ -19,8 +19,8 @@ void Sprite3D::onUpdate()
 
     if (isRemoved()) return;
 
-    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(&billboard->T1);
-    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(&billboard->T2);
+    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
+    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
 }
 
 void Sprite3D::postUpdate()

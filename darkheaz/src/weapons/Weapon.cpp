@@ -174,7 +174,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         );
 
         auto *projectileParticleEmissor = new ParticleEmissor(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
-        projectileParticleEmissor->setRotationFrame(0, 25, 25);
+        projectileParticleEmissor->setRotationFrame(0, 20, 20);
         projectile->setParticleEmissor(projectileParticleEmissor);
 
         if (getType() == WEAPON_BOMB) {

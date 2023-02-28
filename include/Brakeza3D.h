@@ -71,6 +71,8 @@ public:
 
     [[nodiscard]] float getDeltaTime() const;
 
+    [[nodiscard]] float getDeltaTimeMicro() const;
+
     void onStartComponents();
 
     void preUpdateComponents();

@@ -25,9 +25,7 @@ private:
 
     MenuOption *options[MAX_MENU_OPTIONS];
     int numOptions;
-
     int currentOption;
-
 public:
     ComponentMenu();
 
@@ -55,7 +53,7 @@ public:
 
     void drawVersion();
 
-    MenuOption *const *getOptions() const;
+    [[nodiscard]] MenuOption *const *getOptions() const;
 
     [[nodiscard]] int getCurrentOption() const;
 
