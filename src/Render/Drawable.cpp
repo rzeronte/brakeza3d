@@ -356,8 +356,8 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 }
 
 void Drawable::drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangles) {
-    frameTriangles->emplace_back(&B->T1);
-    frameTriangles->emplace_back(&B->T2);
+    frameTriangles->emplace_back(B->getT1());
+    frameTriangles->emplace_back(B->getT2());
 }
 
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
