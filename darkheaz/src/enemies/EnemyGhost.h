@@ -8,7 +8,7 @@
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../../../include/Physics/Mesh3DAnimatedGhost.h"
-#include "../weapons/AmmoProjectileBodyEmissor.h"
+#include "../weapons/AmmoProjectileBodyEmitter.h"
 #include "../../../include/Physics/RayCollisionable.h"
 #include "../../../include/Physics/ProjectileRay.h"
 
@@ -18,7 +18,7 @@ private:
     ShaderLightRay *laser;
     Counter counterDamageBlink;
     Counter counterStucked;
-    AmmoProjectileBodyEmissor *projectileEmissor;
+    AmmoProjectileBodyEmitter *projectileEmissor;
     std::vector<ProjectileRay *> fixedLasers;
 public:
     EnemyGhost();
@@ -53,11 +53,11 @@ public:
 
     void updateLasers();
 
-    void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
+    void setProjectileEmissor(AmmoProjectileBodyEmitter *projectileEmissor);
 
     Object3D *getTarget();
 
-    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
+    [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmissor() const;
 
     [[nodiscard]] ShaderBlink *getBlink() const;
 

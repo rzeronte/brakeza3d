@@ -17,18 +17,22 @@ void ComponentCollisions::onStart() {
     Logging::Log("ComponentCollisions onStart");
 }
 
-void ComponentCollisions::preUpdate() {
+void ComponentCollisions::preUpdate()
+{
 }
 
-void ComponentCollisions::onUpdate() {
-    if (!isEnabled()) {
-        return;
-    }
+void ComponentCollisions::onUpdate()
+{
 
-    this->stepSimulation();
 }
 
 void ComponentCollisions::postUpdate() {
+    if (!isEnabled()) {
+        this->stepSimulation(0);
+        return;
+    }
+
+    stepSimulation(Brakeza3D::get()->getDeltaTime());
 }
 
 void ComponentCollisions::onEnd() {
@@ -116,14 +120,10 @@ void ComponentCollisions::updatePhysicObjects()
     }
 }
 
-void ComponentCollisions::stepSimulation() {
+void ComponentCollisions::stepSimulation(float deltaTime) {
 
     if (SETUP->BULLET_STEP_SIMULATION) {
-        getDynamicsWorld()->stepSimulation(
-            Brakeza3D::get()->getDeltaTime(),
-            1,
-            btScalar(1.) / btScalar(20.)
-        );
+        getDynamicsWorld()->stepSimulation(deltaTime, 0, btScalar(1.) / btScalar(20.));
         updatePhysicObjects();
     }
 

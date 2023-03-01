@@ -531,9 +531,9 @@ void ComponentGame::removeProjectiles() const
             projectile->remove();
         }
 
-        auto projectileEmissor = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
-        if (projectileEmissor != nullptr) {
-            projectileEmissor->setRemoved(true);
+        auto projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
+        if (projectileEmitter != nullptr) {
+            projectileEmitter->setRemoved(true);
         }
 
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
@@ -557,33 +557,38 @@ void ComponentGame::removeInGameObjects()
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
-        auto *emissorProjectiles = dynamic_cast<AmmoProjectileBodyEmissor *> (object);
-        auto *particleEmissor = dynamic_cast<ParticleEmissor *> (object);
+        auto *projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
+        auto *particleEmitter = dynamic_cast<ParticleEmissor *> (object);
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
+            continue;
         }
         if (health != nullptr) {
             health->remove();
+            continue;
         }
         if (weapon != nullptr) {
             weapon->remove();
+            continue;
         }
         if (projectile != nullptr) {
             projectile->remove();
+            continue;
         }
-
-        if (emissorProjectiles != nullptr) {
-            emissorProjectiles->setRemoved(true);
+        if (projectileEmitter != nullptr) {
+            projectileEmitter->setRemoved(true);
+            continue;
         }
-
-        if (particleEmissor) {
-            particleEmissor->setRemoved(true);
+        if (particleEmitter) {
+            particleEmitter->setRemoved(true);
+            continue;
         }
 
         if (bomb != nullptr) {
             bomb->remove();
+            continue;
         }
     }
 }
@@ -800,6 +805,7 @@ void ComponentGame::handleMenuGameState()
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
+    ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
 
     getPlayer()->setEnabled(false);
     getPlayer()->stopBlinkForPlayer();
@@ -809,25 +815,29 @@ void ComponentGame::handleMenuGameState()
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
 
     setVisibleInGameObjects(false);
-    shaderLasers->setEnabled(false);
+    //shaderLasers->setEnabled(false);
     //shaderTrailBuffer->setEnabled(false);
 }
 
 void ComponentGame::handleGamingGameState()
 {
-    getPlayer()->setEnabled(true);
-    shaderLasers->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(255);
     setVisibleInGameObjects(true);
     setEnemyWeaponsEnabled(true);
+
     getPlayer()->setEnabled(true);
     getPlayer()->startPlayerBlink();
+
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
-    shaderColor->setEnabled(false);
+
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
+
+    shaderColor->setEnabled(false);
+    shaderLasers->setEnabled(true);
+
 }
 
 void ComponentGame::handleCountDownGameState()

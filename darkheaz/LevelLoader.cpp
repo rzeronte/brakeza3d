@@ -511,50 +511,52 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
     auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
     auto color = parseColorJSON(cJSON_GetObjectItemCaseSensitive(emitter, "color"));
 
-    auto projectileEmissor = new AmmoProjectileBodyEmissor(
-        ProjectileBodyEmmissorType::UNIQUE_PROJECTILE,
-        step,
-        enemy->getWeapon()
-    );
 
-    projectileEmissor->setActive(false);
+    auto projectileType = ProjectileBodyEmmissorType::CIRCLE_PROJECTILE;
+
     switch(type) {
         case ProjectileBodyEmmissorType::CIRCLE_PROJECTILE: {
-            projectileEmissor->setType(ProjectileBodyEmmissorType::CIRCLE_PROJECTILE);
+            projectileType = ProjectileBodyEmmissorType::CIRCLE_PROJECTILE;
             break;
         }
         case ProjectileBodyEmmissorType::UNIQUE_PROJECTILE: {
-            projectileEmissor->setType(ProjectileBodyEmmissorType::UNIQUE_PROJECTILE);
+            projectileType = ProjectileBodyEmmissorType::UNIQUE_PROJECTILE;
             break;
         }
-        default:
+        default: {
             Logging::Log("Weapon Type not found");
             exit(-1);
-            break;
+        }
     }
 
-    projectileEmissor->setPosition(enemy->getPosition());
+    auto projectileEmitter = new AmmoProjectileBodyEmitter(
+        projectileType,
+        step,
+        stop,
+        stopDuration,
+        stopEvery,
+        enemy->getWeapon()
+    );
 
-    projectileEmissor->setRotation(M3::getMatrixRotationForEulerAngles(
+    projectileEmitter->setPosition(enemy->getPosition());
+    projectileEmitter->setRotationFrameEnabled(true);
+
+    projectileEmitter->setRotation(M3::getMatrixRotationForEulerAngles(
         (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valueint
     ));
 
-    projectileEmissor->setRotationFrameEnabled(true);
-    projectileEmissor->setRotationFrame(Vertex3D(
+    projectileEmitter->setRotationFrame(Vertex3D(
         (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "x")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "y")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "z")->valueint
     ));
 
-    projectileEmissor->setStop(stop);
-    projectileEmissor->setStopDuration(stopDuration);
-    projectileEmissor->setStopEvery(stopEvery);
-    projectileEmissor->setColor(color);
-    projectileEmissor->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectileEmitter->setColor(color);
+    projectileEmitter->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
-    enemy->setProjectileEmissor(projectileEmissor);
+    enemy->setProjectileEmissor(projectileEmitter);
 }
 
 Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)

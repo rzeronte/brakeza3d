@@ -376,11 +376,11 @@ Object3D *EnemyGhost::getTarget()
     return target;
 }
 
-void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmissor *emissor) {
+void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmitter *emissor) {
     EnemyGhost::projectileEmissor = emissor;
 }
 
-AmmoProjectileBodyEmissor *EnemyGhost::getProjectileEmissor() const {
+AmmoProjectileBodyEmitter *EnemyGhost::getProjectileEmissor() const {
     return projectileEmissor;
 }
 

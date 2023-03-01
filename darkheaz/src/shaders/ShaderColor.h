@@ -17,13 +17,9 @@ public:
 
     void update() override;
 
-    ~ShaderColor() override;
-
     void executeKernelOpenCL();
 
     void setProgress(float progress);
-
-    [[nodiscard]] float getProgress() const;
 };
 
 

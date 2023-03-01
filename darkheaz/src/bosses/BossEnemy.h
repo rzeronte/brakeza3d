@@ -7,7 +7,7 @@
 
 
 #include "../enemies/EnemyGhost.h"
-#include "../weapons/AmmoProjectileBodyEmissor.h"
+#include "../weapons/AmmoProjectileBodyEmitter.h"
 
 class BossEnemy : public EnemyGhost {
 

@@ -6,7 +6,7 @@
 #define BRAKEDA3D_BOSSLEVEL10_H
 
 
-#include "../weapons/AmmoProjectileBodyEmissor.h"
+#include "../weapons/AmmoProjectileBodyEmitter.h"
 #include "BossEnemy.h"
 
 class BossLevel10 : public BossEnemy {
