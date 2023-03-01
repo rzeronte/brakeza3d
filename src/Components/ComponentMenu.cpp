@@ -43,7 +43,7 @@ void ComponentMenu::onStart()
     shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
-    shaderBackgroundImage->setImage(new Image(SETUP->IMAGES_FOLDER + "menu_background.png"));
+    shaderBackgroundImage->setImage(SETUP->IMAGES_FOLDER + "menu_background.png");
 
     title = new Image(SETUP->IMAGES_FOLDER + "title.png");
 }

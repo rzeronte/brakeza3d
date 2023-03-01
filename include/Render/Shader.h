@@ -24,10 +24,10 @@ protected:
 
     int phaseRender;
 
-    float deltaTime = 0;
-    float last_ticks = 0;
-    float current_ticks = 0;
-    float executionTime = 0;
+    float deltaTime;
+    float last_ticks;
+    float current_ticks;
+    float executionTime;
 
     Timer t;
 

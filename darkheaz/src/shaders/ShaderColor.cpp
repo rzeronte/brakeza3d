@@ -8,10 +8,12 @@
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderColor::ShaderColor(Color color, float progress) : ShaderOpenCL("color.opencl")
+ShaderColor::ShaderColor(Color color, float progress)
+:
+    ShaderOpenCL("color.opencl"),
+    color(color),
+    progress(progress)
 {
-    this->color = color;
-    this->progress = progress;
 }
 
 void ShaderColor::update()

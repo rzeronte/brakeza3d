@@ -11,6 +11,7 @@
 #include "../../../include/Objects/Object3D.h"
 
 class ShaderLightRay : public ShaderOpenCL {
+private:
     float intensity;
     float reach;
     float speed;
@@ -23,7 +24,7 @@ class ShaderLightRay : public ShaderOpenCL {
     Object3D* target;
     Object3D* parent;
 
-    Image *image;
+    Image image;
 
     cl_mem opencl_buffer_pixels_image;
 public:
@@ -31,8 +32,6 @@ public:
 
     void update() override;
     void executeKernelOpenCL();
-
-    [[nodiscard]] float getIntensity() const;
 
     void setIntensity(float intensity);
 

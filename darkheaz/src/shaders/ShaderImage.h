@@ -11,7 +11,7 @@
 #include "../../../include/Render/ShaderOpenCL.h"
 
 class ShaderImage: public ShaderOpenCL {
-    Image *image;
+    Image image;
     cl_mem opencl_buffer_pixels_image;
     int useOffset;
 
@@ -22,11 +22,9 @@ public:
 
     void update() override;
 
-    ~ShaderImage() override;
-
     void executeKernelOpenCL();
 
-    void setImage(Image *value);
+    void setImage(const std::string& fileName);
 
     void resetOffsets();
 

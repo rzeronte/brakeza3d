@@ -2,12 +2,8 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl")
+ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl"), stencilObjectsBuffer(new bool[bufferSize]), color(Color::olive())
 {
-    this->stencilObjectsBuffer = new bool[bufferSize];
-
-    this->color = Color::olive();
-
     openCLBufferResult = clCreateBuffer(
         context,
         CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
@@ -37,10 +33,11 @@ ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl")
     );
 }
 
-void ShaderTrailBuffer::update() {
-    Shader::update();
-
+void ShaderTrailBuffer::update()
+{
     if (!isEnabled()) return;
+
+    Shader::update();
 
     executeKernelOpenCL();
     clearStencilBuffer();
@@ -131,17 +128,11 @@ void ShaderTrailBuffer::addStencilBufferObject(Object3D *o)
     if (!o->isStencilBufferEnabled()) return;
 
     auto stencilObject = o->getStencilBuffer();
-    for (int i = 0 ; i < this->bufferSize ; i++) {
+    for (int i = 0 ; i < bufferSize ; i++) {
         this->stencilObjectsBuffer[i] = this->stencilObjectsBuffer[i] || stencilObject[i];
     }
 }
 
 void ShaderTrailBuffer::clearStencilBuffer() {
-    std::fill(stencilObjectsBuffer, stencilObjectsBuffer + EngineSetup::get()->RESOLUTION, false);
+    std::fill(stencilObjectsBuffer, stencilObjectsBuffer + bufferSize, false);
 }
-
-bool *ShaderTrailBuffer::getStencilObjectsBuffer() const {
-    return stencilObjectsBuffer;
-}
-
-

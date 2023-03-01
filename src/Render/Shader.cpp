@@ -9,22 +9,21 @@
 #include "../../include/EngineBuffers.h"
 
 Shader::Shader()
+:
+    videoBuffer(new uint32_t[EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight]),
+    enabled(false),
+    w(EngineSetup::get()->screenHeight),
+    h(EngineSetup::get()->screenWidth),
+    bufferSize(EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight),
+    resolution(Vector2D((float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight)),
+    phaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE),
+    deltaTime(0),
+    last_ticks(0),
+    current_ticks(0),
+    executionTime(0)
 {
-    setEnabled(false);
-    setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
+    std::fill(videoBuffer, videoBuffer + bufferSize, 0);
 
-    h = EngineSetup::get()->screenHeight;
-    w = EngineSetup::get()->screenWidth;
-
-    bufferSize = h * w;
-    videoBuffer = new uint32_t[w*h];
-    for (int i = 0; i < bufferSize; i++) {
-        videoBuffer[i] = 0;
-    }
-
-    resolution = Vector2D(w, h);
-
-    executionTime = 0;
     t.start();
 }
 

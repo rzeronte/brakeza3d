@@ -5,10 +5,12 @@
 #include "../../../include/Brakeza3D.h"
 
 
-ShaderHorizontalBar::ShaderHorizontalBar(Color color,float verticalPosition) : ShaderOpenCL("bar.opencl")
+ShaderHorizontalBar::ShaderHorizontalBar(Color color,float verticalPosition)
+:
+    ShaderOpenCL("bar.opencl"),
+    color(color),
+    verticalPosition(verticalPosition)
 {
-    this->color = color;
-    this->verticalPosition = verticalPosition;
 }
 
 void ShaderHorizontalBar::executeKernelOpenCL()

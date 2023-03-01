@@ -14,16 +14,16 @@
 #define FADE_SPEED_PRESSKEY_NEWLEVEL 0.04
 
 ComponentGame::ComponentGame() :
-    primaryColor(Color(179, 0, 40)),
-    secondaryColor(Color(0, 179, 52)),
-    thirdColor(Color(0, 0, 255)),
     player(nullptr),
     shaderLasers(nullptr),
-    shaderBackgroundImage(nullptr),
-    shaderColor(nullptr),
-    shaderTrailBuffer(nullptr),
     shaderClouds(nullptr),
-    gameState(EngineSetup::GameState::NONE)
+    shaderBackgroundImage(nullptr),
+    shaderTrailBuffer(nullptr),
+    shaderColor(nullptr),
+    gameState(EngineSetup::GameState::NONE),
+    primaryColor(Color(179, 0, 40)),
+    secondaryColor(Color(0, 179, 52)),
+    thirdColor(Color(0, 0, 255))
 {
     player = new Player();
 }

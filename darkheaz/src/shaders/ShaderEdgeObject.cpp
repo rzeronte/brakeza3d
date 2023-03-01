@@ -1,14 +1,14 @@
 #include "ShaderEdgeObject.h"
-#include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderEdgeObject::ShaderEdgeObject(Color c) : ShaderOpenCL("edge.opencl")
+ShaderEdgeObject::ShaderEdgeObject(Color c)
+:
+    ShaderOpenCL("edge.opencl"),
+    object(nullptr),
+    color(c)
 {
-    object = nullptr;
-    color = c;
-
     opencl_buffer_stencil = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY,

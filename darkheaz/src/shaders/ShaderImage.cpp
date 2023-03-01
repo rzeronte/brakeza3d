@@ -4,17 +4,17 @@
 #include "../../../include/Brakeza3D.h"
 
 
-ShaderImage::ShaderImage() : ShaderOpenCL("image.opencl")
+ShaderImage::ShaderImage()
+:
+    ShaderOpenCL("image.opencl"),
+    image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png")),
+    useOffset(true)
 {
-    this->useOffset = true;
-
-    this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
-        this->image->pixels(),
+        this->image.pixels(),
         &clRet
     );
 
@@ -24,7 +24,7 @@ ShaderImage::ShaderImage() : ShaderOpenCL("image.opencl")
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
-        image->pixels(),
+        image.pixels(),
         0,
         nullptr,
         nullptr
@@ -122,9 +122,9 @@ void ShaderImage::resetOffsets()
     offsetY = 0;
 }
 
-void ShaderImage::setImage(Image *value)
+void ShaderImage::setImage(const std::string& fileName)
 {
-    ShaderImage::image = value;
+    ShaderImage::image = Image(fileName);
     refreshBufferImage();
 }
 
@@ -136,16 +136,11 @@ void ShaderImage::refreshBufferImage()
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
-        image->pixels(),
+        image.pixels(),
         0,
         nullptr,
         nullptr
     );
-}
-
-ShaderImage::~ShaderImage()
-{
-
 }
 
 bool ShaderImage::isUseOffset() const {

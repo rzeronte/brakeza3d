@@ -5,15 +5,17 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderClouds::ShaderClouds(Color c) : ShaderOpenCL("clouds.opencl"), color(c)
+ShaderClouds::ShaderClouds(Color c)
+:
+    ShaderOpenCL("clouds.opencl"),
+    clouds(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud2.png")),
+    color(c)
 {
-    this->clouds = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud2.png");
-
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
-        this->clouds->pixels(),
+        this->clouds.pixels(),
         &clRet
     );
 
@@ -23,7 +25,7 @@ ShaderClouds::ShaderClouds(Color c) : ShaderOpenCL("clouds.opencl"), color(c)
         CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
-        clouds->pixels(),
+        clouds.pixels(),
         0,
         nullptr,
         nullptr
@@ -92,11 +94,6 @@ void ShaderClouds::executeKernelOpenCL()
     );
 
     //this->debugKernel();
-}
-
-ShaderClouds::~ShaderClouds()
-{
-    delete clouds;
 }
 
 void ShaderClouds::setColor(const Color &v) {

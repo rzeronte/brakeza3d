@@ -12,13 +12,12 @@
 #include "../../../include/Objects/Mesh3D.h"
 
 class ShaderEdgeObject : public ShaderOpenCL {
-    cl_mem opencl_buffer_stencil;
-
+private:
     Object3D* object;
+    cl_mem opencl_buffer_stencil;
     Color color;
-
 public:
-    ShaderEdgeObject(Color c);
+    explicit ShaderEdgeObject(Color c);
 
     void update() override;
 

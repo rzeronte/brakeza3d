@@ -13,16 +13,14 @@
 #include "../../../include/Render/ShaderOpenCL.h"
 
 class ShaderClouds: public ShaderOpenCL {
-    Image *clouds;
+private:
+    Image clouds;
     cl_mem opencl_buffer_pixels_image;
     Color color;
-
 public:
-    ShaderClouds(Color c);
+    explicit ShaderClouds(Color c);
 
     void update() override;
-
-    ~ShaderClouds() override;
 
     void executeKernelOpenCL();
 
