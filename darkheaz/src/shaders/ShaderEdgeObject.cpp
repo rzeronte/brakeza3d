@@ -60,7 +60,7 @@ void ShaderEdgeObject::executeKernelOpenCL()
         CL_FALSE,
         0,
         this->bufferSize * sizeof(bool),
-        object->stencilBuffer,
+        object->getStencilBuffer(),
         0,
         nullptr,
         nullptr

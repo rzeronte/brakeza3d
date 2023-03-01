@@ -2,10 +2,10 @@
 // Created by eduardo on 20/3/22.
 //
 
-#include "EnemyGhostRespawner.h"
+#include "EnemyGhostEmitter.h"
 #include "../../../include/Brakeza3D.h"
 
-EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step): object(object)
+EnemyGhostEmitter::EnemyGhostEmitter(EnemyGhost *object, float step): object(object)
 {
     counter.setStep(step);
     counter.setEnabled(false);
@@ -18,7 +18,7 @@ EnemyGhostRespawner::EnemyGhostRespawner(EnemyGhost *object, float step): object
     Brakeza3D::get()->addObject3D(object, object->getLabel());
 }
 
-void EnemyGhostRespawner::onUpdate()
+void EnemyGhostEmitter::onUpdate()
 {
     if (object == nullptr) {
         return;
@@ -52,7 +52,7 @@ void EnemyGhostRespawner::onUpdate()
     }
 }
 
-void EnemyGhostRespawner::startCounter()
+void EnemyGhostEmitter::startCounter()
 {
     if (this->isRemoved()) {
         return;

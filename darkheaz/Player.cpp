@@ -583,8 +583,7 @@ bool Player::isAllowEnergyShield() const {
 
 void Player::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, Color::green());
-    blink->setStep(0.05);
+    blink = new ShaderBlink(this, 0.05, Color::green());
     blink->setEnabled(false);
     counterDamageBlink.setEnabled(false);
 

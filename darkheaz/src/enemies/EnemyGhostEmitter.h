@@ -9,9 +9,9 @@
 #include "../../../include/Misc/Counter.h"
 #include "EnemyGhost.h"
 
-class EnemyGhostRespawner: public Object3D {
+class EnemyGhostEmitter: public Object3D {
 public:
-    EnemyGhostRespawner(EnemyGhost *object, float step);
+    EnemyGhostEmitter(EnemyGhost *object, float step);
     void onUpdate() override;
     void startCounter();
 private:

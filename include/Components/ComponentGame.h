@@ -36,35 +36,35 @@ private:
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
 
-    FaderToGameStates *fadeToGameState;
+    FaderToGameStates *fadeToGameState{};
     Player *player;
-    ShaderProjectiles *shaderLasers;
+    ShaderProjectiles *shaderLasers{};
 
-    Sprite3D *explosionSpriteTemplate;
-    PathFinder *pathFinder;
+    Sprite3D *explosionSpriteTemplate{};
+    PathFinder *pathFinder{};
 
-    Image *imageCredits;
-    Image *imageHelp;
-    Image *imageSplash;
+    Image *imageCredits{};
+    Image *imageHelp{};
+    Image *imageSplash{};
     Counter splashCounter;
 
-    LevelLoader *levelInfo;
+    LevelLoader *levelInfo{};
 
-    ShaderClouds *shaderClouds;
-    ShaderImage *shaderBackgroundImage;
-    ShaderTrailBuffer *shaderTrailBuffer;
+    ShaderClouds *shaderClouds{};
+    ShaderImage *shaderBackgroundImage{};
+    ShaderTrailBuffer *shaderTrailBuffer{};
 
-    ShaderColor *shaderColor;
-    Image *imageCrossFire;
+    ShaderColor *shaderColor{};
+    Image *imageCrossFire{};
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
     EngineSetup::GameState gameState;
     std::vector<Weapon *> weapons;
 
-    Color primaryColor = Color(179, 0, 40);
-    Color secondaryColor = Color(0, 179, 52);
-    Color thirdColor = Color(0, 0, 255);
+    Color primaryColor;
+    Color secondaryColor;
+    Color thirdColor;
 
 public:
     ComponentGame();
@@ -163,6 +163,8 @@ public:
     [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
 
     [[nodiscard]] ShaderClouds *getShaderClouds() const;
+
+    void handleSplash();
 };
 
 

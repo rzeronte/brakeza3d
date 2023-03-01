@@ -18,14 +18,18 @@ class ShaderBlink : public ShaderOpenCL {
     Object3D* object;
     Color color;
     Counter counter;
+    float step;
 public:
-    ShaderBlink(Object3D *o, Color c): ShaderOpenCL("blink.opencl") {
-        this->object = o;
-        this->screenHeight = EngineSetup::get()->screenHeight;
-        this->screenWidth = EngineSetup::get()->screenWidth;
-        this->color = c;
-        setStep(DEFAULT_BLINK_SECONDS);
-
+    ShaderBlink(Object3D *o, float step, Color c) :
+        object(o),
+        color(c),
+        step(step),
+        counter(Counter(step)),
+        screenHeight(EngineSetup::get()->screenHeight),
+        screenWidth(EngineSetup::get()->screenWidth),
+        ShaderOpenCL("blink.opencl")
+    {
+        counter.setEnabled(true);
         opencl_buffer_stencil = clCreateBuffer(
             context,
             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
@@ -149,13 +153,5 @@ public:
 
         this->debugKernel();
     }
-
-    void setStep(float s) {
-        this->step = s;
-        this->counter.setStep(step);
-        this->counter.setEnabled(true);
-    }
-
-    float step;
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

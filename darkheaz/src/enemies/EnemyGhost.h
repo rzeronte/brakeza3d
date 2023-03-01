@@ -19,12 +19,13 @@ private:
     Counter counterDamageBlink;
     Counter counterStucked;
     AmmoProjectileBodyEmissor *projectileEmissor;
-
     std::vector<ProjectileRay *> fixedLasers;
 public:
     EnemyGhost();
 
-    void resolveCollision(Collisionable *collisionableObject) override;
+    ~EnemyGhost() override;
+
+    void resolveCollision(Collisionable *withObject) override;
 
     void onUpdate() override;
 
@@ -34,15 +35,11 @@ public:
 
     void shoot(Object3D *target);
 
-    [[nodiscard]] ShaderBlink *getBlink() const;
-
     void postUpdate() override;
 
     void rotateToTarget();
 
     void makeReward();
-
-    ~EnemyGhost() override;
 
     void loadBlinkShader();
 
@@ -52,15 +49,18 @@ public:
 
     void makeExplosion();
 
-    Object3D *getTarget();
-
-    void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
-
-    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
-
     void addFixedLaser(ProjectileRay *ray);
 
     void updateLasers();
+
+    void setProjectileEmissor(AmmoProjectileBodyEmissor *projectileEmissor);
+
+    Object3D *getTarget();
+
+    [[nodiscard]] AmmoProjectileBodyEmissor *getProjectileEmissor() const;
+
+    [[nodiscard]] ShaderBlink *getBlink() const;
+
 };
 
 

@@ -7,26 +7,30 @@
 #include "../items/ItemWeaponGhost.h"
 #include "../weapons/AmmoProjectile.h"
 
-EnemyGhost::EnemyGhost()
+EnemyGhost::EnemyGhost() :
+    blink(nullptr),
+    laser(nullptr),
+    projectileEmissor(nullptr),
+    counterDamageBlink(Counter(1)),
+    counterStucked(Counter(5))
 {
-    counterDamageBlink = Counter(1);
     counterDamageBlink.setEnabled(false);
-
-    counterStucked = Counter(5);
     counterStucked.setEnabled(false);
-
-    projectileEmissor = nullptr;
 
     setStucked(false);
 }
 
 void EnemyGhost::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
-    blink->setStep(0.05);
+    blink = new ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
     blink->setEnabled(true);
 
-    laser = new ShaderLaser(this, ComponentsManager::get()->getComponentGame()->getPrimaryColor(), EngineSetup::collisionGroups::ProjectileEnemy, EngineSetup::collisionGroups::Player);
+    laser = new ShaderLaser(
+        this,
+        ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
+        EngineSetup::collisionGroups::ProjectileEnemy,
+        EngineSetup::collisionGroups::Player
+    );
     laser->setSpeed(1000);
     laser->setEnabled(false);
 }
@@ -205,11 +209,11 @@ void EnemyGhost::integrate()
     Mesh3DAnimatedGhost::integrate();
 }
 
-void EnemyGhost::resolveCollision(Collisionable *collisionableObject)
+void EnemyGhost::resolveCollision(Collisionable *withObject)
 {
-    Mesh3DAnimatedGhost::resolveCollision(collisionableObject);
+    Mesh3DAnimatedGhost::resolveCollision(withObject);
 
-    auto *projectile = dynamic_cast<AmmoProjectile*> (collisionableObject);
+    auto *projectile = dynamic_cast<AmmoProjectile*> (withObject);
     if (projectile != nullptr) {
         ComponentsManager::get()->getComponentSound()->playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("enemyDamage"),
