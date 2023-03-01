@@ -3,17 +3,24 @@
 #include "../../include/Components/ComponentMenu.h"
 #include "../../include/Brakeza3D.h"
 #include "../../darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h"
-#include "../../include/Physics/Mesh3DAnimatedGhost.h"
 
-ComponentMenu::ComponentMenu(): numOptions(0), currentOption(0)
+ComponentMenu::ComponentMenu()
+:
+    shaderBackgroundImage(nullptr),
+    title(nullptr),
+    spaceship(nullptr),
+    light(nullptr),
+    pendulum(nullptr),
+    numOptions(0),
+    currentOption(0)
 {
 }
 
 ComponentMenu::~ComponentMenu()
 {
     delete shaderBackgroundImage;
-    delete title;
     delete spaceship;
+    delete title;
     delete light;
     delete pendulum;
 
@@ -40,7 +47,6 @@ void ComponentMenu::onStart()
     Brakeza3D::get()->addObject3D(light, "lightMenu");
 
     shaderBackgroundImage = new ShaderImage();
-    shaderBackgroundImage->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
     shaderBackgroundImage->setImage(SETUP->IMAGES_FOLDER + "menu_background.png");

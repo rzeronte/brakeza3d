@@ -2,15 +2,17 @@
 #include "../../include/Brakeza3D.h"
 
 ComponentCollisions::ComponentCollisions()
+:
+    bspMap(nullptr),
+    collisionConfiguration(nullptr),
+    dispatcher(nullptr),
+    overlappingPairCache(nullptr),
+    ghostPairCallback(nullptr),
+    solver(nullptr),
+    dynamicsWorld(nullptr),
+    debugDraw(nullptr)
+
 {
-    this->bspMap = nullptr;
-    this->collisionConfiguration = nullptr;
-    this->dispatcher = nullptr;
-    this->overlappingPairCache = nullptr;
-    this->solver = nullptr;
-    this->debugDraw = nullptr;
-    this->ghostPairCallback = nullptr;
-    this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 }
 
 void ComponentCollisions::onStart() {
@@ -26,7 +28,8 @@ void ComponentCollisions::onUpdate()
 
 }
 
-void ComponentCollisions::postUpdate() {
+void ComponentCollisions::postUpdate()
+{
     if (!isEnabled()) {
         this->stepSimulation(0);
         return;
@@ -35,7 +38,8 @@ void ComponentCollisions::postUpdate() {
     stepSimulation(Brakeza3D::get()->getDeltaTime());
 }
 
-void ComponentCollisions::onEnd() {
+void ComponentCollisions::onEnd()
+{
 
 }
 

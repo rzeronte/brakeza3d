@@ -14,7 +14,7 @@
 #include "../Render/Logging.h"
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
-#include "../Particles/ParticleEmissor.h"
+#include "../Particles/ParticleEmitter.h"
 #include "../Physics/SimplePendulum.h"
 #include "../../darkheaz/Player.h"
 
@@ -292,7 +292,7 @@ public:
     }
 
     void GuiParticleEmissor(Object3D *object, int i) {
-        auto *emissor = dynamic_cast<ParticleEmissor *>(object);
+        auto *emissor = dynamic_cast<ParticleEmitter *>(object);
         if (emissor != nullptr) {
             const float step_range_min = 0;
             const float step_range_max = 500;

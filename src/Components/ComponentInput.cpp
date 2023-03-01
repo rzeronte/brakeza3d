@@ -1,8 +1,28 @@
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
 
 ComponentInput::ComponentInput()
+:
+    mouseMotion(false),
+    mouseLeftButton(false),
+    mouseRightButton(false),
+    keyboard(nullptr),
+    controllerButtonA(0),
+    controllerButtonB(0),
+    controllerButtonX(0),
+    controllerButtonY(0),
+    controllerAxisLeftX(0),
+    controllerAxisLeftY(0),
+    controllerAxisRightX(0),
+    controllerAxisRightY(0),
+    controllerAxisTriggerLeft(0),
+    controllerAxisTriggerRight(0),
+    mouseButtons(0),
+    mouseX(0),
+    mouseY(0),
+    relativeRendererMouseX(0),
+    relativeRendererMouseY(0),
+    gameController(nullptr)
 {
     setEnabled(true);
 }
@@ -10,7 +30,7 @@ ComponentInput::ComponentInput()
 void ComponentInput::onStart()
 {
     Logging::Log("ComponentInput onStart");
-    this->initJostick();
+    this->initJoystick();
 }
 
 void ComponentInput::preUpdate() {
@@ -155,7 +175,6 @@ void ComponentInput::updateMouseMapping() {
 
     if ((mouseButtons & SDL_BUTTON_LMASK) != 0) {
         mouseLeftButton = true;
-        mousePressed = true;
     }
 
     if ((mouseButtons & SDL_BUTTON_RMASK) != 0) {
@@ -214,7 +233,7 @@ bool ComponentInput::isAnyControllerButtonPressed()
     return false;
 }
 
-void ComponentInput::initJostick()
+void ComponentInput::initJoystick()
 {
     //Check for joysticks
     if ( SDL_NumJoysticks() < 1 ) {

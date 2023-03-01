@@ -4,7 +4,7 @@
 
 #include "../include/Objects/Object3D.h"
 #include "../include/Misc/Counter.h"
-#include "../include/Particles/ParticleEmissor.h"
+#include "../include/Particles/ParticleEmitter.h"
 #include "../include/Physics/Mesh3DGhost.h"
 #include "src/weapons/Weapon.h"
 #include "src/shaders/ShaderShockWave.h"

@@ -13,14 +13,14 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 
-class ParticleEmissor : public Object3D {
+class ParticleEmitter : public Object3D {
 private:
     Counter timeToNextParticleCounter;
 protected:
     std::vector<Particle> particles;
     Counter lifeCounter;
 public:
-    ParticleEmissor(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c);
+    ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c);
 
     [[nodiscard]] Counter &getTimeToNetParticleCounter();
     void setRotationFrame(float, float, float);

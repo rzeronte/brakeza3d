@@ -108,7 +108,7 @@ public:
 
     void setCadenceTime(float value);
 
-    void setIconImage(std::string file);
+    void setIconImage(const std::string& file);
 
     [[nodiscard]] Image *getIcon() const;
 

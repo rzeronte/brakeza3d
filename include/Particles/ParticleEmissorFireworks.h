@@ -6,9 +6,9 @@
 #define BRAKEDA3D_PARTICLEEMISSORFIREWORKS_H
 
 
-#include "ParticleEmissor.h"
+#include "ParticleEmitter.h"
 
-class ParticleEmissorFireworks: public ParticleEmissor {
+class ParticleEmissorFireworks: public ParticleEmitter {
     int maxFires;
     int particlesByFire;
     int firesCounter;

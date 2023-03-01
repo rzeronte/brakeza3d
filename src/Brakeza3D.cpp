@@ -43,8 +43,6 @@ void Brakeza3D::start()
     componentsManager->registerComponent(componentHUD, "ComponentHUD");
     componentsManager->registerComponent(componentGameInput, "ComponentGameInput");
 
-    ComponentsManager::get()->configureComponents();
-
     mainLoop();
 }
 
@@ -105,7 +103,7 @@ void Brakeza3D::addObject3D(Object3D *obj, const std::string &label)
 }
 
 Object3D *Brakeza3D::getObjectByLabel(const std::string &label) {
-    for (int i = 0; i < this->sceneObjects.size(); i++) {
+    for (int i = 0; i < (int) this->sceneObjects.size(); i++) {
         if (sceneObjects[i]->getLabel() == label) {
             return sceneObjects[i];
         }

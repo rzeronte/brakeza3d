@@ -123,7 +123,7 @@ public:
     Point2D parsePositionJSON(cJSON *positionJSON);
     Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
-    void setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy);
+    void setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy);
 
     void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
     void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);

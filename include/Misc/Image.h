@@ -23,7 +23,7 @@ public:
 
     virtual ~Image();
 
-    explicit Image(std::string filename);
+    explicit Image(const std::string& filename);
 
     void loadFromRaw(unsigned int *texture, int w, int h);
 
