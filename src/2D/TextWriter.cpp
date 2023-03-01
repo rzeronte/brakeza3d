@@ -129,11 +129,6 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
 {
-    if (font == nullptr) {
-        Logging::Log("Error en la font TTF", "");
-        exit(-1);
-    }
-
     int w = 0, h = 0;
     TTF_SizeUTF8(font, text, &w, &h);
 

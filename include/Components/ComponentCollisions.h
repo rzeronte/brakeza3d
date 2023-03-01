@@ -54,7 +54,7 @@ public:
 
     void updatePhysicObjects();
 
-    void stepSimulation();
+    void stepSimulation(float deltaTime);
 
     void demoProjectile(int type);
 
