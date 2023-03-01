@@ -53,22 +53,18 @@ void ComponentSound::loadSoundsJSON()
 {
     Logging::Log("Loading Sounds in package...");
 
-    std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     size_t file_size;
-    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
-    auto contentFile = Tools::readFile(filePath, file_size);
+    auto contentFile = Tools::readFile(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS, file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Log("Can't be loaded %s", filePath.c_str());
+        Logging::Log("Cannot load sounds JSON file!");
         return;
     }
 
-    cJSON *soundsJSONList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds");
-
     cJSON *currentSound;
-    cJSON_ArrayForEach(currentSound, soundsJSONList) {
+    cJSON_ArrayForEach(currentSound, cJSON_GetObjectItemCaseSensitive(myDataJSON, "sounds")) {
         cJSON *file = cJSON_GetObjectItemCaseSensitive(currentSound, "file");
         cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
         cJSON *type = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
@@ -80,7 +76,7 @@ void ComponentSound::loadSoundsJSON()
 
         Logging::Log("Loading file sound %s", file->valuestring);
 
-        BUFFERS->soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
+        BUFFERS->soundPackage->addItem(EngineSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
 
     cJSON_Delete(myDataJSON);

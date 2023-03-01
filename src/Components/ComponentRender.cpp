@@ -3,6 +3,27 @@
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
 
+ComponentRender::ComponentRender() :
+    fps(0),
+    fpsFrameCounter(0),
+    frameTime(0),
+    sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
+    sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
+    tilesWidth(0),
+    tilesHeight(0),
+    numTiles(0),
+    tilePixelsBufferSize(0),
+    selectedObject(nullptr),
+    clPlatformId(nullptr),
+    clDeviceId(nullptr),
+    ret_num_devices(0),
+    ret_num_platforms(0),
+    ret(0),
+    clContext(nullptr),
+    clCommandQueue(nullptr)
+{
+
+}
 
 void ComponentRender::onStart()
 {
@@ -1108,3 +1129,4 @@ ComponentRender::~ComponentRender()
         delete l;
     }
 }
+

@@ -4,7 +4,9 @@
 
 ComponentCamera::ComponentCamera()
 :
-    camera(new Camera3D())
+    camera(new Camera3D()),
+    freeLook(false),
+    autoScroll(false)
 {
 }
 
