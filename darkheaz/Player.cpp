@@ -126,7 +126,7 @@ void Player::startPlayerBlink()
 
 void Player::respawn()
 {
-    Logging::getInstance()->Log("Respawn Player");
+    Logging::Log("Respawn Player");
     setState(PlayerState::LIVE);
     setStamina(INITIAL_STAMINA);
 }
@@ -196,7 +196,7 @@ void Player::shoot(float intensity)
             break;
         }
         default:
-            Logging::Log("Not weapon type shoot!", "ERROR");
+            Logging::Log("Not weapon type shoot!");
     }
 }
 
@@ -227,7 +227,7 @@ void Player::onUpdate()
         if (counterStucked.isFinished()) {
             unStuck();
             startPlayerBlink();
-            Logging::Log("unStuck","");
+            Logging::Log("unStuck");
         }
     }
 
@@ -359,7 +359,7 @@ void Player::resolveCollision(Collisionable *with)
             1,
             0
         );
-        Logging::getInstance()->Log("Added Weapon to Player:" + weapon->getWeaponType()->getLabel());
+        Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
         weapon->setRemoved(true);
     }
 
@@ -370,7 +370,7 @@ void Player::resolveCollision(Collisionable *with)
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
-        Logging::getInstance()->Log("Health to Player!");
+        Logging::Log("Health to Player!");
         receiveAid(health->getAid());
         health->remove();
     }
@@ -382,7 +382,7 @@ void Player::resolveCollision(Collisionable *with)
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
-        Logging::getInstance()->Log("Health to Player!");
+        Logging::Log("Health to Player!");
         receiveEnergy(energy->getEnergy());
         energy->remove();
     }
@@ -395,7 +395,7 @@ void Player::resolveCollision(Collisionable *with)
 
 void Player::setState(PlayerState state)
 {
-    Logging::getInstance()->Log("Player change state to " + std::to_string(state));
+    Logging::Log("Player change state to %d", state);
     Player::state = state;
 }
 
@@ -403,8 +403,9 @@ Weapon *Player::getWeapon() const {
     return weapon;
 }
 
-void Player::setWeapon(Weapon *weaponType) {
-    Logging::Log("Set Player Weapon to" + weaponType->getLabel(), "");
+void Player::setWeapon(Weapon *weaponType)
+{
+    Logging::Log("Set Player Weapon to %s", weaponType->getLabel().c_str());
     Player::weapon = weaponType;
 
     ComponentsManager::get()->getComponentSound()->playSound(
@@ -419,7 +420,7 @@ void Player::addWeapon(Weapon *weaponType)
     auto weapon = getWeaponTypeByLabel(weaponType->getLabel());
     if (weapon != nullptr) {
         weapon->addAmount(weaponType->getStartAmmoAmount());
-        Logging::getInstance()->Log("Weapon already exist! Added ammo: " + std::to_string(weaponType->getStartAmmoAmount()));
+        Logging::Log("Weapon already exist! Added ammo: %d", weaponType->getStartAmmoAmount());
         return;
     }
 

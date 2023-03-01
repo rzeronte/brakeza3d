@@ -17,7 +17,6 @@ public:
     static EngineSetup *instance;
 
     bool LOGGING = false;
-    bool LOGGING_TO_FILE = false;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
 

@@ -5,10 +5,9 @@
 #include "../EnemyBehavior.h"
 #include "../include/Render/Logging.h"
 
-EnemyBehavior::EnemyBehavior()
+EnemyBehavior::EnemyBehavior(): enabled(true)
 {
     timer.start();
-    setEnabled(true);
 }
 
 void EnemyBehavior::onUpdate(Vertex3D &position)
@@ -30,10 +29,6 @@ void EnemyBehavior::resetTimer()
 {
     timer.stop();
     timer.start();
-}
-
-EnemyBehavior::~EnemyBehavior() {
-
 }
 
 bool EnemyBehavior::isEnabled() const {

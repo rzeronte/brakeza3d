@@ -17,17 +17,17 @@ private:
 public:
     void onUpdate() override;
 
-    bool isExplode() const;
+    [[nodiscard]] bool isExplode() const;
 
     void setExplode(bool explode);
 
-    Mesh3D *getModelPartitions() const;
+    [[nodiscard]] Mesh3D *getModelPartitions() const;
 
     void setModelPartitions(Mesh3D *modelPartitions);
 
     void addAsteroid();
 
-    int getExplodeNumberPartitions() const;
+    [[nodiscard]] int getExplodeNumberPartitions() const;
 
     void setExplodeNumberPartitions(int explodeNumberPartitions);
 };

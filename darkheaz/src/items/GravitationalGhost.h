@@ -16,15 +16,15 @@ private:
 public:
     GravitationalGhost(float force, float factor);
 
-    float getForce() const;
-
     void setForce(float force);
 
-    virtual void onUpdate() override;
-
-    float getFactor() const;
+    void onUpdate() override;
 
     void setFactor(float factor);
+
+    [[nodiscard]] float getFactor() const;
+
+    [[nodiscard]] float getForce() const;
 };
 
 

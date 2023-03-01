@@ -5,9 +5,14 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
-TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *concharsFile): renderer(renderer), font(font), alpha(255) {
+TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *concharsFile)
+:
+    renderer(renderer),
+    font(font),
+    alpha(255)
+{
     if (!Tools::fileExists(concharsFile)) {
-        Logging::Log(std::string("Error loading file") + concharsFile, "TextWriter");
+        Logging::Log("Error loading file %s", concharsFile);
         return;
     }
 
@@ -35,16 +40,7 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *conch
             r.x = x;
             r.y = y;
 
-            auto *s = SDL_CreateRGBSurface(
-                    0,
-                    CONCHARS_CHARACTER_W,
-                    CONCHARS_CHARACTER_H,
-                    32,
-                    rmask,
-                    gmask,
-                    bmask,
-                    amask
-            );
+            auto *s = SDL_CreateRGBSurface(0, CONCHARS_CHARACTER_W, CONCHARS_CHARACTER_H, 32, rmask, gmask,bmask, amask);
 
             SDL_BlitSurface(sprite, &r, s, nullptr);
             this->characterSurfaces.push_back(s);
@@ -52,7 +48,8 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font, const char *conch
     }
 }
 
-void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin) {
+void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
+{
     SDL_Surface *c = this->characterSurfaces[ascii];
 
     for (int x = 0; x < c->w; x++) {
@@ -107,16 +104,6 @@ void TextWriter::writeText(int x, int y, const char *text, bool bold) {
 
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
-    if (font == nullptr) {
-        Logging::Log("Error en la font TTF", "TTF");
-        exit(-1);
-    }
-
-    if (renderer == nullptr) {
-        Logging::Log("Error en el renderer", "TTF");
-        exit(-1);
-    }
-
     SDL_Color color;
 
     color.r = (int) c.r;
@@ -214,6 +201,8 @@ void TextWriter::setAlpha(float alpha) {
 
 TextWriter::~TextWriter()
 {
+    SDL_FreeSurface(sprite);
+
     for (auto characterSurface: characterSurfaces) {
         SDL_FreeSurface(characterSurface);
     }

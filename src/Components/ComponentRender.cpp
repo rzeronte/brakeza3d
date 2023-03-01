@@ -4,10 +4,10 @@
 #include "../../include/Brakeza3D.h"
 
 
-void ComponentRender::
-onStart()
+void ComponentRender::onStart()
 {
-    Logging::Log("ComponentRender onStart", "ComponentRender");
+    Logging::Log("ComponentRender onStart");
+
     initTiles();
     initOpenCL();
 }
@@ -303,12 +303,6 @@ void ComponentRender::hiddenSurfaceRemoval() {
             std::make_move_iterator(clippedTriangles.begin()),
             std::make_move_iterator(clippedTriangles.end())
     );
-
-    if (SETUP->DEBUG_RENDER_INFO) {
-        Logging::Log("[DEBUG_RENDER_INFO] frameTriangles: " + std::to_string(frameTriangles.size()) +
-                                    ", numVisibleTriangles: " + std::to_string(visibleTriangles.size()), "Render");
-    }
-
 }
 
 void ComponentRender::hiddenOctreeRemoval() {
@@ -752,11 +746,6 @@ void ComponentRender::initTiles() {
     this->numTiles = tilesWidth * tilesHeight;
     this->tilePixelsBufferSize = this->sizeTileWidth * this->sizeTileHeight;
 
-    Logging::Log(
-            "Tiles: (" + std::to_string(tilesWidth) + "x" + std::to_string(tilesHeight) + "), Size: (" +
-            std::to_string(sizeTileWidth) + "x" + std::to_string(sizeTileHeight) + ") - bufferTileSize: " +
-            std::to_string(sizeTileWidth * sizeTileHeight), "Render");
-
     for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
         for (int x = 0; x < SETUP->screenWidth; x += this->sizeTileWidth) {
 
@@ -771,10 +760,6 @@ void ComponentRender::initTiles() {
 
             this->tiles.emplace_back(t);
             // Load up the vector with MyClass objects
-
-            Logging::Log(
-                    "Tiles: (id:" + std::to_string(t.id) + "), (offset_x: " + std::to_string(x) + ", offset_y: " +
-                    std::to_string(y) + ")", "Render");
         }
     }
 
@@ -983,12 +968,12 @@ void ComponentRender::initOpenCL()
 
     ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
     if (ret != CL_SUCCESS) {
-        Logging::getInstance()->Log("Unable to get platform_id");
+        Logging::Log("Unable to get platform_id");
     }
 
     ret = clGetDeviceIDs(clPlatformId, CL_DEVICE_TYPE_GPU, 1, &clDeviceId, &ret_num_devices);
     if (ret != CL_SUCCESS) {
-        Logging::getInstance()->Log("Unable to get cpu_device_id");
+        Logging::Log("Unable to get cpu_device_id");
     }
 
     cl_context_properties properties[3];

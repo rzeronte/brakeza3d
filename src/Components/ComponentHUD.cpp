@@ -1,13 +1,13 @@
 #include "../../include/Components/ComponentHUD.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/2D/ButtonsCallbacks.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentHUD::ComponentHUD() {
+ComponentHUD::ComponentHUD(): shaderLasers(nullptr), textWriter(nullptr), HUDTextures(nullptr) {
 }
 
-void ComponentHUD::onStart() {
-    Logging::Log("ComponentHUD onStart", "ComponentHUD");
+void ComponentHUD::onStart()
+{
+    Logging::Log("ComponentHUD onStart");
 
     HUDTextures = new TexturePackage();
 

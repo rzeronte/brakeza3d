@@ -3,9 +3,8 @@
 #include "../../../../include/Misc/Tools.h"
 #include "../../../../include/ComponentsManager.h"
 
-EnemyBehaviorRandom::EnemyBehaviorRandom(float speed)
+EnemyBehaviorRandom::EnemyBehaviorRandom(float speed): speed(speed)
 {
-    this->speed = speed;
     this->direction = Vertex3D(Tools::random(-25 ,25), Tools::random(-25, 25), 0).getNormalize().getScaled(speed);
 }
 

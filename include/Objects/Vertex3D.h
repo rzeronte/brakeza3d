@@ -64,8 +64,6 @@ public:
 
     void saveToBtVector3(btVector3 *v) const;
 
-    void consoleInfo(const std::string& label, bool returnLine) const;
-
     Vertex4D createVertex4D();
 
 };

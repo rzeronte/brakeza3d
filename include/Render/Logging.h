@@ -13,9 +13,7 @@ public:
 
     static Logging *getInstance();
 
-    static void Log(const std::string& message, const std::string& type);
-
-    void Log(const std::string& message);
+    static void Log(const char *, ...);
 
     void Log(float value);
 

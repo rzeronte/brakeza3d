@@ -36,26 +36,26 @@ private:
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
 
-    FaderToGameStates *fadeToGameState{};
+    FaderToGameStates *fadeToGameState;
     Player *player;
-    ShaderProjectiles *shaderLasers{};
+    ShaderProjectiles *shaderLasers;
 
-    Sprite3D *explosionSpriteTemplate{};
-    PathFinder *pathFinder{};
+    Sprite3D *explosionSpriteTemplate;
+    PathFinder *pathFinder;
 
-    Image *imageCredits{};
-    Image *imageHelp{};
-    Image *imageSplash{};
+    Image *imageCredits;
+    Image *imageHelp;
+    Image *imageSplash;
     Counter splashCounter;
 
-    LevelLoader *levelInfo{};
+    LevelLoader *levelInfo;
 
-    ShaderClouds *shaderClouds{};
-    ShaderImage *shaderBackgroundImage{};
-    ShaderTrailBuffer *shaderTrailBuffer{};
+    ShaderClouds *shaderClouds;
+    ShaderImage *shaderBackgroundImage;
+    ShaderTrailBuffer *shaderTrailBuffer;
 
-    ShaderColor *shaderColor{};
-    Image *imageCrossFire{};
+    ShaderColor *shaderColor;
+    Image *imageCrossFire;
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
@@ -65,7 +65,6 @@ private:
     Color primaryColor;
     Color secondaryColor;
     Color thirdColor;
-
 public:
     ComponentGame();
 

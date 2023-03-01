@@ -24,7 +24,8 @@ ComponentMenu::~ComponentMenu()
 
 void ComponentMenu::onStart()
 {
-    Logging::Log("ComponentMenu onStart", "ComponentMenu");
+    Logging::Log("ComponentMenu onStart");
+
     loadDecorative3DMesh();
     loadMenuOptions();
 
@@ -43,14 +44,13 @@ void ComponentMenu::onStart()
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
     shaderBackgroundImage->setImage(new Image(SETUP->IMAGES_FOLDER + "menu_background.png"));
-}
-
-void ComponentMenu::loadDecorative3DMesh() {
 
     title = new Image(SETUP->IMAGES_FOLDER + "title.png");
+}
 
+void ComponentMenu::loadDecorative3DMesh()
+{
     spaceship = new Mesh3D();
-    spaceship->setLabel("spaceshipMenu");
     spaceship->setEnabled(true);
     spaceship->setAlpha(2555);
     spaceship->setEnableLights(true);
@@ -62,7 +62,7 @@ void ComponentMenu::loadDecorative3DMesh() {
     spaceship->setStencilBufferEnabled(true);
     spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
     spaceship->updateBoundingBox();
-    Brakeza3D::get()->addObject3D(spaceship, "spacheshipMenu");
+    Brakeza3D::get()->addObject3D(spaceship, "spaceshipMenu");
 
     pendulum = new SimplePendulum(0, 1, 1000, 0.0);
     pendulum->setRotation(295, 30, -20);
@@ -113,7 +113,7 @@ void ComponentMenu::loadMenuOptions()
     auto contentFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(contentFile);
     if (myDataJSON == nullptr) {
-        Logging::Log("menu.json can't be loaded", "ERROR");
+        Logging::Log("menu.json can't be loaded");
         return;
     }
 
@@ -124,7 +124,7 @@ void ComponentMenu::loadMenuOptions()
         cJSON *altOption = cJSON_GetObjectItemCaseSensitive(currentLoadingOption, "alt");
 
         if (cJSON_IsString(nameOption)) {
-            Logging::Log("Adding menu option " + std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint), "Menu");
+            Logging::Log("Adding menu option %s", std::string(std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint)).c_str());
             this->options[numOptions] = new MenuOption(nameOption->valuestring, actionOption->valueint);
             this->options[numOptions]->setAlt(altOption->valuestring);
             numOptions++;

@@ -13,39 +13,46 @@
 #include "Color.h"
 
 class Image {
+private:
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    std::string fileName;
+    bool loaded;
 public:
     Image();
+
+    virtual ~Image();
+
     explicit Image(std::string filename);
+
+    void loadFromRaw(unsigned int *texture, int w, int h);
+
     void drawFlat(int, int) const;
+
     void drawFlatAlpha(int pos_x, int pos_y, float alpha);
 
-    void loadTGA(std::string filename);
-    int width() const;
+    void loadTGA(const std::string& filename);
+
     int height();
+
     void* pixels();
     bool isLoaded();
 
     void setSurface(SDL_Surface *surface);
-    void createEmpty(int w, int h);
 
-    [[nodiscard]] SDL_Surface *getSurface() const;
+    void createEmpty(int w, int h);
 
     float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);
 
     Color getColor(int x, int y);
 
     void setTextureAlpha(int value);
-private:
-    SDL_Surface *surface;
-    SDL_Texture *texture;
-    std::string fileName;
-    bool loaded;
 
-    void loadFromRaw(unsigned int *texture, int w, int h);
-public:
-    const std::string &getFileName() const;
+    [[nodiscard]] const std::string &getFileName() const;
 
-    virtual ~Image();
+    [[nodiscard]] SDL_Surface *getSurface() const;
+
+    [[nodiscard]] int width() const;
 };
 
 #endif //BRAKEDA3D_IMAGE_H

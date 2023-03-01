@@ -13,11 +13,11 @@ private:
     Vertex3D direction;
     float speed;
 public:
-    EnemyBehaviorRandom(float speed);
+    explicit EnemyBehaviorRandom(float speed);
 
     void onUpdate(Vertex3D &position) override;
 
-    float getSpeed() const;
+    [[nodiscard]] float getSpeed() const;
 
     EnemyBehavior *clone() override;
 };

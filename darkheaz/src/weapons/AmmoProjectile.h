@@ -22,7 +22,7 @@ public:
         AmmoProjectile::damage = value;
     }
 
-    const Color &getColor() const {
+    [[nodiscard]] const Color &getColor() const {
         return color;
     }
 };

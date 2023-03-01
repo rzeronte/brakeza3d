@@ -2,13 +2,19 @@
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 
-ComponentWindow::ComponentWindow() {
+ComponentWindow::ComponentWindow():
+    window(nullptr),
+    screenSurface(nullptr),
+    screenTexture(nullptr),
+    renderer(nullptr),
+    fontDefault(nullptr)
+{
     this->initWindow();
     this->initFontsTTF();
 }
 
 void ComponentWindow::onStart() {
-    Logging::Log("ComponentWindow onStart", "ComponentWindow");
+    Logging::Log("ComponentWindow onStart");
 }
 
 void ComponentWindow::preUpdate()
@@ -44,7 +50,7 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 }
 
 void ComponentWindow::initWindow() {
-    Logging::Log("Initializating ComponentWindow...", "INFO");
+    Logging::Log("Initializating ComponentWindow...");
 
     //Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
@@ -83,19 +89,19 @@ void ComponentWindow::initWindow() {
 
 void ComponentWindow::initFontsTTF()
 {
-    Logging::Log("Initializating TTF...", "INFO");
+    Logging::Log("Initializating TTF...");
 
     if (TTF_Init() < 0) {
-        Logging::Log(TTF_GetError(), "INFO");
+        Logging::Log(TTF_GetError());
         exit(-1);
     }
     std::string pathFont = SETUP->FONTS_FOLDER + "kremlin.ttf";
-    Logging::Log("Loading FONT: " + pathFont, "INFO");
+    Logging::Log("Loading FONT: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 50);
 
     if (!fontDefault)  {
-        Logging::Log(TTF_GetError(), "INFO");
+        Logging::Log(TTF_GetError());
         exit(-1);
     }
 }

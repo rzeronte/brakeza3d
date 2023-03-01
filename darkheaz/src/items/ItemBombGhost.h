@@ -12,7 +12,7 @@ class ItemBombGhost: public Mesh3DGhost {
     Counter timeToLive;
     float ttl;
 public:
-    explicit ItemBombGhost(float ttl);
+    explicit ItemBombGhost(float ttl, float damage);
 
     float getTtl() const;
 

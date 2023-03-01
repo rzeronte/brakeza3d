@@ -18,7 +18,8 @@ SDL_Surface *TextureAtlas::getAtlasSurface() const {
     return atlas_surface;
 }
 
-bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string& name) {
+bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string& name)
+{
     SDL_Surface *texture_surface = texture->getImage()->getSurface();
 
     int texw = texture_surface->w;
@@ -28,19 +29,15 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string
         for (int x = 0; x < total_width; x++) {
 
             if (this->checkForAllocate(x, y, texw, texh)) {
-                Logging::Log(
-                        "Add texture to atlas SUCCESS(" + texture->getImage()->getFileName() + ", x: " + std::to_string(x) +
-                        ", y: " + std::to_string(y) + ", width: " + std::to_string(texw) + ", height:" +
-                        std::to_string(texh) + ")", "TextureAtlas");
 
-                TextureAtlasImageInfo t_info;
-                t_info.name = name;
-                t_info.x = (float) x;
-                t_info.y = (float) y;
-                t_info.width = (float) texw;
-                t_info.height = (float) texh;
+                TextureAtlasImageInfo textureAtlasInfo;
+                textureAtlasInfo.name = name;
+                textureAtlasInfo.x = (float) x;
+                textureAtlasInfo.y = (float) y;
+                textureAtlasInfo.width = (float) texw;
+                textureAtlasInfo.height = (float) texh;
 
-                textures_info.push_back(t_info);
+                textures_info.push_back(textureAtlasInfo);
                 textures.push_back(texture);
 
                 allocateMask(x, y, texw, texh);
@@ -58,7 +55,7 @@ bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string
         }
     }
 
-    Logging::Log("addTexture failed!", "ERROR");
+    Logging::Log("addTexture failed!");
 
     return false;
 }

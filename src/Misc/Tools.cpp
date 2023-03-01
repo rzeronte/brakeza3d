@@ -106,19 +106,21 @@ Color Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v) {
     );
 }
 
-Color Tools::readSurfacePixel(SDL_Surface *surface, int x, int y) {
+Color Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
+{
     auto *pixels = (Uint32 *) surface->pixels;
 
     return Color(pixels[y * surface->w + x]);
 }
 
-bool Tools::fileExists(const std::string &name) {
-    if (FILE *file = fopen(name.c_str(), "r")) {
+bool Tools::fileExists(const char *name)
+{
+    if (FILE *file = fopen(name, "r")) {
         fclose(file);
         return true;
     }
 
-    Logging::Log("File " + name + " not found", "ERROR");
+    Logging::Log("File %s not found", name);
 
     return false;
 }
@@ -130,7 +132,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::Log("File " + name + " can't be loaded!", "ERROR");
+        Logging::Log("File %s can't be loaded!", name.c_str());
         return nullptr;
     }
     char *file_str = (char *) malloc(MAX_SOURCE_SIZE);

@@ -361,9 +361,9 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 
         auto *componentRender = ComponentsManager::get()->getComponentRender();
 
-        Logging::Log("Weapon shootProjectile from " + parent->getLabel(), "ComponentWeapons");
+        Logging::Log("Weapon shootProjectile from %s", parent->getLabel().c_str());
 
-        auto *projectile = new ItemBombGhost(5);
+        auto *projectile = new ItemBombGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
@@ -376,7 +376,6 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setRotationFrame(Tools::randomVertex());
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
-        projectile->setDamage(this->getDamage());
         projectile->makeSimpleGhostBody(
             Vertex3D(600, 600, 600),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),

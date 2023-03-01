@@ -1,9 +1,8 @@
 #include "ItemBombGhost.h"
 #include "../../../include/Brakeza3D.h"
 
-ItemBombGhost::ItemBombGhost(float ttl)
+ItemBombGhost::ItemBombGhost(float ttl, float damage): ttl(ttl), damage(damage)
 {
-    this->ttl = ttl;
     timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
 }
