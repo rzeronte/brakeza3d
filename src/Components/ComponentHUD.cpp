@@ -2,7 +2,12 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentHUD::ComponentHUD(): shaderLasers(nullptr), HUDTextures(nullptr), textWriter(nullptr) {
+ComponentHUD::ComponentHUD()
+:
+    shaderLasers(nullptr),
+    HUDTextures(nullptr),
+    textWriter(nullptr)
+{
 }
 
 void ComponentHUD::onStart()

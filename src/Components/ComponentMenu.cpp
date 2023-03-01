@@ -11,7 +11,6 @@ ComponentMenu::ComponentMenu()
     spaceship(nullptr),
     light(nullptr),
     pendulum(nullptr),
-    numOptions(0),
     currentOption(0)
 {
 }
@@ -23,10 +22,6 @@ ComponentMenu::~ComponentMenu()
     delete title;
     delete light;
     delete pendulum;
-
-    for (int i = 0; i < numOptions; i++) {
-        delete options[i];
-    }
 }
 
 void ComponentMenu::onStart()
@@ -131,14 +126,11 @@ void ComponentMenu::loadMenuOptions()
 
         if (cJSON_IsString(nameOption)) {
             Logging::Log("Adding menu option %s", std::string(std::string(nameOption->valuestring) + "/" + std::to_string(actionOption->valueint)).c_str());
-            this->options[numOptions] = new MenuOption(nameOption->valuestring, actionOption->valueint);
-            this->options[numOptions]->setAlt(altOption->valuestring);
-            numOptions++;
+            options.emplace_back(nameOption->valuestring, altOption->valuestring, actionOption->valueint);
         }
     }
 
     free(contentFile);
-
     cJSON_Delete(myDataJSON);
     cJSON_Delete(currentLoadingOption);
 }
@@ -153,11 +145,11 @@ void ComponentMenu::drawOptions() {
     int offsetY = 140;
     int stepY = 50;
 
-    for (int i = 0; i < numOptions; i++) {
-        std::string text = this->options[i]->getLabel();
+    for (int i = 0; i < options.size() ; i++) {
+        std::string text = this->options[i].getLabel();
 
         if (i == ComponentMenu::MNU_NEW_GAME && (levelInfo->getCurrentLevelIndex() > 0 || levelInfo->isLevelStartedToPlay())) {
-            text = this->options[ComponentMenu::MNU_NEW_GAME]->getAlt();
+            text = this->options[ComponentMenu::MNU_NEW_GAME].getAlt();
         }
 
         auto color = ComponentsManager::get()->getComponentGame()->getPrimaryColor();
@@ -201,7 +193,7 @@ int ComponentMenu::getCurrentOption() const {
 }
 
 int ComponentMenu::getNumOptions() const {
-    return numOptions;
+    return (int) options.size();
 }
 
 void ComponentMenu::increaseMenuOption()
@@ -214,7 +206,8 @@ void ComponentMenu::decreaseMenuOption()
     currentOption--;
 }
 
-MenuOption *const *ComponentMenu::getOptions() const {
+std::vector<MenuOption> &ComponentMenu::getOptions()
+{
     return options;
 }
 

@@ -24,9 +24,9 @@
 class ComponentRender : public Component {
 private:
 
-    int fps = 0;
-    int fpsFrameCounter = 0;
-    float frameTime = 0;
+    int fps;
+    int fpsFrameCounter;
+    float frameTime;
 
     std::vector<Triangle *> frameTriangles;
     std::vector<Triangle *> clippedTriangles;
@@ -35,8 +35,8 @@ private:
     std::vector<LightPoint3D *> lightPoints;
 
     std::vector<Tile> tiles;
-    int sizeTileWidth = (EngineSetup::get()->screenWidth / 2);
-    int sizeTileHeight = (EngineSetup::get()->screenHeight / 2);
+    int sizeTileWidth;
+    int sizeTileHeight;
     int tilesWidth;
     int tilesHeight;
     int numTiles;
@@ -53,6 +53,7 @@ private:
 
     cl_command_queue clCommandQueue;
 public:
+    ComponentRender();
 
     virtual ~ComponentRender();
 

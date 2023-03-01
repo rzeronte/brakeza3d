@@ -23,8 +23,7 @@ private:
     LightPoint3D *light;
     SimplePendulum *pendulum;
 
-    MenuOption *options[MAX_MENU_OPTIONS];
-    int numOptions;
+    std::vector<MenuOption> options;
     int currentOption;
 public:
     ComponentMenu();
@@ -53,7 +52,7 @@ public:
 
     void drawVersion();
 
-    [[nodiscard]] MenuOption *const *getOptions() const;
+    [[nodiscard]] std::vector<MenuOption> &getOptions();
 
     [[nodiscard]] int getCurrentOption() const;
 

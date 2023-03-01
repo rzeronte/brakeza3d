@@ -2,7 +2,8 @@
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 
-ComponentWindow::ComponentWindow():
+ComponentWindow::ComponentWindow()
+:
     window(nullptr),
     renderer(nullptr),
     screenSurface(nullptr),
@@ -13,7 +14,8 @@ ComponentWindow::ComponentWindow():
     this->initFontsTTF();
 }
 
-void ComponentWindow::onStart() {
+void ComponentWindow::onStart()
+{
     Logging::Log("ComponentWindow onStart");
 }
 
@@ -34,7 +36,8 @@ void ComponentWindow::postUpdate()
     SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
 }
 
-void ComponentWindow::onEnd() {
+void ComponentWindow::onEnd()
+{
     TTF_CloseFont(fontDefault);
     SDL_DestroyWindow(window);
     SDL_DestroyTexture(screenTexture);
