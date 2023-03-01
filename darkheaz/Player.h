@@ -9,7 +9,7 @@
 #include "src/weapons/Weapon.h"
 #include "src/shaders/ShaderShockWave.h"
 #include "src/items/PlayerReflection.h"
-#include "src/shaders/ShaderLaser.h"
+#include "src/shaders/ShaderLightRay.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -54,7 +54,7 @@ private:
     Counter counterStucked;
 
     ShaderBlink *blink;
-    ShaderLaser *shaderLaser;
+    ShaderLightRay *shaderLaser;
 
     int killsCounter;
     bool energyShieldEnabled;
@@ -204,7 +204,7 @@ public:
 
     void updateWeaponAutomaticStatus();
 
-    [[nodiscard]] ShaderLaser *getShaderLaser();
+    [[nodiscard]] ShaderLightRay *getShaderLaser();
 
     [[nodiscard]] Mesh3D *getShieldModel();
 

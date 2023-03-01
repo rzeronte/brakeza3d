@@ -587,8 +587,15 @@ void Player::loadBlinkShader()
     blink->setEnabled(false);
     counterDamageBlink.setEnabled(false);
 
-    shaderLaser = new ShaderLaser(this, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy);
-    shaderLaser->setSpeed(1000);
+    shaderLaser = new ShaderLightRay(
+        this,
+        1000,
+        0,
+        Color::green(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Enemy
+    );
+
     shaderLaser->setEnabled(false);
 
     reflection.loadBlinkShader();
@@ -667,7 +674,7 @@ void Player::updateWeaponAutomaticStatus()
     }
 }
 
-ShaderLaser *Player::getShaderLaser(){
+ShaderLightRay *Player::getShaderLaser(){
     return shaderLaser;
 }
 
