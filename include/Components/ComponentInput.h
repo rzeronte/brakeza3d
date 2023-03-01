@@ -8,12 +8,9 @@
 
 class ComponentInput : public Component {
 private:
-    bool debug = true;
-    bool click = false;
-    bool mousePressed = false;
-    bool mouseMotion = false;
-    bool mouseLeftButton = false;
-    bool mouseRightButton = false;
+    bool mouseMotion;
+    bool mouseLeftButton;
+    bool mouseRightButton;
 
     Uint8 *keyboard;
 
@@ -65,26 +62,27 @@ public:
 
     void handleProjectileDemo(SDL_Event *pEvent);
 
+    void updateMouseMapping();
+
+    void updateGamePadStates();
+
+    bool isAnyControllerButtonPressed();
+
+    void initJoystick();
+    
     [[nodiscard]] bool isLeftMouseButtonPressed() const;
 
     [[nodiscard]] bool isRightMouseButtonPressed() const;
-
-    void updateMouseMapping();
 
     [[nodiscard]] bool isClickLeft() const;
 
     [[nodiscard]] bool isClickRight() const;
 
     [[nodiscard]] int getRelativeRendererMouseX() const;
+    
     [[nodiscard]] int getRelativeRendererMouseY() const;
 
     [[nodiscard]] bool isMouseMotion() const;
-
-    void updateGamePadStates();
-
-    bool isAnyControllerButtonPressed();
-
-    void initJostick();
 
     [[nodiscard]] float getControllerAxisTriggerLeft() const;
 
@@ -100,13 +98,13 @@ public:
 
     [[nodiscard]] Uint8 getControllerButtonY() const;
 
-    float getControllerAxisLeftX() const;
+    [[nodiscard]] float getControllerAxisLeftX() const;
 
-    float getControllerAxisLeftY() const;
+    [[nodiscard]] float getControllerAxisLeftY() const;
 
-    float getControllerAxisRightX() const;
+    [[nodiscard]] float getControllerAxisRightX() const;
 
-    float getControllerAxisRightY() const;
+    [[nodiscard]] float getControllerAxisRightY() const;
 };
 
 

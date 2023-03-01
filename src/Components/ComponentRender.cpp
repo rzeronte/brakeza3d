@@ -53,7 +53,7 @@ void ComponentRender::onUpdate()
     this->drawSceneOverlappingItems();
 
     if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
-        for (auto & lightpoint : this->lightpoints) {
+        for (auto & lightpoint : this->lightPoints) {
             if (!lightpoint->isEnabled()) {
                 lightpoint->clearShadowMappingBuffer();
             }
@@ -109,7 +109,7 @@ std::vector<Triangle *> &ComponentRender::getSpritesTriangles() {
 
 void ComponentRender::createLightPointsDepthMappings() {
 
-    for (auto & lightpoint : this->lightpoints) {
+    for (auto & lightpoint : this->lightPoints) {
         if (!lightpoint->isEnabled()) {
             continue;
         }
@@ -147,19 +147,19 @@ void ComponentRender::createLightPointsDepthMappings() {
 
 void ComponentRender::extractLightPointsFromObjects3D()
 {
-    this->lightpoints.clear();
+    this->lightPoints.clear();
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto &object : sceneObjects) {
         auto *lp = dynamic_cast<LightPoint3D *>(object);
         if (lp != nullptr) {
             lp->clearShadowMappingBuffer();
-            lightpoints.emplace_back(lp);
+            lightPoints.emplace_back(lp);
         }
     }
 }
 
 std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
-    return lightpoints;
+    return lightPoints;
 }
 
 void ComponentRender::onUpdateSceneObjects()
@@ -569,7 +569,7 @@ Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
 
 Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
 {
-    if (this->lightpoints.empty()) {
+    if (this->lightPoints.empty()) {
         return c;
     }
 
@@ -582,7 +582,7 @@ Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
 
     Vertex3D Dl;
     Point2D DP;
-    for (auto & lightpoint : this->lightpoints) {
+    for (auto & lightpoint : this->lightPoints) {
         if (!lightpoint->isEnabled()) {
             continue;
         }
@@ -905,7 +905,7 @@ void ComponentRender::updateFPS(const float deltaTime) {
 
 void ComponentRender::updateLights()
 {
-    for (auto & lightpoint : this->lightpoints) {
+    for (auto & lightpoint : this->lightPoints) {
         if (!lightpoint->isEnabled()) {
             continue;
         }
@@ -1092,7 +1092,7 @@ _cl_command_queue *ComponentRender::getClCommandQueue() {
 
 ComponentRender::~ComponentRender()
 {
-    for (auto &l : lightpoints) {
+    for (auto &l : lightPoints) {
         delete l;
     }
 

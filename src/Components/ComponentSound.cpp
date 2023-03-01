@@ -4,11 +4,13 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Misc/Tools.h"
 
-ComponentSound::ComponentSound() {
+ComponentSound::ComponentSound()
+{
     initSoundSystem();
 }
 
-void ComponentSound::onStart() {
+void ComponentSound::onStart()
+{
     Logging::Log("ComponentSound onStart");
     loadSoundsJSON();
 }
@@ -21,8 +23,9 @@ void ComponentSound::onUpdate() {
 
 }
 
-void ComponentSound::onEnd() {
-
+void ComponentSound::onEnd()
+{
+    Mix_Quit();
 }
 
 void ComponentSound::postUpdate() {
@@ -32,7 +35,8 @@ void ComponentSound::postUpdate() {
 void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentSound::initSoundSystem() {
+void ComponentSound::initSoundSystem()
+{
     Logging::Log("Init Sound System");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -42,7 +46,6 @@ void ComponentSound::initSoundSystem() {
     Mix_AllocateChannels(16);
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
     Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
-
 }
 
 
@@ -84,7 +87,8 @@ void ComponentSound::loadSoundsJSON()
     free(contentFile);
 }
 
-void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times) {
+void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
+{
     if (chunk == nullptr) {
         Logging::Log("Error loading chunk sound");
         return;

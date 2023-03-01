@@ -2,15 +2,19 @@
 #include "../../include/Components/ComponentCamera.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentCamera::ComponentCamera() {
-    this->camera = new Camera3D();
+ComponentCamera::ComponentCamera()
+:
+    camera(new Camera3D())
+{
 }
 
-void ComponentCamera::onStart() {
+void ComponentCamera::onStart()
+{
     Logging::Log("ComponentCamera onStart");
 }
 
-void ComponentCamera::preUpdate() {
+void ComponentCamera::preUpdate()
+{
     getCamera()->getVelocity().vertex1 = getCamera()->getPosition();
     getCamera()->getVelocity().vertex2 = getCamera()->getPosition();
 }

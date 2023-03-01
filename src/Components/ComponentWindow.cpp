@@ -4,9 +4,9 @@
 
 ComponentWindow::ComponentWindow():
     window(nullptr),
+    renderer(nullptr),
     screenSurface(nullptr),
     screenTexture(nullptr),
-    renderer(nullptr),
     fontDefault(nullptr)
 {
     this->initWindow();
