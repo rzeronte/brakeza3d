@@ -2,7 +2,6 @@
 #ifndef BRAKEDA3D_ENEMY_H
 #define BRAKEDA3D_ENEMY_H
 
-
 #include <vector>
 #include "../../../include/Objects/Vertex3D.h"
 #include "../../../include/Physics/Body.h"
@@ -10,65 +9,55 @@
 #include "../../../include/Render/M3.h"
 #include "../weapons/Weapon.h"
 
-
 typedef enum {
     ENEMY_STATE_STOP, ENEMY_STATE_DIE
 } EnemyState;
 
 class Enemy {
-private:
-    bool stucked;
-
-public:
+protected:
+    bool stuck;
     EnemyState state;
     Weapon *weapon;
-
     float startStamina;
     float stamina;
-
     float range;
-
     int soundChannel;
-
     bool rewards;
+public:
 
     Enemy();
 
+    virtual ~Enemy();
+
     void takeDamage(float damageTaken);
-
-    float getRange() const;
-
-    void setRange(float range);
-
-    [[nodiscard]] EnemyState getState() const;
 
     void setState(EnemyState value);
 
-    float getStamina() const;
-
     void setWeapon(Weapon *weaponType);
-
-    Weapon *getWeapon() const;
 
     void setStamina(float stamina);
 
-    float getStartStamina() const;
-
     void setStartStamina(float startStamina);
-
-    int getSoundChannel() const;
 
     void setSoundChannel(int soundChannel);
 
-    bool isRewards() const;
-
     void setRewards(bool value);
 
-    bool isStucked() const;
+    void setStuck(bool value);
 
-    void setStucked(bool value);
+    [[nodiscard]] int getSoundChannel() const;
 
-    virtual ~Enemy();
+    [[nodiscard]] bool isRewards() const;
+
+    [[nodiscard]] bool isStuck() const;
+
+    [[nodiscard]] float getStartStamina() const;
+
+    [[nodiscard]] Weapon *getWeapon() const;
+
+    [[nodiscard]] float getStamina() const;
+
+    [[nodiscard]] EnemyState getState() const;
 };
 
 
