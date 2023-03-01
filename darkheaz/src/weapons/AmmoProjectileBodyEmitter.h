@@ -10,28 +10,33 @@ enum ProjectileBodyEmmissorType {
     CIRCLE_PROJECTILE = 1
 };
 
-class AmmoProjectileBodyEmissor: public Object3D {
+class AmmoProjectileBodyEmitter: public Object3D {
     Counter counter;
     float step;
-    bool active;
-    Weapon *weaponType;
-
-    Counter *counterStopDuration;
-    Counter *counterStopEvery;
-    bool stop;
     float stopDuration;
     float stopEvery;
+
+    bool active;
+    bool stop;
+
+    Weapon *weaponType;
+    Counter counterStopDuration;
+    Counter counterStopEvery;
+
     ProjectileBodyEmmissorType type;
     Color color;
 
 public:
-    AmmoProjectileBodyEmissor(ProjectileBodyEmmissorType type, float step, Weapon *weaponType);
+    AmmoProjectileBodyEmitter(
+        ProjectileBodyEmmissorType type,
+        float step,
+        bool stop,
+        float stopDuration,
+        float stopEvery,
+        Weapon *weaponType
+    );
 
-    ~AmmoProjectileBodyEmissor() override;
-
-    [[nodiscard]] const Counter &getCounter() const;
-
-    void setCounter(const Counter &counter);
+    ~AmmoProjectileBodyEmitter() override;
 
     [[nodiscard]] bool isActive() const;
 
@@ -47,23 +52,9 @@ public:
 
     [[nodiscard]] bool isStop() const;
 
-    void setStop(bool stop);
-
-    [[nodiscard]] float getStopDuration() const;
-
-    void setStopDuration(float stopDuration);
-
-    [[nodiscard]] float getStopEvery() const;
-
-    void setStopEvery(float stopEverySeconds);
-
-    [[nodiscard]] float getStep() const;
-
     void setStep(float step);
 
     [[nodiscard]] ProjectileBodyEmmissorType getType() const;
-
-    void setType(ProjectileBodyEmmissorType type);
 
     void launchUniqueProjectile();
 

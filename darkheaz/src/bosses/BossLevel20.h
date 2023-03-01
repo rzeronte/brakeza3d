@@ -2,7 +2,7 @@
 #define BRAKEDA3D_BOSSLEVEL20_H
 
 
-#include "../weapons/AmmoProjectileBodyEmissor.h"
+#include "../weapons/AmmoProjectileBodyEmitter.h"
 #include "BossEnemy.h"
 
 class BossLevel20 : public BossEnemy {
