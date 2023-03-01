@@ -17,7 +17,7 @@ EnemyGhost::EnemyGhost() :
     counterDamageBlink.setEnabled(false);
     counterStucked.setEnabled(false);
 
-    setStucked(false);
+    setStuck(false);
 }
 
 void EnemyGhost::loadBlinkShader()
@@ -66,7 +66,7 @@ void EnemyGhost::onUpdate()
         remove();
     }
 
-    if (isStucked()) {
+    if (isStuck()) {
 
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
 
@@ -326,7 +326,7 @@ EnemyGhost::~EnemyGhost()
 void EnemyGhost::stuck(float time)
 {
     counterStucked.setStep(time);
-    setStucked(true);
+    setStuck(true);
     counterStucked.setEnabled(true);
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(false);
@@ -341,7 +341,7 @@ void EnemyGhost::stuck(float time)
 
 void EnemyGhost::unstuck()
 {
-    setStucked(false);
+    setStuck(false);
     counterStucked.setEnabled(false);
 
     if (getBehavior() != nullptr) {

@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include "../../../include/Brakeza3D.h"
 
-Enemy::Enemy() : startStamina(100), stamina(0), range(0), rewards(false)
+Enemy::Enemy() : startStamina(100), stamina(0), rewards(false)
 {
     this->stamina = this->startStamina;
     setState(EnemyState::ENEMY_STATE_STOP);
@@ -14,14 +14,6 @@ void Enemy::takeDamage(float damageTaken) {
     if (this->stamina <= 0) {
         setState(EnemyState::ENEMY_STATE_DIE);
     }
-}
-
-float Enemy::getRange() const {
-    return range;
-}
-
-void Enemy::setRange(float value) {
-    Enemy::range = value;
 }
 
 EnemyState Enemy::getState() const {
@@ -77,12 +69,12 @@ void Enemy::setRewards(bool value) {
     Enemy::rewards = value;
 }
 
-bool Enemy::isStucked() const
+bool Enemy::isStuck() const
 {
-    return stucked;
+    return stuck;
 }
 
-void Enemy::setStucked(bool value)
+void Enemy::setStuck(bool value)
 {
-    Enemy::stucked = value;
+    Enemy::stuck = value;
 }
