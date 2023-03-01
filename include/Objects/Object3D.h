@@ -12,28 +12,26 @@ class Object3D {
 
 protected:
     Vertex3D position;
+    Vertex3D drawOffset;
+    Vertex3D rotationFrame;
     M3 rotation;
 
     EnemyBehavior *motion;
+    Object3D *parent;
+    bool *stencilBuffer;
+
     bool enabled;
     bool removed;
-    bool decal;         // Decals exclude UV Coordinates out of [0, 1]
+    float scale;
+    bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
     bool stencilBufferEnabled;
-
-    Vertex3D drawOffset;
-    Vertex3D rotationFrame;
     bool rotationFrameEnabled;
-    float scale;
 
     std::string label;
-
     float rotX, rotY, rotZ; // For easy management from UI
-    Object3D *parent;
     bool alphaEnabled;
     float alpha;
-
-    bool *stencilBuffer;
 public:
 
     Object3D();

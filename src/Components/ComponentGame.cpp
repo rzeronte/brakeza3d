@@ -13,10 +13,19 @@
 #define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
 #define FADE_SPEED_PRESSKEY_NEWLEVEL 0.04
 
-ComponentGame::ComponentGame()
+ComponentGame::ComponentGame() :
+    primaryColor(Color(179, 0, 40)),
+    secondaryColor(Color(0, 179, 52)),
+    thirdColor(Color(0, 0, 255)),
+    player(nullptr),
+    shaderLasers(nullptr),
+    shaderBackgroundImage(nullptr),
+    shaderColor(nullptr),
+    shaderTrailBuffer(nullptr),
+    shaderClouds(nullptr),
+    gameState(EngineSetup::GameState::NONE)
 {
     player = new Player();
-    gameState = EngineSetup::GameState::NONE;
 }
 
 void ComponentGame::onStart()
@@ -212,9 +221,9 @@ int ComponentGame::getLiveEnemiesCounter()
     int cont = 0 ;
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
-        auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
+        auto *enemiesEmitter = dynamic_cast<EnemyGhostEmitter *> (object);
 
-        if (enemy != nullptr || respawner != nullptr) {
+        if (enemy != nullptr || enemiesEmitter != nullptr) {
             cont++;
         }
     }
@@ -246,52 +255,43 @@ void ComponentGame::checkForEndLevel()
 
 void ComponentGame::setGameState(EngineSetup::GameState state)
 {
-    Logging::getInstance()->Log("GameState changed to: " + std::to_string(state));
-
-    if (getGameState() == EngineSetup::GameState::NONE && state == EngineSetup::GameState::SPLASH) {
-        Logging::getInstance()->Log("GameState changed to SPLASH");
-
-        splashCounter.setEnabled(true);
-        shaderClouds->setEnabled(false);
-
-        ComponentsManager::get()->getComponentSound()->fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, SPLASH_TIME * 1000);
-    }
-
-    if (state == EngineSetup::GameState::MENU) {
-        handleMenuGameState();
-    }
-
-    if (state == EngineSetup::GameState::GAMING) {
-        handleGamingGameState();
-    }
-
-    if (state == EngineSetup::GameState::COUNTDOWN) {
-        handleCountDownGameState();
-    }
-
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL) {
-        handlePressNewLevelKeyGameState();
-
-    }
-
-    if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
-        handlePressKeyByDead();
-    }
-
-    if (state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) {
-        handlePressKeyPreviousLevel();
-
-    }
-
-    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
-        handlePressKeyGameOver();
-    }
-
-    if (state == EngineSetup::GameState::CREDITS || state == EngineSetup::GameState::HELP) {
-        handlePressKeyCredits();
+    switch(state) {
+        case EngineSetup::NONE:
+            break;
+        case EngineSetup::SPLASH:
+            handleSplash();
+            break;
+        case EngineSetup::MENU:
+            handleMenuGameState();
+            break;
+        case EngineSetup::PRESSKEY_NEWLEVEL:
+            handlePressNewLevelKeyGameState();
+            break;
+        case EngineSetup::PRESSKEY_PREVIOUS_LEVEL:
+            handlePressKeyPreviousLevel();
+            break;
+        case EngineSetup::PRESSKEY_BY_DEAD:
+            handlePressKeyByDead();
+            break;
+        case EngineSetup::COUNTDOWN:
+            handleCountDownGameState();
+            break;
+        case EngineSetup::GAMING:
+            handleGamingGameState();
+            break;
+        case EngineSetup::HELP:
+            handlePressKeyCredits();
+            break;
+        case EngineSetup::PRESSKEY_GAMEOVER:
+            handlePressKeyGameOver();
+            break;
+        case EngineSetup::CREDITS:
+            break;
     }
 
     this->gameState = state;
+
+    Logging::getInstance()->Log("GameState changed to: " + std::to_string(state));
 }
 
 void ComponentGame::onEnd() {
@@ -622,7 +622,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
-        auto *respawner = dynamic_cast<EnemyGhostRespawner *> (object);
+        auto *respawner = dynamic_cast<EnemyGhostEmitter *> (object);
         auto *bomb = dynamic_cast<ItemBombGhost *> (object);
         auto *particleEmissor = dynamic_cast<ParticleEmissor *> (object);
 
@@ -892,7 +892,6 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
     ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::COUNTDOWN);
     ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
-
 }
 
 void ComponentGame::handlePressKeyByDead()
@@ -903,11 +902,12 @@ void ComponentGame::handlePressKeyByDead()
     shaderBackgroundImage->resetOffsets();
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
+
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
-    silenceInGameObjects();
 
+    silenceInGameObjects();
 }
 
 void ComponentGame::handlePressKeyPreviousLevel()
@@ -968,5 +968,17 @@ ShaderImage *ComponentGame::getShaderBackgroundImage() const {
 
 ShaderClouds *ComponentGame::getShaderClouds() const {
     return shaderClouds;
+}
+
+void ComponentGame::handleSplash()
+{
+    splashCounter.setEnabled(true);
+    shaderClouds->setEnabled(false);
+
+    ComponentsManager::get()->getComponentSound()->fadeInMusic(
+        BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"),
+        -1,
+        SPLASH_TIME * 1000
+    );
 }
 

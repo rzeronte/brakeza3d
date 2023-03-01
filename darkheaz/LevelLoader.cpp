@@ -5,7 +5,7 @@
 #include "LevelLoader.h"
 #include "../include/Brakeza3D.h"
 #include "../include/Render/Transforms.h"
-#include "src/enemies/EnemyGhostRespawner.h"
+#include "src/enemies/EnemyGhostEmitter.h"
 #include "src/enemies/behaviors/EnemyBehaviorCircle.h"
 #include "src/enemies/behaviors/EnemyBehaviorPatrol.h"
 #include "src/enemies/behaviors/EnemyBehaviorFollow.h"
@@ -152,7 +152,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto enemy = new EnemyGhost();
         parseEnemyJSON(currentEnemyJSON, enemy);
 
-        auto respawner = new EnemyGhostRespawner(enemy, 3);
+        auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
@@ -171,7 +171,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     cJSON *currentAsteroid;
     cJSON_ArrayForEach(currentAsteroid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "asteroids")) {
         auto asteroid = this->parseAsteroidJSON(currentAsteroid);
-        auto respawner = new EnemyGhostRespawner(asteroid, 3);
+        auto respawner = new EnemyGhostEmitter(asteroid, 3);
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         respawners.push_back(respawner);
@@ -366,7 +366,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::Projectile | EngineSetup::collisionGroups::Player
     );
-    enemy->setSoundChannel(respawners.size() + 2);
+    enemy->setSoundChannel((int) respawners.size() + 2);
 
     if (weapon != nullptr) {
         auto weaponType = parseWeaponJSON(weapon);
@@ -645,7 +645,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
 
     parseEnemyJSON(bossJSON, boss);
 
-    auto respawner = new EnemyGhostRespawner(boss, 3);
+    auto respawner = new EnemyGhostEmitter(boss, 3);
     respawner->setPosition(boss->getPosition());
 
     Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());

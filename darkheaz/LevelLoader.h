@@ -11,7 +11,7 @@
 #include "../include/Objects/Object3D.h"
 #include "src/weapons/Weapon.h"
 #include "../include/Misc/cJSON.h"
-#include "src/enemies/EnemyGhostRespawner.h"
+#include "src/enemies/EnemyGhostEmitter.h"
 #include "src/items/ItemHealthGhost.h"
 #include "src/enemies/AsteroidEnemyGhost.h"
 
@@ -63,7 +63,7 @@ public:
 
 private:
     std::vector<std::string> levels;
-    std::vector<EnemyGhostRespawner*> respawners;
+    std::vector<EnemyGhostEmitter*> respawners;
 
     bool hasMusic;
     std::string music;
