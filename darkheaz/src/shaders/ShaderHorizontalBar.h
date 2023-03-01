@@ -8,23 +8,21 @@
 
 #include "../../../include/Render/ShaderOpenCL.h"
 
-class ShaderHorizontalBar: public ShaderOpenCL
-{
-public:
-    ShaderHorizontalBar(Color color, float verticalPosition);
-
+class ShaderHorizontalBar: public ShaderOpenCL {
 private:
     Color color;
     float verticalPosition;
     float value;
-    void executeKernelOpenCL();
 
 public:
-    float getValue() const;
+    ShaderHorizontalBar(Color color, float verticalPosition);
+
+    [[nodiscard]] float getValue() const;
+
+    void executeKernelOpenCL();
 
     void setValue(float value);
 
-public:
     void update() override;
 };
 

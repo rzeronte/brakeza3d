@@ -38,11 +38,7 @@ struct OCProjectile
 
 class ShaderProjectiles : public ShaderOpenCL {
 private:
-    float reach;
-    float speed;
-    float damage;
-
-    Image *image;
+    Image image;
 
     cl_mem opencl_buffer_pixels_image;
     cl_mem opencl_buffer_lasers;

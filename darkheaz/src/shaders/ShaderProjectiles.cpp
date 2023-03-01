@@ -3,15 +3,13 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
+ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl"), image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
 {
-    this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
-        this->image->pixels(),
+        this->image.pixels(),
         &clRet
     );
 
@@ -21,7 +19,7 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl")
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
-        image->pixels(),
+        image.pixels(),
         0,
         nullptr,
         nullptr

@@ -124,7 +124,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     }
 
     ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->setImage(
-        new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring)
+       EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {

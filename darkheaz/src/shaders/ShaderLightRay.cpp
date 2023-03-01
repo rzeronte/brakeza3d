@@ -6,21 +6,20 @@ ShaderLightRay::ShaderLightRay(Object3D *parent, float speed, float damage, Colo
     ShaderOpenCL("laser.opencl"),
     intensity(0),
     reach(0),
+    speed(speed),
+    damage(damage),
     filterGroup(filterGroup),
     filterMask(filterMask),
     color(c),
-    speed(speed),
-    damage(damage),
     target(parent),
-    parent(parent)
+    parent(parent),
+    image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
 {
-    this->image = new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
-        this->image->pixels(),
+        this->image.pixels(),
         &clRet
     );
 
@@ -30,7 +29,7 @@ ShaderLightRay::ShaderLightRay(Object3D *parent, float speed, float damage, Colo
         CL_TRUE,
         0,
         this->bufferSize * sizeof(Uint32),
-        image->pixels(),
+        image.pixels(),
         0,
         nullptr,
         nullptr
@@ -158,10 +157,6 @@ void ShaderLightRay::executeKernelOpenCL()
     );
 
     this->debugKernel();
-}
-
-float ShaderLightRay::getIntensity() const {
-    return intensity;
 }
 
 void ShaderLightRay::setIntensity(float value) {

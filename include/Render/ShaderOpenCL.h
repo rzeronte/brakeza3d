@@ -10,12 +10,7 @@
 #include "Shader.h"
 
 class ShaderOpenCL: public Shader {
-
-public:
-     explicit ShaderOpenCL(std::string kernelFilename);
-
-    void initOpenCLProgram();
-
+protected:
     std::string kernelFilename;
 
     cl_command_queue clCommandQueue;
@@ -28,6 +23,10 @@ public:
 
     cl_mem openClBufferMappedWithVideoInput;
     cl_mem openClBufferMappedWithVideoOutput;
+public:
+     explicit ShaderOpenCL(std::string kernelFilename);
+
+    void initOpenCLProgram();
 
     void debugKernel() const;
 };

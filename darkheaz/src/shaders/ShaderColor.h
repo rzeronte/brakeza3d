@@ -10,6 +10,7 @@
 #include "../../../include/Misc/Image.h"
 
 class ShaderColor: public ShaderOpenCL {
+private:
     Color color;
     float progress;
 public:

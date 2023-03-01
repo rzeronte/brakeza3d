@@ -24,8 +24,6 @@ public:
     void addStencilBufferObject(Object3D *o);
 
     void clearStencilBuffer();
-
-    bool *getStencilObjectsBuffer() const;
 };
 
 
