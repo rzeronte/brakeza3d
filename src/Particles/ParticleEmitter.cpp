@@ -1,8 +1,8 @@
 
-#include "../../include/Particles/ParticleEmissor.h"
+#include "../../include/Particles/ParticleEmitter.h"
 #include "../../include/Render/Logging.h"
 
-ParticleEmissor::ParticleEmissor(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c):
+ParticleEmitter::ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c):
     force(force),
     ttl(ttl),
     step(step),
@@ -21,15 +21,15 @@ ParticleEmissor::ParticleEmissor(Object3D *parent, Vertex3D position, float ttlE
     this->lifeCounter.setEnabled(true);
 }
 
-Counter &ParticleEmissor::getTimeToNetParticleCounter() {
+Counter &ParticleEmitter::getTimeToNetParticleCounter() {
     return timeToNextParticleCounter;
 }
 
-bool ParticleEmissor::isActive() const {
+bool ParticleEmitter::isActive() const {
     return active;
 }
 
-void ParticleEmissor::onUpdate()
+void ParticleEmitter::onUpdate()
 {
     if (isRemoved()) return;
 
@@ -57,37 +57,37 @@ void ParticleEmissor::onUpdate()
     }
 }
 
-void ParticleEmissor::updateParticles()
+void ParticleEmitter::updateParticles()
 {
     for (auto &p : particles) {
         p.onUpdate();
     }
 }
 
-void ParticleEmissor::postUpdate()
+void ParticleEmitter::postUpdate()
 {
     Object3D::postUpdate();
 }
 
-void ParticleEmissor::setRotationFrame(float x, float y, float z)
+void ParticleEmitter::setRotationFrame(float x, float y, float z)
 {
     this->rotFrameX = x;
     this->rotFrameY = y;
     this->rotFrameZ = z;
 }
 
-void ParticleEmissor::setActive(bool value) {
+void ParticleEmitter::setActive(bool value) {
     this->active = value;
 }
 
-bool ParticleEmissor::isActiveAdding() const {
+bool ParticleEmitter::isActiveAdding() const {
     return activeAdding;
 }
 
-void ParticleEmissor::setActiveAdding(bool value) {
-    ParticleEmissor::activeAdding = value;
+void ParticleEmitter::setActiveAdding(bool value) {
+    ParticleEmitter::activeAdding = value;
 }
 
-std::vector<Particle> &ParticleEmissor::getParticles() {
+std::vector<Particle> &ParticleEmitter::getParticles() {
     return particles;
 }

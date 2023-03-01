@@ -375,7 +375,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
 
     if (emitter != nullptr) {
-        this->setProjectileEmissorForEnemy(emitter, enemy);
+        this->setProjectileEmitterForEnemy(emitter, enemy);
     }
 }
 
@@ -487,6 +487,7 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
 {
     auto direction = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(laser, "direction"));
     auto length = cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint;
+
     enemy->addFixedLaser(new ProjectileRay(
         100,
         (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
@@ -500,27 +501,21 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
     ));
 }
 
-void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy)
+void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy)
 {
     cJSON *rotation = cJSON_GetObjectItemCaseSensitive(emitter, "rotation");
     cJSON *rotationFrame = cJSON_GetObjectItemCaseSensitive(emitter, "rotationFrame");
     int type = cJSON_GetObjectItemCaseSensitive(emitter, "type")->valueint;
-    auto step = (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble;
-    bool stop = (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint;
-    auto stopDuration = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble;
-    auto stopEvery = (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble;
-    auto color = parseColorJSON(cJSON_GetObjectItemCaseSensitive(emitter, "color"));
 
 
-    auto projectileType = ProjectileBodyEmmissorType::CIRCLE_PROJECTILE;
-
+    auto projectileType = ProjectileBodyEmmitterType::CIRCLE_PROJECTILE;
     switch(type) {
-        case ProjectileBodyEmmissorType::CIRCLE_PROJECTILE: {
-            projectileType = ProjectileBodyEmmissorType::CIRCLE_PROJECTILE;
+        case ProjectileBodyEmmitterType::CIRCLE_PROJECTILE: {
+            projectileType = ProjectileBodyEmmitterType::CIRCLE_PROJECTILE;
             break;
         }
-        case ProjectileBodyEmmissorType::UNIQUE_PROJECTILE: {
-            projectileType = ProjectileBodyEmmissorType::UNIQUE_PROJECTILE;
+        case ProjectileBodyEmmitterType::UNIQUE_PROJECTILE: {
+            projectileType = ProjectileBodyEmmitterType::UNIQUE_PROJECTILE;
             break;
         }
         default: {
@@ -531,11 +526,12 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
 
     auto projectileEmitter = new AmmoProjectileBodyEmitter(
         projectileType,
-        step,
-        stop,
-        stopDuration,
-        stopEvery,
-        enemy->getWeapon()
+        (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble,
+        (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble,
+        (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopEvery")->valuedouble,
+        enemy->getWeapon(),
+        parseColorJSON(cJSON_GetObjectItemCaseSensitive(emitter, "color"))
     );
 
     projectileEmitter->setPosition(enemy->getPosition());
@@ -553,8 +549,7 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
         (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "z")->valueint
     ));
 
-    projectileEmitter->setColor(color);
-    projectileEmitter->setLabel("boss_emissor_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectileEmitter->setLabel("boss_emitter_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
     enemy->setProjectileEmissor(projectileEmitter);
 }

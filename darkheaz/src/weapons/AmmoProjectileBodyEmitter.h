@@ -5,16 +5,13 @@
 #include "../../../include/Objects/Object3D.h"
 #include "AmmoProjectileBody.h"
 
-enum ProjectileBodyEmmissorType {
+enum ProjectileBodyEmmitterType {
     UNIQUE_PROJECTILE = 0,
     CIRCLE_PROJECTILE = 1
 };
 
 class AmmoProjectileBodyEmitter: public Object3D {
     Counter counter;
-    float step;
-    float stopDuration;
-    float stopEvery;
 
     bool active;
     bool stop;
@@ -23,17 +20,18 @@ class AmmoProjectileBodyEmitter: public Object3D {
     Counter counterStopDuration;
     Counter counterStopEvery;
 
-    ProjectileBodyEmmissorType type;
+    ProjectileBodyEmmitterType type;
     Color color;
 
 public:
     AmmoProjectileBodyEmitter(
-        ProjectileBodyEmmissorType type,
+        ProjectileBodyEmmitterType type,
         float step,
         bool stop,
         float stopDuration,
         float stopEvery,
-        Weapon *weaponType
+        Weapon *weaponType,
+        Color c
     );
 
     ~AmmoProjectileBodyEmitter() override;
@@ -46,15 +44,11 @@ public:
 
     [[nodiscard]] Weapon *getWeapon() const;
 
-    void setWeapon(Weapon *weapon);
-
     void addProjectile();
 
     [[nodiscard]] bool isStop() const;
 
-    void setStep(float step);
-
-    [[nodiscard]] ProjectileBodyEmmissorType getType() const;
+    [[nodiscard]] ProjectileBodyEmmitterType getType() const;
 
     void launchUniqueProjectile();
 

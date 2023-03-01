@@ -29,15 +29,15 @@ public:
 
     void loadSoundsJSON();
 
-    void playSound(Mix_Chunk *chunk, int channel, int times);
+    static void playSound(Mix_Chunk *chunk, int channel, int times);
 
-    void playMusic(Mix_Music *music, int loops);
+    static void playMusic(Mix_Music *music, int loops);
 
-    void fadeInMusic(Mix_Music *music, int loops, int ms);
+    static void fadeInMusic(Mix_Music *music, int loops, int ms);
 
     void stopMusic();
 
-    void stopChannel(int channel);
+    static void stopChannel(int channel);
 };
 
 

@@ -1,7 +1,13 @@
 #include "../../include/Components/Component.h"
 
-Component::Component() : SETUP(EngineSetup::get()), BUFFERS(EngineBuffers::getInstance()) {
-    this->enabled = false;
+Component::Component()
+:
+    sceneObjects(nullptr),
+    enabled(false),
+    BUFFERS(EngineBuffers::getInstance()),
+    SETUP(EngineSetup::get()
+)
+{
 }
 
 std::vector<Component *> *Component::getComponents() const {

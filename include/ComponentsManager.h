@@ -39,10 +39,6 @@ public:
 
     void registerComponent(Component *component, const std::string& label);
 
-    void configureComponents();
-
-    [[nodiscard]] std::vector<Object3D *> *getSceneObjects() const;
-
     void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
     ComponentCamera *getComponentCamera() {

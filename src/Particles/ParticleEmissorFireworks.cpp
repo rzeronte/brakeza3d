@@ -15,9 +15,9 @@ ParticleEmissorFireworks::ParticleEmissorFireworks(
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmissor(this, position, ttlEmitter, force, ttl, step, c),
-    maxFires(maxFires),
-    particlesByFire(particlesByFire)
+        ParticleEmitter(this, position, ttlEmitter, force, ttl, step, c),
+        maxFires(maxFires),
+        particlesByFire(particlesByFire)
 {
     setPosition(position);
     this->firesCounter = 0;
@@ -46,7 +46,7 @@ void ParticleEmissorFireworks::onUpdate()
 
 void ParticleEmissorFireworks::postUpdate()
 {
-    ParticleEmissor::postUpdate();
+    ParticleEmitter::postUpdate();
     updateFireWorksParticles();
 }
 

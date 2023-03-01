@@ -86,7 +86,7 @@ void Weapon::onUpdate()
 }
 
 void Weapon::stopSoundChannel() const {
-    ComponentsManager::get()->getComponentSound()->stopChannel(getSoundChannel());
+    ComponentSound::stopChannel(getSoundChannel());
 }
 
 void Weapon::setSpeed(int value) {
@@ -173,7 +173,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             nullptr
         );
 
-        auto *projectileParticleEmissor = new ParticleEmissor(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
+        auto *projectileParticleEmissor = new ParticleEmitter(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
         projectileParticleEmissor->setRotationFrame(0, 20, 20);
         projectile->setParticleEmissor(projectileParticleEmissor);
 
@@ -185,7 +185,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         setAmmoAmount(getAmmoAmount() - 1);
 
         if (sound) {
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeOne"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -233,7 +233,7 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
         if (sound) {
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 EngineBuffers::getInstance()->soundPackage->getByLabel("laserShoot"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -256,8 +256,8 @@ Image *Weapon::getIcon() const {
     return icon;
 }
 
-void Weapon::setIconImage(std::string file) {
-    this->icon = new Image(std::move(file));
+void Weapon::setIconImage(const std::string& file) {
+    this->icon = new Image(file);
 }
 
 int Weapon::getAmmoAmount() const {
@@ -385,7 +385,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 
         setAmmoAmount(ammoAmount - 1);
 
-        ComponentsManager::get()->getComponentSound()->playSound(
+        ComponentSound::playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeThree"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
@@ -410,7 +410,7 @@ void Weapon::shootLaserRay(ShaderLightRay *shaderLaser, float intensity)
     shaderLaser->setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
-        ComponentsManager::get()->getComponentSound()->playSound(
+        ComponentSound::playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("laser"),
             EngineSetup::SND_LASER,
             -1

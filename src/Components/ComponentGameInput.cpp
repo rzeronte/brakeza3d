@@ -4,10 +4,12 @@
 
 #define PAD_AXIS_THRESHOLD 0.05f;
 
-ComponentGameInput::ComponentGameInput(Player *player): player(player)
+ComponentGameInput::ComponentGameInput(Player *player)
+:
+    controllerAxisThreshold(0.1),
+    lockRightStick(false),
+    player(player)
 {
-    this->controllerAxisThreshold = 0.1;
-    this->lockRightStick = false;
 }
 
 void ComponentGameInput::onStart()
@@ -117,7 +119,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 BUFFERS->soundPackage->getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -128,7 +130,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 BUFFERS->soundPackage->getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -182,7 +184,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
 
         if (keyboard[SDL_SCANCODE_2]) {
             game->getPlayer()->setWeaponTypeByIndex(1);
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 soundPackage->getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -191,7 +193,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
 
         if (keyboard[SDL_SCANCODE_3] ) {
             game->getPlayer()->setWeaponTypeByIndex(2);
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 soundPackage->getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -200,7 +202,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
 
         if (keyboard[SDL_SCANCODE_4] ) {
             game->getPlayer()->setWeaponTypeByIndex(3);
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 soundPackage->getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -301,7 +303,7 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
         if (currentClosestObject != nullptr) {
             ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
 
-            ComponentsManager::get()->getComponentSound()->playSound(
+            ComponentSound::playSound(
                 BUFFERS->soundPackage->getByLabel("tic"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
@@ -348,7 +350,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
             return;
         }
 
-        ComponentsManager::get()->getComponentSound()->playSound(
+        ComponentSound::playSound(
             BUFFERS->soundPackage->getByLabel("dash"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
@@ -381,7 +383,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 
         player->setEnergyShieldEnabled(true);
         player->getShieldModel()->setEnabled(true);
-        ComponentsManager::get()->getComponentSound()->playSound(
+        ComponentSound::playSound(
             EngineBuffers::getInstance()->soundPackage->getByLabel("energyShield"),
             1,
             0
@@ -427,7 +429,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
 {
     if (pEvent->type == SDL_CONTROLLERDEVICEADDED ) {
-        ComponentsManager::get()->getComponentInput()->initJostick();
+        ComponentsManager::get()->getComponentInput()->initJoystick();
     }
 
     if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {

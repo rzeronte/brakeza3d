@@ -8,11 +8,10 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 
-Image::Image(std::string filename): surface(nullptr), texture(nullptr), loaded(false)
+Image::Image(const std::string& filename): surface(nullptr), texture(nullptr), loaded(false)
 {
-    this->loadTGA(std::move(filename));
+    this->loadTGA(filename);
 }
-
 
 Image::Image(): surface(nullptr), texture(nullptr)
 {
@@ -36,9 +35,11 @@ void Image::loadTGA(const std::string& filename)
         this->loaded = true;
         Logging::Log("Loading TGA texture '%s'", filename.c_str());
 
-    } else {
-        Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+        return;
     }
+
+    Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+    exit(-1);
 }
 
 void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)

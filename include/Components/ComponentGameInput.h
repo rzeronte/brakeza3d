@@ -11,7 +11,6 @@ private:
     bool lockRightStick;
     Player *player;
 public:
-
     explicit ComponentGameInput(Player *player);
 
     void onStart() override;

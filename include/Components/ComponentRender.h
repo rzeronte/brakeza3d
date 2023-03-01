@@ -32,7 +32,7 @@ private:
     std::vector<Triangle *> clippedTriangles;
     std::vector<Triangle *> visibleTriangles;
     std::vector<Triangle *> spritesTriangles;
-    std::vector<LightPoint3D *> lightpoints;
+    std::vector<LightPoint3D *> lightPoints;
 
     std::vector<Tile> tiles;
     int sizeTileWidth = (EngineSetup::get()->screenWidth / 2);

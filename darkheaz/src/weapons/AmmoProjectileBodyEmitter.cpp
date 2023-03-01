@@ -3,24 +3,24 @@
 #include "../../../include/Brakeza3D.h"
 
 AmmoProjectileBodyEmitter::AmmoProjectileBodyEmitter(
-    ProjectileBodyEmmissorType type,
+    ProjectileBodyEmmitterType type,
     float step,
     bool stop,
     float stopDuration,
     float stopEvery,
-    Weapon *weaponType
-) :
-    step(step),
-    stopDuration(stopDuration),
-    stopEvery(stopEvery),
+    Weapon *weaponType,
+    Color c
+)
+:
+    counter(Counter(step)),
     active(false),
     stop(stop),
     weaponType(weaponType),
     counterStopDuration(Counter(stopDuration)),
     counterStopEvery(Counter(stopEvery)),
-    type(type)
+    type(type),
+    color(c)
 {
-    this->counter.setStep(step);
 }
 
 bool AmmoProjectileBodyEmitter::isActive() const {
@@ -70,18 +70,14 @@ Weapon *AmmoProjectileBodyEmitter::getWeapon() const {
     return weaponType;
 }
 
-void AmmoProjectileBodyEmitter::setWeapon(Weapon *weapon) {
-    AmmoProjectileBodyEmitter::weaponType = weapon;
-}
-
 void AmmoProjectileBodyEmitter::addProjectile()
 {
     switch(getType()) {
-        case ProjectileBodyEmmissorType::UNIQUE_PROJECTILE: {
+        case ProjectileBodyEmmitterType::UNIQUE_PROJECTILE: {
             launchUniqueProjectile();
             break;
         }
-        case ProjectileBodyEmmissorType::CIRCLE_PROJECTILE: {
+        case ProjectileBodyEmmitterType::CIRCLE_PROJECTILE: {
             launchCircleProjectiles();
             break;
         }
@@ -92,16 +88,12 @@ bool AmmoProjectileBodyEmitter::isStop() const {
     return stop;
 }
 
-void AmmoProjectileBodyEmitter::setStep(float value) {
-    AmmoProjectileBodyEmitter::step = value;
-}
-
 AmmoProjectileBodyEmitter::~AmmoProjectileBodyEmitter()
 {
     delete weaponType;
 }
 
-ProjectileBodyEmmissorType AmmoProjectileBodyEmitter::getType() const {
+ProjectileBodyEmmitterType AmmoProjectileBodyEmitter::getType() const {
     return type;
 }
 
@@ -125,16 +117,16 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         nullptr
     );
 
-    auto *projectileParticleEmissor = new ParticleEmissor(projectile, getPosition(), 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
-    projectileParticleEmissor->setRotationFrame(0, 25, 25);
+    auto *projectileParticleEmitter = new ParticleEmitter(projectile, getPosition(), 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
+    projectileParticleEmitter->setRotationFrame(0, 25, 25);
 
     Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    Brakeza3D::get()->addObject3D(projectileParticleEmissor, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(projectileParticleEmitter, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void AmmoProjectileBodyEmitter::launchCircleProjectiles()
 {
-    int shoots = 8;
+    const int shoots = 8;
     for (int i = 0; i < shoots; i++) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/(float) shoots, 0));
         launchUniqueProjectile();
