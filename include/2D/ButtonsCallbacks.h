@@ -6,10 +6,10 @@
 #include "../ComponentsManager.h"
 
 void callbackPlayerShoot() {
-    Logging::getInstance()->Log("callbackPlayerShoot");
+    Logging::Log("callbackPlayerShoot");
 }
 
 void callbackPlayerShoot2() {
-    Logging::getInstance()->Log("callbackPlayerShoot2");
+    Logging::Log("callbackPlayerShoot2");
 }
 #endif //BRAKEDA3D_BUTTONSCALLBACKS_H

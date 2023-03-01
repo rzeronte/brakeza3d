@@ -18,7 +18,7 @@ ShaderOpenCL::ShaderOpenCL(const std::string kernelFilename)
 
     initOpenCLProgram();
 
-    Logging::Log("Loading '" + kernelFilename + "' kernel", "OPENCL");
+    Logging::Log("Loading '%s' kernel", kernelFilename.c_str());
 }
 
 void ShaderOpenCL::initOpenCLProgram()
@@ -65,7 +65,7 @@ void ShaderOpenCL::debugKernel() const
     if (!EngineSetup::get()->LOGGING) return;
 
     if (clRet != CL_SUCCESS) {
-        Logging::getInstance()->Log( "Error OpenCL kernel: " + std::to_string(clRet) );
+        Logging::Log( "Error OpenCL kernel: %d",  clRet);
 
         char buffer[2048];
         clGetProgramBuildInfo(
@@ -78,7 +78,7 @@ void ShaderOpenCL::debugKernel() const
         );
 
         if (strlen(buffer) > 0 ) {
-            Logging::getInstance()->Log( buffer );
+            Logging::Log( buffer );
         }
     }
 }

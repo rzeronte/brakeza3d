@@ -94,15 +94,6 @@ Vertex3D Vertex3D::zero() {
     return Vertex3D(0, 0, 0);
 }
 
-void Vertex3D::consoleInfo(const std::string& label, bool returnLine) const {
-    Logging::Log(
-            label + ": (x:" + std::to_string(x) + ", y:" + std::to_string(y) + ", z: " + std::to_string(z) + ")",
-            "VERTEX");
-    if (returnLine) {
-        Logging::Log("", "VERTEX");
-    }
-}
-
 Vertex3D Vertex3D::getInverse() const {
     Vertex3D t(-this->x,-this->y,-this->z);
 

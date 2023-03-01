@@ -28,8 +28,7 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
-    Logging::Log(
-            "OctreeNode: (" + std::to_string(recursiveDepth) + ") = " + std::to_string(node->triangles.size()), "Octree");
+    Logging::Log("OctreeNode: (%d) = %d", recursiveDepth, node->triangles.size());
 
     for (int i = 0; i < 8; i++) {
         AABB3D childBounds;

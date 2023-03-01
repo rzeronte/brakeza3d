@@ -38,7 +38,7 @@ void BossLevel30::setRandomBossState() {
         case ONE: {
             setBossState(ONE);
             break;
-        };
+        }
         case TWO: {
             setBossState(TWO);
             break;

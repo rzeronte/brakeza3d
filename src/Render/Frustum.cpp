@@ -149,12 +149,12 @@ bool Frustum::isVertexInside(Vertex3D &v) {
 void Frustum::consoleInfo() const
 {
     printf("\r\n");
-    Logging::Log("Aspect ratio:" + std::to_string(aspectRatio), "CAMERA");
-    Logging::Log("Horizontal FOV:" + std::to_string(horizontal_fov), "CAMERA");
-    Logging::Log("Vertical FOV:" + std::to_string(getVerticalFOV()), "CAMERA");
-    Logging::Log("Near distance:" + std::to_string(getNearDistance()), "CAMERA");
-    Logging::Log("Canvas width:" + std::to_string(calcCanvasNearWidth()), "CAMERA");
-    Logging::Log("Canvas height:" + std::to_string(calcCanvasNearHeight()), "CAMERA");
+    Logging::Log(("Aspect ratio:" + std::to_string(aspectRatio)).c_str());
+    Logging::Log(("Horizontal FOV:" + std::to_string(horizontal_fov)).c_str());
+    Logging::Log(("Vertical FOV:" + std::to_string(getVerticalFOV())).c_str());
+    Logging::Log(("Near distance:" + std::to_string(getNearDistance())).c_str());
+    Logging::Log(("Canvas width:" + std::to_string(calcCanvasNearWidth())).c_str());
+    Logging::Log(("Canvas height:" + std::to_string(calcCanvasNearHeight())).c_str());
 }
 
 bool Frustum::isAABBInFrustum(AABB3D *aabb) {

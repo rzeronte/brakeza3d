@@ -271,8 +271,8 @@ void BSPMap::InitializeTriangles() {
 
     }
 
-    Logging::Log("BSP Num Triangles: " + std::to_string(this->model_triangles.size()), "");
-    Logging::Log("BSP Num Surfaces: " + std::to_string(this->getNumSurfaces()), "");
+    Logging::Log("BSP Num Triangles: %s", this->model_triangles.size());
+    Logging::Log("BSP Num Surfaces: %s", this->getNumSurfaces());
 }
 
 void BSPMap::InitializeLightmaps() {
@@ -885,7 +885,8 @@ Vertex3D BSPMap::parsePositionFromEntityAttribute(char *line) const {
     return Vertex3D(x * scale, y * scale, z * scale);
 }
 
-Vertex3D BSPMap::getStartMapPosition() {
+Vertex3D BSPMap::getStartMapPosition()
+{
     int entityID = this->getIndexOfFirstEntityByClassname("info_player_start");
 
     if (entityID != -1) {
@@ -893,8 +894,9 @@ Vertex3D BSPMap::getStartMapPosition() {
         //parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
     } else {
-        Logging::Log("Not exist entity for '" + std::string("info_player_start") + "'", "");
+        Logging::Log("Not exist entity for 'info_player_start'");
     }
+
     return Vertex3D();
 }
 
@@ -1088,23 +1090,13 @@ void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
 void BSPMap::createObjects3DFromBSPEntities() {
     EngineSetup *engineSetup = EngineSetup::get();
 
-    Logging::Log("BSP Num Entities: " + std::to_string(this->n_entities), "");
+    Logging::Log("BSP Num Entities: %s", this->n_entities);
+
     Brakeza3D *brakeza3D = Brakeza3D::get();
-
-
 
     if (this->n_entities > MAX_BSP_ENTITIES) {
         printf("Error: Entities overflow");
         exit(-1);
-    }
-
-    for (int i = 0; i < this->n_entities; i++) {
-        Logging::Log("BSPEntity: " + std::to_string(this->entities[i].id), "");
-        for (int j = 0; j < this->entities[i].num_attributes; j++) {
-            Logging::Log(
-                    "Key: '" + (std::string) this->entities[i].attributes[j].key + "' - Value: '" +
-                    (std::string) this->entities[i].attributes[j].value + "'", "");
-        }
     }
 
     // Create Objects3D from BSP Entities

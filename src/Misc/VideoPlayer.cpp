@@ -19,12 +19,12 @@ VideoPlayer::VideoPlayer(const std::string &filename) {
     pFormatCtx = NULL;
 
     if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
-        Logging::Log("VideoPlayer Couldn't open file", "ERROR");
+        Logging::Log("VideoPlayer Couldn't open file");
         return;
     }
 
     if (avformat_find_stream_info(pFormatCtx, NULL)<0) {
-        Logging::Log("VideoPlayer Couldn't find stream information", "ERROR");
+        Logging::Log("VideoPlayer Couldn't find stream information");
         return;
     }
 
@@ -47,9 +47,10 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
 
     // Find the first video stream
     videoStream = -1;
-    Logging::Log("VideoPlayer File Number Streams: (" + std::to_string(pFormatCtx->nb_streams) + ")", "VIDEO");
+    Logging::Log("VideoPlayer File Number Streams: (%d)", pFormatCtx->nb_streams);
+
     for (unsigned int i = 0; i < pFormatCtx->nb_streams; i++) {
-        Logging::Log("VideoPlayer AVI stream TypeCoded (" + std::to_string(pFormatCtx->streams[i]->codec->codec_type) + ")", "ERROR");
+        Logging::Log("VideoPlayer AVI stream TypeCoded (%s)", pFormatCtx->streams[i]->codec->codec_type);
         if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             videoStream = (int) i;
             break;
@@ -57,13 +58,13 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
     }
 
     if (videoStream == -1) {
-        Logging::Log("VideoPlayer didn't find a video stream", "ERROR");
+        Logging::Log("VideoPlayer didn't find a video stream");
         exit(-1);
     }
 
-    Logging::Log("VideoPlayer stream found it (" + std::to_string(videoStream) + ")", "ERROR");
+    Logging::Log("VideoPlayer stream found it (%s)", videoStream);
 
-    pCodecCtx = NULL;
+    pCodecCtx = nullptr;
 
     // Get a pointer to the codec context for the video stream
     pCodecCtx = pFormatCtx->streams[videoStream]->codec;
@@ -73,7 +74,7 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
     // Find the decoder for the video stream
     pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
     if (pCodec == nullptr) {
-        Logging::Log("Unsupported codec!", "ERROR");
+        Logging::Log("Unsupported codec!");
         exit(-1); // Codec not found
     }
 
@@ -86,7 +87,7 @@ void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
 
     // Open codec
     if (avcodec_open2(pCodecCtx, pCodec, nullptr) < 0) {
-        Logging::Log("Could not open codec!", "ERROR");
+        Logging::Log("Could not open codec!");
         exit(-1); //
     }
 

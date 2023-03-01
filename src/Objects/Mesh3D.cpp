@@ -150,10 +150,10 @@ void Mesh3D::onUpdate()
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 {
-    Logging::Log("AssimpLoadGeometryFromFile for " + fileName, "Mesh3D");
+    Logging::Log("AssimpLoadGeometryFromFile for %s", fileName.c_str());
 
-    if (!Tools::fileExists(fileName)) {
-        Logging::Log("Error import 3D file not exist", "Mesh3D");
+    if (!Tools::fileExists(fileName.c_str())) {
+        Logging::Log("Error import 3D file not exist");
         exit(-1);
     }
 
@@ -164,7 +164,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     );
 
     if (!scene) {
-        Logging::Log("Error import 3D file for ASSIMP", "Mesh3D");
+        Logging::Log("Error import 3D file for ASSIMP");
         exit(-1);
     }
 
@@ -188,7 +188,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
     bool Ret = true;
 
-    Logging::Log("ASSIMP: mNumMaterials: " + std::to_string(pScene->mNumMaterials), "Mesh3DAnimated");
+    Logging::Log("ASSIMP: mNumMaterials: %d", pScene->mNumMaterials);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
@@ -214,7 +214,7 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
             this->modelTextures.push_back(new Texture(FullPath));
         } else {
-            Logging::Log("ERROR: mMaterial[" + std::to_string(i) + "]: Not valid color", "Mesh3DAnimated");
+            Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);
         }
         //}
     }
@@ -237,7 +237,7 @@ void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
 void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Log("Skip mesh non triangle: " + std::to_string(mesh->mPrimitiveTypes), "Mesh3D");
+        Logging::Log("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
         return;
     }
 
@@ -288,7 +288,8 @@ Grid3D *Mesh3D::getGrid3D() const {
 
 void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
 {
-    Logging::Log("Building Grid3D for " + this->getLabel() + "(TriangleContains)", "Mesh3D");
+    Logging::Log("Building Grid3D for %s (TriangleContains)", getLabel().c_str());
+
     this->updateBoundingBox();
     this->grid = new Grid3D(
         &this->modelTriangles,
@@ -303,7 +304,8 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
 
 void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
 {
-    Logging::Log("Building Grid3D for " + this->getLabel() + "(RayIntersection)", "Mesh3D");
+    Logging::Log("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
+
     this->updateBoundingBox();
     this->grid = new Grid3D(
         &this->modelTriangles,
@@ -311,7 +313,7 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
         sizeX,
         sizeY,
         sizeZ,
-Grid3D::EmptyStrategies::RAY_INTERSECTION
+        Grid3D::EmptyStrategies::RAY_INTERSECTION
     );
     this->grid->setRayIntersectionDirection(direction);
     this->grid->applyCheckCellEmptyStrategy();
@@ -319,16 +321,19 @@ Grid3D::EmptyStrategies::RAY_INTERSECTION
 
 void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY)
 {
-    Logging::Log("Building Grid3D for " + this->getLabel() + "(DataImage)", "Mesh3D");
+    Logging::Log("Building Grid3D for %s (DataImage)", getLabel().c_str());
+
     this->updateBoundingBox();
+
     this->grid = new Grid3D(
         &this->modelTriangles,
         this->aabb,
         sizeX,
         1,
         sizeZ,
-Grid3D::EmptyStrategies::IMAGE_FILE
+        Grid3D::EmptyStrategies::IMAGE_FILE
     );
+
     this->grid->setImageFilename(filename);
     this->grid->setFixedYImageData(fixedY);
     this->grid->applyCheckCellEmptyStrategy();
@@ -336,8 +341,10 @@ Grid3D::EmptyStrategies::IMAGE_FILE
 
 void Mesh3D::buildOctree()
 {
-    Logging::Log("Building Octree for " + this->getLabel(), "Mesh3D");
+    Logging::Log("Building Octree for %s", getLabel().c_str());
+
     this->updateBoundingBox();
+
     this->octree = new Octree(this->modelTriangles, this->aabb);
 }
 
@@ -371,7 +378,7 @@ const Color &Mesh3D::getFlatColor() const {
 
 Mesh3D::~Mesh3D()
 {
-    Logging::getInstance()->Log("Delete Mesh3D: " + getLabel());
+    Logging::Log("Delete Mesh3D: %s", getLabel().c_str());
 
     for (auto triangle : modelTriangles) {
         delete triangle;

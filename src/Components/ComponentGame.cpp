@@ -30,8 +30,10 @@ ComponentGame::ComponentGame() :
 
 void ComponentGame::onStart()
 {
-    Logging::Log("ComponentGame onStart", "ComponentGame");
+    Logging::Log("ComponentGame onStart");
+
     setGameState(EngineSetup::GameState::NONE);
+
     fadeToGameState = new FaderToGameStates(
         Color(3, 3, 111),
         0.01f,
@@ -291,7 +293,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
 
     this->gameState = state;
 
-    Logging::getInstance()->Log("GameState changed to: " + std::to_string(state));
+    Logging::Log("GameState changed to: %d", state);
 }
 
 void ComponentGame::onEnd() {
@@ -645,7 +647,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
 
 void ComponentGame::loadWeapons()
 {
-    Logging::Log("Loading Weapons for game...", "ComponentGame");
+    Logging::Log("Loading Weapons for game...");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "playerWeapons.json";
@@ -656,7 +658,7 @@ void ComponentGame::loadWeapons()
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log("Can't be loaded: %s", filePath.c_str());
         return;
     }
 

@@ -10,8 +10,9 @@ ComponentGameInput::ComponentGameInput(Player *player): player(player)
     this->lockRightStick = false;
 }
 
-void ComponentGameInput::onStart() {
-    Logging::Log("ComponentGameInput onStart", "ComponentGameInput");
+void ComponentGameInput::onStart()
+{
+    Logging::Log("ComponentGameInput onStart");
 }
 
 void ComponentGameInput::preUpdate()
@@ -426,12 +427,10 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
 {
     if (pEvent->type == SDL_CONTROLLERDEVICEADDED ) {
-        Logging::getInstance()->Log(std::string("added"));
         ComponentsManager::get()->getComponentInput()->initJostick();
     }
 
     if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
-        Logging::getInstance()->Log(std::string("removed"));
     }
 }
 

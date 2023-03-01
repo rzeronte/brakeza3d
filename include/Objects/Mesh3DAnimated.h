@@ -23,7 +23,7 @@ struct VertexBoneData {
                 return;
             }
         }
-        Logging::Log("NUM_BONES_PER_VERTEX reached", "Mesh3DAnimated");
+        Logging::Log("NUM_BONES_PER_VERTEX reached");
         assert(0);
     }
 };
@@ -68,7 +68,7 @@ public:
 
     void updateFrameTransformations();
 
-    bool AssimpLoadAnimation(const std::string &Filename);
+    bool AssimpLoadAnimation(const std::string &filename);
 
     void AssimpProcessNodeAnimation(aiNode *node);
 

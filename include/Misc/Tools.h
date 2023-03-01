@@ -40,7 +40,7 @@ public:
 
     static Color readSurfacePixel(SDL_Surface *surface, int x, int y);
 
-    static bool fileExists(const std::string &name);
+    static bool fileExists(const char *name);
 
     static char *readFile(const std::string &name, size_t &source_size);
 

@@ -19,11 +19,11 @@ public:
 
     void onUpdate(Vertex3D &position) override;
 
-    float getSpeed() const;
-
     void setSpeed(float speed);
 
     EnemyBehavior *clone() override;
+
+    [[nodiscard]] float getSpeed() const;
 };
 
 

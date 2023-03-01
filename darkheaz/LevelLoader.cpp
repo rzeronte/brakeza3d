@@ -32,7 +32,7 @@ LevelLoader::LevelLoader(std::string filename)
 
 void LevelLoader::load(int levelIndex)
 {
-    Logging::getInstance()->Log("loading level: " + std::to_string(levelIndex));
+    Logging::Log("loading level: %d", levelIndex);
     setLevelStartedToPlay(true);
     setLevelFinished(false);
     setCurrentLevelIndex(levelIndex);
@@ -96,7 +96,7 @@ int LevelLoader::getCurrentLevelIndex() const {
 
 void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 {
-    Logging::Log("Loading Enemies for Level: " + filePath, "LEVEL_LOADER");
+    Logging::Log("Loading Enemies for Level: %s", filePath.c_str());
 
     respawners.resize(0);
 
@@ -107,7 +107,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     cJSON *jsonContentFile = cJSON_Parse(contentFile);
 
     if (jsonContentFile == nullptr) {
-        Logging::Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log("Can't be loaded: %s", filePath.c_str());
         return;
     }
 
@@ -185,7 +185,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 {
     int index = cJSON_GetObjectItemCaseSensitive(weaponJson, "index")->valueint;
 
-    Logging::Log("Cargando arma index: " + std::to_string(index), "[WEAPONS]");
+    Logging::Log("Loading Weapon with index: %d", index);
 
     return new Weapon(
         cJSON_GetObjectItemCaseSensitive(weaponJson, "name")->valuestring,
@@ -445,7 +445,6 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             cJSON *currentPoint;
             cJSON_ArrayForEach(currentPoint, pointsJSON) {
                 Vertex3D position = getVertex3DFromJSONPosition(currentPoint);
-                position.consoleInfo("ieah", false);
                 behavior->addPoint(position);
             }
             behavior->start();
@@ -529,7 +528,7 @@ void LevelLoader::setProjectileEmissorForEnemy(cJSON *emitter, EnemyGhost *enemy
             break;
         }
         default:
-            Logging::Log("Weapon Type not found", "ERROR");
+            Logging::Log("Weapon Type not found");
             exit(-1);
             break;
     }
@@ -615,7 +614,7 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             break;
         }
         default: {
-            Logging::Log("Item not found in parsing JSON", "ERROR");
+            Logging::Log("Item not found in parsing JSON");
             exit(-1);
         }
     }

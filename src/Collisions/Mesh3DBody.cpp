@@ -176,7 +176,7 @@ void Mesh3DBody::resolveCollision(Collisionable *with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
-        Logging::getInstance()->Log("Mesh3DBody: Collision "  + getLabel() + " with " + object->getLabel());
+        Logging::Log("Mesh3DBody: Collision %s with %s", getLabel().c_str(), object->getLabel().c_str());
     }
 }
 

@@ -21,11 +21,9 @@ public:
 
     void executeKernelOpenCL();
 
-    void setImage(Image *image);
-
     void setProgress(float progress);
 
-    float getProgress() const;
+    [[nodiscard]] float getProgress() const;
 };
 
 

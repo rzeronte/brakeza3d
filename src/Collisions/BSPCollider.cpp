@@ -896,7 +896,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
 
     // Check again
     if (!SV_TestEntityPosition(ent)) {
-        Logging::Log("Unstucking with last good origin!", "BspCollider");
+        Logging::Log("Unstucking with last good origin!");
         return;
     }
 
@@ -908,7 +908,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
                 ent->origin[1] = org[1] + j;
                 ent->origin[2] = org[2] + z;
                 if (!SV_TestEntityPosition(ent)) {
-                    Logging::Log("Unstuck with swept!\n", "BSPCollider");
+                    Logging::Log("Unstuck with swept!\n");
                     //SV_LinkEdict (ent, true);
                     return;
                 }
@@ -917,7 +917,7 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
     }
 
     VectorCopy (org, ent->origin)
-    Logging::Log("player is stuck.\n", "BspCollider");
+    Logging::Log("player is stuck.\n");
 }
 
 model_collision_t *BSPCollider::SV_TestEntityPosition(model_collision_t *ent) {

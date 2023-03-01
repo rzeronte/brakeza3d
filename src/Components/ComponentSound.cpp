@@ -9,7 +9,7 @@ ComponentSound::ComponentSound() {
 }
 
 void ComponentSound::onStart() {
-    Logging::Log("ComponentSound onStart", "ComponentSound");
+    Logging::Log("ComponentSound onStart");
     loadSoundsJSON();
 }
 
@@ -33,7 +33,7 @@ void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
 void ComponentSound::initSoundSystem() {
-    Logging::Log("Init Sound System", "Sound");
+    Logging::Log("Init Sound System");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
@@ -46,17 +46,19 @@ void ComponentSound::initSoundSystem() {
 }
 
 
-void ComponentSound::loadSoundsJSON() {
-    Logging::Log("Loading Sounds in package...", "SOUNDS");
+void ComponentSound::loadSoundsJSON()
+{
+    Logging::Log("Loading Sounds in package...");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     size_t file_size;
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
     auto contentFile = Tools::readFile(filePath, file_size);
+
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Log(filePath + " can't be loaded", "ERROR");
+        Logging::Log("Can't be loaded %s", filePath.c_str());
         return;
     }
 
@@ -73,7 +75,7 @@ void ComponentSound::loadSoundsJSON() {
         if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
         if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
 
-        Logging::Log("Loading file sound " + std::string(file->valuestring), "SOUNDS");
+        Logging::Log("Loading file sound %s", file->valuestring);
 
         BUFFERS->soundPackage->addItem(sndPath + file->valuestring, label->valuestring, selectedType);
     }
@@ -84,7 +86,7 @@ void ComponentSound::loadSoundsJSON() {
 
 void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times) {
     if (chunk == nullptr) {
-        Logging::Log("Error loading chunk sound", "Sound");
+        Logging::Log("Error loading chunk sound");
         return;
     }
 

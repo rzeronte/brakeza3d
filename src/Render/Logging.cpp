@@ -6,7 +6,8 @@
 
 Logging *Logging::instance = nullptr;
 
-Logging *Logging::getInstance() {
+Logging *Logging::getInstance()
+{
     if (instance == nullptr) {
         instance = new Logging();
     }
@@ -14,27 +15,21 @@ Logging *Logging::getInstance() {
     return instance;
 }
 
-void Logging::Log(const std::string& message, const std::string& type) {
+void Logging::Log(const char *message, ...)
+{
     if (!EngineSetup::get()->LOGGING) return;
 
-    if (EngineSetup::get()->LOGGING_TO_FILE) {
-        FILE *f = fopen("brakeza.log", "a");
-        if (f == nullptr) {
-            std::cout << "Error opening log file!" << std::endl;
-            exit(1);
-        }
-        fprintf(f, "%s\n", message.c_str());
-        fclose(f);
-    }
+    va_list args;
+    va_start (args, message);
+    vfprintf (stdout, message, args);
 
-    std::cout << '[' << type << ']' << ' ' << message << std::endl;
+    std::cout << std::endl;
+
+    va_end (args);
 }
 
-void Logging::Log(const std::string& message) {
-    this->Log(message, "DEBUG");
-}
-
-void Logging::Log(float value) {
-    this->Log(std::to_string(value), "DEBUG");
+void Logging::Log(float value)
+{
+    this->Log(std::to_string(value).c_str());
 }
 

@@ -2,11 +2,17 @@
 #include "Enemy.h"
 #include "../../../include/Brakeza3D.h"
 
-Enemy::Enemy() : startStamina(100), stamina(0), rewards(false)
+Enemy::Enemy()
+:
+    weapon(nullptr),
+    startStamina(100),
+    stamina(100),
+    rewards(false),
+    state(EnemyState::ENEMY_STATE_STOP),
+    range(0),
+    stuck(false),
+    soundChannel(-1)
 {
-    this->stamina = this->startStamina;
-    setState(EnemyState::ENEMY_STATE_STOP);
-    weapon = nullptr;
 }
 
 void Enemy::takeDamage(float damageTaken) {

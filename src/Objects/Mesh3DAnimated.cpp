@@ -80,11 +80,11 @@ void Mesh3DAnimated::updateFrameTransformations() {
     }
 }
 
-bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename) {
-    Logging::Log("AssimpLoad for " + Filename, "Mesh3DAnimated");
+bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
+    Logging::Log("AssimpLoad for %s", filename.c_str());
 
     this->scene = importer.ReadFile(
-        Filename,
+        filename,
         aiProcess_Triangulate |
         aiProcess_MakeLeftHanded |
         aiProcess_SortByPType |
@@ -92,12 +92,12 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &Filename) {
     );
 
     if (!scene) {
-        Logging::Log("Error import 3D file for ASSIMP", "Mesh3DAnimated");
+        Logging::Log("Error import 3D file for ASSIMP");
         exit(-1);
         return false;
     }
 
-    this->AssimpInitMaterials(scene, Filename);
+    this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
 
     return true;
@@ -121,7 +121,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Log("Skip mesh non triangle", "Mesh3DAnimated");
+        Logging::Log("Skip mesh non triangle");
         return;
     }
 

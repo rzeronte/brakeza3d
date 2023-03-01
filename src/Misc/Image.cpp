@@ -1,4 +1,6 @@
 #include <SDL_image.h>
+
+#include <utility>
 #include "../../include/Misc/Image.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
@@ -6,7 +8,13 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 
-Image::Image()
+Image::Image(std::string filename): surface(nullptr), texture(nullptr), loaded(false)
+{
+    this->loadTGA(std::move(filename));
+}
+
+
+Image::Image(): surface(nullptr), texture(nullptr)
 {
     this->loaded = false;
 }
@@ -17,24 +25,19 @@ void Image::createEmpty(int w, int h)
     this->loaded = true;
 }
 
-Image::Image(std::string filename)
+void Image::loadTGA(const std::string& filename)
 {
-    this->loadTGA(filename);
-}
-
-void Image::loadTGA(std::string filename)
-{
-    if (Tools::fileExists(filename)) {
+    if (Tools::fileExists(filename.c_str())) {
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
         this->fileName = filename;
         this->loaded = true;
-        Logging::Log("Loading TGA texture '" + std::string(filename), "IMAGE");
+        Logging::Log("Loading TGA texture '%s'", filename.c_str());
 
     } else {
-        Logging::Log("Error loading TGA texture '" + std::string(filename), "IMAGE");
+        Logging::Log("Error loading TGA texture '%s'", filename.c_str());
     }
 }
 
@@ -126,6 +129,7 @@ const std::string &Image::getFileName() const {
 Image::~Image()
 {
     SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 }
 
 Color Image::getColor(int x, int y)

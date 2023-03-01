@@ -22,7 +22,7 @@ void Mesh3DAnimatedGhost::resolveCollision(Collisionable *with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
-        Logging::getInstance()->Log("Mesh3DAnimatedGhost: Collision "  + getLabel() + " with " + object->getLabel());
+        Logging::Log("Mesh3DAnimatedGhost: Collision %s with %s", getLabel().c_str(), object->getLabel().c_str());
     }
 }
 
