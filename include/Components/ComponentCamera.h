@@ -22,9 +22,9 @@ typedef float vec3_t[3];
 class ComponentCamera : public Component {
 private:
     Camera3D *camera;
-    bool freeLook = false;
+    bool freeLook;
+    bool autoScroll;
     Vertex3D autoScrollSpeed;
-    bool autoScroll = false;
 public:
     ComponentCamera();
 
@@ -40,22 +40,21 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    [[nodiscard]] Vertex3D &getAutoScrollSpeed();
-
     void setAutoScrollSpeed(const Vertex3D &autoScrollSpeed);
 
-    [[nodiscard]] bool &isAutoScroll();
-
     void setAutoScroll(bool autoScroll);
-
-    [[nodiscard]] Camera3D *getCamera() const;
-
-    [[nodiscard]] bool isFreeLookEnabled() const;
 
     void setFreeLook(bool isFlyMode);
 
     void updatePositionForTrackingObject();
 
+    [[nodiscard]] Vertex3D &getAutoScrollSpeed();
+
+    [[nodiscard]] bool &isAutoScroll();
+
+    [[nodiscard]] Camera3D *getCamera() const;
+
+    [[nodiscard]] bool isFreeLookEnabled() const;
 };
 
 

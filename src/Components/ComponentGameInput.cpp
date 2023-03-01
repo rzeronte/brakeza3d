@@ -140,20 +140,20 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 
     // Execute Menu option
     if (keyboard[SDL_SCANCODE_RETURN] || componentInput->getControllerButtonA()) {
-        if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_EXIT) {
+        if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
         }
 
-        if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_NEW_GAME) {
+        if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_NEW_GAME) {
             ComponentsManager::get()->getComponentGame()->pressedKeyForNewGame();
         }
 
-        if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_HELP) {
+        if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
             componentGame->makeFadeToGameState(EngineSetup::GameState::HELP);
         }
 
-        if (menuOptions[currentOption]->getAction() == ComponentMenu::MNU_CREDITS) {
+        if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_CREDITS) {
             componentGame->makeFadeToGameState(EngineSetup::GameState::CREDITS);
         }
     }

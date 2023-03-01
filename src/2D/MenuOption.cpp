@@ -1,9 +1,14 @@
 
+#include <utility>
+
 #include "../../include/2D/MenuOption.h"
 
-MenuOption::MenuOption(const std::string& label, int action) {
-    this->label = label;
-    this->action = action;
+MenuOption::MenuOption(std::string  label, std::string  alt, int action)
+:
+    label(std::move(label)),
+    alt(std::move(alt)),
+    action(action)
+{
 }
 
 std::string &MenuOption::getLabel() {
