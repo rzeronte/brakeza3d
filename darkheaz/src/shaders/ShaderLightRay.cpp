@@ -1,14 +1,16 @@
-#include "ShaderLaser.h"
+#include "ShaderLightRay.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderLaser::ShaderLaser(Object3D *parent, Color c, int filterGroup, int filterMask):
+ShaderLightRay::ShaderLightRay(Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask):
     ShaderOpenCL("laser.opencl"),
     intensity(0),
     reach(0),
     filterGroup(filterGroup),
     filterMask(filterMask),
     color(c),
+    speed(speed),
+    damage(damage),
     target(parent),
     parent(parent)
 {
@@ -35,7 +37,7 @@ ShaderLaser::ShaderLaser(Object3D *parent, Color c, int filterGroup, int filterM
     );
 }
 
-void ShaderLaser::update()
+void ShaderLightRay::update()
 {
     Shader::update();
 
@@ -44,7 +46,7 @@ void ShaderLaser::update()
     executeKernelOpenCL();
 }
 
-void ShaderLaser::executeKernelOpenCL()
+void ShaderLightRay::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
         clCommandQueue,
@@ -158,55 +160,55 @@ void ShaderLaser::executeKernelOpenCL()
     this->debugKernel();
 }
 
-float ShaderLaser::getIntensity() const {
+float ShaderLightRay::getIntensity() const {
     return intensity;
 }
 
-void ShaderLaser::setIntensity(float value) {
-    ShaderLaser::intensity = value;
+void ShaderLightRay::setIntensity(float value) {
+    ShaderLightRay::intensity = value;
 }
 
-float ShaderLaser::getReach() const {
+float ShaderLightRay::getReach() const {
     return reach;
 }
 
-void ShaderLaser::resetReach() {
+void ShaderLightRay::resetReach() {
     this->reach = 0;
 }
 
-float ShaderLaser::getDamage() const {
+float ShaderLightRay::getDamage() const {
     return damage;
 }
 
-void ShaderLaser::setDamage(float value) {
-    ShaderLaser::damage = value;
+void ShaderLightRay::setDamage(float value) {
+    ShaderLightRay::damage = value;
 }
 
-void ShaderLaser::increaseReach() {
+void ShaderLightRay::increaseReach() {
     reach = reach + 1 * speed;
 }
 
-float ShaderLaser::getSpeed() const {
+float ShaderLightRay::getSpeed() const {
     return speed;
 }
 
-void ShaderLaser::setSpeed(float value) {
-    ShaderLaser::speed = value;
+void ShaderLightRay::setSpeed(float value) {
+    ShaderLightRay::speed = value;
 }
 
-Object3D *ShaderLaser::getTarget() const {
+Object3D *ShaderLightRay::getTarget() const {
     return target;
 }
 
-void ShaderLaser::setTarget(Object3D *object) {
-    ShaderLaser::target = object;
+void ShaderLightRay::setTarget(Object3D *object) {
+    ShaderLightRay::target = object;
 }
 
-const Color &ShaderLaser::getColor() const {
+const Color &ShaderLightRay::getColor() const {
     return color;
 }
 
-void ShaderLaser::setColor(const Color &c) {
-    ShaderLaser::color = c;
+void ShaderLightRay::setColor(const Color &c) {
+    ShaderLightRay::color = c;
 }
 

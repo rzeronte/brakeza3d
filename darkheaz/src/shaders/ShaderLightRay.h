@@ -2,15 +2,15 @@
 // Created by eduardo on 8/01/23.
 //
 
-#ifndef BRAKEZA3D_SHADERLASER_H
-#define BRAKEZA3D_SHADERLASER_H
+#ifndef BRAKEZA3D_SHADERLIGHTRAY_H
+#define BRAKEZA3D_SHADERLIGHTRAY_H
 
 
 #include "../../../include/Render/ShaderOpenCL.h"
 #include "../../../include/Misc/Image.h"
 #include "../../../include/Objects/Object3D.h"
 
-class ShaderLaser : public ShaderOpenCL {
+class ShaderLightRay : public ShaderOpenCL {
     float intensity;
     float reach;
     float speed;
@@ -27,7 +27,7 @@ class ShaderLaser : public ShaderOpenCL {
 
     cl_mem opencl_buffer_pixels_image;
 public:
-    explicit ShaderLaser(Object3D *parent, Color c, int filterGroup, int filterMask);
+    explicit ShaderLightRay(Object3D *parent,  float speed, float damage, Color c, int filterGroup, int filterMask);
 
     void update() override;
     void executeKernelOpenCL();
@@ -60,4 +60,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_SHADERLASER_H
+#endif //BRAKEZA3D_SHADERLIGHTRAY_H

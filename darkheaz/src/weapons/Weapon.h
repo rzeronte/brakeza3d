@@ -7,7 +7,7 @@
 #include "../../../include/Objects/Sprite3D.h"
 #include "../../../include/Objects/Mesh3D.h"
 #include "../../../include/Objects/Mesh3DAnimatedCollection.h"
-#include "../shaders/ShaderLaser.h"
+#include "../shaders/ShaderLightRay.h"
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
@@ -154,7 +154,7 @@ public:
 
     void shootBomb(Object3D *parent, Vertex3D position);
 
-    void shootLaserRay(ShaderLaser *shaderLaser, float intensity);
+    void shootLaserRay(ShaderLightRay *shaderLaser, float intensity);
 
     void setLabel(const std::string &value);
 };

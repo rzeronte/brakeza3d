@@ -25,13 +25,14 @@ void EnemyGhost::loadBlinkShader()
     blink = new ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
     blink->setEnabled(true);
 
-    laser = new ShaderLaser(
+    laser = new ShaderLightRay(
         this,
+        1000,
+        0,
         ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player
     );
-    laser->setSpeed(1000);
     laser->setEnabled(false);
 }
 

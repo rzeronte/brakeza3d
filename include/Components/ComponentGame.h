@@ -23,7 +23,7 @@
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
-#include "../../darkheaz/src/shaders/ShaderLaser.h"
+#include "../../darkheaz/src/shaders/ShaderLightRay.h"
 #include "../Physics/RayCollisionable.h"
 #include "../Physics/ProjectileRay.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
