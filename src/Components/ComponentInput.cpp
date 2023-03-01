@@ -9,7 +9,7 @@ ComponentInput::ComponentInput()
 
 void ComponentInput::onStart()
 {
-    Logging::Log("ComponentInput onStart", "ComponentInput");
+    Logging::Log("ComponentInput onStart");
     this->initJostick();
 }
 

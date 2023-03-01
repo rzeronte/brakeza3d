@@ -14,7 +14,7 @@ ComponentCollisions::ComponentCollisions()
 }
 
 void ComponentCollisions::onStart() {
-    Logging::Log("ComponentCollisions onStart", "ComponentCollisions");
+    Logging::Log("ComponentCollisions onStart");
 }
 
 void ComponentCollisions::preUpdate() {

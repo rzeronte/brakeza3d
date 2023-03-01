@@ -24,7 +24,7 @@ public:
 
     void setId(int newId);
 
-    const std::string &getLabel() const;
+    [[nodiscard]] const std::string &getLabel() const;
 
     void setLabel(const std::string &newLabel);
 
