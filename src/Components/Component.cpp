@@ -30,10 +30,6 @@ std::vector<Object3D *> *Component::getSceneObjects() const {
     return sceneObjects;
 }
 
-int Component::getId() const {
-    return id;
-}
-
 void Component::setId(int newId) {
     Component::id = newId;
 }

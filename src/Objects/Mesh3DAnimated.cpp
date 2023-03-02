@@ -94,7 +94,6 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     if (!scene) {
         Logging::Log("Error import 3D file for ASSIMP");
         exit(-1);
-        return false;
     }
 
     this->AssimpInitMaterials(scene, filename);

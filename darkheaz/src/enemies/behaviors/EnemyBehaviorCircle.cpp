@@ -4,10 +4,13 @@
 
 #include "EnemyBehaviorCircle.h"
 
-EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, float radius) : speed(speed), center(center),
-                                                                                              radius(radius) {
-    this->center = center;
-    this->offset = Vertex3D(0, radius, 0);
+EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, float radius)
+:
+    speed(speed),
+    center(center),
+    radius(radius),
+    offset(Vertex3D(0, radius, 0))
+{
 }
 
 

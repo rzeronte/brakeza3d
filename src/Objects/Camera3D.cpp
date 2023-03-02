@@ -3,10 +3,8 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/EngineSetup.h"
 
-Camera3D::Camera3D()
+Camera3D::Camera3D(): m_ghostObject(nullptr), speed(0), strafe(0), jump(0)
 {
-
-    // Inicializamos el frustum que acompañará a la cámara
     frustum = new Frustum();
     frustum->setParent(this);
     frustum->setup(
@@ -20,7 +18,7 @@ Camera3D::Camera3D()
     );
 
     btConvexShape *capsule = new btCapsuleShapeZ(
-            EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
+        EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
     );
 
@@ -31,11 +29,6 @@ Camera3D::Camera3D()
     this->makeKineticCharacter(startTransform, capsule);
 
     this->setLabel(EngineSetup::get()->cameraNameIdentifier);
-
-    // Reset speed
-    speed = 0;
-    strafe = 0;
-    jump = 0;
 
     this->consoleInfo();
 }
@@ -149,7 +142,8 @@ void Camera3D::setFollowTo(Object3D *followTo) {
     follow_to = followTo;
 }
 
-void Camera3D::makeKineticCharacter(const btTransform& transform, btConvexShape *capsule) {
+void Camera3D::makeKineticCharacter(const btTransform& transform, btConvexShape *capsule)
+{
     m_ghostObject = new btPairCachingGhostObject();
     m_ghostObject->setWorldTransform(transform);
 

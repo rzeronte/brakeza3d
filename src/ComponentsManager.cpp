@@ -20,7 +20,7 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
 
     components.push_back(component);
 
-    std::cout << "Register component (" << component->getId() << ")" << std::endl;
+    std::cout << "Register component (" << component->getLabel() << ")" << std::endl;
 }
 
 void ComponentsManager::setSceneObjects(std::vector<Object3D *> *sceneObjects) {
