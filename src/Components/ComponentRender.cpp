@@ -202,7 +202,7 @@ void ComponentRender::onUpdateSceneObjects()
         sceneObjects.end()
     );
 
-    for (auto &object : sceneObjects) {
+    for (auto object : sceneObjects) {
         if (object->isEnabled() && !object->isRemoved()) {
             object->onUpdate();
         }
