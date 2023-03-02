@@ -61,7 +61,7 @@ public:
 
     void addObject3D(Object3D *obj, const std::string &label);
 
-    [[nodiscard]] const std::vector<Object3D *> &getSceneObjects() const;
+    [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
 
     Object3D *getObjectByLabel(const std::string &label);
 

@@ -2,10 +2,8 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/ComponentsManager.h"
 
-Body::Body()
+Body::Body(): mass(0), body(nullptr)
 {
-    this->body = nullptr;
-    setMass(0);
 }
 
 void Body::setMass(float m) {

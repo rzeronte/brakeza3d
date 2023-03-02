@@ -91,8 +91,6 @@ public:
     bool isAABBInFrustum(AABB3D *aabb);
 
     void consoleInfo() const;
-
-    void fillDeepMapping();
 };
 
 
