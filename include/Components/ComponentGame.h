@@ -16,7 +16,7 @@
 #include "../Physics/Mesh3DBody.h"
 #include "../../darkheaz/FaderToGameStates.h"
 #include "../../darkheaz/LevelLoader.h"
-#include "../Particles/ParticleEmissorFireworks.h"
+#include "../Particles/ParticleEmitterFireworks.h"
 #include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderClouds.h"
 #include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"

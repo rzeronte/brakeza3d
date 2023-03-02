@@ -303,21 +303,6 @@ public:
             const float range_angle_sensibility = 0.1;
 
             std::string rotation_particle_text = "Rotation Frame##" + std::to_string(i);
-
-            // rotation frame
-            if (ImGui::TreeNode(rotation_particle_text.c_str())) {
-                ImGui::DragScalar("X", ImGuiDataType_Float, &emissor->rotFrameX, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::DragScalar("Y", ImGuiDataType_Float, &emissor->rotFrameY, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::DragScalar("Z", ImGuiDataType_Float, &emissor->rotFrameZ, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::TreePop();
-            }
-
-            ImGui::DragScalar("Force", ImGuiDataType_Float, &emissor->force, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
-            ImGui::DragScalar("TTL", ImGuiDataType_Float, &emissor->ttl, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
-            ImGui::DragScalar("Step", ImGuiDataType_Float, &emissor->step, step_range_sensibility,&step_range_min, &step_range_max, "%f", 1.0f);
-            if (ImGui::IsItemEdited()) {
-                emissor->getTimeToNetParticleCounter().setStep(emissor->step);
-            }
         }
     }
 

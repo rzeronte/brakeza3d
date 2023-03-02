@@ -2,10 +2,10 @@
 // Created by eduardo on 3/04/22.
 //
 
-#include "../../include/Particles/ParticleEmissorFireworks.h"
+#include "../../include/Particles/ParticleEmitterFireworks.h"
 #include "../../include/Misc/Tools.h"
 
-ParticleEmissorFireworks::ParticleEmissorFireworks(
+ParticleEmitterFireworks::ParticleEmitterFireworks(
     Vertex3D position,
     float ttlEmitter,
     float force,
@@ -15,15 +15,15 @@ ParticleEmissorFireworks::ParticleEmissorFireworks(
     int maxFires,
     int particlesByFire
 ) :
-        ParticleEmitter(this, position, ttlEmitter, force, ttl, step, c),
-        maxFires(maxFires),
-        particlesByFire(particlesByFire)
+    ParticleEmitter(this, position, ttlEmitter, force, ttl, step, c),
+    maxFires(maxFires),
+    particlesByFire(particlesByFire),
+    firesCounter(0)
 {
     setPosition(position);
-    this->firesCounter = 0;
 }
 
-void ParticleEmissorFireworks::onUpdate()
+void ParticleEmitterFireworks::onUpdate()
 {
     if (!isActive()) {
         return;
@@ -44,13 +44,13 @@ void ParticleEmissorFireworks::onUpdate()
     }
 }
 
-void ParticleEmissorFireworks::postUpdate()
+void ParticleEmitterFireworks::postUpdate()
 {
     ParticleEmitter::postUpdate();
     updateFireWorksParticles();
 }
 
-void ParticleEmissorFireworks::addFire()
+void ParticleEmitterFireworks::addFire()
 {
     setPosition(getPosition() + Vertex3D(
         (float) Tools::random(-100, 100),
@@ -71,7 +71,7 @@ void ParticleEmissorFireworks::addFire()
     firesCounter++;
 }
 
-void ParticleEmissorFireworks::updateFireWorksParticles()
+void ParticleEmitterFireworks::updateFireWorksParticles()
 {
     for (auto &p : getParticles()) {
         p.onUpdate();

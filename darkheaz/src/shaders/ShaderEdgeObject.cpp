@@ -14,7 +14,7 @@ ShaderEdgeObject::ShaderEdgeObject(Color c)
         CL_MEM_READ_ONLY,
         this->bufferSize * sizeof(bool),
         nullptr,
-        &clRet
+        nullptr
     );
 }
 

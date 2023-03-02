@@ -35,7 +35,7 @@ protected:
 public:
     Shader();
 
-    virtual ~Shader();
+    ~Shader();
 
     virtual void update();
 

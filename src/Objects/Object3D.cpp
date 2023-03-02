@@ -157,7 +157,6 @@ void Object3D::onUpdate()
 
 void Object3D::postUpdate()
 {
-
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }

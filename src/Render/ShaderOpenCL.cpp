@@ -9,7 +9,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOpenCL::ShaderOpenCL(const std::string kernelFilename)
+ShaderOpenCL::ShaderOpenCL(const std::string& kernelFilename)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
     this->clCommandQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
@@ -46,7 +46,7 @@ void ShaderOpenCL::initOpenCLProgram()
         CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
-        &clRet
+        nullptr
     );
 
     openClBufferMappedWithVideoOutput = clCreateBuffer(
@@ -54,7 +54,7 @@ void ShaderOpenCL::initOpenCLProgram()
          CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
         EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
-        &clRet
+        nullptr
     );
 
     free(source_str);
@@ -81,4 +81,12 @@ void ShaderOpenCL::debugKernel() const
             Logging::Log( buffer );
         }
     }
+}
+
+ShaderOpenCL::~ShaderOpenCL()
+{
+    clReleaseMemObject(openClBufferMappedWithVideoInput);
+    clReleaseMemObject(openClBufferMappedWithVideoOutput);
+    clReleaseProgram(program);
+    clReleaseKernel(kernel);
 }

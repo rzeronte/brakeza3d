@@ -175,7 +175,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
 
         auto *projectileParticleEmissor = new ParticleEmitter(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
         projectileParticleEmissor->setRotationFrame(0, 20, 20);
-        projectile->setParticleEmissor(projectileParticleEmissor);
 
         if (getType() == WEAPON_BOMB) {
             projectile->setRotationFrameEnabled(true);
@@ -193,7 +192,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        Brakeza3D::get()->addObject3D(projectileParticleEmissor, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(projectileParticleEmissor, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 

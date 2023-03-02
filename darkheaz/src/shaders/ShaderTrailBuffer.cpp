@@ -9,7 +9,7 @@ ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl"), stencilOb
         CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
         this->videoBuffer,
-        &clRet
+        nullptr
     );
 
     openCLBufferForStencilObjects = clCreateBuffer(

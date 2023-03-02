@@ -101,6 +101,8 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
 {
     if (isRemoved()) return;
 
+    if (weaponType == nullptr) return;
+
     auto *projectile = new AmmoProjectileBody(
         getPosition(),
         this,
@@ -121,7 +123,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
     projectileParticleEmitter->setRotationFrame(0, 25, 25);
 
     Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    Brakeza3D::get()->addObject3D(projectileParticleEmitter, "projectileBodyParticleEmissor" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(projectileParticleEmitter, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
 void AmmoProjectileBodyEmitter::launchCircleProjectiles()

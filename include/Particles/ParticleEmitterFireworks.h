@@ -8,13 +8,13 @@
 
 #include "ParticleEmitter.h"
 
-class ParticleEmissorFireworks: public ParticleEmitter {
+class ParticleEmitterFireworks: public ParticleEmitter {
     int maxFires;
     int particlesByFire;
     int firesCounter;
 
 public:
-    ParticleEmissorFireworks(Vertex3D position, float ttlEmitter, float force, float ttl, float step, const Color &c, int maxFires, int particlesByFire);
+    ParticleEmitterFireworks(Vertex3D position, float ttlEmitter, float force, float ttl, float step, const Color &c, int maxFires, int particlesByFire);
 
     void onUpdate() override;
 

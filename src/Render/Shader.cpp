@@ -65,7 +65,6 @@ Shader::~Shader()
     delete[] videoBuffer;
 }
 
-
 float Shader::fract(float x)
 {
     return x - floor(x);

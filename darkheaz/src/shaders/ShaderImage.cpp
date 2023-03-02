@@ -15,7 +15,7 @@ ShaderImage::ShaderImage()
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
         this->image.pixels(),
-        &clRet
+        nullptr
     );
 
     clEnqueueWriteBuffer(
