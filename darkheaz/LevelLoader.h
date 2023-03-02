@@ -63,7 +63,7 @@ public:
 
 private:
     std::vector<std::string> levels;
-    std::vector<EnemyGhostEmitter*> respawners;
+    std::vector<EnemyGhostEmitter*> enemiesEmitter;
 
     bool hasMusic;
     std::string music;

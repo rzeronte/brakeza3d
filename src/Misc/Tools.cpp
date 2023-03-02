@@ -125,7 +125,8 @@ bool Tools::fileExists(const char *name)
     return false;
 }
 
-char *Tools::readFile(const std::string &name, size_t &source_size) {
+char *Tools::readFile(const std::string &name, size_t &source_size)
+{
     // Load the kernel source code into the array source_str
     FILE *fp;
 
@@ -140,6 +141,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size) {
     source_size = fread(file_str, 1, MAX_SOURCE_SIZE, fp);
 
     fclose(fp);
+
     return file_str;
 }
 

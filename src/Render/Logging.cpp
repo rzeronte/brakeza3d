@@ -20,8 +20,8 @@ void Logging::Log(const char *message, ...)
     if (!EngineSetup::get()->LOGGING) return;
 
     va_list args;
-    va_start (args, message);
-    vfprintf (stdout, message, args);
+    va_start(args, message);
+    vfprintf(stdout, message, args);
 
     std::cout << std::endl;
 

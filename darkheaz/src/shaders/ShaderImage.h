@@ -28,11 +28,11 @@ public:
 
     void resetOffsets();
 
-    bool isUseOffset() const;
-
     void setUseOffset(bool value);
 
     void refreshBufferImage();
+
+    [[nodiscard]] bool isUseOffset() const;
 };
 
 

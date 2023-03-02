@@ -9,9 +9,8 @@
 #include "../Render/Logging.h"
 #include "../Render/ShaderOpenCL.h"
 
-#define DEFAULT_BLINK_SECONDS 1
 class ShaderBlink : public ShaderOpenCL {
-    bool isBlinking = false;
+    bool isBlinking;
     cl_mem opencl_buffer_stencil;
     int screenWidth;
     int screenHeight;
@@ -21,6 +20,7 @@ class ShaderBlink : public ShaderOpenCL {
     float step;
 public:
     ShaderBlink(Object3D *o, float step, Color c) :
+        isBlinking(false),
         object(o),
         color(c),
         step(step),
@@ -29,7 +29,6 @@ public:
         screenWidth(EngineSetup::get()->screenWidth),
         ShaderOpenCL("blink.opencl")
     {
-        counter.setEnabled(true);
         opencl_buffer_stencil = clCreateBuffer(
             context,
             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
@@ -74,18 +73,6 @@ public:
             }
             executeKernelOpenCL();
         }
-    }
-
-    void setObject(Object3D *o) {
-        this->object = o;
-    }
-
-    void setColor(Color c) {
-        this->color = c;
-    }
-
-    Color getColor() {
-        return this->color;
     }
 
     void executeKernelOpenCL()

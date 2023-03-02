@@ -3,7 +3,7 @@
 
 #include "../../include/2D/MenuOption.h"
 
-MenuOption::MenuOption(std::string  label, std::string  alt, int action)
+MenuOption::MenuOption(std::string label, std::string  alt, int action)
 :
     label(std::move(label)),
     alt(std::move(alt)),
