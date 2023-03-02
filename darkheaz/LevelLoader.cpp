@@ -27,7 +27,6 @@ LevelLoader::LevelLoader(std::string filename)
     addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
-
 }
 
 void LevelLoader::load(int levelIndex)
@@ -50,7 +49,7 @@ void LevelLoader::addLevel(std::string filename)
 
 int LevelLoader::getNumberLevelEnemies() const
 {
-    return (int) respawners.size();
+    return (int) enemiesEmitter.size();
 }
 
 void LevelLoader::loadPrevious()
@@ -98,7 +97,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 {
     Logging::Log("Loading Enemies for Level: %s", filePath.c_str());
 
-    respawners.resize(0);
+    enemiesEmitter.resize(0);
 
     hasTutorial = false;
 
@@ -155,7 +154,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        respawners.push_back(respawner);
+        enemiesEmitter.push_back(respawner);
     }
 
     cJSON *currentItem;
@@ -174,7 +173,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto respawner = new EnemyGhostEmitter(asteroid, 3);
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        respawners.push_back(respawner);
+        enemiesEmitter.push_back(respawner);
     }
 
     free(contentFile);
@@ -215,10 +214,9 @@ void LevelLoader::startCountDown()
     this->countDown.setStep(COUNTDOWN_TO_START);
     this->countDown.setEnabled(true);
 
-    for (auto respawner : respawners) {
-        respawner->startCounter();
+    for (auto enemyEmitter : enemiesEmitter) {
+        enemyEmitter->startCounter();
     }
-
 }
 
 const std::string &LevelLoader::getMusic() const {
@@ -366,7 +364,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::Projectile | EngineSetup::collisionGroups::Player
     );
-    enemy->setSoundChannel((int) respawners.size() + 2);
+    enemy->setSoundChannel((int) enemiesEmitter.size() + 2);
 
     if (weapon != nullptr) {
         auto weaponType = parseWeaponJSON(weapon);
@@ -645,7 +643,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
     respawner->setPosition(boss->getPosition());
 
     Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    respawners.push_back(respawner);
+    enemiesEmitter.push_back(respawner);
 }
 
 bool LevelLoader::isHaveMusic() const {
@@ -721,7 +719,7 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::Player
     );
-    asteroid->setSoundChannel(respawners.size() + 2);
+    asteroid->setSoundChannel(enemiesEmitter.size() + 2);
     asteroid->setExplode(explode);
 
     if (explode) {

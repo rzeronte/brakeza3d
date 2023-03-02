@@ -124,7 +124,7 @@ void ShaderImage::resetOffsets()
 
 void ShaderImage::setImage(const std::string& fileName)
 {
-    ShaderImage::image = Image(fileName);
+    image.loadTGA(fileName);
     refreshBufferImage();
 }
 

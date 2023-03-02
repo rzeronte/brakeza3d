@@ -103,6 +103,10 @@ ComponentGame::~ComponentGame()
     delete imageCredits;
     delete imageHelp;
     delete imageSplash;
+
+    for (auto weapon: weapons) {
+        delete weapon;
+    }
 }
 
 void ComponentGame::preUpdate()
@@ -667,9 +671,8 @@ void ComponentGame::loadWeapons()
         return;
     }
 
-    cJSON *weaponsList = cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons");
     cJSON *currentWeapon;
-    cJSON_ArrayForEach(currentWeapon, weaponsList) {
+    cJSON_ArrayForEach(currentWeapon, cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons")) {
         auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
