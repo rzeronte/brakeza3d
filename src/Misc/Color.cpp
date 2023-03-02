@@ -1,25 +1,12 @@
 
-#include <cmath>
-#include <SDL_pixels.h>
 #include "../../include/Misc/Color.h"
 
-Color::Color()
+Color::Color(): r(0), g(0), b(0), a(0), color(0)
 {
-    this->r = 0;
-    this->g = 0;
-    this->b = 0;
-    this->a = 0;
-
-    //this->color = (b << 16) + (g << 8) + (r);
 }
 
-Color::Color(int r, int g, int b, int a)
+Color::Color(int r, int g, int b, int a):  r((float)r), g((float)g), b((float)b), a((float)a), color(0)
 {
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
-
     auto s = (unsigned char*) &this->color;
 
     s[0] = r;
@@ -28,7 +15,7 @@ Color::Color(int r, int g, int b, int a)
     s[3] = 0;
 }
 
-Color::Color(uint32_t v)
+Color::Color(uint32_t v): a(0)
 {
     this->color = v;
 

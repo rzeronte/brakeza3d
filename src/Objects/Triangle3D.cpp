@@ -157,7 +157,7 @@ void Triangle::clipping(
     }
 
     if (num_inputvertices != 0) {
-        int oldNumTriangles = triangles.size();
+        int oldNumTriangles = (int) triangles.size();
 
         Maths::TriangulatePolygon(
                 num_inputvertices, input_vertices,
@@ -173,7 +173,7 @@ void Triangle::clipping(
         );
 
         // update cache for clipped triangles (they are out from hide removal surface updating)
-        for (int i = oldNumTriangles; i < triangles.size(); i++) {
+        for (int i = oldNumTriangles; i < (int) triangles.size(); i++) {
             triangles[i]->updateFullVertexSpaces(frustum);
             triangles[i]->updateUVCache();
             triangles[i]->updateBoundingBox();

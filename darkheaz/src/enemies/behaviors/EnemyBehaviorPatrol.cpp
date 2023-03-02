@@ -39,3 +39,5 @@ EnemyBehavior *EnemyBehaviorPatrol::clone()
         this->speed
     );
 }
+
+EnemyBehaviorPatrol::~EnemyBehaviorPatrol() = default;

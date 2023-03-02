@@ -67,7 +67,6 @@ void ComponentGame::onStart()
     loadLevels();
 
     shaderClouds = new ShaderClouds(Color::black());
-    shaderClouds->setPhaseRender(EngineSetup::ShadersPhaseRender::PREUPDATE);
     shaderClouds->setEnabled(false);
 
     shaderBackgroundImage = new ShaderImage();
@@ -141,6 +140,7 @@ void ComponentGame::preUpdate()
 void ComponentGame::onUpdate()
 {
     EngineSetup::GameState state = getGameState();
+    auto writer = ComponentsManager::get()->getComponentHUD()->getTextWriter();
 
     if (state == EngineSetup::GameState::GAMING) {
         blockPlayerPositionInCamera();
@@ -149,21 +149,20 @@ void ComponentGame::onUpdate()
 
     if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
         getPlayer()->respawn();
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
+        writer->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
         if (getLevelInfo()->isHasTutorial()) {
             getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
         }
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);
+        writer->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);
     }
-
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
         zoomCameraCountDown();
         int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 1);
+        writer->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 1);
         getLevelInfo()->getCountDown()->update();
         if (getLevelInfo()->getCountDown()->isFinished()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GameState::GAMING);
@@ -171,7 +170,7 @@ void ComponentGame::onUpdate()
     }
 
     if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5);
+        writer->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5);
         shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50);
     }
 
@@ -195,7 +194,6 @@ void ComponentGame::onUpdate()
 
     updateShaders();
     updateCrossFire();
-
 }
 
 void ComponentGame::postUpdate()
@@ -610,8 +608,8 @@ void ComponentGame::silenceInGameObjects()
 
 void ComponentGame::setEnemyWeaponsEnabled(bool value)
 {
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        auto *enemy = dynamic_cast<EnemyGhost *> (object);
+    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
+        auto enemy = dynamic_cast<EnemyGhost *> (object);
 
         if (enemy != nullptr) {
             if (enemy->getProjectileEmissor() != nullptr) {
