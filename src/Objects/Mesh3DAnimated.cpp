@@ -39,7 +39,7 @@ void Mesh3DAnimated::updateFrameTransformations() {
     this->BoneTransform(runningTime, Transforms);
 
     int numModelTriangles = 0;
-    for (int i = 0; i < this->scene->mNumMeshes; i++) {
+    for (int i = 0; i < (int) this->scene->mNumMeshes; i++) {
 
         if (this->meshVertices[i].empty()) continue;
 
@@ -166,8 +166,9 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
     }
 }
 
-void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData) {
-    for (int i = 0; i < mesh->mNumBones; i++) {
+void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+{
+    for (int i = 0; i < (int) mesh->mNumBones; i++) {
         int BoneIndex;
         std::string BoneName(mesh->mBones[i]->mName.data);
 
@@ -187,7 +188,7 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
 
         //Logging::Log(std::string("Loading Bone info for BoneIndex: ") + std::to_string(BoneIndex) + ": " + mesh->mBones[i]->mName.C_Str());
 
-        for (int j = 0; j < mesh->mBones[i]->mNumWeights; j++) {
+        for (int j = 0; j < (int) mesh->mBones[i]->mNumWeights; j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 
@@ -209,7 +210,7 @@ void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>
 
     Transforms.resize(this->m_NumBones);
 
-    for (unsigned int i = 0; i < this->m_NumBones; i++) {
+    for (int i = 0; i < (int) this->m_NumBones; i++) {
         Transforms[i] = boneInfo[i].FinalTransformation;
     }
 }
@@ -447,7 +448,7 @@ void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transform
                              colorPoints);
     }
 
-    for (int j = 0; j < node->mNumChildren; j++) {
+    for (int j = 0; j < (int) node->mNumChildren; j++) {
         drawBones(node->mChildren[j], Transforms);
     }
 }

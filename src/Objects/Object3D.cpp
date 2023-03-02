@@ -7,21 +7,21 @@
 
 Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
+    motion(nullptr),
+    parent(nullptr),
+    stencilBuffer(nullptr),
+    enabled(true),
+    removed(false),
+    scale(1),
+    decal(false),
+    followCamera(false),
+    stencilBufferEnabled(false),
+    rotationFrameEnabled(false),
     rotX(0),
     rotY(0),
     rotZ(0),
-    parent(nullptr),
-    enabled(true),
-    removed(false),
-    decal(false),
-    scale(1),
-    stencilBuffer(nullptr),
-    followCamera(false),
-    rotationFrameEnabled(false),
-    stencilBufferEnabled(false),
-    motion(nullptr),
-    alpha(0),
-    alphaEnabled(false)
+    alphaEnabled(false),
+    alpha(0)
 {
 }
 
@@ -256,7 +256,6 @@ void Object3D::setAlphaEnabled(bool alphaEnabled) {
 Object3D::~Object3D()
 {
     if (stencilBufferEnabled) delete[] stencilBuffer;
-    delete motion;
 }
 
 float &Object3D::getRotX() {

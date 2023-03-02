@@ -17,6 +17,8 @@ public:
 
     EnemyBehaviorPatrol(Vertex3D from, Vertex3D to, float speed);
 
+    virtual ~EnemyBehaviorPatrol();
+
     void onUpdate(Vertex3D &position) override;
 
     void setSpeed(float speed);

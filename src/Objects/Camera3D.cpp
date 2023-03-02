@@ -3,7 +3,7 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/EngineSetup.h"
 
-Camera3D::Camera3D(): m_ghostObject(nullptr), speed(0), strafe(0), jump(0)
+Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
 {
     frustum = new Frustum();
     frustum->setParent(this);
