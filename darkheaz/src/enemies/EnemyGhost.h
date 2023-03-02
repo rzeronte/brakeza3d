@@ -17,8 +17,8 @@ private:
     ShaderBlink *blink;
     ShaderLightRay *laser;
     Counter counterDamageBlink;
-    Counter counterStucked;
-    AmmoProjectileBodyEmitter *projectileEmissor;
+    Counter counterStuck;
+    AmmoProjectileBodyEmitter *projectileEmitter;
     std::vector<ProjectileRay *> fixedLasers;
 public:
     EnemyGhost();

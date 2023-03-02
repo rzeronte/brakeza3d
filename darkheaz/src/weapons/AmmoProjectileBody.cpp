@@ -18,10 +18,10 @@ AmmoProjectileBody::AmmoProjectileBody(
         int collisionMask,
         ParticleEmitter *particleEmissor
 ) :
-    particleEmissor(particleEmissor),
     Projectile3DBody(ttl, direction),
     AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
-    weaponType(weaponType)
+    weaponType(weaponType),
+    particleEmissor(particleEmissor)
 {
     setPosition(position);
     setParent(parent);
@@ -90,8 +90,4 @@ void AmmoProjectileBody::onUpdate()
             particleEmissor->setActiveAdding(false);
         }
     }
-}
-
-void AmmoProjectileBody::setParticleEmissor(ParticleEmitter *particleEmissor) {
-    AmmoProjectileBody::particleEmissor = particleEmissor;
 }

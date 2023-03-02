@@ -631,9 +631,9 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
-        auto *respawner = dynamic_cast<EnemyGhostEmitter *> (object);
+        auto *enemiesEmitter = dynamic_cast<EnemyGhostEmitter *> (object);
         auto *bomb = dynamic_cast<ItemBombGhost *> (object);
-        auto *particleEmissor = dynamic_cast<ParticleEmitter *> (object);
+        auto *particleEmitter = dynamic_cast<ParticleEmitter *> (object);
 
         if (enemy != nullptr ||
             health != nullptr ||
@@ -641,13 +641,13 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             projectile != nullptr ||
             energy != nullptr ||
             bomb != nullptr ||
-            respawner != nullptr
+            enemiesEmitter != nullptr
         ) {
             object->setEnabled(value);
         }
 
-        if (particleEmissor != nullptr) {
-            particleEmissor->setRemoved(true);
+        if (particleEmitter != nullptr) {
+            particleEmitter->setRemoved(true);
         }
     }
 }
@@ -816,8 +816,6 @@ void ComponentGame::handleMenuGameState()
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
 
     setVisibleInGameObjects(false);
-    //shaderLasers->setEnabled(false);
-    //shaderTrailBuffer->setEnabled(false);
 }
 
 void ComponentGame::handleGamingGameState()

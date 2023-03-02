@@ -17,25 +17,27 @@ class ShaderBlink : public ShaderOpenCL {
     Object3D* object;
     Color color;
     Counter counter;
-    float step;
 public:
     ShaderBlink(Object3D *o, float step, Color c) :
+        ShaderOpenCL("blink.opencl"),
         isBlinking(false),
+        screenWidth(EngineSetup::get()->screenWidth),
+        screenHeight(EngineSetup::get()->screenHeight),
         object(o),
         color(c),
-        step(step),
-        counter(Counter(step)),
-        screenHeight(EngineSetup::get()->screenHeight),
-        screenWidth(EngineSetup::get()->screenWidth),
-        ShaderOpenCL("blink.opencl")
+        counter(Counter(step))
     {
         opencl_buffer_stencil = clCreateBuffer(
             context,
             CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
             EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
             this->object->getStencilBuffer(),
-            &clRet
+            nullptr
         );
+    }
+
+    ~ShaderBlink() override {
+        clReleaseMemObject(opencl_buffer_stencil);
     }
 
     void update() override

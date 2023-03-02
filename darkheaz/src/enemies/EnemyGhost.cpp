@@ -8,14 +8,14 @@
 #include "../weapons/AmmoProjectile.h"
 
 EnemyGhost::EnemyGhost() :
-    blink(nullptr),
-    laser(nullptr),
-    projectileEmissor(nullptr),
-    counterDamageBlink(Counter(1)),
-    counterStucked(Counter(5))
+        blink(nullptr),
+        laser(nullptr),
+        projectileEmitter(nullptr),
+        counterDamageBlink(Counter(1)),
+        counterStuck(Counter(5))
 {
     counterDamageBlink.setEnabled(false);
-    counterStucked.setEnabled(false);
+    counterStuck.setEnabled(false);
 
     setStuck(false);
 }
@@ -70,17 +70,17 @@ void EnemyGhost::onUpdate()
 
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
 
-        counterStucked.update();
+        counterStuck.update();
 
-        if (counterStucked.isFinished()) {
+        if (counterStuck.isFinished()) {
             unstuck();
         }
     }
 
     if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) && gameState == EngineSetup::GAMING) {
-        if (projectileEmissor != nullptr) {
-            projectileEmissor->setPosition(getPosition());
-            projectileEmissor->onUpdate();
+        if (projectileEmitter != nullptr) {
+            projectileEmitter->setPosition(getPosition());
+            projectileEmitter->onUpdate();
         }
 
         shoot(getTarget());
@@ -105,8 +105,8 @@ void EnemyGhost::postUpdate()
         return;
     }
 
-    if (projectileEmissor != nullptr) {
-        projectileEmissor->postUpdate();
+    if (projectileEmitter != nullptr) {
+        projectileEmitter->postUpdate();
     }
 
     if (counterDamageBlink.isEnabled()) {
@@ -124,7 +124,7 @@ void EnemyGhost::makeReward()
     if (!isRewards()) return;
 
     Brakeza3D::get()->addObject3D(
-        new ParticleEmissorFireworks(getPosition(), 5, 520, 10, 0.01, Color::red(), 6, 15),
+        new ParticleEmitterFireworks(getPosition(), 5, 520, 10, 0.01, Color::red(), 6, 15),
         "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
     );
 
@@ -225,7 +225,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
         counterDamageBlink.setEnabled(true);
 
         Brakeza3D::get()->addObject3D(
-            new ParticleEmissorFireworks(
+            new ParticleEmitterFireworks(
                 getPosition(),
                 5,
                 1000,
@@ -325,9 +325,9 @@ EnemyGhost::~EnemyGhost()
 
 void EnemyGhost::stuck(float time)
 {
-    counterStucked.setStep(time);
+    counterStuck.setStep(time);
     setStuck(true);
-    counterStucked.setEnabled(true);
+    counterStuck.setEnabled(true);
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(false);
     }
@@ -342,7 +342,7 @@ void EnemyGhost::stuck(float time)
 void EnemyGhost::unstuck()
 {
     setStuck(false);
-    counterStucked.setEnabled(false);
+    counterStuck.setEnabled(false);
 
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(true);
@@ -377,11 +377,11 @@ Object3D *EnemyGhost::getTarget()
 }
 
 void EnemyGhost::setProjectileEmissor(AmmoProjectileBodyEmitter *emissor) {
-    EnemyGhost::projectileEmissor = emissor;
+    EnemyGhost::projectileEmitter = emissor;
 }
 
 AmmoProjectileBodyEmitter *EnemyGhost::getProjectileEmissor() const {
-    return projectileEmissor;
+    return projectileEmitter;
 }
 
 void EnemyGhost::addFixedLaser(ProjectileRay *ray)

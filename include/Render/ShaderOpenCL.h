@@ -24,7 +24,9 @@ protected:
     cl_mem openClBufferMappedWithVideoInput;
     cl_mem openClBufferMappedWithVideoOutput;
 public:
-     explicit ShaderOpenCL(std::string kernelFilename);
+    explicit ShaderOpenCL(const std::string& kernelFilename);
+
+    virtual ~ShaderOpenCL();
 
     void initOpenCLProgram();
 

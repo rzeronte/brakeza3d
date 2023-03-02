@@ -20,7 +20,7 @@ ShaderLightRay::ShaderLightRay(Object3D *parent, float speed, float damage, Colo
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
         this->image.pixels(),
-        &clRet
+        nullptr
     );
 
     clEnqueueWriteBuffer(
@@ -205,5 +205,10 @@ const Color &ShaderLightRay::getColor() const {
 
 void ShaderLightRay::setColor(const Color &c) {
     ShaderLightRay::color = c;
+}
+
+ShaderLightRay::~ShaderLightRay()
+{
+    clReleaseMemObject(opencl_buffer_pixels_image);
 }
 

@@ -2,22 +2,29 @@
 #include "../../include/Particles/ParticleEmitter.h"
 #include "../../include/Render/Logging.h"
 
-ParticleEmitter::ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c):
-    force(force),
-    ttl(ttl),
-    step(step),
-    color(c),
+ParticleEmitter::ParticleEmitter(
+    Object3D *parent,
+    Vertex3D position,
+    float ttlEmitter,
+    float force,
+    float ttl,
+    float step,
+    Color c
+) :
+    timeToNextParticleCounter(Counter(step)),
     active(true),
     activeAdding(true),
     rotFrameX(0),
     rotFrameY(0),
-    rotFrameZ(0)
+    rotFrameZ(0),
+    lifeCounter(Counter(ttlEmitter)),
+    force(force),
+    ttl(ttl),
+    color(c)
 {
     setParent(parent);
     setPosition(position);
 
-    this->timeToNextParticleCounter.setStep(step);
-    this->lifeCounter.setStep(ttlEmitter);
     this->lifeCounter.setEnabled(true);
 }
 
@@ -33,20 +40,20 @@ void ParticleEmitter::onUpdate()
 {
     if (isRemoved()) return;
 
+    if (!isActive()) return;
+
     Object3D::onUpdate();
 
     if (parent != nullptr) {
         setPosition(parent->getPosition());
     }
 
-    updateParticles();
-
     lifeCounter.update();
     if (this->lifeCounter.isFinished()) {
         setRemoved(true);
     }
 
-    if (!isActive()) return;
+    updateParticles();
 
     setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 

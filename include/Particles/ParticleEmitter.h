@@ -16,38 +16,39 @@
 class ParticleEmitter : public Object3D {
 private:
     Counter timeToNextParticleCounter;
-protected:
-    std::vector<Particle> particles;
-    Counter lifeCounter;
-public:
-    ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c);
-
-    [[nodiscard]] Counter &getTimeToNetParticleCounter();
-    void setRotationFrame(float, float, float);
-    [[nodiscard]] bool isActive() const;
-    void onUpdate() override;
-
-    void postUpdate() override;
-
-    float force;
-    float ttl;
-    float step;
-    Color color;
     bool active;
     bool activeAdding;
     float rotFrameX;
     float rotFrameY;
     float rotFrameZ;
+protected:
+    std::vector<Particle> particles;
+    Counter lifeCounter;
+    float force;
+    float ttl;
+    Color color;
+public:
+    ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c);
+
+    void setRotationFrame(float, float, float);
+
+    void onUpdate() override;
+
+    void postUpdate() override;
 
     void updateParticles();
 
     void setActive(bool value);
 
-    [[nodiscard]] bool isActiveAdding() const;
-
     void setActiveAdding(bool value);
 
+    [[nodiscard]] bool isActiveAdding() const;
+
     [[nodiscard]] std::vector<Particle> &getParticles();
+
+    [[nodiscard]] Counter &getTimeToNetParticleCounter();
+
+    [[nodiscard]] bool isActive() const;
 };
 
 

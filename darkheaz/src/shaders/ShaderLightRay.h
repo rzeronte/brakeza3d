@@ -5,7 +5,6 @@
 #ifndef BRAKEZA3D_SHADERLIGHTRAY_H
 #define BRAKEZA3D_SHADERLIGHTRAY_H
 
-
 #include "../../../include/Render/ShaderOpenCL.h"
 #include "../../../include/Misc/Image.h"
 #include "../../../include/Objects/Object3D.h"
@@ -30,32 +29,31 @@ private:
 public:
     explicit ShaderLightRay(Object3D *parent,  float speed, float damage, Color c, int filterGroup, int filterMask);
 
+    ~ShaderLightRay() override;
+
     void update() override;
+
     void executeKernelOpenCL();
 
     void setIntensity(float intensity);
 
-    [[nodiscard]] float getReach() const;
-
     void resetReach();
-
-    [[nodiscard]] float getDamage() const;
 
     void setDamage(float damage);
 
     void increaseReach();
 
-    [[nodiscard]] float getSpeed() const;
-
     void setSpeed(float speed);
-
-    [[nodiscard]] Object3D *getTarget() const;
 
     void setTarget(Object3D *object);
 
-    [[nodiscard]] const Color &getColor() const;
-
     void setColor(const Color &c);
+
+    [[nodiscard]] float getReach() const;
+    [[nodiscard]] float getDamage() const;
+    [[nodiscard]] float getSpeed() const;
+    [[nodiscard]] Object3D *getTarget() const;
+    [[nodiscard]] const Color &getColor() const;
 };
 
 

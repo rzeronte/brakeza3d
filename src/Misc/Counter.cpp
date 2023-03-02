@@ -5,17 +5,17 @@
 Counter::Counter()
 :
     enabled(true),
-    finished(false),
     step(0),
-    timer(Brakeza3D::get()->getTimer())
+    timer(Brakeza3D::get()->getTimer()),
+    finished(false)
 {
 }
 
 Counter::Counter(float step)
 :
-    timer(Brakeza3D::get()->getTimer()),
-    step(step),
     enabled(true),
+    step(step),
+    timer(Brakeza3D::get()->getTimer()),
     finished(false)
 {
 }

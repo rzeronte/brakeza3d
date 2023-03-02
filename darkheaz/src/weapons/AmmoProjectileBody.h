@@ -35,8 +35,6 @@ public:
     void resolveCollision(Collisionable *collisionable) override;
 
     void onUpdate() override;
-
-    void setParticleEmissor(ParticleEmitter *particleEmissor);
 };
 
 

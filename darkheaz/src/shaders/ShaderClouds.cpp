@@ -16,7 +16,7 @@ ShaderClouds::ShaderClouds(Color c)
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         this->bufferSize * sizeof(Uint32),
         this->clouds.pixels(),
-        &clRet
+        nullptr
     );
 
     clEnqueueWriteBuffer(
