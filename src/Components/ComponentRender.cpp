@@ -168,9 +168,9 @@ void ComponentRender::createLightPointsDepthMappings() {
 
 void ComponentRender::extractLightPointsFromObjects3D()
 {
-    this->lightPoints.clear();
+    this->lightPoints.resize(0);
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto &object : sceneObjects) {
+    for (auto object : sceneObjects) {
         auto *lp = dynamic_cast<LightPoint3D *>(object);
         if (lp != nullptr) {
             lp->clearShadowMappingBuffer();
@@ -187,26 +187,25 @@ void ComponentRender::onUpdateSceneObjects()
 {
     if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
-    std::vector<Object3D *>::iterator it;
-    for (it = getSceneObjects()->begin(); it != getSceneObjects()->end();) {
-        Object3D *object = *(it);
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    sceneObjects.erase(
+        std::remove_if(
+                sceneObjects.begin(),
+                sceneObjects.end(), [](Object3D* object) {
+                    if (object->isRemoved()) {
+                        delete object;
+                        return true;
+                    }
+                    return false;
+                }
+        ),
+        sceneObjects.end()
+    );
 
-        if (object->isRemoved()) {
-            delete object;
-            getSceneObjects()->erase(it);
-            continue;
+    for (auto &object : sceneObjects) {
+        if (object->isEnabled() && !object->isRemoved()) {
+            object->onUpdate();
         }
-
-        it++;
-    }
-
-    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        if (!object->isEnabled()) {
-            continue;
-        }
-
-        object->onUpdate();
     }
 }
 

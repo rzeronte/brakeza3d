@@ -128,7 +128,7 @@ void ComponentCollisions::updatePhysicObjects()
 void ComponentCollisions::stepSimulation(float deltaTime) {
 
     if (SETUP->BULLET_STEP_SIMULATION) {
-        getDynamicsWorld()->stepSimulation(deltaTime, 0, btScalar(1.) / btScalar(20.));
+        getDynamicsWorld()->stepSimulation(deltaTime, 1, btScalar(1.) / btScalar(20.));
         updatePhysicObjects();
     }
 

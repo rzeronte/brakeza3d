@@ -19,9 +19,6 @@ public:
 
     Component();
 
-    // Identification functions
-    int getId() const;
-
     void setId(int newId);
 
     [[nodiscard]] const std::string &getLabel() const;
