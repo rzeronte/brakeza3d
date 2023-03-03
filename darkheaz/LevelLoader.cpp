@@ -549,7 +549,7 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
 
     projectileEmitter->setLabel("boss_emitter_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
-    enemy->setProjectileEmissor(projectileEmitter);
+    enemy->setProjectileEmitter(projectileEmitter);
 }
 
 Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)

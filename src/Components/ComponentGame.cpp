@@ -562,6 +562,7 @@ void ComponentGame::removeInGameObjects()
         auto *projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
         auto *particleEmitter = dynamic_cast<ParticleEmitter *> (object);
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
+        auto projectileRay = dynamic_cast<ProjectileRay *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
@@ -577,6 +578,10 @@ void ComponentGame::removeInGameObjects()
         }
         if (projectile != nullptr) {
             projectile->remove();
+            continue;
+        }
+        if (projectileRay != nullptr) {
+            projectileRay->setRemoved(true);
             continue;
         }
         if (projectileEmitter != nullptr) {
@@ -610,10 +615,15 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         auto enemy = dynamic_cast<EnemyGhost *> (object);
+        auto projectileRay = dynamic_cast<ProjectileRay *> (object);
+
+        if (projectileRay != nullptr) {
+            projectileRay->setEnabled(true);
+        }
 
         if (enemy != nullptr) {
-            if (enemy->getProjectileEmissor() != nullptr) {
-                enemy->getProjectileEmissor()->setActive(value);
+            if (enemy->getProjectileEmitter() != nullptr) {
+                enemy->getProjectileEmitter()->setActive(value);
             }
 
             if (enemy->getBehavior() != nullptr) {
@@ -697,9 +707,9 @@ void ComponentGame::pressedKeyForNewGame()
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
         ComponentSound::playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
+            EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
         );
 
         player->respawn();
@@ -743,11 +753,7 @@ void ComponentGame::addObjectsToStencilBuffer()
     if (getGameState() != EngineSetup::GAMING) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        if (object->isRemoved()) continue;
-
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
-        auto ray = dynamic_cast<ProjectileRay *> (object);
-
         auto reflection = dynamic_cast<PlayerReflection *> (object);
         auto energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto health = dynamic_cast<ItemHealthGhost *> (object);
@@ -764,24 +770,13 @@ void ComponentGame::addObjectsToStencilBuffer()
         ) {
             this->shaderTrailBuffer->addStencilBufferObject(object);
         }
-
-        if (projectile != nullptr) {
-            shaderLasers->addProjectile(
-                object->getPosition(),
-                projectile->getColor(),
-                (float) projectile->getWeaponType()->getSpeed()
-            );
-        }
-
-        if (ray != nullptr) {
-            shaderLasers->addLaserFromRay(ray);
-        }
     }
 }
 
 void ComponentGame::updateShaders()
 {
     addObjectsToStencilBuffer();
+    addProjectilesToShaderLasers();
     shaderTrailBuffer->update();
     shaderClouds->update();
     shaderColor->update();
@@ -993,3 +988,26 @@ void ComponentGame::handleSplash()
     );
 }
 
+void ComponentGame::addProjectilesToShaderLasers()
+{
+    if (getGameState() != EngineSetup::GAMING && getGameState() != EngineSetup::COUNTDOWN) return;
+
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (object->isRemoved()) continue;
+
+        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
+        auto ray = dynamic_cast<ProjectileRay *> (object);
+
+        if (projectile != nullptr) {
+            shaderLasers->addProjectile(
+                object->getPosition(),
+                projectile->getColor(),
+                (float) projectile->getWeaponType()->getSpeed()
+            );
+        }
+
+        if (ray != nullptr) {
+            shaderLasers->addLaserFromRay(ray);
+        }
+    }
+}

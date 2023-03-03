@@ -12,7 +12,7 @@
 #include "Projectile.h"
 #include "../../darkheaz/src/weapons/AmmoProjectile.h"
 
-class ProjectileRay: public RayCollisionable, public Projectile,  public AmmoProjectile {
+class ProjectileRay: public RayCollisionable, public Projectile, public AmmoProjectile {
 private:
     Color color;
     int speed;
@@ -32,17 +32,13 @@ public:
 
     void onUpdate() override;
 
-    void moveDirection();
-
-    void resolveCollision(Collisionable *collisionable) override;
+    void resolveCollision(Collisionable *objectWithCollision) override;
 
     [[nodiscard]] int getSpeed() const;
 
     void setSpeed(int value);
 
     void integrate() override;
-
-    void hasHit();
 };
 
 

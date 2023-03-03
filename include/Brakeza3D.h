@@ -45,8 +45,6 @@ private:
     float current_ticks = 0;
     float executionTime = 0;
 
-    float currentFadePercent = 1;
-
     std::vector<Object3D *> sceneObjects;
 public:
     Brakeza3D();

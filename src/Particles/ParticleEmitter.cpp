@@ -1,6 +1,5 @@
 
 #include "../../include/Particles/ParticleEmitter.h"
-#include "../../include/Render/Logging.h"
 
 ParticleEmitter::ParticleEmitter(
     Object3D *parent,
@@ -44,7 +43,7 @@ void ParticleEmitter::onUpdate()
 
     Object3D::onUpdate();
 
-    if (parent != nullptr) {
+    if (parent != nullptr && !parent->isRemoved()) {
         setPosition(parent->getPosition());
     }
 

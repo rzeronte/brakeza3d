@@ -3,7 +3,6 @@
 #include "../../darkheaz/src/items/ItemHealthGhost.h"
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 
-
 ProjectileRay::ProjectileRay(
     float ttl,
     float damage,
@@ -27,36 +26,31 @@ void ProjectileRay::onUpdate()
 {
     RayCollisionable::onUpdate();
 
-    moveDirection();
+    if (!isEnabled()) return;
+
+    addToPosition(getDirection().getScaled((float) speed));
 }
 
-void ProjectileRay::moveDirection()
+void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
 {
-    const Vertex3D to = getPosition() + direction.getScaled(speed);
+    RayCollisionable::resolveCollision(objectWithCollision);
 
-    setPosition(to);
-}
-
-void ProjectileRay::resolveCollision(Collisionable *collisionable)
-{
-    RayCollisionable::resolveCollision(collisionable);
-
-    auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
+    auto projectile = dynamic_cast<AmmoProjectileBody*> (objectWithCollision);
     if (projectile != nullptr) {
         return;
     }
 
-    auto health = dynamic_cast<ItemHealthGhost*> (collisionable);
+    auto health = dynamic_cast<ItemHealthGhost*> (objectWithCollision);
     if (health != nullptr) {
         return;
     }
 
-    auto weapon = dynamic_cast<ItemWeaponGhost*> (collisionable);
+    auto weapon = dynamic_cast<ItemWeaponGhost*> (objectWithCollision);
     if (weapon != nullptr) {
         return;
     }
 
-    auto object = dynamic_cast<Object3D*> (collisionable);
+    auto object = dynamic_cast<Object3D*> (objectWithCollision);
     if (object != nullptr) {
         if (object == getParent()) {
             return;
@@ -76,22 +70,8 @@ void ProjectileRay::setSpeed(int value) {
     ProjectileRay::speed = value;
 }
 
-void ProjectileRay::integrate() {
-    RayCollisionable::integrate();
-}
-
-void ProjectileRay::hasHit()
+void ProjectileRay::integrate()
 {
-    if (getRayCallback()->hasHit()) {
-        auto *collisionable = (Collisionable *) getRayCallback()->m_collisionObject->getUserPointer();
-
-        btVector3 rayHitPosition = getRayCallback()->m_hitPointWorld;
-
-        collisionable->resolveCollision(this);
-
-        setHitPosition(Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z()));
-
-        this->resolveCollision(collisionable);
-    }
+    RayCollisionable::integrate();
 }
 

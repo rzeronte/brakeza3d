@@ -18,8 +18,6 @@ RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int fil
 
 void RayCollisionable::integrate()
 {
-    Collisionable::integrate();
-
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
 
@@ -38,19 +36,21 @@ void RayCollisionable::integrate()
 void RayCollisionable::hasHit()
 {
     if (rayCallback->hasHit()) {
-        auto *collisionable = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
+        auto *objectWithCollision = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
 
         btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
 
-        collisionable->resolveCollision(this);
+        objectWithCollision->resolveCollision(this);
 
         setHitPosition(Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z()));
 
-        this->resolveCollision(collisionable);
+        this->resolveCollision(objectWithCollision);
+
+        rayCallback->m_collisionObject = nullptr;
     }
 }
 
-void RayCollisionable::resolveCollision(Collisionable *collisionable)
+void RayCollisionable::resolveCollision(Collisionable *objectWithCollision)
 {
     Logging::Log("Collision with ray!");
 }
@@ -67,10 +67,12 @@ void RayCollisionable::onUpdate()
 {
     Object3D::onUpdate();
 
+    if (!isEnabled()) return;
+
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {
         auto end = getPosition() + ray;
         auto vector = Vector3D(getPosition(), end);
-        Drawable::drawVector3D(vector, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());
+        Drawable::drawVector3D(vector, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow());
     }
 }
 
@@ -81,8 +83,3 @@ const Vertex3D &RayCollisionable::getRay() const {
 void RayCollisionable::setRay(const Vertex3D &ray) {
     RayCollisionable::ray = ray;
 }
-
-btCollisionWorld::ClosestRayResultCallback *RayCollisionable::getRayCallback() const {
-    return rayCallback;
-}
-

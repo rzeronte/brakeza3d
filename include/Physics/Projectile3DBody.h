@@ -13,9 +13,9 @@ public:
 
     void makeProjectileRigidBody(float mass, Vertex3D size, Vertex3D direction, M3 rotation, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
 
-    virtual void onUpdate() override;
+    void onUpdate() override;
 
-    void resolveCollision(Collisionable *collisionable) override;
+    void resolveCollision(Collisionable *objectWithCollision) override;
 };
 
 

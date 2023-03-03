@@ -39,17 +39,17 @@ void Projectile3DBody::onUpdate()
         return;
     }
 
-    if (this->getTTL() != 0) {
-        if (this->getTimeToLive()->isFinished()) {
-            this->getTimeToLive()->setEnabled(true);
+    /*if (this->getTTL() != 0) {
+        if (this->getTimeToLive().isFinished()) {
+            this->getTimeToLive().setEnabled(true);
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getRigidBody());
             setRemoved(true);
         }
 
-        this->getTimeToLive()->update();
-    }
+        this->getTimeToLive().update();
+    }*/
 }
 
-void Projectile3DBody::resolveCollision(Collisionable *collisionable) {
-    Mesh3DBody::resolveCollision(collisionable);
+void Projectile3DBody::resolveCollision(Collisionable *objectWithCollision) {
+    Mesh3DBody::resolveCollision(objectWithCollision);
 }
