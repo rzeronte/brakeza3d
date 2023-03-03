@@ -53,11 +53,11 @@ public:
 
     void updateLasers();
 
-    void setProjectileEmissor(AmmoProjectileBodyEmitter *projectileEmissor);
+    void setProjectileEmitter(AmmoProjectileBodyEmitter *emitter);
 
     Object3D *getTarget();
 
-    [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmissor() const;
+    [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmitter() const;
 
     [[nodiscard]] ShaderBlink *getBlink() const;
 

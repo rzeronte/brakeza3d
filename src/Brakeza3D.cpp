@@ -116,7 +116,8 @@ Timer *Brakeza3D::getTimer() {
     return &this->engineTimer;
 }
 
-void Brakeza3D::updateTimer() {
+void Brakeza3D::updateTimer()
+{
     current_ticks = (float) engineTimer.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;

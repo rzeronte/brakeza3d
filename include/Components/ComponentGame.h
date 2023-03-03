@@ -164,6 +164,8 @@ public:
     [[nodiscard]] ShaderClouds *getShaderClouds() const;
 
     void handleSplash();
+
+    void addProjectilesToShaderLasers();
 };
 
 
