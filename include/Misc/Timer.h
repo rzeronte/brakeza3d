@@ -22,12 +22,12 @@ public:
     void unpause();
 
     //Gets the timer's time
-    Uint32 getTicks() const;
+    [[nodiscard]] Uint32 getTicks() const;
 
     //Checks the status of the timer
-    bool isStarted() const;
+    [[nodiscard]] bool isStarted() const;
 
-    bool isPaused() const;
+    [[nodiscard]] bool isPaused() const;
 
 private:
     //The clock time when the timer started
