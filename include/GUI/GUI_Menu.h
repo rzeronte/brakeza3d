@@ -265,7 +265,6 @@ public:
                 ImGui::DragScalar("Projectile Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("Projectile Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("Projectile Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Projectile TTL", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_TTL, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
 
                 ImGui::EndMenu();
             }

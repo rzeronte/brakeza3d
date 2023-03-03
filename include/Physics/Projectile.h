@@ -8,18 +8,11 @@
 
 class Projectile {
 private:
-    Counter timeToLive;
-
-    float ttl;
     Vertex3D direction;
 public:
 
-    Projectile(float ttl, const Vertex3D direction) : timeToLive(Counter(ttl)), ttl(ttl), direction(direction)
+    Projectile(const Vertex3D direction) : direction(direction)
     {
-    }
-
-    [[nodiscard]] float getTTL() const {
-        return ttl;
     }
 
     [[nodiscard]] const Vertex3D &getDirection() const {
@@ -30,9 +23,6 @@ public:
         Projectile::direction = value;
     }
 
-    [[nodiscard]] Counter &getTimeToLive() {
-        return timeToLive;
-    }
 };
 
 

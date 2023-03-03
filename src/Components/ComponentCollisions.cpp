@@ -166,7 +166,7 @@ void ComponentCollisions::demoProjectile(int type) {
 
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
 
-    auto *projectile = new Projectile3DBody(EngineSetup::get()->PROJECTILE_DEMO_TTL, direction);
+    auto *projectile = new Projectile3DBody(direction);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(

@@ -19,7 +19,6 @@ private:
     bool indestructible;
 public:
     ProjectileRay(
-        float ttl,
         float damage,
         const Vertex3D &direction,
         const Vertex3D &ray,
