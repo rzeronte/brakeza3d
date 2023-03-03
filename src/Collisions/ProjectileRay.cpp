@@ -4,7 +4,6 @@
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 
 ProjectileRay::ProjectileRay(
-    float ttl,
     float damage,
     const Vertex3D &direction,
     const Vertex3D &ray,
@@ -15,7 +14,7 @@ ProjectileRay::ProjectileRay(
     bool indestructible
 ) :
     RayCollisionable(ray, filterGroup, filterMask),
-    Projectile(ttl, direction),
+    Projectile(direction),
     AmmoProjectile(color, damage),
     speed(speed),
     indestructible(indestructible)

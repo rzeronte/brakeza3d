@@ -4,24 +4,23 @@
 #include "../../../include/Brakeza3D.h"
 
 AmmoProjectileBody::AmmoProjectileBody(
-        Vertex3D position,
-        Object3D *parent,
-        Weapon *weaponType,
-        M3 rotation,
-        const Vertex3D &sizeCollision,
-        const Vertex3D &direction,
-        float damage,
-        float speed,
-        float accuracy,
-        float ttl,
-        int collisionGroup,
-        int collisionMask,
-        ParticleEmitter *particleEmissor
+    Vertex3D position,
+    Object3D *parent,
+    Weapon *weaponType,
+    M3 rotation,
+    const Vertex3D &sizeCollision,
+    const Vertex3D &direction,
+    float damage,
+    float speed,
+    float accuracy,
+    int collisionGroup,
+    int collisionMask,
+    ParticleEmitter *particleEmitter
 ) :
-    Projectile3DBody(ttl, direction),
+    Projectile3DBody(direction),
     AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
     weaponType(weaponType),
-    particleEmissor(particleEmissor)
+    particleEmissor(particleEmitter)
 {
     setPosition(position);
     setParent(parent);

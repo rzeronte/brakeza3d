@@ -487,7 +487,6 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
     auto length = cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint;
 
     enemy->addFixedLaser(new ProjectileRay(
-        100,
         (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
         direction.getScaled((float) length),
         direction.getScaled((float) length),

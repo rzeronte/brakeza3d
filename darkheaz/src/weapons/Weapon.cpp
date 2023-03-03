@@ -167,7 +167,6 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             getDamage(),
             (float) getSpeed(),
             getAccuracy(),
-            EngineSetup::get()->PROJECTILE_DEMO_TTL,
             filterGroup,
             filterMask,
             nullptr
@@ -212,7 +211,6 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         setStatus(WeaponStatus::PRESSED);
 
         auto *projectile = new ProjectileRay(
-            EngineSetup::get()->PROJECTILE_DEMO_TTL,
             getDamage(),
             direction,
             direction.getNormalize().getScaled((float) getSpeed()),

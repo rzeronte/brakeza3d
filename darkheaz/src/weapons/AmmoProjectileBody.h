@@ -24,10 +24,9 @@ public:
             float damage,
             float speed,
             float accuracy,
-            float ttl,
             int collisionGroup,
             int collisionMask,
-            ParticleEmitter *particleEmissor
+            ParticleEmitter *particleEmitter
     );
 
     [[nodiscard]] Weapon *getWeaponType() const;

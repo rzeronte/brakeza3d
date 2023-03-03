@@ -1,11 +1,9 @@
 
 #include "../../include/Physics/Projectile3DBody.h"
-#include "../../include/ComponentsManager.h"
 
 Projectile3DBody::Projectile3DBody(
-    float ttl,
     const Vertex3D &direction
-) : Projectile(ttl, direction)
+) : Projectile(direction)
 {
 }
 
@@ -38,16 +36,6 @@ void Projectile3DBody::onUpdate()
     if (isRemoved()) {
         return;
     }
-
-    /*if (this->getTTL() != 0) {
-        if (this->getTimeToLive().isFinished()) {
-            this->getTimeToLive().setEnabled(true);
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getRigidBody());
-            setRemoved(true);
-        }
-
-        this->getTimeToLive().update();
-    }*/
 }
 
 void Projectile3DBody::resolveCollision(Collisionable *objectWithCollision) {
