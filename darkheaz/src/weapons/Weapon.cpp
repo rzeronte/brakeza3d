@@ -392,7 +392,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
     }
 }
 
-void Weapon::shootLaserRay(ShaderLightRay *shaderLaser, float intensity)
+void Weapon::shootLaserRay(RayLight &rayLight, float intensity)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -402,9 +402,9 @@ void Weapon::shootLaserRay(ShaderLightRay *shaderLaser, float intensity)
 
     setAmmoAmount(ammoAmount - 1);
 
-    shaderLaser->setDamage(getDamage());
-    shaderLaser->setEnabled(true);
-    shaderLaser->setIntensity(intensity);
+    rayLight.setDamage(getDamage());
+    rayLight.setEnabled(true);
+    rayLight.setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
         ComponentSound::playSound(
@@ -414,7 +414,7 @@ void Weapon::shootLaserRay(ShaderLightRay *shaderLaser, float intensity)
         );
     }
 
-    shaderLaser->update();
+    rayLight.update();
 }
 
 void Weapon::setLabel(const std::string &value) {

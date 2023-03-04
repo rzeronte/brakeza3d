@@ -442,7 +442,7 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
             false,
             true,
             false,
-            NULL,
+            Color::green(),
             false
     );
 

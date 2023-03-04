@@ -9,10 +9,17 @@
 
 EnemyGhost::EnemyGhost() :
         blink(nullptr),
-        laser(nullptr),
-        projectileEmitter(nullptr),
+        rayLight(RayLight(
+            this,
+            1000,
+            0,
+            ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
+            EngineSetup::collisionGroups::ProjectileEnemy,
+            EngineSetup::collisionGroups::Player
+        )),
         counterDamageBlink(Counter(1)),
-        counterStuck(Counter(5))
+        counterStuck(Counter(5)),
+        projectileEmitter(nullptr)
 {
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
@@ -25,15 +32,7 @@ void EnemyGhost::loadBlinkShader()
     blink = new ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
     blink->setEnabled(true);
 
-    laser = new ShaderLightRay(
-        this,
-        1000,
-        0,
-        ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
-        EngineSetup::collisionGroups::ProjectileEnemy,
-        EngineSetup::collisionGroups::Player
-    );
-    laser->setEnabled(false);
+    rayLight.setEnabled(false);
 }
 
 void EnemyGhost::onUpdate()
@@ -303,8 +302,8 @@ void EnemyGhost::shoot(Object3D *target)
             break;
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
-            laser->setEnabled(true);
-            weapon->shootLaserRay(laser, 1.0);
+            rayLight.setEnabled(true);
+            weapon->shootLaserRay(rayLight, 1.0);
             break;
         }
     }

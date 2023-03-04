@@ -5,7 +5,7 @@ Color::Color(): r(0), g(0), b(0), a(0), color(0)
 {
 }
 
-Color::Color(int r, int g, int b, int a):  r((float)r), g((float)g), b((float)b), a((float)a), color(0)
+Color::Color(int r, int g, int b, int a): r(r), g(g), b(b), a(a), color(0)
 {
     auto s = (unsigned char*) &this->color;
 

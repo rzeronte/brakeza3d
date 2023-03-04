@@ -17,6 +17,14 @@ Player::Player() :
     lives(INITIAL_LIVES),
     counterDamageBlink (Counter(0.45)),
     counterStucked(Counter(5)),
+    rayLight(RayLight(
+        this,
+        1000,
+        0,
+        Color::green(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Enemy
+    )),
     killsCounter(0),
     energyShieldEnabled(false),
     gravityShieldsNumber(0),
@@ -192,7 +200,7 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
-            weapon->shootLaserRay(shaderLaser, intensity);
+            weapon->shootLaserRay(rayLight, intensity);
             break;
         }
         default:
@@ -588,16 +596,7 @@ void Player::loadBlinkShader()
     blink->setEnabled(false);
     counterDamageBlink.setEnabled(false);
 
-    shaderLaser = new ShaderLightRay(
-        this,
-        1000,
-        0,
-        Color::green(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy
-    );
-
-    shaderLaser->setEnabled(false);
+    rayLight.setEnabled(false);
 
     reflection.loadBlinkShader();
 }
@@ -669,14 +668,15 @@ void Player::updateWeaponAutomaticStatus()
     }
 
     if (getWeapon()->getStatus() == RELEASED) {
-        shaderLaser->resetReach();
+        rayLight.resetReach();
         ComponentSound::stopChannel(EngineSetup::SND_LASER);
         getWeapon()->setStatus(NONE);
     }
 }
 
-ShaderLightRay *Player::getShaderLaser(){
-    return shaderLaser;
+RayLight &Player::getShaderLaser()
+{
+    return rayLight;
 }
 
 LightPoint3D *Player::getLight() const {
@@ -694,9 +694,7 @@ PlayerReflection *Player::getReflection() {
 Player::~Player()
 {
     delete light;
-
     delete blink;
-    delete shaderLaser;
 
     for (auto w: weaponTypes) {
         delete weapon;
