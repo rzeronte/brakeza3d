@@ -23,7 +23,7 @@
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
-#include "../../darkheaz/src/shaders/ShaderLightRay.h"
+#include "../../darkheaz/src/shaders/RayLight.h"
 #include "../Physics/RayCollisionable.h"
 #include "../Physics/ProjectileRay.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
@@ -160,6 +160,8 @@ public:
     [[nodiscard]] ShaderColor *getShaderColor() const;
 
     [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
+
+    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
 
     [[nodiscard]] ShaderClouds *getShaderClouds() const;
 

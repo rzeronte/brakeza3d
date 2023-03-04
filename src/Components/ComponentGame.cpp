@@ -21,8 +21,8 @@ ComponentGame::ComponentGame() :
     shaderTrailBuffer(nullptr),
     shaderColor(nullptr),
     gameState(EngineSetup::GameState::NONE),
-    primaryColor(Color(179, 0, 40)),
-    secondaryColor(Color(0, 179, 52)),
+    primaryColor(Color(255, 0, 0)),
+    secondaryColor(Color(1, 179, 52)),
     thirdColor(Color(0, 0, 255))
 {
     player = new Player();
@@ -192,6 +192,8 @@ void ComponentGame::onUpdate()
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 
+    addObjectsToStencilBuffer();
+    addProjectilesToShaderLasers();
     updateShaders();
     updateCrossFire();
 }
@@ -775,11 +777,9 @@ void ComponentGame::addObjectsToStencilBuffer()
 
 void ComponentGame::updateShaders()
 {
-    addObjectsToStencilBuffer();
-    addProjectilesToShaderLasers();
-    shaderTrailBuffer->update();
-    shaderClouds->update();
-    shaderColor->update();
+    //shaderTrailBuffer->update();
+    //shaderClouds->update();
+    //shaderColor->update();
     shaderLasers->update();
 }
 
@@ -847,7 +847,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 {
     removeInGameObjects();
     getPlayer()->setEnabled(true);
-    getPlayer()->getShaderLaser()->setEnabled(false);
+    getPlayer()->getShaderLaser().setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     shaderTrailBuffer->setEnabled(true);
@@ -868,7 +868,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
         ComponentSound::fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
 }
-
 
 void ComponentGame::reloadLevel(int level)
 {
@@ -1010,4 +1009,8 @@ void ComponentGame::addProjectilesToShaderLasers()
             shaderLasers->addLaserFromRay(ray);
         }
     }
+}
+
+ShaderProjectiles *ComponentGame::getShaderLasers() const {
+    return shaderLasers;
 }
