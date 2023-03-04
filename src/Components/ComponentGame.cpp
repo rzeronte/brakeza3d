@@ -25,11 +25,12 @@ ComponentGame::ComponentGame() :
     secondaryColor(Color(1, 179, 52)),
     thirdColor(Color(0, 0, 255))
 {
-    player = new Player();
 }
 
 void ComponentGame::onStart()
 {
+    player = new Player();
+
     Logging::Log("ComponentGame onStart");
 
     setGameState(EngineSetup::GameState::NONE);
@@ -556,7 +557,7 @@ void ComponentGame::makeFadeToGameState(EngineSetup::GameState value) const
 
 void ComponentGame::removeInGameObjects()
 {
-    for (auto object : *getSceneObjects()) {
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);

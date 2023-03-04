@@ -10,13 +10,13 @@
 class EngineSetup {
 
 public:
-    EngineSetup();
-
     static EngineSetup *get();
 
     static EngineSetup *instance;
 
     bool LOGGING = false;
+
+    bool IMGUI_ENABLED = true;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
 
@@ -49,7 +49,7 @@ public:
     int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = false;
+    bool BASED_TILE_RENDER_THREADED = true;
 
     float EPSILON = 0.00001f;
 

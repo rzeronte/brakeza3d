@@ -348,7 +348,6 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setEnableLights(enableLights);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
-    enemy->loadBlinkShader();
     enemy->setScale(1);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);

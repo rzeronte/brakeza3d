@@ -10,6 +10,3 @@ EngineSetup *EngineSetup::get() {
 
     return instance;
 }
-
-EngineSetup::EngineSetup() {
-}

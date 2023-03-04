@@ -13,18 +13,12 @@ ComponentsManager *ComponentsManager::get()
 
 void ComponentsManager::registerComponent(Component *component, const std::string& label)
 {
-    component->setComponents(&components);
     component->setId((int) components.size());
     component->setLabel(label);
-    component->setSceneObjects(sceneObjects);
 
     components.push_back(component);
 
-    std::cout << "Register component (" << component->getLabel() << ")" << std::endl;
-}
-
-void ComponentsManager::setSceneObjects(std::vector<Object3D *> *sceneObjects) {
-    ComponentsManager::sceneObjects = sceneObjects;
+    Logging::Log("Register component: %s", component->getLabel().c_str());
 }
 
 ComponentsManager::~ComponentsManager()
