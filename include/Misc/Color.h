@@ -7,10 +7,10 @@
 
 class Color {
 public:
-    int r;
-    int g;
-    int b;
-    int a;
+    float r;
+    float g;
+    float b;
+    float a;
 
     Color();
     Color(int r, int g, int b, int a = 0);

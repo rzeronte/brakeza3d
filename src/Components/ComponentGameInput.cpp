@@ -2,8 +2,6 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-#define PAD_AXIS_THRESHOLD 0.05f;
-
 ComponentGameInput::ComponentGameInput()
 :
     controllerAxisThreshold(0.1),
@@ -352,7 +350,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (
-        (keyboard[SDL_SCANCODE_BACKSPACE] && event->type == SDL_KEYDOWN) ||
+        (keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB())
     ) {
         const float dashEnergyCost = 10;
