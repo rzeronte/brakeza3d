@@ -11,7 +11,6 @@ ComponentCollisions::ComponentCollisions()
     solver(nullptr),
     dynamicsWorld(nullptr),
     debugDraw(nullptr)
-
 {
 }
 
