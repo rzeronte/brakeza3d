@@ -10,6 +10,8 @@
 #include "Component.h"
 
 class ComponentSound : public Component {
+private:
+    SoundPackage soundPackage;
 public:
     ComponentSound();
 
@@ -38,6 +40,8 @@ public:
     void stopMusic();
 
     static void stopChannel(int channel);
+
+    [[nodiscard]] SoundPackage &getSoundPackage();
 };
 
 

@@ -168,6 +168,8 @@ public:
     void handleSplash();
 
     void addProjectilesToShaderLasers();
+
+    void pressedKeyForWin();
 };
 
 

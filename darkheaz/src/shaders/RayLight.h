@@ -39,6 +39,8 @@ public:
     [[nodiscard]] bool isEnabled() const;
 
     void setEnabled(bool enabled);
+
+    void setColor(const Color &color);
 };
 
 

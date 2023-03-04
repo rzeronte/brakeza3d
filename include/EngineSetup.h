@@ -63,7 +63,7 @@ public:
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
-    bool RENDER_MAIN_AXIS = true;
+    bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 10;
 
@@ -278,14 +278,16 @@ public:
         NONE = 0,
         SPLASH = 1,
         MENU = 2,
-        PRESSKEY_NEWLEVEL = 3,
-        PRESSKEY_PREVIOUS_LEVEL = 4,
-        PRESSKEY_BY_DEAD = 5,
+        PRESS_KEY_NEWLEVEL = 3,
+        PRESS_KEY_PREVIOUS_LEVEL = 4,
+        PRESS_KEY_BY_DEAD = 5,
         COUNTDOWN = 6,
         GAMING = 7,
         HELP = 8,
-        PRESSKEY_GAMEOVER = 9,
-        CREDITS = 10
+        PRESS_KEY_GAMEOVER = 9,
+        CREDITS = 10,
+        PRESS_KEY_BY_WIN = 11,
+
     } GameState;
 };
 

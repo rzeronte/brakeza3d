@@ -113,11 +113,11 @@ bool Player::takeDamage(float dmg)
         stamina = 0;
         setState(PlayerState::DEAD);
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("playerDead"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("playerDead"),
             1,
             0
         );
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_BY_DEAD);
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD);
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
         lives--;
@@ -153,7 +153,7 @@ void Player::makeReflection()
     gravityShieldsNumber++;
 
     ComponentSound::playSound(
-        EngineBuffers::getInstance()->soundPackage->getByLabel("gravitationalShield"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("gravitationalShield"),
         1,
         0
     );
@@ -231,7 +231,11 @@ void Player::onUpdate()
     Mesh3D::onUpdate();
 
     if (isStucked()) {
-        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
+        Drawable::drawLightning(
+            getPosition() + Tools::randomVertex().getScaled(5),
+            getPosition() + Tools::randomVertex().getScaled(5),
+            Color::green()
+        );
         counterStucked.update();
 
         if (counterStucked.isFinished()) {
@@ -341,7 +345,7 @@ void Player::resolveCollision(Collisionable *with)
         if (projectile->getParent() != this) {
             if (takeDamage(projectile->getWeaponType()->getDamage())) {
                 ComponentSound::playSound(
-                    EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+                    ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("playerDamage"),
                     1,
                     0
                );
@@ -354,7 +358,7 @@ void Player::resolveCollision(Collisionable *with)
     if (laser != nullptr) {
         if (takeDamage(laser->getDamage())) {
             ComponentSound::playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("playerDamage"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("playerDamage"),
                 1,
                 0
             );
@@ -365,7 +369,7 @@ void Player::resolveCollision(Collisionable *with)
     if (weapon != nullptr) {
         this->addWeapon(weapon->getWeaponType());
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("itemWeapon"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("itemWeapon"),
             1,
             0
         );
@@ -376,7 +380,7 @@ void Player::resolveCollision(Collisionable *with)
     auto health = dynamic_cast<ItemHealthGhost*> (with);
     if (health != nullptr) {
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("itemHealth"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("itemHealth"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -388,7 +392,7 @@ void Player::resolveCollision(Collisionable *with)
     auto energy = dynamic_cast<ItemEnergyGhost*> (with);
     if (energy != nullptr) {
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("itemHealth"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("itemHealth"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -419,7 +423,7 @@ void Player::setWeapon(Weapon *weaponType)
     Player::weapon = weaponType;
 
     ComponentSound::playSound(
-        EngineBuffers::getInstance()->soundPackage->getByLabel("switchWeapon"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("switchWeapon"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
@@ -619,7 +623,7 @@ void Player::makeStuck(float time)
     setState(PlayerState::GETTING_DAMAGE);
 
     ComponentSound::playSound(
-        EngineBuffers::getInstance()->soundPackage->getByLabel("electricStuck"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("electricStuck"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );

@@ -4,7 +4,8 @@
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
-EngineBuffers *EngineBuffers::getInstance() {
+EngineBuffers *EngineBuffers::getInstance()
+{
     if (instance == nullptr) {
         instance = new EngineBuffers();
     }
@@ -12,15 +13,13 @@ EngineBuffers *EngineBuffers::getInstance() {
     return instance;
 }
 
-EngineBuffers::EngineBuffers() {
+EngineBuffers::EngineBuffers()
+{
     EngineSetup *setup = EngineSetup::get();
 
     sizeBuffers = setup->RESOLUTION;
-
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
-
-    soundPackage = new SoundPackage();
 }
 
 void EngineBuffers::clearDepthBuffer() const {

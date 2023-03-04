@@ -26,21 +26,19 @@ public:
 
     int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
-    SoundPackage *soundPackage;
-
     void clearDepthBuffer() const;
 
-    float getDepthBuffer(int x, int y) const;
+    [[nodiscard]] float getDepthBuffer(int x, int y) const;
 
-    float getDepthBuffer(int i) const;
+    [[nodiscard]] float getDepthBuffer(int i) const;
 
-    void setDepthBuffer(const int x, const int y, const float value) const;
+    void setDepthBuffer(int x, int y, float value) const;
 
-    void setDepthBuffer(const int i, const float value) const;
+    void setDepthBuffer(int i, float value) const;
 
-    uint32_t getVideoBuffer(int x, int y) const;
+    [[nodiscard]] uint32_t getVideoBuffer(int x, int y) const;
 
-    uint32_t getVideoBuffer(int bufferIndex) const;
+    [[nodiscard]] uint32_t getVideoBuffer(int bufferIndex) const;
 
     void clearVideoBuffer() const;
 
