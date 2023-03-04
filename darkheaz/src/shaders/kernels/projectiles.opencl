@@ -8,6 +8,8 @@ struct OCLaser
     int g;
     int b;
     float intensity;
+    bool startCircle;
+    bool endCircle;
 };
 
 struct OCProjectile
@@ -49,6 +51,75 @@ __kernel void onUpdate(
     unsigned int mixedColor = video[i];
     unsigned char *mi = &mixedColor;
 
+
+    for (int j = 0; j < numberLasers; j++) {
+        struct OCLaser laser = lasers[j];
+
+        float2 A = { laser.x1, laser.y1 };
+        float2 B = { laser.x2, laser.y2 };
+
+        A = A / resolution;
+        B = B / resolution;
+
+        float l = line(A, B, st, 0.015 * laser.intensity);
+
+        //--
+        float rad  = 0.075;
+        float width = 0.2;
+        float len = length(A-st);
+        float circleStart = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+
+        len = length(B-st);
+        float circleEnd = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+
+        float3 colorStartCircle = {0.f, 0.f, 0.f};
+        float3 colorEndCircle = {0.f, 0.f, 0.f};
+
+        if (laser.startCircle) {
+            colorStartCircle[0] = circleStart * laser.r;
+            colorStartCircle[1] = circleStart * laser.g;
+            colorStartCircle[2] = circleStart * laser.b;
+        }
+
+        if (laser.endCircle) {
+            colorEndCircle[0] = circleEnd * laser.r;
+            colorEndCircle[1] = circleEnd * laser.g;
+            colorEndCircle[2] = circleEnd * laser.b;
+        }
+
+        //--
+
+        float2 nst = st;
+        float2 offset = normalize(A-B) * iTime * 1.50;
+        nst += offset;
+
+        float intPart;
+        nst.x = fract(nst.x, &intPart);
+        nst.y = fract(nst.y, &intPart);
+
+        int cx = nst.x * screenWidth;
+        int cy = nst.y * screenHeight;
+        int index = cy * screenWidth + cx;
+
+        __global unsigned char *ci = &image[index];
+
+        float n = ci[0];
+
+        float3 colorLine = {laser.r, laser.g, laser.b};
+        colorLine = (colorLine/255) * l * n;
+
+        __global unsigned char *t = &video[i];
+
+        colorStartCircle  = colorStartCircle/177 * n;
+        colorEndCircle  = colorEndCircle/177 * n;
+
+        mixedColor = createRGB(
+            min(colorStartCircle[0] + colorEndCircle[0] + colorLine[0] + mi[0], 255.0),
+            min(colorStartCircle[1] + colorEndCircle[1] + colorLine[1] + mi[1], 255.0),
+            min(colorStartCircle[2] + colorEndCircle[2] + colorLine[2] + mi[2], 255.0)
+        );
+    }
+
     for (int j = 0; j < numberProjectiles; j++) {
         struct OCProjectile projectile = projectiles[j];
         float2 A = { projectile.x, projectile.y };
@@ -79,47 +150,6 @@ __kernel void onUpdate(
         );
     }
 
-    for (int j = 0; j < numberLasers; j++) {
-        struct OCLaser laser = lasers[j];
-
-        float2 A = { laser.x1, laser.y1 };
-        float2 B = { laser.x2, laser.y2 };
-
-        A = A / resolution;
-        B = B / resolution;
-
-        float l = line(A, B, st, 0.015 * laser.intensity);
-
-        float2 nst = st;
-        float2 offset = normalize(A-B) * iTime * 1.50;
-        nst += offset;
-
-        float intPart;
-        nst.x = fract(nst.x, &intPart);
-        nst.y = fract(nst.y, &intPart);
-
-        int cx = nst.x * screenWidth;
-        int cy = nst.y * screenHeight;
-        int index = cy * screenWidth + cx;
-
-        __global unsigned char *ci = &image[index];
-
-        float n = ci[0];
-
-        float3 colorLine = {
-            (laser.r/255) * l * n,
-            (laser.g/255) * l * n,
-            (laser.b/255) * l * n
-        };
-
-        __global unsigned char *t = &video[i];
-
-        mixedColor = createRGB(
-            min(colorLine[0] + mi[0], 255.0),
-            min(colorLine[1] + mi[1], 255.0),
-            min(colorLine[2] + mi[2], 255.0)
-        );
-    }
 
     video[i] = mixedColor;
 }

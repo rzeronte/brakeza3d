@@ -7,40 +7,59 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Shocker",
+      "name": "RedBallLaser",
       "position": { "x": 50,  "y": 10 },
-      "model": "spaceships/purple_spaceship_02.fbx",
+      "model": "energy_ball.fbx",
       "enableLights": true,
-      "animated": false,
-      "stamina": 1500,
+      "animated": true,
+      "stamina": 1250,
       "reward": true,
       "motion": {
         "type": 1,
-        "from":  { "x": 50,  "y": 10 },
-        "to":  { "x": 50,  "y": 20 },
-        "speed": 0.5
+        "from": { "x": 50, "y": 10 },
+        "to": { "x": 50, "y": 50 },
+        "speed": 1,
+        "rotation": { "x": 0, "y": 0, "z": -1 }
       },
+      "lasers": [
+        {
+          "damage": 30,
+          "length": 5000,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
       "weapon": {
         "index": 0,
-        "available": true,
-        "name": "Instant",
+        "available": false,
+        "name": "Linear",
         "damage": 20,
-        "amount": 1000,
-        "startAmount": 10000,
+        "amount": 999,
+        "startAmount": 100,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.50,
+        "cadenceTime": 1.0,
         "stop": false,
-        "stopDuration": 1,
-        "stopEvery": 1,
-        "type": 4,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
         "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_03.fbx",
-        "model": "item_weapon_01.fbx",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 16, "z": 0 },
+        "cadenceTime": 0.20,
+        "type": 0,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 4,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     },
     {

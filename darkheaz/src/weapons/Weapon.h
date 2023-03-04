@@ -154,7 +154,7 @@ public:
 
     void shootBomb(Object3D *parent, Vertex3D position);
 
-    void shootLaserRay(RayLight &rayLight, float intensity);
+    void shootRayLight(RayLight &rayLight, float intensity);
 
     void setLabel(const std::string &value);
 };

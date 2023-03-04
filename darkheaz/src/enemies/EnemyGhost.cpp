@@ -299,7 +299,7 @@ void EnemyGhost::shoot(Object3D *target)
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
             rayLight.setEnabled(true);
-            weapon->shootLaserRay(rayLight, 1.0);
+            weapon->shootRayLight(rayLight, 0.5);
             break;
         }
     }

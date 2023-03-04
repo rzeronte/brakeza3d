@@ -17,14 +17,14 @@
       "motion": {
         "type": 2,
         "speed": 10,
-        "separation": 1000
+        "separation": 4000
       },
       "weapon": {
         "index": 0,
         "available": true,
         "name": "Linear",
         "damage": 10,
-        "amount": 999,
+        "amount": 5000,
         "startAmount": 1000,
         "speed": 500,
         "dispersion": 10,
@@ -33,7 +33,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 0,
+        "type": 2,
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
@@ -54,7 +54,7 @@
     },
     {
       "name": "Blupincher",
-      "position": {"x": 95, "y": 5},
+      "position": {"x": 95, "y": 15},
       "model": "spaceships/blue_spaceship_02.fbx",
       "enableLights": true,
       "animated": true,
@@ -98,7 +98,7 @@
     },
     {
       "name": "Blupincher",
-      "position": {"x": 5, "y": 5},
+      "position": {"x": 5, "y": 15},
       "model": "spaceships/blue_spaceship_02.fbx",
       "enableLights": true,
       "animated": true,
