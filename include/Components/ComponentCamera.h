@@ -46,8 +46,6 @@ public:
 
     void setFreeLook(bool isFlyMode);
 
-    void updatePositionForTrackingObject();
-
     [[nodiscard]] Vertex3D &getAutoScrollSpeed();
 
     [[nodiscard]] bool &isAutoScroll();

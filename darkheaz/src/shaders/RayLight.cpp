@@ -116,3 +116,7 @@ bool RayLight::isEnabled() const {
 void RayLight::setEnabled(bool enabled) {
     RayLight::enabled = enabled;
 }
+
+void RayLight::setColor(const Color &color) {
+    RayLight::color = color;
+}

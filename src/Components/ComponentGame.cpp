@@ -126,11 +126,12 @@ void ComponentGame::preUpdate()
 
     if (
         state == EngineSetup::GameState::GAMING ||
-        state == EngineSetup::GameState::PRESSKEY_GAMEOVER ||
+        state == EngineSetup::GameState::PRESS_KEY_GAMEOVER ||
         state == EngineSetup::GameState::COUNTDOWN ||
-        state == EngineSetup::GameState::PRESSKEY_BY_DEAD ||
-        state == EngineSetup::GameState::PRESSKEY_NEWLEVEL ||
-        state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL
+        state == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
+        state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ||
+        state == EngineSetup::GameState::PRESS_KEY_BY_WIN ||
+        state == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL
     ) {
         shaderBackgroundImage->update();
     }
@@ -148,7 +149,7 @@ void ComponentGame::onUpdate()
         checkForEndLevel();
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_NEWLEVEL || state == EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL) {
+    if (state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL) {
         getPlayer()->respawn();
         writer->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
         if (getLevelInfo()->isHasTutorial()) {
@@ -156,8 +157,12 @@ void ComponentGame::onUpdate()
         }
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER) {
+    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER) {
         writer->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);
+    }
+
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_WIN) {
+        writer->writeTextTTFMiddleScreen("congratulations! Mission done...", primaryColor, 0.5);
     }
 
     if (state == EngineSetup::GameState::COUNTDOWN) {
@@ -170,7 +175,7 @@ void ComponentGame::onUpdate()
         }
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD) {
         writer->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5);
         shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50);
     }
@@ -246,15 +251,15 @@ void ComponentGame::checkForEndLevel()
         removeProjectiles();
         getFadeToGameState()->setSpeed(FADE_SPEED_ENDLEVEL);
         ComponentSound::playSound(
-            BUFFERS->soundPackage->getByLabel("levelCompleted"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
 
         if (getLevelInfo()->isEndLevel()) {
-            makeFadeToGameState(EngineSetup::PRESSKEY_GAMEOVER);
+            makeFadeToGameState(EngineSetup::PRESS_KEY_GAMEOVER);
         } else {
-            makeFadeToGameState(EngineSetup::PRESSKEY_NEWLEVEL);
+            setGameState(EngineSetup::PRESS_KEY_BY_WIN);
         }
     }
 }
@@ -270,13 +275,13 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::MENU:
             handleMenuGameState();
             break;
-        case EngineSetup::PRESSKEY_NEWLEVEL:
+        case EngineSetup::PRESS_KEY_NEWLEVEL:
             handlePressNewLevelKeyGameState();
             break;
-        case EngineSetup::PRESSKEY_PREVIOUS_LEVEL:
+        case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL:
             handlePressKeyPreviousLevel();
             break;
-        case EngineSetup::PRESSKEY_BY_DEAD:
+        case EngineSetup::PRESS_KEY_BY_DEAD:
             handlePressKeyByDead();
             break;
         case EngineSetup::COUNTDOWN:
@@ -288,7 +293,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::HELP:
             handlePressKeyCredits();
             break;
-        case EngineSetup::PRESSKEY_GAMEOVER:
+        case EngineSetup::PRESS_KEY_GAMEOVER:
             handlePressKeyGameOver();
             break;
         case EngineSetup::CREDITS:
@@ -482,7 +487,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
     if (currentClosestObject != nullptr) {
         ComponentSound::playSound(
-            BUFFERS->soundPackage->getByLabel("tic"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -707,9 +712,9 @@ void ComponentGame::pressedKeyForNewGame()
 {
     if (!ComponentsManager::get()->getComponentGame()->getLevelInfo()->isLevelStartedToPlay()) {
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_NEWLEVEL);
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL);
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -720,10 +725,15 @@ void ComponentGame::pressedKeyForNewGame()
     }
 }
 
+void ComponentGame::pressedKeyForWin()
+{
+    makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL);
+}
+
 void ComponentGame::pressedKeyForBeginLevel()
 {
     ComponentSound::playSound(
-        BUFFERS->soundPackage->getByLabel("newLevel"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("newLevel"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
@@ -734,7 +744,7 @@ void ComponentGame::pressedKeyForBeginLevel()
 
 void ComponentGame::pressedKeyForFinishGameAndRestart()
 {
-    ComponentSound::fadeInMusic(BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"), -1, 3000);
+    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"), -1, 3000);
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->setCurrentLevelIndex(-1);
     ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::MENU);
 }
@@ -742,11 +752,11 @@ void ComponentGame::pressedKeyForFinishGameAndRestart()
 void ComponentGame::pressedKeyByDead()
 {
     ComponentSound::playSound(
-        EngineBuffers::getInstance()->soundPackage->getByLabel("startGame"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
-    ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESSKEY_PREVIOUS_LEVEL);
+    ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL);
     ComponentsManager::get()->getComponentGame()->getPlayer()->startPlayerBlink();
 }
 
@@ -865,7 +875,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
     if (getLevelInfo()->isHaveMusic()) {
-        ComponentSound::fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+        ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
 }
 
@@ -891,7 +901,7 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
 
     if (getLevelInfo()->isHaveMusic()) {
-        ComponentSound::fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+        ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
     }
 
     ComponentsManager::get()->getComponentGame()->getLevelInfo()->startCountDown();
@@ -931,13 +941,13 @@ void ComponentGame::handlePressKeyPreviousLevel()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     shaderColor->setEnabled(false);
     ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-    ComponentSound::fadeInMusic(BUFFERS->soundPackage->getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
 }
 
 void ComponentGame::handlePressKeyGameOver()
 {
     getPlayer()->setEnabled(true);
-    ComponentSound::playMusic(BUFFERS->soundPackage->getMusicByLabel("gameOverMusic"), -1);
+    ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
     setVisibleInGameObjects(false);
     removeInGameObjects();
     getPlayer()->stopBlinkForPlayer();
@@ -981,7 +991,7 @@ void ComponentGame::handleSplash()
     shaderClouds->setEnabled(false);
 
     ComponentSound::fadeInMusic(
-        BUFFERS->soundPackage->getMusicByLabel("musicMainMenu"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
         -1,
         SPLASH_TIME * 1000
     );

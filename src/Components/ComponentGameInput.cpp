@@ -88,7 +88,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             game->makeFadeToGameState(EngineSetup::GameState::GAMING);
         } else {
             // can't cancel countdown
-            if (gameState == EngineSetup::GameState::COUNTDOWN || gameState == EngineSetup::GameState::PRESSKEY_NEWLEVEL ) return;
+            if (gameState == EngineSetup::GameState::COUNTDOWN || gameState == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ) return;
 
             game->makeFadeToGameState(EngineSetup::GameState::MENU);
 
@@ -117,7 +117,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
             ComponentSound::playSound(
-                BUFFERS->soundPackage->getByLabel("soundMenuClick"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -128,7 +128,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
             ComponentSound::playSound(
-                BUFFERS->soundPackage->getByLabel("soundMenuClick"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("soundMenuClick"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -170,8 +170,10 @@ void ComponentGameInput::handleFire() const
     }
 }
 
-void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
-    SoundPackage *soundPackage = BUFFERS->soundPackage;
+void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
+{
+    auto soundPackage =ComponentsManager::get()->getComponentSound()->getSoundPackage();
+
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
@@ -184,7 +186,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         if (keyboard[SDL_SCANCODE_2]) {
             componentGame->getPlayer()->setWeaponTypeByIndex(1);
             ComponentSound::playSound(
-                soundPackage->getByLabel("switchWeapon"),
+                soundPackage.getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -193,7 +195,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         if (keyboard[SDL_SCANCODE_3] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(2);
             ComponentSound::playSound(
-                soundPackage->getByLabel("switchWeapon"),
+                soundPackage.getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -202,7 +204,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event) {
         if (keyboard[SDL_SCANCODE_4] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(3);
             ComponentSound::playSound(
-                soundPackage->getByLabel("switchWeapon"),
+                soundPackage.getByLabel("switchWeapon"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -307,7 +309,7 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
             ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
 
             ComponentSound::playSound(
-                BUFFERS->soundPackage->getByLabel("tic"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -360,7 +362,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
         }
 
         ComponentSound::playSound(
-            BUFFERS->soundPackage->getByLabel("dash"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("dash"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -395,7 +397,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
         player->setEnergyShieldEnabled(true);
         player->getShieldModel()->setEnabled(true);
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("energyShield"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("energyShield"),
             1,
             0
         );
@@ -426,16 +428,21 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    if ((state == EngineSetup::GameState::PRESSKEY_NEWLEVEL|| state == EngineSetup::PRESSKEY_PREVIOUS_LEVEL) &&
+    if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) &&
+        (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        ComponentsManager::get()->getComponentGame()->pressedKeyForWin();
+    }
+
+    if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL) &&
         (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForFinishGameAndRestart();
     }
 
-    if (state == EngineSetup::GameState::PRESSKEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
         ComponentsManager::get()->getComponentGame()->pressedKeyByDead();
     }
 }

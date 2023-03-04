@@ -4,14 +4,14 @@
 
 Enemy::Enemy()
 :
+    stuck(false),
+    state(EnemyState::ENEMY_STATE_STOP),
     weapon(nullptr),
     startStamina(100),
     stamina(100),
-    rewards(false),
-    state(EnemyState::ENEMY_STATE_STOP),
     range(0),
-    stuck(false),
-    soundChannel(-1)
+    soundChannel(-1),
+    rewards(false)
 {
 }
 

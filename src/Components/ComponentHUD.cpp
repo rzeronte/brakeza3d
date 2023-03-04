@@ -86,10 +86,10 @@ void ComponentHUD::drawHUD()
 
     if (SETUP->DRAW_FPS) {
         this->textWriter->writeTTFCenterHorizontal(
-            15,
+            5,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
             componentManager->getComponentGame()->getPrimaryColor(),
-            0.5
+            0.3
         );
     }
 
@@ -147,9 +147,10 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     }
 }
 
-int ComponentHUD::getButtonsOffsetY() {
+int ComponentHUD::getButtonsOffsetY()
+{
     const unsigned int innerMargin = 0;
-    const int offsetY = SETUP->screenHeight - 16 - innerMargin;
+    const int offsetY = (int) (SETUP->screenHeight - 16 - innerMargin);
     return offsetY;
 }
 
@@ -157,7 +158,7 @@ void ComponentHUD::drawShaderLasers()
 {
     const auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
     const float fixedWidth = 1.0;
-    const float health = (player->getStamina() * fixedWidth) / player->getStartStamina();
+    const float health = ((float) player->getStamina() * fixedWidth) / (float) player->getStartStamina();
     const float energy = (player->getEnergy() * fixedWidth) / player->getStartEnergy();
 
     const int startPositionX = 110;
@@ -166,7 +167,7 @@ void ComponentHUD::drawShaderLasers()
 
     shaderLasers->addLaser(
         startPositionX, 445,
-        startPositionX + (width * health), 445 ,
+        startPositionX + (int) (width * health), 445 ,
         255, 0, 0,
         stroke,
         false,
@@ -175,7 +176,7 @@ void ComponentHUD::drawShaderLasers()
 
     shaderLasers->addLaser(
         startPositionX, 465,
-        startPositionX + (width * energy), 465,
+        startPositionX + (int) (width * energy), 465,
         0, 255, 0,
         stroke,
         false,
@@ -189,9 +190,9 @@ void ComponentHUD::drawShaderLasers()
         const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
 
         shaderLasers->addLaser(
-            startPositionX, 25,
-            startPositionX + (width * enemyHealth), 25,
-            255, 0, 255,
+            90, 12,
+            90 + (int) (460 * enemyHealth), 12,
+            255, 0, 0,
             stroke,
             false,
             false

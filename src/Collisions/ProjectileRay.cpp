@@ -2,6 +2,7 @@
 #include "../../darkheaz/src/weapons/AmmoProjectileBody.h"
 #include "../../darkheaz/src/items/ItemHealthGhost.h"
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
+#include "../../include/ComponentsManager.h"
 
 ProjectileRay::ProjectileRay(
     float damage,
@@ -26,6 +27,11 @@ void ProjectileRay::onUpdate()
     RayCollisionable::onUpdate();
 
     if (!isEnabled()) return;
+
+    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
+        this->setRemoved(true);
+        return;
+    }
 
     addToPosition(getDirection().getScaled((float) speed));
 }

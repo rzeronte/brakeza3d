@@ -90,7 +90,8 @@ void Brakeza3D::addObject3D(Object3D *obj, const std::string &label)
     sceneObjects.push_back(obj);
 }
 
-Object3D *Brakeza3D::getObjectByLabel(const std::string &label) {
+Object3D *Brakeza3D::getObjectByLabel(const std::string &label)
+{
     for (int i = 0; i < (int) this->sceneObjects.size(); i++) {
         if (sceneObjects[i]->getLabel() == label) {
             return sceneObjects[i];
@@ -100,7 +101,8 @@ Object3D *Brakeza3D::getObjectByLabel(const std::string &label) {
     return nullptr;
 }
 
-Timer *Brakeza3D::getTimer() {
+Timer *Brakeza3D::getTimer()
+{
     return &this->engineTimer;
 }
 
@@ -121,7 +123,8 @@ float Brakeza3D::getDeltaTimeMicro() const {
     return this->deltaTime;
 }
 
-void Brakeza3D::onStartComponents() {
+void Brakeza3D::onStartComponents()
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -129,7 +132,8 @@ void Brakeza3D::onStartComponents() {
     }
 }
 
-void Brakeza3D::preUpdateComponents() {
+void Brakeza3D::preUpdateComponents()
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -137,7 +141,8 @@ void Brakeza3D::preUpdateComponents() {
     }
 }
 
-void Brakeza3D::onUpdateComponents() {
+void Brakeza3D::onUpdateComponents()
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -145,7 +150,8 @@ void Brakeza3D::onUpdateComponents() {
     }
 }
 
-void Brakeza3D::postUpdateComponents() {
+void Brakeza3D::postUpdateComponents()
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -153,7 +159,8 @@ void Brakeza3D::postUpdateComponents() {
     }
 }
 
-void Brakeza3D::onEndComponents() {
+void Brakeza3D::onEndComponents()
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -161,7 +168,8 @@ void Brakeza3D::onEndComponents() {
     }
 }
 
-void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) {
+void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
+{
     std::vector<Component *>::iterator it;
     for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
         Component *component = *(it);
@@ -169,7 +177,8 @@ void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) {
     }
 }
 
-ComponentsManager *Brakeza3D::getComponentsManager() const {
+ComponentsManager *Brakeza3D::getComponentsManager() const
+{
     return componentsManager;
 }
 

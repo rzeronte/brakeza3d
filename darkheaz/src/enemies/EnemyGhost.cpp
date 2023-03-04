@@ -53,7 +53,7 @@ void EnemyGhost::onUpdate()
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("enemyExplosion"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -212,7 +212,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
     auto *projectile = dynamic_cast<AmmoProjectile*> (withObject);
     if (projectile != nullptr) {
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("enemyDamage"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyDamage"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -329,7 +329,7 @@ void EnemyGhost::stuck(float time)
     }
 
     ComponentSound::playSound(
-        EngineBuffers::getInstance()->soundPackage->getByLabel("electricStuck"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("electricStuck"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );

@@ -184,7 +184,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
 
         if (sound) {
             ComponentSound::playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeOne"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("projectileTypeOne"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -231,7 +231,7 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
 
         if (sound) {
             ComponentSound::playSound(
-                EngineBuffers::getInstance()->soundPackage->getByLabel("laserShoot"),
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("laserShoot"),
                 EngineSetup::SoundChannels::SND_GLOBAL,
                 0
             );
@@ -383,7 +383,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         setAmmoAmount(ammoAmount - 1);
 
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("projectileTypeThree"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("projectileTypeThree"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -402,13 +402,14 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
 
     setAmmoAmount(ammoAmount - 1);
 
+    rayLight.setColor(getModelProjectile()->getFlatColor());
     rayLight.setDamage(getDamage());
     rayLight.setEnabled(true);
     rayLight.setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
         ComponentSound::playSound(
-            EngineBuffers::getInstance()->soundPackage->getByLabel("laser"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("laser"),
             EngineSetup::SND_LASER,
             -1
         );

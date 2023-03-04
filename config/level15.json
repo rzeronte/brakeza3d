@@ -39,7 +39,7 @@
           "model": "item_weapon_02.fbx",
           "flatTexture": true,
           "enableLights": false,
-          "color": { "r": 255, "g": 255, "b": 0 }
+          "color": { "r": 255, "g": 0, "b": 0 }
         }
       },
       {
@@ -52,8 +52,8 @@
         "reward": true,
         "motion": {
           "type": 1,
-          "from": { "x": 5, "y": 30 },
-          "to": { "x": 5, "y": 60 },
+          "from": { "x": 5, "y": 20 },
+          "to": { "x": 5, "y": 80 },
           "speed": 0.5
         },
         "weapon": {
@@ -89,8 +89,8 @@
         "reward": true,
         "motion": {
           "type": 1,
-          "from": { "x": 95, "y": 30 },
-          "to": { "x": 95, "y": 60 },
+          "from": { "x": 95, "y": 80 },
+          "to": { "x": 95, "y": 20 },
           "speed": 0.5
         },
         "weapon": {
