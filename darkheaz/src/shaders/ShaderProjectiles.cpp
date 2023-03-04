@@ -136,9 +136,9 @@ void ShaderProjectiles::executeKernelOpenCL()
     this->debugKernel();
 }
 
-void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i)
+void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i, bool startCircle, bool endCircle)
 {
-    this->lasers.emplace_back(OCLaser {x1, y1, x2, y2, r, g, b, i });
+    this->lasers.emplace_back(OCLaser {x1, y1, x2, y2, r, g, b, i, startCircle, endCircle });
 }
 
 void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
@@ -155,7 +155,9 @@ void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
         screenPoint.x, screenPoint.y,
         middlePoint.x, middlePoint.y,
         (int) color.r, (int) color.g, (int) color.b,
-        0.05
+        0.05,
+        false,
+        false
     );
 }
 

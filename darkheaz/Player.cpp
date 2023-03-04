@@ -202,7 +202,7 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
-            weapon->shootLaserRay(rayLight, intensity);
+            weapon->shootRayLight(rayLight, intensity);
             break;
         }
         default:

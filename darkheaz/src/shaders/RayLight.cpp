@@ -27,7 +27,7 @@ void RayLight::update()
 {
     if (!isEnabled()) return;
 
-    Vertex3D start = parent->getPosition() + parent->AxisDown().getScaled(1000);
+    Vertex3D start = parent->getPosition() + parent->AxisDown().getScaled(1100);
     Point2D screenPoint = Transforms::WorldToPoint(start, ComponentsManager::get()->getComponentCamera()->getCamera());
 
     Vertex3D end = parent->getPosition() + parent->AxisDown().getScaled(reach);
@@ -80,7 +80,9 @@ void RayLight::update()
         screenPoint.x, screenPoint.y,
         middlePoint.x, middlePoint.y,
         (int) color.r, (int) color.g, (int) color.b,
-        intensity
+        intensity,
+        true,
+        true
     );
 
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {

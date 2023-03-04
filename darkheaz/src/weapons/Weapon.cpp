@@ -392,7 +392,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
     }
 }
 
-void Weapon::shootLaserRay(RayLight &rayLight, float intensity)
+void Weapon::shootRayLight(RayLight &rayLight, float intensity)
 {
     if (getAmmoAmount() <= 0) return;
 

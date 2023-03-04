@@ -7,48 +7,90 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Colossus",
-      "position": { "x": 50, "y": 0 },
-      "model": "spaceships/blue_spaceship_01.fbx",
+      "name": "Blupincher",
+      "position": {"x": 95, "y": 5},
+      "model": "spaceships/blue_spaceship_02.fbx",
       "enableLights": true,
       "animated": true,
-      "stamina": 1000,
+      "stamina": 1250,
       "reward": true,
       "motion": {
-        "type": 2,
-        "speed": 10,
-        "separation": 1000
+        "type": 0
       },
       "weapon": {
         "index": 0,
-        "available": true,
+        "available": false,
         "name": "Linear",
-        "damage": 10,
+        "damage": 20,
         "amount": 999,
-        "startAmount": 1000,
+        "startAmount": 100,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.35,
-        "stop": true,
+        "cadenceTime": 0.25,
+        "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 0,
+        "type": 1,
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0}
       },
       "emitter": {
-        "rotation": { "x": 90, "y": 0, "z": 0 },
-        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
-        "cadenceTime": 3.0,
-        "type": 1,
+        "rotation": { "x": 90, "y": 0, "z": 0},
+        "rotationFrame": { "x": 0, "y": 1, "z": 0},
+        "cadenceTime": 0.20,
+        "type": 0,
         "stop": false,
-        "stopDuration": 0,
-        "stopEvery": 9,
+        "stopDuration": 2,
+        "stopEvery": 4,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Blupincher",
+      "position": {"x": 5, "y": 5},
+      "model": "spaceships/blue_spaceship_02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 0
+      },
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0}
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0},
+        "rotationFrame": { "x": 0, "y": -1, "z": 0},
+        "cadenceTime": 0.20,
+        "type": 0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 4,
         "color": { "r": 255, "g": 0, "b": 0 }
       }
     },
@@ -62,9 +104,9 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 5, "y": 30 },
-        "to": { "x": 5, "y": 60 },
-        "speed": 0.5
+        "from": { "x": 15, "y": 30 },
+        "to": { "x": 15, "y": 90 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,
@@ -99,9 +141,9 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 95, "y": 30 },
-        "to": { "x": 95, "y": 60 },
-        "speed": 0.5
+        "from": { "x": 85, "y": 30 },
+        "to": { "x": 85, "y": 90 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,
@@ -124,6 +166,49 @@
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 255 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "position": { "x": 50,  "y": 40 },
+      "model": "energy_ball.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": -1 }
+      },
+      "lasers": [
+        {
+          "damage": 30,
+          "length": 5500,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],

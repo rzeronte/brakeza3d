@@ -168,14 +168,18 @@ void ComponentHUD::drawShaderLasers()
         startPositionX, 445,
         startPositionX + (width * health), 445 ,
         255, 0, 0,
-        stroke
+        stroke,
+        false,
+        false
     );
 
     shaderLasers->addLaser(
         startPositionX, 465,
         startPositionX + (width * energy), 465,
         0, 255, 0,
-        stroke
+        stroke,
+        false,
+        false
     );
 
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -188,7 +192,9 @@ void ComponentHUD::drawShaderLasers()
             startPositionX, 25,
             startPositionX + (width * enemyHealth), 25,
             255, 0, 255,
-            stroke
+            stroke,
+            false,
+            false
         );
     }
 
