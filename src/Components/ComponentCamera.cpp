@@ -21,7 +21,8 @@ void ComponentCamera::preUpdate()
     getCamera()->getVelocity().vertex2 = getCamera()->getPosition();
 }
 
-void ComponentCamera::onUpdate() {
+void ComponentCamera::onUpdate()
+{
     if (isAutoScroll()) {
         getCamera()->addToPosition(autoScrollSpeed);
     }
@@ -46,24 +47,23 @@ void ComponentCamera::onEnd() {
 
 }
 
-void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish) {
+void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish)
+{
 }
 
-Camera3D *ComponentCamera::getCamera() const {
+Camera3D *ComponentCamera::getCamera() const
+{
     return camera;
 }
 
-bool ComponentCamera::isFreeLookEnabled() const {
+bool ComponentCamera::isFreeLookEnabled() const
+{
     return freeLook;
 }
 
-void ComponentCamera::setFreeLook(bool value) {
-    freeLook = value;
-}
-
-void ComponentCamera::updatePositionForTrackingObject()
+void ComponentCamera::setFreeLook(bool value)
 {
-    getCamera()->setPosition(getCamera()->getFollowTo()->getPosition() + getCamera()->getFollowToPositionOffset());
+    freeLook = value;
 }
 
 Vertex3D &ComponentCamera::getAutoScrollSpeed() {

@@ -76,7 +76,7 @@ void ComponentSound::loadSoundsJSON()
 
         Logging::Log("Loading file sound %s", file->valuestring);
 
-        BUFFERS->soundPackage->addItem(EngineSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
+        soundPackage.addItem(EngineSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
 
     cJSON_Delete(myDataJSON);
@@ -110,5 +110,9 @@ void ComponentSound::stopMusic()
 
 void ComponentSound::stopChannel(int channel) {
     Mix_HaltChannel(channel);
+}
+
+SoundPackage &ComponentSound::getSoundPackage(){
+    return soundPackage;
 }
 
