@@ -53,7 +53,7 @@ private:
     Counter counterDamageBlink;
     Counter counterStucked;
 
-    ShaderBlink blink;
+    ShaderBlink *blink;
     RayLight rayLight;
 
     int killsCounter;

@@ -45,9 +45,10 @@ void RayCollisionable::hasHit()
         setHitPosition(Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z()));
 
         this->resolveCollision(objectWithCollision);
-
-        rayCallback->m_collisionObject = nullptr;
     }
+
+    rayCallback->m_closestHitFraction = btScalar(1.),
+    rayCallback->m_collisionObject = nullptr;
 }
 
 void RayCollisionable::resolveCollision(Collisionable *objectWithCollision)

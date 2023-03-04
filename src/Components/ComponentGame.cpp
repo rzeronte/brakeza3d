@@ -202,7 +202,6 @@ void ComponentGame::onUpdate()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
-
 }
 
 void ComponentGame::updateCrossFire() {
@@ -778,9 +777,9 @@ void ComponentGame::addObjectsToStencilBuffer()
 
 void ComponentGame::updateShaders()
 {
-    //shaderTrailBuffer->update();
-    //shaderClouds->update();
-    //shaderColor->update();
+    shaderTrailBuffer->update();
+    shaderClouds->update();
+    shaderColor->update();
     shaderLasers->update();
 }
 

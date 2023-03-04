@@ -18,7 +18,7 @@ Player::Player() :
     weapon(nullptr),
     counterDamageBlink (Counter(0.45)),
     counterStucked(Counter(5)),
-    blink(ShaderBlink(this, 0.05, Color::green())),
+    blink(nullptr),
     rayLight(RayLight(
         this,
         1000,
@@ -301,7 +301,7 @@ void Player::postUpdate()
 
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
-        blink.update();
+        blink->update();
         if (counterDamageBlink.isFinished()) {
             stopBlinkForPlayer();
         }
@@ -459,14 +459,14 @@ void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
 void Player::startBlinkShaderForPlayer()
 {
     counterDamageBlink.setEnabled(true);
-    blink.setEnabled(true);
+    blink->setEnabled(true);
 }
 
 void Player::stopBlinkForPlayer()
 {
     setState(PlayerState::LIVE);
     counterDamageBlink.setEnabled(false);
-    blink.setEnabled(false);
+    blink->setEnabled(false);
 }
 
 int Player::getKillsCounter() const {
@@ -594,7 +594,8 @@ bool Player::isAllowEnergyShield() const {
 
 void Player::loadBlinkShader()
 {
-    blink.setEnabled(false);
+    blink = new ShaderBlink(this, 0.05, Color::green());
+    blink->setEnabled(false);
     counterDamageBlink.setEnabled(false);
 
     rayLight.setEnabled(false);
@@ -695,8 +696,9 @@ PlayerReflection *Player::getReflection() {
 Player::~Player()
 {
     delete light;
+    delete blink;
 
-    for (auto w: weaponTypes) {
-        delete weapon;
+    for (auto w : weaponTypes) {
+        delete w;
     }
 }

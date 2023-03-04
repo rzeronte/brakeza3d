@@ -14,7 +14,7 @@
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
-    ShaderBlink blink;
+    ShaderBlink *blink;
     RayLight rayLight;
     Counter counterDamageBlink;
     Counter counterStuck;
@@ -26,6 +26,8 @@ public:
     ~EnemyGhost() override;
 
     void resolveCollision(Collisionable *withObject) override;
+
+    void onStart();
 
     void onUpdate() override;
 
@@ -57,7 +59,7 @@ public:
 
     [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmitter() const;
 
-    [[nodiscard]] ShaderBlink &getBlink();
+    [[nodiscard]] ShaderBlink *getBlink();
 
 };
 

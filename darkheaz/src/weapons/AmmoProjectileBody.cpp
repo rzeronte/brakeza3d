@@ -17,10 +17,10 @@ AmmoProjectileBody::AmmoProjectileBody(
     int collisionMask,
     ParticleEmitter *particleEmitter
 ) :
-    Projectile3DBody(direction),
-    AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
-    weaponType(weaponType),
-    particleEmissor(particleEmitter)
+        Projectile3DBody(direction),
+        AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
+        weaponType(weaponType),
+        particleEmitter(particleEmitter)
 {
     setPosition(position);
     setParent(parent);
@@ -68,25 +68,25 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
         }
     }
 
-    this->remove();
-
-    if (particleEmissor != nullptr) {
-        particleEmissor->setActive(false);
+    if (particleEmitter != nullptr) {
+        particleEmitter->setActive(false);
     }
+
+    this->remove();
 }
 
 void AmmoProjectileBody::onUpdate()
 {
     Projectile3DBody::onUpdate();
 
-    if (particleEmissor != nullptr) {
-        particleEmissor->setPosition(getPosition());
+    if (particleEmitter != nullptr) {
+        particleEmitter->setPosition(getPosition());
     }
 
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->remove();
-        if (particleEmissor != nullptr) {
-            particleEmissor->setActiveAdding(false);
+        if (particleEmitter != nullptr) {
+            particleEmitter->setActiveAdding(false);
         }
     }
 }

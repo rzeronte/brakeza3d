@@ -5,7 +5,7 @@
 #include "../items/ItemWeaponGhost.h"
 
 EnemyGhost::EnemyGhost() :
-    blink(ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor())),
+    blink(nullptr),
     rayLight(RayLight(
         this,
         1000,
@@ -20,10 +20,15 @@ EnemyGhost::EnemyGhost() :
 {
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
-    blink.setEnabled(true);
     rayLight.setEnabled(false);
 
     setStuck(false);
+}
+
+void EnemyGhost::onStart()
+{
+    blink = new ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
+    blink->setEnabled(true);
 }
 
 void EnemyGhost::onUpdate()
@@ -101,9 +106,9 @@ void EnemyGhost::postUpdate()
 
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
-        getBlink().update();
+        blink->update();
         if (counterDamageBlink.isFinished()) {
-            getBlink().setEnabled(false);
+            blink->setEnabled(false);
             counterDamageBlink.setEnabled(false);
         }
     }
@@ -211,7 +216,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
-        blink.setEnabled(true);
+        blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
 
         Brakeza3D::get()->addObject3D(
@@ -300,13 +305,15 @@ void EnemyGhost::shoot(Object3D *target)
     }
 }
 
-ShaderBlink &EnemyGhost::getBlink()
+ShaderBlink *EnemyGhost::getBlink()
 {
     return blink;
 }
 
 EnemyGhost::~EnemyGhost()
 {
+    delete blink;
+
     for (auto ray : fixedLasers) {
         ray->setRemoved(true);
     }
