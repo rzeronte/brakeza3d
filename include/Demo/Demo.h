@@ -9,6 +9,8 @@
 class Demo {
 public:
     Demo();
+
+    [[maybe_unused]] void AxisPlaneInitialize();
 };
 
 

@@ -29,7 +29,6 @@ enum ComponentID {
 class ComponentsManager {
 public:
     std::vector<Component *> components;
-    std::vector<Object3D *> *sceneObjects;
 
     virtual ~ComponentsManager();
 
@@ -38,8 +37,6 @@ public:
     static ComponentsManager *instance;
 
     void registerComponent(Component *component, const std::string& label);
-
-    void setSceneObjects(std::vector<Object3D *> *sceneObjects);
 
     ComponentCamera *getComponentCamera() {
         return dynamic_cast<ComponentCamera *>(components[ComponentID::COMPONENT_CAMERA]);

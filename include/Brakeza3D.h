@@ -25,17 +25,6 @@ private:
 
     ComponentsManager *componentsManager;
 
-    ComponentCamera *componentCamera = nullptr;
-    ComponentCollisions *componentCollisions = nullptr;
-    ComponentMenu *componentMenu = nullptr;
-    ComponentInput *componentInput = nullptr;
-    ComponentWindow *componentWindow = nullptr;
-    ComponentSound *componentSound = nullptr;
-    ComponentRender *componentRender = nullptr;
-    ComponentHUD *componentHUD = nullptr;
-    ComponentGame *componentGame = nullptr;
-    ComponentGameInput *componentGameInput = nullptr;
-
     Timer engineTimer;
 
     bool finish = false;
@@ -86,8 +75,6 @@ public:
     void mainLoop();
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
-
-    void AxisPlaneInitialize();
 
     void ImGuiInitialize() const;
 

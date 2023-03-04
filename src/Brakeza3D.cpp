@@ -8,10 +8,10 @@ Brakeza3D *Brakeza3D::instance = nullptr;
 Brakeza3D::Brakeza3D()
 {
     componentsManager = ComponentsManager::get();
-    componentsManager->setSceneObjects(&sceneObjects);
 }
 
-Brakeza3D *Brakeza3D::get() {
+Brakeza3D *Brakeza3D::get()
+{
     if (instance == nullptr) {
         instance = new Brakeza3D();
     }
@@ -21,32 +21,22 @@ Brakeza3D *Brakeza3D::get() {
 
 void Brakeza3D::start()
 {
-    componentCamera = new ComponentCamera();
-    componentInput = new ComponentInput();
-    componentCollisions = new ComponentCollisions();
-    componentWindow = new ComponentWindow();
-    componentSound = new ComponentSound();
-    componentRender = new ComponentRender();
-    componentMenu = new ComponentMenu();
-    componentHUD = new ComponentHUD();
-    componentGame = new ComponentGame();
-    componentGameInput = new ComponentGameInput(componentGame->getPlayer());
-
-    componentsManager->registerComponent(componentWindow, "ComponentWindow");
-    componentsManager->registerComponent(componentCamera, "ComponentCamera");
-    componentsManager->registerComponent(componentCollisions, "ComponentCollisions");
-    componentsManager->registerComponent(componentInput, "ComponentInput");
-    componentsManager->registerComponent(componentSound, "ComponentSound");
-    componentsManager->registerComponent(componentRender, "ComponentRender");
-    componentsManager->registerComponent(componentMenu, "ComponentMenu");
-    componentsManager->registerComponent(componentGame, "ComponentGame");
-    componentsManager->registerComponent(componentHUD, "ComponentHUD");
-    componentsManager->registerComponent(componentGameInput, "ComponentGameInput");
+    componentsManager->registerComponent(new ComponentWindow(), "ComponentWindow");
+    componentsManager->registerComponent(new ComponentCamera(), "ComponentCamera");
+    componentsManager->registerComponent(new ComponentCollisions(), "ComponentCollisions");
+    componentsManager->registerComponent(new ComponentInput(), "ComponentInput");
+    componentsManager->registerComponent(new ComponentSound(), "ComponentSound");
+    componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
+    componentsManager->registerComponent(new ComponentMenu(), "ComponentMenu");
+    componentsManager->registerComponent(new ComponentGame(), "ComponentGame");
+    componentsManager->registerComponent(new ComponentHUD(), "ComponentHUD");
+    componentsManager->registerComponent(new ComponentGameInput(), "ComponentGameInput");
 
     mainLoop();
 }
 
-void Brakeza3D::mainLoop() {
+void Brakeza3D::mainLoop()
+{
     SDL_Event e;
 
     engineTimer.start();
@@ -55,8 +45,6 @@ void Brakeza3D::mainLoop() {
 
     ImGuiInitialize();
 
-    //AxisPlaneInitialize();
-
     while (!finish) {
         controlFrameRate();
 
@@ -64,7 +52,7 @@ void Brakeza3D::mainLoop() {
 
         preUpdateComponents();
 
-        ImGuiOnUpdate();
+        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         while (SDL_PollEvent(&e)) {
             onUpdateSDLPollEventComponents(&e, finish);
@@ -185,22 +173,6 @@ ComponentsManager *Brakeza3D::getComponentsManager() const {
     return componentsManager;
 }
 
-void Brakeza3D::AxisPlaneInitialize()
-{
-    auto axisPlanes = new Mesh3DBody();
-    axisPlanes->setRotation(0, 0, 0);
-    axisPlanes->initializeStencilBuffer();
-    axisPlanes->setStencilBufferEnabled(true);
-    axisPlanes->setEnabled(false);
-    axisPlanes->setLabel("test");
-    axisPlanes->setCollisionsEnabled(true);
-    axisPlanes->setScale(1);
-    axisPlanes->setFlatTextureColor(false);
-    axisPlanes->setRotationFrameEnabled(false);
-    axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
-    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), EngineSetup::collisionGroups::AllFilter, EngineSetup::collisionGroups::AllFilter);
-    addObject3D(axisPlanes, "AxisPlanes");
-}
 
 void Brakeza3D::ImGuiOnUpdate()
 {
@@ -249,6 +221,8 @@ void Brakeza3D::ImGuiInitialize() const
 
 Brakeza3D::~Brakeza3D()
 {
+    ImGui::DestroyContext();
+
     for (auto o : sceneObjects) {
         delete o;
     }

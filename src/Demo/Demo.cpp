@@ -107,3 +107,21 @@ Demo::Demo() {
     Brakeza3D::get()->addObject3D(sample, "mono");
 
 }
+
+
+[[maybe_unused]] void Demo::AxisPlaneInitialize()
+{
+    auto axisPlanes = new Mesh3DBody();
+    axisPlanes->setRotation(0, 0, 0);
+    axisPlanes->initializeStencilBuffer();
+    axisPlanes->setStencilBufferEnabled(true);
+    axisPlanes->setEnabled(false);
+    axisPlanes->setLabel("test");
+    axisPlanes->setCollisionsEnabled(true);
+    axisPlanes->setScale(1);
+    axisPlanes->setFlatTextureColor(false);
+    axisPlanes->setRotationFrameEnabled(false);
+    axisPlanes->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "axisPlanes.fbx"));
+    axisPlanes->makeRigidBodyFromTriangleMesh(0, ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(), EngineSetup::collisionGroups::AllFilter, EngineSetup::collisionGroups::AllFilter);
+    Brakeza3D::get()->addObject3D(axisPlanes, "AxisPlanes");
+}

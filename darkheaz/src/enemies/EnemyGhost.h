@@ -14,7 +14,7 @@
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
-    ShaderBlink *blink;
+    ShaderBlink blink;
     RayLight rayLight;
     Counter counterDamageBlink;
     Counter counterStuck;
@@ -41,8 +41,6 @@ public:
 
     void makeReward();
 
-    void loadBlinkShader();
-
     void stuck(float time);
 
     void unstuck();
@@ -59,7 +57,7 @@ public:
 
     [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmitter() const;
 
-    [[nodiscard]] ShaderBlink *getBlink() const;
+    [[nodiscard]] ShaderBlink &getBlink();
 
 };
 

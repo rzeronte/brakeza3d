@@ -9,9 +9,8 @@ class ComponentGameInput : public Component {
 private:
     float controllerAxisThreshold;
     bool lockRightStick;
-    Player *player;
 public:
-    explicit ComponentGameInput(Player *player);
+    explicit ComponentGameInput();
 
     void onStart() override;
 
@@ -52,8 +51,6 @@ public:
     void handlePressKeyGameStates(SDL_Event *event);
 
     void handleCheckPadConnection(SDL_Event *pEvent);
-
-    void setPlayer(Player *player);
 
     void handleBomb(SDL_Event *pEvent);
 
