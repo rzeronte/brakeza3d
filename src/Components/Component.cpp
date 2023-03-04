@@ -2,32 +2,12 @@
 
 Component::Component()
 :
-    sceneObjects(nullptr),
+    id(-1),
     enabled(false),
     BUFFERS(EngineBuffers::getInstance()),
     SETUP(EngineSetup::get()
 )
 {
-}
-
-std::vector<Component *> *Component::getComponents() const {
-    return components;
-}
-
-void Component::setComponents(std::vector<Component *> *newComponent) {
-    Component::components = newComponent;
-}
-
-Component *Component::getComponentById(unsigned int componentId) const {
-    return this->components->at(componentId);
-}
-
-void Component::setSceneObjects(std::vector<Object3D *> *newSceneObjects) {
-    Component::sceneObjects = newSceneObjects;
-}
-
-std::vector<Object3D *> *Component::getSceneObjects() const {
-    return sceneObjects;
 }
 
 void Component::setId(int newId) {

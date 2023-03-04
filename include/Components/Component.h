@@ -11,7 +11,6 @@ class ComponentsManager;
 
 class Component {
 private:
-    std::vector<Object3D *> *sceneObjects;
     int id;
     std::string label;
     bool enabled;
@@ -38,25 +37,10 @@ public:
 
     virtual void onSDLPollEvent(SDL_Event *event, bool &finish) = 0;
 
-    // get another components functions
-    std::vector<Component *> *getComponents() const;
-
-    Component *getComponentById(unsigned int componentId) const;
-
-    void setComponents(std::vector<Component *> *newComponent);
-
-    // Accesor to scene objects
-    std::vector<Object3D *> *getSceneObjects() const;
-
-    void setSceneObjects(std::vector<Object3D *> *newSceneObjects);
-
-    std::vector<Component *> *components{};
-
-    // Accessors to Setup and Buffers
     EngineBuffers *BUFFERS;
     EngineSetup *SETUP;
 
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     virtual void setEnabled(bool enabled);
 };

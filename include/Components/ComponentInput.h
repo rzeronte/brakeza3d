@@ -105,6 +105,8 @@ public:
     [[nodiscard]] float getControllerAxisRightX() const;
 
     [[nodiscard]] float getControllerAxisRightY() const;
+
+    void handleToggleImGui(SDL_Event *event);
 };
 
 

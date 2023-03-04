@@ -720,12 +720,14 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
     }
 }
 
-void ComponentRender::drawSceneOverlappingItems() {
-    for (unsigned int i = 0; i < getSceneObjects()->size(); i++) {
-        if (getSceneObjects()->operator[](i)->isEnabled()) {
+void ComponentRender::drawSceneOverlappingItems()
+{
+    auto objects = Brakeza3D::get()->getSceneObjects();
+    for (unsigned int i = 0; i < objects.size(); i++) {
+        if (objects.operator[](i)->isEnabled()) {
             if (SETUP->RENDER_OBJECTS_AXIS) {
                 Drawable::drawObject3DAxis(
-                    getSceneObjects()->operator[](i),
+                    objects.operator[](i),
                     ComponentsManager::get()->getComponentCamera()->getCamera(),
                     true,
                     true,
@@ -734,7 +736,7 @@ void ComponentRender::drawSceneOverlappingItems() {
             }
 
             // Only for meshes
-            auto *lightpoint = dynamic_cast<LightPoint3D *>(getSceneObjects()->operator[](i));
+            auto *lightpoint = dynamic_cast<LightPoint3D *>(objects.operator[](i));
             if (lightpoint != nullptr) {
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
                     Drawable::drawLinePoints(
@@ -934,8 +936,9 @@ void ComponentRender::updateLights()
     }
 }
 
-std::string ComponentRender::getUniqueGameObjectLabel() {
-    return std::to_string(getSceneObjects()->size()+1);
+std::string ComponentRender::getUniqueGameObjectLabel()
+{
+    return std::to_string(Brakeza3D::get()->getSceneObjects().size()+1);
 }
 
 Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
@@ -972,7 +975,7 @@ void ComponentRender::setSelectedObject(Object3D *o) {
 
 void ComponentRender::onPostUpdateSceneObjects()
 {
-    for (auto &object : *getSceneObjects()) {
+    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         if (!object->isEnabled() || object->isRemoved()) {
             continue;
         }
@@ -983,9 +986,6 @@ void ComponentRender::onPostUpdateSceneObjects()
 
 void ComponentRender::initOpenCL()
 {
-    clPlatformId = NULL;
-    clDeviceId = NULL;
-
     ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get platform_id");
@@ -1001,9 +1001,7 @@ void ComponentRender::initOpenCL()
     properties[1]= (cl_context_properties) clPlatformId;
     properties[2]= 0;
 
-    // Create an OpenCL context
     clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
-
     clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
 
     OpenCLInfo();

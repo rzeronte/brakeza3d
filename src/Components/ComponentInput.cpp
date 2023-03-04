@@ -33,29 +33,32 @@ void ComponentInput::onStart()
     this->initJoystick();
 }
 
-void ComponentInput::preUpdate() {
+void ComponentInput::preUpdate()
+{
     updateKeyboardMapping();
     updateMouseMapping();
-
 }
 
-void ComponentInput::onUpdate() {
+void ComponentInput::onUpdate()
+{
     if (!isEnabled()) return;
     handleKeyboardMovingCamera();
 }
 
-void ComponentInput::postUpdate() {
-
+void ComponentInput::postUpdate()
+{
 }
 
-void ComponentInput::onEnd() {
-
+void ComponentInput::onEnd()
+{
 }
 
-void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish) {
+void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
+{
     updateMouseStates(e);
     updateGamePadStates();
     handleWindowEvents(e, finish);
+    handleToggleImGui(e);
 
     if (!isEnabled()) return;
 
@@ -68,7 +71,6 @@ void ComponentInput::handleMouse(SDL_Event *event) {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
-    // Camera rotation
     if (mouseMotion && isLeftMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             ComponentsManager::get()->getComponentCamera()->getCamera()->Yaw(event->motion.xrel);
@@ -77,7 +79,8 @@ void ComponentInput::handleMouse(SDL_Event *event) {
     }
 }
 
-void ComponentInput::handleKeyboardMovingCamera() const {
+void ComponentInput::handleKeyboardMovingCamera() const
+{
     if (keyboard[SDL_SCANCODE_W]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
     }
@@ -122,11 +125,13 @@ void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {
     }
 }
 
-void ComponentInput::updateKeyboardMapping() {
+void ComponentInput::updateKeyboardMapping()
+{
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
 
-void ComponentInput::updateMouseStates(SDL_Event *event) {
+void ComponentInput::updateMouseStates(SDL_Event *event)
+{
     if (event->type == SDL_MOUSEMOTION) {
         mouseMotion = true;
     } else {
@@ -134,7 +139,8 @@ void ComponentInput::updateMouseStates(SDL_Event *event) {
     }
 }
 
-void ComponentInput::handleProjectileDemo(SDL_Event *event) {
+void ComponentInput::handleProjectileDemo(SDL_Event *event)
+{
     if (event->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_1]) {
             ComponentsManager::get()->getComponentCollisions()->demoProjectile(0);
@@ -157,15 +163,18 @@ void ComponentInput::handleProjectileDemo(SDL_Event *event) {
     }
 }
 
-bool ComponentInput::isLeftMouseButtonPressed() const {
+bool ComponentInput::isLeftMouseButtonPressed() const
+{
     return mouseLeftButton;
 }
 
-bool ComponentInput::isRightMouseButtonPressed() const {
+bool ComponentInput::isRightMouseButtonPressed() const
+{
     return mouseRightButton;
 }
 
-void ComponentInput::updateMouseMapping() {
+void ComponentInput::updateMouseMapping()
+{
     auto *window = ComponentsManager::get()->getComponentWindow();
 
     mouseLeftButton = false;
@@ -292,4 +301,13 @@ float ComponentInput::getControllerAxisRightX() const {
 
 float ComponentInput::getControllerAxisRightY() const {
     return controllerAxisRightY;
+}
+
+void ComponentInput::handleToggleImGui(SDL_Event *event)
+{
+    if (event->type == SDL_KEYDOWN) {
+        if (keyboard[SDL_SCANCODE_BACKSPACE]) {
+            EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED;
+        }
+    }
 }
