@@ -27,6 +27,7 @@
 #include "../Physics/RayCollisionable.h"
 #include "../Physics/ProjectileRay.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
+#include "../2D/TextWriter.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 
@@ -35,6 +36,8 @@ private:
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
+
+    TextWriter *textWriter;
 
     FaderToGameStates *fadeToGameState;
     Player *player;
@@ -170,6 +173,10 @@ public:
     void addProjectilesToShaderLasers();
 
     void pressedKeyForWin();
+
+    TextWriter *getTextWriter();
+
+    void updateFadeToGameState();
 };
 
 

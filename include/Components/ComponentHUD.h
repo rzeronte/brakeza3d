@@ -20,7 +20,6 @@ private:
     std::vector<Button*> buttons;
     ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
-    TextWriter *textWriter;
 public:
 
     ComponentHUD();
@@ -55,7 +54,6 @@ public:
 
     void drawShaderLasers();
 
-    [[nodiscard]] TextWriter *getTextWriter() const;
 };
 
 

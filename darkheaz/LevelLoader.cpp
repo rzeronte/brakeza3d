@@ -47,11 +47,6 @@ void LevelLoader::addLevel(std::string filename)
     this->levels.push_back(std::move(filename));
 }
 
-int LevelLoader::getNumberLevelEnemies() const
-{
-    return (int) enemiesEmitter.size();
-}
-
 void LevelLoader::loadPrevious()
 {
     if (currentLevelIndex > 0) {

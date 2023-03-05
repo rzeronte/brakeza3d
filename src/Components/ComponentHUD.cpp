@@ -5,8 +5,7 @@
 ComponentHUD::ComponentHUD()
 :
     shaderLasers(nullptr),
-    HUDTextures(nullptr),
-    textWriter(nullptr)
+    HUDTextures(nullptr)
 {
 }
 
@@ -15,12 +14,6 @@ void ComponentHUD::onStart()
     Logging::Log("ComponentHUD onStart");
 
     HUDTextures = new TexturePackage();
-
-    textWriter = new TextWriter(
-        ComponentsManager::get()->getComponentWindow()->getRenderer(),
-        ComponentsManager::get()->getComponentWindow()->getFontDefault(),
-        std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
-    );
 
     shaderLasers = new ShaderProjectiles();
     shaderLasers->setEnabled(true);
@@ -78,6 +71,7 @@ void ComponentHUD::loadImages()
 void ComponentHUD::drawHUD()
 {
     auto componentManager = ComponentsManager::get();
+    auto textWriter = componentManager->getComponentGame()->getTextWriter();
 
     drawIconWeaponAndLevelName();
     drawShaderLasers();
@@ -85,7 +79,7 @@ void ComponentHUD::drawHUD()
     HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
 
     if (SETUP->DRAW_FPS) {
-        this->textWriter->writeTTFCenterHorizontal(
+        textWriter->writeTTFCenterHorizontal(
             5,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
             componentManager->getComponentGame()->getPrimaryColor(),
@@ -118,6 +112,7 @@ void ComponentHUD::loadButtons() {
 void ComponentHUD::drawIconWeaponAndLevelName()
 {
     auto game = ComponentsManager::get()->getComponentGame();
+    auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
 
     player->getWeapon()->getIcon()->drawFlat(470, 440);
@@ -202,14 +197,8 @@ void ComponentHUD::drawShaderLasers()
     shaderLasers->update();
 }
 
-
-TextWriter *ComponentHUD::getTextWriter() const {
-    return textWriter;
-}
-
 ComponentHUD::~ComponentHUD()
 {
     delete shaderLasers;
-    delete textWriter;
     delete HUDTextures;
 }
