@@ -8,10 +8,10 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
 
-Shader::Shader()
+Shader::Shader(bool enabled)
 :
     videoBuffer(new uint32_t[EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight]),
-    enabled(false),
+    enabled(enabled),
     w(EngineSetup::get()->screenHeight),
     h(EngineSetup::get()->screenWidth),
     bufferSize(EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight),

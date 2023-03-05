@@ -5,9 +5,9 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderClouds::ShaderClouds(Color c)
+ShaderClouds::ShaderClouds(bool active, Color c)
 :
-    ShaderOpenCL("clouds.opencl"),
+    ShaderOpenCL(active, "clouds.opencl"),
     clouds(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud2.png")),
     color(c)
 {

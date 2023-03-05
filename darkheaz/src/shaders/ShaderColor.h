@@ -14,7 +14,7 @@ private:
     Color color;
     float progress;
 public:
-    ShaderColor(Color color, float progress);
+    ShaderColor(bool active, Color color, float progress);
 
     void update() override;
 

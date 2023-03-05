@@ -8,9 +8,9 @@
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderColor::ShaderColor(Color color, float progress)
+ShaderColor::ShaderColor(bool active, Color color, float progress)
 :
-    ShaderOpenCL("color.opencl"),
+    ShaderOpenCL(active, "color.opencl"),
     color(color),
     progress(progress)
 {

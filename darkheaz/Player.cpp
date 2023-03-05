@@ -20,6 +20,7 @@ Player::Player() :
     counterStucked(Counter(5)),
     blink(nullptr),
     rayLight(RayLight(
+        false,
         this,
         1000,
         0,
@@ -600,12 +601,8 @@ bool Player::isAllowEnergyShield() const {
 
 void Player::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, 0.05, Color::green());
-    blink->setEnabled(false);
+    blink = new ShaderBlink(false, this, 0.05, Color::green());
     counterDamageBlink.setEnabled(false);
-
-    rayLight.setEnabled(false);
-
     reflection.loadBlinkShader();
 }
 

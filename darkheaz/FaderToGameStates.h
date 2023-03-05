@@ -46,7 +46,7 @@ public:
         screenHeight = EngineSetup::get()->screenHeight;
         screenWidth = EngineSetup::get()->screenWidth;
 
-        shader = new ShaderColor(Color::black(), 0);
+        shader = new ShaderColor(true, Color::black(), 0);
         shader->setEnabled(true);
     }
 

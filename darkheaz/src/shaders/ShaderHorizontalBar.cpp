@@ -5,9 +5,9 @@
 #include "../../../include/Brakeza3D.h"
 
 
-ShaderHorizontalBar::ShaderHorizontalBar(Color color,float verticalPosition)
+ShaderHorizontalBar::ShaderHorizontalBar(bool active, Color color,float verticalPosition)
 :
-    ShaderOpenCL("bar.opencl"),
+    ShaderOpenCL(active, "bar.opencl"),
     color(color),
     verticalPosition(verticalPosition)
 {

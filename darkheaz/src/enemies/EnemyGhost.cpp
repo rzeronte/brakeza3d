@@ -7,6 +7,7 @@
 EnemyGhost::EnemyGhost() :
     blink(nullptr),
     rayLight(RayLight(
+        false,
         this,
         1000,
         0,
@@ -20,15 +21,13 @@ EnemyGhost::EnemyGhost() :
 {
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
-    rayLight.setEnabled(false);
 
     setStuck(false);
 }
 
 void EnemyGhost::onStart()
 {
-    blink = new ShaderBlink(this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
-    blink->setEnabled(true);
+    blink = new ShaderBlink(true, this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
 }
 
 void EnemyGhost::onUpdate()

@@ -15,7 +15,7 @@ private:
     float value;
 
 public:
-    ShaderHorizontalBar(Color color, float verticalPosition);
+    ShaderHorizontalBar(bool active, Color color, float verticalPosition);
 
     [[nodiscard]] float getValue() const;
 

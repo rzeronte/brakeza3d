@@ -33,7 +33,7 @@ protected:
 
     std::string label;
 public:
-    Shader();
+    explicit Shader(bool enabled);
 
     ~Shader();
 

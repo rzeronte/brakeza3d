@@ -17,7 +17,7 @@ private:
     cl_mem opencl_buffer_stencil;
     Color color;
 public:
-    explicit ShaderEdgeObject(Color c);
+    explicit ShaderEdgeObject(bool active, Color c);
 
     void update() override;
 

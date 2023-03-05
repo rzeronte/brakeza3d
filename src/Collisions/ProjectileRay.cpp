@@ -28,7 +28,7 @@ void ProjectileRay::onUpdate()
 
     if (!isEnabled()) return;
 
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
+    if (!indestructible && !ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->setRemoved(true);
         return;
     }

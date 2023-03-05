@@ -24,7 +24,7 @@ private:
 
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
 public:
-    explicit RayLight(Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask);
+    explicit RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask);
 
     void update();
 
