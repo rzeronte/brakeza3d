@@ -2,9 +2,9 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-RayLight::RayLight(Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask)
+RayLight::RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask)
 :
-    enabled(false),
+    enabled(enabled),
     intensity(0),
     reach(0),
     speed(speed),

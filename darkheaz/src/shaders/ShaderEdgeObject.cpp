@@ -3,9 +3,9 @@
 #include "../../../include/Render/Logging.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderEdgeObject::ShaderEdgeObject(Color c)
+ShaderEdgeObject::ShaderEdgeObject(bool active, Color c)
 :
-    ShaderOpenCL("edge.opencl"),
+    ShaderOpenCL(active, "edge.opencl"),
     object(nullptr),
     color(c)
 {

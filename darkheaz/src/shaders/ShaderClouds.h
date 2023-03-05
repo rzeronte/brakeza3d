@@ -18,7 +18,7 @@ private:
     cl_mem opencl_buffer_pixels_image;
     Color color;
 public:
-    explicit ShaderClouds(Color c);
+    explicit ShaderClouds(bool active, Color c);
 
     void update() override;
 

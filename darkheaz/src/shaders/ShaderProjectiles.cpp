@@ -3,7 +3,7 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL("projectiles.opencl"), image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
+ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL(true, "projectiles.opencl"), image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
 {
     opencl_buffer_pixels_image = clCreateBuffer(
         context,

@@ -15,7 +15,7 @@ class ShaderTrailBuffer: public ShaderOpenCL {
     bool *stencilObjectsBuffer;
     Color color;
 public:
-    explicit ShaderTrailBuffer();
+    explicit ShaderTrailBuffer(bool enabled);
 
     void update() override;
 

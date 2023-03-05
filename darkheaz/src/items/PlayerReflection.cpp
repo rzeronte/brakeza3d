@@ -124,8 +124,7 @@ void PlayerReflection::setHidden(bool value)
 
 void PlayerReflection::loadBlinkShader()
 {
-    blink = new ShaderBlink(this, 0.05, Color::red());
-    blink->setEnabled(true);
+    blink = new ShaderBlink(true, this, 0.05, Color::red());
 
     makeSimpleGhostBody(
         Vertex3D(600, 600, 600),

@@ -6,10 +6,11 @@
 #include "../../../include/Brakeza3D.h"
 
 ShaderShockWave::ShaderShockWave(
+        bool active,
         float size,
         float speed,
         float ttl
-) : ShaderOpenCL("shockWave.opencl") {
+) : ShaderOpenCL(active, "shockWave.opencl") {
     this->startSize = size;
     this->currentSize = size;
     this->waveSpeed = speed;

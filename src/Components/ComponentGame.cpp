@@ -13,9 +13,18 @@
 #define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
 #define FADE_SPEED_PRESSKEY_NEWLEVEL 0.04
 
-ComponentGame::ComponentGame() :
+ComponentGame::ComponentGame()
+:
+    textWriter(nullptr),
+    fadeToGameState(nullptr),
     player(nullptr),
     shaderLasers(nullptr),
+    explosionSpriteTemplate(nullptr),
+    imageCredits(nullptr),
+    imageHelp(nullptr),
+    imageSplash(nullptr),
+    imageCrossFire(nullptr),
+    levelLoader(nullptr),
     shaderClouds(nullptr),
     shaderBackgroundImage(nullptr),
     shaderTrailBuffer(nullptr),
@@ -73,22 +82,18 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
 
-    shaderClouds = new ShaderClouds(Color::black());
-    shaderClouds->setEnabled(false);
+    shaderClouds = new ShaderClouds(false, Color::black());
 
     shaderBackgroundImage = new ShaderImage();
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(true);
 
-    shaderColor = new ShaderColor(Color::red(), 0.75);
-    shaderColor->setEnabled(false);
+    shaderColor = new ShaderColor(false, Color::red(), 0.75);
 
-    shaderTrailBuffer = new ShaderTrailBuffer();
-    shaderTrailBuffer->setEnabled(false);
+    shaderTrailBuffer = new ShaderTrailBuffer(true);
     shaderTrailBuffer->clearStencilBuffer();
 
     shaderLasers = new ShaderProjectiles();
-    shaderLasers->setEnabled(true);
 }
 
 ComponentGame::~ComponentGame()
@@ -96,7 +101,7 @@ ComponentGame::~ComponentGame()
     delete player;
 
     delete fadeToGameState;
-    delete levelInfo;
+    delete levelLoader;
 
     delete shaderLasers;
     delete shaderBackgroundImage;
@@ -224,7 +229,10 @@ void ComponentGame::postUpdate()
     player->updateWeaponAutomaticStatus();
 }
 
-void ComponentGame::updateCrossFire() {
+void ComponentGame::updateCrossFire()
+{
+    if (gameState != EngineSetup::GAMING) return;
+
     auto selected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
     if (selected != nullptr) {
@@ -512,27 +520,27 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelInfo = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level08.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level11.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level12.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level13.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level15.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level16.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
-    levelInfo->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level30.json");
+    levelLoader = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level08.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level11.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level12.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level13.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level15.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level16.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
+    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level30.json");
 }
 
 
@@ -543,7 +551,7 @@ FaderToGameStates *ComponentGame::getFadeToGameState() const
 
 LevelLoader *ComponentGame::getLevelInfo() const
 {
-    return levelInfo;
+    return levelLoader;
 }
 
 void ComponentGame::removeProjectiles() const
@@ -876,7 +884,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     getPlayer()->getShaderLaser().setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
-    shaderTrailBuffer->setEnabled(true);
     shaderBackgroundImage->resetOffsets();
 
     getLevelInfo()->loadNext();

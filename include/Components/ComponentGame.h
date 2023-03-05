@@ -10,9 +10,6 @@
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 #include "../Misc/PathFinder.h"
-#include "../Shaders/ShaderWater.h"
-#include "../Shaders/ShaderFire.h"
-#include "../Shaders/ShaderTintScreen.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../../darkheaz/FaderToGameStates.h"
 #include "../../darkheaz/LevelLoader.h"
@@ -44,21 +41,21 @@ private:
     ShaderProjectiles *shaderLasers;
 
     Sprite3D *explosionSpriteTemplate;
-    PathFinder *pathFinder;
 
     Image *imageCredits;
     Image *imageHelp;
     Image *imageSplash;
+    Image *imageCrossFire;
+
     Counter splashCounter;
 
-    LevelLoader *levelInfo;
+    LevelLoader *levelLoader;
 
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderTrailBuffer *shaderTrailBuffer;
 
     ShaderColor *shaderColor;
-    Image *imageCrossFire;
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
@@ -68,6 +65,9 @@ private:
     Color primaryColor;
     Color secondaryColor;
     Color thirdColor;
+
+    //PathFinder *pathFinder;
+
 public:
     ComponentGame();
 

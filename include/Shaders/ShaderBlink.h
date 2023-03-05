@@ -18,8 +18,8 @@ class ShaderBlink : public ShaderOpenCL {
     Color color;
     Counter counter;
 public:
-    ShaderBlink(Object3D *o, float step, Color c) :
-        ShaderOpenCL("blink.opencl"),
+    ShaderBlink(bool active, Object3D *o, float step, Color c) :
+        ShaderOpenCL(active, "blink.opencl"),
         isBlinking(false),
         screenWidth(EngineSetup::get()->screenWidth),
         screenHeight(EngineSetup::get()->screenHeight),

@@ -2,7 +2,11 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderTrailBuffer::ShaderTrailBuffer() : ShaderOpenCL("trail.opencl"), stencilObjectsBuffer(new bool[bufferSize]), color(Color::olive())
+ShaderTrailBuffer::ShaderTrailBuffer(bool enabled)
+:
+    ShaderOpenCL(enabled, "trail.opencl"),
+    stencilObjectsBuffer(new bool[bufferSize]),
+    color(Color::olive())
 {
     openCLBufferResult = clCreateBuffer(
         context,

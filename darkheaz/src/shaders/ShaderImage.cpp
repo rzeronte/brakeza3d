@@ -6,9 +6,11 @@
 
 ShaderImage::ShaderImage()
 :
-    ShaderOpenCL("image.opencl"),
+    ShaderOpenCL(true, "image.opencl"),
     image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png")),
-    useOffset(true)
+    useOffset(true),
+    offsetX(0),
+    offsetY(0)
 {
     opencl_buffer_pixels_image = clCreateBuffer(
         context,
