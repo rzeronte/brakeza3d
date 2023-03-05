@@ -7,7 +7,9 @@
 
 enum ProjectileBodyEmmitterType {
     UNIQUE_PROJECTILE = 0,
-    CIRCLE_PROJECTILE = 1
+    CIRCLE_PROJECTILE = 1,
+    LASER_UNIQUE_PROJECTILE = 2,
+    LASER_CIRCLE_PROJECTILE = 3,
 };
 
 class AmmoProjectileBodyEmitter: public Object3D {
@@ -53,6 +55,10 @@ public:
     void launchUniqueProjectile();
 
     void launchCircleProjectiles();
+
+    void launchUniqueLaser();
+
+    void launchCircleLaser();
 
     [[nodiscard]] const Color &getColor() const;
 

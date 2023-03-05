@@ -482,11 +482,13 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
     auto length = cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint;
 
     enemy->addFixedLaser(new ProjectileRay(
+        enemy,
+        enemy->getPosition(),
         (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
         direction.getScaled((float) length),
         direction.getScaled((float) length),
         EngineSetup::collisionGroups::ProjectileEnemy,
-        EngineSetup::collisionGroups::AllFilter,
+        EngineSetup::collisionGroups::Player,
         0,
         parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
         true
@@ -499,25 +501,8 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
     cJSON *rotationFrame = cJSON_GetObjectItemCaseSensitive(emitter, "rotationFrame");
     int type = cJSON_GetObjectItemCaseSensitive(emitter, "type")->valueint;
 
-
-    auto projectileType = ProjectileBodyEmmitterType::CIRCLE_PROJECTILE;
-    switch(type) {
-        case ProjectileBodyEmmitterType::CIRCLE_PROJECTILE: {
-            projectileType = ProjectileBodyEmmitterType::CIRCLE_PROJECTILE;
-            break;
-        }
-        case ProjectileBodyEmmitterType::UNIQUE_PROJECTILE: {
-            projectileType = ProjectileBodyEmmitterType::UNIQUE_PROJECTILE;
-            break;
-        }
-        default: {
-            Logging::Log("Weapon Type not found");
-            exit(-1);
-        }
-    }
-
     auto projectileEmitter = new AmmoProjectileBodyEmitter(
-        projectileType,
+        (ProjectileBodyEmmitterType) type,
         (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble,
         (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble,

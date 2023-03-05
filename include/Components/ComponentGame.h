@@ -16,7 +16,6 @@
 #include "../Particles/ParticleEmitterFireworks.h"
 #include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderClouds.h"
-#include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"

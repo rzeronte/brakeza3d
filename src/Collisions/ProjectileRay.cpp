@@ -5,6 +5,8 @@
 #include "../../include/ComponentsManager.h"
 
 ProjectileRay::ProjectileRay(
+    Object3D *parent,
+    Vertex3D position,
     float damage,
     const Vertex3D &direction,
     const Vertex3D &ray,
@@ -20,6 +22,8 @@ ProjectileRay::ProjectileRay(
     speed(speed),
     indestructible(indestructible)
 {
+    setParent(parent);
+    setPosition(position);
 }
 
 void ProjectileRay::onUpdate()

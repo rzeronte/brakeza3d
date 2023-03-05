@@ -81,6 +81,12 @@ void AmmoProjectileBodyEmitter::addProjectile()
             launchCircleProjectiles();
             break;
         }
+        case LASER_UNIQUE_PROJECTILE:
+            launchUniqueLaser();
+            break;
+        case LASER_CIRCLE_PROJECTILE:
+            launchCircleLaser();
+            break;
     }
 }
 
@@ -138,7 +144,43 @@ const Color &AmmoProjectileBodyEmitter::getColor() const {
     return color;
 }
 
-void AmmoProjectileBodyEmitter::setColor(const Color &color) {
+void AmmoProjectileBodyEmitter::setColor(const Color &color)
+{
     AmmoProjectileBodyEmitter::color = color;
+}
+
+void AmmoProjectileBodyEmitter::launchUniqueLaser()
+{
+    if (isRemoved()) return;
+
+    if (weaponType == nullptr) return;
+
+    auto direction = this->AxisForward().getNormalize();
+
+    Brakeza3D::get()->addObject3D(
+        new ProjectileRay(
+            this,
+            position,
+            weaponType->getDamage(),
+            direction,
+            direction.getScaled((float) weaponType->getSpeed()),
+            EngineSetup::collisionGroups::ProjectileEnemy,
+            EngineSetup::collisionGroups::Player,
+            weaponType->getSpeed(),
+            color,
+            false
+        ),
+        "laser_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+    );
+
+}
+
+void AmmoProjectileBodyEmitter::launchCircleLaser()
+{
+    const int shoots = 8;
+    for (int i = 0; i < shoots; i++) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/(float) shoots, 0));
+        launchUniqueLaser();
+    }
 }
 

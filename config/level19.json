@@ -17,20 +17,20 @@
       "motion": {
         "type": 1,
         "from":  { "x": 5,  "y": 40 },
-        "to":  { "x": 40,  "y": 10 },
+        "to":  { "x": 35,  "y": 10 },
         "speed": 0.5
       },
       "weapon": {
         "index": 0,
-        "available": true,
+        "available": false,
         "name": "Linear",
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 250,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.35,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -46,7 +46,7 @@
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
         "cadenceTime": 3.0,
-        "type": 1,
+        "type": 3,
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
@@ -69,15 +69,15 @@
       },
       "weapon": {
         "index": 0,
-        "available": true,
+        "available": false,
         "name": "Linear",
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 250,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.35,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -93,7 +93,7 @@
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
         "cadenceTime": 3.0,
-        "type": 1,
+        "type": 3,
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
@@ -102,7 +102,7 @@
     },
     {
       "name": "Shocker",
-      "position": { "x": 50,  "y": 5 },
+      "position": { "x": 50,  "y": 10 },
       "model": "spaceships/purple_spaceship_02.fbx",
       "enableLights": true,
       "animated": false,
@@ -129,6 +129,135 @@
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_03.fbx",
         "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "position": { "x": 50,  "y": 50 },
+      "model": "energy_ball.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": -1 }
+      },
+      "lasers": [
+        {
+          "damage": 30,
+          "length": 3000,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "position": { "x": 20,  "y": 70 },
+      "model": "energy_ball.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": 1 }
+      },
+      "lasers": [
+        {
+          "damage": 30,
+          "length": 3000,
+          "direction": { "x": 1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "position": { "x": 80,  "y": 70 },
+      "model": "energy_ball.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1250,
+      "reward": true,
+      "motion": {
+        "type": 6,
+        "rotation": { "x": 0, "y": 0, "z": -1 }
+      },
+      "lasers": [
+        {
+          "damage": 30,
+          "length": 3000,
+          "direction": { "x": -1, "y": 0, "z": 0 },
+          "color": { "r": 255, "g": 0, "b": 0 }
+        }
+      ],
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
