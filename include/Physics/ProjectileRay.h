@@ -19,6 +19,8 @@ private:
     bool indestructible;
 public:
     ProjectileRay(
+        Object3D *parent,
+        Vertex3D position,
         float damage,
         const Vertex3D &direction,
         const Vertex3D &ray,

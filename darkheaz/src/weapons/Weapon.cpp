@@ -211,6 +211,8 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         setStatus(WeaponStatus::PRESSED);
 
         auto *projectile = new ProjectileRay(
+            parent,
+            position,
             getDamage(),
             direction,
             direction.getNormalize().getScaled((float) getSpeed()),
@@ -222,8 +224,6 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         );
 
         projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        projectile->setParent(parent);
-        projectile->setPosition(position);
 
         setAmmoAmount(getAmmoAmount() - 1);
 

@@ -12,7 +12,6 @@
 #include "../2D/TextWriter.h"
 #include "../2D/Button.h"
 #include "../Objects/Mesh3D.h"
-#include "../../darkheaz/src/shaders/ShaderHorizontalBar.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 
 class ComponentHUD : public Component {
