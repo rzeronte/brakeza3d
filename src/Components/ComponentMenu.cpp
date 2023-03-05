@@ -137,15 +137,13 @@ void ComponentMenu::loadMenuOptions()
 
 void ComponentMenu::drawOptions() {
 
-    auto levelInfo = ComponentsManager::get()->getComponentGame()->getLevelInfo();
-
-    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
-    ComponentsManager::get()->getComponentHUD()->getTextWriter()->setAlpha(alpha);
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    auto levelInfo = componentGame->getLevelInfo();
 
     int offsetY = 140;
     int stepY = 50;
 
-    for (int i = 0; i < options.size() ; i++) {
+    for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();
 
         if (i == ComponentMenu::MNU_NEW_GAME && (levelInfo->getCurrentLevelIndex() > 0 || levelInfo->isLevelStartedToPlay())) {
@@ -157,7 +155,7 @@ void ComponentMenu::drawOptions() {
             color = Color::black();
         }
 
-        ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
+        componentGame->getTextWriter()->writeTextTTFAutoSize(
             30,
             stepY + offsetY,
             text.c_str(),
@@ -179,7 +177,7 @@ void ComponentMenu::setEnabled(bool value)
 
 void ComponentMenu::drawVersion()
 {
-    ComponentsManager::get()->getComponentHUD()->getTextWriter()->writeTextTTFAutoSize(
+    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTextTTFAutoSize(
         520,
         455,
         "brakeza.com",

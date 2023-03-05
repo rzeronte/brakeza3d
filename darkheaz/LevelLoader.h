@@ -50,7 +50,7 @@ typedef enum {
 
 class LevelLoader {
 public:
-    LevelLoader(std::string filename);
+    explicit LevelLoader(std::string filename);
     void load(int levelIndex);
     bool loadNext();
     void addLevel(std::string filename);
@@ -72,7 +72,6 @@ private:
     bool levelStartedToPlay;
     bool levelFinished;
 public:
-    [[nodiscard]] int getNumberLevelEnemies() const;
 
     [[nodiscard]] bool isLevelStartedToPlay() const;
 

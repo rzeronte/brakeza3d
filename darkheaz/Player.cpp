@@ -96,6 +96,8 @@ void Player::setLives(int value) {
 
 bool Player::takeDamage(float dmg)
 {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GAMING) return false;
+
     if ((state == PlayerState::GETTING_DAMAGE && !isStucked()) || state == PlayerState::DEAD) {
         return false;
     }
@@ -107,7 +109,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    //this->stamina -= dmg;
+    this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
