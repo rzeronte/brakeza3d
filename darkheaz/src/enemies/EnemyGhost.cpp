@@ -118,7 +118,7 @@ void EnemyGhost::makeReward()
     if (!isRewards()) return;
 
     Brakeza3D::get()->addObject3D(
-        new ParticleEmitterFireworks(getPosition(), 5, 520, 10, 0.01, Color::red(), 6, 15),
+        new ParticleEmitterFireworks(getPosition(), 5, 520, 10, 0.01, Color::white(), Color::red(), 6, 15),
         "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
     );
 
@@ -221,11 +221,8 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
         Brakeza3D::get()->addObject3D(
             new ParticleEmitterFireworks(
                 getPosition(),
-                5,
-                1000,
-                1,
-                0.02,
-                Color::green(),
+                5, 1000, 1, 0.02,
+                Color::yellow(), Color::red(),
                 1,
                 4
             ),

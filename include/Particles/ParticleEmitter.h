@@ -27,9 +27,21 @@ protected:
     Counter lifeCounter;
     float force;
     float ttl;
-    Color color;
+    Color colorTo;
+    Color colorFrom;
 public:
-    ParticleEmitter(Object3D *parent, Vertex3D position, int maxParticles, float ttlEmitter, float force, float ttl, float step, Color c);
+    ParticleEmitter(
+        Object3D *parent,
+        Vertex3D position,
+        int maxParticles,
+        float ttlEmitter,
+        float force,
+        float ttl,
+        float step,
+        Color colorFrom,
+        Color colorTo,
+        Vertex3D rotationFrame
+    );
 
     void setRotationFrame(float, float, float);
 

@@ -372,7 +372,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
         );
 
         Brakeza3D::get()->addObject3D(
-            new ParticleEmitterFireworks(player->getPosition(), 3, 1520, 1, 0.01, Color::green(), 6, 25),
+            new ParticleEmitterFireworks(player->getPosition(), 3, 1520, 1, 0.01, Color::green(), Color::yellow(), 6, 25),
             "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
         );
 

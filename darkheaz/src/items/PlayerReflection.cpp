@@ -85,7 +85,7 @@ void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)
         blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
 
-        auto fireworks = new ParticleEmitterFireworks(getPosition(), 5, 1000, 1, 0.02, Color::green(), 1, 4);
+        auto fireworks = new ParticleEmitterFireworks(getPosition(), 5, 1000, 1, 0.02, Color::yellow(), Color::red(), 1, 4);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
         takeDamage(projectile->getWeaponType()->getDamage());

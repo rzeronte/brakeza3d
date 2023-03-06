@@ -2,8 +2,13 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Brakeza3D.h"
 
-Particle::Particle(Object3D *parent, float force, float ttl, Color c)
-    : parent(parent), active(true), force(force), color(c)
+Particle::Particle(Object3D *parent, float force, float ttl, Color colorFrom, Color colorTo)
+:
+    parent(parent),
+    active(true),
+    force(force),
+    colorFrom(colorFrom),
+    colorTo(colorTo)
 {
     this->setPosition(parent->getPosition());
     this->setRotation(parent->getRotation());
@@ -26,12 +31,15 @@ void Particle::onUpdate()
 
     Vertex3D forward = rotation * EngineSetup::get()->forward;
 
-    velocity = forward.getScaled(force * Brakeza3D::get()->getDeltaTime());
+    const auto dt = Brakeza3D::get()->getDeltaTime();
+
+    velocity = forward.getScaled(force * dt);
 
     position = position + velocity;
-    color = (Color::red() * timeToLive.getAcumulatedTime()) + color;
 
-    Drawable::drawVertex3D(getPosition(), color);
+    const float increase = timeToLive.getAcumulatedTime() / timeToLive.getStep();
+
+    Drawable::drawVertex3D(getPosition(), Color::mixColor(colorFrom, colorTo, increase));
 }
 
 const Vertex3D &Particle::getPosition() const {

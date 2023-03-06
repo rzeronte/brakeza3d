@@ -11,11 +11,12 @@ ParticleEmitterFireworks::ParticleEmitterFireworks(
     float force,
     float ttl,
     float step,
-    const Color &c,
+    Color colorFrom,
+    Color colorTo,
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmitter(this, position, 100, ttlEmitter, force, ttl, step, c),
+    ParticleEmitter(this, position, 100, ttlEmitter, force, ttl, step, colorFrom, colorTo, Vertex3D(0, 0, 0)),
     maxFires(maxFires),
     particlesByFire(particlesByFire),
     firesCounter(0)
@@ -65,7 +66,7 @@ void ParticleEmitterFireworks::addFire()
             (float)Tools::random(0, 360)
         ));
 
-        particles.emplace_back(this, this->force, Tools::random(0, (int) this->ttl), this->color);
+        particles.emplace_back(this, this->force, Tools::random(0, (int) this->ttl), this->colorFrom, this->colorTo);
     }
 
     firesCounter++;

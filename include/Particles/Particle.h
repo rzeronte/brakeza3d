@@ -7,7 +7,7 @@
 
 class Particle {
 public:
-    Particle(Object3D *parent, float force, float ttl, Color c);
+    Particle(Object3D *parent, float force, float ttl, Color colorFrom, Color colorTo);
     void onUpdate();
 private:
     Object3D *parent;
@@ -19,7 +19,8 @@ private:
     Counter timeToLive;
     Vertex3D velocity;
     float force;
-    Color color;
+    Color colorFrom;
+    Color colorTo;
 
 public:
     [[nodiscard]] const Vertex3D &getPosition() const;

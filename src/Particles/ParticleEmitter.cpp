@@ -9,7 +9,9 @@ ParticleEmitter::ParticleEmitter(
     float force,
     float ttl,
     float step,
-    Color c
+    Color colorFrom,
+    Color colorTo,
+    Vertex3D rotationFrame
 ) :
     timeToNextParticleCounter(Counter(step)),
     active(true),
@@ -21,11 +23,12 @@ ParticleEmitter::ParticleEmitter(
     lifeCounter(Counter(ttlEmitter)),
     force(force),
     ttl(ttl),
-    color(c)
+    colorTo(colorTo),
+    colorFrom(colorFrom)
 {
     setParent(parent);
     setPosition(position);
-
+    setRotationFrame(rotationFrame.x, rotationFrame.y, rotationFrame.z);
     this->lifeCounter.setEnabled(true);
 }
 
@@ -60,7 +63,7 @@ void ParticleEmitter::onUpdate()
 
     timeToNextParticleCounter.update();
     if (timeToNextParticleCounter.isFinished() && isActiveAdding() && (int) particles.size() < maxParticles) {
-        particles.emplace_back(this, this->force, this->ttl, this->color);
+        particles.emplace_back(this, this->force, this->ttl, this->colorFrom, this->colorTo);
         timeToNextParticleCounter.setEnabled(true);
     }
 }
