@@ -1,7 +1,6 @@
 {
   "name": "Level 07",
   "backgroundImage": "levels/07.png",
-  "music": "level01Music",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -45,7 +44,7 @@
     },
     {
       "name": "Patrol",
-      "position": { "x": 80, "y": 20 },
+      "position": { "x": 10, "y": 20 },
       "model": "spaceships/green_spaceship_01.fbx",
       "enableLights": true,
       "animated": true,
@@ -53,8 +52,8 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 90, "y": 10 },
-        "to": { "x": 15, "y": 10 },
+        "from": { "x": 95, "y": 10 },
+        "to": { "x": 95, "y": 90 },
         "speed": 0.75
       },
       "weapon": {
@@ -78,6 +77,43 @@
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Rayer",
+      "position": { "x": 50, "y": 5 },
+      "model": "spaceships/green_spaceship_03.fbx",
+      "enableLights": true,
+      "animated": false,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from": { "x": 20, "y": 10 },
+        "to": { "x": 80, "y": 10 },
+        "speed": 1
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Instant",
+        "damage": 5,
+        "amount": 1000,
+        "startAmount": 10000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.3,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 2,
+        "type": 1,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 255 }
       }
     }
   ]

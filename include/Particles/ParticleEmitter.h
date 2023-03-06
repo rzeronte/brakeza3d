@@ -21,6 +21,7 @@ private:
     float rotFrameX;
     float rotFrameY;
     float rotFrameZ;
+    int maxParticles;
 protected:
     std::vector<Particle> particles;
     Counter lifeCounter;
@@ -28,7 +29,7 @@ protected:
     float ttl;
     Color color;
 public:
-    ParticleEmitter(Object3D *parent, Vertex3D position, float ttlEmitter, float force, float ttl, float step, Color c);
+    ParticleEmitter(Object3D *parent, Vertex3D position, int maxParticles, float ttlEmitter, float force, float ttl, float step, Color c);
 
     void setRotationFrame(float, float, float);
 

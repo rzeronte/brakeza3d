@@ -321,6 +321,9 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             break;
         case EngineSetup::CREDITS:
             break;
+        case EngineSetup::PRESS_KEY_BY_WIN:
+            handlePressKeyByWin();
+            break;
     }
 
     this->gameState = state;
@@ -411,7 +414,7 @@ void ComponentGame::loadPlayer()
 
     // load in this point because alpha is not working if is load previous (todo)
     player->loadShieldModel();
-    player->loadBlinkShader();
+    player->loadShaders();
     player->loadReflection();
 
     explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
@@ -737,7 +740,7 @@ void ComponentGame::pressedKeyForNewGame()
         getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
         makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL);
         ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
             EngineSetup::SoundChannels::SND_GLOBAL,
             0
         );
@@ -756,7 +759,7 @@ void ComponentGame::pressedKeyForWin()
 void ComponentGame::pressedKeyForBeginLevel()
 {
     ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("newLevel"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
@@ -1046,4 +1049,9 @@ ShaderProjectiles *ComponentGame::getShaderLasers() const {
 
 TextWriter *ComponentGame::getTextWriter() {
     return textWriter;
+}
+
+void ComponentGame::handlePressKeyByWin()
+{
+    removeInGameObjects();
 }

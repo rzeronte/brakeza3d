@@ -237,7 +237,7 @@ public:
         ProjectileEnemy = 8,
         Health = 16,
         Weapon = 32,
-        CharacterFilter = 64,
+        Bomb = 64,
         AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
 

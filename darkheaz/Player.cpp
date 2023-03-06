@@ -19,6 +19,7 @@ Player::Player() :
     counterDamageBlink (Counter(0.45)),
     counterStucked(Counter(5)),
     blink(nullptr),
+    shockWave(nullptr),
     rayLight(RayLight(
         false,
         this,
@@ -172,8 +173,7 @@ void Player::shoot(float intensity)
         return;
     }
 
-    const int type = getWeapon()->getType();
-    switch (type) {
+    switch (getWeapon()->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
                 this,
@@ -205,7 +205,7 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
-            weapon->shootRayLight(rayLight, intensity);
+            weapon->shootRayLight(rayLight, intensity * 0.5f);
             break;
         }
         default:
@@ -292,6 +292,7 @@ void Player::onUpdate()
         setRotation(getRotation() * rotation.getTranspose());
     }
 
+
     setPosition(getPosition() + this->velocity);
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
@@ -301,6 +302,8 @@ void Player::onUpdate()
 void Player::postUpdate()
 {
     if (!isEnabled()) return;
+
+    shockWave->onUpdate();
 
     if (state == PlayerState::DEAD) {
         return;
@@ -444,9 +447,10 @@ void Player::addWeapon(Weapon *weaponType)
     this->weaponTypes.emplace_back(weaponType);
 }
 
-Weapon *Player::getWeaponTypeByLabel(const std::string& label) {
+Weapon *Player::getWeaponTypeByLabel(const std::string& label)
+{
     for (auto & weaponType : this->weaponTypes) {
-        if (weaponType->label == label) {
+        if (weaponType->getLabel() == label) {
             return weaponType;
         }
     }
@@ -591,22 +595,28 @@ void Player::setAllowEnergyShield(bool value) {
     Player::allowEnergyShield = value;
 }
 
-bool Player::isAllowedMakeReflections() const {
+bool Player::isAllowedMakeReflections() const
+{
     return allowMakeReflections;
 }
 
-bool Player::isAllowEnergyShield() const {
+bool Player::isAllowEnergyShield() const
+{
     return allowEnergyShield;
 }
 
-void Player::loadBlinkShader()
+void Player::loadShaders()
 {
     blink = new ShaderBlink(false, this, 0.05, Color::green());
+
     counterDamageBlink.setEnabled(false);
     reflection.loadBlinkShader();
+
+    shockWave = new ShaderShockWave(true, getPosition(), 50, 0.25, 1);
 }
 
-PlayerState Player::getState() const {
+PlayerState Player::getState() const
+{
     return state;
 }
 
@@ -700,8 +710,13 @@ Player::~Player()
 {
     delete light;
     delete blink;
+    delete shockWave;
 
     for (auto w : weaponTypes) {
         delete w;
     }
+}
+
+ShaderShockWave *Player::getShockWave() const {
+    return shockWave;
 }

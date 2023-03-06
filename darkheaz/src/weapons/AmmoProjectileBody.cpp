@@ -69,6 +69,7 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     if (particleEmitter != nullptr) {
+        particleEmitter->setActiveAdding(false);
         particleEmitter->setActive(false);
     }
 
@@ -86,6 +87,7 @@ void AmmoProjectileBody::onUpdate()
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->remove();
         if (particleEmitter != nullptr) {
+            particleEmitter->setRemoved(true);
             particleEmitter->setActiveAdding(false);
         }
     }

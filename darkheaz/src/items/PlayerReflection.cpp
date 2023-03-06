@@ -8,13 +8,14 @@ PlayerReflection::PlayerReflection(
     float ttl
 ):
     startStamina(stamina),
-    counterDamageBlink(Counter(1))
+    stamina(stamina),
+    blink(nullptr),
+    counterDamageBlink(Counter(1)),
+    hidden(true),
+    timeToLive(Counter(ttl))
 {
-    timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
-
     counterDamageBlink.setEnabled(false);
-
 }
 
 void PlayerReflection::onUpdate()
@@ -25,7 +26,6 @@ void PlayerReflection::onUpdate()
 
     timeToLive.update();
 }
-
 
 void PlayerReflection::postUpdate()
 {
@@ -76,17 +76,17 @@ void PlayerReflection::takeDamage(float damageTaken)
     }
 }
 
-void PlayerReflection::resolveCollision(Collisionable *collisionable)
+void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)
 {
-    Mesh3DGhost::resolveCollision(collisionable);
-    auto *projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
+    Mesh3DGhost::resolveCollision(objectWithCollision);
+
+    auto *projectile = dynamic_cast<AmmoProjectileBody*> (objectWithCollision);
     if (projectile != nullptr) {
         blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
 
         auto fireworks = new ParticleEmitterFireworks(getPosition(), 5, 1000, 1, 0.02, Color::green(), 1, 4);
         Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
 
         takeDamage(projectile->getWeaponType()->getDamage());
     }

@@ -355,6 +355,10 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
         (keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB())
     ) {
+        player->getShockWave()->reset();
+        player->getShockWave()->setPosition(player->getPosition());
+        player->getShockWave()->setEnabled(true);
+
         const float dashEnergyCost = 10;
 
         if (player->getEnergy() < dashEnergyCost) {

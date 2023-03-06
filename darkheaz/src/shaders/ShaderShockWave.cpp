@@ -6,37 +6,39 @@
 #include "../../../include/Brakeza3D.h"
 
 ShaderShockWave::ShaderShockWave(
-        bool active,
-        float size,
-        float speed,
-        float ttl
-) : ShaderOpenCL(active, "shockWave.opencl") {
-    this->startSize = size;
-    this->currentSize = size;
-    this->waveSpeed = speed;
-    this->ttlWave.setStep(ttl);
-    this->ttlWave.setEnabled(true);
+    bool active,
+    Vertex3D position,
+    float size,
+    float speed,
+    float ttl
+) :
+    ShaderOpenCL(active, "shockWave.opencl"),
+    startSize(size),
+    currentSize(size),
+    waveSpeed(speed),
+    ttlWave(Counter(ttl)),
+    position(position)
+{
 }
 
-void ShaderShockWave::onUpdate(Vertex3D position)
+void ShaderShockWave::onUpdate()
 {
+    if (!isEnabled()) return;
+
     ttlWave.update();
 
-    auto engineBuffers = EngineBuffers::getInstance();
+    this->executeKernelOpenCL();
 
-    this->executeKernelOpenCL(position);
-
-    const float sizeDecreasing = (Brakeza3D::get()->getDeltaTime() * startSize) / ttlWave.getStep();
-    currentSize -= sizeDecreasing;
+    currentSize -= (Brakeza3D::get()->getDeltaTime() * startSize) / ttlWave.getStep();
 
     if (ttlWave.isFinished()) {
-        currentSize = startSize;
-        ttlWave.setEnabled(true);
+        setEnabled(false);
+        ttlWave.setEnabled(false);
     }
 }
 
 
-void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
+void ShaderShockWave::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
         clCommandQueue,
@@ -109,4 +111,14 @@ void ShaderShockWave::executeKernelOpenCL(Vertex3D position)
     );
 
     this->debugKernel();
+}
+
+void ShaderShockWave::setPosition(const Vertex3D &position) {
+    ShaderShockWave::position = position;
+}
+
+void ShaderShockWave::reset()
+{
+    currentSize = startSize;
+    ttlWave.setEnabled(true);
 }

@@ -142,7 +142,16 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, M3 rotation, float intensity, int filterGroup, int filterMask, bool sound)
+void Weapon::shootProjectile(
+    Object3D *parent,
+    Vertex3D position,
+    Vertex3D direction,
+    M3 rotation,
+    float intensity,
+    int filterGroup,
+    int filterMask,
+    bool sound
+)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -172,8 +181,14 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
             nullptr
         );
 
-        auto *projectileParticleEmissor = new ParticleEmitter(projectile, position, 4, 1000, 1, 0.003, this->getModelProjectile()->getFlatColor());
-        projectileParticleEmissor->setRotationFrame(0, 20, 20);
+        auto *projectileParticleEmitter = new ParticleEmitter(
+            projectile,
+            position,
+            75,
+            4, 1000, 1, 0.075,
+            this->getModelProjectile()->getFlatColor()
+        );
+        projectileParticleEmitter->setRotationFrame(0, 20, 20);
 
         if (getType() == WEAPON_BOMB) {
             projectile->setRotationFrameEnabled(true);
@@ -191,7 +206,7 @@ void Weapon::shootProjectile(Object3D *parent, Vertex3D position, Vertex3D direc
         }
 
         Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-        Brakeza3D::get()->addObject3D(projectileParticleEmissor, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(projectileParticleEmitter, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 
@@ -370,7 +385,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
-        projectile->setRotationFrame(Tools::randomVertex());
+        projectile->setRotationFrame(Vertex3D(1, 0, 0));
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
@@ -420,5 +435,9 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
 
 void Weapon::setLabel(const std::string &value) {
     Weapon::label = value;
+}
+
+Counter *Weapon::getCounterCadence() const {
+    return counterCadence;
 }
 

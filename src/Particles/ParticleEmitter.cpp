@@ -4,6 +4,7 @@
 ParticleEmitter::ParticleEmitter(
     Object3D *parent,
     Vertex3D position,
+    int maxParticles,
     float ttlEmitter,
     float force,
     float ttl,
@@ -16,6 +17,7 @@ ParticleEmitter::ParticleEmitter(
     rotFrameX(0),
     rotFrameY(0),
     rotFrameZ(0),
+    maxParticles(maxParticles),
     lifeCounter(Counter(ttlEmitter)),
     force(force),
     ttl(ttl),
@@ -57,7 +59,7 @@ void ParticleEmitter::onUpdate()
     setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 
     timeToNextParticleCounter.update();
-    if (timeToNextParticleCounter.isFinished() && isActiveAdding()) {
+    if (timeToNextParticleCounter.isFinished() && isActiveAdding() && (int) particles.size() < maxParticles) {
         particles.emplace_back(this, this->force, this->ttl, this->color);
         timeToNextParticleCounter.setEnabled(true);
     }
