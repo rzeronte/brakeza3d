@@ -124,11 +124,18 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         nullptr
     );
 
-    auto *projectileParticleEmitter = new ParticleEmitter(projectile, getPosition(), 75, 4, 1000, 1, 0.075, weaponType->getModelProjectile()->getFlatColor());
-    projectileParticleEmitter->setRotationFrame(0, 25, 25);
-
     Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    Brakeza3D::get()->addObject3D(projectileParticleEmitter, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+
+    Brakeza3D::get()->addObject3D(
+        new ParticleEmitter(
+            projectile,
+            getPosition(),
+            75, 4, 1000, 1, 0.025,
+            Color::yellow(), Color::red(),
+            Vertex3D(0, 15, 15)
+        ),
+        "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+    );
 }
 
 void AmmoProjectileBodyEmitter::launchCircleProjectiles()

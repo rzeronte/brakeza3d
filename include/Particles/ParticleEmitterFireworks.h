@@ -14,7 +14,17 @@ class ParticleEmitterFireworks: public ParticleEmitter {
     int firesCounter;
 
 public:
-    ParticleEmitterFireworks(Vertex3D position, float ttlEmitter, float force, float ttl, float step, const Color &c, int maxFires, int particlesByFire);
+    ParticleEmitterFireworks(
+        Vertex3D position,
+        float ttlEmitter,
+        float force,
+        float ttl,
+        float step,
+        Color colorFrom,
+        Color colorTo,
+        int maxFires,
+        int particlesByFire
+    );
 
     void onUpdate() override;
 
