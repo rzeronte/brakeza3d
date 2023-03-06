@@ -18,13 +18,18 @@ class ShaderShockWave: public ShaderOpenCL {
     float currentSize;
     float waveSpeed;
     Counter ttlWave;
+    Vertex3D position;
 
 public:
-    ShaderShockWave(bool active, float size, float speed, float ttl);
+    ShaderShockWave(bool active, Vertex3D position, float size, float speed, float ttl);
 
-    void onUpdate(Vertex3D position);
+    void onUpdate();
 
-    void executeKernelOpenCL(Vertex3D position);
+    void reset();
+
+    void executeKernelOpenCL();
+
+    void setPosition(const Vertex3D &position);
 };
 
 

@@ -176,6 +176,8 @@ public:
     TextWriter *getTextWriter();
 
     void updateFadeToGameState();
+
+    void handlePressKeyByWin();
 };
 
 

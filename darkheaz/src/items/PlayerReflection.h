@@ -15,10 +15,10 @@ class PlayerReflection : public Mesh3DGhost {
 private:
     float startStamina;
     float stamina;
-    float ttl;
     ShaderBlink *blink;
     Counter counterDamageBlink;
     bool hidden;
+    Counter timeToLive;
 public:
     PlayerReflection(float stamina, float ttl);
 
@@ -36,9 +36,8 @@ public:
 
     void takeDamage(float damageTaken);
 
-    void resolveCollision(Collisionable *collisionable) override;
+    void resolveCollision(Collisionable *objectWithCollision) override;
 
-    Counter timeToLive;
 
     void reset();
 

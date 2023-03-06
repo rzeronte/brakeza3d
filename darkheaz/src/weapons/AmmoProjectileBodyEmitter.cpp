@@ -124,7 +124,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         nullptr
     );
 
-    auto *projectileParticleEmitter = new ParticleEmitter(projectile, getPosition(), 4, 1000, 1, 0.003, weaponType->getModelProjectile()->getFlatColor());
+    auto *projectileParticleEmitter = new ParticleEmitter(projectile, getPosition(), 75, 4, 1000, 1, 0.075, weaponType->getModelProjectile()->getFlatColor());
     projectileParticleEmitter->setRotationFrame(0, 25, 25);
 
     Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());

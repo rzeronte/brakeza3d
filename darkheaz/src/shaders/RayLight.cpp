@@ -1,6 +1,7 @@
 #include "RayLight.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
+#include "../items/ItemBombGhost.h"
 
 RayLight::RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask)
 :
@@ -50,25 +51,35 @@ void RayLight::update()
         auto *object = dynamic_cast<Object3D*> (brkObjectA);
         auto *enemy = dynamic_cast<EnemyGhost*> (brkObjectA);
         auto *player = dynamic_cast<Player*> (brkObjectA);
+        auto *bomb = dynamic_cast<ItemBombGhost*> (brkObjectA);
 
         if (object != this->parent) {
+            btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
+            auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+
             if (player != nullptr) {
-                btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
-                auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
                 player->takeDamage(damage);
                 increase = false;
             }
 
+            if (bomb != nullptr) {
+                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+                increase = false;
+            }
+
             if (enemy != nullptr) {
-                btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
-                auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
                 enemy->takeDamage(damage);
                 increase = false;
             }
+
+            Brakeza3D::get()->addObject3D(
+                new ParticleEmitterFireworks(hitPosition, 1.5, 1000, 1, 0.02, Color::green(), 1, 5),
+                "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+            );
         }
     }
 

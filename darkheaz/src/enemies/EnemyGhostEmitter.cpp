@@ -11,7 +11,7 @@ EnemyGhostEmitter::EnemyGhostEmitter(EnemyGhost *object, float step): object(obj
     counter.setEnabled(false);
     object->setEnabled(true);
     if (object->getWeapon() != nullptr) {
-        object->getWeapon()->counterCadence->setEnabled(false);
+        object->getWeapon()->getCounterCadence()->setEnabled(false);
     }
     object->setStencilBufferEnabled(false);
     object->setAlphaEnabled(true);
@@ -41,7 +41,7 @@ void EnemyGhostEmitter::onUpdate()
 
     if (counter.isFinished()) {
         if (object->getWeapon() != nullptr) {
-            object->getWeapon()->counterCadence->setEnabled(true);
+            object->getWeapon()->getCounterCadence()->setEnabled(true);
         }
         object->setStencilBufferEnabled(true);
         object->setAlphaEnabled(false);

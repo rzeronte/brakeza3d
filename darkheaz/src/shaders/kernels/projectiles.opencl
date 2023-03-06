@@ -23,8 +23,6 @@ struct OCProjectile
 };
 
 unsigned int createRGB(int r, int g, int b);
-float plot(float, float, float);
-float rand(float2 seed);
 float line(float2 A, float2 B, float2 C, float thickness);
 
 __kernel void onUpdate(
@@ -50,7 +48,6 @@ __kernel void onUpdate(
 
     unsigned int mixedColor = video[i];
     unsigned char *mi = &mixedColor;
-
 
     for (int j = 0; j < numberLasers; j++) {
         struct OCLaser laser = lasers[j];
@@ -133,15 +130,10 @@ __kernel void onUpdate(
 
         __global unsigned char *ci = &image[i];
 
-        float n = ci[0] * 3;
+        float n = ci[0] * 1.5;
 
-        float3 colorCircle = {
-            (circle * (projectile.r/255)),
-            (circle * (projectile.g/255)),
-            (circle * (projectile.b/255))
-        };
-
-        colorCircle *= n;
+        float3 colorCircle = {projectile.r, projectile.g, projectile.b};
+        colorCircle = (colorCircle/255) * circle * n;
 
         mixedColor = createRGB(
             min(colorCircle[0] + mi[0], 255.0),
@@ -150,25 +142,12 @@ __kernel void onUpdate(
         );
     }
 
-
     video[i] = mixedColor;
 }
 
 unsigned int createRGB(int r, int g, int b)
 {
     return (b << 16) + (g << 8) + (r);
-}
-
-float plot(float st, float pct, float thickness)
-{
-    return smoothstep(pct - thickness, pct, st) - smoothstep(pct, pct + thickness, st);
-}
-
-float rand (float2 seed)
-{
-    float2 p = {12.9898, 78.233};
-    float intPart;
-	return fract (sin (dot (seed, p)) * 137.5453, &intPart);
 }
 
 float line(float2 A, float2 B, float2 C, float thickness)

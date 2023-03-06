@@ -54,6 +54,8 @@ private:
     Counter counterStucked;
 
     ShaderBlink *blink;
+    ShaderShockWave *shockWave;
+
     RayLight rayLight;
 
     int killsCounter;
@@ -184,7 +186,7 @@ public:
 
     [[nodiscard]] bool isAllowEnergyShield() const;
 
-    void loadBlinkShader();
+    void loadShaders();
 
     void loadReflection();
 
@@ -211,6 +213,8 @@ public:
     [[nodiscard]] PlayerReflection *getReflection();
 
     [[nodiscard]] LightPoint3D *getLight() const;
+
+    ShaderShockWave *getShockWave() const;
 };
 
 
