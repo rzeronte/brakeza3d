@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/EngineBuffers.h"
 #include "../../include/Render/Logging.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
@@ -440,4 +441,24 @@ Vertex3D Tools::randomVertex() {
         Tools::random(1, 2),
         Tools::random(1, 2)
     );
+}
+
+const char *Tools::sprintf(const char *format, ...)
+{
+    va_list args;
+    va_start (args, format);
+    vsnprintf (EngineBuffers::getInstance()->text, 255, format, args);
+
+    va_end (args);
+
+    return EngineBuffers::getInstance()->text;
+}
+
+float Tools::percentage(int value, int total)
+{
+    if (total == 0) {
+        return 0;
+    }
+
+    return (float) ((float) value * 100 / (float) total);
 }

@@ -86,6 +86,10 @@ public:
     static Color getColorRGB(ColorHSV in);
 
     static Vertex3D randomVertex();
+
+    static const char *sprintf(const char *, ...);
+
+    static float percentage(int value, int total);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
