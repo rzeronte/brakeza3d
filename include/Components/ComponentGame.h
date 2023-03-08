@@ -181,7 +181,7 @@ public:
 
     void showLevelStatistics();
 
-    void drawMedal(int type, int x, int y);
+    void drawMedalAlpha(int type, int x, int y, float alpha);
 };
 
 

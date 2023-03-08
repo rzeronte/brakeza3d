@@ -211,40 +211,41 @@ void ComponentGame::onUpdate()
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
 }
 
-void ComponentGame::drawMedal(int type, int x, int y)
+void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 {
     auto hudTexturePackage = ComponentsManager::get()->getComponentHUD()->getHudTextures();
     switch(type) {
-        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->getImage()->drawFlat(x, y); break; }
-        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->getImage()->drawFlat(x, y); break; }
-        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->getImage()->drawFlat(x, y); break; }
+        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->getImage()->drawFlatAlpha(x, y, alpha); break; }
+        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->getImage()->drawFlatAlpha(x, y, alpha); break; }
+        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->getImage()->drawFlatAlpha(x, y, alpha); break; }
         default: break;
     }
 }
 
 void ComponentGame::showLevelStatistics()
 {
+    const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
     textWriter->writeTTFCenterHorizontal(100, "congratulations! mission done...", primaryColor, 0.5);
 
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlat(124, 160);
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(124, 160, alpha);
     textWriter->writeTextTTFAutoSize(124, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
     textWriter->writeTextTTFAutoSize(124, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
-    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), 118, 250);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), 118, 250, alpha);
 
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlat(244, 160);
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(244, 160, alpha);
     textWriter->writeTextTTFAutoSize(244, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
     textWriter->writeTextTTFAutoSize(244, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
-    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), 238, 250);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), 238, 250, alpha);
 
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlat(355, 160);
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(355, 160, alpha);
     textWriter->writeTextTTFAutoSize(355, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
     textWriter->writeTextTTFAutoSize(355, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
-    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), 348, 250);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), 348, 250, alpha);
 
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlat(460, 160);
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(460, 160, alpha);
     textWriter->writeTextTTFAutoSize(460, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
     textWriter->writeTextTTFAutoSize(460, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
-    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), 454, 250);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), 454, 250, alpha);
 }
 
 void ComponentGame::updateFadeToGameState()
