@@ -24,6 +24,8 @@ public:
     Uint32 *videoBuffer;
     int sizeBuffers;
 
+    char text[256];
+
     int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
     void clearDepthBuffer() const;

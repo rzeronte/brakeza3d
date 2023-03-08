@@ -4,7 +4,6 @@
 
 #include "LevelLoader.h"
 #include "../include/Brakeza3D.h"
-#include "../include/Render/Transforms.h"
 #include "src/enemies/EnemyGhostEmitter.h"
 #include "src/enemies/behaviors/EnemyBehaviorCircle.h"
 #include "src/enemies/behaviors/EnemyBehaviorPatrol.h"
@@ -24,6 +23,8 @@
 
 LevelLoader::LevelLoader(std::string filename)
 {
+    stats = new LevelStats();
+
     addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
@@ -31,6 +32,8 @@ LevelLoader::LevelLoader(std::string filename)
 
 void LevelLoader::load(int levelIndex)
 {
+    stats->reset();
+
     Logging::Log("loading level: %d", levelIndex);
     setLevelStartedToPlay(true);
     setLevelFinished(false);
@@ -737,4 +740,8 @@ bool LevelLoader::isEndLevel() const {
 
 void LevelLoader::setEndLevel(bool value) {
     LevelLoader::endLevel = value;
+}
+
+LevelStats *LevelLoader::getStats() const {
+    return stats;
 }

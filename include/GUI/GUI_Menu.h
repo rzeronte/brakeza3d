@@ -383,7 +383,7 @@ public:
 
             if (ImGui::BeginMenu("Levels")) {
 
-                auto levels = ComponentsManager::get()->getComponentGame()->getLevelInfo()->getLevels();
+                auto levels = ComponentsManager::get()->getComponentGame()->getLevelLoader()->getLevels();
                 for (int n = 0; n < levels.size(); n++) {
                     auto levelName = std::to_string(n+1) + ") " + levels[n];
                     ImGui::Button(levelName.c_str());

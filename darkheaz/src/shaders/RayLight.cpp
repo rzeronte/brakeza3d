@@ -71,6 +71,7 @@ void RayLight::update()
 
             if (enemy != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+                ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_RAY);
 
                 enemy->takeDamage(damage);
                 increase = false;

@@ -103,7 +103,7 @@ public:
 
     void loadLevels();
 
-    [[nodiscard]] LevelLoader *getLevelInfo() const;
+    [[nodiscard]] LevelLoader *getLevelLoader() const;
 
     void checkForEndLevel();
 
@@ -178,6 +178,10 @@ public:
     void updateFadeToGameState();
 
     void handlePressKeyByWin();
+
+    void showLevelStatistics();
+
+    void drawMedal(int type, int x, int y);
 };
 
 

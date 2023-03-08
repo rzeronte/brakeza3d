@@ -66,6 +66,9 @@ void ComponentHUD::loadImages()
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "reflectionIcon");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "hud_background.png", "hudBackground");
+    HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_bronze.png", "medalBronze");
+    HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_silver.png", "medalSilver");
+    HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_gold.png", "medalGold");
 }
 
 void ComponentHUD::drawHUD()
@@ -128,7 +131,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     textWriter->writeTextTTFAutoSize(
         510,
         462,
-        game->getLevelInfo()->getLevelName().c_str(),
+        game->getLevelLoader()->getLevelName().c_str(),
         game->getPrimaryColor(),
         0.25
     );
@@ -201,4 +204,8 @@ ComponentHUD::~ComponentHUD()
 {
     delete shaderLasers;
     delete HUDTextures;
+}
+
+TexturePackage *ComponentHUD::getHudTextures() const {
+    return HUDTextures;
 }

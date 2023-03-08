@@ -196,6 +196,8 @@ void Weapon::shootProjectile(
             );
         }
 
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+
         Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
         Brakeza3D::get()->addObject3D(
@@ -212,7 +214,16 @@ void Weapon::shootProjectile(
     }
 }
 
-void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask)
+void Weapon::shootLaserProjectile(
+    Object3D *parent,
+    Vertex3D position,
+    Vertex3D direction,
+    float intensity,
+    bool sound,
+    Color color,
+    int filterGroup,
+    int filterMask
+)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -243,6 +254,8 @@ void Weapon::shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D 
         projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
         setAmmoAmount(getAmmoAmount() - 1);
+
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(WEAPON_LASER_PROJECTILE);
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
@@ -405,6 +418,8 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
             0
         );
 
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
     }
 }
@@ -431,6 +446,8 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
             -1
         );
     }
+
+    ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
     rayLight.update();
 }
