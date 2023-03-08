@@ -53,6 +53,8 @@ public:
 
     void drawShaderLasers();
 
+    TexturePackage *getHudTextures() const;
+
 };
 
 

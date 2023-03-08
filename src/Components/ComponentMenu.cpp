@@ -138,7 +138,7 @@ void ComponentMenu::loadMenuOptions()
 void ComponentMenu::drawOptions() {
 
     auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto levelInfo = componentGame->getLevelInfo();
+    auto levelInfo = componentGame->getLevelLoader();
 
     int offsetY = 140;
     int stepY = 50;

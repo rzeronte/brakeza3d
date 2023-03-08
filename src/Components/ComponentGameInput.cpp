@@ -2,10 +2,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentGameInput::ComponentGameInput()
-:
-    controllerAxisThreshold(0.1),
-    lockRightStick(false)
+ComponentGameInput::ComponentGameInput() : controllerAxisThreshold(0.1), lockRightStick(false)
 {
 }
 
@@ -27,16 +24,16 @@ void ComponentGameInput::preUpdate()
     }
 }
 
-void ComponentGameInput::onUpdate() {
-
+void ComponentGameInput::onUpdate()
+{
 }
 
-void ComponentGameInput::postUpdate() {
-
+void ComponentGameInput::postUpdate()
+{
 }
 
-void ComponentGameInput::onEnd() {
-
+void ComponentGameInput::onEnd()
+{
 }
 
 void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
@@ -59,7 +56,6 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
     }
 
     this->handlePressKeyGameStates(event);
-
 
     if (state == EngineSetup::GameState::GAMING) {
         this->handleFindClosestObject3D(event);
@@ -84,20 +80,24 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
     ) {
-        if (gameState == EngineSetup::GameState::MENU && game->getLevelInfo()->isLevelStartedToPlay()) {
+        if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
             game->makeFadeToGameState(EngineSetup::GameState::GAMING);
-        } else {
-            // can't cancel countdown
-            if (gameState == EngineSetup::GameState::COUNTDOWN || gameState == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ) return;
-
-            game->makeFadeToGameState(EngineSetup::GameState::MENU);
-
-            SDL_WarpMouseInWindow(
-                ComponentsManager::get()->getComponentWindow()->getWindow(),
-                SETUP->screenWidth / 2,
-                SETUP->screenHeight / 2
-            );
+            return;
         }
+
+        if (gameState == EngineSetup::GameState::COUNTDOWN ||
+            gameState == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ||
+            gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
+            gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
+        ) return;
+
+        game->makeFadeToGameState(EngineSetup::GameState::MENU);
+
+        SDL_WarpMouseInWindow(
+            ComponentsManager::get()->getComponentWindow()->getWindow(),
+            SETUP->screenWidth / 2,
+            SETUP->screenHeight / 2
+        );
     }
 }
 
@@ -430,23 +430,23 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 {
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    auto componentInput = ComponentsManager::get()->getComponentInput();
+    bool isButtonGuidedPressed = (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE);
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) &&
-        (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForWin();
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL) &&
-        (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+        (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForFinishGameAndRestart();
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (event->type == SDL_KEYDOWN || (event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->isAnyControllerButtonPressed()))) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyByDead();
     }
 }
@@ -468,7 +468,7 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX()) {
-        auto weapon = player->getWeaponTypeByLabel("Bomb");
+        auto weapon = player->getWeaponTypeByLabel("bomb");
         weapon->onUpdate();
         weapon->shootBomb(player, player->getPosition());
     }

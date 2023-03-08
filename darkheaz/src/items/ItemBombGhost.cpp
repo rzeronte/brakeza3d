@@ -37,6 +37,8 @@ void ItemBombGhost::resolveCollision(Collisionable *collisionable)
         setEnabled(false);
         setRemoved(true);
 
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
+
         enemy->takeDamage(getDamage());
         enemy->stuck(5);
     }

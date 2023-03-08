@@ -158,8 +158,8 @@ void ComponentGame::onUpdate()
         case EngineSetup::PRESS_KEY_NEWLEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
             textWriter->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
-            if (getLevelInfo()->isHasTutorial()) {
-                getLevelInfo()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth/2-(getLevelInfo()->getTutorialImage()->width()/2), 40);
+            if (getLevelLoader()->isHasTutorial()) {
+                getLevelLoader()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth / 2 - (getLevelLoader()->getTutorialImage()->width() / 2), 40);
             }
             break;
         }
@@ -170,10 +170,10 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::COUNTDOWN: {
             zoomCameraCountDown();
-            int restTime = (int) (getLevelInfo()->getCountDown()->getStep() - getLevelInfo()->getCountDown()->getAcumulatedTime() + 1);
+            int restTime = (int) (getLevelLoader()->getCountDown()->getStep() - getLevelLoader()->getCountDown()->getAcumulatedTime() + 1);
             textWriter->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 1);
-            getLevelInfo()->getCountDown()->update();
-            if (getLevelInfo()->getCountDown()->isFinished()) {
+            getLevelLoader()->getCountDown()->update();
+            if (getLevelLoader()->getCountDown()->isFinished()) {
                 setGameState(EngineSetup::GameState::GAMING);
             }
             break;
@@ -193,7 +193,7 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::PRESS_KEY_BY_WIN: {
-            textWriter->writeTextTTFMiddleScreen("congratulations! Mission done...", primaryColor, 0.5);
+            showLevelStatistics();
             break;
         }
         case EngineSetup::NONE:
@@ -209,6 +209,42 @@ void ComponentGame::onUpdate()
     updateCrossFire();
 
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
+}
+
+void ComponentGame::drawMedal(int type, int x, int y)
+{
+    auto hudTexturePackage = ComponentsManager::get()->getComponentHUD()->getHudTextures();
+    switch(type) {
+        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->getImage()->drawFlat(x, y); break; }
+        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->getImage()->drawFlat(x, y); break; }
+        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->getImage()->drawFlat(x, y); break; }
+        default: break;
+    }
+}
+
+void ComponentGame::showLevelStatistics()
+{
+    textWriter->writeTTFCenterHorizontal(100, "congratulations! mission done...", primaryColor, 0.5);
+
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlat(124, 160);
+    textWriter->writeTextTTFAutoSize(124, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(124, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
+    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), 118, 250);
+
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlat(244, 160);
+    textWriter->writeTextTTFAutoSize(244, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(244, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
+    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), 238, 250);
+
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlat(355, 160);
+    textWriter->writeTextTTFAutoSize(355, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(355, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
+    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), 348, 250);
+
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlat(460, 160);
+    textWriter->writeTextTTFAutoSize(460, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(460, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
+    drawMedal(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), 454, 250);
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -267,10 +303,10 @@ int ComponentGame::getLiveEnemiesCounter()
 
 void ComponentGame::checkForEndLevel()
 {
-    if (getLiveEnemiesCounter() == 0 && !getLevelInfo()->isLevelFinished()) {
+    if (getLiveEnemiesCounter() == 0 && !getLevelLoader()->isLevelFinished()) {
         getPlayer()->setKillsCounter(0);
-        getLevelInfo()->setLevelFinished(true);
-        getLevelInfo()->setLevelStartedToPlay(false);
+        getLevelLoader()->setLevelFinished(true);
+        getLevelLoader()->setLevelStartedToPlay(false);
         removeProjectiles();
         getFadeToGameState()->setSpeed(FADE_SPEED_ENDLEVEL);
         ComponentSound::playSound(
@@ -279,7 +315,7 @@ void ComponentGame::checkForEndLevel()
             0
         );
 
-        if (getLevelInfo()->isEndLevel()) {
+        if (getLevelLoader()->isEndLevel()) {
             makeFadeToGameState(EngineSetup::PRESS_KEY_GAMEOVER);
         } else {
             setGameState(EngineSetup::PRESS_KEY_BY_WIN);
@@ -552,7 +588,7 @@ FaderToGameStates *ComponentGame::getFadeToGameState() const
     return fadeToGameState;
 }
 
-LevelLoader *ComponentGame::getLevelInfo() const
+LevelLoader *ComponentGame::getLevelLoader() const
 {
     return levelLoader;
 }
@@ -714,7 +750,7 @@ void ComponentGame::loadWeapons()
 
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons")) {
-        auto weapon = getLevelInfo()->parseWeaponJSON(currentWeapon);
+        auto weapon = getLevelLoader()->parseWeaponJSON(currentWeapon);
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }
@@ -736,7 +772,7 @@ const std::vector<Weapon *> &ComponentGame::getWeapons() const
 
 void ComponentGame::pressedKeyForNewGame()
 {
-    if (!getLevelInfo()->isLevelStartedToPlay()) {
+    if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
         makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL);
         ComponentSound::playSound(
@@ -763,7 +799,7 @@ void ComponentGame::pressedKeyForBeginLevel()
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
-    getLevelInfo()->startCountDown();
+    getLevelLoader()->startCountDown();
     setGameState(EngineSetup::GameState::COUNTDOWN);
     getPlayer()->startPlayerBlink();
 }
@@ -771,7 +807,7 @@ void ComponentGame::pressedKeyForBeginLevel()
 void ComponentGame::pressedKeyForFinishGameAndRestart()
 {
     ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"), -1, 3000);
-    getLevelInfo()->setCurrentLevelIndex(-1);
+    getLevelLoader()->setCurrentLevelIndex(-1);
     makeFadeToGameState(EngineSetup::GameState::MENU);
 }
 
@@ -827,7 +863,7 @@ void ComponentGame::zoomCameraCountDown()
     Vertex3D to = cameraInGamePosition;
 
     Vector3D direction(origin, to);
-    auto counter = getLevelInfo()->getCountDown();
+    auto counter = getLevelLoader()->getCountDown();
 
     float t = counter->getAcumulatedTime() / counter->getStep();
 
@@ -889,7 +925,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
     shaderBackgroundImage->resetOffsets();
 
-    getLevelInfo()->loadNext();
+    getLevelLoader()->loadNext();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setGravityShieldsNumber(0);
@@ -899,8 +935,9 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-    if (getLevelInfo()->isHaveMusic()) {
-        ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+    if (getLevelLoader()->isHaveMusic()) {
+        ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(
+                getLevelLoader()->getMusic()), -1, 3000);
     }
 }
 
@@ -914,7 +951,7 @@ void ComponentGame::reloadLevel(int level)
 
     shaderBackgroundImage->resetOffsets();
 
-    getLevelInfo()->load(level);
+    getLevelLoader()->load(level);
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
@@ -926,7 +963,7 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
 
-    getLevelInfo()->startCountDown();
+    getLevelLoader()->startCountDown();
     setGameState(EngineSetup::GameState::COUNTDOWN);
     getPlayer()->startPlayerBlink();
 }
@@ -950,7 +987,7 @@ void ComponentGame::handlePressKeyPreviousLevel()
 {
     getPlayer()->setEnabled(true);
     removeInGameObjects();
-    getLevelInfo()->loadPrevious();
+    getLevelLoader()->loadPrevious();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setGravityShieldsNumber(0);
@@ -962,7 +999,8 @@ void ComponentGame::handlePressKeyPreviousLevel()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     shaderColor->setEnabled(false);
     getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelInfo()->getMusic()), -1, 3000);
+    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(
+            getLevelLoader()->getMusic()), -1, 3000);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 }
 

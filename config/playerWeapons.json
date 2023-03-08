@@ -3,7 +3,7 @@
     {
       "index": 0,
       "available": true,
-      "name": "Linear",
+      "name": "projectile",
       "damage": 50,
       "amount": 0,
       "startAmount": 250,
@@ -25,11 +25,11 @@
     {
       "index": 1,
       "available": true,
-      "name": "Laser",
+      "name": "laser",
       "damage": 50,
       "amount": 0,
       "startAmount": 600,
-      "speed": 600,
+      "speed": 400,
       "dispersion": 10,
       "accuracy": 100,
       "cadenceTime": 0.10,
@@ -47,7 +47,7 @@
     {
       "index": 2,
       "available": true,
-      "name": "LaserProjectile",
+      "name": "ray",
       "damage": 2,
       "amount": 0,
       "startAmount": 1500,
@@ -69,7 +69,7 @@
     {
       "index": 3,
       "available": false,
-      "name": "Bomb",
+      "name": "bomb",
       "damage": 400,
       "amount": 1000,
       "startAmount": 10,

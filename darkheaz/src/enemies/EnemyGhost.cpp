@@ -229,6 +229,18 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
             "enemy_fireworks_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
         );
 
+        auto *body = dynamic_cast<AmmoProjectileBody*> (withObject);
+        auto *ray = dynamic_cast<ProjectileRay*> (withObject);
+
+        if (body != nullptr) {
+            ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_PROJECTILE);
+        }
+
+        if (ray != nullptr) {
+            ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_PROJECTILE);
+        }
+
+
         this->takeDamage((float) projectile->getDamage());
     }
 }
