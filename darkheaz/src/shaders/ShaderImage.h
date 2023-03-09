@@ -18,7 +18,7 @@ class ShaderImage: public ShaderOpenCL {
     float offsetX;
     float offsetY;
 public:
-    ShaderImage();
+    explicit ShaderImage(const std::string& filename);
 
     void update() override;
 

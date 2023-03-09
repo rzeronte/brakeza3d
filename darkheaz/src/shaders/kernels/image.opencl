@@ -21,13 +21,13 @@ __kernel void onUpdate(
    float2 st = uv / resolution;
 
     float2 center = { 0.5, 0.5 };
-    float2 offset = {0.25, 0.25};
+    float2 offsetToCenter = {0.25, 0.25}; // center screen
 
-    float2 ieah = { offsetX, offsetY };
+    float2 offsetInput = { offsetX, offsetY };
 
     if (usingOffset > 0) {
         st /= 1.75;
-        st += center - offset + ieah;
+        st += center - offsetToCenter + offsetInput;
     }
 
     int cx = st.x * screenWidth;
@@ -35,7 +35,17 @@ __kernel void onUpdate(
 
     int index = cy * screenWidth + cx;
 
-    video[i] = image[index];
+    __global unsigned char *im = &image[index];
+
+    float s = sin(iTime);
+    float c = cos(iTime);
+    float t = s * c;
+
+    video[i] = createRGB(
+        min(im[0] * (1 - s * 0.5), 200.0),
+        min(im[1] * (1 - c * 0.5), 200.0),
+        min(im[2] * (1 - t * 0.5), 200.0)
+    );
 }
 
 unsigned int createRGB(int r, int g, int b)

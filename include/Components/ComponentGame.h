@@ -53,8 +53,8 @@ private:
     ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderTrailBuffer *shaderTrailBuffer;
-
     ShaderColor *shaderColor;
+
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
@@ -66,7 +66,6 @@ private:
     Color thirdColor;
 
     //PathFinder *pathFinder;
-
 public:
     ComponentGame();
 

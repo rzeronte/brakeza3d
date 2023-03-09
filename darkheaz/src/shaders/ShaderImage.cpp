@@ -4,10 +4,10 @@
 #include "../../../include/Brakeza3D.h"
 
 
-ShaderImage::ShaderImage()
+ShaderImage::ShaderImage(const std::string& filename)
 :
     ShaderOpenCL(true, "image.opencl"),
-    image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png")),
+    image(Image(filename)),
     useOffset(true),
     offsetX(0),
     offsetY(0)
