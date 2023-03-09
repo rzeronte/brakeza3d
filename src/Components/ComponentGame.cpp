@@ -84,7 +84,7 @@ void ComponentGame::onStart()
 
     shaderClouds = new ShaderClouds(false, Color::black());
 
-    shaderBackgroundImage = new ShaderImage();
+    shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(true);
 

@@ -41,10 +41,9 @@ void ComponentMenu::onStart()
     light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
     Brakeza3D::get()->addObject3D(light, "lightMenu");
 
-    shaderBackgroundImage = new ShaderImage();
+    shaderBackgroundImage = new ShaderImage(SETUP->IMAGES_FOLDER + "menu_background.png");
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
-    shaderBackgroundImage->setImage(SETUP->IMAGES_FOLDER + "menu_background.png");
 
     title = new Image(SETUP->IMAGES_FOLDER + "title.png");
 }
