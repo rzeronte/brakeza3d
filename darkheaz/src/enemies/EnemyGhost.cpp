@@ -46,18 +46,7 @@ void EnemyGhost::onUpdate()
     }
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
-        makeReward();
-        makeExplosion();
-
-        ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
-
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
-        unstuck();
-        remove();
+        handleDie();
     }
 
     if (isStuck()) {
@@ -81,6 +70,26 @@ void EnemyGhost::onUpdate()
     }
 
     updateLasers();
+}
+
+void EnemyGhost::handleDie()
+{
+    Brakeza3D::get()->addObject3D(
+        new ShockWave(getPosition(), 0.50, 50, 1, true),
+        "shockWave_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+    );
+    makeReward();
+    makeExplosion();
+
+    ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
+
+    ComponentSound::playSound(
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
+            EngineSetup::SND_GLOBAL,
+            0
+    );
+    unstuck();
+    remove();
 }
 
 void EnemyGhost::updateLasers()

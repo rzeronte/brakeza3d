@@ -15,7 +15,6 @@
 #include "../../darkheaz/LevelLoader.h"
 #include "../Particles/ParticleEmitterFireworks.h"
 #include "../Misc/VideoPlayer.h"
-#include "../../darkheaz/src/shaders/ShaderClouds.h"
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
@@ -50,10 +49,10 @@ private:
 
     LevelLoader *levelLoader;
 
-    ShaderClouds *shaderClouds;
     ShaderImage *shaderBackgroundImage;
     ShaderTrailBuffer *shaderTrailBuffer;
     ShaderColor *shaderColor;
+    ShaderShockWave *shaderShockWave;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
@@ -88,21 +87,20 @@ public:
     void loadPlayer();
 
     void blockPlayerPositionInCamera();
+
     void zoomCameraCountDown();
 
     void reloadLevel(int level);
 
     void setGameState(EngineSetup::GameState state);
-    EngineSetup::GameState getGameState();
-    void selectClosestObject3DFromPlayer();
-    Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
-    [[nodiscard]] Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
 
-    [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
+    EngineSetup::GameState getGameState();
+
+    void selectClosestObject3DFromPlayer();
+
+    Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
 
     void loadLevels();
-
-    [[nodiscard]] LevelLoader *getLevelLoader() const;
 
     void checkForEndLevel();
 
@@ -111,12 +109,12 @@ public:
     void makeFadeToGameState(EngineSetup::GameState value) const;
 
     void setVisibleInGameObjects(bool value);
+
     void setEnemyWeaponsEnabled(bool value);
 
     void removeInGameObjects();
-    void loadWeapons();
 
-    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
+    void loadWeapons();
 
     void pressedKeyForNewGame();
 
@@ -152,20 +150,6 @@ public:
 
     void updateCrossFire();
 
-    [[nodiscard]] const Color &getPrimaryColor() const;
-
-    [[nodiscard]] const Color &getSecondaryColor() const;
-
-    [[nodiscard]] Sprite3D *getExplosionSpriteTemplate() const;
-
-    [[nodiscard]] ShaderColor *getShaderColor() const;
-
-    [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
-
-    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
-
-    [[nodiscard]] ShaderClouds *getShaderClouds() const;
-
     void handleSplash();
 
     void addProjectilesToShaderLasers();
@@ -181,6 +165,31 @@ public:
     void showLevelStatistics();
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
+
+    [[nodiscard]] ShaderTrailBuffer *getShaderTrailBuffer() const;
+
+
+    [[nodiscard]] const Color &getPrimaryColor() const;
+
+    [[nodiscard]] const Color &getSecondaryColor() const;
+
+    [[nodiscard]] Sprite3D *getExplosionSpriteTemplate() const;
+
+    [[nodiscard]] ShaderColor *getShaderColor() const;
+
+    [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
+
+    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
+
+    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
+
+    [[nodiscard]] Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
+
+    [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
+
+    [[nodiscard]] LevelLoader *getLevelLoader() const;
+
+    void loadShaders();
 };
 
 
