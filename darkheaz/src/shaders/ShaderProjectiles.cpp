@@ -101,6 +101,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     clSetKernelArg(kernel, 6, sizeof(int), &numberLasers);
     clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&opencl_buffer_projectiles);
     clSetKernelArg(kernel, 8, sizeof(int), &numberProjectiles);
+
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
     // Divide work items into groups of 64
@@ -133,7 +134,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     this->lasers.clear();
     this->projectiles.clear();
 
-    this->debugKernel();
+    //this->debugKernel();
 }
 
 void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i, bool startCircle, bool endCircle)

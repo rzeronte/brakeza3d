@@ -5,45 +5,48 @@
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderShockWave::ShaderShockWave(
-    bool active,
-    Vertex3D position,
-    float size,
-    float speed,
-    float ttl
-) :
-    ShaderOpenCL(active, "shockWave.opencl"),
-    startSize(size),
-    currentSize(size),
-    waveSpeed(speed),
-    ttlWave(Counter(ttl)),
-    position(position)
+ShaderShockWave::ShaderShockWave(bool active) : ShaderOpenCL(active, "shockWave.opencl")
 {
+    opencl_buffer_waves = clCreateBuffer(
+        context,
+        CL_MEM_READ_WRITE,
+        MAX_SHOCK_WAVES * sizeof(OCShockWave),
+        waves.data(),
+        nullptr
+    );
 }
 
-void ShaderShockWave::onUpdate()
+void ShaderShockWave::update()
 {
+    Shader::update();
+
     if (!isEnabled()) return;
 
-    ttlWave.update();
-
     this->executeKernelOpenCL();
-
-    currentSize -= (Brakeza3D::get()->getDeltaTime() * startSize) / ttlWave.getStep();
-
-    if (ttlWave.isFinished()) {
-        setEnabled(false);
-        ttlWave.setEnabled(false);
-    }
 }
-
 
 void ShaderShockWave::executeKernelOpenCL()
 {
+    const int numberWaves = (int) waves.size();
+
+    if (numberWaves <= 0) return;
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        opencl_buffer_waves,
+        CL_TRUE,
+        0,
+        numberWaves * sizeof(OCShockWave),
+        waves.data(),
+        0,
+        nullptr,
+        nullptr
+    );
+
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoOutput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         EngineBuffers::getInstance()->videoBuffer,
@@ -55,7 +58,7 @@ void ShaderShockWave::executeKernelOpenCL()
     clEnqueueWriteBuffer(
         clCommandQueue,
         openClBufferMappedWithVideoInput,
-        CL_TRUE,
+        CL_FALSE,
         0,
         this->bufferSize * sizeof(Uint32),
         this->videoBuffer,
@@ -64,22 +67,13 @@ void ShaderShockWave::executeKernelOpenCL()
         nullptr
     );
 
-    Point2D focalPoint = Transforms::WorldToPoint(
-        position,
-        ComponentsManager::get()->getComponentCamera()->getCamera()
-    );
-
-    float iTime = this->ttlWave.getAcumulatedTime();
-
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(float), &iTime);
-    clSetKernelArg(kernel, 3, sizeof(float), &this->waveSpeed);
-    clSetKernelArg(kernel, 4, sizeof(int), &focalPoint.x);
-    clSetKernelArg(kernel, 5, sizeof(int), &focalPoint.y);
-    clSetKernelArg(kernel, 6, sizeof(float), &currentSize);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
-    clSetKernelArg(kernel, 8, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_waves);
+    clSetKernelArg(kernel, 6, sizeof(int), &numberWaves);
 
     // Process the entire lists
     size_t global_item_size = this->bufferSize;
@@ -110,15 +104,31 @@ void ShaderShockWave::executeKernelOpenCL()
         nullptr
     );
 
-    this->debugKernel();
+    waves.clear();
+
+    //this->debugKernel();
 }
 
-void ShaderShockWave::setPosition(const Vertex3D &position) {
-    ShaderShockWave::position = position;
-}
-
-void ShaderShockWave::reset()
+void ShaderShockWave::addShockWave(ShockWave *wave)
 {
-    currentSize = startSize;
-    ttlWave.setEnabled(true);
+    Point2D focalPoint = Transforms::WorldToPoint(
+        wave->getPosition(),
+        ComponentsManager::get()->getComponentCamera()->getCamera(
+    ));
+
+    /*Logging::Log("iTime: %f | speed: %.2f | x: %d | y: %d | currentSize: %.2f",
+         wave->getTtlWave().getAcumulatedTime(),
+         wave->getSpeed(),
+         focalPoint.x,
+         focalPoint.y,
+         wave->getCurrentSize()
+    );*/
+
+    this->waves.push_back(OCShockWave{
+        wave->getTtlWave().getAcumulatedTime(),
+        wave->getSpeed(),
+        focalPoint.x,
+        focalPoint.y,
+        wave->getCurrentSize()
+    });
 }

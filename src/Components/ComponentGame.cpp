@@ -15,6 +15,8 @@
 
 ComponentGame::ComponentGame()
 :
+    cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
+    cameraInGamePosition(Vertex3D(0, -1000, -1000)),
     textWriter(nullptr),
     fadeToGameState(nullptr),
     player(nullptr),
@@ -25,10 +27,10 @@ ComponentGame::ComponentGame()
     imageSplash(nullptr),
     imageCrossFire(nullptr),
     levelLoader(nullptr),
-    shaderClouds(nullptr),
     shaderBackgroundImage(nullptr),
     shaderTrailBuffer(nullptr),
     shaderColor(nullptr),
+    shaderShockWave(nullptr),
     gameState(EngineSetup::GameState::NONE),
     primaryColor(Color(255, 0, 0)),
     secondaryColor(Color(1, 179, 52)),
@@ -67,8 +69,6 @@ void ComponentGame::onStart()
 
     playerStartPosition = Vertex3D(-40, 2990, Z_COORDINATE_GAMEPLAY);
 
-    cameraCountDownPosition = Vertex3D(0, 3000, 5000);
-    cameraInGamePosition = Vertex3D(0, -1000, -1000);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
@@ -81,19 +81,19 @@ void ComponentGame::onStart()
     loadPlayer();
     loadWeapons();
     loadLevels();
+    loadShaders();
+}
 
-    shaderClouds = new ShaderClouds(false, Color::black());
-
+void ComponentGame::loadShaders()
+{
     shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-    shaderBackgroundImage->setEnabled(true);
-    shaderBackgroundImage->setUseOffset(true);
-
     shaderColor = new ShaderColor(false, Color::red(), 0.75);
-
-    shaderTrailBuffer = new ShaderTrailBuffer(true);
-    shaderTrailBuffer->clearStencilBuffer();
-
     shaderLasers = new ShaderProjectiles();
+    shaderShockWave = new ShaderShockWave(true);
+    shaderTrailBuffer = new ShaderTrailBuffer(true);
+
+    shaderBackgroundImage->setUseOffset(true);
+    shaderTrailBuffer->clearStencilBuffer();
 }
 
 ComponentGame::~ComponentGame()
@@ -105,7 +105,6 @@ ComponentGame::~ComponentGame()
 
     delete shaderLasers;
     delete shaderBackgroundImage;
-    delete shaderClouds;
     delete shaderColor;
     delete shaderTrailBuffer,
 
@@ -123,7 +122,6 @@ ComponentGame::~ComponentGame()
 void ComponentGame::preUpdate()
 {
     EngineSetup::GameState state = getGameState();
-
 
     if (state == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -153,6 +151,7 @@ void ComponentGame::preUpdate()
 void ComponentGame::onUpdate()
 {
     EngineSetup::GameState state = getGameState();
+
 
     switch(state) {
         case EngineSetup::PRESS_KEY_NEWLEVEL:
@@ -853,9 +852,9 @@ void ComponentGame::addObjectsToStencilBuffer()
 void ComponentGame::updateShaders()
 {
     shaderTrailBuffer->update();
-    shaderClouds->update();
     shaderColor->update();
     shaderLasers->update();
+    shaderShockWave->update();
 }
 
 void ComponentGame::zoomCameraCountDown()
@@ -1042,14 +1041,9 @@ ShaderImage *ComponentGame::getShaderBackgroundImage() const {
     return shaderBackgroundImage;
 }
 
-ShaderClouds *ComponentGame::getShaderClouds() const {
-    return shaderClouds;
-}
-
 void ComponentGame::handleSplash()
 {
     splashCounter.setEnabled(true);
-    shaderClouds->setEnabled(false);
 
     ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
@@ -1060,13 +1054,14 @@ void ComponentGame::handleSplash()
 
 void ComponentGame::addProjectilesToShaderLasers()
 {
-    if (getGameState() != EngineSetup::GAMING && getGameState() != EngineSetup::COUNTDOWN) return;
+    if (gameState != EngineSetup::GAMING && gameState != EngineSetup::COUNTDOWN && gameState != EngineSetup::PRESS_KEY_BY_WIN) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
 
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         auto ray = dynamic_cast<ProjectileRay *> (object);
+        auto wave = dynamic_cast<ShockWave *> (object);
 
         if (projectile != nullptr) {
             shaderLasers->addProjectile(
@@ -1074,6 +1069,10 @@ void ComponentGame::addProjectilesToShaderLasers()
                 projectile->getColor(),
                 (float) projectile->getWeaponType()->getSpeed()
             );
+        }
+
+        if (wave != nullptr) {
+            shaderShockWave->addShockWave(wave);
         }
 
         if (ray != nullptr) {
@@ -1093,4 +1092,8 @@ TextWriter *ComponentGame::getTextWriter() {
 void ComponentGame::handlePressKeyByWin()
 {
     removeInGameObjects();
+}
+
+ShaderTrailBuffer *ComponentGame::getShaderTrailBuffer() const {
+    return shaderTrailBuffer;
 }

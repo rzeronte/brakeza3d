@@ -124,7 +124,7 @@ void ShaderTrailBuffer::executeKernelOpenCL()
         nullptr
     );
 
-    this->debugKernel();
+    //this->debugKernel();
 }
 
 void ShaderTrailBuffer::addStencilBufferObject(Object3D *o)
@@ -139,4 +139,8 @@ void ShaderTrailBuffer::addStencilBufferObject(Object3D *o)
 
 void ShaderTrailBuffer::clearStencilBuffer() {
     std::fill(stencilObjectsBuffer, stencilObjectsBuffer + bufferSize, false);
+}
+
+bool *ShaderTrailBuffer::getStencilObjectsBuffer() const {
+    return stencilObjectsBuffer;
 }

@@ -54,7 +54,6 @@ private:
     Counter counterStucked;
 
     ShaderBlink *blink;
-    ShaderShockWave *shockWave;
 
     RayLight rayLight;
 
@@ -213,8 +212,6 @@ public:
     [[nodiscard]] PlayerReflection *getReflection();
 
     [[nodiscard]] LightPoint3D *getLight() const;
-
-    ShaderShockWave *getShockWave() const;
 };
 
 

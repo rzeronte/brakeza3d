@@ -1,6 +1,7 @@
 #include "../../include/Components/ComponentGameInput.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../darkheaz/src/shaders/ShockWave.h"
 
 ComponentGameInput::ComponentGameInput() : controllerAxisThreshold(0.1), lockRightStick(false)
 {
@@ -355,9 +356,10 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
         (keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB())
     ) {
-        player->getShockWave()->reset();
-        player->getShockWave()->setPosition(player->getPosition());
-        player->getShockWave()->setEnabled(true);
+        Brakeza3D::get()->addObject3D(
+            new ShockWave(player->getPosition(), 0.50, 50, 1, true),
+            "shockWave_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        );
 
         const float dashEnergyCost = 10;
 

@@ -61,6 +61,7 @@ public:
 
     [[nodiscard]] ShaderBlink *getBlink();
 
+    void handleDie();
 };
 
 

@@ -19,7 +19,6 @@ Player::Player() :
     counterDamageBlink (Counter(0.45)),
     counterStucked(Counter(5)),
     blink(nullptr),
-    shockWave(nullptr),
     rayLight(RayLight(
         false,
         this,
@@ -302,8 +301,6 @@ void Player::onUpdate()
 void Player::postUpdate()
 {
     if (!isEnabled()) return;
-
-    shockWave->onUpdate();
 
     if (state == PlayerState::DEAD) {
         return;
@@ -611,8 +608,6 @@ void Player::loadShaders()
 
     counterDamageBlink.setEnabled(false);
     reflection.loadBlinkShader();
-
-    shockWave = new ShaderShockWave(true, getPosition(), 50, 0.25, 1);
 }
 
 PlayerState Player::getState() const
@@ -710,13 +705,8 @@ Player::~Player()
 {
     delete light;
     delete blink;
-    delete shockWave;
 
     for (auto w : weaponTypes) {
         delete w;
     }
-}
-
-ShaderShockWave *Player::getShockWave() const {
-    return shockWave;
 }

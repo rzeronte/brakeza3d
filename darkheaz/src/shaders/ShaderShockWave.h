@@ -12,24 +12,29 @@
 #include "../../../include/Objects/Point2D.h"
 #include "../../../include/Misc/Counter.h"
 #include "../../../include/Render/ShaderOpenCL.h"
+#include "ShockWave.h"
+
+#define MAX_SHOCK_WAVES 5
+
+struct OCShockWave {
+    float iTime;
+    float speed;
+    int focalPointX;
+    int focalPointY;
+    float currentSize;
+};
 
 class ShaderShockWave: public ShaderOpenCL {
-    float startSize;
-    float currentSize;
-    float waveSpeed;
-    Counter ttlWave;
-    Vertex3D position;
-
+    std::vector<OCShockWave> waves;
+    cl_mem opencl_buffer_waves;
 public:
-    ShaderShockWave(bool active, Vertex3D position, float size, float speed, float ttl);
+    explicit ShaderShockWave(bool active);
 
-    void onUpdate();
-
-    void reset();
+    void update() override;
 
     void executeKernelOpenCL();
 
-    void setPosition(const Vertex3D &position);
+    void addShockWave(ShockWave *wave);
 };
 
 
