@@ -198,6 +198,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
             }
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->getShaderTrailBuffer()->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     } else {
@@ -214,6 +215,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
             }
             if (Tools::isPixelInWindow(x, y)) {
                 EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                ComponentsManager::get()->getComponentGame()->getShaderTrailBuffer()->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
             }
         }
     }
