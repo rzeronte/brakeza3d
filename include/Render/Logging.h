@@ -15,6 +15,8 @@ public:
 
     static void Log(const char *, ...);
 
+    static void Message(const char *, ...);
+
     void Log(float value);
 
 };

@@ -64,6 +64,7 @@ private:
     Color secondaryColor;
     Color thirdColor;
 
+    VideoPlayer* videoPlayer;
     //PathFinder *pathFinder;
 public:
     ComponentGame();
