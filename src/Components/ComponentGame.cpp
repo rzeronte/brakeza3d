@@ -78,6 +78,8 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
+    videoPlayer = new VideoPlayer(SETUP->VIDEOS_FOLDER + "sample.avi");
+
     loadPlayer();
     loadWeapons();
     loadLevels();
@@ -127,7 +129,7 @@ void ComponentGame::preUpdate()
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
             splashCounter.setEnabled(false);
-            makeFadeToGameState(EngineSetup::GameState::MENU);
+            makeFadeToGameState(EngineSetup::GameState::INTRO);
         }
 
         imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
@@ -150,10 +152,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-    EngineSetup::GameState state = getGameState();
-
-
-    switch(state) {
+    switch(gameState) {
         case EngineSetup::PRESS_KEY_NEWLEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
             textWriter->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
@@ -193,6 +192,14 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::PRESS_KEY_BY_WIN: {
             showLevelStatistics();
+            break;
+        }
+        case EngineSetup::INTRO: {
+            videoPlayer->onUpdate();
+
+            if (videoPlayer->isFinished()) {
+                setGameState(EngineSetup::GameState::MENU);
+            }
             break;
         }
         case EngineSetup::NONE:
@@ -1045,11 +1052,11 @@ void ComponentGame::handleSplash()
 {
     splashCounter.setEnabled(true);
 
-    ComponentSound::fadeInMusic(
+    /*ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
         -1,
         SPLASH_TIME * 1000
-    );
+    );*/
 }
 
 void ComponentGame::addProjectilesToShaderLasers()

@@ -14,7 +14,7 @@ public:
 
     static EngineSetup *instance;
 
-    bool LOGGING = false;
+    bool LOGGING = true;
 
     bool IMGUI_ENABLED = true;
 
@@ -127,6 +127,7 @@ public:
     std::string MAPS_FOLDER = "../assets/maps/";
     std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
+    std::string VIDEOS_FOLDER = "../assets/videos/";
     std::string CONFIG_FOLDER = "../config/";
     std::string SOUNDS_FOLDER = "../assets/sounds/";
     std::string MODELS_FOLDER = "../assets/models/";
@@ -287,6 +288,7 @@ public:
         PRESS_KEY_GAMEOVER = 9,
         CREDITS = 10,
         PRESS_KEY_BY_WIN = 11,
+        INTRO = 12,
 
     } GameState;
 };

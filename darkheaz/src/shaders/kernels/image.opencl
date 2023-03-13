@@ -1,5 +1,10 @@
 unsigned int createRGB(int r, int g, int b);
 
+#define PI 3.14159
+#define FLOW_SPEED_FACTOR 0.5
+#define AMPLITUDE_FACTOR 3.0
+#define NUMBER_OF_WAVES 20.0
+
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
@@ -25,14 +30,18 @@ __kernel void onUpdate(
 
     float2 offsetInput = { offsetX, offsetY };
 
+
     if (usingOffset > 0) {
         st /= 1.75;
         st += center - offsetToCenter + offsetInput;
     }
 
+    // -- WAVE EFFECT
+    st.x += sin(st.y * NUMBER_OF_WAVES * PI + iTime * FLOW_SPEED_FACTOR) * (1.0 / resolution.x) * AMPLITUDE_FACTOR;
+    // --
+
     int cx = st.x * screenWidth;
     int cy = st.y * screenHeight;
-
     int index = cy * screenWidth + cx;
 
     __global unsigned char *im = &image[index];
