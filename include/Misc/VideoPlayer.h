@@ -8,40 +8,51 @@
 
 #include <string>
 #include <SDL_render.h>
+#include <SDL_audio.h>
 #include "Counter.h"
 
 extern "C" {
-    #include <libavutil/dict.h>
-    #include <libavformat/avformat.h>
+#include <libavutil/dict.h>
+#include <libavformat/avformat.h>
 }
-
-#define SDL_AUDIO_BUFFER_SIZE 1024
 
 class VideoPlayer {
     int videoStream = -1;
     int audioStream = -1;
 
     AVFormatContext *pFormatCtx = nullptr;
-    AVFrame *pFrame = nullptr;
-    AVFrame *pFrameRGB = nullptr;
-    AVCodecContext *pCodecCtx = nullptr;
-    struct SwsContext *sws_ctx = nullptr;
-    SDL_Texture* bmp = nullptr;
-    SDL_Surface* surf = nullptr;
-
-    AVCodec *pCodec;
-    Counter *fps;
+    AVFrame *videoFrame = nullptr;
+    AVFrame *videoFrameRGB = nullptr;
+    AVCodecContext *videoCodecContext = nullptr;
+    struct SwsContext *swsContext = nullptr;
+    SDL_Texture* screenTexture = nullptr;
 
     bool finished;
+    AVCodec *videoCodec;
+    Counter *fps;
+
+    AVCodec *audioCodec;
+    AVCodecContext *audioContext;
+
+    SDL_AudioDeviceID audioDeviceId;
+    SDL_AudioSpec want, have;
+    AVCodecParameters *audioCodecParameters;
+
+    AVFrame *audioFrame;
+
 public:
-    VideoPlayer(const std::string &filename);
+    explicit VideoPlayer(const std::string &filename);
 
     void findFirstStream(AVFormatContext *pFormatCtx);
     void onUpdate();
     void renderToScreen();
     void renderToScreenTexture();
 
-    bool isFinished() const;
+    [[nodiscard]] bool isFinished() const;
+
+    void playAudio(AVCodecContext *ctx, AVPacket *pkt, AVFrame *frame, SDL_AudioDeviceID auddev);
+
+    void renderToScreenFromYUV();
 };
 
 
