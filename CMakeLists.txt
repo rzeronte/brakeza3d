@@ -276,9 +276,7 @@ add_executable(Brakeza3D
     darkheaz/src/bosses/BossLevel20.h
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h
-    darkheaz/src/shaders/ShaderClouds.cpp
-    darkheaz/src/shaders/ShaderClouds.h
-    include/Objects/Vector2D.cpp
+        include/Objects/Vector2D.cpp
     include/Objects/Vector2D.h
     include/Misc/ColorHSV.cpp
     include/Misc/ColorHSV.h
@@ -310,7 +308,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderProjectiles.cpp
     darkheaz/src/shaders/ShaderProjectiles.h
     darkheaz/src/weapons/AmmoProjectile.h
-)
+        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
