@@ -10,12 +10,13 @@
 #include <libavcodec/avcodec.h>
 
 extern "C" {
-    #include <libavutil/dict.h>
-    #include <libavformat/avformat.h>
-    #include <libswscale/swscale.h>
+#include <libavutil/dict.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 }
 
-VideoPlayer::VideoPlayer(const std::string &filename) : finished(false){
+VideoPlayer::VideoPlayer(const std::string &filename) : finished(false)
+{
     pFormatCtx = NULL;
 
     if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
@@ -33,99 +34,122 @@ VideoPlayer::VideoPlayer(const std::string &filename) : finished(false){
 
     this->findFirstStream(pFormatCtx);
 
-    bmp = SDL_CreateTexture(
+    screenTexture = SDL_CreateTexture(
         ComponentsManager::get()->getComponentWindow()->getRenderer(),
         SDL_PIXELFORMAT_YV12,
         SDL_TEXTUREACCESS_STREAMING,
-        pCodecCtx->width,
-        pCodecCtx->height
+        videoCodecContext->width,
+        videoCodecContext->height
     );
+
 }
 
 void VideoPlayer::findFirstStream(AVFormatContext *pFormatCtx)
 {
-
     // Find the first video stream
     videoStream = -1;
     Logging::Log("VideoPlayer File Number Streams: (%d)", pFormatCtx->nb_streams);
 
     for (unsigned int i = 0; i < pFormatCtx->nb_streams; i++) {
-        Logging::Log("VideoPlayer AVI stream TypeCoded (%s)", pFormatCtx->streams[i]->codec->codec_type);
+        Logging::Message("VideoPlayer AVI stream TypeCoded (%d)", pFormatCtx->streams[i]->codec->codec_type);
         if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             videoStream = (int) i;
-            break;
+        }
+
+        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+            audioCodec = avcodec_find_decoder(pFormatCtx->streams[i]->codecpar->codec_id);
+            audioCodecParameters = pFormatCtx->streams[i]->codecpar;
+            audioStream = (int) i;
         }
     }
 
     if (videoStream == -1) {
-        Logging::Log("VideoPlayer didn't find a video stream");
+        Logging::Message("VideoPlayer didn't find a video stream");
         exit(-1);
     }
 
-    Logging::Log("VideoPlayer stream found it (%s)", videoStream);
+    if (audioStream == -1) {
+        Logging::Message("VideoPlayer didn't find a audio stream");
+        exit(-1);
+    }
 
-    pCodecCtx = nullptr;
-
-    // Get a pointer to the codec context for the video stream
-    pCodecCtx = pFormatCtx->streams[videoStream]->codec;
-
-    pCodec = nullptr;
-
-    // Find the decoder for the video stream
-    pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
-    if (pCodec == nullptr) {
-        Logging::Log("Unsupported codec!");
+    videoCodecContext = pFormatCtx->streams[videoStream]->codec;
+    videoCodec = avcodec_find_decoder(videoCodecContext->codec_id);
+    if (videoCodec == nullptr) {
+        Logging::Log("Unsupported video codec!");
         exit(-1); // Codec not found
     }
 
-    // Copy context
-    /*pCodecCtx = avcodec_alloc_context3(pCodec);
-    if (avcodec_copy_context(pCodecCtx, pCodecCtxOrig) != 0) {
-        fprintf(stderr, "Couldn't copy codec context");
-        exit(-1); // Error copying codec context
-    }*/
+    audioContext = avcodec_alloc_context3(audioCodec);
+    if (avcodec_parameters_to_context(audioContext, audioCodecParameters) < 0) {
+        perror("audCtx");
+        exit(-1);
+    }
 
     // Open codec
-    if (avcodec_open2(pCodecCtx, pCodec, nullptr) < 0) {
-        Logging::Log("Could not open codec!");
+    if (avcodec_open2(videoCodecContext, videoCodec, nullptr) < 0) {
+        Logging::Log("Could not open video codec!");
         exit(-1); //
     }
 
-    pFrame = NULL;
-    pFrameRGB = NULL;
+    if (avcodec_open2(audioContext, audioCodec, NULL) < 0) {
+        Logging::Log("Could not open audio codec!");
+        exit(-1); //
+    }
+
+    videoFrame = NULL;
+    videoFrameRGB = NULL;
 
     // Allocate video frame
-    pFrame = av_frame_alloc();
+    videoFrame = av_frame_alloc();
 
-    pFrameRGB = av_frame_alloc();
-    if (pFrameRGB == NULL) {
+    videoFrameRGB = av_frame_alloc();
+    if (videoFrameRGB == NULL) {
         exit(-1);
     }
 
     uint8_t *buffer = NULL;
     int numBytes;
     // Determine required buffer size and allocate buffer
-    numBytes = avpicture_get_size(AV_PIX_FMT_RGB32, pCodecCtx->width,pCodecCtx->height);
+    numBytes = avpicture_get_size(AV_PIX_FMT_RGB32, videoCodecContext->width, videoCodecContext->height);
     buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
 
     // Assign appropriate parts of buffer to image planes in pFrameRGB
     // Note that pFrameRGB is an AVFrame, but AVFrame is a superset
     // of AVPicture
-    avpicture_fill((AVPicture *)pFrameRGB, buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height);
+    avpicture_fill((AVPicture *)videoFrameRGB, buffer, AV_PIX_FMT_RGB24, videoCodecContext->width, videoCodecContext->height);
 
     // initialize SWS context for software scaling
-    sws_ctx = sws_getContext(
-        pCodecCtx->width,
-        pCodecCtx->height,
-        pCodecCtx->pix_fmt,
-        pCodecCtx->width,
-        pCodecCtx->height,
+    swsContext = sws_getContext(
+        videoCodecContext->width,
+        videoCodecContext->height,
+        videoCodecContext->pix_fmt,
+        videoCodecContext->width,
+        videoCodecContext->height,
         AV_PIX_FMT_BGR32,
         SWS_FAST_BILINEAR,
         NULL,
         NULL,
         NULL
     );
+
+    //--
+    audioFrame = av_frame_alloc();
+
+    SDL_zero(want);
+    SDL_zero(have);
+    want.samples = 2048;
+    want.channels = 2;
+    want.format = AUDIO_F32SYS; // Sample format
+    want.silence = 0;
+    want.userdata = audioContext;
+
+    audioDeviceId = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+    SDL_PauseAudioDevice(audioDeviceId, 0);
+    if (!audioDeviceId) {
+        Logging::Message("Error audio device videoPlayer: %s", SDL_GetError());
+        exit(-1);
+    }
 }
 
 void VideoPlayer::onUpdate()
@@ -139,26 +163,29 @@ void VideoPlayer::onUpdate()
         // Is this a packet from the video stream?
         if (packet.stream_index == videoStream) {
             // Decode video frame
-            avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
+            avcodec_decode_video2(videoCodecContext, videoFrame, &frameFinished, &packet);
 
             // Did we get a video frame?
             if (frameFinished) {
                 // Convert the image from its native format to RGB
                 sws_scale(
-                    sws_ctx,
-                    (uint8_t const * const *)pFrame->data,
-                    pFrame->linesize,
-                    0,
-                    pCodecCtx->height,
-                    pFrameRGB->data,
-                    pFrameRGB->linesize
+                        swsContext,
+                        (uint8_t const * const *)videoFrame->data,
+                        videoFrame->linesize,
+                        0,
+                        videoCodecContext->height,
+                        videoFrameRGB->data,
+                        videoFrameRGB->linesize
                 );
-
             }
         }
-        this->renderToScreen();
+        if (packet.stream_index == audioStream) {
+            playAudio(audioContext, &packet, audioFrame, audioDeviceId);
+        }
+        this->renderToScreenFromYUV();
         av_packet_unref(&packet);
     } else {
+        Logging::Log("Finished");
         finished = true;
     }
 }
@@ -166,28 +193,27 @@ void VideoPlayer::onUpdate()
 void VideoPlayer::renderToScreenTexture()
 {
     SDL_UpdateTexture(
-        ComponentsManager::get()->getComponentWindow()->getScreenTexture(),
-        nullptr,
-        pFrameRGB->data[0],
-        pFrameRGB->linesize[0]
+            ComponentsManager::get()->getComponentWindow()->getScreenTexture(),
+            nullptr,
+            videoFrameRGB->data[0],
+            videoFrameRGB->linesize[0]
     );
 }
 
 void VideoPlayer::renderToScreen()
 {
-    uint8_t *data = pFrameRGB->data[0];
+    uint8_t *data = videoFrameRGB->data[0];
 
-    for(int y = 0; y < pCodecCtx->height; y++) {
-        for(int x = 0; x < pCodecCtx->width; x++) {
+    for(int y = 0; y < videoCodecContext->height; y++) {
+        for(int x = 0; x < videoCodecContext->width; x++) {
 
-            int offset = 4 * x + y * pFrameRGB->linesize[0];
+            int offset = 4 * x + y * videoFrameRGB->linesize[0];
 
             Uint8 r = data[offset];
             Uint8 g = data[offset + 1];
             Uint8 b = data[offset + 2];
 
-            auto color = Color(r, g, b);
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+            EngineBuffers::getInstance()->setVideoBuffer(x, y, Color(r, g, b).getColor());
         }
     }
 }
@@ -195,4 +221,50 @@ void VideoPlayer::renderToScreen()
 bool VideoPlayer::isFinished() const
 {
     return finished;
+}
+
+void VideoPlayer::playAudio(AVCodecContext *ctx, AVPacket *pkt, AVFrame *frame, SDL_AudioDeviceID auddev)
+{
+    if (avcodec_send_packet(ctx, pkt) < 0) {
+        perror("send packet");
+        return;
+    }
+    if (avcodec_receive_frame(ctx, frame) < 0) {
+        perror("receive frame");
+        return;
+    }
+    int size;
+    int bufsize = av_samples_get_buffer_size(&size, ctx->channels, frame->nb_samples, (AVSampleFormat) frame->format, 0);
+    bool isplanar = av_sample_fmt_is_planar((AVSampleFormat) frame->format) == 1;
+    for (int ch = 0; ch < ctx->channels; ch++) {
+        if (!isplanar) {
+            if (SDL_QueueAudio(auddev, frame->data[ch], frame->linesize[ch]) < 0) {
+                perror("playAudio");
+                printf(" %s\n", SDL_GetError());
+                return;
+            }
+        } else {
+            if (SDL_QueueAudio(auddev, frame->data[0] + size*ch, size) < 0) {
+                perror("playAudio");
+                printf(" %s\n", SDL_GetError());
+                return;
+            }
+        }
+    }
+}
+
+
+void VideoPlayer::renderToScreenFromYUV()
+{
+    SDL_UpdateYUVTexture(
+            screenTexture,
+            NULL,
+            videoFrame->data[0],
+            videoFrame->linesize[0],
+            videoFrame->data[1],
+            videoFrame->linesize[1],
+            videoFrame->data[2],
+            videoFrame->linesize[2]
+    );
+    SDL_RenderCopy(ComponentsManager::get()->getComponentWindow()->getRenderer(), screenTexture, NULL, NULL);
 }
