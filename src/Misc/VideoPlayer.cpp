@@ -15,7 +15,7 @@ extern "C" {
     #include <libswscale/swscale.h>
 }
 
-VideoPlayer::VideoPlayer(const std::string &filename) {
+VideoPlayer::VideoPlayer(const std::string &filename) : finished(false){
     pFormatCtx = NULL;
 
     if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
@@ -133,6 +133,8 @@ void VideoPlayer::onUpdate()
     AVPacket packet;
     int frameFinished;
 
+    if (finished) return;
+
     if (av_read_frame(pFormatCtx, &packet) >= 0) {
         // Is this a packet from the video stream?
         if (packet.stream_index == videoStream) {
@@ -156,6 +158,8 @@ void VideoPlayer::onUpdate()
         }
         this->renderToScreen();
         av_packet_unref(&packet);
+    } else {
+        finished = true;
     }
 }
 
@@ -182,8 +186,13 @@ void VideoPlayer::renderToScreen()
             Uint8 g = data[offset + 1];
             Uint8 b = data[offset + 2];
 
-            auto color = new Color(r, g, b);
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, color->getColor());
+            auto color = Color(r, g, b);
+            EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
         }
     }
+}
+
+bool VideoPlayer::isFinished() const
+{
+    return finished;
 }

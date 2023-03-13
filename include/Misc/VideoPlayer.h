@@ -15,8 +15,12 @@ extern "C" {
     #include <libavformat/avformat.h>
 }
 
+#define SDL_AUDIO_BUFFER_SIZE 1024
+
 class VideoPlayer {
     int videoStream = -1;
+    int audioStream = -1;
+
     AVFormatContext *pFormatCtx = nullptr;
     AVFrame *pFrame = nullptr;
     AVFrame *pFrameRGB = nullptr;
@@ -27,6 +31,8 @@ class VideoPlayer {
 
     AVCodec *pCodec;
     Counter *fps;
+
+    bool finished;
 public:
     VideoPlayer(const std::string &filename);
 
@@ -34,6 +40,8 @@ public:
     void onUpdate();
     void renderToScreen();
     void renderToScreenTexture();
+
+    bool isFinished() const;
 };
 
 
