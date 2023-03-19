@@ -64,7 +64,6 @@ private:
     Color secondaryColor;
     Color thirdColor;
 
-    VideoPlayer* videoPlayer;
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -191,6 +190,10 @@ public:
     [[nodiscard]] LevelLoader *getLevelLoader() const;
 
     void loadShaders();
+
+    VideoPlayer *getVideoPlayer() const;
+
+    VideoPlayer* videoPlayer;
 };
 
 

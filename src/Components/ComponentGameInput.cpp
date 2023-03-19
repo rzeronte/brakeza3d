@@ -73,7 +73,6 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 void ComponentGameInput::handleEscape(SDL_Event *event)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-
     auto game = ComponentsManager::get()->getComponentGame();
     auto gameState = game->getGameState();
 
@@ -83,6 +82,11 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
     ) {
         if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
             game->makeFadeToGameState(EngineSetup::GameState::GAMING);
+            return;
+        }
+
+        if (gameState == EngineSetup::GameState::INTRO)  {
+            game->videoPlayer->finished = true;
             return;
         }
 
@@ -100,6 +104,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             SETUP->screenHeight / 2
         );
     }
+
 }
 
 void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)

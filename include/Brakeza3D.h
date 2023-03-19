@@ -27,8 +27,6 @@ private:
 
     Timer engineTimer;
 
-    bool finish = false;
-
     float deltaTime = 0;
     float last_ticks = 0;
     float current_ticks = 0;
@@ -83,6 +81,8 @@ public:
     void controlFrameRate() const;
 
     float &getExecutionTime();
+
+    bool finish = false;
 };
 
 
