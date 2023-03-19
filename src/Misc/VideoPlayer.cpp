@@ -4,9 +4,6 @@
 
 #include "../../include/Misc/VideoPlayer.h"
 #include <string>
-#include "../../include/Render/Logging.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include <libavcodec/avcodec.h>
 #include <thread>
@@ -21,38 +18,14 @@ extern "C" {
 int threadPlayVideo(void *raw)
 {
     auto *data = (ThreadVideoData *) raw;
-
-    avcodec_decode_video2(data->videoContext, data->videoFrame, &data->frameFinished, data->packet);
-
     int frameFinished;
-    double pts;
-
-    if (data->packet->dts != AV_NOPTS_VALUE) {
-        pts = av_frame_get_best_effort_timestamp(data->videoFrame);
-    } else {
-        pts = 0;
-    }
-
-    pts *= av_q2d(data->videoContext->time_base);
-
-    double delay = pts - data->lastPts;
-
-    /*Logging::Message("frame: %d, pts: %f, lastPts: %f, delay: %f, SDL_Delay(%f)",
-        data->videoContext->frame_number,
-        pts,
-        data->lastPts,
-        delay
-    );*/
-
-    if (delay > 0) {
-        //SDL_Delay(44);
-        std::this_thread::sleep_for(std::chrono::milliseconds(44));
-    }
-
-    data->lastPts = pts;
+    avcodec_decode_video2(data->videoContext, data->videoFrame, &frameFinished, data->packet);
 
     if (frameFinished) {
+        data->player->renderToScreenFromYUV();
     }
+
+    SDL_Delay(41);
 
     return 0;
 }
@@ -61,28 +34,28 @@ int threadPlayAudio(void *raw)
 {
     auto data = (ThreadAudioData *) raw;
 
-    if (avcodec_send_packet(data->ctx, data->pkt) < 0) {
+    if (avcodec_send_packet(data->audioContext, data->packet) < 0) {
         perror("send packet");
         return -1;
     }
-    if (avcodec_receive_frame(data->ctx, data->frame) < 0) {
+    if (avcodec_receive_frame(data->audioContext, data->audioFrame) < 0) {
         perror("receive frame");
         return -1;
     }
 
     int size;
 
-    av_samples_get_buffer_size(&size, data->ctx->channels, data->frame->nb_samples, (AVSampleFormat) data->frame->format, 0);
-    bool isPlanar = av_sample_fmt_is_planar((AVSampleFormat) data->frame->format) == 1;
-    for (int ch = 0; ch < data->ctx->channels; ch++) {
+    av_samples_get_buffer_size(&size, data->audioContext->channels, data->audioFrame->nb_samples, (AVSampleFormat) data->audioFrame->format, 0);
+    bool isPlanar = av_sample_fmt_is_planar((AVSampleFormat) data->audioFrame->format) == 1;
+    for (int ch = 0; ch < data->audioContext->channels; ch++) {
         if (!isPlanar) {
-            if (SDL_QueueAudio(data->auddev, data->frame->data[ch], data->frame->linesize[ch]) < 0) {
+            if (SDL_QueueAudio(data->audioDeviceId, data->audioFrame->data[ch], data->audioFrame->linesize[ch]) < 0) {
                 perror("playAudio");
                 printf(" %s\n", SDL_GetError());
                 return 0;
             }
         } else {
-            if (SDL_QueueAudio(data->auddev, data->frame->data[0] + size*ch, size) < 0) {
+            if (SDL_QueueAudio(data->audioDeviceId, data->audioFrame->data[0] + size*ch, size) < 0) {
                 perror("playAudio");
                 printf(" %s\n", SDL_GetError());
                 return 0;
@@ -92,35 +65,6 @@ int threadPlayAudio(void *raw)
 
     return 0;
 }
-
-int audio_main_thread(void *raw)
-{
-    auto *data = (ThreadData *) raw;
-
-    //for (;;) {
-    //}
-
-    return 0;
-}
-
-int video_main_thread(void *raw)
-{
-    auto *data = (ThreadData *) raw;
-    int frameFinished;
-
-    for (;;) {
-
-        if (data->player->completed) break;
-
-        Logging::Message("entro");
-        auto videoInfo = ThreadVideoData(data->videoContext, data->videoFrame, data->packet, frameFinished, data->lastPts);
-        SDL_Thread* thread = SDL_CreateThread(threadPlayVideo, "video_m_t", &videoInfo);
-        SDL_WaitThread( thread, NULL );
-    }
-
-    return 0;
-}
-
 
 int decode_thread(void *raw)
 {
@@ -128,56 +72,47 @@ int decode_thread(void *raw)
 
     Logging::Message("decode_thread START");
 
-    AVPacket packet;
-
-    SDL_Thread* audioMainThread = SDL_CreateThread(audio_main_thread, "audioMainThread", &raw);
-    SDL_Thread* videoMainThread = SDL_CreateThread(video_main_thread, "videoMainThread", &raw);
-
+    SDL_Event e;
+    bool &finished = Brakeza3D::get()->finish;
     for (;;) {
+        while (SDL_PollEvent(&e)) {
+            ComponentsManager::get()->getComponentInput()->onSDLPollEvent(&e, finished);
+            ComponentsManager::get()->getComponentGameInput()->onSDLPollEvent(&e, finished);
+        }
+
+        if (finished || data->player->finished) {
+            data->player->finished = true;
+            return -1;
+        }
+
+        AVPacket packet;
         if (av_read_frame(data->pFormatCtx, &packet) >= 0) {
-            SDL_Thread* audioTr = nullptr;
-            std::thread videoTr;
             data->packet = &packet;
 
             if (data->packet->stream_index == data->videoStream) {
-                //auto videoInfo = ThreadVideoData(data->videoContext, data->videoFrame, data->packet, frameFinished, data->lastPts);
-                //videoTr = std::thread( threadPlayVideo, &videoInfo );
-                //if (videoTr.joinable()) videoTr.join();
+                auto videoInfo = ThreadVideoData(data->videoContext, data->videoFrame, data->packet, 0, data->player);
+                threadPlayVideo(&videoInfo);
             }
 
             if (data->packet->stream_index == data->audioStream) {
                 auto audioInfo = ThreadAudioData(data->audioContext, &packet, data->audioFrame, data->audioDeviceId);
-                audioTr = SDL_CreateThread( threadPlayAudio, "audioTr", &audioInfo );
+                threadPlayAudio(&audioInfo );
             }
-
-            //if (videoTr != nullptr) SDL_WaitThread( videoTr, NULL );
-            if (audioTr != nullptr) SDL_WaitThread( audioTr, NULL );
-
-            data->player->renderToScreenFromYUV();
-            data->player->fps->update();
-            data->player->drawSecond();
-            //av_packet_unref(data->packet);
+            av_packet_unref(data->packet);
         } else {
-            Logging::Message("-------------------------------------------------------------- Completed!"),
-            data->player->completed = true;
+            data->player->finished = true;
             break;
         }
     }
 
-    SDL_WaitThread( audioMainThread, NULL );
-    SDL_WaitThread( videoMainThread, NULL );
-    data->finished = true;
 
     return 0;
 }
 
 VideoPlayer::VideoPlayer(const std::string &filename)
 :
-    finished(false),
-    completed(false)
+    finished(false)
 {
-    fps = new Counter();
-    frameCounter = new Counter();
     pFormatCtx = NULL;
 
     if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
@@ -200,9 +135,6 @@ VideoPlayer::VideoPlayer(const std::string &filename)
             videoContext->height
     );
 
-    pts = 0;
-    delay = 0;
-
 }
 
 void VideoPlayer::findFirstStream()
@@ -217,10 +149,7 @@ void VideoPlayer::findFirstStream()
             videoStream = (int) i;
 
             AVRational rational = pFormatCtx->streams[i]->avg_frame_rate;
-            fpsrendering = 1.0 / ((double)rational.num / (double)(rational.den));
-            Logging::Message("Setting frame timer to: %f", fpsrendering);
-            frameCounter->setStep((float) fpsrendering);
-            foundVideo = true;
+            fpsRendering = 1.0 / ((double)rational.num / (double)(rational.den));
         }
 
         if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
@@ -333,68 +262,19 @@ void VideoPlayer::play()
         audioFrame,
         audioDeviceId,
         videoStream,
-        audioStream,
-        lastPts,
-        fps,
-        finished,
-        completed
+        audioStream
     );
+
     threadFunction = SDL_CreateThread(decode_thread, "MainVideoThread", data);
     SDL_WaitThread( threadFunction, NULL );
-    Logging::Message("decode_thread WAITED");
+    Logging::Message("exit decoding...");
 }
 
 void VideoPlayer::onUpdate()
 {
-    fps->update();
-    frameCounter->update();
-
 }
 
-void VideoPlayer::playVideo(void *raw)
-{
-
-}
-
-void VideoPlayer::playAudio(void *raw)
-{
-    auto data = (ThreadAudioData *) raw;
-
-    if (avcodec_send_packet(data->ctx, data->pkt) < 0) {
-        perror("send packet");
-        return;
-    }
-    if (avcodec_receive_frame(data->ctx, data->frame) < 0) {
-        perror("receive frame");
-        return;
-    }
-    int size;
-    av_samples_get_buffer_size(&size, data->ctx->channels, data->frame->nb_samples, (AVSampleFormat) data->frame->format, 0);
-    bool isPlanar = av_sample_fmt_is_planar((AVSampleFormat) data->frame->format) == 1;
-    for (int ch = 0; ch < data->ctx->channels; ch++) {
-        if (!isPlanar) {
-            if (SDL_QueueAudio(data->auddev, data->frame->data[ch], data->frame->linesize[ch]) < 0) {
-                perror("playAudio");
-                printf(" %s\n", SDL_GetError());
-                return;
-            }
-        } else {
-            if (SDL_QueueAudio(data->auddev, data->frame->data[0] + size*ch, size) < 0) {
-                perror("playAudio");
-                printf(" %s\n", SDL_GetError());
-                return;
-            }
-        }
-    }
-}
-
-
-void VideoPlayer::drawSecond() const {
-    int restTime = (int) fps->getAcumulatedTime();
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), Color::red(), 1);
-}
-
-void VideoPlayer::renderToScreenTexture(int frameFinished)
+void VideoPlayer::renderToScreenTexture()
 {
     SDL_UpdateTexture(
         ComponentsManager::get()->getComponentWindow()->getScreenTexture(),
@@ -420,12 +300,6 @@ void VideoPlayer::renderToScreen()
             EngineBuffers::getInstance()->setVideoBuffer(x, y, Color(r, g, b).getColor());
         }
     }
-}
-
-
-void VideoPlayer::waitSync(void *raw)
-{
-
 }
 
 bool VideoPlayer::isFinished() const

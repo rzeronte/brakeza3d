@@ -127,14 +127,15 @@ void ComponentGame::preUpdate()
 
     if (state == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
-        if (splashCounter.isFinished() && splashCounter.isEnabled()) {
-            splashCounter.setEnabled(false);
-            videoPlayer->play();
-            videoPlayer->frameCounter->setEnabled(true);
-            setGameState(EngineSetup::GameState::INTRO);
-        }
 
         imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
+
+        if (splashCounter.isFinished() && splashCounter.isEnabled()) {
+            splashCounter.setEnabled(false);
+            setGameState(EngineSetup::GameState::INTRO);
+            videoPlayer->play();
+        }
+
     }
 
     if (
@@ -197,8 +198,9 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::INTRO: {
-            if (videoPlayer->isFinished()) {
-                setGameState(EngineSetup::GameState::MENU);
+            if (videoPlayer->isFinished() ) {
+                videoPlayer->finished = false;
+                makeFadeToGameState(EngineSetup::GameState::MENU);
             }
             break;
         }
@@ -1052,11 +1054,11 @@ void ComponentGame::handleSplash()
 {
     splashCounter.setEnabled(true);
 
-    /*ComponentSound::fadeInMusic(
+    ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
         -1,
         SPLASH_TIME * 1000
-    );*/
+    );
 }
 
 void ComponentGame::addProjectilesToShaderLasers()
@@ -1103,4 +1105,8 @@ void ComponentGame::handlePressKeyByWin()
 
 ShaderTrailBuffer *ComponentGame::getShaderTrailBuffer() const {
     return shaderTrailBuffer;
+}
+
+VideoPlayer *ComponentGame::getVideoPlayer() const {
+    return videoPlayer;
 }
