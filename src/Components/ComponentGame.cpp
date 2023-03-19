@@ -129,7 +129,9 @@ void ComponentGame::preUpdate()
         splashCounter.update();
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
             splashCounter.setEnabled(false);
-            makeFadeToGameState(EngineSetup::GameState::INTRO);
+            videoPlayer->play();
+            videoPlayer->frameCounter->setEnabled(true);
+            setGameState(EngineSetup::GameState::INTRO);
         }
 
         imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
@@ -195,8 +197,6 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::INTRO: {
-            videoPlayer->onUpdate();
-
             if (videoPlayer->isFinished()) {
                 setGameState(EngineSetup::GameState::MENU);
             }
