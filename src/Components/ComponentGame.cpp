@@ -78,7 +78,7 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
-    videoPlayer = new VideoPlayer(SETUP->VIDEOS_FOLDER + "sample.avi");
+    videoPlayer = new VideoPlayer(SETUP->VIDEOS_FOLDER + "0000-1326.mp4");
 
     loadPlayer();
     loadWeapons();
@@ -165,7 +165,7 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::PRESS_KEY_BY_DEAD: {
-            textWriter->writeTextTTFMiddleScreen("you are die...", Color::black(), 0.5f);
+            textWriter->writeTextTTFMiddleScreen("GAME OVER", Color::black(), 0.5f);
             shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
             break;
         }
@@ -201,6 +201,12 @@ void ComponentGame::onUpdate()
             if (videoPlayer->isFinished() ) {
                 videoPlayer->finished = false;
                 makeFadeToGameState(EngineSetup::GameState::MENU);
+
+                ComponentSound::fadeInMusic(
+                    ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+                    -1,
+                    SPLASH_TIME * 1000
+                );
             }
             break;
         }
@@ -1053,12 +1059,6 @@ ShaderImage *ComponentGame::getShaderBackgroundImage() const {
 void ComponentGame::handleSplash()
 {
     splashCounter.setEnabled(true);
-
-    ComponentSound::fadeInMusic(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
-        -1,
-        SPLASH_TIME * 1000
-    );
 }
 
 void ComponentGame::addProjectilesToShaderLasers()
@@ -1107,6 +1107,6 @@ ShaderTrailBuffer *ComponentGame::getShaderTrailBuffer() const {
     return shaderTrailBuffer;
 }
 
-VideoPlayer *ComponentGame::getVideoPlayer() const {
+VideoPlayer *ComponentGame::getVideoPlayer() {
     return videoPlayer;
 }

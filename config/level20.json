@@ -7,6 +7,74 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": true,
   "enemies": [
+    {
+      "name": "Colossus",
+      "position": { "x": 10, "y": 5 },
+      "model": "spaceships/Challenger.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 0
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 25000,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 2,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Colossus",
+      "position": { "x": 90, "y": 5 },
+      "model": "spaceships/Challenger.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": 0
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 25000,
+        "startAmount": 1000,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.25,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": 2,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    }
   ],
   "items": [
   ],
@@ -14,17 +82,14 @@
     {
       "type": 2,
       "name": "Octscar",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 10 },
       "model": "tentacle.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
-        "from": { "x": 80, "y": 10 },
-        "to": { "x": 80, "y": 40 },
-        "speed": 0.5
+        "type": 0
       },
       "weapon": {
         "index": 0,

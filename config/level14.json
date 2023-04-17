@@ -8,8 +8,8 @@
   "enemies": [
     {
       "name": "Blupincher",
-      "position": {"x": 95, "y": 5},
-      "model": "spaceships/blue_spaceship_02.fbx",
+      "position": {"x": 95, "y": 8},
+      "model": "spaceships/Pancake.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1250,
@@ -52,8 +52,8 @@
     },
     {
       "name": "Blupincher",
-      "position": {"x": 5, "y": 5},
-      "model": "spaceships/blue_spaceship_02.fbx",
+      "position": {"x": 5, "y": 8},
+      "model": "spaceships/Pancake.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1250,

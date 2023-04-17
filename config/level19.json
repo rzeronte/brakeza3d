@@ -9,7 +9,7 @@
     {
       "name": "Colossus",
       "position": { "x": 5, "y": 40},
-      "model": "spaceships/blue_spaceship_01.fbx",
+      "model": "spaceships/Pancake.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -17,7 +17,7 @@
       "motion": {
         "type": 1,
         "from":  { "x": 5,  "y": 40 },
-        "to":  { "x": 35,  "y": 10 },
+        "to":  { "x": 30,  "y": 10 },
         "speed": 0.5
       },
       "weapon": {
@@ -56,7 +56,7 @@
     {
       "name": "Colossus",
       "position": { "x": 95, "y": 40 },
-      "model": "spaceships/blue_spaceship_01.fbx",
+      "model": "spaceships/Pancake.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -64,7 +64,7 @@
       "motion": {
         "type": 1,
         "from":  { "x": 95,  "y": 40 },
-        "to":  { "x": 65,  "y": 10 },
+        "to":  { "x": 70,  "y": 10 },
         "speed": 0.5
       },
       "weapon": {
@@ -103,9 +103,9 @@
     {
       "name": "Shocker",
       "position": { "x": 50,  "y": 10 },
-      "model": "spaceships/purple_spaceship_02.fbx",
+      "model": "spaceships/Imperial.fbx",
       "enableLights": true,
-      "animated": false,
+      "animated": true,
       "stamina": 1500,
       "reward": true,
       "motion": {

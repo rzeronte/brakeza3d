@@ -9,7 +9,7 @@
     {
       "name": "Patrol",
       "position": { "x": 20, "y": 30 },
-      "model": "spaceships/green_spaceship_01.fbx",
+      "model": "spaceships/Bob.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -46,7 +46,7 @@
     {
       "name": "Patrol",
       "position": { "x": 20, "y": 30 },
-      "model": "spaceships/green_spaceship_01.fbx",
+      "model": "spaceships/Bob.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,

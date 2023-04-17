@@ -79,7 +79,7 @@ public:
 
     void executeKernelOpenCL()
     {
-        clEnqueueWriteBuffer(
+            clEnqueueWriteBuffer(
             clCommandQueue,
             openClBufferMappedWithVideoInput,
             CL_TRUE,
