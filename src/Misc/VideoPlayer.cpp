@@ -25,7 +25,7 @@ int threadPlayVideo(void *raw)
         data->player->renderToScreenFromYUV();
     }
 
-    SDL_Delay(41);
+    SDL_Delay(39);
 
     return 0;
 }
@@ -104,7 +104,6 @@ int decode_thread(void *raw)
             break;
         }
     }
-
 
     return 0;
 }
