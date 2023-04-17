@@ -9,7 +9,7 @@
     {
       "name": "Rayer",
       "position": { "x": 10, "y": 30 },
-      "model": "spaceships/green_spaceship_03.fbx",
+      "model": "spaceships/Bob.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -46,7 +46,7 @@
     {
       "name": "Rayer",
       "position": { "x": 90, "y": 30 },
-      "model": "spaceships/green_spaceship_03.fbx",
+      "model": "spaceships/Bob.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -86,7 +86,7 @@
       "type": 0,
       "name": "Leuman",
       "position": { "x": 50, "y": 5 },
-      "model": "spaceships/boss_green_01.fbx",
+      "model": "spaceships/Spitfire.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 3000,

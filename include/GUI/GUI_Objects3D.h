@@ -41,7 +41,7 @@ public:
             ImGui::Begin(title.c_str(), &show, window_flags);
 
 
-            for(int i = 0; i < gameObjects.size(); i++) {
+            for(int i = 0; i < (int)gameObjects.size(); i++) {
                 auto object = gameObjects[i];
 
                 if (object->isRemoved()) {

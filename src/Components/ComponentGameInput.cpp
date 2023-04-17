@@ -86,7 +86,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         }
 
         if (gameState == EngineSetup::GameState::INTRO)  {
-            game->videoPlayer->finished = true;
+            game->getVideoPlayer()->finished = true;
             return;
         }
 

@@ -191,7 +191,7 @@ public:
 
     void loadShaders();
 
-    VideoPlayer *getVideoPlayer() const;
+    VideoPlayer *getVideoPlayer();
 
     VideoPlayer* videoPlayer;
 };
