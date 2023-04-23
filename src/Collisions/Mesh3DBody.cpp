@@ -6,7 +6,6 @@
 Mesh3DBody::Mesh3DBody()
 {
     setMass(0.f);
-    BSPEntityIndex = -1;
 }
 
 void Mesh3DBody::integrate()

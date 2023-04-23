@@ -368,9 +368,6 @@ void BSPMap::bindTrianglesLightmaps() {
 
         for (int j = offset; j < offset + num; j++) {
 
-            this->model_triangles[j]->surfaceBSPIndex = surfaceId;
-            this->model_triangles[j]->bspTriangle = true;
-
             /*if (lightmaps[surfaceId].isLightMapped()) {
                 lightmap_t *lt = &surface_lightmaps[surfaceId];
 
@@ -433,17 +430,16 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     surface_t *surf = this->getSurface(surface);
 
     Maths::TriangulatePolygon(
-            num_vertices,
-            vertices,
-            normal,
-            model_triangles,
-            this,
-            textures[this->getTextureInfo(surface)->texid],
-            false,
-            true,
-            false,
-            Color::green(),
-            false
+        num_vertices,
+        vertices,
+        normal,
+        model_triangles,
+        this,
+        textures[this->getTextureInfo(surface)->texid],
+        false,
+        false,
+        Color::green(),
+        false
     );
 
     return true;
@@ -1039,10 +1035,6 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
     auto *ghost = new Mesh3DGhost();
     ghost->setEnabled(enabled);
 
-    if (entityIndex >= 1) {
-        ghost->setBspEntityIndex(entityIndex);
-    }
-
     ghost->setPosition(getPosition());
     ghost->setRotation(getRotation());
 
@@ -1055,9 +1047,7 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
 
 void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
     auto *ghost = new Mesh3DGhost();
-    if (entityIndex >= 1) {
-        ghost->setBspEntityIndex(entityIndex);
-    }
+
     ghost->setEnabled(enabled);
     ghost->setPosition(getPosition());
     ghost->setRotation(getRotation());
@@ -1079,7 +1069,7 @@ void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
         for (int i = offset; i < offset + num; i++) {
             Triangle *t = this->model_triangles[i];
             t->parent = mesh;
-            mesh->modelTriangles.push_back(t);
+            mesh->getModelTriangles().push_back(t);
         }
     }
 

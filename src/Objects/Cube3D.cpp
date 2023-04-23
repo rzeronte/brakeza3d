@@ -48,8 +48,6 @@ void Cube3D::makeTriangles() {
                 vertices[i * 3 + 2],
                 this
         );
-        t->drawed = true;
-
         modelTriangles.push_back(t);
     }
 }

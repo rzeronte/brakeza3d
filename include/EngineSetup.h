@@ -49,7 +49,7 @@ public:
     int RESOLUTION = screenWidth * screenHeight;
 
     bool BASED_TILE_RENDER = true;
-    bool BASED_TILE_RENDER_THREADED = true;
+    bool BASED_TILE_RENDER_THREADED = false;
 
     float EPSILON = 0.00001f;
 
@@ -123,6 +123,7 @@ public:
     bool ENABLE_CLIPPING = true;
 
     // BSP ITEM BILLBOARDS
+    std::string ROOT_FOLDER = "../";
     std::string SPRITES_FOLDER = "../assets/sprites/";
     std::string MAPS_FOLDER = "../assets/maps/";
     std::string IMAGES_FOLDER = "../assets/images/";

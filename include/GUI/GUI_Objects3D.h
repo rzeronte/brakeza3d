@@ -153,7 +153,7 @@ public:
         auto *mesh = dynamic_cast<Mesh3D *>(object);
         if (mesh != nullptr) {
             std::string mesh3d_text = "Mesh3D##" + std::to_string(i);
-            std::string numTriangles = "Triangles: " + std::to_string(mesh->modelTriangles.size());
+            std::string numTriangles = "Triangles: " + std::to_string(mesh->getModelTriangles().size());
 
             if (ImGui::TreeNode(mesh3d_text.c_str())) {
                 ImGui::Checkbox(std::string("Enable light").c_str(), &mesh->enableLights);
@@ -167,7 +167,7 @@ public:
         auto *decal = dynamic_cast<Decal *>(object);
         if (decal != nullptr) {
             ImGui::Checkbox(std::string("Draw Decal Planes").c_str(), &decal->drawWireframe);
-            std::string decalNumTriangles = "Decal Triangles: " + std::to_string(decal->modelTriangles.size());
+            std::string decalNumTriangles = "Decal Triangles: " + std::to_string(decal->getModelTriangles().size());
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), decalNumTriangles.c_str());
         }
     }

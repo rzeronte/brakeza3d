@@ -10,6 +10,7 @@
 #include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
+#include "../Render/MeshOpenCLRenderer.h"
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
@@ -17,31 +18,32 @@
 typedef float vec3_t[3];
 
 class Mesh3D : public Object3D {
-
-public:
+private:
+    Octree *octree;
+    Grid3D *grid;
     std::string sourceFile;
 
+    AABB3D aabb;
+    bool sharedTextures;
+
+    bool flatTextureColor;
+    bool render;
+    MeshOpenCLRenderer *openClRenderer;
+
+protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Texture *> modelTextures;
     std::vector<Vertex3D *> modelVertices;
 
-    bool sharedTextures;
-
-    AABB3D aabb;
-
-    bool flatTextureColor;
     Color flatColor;
-    bool enableLights = false;
-    bool render = true;
-    int BSPEntityIndex;
-
+public:
     Mesh3D();
 
     ~Mesh3D() override;
 
     void AssimpLoadGeometryFromFile(const std::string &fileName);
 
-    bool AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
+    void AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
 
     void AssimpProcessNodes(const aiScene *, aiNode *node);
 
@@ -49,23 +51,17 @@ public:
 
     void sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles);
 
-    int getBspEntityIndex() const;
-
-    void setBspEntityIndex(int bspEntityIndex);
-
     void updateBoundingBox();
 
     void clone(Mesh3D *source);
 
     void cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLights, Color color);
 
-    void onUpdate();
+    void onUpdate() override;
 
-    Octree *getOctree() const;
+    void postUpdate() override;
 
     void buildOctree();
-
-    Grid3D *getGrid3D() const;
 
     void buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ);
 
@@ -73,23 +69,39 @@ public:
 
     void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY);
 
-    bool isFlatTextureColor() const;
     void setFlatTextureColor(bool isFlatTextureColor);
 
-    bool isEnableLights() const;
     void setEnableLights(bool enableLights);
 
     void setFlatColor(const Color &flatColor);
 
-    const Color &getFlatColor() const;
-
-    bool isRender() const;
-
     void setRender(bool render);
 
-private:
-    Octree *octree;
-    Grid3D *grid;
+    [[nodiscard]] const Color &getFlatColor() const;
+
+    [[nodiscard]] bool isRender() const;
+
+    [[nodiscard]] Grid3D *getGrid3D() const;
+
+    [[nodiscard]] Octree *getOctree() const;
+
+    [[nodiscard]] bool isFlatTextureColor() const;
+
+    [[nodiscard]] bool isEnableLights() const;
+
+    [[nodiscard]] std::vector<Triangle *> &getModelTriangles() ;
+
+    [[nodiscard]] std::vector<Texture *> &getModelTextures() ;
+
+    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices() ;
+
+    AABB3D &getAabb();
+
+    OCLMeshContext openCLContext();
+
+    bool enableLights;
+
+    MeshOpenCLRenderer *getOpenClRenderer() const;
 };
 
 

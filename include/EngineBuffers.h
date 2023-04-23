@@ -5,6 +5,7 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_mixer.h>
+#include <CL/cl.h>
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Misc/SoundPackage.h"
@@ -28,6 +29,9 @@ public:
 
     int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
+    cl_mem openClVideoBuffer;
+    cl_mem openClDepthBuffer;
+
     void clearDepthBuffer() const;
 
     [[nodiscard]] float getDepthBuffer(int x, int y) const;
@@ -49,6 +53,8 @@ public:
     void setVideoBuffer(const int i, Uint32 value) const;
 
     void flipVideoBufferToSurface(SDL_Surface *);
+
+    void setOpenCLContext(_cl_context *c, cl_command_queue &queue);
 };
 
 #endif

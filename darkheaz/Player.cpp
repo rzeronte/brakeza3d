@@ -302,6 +302,8 @@ void Player::postUpdate()
 {
     if (!isEnabled()) return;
 
+    Mesh3D::postUpdate();
+
     if (state == PlayerState::DEAD) {
         return;
     }

@@ -27,7 +27,7 @@ void Mesh3DAnimatedCollection::onUpdate() {
 
     if (!this->isFollowCamera()) {
         if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isAABBInFrustum(
-                &this->getCurrentMesh3DAnimated()->aabb)) {
+                &this->getCurrentMesh3DAnimated()->getAabb())) {
             return;
         }
     }
