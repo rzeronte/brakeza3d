@@ -9,7 +9,7 @@ Ghost::Ghost() {
 void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask) {
 
     mesh->updateBoundingBox();
-    for (auto & modelTriangle : mesh->modelTriangles) {
+    for (auto & modelTriangle : mesh->getModelTriangles()) {
         btVector3 a, b, c;
         a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
         b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);

@@ -50,8 +50,6 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
     int out = 0;
 
     for (auto & triangle : triangles) {
-        if (!triangle->bspTriangle) continue;
-
         if (triangle->parent->isDecal()) {
             alreadyDecal++;
             continue;
@@ -77,8 +75,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
                 0,
                 5,
                 this,
-                this->modelTriangles,
-                false
+                this->modelTriangles
             );
             clipped++;
             continue;
@@ -87,14 +84,13 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
         if (!cube->isPointInside(triangle->Ao) &&
             !cube->isPointInside(triangle->Bo) &&
             !cube->isPointInside(triangle->Co)
-                ) {
+        ) {
             out++;
             continue;
         }
 
         Triangle *t = triangle;
         t->parent = this;
-        t->bspTriangle = false;
         t->clipped = true;
         t->A = Transforms::objectToLocal(t->Ao, this);
         t->B = Transforms::objectToLocal(t->Bo, this);

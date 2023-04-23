@@ -571,3 +571,14 @@ void Drawable::drawStencilBuffer(Object3D *o) {
         }
     }
 }
+
+void Drawable::drawTriangleNormal(Triangle *triangle, Color color)
+{
+    Vertex3D normal = triangle->getNormal();
+    Vertex3D origin = triangle->getCenterOfMass();
+
+    Vertex3D destiny = origin + normal.getNormalize().getScaled(5);
+    Vector3D v = Vector3D(origin, destiny);
+    Drawable::drawVector3D(v, ComponentsManager::get()->getComponentCamera()->getCamera(), color);
+}
+

@@ -102,7 +102,7 @@ void EnemyGhost::updateLasers()
 
 void EnemyGhost::postUpdate()
 {
-    Object3D::postUpdate();
+    Mesh3D::postUpdate();
 
     if (!isEnabled()) {
         return;

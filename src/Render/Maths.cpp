@@ -117,17 +117,16 @@ long Maths::GetPrevActive(long x, long vertexCount, const bool *active) {
 }
 
 int Maths::TriangulatePolygon(
-        long vertexCount,
-        Vertex3D *vertices,
-        Vertex3D normal,
-        std::vector<Triangle *> &triangles,
-        Object3D *parent,
-        Texture *texture,
-        bool clipped,
-        bool isBsp,
-        bool isFlattenTextureColor,
-        Color flatColor,
-        bool enableLights
+    long vertexCount,
+    Vertex3D *vertices,
+    Vertex3D normal,
+    std::vector<Triangle *> &triangles,
+    Object3D *parent,
+    Texture *texture,
+    bool clipped,
+    bool isFlattenTextureColor,
+    Color flatColor,
+    bool enableLights
 ) {
     bool *active = new bool[vertexCount];
     for (long a = 0; a < vertexCount; a++) active[a] = true;
@@ -154,8 +153,6 @@ int Maths::TriangulatePolygon(
             }
             t->setTexture(texture);
             t->setClipped(clipped);
-            t->setId(triangles.size());
-            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 
@@ -241,8 +238,6 @@ int Maths::TriangulatePolygon(
             }
             t->setTexture(texture);
             t->setClipped(clipped);
-            t->setId(triangles.size());
-            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 
@@ -265,8 +260,6 @@ int Maths::TriangulatePolygon(
             t->setFlatTextureColor(isFlattenTextureColor);
             t->setTexture(texture);
             t->setClipped(clipped);
-            t->setId(triangles.size());
-            t->bspTriangle = isBsp;
 
             triangles.emplace_back(t);
 

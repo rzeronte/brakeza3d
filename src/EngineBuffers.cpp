@@ -1,6 +1,7 @@
 
 #include <SDL2/SDL_surface.h>
 #include "../include/EngineBuffers.h"
+#include "../include/ComponentsManager.h"
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
@@ -20,6 +21,8 @@ EngineBuffers::EngineBuffers()
     sizeBuffers = setup->RESOLUTION;
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
+
+
 }
 
 void EngineBuffers::clearDepthBuffer() const {
@@ -71,4 +74,26 @@ void EngineBuffers::clearVideoBuffer() const {
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
     // buffer -> surface
     memcpy(&surface->pixels, &videoBuffer, sizeof(surface->pixels));
+}
+
+void EngineBuffers::setOpenCLContext(_cl_context *context, cl_command_queue &queue)
+{
+    openClVideoBuffer = clCreateBuffer(
+        context,
+        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        sizeBuffers * sizeof(Uint32),
+        videoBuffer,
+        nullptr
+    );
+
+    openClDepthBuffer = clCreateBuffer(
+        context,
+        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        sizeBuffers * sizeof(float),
+        depthBuffer,
+        nullptr
+    );
+
+    //this->videoBuffer = (Uint32*)clEnqueueMapBuffer(queue, openClVideoBuffer, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeBuffers * sizeof(Uint32), 0, NULL, NULL, NULL);
+    //this->depthBuffer = (float*)clEnqueueMapBuffer(queue, openClDepthBuffer, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeBuffers * sizeof(float), 0, NULL, NULL, NULL);
 }

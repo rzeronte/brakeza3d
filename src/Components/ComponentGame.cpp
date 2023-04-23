@@ -147,7 +147,7 @@ void ComponentGame::preUpdate()
         state == EngineSetup::GameState::PRESS_KEY_BY_WIN ||
         state == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL
     ) {
-        shaderBackgroundImage->update();
+        //shaderBackgroundImage->update();
     }
 
     getPlayer()->updateWeaponInteractionStatus();
@@ -539,7 +539,7 @@ Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPla
         }
 
         mesh->updateBoundingBox();
-        for (auto & vertice : mesh->aabb.vertices) {
+        for (auto & vertice : mesh->getAabb().vertices) {
             Vector3D v(to, vertice);
 
             const float distance = v.getComponent().getSquaredLength();
@@ -859,17 +859,23 @@ void ComponentGame::addObjectsToStencilBuffer()
             weapon != nullptr ||
             energy != nullptr
         ) {
-            this->shaderTrailBuffer->addStencilBufferObject(object);
+            //this->shaderTrailBuffer->addStencilBufferObject(object);
         }
     }
 }
 
 void ComponentGame::updateShaders()
 {
-    shaderTrailBuffer->update();
-    shaderColor->update();
-    shaderLasers->update();
-    shaderShockWave->update();
+    //shaderTrailBuffer->update();
+    //shaderColor->update();
+    ///shaderLasers->update();
+    //shaderShockWave->update();
+
+    /*if (getGameState() == EngineSetup::GAMING) {
+        auto c = player->openCLContext();
+        player->getOpenClRenderer()->onUpdate(&c);
+    }*/
+
 }
 
 void ComponentGame::zoomCameraCountDown()

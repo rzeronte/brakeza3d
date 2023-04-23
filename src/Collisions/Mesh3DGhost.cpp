@@ -3,7 +3,6 @@
 #include "../../include/Physics/Projectile3DBody.h"
 
 Mesh3DGhost::Mesh3DGhost() {
-    BSPEntityIndex = -1;
 }
 
 void Mesh3DGhost::integrate()

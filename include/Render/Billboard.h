@@ -31,8 +31,6 @@ public:
 
     void reassignTexture();
 
-    void setDimensions(float w, float h);
-
     Triangle *getT1();
 
     Triangle *getT2();

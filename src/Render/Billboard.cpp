@@ -3,12 +3,13 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/EngineSetup.h"
 
-Billboard::Billboard(float width, float height):
+Billboard::Billboard(float width, float height)
+:
     width(width),
     height(height),
-    texture(nullptr),
     T1(Triangle()),
-    T2(Triangle())
+    T2(Triangle()),
+    texture(nullptr)
 {
 }
 
@@ -78,11 +79,6 @@ void Billboard::setTrianglesTexture(Texture *t) {
 
 void Billboard::reassignTexture() {
     setTrianglesTexture(this->texture);
-}
-
-void Billboard::setDimensions(float w, float h) {
-    this->width = w;
-    this->height = h;
 }
 
 Triangle *Billboard::getT1() {

@@ -308,7 +308,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderProjectiles.cpp
     darkheaz/src/shaders/ShaderProjectiles.h
     darkheaz/src/weapons/AmmoProjectile.h
-        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h)
+        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h renderer.cl include/Render/MeshOpenCLRenderer.cpp include/Render/MeshOpenCLRenderer.h renderer.cl)
 
 if (WIN32)
     target_link_libraries(Brakeza3D

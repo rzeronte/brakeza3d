@@ -6,15 +6,16 @@
 #include "../../include/Brakeza3D.h"
 
 Mesh3D::Mesh3D()
+:
+    octree(nullptr),
+    grid(nullptr),
+    sharedTextures(false),
+    flatTextureColor(false),
+    render(true),
+    enableLights(true)
 {
-    BSPEntityIndex = -1;
     decal = false;
-
-    this->octree = nullptr;
-    this->grid = nullptr;
-    this->flatTextureColor = false;
-    this->enableLights = true;
-    this->sharedTextures = false;
+    openClRenderer = new MeshOpenCLRenderer("renderer.cl", this->modelTriangles);
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
@@ -22,16 +23,6 @@ void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
     for (auto & modelTriangle : this->modelTriangles) {
         frameTriangles->push_back(modelTriangle);
     }
-}
-
-int Mesh3D::getBspEntityIndex() const
-{
-    return BSPEntityIndex;
-}
-
-void Mesh3D::setBspEntityIndex(int bspEntityIndex)
-{
-    BSPEntityIndex = bspEntityIndex;
 }
 
 void Mesh3D::updateBoundingBox()
@@ -91,7 +82,6 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
         t->setFlatTextureColor(isFlatTextureColor);
         t->setFlatColor(color);
         t->setEnableLights(isEnableLights);
-        t->setBSPTriangle(false);
 
         this->modelTriangles.push_back(t);
     }
@@ -110,7 +100,6 @@ void Mesh3D::clone(Mesh3D *source)
         t->setFlatTextureColor(source->isFlatTextureColor());
         t->setFlatColor(source->getFlatColor());
         t->setEnableLights(triangle->isEnableLights());
-        t->setBSPTriangle(triangle->isBSPTriangle());
 
         this->modelTriangles.push_back(t);
     }
@@ -146,6 +135,14 @@ void Mesh3D::onUpdate()
         this->updateBoundingBox();
         Drawable::drawAABB(&this->aabb, Color::white());
     }
+
+}
+
+void Mesh3D::postUpdate() {
+    Object3D::postUpdate();
+
+        auto context = openCLContext();
+        openClRenderer->onUpdate(&context);
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -172,7 +169,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     AssimpProcessNodes(scene, scene->mRootNode);
 }
 
-bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
+void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
 {
     // Extract the directory part from the file name
     std::string::size_type SlashIndex = Filename.find_last_of('/');
@@ -185,8 +182,6 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
     } else {
         Dir = Filename.substr(0, SlashIndex);
     }
-
-    bool Ret = true;
 
     Logging::Log("ASSIMP: mNumMaterials: %d", pScene->mNumMaterials);
 
@@ -218,8 +213,6 @@ bool Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
         }
         //}
     }
-
-    return Ret;
 }
 
 void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
@@ -402,3 +395,62 @@ bool Mesh3D::isRender() const {
 void Mesh3D::setRender(bool render) {
     Mesh3D::render = render;
 }
+
+std::vector<Triangle *> &Mesh3D::getModelTriangles() {
+    return modelTriangles;
+}
+
+std::vector<Texture *> &Mesh3D::getModelTextures() {
+    return modelTextures;
+}
+
+std::vector<Vertex3D *> &Mesh3D::getModelVertices(){
+    return modelVertices;
+}
+
+AABB3D &Mesh3D::getAabb(){
+    return aabb;
+}
+
+OCLMeshContext Mesh3D::openCLContext()
+{
+    ObjectData objectData(
+        OCVertex3D(this->position.x, this->position.y, this->position.z),
+        OCVertex3D(this->rotation.getPitch(), this->rotation.getYaw(), this->rotation.getRoll()),
+        this->scale
+    );
+
+    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto rp = cam->getRotation();
+
+    CameraData cameraData(
+        OCVertex3D(cam->getPosition().x, cam->getPosition().y, cam->getPosition().z),
+        OCVertex3D(rp.getPitch(), rp.getYaw(), rp.getRoll())
+    );
+
+    auto frustum = cam->getFrustum();
+
+    OCVertex3D vNL(frustum->vNLs.x, frustum->vNLs.y, frustum->vNLs.z );
+    OCVertex3D vNR(frustum->vNRs.x, frustum->vNRs.y, frustum->vNRs.z );
+    OCVertex3D vNT(frustum->vNTs.x, frustum->vNTs.y, frustum->vNTs.z );
+    OCVertex3D vNB(frustum->vNBs.x, frustum->vNBs.y, frustum->vNBs.z );
+
+    std::vector<OCLPlane> planesOCL;
+    for (int i = EngineSetup::get()->LEFT_PLANE ; i <= EngineSetup::get()->BOTTOM_PLANE ; i++) {
+        OCVertex3D A( frustum->planes[i].A.x, frustum->planes[i].A.y, frustum->planes[i].A.z );
+        OCVertex3D B( frustum->planes[i].B.x, frustum->planes[i].B.y, frustum->planes[i].B.z );
+        OCVertex3D C( frustum->planes[i].C.x, frustum->planes[i].C.y, frustum->planes[i].C.z );
+        OCVertex3D normal( frustum->planes[i].normal.x, frustum->planes[i].normal.y, frustum->planes[i].normal.z );
+
+        planesOCL.emplace_back(A, B, C, normal);
+    }
+
+    FrustumData frustumData(vNL, vNR, vNT, vNB, planesOCL);
+
+    return OCLMeshContext(objectData, cameraData, frustumData);
+}
+
+MeshOpenCLRenderer *Mesh3D::getOpenClRenderer() const {
+    return openClRenderer;
+}
+

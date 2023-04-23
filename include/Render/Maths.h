@@ -46,7 +46,6 @@ public:
             Object3D *parent,
             Texture *texture,
             bool isClipped,
-            bool isBsp,
             bool isFlattenTextureColor,
             Color flatColor,
             bool enableLights
