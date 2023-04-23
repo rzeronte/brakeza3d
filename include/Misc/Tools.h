@@ -90,6 +90,10 @@ public:
     static const char *sprintf(const char *, ...);
 
     static float percentage(int value, int total);
+
+    static OCVertex3D vertexOCL(Vertex3D v);
+
+    static OCPoint2D pointOCL(Point2D v);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

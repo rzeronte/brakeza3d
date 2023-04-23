@@ -58,9 +58,9 @@ void ComponentRender::onUpdate()
         }
     }
 
-    this->hiddenSurfaceRemoval();
+    //this->hiddenSurfaceRemoval();
 
-    this->drawVisibleTriangles();
+    //this->drawVisibleTriangles();
 
     this->onPostUpdateSceneObjects();
 
@@ -86,7 +86,9 @@ void ComponentRender::onUpdate()
     }
 }
 
-void ComponentRender::postUpdate() {
+void ComponentRender::postUpdate()
+{
+
 }
 
 void ComponentRender::onEnd() {
@@ -233,8 +235,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
                 SETUP->LEFT_PLANE,
                 SETUP->BOTTOM_PLANE,
                 t->parent,
-                clippedTriangles,
-                t->bspTriangle
+                clippedTriangles
             );
         }
 
@@ -275,8 +276,7 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
                 SETUP->LEFT_PLANE,
                 SETUP->BOTTOM_PLANE,
                 t->parent,
-                clippedTriangles,
-                t->bspTriangle
+                clippedTriangles
             );
         }
 
@@ -298,7 +298,6 @@ void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
     t->updateFullArea();
     t->updateUVCache();
 
-    t->drawed = false;
     visibleTriangles.emplace_back(t);
 }
 
@@ -443,9 +442,6 @@ void ComponentRender::render(Triangle *t)
         Drawable::drawVertex(t->Bo, CC, Color::green());
         Drawable::drawVertex(t->Co, CC, Color::green());
     }
-
-
-    t->drawed = true;
 }
 
 void ComponentRender::triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint) {
@@ -504,10 +500,8 @@ void ComponentRender::triangleRasterizerForDepthMapping(Triangle *t, LightPoint3
     }
 }
 
-void ComponentRender::triangleRasterizer(Triangle *t) {
-    // LOD determination
-    t->lod = 0; //t->processLOD();
-
+void ComponentRender::triangleRasterizer(Triangle *t)
+{
     // Triangle setup
     int A01 = (int) (-t->As.y + t->Bs.y);
     int A12 = (int) (-t->Bs.y + t->Cs.y);
@@ -833,10 +827,8 @@ void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &triangle
     }
 }
 
-void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY) {
-    // LOD determination
-    t->lod = 0; //t->processLOD();
-
+void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
+{
     // Triangle setup
     int A01 = (int) (-t->As.y + t->Bs.y);
     int A12 = (int) (-t->Bs.y + t->Cs.y);
@@ -1004,6 +996,7 @@ void ComponentRender::initOpenCL()
     clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
     clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
 
+    EngineBuffers::getInstance()->setOpenCLContext(clContext, clCommandQueue);
     OpenCLInfo();
 }
 

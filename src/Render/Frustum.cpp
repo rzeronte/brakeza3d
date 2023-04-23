@@ -27,6 +27,7 @@ void Frustum::setup(Vertex3D position, Vertex3D direction, Vertex3D up, Vertex3D
     this->Hfar = calcCanvasFarHeight();
     this->Wfar = calcCanvasFarWidth();
 }
+
 void Frustum::updateFrustum()
 {
     updateCenters();
