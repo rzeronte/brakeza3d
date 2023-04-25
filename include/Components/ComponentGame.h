@@ -17,7 +17,6 @@
 #include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
-#include "../../darkheaz/src/shaders/ShaderTrailBuffer.h"
 #include "../../darkheaz/src/shaders/RayLight.h"
 #include "../Physics/RayCollisionable.h"
 #include "../Physics/ProjectileRay.h"
@@ -50,7 +49,6 @@ private:
     LevelLoader *levelLoader;
 
     ShaderImage *shaderBackgroundImage;
-    ShaderTrailBuffer *shaderTrailBuffer;
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
 
@@ -128,8 +126,6 @@ public:
 
     void silenceInGameObjects();
 
-    void addObjectsToStencilBuffer();
-
     void updateShaders();
 
     void handleMenuGameState();
@@ -166,9 +162,6 @@ public:
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
 
-    [[nodiscard]] ShaderTrailBuffer *getShaderTrailBuffer() const;
-
-
     [[nodiscard]] const Color &getPrimaryColor() const;
 
     [[nodiscard]] const Color &getSecondaryColor() const;
@@ -194,6 +187,8 @@ public:
     VideoPlayer *getVideoPlayer();
 
     VideoPlayer* videoPlayer;
+
+    void shaderBackgroundUpdate();
 };
 
 

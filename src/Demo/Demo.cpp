@@ -113,7 +113,6 @@ Demo::Demo() {
 {
     auto axisPlanes = new Mesh3DBody();
     axisPlanes->setRotation(0, 0, 0);
-    axisPlanes->initializeStencilBuffer();
     axisPlanes->setStencilBufferEnabled(true);
     axisPlanes->setEnabled(false);
     axisPlanes->setLabel("test");

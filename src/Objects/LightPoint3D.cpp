@@ -146,7 +146,7 @@ void LightPoint3D::drawDeepMap(int pos_x, int pos_y) const {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             auto pixelColor = getShadowMappingBuffer(j, i);
-            EngineBuffers::getInstance()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor, pixelColor, pixelColor).getColor());
+            EngineBuffers::get()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor, pixelColor, pixelColor).getColor());
         }
     }
 }

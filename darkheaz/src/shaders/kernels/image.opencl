@@ -32,7 +32,7 @@ __kernel void onUpdate(
 
 
     if (usingOffset > 0) {
-        st /= 1.75;
+        st /= 1.75f;
         st += center - offsetToCenter + offsetInput;
     }
 

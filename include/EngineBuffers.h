@@ -19,7 +19,7 @@ private:
     EngineBuffers();
 
 public:
-    static EngineBuffers *getInstance();
+    static EngineBuffers *get();
 
     float *depthBuffer;
     Uint32 *videoBuffer;

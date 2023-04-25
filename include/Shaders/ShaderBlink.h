@@ -11,14 +11,13 @@
 
 class ShaderBlink : public ShaderOpenCL {
     bool isBlinking;
-    cl_mem opencl_buffer_stencil;
     int screenWidth;
     int screenHeight;
-    Object3D* object;
+    Mesh3D* object;
     Color color;
     Counter counter;
 public:
-    ShaderBlink(bool active, Object3D *o, float step, Color c) :
+    ShaderBlink(bool active, Mesh3D *o, float step, Color c) :
         ShaderOpenCL(active, "blink.opencl"),
         isBlinking(false),
         screenWidth(EngineSetup::get()->screenWidth),
@@ -27,17 +26,9 @@ public:
         color(c),
         counter(Counter(step))
     {
-        opencl_buffer_stencil = clCreateBuffer(
-            context,
-            CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
-            EngineBuffers::getInstance()->sizeBuffers * sizeof(bool),
-            this->object->getStencilBuffer(),
-            nullptr
-        );
     }
 
     ~ShaderBlink() override {
-        clReleaseMemObject(opencl_buffer_stencil);
     }
 
     void update() override
@@ -79,68 +70,20 @@ public:
 
     void executeKernelOpenCL()
     {
-            clEnqueueWriteBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
-        );
-
-        clEnqueueWriteBuffer(
-            clCommandQueue,
-            opencl_buffer_stencil,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(bool),
-            object->getStencilBuffer(),
-            0,
-            nullptr,
-            nullptr
-        );
-
         clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
         clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
-        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
-        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&opencl_buffer_stencil);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
+        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&object->getOpenClRenderer()->clBufferStencil);
         clSetKernelArg(kernel, 4, sizeof(float), &this->color.r);
         clSetKernelArg(kernel, 5, sizeof(float), &this->color.g);
         clSetKernelArg(kernel, 6, sizeof(float), &this->color.b);
 
-        // Process the entire lists
-        size_t global_item_size = EngineBuffers::getInstance()->sizeBuffers;
-        // Divide work items into groups of 64
-        size_t local_item_size = 64;
+        size_t global_item_size = EngineBuffers::get()->sizeBuffers;
+        size_t local_item_size = 256;
 
-        clRet = clEnqueueNDRangeKernel(
-            clCommandQueue,
-            kernel,
-            1,
-            nullptr,
-            &global_item_size,
-            &local_item_size,
-            0,
-            nullptr,
-            nullptr
-        );
+        clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr );
 
-        clEnqueueReadBuffer(
-            clCommandQueue,
-            openClBufferMappedWithVideoInput,
-            CL_TRUE,
-            0,
-            this->bufferSize * sizeof(Uint32),
-            EngineBuffers::getInstance()->videoBuffer,
-            0,
-            nullptr,
-            nullptr
-        );
-
-        this->debugKernel();
+        this->debugKernel("ShaderBlink");
     }
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

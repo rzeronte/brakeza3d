@@ -296,7 +296,7 @@ void VideoPlayer::renderToScreen()
             Uint8 g = data[offset + 1];
             Uint8 b = data[offset + 2];
 
-            EngineBuffers::getInstance()->setVideoBuffer(x, y, Color(r, g, b).getColor());
+            EngineBuffers::get()->setVideoBuffer(x, y, Color(r, g, b).getColor());
         }
     }
 }

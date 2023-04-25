@@ -62,9 +62,9 @@ public:
     aiNode *follow_me_point_node;
     Object3D *follow_me_point_object;
 
-    Object3D *getFollowMePointObject() const;
+    [[nodiscard]] Object3D *getFollowMePointObject() const;
 
-    void onUpdate();
+    void onUpdate() override;
 
     void updateFrameTransformations();
 

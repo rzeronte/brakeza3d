@@ -5,7 +5,7 @@
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
-EngineBuffers *EngineBuffers::getInstance()
+EngineBuffers *EngineBuffers::get()
 {
     if (instance == nullptr) {
         instance = new EngineBuffers();
@@ -21,8 +21,6 @@ EngineBuffers::EngineBuffers()
     sizeBuffers = setup->RESOLUTION;
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
-
-
 }
 
 void EngineBuffers::clearDepthBuffer() const {
@@ -80,7 +78,7 @@ void EngineBuffers::setOpenCLContext(_cl_context *context, cl_command_queue &que
 {
     openClVideoBuffer = clCreateBuffer(
         context,
-        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
         sizeBuffers * sizeof(Uint32),
         videoBuffer,
         nullptr
@@ -93,7 +91,4 @@ void EngineBuffers::setOpenCLContext(_cl_context *context, cl_command_queue &que
         depthBuffer,
         nullptr
     );
-
-    //this->videoBuffer = (Uint32*)clEnqueueMapBuffer(queue, openClVideoBuffer, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeBuffers * sizeof(Uint32), 0, NULL, NULL, NULL);
-    //this->depthBuffer = (float*)clEnqueueMapBuffer(queue, openClDepthBuffer, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeBuffers * sizeof(float), 0, NULL, NULL, NULL);
 }

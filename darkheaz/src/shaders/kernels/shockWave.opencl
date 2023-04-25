@@ -57,9 +57,9 @@ __kernel void onUpdate(
         __global unsigned char *cs = &videoShader[i];
 
         mixedColor = createRGB(
-            mix(cc[0], mi[0], 0.5),
-            mix(cc[1], mi[1], 0.5),
-            mix(cc[2], mi[2], 0.5)
+            mix((float)cc[0], (float)mi[0], 0.5f),
+            mix((float)cc[1], (float)mi[1], 0.5f),
+            mix((float)cc[2], (float)mi[2], 0.5f)
         );
     }
 

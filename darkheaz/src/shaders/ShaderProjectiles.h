@@ -43,8 +43,8 @@ private:
     Image image;
 
     cl_mem opencl_buffer_pixels_image;
-    cl_mem opencl_buffer_lasers;
-    cl_mem opencl_buffer_projectiles;
+    cl_mem clBufferLasers;
+    cl_mem clBufferProjectiles;
 
     std::vector<OCLaser> lasers;
     std::vector<OCProjectile> projectiles;

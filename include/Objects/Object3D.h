@@ -18,7 +18,6 @@ protected:
 
     EnemyBehavior *motion;
     Object3D *parent;
-    bool *stencilBuffer;
 
     bool enabled;
     bool removed;
@@ -90,14 +89,6 @@ public:
 
     void setStencilBufferEnabled(bool stencilBufferEnabled);
 
-    void initializeStencilBuffer();
-
-    void setStencilBuffer(int x, int y, bool value);
-
-    void setStencilBuffer(int index, bool value);
-
-    void clearStencilBuffer();
-
     void setAlpha(float alpha);
 
     void setAlphaEnabled(bool alphaEnabled);
@@ -110,15 +101,9 @@ public:
 
     float &getRotZ();
 
-    [[nodiscard]] bool getStencilBufferValue(int i) const;
-
-    [[nodiscard]] bool getStencilBufferValue(int x, int y) const;
-
     [[nodiscard]] EnemyBehavior *getBehavior() const;
 
     [[nodiscard]] bool &isAlphaEnabled();
-
-    [[nodiscard]] bool *getStencilBuffer() const;
 
     [[nodiscard]] bool &isStencilBufferEnabled();
 

@@ -75,13 +75,14 @@ void ComponentMenu::preUpdate()
         return;
     }
 
-    shaderBackgroundImage->update();
 
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
     title->drawFlatAlpha(0, 0, alpha);
 
     drawOptions();
     drawVersion();
+
+    shaderBackgroundImage->update();
 }
 
 void ComponentMenu::onUpdate()
@@ -89,14 +90,13 @@ void ComponentMenu::onUpdate()
     if (!isEnabled()) {
         return;
     }
-
     pendulum->onUpdate();
     spaceship->setRotation(pendulum->pendulumRotation);
 
 }
 
-void ComponentMenu::postUpdate() {
-
+void ComponentMenu::postUpdate()
+{
 }
 
 void ComponentMenu::onEnd() {

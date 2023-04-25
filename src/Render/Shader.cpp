@@ -101,7 +101,7 @@ float Shader::step(float limit, float value)
 
 void Shader::flipToVideo()
 {
-    auto engineBuffers = EngineBuffers::getInstance();
+    auto engineBuffers = EngineBuffers::get();
 
     auto screenBuffer = engineBuffers->videoBuffer;
     auto currentBuffer = this->videoBuffer;

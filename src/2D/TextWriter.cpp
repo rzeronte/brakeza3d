@@ -59,7 +59,7 @@ void TextWriter::putCharacter(int ascii, int xOrigin, int yOrigin)
             if (color.getColor() == Color::black().getColor()) {
                 continue;
             }
-            EngineBuffers::getInstance()->setVideoBuffer(xOrigin + x, yOrigin + y, color.getColor());
+            EngineBuffers::get()->setVideoBuffer(xOrigin + x, yOrigin + y, color.getColor());
         }
     }
 }
