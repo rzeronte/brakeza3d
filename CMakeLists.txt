@@ -292,9 +292,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderColor.h
     darkheaz/src/items/ItemBombGhost.cpp
     darkheaz/src/items/ItemBombGhost.h
-    darkheaz/src/shaders/ShaderTrailBuffer.cpp
-    darkheaz/src/shaders/ShaderTrailBuffer.h
-    src/Collisions/Mesh3DAnimatedGhost.cpp
+        src/Collisions/Mesh3DAnimatedGhost.cpp
     include/Physics/Mesh3DAnimatedGhost.h
     darkheaz/src/bosses/BossLevel30.cpp
     darkheaz/src/bosses/BossLevel30.h

@@ -65,7 +65,7 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Transforms::screenSpace(P1, A);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
-        EngineBuffers::getInstance()->setVideoBuffer((int)P1.x, (int)P1.y, color.getColor());
+        EngineBuffers::get()->setVideoBuffer((int)P1.x, (int)P1.y, color.getColor());
     }
 }
 
@@ -81,7 +81,7 @@ void Drawable::drawVertex3D(Vertex3D V, Color color)
     Transforms::screenSpace(P1, A);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
-        EngineBuffers::getInstance()->setVideoBuffer(P1.x, P1.y, color.getColor());
+        EngineBuffers::get()->setVideoBuffer(P1.x, P1.y, color.getColor());
     }
 }
 
@@ -130,7 +130,7 @@ void Drawable::drawLine2D(Line2D L, Color color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
             }
         }
     } else {
@@ -146,7 +146,7 @@ void Drawable::drawLine2D(Line2D L, Color color) {
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
+                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
             }
         }
     }
@@ -197,8 +197,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
-                ComponentsManager::get()->getComponentGame()->getShaderTrailBuffer()->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
+                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
             }
         }
     } else {
@@ -214,8 +213,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
                 p = p + incNE;
             }
             if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::getInstance()->setVideoBuffer(x, y, color.getColor());
-                ComponentsManager::get()->getComponentGame()->getShaderTrailBuffer()->getStencilObjectsBuffer()[y * EngineSetup::get()->screenWidth + x] = true;
+                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
             }
         }
     }
@@ -422,10 +420,10 @@ void Drawable::drawCrossHair() {
 
     Uint32 color = EngineSetup::get()->CROSSHAIR_COLOR;
     for (int cw = 1; cw < 3; cw++) {
-        EngineBuffers::getInstance()->setVideoBuffer(x + cw, y, color);
-        EngineBuffers::getInstance()->setVideoBuffer(x - cw, y, color);
-        EngineBuffers::getInstance()->setVideoBuffer(x, y + cw, color);
-        EngineBuffers::getInstance()->setVideoBuffer(x, y - cw, color);
+        EngineBuffers::get()->setVideoBuffer(x + cw, y, color);
+        EngineBuffers::get()->setVideoBuffer(x - cw, y, color);
+        EngineBuffers::get()->setVideoBuffer(x, y + cw, color);
+        EngineBuffers::get()->setVideoBuffer(x, y - cw, color);
     }
 }
 
@@ -555,19 +553,8 @@ void Drawable::drawMainDeepMapFromCamera(int pos_x, int pos_y)
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            auto pixelColor = EngineBuffers::getInstance()->getDepthBuffer(j, i);
-            EngineBuffers::getInstance()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor/10, pixelColor/10, pixelColor/10).getColor());
-        }
-    }
-}
-
-void Drawable::drawStencilBuffer(Object3D *o) {
-    if (!o->isStencilBufferEnabled()) return;
-
-    auto stencilObject = o->getStencilBuffer();
-    for (int i = 0 ; i < EngineBuffers::getInstance()->sizeBuffers ; i++) {
-        if (stencilObject[i]) {
-            EngineBuffers::getInstance()->setVideoBuffer(i, Color::red().getColor());
+            auto pixelColor = EngineBuffers::get()->getDepthBuffer(j, i);
+            EngineBuffers::get()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor / 10, pixelColor / 10, pixelColor / 10).getColor());
         }
     }
 }

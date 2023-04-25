@@ -52,6 +52,9 @@ private:
     cl_context clContext;
 
     cl_command_queue clCommandQueue;
+
+    cl_program rendererProgram;
+    cl_kernel rendererKernel;
 public:
     ComponentRender();
 
@@ -164,6 +167,18 @@ public:
     _cl_context *getClContext();
 
     _cl_command_queue *getClCommandQueue();
+
+    cl_device_id selectNvidiaDevice();
+
+    void updateOpenCLBuffersWrite() const;
+
+    void updateOpenclBuffersRead() const;
+
+    void loadRenderKernel();
+
+    _cl_program *getRendererProgram();
+
+    _cl_kernel *getRendererKernel();
 };
 
 

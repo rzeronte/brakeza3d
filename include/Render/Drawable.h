@@ -60,8 +60,6 @@ public:
 
     static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
 
-    static void drawStencilBuffer(Object3D *o);
-
     static void drawTriangleNormal(Triangle *triangle, Color color);
 };
 

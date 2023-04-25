@@ -22,7 +22,6 @@ ComponentRender::ComponentRender() :
     clContext(nullptr),
     clCommandQueue(nullptr)
 {
-
 }
 
 void ComponentRender::onStart()
@@ -37,6 +36,8 @@ void ComponentRender::preUpdate()
 {
     this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
 
+    updateOpenCLBuffersWrite();
+
     if (!isEnabled()) {
         return;
     }
@@ -47,6 +48,11 @@ void ComponentRender::onUpdate()
     if (!isEnabled()) {
         return;
     }
+
+    ComponentsManager::get()->getComponentGame()->shaderBackgroundUpdate();
+    ComponentsManager::get()->getComponentGame()->addProjectilesToShaderLasers();
+    ComponentsManager::get()->getComponentGame()->updateShaders();
+    ComponentsManager::get()->getComponentHUD()->drawShaderLasers();
 
     this->onUpdateSceneObjects();
 
@@ -59,10 +65,11 @@ void ComponentRender::onUpdate()
     }
 
     //this->hiddenSurfaceRemoval();
-
     //this->drawVisibleTriangles();
 
     this->onPostUpdateSceneObjects();
+
+    updateOpenclBuffersRead();
 
     frameTriangles.clear();
     spritesTriangles.clear();
@@ -71,7 +78,6 @@ void ComponentRender::onUpdate()
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
     }
 
-    this->drawSceneOverlappingItems();
 
     if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
         for (auto & lightpoint : this->lightPoints) {
@@ -81,16 +87,71 @@ void ComponentRender::onUpdate()
         }
     }
 
+    this->drawSceneOverlappingItems();
+
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
 }
 
+
 void ComponentRender::postUpdate()
 {
-
 }
 
+void ComponentRender::updateOpenclBuffersRead() const
+{
+    clEnqueueReadBuffer(
+        clCommandQueue,
+        EngineBuffers::get()->openClVideoBuffer,
+        CL_TRUE,
+        0,
+        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::get()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
+
+    clEnqueueReadBuffer(
+        clCommandQueue,
+        EngineBuffers::get()->openClDepthBuffer,
+        CL_TRUE,
+        0,
+        EngineBuffers::get()->sizeBuffers * sizeof(float),
+        EngineBuffers::get()->depthBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
+}
+
+void ComponentRender::updateOpenCLBuffersWrite() const
+{
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        EngineBuffers::get()->openClVideoBuffer,
+        CL_FALSE,
+        0,
+        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::get()->videoBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
+
+    clEnqueueWriteBuffer(
+        clCommandQueue,
+        EngineBuffers::get()->openClDepthBuffer,
+        CL_FALSE,
+        0,
+        EngineBuffers::get()->sizeBuffers * sizeof(float),
+        EngineBuffers::get()->depthBuffer,
+        0,
+        nullptr,
+        nullptr
+    );
+}
 void ComponentRender::onEnd() {
 }
 
@@ -406,7 +467,6 @@ void ComponentRender::drawTilesGrid() {
 
 void ComponentRender::drawTriangles(std::vector<Triangle *> &visibleTriangles)
 {
-
     std::vector<Triangle *>::iterator it;
     for (it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
         Triangle *triangle = *(it);
@@ -675,10 +735,6 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
         pixelColor = this->processPixelFog(fragment, pixelColor);
     }
 
-    if (t->parent->isStencilBufferEnabled()) {
-        t->parent->setStencilBuffer(bufferIndex, true);
-    }
-
     if (t->parent->isAlphaEnabled()) {
         const float alpha = t->parent->getAlpha() / 255.0f;
         pixelColor = Tools::mixColor(Color(BUFFERS->getVideoBuffer(bufferIndex)), pixelColor, alpha);
@@ -871,10 +927,8 @@ void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int m
                                                  (fragment.theta * t->persp_correct_Bz) +
                                                  (fragment.gamma * t->persp_correct_Cz));
 
-                        fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) +
-                                         (fragment.gamma * t->tex_u3_Cc_z)) * fragment.affineUV;
-                        fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) +
-                                         (fragment.gamma * t->tex_v3_Cc_z)) * fragment.affineUV;
+                        fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z)) * fragment.affineUV;
+                        fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z)) * fragment.affineUV;
 
                         fragment.normalZ = normal.x;
                         fragment.normalY = normal.y;
@@ -976,6 +1030,51 @@ void ComponentRender::onPostUpdateSceneObjects()
     }
 }
 
+cl_device_id ComponentRender::selectNvidiaDevice() {
+    cl_uint numPlatforms;
+    cl_int ret = clGetPlatformIDs(0, nullptr, &numPlatforms);
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Unable to get number of platforms");
+        return nullptr;
+    }
+
+    std::vector<cl_platform_id> platforms(numPlatforms);
+    ret = clGetPlatformIDs(numPlatforms, platforms.data(), nullptr);
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Unable to get platform IDs");
+        return nullptr;
+    }
+
+    for (const auto &platform : platforms) {
+        cl_uint numDevices;
+        ret = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices);
+        if (ret != CL_SUCCESS || numDevices == 0) {
+            continue;
+        }
+
+        std::vector<cl_device_id> devices(numDevices);
+        ret = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.data(), nullptr);
+        if (ret != CL_SUCCESS) {
+            continue;
+        }
+
+        for (const auto &device : devices) {
+            char vendor[128];
+            ret = clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
+            if (ret != CL_SUCCESS) {
+                continue;
+            }
+
+            if (std::string(vendor).find("NVIDIA") != std::string::npos) {
+                clPlatformId = platform;
+                return device;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 void ComponentRender::initOpenCL()
 {
     ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
@@ -987,6 +1086,12 @@ void ComponentRender::initOpenCL()
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get cpu_device_id");
     }
+    clDeviceId = selectNvidiaDevice();
+    if (clDeviceId == nullptr) {
+        Logging::Log("Unable to find a suitable NVIDIA device");
+        return;
+    }
+
 
     cl_context_properties properties[3];
     properties[0]= CL_CONTEXT_PLATFORM;
@@ -996,9 +1101,50 @@ void ComponentRender::initOpenCL()
     clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
     clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
 
-    EngineBuffers::getInstance()->setOpenCLContext(clContext, clCommandQueue);
+    EngineBuffers::get()->setOpenCLContext(clContext, clCommandQueue);
+
+    // Get device information
+    char vendor[128];
+    char deviceName[128];
+    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Unable to get device vendor");
+    }
+
+    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Unable to get device name");
+    }
+
+    // Print device information
+    Logging::Message("Selected device vendor: %s", vendor);
+    Logging::Message("Selected device name: %s", deviceName);
+
     OpenCLInfo();
+
+    loadRenderKernel();
 }
+
+void ComponentRender::loadRenderKernel()
+{
+    Logging::Message("Loading '%s' kernel");
+
+    size_t source_size;
+    char * source_str = Tools::readFile(EngineSetup::get()->ROOT_FOLDER + "renderer.cl", source_size );
+    rendererProgram = clCreateProgramWithSource(
+        clContext,
+        1,
+        (const char **)&source_str,
+        (const size_t *)&source_size,
+        &ret
+    );
+
+    clBuildProgram(rendererProgram, 1, &clDeviceId, nullptr, nullptr, nullptr);
+    rendererKernel = clCreateKernel(rendererProgram, "onUpdate", &ret);
+
+    free(source_str);
+}
+
 
 void ComponentRender::OpenCLInfo()
 {
@@ -1118,5 +1264,13 @@ ComponentRender::~ComponentRender()
     for (auto &l : frameTriangles) {
         delete l;
     }
+}
+
+_cl_program *ComponentRender::getRendererProgram(){
+    return rendererProgram;
+}
+
+_cl_kernel *ComponentRender::getRendererKernel() {
+    return rendererKernel;
 }
 

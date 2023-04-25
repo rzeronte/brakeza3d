@@ -447,11 +447,11 @@ const char *Tools::sprintf(const char *format, ...)
 {
     va_list args;
     va_start (args, format);
-    vsnprintf (EngineBuffers::getInstance()->text, 255, format, args);
+    vsnprintf (EngineBuffers::get()->text, 255, format, args);
 
     va_end (args);
 
-    return EngineBuffers::getInstance()->text;
+    return EngineBuffers::get()->text;
 }
 
 float Tools::percentage(int value, int total)
