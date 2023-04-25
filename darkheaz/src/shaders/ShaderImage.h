@@ -12,7 +12,7 @@
 
 class ShaderImage: public ShaderOpenCL {
     Image image;
-    cl_mem opencl_buffer_pixels_image;
+    cl_mem clBufferImage;
     int useOffset;
 
     float offsetX;
@@ -33,6 +33,8 @@ public:
     void refreshBufferImage();
 
     [[nodiscard]] bool isUseOffset() const;
+
+    void limitOffset();
 };
 
 

@@ -32,14 +32,15 @@ void ComponentHUD::preUpdate()
         Drawable::drawCrossHair();
     }
 
+    drawHUD();
 
 }
 
 void ComponentHUD::onUpdate()
 {
     if (!isEnabled()) return;
+    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
 
-    drawHUD();
 }
 
 void ComponentHUD::postUpdate()
@@ -77,9 +78,7 @@ void ComponentHUD::drawHUD()
     auto textWriter = componentManager->getComponentGame()->getTextWriter();
 
     drawIconWeaponAndLevelName();
-    drawShaderLasers();
 
-    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(

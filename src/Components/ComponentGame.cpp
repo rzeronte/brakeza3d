@@ -3,7 +3,6 @@
 #include "../../include/Brakeza3D.h"
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 #include "../../darkheaz/src/items/ItemEnergyGhost.h"
-#include "../../include/Misc/VideoPlayer.h"
 #include "../../darkheaz/src/items/ItemBombGhost.h"
 
 #define FREELOOK false
@@ -28,7 +27,6 @@ ComponentGame::ComponentGame()
     imageCrossFire(nullptr),
     levelLoader(nullptr),
     shaderBackgroundImage(nullptr),
-    shaderTrailBuffer(nullptr),
     shaderColor(nullptr),
     shaderShockWave(nullptr),
     gameState(EngineSetup::GameState::NONE),
@@ -92,10 +90,7 @@ void ComponentGame::loadShaders()
     shaderColor = new ShaderColor(false, Color::red(), 0.75);
     shaderLasers = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
-    shaderTrailBuffer = new ShaderTrailBuffer(true);
-
     shaderBackgroundImage->setUseOffset(true);
-    shaderTrailBuffer->clearStencilBuffer();
 }
 
 ComponentGame::~ComponentGame()
@@ -108,7 +103,6 @@ ComponentGame::~ComponentGame()
     delete shaderLasers;
     delete shaderBackgroundImage;
     delete shaderColor;
-    delete shaderTrailBuffer,
 
     delete explosionSpriteTemplate;
     delete imageCrossFire;
@@ -135,22 +129,11 @@ void ComponentGame::preUpdate()
             setGameState(EngineSetup::GameState::INTRO);
             videoPlayer->play();
         }
-
-    }
-
-    if (
-        state == EngineSetup::GameState::GAMING ||
-        state == EngineSetup::GameState::PRESS_KEY_GAMEOVER ||
-        state == EngineSetup::GameState::COUNTDOWN ||
-        state == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
-        state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ||
-        state == EngineSetup::GameState::PRESS_KEY_BY_WIN ||
-        state == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL
-    ) {
-        //shaderBackgroundImage->update();
     }
 
     getPlayer()->updateWeaponInteractionStatus();
+
+    updateFadeToGameState();
 }
 
 void ComponentGame::onUpdate()
@@ -216,10 +199,6 @@ void ComponentGame::onUpdate()
         break;
     }
 
-    updateFadeToGameState();
-    addObjectsToStencilBuffer();
-    addProjectilesToShaderLasers();
-    updateShaders();
     updateCrossFire();
 
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
@@ -278,6 +257,7 @@ void ComponentGame::updateFadeToGameState()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
+
 }
 
 void ComponentGame::updateCrossFire()
@@ -839,43 +819,25 @@ void ComponentGame::pressedKeyByDead()
     getPlayer()->startPlayerBlink();
 }
 
-void ComponentGame::addObjectsToStencilBuffer()
-{
-    if (getGameState() != EngineSetup::GAMING) return;
-
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
-        auto reflection = dynamic_cast<PlayerReflection *> (object);
-        auto energy = dynamic_cast<ItemEnergyGhost *> (object);
-        auto health = dynamic_cast<ItemHealthGhost *> (object);
-        auto weapon = dynamic_cast<ItemWeaponGhost *> (object);
-        auto bomb = dynamic_cast<ItemBombGhost *> (object);
-
-        if (
-            projectile != nullptr ||
-            reflection != nullptr ||
-            bomb != nullptr ||
-            health != nullptr ||
-            weapon != nullptr ||
-            energy != nullptr
-        ) {
-            //this->shaderTrailBuffer->addStencilBufferObject(object);
-        }
-    }
-}
-
 void ComponentGame::updateShaders()
 {
-    //shaderTrailBuffer->update();
-    //shaderColor->update();
-    ///shaderLasers->update();
-    //shaderShockWave->update();
+    shaderColor->update();
+    shaderLasers->update();
+    shaderShockWave->update();
+}
 
-    /*if (getGameState() == EngineSetup::GAMING) {
-        auto c = player->openCLContext();
-        player->getOpenClRenderer()->onUpdate(&c);
-    }*/
-
+void ComponentGame::shaderBackgroundUpdate() {
+    if (
+        gameState == EngineSetup::GAMING ||
+        gameState == EngineSetup::PRESS_KEY_GAMEOVER ||
+        gameState == EngineSetup::COUNTDOWN ||
+        gameState == EngineSetup::PRESS_KEY_BY_DEAD ||
+        gameState == EngineSetup::PRESS_KEY_NEWLEVEL ||
+        gameState == EngineSetup::PRESS_KEY_BY_WIN ||
+        gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL
+    ) {
+        shaderBackgroundImage->update();
+    }
 }
 
 void ComponentGame::zoomCameraCountDown()
@@ -1107,10 +1069,6 @@ TextWriter *ComponentGame::getTextWriter() {
 void ComponentGame::handlePressKeyByWin()
 {
     removeInGameObjects();
-}
-
-ShaderTrailBuffer *ComponentGame::getShaderTrailBuffer() const {
-    return shaderTrailBuffer;
 }
 
 VideoPlayer *ComponentGame::getVideoPlayer() {

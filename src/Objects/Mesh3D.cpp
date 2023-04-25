@@ -15,7 +15,7 @@ Mesh3D::Mesh3D()
     enableLights(true)
 {
     decal = false;
-    openClRenderer = new MeshOpenCLRenderer("renderer.cl", this->modelTriangles);
+    openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
@@ -136,13 +136,15 @@ void Mesh3D::onUpdate()
         Drawable::drawAABB(&this->aabb, Color::white());
     }
 
+    if ((int) modelTriangles.size() > 0) {
+        auto context = openCLContext();
+        openClRenderer->onUpdate(&context, modelTextures[0]);
+    }
 }
 
-void Mesh3D::postUpdate() {
+void Mesh3D::postUpdate()
+{
     Object3D::postUpdate();
-
-        auto context = openCLContext();
-        openClRenderer->onUpdate(&context);
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)

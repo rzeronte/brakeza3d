@@ -11,6 +11,7 @@
 Image::Image(const std::string& filename): surface(nullptr), texture(nullptr), loaded(false)
 {
     this->loadTGA(filename);
+
 }
 
 Image::Image(): surface(nullptr), texture(nullptr)
@@ -31,15 +32,41 @@ void Image::loadTGA(const std::string& filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
+        loadOpenCLBuffer();
+
         this->fileName = filename;
         this->loaded = true;
-        Logging::Log("Loading TGA texture '%s'", filename.c_str());
+        Logging::Message("Loading TGA texture '%s'", filename.c_str());
 
         return;
     }
 
     Logging::Log("Error loading TGA texture '%s'", filename.c_str());
     exit(-1);
+}
+
+void Image::loadOpenCLBuffer() {
+    cl_int errCode;
+
+    openClTexture = clCreateBuffer(
+        ComponentsManager::get()->getComponentRender()->getClContext(),
+        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+        (width() * height()) * sizeof(Uint32),
+        pixels(),
+        &errCode
+    );
+
+
+    if (errCode != CL_SUCCESS) {
+        std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
+
+        // Puedes manejar el error de diferentes maneras:
+        // - Lanzar una excepción
+        // - Retornar un valor de error
+        // - Salir del programa
+    } else {
+        std::cout << "El buffer de OpenCL se ha creado correctamente." << std::endl;
+    }
 }
 
 void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
@@ -131,6 +158,7 @@ Image::~Image()
 {
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
+    clReleaseMemObject(openClTexture);
 }
 
 Color Image::getColor(int x, int y)
@@ -151,4 +179,8 @@ void Image::setTextureAlpha(int value)
 {
     SDL_SetTextureAlphaMod(texture, value);
 
+}
+
+_cl_mem *Image::getOpenClTexture() {
+    return openClTexture;
 }

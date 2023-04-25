@@ -14,18 +14,18 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL(true, "projectiles.opencl"
     );
 
     clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_pixels_image,
-        CL_TRUE,
-        0,
+            clQueue,
+            opencl_buffer_pixels_image,
+            CL_TRUE,
+            0,
         this->bufferSize * sizeof(Uint32),
-        image.pixels(),
-        0,
-        nullptr,
-        nullptr
+            image.pixels(),
+            0,
+            nullptr,
+            nullptr
     );
 
-    opencl_buffer_lasers = clCreateBuffer(
+    clBufferLasers = clCreateBuffer(
         context,
         CL_MEM_READ_WRITE,
         MAX_LASERS * sizeof(OCLaser),
@@ -33,7 +33,7 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL(true, "projectiles.opencl"
         nullptr
     );
 
-    opencl_buffer_projectiles = clCreateBuffer(
+    clBufferProjectiles = clCreateBuffer(
         context,
         CL_MEM_READ_WRITE,
         MAX_PROJECTILES * sizeof(OCProjectile),
@@ -56,85 +56,28 @@ void ShaderProjectiles::executeKernelOpenCL()
     const int numberLasers = (int) lasers.size();
     const int numberProjectiles = (int) projectiles.size();
 
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_lasers,
-        CL_TRUE,
-        0,
-        numberLasers * sizeof(OCLaser),
-        lasers.data(),
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_projectiles,
-        CL_TRUE,
-        0,
-        numberProjectiles * sizeof(OCProjectile),
-        projectiles.data(),
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoInput,
-        CL_TRUE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
+    clEnqueueWriteBuffer(clQueue, clBufferLasers, CL_TRUE, 0, numberLasers * sizeof(OCLaser), lasers.data(), 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, clBufferProjectiles, CL_TRUE, 0, numberProjectiles * sizeof(OCProjectile), projectiles.data(), 0, nullptr, nullptr);
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_lasers);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferLasers);
     clSetKernelArg(kernel, 6, sizeof(int), &numberLasers);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&opencl_buffer_projectiles);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&clBufferProjectiles);
     clSetKernelArg(kernel, 8, sizeof(int), &numberProjectiles);
 
-    // Process the entire lists
     size_t global_item_size = this->bufferSize;
-    // Divide work items into groups of 64
-    size_t local_item_size = 16;
+    size_t local_item_size = 256;
 
-    clRet = clEnqueueNDRangeKernel(
-        clCommandQueue,
-        kernel,
-        1,
-        nullptr,
-        &global_item_size,
-        &local_item_size,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueReadBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoInput,
-        CL_TRUE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
 
     this->lasers.clear();
     this->projectiles.clear();
 
-    //this->debugKernel();
+    this->debugKernel("ShaderProjectiles");
 }
 
 void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float i, bool startCircle, bool endCircle)

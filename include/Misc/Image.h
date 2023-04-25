@@ -9,6 +9,7 @@
 #include <string>
 #include <SDL_surface.h>
 #include <SDL_image.h>
+#include <CL/cl.h>
 #include "../Objects/Vertex3D.h"
 #include "Color.h"
 
@@ -53,6 +54,12 @@ public:
     [[nodiscard]] SDL_Surface *getSurface() const;
 
     [[nodiscard]] int width() const;
+
+    _cl_mem *getOpenClTexture();
+
+    void loadOpenCLBuffer();
+
+    cl_mem openClTexture;
 };
 
 #endif //BRAKEDA3D_IMAGE_H

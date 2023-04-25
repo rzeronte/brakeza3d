@@ -13,7 +13,7 @@ class ShaderOpenCL: public Shader {
 protected:
     std::string kernelFilename;
 
-    cl_command_queue clCommandQueue;
+    cl_command_queue clQueue;
     cl_device_id clDeviceId;
     cl_int clRet;
     cl_context context;
@@ -30,7 +30,7 @@ public:
 
     void initOpenCLProgram();
 
-    void debugKernel() const;
+    void debugKernel(std::string from) const;
 };
 
 

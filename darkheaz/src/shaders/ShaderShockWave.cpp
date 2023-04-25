@@ -31,82 +31,24 @@ void ShaderShockWave::executeKernelOpenCL()
 
     if (numberWaves <= 0) return;
 
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_waves,
-        CL_TRUE,
-        0,
-        numberWaves * sizeof(OCShockWave),
-        waves.data(),
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoOutput,
-        CL_FALSE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoInput,
-        CL_FALSE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        this->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
+    clEnqueueWriteBuffer(clQueue, opencl_buffer_waves, CL_TRUE, 0, numberWaves * sizeof(OCShockWave), waves.data(), 0, nullptr, nullptr );
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoOutput);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&openClBufferMappedWithVideoInput);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_waves);
     clSetKernelArg(kernel, 6, sizeof(int), &numberWaves);
 
-    // Process the entire lists
     size_t global_item_size = this->bufferSize;
-    // Divide work items into groups of 64
-    size_t local_item_size = 16;
+    size_t local_item_size = 256;
 
-    clRet = clEnqueueNDRangeKernel(
-        clCommandQueue,
-        kernel,
-        1,
-        nullptr,
-        &global_item_size,
-        &local_item_size,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueReadBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoInput,
-        CL_TRUE,
-        0,
-        this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
 
     waves.clear();
 
-    //this->debugKernel();
+    this->debugKernel("ShaderShockWave");
 }
 
 void ShaderShockWave::addShockWave(ShockWave *wave)
@@ -115,14 +57,6 @@ void ShaderShockWave::addShockWave(ShockWave *wave)
         wave->getPosition(),
         ComponentsManager::get()->getComponentCamera()->getCamera(
     ));
-
-    /*Logging::Log("iTime: %f | speed: %.2f | x: %d | y: %d | currentSize: %.2f",
-         wave->getTtlWave().getAcumulatedTime(),
-         wave->getSpeed(),
-         focalPoint.x,
-         focalPoint.y,
-         wave->getCurrentSize()
-    );*/
 
     this->waves.push_back(OCShockWave{
         wave->getTtlWave().getAcumulatedTime(),

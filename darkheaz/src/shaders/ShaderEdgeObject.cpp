@@ -43,27 +43,15 @@ void ShaderEdgeObject::update()
 void ShaderEdgeObject::executeKernelOpenCL()
 {
     clEnqueueWriteBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoInput,
-        CL_TRUE,
-        0,
+            clQueue,
+            openClBufferMappedWithVideoInput,
+            CL_TRUE,
+            0,
         this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    clEnqueueWriteBuffer(
-        clCommandQueue,
-        opencl_buffer_stencil,
-        CL_FALSE,
-        0,
-        this->bufferSize * sizeof(bool),
-        object->getStencilBuffer(),
-        0,
-        nullptr,
-        nullptr
+            EngineBuffers::get()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
     );
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
@@ -82,30 +70,30 @@ void ShaderEdgeObject::executeKernelOpenCL()
     size_t local_item_size = 16;
 
     clRet = clEnqueueNDRangeKernel(
-        clCommandQueue,
-        kernel,
-        1,
-        nullptr,
-        &global_item_size,
-        &local_item_size,
-        0,
-        nullptr,
-        nullptr
+            clQueue,
+            kernel,
+            1,
+            nullptr,
+            &global_item_size,
+            &local_item_size,
+            0,
+            nullptr,
+            nullptr
     );
 
     clEnqueueReadBuffer(
-        clCommandQueue,
-        openClBufferMappedWithVideoOutput,
-        CL_TRUE,
-        0,
+            clQueue,
+            openClBufferMappedWithVideoOutput,
+            CL_TRUE,
+            0,
         this->bufferSize * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
+            EngineBuffers::get()->videoBuffer,
+            0,
+            nullptr,
+            nullptr
     );
 
-    this->debugKernel();
+    this->debugKernel("ShaderEdge");
 }
 
 ShaderEdgeObject::~ShaderEdgeObject() {

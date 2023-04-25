@@ -38,6 +38,7 @@ struct ObjectData {
     OCVertex3D position;  // Posición del objeto
     OCVertex3D rotation;  // Rotación del objeto
     float scale;        // Escala del objeto
+
 };
 
 struct CameraData{
@@ -77,34 +78,32 @@ struct OCLMeshContext {
 };
 
 class MeshOpenCLRenderer {
-    std::string kernelFilename;
 
     cl_command_queue clQueue;
     cl_device_id clDeviceId;
     cl_int clRet;
     cl_context context;
 
-    cl_program program;
-    cl_kernel kernel;
-
     cl_mem clBufferTriangles;
     cl_mem clBufferMeshContext;
 
     std::vector<Triangle*> &triangles;
 
+    Object3D *object;
     void initOpenCLProgram();
 
 public:
     virtual ~MeshOpenCLRenderer();
 
-    MeshOpenCLRenderer(const std::string& kernelFilename, std::vector<Triangle*> &triangles);
+    MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> &triangles);
 
-    void onUpdate(OCLMeshContext *context);
+    void onUpdate(OCLMeshContext *context, Texture *texture);
 
     void debugKernel() const;
 
     std::vector<OCTriangle> openCLTriangles();
 
+    cl_mem clBufferStencil;
 };
 
 

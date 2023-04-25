@@ -12,7 +12,7 @@
 ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shader(active)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
-    this->clCommandQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
+    this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
     this->kernelFilename = kernelFilename;
     this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
@@ -44,30 +44,30 @@ void ShaderOpenCL::initOpenCLProgram()
     openClBufferMappedWithVideoInput = clCreateBuffer(
         context,
         CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
+        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::get()->videoBuffer,
         nullptr
     );
 
     openClBufferMappedWithVideoOutput = clCreateBuffer(
         context,
          CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
-        EngineBuffers::getInstance()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::getInstance()->videoBuffer,
+        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
+        EngineBuffers::get()->videoBuffer,
         nullptr
     );
 
     free(source_str);
 }
 
-void ShaderOpenCL::debugKernel() const
+void ShaderOpenCL::debugKernel(std::string from) const
 {
     if (!EngineSetup::get()->LOGGING) return;
 
     if (clRet != CL_SUCCESS) {
-        Logging::Log( "Error OpenCL kernel: %d",  clRet);
+        Logging::Log( "Error OpenCL kernel: %d %s",  clRet, from.c_str());
 
-        char buffer[2048];
+        char buffer[2048*10];
         clGetProgramBuildInfo(
             program,
             clDeviceId,

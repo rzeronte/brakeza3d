@@ -232,6 +232,8 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
+
+
     if (isStucked()) {
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),
@@ -308,6 +310,10 @@ void Player::postUpdate()
         return;
     }
 
+    if (weapon != nullptr) {
+        weapon->onUpdate();
+    }
+
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
         blink->update();
@@ -316,9 +322,6 @@ void Player::postUpdate()
         }
     }
 
-    if (weapon != nullptr) {
-        weapon->onUpdate();
-    }
 }
 
 Vertex3D Player::getVelocity() {

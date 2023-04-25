@@ -75,7 +75,7 @@ void Button::setCallBack(void (*pFunction)()) {
 }
 
 void Button::drawSelectedEffect() {
-    auto *buffer = EngineBuffers::getInstance();
+    auto *buffer = EngineBuffers::get();
 
     Color c = Color::green();
     for (int i = 0; i < getImage()->width(); i++) {

@@ -42,9 +42,10 @@ __kernel void onUpdate(
     int x = i % screenWidth;
     int y = i / screenWidth;
 
-    float2 uv = { x, y };
-    float2 resolution = { screenWidth, screenHeight};
+    float2 uv = { (float) x, (float) y };
+    float2 resolution = { (float) screenWidth, (float) screenHeight};
     float2 st = uv / resolution;
+
 
     unsigned int mixedColor = video[i];
     unsigned char *mi = &mixedColor;
@@ -58,11 +59,11 @@ __kernel void onUpdate(
         A = A / resolution;
         B = B / resolution;
 
-        float l = line(A, B, st, 0.015 * laser.intensity);
+        float l = line(A, B, st, 0.015f * laser.intensity);
 
         //--
-        float rad  = 0.075;
-        float width = 0.2;
+        float rad  = 0.075f;
+        float width = 0.2f;
         float len = length(A-st);
         float circleStart = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
 
@@ -73,21 +74,21 @@ __kernel void onUpdate(
         float3 colorEndCircle = {0.f, 0.f, 0.f};
 
         if (laser.startCircle) {
-            colorStartCircle[0] = circleStart * laser.r;
-            colorStartCircle[1] = circleStart * laser.g;
-            colorStartCircle[2] = circleStart * laser.b;
+            colorStartCircle.x = circleStart * laser.r;
+            colorStartCircle.y = circleStart * laser.g;
+            colorStartCircle.z = circleStart * laser.b;
         }
 
         if (laser.endCircle) {
-            colorEndCircle[0] = circleEnd * laser.r;
-            colorEndCircle[1] = circleEnd * laser.g;
-            colorEndCircle[2] = circleEnd * laser.b;
+            colorEndCircle.x = circleEnd * laser.r;
+            colorEndCircle.y = circleEnd * laser.g;
+            colorEndCircle.z = circleEnd * laser.b;
         }
 
         //--
 
         float2 nst = st;
-        float2 offset = normalize(A-B) * iTime * 1.50;
+        float2 offset = normalize(A-B) * iTime * 1.50f;
         nst += offset;
 
         float intPart;
@@ -103,17 +104,17 @@ __kernel void onUpdate(
         float n = ci[0];
 
         float3 colorLine = {laser.r, laser.g, laser.b};
-        colorLine = (colorLine/255) * l * n;
+        colorLine = (colorLine/255.0f) * l * n;
 
         __global unsigned char *t = &video[i];
 
-        colorStartCircle  = colorStartCircle/177 * n;
-        colorEndCircle  = colorEndCircle/177 * n;
+        colorStartCircle  = colorStartCircle/177.0f * n;
+        colorEndCircle  = colorEndCircle/177.0f * n;
 
         mixedColor = createRGB(
-            min(colorStartCircle[0] + colorEndCircle[0] + colorLine[0] + mi[0], 255.0),
-            min(colorStartCircle[1] + colorEndCircle[1] + colorLine[1] + mi[1], 255.0),
-            min(colorStartCircle[2] + colorEndCircle[2] + colorLine[2] + mi[2], 255.0)
+            min(colorStartCircle.x + colorEndCircle.x + colorLine.x + mi[0], 255.0f),
+            min(colorStartCircle.y + colorEndCircle.y + colorLine.y + mi[1], 255.0f),
+            min(colorStartCircle.z + colorEndCircle.z + colorLine.z + mi[2], 255.0f)
         );
     }
 
@@ -123,26 +124,28 @@ __kernel void onUpdate(
 
         A = A / resolution;
 
-        float rad  = 0.0035 * projectile.intensity;
+        float rad  = 0.0035f * projectile.intensity;
         float len = length(A-st);
-        float width =  0.12;
+        float width =  0.12f;
         float circle = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
 
         __global unsigned char *ci = &image[i];
 
-        float n = ci[0] * 1.5;
+        float n = ci[0] * 1.5f;
 
         float3 colorCircle = {projectile.r, projectile.g, projectile.b};
         colorCircle = (colorCircle/255) * circle * n;
 
         mixedColor = createRGB(
-            min(colorCircle[0] + mi[0], 255.0),
-            min(colorCircle[1] + mi[1], 255.0),
-            min(colorCircle[2] + mi[2], 255.0)
+            min(colorCircle.x + mi[0], 255.0f),
+            min(colorCircle.y + mi[1], 255.0f),
+            min(colorCircle.z + mi[2], 255.0f)
         );
     }
 
     video[i] = mixedColor;
+
+
 }
 
 unsigned int createRGB(int r, int g, int b)
@@ -156,11 +159,11 @@ float line(float2 A, float2 B, float2 C, float thickness)
     float2 AC = C-A;
 
     float t = dot(AC, AB) / dot(AB, AB);
-    t = min(1.0, max(0.0, t));
+    t = min(1.0f, max(0.0f, t));
 
     float2 Q = A + t * AB;
 
     float dist = length(Q-C);
-    return smoothstep(0.001, -dist, -thickness) + smoothstep(-0.002, dist, thickness);
+    return smoothstep(0.001f, -dist, -thickness) + smoothstep(-0.002f, dist, thickness);
 }
 

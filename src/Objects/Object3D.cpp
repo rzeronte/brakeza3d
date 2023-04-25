@@ -9,7 +9,6 @@ Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
     motion(nullptr),
     parent(nullptr),
-    stencilBuffer(nullptr),
     enabled(true),
     removed(false),
     scale(1),
@@ -146,10 +145,6 @@ void Object3D::onUpdate()
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
     }
 
-    if (isStencilBufferEnabled()) {
-        clearStencilBuffer();
-    }
-
     if (getBehavior() != nullptr) {
         motion->onUpdate(position);
     }
@@ -185,47 +180,12 @@ void Object3D::setRotationFrame(Vertex3D r) {
     this->rotationFrame = r;
 }
 
-bool *Object3D::getStencilBuffer() const {
-    return stencilBuffer;
-}
-
 bool &Object3D::isStencilBufferEnabled() {
     return stencilBufferEnabled;
 }
 
 void Object3D::setStencilBufferEnabled(bool value) {
-    if (value) {
-        initializeStencilBuffer();
-    }
     Object3D::stencilBufferEnabled = value;
-}
-
-void Object3D::initializeStencilBuffer()
-{
-    const unsigned int bufferSize = EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight;
-    this->stencilBuffer = new bool[bufferSize];
-    std::fill(stencilBuffer, stencilBuffer + bufferSize, 0);
-
-}
-
-void Object3D::setStencilBuffer(int index, bool value) {
-    this->stencilBuffer[index] = value;
-}
-
-void Object3D::setStencilBuffer(int x, int y, bool value) {
-    this->stencilBuffer[y * EngineSetup::get()->screenWidth + x] = value;
-}
-
-void Object3D::clearStencilBuffer() {
-    std::fill(stencilBuffer, stencilBuffer + EngineSetup::get()->RESOLUTION, false);
-}
-
-bool Object3D::getStencilBufferValue(int i) const {
-    return this->stencilBuffer[i];
-}
-
-bool Object3D::getStencilBufferValue(int x, int y) const {
-    return this->stencilBuffer[y * EngineSetup::get()->screenWidth + x];
 }
 
 EnemyBehavior *Object3D::getBehavior() const {
@@ -254,7 +214,6 @@ void Object3D::setAlphaEnabled(bool alphaEnabled) {
 
 Object3D::~Object3D()
 {
-    if (stencilBufferEnabled) delete[] stencilBuffer;
 }
 
 float &Object3D::getRotX() {

@@ -70,7 +70,6 @@ typedef struct OCLMeshContext {
 int orient2d(OCPoint2D pa, OCPoint2D pb, int pc_x, int pc_y);
 float processFullArea(OCPoint2D pb, OCPoint2D pc, OCPoint2D pa);
 unsigned int createRGB(int r, int g, int b);
-void renderTriangle(__global struct OCTriangle *t, int screenWidth, __global unsigned int *video, __global float *bufferDepth);
 struct OCVertex3D objectSpace(struct OCVertex3D A, struct OCVertex3D objectPosition, struct OCVertex3D objectRotation, float oScale);
 struct OCVertex3D cameraSpace(struct OCVertex3D V, struct OCVertex3D camPos, struct OCVertex3D camRot);
 struct OCVertex3D NDCSpace(struct OCVertex3D v, struct OCVertex3D camPos, struct OCVertex3D camRot, struct OCVertex3D vNL, struct OCVertex3D vNR, struct OCVertex3D vNT, struct OCVertex3D vNB);
@@ -90,7 +89,10 @@ struct OCVertex3D getNormalize(struct OCVertex3D V);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
 struct OCVertex3D getComponent(struct Vector3D V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
-void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth);
+void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth, __global unsigned int *texture, int surfaceWidth, int surfaceHeight, bool useStencil, __global bool *stencil);
+float getXTextureFromUV(int textureWidth, float u);
+float getYTextureFromUV(int textureHeight, float v);
+unsigned int readSurfacePixel( __global unsigned int *pixels, int surfaceWidth, int x, int y);
 
 /* KERNEL */
 
@@ -101,14 +103,18 @@ __kernel void onUpdate(
     __global float *depthBuffer,
     __global OCLMeshContext *context,
     __global OCTriangle *triangles,
-    int numTriangles
+    int numTriangles,
+    __global unsigned int *texture,
+    int surfaceWidth,
+    int surfaceHeight,
+    __global bool *stencil,
+    int useStencil
 )
 {
     int i = get_global_id(0);
 
     if (i < numTriangles) {
-        updateTriangle(&triangles[i], context, screenWidth, screenHeight, videoBuffer, depthBuffer);
-        //renderTriangle(&triangles[i], screenWidth, videoBuffer, depthBuffer);
+        updateTriangle(&triangles[i], context, screenWidth, screenHeight, videoBuffer, depthBuffer, texture, surfaceWidth, surfaceHeight, useStencil, stencil);
     }
 }
 
@@ -116,7 +122,7 @@ __kernel void onUpdate(
 * Functions
 ****************************/
 
-void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth)
+void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth, __global unsigned int *texture, int surfaceWidth, int surfaceHeight, bool useStencil, __global bool *stencil)
 {
     /*t->Ao = objectSpace(t->A, context->objectData.position, context->objectData.rotation, context->objectData.scale);
     t->Bo = objectSpace(t->B, context->objectData.position, context->objectData.rotation, context->objectData.scale);
@@ -175,66 +181,33 @@ void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContex
                 gamma = 1 - alpha - theta;
 
                 float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
-                if (depth < bufferDepth[bufferIndex]) {
-                    bufferDepth[bufferIndex] = depth;
-                    video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-                }
-            }
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-
-
-}
-
-void renderTriangle(__global struct OCTriangle *t, int screenWidth, __global unsigned int *video, __global float *bufferDepth)
-{
-    int A01 = (int) -( t->As.y - t->Bs.y );
-    int A12 = (int) -( t->Bs.y - t->Cs.y );
-    int A20 = (int) -( t->Bs.y - t->As.y );
-
-    int B01 = (int) -( t->Bs.x - t->As.x );
-    int B12 = (int) -( t->Cs.x - t->Bs.x );
-    int B20 = (int) -( t->As.x - t->Cs.x );
-
-    int maxX = max( t->As.x, max( t->Bs.x, t->Cs.x ) );
-    int minX = min( t->As.x, min( t->Bs.x, t->Cs.x ) );
-    int maxY = max( t->As.y, max( t->Bs.y, t->Cs.y ) );
-    int minY = min( t->As.y, min( t->Bs.y, t->Cs.y ) );
-
-    int w0_row = orient2d( t->Bs, t->Cs, minX, minY );
-    int w1_row = orient2d( t->Cs, t->As, minX, minY );
-    int w2_row = orient2d( t->As, t->Bs, minX, minY );
-
-    float alpha, theta, gamma;
-
-    float fullArea = processFullArea(t->Bs, t->Cs, t->As);
-    float reciprocalFullArea = 1 / fullArea;
-
-    for (int y = minY ; y < maxY ; y++) {
-
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = minX ; x < maxX ; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-                int bufferIndex = ( y * screenWidth ) + x;
-
-                alpha =  (float) w0 * reciprocalFullArea;
-                theta =  (float) w1 * reciprocalFullArea;
-                gamma = 1 - alpha - theta;
-
-                float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
                 if (depth <= bufferDepth[bufferIndex]) {
                     bufferDepth[bufferIndex] = depth;
-                    video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+                    //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+
+                    float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+                    float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
+                    float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
+
+                    float ignorablePartInt;
+
+                    if (texU < 0.0f) {
+                        texU = 1.0f - fmod(fabs(texU), 1.0f);
+                    } else {
+                        texU = fmod(texU, 1.0f);
+                    }
+
+                    if (texV < 0.0f) {
+                        texV = 1.0f - fmod(fabs(texV), 1.0f);
+                    } else {
+                        texV = fmod(texV, 1.0f);
+                    }
+
+                    int tx = (int) getXTextureFromUV(surfaceWidth, texU);
+                    int ty = (int) getYTextureFromUV(surfaceHeight, texV);
+
+                    video[bufferIndex] = texture[ty * surfaceWidth + tx];
+                    stencil[bufferIndex] = true;
                 }
             }
             w0 += A12;
@@ -417,26 +390,14 @@ bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D
 {
     struct Vector3D edges[3];
 
-    edges[0].A.x = Ao.x;
-    edges[0].A.y = Ao.y;
-    edges[0].A.z = Ao.z;
-    edges[0].B.x = Bo.x;
-    edges[0].B.y = Bo.y;
-    edges[0].B.z = Bo.z;
+    edges[0].A = Ao;
+    edges[0].B = Bo;
 
-    edges[1].A.x = Bo.x;
-    edges[1].A.y = Bo.y;
-    edges[1].A.z = Bo.z;
-    edges[1].B.x = Co.x;
-    edges[1].B.y = Co.y;
-    edges[1].B.z = Co.z;
+    edges[1].A = Bo;
+    edges[1].B = Co;
 
-    edges[2].A.x = Co.x;
-    edges[2].A.y = Co.y;
-    edges[2].A.z = Co.z;
-    edges[2].B.x = Ao.x;
-    edges[2].B.y = Ao.y;
-    edges[2].B.z = Ao.z;
+    edges[2].A = Co;
+    edges[2].B = Ao;
 
     // 4 planes
     for (int i = 0 ; i < 4 ; i++) {
@@ -518,4 +479,17 @@ struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2) {
     r.z = (v1.x * v2.y) - (v1.y * v2.x);
 
     return r;
+}
+
+float getXTextureFromUV(int textureWidth, float u) {
+    return (float) textureWidth * u;
+}
+
+float getYTextureFromUV(int textureHeight, float v) {
+    return (float) textureHeight * v;
+}
+
+unsigned int readSurfacePixel( __global unsigned int *pixels, int surfaceWidth, int x, int y)
+{
+    return pixels[y * surfaceWidth + x];
 }

@@ -4,7 +4,7 @@ Component::Component()
 :
     id(-1),
     enabled(false),
-    BUFFERS(EngineBuffers::getInstance()),
+    BUFFERS(EngineBuffers::get()),
     SETUP(EngineSetup::get()
 )
 {
