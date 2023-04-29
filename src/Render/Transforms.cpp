@@ -72,16 +72,6 @@ void Transforms::screenSpace(Point2D &P, Vertex3D &V)
     P.y = (int) ((1 + V.y) * EngineSetup::get()->screenHeightHalf);
 }
 
-Vertex3D Transforms::perspectiveDivision(Vertex3D &V, float nearDist)
-{
-    Vertex3D A = V;
-
-    A.x = -(nearDist * V.x) / V.z;
-    A.y = -(nearDist * V.y) / V.z;
-
-    return A;
-}
-
 Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 {
     Vertex3D T;

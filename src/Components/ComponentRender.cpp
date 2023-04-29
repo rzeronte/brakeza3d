@@ -36,11 +36,31 @@ void ComponentRender::preUpdate()
 {
     this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
 
-    updateOpenCLBuffersWrite();
-
     if (!isEnabled()) {
         return;
     }
+}
+
+void ComponentRender::drawObjetsInHostBuffer()
+{
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+
+    for (auto object : sceneObjects) {
+        if (object != nullptr && object->isEnabled()) {
+            object->onDraw();
+        }
+    }
+
+    this->drawSceneOverlappingItems();
+
+    if (SETUP->RENDER_MAIN_AXIS) {
+        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
+    }
+
+    if (SETUP->BULLET_DEBUG_MODE) {
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
+     }
+
 }
 
 void ComponentRender::onUpdate()
@@ -49,12 +69,9 @@ void ComponentRender::onUpdate()
         return;
     }
 
-    ComponentsManager::get()->getComponentGame()->shaderBackgroundUpdate();
-    ComponentsManager::get()->getComponentGame()->addProjectilesToShaderLasers();
-    ComponentsManager::get()->getComponentGame()->updateShaders();
-    ComponentsManager::get()->getComponentHUD()->drawShaderLasers();
+    deleteRemovedObjects();
 
-    this->onUpdateSceneObjects();
+    onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {
         this->extractLightPointsFromObjects3D();
@@ -67,17 +84,9 @@ void ComponentRender::onUpdate()
     //this->hiddenSurfaceRemoval();
     //this->drawVisibleTriangles();
 
-    this->onPostUpdateSceneObjects();
-
-    updateOpenclBuffersRead();
 
     frameTriangles.clear();
     spritesTriangles.clear();
-
-    if (SETUP->BULLET_DEBUG_MODE) {
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
-    }
-
 
     if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
         for (auto & lightpoint : this->lightPoints) {
@@ -87,23 +96,17 @@ void ComponentRender::onUpdate()
         }
     }
 
-    this->drawSceneOverlappingItems();
-
-    if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
-    }
 }
-
 
 void ComponentRender::postUpdate()
 {
+    this->onPostUpdateSceneObjects();
 }
 
-void ComponentRender::updateOpenclBuffersRead() const
+void ComponentRender::writeOCLBufferIntoHost() const
 {
-    clEnqueueReadBuffer(
-        clCommandQueue,
-        EngineBuffers::get()->openClVideoBuffer,
+    clEnqueueReadBuffer(clCommandQueue,
+        EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
@@ -115,7 +118,7 @@ void ComponentRender::updateOpenclBuffersRead() const
 
     clEnqueueReadBuffer(
         clCommandQueue,
-        EngineBuffers::get()->openClDepthBuffer,
+        EngineBuffers::get()->depthBufferOCL,
         CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(float),
@@ -126,12 +129,14 @@ void ComponentRender::updateOpenclBuffersRead() const
     );
 }
 
-void ComponentRender::updateOpenCLBuffersWrite() const
+void ComponentRender::writeOCLBuffersFromHost() const
 {
-    clEnqueueWriteBuffer(
+    cl_int ret;
+
+    ret = clEnqueueWriteBuffer(
         clCommandQueue,
-        EngineBuffers::get()->openClVideoBuffer,
-        CL_FALSE,
+        EngineBuffers::get()->videoBufferOCL,
+        CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -140,10 +145,14 @@ void ComponentRender::updateOpenCLBuffersWrite() const
         nullptr
     );
 
-    clEnqueueWriteBuffer(
+    if (ret != CL_SUCCESS) {
+        printf("Error al escribir en el buffer de vídeo: %d\n", ret);
+    }
+
+    ret = clEnqueueWriteBuffer(
         clCommandQueue,
-        EngineBuffers::get()->openClDepthBuffer,
-        CL_FALSE,
+        EngineBuffers::get()->depthBufferOCL,
+        CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(float),
         EngineBuffers::get()->depthBuffer,
@@ -151,6 +160,10 @@ void ComponentRender::updateOpenCLBuffersWrite() const
         nullptr,
         nullptr
     );
+
+    if (ret != CL_SUCCESS) {
+        printf("Error al escribir en el buffer de depth: %d\n", ret);
+    }
 }
 void ComponentRender::onEnd() {
 }
@@ -246,7 +259,7 @@ std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
     return lightPoints;
 }
 
-void ComponentRender::onUpdateSceneObjects()
+void ComponentRender::deleteRemovedObjects()
 {
     if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
 
@@ -264,6 +277,11 @@ void ComponentRender::onUpdateSceneObjects()
         ),
         sceneObjects.end()
     );
+}
+
+void ComponentRender::onUpdateSceneObjects()
+{
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
 
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
@@ -379,9 +397,9 @@ void ComponentRender::hiddenSurfaceRemoval() {
     }
 
     visibleTriangles.insert(
-            visibleTriangles.end(),
-            std::make_move_iterator(clippedTriangles.begin()),
-            std::make_move_iterator(clippedTriangles.end())
+        visibleTriangles.end(),
+        std::make_move_iterator(clippedTriangles.begin()),
+        std::make_move_iterator(clippedTriangles.end())
     );
 }
 
@@ -393,12 +411,8 @@ void ComponentRender::hiddenOctreeRemoval() {
 
 void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles)
 {
-    if (
-            node->isLeaf() &&
-            ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isAABBInFrustum(
-                    &node->bounds
-            )
-            ) {
+    auto frustum = ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum();
+    if (node->isLeaf() &&frustum->isAABBInFrustum(&node->bounds)) {
         for (auto & triangle : node->triangles) {
             triangles.push_back(triangle);
         }
@@ -1101,7 +1115,7 @@ void ComponentRender::initOpenCL()
     clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
     clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
 
-    EngineBuffers::get()->setOpenCLContext(clContext, clCommandQueue);
+    EngineBuffers::get()->createOpenCLBuffers(clContext, clCommandQueue);
 
     // Get device information
     char vendor[128];
@@ -1273,4 +1287,3 @@ _cl_program *ComponentRender::getRendererProgram(){
 _cl_kernel *ComponentRender::getRendererKernel() {
     return rendererKernel;
 }
-

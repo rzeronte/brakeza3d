@@ -25,8 +25,6 @@ public:
 
     static void cameraSpace(Vertex3D &dst, Vertex3D &src, Object3D *cam);
 
-    static Vertex3D perspectiveDivision(Vertex3D &V, float nearDist);
-
     static void screenSpace(Point2D &P, Vertex3D &V);
 
     static Point2D WorldToPoint(Vertex3D V, Camera3D *camera);

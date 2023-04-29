@@ -12,6 +12,7 @@
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "PathFinder.h"
+#include "../Render/MeshOpenCLRenderer.h"
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -94,6 +95,8 @@ public:
     static OCVertex3D vertexOCL(Vertex3D v);
 
     static OCPoint2D pointOCL(Point2D v);
+
+    static OCLMeshContext openCLContext(Object3D *object);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

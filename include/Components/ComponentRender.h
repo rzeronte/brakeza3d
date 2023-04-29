@@ -170,15 +170,19 @@ public:
 
     cl_device_id selectNvidiaDevice();
 
-    void updateOpenCLBuffersWrite() const;
+    void writeOCLBuffersFromHost() const;
 
-    void updateOpenclBuffersRead() const;
+    void writeOCLBufferIntoHost() const;
 
     void loadRenderKernel();
 
     _cl_program *getRendererProgram();
 
     _cl_kernel *getRendererKernel();
+
+    void drawObjetsInHostBuffer();
+
+    void deleteRemovedObjects();
 };
 
 

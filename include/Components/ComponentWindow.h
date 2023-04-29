@@ -48,6 +48,10 @@ public:
     [[nodiscard]] SDL_Texture *getScreenTexture() const;
 
     [[nodiscard]] TTF_Font *getFontDefault() const;
+
+    void renderToWindow();
+
+    void clearVideoBuffers();
 };
 
 
