@@ -2,7 +2,6 @@
 #ifndef BRAKEDA3D_ANIMATEDSPRITE_H
 #define BRAKEDA3D_ANIMATEDSPRITE_H
 
-
 #include "Object3D.h"
 #include "../Components/Camera3D.h"
 #include "../EngineSetup.h"
@@ -10,9 +9,8 @@
 #include "../2D/TextureAnimated.h"
 #include "../Render/Billboard.h"
 #include "../Misc/Counter.h"
+#include "../Render/MeshOpenCLRenderer.h"
 #include <vector>
-
-#define ANIMATEDSPRITE_MAX_ANIMATIONS 25
 
 class Sprite3D : public Object3D {
     Billboard *billboard;
@@ -25,6 +23,8 @@ private:
 
     bool autoRemoveAfterAnimation;
     bool sharedTextures;
+
+    MeshOpenCLRenderer *openClRenderer;
 public:
     Sprite3D(float width, float height);
 

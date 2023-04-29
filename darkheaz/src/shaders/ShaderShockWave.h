@@ -30,6 +30,8 @@ class ShaderShockWave: public ShaderOpenCL {
 public:
     explicit ShaderShockWave(bool active);
 
+    ~ShaderShockWave() override;
+
     void update() override;
 
     void executeKernelOpenCL();

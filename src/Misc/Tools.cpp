@@ -8,6 +8,7 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -465,10 +466,49 @@ float Tools::percentage(int value, int total)
 
 OCVertex3D Tools::vertexOCL(Vertex3D v)
 {
-    return OCVertex3D(v.x, v.y, v.z);
+    return OCVertex3D(v.x, v.y, v.z, v.u, v.v);
 }
 
 OCPoint2D Tools::pointOCL(Point2D v)
 {
     return OCPoint2D(v.x, v.y);
+}
+
+
+OCLMeshContext Tools::openCLContext(Object3D *object)
+{
+    ObjectData objectData(
+        OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
+        OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
+        object->getScale()
+    );
+
+    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto rp = cam->getRotation();
+
+    CameraData cameraData(
+            OCVertex3D(cam->getPosition().x, cam->getPosition().y, cam->getPosition().z),
+            OCVertex3D(rp.getPitch(), rp.getYaw(), rp.getRoll())
+    );
+
+    auto frustum = cam->getFrustum();
+
+    OCVertex3D vNL(frustum->vNLs.x, frustum->vNLs.y, frustum->vNLs.z );
+    OCVertex3D vNR(frustum->vNRs.x, frustum->vNRs.y, frustum->vNRs.z );
+    OCVertex3D vNT(frustum->vNTs.x, frustum->vNTs.y, frustum->vNTs.z );
+    OCVertex3D vNB(frustum->vNBs.x, frustum->vNBs.y, frustum->vNBs.z );
+
+    std::vector<OCLPlane> planesOCL;
+    for (int i = EngineSetup::get()->NEAR_PLANE ; i <= EngineSetup::get()->BOTTOM_PLANE ; i++) {
+        OCVertex3D A( frustum->planes[i].A.x, frustum->planes[i].A.y, frustum->planes[i].A.z );
+        OCVertex3D B( frustum->planes[i].B.x, frustum->planes[i].B.y, frustum->planes[i].B.z );
+        OCVertex3D C( frustum->planes[i].C.x, frustum->planes[i].C.y, frustum->planes[i].C.z );
+        OCVertex3D normal( frustum->planes[i].normal.x, frustum->planes[i].normal.y, frustum->planes[i].normal.z );
+
+        planesOCL.emplace_back(A, B, C, normal);
+    }
+
+    FrustumData frustumData(vNL, vNR, vNT, vNB, planesOCL);
+
+    return OCLMeshContext(objectData, cameraData, frustumData);
 }

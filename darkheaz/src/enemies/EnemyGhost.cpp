@@ -34,9 +34,6 @@ void EnemyGhost::onUpdate()
 {
     Mesh3DAnimatedGhost::onUpdate();
 
-    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
-
     if (!rotationFrameEnabled) {
         rotateToTarget();
     }
@@ -49,18 +46,38 @@ void EnemyGhost::onUpdate()
         handleDie();
     }
 
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
+        blink->update();
+        if (counterDamageBlink.isFinished()) {
+            blink->setEnabled(false);
+            counterDamageBlink.setEnabled(false);
+        }
+    }
+
+    updateLasers();
+}
+
+void EnemyGhost::onDraw()
+{
+    Mesh3D::onDraw();
+
+    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
+    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+
     if (isStuck()) {
-
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
-
         counterStuck.update();
-
         if (counterStuck.isFinished()) {
             unstuck();
         }
     }
 
-    if (getState() != EnemyState::ENEMY_STATE_DIE && (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) && gameState == EngineSetup::GAMING) {
+    if (
+        state != EnemyState::ENEMY_STATE_DIE &&
+        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
+        gameState == EngineSetup::GAMING
+    ) {
         if (projectileEmitter != nullptr) {
             projectileEmitter->setPosition(getPosition());
             projectileEmitter->onUpdate();
@@ -68,8 +85,6 @@ void EnemyGhost::onUpdate()
 
         shoot(getTarget());
     }
-
-    updateLasers();
 }
 
 void EnemyGhost::handleDie()
@@ -112,14 +127,6 @@ void EnemyGhost::postUpdate()
         projectileEmitter->postUpdate();
     }
 
-    if (counterDamageBlink.isEnabled()) {
-        counterDamageBlink.update();
-        blink->update();
-        if (counterDamageBlink.isFinished()) {
-            blink->setEnabled(false);
-            counterDamageBlink.setEnabled(false);
-        }
-    }
 }
 
 void EnemyGhost::makeReward()

@@ -11,6 +11,8 @@ Billboard::Billboard(float width, float height)
     T2(Triangle()),
     texture(nullptr)
 {
+    triangles.push_back(&T1);
+    triangles.push_back(&T2);
 }
 
 void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
@@ -87,4 +89,8 @@ Triangle *Billboard::getT1() {
 
 Triangle *Billboard::getT2() {
     return &T2;
+}
+
+std::vector<Triangle *> &Billboard::getTriangles() {
+    return triangles;
 }

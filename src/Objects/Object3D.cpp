@@ -81,7 +81,6 @@ Vertex3D Object3D::AxisRight() {
     Vertex3D v = getRotation() * EngineSetup::get()->right;
 
     return v.getNormalize();
-
 }
 
 Vertex3D Object3D::AxisLeft() {
@@ -227,3 +226,8 @@ float &Object3D::getRotY() {
 float &Object3D::getRotZ() {
     return rotZ;
 }
+
+void Object3D::onDraw()
+{
+}
+

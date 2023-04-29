@@ -33,19 +33,13 @@ public:
 
     void update() override
     {
-        if (!isEnabled()) {
-            return;
-        }
-
-        if (this->object == nullptr) {
-            return;
-        }
+        if (!isEnabled()) return;
+        if (this->object == nullptr) return;
+        if (object->isRemoved()) return;
 
         counter.update();
 
-        if (!this->object->isStencilBufferEnabled()) {
-            return;
-        }
+        if (!this->object->isStencilBufferEnabled()) return;
 
         if (isBlinking) {
             if (counter.isFinished()) {
@@ -72,7 +66,7 @@ public:
     {
         clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
         clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
-        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
         clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&object->getOpenClRenderer()->clBufferStencil);
         clSetKernelArg(kernel, 4, sizeof(float), &this->color.r);
         clSetKernelArg(kernel, 5, sizeof(float), &this->color.g);

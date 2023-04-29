@@ -16,19 +16,26 @@ ComponentWindow::ComponentWindow()
 
 void ComponentWindow::onStart()
 {
-    Logging::Log("ComponentWindow onStart");
 }
 
 void ComponentWindow::preUpdate()
+{
+}
+
+void ComponentWindow::clearVideoBuffers()
 {
     BUFFERS->clearDepthBuffer();
     BUFFERS->clearVideoBuffer();
 }
 
-void ComponentWindow::onUpdate()
+void ComponentWindow::renderToWindow()
 {
     SDL_RenderPresent(renderer);
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
+}
+
+void ComponentWindow::onUpdate()
+{
 }
 
 void ComponentWindow::postUpdate()

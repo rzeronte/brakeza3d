@@ -37,7 +37,7 @@ void ShaderImage::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferImage);
     clSetKernelArg(kernel, 5, sizeof(int), &useOffset);
     clSetKernelArg(kernel, 6, sizeof(float), &offsetX);
@@ -83,17 +83,9 @@ void ShaderImage::setImage(const std::string& fileName)
 
 void ShaderImage::refreshBufferImage()
 {
-    clEnqueueWriteBuffer(
-            clQueue,
-            clBufferImage,
-            CL_TRUE,
-            0,
-        this->bufferSize * sizeof(Uint32),
-            image.pixels(),
-            0,
-            nullptr,
-            nullptr
-    );
+    clReleaseMemObject(clBufferImage);
+    clBufferImage = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->bufferSize * sizeof(Uint32), this->image.pixels(), nullptr);
+    clEnqueueWriteBuffer(clQueue, clBufferImage, CL_TRUE, 0, this->bufferSize * sizeof(Uint32), image.pixels(), 0, nullptr, nullptr );
 }
 
 bool ShaderImage::isUseOffset() const {
@@ -102,4 +94,8 @@ bool ShaderImage::isUseOffset() const {
 
 void ShaderImage::setUseOffset(bool value) {
     ShaderImage::useOffset = value;
+}
+
+ShaderImage::~ShaderImage() {
+    clReleaseMemObject(clBufferImage);
 }

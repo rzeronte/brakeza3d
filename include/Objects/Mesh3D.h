@@ -28,8 +28,8 @@ private:
 
     bool flatTextureColor;
     bool render;
-    MeshOpenCLRenderer *openClRenderer;
 
+    MeshOpenCLRenderer *openClRenderer;
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Texture *> modelTextures;
@@ -102,6 +102,8 @@ public:
     bool enableLights;
 
     MeshOpenCLRenderer *getOpenClRenderer() const;
+
+    void onDraw();
 };
 
 

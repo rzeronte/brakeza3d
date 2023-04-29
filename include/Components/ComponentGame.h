@@ -144,7 +144,7 @@ public:
 
     void handlePressKeyCredits();
 
-    void updateCrossFire();
+    void updateEnemyTargetedCrossFire();
 
     void handleSplash();
 

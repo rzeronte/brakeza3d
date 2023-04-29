@@ -13,7 +13,6 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *videoShader,
     __global struct OCShockWave *waves,
     int numberWaves
 
@@ -54,7 +53,7 @@ __kernel void onUpdate(
         int index = cy * screenWidth + cx;
 
         __global unsigned char *cc = &video[index];
-        __global unsigned char *cs = &videoShader[i];
+        __global unsigned char *cs = &video[i];
 
         mixedColor = createRGB(
             mix((float)cc[0], (float)mi[0], 0.5f),
@@ -63,7 +62,7 @@ __kernel void onUpdate(
         );
     }
 
-    videoShader[i] = mixedColor;
+    video[i] = mixedColor;
 }
 
 unsigned int createRGB(int r, int g, int b)

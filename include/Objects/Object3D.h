@@ -126,6 +126,7 @@ public:
     [[nodiscard]] Object3D *getParent() const;
 
 
+    virtual void onDraw();
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

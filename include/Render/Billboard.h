@@ -20,6 +20,7 @@ private:
     Vertex3D Q4;
 
     Texture *texture;
+    std::vector<Triangle *> triangles;
 public:
     Billboard(float width, float height);
 
@@ -34,6 +35,8 @@ public:
     Triangle *getT1();
 
     Triangle *getT2();
+
+    std::vector<Triangle *> &getTriangles();
 };
 
 

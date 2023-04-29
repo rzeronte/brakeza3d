@@ -36,10 +36,9 @@ void ShaderShockWave::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&opencl_buffer_waves);
-    clSetKernelArg(kernel, 6, sizeof(int), &numberWaves);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_waves);
+    clSetKernelArg(kernel, 5, sizeof(int), &numberWaves);
 
     size_t global_item_size = this->bufferSize;
     size_t local_item_size = 256;
@@ -65,4 +64,9 @@ void ShaderShockWave::addShockWave(ShockWave *wave)
         focalPoint.y,
         wave->getCurrentSize()
     });
+}
+
+ShaderShockWave::~ShaderShockWave()
+{
+    clReleaseMemObject(opencl_buffer_waves);
 }

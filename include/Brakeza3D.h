@@ -48,8 +48,6 @@ public:
 
     [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
 
-    Object3D *getObjectByLabel(const std::string &label);
-
     Timer *getTimer();
 
     void updateTimer();

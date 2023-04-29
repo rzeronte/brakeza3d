@@ -1,18 +1,19 @@
 
 #include "../../include/Objects/Sprite3D.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/Render/Drawable.h"
 #include "../../include/ComponentsManager.h"
 
 Sprite3D::Sprite3D(float width, float height):
+    billboard(new Billboard(width, height)),
     currentAnimationIndex(0),
     step(0),
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
 {
-    this->billboard = new Billboard(width, height);
     this->counter = Counter();
     this->counter.setEnabled(true);
+
+    openClRenderer = new MeshOpenCLRenderer(this, this->billboard->getTriangles());
 }
 
 void Sprite3D::onUpdate()
@@ -23,8 +24,11 @@ void Sprite3D::onUpdate()
 
     if (isRemoved()) return;
 
-    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
-    ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
+    //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
+    //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
+
+    auto context = Tools::openCLContext(this);
+    openClRenderer->onUpdate(&context, billboard->getT1()->getTexture());
 }
 
 void Sprite3D::postUpdate()

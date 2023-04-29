@@ -117,9 +117,7 @@ ComponentGame::~ComponentGame()
 
 void ComponentGame::preUpdate()
 {
-    EngineSetup::GameState state = getGameState();
-
-    if (state == EngineSetup::GameState::SPLASH) {
+    if (gameState == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
 
         imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
@@ -133,11 +131,10 @@ void ComponentGame::preUpdate()
 
     getPlayer()->updateWeaponInteractionStatus();
 
-    updateFadeToGameState();
-}
+    updateShaders();
 
-void ComponentGame::onUpdate()
-{
+    textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
+
     switch(gameState) {
         case EngineSetup::PRESS_KEY_NEWLEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
@@ -186,9 +183,9 @@ void ComponentGame::onUpdate()
                 makeFadeToGameState(EngineSetup::GameState::MENU);
 
                 ComponentSound::fadeInMusic(
-                    ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
-                    -1,
-                    SPLASH_TIME * 1000
+                        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+                        -1,
+                        SPLASH_TIME * 1000
                 );
             }
             break;
@@ -196,12 +193,17 @@ void ComponentGame::onUpdate()
         case EngineSetup::NONE:
         case EngineSetup::SPLASH:
         case EngineSetup::MENU:
-        break;
+            break;
     }
+}
 
-    updateCrossFire();
+void ComponentGame::onUpdate()
+{
+    updateFadeToGameState();
 
-    textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
+    updateEnemyTargetedCrossFire();
+    addProjectilesToShaderLasers();
+
 }
 
 void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
@@ -257,10 +259,9 @@ void ComponentGame::updateFadeToGameState()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
-
 }
 
-void ComponentGame::updateCrossFire()
+void ComponentGame::updateEnemyTargetedCrossFire()
 {
     if (gameState != EngineSetup::GAMING) return;
 
@@ -821,6 +822,7 @@ void ComponentGame::pressedKeyByDead()
 
 void ComponentGame::updateShaders()
 {
+    shaderBackgroundUpdate();
     shaderColor->update();
     shaderLasers->update();
     shaderShockWave->update();

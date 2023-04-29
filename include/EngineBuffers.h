@@ -29,8 +29,8 @@ public:
 
     int widthVideoBuffer = EngineSetup::get()->screenWidth;
 
-    cl_mem openClVideoBuffer;
-    cl_mem openClDepthBuffer;
+    cl_mem videoBufferOCL;
+    cl_mem depthBufferOCL;
 
     void clearDepthBuffer() const;
 
@@ -54,7 +54,7 @@ public:
 
     void flipVideoBufferToSurface(SDL_Surface *);
 
-    void setOpenCLContext(_cl_context *c, cl_command_queue &queue);
+    void createOpenCLBuffers(_cl_context *context, cl_command_queue &queue);
 };
 
 #endif

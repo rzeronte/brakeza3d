@@ -62,7 +62,7 @@ void ShaderProjectiles::executeKernelOpenCL()
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&opencl_buffer_pixels_image);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferLasers);
     clSetKernelArg(kernel, 6, sizeof(int), &numberLasers);
@@ -117,4 +117,11 @@ void ShaderProjectiles::addProjectile(Vertex3D position, Color color, float i)
         (int) color.b,
         i * 0.0050f
     });
+}
+
+ShaderProjectiles::~ShaderProjectiles()
+{
+    clReleaseMemObject(opencl_buffer_pixels_image);
+    clReleaseMemObject(clBufferLasers);
+    clReleaseMemObject(clBufferProjectiles);
 }
