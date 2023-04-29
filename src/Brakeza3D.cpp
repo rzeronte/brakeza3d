@@ -50,9 +50,11 @@ void Brakeza3D::mainLoop()
 
         this->updateTimer();
 
-        preUpdateComponents();
+        componentsManager->getComponentWindow()->clearVideoBuffers();
 
-        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
+        componentsManager->getComponentRender()->writeOCLBuffersFromHost();
+
+        preUpdateComponents();
 
         while (SDL_PollEvent(&e)) {
             onUpdateSDLPollEventComponents(&e, finish);
@@ -60,7 +62,16 @@ void Brakeza3D::mainLoop()
         }
 
         onUpdateComponents();
+
+        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
+
+        componentsManager->getComponentRender()->writeOCLBufferIntoHost();
+
+        componentsManager->getComponentRender()->drawObjetsInHostBuffer();
+
         postUpdateComponents();
+
+        componentsManager->getComponentWindow()->renderToWindow();
     }
 
     onEndComponents();
@@ -88,17 +99,6 @@ void Brakeza3D::addObject3D(Object3D *obj, const std::string &label)
     Logging::Log("Adding Object3D: %s", label.c_str());
     obj->setLabel(label);
     sceneObjects.push_back(obj);
-}
-
-Object3D *Brakeza3D::getObjectByLabel(const std::string &label)
-{
-    for (int i = 0; i < (int) this->sceneObjects.size(); i++) {
-        if (sceneObjects[i]->getLabel() == label) {
-            return sceneObjects[i];
-        }
-    }
-
-    return nullptr;
 }
 
 Timer *Brakeza3D::getTimer()

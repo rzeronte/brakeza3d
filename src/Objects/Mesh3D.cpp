@@ -137,7 +137,7 @@ void Mesh3D::onUpdate()
     }
 
     if ((int) modelTriangles.size() > 0) {
-        auto context = openCLContext();
+        auto context = Tools::openCLContext(this);
         openClRenderer->onUpdate(&context, modelTextures[0]);
     }
 }
@@ -340,7 +340,7 @@ void Mesh3D::buildOctree()
 
     this->updateBoundingBox();
 
-    this->octree = new Octree(this->modelTriangles, this->aabb);
+    this->octree = new Octree(this->modelTriangles, aabb);
 }
 
 bool Mesh3D::isFlatTextureColor() const
@@ -388,6 +388,8 @@ Mesh3D::~Mesh3D()
             delete texture;
         }
     }
+
+    delete openClRenderer;
 }
 
 bool Mesh3D::isRender() const {
@@ -414,45 +416,14 @@ AABB3D &Mesh3D::getAabb(){
     return aabb;
 }
 
-OCLMeshContext Mesh3D::openCLContext()
-{
-    ObjectData objectData(
-        OCVertex3D(this->position.x, this->position.y, this->position.z),
-        OCVertex3D(this->rotation.getPitch(), this->rotation.getYaw(), this->rotation.getRoll()),
-        this->scale
-    );
-
-    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-    auto rp = cam->getRotation();
-
-    CameraData cameraData(
-        OCVertex3D(cam->getPosition().x, cam->getPosition().y, cam->getPosition().z),
-        OCVertex3D(rp.getPitch(), rp.getYaw(), rp.getRoll())
-    );
-
-    auto frustum = cam->getFrustum();
-
-    OCVertex3D vNL(frustum->vNLs.x, frustum->vNLs.y, frustum->vNLs.z );
-    OCVertex3D vNR(frustum->vNRs.x, frustum->vNRs.y, frustum->vNRs.z );
-    OCVertex3D vNT(frustum->vNTs.x, frustum->vNTs.y, frustum->vNTs.z );
-    OCVertex3D vNB(frustum->vNBs.x, frustum->vNBs.y, frustum->vNBs.z );
-
-    std::vector<OCLPlane> planesOCL;
-    for (int i = EngineSetup::get()->LEFT_PLANE ; i <= EngineSetup::get()->BOTTOM_PLANE ; i++) {
-        OCVertex3D A( frustum->planes[i].A.x, frustum->planes[i].A.y, frustum->planes[i].A.z );
-        OCVertex3D B( frustum->planes[i].B.x, frustum->planes[i].B.y, frustum->planes[i].B.z );
-        OCVertex3D C( frustum->planes[i].C.x, frustum->planes[i].C.y, frustum->planes[i].C.z );
-        OCVertex3D normal( frustum->planes[i].normal.x, frustum->planes[i].normal.y, frustum->planes[i].normal.z );
-
-        planesOCL.emplace_back(A, B, C, normal);
-    }
-
-    FrustumData frustumData(vNL, vNR, vNT, vNB, planesOCL);
-
-    return OCLMeshContext(objectData, cameraData, frustumData);
-}
 
 MeshOpenCLRenderer *Mesh3D::getOpenClRenderer() const {
     return openClRenderer;
+}
+
+void Mesh3D::onDraw()
+{
+    Object3D::onDraw();
+
 }
 

@@ -55,7 +55,7 @@ public:
 
     [[nodiscard]] int width() const;
 
-    _cl_mem *getOpenClTexture();
+    cl_mem *getOpenClTexture();
 
     void loadOpenCLBuffer();
 

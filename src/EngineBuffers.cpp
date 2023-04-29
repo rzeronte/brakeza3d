@@ -74,17 +74,17 @@ void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
     memcpy(&surface->pixels, &videoBuffer, sizeof(surface->pixels));
 }
 
-void EngineBuffers::setOpenCLContext(_cl_context *context, cl_command_queue &queue)
+void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &queue)
 {
-    openClVideoBuffer = clCreateBuffer(
+    videoBufferOCL = clCreateBuffer(
         context,
-        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
         sizeBuffers * sizeof(Uint32),
         videoBuffer,
         nullptr
     );
 
-    openClDepthBuffer = clCreateBuffer(
+    depthBufferOCL = clCreateBuffer(
         context,
         CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
         sizeBuffers * sizeof(float),

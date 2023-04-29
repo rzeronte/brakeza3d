@@ -20,6 +20,8 @@ class ShaderImage: public ShaderOpenCL {
 public:
     explicit ShaderImage(const std::string& filename);
 
+    ~ShaderImage() override;
+
     void update() override;
 
     void executeKernelOpenCL();

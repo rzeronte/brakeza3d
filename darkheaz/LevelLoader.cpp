@@ -125,9 +125,9 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        delete tutorialImage;
-        tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
-        hasTutorial = true;
+        //delete tutorialImage;
+        //tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
+        //hasTutorial = true;
     }
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(

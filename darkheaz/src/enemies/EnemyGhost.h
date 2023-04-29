@@ -62,6 +62,8 @@ public:
     [[nodiscard]] ShaderBlink *getBlink();
 
     void handleDie();
+
+    void onDraw() override;
 };
 
 

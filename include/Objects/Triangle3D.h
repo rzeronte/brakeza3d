@@ -21,11 +21,14 @@ struct OCPoint2D {
 struct OCVertex3D {
     OCVertex3D() {}
 
-    OCVertex3D(float x, float y, float z) : x(x), y(y), z(z) {}
+    OCVertex3D(float x, float y, float z, float u, float v) : x(x), y(y), z(z), u(u), v(v) {}
+    OCVertex3D(float x, float y, float z) : x(x), y(y), z(z), u(0), v(0) {}
 
     float x = 0;
     float y = 0;
     float z = 0;
+    float u = 0;
+    float v;
 };
 
 struct OCTriangle

@@ -11,7 +11,6 @@
 Image::Image(const std::string& filename): surface(nullptr), texture(nullptr), loaded(false)
 {
     this->loadTGA(filename);
-
 }
 
 Image::Image(): surface(nullptr), texture(nullptr)
@@ -56,16 +55,9 @@ void Image::loadOpenCLBuffer() {
         &errCode
     );
 
-
     if (errCode != CL_SUCCESS) {
         std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
-
-        // Puedes manejar el error de diferentes maneras:
-        // - Lanzar una excepción
-        // - Retornar un valor de error
-        // - Salir del programa
-    } else {
-        std::cout << "El buffer de OpenCL se ha creado correctamente." << std::endl;
+        exit(-1);
     }
 }
 
@@ -181,6 +173,6 @@ void Image::setTextureAlpha(int value)
 
 }
 
-_cl_mem *Image::getOpenClTexture() {
-    return openClTexture;
+cl_mem *Image::getOpenClTexture() {
+    return &openClTexture;
 }

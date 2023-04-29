@@ -12,7 +12,7 @@
 #include "../Objects/Triangle3D.h"
 
 
-#define MAX_OPENCL_TRIANGLES 1024
+#define MAX_OPENCL_TRIANGLES 5120
 
 struct OCLPlane {
     OCLPlane() {}
@@ -60,7 +60,7 @@ struct FrustumData {
     OCVertex3D vNR;       // Vértice Near Plane Right
     OCVertex3D vNT;       // Vértice Near Plane Top
     OCVertex3D vNB;       // Vértice Near Plane Bottom
-    OCLPlane planes[4];  // Frustum planes (OCPlanes)
+    OCLPlane planes[6];  // Frustum planes (OCPlanes)
 };
 
 struct OCLMeshContext {
@@ -90,7 +90,6 @@ class MeshOpenCLRenderer {
     std::vector<Triangle*> &triangles;
 
     Object3D *object;
-    void initOpenCLProgram();
 
 public:
     virtual ~MeshOpenCLRenderer();

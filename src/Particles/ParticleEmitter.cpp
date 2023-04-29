@@ -42,6 +42,27 @@ bool ParticleEmitter::isActive() const {
 
 void ParticleEmitter::onUpdate()
 {
+
+}
+
+void ParticleEmitter::updateParticles()
+{
+    for (auto &p : particles) {
+        p.onUpdate();
+    }
+}
+
+void ParticleEmitter::onDraw()
+{
+    Object3D::onDraw();
+    updateParticles();
+
+}
+
+void ParticleEmitter::postUpdate()
+{
+    Object3D::postUpdate();
+
     if (isRemoved()) return;
 
     if (!isActive()) return;
@@ -57,7 +78,6 @@ void ParticleEmitter::onUpdate()
         setRemoved(true);
     }
 
-    updateParticles();
 
     setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 
@@ -66,18 +86,6 @@ void ParticleEmitter::onUpdate()
         particles.emplace_back(this, this->force, this->ttl, this->colorFrom, this->colorTo);
         timeToNextParticleCounter.setEnabled(true);
     }
-}
-
-void ParticleEmitter::updateParticles()
-{
-    for (auto &p : particles) {
-        p.onUpdate();
-    }
-}
-
-void ParticleEmitter::postUpdate()
-{
-    Object3D::postUpdate();
 }
 
 void ParticleEmitter::setRotationFrame(float x, float y, float z)

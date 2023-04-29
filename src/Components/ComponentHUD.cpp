@@ -27,13 +27,6 @@ void ComponentHUD::preUpdate()
     if (!isEnabled()) {
         return;
     }
-
-    if (SETUP->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
-    }
-
-    drawHUD();
-
 }
 
 void ComponentHUD::onUpdate()
@@ -41,11 +34,17 @@ void ComponentHUD::onUpdate()
     if (!isEnabled()) return;
     HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
 
+    if (SETUP->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
+    }
+
+    ComponentsManager::get()->getComponentHUD()->drawShaderLasers();
 }
 
 void ComponentHUD::postUpdate()
 {
     if (!isEnabled()) return;
+    drawHUD();
 
 }
 

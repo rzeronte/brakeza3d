@@ -14,15 +14,8 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
     triangles(triangles),
     object(parent)
 {
-    initOpenCLProgram();
-}
-
-void MeshOpenCLRenderer::initOpenCLProgram()
-{
-    clBufferTriangles = clCreateBuffer(this->context, CL_MEM_READ_ONLY, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
-
+    clBufferTriangles = clCreateBuffer(this->context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
     clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(OCLMeshContext), nullptr, nullptr );
-
     clBufferStencil = clCreateBuffer(context, CL_MEM_READ_WRITE, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
 }
 
@@ -31,6 +24,7 @@ void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
     auto oclTriangles = openCLTriangles();
 
     int numTriangles = (int) oclTriangles.size();
+    if (numTriangles <= 0) return;
 
     clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), context, 0, nullptr, nullptr);
@@ -45,8 +39,8 @@ void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClVideoBuffer);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->openClDepthBuffer);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTriangles);
     clSetKernelArg(kernel, 6, sizeof(int), &numTriangles);
@@ -66,8 +60,9 @@ void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()
 {
-    clReleaseMemObject(clBufferTriangles);
-    clReleaseMemObject(clBufferMeshContext);
+    if (clBufferTriangles != nullptr) clReleaseMemObject(clBufferTriangles);
+    if (clBufferMeshContext != nullptr) clReleaseMemObject(clBufferMeshContext);
+    if (clBufferStencil != nullptr) clReleaseMemObject(clBufferStencil);
 }
 
 void MeshOpenCLRenderer::debugKernel() const
@@ -100,14 +95,15 @@ std::vector<OCTriangle> MeshOpenCLRenderer::openCLTriangles()
 
     std::vector<OCTriangle> openCLTriangles;
     for (auto &t : this->triangles) {
-        t->updateObjectSpace();
+        /*t->updateObjectSpace();
         t->updateNormal();
         t->updateCameraSpace(cam);
         t->updatePerspectiveNDCSpace(cam->getFrustum());
         t->updateScreenSpace();
         t->updateBoundingBox();
         t->updateFullArea();
-        t->updateUVCache();
+        t->updateUVCache();*/
+
         openCLTriangles.emplace_back(OCTriangle(
             Tools::vertexOCL(t->A), Tools::vertexOCL(t->B), Tools::vertexOCL(t->C),
             Tools::vertexOCL(t->Ao), Tools::vertexOCL(t->Bo), Tools::vertexOCL(t->Co),

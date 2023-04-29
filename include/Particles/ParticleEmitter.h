@@ -62,6 +62,8 @@ public:
     [[nodiscard]] Counter &getTimeToNetParticleCounter();
 
     [[nodiscard]] bool isActive() const;
+
+    void onDraw() override;
 };
 
 
