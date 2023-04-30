@@ -12,7 +12,7 @@
 #include "../Objects/Triangle3D.h"
 
 
-#define MAX_OPENCL_TRIANGLES 5120
+#define MAX_OPENCL_TRIANGLES 56320
 
 struct OCLPlane {
     OCLPlane() {}
@@ -89,12 +89,16 @@ class MeshOpenCLRenderer {
 
     std::vector<Triangle*> &triangles;
 
+    std::vector<OCTriangle> oclTriangles;
+
     Object3D *object;
 
 public:
     virtual ~MeshOpenCLRenderer();
 
     MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> &triangles);
+
+    void updateTriangles();
 
     void onUpdate(OCLMeshContext *context, Texture *texture);
 

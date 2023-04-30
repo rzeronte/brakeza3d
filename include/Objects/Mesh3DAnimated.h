@@ -62,8 +62,6 @@ public:
     aiNode *follow_me_point_node;
     Object3D *follow_me_point_object;
 
-    [[nodiscard]] Object3D *getFollowMePointObject() const;
-
     void onUpdate() override;
 
     void updateFrameTransformations();
@@ -88,7 +86,6 @@ public:
 
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-
     int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
 
     void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
@@ -103,26 +100,28 @@ public:
 
     void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
 
-    bool isRemoveAtEndAnimation() const;
-
     void setRemoveAtEndAnimation(bool removeAtEnds);
-
-
-    aiNode *getFollowPointNode() const;
 
     void setFollowPointNode(aiNode *followPointOrigin);
 
     void updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms);
 
-    const std::string &getFollowPointLabel() const;
-
     void setFollowPointLabel(const std::string &followPointLabel);
-
-    const M3 &getFixedRotation() const;
 
     void setFixedRotation(const M3 &fixedRotation);
 
-    bool isAnimationEnds() const;
+    [[nodiscard]] bool isAnimationEnds() const;
+
+    [[nodiscard]] const M3 &getFixedRotation() const;
+
+    [[nodiscard]] const std::string &getFollowPointLabel() const;
+
+    [[nodiscard]] aiNode *getFollowPointNode() const;
+
+    [[nodiscard]] bool isRemoveAtEndAnimation() const;
+
+    [[nodiscard]] Object3D *getFollowMePointObject() const;
+
 };
 
 

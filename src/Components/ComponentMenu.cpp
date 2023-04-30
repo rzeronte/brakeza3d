@@ -60,7 +60,7 @@ void ComponentMenu::loadDecorative3DMesh()
     spaceship->setRotation(-30, 0, 0);
     spaceship->setScale(6);
     spaceship->setStencilBufferEnabled(true);
-    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
+    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/benchmark.fbx"));
     spaceship->updateBoundingBox();
     Brakeza3D::get()->addObject3D(spaceship, "spaceshipMenu");
 
@@ -77,6 +77,7 @@ void ComponentMenu::preUpdate()
 
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
     title->drawFlatAlpha(0, 0, alpha);
+    shaderBackgroundImage->update();
 
 }
 
@@ -89,7 +90,6 @@ void ComponentMenu::onUpdate()
     pendulum->onUpdate();
     spaceship->setRotation(pendulum->pendulumRotation);
 
-    shaderBackgroundImage->update();
 
     drawOptions();
     drawVersion();

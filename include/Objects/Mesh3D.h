@@ -29,13 +29,13 @@ private:
     bool flatTextureColor;
     bool render;
 
-    MeshOpenCLRenderer *openClRenderer;
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Texture *> modelTextures;
     std::vector<Vertex3D *> modelVertices;
 
     Color flatColor;
+    MeshOpenCLRenderer *openClRenderer;
 public:
     Mesh3D();
 

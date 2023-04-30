@@ -62,7 +62,7 @@ void Mesh3DAnimated::updateFrameTransformations() {
             T->B = V2;
             T->C = V3;
 
-            if (this->modelTextures.size() > 0) {
+            if ((int) this->modelTextures.size() > 0) {
                 T->setTexture(this->modelTextures[this->scene->mMeshes[i]->mMaterialIndex]);
             }
 
@@ -86,7 +86,6 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     this->scene = importer.ReadFile(
         filename,
         aiProcess_Triangulate |
-        aiProcess_MakeLeftHanded |
         aiProcess_SortByPType |
         aiProcess_FlipUVs
     );
@@ -98,6 +97,7 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
 
     this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
+
 
     return true;
 }

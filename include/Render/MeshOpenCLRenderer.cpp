@@ -14,7 +14,7 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
     triangles(triangles),
     object(parent)
 {
-    clBufferTriangles = clCreateBuffer(this->context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
+    clBufferTriangles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
     clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(OCLMeshContext), nullptr, nullptr );
     clBufferStencil = clCreateBuffer(context, CL_MEM_READ_WRITE, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
 }
@@ -51,11 +51,10 @@ void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
     clSetKernelArg(kernel, 11, sizeof(int), &useStencil);
 
     size_t global_item_size = MAX_OPENCL_TRIANGLES;
-    size_t local_item_size = 512;
+    size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
-
-    debugKernel();
+    //debugKernel();
 }
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()
@@ -91,33 +90,9 @@ void MeshOpenCLRenderer::debugKernel() const
 
 std::vector<OCTriangle> MeshOpenCLRenderer::openCLTriangles()
 {
-    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
     std::vector<OCTriangle> openCLTriangles;
-    for (auto &t : this->triangles) {
-        /*t->updateObjectSpace();
-        t->updateNormal();
-        t->updateCameraSpace(cam);
-        t->updatePerspectiveNDCSpace(cam->getFrustum());
-        t->updateScreenSpace();
-        t->updateBoundingBox();
-        t->updateFullArea();
-        t->updateUVCache();*/
-
-        openCLTriangles.emplace_back(OCTriangle(
-            Tools::vertexOCL(t->A), Tools::vertexOCL(t->B), Tools::vertexOCL(t->C),
-            Tools::vertexOCL(t->Ao), Tools::vertexOCL(t->Bo), Tools::vertexOCL(t->Co),
-            Tools::vertexOCL(t->Ac), Tools::vertexOCL(t->Bc), Tools::vertexOCL(t->Cc),
-            Tools::vertexOCL(t->An), Tools::vertexOCL(t->Bn), Tools::vertexOCL(t->Cn),
-            Tools::pointOCL(t->As), Tools::pointOCL(t->Bs), Tools::pointOCL(t->Cs),
-            t->fullArea, t->reciprocalFullArea,
-            Tools::vertexOCL(t->normal),
-            t->tex_u1_Ac_z, t->tex_u2_Bc_z, t->tex_u3_Cc_z,
-            t->tex_v1_Ac_z, t->tex_v2_Bc_z, t->tex_v3_Cc_z,
-            t->persp_correct_Az, t->persp_correct_Bz, t->persp_correct_Cz,
-            t->maxX, t->minX, t->maxY, t->minY,
-            t->clipped
-        ));
+    for (auto t : this->triangles) {
+        openCLTriangles.emplace_back(OCVertex3D(t->A), OCVertex3D(t->B), OCVertex3D(t->C));
     }
 
     return openCLTriangles;

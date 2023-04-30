@@ -12,7 +12,8 @@
 #include <vector>
 #include "../Misc/Color.h"
 struct OCPoint2D {
-    OCPoint2D(int x, int y) : x(x), y(y) {}
+    OCPoint2D() {}
+    OCPoint2D(int &x, int &y) : x(x), y(y) {}
 
     int x;
     int y;
@@ -20,59 +21,34 @@ struct OCPoint2D {
 
 struct OCVertex3D {
     OCVertex3D() {}
-
+    OCVertex3D(Vertex3D &v): x(v.x), y(v.y), z(v.z), u(v.u), v(v.v) {}
     OCVertex3D(float x, float y, float z, float u, float v) : x(x), y(y), z(z), u(u), v(v) {}
     OCVertex3D(float x, float y, float z) : x(x), y(y), z(z), u(0), v(0) {}
 
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    float u = 0;
+    float x;
+    float y;
+    float z;
+    float u;
     float v;
 };
 
 struct OCTriangle
 {
-    OCTriangle(
-        OCVertex3D A, OCVertex3D B, OCVertex3D C,
-        OCVertex3D Ao, OCVertex3D Bo, OCVertex3D Co,
-        OCVertex3D Ac, OCVertex3D Bc, OCVertex3D Cc,
-        OCVertex3D An, OCVertex3D Bn, OCVertex3D Cn,
-        OCPoint2D As, OCPoint2D Bs, OCPoint2D Cs,
-        float fullArea, float reciprocalFullArea,
-        OCVertex3D normal,
-        float tex_u1_Ac_z, float tex_u2_Bc_z, float tex_u3_Cc_z,
-        float tex_v1_Ac_z, float tex_v2_Bc_z, float tex_v3_Cc_z,
-        float persp_correct_Az, float persp_correct_Bz, float persp_correct_Cz,
-        int maxX, int minX, int maxY, int minY,
-        bool clipped
-    )
-    :
-    A(A), B(B), C(C),
-    Ao(Ao), Bo(Bo), Co(Co),
-    Ac(Ac), Bc(Bc), Cc(Cc),
-    An(An), Bn(Bn), Cn(Cn),
-    As(As), Bs(Bs), Cs(Cs),
-    fullArea(fullArea), reciprocalFullArea(reciprocalFullArea),
-    normal(normal),
-    tex_u1_Ac_z(tex_u1_Ac_z), tex_u2_Bc_z(tex_u2_Bc_z), tex_u3_Cc_z(tex_u3_Cc_z),
-    tex_v1_Ac_z(tex_v1_Ac_z), tex_v2_Bc_z(tex_v2_Bc_z), tex_v3_Cc_z(tex_v3_Cc_z),
-    persp_correct_Az(persp_correct_Az), persp_correct_Bz(persp_correct_Bz), persp_correct_Cz(persp_correct_Cz),
-    maxX(maxX), minX(minX), maxY(maxY), minY(minY),
-    clipped(clipped)
-    {}
+    OCTriangle() {}
+    OCTriangle(OCVertex3D A, OCVertex3D B, OCVertex3D C) : A(A), B(B), C(C) {
+    }
     OCVertex3D A, B, C;
     OCVertex3D Ao, Bo, Co;
     OCVertex3D Ac, Bc, Cc;
     OCVertex3D An, Bn, Cn;
     OCPoint2D As, Bs, Cs;
-    float fullArea, reciprocalFullArea = 0;
+    float fullArea, reciprocalFullArea ;
     OCVertex3D normal;
-    float tex_u1_Ac_z = 0, tex_u2_Bc_z = 0, tex_u3_Cc_z = 0;
-    float tex_v1_Ac_z = 0, tex_v2_Bc_z = 0, tex_v3_Cc_z = 0;
-    float persp_correct_Az = 0, persp_correct_Bz = 0, persp_correct_Cz = 0;
-    int maxX, minX = 0, maxY = 0, minY = 0;
-    bool clipped = false;
+    float tex_u1_Ac_z, tex_u2_Bc_z, tex_u3_Cc_z;
+    float tex_v1_Ac_z, tex_v2_Bc_z, tex_v3_Cc_z;
+    float persp_correct_Az, persp_correct_Bz, persp_correct_Cz;
+    int maxX, minX, maxY, minY;
+    bool clipped;
 };
 
 
