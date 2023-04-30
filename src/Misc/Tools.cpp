@@ -464,7 +464,7 @@ float Tools::percentage(int value, int total)
     return (float) ((float) value * 100 / (float) total);
 }
 
-OCVertex3D Tools::vertexOCL(Vertex3D v)
+OCVertex3D Tools::vertexOCL(Vertex3D &v)
 {
     return OCVertex3D(v.x, v.y, v.z, v.u, v.v);
 }

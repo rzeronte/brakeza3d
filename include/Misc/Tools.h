@@ -54,6 +54,7 @@ public:
     static float clamp(float n, float lower, float upper);
 
     static int random(int min, int max); //range : [min, max)
+
     static Vertex3D wedge(Vertex3D v1, Vertex3D v2);
 
     static int classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN);
@@ -92,7 +93,7 @@ public:
 
     static float percentage(int value, int total);
 
-    static OCVertex3D vertexOCL(Vertex3D v);
+    static OCVertex3D vertexOCL(Vertex3D &v);
 
     static OCPoint2D pointOCL(Point2D v);
 

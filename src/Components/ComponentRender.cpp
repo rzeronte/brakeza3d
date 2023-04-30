@@ -116,7 +116,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
         nullptr
     );
 
-    clEnqueueReadBuffer(
+    /*clEnqueueReadBuffer(
         clCommandQueue,
         EngineBuffers::get()->depthBufferOCL,
         CL_TRUE,
@@ -126,7 +126,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
         0,
         nullptr,
         nullptr
-    );
+    );*/
 }
 
 void ComponentRender::writeOCLBuffersFromHost() const
