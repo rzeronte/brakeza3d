@@ -119,23 +119,6 @@ void Mesh3D::onUpdate()
         this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
-        if (this->octree != nullptr) {
-            Drawable::drawOctree(this->octree, true);
-        }
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
-        if (this->grid != nullptr) {
-            Drawable::drawGrid3D(this->grid);
-        }
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
-        this->updateBoundingBox();
-        Drawable::drawAABB(&this->aabb, Color::white());
-    }
-
     if ((int) modelTriangles.size() > 0) {
         auto context = Tools::openCLContext(this);
         openClRenderer->onUpdate(&context, modelTextures[0]);
@@ -159,7 +142,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
         fileName,
-        aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType | aiProcess_FlipUVs
+        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs
     );
 
     if (!scene) {
@@ -425,5 +408,22 @@ void Mesh3D::onDraw()
 {
     Object3D::onDraw();
 
+
+    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
+        if (this->octree != nullptr) {
+            Drawable::drawOctree(this->octree, true);
+        }
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
+        if (this->grid != nullptr) {
+            Drawable::drawGrid3D(this->grid);
+        }
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
+        this->updateBoundingBox();
+        Drawable::drawAABB(&this->aabb, Color::white());
+    }
 }
 
