@@ -114,15 +114,13 @@ public:
 
     static void drawWireframe(Triangle *t);
 
-    void processPixelTextureAnimated(Fragment *fragment);
-
     Color processPixelFog(Fragment *fragment, Color pixelColor);
 
     Color processPixelLights(Triangle *t, Fragment *f, Color c);
 
     void updateLights();
 
-    void updateFPS(const float deltaTime);
+    void updateFPS(float deltaTime);
 
     std::vector<Triangle *> &getFrameTriangles();
 

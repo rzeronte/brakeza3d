@@ -98,6 +98,7 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
 
+    openClRenderer->updateTriangles();
 
     return true;
 }

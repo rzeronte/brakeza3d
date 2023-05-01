@@ -44,14 +44,13 @@ void ComponentRender::preUpdate()
 void ComponentRender::drawObjetsInHostBuffer()
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
             object->onDraw();
         }
     }
 
-    this->drawSceneOverlappingItems();
+    drawSceneOverlappingItems();
 
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
@@ -60,7 +59,6 @@ void ComponentRender::drawObjetsInHostBuffer()
     if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
      }
-
 }
 
 void ComponentRender::onUpdate()
@@ -636,13 +634,6 @@ void ComponentRender::triangleRasterizer(Triangle *t)
     }
 }
 
-void ComponentRender::processPixelTextureAnimated(Fragment *fragment) {
-    float cache1 = fragment->texU / SETUP->LAVA_CLOSENESS;
-    float cache2 = fragment->texV / SETUP->LAVA_CLOSENESS;
-    fragment->texU = (cache1 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->getExecutionTime() + cache2)) * SETUP->LAVA_SCALE;
-    fragment->texV = (cache2 + SETUP->LAVA_INTENSITY * sin(SETUP->LAVA_SPEED * Brakeza3D::get()->getExecutionTime() + cache1)) * SETUP->LAVA_SCALE;
-}
-
 Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
     float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE*2);
 
@@ -972,15 +963,15 @@ void ComponentRender::drawWireframe(Triangle *t)
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
-void ComponentRender::updateFPS(const float deltaTime) {
+void ComponentRender::updateFPS(float deltaTime) {
     if (!EngineSetup::get()->DRAW_FPS) return;
 
     frameTime += deltaTime;
     ++fpsFrameCounter;
 
-    if (frameTime >= 1000) {
+    if (frameTime >= 1000.0f) { // Ahora frameTime se mide en milisegundos
         fps = fpsFrameCounter;
-        frameTime = 0;
+        frameTime -= 1000.0f; // Restamos 1 segundo en milisegundos, manteniendo el tiempo restante
         fpsFrameCounter = 0;
     }
 }

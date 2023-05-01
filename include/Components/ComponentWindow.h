@@ -5,12 +5,10 @@
 #ifndef BRAKEDA3D_COMPONENTWINDOW_H
 #define BRAKEDA3D_COMPONENTWINDOW_H
 
-
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
-
 
 class ComponentWindow : public Component {
 private:
@@ -42,8 +40,6 @@ public:
     [[nodiscard]] SDL_Window *getWindow() const;
 
     [[nodiscard]] SDL_Renderer *getRenderer() const;
-
-    [[nodiscard]] SDL_Surface *getScreenSurface() const;
 
     [[nodiscard]] SDL_Texture *getScreenTexture() const;
 

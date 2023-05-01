@@ -69,22 +69,22 @@ typedef struct OCLMeshContext {
 } OCLMeshContext;
 
 /* FUNCTIONS */
-int orient2d(OCPoint2D pa, OCPoint2D pb, int pc_x, int pc_y);
-float processFullArea(OCPoint2D pb, OCPoint2D pc, OCPoint2D pa);
+int orient2d(OCPoint2D *pa, OCPoint2D *pb, int pc_x, int pc_y);
+float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global OCPoint2D *pa);
 unsigned int createRGB(int r, int g, int b);
-struct OCVertex3D objectSpace(struct OCVertex3D A, struct OCVertex3D objectPosition, struct OCVertex3D objectRotation, float oScale);
-struct OCVertex3D cameraSpace(struct OCVertex3D V, struct OCVertex3D camPos, struct OCVertex3D camRot);
-struct OCVertex3D NDCSpace(struct OCVertex3D v, struct OCVertex3D camPos, struct OCVertex3D camRot, struct OCVertex3D vNL, struct OCVertex3D vNR, struct OCVertex3D vNT, struct OCVertex3D vNB);
-struct OCPoint2D screenSpace(struct OCVertex3D V, int screenWidth, int screenHeight);
-struct OCVertex3D perspectiveDivision(struct OCVertex3D v, float frustumNearDist);
-struct OCVertex3D rotateAxisX(struct OCVertex3D V, float rads);
-struct OCVertex3D rotateAxisY(struct OCVertex3D V, float rads);
-struct OCVertex3D rotateAxisZ(struct OCVertex3D V, float rads);
+struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPosition, struct OCVertex3D *objectRotation, float oScale);
+struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, struct OCVertex3D *camRot);
+struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct OCVertex3D *vNR, struct OCVertex3D *vNT, struct OCVertex3D *vNB);
+struct OCPoint2D screenSpace(struct OCVertex3D *V, int screenWidth, int screenHeight);
+void perspectiveDivision(struct OCVertex3D *v, float frustumNearDist);
+struct OCVertex3D rotateAxisX(struct OCVertex3D *V, float rads);
+struct OCVertex3D rotateAxisY(struct OCVertex3D *V, float rads);
+struct OCVertex3D rotateAxisZ(struct OCVertex3D *V, float rads);
 bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D Bo, OCVertex3D Co);
-int isVector3DClippingPlane(struct OCLPlane plane, struct Vector3D V);
-float distancePlaneVertex(struct OCLPlane plane, struct OCVertex3D p);
+int isVector3DClippingPlane(__global struct OCLPlane *plane, struct Vector3D *V);
+float distancePlaneVertex(struct OCLPlane *plane, struct OCVertex3D *p);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
-struct OCVertex3D getComponent(struct Vector3D V);
+struct OCVertex3D getComponent(struct Vector3D *V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
 float getXTextureFromUV(int textureWidth, float u);
 float getYTextureFromUV(int textureHeight, float v);
@@ -96,9 +96,9 @@ void updateScreenSpace(__global struct OCTriangle *t, int screenWidth, int scree
 void updateBoundingBox(__global struct OCTriangle *t);
 void updateFullArea(__global struct OCTriangle *t);
 void updateUVCache(__global struct OCTriangle *t);
-float dotProduct(struct OCVertex3D a, struct OCVertex3D b);
-bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D position);
-bool isVertexInside(struct OCVertex3D v, __global struct OCLPlane *planes);
+float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b);
+bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *position);
+bool isVertexInside(struct OCVertex3D *v, __global struct OCLPlane *planes);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
 
 /* KERNEL */
@@ -134,12 +134,12 @@ __kernel void onUpdate(
         //t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
         //if (t->clipped) return;
 
-        if (isBackFaceCulling(t, context->cameraData.position)) return;
+        if (isBackFaceCulling(t, &context->cameraData.position)) return;
 
         if (
-            !isVertexInside(t->Ao, context->frustumData.planes) &&
-            !isVertexInside(t->Bo, context->frustumData.planes) &&
-            !isVertexInside(t->Co, context->frustumData.planes)
+            !isVertexInside(&t->Ao, context->frustumData.planes) &&
+            !isVertexInside(&t->Bo, context->frustumData.planes) &&
+            !isVertexInside(&t->Co, context->frustumData.planes)
         ) {
             return;
         }
@@ -152,13 +152,14 @@ __kernel void onUpdate(
         int B12 = (int) -( t->Cs.x - t->Bs.x );
         int B20 = (int) -( t->As.x - t->Cs.x );
 
-        int w0_row = orient2d( t->Bs, t->Cs, t->minX, t->minY );
-        int w1_row = orient2d( t->Cs, t->As, t->minX, t->minY );
-        int w2_row = orient2d( t->As, t->Bs, t->minX, t->minY );
+        int w0_row = orient2d( &t->Bs, &t->Cs, t->minX, t->minY );
+        int w1_row = orient2d( &t->Cs, &t->As, t->minX, t->minY );
+        int w2_row = orient2d( &t->As, &t->Bs, t->minX, t->minY );
 
         float alpha, theta, gamma;
 
-        float fullArea = processFullArea(t->Bs, t->Cs, t->As);
+        float fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
+
         float reciprocalFullArea = 1 / fullArea;
 
         for (int y = t->minY ; y < t->maxY ; y++) {
@@ -171,8 +172,8 @@ __kernel void onUpdate(
                 if ((w0 | w1 | w2) > 0) {
                     int bufferIndex = y * screenWidth + x;
 
-                    alpha = w0 * reciprocalFullArea;
-                    theta = w1 * reciprocalFullArea;
+                    alpha = (float) w0 * reciprocalFullArea;
+                    theta = (float) w1 * reciprocalFullArea;
                     gamma = 1 - alpha - theta;
 
                     float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
@@ -184,8 +185,6 @@ __kernel void onUpdate(
                         float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
                         float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
                         float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
-
-                        float ignorablePartInt;
 
                         if (texU < 0.0f) {
                             texU = 1.0f - fmod(fabs(texU), 1.0f);
@@ -226,14 +225,14 @@ __kernel void onUpdate(
 }
 
 
-float processFullArea(OCPoint2D pb, OCPoint2D pc, OCPoint2D pa)
+float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global OCPoint2D *pa)
 {
-    return (float) orient2d(pb, pc, pa.x, pa.y);
+    return (float) orient2d(pb, pc, pa->x, pa->y);
 }
 
-int orient2d(OCPoint2D pa, OCPoint2D pb, int pc_x, int pc_y)
+int orient2d(OCPoint2D *pa, OCPoint2D *pb, int pc_x, int pc_y)
 {
-    return (pc_x - pa.x) * (pb.y - pa.y) - (pc_y - pa.y) * (pb.x - pa.x);
+    return (pc_x - pa->x) * (pb->y - pa->y) - (pc_y - pa->y) * (pb->x - pa->x);
 }
 
 unsigned int createRGB(int r, int g, int b)
@@ -241,53 +240,67 @@ unsigned int createRGB(int r, int g, int b)
     return (b << 16) + (g << 8) + (r);
 }
 
-struct OCVertex3D objectSpace(struct OCVertex3D A, struct OCVertex3D objectPosition, struct OCVertex3D objectRotation, float oScale)
+struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPosition, struct OCVertex3D *objectRotation, float oScale)
 {
-    A.x *= oScale;
-    A.y *= oScale;
-    A.z *= oScale;
+    OCVertex3D output;
 
-    A = rotateAxisX(A, objectRotation.x);
-    A = rotateAxisY(A, objectRotation.y);
-    A = rotateAxisZ(A, objectRotation.z);
+    output.x = A->x;
+    output.y = A->y;
+    output.z = A->z;
 
-    A.x += objectPosition.x;
-    A.y += objectPosition.y;
-    A.z += objectPosition.z;
+    output.x *= oScale;
+    output.y *= oScale;
+    output.z *= oScale;
 
-    return A;
+    output = rotateAxisX(&output, objectRotation->x);
+    output = rotateAxisY(&output, objectRotation->y);
+    output = rotateAxisZ(&output, objectRotation->z);
+
+    output.x += objectPosition->x;
+    output.y += objectPosition->y;
+    output.z += objectPosition->z;
+
+    return output;
 }
 
-struct OCVertex3D cameraSpace(struct OCVertex3D V, struct OCVertex3D camPos, struct OCVertex3D camRot)
+struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, struct OCVertex3D *camRot)
 {
-    V.x -= camPos.x;
-    V.y -= camPos.y;
-    V.z -= camPos.z;
+    OCVertex3D output;
+    output.x = V->x;
+    output.y = V->y;
+    output.z = V->z;
 
-    V = rotateAxisX(V, camRot.x);
-    V = rotateAxisY(V, camRot.y);
-    V = rotateAxisZ(V, camRot.z);
+    output.x -= camPos->x;
+    output.y -= camPos->y;
+    output.z -= camPos->z;
 
-    return V;
+    output = rotateAxisX(&output, camRot->x);
+    output = rotateAxisY(&output, camRot->y);
+    output = rotateAxisZ(&output, camRot->z);
+
+    return output;
 }
 
-struct OCVertex3D NDCSpace(struct OCVertex3D v, struct OCVertex3D camPos, struct OCVertex3D camRot, struct OCVertex3D vNL, struct OCVertex3D vNR, struct OCVertex3D vNT, struct OCVertex3D vNB)
+struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct OCVertex3D *vNR, struct OCVertex3D *vNT, struct OCVertex3D *vNB)
 {
     OCVertex3D A;
+    A.x = v->x;
+    A.y = v->y;
+    A.z = v->z;
 
-    A = perspectiveDivision(v, 1);
+    perspectiveDivision(&A, 1);
 
     // NDC
     float Ax = A.x;                    // componente X de nuestro vértice en PANTALLA2D
-    float vNLx = vNL.x;                // Límite Izquierdo de PANTALLA2D
-    float vNRx = vNR.x;                // Límite Derecho de PANTALLA2D
+    float vNLx = vNL->x;                // Límite Izquierdo de PANTALLA2D
+    float vNRx = vNR->x;                // Límite Derecho de PANTALLA2D
     float tx0 = (Ax - vNLx);           // Distancia entre el límite Izquierdo y nuestro vértice
     float tx1 = 2 / ( vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
     float xt = (tx0 * tx1)  - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
 
     float Ay = A.y;
-    float vNBy = vNB.y;
-    float vNTy = vNT.y;
+    float vNBy = vNB->y;
+    float vNTy = vNT->y;
     float ty0 = (Ay - vNBy);
     float ty1 = 2 / (vNTy - vNBy);
     float yt = (ty0 * ty1)  - 1;
@@ -295,17 +308,17 @@ struct OCVertex3D NDCSpace(struct OCVertex3D v, struct OCVertex3D camPos, struct
     A.x = xt;
     A.y = yt;
 
-    A.z = v.z; // Almaceno z (deberia ser w)
+    A.z = v->z; // Almaceno z (deberia ser w)
 
     return A;
 }
 
-struct OCPoint2D screenSpace(struct OCVertex3D V, int screenWidth, int screenHeight)
+struct OCPoint2D screenSpace(struct OCVertex3D *V, int screenWidth, int screenHeight)
 {
     OCPoint2D A;
 
-    A.x = (1 + V.x) * ((float) screenWidth/2);
-    A.y = (1 + V.y) * ((float) screenHeight/2);
+    A.x = (1 + V->x) * ((float) screenWidth/2);
+    A.y = (1 + V->y) * ((float) screenHeight/2);
 
     A.x = (int) A.x;
     A.y = (int) A.y;
@@ -313,43 +326,41 @@ struct OCPoint2D screenSpace(struct OCVertex3D V, int screenWidth, int screenHei
     return A;
 }
 
-struct OCVertex3D perspectiveDivision(struct OCVertex3D V, float frustumNearDist)
+void perspectiveDivision(struct OCVertex3D *V, float frustumNearDist)
 {
-    V.x =  ( frustumNearDist * V.x) / V.z;
-    V.y =  ( frustumNearDist * V.y) / V.z;
-
-    return V;
+    V->x = ( frustumNearDist * V->x) / V->z;
+    V->y = ( frustumNearDist * V->y) / V->z;
 }
 
-struct OCVertex3D rotateAxisX(struct OCVertex3D V, float rads)
+struct OCVertex3D rotateAxisX(struct OCVertex3D *V, float rads)
 {
     OCVertex3D  A;
 
-    A.x = 1 * V.x;
-    A.y = cos(rads) * V.y - sin(rads) * V.z;
-    A.z = sin(rads) * V.y + cos(rads) * V.z;
+    A.x = 1 * V->x;
+    A.y = cos(rads) * V->y - sin(rads) * V->z;
+    A.z = sin(rads) * V->y + cos(rads) * V->z;
 
     return A;
 }
 
-struct OCVertex3D rotateAxisY(struct OCVertex3D V, float rads)
+struct OCVertex3D rotateAxisY(struct OCVertex3D *V, float rads)
 {
     OCVertex3D  A;
 
-    A.x = ( cos(rads) * V.x ) + ( sin(rads) * V.z );
-    A.y = 1 * V.y;
-    A.z = ( -sin(rads) * V.x ) + ( cos(rads) * V.z );
+    A.x = ( cos(rads) * V->x ) + ( sin(rads) * V->z );
+    A.y = 1 * V->y;
+    A.z = ( -sin(rads) * V->x ) + ( cos(rads) * V->z );
 
     return A;
 }
 
-struct OCVertex3D rotateAxisZ(struct OCVertex3D V, float rads)
+struct OCVertex3D rotateAxisZ(struct OCVertex3D *V, float rads)
 {
     OCVertex3D  A;
 
-    A.x = ( cos(rads) * V.x ) - ( sin(rads) * V.y );
-    A.y = ( sin(rads) * V.x ) + ( cos(rads) * V.y );
-    A.z = 1 * V.z ;
+    A.x = ( cos(rads) * V->x ) - ( sin(rads) * V->y );
+    A.y = ( sin(rads) * V->x ) + ( cos(rads) * V->y );
+    A.z = 1 * V->z ;
 
     return A;
 }
@@ -371,7 +382,7 @@ bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D
     for (int i = 0 ; i < 4 ; i++) {
         // 3 vertices
         for (int e = 0 ; e < 3 ; e++) {
-            if ( isVector3DClippingPlane( planes[i], edges[e] ) > 1 ) {
+            if ( isVector3DClippingPlane( &planes[i], &edges[e] ) > 1 ) {
                 return true;
             }
         }
@@ -380,28 +391,28 @@ bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D
     return false;
 }
 
-int isVector3DClippingPlane(struct OCLPlane P, struct Vector3D V)
+int isVector3DClippingPlane(__global struct OCLPlane *P, struct Vector3D *V)
 {
-    if (distancePlaneVertex(P, V.A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V.B) > FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, &V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->B) > FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
     }
 
-    if (distancePlaneVertex(P, V.B) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V.A) < FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, &V->B) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->A) < FRUSTUM_CLIPPING_DISTANCE) {
         return 2;
     }
 
-    if (distancePlaneVertex(P, V.A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V.B) < FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, &V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->B) < FRUSTUM_CLIPPING_DISTANCE) {
         return 3;
     }
 
     return 0;
 }
 
-float distancePlaneVertex(struct OCLPlane plane, struct OCVertex3D p)
+float distancePlaneVertex(struct OCLPlane *plane, struct OCVertex3D *p)
 {
-    float D = - ( (plane.normal.x * plane.A.x) + (plane.normal.y * plane.A.y) + (plane.normal.z * plane.A.z) );
+    float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
 
-    return ( (plane.normal.x * p.x) + (plane.normal.y * p.y) + (plane.normal.z * p.z) + D);
+    return ( (plane->normal.x * p->x) + (plane->normal.y * p->y) + (plane->normal.z * p->z) + D);
 }
 
 struct OCVertex3D getNormal(__global struct OCTriangle *t)
@@ -414,16 +425,16 @@ struct OCVertex3D getNormal(__global struct OCTriangle *t)
     vector2.A = t->Ao;
     vector2.B = t->Co;
 
-    return crossProduct( getComponent(vector1), getComponent(vector2) );
+    return crossProduct( getComponent(&vector1), getComponent(&vector2) );
 }
 
-struct OCVertex3D getComponent(struct Vector3D V)
+struct OCVertex3D getComponent(struct Vector3D *V)
 {
     OCVertex3D c;
 
-    c.x = V.B.x - V.A.x;
-    c.y = V.B.y - V.A.y;
-    c.z = V.B.z - V.A.z;
+    c.x = V->B.x - V->A.x;
+    c.y = V->B.y - V->A.y;
+    c.z = V->B.z - V->A.z;
 
     return c;
 }
@@ -447,29 +458,29 @@ float getYTextureFromUV(int textureHeight, float v) {
 }
 
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context) {
-    t->Ao = objectSpace(t->A, context->objectData.position, context->objectData.rotation, context->objectData.scale);
-    t->Bo = objectSpace(t->B, context->objectData.position, context->objectData.rotation, context->objectData.scale);
-    t->Co = objectSpace(t->C, context->objectData.position, context->objectData.rotation, context->objectData.scale);
+    t->Ao = objectSpace(&t->A, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
+    t->Bo = objectSpace(&t->B, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
+    t->Co = objectSpace(&t->C, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
 }
 void updateNormal(__global struct OCTriangle *t) {
     t->normal = getNormal(t);
 }
 void updateCameraSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context) {
-    t->Ac = cameraSpace(t->Ao, context->cameraData.position, context->cameraData.rotation);
-    t->Bc = cameraSpace(t->Bo, context->cameraData.position, context->cameraData.rotation);
-    t->Cc = cameraSpace(t->Co, context->cameraData.position, context->cameraData.rotation);
+    t->Ac = cameraSpace(&t->Ao, &context->cameraData.position, &context->cameraData.rotation);
+    t->Bc = cameraSpace(&t->Bo, &context->cameraData.position, &context->cameraData.rotation);
+    t->Cc = cameraSpace(&t->Co, &context->cameraData.position, &context->cameraData.rotation);
 }
 
 void updatePerspectiveNDCSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context) {
-    t->An = NDCSpace(t->Ac, context->objectData.position, context->objectData.rotation, context->frustumData.vNL, context->frustumData.vNR, context->frustumData.vNT, context->frustumData.vNB);
-    t->Bn = NDCSpace(t->Bc, context->objectData.position, context->objectData.rotation, context->frustumData.vNL, context->frustumData.vNR, context->frustumData.vNT, context->frustumData.vNB);
-    t->Cn = NDCSpace(t->Cc, context->objectData.position, context->objectData.rotation, context->frustumData.vNL, context->frustumData.vNR, context->frustumData.vNT, context->frustumData.vNB);
+    t->An = NDCSpace(&t->Ac, &context->frustumData.vNL, &context->frustumData.vNR, &context->frustumData.vNT, &context->frustumData.vNB);
+    t->Bn = NDCSpace(&t->Bc, &context->frustumData.vNL, &context->frustumData.vNR, &context->frustumData.vNT, &context->frustumData.vNB);
+    t->Cn = NDCSpace(&t->Cc, &context->frustumData.vNL, &context->frustumData.vNR, &context->frustumData.vNT, &context->frustumData.vNB);
 }
 
 void updateScreenSpace(__global struct OCTriangle *t, int screenWidth, int screenHeight) {
-    t->As = screenSpace(t->An, screenWidth, screenHeight);
-    t->Bs = screenSpace(t->Bn, screenWidth, screenHeight);
-    t->Cs = screenSpace(t->Cn, screenWidth, screenHeight);
+    t->As = screenSpace(&t->An, screenWidth, screenHeight);
+    t->Bs = screenSpace(&t->Bn, screenWidth, screenHeight);
+    t->Cs = screenSpace(&t->Cn, screenWidth, screenHeight);
 }
 
 void updateBoundingBox(__global struct OCTriangle *t) {
@@ -480,7 +491,7 @@ void updateBoundingBox(__global struct OCTriangle *t) {
 }
 
 void updateFullArea(__global struct OCTriangle *t) {
-    t->fullArea = processFullArea(t->Bs, t->Cs, t->As);
+    t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
 }
 
 void updateUVCache(__global struct OCTriangle *t) {
@@ -498,25 +509,27 @@ void updateUVCache(__global struct OCTriangle *t) {
 }
 
 // (v0 - P) . N
-bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D position)
+bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *position)
 {
     OCVertex3D v;
 
-    v.x = t->Ao.x - position.x;
-    v.y = t->Ao.y - position.y;
-    v.z = t->Ao.z - position.z;
+    v.x = t->Ao.x - position->x;
+    v.y = t->Ao.y - position->y;
+    v.z = t->Ao.z - position->z;
 
-    return dotProduct(v, getNormal(t)) >= 0;
+    OCVertex3D normal = getNormal(t);
+
+    return dotProduct(&v, &normal) >= 0;
 }
 
-float dotProduct(struct OCVertex3D a, struct OCVertex3D b) {
-    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b) {
+    return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
-bool isVertexInside(struct OCVertex3D v, __global struct OCLPlane *planes) {
+bool isVertexInside(struct OCVertex3D *v, __global struct OCLPlane *planes) {
 
     for (int i = 1; i <= 5; i++) {
-        float distance = distancePlaneVertex(planes[i], v);
+        float distance = distancePlaneVertex(&planes[i], v);
 
         if (distance  >= FRUSTUM_CLIPPING_DISTANCE) {
             return false;

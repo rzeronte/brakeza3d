@@ -30,6 +30,7 @@ struct OCLPlane {
 };
 
 struct ObjectData {
+    ObjectData() {}
     ObjectData(const OCVertex3D &position, const OCVertex3D &rotation, float scale)
     :
     position(position), rotation(rotation), scale(scale)
@@ -41,13 +42,15 @@ struct ObjectData {
 
 };
 
-struct CameraData{
+struct CameraData {
+    CameraData() {}
     CameraData(const OCVertex3D &position, const OCVertex3D &rotation) : position(position), rotation(rotation) {}
     OCVertex3D position;  // Posición de la cámara
     OCVertex3D rotation;  // Rotación de la cámara
 };
 
 struct FrustumData {
+    FrustumData() {}
     FrustumData(OCVertex3D vNL, OCVertex3D vNR, OCVertex3D vNT, OCVertex3D vNB, std::vector<OCLPlane> planes)
     :
     vNL(vNL), vNR(vNR), vNT(vNT), vNB(vNB)
@@ -64,6 +67,7 @@ struct FrustumData {
 };
 
 struct OCLMeshContext {
+    OCLMeshContext() {}
     OCLMeshContext(const ObjectData &objectData, const CameraData &cameraData, const FrustumData &frustumData)
     :
     objectData(objectData),
@@ -93,6 +97,8 @@ class MeshOpenCLRenderer {
 
     Object3D *object;
 
+    OCLMeshContext meshContext;
+
 public:
     virtual ~MeshOpenCLRenderer();
 
@@ -100,7 +106,7 @@ public:
 
     void updateTriangles();
 
-    void onUpdate(OCLMeshContext *context, Texture *texture);
+    void onUpdate(Texture *texture);
 
     void debugKernel() const;
 
