@@ -44,11 +44,11 @@ void ShaderImage::executeKernelOpenCL()
     clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
 
     size_t global_item_size = this->bufferSize;
-    size_t local_item_size = 128;
+    size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
 
-    debugKernel("ShaderImage");
+    //debugKernel("ShaderImage");
 }
 
 void ShaderImage::limitOffset() {

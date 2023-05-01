@@ -10,9 +10,11 @@
 #include <CL/cl.h>
 #include <vector>
 #include "../Objects/Triangle3D.h"
+#include "../Objects/LightPoint3D.h"
 
 
 #define MAX_OPENCL_TRIANGLES 56320
+#define MAX_OPENCL_LIGHTS 16
 
 struct OCLPlane {
     OCLPlane() {}
@@ -89,11 +91,13 @@ class MeshOpenCLRenderer {
     cl_context context;
 
     cl_mem clBufferTriangles;
+    cl_mem clBufferLights;
     cl_mem clBufferMeshContext;
 
     std::vector<Triangle*> &triangles;
 
     std::vector<OCTriangle> oclTriangles;
+    std::vector<OCLight> oclLights;
 
     Object3D *object;
 
@@ -104,15 +108,17 @@ public:
 
     MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> &triangles);
 
-    void updateTriangles();
+    void makeOCLTriangles();
 
     void onUpdate(Texture *texture);
 
     void debugKernel() const;
 
-    std::vector<OCTriangle> openCLTriangles();
+    void updateTriangles();
 
     cl_mem clBufferStencil;
+
+    void updateLights();
 };
 
 

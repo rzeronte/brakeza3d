@@ -963,7 +963,7 @@ void ComponentRender::drawWireframe(Triangle *t)
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
-void ComponentRender::updateFPS(float deltaTime) {
+void ComponentRender::updateFPS( float deltaTime) {
     if (!EngineSetup::get()->DRAW_FPS) return;
 
     frameTime += deltaTime;

@@ -8,7 +8,7 @@ void Mesh3DAnimated::onUpdate()
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
     }
-
+    openClRenderer->updateTriangles();
     Mesh3D::onUpdate();
 }
 
@@ -98,7 +98,7 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
 
-    openClRenderer->updateTriangles();
+    openClRenderer->makeOCLTriangles();
 
     return true;
 }
