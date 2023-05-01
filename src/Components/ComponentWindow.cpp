@@ -52,7 +52,7 @@ void ComponentWindow::onEnd()
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
 
-    std::cout << std::endl << "Brakeza3D exit, good bye ;)" << std::endl;
+    Logging::Message("Brakeza3D exit, good bye ;)");
 }
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
@@ -69,12 +69,12 @@ void ComponentWindow::initWindow() {
     } else {
         //Create window
         window = SDL_CreateWindow(
-                SETUP->ENGINE_TITLE.c_str(),
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                SETUP->screenWidth,
-                SETUP->screenHeight,
-                SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SETUP->ENGINE_TITLE.c_str(),
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            SETUP->screenWidth,
+            SETUP->screenHeight,
+            SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
         );
 
         if (window == nullptr) {
@@ -83,14 +83,13 @@ void ComponentWindow::initWindow() {
         }
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
-
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         screenTexture = SDL_CreateTexture(
             renderer,
             SDL_PIXELFORMAT_RGBA32,
-            SDL_TEXTUREACCESS_TARGET,
+            SDL_TEXTUREACCESS_STREAMING,
             EngineSetup::get()->screenWidth,
             EngineSetup::get()->screenHeight
         );
@@ -122,10 +121,6 @@ SDL_Window *ComponentWindow::getWindow() const {
 
 SDL_Renderer *ComponentWindow::getRenderer() const {
     return renderer;
-}
-
-SDL_Surface *ComponentWindow::getScreenSurface() const {
-    return screenSurface;
 }
 
 SDL_Texture *ComponentWindow::getScreenTexture() const {
