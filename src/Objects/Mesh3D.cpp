@@ -107,6 +107,8 @@ void Mesh3D::clone(Mesh3D *source)
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
     this->sharedTextures = true;
+
+    openClRenderer->updateTriangles();
 }
 
 void Mesh3D::onUpdate()
@@ -120,8 +122,7 @@ void Mesh3D::onUpdate()
     }
 
     if ((int) modelTriangles.size() > 0) {
-        auto context = Tools::openCLContext(this);
-        openClRenderer->onUpdate(&context, modelTextures[0]);
+        openClRenderer->onUpdate(modelTextures[0]);
     }
 }
 
@@ -152,6 +153,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes(scene, scene->mRootNode);
+
+    openClRenderer->updateTriangles();
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)

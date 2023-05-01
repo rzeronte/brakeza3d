@@ -15,19 +15,19 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
     object(parent)
 {
     clBufferTriangles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
-    clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(OCLMeshContext), nullptr, nullptr );
-    clBufferStencil = clCreateBuffer(context, CL_MEM_READ_WRITE, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
+    clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(OCLMeshContext), nullptr, nullptr );
+    clBufferStencil = clCreateBuffer(context, CL_MEM_READ_ONLY, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
 }
 
-void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
+void MeshOpenCLRenderer::onUpdate(Texture *texture)
 {
-    auto oclTriangles = openCLTriangles();
+    meshContext = Tools::openCLContext(object);
 
     int numTriangles = (int) oclTriangles.size();
     if (numTriangles <= 0) return;
 
     clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), context, 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
 
     bool useStencil = object->isStencilBufferEnabled();
     auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
@@ -54,7 +54,7 @@ void MeshOpenCLRenderer::onUpdate(OCLMeshContext *context, Texture *texture)
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
-    //debugKernel();
+    debugKernel();
 }
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()
@@ -87,13 +87,22 @@ void MeshOpenCLRenderer::debugKernel() const
     }
 }
 
-
 std::vector<OCTriangle> MeshOpenCLRenderer::openCLTriangles()
 {
-    std::vector<OCTriangle> openCLTriangles;
-    for (auto t : this->triangles) {
-        openCLTriangles.emplace_back(OCVertex3D(t->A), OCVertex3D(t->B), OCVertex3D(t->C));
+    for (int i = 0; i < (int) triangles.size(); i++) {
+        oclTriangles[i].A = triangles[i]->A;
+        oclTriangles[i].B = triangles[i]->B;
+        oclTriangles[i].C = triangles[i]->C;
     }
 
-    return openCLTriangles;
+    return oclTriangles;
+}
+
+void MeshOpenCLRenderer::updateTriangles() 
+{
+    oclTriangles.clear();
+
+    for (auto t : this->triangles) {
+        oclTriangles.emplace_back(OCVertex3D(t->A), OCVertex3D(t->B), OCVertex3D(t->C));
+    }
 }

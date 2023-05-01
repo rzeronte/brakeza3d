@@ -27,8 +27,9 @@ void Sprite3D::onUpdate()
     //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
     //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
 
-    auto context = Tools::openCLContext(this);
-    openClRenderer->onUpdate(&context, billboard->getT1()->getTexture());
+    openClRenderer->updateTriangles();
+
+    openClRenderer->onUpdate(billboard->getT1()->getTexture());
 }
 
 void Sprite3D::postUpdate()

@@ -44,6 +44,7 @@ void ComponentHUD::onUpdate()
 void ComponentHUD::postUpdate()
 {
     if (!isEnabled()) return;
+
     drawHUD();
 
 }
