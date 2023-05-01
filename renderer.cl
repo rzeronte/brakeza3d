@@ -86,7 +86,6 @@ float distancePlaneVertex(struct OCLPlane plane, struct OCVertex3D p);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
 struct OCVertex3D getComponent(struct Vector3D V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
-void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth, __global unsigned int *texture, int surfaceWidth, int surfaceHeight, bool useStencil, __global bool *stencil);
 float getXTextureFromUV(int textureWidth, float u);
 float getYTextureFromUV(int textureHeight, float v);
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context);
@@ -106,8 +105,8 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
-    __global unsigned int *videoBuffer,
-    __global float *depthBuffer,
+    __global unsigned int *video,
+    __global float *bufferDepth,
     __global OCLMeshContext *context,
     __global OCTriangle *triangles,
     int numTriangles,
@@ -121,118 +120,111 @@ __kernel void onUpdate(
     int i = get_global_id(0);
 
     if (i < numTriangles) {
-        updateTriangle(&triangles[i], context, screenWidth, screenHeight, videoBuffer, depthBuffer, texture, surfaceWidth, surfaceHeight, useStencil, stencil);
-    }
-}
+        __global struct OCTriangle *t = &triangles[i];
 
-/***************************
-* Functions
-****************************/
+        updateObjectSpace(t, context);
+        updateNormal(t);
+        updateCameraSpace(t, context);
+        updatePerspectiveNDCSpace(t, context);
+        updateScreenSpace(t, screenWidth, screenHeight);
+        updateBoundingBox(t);
+        updateFullArea(t);
+        updateUVCache(t);
 
-void updateTriangle(__global struct OCTriangle *t, __global struct OCLMeshContext *context, int screenWidth, int screenHeight, __global unsigned int *video, __global float *bufferDepth, __global unsigned int *texture, int surfaceWidth, int surfaceHeight, bool useStencil, __global bool *stencil)
-{
-    updateObjectSpace(t, context);
-    updateNormal(t);
-    updateCameraSpace(t, context);
-    updatePerspectiveNDCSpace(t, context);
-    updateScreenSpace(t, screenWidth, screenHeight);
-    updateBoundingBox(t);
-    updateFullArea(t);
-    updateUVCache(t);
+        //t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
+        //if (t->clipped) return;
 
-    t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
+        if (isBackFaceCulling(t, context->cameraData.position)) return;
 
-    if (t->clipped) return;
-
-    if (isBackFaceCulling(t, context->cameraData.position)) return;
-
-    if (
-        !isVertexInside(t->Ao, context->frustumData.planes) &&
-        !isVertexInside(t->Bo, context->frustumData.planes) &&
-        !isVertexInside(t->Co, context->frustumData.planes)
-    ) {
-        return;
-    }
-
-    int A01 = (int) -( t->As.y - t->Bs.y );
-    int A12 = (int) -( t->Bs.y - t->Cs.y );
-    int A20 = (int) -( t->Cs.y - t->As.y );
-
-    int B01 = (int) -( t->Bs.x - t->As.x );
-    int B12 = (int) -( t->Cs.x - t->Bs.x );
-    int B20 = (int) -( t->As.x - t->Cs.x );
-
-    int w0_row = orient2d( t->Bs, t->Cs, t->minX, t->minY );
-    int w1_row = orient2d( t->Cs, t->As, t->minX, t->minY );
-    int w2_row = orient2d( t->As, t->Bs, t->minX, t->minY );
-
-    float alpha, theta, gamma;
-
-    float fullArea = processFullArea(t->Bs, t->Cs, t->As);
-    float reciprocalFullArea = 1 / fullArea;
-
-    for (int y = t->minY ; y < t->maxY ; y++) {
-
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = t->minX ; x < t->maxX ; x++) {
-            if ((w0 | w1 | w2) > 0) {
-                int bufferIndex = y * screenWidth + x;
-
-                alpha = w0 * reciprocalFullArea;
-                theta = w1 * reciprocalFullArea;
-                gamma = 1 - alpha - theta;
-
-                float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
-
-                if (depth <= bufferDepth[bufferIndex]) {
-                    bufferDepth[bufferIndex] = depth;
-                    //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-
-                    float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
-                    float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
-                    float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
-
-                    float ignorablePartInt;
-
-                    if (texU < 0.0f) {
-                        texU = 1.0f - fmod(fabs(texU), 1.0f);
-                    } else {
-                        texU = fmod(texU, 1.0f);
-                    }
-
-                    if (texV < 0.0f) {
-                        texV = 1.0f - fmod(fabs(texV), 1.0f);
-                    } else {
-                        texV = fmod(texV, 1.0f);
-                    }
-
-                    int tx = (int) getXTextureFromUV(surfaceWidth, texU);
-                    int ty = (int) getYTextureFromUV(surfaceHeight, texV);
-
-                    unsigned int color = texture[ty * surfaceWidth + tx];
-
-                    unsigned char *color_bytes = (unsigned char *)&color;
-                    unsigned char alpha = color_bytes[3];
-                    if (alpha < 255) {
-                        color = alphaBlend(video[bufferIndex], color, alpha);
-                    }
-
-                    video[bufferIndex] = color;
-                    stencil[bufferIndex] = true;
-                }
-            }
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
+        if (
+            !isVertexInside(t->Ao, context->frustumData.planes) &&
+            !isVertexInside(t->Bo, context->frustumData.planes) &&
+            !isVertexInside(t->Co, context->frustumData.planes)
+        ) {
+            return;
         }
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
+
+        int A01 = (int) -( t->As.y - t->Bs.y );
+        int A12 = (int) -( t->Bs.y - t->Cs.y );
+        int A20 = (int) -( t->Cs.y - t->As.y );
+
+        int B01 = (int) -( t->Bs.x - t->As.x );
+        int B12 = (int) -( t->Cs.x - t->Bs.x );
+        int B20 = (int) -( t->As.x - t->Cs.x );
+
+        int w0_row = orient2d( t->Bs, t->Cs, t->minX, t->minY );
+        int w1_row = orient2d( t->Cs, t->As, t->minX, t->minY );
+        int w2_row = orient2d( t->As, t->Bs, t->minX, t->minY );
+
+        float alpha, theta, gamma;
+
+        float fullArea = processFullArea(t->Bs, t->Cs, t->As);
+        float reciprocalFullArea = 1 / fullArea;
+
+        for (int y = t->minY ; y < t->maxY ; y++) {
+
+            int w0 = w0_row;
+            int w1 = w1_row;
+            int w2 = w2_row;
+
+            for (int x = t->minX ; x < t->maxX ; x++) {
+                if ((w0 | w1 | w2) > 0) {
+                    int bufferIndex = y * screenWidth + x;
+
+                    alpha = w0 * reciprocalFullArea;
+                    theta = w1 * reciprocalFullArea;
+                    gamma = 1 - alpha - theta;
+
+                    float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
+
+                    if (depth <= bufferDepth[bufferIndex]) {
+                        bufferDepth[bufferIndex] = depth;
+                        //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+
+                        float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+                        float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
+                        float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
+
+                        float ignorablePartInt;
+
+                        if (texU < 0.0f) {
+                            texU = 1.0f - fmod(fabs(texU), 1.0f);
+                        } else {
+                            texU = fmod(texU, 1.0f);
+                        }
+
+                        if (texV < 0.0f) {
+                            texV = 1.0f - fmod(fabs(texV), 1.0f);
+                        } else {
+                            texV = fmod(texV, 1.0f);
+                        }
+
+                        int tx = (int) getXTextureFromUV(surfaceWidth, texU);
+                        int ty = (int) getYTextureFromUV(surfaceHeight, texV);
+
+                        unsigned int color = texture[ty * surfaceWidth + tx];
+
+                        unsigned char *color_bytes = (unsigned char *)&color;
+                        unsigned char alphaChannel = color_bytes[3];
+                        if (alphaChannel < 255) {
+                            color = alphaBlend(video[bufferIndex], color, alphaChannel);
+                        }
+
+                        video[bufferIndex] = color;
+                        stencil[bufferIndex] = true;
+                    }
+                }
+                w0 += A12;
+                w1 += A20;
+                w2 += A01;
+            }
+            w0_row += B12;
+            w1_row += B20;
+            w2_row += B01;
+        }
     }
 }
+
 
 float processFullArea(OCPoint2D pb, OCPoint2D pc, OCPoint2D pa)
 {
