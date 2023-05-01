@@ -11,6 +11,8 @@
 #include <list>
 #include <vector>
 #include "../Misc/Color.h"
+
+
 struct OCPoint2D {
     OCPoint2D() {}
     OCPoint2D(int &x, int &y) : x(x), y(y) {}
@@ -30,6 +32,22 @@ struct OCVertex3D {
     float z;
     float u;
     float v;
+};
+
+struct OCLight {
+    OCLight(OCVertex3D position, OCVertex3D forward, float power, float kc, float kl, float kq, float specularComponent, const Uint32 color,
+            const Uint32 colorSpecularity) : position(position), forward(forward), power(power), kc(kc), kl(kl), kq(kq),
+                                                  specularComponent(specularComponent), color(color),
+                                                  colorSpecularity(colorSpecularity) {}
+    OCVertex3D position;
+    OCVertex3D forward;
+    float power;
+    float kc;
+    float kl;
+    float kq;
+    float specularComponent;
+    Uint32 color;
+    Uint32 colorSpecularity;
 };
 
 struct OCTriangle

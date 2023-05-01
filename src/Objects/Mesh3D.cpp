@@ -108,7 +108,7 @@ void Mesh3D::clone(Mesh3D *source)
     this->scale = source->scale;
     this->sharedTextures = true;
 
-    openClRenderer->updateTriangles();
+    openClRenderer->makeOCLTriangles();
 }
 
 void Mesh3D::onUpdate()
@@ -154,7 +154,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes(scene, scene->mRootNode);
 
-    openClRenderer->updateTriangles();
+    openClRenderer->makeOCLTriangles();
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)

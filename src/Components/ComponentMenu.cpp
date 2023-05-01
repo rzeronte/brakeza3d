@@ -60,7 +60,7 @@ void ComponentMenu::loadDecorative3DMesh()
     spaceship->setRotation(-30, 0, 0);
     spaceship->setScale(6);
     spaceship->setStencilBufferEnabled(true);
-    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/benchmark.fbx"));
+    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
     spaceship->updateBoundingBox();
     Brakeza3D::get()->addObject3D(spaceship, "spaceshipMenu");
 

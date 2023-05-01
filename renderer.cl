@@ -10,6 +10,18 @@ typedef struct OCVertex3D {
     float v;
 } OCVertex3D;
 
+typedef struct OCLight {
+    OCVertex3D position;
+    OCVertex3D forward;
+    float power;
+    float kc;
+    float kl;
+    float kq;
+    float specularComponent;
+    unsigned int color;
+    unsigned int colorSpecularity;
+} OCLight;
+
 typedef struct OCPoint2D {
     int x;
     int y;
@@ -100,6 +112,10 @@ float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b);
 bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *position);
 bool isVertexInside(struct OCVertex3D *v, __global struct OCLPlane *planes);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
+unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma);
+unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struct OCVertex3D *Q, struct OCVertex3D *N);
+float distanceBetweenVertices(struct OCVertex3D *v1, struct OCVertex3D *v2);
+unsigned int mixColors(unsigned int color1, unsigned int color2, float t);
 
 /* KERNEL */
 __kernel void onUpdate(
@@ -114,7 +130,9 @@ __kernel void onUpdate(
     int surfaceWidth,
     int surfaceHeight,
     __global bool *stencil,
-    int useStencil
+    int useStencil,
+    __global OCLight *lights,
+    int numLights
 )
 {
     int i = get_global_id(0);
@@ -208,6 +226,8 @@ __kernel void onUpdate(
                         if (alphaChannel < 255) {
                             color = alphaBlend(video[bufferIndex], color, alphaChannel);
                         }
+
+                        color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
 
                         video[bufferIndex] = color;
                         stencil[bufferIndex] = true;
@@ -546,4 +566,68 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
     g += ((color2 & 0x00ff00) - g) * alpha >> 8;
 
     return (rb & 0xff00ff) | (g & 0xff00);
+}
+
+
+unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma)
+{
+    OCVertex3D D;
+    D.x = alpha * t->Ao.x + theta * t->Bo.x + gamma * t->Co.x;
+    D.y = alpha * t->Ao.y + theta * t->Bo.y + gamma * t->Co.y;
+    D.z = alpha * t->Ao.z + theta * t->Bo.z + gamma * t->Co.z;
+
+    for (int i = 0; i < numLights; i++) {
+        color = mixLightColor(&lights[i], color, &D, &t->normal);
+    }
+
+    return color;
+}
+
+unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struct OCVertex3D *Q, struct OCVertex3D *N)
+{
+    float distance = distanceBetweenVertices(&l->position, Q);
+
+    OCVertex3D R = l->forward;
+
+    // Vector(Q, P)
+    OCVertex3D component;
+    component.x = l->position.x - Q->x;
+    component.y = l->position.y - Q->y;
+    component.z = l->position.z - Q->z;
+
+    float modulo = sqrt((component.x * component.x) + (component.y * component.y) + (component.z * component.z));
+
+    OCVertex3D L;
+    L.x = component.x / modulo;
+    L.y = component.y / modulo;
+    L.z = component.z / modulo;
+    //
+
+    float C = pow(max(dotProduct(&R, &L), 0.0f), l->power) / (l->kc + l->kl * distance + l->kq * (distance * distance));
+
+    unsigned int diffuseColor;
+    if (C >= 1) {
+        diffuseColor = l->color;
+    } else {
+        diffuseColor = mixColors(color, l->color, C);
+    }
+
+    return diffuseColor;
+}
+
+float distanceBetweenVertices(struct OCVertex3D *v1, struct OCVertex3D *v2)
+{
+    return sqrt( (v2->x - v1->x) * (v2->x - v1->x) + (v2->y - v1->y) * (v2->y - v1->y) + (v2->z - v1->z) * (v2->z - v1->z));
+}
+
+unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
+{
+    unsigned char *c1 = (unsigned char *)&color1;
+    unsigned char *c2 = (unsigned char *)&color2;
+
+    return createRGB(
+        mix((float) c1[0], (float) c2[0], t),
+        mix((float) c1[1], (float) c2[1], t),
+        mix((float) c1[2], (float) c2[2], t)
+    );
 }
