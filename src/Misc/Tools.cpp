@@ -9,6 +9,7 @@
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -495,7 +496,8 @@ OCLMeshContext Tools::openCLContext(Object3D *object)
         ObjectData(
               OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
               OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
-              object->getScale()
+              object->getScale(),
+              object->isEnableLights()
           ),
         CameraData(
             OCVertex3D(cam->getPosition().x, cam->getPosition().y, cam->getPosition().z),
@@ -509,4 +511,18 @@ OCLMeshContext Tools::openCLContext(Object3D *object)
             planesOCL
         )
     );
+}
+
+void Tools::addSceneObject(const std::string& filename, const std::string& name)
+{
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
+
+    auto *newObject = new Mesh3D();
+    newObject->setPosition(position);
+    newObject->setScale(1);
+    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
+
+    Logging::Message("Loading from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
+
+    Brakeza3D::get()->addObject3D(newObject, name + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
