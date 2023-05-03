@@ -59,6 +59,7 @@ typedef struct ObjectData {
     OCVertex3D position;  // Posición del objeto
     OCVertex3D rotation;  // Rotación del objeto
     float scale;        // Escala del objeto
+    bool light;
 } ObjectData;
 
 typedef struct CameraData {
@@ -122,7 +123,7 @@ __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
     __global unsigned int *video,
-    __global float *bufferDepth,
+    __global unsigned int *bufferDepth,
     __global OCLMeshContext *context,
     __global OCTriangle *triangles,
     int numTriangles,
@@ -138,6 +139,7 @@ __kernel void onUpdate(
     int i = get_global_id(0);
 
     if (i < numTriangles) {
+
         __global struct OCTriangle *t = &triangles[i];
 
         updateObjectSpace(t, context);
@@ -188,33 +190,21 @@ __kernel void onUpdate(
 
             for (int x = t->minX ; x < t->maxX ; x++) {
                 if ((w0 | w1 | w2) > 0) {
-                    int bufferIndex = y * screenWidth + x;
+                    const int bufferIndex = y * screenWidth + x;
 
                     alpha = (float) w0 * reciprocalFullArea;
                     theta = (float) w1 * reciprocalFullArea;
-                    gamma = 1 - alpha - theta;
+                    gamma = (float) w2 * reciprocalFullArea;
 
                     float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
 
-                    if (depth <= bufferDepth[bufferIndex]) {
-                        bufferDepth[bufferIndex] = depth;
-                        //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+                    unsigned int depthInt = (int) depth * 10000;
+                    if (depthInt < bufferDepth[bufferIndex]) {
+                        atomic_min(&bufferDepth[bufferIndex], depthInt);
 
                         float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
                         float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
                         float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
-
-                        if (texU < 0.0f) {
-                            texU = 1.0f - fmod(fabs(texU), 1.0f);
-                        } else {
-                            texU = fmod(texU, 1.0f);
-                        }
-
-                        if (texV < 0.0f) {
-                            texV = 1.0f - fmod(fabs(texV), 1.0f);
-                        } else {
-                            texV = fmod(texV, 1.0f);
-                        }
 
                         int tx = (int) getXTextureFromUV(surfaceWidth, texU);
                         int ty = (int) getYTextureFromUV(surfaceHeight, texV);
@@ -227,8 +217,11 @@ __kernel void onUpdate(
                             color = alphaBlend(video[bufferIndex], color, alphaChannel);
                         }
 
-                        color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
+                        if (context->objectData.light) {
+                            color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
+                        }
 
+                        //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
                         video[bufferIndex] = color;
                         stencil[bufferIndex] = true;
                     }
@@ -243,7 +236,6 @@ __kernel void onUpdate(
         }
     }
 }
-
 
 float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global OCPoint2D *pa)
 {
@@ -262,11 +254,7 @@ unsigned int createRGB(int r, int g, int b)
 
 struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPosition, struct OCVertex3D *objectRotation, float oScale)
 {
-    OCVertex3D output;
-
-    output.x = A->x;
-    output.y = A->y;
-    output.z = A->z;
+    OCVertex3D output = *A;
 
     output.x *= oScale;
     output.y *= oScale;
@@ -285,10 +273,7 @@ struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPos
 
 struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, struct OCVertex3D *camRot)
 {
-    OCVertex3D output;
-    output.x = V->x;
-    output.y = V->y;
-    output.z = V->z;
+    OCVertex3D output = *V;
 
     output.x -= camPos->x;
     output.y -= camPos->y;
@@ -303,10 +288,7 @@ struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, s
 
 struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct OCVertex3D *vNR, struct OCVertex3D *vNT, struct OCVertex3D *vNB)
 {
-    OCVertex3D A;
-    A.x = v->x;
-    A.y = v->y;
-    A.z = v->z;
+    OCVertex3D A = *v;
 
     perspectiveDivision(&A, 1);
 
@@ -328,8 +310,6 @@ struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct 
     A.x = xt;
     A.y = yt;
 
-    A.z = v->z; // Almaceno z (deberia ser w)
-
     return A;
 }
 
@@ -339,9 +319,6 @@ struct OCPoint2D screenSpace(struct OCVertex3D *V, int screenWidth, int screenHe
 
     A.x = (1 + V->x) * ((float) screenWidth/2);
     A.y = (1 + V->y) * ((float) screenHeight/2);
-
-    A.x = (int) A.x;
-    A.y = (int) A.y;
 
     return A;
 }
@@ -482,9 +459,11 @@ void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshCon
     t->Bo = objectSpace(&t->B, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
     t->Co = objectSpace(&t->C, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
 }
+
 void updateNormal(__global struct OCTriangle *t) {
     t->normal = getNormal(t);
 }
+
 void updateCameraSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context) {
     t->Ac = cameraSpace(&t->Ao, &context->cameraData.position, &context->cameraData.rotation);
     t->Bc = cameraSpace(&t->Bo, &context->cameraData.position, &context->cameraData.rotation);
@@ -537,9 +516,7 @@ bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *positio
     v.y = t->Ao.y - position->y;
     v.z = t->Ao.z - position->z;
 
-    OCVertex3D normal = getNormal(t);
-
-    return dotProduct(&v, &normal) >= 0;
+    return dotProduct(&v, &t->normal) >= 0;
 }
 
 float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b) {

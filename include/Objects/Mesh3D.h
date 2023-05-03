@@ -71,8 +71,6 @@ public:
 
     void setFlatTextureColor(bool isFlatTextureColor);
 
-    void setEnableLights(bool enableLights);
-
     void setFlatColor(const Color &flatColor);
 
     void setRender(bool render);
@@ -87,8 +85,6 @@ public:
 
     [[nodiscard]] bool isFlatTextureColor() const;
 
-    [[nodiscard]] bool isEnableLights() const;
-
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles() ;
 
     [[nodiscard]] std::vector<Texture *> &getModelTextures() ;
@@ -97,13 +93,9 @@ public:
 
     AABB3D &getAabb();
 
-    OCLMeshContext openCLContext();
+    [[nodiscard]] MeshOpenCLRenderer *getOpenClRenderer() const;
 
-    bool enableLights;
-
-    MeshOpenCLRenderer *getOpenClRenderer() const;
-
-    void onDraw();
+    void onDraw() override;
 };
 
 

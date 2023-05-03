@@ -13,7 +13,6 @@ class Object3D {
 protected:
     Vertex3D position;
     Vertex3D drawOffset;
-    Vertex3D rotationFrame;
     M3 rotation;
 
     EnemyBehavior *motion;
@@ -21,11 +20,9 @@ protected:
 
     bool enabled;
     bool removed;
-    float scale;
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
     bool stencilBufferEnabled;
-    bool rotationFrameEnabled;
 
     std::string label;
     float rotX, rotY, rotZ; // For easy management from UI
@@ -125,8 +122,16 @@ public:
 
     [[nodiscard]] Object3D *getParent() const;
 
-
     virtual void onDraw();
+
+    [[nodiscard]] bool isEnableLights() const;
+
+    void setEnableLights(bool enableLights);
+
+    bool enableLights;
+    float scale;
+    Vertex3D rotationFrame;
+    bool rotationFrameEnabled;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

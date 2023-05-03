@@ -54,13 +54,13 @@ void ComponentMenu::loadDecorative3DMesh()
     spaceship->setEnabled(true);
     spaceship->setAlpha(2555);
     spaceship->setEnableLights(true);
-    spaceship->setPosition(Vertex3D(5000, -1000, 20000));
-    spaceship->setRotationFrameEnabled(false);
-    spaceship->setRotationFrame(Vertex3D(0, 0.5, 0));
+    spaceship->setPosition(Vertex3D(1800, -1000, 3000));
+    spaceship->setRotationFrameEnabled(true);
+    spaceship->setRotationFrame(Vertex3D(0, 0.1, 0));
     spaceship->setRotation(-30, 0, 0);
     spaceship->setScale(6);
     spaceship->setStencilBufferEnabled(true);
-    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
+    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "Earth.fbx"));
     spaceship->updateBoundingBox();
     Brakeza3D::get()->addObject3D(spaceship, "spaceshipMenu");
 
@@ -88,7 +88,7 @@ void ComponentMenu::onUpdate()
     }
 
     pendulum->onUpdate();
-    spaceship->setRotation(pendulum->pendulumRotation);
+    //spaceship->setRotation(pendulum->pendulumRotation);
 
 
     drawOptions();

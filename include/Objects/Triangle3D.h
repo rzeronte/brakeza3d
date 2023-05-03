@@ -35,10 +35,16 @@ struct OCVertex3D {
 };
 
 struct OCLight {
-    OCLight(OCVertex3D position, OCVertex3D forward, float power, float kc, float kl, float kq, float specularComponent, const Uint32 color,
-            const Uint32 colorSpecularity) : position(position), forward(forward), power(power), kc(kc), kl(kl), kq(kq),
-                                                  specularComponent(specularComponent), color(color),
-                                                  colorSpecularity(colorSpecularity) {}
+    OCLight(
+        OCVertex3D position, OCVertex3D forward,
+        float power, float kc, float kl, float kq, float specularComponent,
+        const Uint32 color, const Uint32 colorSpecularity
+    )
+    : position(position), forward(forward),
+      power(power), kc(kc), kl(kl), kq(kq), specularComponent(specularComponent),
+      color(color), colorSpecularity(colorSpecularity)
+    {
+    }
     OCVertex3D position;
     OCVertex3D forward;
     float power;

@@ -44,6 +44,12 @@ public:
             for(int i = 0; i < (int)gameObjects.size(); i++) {
                 auto object = gameObjects[i];
 
+                auto *projectile = dynamic_cast<AmmoProjectileBody *>(object);
+                if (projectile != nullptr) continue;
+
+                auto *emitter = dynamic_cast<ParticleEmitter *>(object);
+                if (emitter != nullptr) continue;
+
                 if (object->isRemoved()) {
                     continue;
                 }
@@ -70,16 +76,18 @@ public:
         std::string enabled_text = "Enabled##" + std::to_string(i);
         std::string stencilBuffer_text = "StencilBuffer##" + std::to_string(i);
         std::string position_text = "Position##" + std::to_string(i);
+        std::string scale_text = "Scale##" + std::to_string(i);
         std::string rotation_text = "Rotation##" + std::to_string(i);
+        std::string rotation_frame_text = "Rotation Frame##" + std::to_string(i);
         std::string follow_camera_text = "FollowCamera##" + std::to_string(i);
         std::string draw_offset_text = "DrawOffset##" + std::to_string(i);
         std::string alpha_text = "Alpha Channel##" + std::to_string(i);
         std::string alpha_value_text = "Alpha Value##" + std::to_string(i);
         std::string alpha_value = "Alpha##" + std::to_string(i);
 
-        const float range_min = -10000;
-        const float range_max = 10000;
-        const float range_sensibility = 0.5;
+        const float range_min = -100000;
+        const float range_max = 100000;
+        const float range_sensibility = 1;
 
         const float range_angle_min = -360;
         const float range_angle_max = 360;
@@ -125,6 +133,26 @@ public:
             if (needUpdateRotation) {
                 object->setRotation(M3::getMatrixRotationForEulerAngles(object->getRotX(), object->getRotY(), object->getRotZ()));
             }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+
+        ImGui::Checkbox(std::string("Rotation Frame").c_str(), &object->rotationFrameEnabled);
+
+        ImGui::Separator();
+        if (object->rotationFrameEnabled) {
+            // rotation frame
+            if (ImGui::TreeNode(rotation_frame_text.c_str())) {
+                ImGui::DragScalar("X", ImGuiDataType_Float, &object->rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &object->rotationFrame.y, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &object->rotationFrame.z, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::TreePop();
+            }
+        }
+
+        // scale
+        if (ImGui::TreeNode(scale_text.c_str())) {
+            ImGui::DragScalar("scale", ImGuiDataType_Float, &object->scale, 0.1, &range_min, &range_max, "%f", 1.0f);
             ImGui::TreePop();
         }
 

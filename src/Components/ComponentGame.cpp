@@ -130,8 +130,8 @@ void ComponentGame::preUpdate()
     }
 
     getPlayer()->updateWeaponInteractionStatus();
+    shaderBackgroundUpdate();
 
-    updateShaders();
 
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
 
@@ -203,6 +203,7 @@ void ComponentGame::onUpdate()
 
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
+    updateShaders();
 
 }
 
@@ -822,7 +823,6 @@ void ComponentGame::pressedKeyByDead()
 
 void ComponentGame::updateShaders()
 {
-    shaderBackgroundUpdate();
     shaderColor->update();
     shaderLasers->update();
     shaderShockWave->update();
