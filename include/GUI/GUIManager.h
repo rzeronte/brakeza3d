@@ -9,6 +9,7 @@
 #include "GUI_Camera.h"
 #include "GUI_Tiles.h"
 #include "GUI_Weapons.h"
+#include "GUI_Files.h"
 
 class GUIManager : public GUI {
 public:
@@ -17,6 +18,7 @@ public:
     GUI_Camera *guiCamera;
     GUI_Tiles *guiTiles;
     GUI_Weapons *guiWeapons;
+    GUI_Files *guiFiles;
 
     GUIManager() {
         guiMenu = new GUI_Menu();
@@ -24,6 +26,8 @@ public:
         guiCamera = new GUI_Camera();
         guiTiles = new GUI_Tiles();
         guiWeapons = new GUI_Weapons();
+        guiFiles = new GUI_Files(EngineSetup::get()->MODELS_FOLDER);
+
     }
 
     virtual void draw(
@@ -44,49 +48,15 @@ public:
             guiCamera->show,
             guiTiles->show,
             guiWeapons->show,
+            guiFiles->show,
             cam
         );
-
-        ShowFileBrowser(EngineSetup::get()->MODELS_FOLDER);
 
         guiInspector->draw(gameObjects);
         guiCamera->draw(cam);
         guiTiles->draw(cam, tiles, numTilesColumns);
         guiWeapons->draw();
-    }
-
-    std::string selected_file;
-
-    void ShowFileBrowser(const std::string& directory_path)
-    {
-        ImGui::Begin("File Browser");
-
-        DIR *dir;
-        struct dirent *ent;
-        if ((dir = opendir (directory_path.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-                    if(ImGui::Selectable(ent->d_name, selected_file == ent->d_name)){
-                        selected_file = ent->d_name;
-                    }
-                }
-            }
-            closedir (dir);
-        } else {
-            ImGui::Text("Could not open directory");
-        }
-
-        if(ImGui::Button("Accept")){
-            if(!selected_file.empty()){
-                ImGui::Text("You selected: %s", selected_file.c_str());
-                Tools::addSceneObject(selected_file, "added_item");
-                selected_file = "";
-            } else {
-                ImGui::Text("No file selected");
-            }
-        }
-
-        ImGui::End();
+        guiFiles->draw();
     }
 };
 
