@@ -24,7 +24,7 @@ EngineBuffers::EngineBuffers()
 }
 
 void EngineBuffers::clearDepthBuffer() const {
-    std::fill(depthBuffer, depthBuffer + sizeBuffers, 90000);
+    std::fill(depthBuffer, depthBuffer + sizeBuffers, 50000);
 }
 
 float EngineBuffers::getDepthBuffer(int x, int y) const {
@@ -86,9 +86,9 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
 
     depthBufferOCL = clCreateBuffer(
         context,
-        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
-        sizeBuffers * sizeof(float),
-        depthBuffer,
+        CL_MEM_READ_WRITE,
+        sizeBuffers * sizeof(unsigned int),
+        nullptr,
         nullptr
     );
 }

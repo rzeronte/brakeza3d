@@ -33,14 +33,15 @@ struct OCLPlane {
 
 struct ObjectData {
     ObjectData() {}
-    ObjectData(const OCVertex3D &position, const OCVertex3D &rotation, float scale)
+    ObjectData(const OCVertex3D &position, const OCVertex3D &rotation, float scale, bool light)
     :
-    position(position), rotation(rotation), scale(scale)
+    position(position), rotation(rotation), scale(scale), light(light)
     {
     }
     OCVertex3D position;  // Posición del objeto
     OCVertex3D rotation;  // Rotación del objeto
     float scale;        // Escala del objeto
+    bool light;
 
 };
 
@@ -102,7 +103,6 @@ class MeshOpenCLRenderer {
     Object3D *object;
 
     OCLMeshContext meshContext;
-
 public:
     virtual ~MeshOpenCLRenderer();
 

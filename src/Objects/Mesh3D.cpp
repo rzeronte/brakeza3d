@@ -11,8 +11,7 @@ Mesh3D::Mesh3D()
     grid(nullptr),
     sharedTextures(false),
     flatTextureColor(false),
-    render(true),
-    enableLights(true)
+    render(true)
 {
     decal = false;
     openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
@@ -337,16 +336,6 @@ bool Mesh3D::isFlatTextureColor() const
 void Mesh3D::setFlatTextureColor(bool isFlatTextureColor)
 {
     this->flatTextureColor = isFlatTextureColor;
-}
-
-bool Mesh3D::isEnableLights() const
-{
-    return this->enableLights;
-}
-
-void Mesh3D::setEnableLights(bool enableLights)
-{
-    this->enableLights = enableLights;
 }
 
 void Mesh3D::setFlatColor(const Color &flatColor) {

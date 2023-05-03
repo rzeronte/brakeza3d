@@ -58,7 +58,12 @@ void ComponentRender::drawObjetsInHostBuffer()
 
     if (SETUP->BULLET_DEBUG_MODE) {
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
-     }
+    }
+
+    //this->hiddenSurfaceRemoval();
+    //this->drawVisibleTriangles();
+    frameTriangles.clear();
+    spritesTriangles.clear();
 }
 
 void ComponentRender::onUpdate()
@@ -79,12 +84,7 @@ void ComponentRender::onUpdate()
         }
     }
 
-    //this->hiddenSurfaceRemoval();
-    //this->drawVisibleTriangles();
 
-
-    frameTriangles.clear();
-    spritesTriangles.clear();
 
     if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
         for (auto & lightpoint : this->lightPoints) {
@@ -147,17 +147,8 @@ void ComponentRender::writeOCLBuffersFromHost() const
         printf("Error al escribir en el buffer de vídeo: %d\n", ret);
     }
 
-    ret = clEnqueueWriteBuffer(
-        clCommandQueue,
-        EngineBuffers::get()->depthBufferOCL,
-        CL_TRUE,
-        0,
-        EngineBuffers::get()->sizeBuffers * sizeof(float),
-        EngineBuffers::get()->depthBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
+    float max_value = 100000;
+    clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
         printf("Error al escribir en el buffer de depth: %d\n", ret);

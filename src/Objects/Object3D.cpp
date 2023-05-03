@@ -16,6 +16,7 @@ Object3D::Object3D() :
     followCamera(false),
     stencilBufferEnabled(false),
     rotationFrameEnabled(false),
+    enableLights(false),
     rotX(0),
     rotY(0),
     rotZ(0),
@@ -231,3 +232,10 @@ void Object3D::onDraw()
 {
 }
 
+bool Object3D::isEnableLights() const {
+    return enableLights;
+}
+
+void Object3D::setEnableLights(bool enableLights) {
+    Object3D::enableLights = enableLights;
+}

@@ -98,6 +98,8 @@ public:
     static OCPoint2D pointOCL(Point2D v);
 
     static OCLMeshContext openCLContext(Object3D *object);
+
+    static void addSceneObject(const std::string& filename, const std::string& name);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
