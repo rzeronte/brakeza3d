@@ -11,17 +11,17 @@ Object3D::Object3D() :
     parent(nullptr),
     enabled(true),
     removed(false),
-    scale(1),
     decal(false),
     followCamera(false),
     stencilBufferEnabled(false),
-    rotationFrameEnabled(false),
-    enableLights(false),
     rotX(0),
     rotY(0),
     rotZ(0),
     alphaEnabled(false),
-    alpha(0)
+    alpha(0),
+    enableLights(false),
+    scale(1),
+    rotationFrameEnabled(false)
 {
 }
 
@@ -238,4 +238,13 @@ bool Object3D::isEnableLights() const {
 
 void Object3D::setEnableLights(bool enableLights) {
     Object3D::enableLights = enableLights;
+}
+
+cJSON *Object3D::getJSON()
+{
+    return nullptr;
+}
+
+const Vertex3D &Object3D::getRotationFrame() const {
+    return rotationFrame;
 }

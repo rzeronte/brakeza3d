@@ -154,6 +154,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     AssimpProcessNodes(scene, scene->mRootNode);
 
     openClRenderer->makeOCLTriangles();
+
+    sourceFile = fileName;
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
@@ -419,3 +421,48 @@ void Mesh3D::onDraw()
     }
 }
 
+cJSON * Mesh3D::getJSON()
+{
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "name", getLabel().c_str());
+
+    Vertex3D homogeneousPosition;
+    Vertex3D destinyPoint = getPosition();
+    Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
+    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
+
+    Point2D P1;
+    Transforms::screenSpace(P1, homogeneousPosition);
+    Logging::Message("%d %d", P1.x, P1.y);
+
+    float x = (P1.x / (float) EngineSetup::get()->screenWidth) * 100;
+    float y = (P1.y / (float)  EngineSetup::get()->screenHeight) * 100;
+
+    cJSON *position = cJSON_CreateObject();
+    cJSON_AddNumberToObject(position, "x", (int) x);
+    cJSON_AddNumberToObject(position, "y", (int) y);
+    cJSON_AddItemToObject(root, "position", position);
+
+    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
+
+    auto r = getRotation();
+    cJSON *rotation = cJSON_CreateObject();
+    cJSON_AddNumberToObject(rotation, "x", (int)getRotX());
+    cJSON_AddNumberToObject(rotation, "y", (int)getRotY());
+    cJSON_AddNumberToObject(rotation, "z", (int)getRotZ());
+    cJSON_AddItemToObject(root, "rotation", rotation);
+
+    auto rotFrame = getRotationFrame();
+    cJSON *rFrame = cJSON_CreateObject();
+    cJSON_AddNumberToObject(rFrame, "x", (int) rotFrame.x);
+    cJSON_AddNumberToObject(rFrame, "y", (int) rotFrame.y);
+    cJSON_AddNumberToObject(rFrame, "z", (int) rotFrame.z);
+    cJSON_AddItemToObject(root, "rotationFrame", rFrame);
+
+    cJSON_AddNumberToObject(root, "scale", getScale());
+
+    return root;
+}

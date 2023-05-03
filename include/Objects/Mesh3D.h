@@ -96,6 +96,8 @@ public:
     [[nodiscard]] MeshOpenCLRenderer *getOpenClRenderer() const;
 
     void onDraw() override;
+
+    cJSON * getJSON();
 };
 
 

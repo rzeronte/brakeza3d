@@ -18,6 +18,7 @@
 #include "src/bosses/BossLevel20.h"
 #include "src/enemies/behaviors/EnemyBehaviorPath.h"
 #include "src/bosses/BossLevel30.h"
+#include "LevelStats.h"
 
 #include <utility>
 
@@ -41,6 +42,8 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
+
+    removeBackgroundObjects();
 
     loadLevelFromJSON(levels[levelIndex]);
 }
@@ -125,7 +128,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        delete tutorialImage;
+        //delete tutorialImage;
         tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
         hasTutorial = true;
     }
@@ -171,6 +174,11 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
         enemiesEmitter.push_back(respawner);
+    }
+
+    cJSON *currentBackground;
+    cJSON_ArrayForEach(currentBackground, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "background")) {
+        this->parseBackgroundItem(currentBackground);
     }
 
     free(contentFile);
@@ -743,4 +751,40 @@ void LevelLoader::setEndLevel(bool value) {
 
 LevelStats *LevelLoader::getStats() const {
     return stats;
+}
+
+void LevelLoader::parseBackgroundItem(cJSON *object)
+{
+    std::string name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
+    std::string model = cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring;
+    cJSON *rotationJSON = cJSON_GetObjectItemCaseSensitive(object, "rotation");
+    float scale = (float) cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble;
+    cJSON *positionJSON = cJSON_GetObjectItemCaseSensitive(object, "position");
+
+    auto mesh = new Mesh3D();
+    mesh->setScale(scale);
+    mesh->setRotation(M3::getMatrixRotationForEulerAngles(
+        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "x")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "y")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "z")->valueint
+    ));
+
+    mesh->setRotationFrame(parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
+    mesh->AssimpLoadGeometryFromFile(EngineSetup::get()->MODELS_FOLDER + model);
+
+    auto position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(object, "position"));
+    position.z = (float) cJSON_GetObjectItemCaseSensitive(positionJSON, "z")->valuedouble;
+
+    mesh->setPosition(position);
+
+    objectsBackground.emplace_back(mesh);
+
+    Brakeza3D::get()->addObject3D(mesh, name);
+}
+
+void LevelLoader::removeBackgroundObjects() {
+
+    for (auto o : objectsBackground) {
+        o->setRemoved(true);
+    }
 }
