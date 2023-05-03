@@ -7,6 +7,7 @@
 #include "../../include/Render/M3.h"
 #include "../../darkheaz/src/enemies/EnemyBehavior.h"
 #include "Point2D.h"
+#include "../Misc/cJSON.h"
 
 class Object3D {
 
@@ -132,6 +133,10 @@ public:
     float scale;
     Vertex3D rotationFrame;
     bool rotationFrameEnabled;
+
+    virtual cJSON *getJSON();
+
+    const Vertex3D &getRotationFrame() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

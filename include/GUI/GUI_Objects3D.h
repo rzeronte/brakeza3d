@@ -25,7 +25,9 @@ private:
 
 public:
     bool show = false;
+    bool showJSON = false;
     int miscFlags = ImGuiColorEditFlags_NoOptions;
+    std::string text_area;
 
     virtual ~GUI_Objects3D() {}
 
@@ -69,6 +71,11 @@ public:
                 }
             }
             ImGui::End();
+
+
+            if (showJSON) {
+                DrawTextAreaDialog();
+            }
         }
     }
 
@@ -175,6 +182,13 @@ public:
         if (ImGui::IsItemClicked()) {
             object->setRemoved(true);
         }
+        ImGui::Button("GetJSON!");
+        if (ImGui::IsItemClicked()) {
+            Logging::Message("getJSON");
+            showJSON = true;
+            setJSONText(object->getJSON());
+        }
+
     }
 
     void GuiMesh3D(Object3D *object, int i) {
@@ -377,6 +391,40 @@ public:
                 ImGui::TreePop();
             }
         }
+    }
+
+
+    void DrawTextAreaDialog() {
+        // Configuración del diálogo
+        const ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+
+        // Obtener el tamaño de la ventana
+        ImVec2 size = ImGui::GetIO().DisplaySize;
+
+        // Calcula la posición del centro de la ventana
+        ImVec2 center = ImVec2(size.x * 0.5f, size.y * 0.5f);
+
+        // Calcula el tamaño del diálogo
+        ImVec2 dialog_size = ImVec2(400, 400);
+
+        // Calcula la posición del diálogo
+        ImVec2 dialog_pos = ImVec2(center.x - (dialog_size.x * 0.5f), center.y - (dialog_size.y * 0.5f));
+
+        // Inicia el diálogo
+        ImGui::SetNextWindowPos(dialog_pos);
+        ImGui::SetNextWindowSize(dialog_size);
+        ImGui::Begin("Object3D JSON", &showJSON, window_flags);
+
+        char text_area[1024];
+        strcpy(text_area, this->text_area.c_str());
+        ImGui::InputTextMultiline("##text_area", text_area, IM_ARRAYSIZE(text_area), ImVec2(-1, -1), ImGuiInputTextFlags_AllowTabInput);
+
+        // Finaliza el diálogo
+        ImGui::End();
+    }
+
+    void setJSONText(cJSON *pJson) {
+        text_area = cJSON_Print(pJson);
     }
 
 };

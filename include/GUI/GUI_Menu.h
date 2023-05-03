@@ -20,18 +20,17 @@ public:
 
     virtual void
     draw(
-            bool &done,
-            bool &show_window_inspector,
-            bool &show_camera_info,
-            bool &show_window_physics,
-            bool &show_window_weapons,
-            Camera3D *cam
+        bool &done,
+        bool &show_window_inspector,
+        bool &show_camera_info,
+        bool &show_window_physics,
+        bool &show_window_weapons,
+        bool &show_window_files,
+        Camera3D *cam
     ) {
 
         bool show_about_window = false;
 
-        const float range_min_radius = 1;
-        const float range_max_radius = 100000;
 
         const float range_min_lightmap_intensity = 0;
         const float range_max_lightmap_intensity = 1;
@@ -45,21 +44,9 @@ public:
         const float range_max_fog_distance = 50000;
         const float range_sensibility_fog_distance = 5;
 
-        const float range_sensibility_lava = 0.05;
-        const float range_sensibility_lava_min = -5;
-        const float range_sensibility_lava_max = 5;
-
         const float range_sensibility_lightnin = 0.5;
         const float range_sensibility_lightnin_min = -1000;
         const float range_sensibility_lightnin_max = 10000;
-
-        const float range_sensibility_fire = 1;
-        const float range_sensibility_fire_min = 0;
-        const float range_sensibility_fire_max = 512;
-
-
-        const float range_min_test_int = 0;
-        const float range_max_test_int = 10000;
 
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
@@ -98,6 +85,9 @@ public:
             }
 
             if (ImGui::BeginMenu("Render")) {
+                ImGui::Checkbox("Models loader", &show_window_files);
+                ImGui::Separator();
+
                 ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);
                 if (EngineSetup::get()->LIMIT_FRAMERATE) {
                     ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &EngineSetup::get()->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);

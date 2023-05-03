@@ -14,6 +14,7 @@
 #include "src/enemies/EnemyGhostEmitter.h"
 #include "src/items/ItemHealthGhost.h"
 #include "src/enemies/AsteroidEnemyGhost.h"
+#include "LevelStats.h"
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
@@ -46,108 +47,6 @@ typedef enum {
     ROTATE_FRAME = 6
 } EnemyBehaviorTypes;
 
-
-class LevelStats {
-public:
-    float seconds = 0;
-    int projectiles = 0;
-    int projectilesLaser = 0;
-    int rayLaser = 0;
-    int bombs = 0;
-
-    int projectilesWasHit = 0;
-    int projectilesLaserWasHit = 0;
-    int rayLaserWasHit = 0;
-    int bombsWasHit = 0;
-
-    void increaseHit(int weaponType) {
-        switch(weaponType) {
-            case WeaponTypes::WEAPON_PROJECTILE: { projectilesWasHit++; break; }
-            case WeaponTypes::WEAPON_LASER_RAY: { rayLaserWasHit++; break; }
-            case WeaponTypes::WEAPON_BOMB: { bombsWasHit++; break;}
-            case WeaponTypes::WEAPON_LASER_PROJECTILE: { projectilesLaserWasHit++; break; }
-            default: break;
-        }
-    }
-
-    void increase(int weaponType) {
-        switch(weaponType) {
-            case WeaponTypes::WEAPON_PROJECTILE: { projectiles++; break; }
-            case WeaponTypes::WEAPON_LASER_RAY: { rayLaser++; break; }
-            case WeaponTypes::WEAPON_BOMB: { bombs++; break; }
-            case WeaponTypes::WEAPON_LASER_PROJECTILE: { projectilesLaser++; break;}
-            default: break;
-        }
-    }
-
-    [[nodiscard]] std::string stats(int weaponType) const {
-        std::string output;
-
-        switch(weaponType) {
-            case WeaponTypes::WEAPON_PROJECTILE: { output += Tools::sprintf("%d -  %d", projectilesWasHit, projectiles); break; }
-            case WeaponTypes::WEAPON_LASER_RAY: { output += Tools::sprintf("%d - %d", rayLaserWasHit, rayLaser); break; }
-            case WeaponTypes::WEAPON_BOMB: { output += Tools::sprintf("%d - %d", projectilesLaserWasHit, projectilesLaser); break; }
-            case WeaponTypes::WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%d - %d", bombsWasHit, bombs); break; }
-            default: break;
-        }
-
-        return output;
-    }
-
-    [[nodiscard]] int medalType(int weaponType) const
-    {
-        float percentage;
-
-        switch(weaponType) {
-            case WeaponTypes::WEAPON_PROJECTILE: { percentage = Tools::percentage(projectilesWasHit, projectiles); break; }
-            case WeaponTypes::WEAPON_LASER_RAY: { percentage = Tools::percentage(rayLaserWasHit, rayLaser); break; }
-            case WeaponTypes::WEAPON_BOMB: { percentage = Tools::percentage(projectilesLaserWasHit, projectilesLaser); break; }
-            case WeaponTypes::WEAPON_LASER_PROJECTILE: {  percentage = Tools::percentage(bombsWasHit, bombs); break; }
-            default: break;
-        }
-
-        int medalType = 0;
-        if ( percentage < 50) {
-            medalType = 0;
-        } else if (percentage >= 50 && percentage < 75) {
-            medalType = 1;
-        } else if (percentage >= 75){
-            medalType = 2;
-        }
-
-        return medalType;
-    }
-
-    [[nodiscard]] std::string accuracyPercentageFormatted(int weaponType) const
-    {
-        std::string output;
-
-        switch(weaponType) {
-            case WeaponTypes::WEAPON_PROJECTILE: { output += Tools::sprintf("%.2f%%", Tools::percentage(projectilesWasHit, projectiles)); break; }
-            case WeaponTypes::WEAPON_LASER_RAY: { output += Tools::sprintf("%.2f%%", Tools::percentage(rayLaserWasHit, rayLaser)); break; }
-            case WeaponTypes::WEAPON_BOMB: { output += Tools::sprintf("%.2f%%", Tools::percentage(projectilesLaserWasHit, projectilesLaser)); break; }
-            case WeaponTypes::WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%.2f%%", Tools::percentage(bombsWasHit, bombs)); break; }
-            default: break;
-        }
-
-        return output;
-    }
-
-    void reset()
-    {
-        seconds = 0;
-        projectiles = 0;
-        projectilesLaser = 0;
-        rayLaser = 0;
-        bombs = 0;
-        projectilesWasHit = 0;
-        projectilesLaserWasHit = 0;
-        rayLaserWasHit = 0;
-        bombsWasHit = 0;
-    }
-
-};
-
 #define COUNTDOWN_TO_START 3
 
 class LevelLoader {
@@ -163,7 +62,7 @@ public:
     bool hasTutorial;
     bool endLevel;
     LevelStats *stats;
-
+    std::vector<Object3D*> objectsBackground;
 private:
     std::vector<std::string> levels;
     std::vector<EnemyGhostEmitter*> enemiesEmitter;
@@ -240,7 +139,7 @@ public:
 
     void setHasMusic(bool hasMusic);
 
-    AsteroidEnemyGhost*  parseAsteroidJSON(cJSON *asteroidJSON);
+    AsteroidEnemyGhost* parseAsteroidJSON(cJSON *asteroidJSON);
 
     Point2D convertPointPercentRelativeToScreen(Point2D point);
 
@@ -252,7 +151,11 @@ public:
 
     void setEndLevel(bool value);
 
-    LevelStats *getStats() const;
+    [[nodiscard]] LevelStats *getStats() const;
+
+    void parseBackgroundItem(cJSON *object);
+
+    void removeBackgroundObjects();
 };
 
 
