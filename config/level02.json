@@ -58,5 +58,15 @@
     }
   ],
   "asteroids": [
+  ],
+  "background": [
+    {
+      "name":	"flower",
+      "position": { "x": 50, "y": 30, "z": 30000 },
+      "model":	"spaceFlower.fbx",
+      "rotation": { "x": 90, "y": 0,  "z": 0 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "scale":	5
+    }
   ]
 }

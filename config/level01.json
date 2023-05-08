@@ -26,5 +26,23 @@
       "type": 1,
       "position": { "x": 50, "y": 35 }
     }
+  ],
+  "background": [
+    {
+      "name": "marsh",
+      "model": "marsh.fbx",
+      "scale": 15,
+      "position": { "x": 50, "y": 50, "z": 20000 },
+      "rotation": { "x": 90, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
+    },
+    {
+      "name":	"earth",
+      "position": { "x":	93,  "y":	25, "z": 40000 },
+      "model":	"Earth.fbx",
+      "rotation": { "x": 0, "y": 0,  "z": 0 },
+      "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },
+      "scale":	15
+    }
   ]
 }
