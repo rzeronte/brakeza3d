@@ -1267,7 +1267,7 @@ float BSPCollider::V_CalcBob(float time, const vec3_t velocity) {
 int nanmask = 255 << 23;
 
 void BSPCollider::SV_CheckVelocity(model_collision_t *ent) {
-    float maxvelocity = MAX_VELOCITY
+    float maxvelocity = MAX_VELOCITY_BSP;
     float wishspeed = VectorLength(ent->velocity);
 
     float tmp = ent->velocity[2];
@@ -1282,7 +1282,7 @@ void BSPCollider::SV_AirMove(model_collision_t *model, float deltaTime) {
     vec3_t wishvel;
     float fmove, smove;
 
-    float maxvelocity = MAX_VELOCITY
+    float maxvelocity = MAX_VELOCITY_BSP;
 
     vec3_t forward, right, up;
     AngleVectors(model->angles, forward, right, up);

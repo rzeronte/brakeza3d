@@ -27,11 +27,6 @@ public:
     );
 
     void onUpdate() override;
-
-    void addFire();
-
-    void updateFireWorksParticles();
-
     void postUpdate() override;
 };
 

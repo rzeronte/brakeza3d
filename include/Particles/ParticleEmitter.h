@@ -8,22 +8,22 @@
 
 #include <vector>
 #include "../Objects/Object3D.h"
-#include "Particle.h"
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
+#include "../../darkheaz/src/shaders/ShaderParticles.h"
 
 class ParticleEmitter : public Object3D {
 private:
-    Counter timeToNextParticleCounter;
     bool active;
-    bool activeAdding;
+    bool stopAdd;
     float rotFrameX;
     float rotFrameY;
     float rotFrameZ;
-    int maxParticles;
+    ShaderParticles *shaderParticles;
 protected:
-    std::vector<Particle> particles;
+    std::vector<OCParticle> oclParticles;
+
     Counter lifeCounter;
     float force;
     float ttl;
@@ -33,7 +33,6 @@ public:
     ParticleEmitter(
         Object3D *parent,
         Vertex3D position,
-        int maxParticles,
         float ttlEmitter,
         float force,
         float ttl,
@@ -43,27 +42,20 @@ public:
         Vertex3D rotationFrame
     );
 
+    ~ParticleEmitter() override;
+
     void setRotationFrame(float, float, float);
 
     void onUpdate() override;
 
-    void postUpdate() override;
-
-    void updateParticles();
-
     void setActive(bool value);
-
-    void setActiveAdding(bool value);
-
-    [[nodiscard]] bool isActiveAdding() const;
-
-    [[nodiscard]] std::vector<Particle> &getParticles();
-
-    [[nodiscard]] Counter &getTimeToNetParticleCounter();
 
     [[nodiscard]] bool isActive() const;
 
-    void onDraw() override;
+    bool isStopAdd() const;
+
+    void setStopAdd(bool stopAdd);
+
 };
 
 

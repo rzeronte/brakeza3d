@@ -82,6 +82,16 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
     loadShaders();
+
+    auto emitter = new ParticleEmitter(
+        player,
+        player->getPosition(),
+        1114, 1000, 1, 0.025,
+        Color::yellow(), Color::green(),
+        Vertex3D(0, 15, 15)
+    );
+
+    Brakeza3D::get()->addObject3D(emitter, "emiadfadtter");
 }
 
 void ComponentGame::loadShaders()
@@ -427,6 +437,7 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
+    player->setRotation(-15, 0, 0);
     player->setEnabled(false);
     player->setAlpha(255);
     player->setEnableLights(true);
@@ -596,7 +607,7 @@ void ComponentGame::removeProjectiles() const
     for (auto object : objects) {
         auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         if (projectile != nullptr) {
-            projectile->remove();
+            projectile->setRemoved(true);
         }
 
         auto projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
@@ -643,7 +654,7 @@ void ComponentGame::removeInGameObjects()
             continue;
         }
         if (projectile != nullptr) {
-            projectile->remove();
+            projectile->setRemoved(true);
             continue;
         }
         if (projectileRay != nullptr) {
@@ -664,6 +675,8 @@ void ComponentGame::removeInGameObjects()
             continue;
         }
     }
+
+    getLevelLoader()->removeBackgroundObjects();
 }
 
 void ComponentGame::silenceInGameObjects()
@@ -723,7 +736,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         }
 
         if (particleEmitter != nullptr) {
-            particleEmitter->setRemoved(true);
+            particleEmitter->setEnabled(value);
         }
     }
 }
@@ -826,6 +839,11 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderLasers->update();
     shaderShockWave->update();
+
+    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
+    Vertex3D offset(vel.x, vel.y, 0);
+
+    levelLoader->moveBackgroundObjects(offset.getScaled(20000).getInverse());
 }
 
 void ComponentGame::shaderBackgroundUpdate() {

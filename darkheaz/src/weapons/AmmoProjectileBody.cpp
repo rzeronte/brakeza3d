@@ -17,15 +17,15 @@ AmmoProjectileBody::AmmoProjectileBody(
     int collisionMask,
     ParticleEmitter *particleEmitter
 ) :
-        Projectile3DBody(direction),
-        AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
-        weaponType(weaponType),
-        particleEmitter(particleEmitter)
+    Projectile3DBody(direction),
+    AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
+    weaponType(weaponType),
+    particleEmitter(particleEmitter)
 {
     setPosition(position);
     setParent(parent);
     setRender(false);
-    setStencilBufferEnabled(true);
+    setStencilBufferEnabled(false);
 
     makeProjectileRigidBody(
         0.1,
@@ -69,11 +69,10 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     if (particleEmitter != nullptr) {
-        particleEmitter->setActiveAdding(false);
-        particleEmitter->setActive(false);
+        particleEmitter->setStopAdd(true);
     }
 
-    this->remove();
+    this->setRemoved(true);
 }
 
 void AmmoProjectileBody::onUpdate()
@@ -85,10 +84,11 @@ void AmmoProjectileBody::onUpdate()
     }
 
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
-        this->remove();
-        if (particleEmitter != nullptr) {
-            particleEmitter->setRemoved(true);
-            particleEmitter->setActiveAdding(false);
-        }
+        this->removeCollisionObject();
+        this->setRemoved(true);
     }
+}
+
+void AmmoProjectileBody::setParticleEmitter(ParticleEmitter *particleEmitter) {
+    AmmoProjectileBody::particleEmitter = particleEmitter;
 }

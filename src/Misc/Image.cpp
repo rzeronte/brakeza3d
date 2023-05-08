@@ -61,6 +61,13 @@ void Image::loadOpenCLBuffer() {
     }
 }
 
+void Image::refreshOpenCLBuffer()
+{
+    clReleaseMemObject(openClTexture);
+    openClTexture = clCreateBuffer(ComponentsManager::get()->getComponentRender()->getClContext(), CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, (width() * height()) * sizeof(Uint32), nullptr, nullptr);
+    clEnqueueWriteBuffer(ComponentsManager::get()->getComponentRender()->getClCommandQueue(), openClTexture, CL_TRUE, 0, (width() * height()) * sizeof(Uint32), pixels(), 0, nullptr, nullptr );
+}
+
 void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
 {
     setTextureAlpha((int) alpha);
@@ -175,4 +182,28 @@ void Image::setTextureAlpha(int value)
 
 cl_mem *Image::getOpenClTexture() {
     return &openClTexture;
+}
+
+void Image::setImage(const std::string &filename)
+{
+    if (Tools::fileExists(filename.c_str())) {
+
+        SDL_DestroyTexture(this->texture);
+        SDL_FreeSurface(this->surface);
+
+        this->surface = IMG_Load(filename.c_str());
+        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
+        refreshOpenCLBuffer();
+
+        this->fileName = filename;
+        this->loaded = true;
+        Logging::Message("Loading TGA texture '%s'", filename.c_str());
+
+        return;
+    }
+
+    Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+    exit(-1);
 }

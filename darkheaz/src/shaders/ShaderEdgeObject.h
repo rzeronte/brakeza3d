@@ -13,8 +13,7 @@
 
 class ShaderEdgeObject : public ShaderOpenCL {
 private:
-    Object3D* object;
-    cl_mem opencl_buffer_stencil;
+    Mesh3D* object;
     Color color;
 public:
     explicit ShaderEdgeObject(bool active, Color c);
@@ -24,8 +23,6 @@ public:
     ~ShaderEdgeObject() override;
 
     void executeKernelOpenCL();
-
-    void setObject(Object3D *o);
 
     void setColor(Color c);
 

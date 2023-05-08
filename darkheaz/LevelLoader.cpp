@@ -29,6 +29,8 @@ LevelLoader::LevelLoader(std::string filename)
     addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
+    tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + "brakeza.png");
+
 }
 
 void LevelLoader::load(int levelIndex)
@@ -42,8 +44,6 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
-
-    removeBackgroundObjects();
 
     loadLevelFromJSON(levels[levelIndex]);
 }
@@ -128,8 +128,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        //delete tutorialImage;
-        tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
+        //tutorialImage->setImage(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
         hasTutorial = true;
     }
 
@@ -768,7 +767,7 @@ void LevelLoader::parseBackgroundItem(cJSON *object)
         (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "y")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "z")->valueint
     ));
-
+    mesh->setRotationFrameEnabled(true);
     mesh->setRotationFrame(parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
     mesh->AssimpLoadGeometryFromFile(EngineSetup::get()->MODELS_FOLDER + model);
 
@@ -782,9 +781,17 @@ void LevelLoader::parseBackgroundItem(cJSON *object)
     Brakeza3D::get()->addObject3D(mesh, name);
 }
 
-void LevelLoader::removeBackgroundObjects() {
-
+void LevelLoader::removeBackgroundObjects()
+{
     for (auto o : objectsBackground) {
         o->setRemoved(true);
+    }
+    objectsBackground.clear();
+}
+
+void LevelLoader::moveBackgroundObjects(Vertex3D offset)
+{
+    for (auto o : objectsBackground) {
+        o->addToPosition(offset);
     }
 }

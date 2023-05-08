@@ -200,17 +200,15 @@ void Weapon::shootProjectile(
 
         Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
-        Brakeza3D::get()->addObject3D(
-            new ParticleEmitter(
-                projectile,
-                position,
-                75,
-                4, 1000, 1, 0.025,
-                Color::yellow(), Color::red(),
-                Vertex3D(0, 15, 15)
-            ),
-            "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        auto emitter = new ParticleEmitter(
+            projectile,
+            position,
+            4, 1000, 1, 0.025,
+            Color::yellow(), Color::red(),
+            Vertex3D(0, 15, 15)
         );
+        projectile->setParticleEmitter(emitter);
+        Brakeza3D::get()->addObject3D(emitter, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
     }
 }
 

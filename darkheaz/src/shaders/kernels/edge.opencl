@@ -10,7 +10,6 @@ __kernel void onUpdate(
     int screenHeight,
     float iTime,
     __global unsigned int *video,
-    __global unsigned int *shader,
     __global bool *stencil,
     float r,
     float g,
@@ -65,12 +64,12 @@ __kernel void onUpdate(
     float3 color = { l1, l2, l3 };
 
     if (stencil[i]) {
-        video[i] = shader[i];
+        video[i] = video[i];
     } else {
         if (l1 + l2 + l3 > 0) {
             video[i] = createRGB(r, g, b);
         } else {
-            video[i] = shader[i];
+            video[i] = video[i];
         }
     }
 }

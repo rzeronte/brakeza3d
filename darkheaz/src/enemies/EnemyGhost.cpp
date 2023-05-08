@@ -55,16 +55,6 @@ void EnemyGhost::onUpdate()
         }
     }
 
-    updateLasers();
-}
-
-void EnemyGhost::onDraw()
-{
-    Mesh3D::onDraw();
-
-    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
-
     if (isStuck()) {
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
         counterStuck.update();
@@ -73,6 +63,8 @@ void EnemyGhost::onDraw()
         }
     }
 
+    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
+    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
     if (
         state != EnemyState::ENEMY_STATE_DIE &&
         (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
@@ -85,6 +77,16 @@ void EnemyGhost::onDraw()
 
         shoot(getTarget());
     }
+
+    updateLasers();
+}
+
+void EnemyGhost::onDraw()
+{
+    Mesh3D::onDraw();
+
+
+
 }
 
 void EnemyGhost::handleDie()
@@ -234,7 +236,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
         blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
 
-        Brakeza3D::get()->addObject3D(
+        /*Brakeza3D::get()->addObject3D(
             new ParticleEmitterFireworks(
                 getPosition(),
                 5, 1000, 1, 0.02,
@@ -243,7 +245,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
                 4
             ),
             "enemy_fireworks_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-        );
+        );*/
 
         auto *body = dynamic_cast<AmmoProjectileBody*> (withObject);
         auto *ray = dynamic_cast<ProjectileRay*> (withObject);

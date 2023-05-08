@@ -156,6 +156,8 @@ public:
     void parseBackgroundItem(cJSON *object);
 
     void removeBackgroundObjects();
+
+    void moveBackgroundObjects(Vertex3D offset);
 };
 
 

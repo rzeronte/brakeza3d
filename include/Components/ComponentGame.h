@@ -22,6 +22,7 @@
 #include "../Physics/ProjectileRay.h"
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 #include "../2D/TextWriter.h"
+#include "../../darkheaz/src/shaders/ShaderParticles.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 
@@ -51,6 +52,8 @@ private:
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
+
+    ShaderParticles *shaderParticles;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;

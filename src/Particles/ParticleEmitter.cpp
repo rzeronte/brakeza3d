@@ -1,10 +1,11 @@
 
 #include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/ComponentsManager.h"
 
 ParticleEmitter::ParticleEmitter(
     Object3D *parent,
     Vertex3D position,
-    int maxParticles,
     float ttlEmitter,
     float force,
     float ttl,
@@ -13,13 +14,10 @@ ParticleEmitter::ParticleEmitter(
     Color colorTo,
     Vertex3D rotationFrame
 ) :
-    timeToNextParticleCounter(Counter(step)),
     active(true),
-    activeAdding(true),
     rotFrameX(0),
     rotFrameY(0),
     rotFrameZ(0),
-    maxParticles(maxParticles),
     lifeCounter(Counter(ttlEmitter)),
     force(force),
     ttl(ttl),
@@ -29,12 +27,11 @@ ParticleEmitter::ParticleEmitter(
     setParent(parent);
     setPosition(position);
     setRotationFrame(rotationFrame.x, rotationFrame.y, rotationFrame.z);
-    this->lifeCounter.setEnabled(true);
+
+    lifeCounter.setEnabled(true);
+    shaderParticles = new ShaderParticles(true, colorFrom, colorTo);
 }
 
-Counter &ParticleEmitter::getTimeToNetParticleCounter() {
-    return timeToNextParticleCounter;
-}
 
 bool ParticleEmitter::isActive() const {
     return active;
@@ -42,27 +39,6 @@ bool ParticleEmitter::isActive() const {
 
 void ParticleEmitter::onUpdate()
 {
-
-}
-
-void ParticleEmitter::updateParticles()
-{
-    for (auto &p : particles) {
-        p.onUpdate();
-    }
-}
-
-void ParticleEmitter::onDraw()
-{
-    Object3D::onDraw();
-    updateParticles();
-
-}
-
-void ParticleEmitter::postUpdate()
-{
-    Object3D::postUpdate();
-
     if (isRemoved()) return;
 
     if (!isActive()) return;
@@ -78,14 +54,13 @@ void ParticleEmitter::postUpdate()
         setRemoved(true);
     }
 
-
     setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 
-    timeToNextParticleCounter.update();
-    if (timeToNextParticleCounter.isFinished() && isActiveAdding() && (int) particles.size() < maxParticles) {
-        particles.emplace_back(this, this->force, this->ttl, this->colorFrom, this->colorTo);
-        timeToNextParticleCounter.setEnabled(true);
-    }
+    shaderParticles->update(
+        Transforms::WorldToPoint(getPosition(),ComponentsManager::get()->getComponentCamera()->getCamera()),
+        Vertex3D(1, 0, 0),
+        1.0f
+    );
 }
 
 void ParticleEmitter::setRotationFrame(float x, float y, float z)
@@ -99,14 +74,16 @@ void ParticleEmitter::setActive(bool value) {
     this->active = value;
 }
 
-bool ParticleEmitter::isActiveAdding() const {
-    return activeAdding;
+ParticleEmitter::~ParticleEmitter() {
+    delete shaderParticles;
 }
 
-void ParticleEmitter::setActiveAdding(bool value) {
-    ParticleEmitter::activeAdding = value;
+bool ParticleEmitter::isStopAdd() const {
+    return stopAdd;
 }
 
-std::vector<Particle> &ParticleEmitter::getParticles() {
-    return particles;
+void ParticleEmitter::setStopAdd(bool stopAdd) {
+    ParticleEmitter::stopAdd = stopAdd;
+    shaderParticles->setStopAdd(stopAdd);
 }
+
