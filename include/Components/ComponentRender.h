@@ -55,6 +55,10 @@ private:
 
     cl_program rendererProgram;
     cl_kernel rendererKernel;
+
+    cl_program particlesProgram;
+    cl_kernel particlesKernel;
+
 public:
     ComponentRender();
 
@@ -181,6 +185,12 @@ public:
     void drawObjetsInHostBuffer();
 
     void deleteRemovedObjects();
+
+    void loadParticlesKernel();
+
+    _cl_program *getParticlesProgram();
+
+    _cl_kernel *getParticlesKernel();
 };
 
 

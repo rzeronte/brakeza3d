@@ -45,7 +45,7 @@ void ComponentRender::drawObjetsInHostBuffer()
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        if (object != nullptr && object->isEnabled()) {
+        if (object != nullptr && !object->isRemoved()) {
             object->onDraw();
         }
     }
@@ -270,7 +270,7 @@ void ComponentRender::deleteRemovedObjects()
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
 
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
@@ -1119,11 +1119,30 @@ void ComponentRender::initOpenCL()
     OpenCLInfo();
 
     loadRenderKernel();
+    loadParticlesKernel();
+}
+
+void ComponentRender::loadParticlesKernel()
+{
+    size_t source_size;
+    char * source_str = Tools::readFile(EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "particles.cl", source_size );
+    particlesProgram = clCreateProgramWithSource(
+        clContext,
+        1,
+        (const char **)&source_str,
+        (const size_t *)&source_size,
+        &ret
+    );
+
+    clBuildProgram(particlesProgram, 1, &clDeviceId, nullptr, nullptr, nullptr);
+    particlesKernel = clCreateKernel(particlesProgram, "onUpdate", &ret);
+
+    free(source_str);
 }
 
 void ComponentRender::loadRenderKernel()
 {
-    Logging::Message("Loading '%s' kernel");
+    Logging::Message("Loading renders kernel");
 
     size_t source_size;
     char * source_str = Tools::readFile(EngineSetup::get()->ROOT_FOLDER + "renderer.cl", source_size );
@@ -1268,4 +1287,12 @@ _cl_program *ComponentRender::getRendererProgram(){
 
 _cl_kernel *ComponentRender::getRendererKernel() {
     return rendererKernel;
+}
+
+ _cl_program *ComponentRender::getParticlesProgram() {
+    return particlesProgram;
+}
+
+ _cl_kernel *ComponentRender::getParticlesKernel() {
+    return particlesKernel;
 }

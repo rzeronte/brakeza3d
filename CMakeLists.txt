@@ -227,9 +227,7 @@ add_executable(Brakeza3D
     include/Objects/Vertex4D.h
     src/Particles/ParticleEmitter.cpp
     include/Particles/ParticleEmitter.h
-    src/Particles/Particle.cpp
-    include/Particles/Particle.h
-    src/Collisions/SimplePendulum.cpp
+        src/Collisions/SimplePendulum.cpp
     include/Physics/SimplePendulum.h
     src/Render/Shader.cpp
     include/Render/Shader.h
@@ -306,7 +304,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderProjectiles.cpp
     darkheaz/src/shaders/ShaderProjectiles.h
     darkheaz/src/weapons/AmmoProjectile.h
-        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h renderer.cl include/Render/MeshOpenCLRenderer.cpp include/Render/MeshOpenCLRenderer.h renderer.cl)
+        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h renderer.cl include/Render/MeshOpenCLRenderer.cpp include/Render/MeshOpenCLRenderer.h renderer.cl include/GUI/GUI_Files.h darkheaz/src/shaders/ShaderParticles.cpp darkheaz/src/shaders/ShaderParticles.h darkheaz/src/shaders/kernels/particles.cl)
 
 if (WIN32)
     target_link_libraries(Brakeza3D
