@@ -402,7 +402,6 @@ void Mesh3D::onDraw()
 {
     Object3D::onDraw();
 
-
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
         if (this->octree != nullptr) {
             Drawable::drawOctree(this->octree, true);

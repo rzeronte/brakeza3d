@@ -37,6 +37,10 @@ public:
     [[nodiscard]] bool isUseOffset() const;
 
     void limitOffset();
+
+    float getOffsetX() const;
+
+    float getOffsetY() const;
 };
 
 

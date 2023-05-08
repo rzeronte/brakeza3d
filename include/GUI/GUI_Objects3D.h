@@ -49,8 +49,8 @@ public:
                 auto *projectile = dynamic_cast<AmmoProjectileBody *>(object);
                 if (projectile != nullptr) continue;
 
-                auto *emitter = dynamic_cast<ParticleEmitter *>(object);
-                if (emitter != nullptr) continue;
+                //auto *emitter = dynamic_cast<ParticleEmitter *>(object);
+                //if (emitter != nullptr) continue;
 
                 if (object->isRemoved()) {
                     continue;

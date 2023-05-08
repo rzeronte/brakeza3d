@@ -47,6 +47,8 @@ Player::Player() :
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
+
+    shaderParticles = new ShaderParticles(true, Color(0, 0, 255), Color(0, 255, 255));
 }
 
 void Player::loadShieldModel()
@@ -232,6 +234,9 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
+
+    updateShaderParticles();
+
     if (isStucked()) {
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),
@@ -305,6 +310,18 @@ void Player::onUpdate()
 
 }
 
+void Player::updateShaderParticles()
+{
+    shaderParticles->update(
+        Transforms::WorldToPoint(
+            getPosition() - AxisUp().getScaled(-1000),
+            ComponentsManager::get()->getComponentCamera()->getCamera()
+        ),
+        AxisUp(),
+        (velocity.getModule() / maxVelocity) + 0.1f
+    );
+}
+
 void Player::postUpdate()
 {
     if (!isEnabled()) return;
@@ -354,7 +371,7 @@ void Player::resolveCollision(Collisionable *with)
                     0
                );
             }
-            projectile->remove();
+            projectile->setRemoved(true);
         }
     }
 

@@ -12,7 +12,7 @@ typedef int string_t;
 typedef float vec_t;
 typedef unsigned char byte;
 
-#define MAX_VELOCITY 320;
+#define MAX_VELOCITY_BSP 320;
 
 #define    MAX_ENT_LEAFS    16
 

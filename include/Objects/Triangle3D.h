@@ -15,7 +15,7 @@
 
 struct OCPoint2D {
     OCPoint2D() {}
-    OCPoint2D(int &x, int &y) : x(x), y(y) {}
+    OCPoint2D(int x, int y) : x(x), y(y) {}
 
     int x;
     int y;

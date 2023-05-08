@@ -21,8 +21,6 @@ public:
 
     void setGravity(Vertex3D g);
 
-    void remove();
-
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
 

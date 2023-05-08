@@ -10,6 +10,7 @@
 #include "src/shaders/ShaderShockWave.h"
 #include "src/items/PlayerReflection.h"
 #include "src/shaders/RayLight.h"
+#include "src/shaders/ShaderParticles.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -75,6 +76,8 @@ private:
 
     Mesh3D shieldModel;
     PlayerReflection reflection;
+
+    ShaderParticles *shaderParticles;
 public:
 
     Player();
@@ -212,6 +215,8 @@ public:
     [[nodiscard]] PlayerReflection *getReflection();
 
     [[nodiscard]] LightPoint3D *getLight() const;
+
+    void updateShaderParticles();
 };
 
 

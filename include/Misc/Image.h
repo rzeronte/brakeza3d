@@ -60,6 +60,10 @@ public:
     void loadOpenCLBuffer();
 
     cl_mem openClTexture;
+
+    void setImage(const std::string &basicString);
+
+    void refreshOpenCLBuffer();
 };
 
 #endif //BRAKEDA3D_IMAGE_H

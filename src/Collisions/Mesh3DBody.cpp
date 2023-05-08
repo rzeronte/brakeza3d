@@ -178,8 +178,3 @@ void Mesh3DBody::resolveCollision(Collisionable *with)
         Logging::Log("Mesh3DBody: Collision %s with %s", getLabel().c_str(), object->getLabel().c_str());
     }
 }
-
-void Mesh3DBody::remove()
-{
-    this->setRemoved(true);
-}

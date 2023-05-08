@@ -25,6 +25,8 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
 {
     meshContext = Tools::openCLContext(object);
 
+    if (object->isRemoved()) return;
+
     updateLights();
 
     const int numTriangles = (int) oclTriangles.size();
@@ -68,10 +70,10 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()
 {
-    if (clBufferTriangles != nullptr) clReleaseMemObject(clBufferTriangles);
-    if (clBufferMeshContext != nullptr) clReleaseMemObject(clBufferMeshContext);
-    if (clBufferStencil != nullptr) clReleaseMemObject(clBufferStencil);
-    if (clBufferLights != nullptr) clReleaseMemObject(clBufferLights);
+    clReleaseMemObject(clBufferTriangles);
+    clReleaseMemObject(clBufferMeshContext);
+    clReleaseMemObject(clBufferStencil);
+    clReleaseMemObject(clBufferLights);
 }
 
 void MeshOpenCLRenderer::debugKernel() const

@@ -51,7 +51,8 @@ void ShaderImage::executeKernelOpenCL()
     //debugKernel("ShaderImage");
 }
 
-void ShaderImage::limitOffset() {
+void ShaderImage::limitOffset()
+{
     if (offsetY < -100) {
         offsetY = -100;
     }
@@ -77,7 +78,7 @@ void ShaderImage::resetOffsets()
 
 void ShaderImage::setImage(const std::string& fileName)
 {
-    image.loadTGA(fileName);
+    image.setImage(fileName);
     refreshBufferImage();
 }
 
@@ -98,4 +99,12 @@ void ShaderImage::setUseOffset(bool value) {
 
 ShaderImage::~ShaderImage() {
     clReleaseMemObject(clBufferImage);
+}
+
+float ShaderImage::getOffsetX() const {
+    return offsetX;
+}
+
+float ShaderImage::getOffsetY() const {
+    return offsetY;
 }
