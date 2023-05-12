@@ -48,7 +48,20 @@ Player::Player() :
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    shaderParticles = new ShaderParticles(true, Color(0, 0, 255), Color(0, 255, 255));
+    shaderParticles = new ShaderParticles(true, Color(0, 0, 255), Color(0, 255, 255), OCParticlesContext(
+            0.0f,
+            0.0025f,
+            1.5f,
+            45.0f,
+            0.0f,
+            50.0f,
+            50.0f,
+            255.0f,
+            2.0f,
+            0.8f,
+            0.98f
+        )
+    );
 }
 
 void Player::loadShieldModel()
@@ -235,7 +248,6 @@ void Player::onUpdate()
     Mesh3D::onUpdate();
 
 
-    updateShaderParticles();
 
     if (isStucked()) {
         Drawable::drawLightning(
@@ -308,6 +320,7 @@ void Player::onUpdate()
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
+    updateShaderParticles();
 }
 
 void Player::updateShaderParticles()
@@ -727,4 +740,8 @@ Player::~Player()
     for (auto w : weaponTypes) {
         delete w;
     }
+}
+
+ShaderParticles *Player::getShaderParticles() const {
+    return shaderParticles;
 }

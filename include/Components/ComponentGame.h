@@ -23,6 +23,7 @@
 #include "../../darkheaz/src/shaders/ShaderProjectiles.h"
 #include "../2D/TextWriter.h"
 #include "../../darkheaz/src/shaders/ShaderParticles.h"
+#include "../../darkheaz/src/shaders/ShaderBilinear.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 

@@ -94,6 +94,9 @@ void ComponentRender::onUpdate()
         }
     }
 
+    if(EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
+        shaderBilinear->update();
+    }
 }
 
 void ComponentRender::postUpdate()
@@ -1120,6 +1123,8 @@ void ComponentRender::initOpenCL()
 
     loadRenderKernel();
     loadParticlesKernel();
+
+    shaderBilinear = new ShaderBilinear(true);
 }
 
 void ComponentRender::loadParticlesKernel()
@@ -1159,7 +1164,6 @@ void ComponentRender::loadRenderKernel()
 
     free(source_str);
 }
-
 
 void ComponentRender::OpenCLInfo()
 {

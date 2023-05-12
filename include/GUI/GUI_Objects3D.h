@@ -39,7 +39,7 @@ public:
             ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
-            std::string title = "Object Inspector (" + std::to_string(gameObjects.size()) + " objects)";
+            std::string title = "Object Inspector";
             ImGui::Begin(title.c_str(), &show, window_flags);
 
 
@@ -389,6 +389,11 @@ public:
                 ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),std::to_string(player->getVelocity().z).c_str());
 
                 ImGui::TreePop();
+            }
+
+            ImGui::Button("Reset");
+            if (ImGui::IsItemClicked()) {
+                player->getShaderParticles()->resetContext();
             }
         }
     }

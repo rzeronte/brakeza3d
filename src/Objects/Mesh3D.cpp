@@ -117,7 +117,7 @@ void Mesh3D::onUpdate()
     if (isRemoved()) return;
 
     if (isRender()) {
-        this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+        //this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }
 
     if ((int) modelTriangles.size() > 0) {

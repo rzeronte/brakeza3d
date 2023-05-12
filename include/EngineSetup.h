@@ -44,7 +44,7 @@ public:
     float screenHeightHalf = (float) screenHeight / 2;
 
     bool LIMIT_FRAMERATE = true;
-    int FRAMERATE = 50;
+    int FRAMERATE = 60;
 
     int RESOLUTION = screenWidth * screenHeight;
 
@@ -82,7 +82,7 @@ public:
     bool DRAW_ANIMATION_BONES = false;
     bool DRAW_DECAL_WIREFRAMES = false;
 
-    bool TEXTURES_BILINEAR_INTERPOLATION = false;
+    bool TEXTURES_BILINEAR_INTERPOLATION = true;
     bool LIGHTMAPS_BILINEAR_INTERPOLATION = false;
 
     bool DRAW_OBJECT3D_BILLBOARD = false;
@@ -232,6 +232,18 @@ public:
     bool CLICK_SELECT_OBJECT3D = true;
     bool GAMEPAD_CONTROLLER_ENABLED = true;
 
+    // PARTICLES_SHADER
+    float PARTICLES_SHADER_GRAVITY = 0.0f;
+    float PARTICLES_SHADER_STEP_ADD_PARTICLE = 0.0025f;
+    float PARTICLES_SHADER_PARTICLE_LIFESPAN = 1.5f;
+    float PARTICLES_SHADER_SMOKE_ANGLE_RANGE = 25.0f;
+    float PARTICLES_SHADER_MIN_VELOCITY = 0.0f;
+    float PARTICLES_SHADER_MAX_VELOCITY = 50.0f;
+    float PARTICLES_SHADER_ALPHA_MIN = 125.0f;
+    float PARTICLES_SHADER_ALPHA_MAX = 255.0f;
+    float PARTICLES_SHADER_POSITION_NOISE = 2.0f;
+    float PARTICLES_SHADER_VELOCITY_NOISE = 0.1f;
+    float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
     enum collisionGroups {
         Player = 1,
         Enemy = 2,

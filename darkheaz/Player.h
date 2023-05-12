@@ -217,6 +217,8 @@ public:
     [[nodiscard]] LightPoint3D *getLight() const;
 
     void updateShaderParticles();
+
+    ShaderParticles *getShaderParticles() const;
 };
 
 

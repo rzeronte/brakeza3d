@@ -52,7 +52,7 @@ public:
 
     [[nodiscard]] bool isActive() const;
 
-    bool isStopAdd() const;
+    [[nodiscard]] bool isStopAdd() const;
 
     void setStopAdd(bool stopAdd);
 
