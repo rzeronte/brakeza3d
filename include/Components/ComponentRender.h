@@ -19,6 +19,7 @@
 #include "ComponentWindow.h"
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
+#include "../../darkheaz/src/shaders/ShaderBilinear.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -59,6 +60,7 @@ private:
     cl_program particlesProgram;
     cl_kernel particlesKernel;
 
+    ShaderBilinear *shaderBilinear;
 public:
     ComponentRender();
 

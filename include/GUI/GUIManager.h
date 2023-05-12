@@ -27,17 +27,16 @@ public:
         guiTiles = new GUI_Tiles();
         guiWeapons = new GUI_Weapons();
         guiFiles = new GUI_Files(EngineSetup::get()->MODELS_FOLDER);
-
     }
 
     virtual void draw(
-            float timedelta,
-            bool &finish,
-            Camera3D *cam,
-            const std::vector<Object3D *> &gameObjects,
-            std::vector<LightPoint3D *> &lightPoints,
-            std::vector<Tile> &tiles,
-            int numTilesColumns
+        float timedelta,
+        bool &finish,
+        Camera3D *cam,
+        const std::vector<Object3D *> &gameObjects,
+        std::vector<LightPoint3D *> &lightPoints,
+        std::vector<Tile> &tiles,
+        int numTilesColumns
     ) {
         bool show_demo_window = true;
         ImGui::ShowDemoWindow(&show_demo_window);

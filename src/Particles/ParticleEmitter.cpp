@@ -29,7 +29,7 @@ ParticleEmitter::ParticleEmitter(
     setRotationFrame(rotationFrame.x, rotationFrame.y, rotationFrame.z);
 
     lifeCounter.setEnabled(true);
-    shaderParticles = new ShaderParticles(true, colorFrom, colorTo);
+    shaderParticles = new ShaderParticles(true, colorFrom, colorTo, OCParticlesContext());
 }
 
 
@@ -54,11 +54,11 @@ void ParticleEmitter::onUpdate()
         setRemoved(true);
     }
 
-    setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
+    //setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
 
     shaderParticles->update(
         Transforms::WorldToPoint(getPosition(),ComponentsManager::get()->getComponentCamera()->getCamera()),
-        Vertex3D(1, 0, 0),
+        AxisForward(),
         1.0f
     );
 }

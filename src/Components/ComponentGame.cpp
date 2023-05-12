@@ -214,7 +214,6 @@ void ComponentGame::onUpdate()
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
     updateShaders();
-
 }
 
 void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)

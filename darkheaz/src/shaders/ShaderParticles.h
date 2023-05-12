@@ -9,54 +9,45 @@
 #include "../../../include/Render/ShaderOpenCL.h"
 #include "../../../include/Objects/Point2D.h"
 #include "../../../include/Objects/Triangle3D.h"
+#include "../../../include/Objects/OpenCLTypes.h"
+#include "../../../include/EngineSetup.h"
 
 #define MAX_OPENCL_PARTICLES 1024
 
-struct OCParticle {
-    OCParticle(
-        const OCVertex3D &position,
-        const OCVertex3D &rotation,
-        const OCVertex3D &colorFrom,
-        const OCVertex3D &colorTo,
-        const OCVertex3D &velocity,
-        float timeToLive,
-        float force,
-        bool active
-    ) :
-        position(position),
-        rotation(rotation),
-        timeToLive(timeToLive),
-        timeLiving(0),
-        force(force), velocity(velocity),
-        colorFrom(colorFrom),
-        colorTo(colorTo),
-        active(active)
-    {
-    }
-
-    OCVertex3D position;
-    OCVertex3D rotation;
-    float timeToLive;
-    float timeLiving;
-    float force;
-    OCVertex3D velocity;
-    OCVertex3D colorFrom;
-    OCVertex3D colorTo;
-    bool active;
-};
-
 struct OCParticlesContext {
-    float GRAVITY = 0.0f;
-    float STEP_ADD_PARTICLE = 0.0025f;
-    float PARTICLE_LIFESPAN = 1.0f;
-    float SMOKE_ANGLE_RANGE = 25.0f;
-    float MIN_VELOCITY = 0.0f;
-    float MAX_VELOCITY = 50.0f;
-    float ALPHA_MIN = 0.0f;
-    float ALPHA_MAX = 255.0f;
-    float POSITION_NOISE = 2.5f;
-    float VELOCITY_NOISE = 0.2f;
-    float DECELERATION_FACTOR = 0.98f;
+    OCParticlesContext() = default;
+
+    OCParticlesContext(
+        float gravity, float stepAddParticle, float particleLifespan, float smokeAngleRange,
+        float minVelocity, float maxVelocity, float alphaMin, float alphaMax, float positionNoise,
+        float velocityNoise, float decelerationFactor
+    )
+    :
+    GRAVITY(gravity),
+    STEP_ADD_PARTICLE(stepAddParticle),
+    PARTICLE_LIFESPAN(particleLifespan),
+    SMOKE_ANGLE_RANGE(smokeAngleRange),
+    MIN_VELOCITY(minVelocity),
+    MAX_VELOCITY(maxVelocity), ALPHA_MIN(alphaMin),
+    ALPHA_MAX(alphaMax),
+    POSITION_NOISE(positionNoise),
+    VELOCITY_NOISE(velocityNoise),
+    DECELERATION_FACTOR(decelerationFactor)
+{
+
+}
+
+    float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;
+    float STEP_ADD_PARTICLE = EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE;
+    float PARTICLE_LIFESPAN = EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN;
+    float SMOKE_ANGLE_RANGE = EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE;
+    float MIN_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY;
+    float MAX_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY;
+    float ALPHA_MIN = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MIN;
+    float ALPHA_MAX = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MAX;
+    float POSITION_NOISE = EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE;
+    float VELOCITY_NOISE = EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE;
+    float DECELERATION_FACTOR =EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR;
 };
 
 class ShaderParticles : public ShaderOpenCL {
@@ -83,7 +74,7 @@ class ShaderParticles : public ShaderOpenCL {
     bool stopAdd;
 
 public:
-    ShaderParticles(bool active, Color from, Color to);
+    ShaderParticles(bool active, Color from, Color to, OCParticlesContext context);
 
     void update(Point2D origin, Vertex3D direction, float intensity);
 
@@ -98,6 +89,10 @@ public:
     void setIntensity(float intensity);
 
     void setStopAdd(bool stopAdd);
+
+    OCParticlesContext &getParticlesContext();
+
+    void resetContext();
 };
 
 

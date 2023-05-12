@@ -1,9 +1,13 @@
 
 #include "ShaderParticles.h"
-#include "../../../include/EngineSetup.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderParticles::ShaderParticles(bool active, Color from, Color to) : ShaderOpenCL(active, "particles.cl"), intensity(1), stopAdd(false)
+ShaderParticles::ShaderParticles(bool active, Color from, Color to, OCParticlesContext particlesContext)
+:
+    ShaderOpenCL(active, "particles.cl"),
+    particlesContext(particlesContext),
+    intensity(1),
+    stopAdd(false)
 {
     openCLBufferParticles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_PARTICLES * sizeof(OCParticle), nullptr, nullptr);
 
@@ -96,3 +100,15 @@ void ShaderParticles::setIntensity(float intensity) {
 void ShaderParticles::setStopAdd(bool stopAdd) {
     ShaderParticles::stopAdd = stopAdd;
 }
+
+OCParticlesContext &ShaderParticles::getParticlesContext(){
+    return particlesContext;
+}
+
+void ShaderParticles::resetContext()
+{
+    particlesContext = OCParticlesContext();
+    clReleaseMemObject(openCLBufferContext);
+    openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
+}
+

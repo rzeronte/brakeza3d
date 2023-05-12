@@ -45,5 +45,13 @@
     }
   ],
   "background": [
+    {
+      "name": "asteroid01",
+      "position": { "x": 50,  "y":	0, "z": 40000 },
+      "model":	"asteroid_01.fbx",
+      "rotation": { "x": 0, "y": 0,  "z": 0 },
+      "rotationFrame": { "x": 0.02, "y": 0.07, "z": 0.11 },
+      "scale":	15
+    }
   ]
 }
