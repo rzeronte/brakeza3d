@@ -55,14 +55,16 @@ void ParticleEmitter::onUpdate()
     }
 
     //setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotFrameX, rotFrameY, rotFrameZ));
+}
 
+void ParticleEmitter::drawCall()
+{
     shaderParticles->update(
         Transforms::WorldToPoint(getPosition(),ComponentsManager::get()->getComponentCamera()->getCamera()),
         AxisForward(),
         1.0f
     );
 }
-
 void ParticleEmitter::setRotationFrame(float x, float y, float z)
 {
     this->rotFrameX = x;

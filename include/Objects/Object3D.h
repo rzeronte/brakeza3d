@@ -79,6 +79,8 @@ public:
 
     virtual void postUpdate();
 
+    virtual void drawCall();
+
     bool isRotationFrameEnabled();
 
     void setRotationFrameEnabled(bool value);

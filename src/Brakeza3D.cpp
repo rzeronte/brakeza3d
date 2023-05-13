@@ -63,6 +63,8 @@ void Brakeza3D::mainLoop()
 
         onUpdateComponents();
 
+        componentsManager->getComponentRender()->drawObjetsInHostBuffer();
+
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         componentsManager->getComponentRender()->writeOCLBufferIntoHost();

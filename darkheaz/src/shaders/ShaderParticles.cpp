@@ -111,4 +111,3 @@ void ShaderParticles::resetContext()
     clReleaseMemObject(openCLBufferContext);
     openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
 }
-

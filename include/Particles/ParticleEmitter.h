@@ -56,6 +56,7 @@ public:
 
     void setStopAdd(bool stopAdd);
 
+    void drawCall();
 };
 
 

@@ -219,6 +219,8 @@ public:
     void updateShaderParticles();
 
     ShaderParticles *getShaderParticles() const;
+
+    void drawCall();
 };
 
 
