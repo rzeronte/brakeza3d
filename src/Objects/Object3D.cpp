@@ -248,3 +248,7 @@ cJSON *Object3D::getJSON()
 const Vertex3D &Object3D::getRotationFrame() const {
     return rotationFrame;
 }
+
+void Object3D::drawCall() {
+
+}

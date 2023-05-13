@@ -210,7 +210,6 @@ void ComponentGame::preUpdate()
 void ComponentGame::onUpdate()
 {
     updateFadeToGameState();
-
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
     updateShaders();

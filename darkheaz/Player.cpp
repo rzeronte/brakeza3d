@@ -247,8 +247,6 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-
-
     if (isStucked()) {
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),
@@ -308,6 +306,14 @@ void Player::onUpdate()
         setRotation(getRotation() * rotation.getTranspose());
     }
 
+    setPosition(getPosition() + this->velocity);
+
+    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
+
+}
+
+void Player::drawCall()
+{
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
         blink->update();
@@ -315,10 +321,6 @@ void Player::onUpdate()
             stopBlinkForPlayer();
         }
     }
-
-    setPosition(getPosition() + this->velocity);
-
-    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
     updateShaderParticles();
 }
