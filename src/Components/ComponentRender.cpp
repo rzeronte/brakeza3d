@@ -280,6 +280,12 @@ void ComponentRender::onUpdateSceneObjects()
             object->onUpdate();
         }
     }
+
+    for (auto object : sceneObjects) {
+        if (object != nullptr && object->isEnabled()) {
+            object->drawCall();
+        }
+    }
 }
 
 void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
