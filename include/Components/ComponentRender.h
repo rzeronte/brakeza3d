@@ -110,8 +110,6 @@ public:
 
     void drawTilesTriangles(std::vector<Triangle *> *visibleTriangles);
 
-    void drawSceneOverlappingItems();
-
     void initTiles();
 
     void drawTileTriangles(int i, std::vector<Triangle *> &trianglesToDraw);

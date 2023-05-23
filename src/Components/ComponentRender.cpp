@@ -50,8 +50,6 @@ void ComponentRender::drawObjetsInHostBuffer()
         }
     }
 
-    drawSceneOverlappingItems();
-
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
@@ -62,8 +60,9 @@ void ComponentRender::drawObjetsInHostBuffer()
 
     //this->hiddenSurfaceRemoval();
     //this->drawVisibleTriangles();
-    frameTriangles.clear();
-    spritesTriangles.clear();
+
+    //frameTriangles.clear();
+    //spritesTriangles.clear();
 }
 
 void ComponentRender::onUpdate()
@@ -772,38 +771,6 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
 
     if (SETUP->DRAW_MAIN_DEEP_MAPPING) {
         Drawable::drawMainDeepMapFromCamera(0, 0);
-    }
-}
-
-void ComponentRender::drawSceneOverlappingItems()
-{
-    auto objects = Brakeza3D::get()->getSceneObjects();
-    for (unsigned int i = 0; i < objects.size(); i++) {
-        if (objects.operator[](i)->isEnabled()) {
-            if (SETUP->RENDER_OBJECTS_AXIS) {
-                Drawable::drawObject3DAxis(
-                    objects.operator[](i),
-                    ComponentsManager::get()->getComponentCamera()->getCamera(),
-                    true,
-                    true,
-                    true
-                );
-            }
-
-            // Only for meshes
-            auto *lightpoint = dynamic_cast<LightPoint3D *>(objects.operator[](i));
-            if (lightpoint != nullptr) {
-                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
-                    Drawable::drawLinePoints(
-                        lightpoint->getPosition(),
-                        lightpoint->getPosition() + lightpoint->AxisForward().getInverse().getNormalize().getScaled(
-                          EngineSetup::get()->LIGHTS_DIRECTION_SIZE
-                        ),
-                       Color::white()
-                    );
-                }
-            }
-        }
     }
 }
 

@@ -475,7 +475,7 @@ OCPoint2D Tools::pointOCL(Point2D v)
     return OCPoint2D(v.x, v.y);
 }
 
-OCLMeshContext Tools::openCLContext(Object3D *object)
+OCLMeshContext Tools::openCLMeshContext(Object3D *object)
 {
     auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto rp = cam->getRotation();
@@ -525,4 +525,19 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
     Logging::Message("Loading from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
     Brakeza3D::get()->addObject3D(newObject, name + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+}
+
+void Tools::makeExplosion(Object3D *parent, Vertex3D position) {
+
+    Brakeza3D::get()->addObject3D(
+        new ParticleEmitter(
+            ParticleEmitterState::EXPLOSION,
+            parent,
+            position,
+            EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_TTL,
+            Color::white(),
+            Color::red()
+        ),
+        "enemyFireworks_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+    );
 }
