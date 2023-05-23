@@ -103,3 +103,12 @@ bool Cube3D::isPointInside(Vertex3D v) {
 
     return result;
 }
+
+void Cube3D::onUpdate() {
+}
+
+void Cube3D::postUpdate() {
+}
+
+void Cube3D::onDraw() {
+}

@@ -26,8 +26,8 @@ ShaderParticles::ShaderParticles(bool active, Color from, Color to, OCParticlesC
     openCLBufferColorTo = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &oclTo, nullptr );
     openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
 
-    openCLBufferDirection = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &ocOrigin, nullptr );
-    openCLBufferOrigin = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCPoint2D), &ocDirection, nullptr );
+    openCLBufferDirection = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &ocDirection, nullptr );
+    openCLBufferOrigin = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCPoint2D), &ocOrigin, nullptr );
 }
 
 void ShaderParticles::update(Point2D origin, Vertex3D direction, float intensity)

@@ -65,6 +65,8 @@ public:
     void setSpecularComponent(float m);
 
     void drawDeepMap(int pos_x, int pos_y) const;
+
+    void onDraw() override;
 };
 
 

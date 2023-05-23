@@ -58,6 +58,8 @@ public:
 
     float distance(Vertex3D);
 
+    Vertex3D divide(float value);
+
     static Vertex3D zero();
 
     void saveToFloat3(float *v) const;

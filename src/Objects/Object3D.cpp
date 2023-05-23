@@ -140,6 +140,10 @@ void Object3D::setFollowCamera(bool value) {
 
 void Object3D::onUpdate()
 {
+    if (isRemoved()) return;
+
+    if (!isEnabled()) return;
+
     if (this->isFollowCamera()) {
         this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
         this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
@@ -230,6 +234,15 @@ float &Object3D::getRotZ() {
 
 void Object3D::onDraw()
 {
+    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawObject3DAxis(
+            this,
+            ComponentsManager::get()->getComponentCamera()->getCamera(),
+            true,
+            true,
+            true
+        );
+    }
 }
 
 bool Object3D::isEnableLights() const {

@@ -63,6 +63,12 @@ public:
     void makePlanes();
 
     bool isPointInside(Vertex3D v);
+
+    void onUpdate() override;
+
+    void postUpdate() override;
+
+    void onDraw() override;
 };
 
 

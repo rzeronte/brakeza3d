@@ -23,7 +23,7 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
 
 void MeshOpenCLRenderer::onUpdate(Texture *texture)
 {
-    meshContext = Tools::openCLContext(object);
+    meshContext = Tools::openCLMeshContext(object);
 
     if (object->isRemoved()) return;
 

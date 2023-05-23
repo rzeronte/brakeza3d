@@ -418,6 +418,7 @@ void Mesh3D::onDraw()
         this->updateBoundingBox();
         Drawable::drawAABB(&this->aabb, Color::white());
     }
+
 }
 
 cJSON * Mesh3D::getJSON()

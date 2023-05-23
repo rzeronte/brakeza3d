@@ -68,6 +68,7 @@ public:
                     GuiParticleEmissor(object, i);
                     GuiSimplePendulum(object, i);
                     GuiPlayer(object, i);
+                    GuiSwarm(object, i);
                 }
             }
             ImGui::End();
@@ -336,15 +337,9 @@ public:
     void GuiParticleEmissor(Object3D *object, int i) {
         auto *emissor = dynamic_cast<ParticleEmitter *>(object);
         if (emissor != nullptr) {
-            const float step_range_min = 0;
-            const float step_range_max = 500;
-            const float  step_range_sensibility = 0.001f;
-
-            const float range_angle_min = -360;
-            const float range_angle_max = 360;
-            const float range_angle_sensibility = 0.1;
-
-            std::string rotation_particle_text = "Rotation Frame##" + std::to_string(i);
+            const float step_range_min = -10;
+            const float step_range_max = 10;
+            ImGui::DragScalar("Intensity", ImGuiDataType_Float, &emissor->shaderExplosion->intensity, 0.1f, &step_range_min, &step_range_max, "%f", 1.0f);
         }
     }
 
@@ -365,6 +360,60 @@ public:
                     pendulum->t = 0;
                 }
             }
+        }
+    }
+
+    void GuiSwarm(Object3D *object, int i) {
+        auto swarm = dynamic_cast<Swarm *>(object);
+        if (swarm != nullptr) {
+            const float step_range_zero = -1000;
+            const float step_range_one = 1000;
+            const float sensibility = 0.01f;
+
+            const float step_range_min = -50000;
+            const float step_range_max = 50000;
+
+            //ImGui::DragScalar("X", ImGuiDataType_Float, &swarm->size.x, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            //ImGui::DragScalar("Y", ImGuiDataType_Float, &swarm->size.y, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            //ImGui::DragScalar("Z", ImGuiDataType_Float, &swarm->size.z, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+
+            ImGui::Separator();
+            ImGui::DragScalar("RX", ImGuiDataType_Float, &swarm->rotationObject.x, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::DragScalar("RY", ImGuiDataType_Float, &swarm->rotationObject.y, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::DragScalar("RZ", ImGuiDataType_Float, &swarm->rotationObject.z, 1.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::DragScalar("Center attraction", ImGuiDataType_Float, &swarm->centerAttractionWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Center thresold", ImGuiDataType_Float, &swarm->centerThreshold, 0.01f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::Separator();
+
+            ImGui::DragScalar("Predator Threshold ", ImGuiDataType_Float, &swarm->predatorThreshold, 0.01f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::DragScalar("Boids avoidance predators Weight", ImGuiDataType_Float, &swarm->predatorAvoidanceWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::DragScalar("Predator Center Attraction Weight", ImGuiDataType_Float, &swarm->predatorAttractionWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Predators separation Weight", ImGuiDataType_Float, &swarm->predatorSeparationWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Predators Cohesion Weight", ImGuiDataType_Float, &swarm->predatorCohesionWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Predators Alignment Weight", ImGuiDataType_Float, &swarm->predatorAlignmentWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+
+            ImGui::DragScalar("Velocity factor", ImGuiDataType_Float, &swarm->velocityPredatorsFactor, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+
+            ImGui::Separator();
+
+            ImGui::DragScalar("Scale Objetcs", ImGuiDataType_Float, &swarm->scaleObject, 0.1f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::DragScalar("Separation weight", ImGuiDataType_Float, &swarm->separationWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Alignment weight", ImGuiDataType_Float, &swarm->alignmentWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Cohesion weight", ImGuiDataType_Float, &swarm->cohesionWeight, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Velocity Boids factor", ImGuiDataType_Float, &swarm->velocityBoidsFactor, sensibility, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::Separator();
+
+            ImGui::DragScalar("Neighbor Distance", ImGuiDataType_Float, &swarm->neighborDist, 5.0f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::DragScalar("Max Speed", ImGuiDataType_Float, &swarm->maxSpeed, 0.1f, &step_range_min, &step_range_max, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::DragScalar("Global Bias Separation", ImGuiDataType_Float, &swarm->globalBiasSeparation, 1.0f, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Global Bias Alignment", ImGuiDataType_Float, &swarm->globalBiasAligniment, 1.0f, &step_range_zero, &step_range_one, "%f", 1.0f);
+            ImGui::DragScalar("Global Bias Cohesion", ImGuiDataType_Float, &swarm->globalBiasCohesion, 1.0f, &step_range_zero, &step_range_one, "%f", 1.0f);
+
         }
     }
 

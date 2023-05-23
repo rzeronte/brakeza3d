@@ -301,11 +301,17 @@ public:
                     ImGui::DragScalar("PARTICLES_SHADER_SMOKE_ANGLE_RANGE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::DragScalar("PARTICLES_SHADER_MIN_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::DragScalar("PARTICLES_SHADER_MAX_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_ALPHA_MIN ", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_ALPHA_MIN, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_ALPHA_MAX ", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_ALPHA_MAX, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_POSITION_NOISE ", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_VELOCITY_NOISE ", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_DECELERATION_FACTOR ", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("PARTICLES_SHADER_ALPHA_MIN", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_ALPHA_MIN, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("PARTICLES_SHADER_ALPHA_MAX", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_ALPHA_MAX, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("PARTICLES_SHADER_POSITION_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("PARTICLES_SHADER_VELOCITY_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("PARTICLES_SHADER_DECELERATION_FACTOR", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::DragScalar("SHADER EXPLOSION TTL", ImGuiDataType_Float, &EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_TTL, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                    ImGui::Button("Load Explosion");
+                    if (ImGui::IsItemClicked()) {
+                        ComponentsManager::get()->getComponentGame()->particleEmitter->shaderExplosion->resetContext();
+                        ComponentsManager::get()->getComponentGame()->particleEmitter->shaderParticles->resetContext();
+                    }
                     ImGui::EndMenu();
                 }
 
