@@ -127,11 +127,12 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
     Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
     auto emitter = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
         projectile,
         getPosition(),
-        5, 1000, 1, 0.025,
-        Color::yellow(), Color::green(),
-        Vertex3D(0, 15, 15)
+        5,
+        Color::yellow(),
+        Color::green()
     );
 
     projectile->setParticleEmitter(emitter);

@@ -65,7 +65,7 @@ public:
     // Draw axis
     bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
-    float OBJECT_AXIS_SIZE = 10;
+    float OBJECT_AXIS_SIZE = 100;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
@@ -244,6 +244,9 @@ public:
     float PARTICLES_SHADER_POSITION_NOISE = 2.0f;
     float PARTICLES_SHADER_VELOCITY_NOISE = 0.1f;
     float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
+
+    float SHADER_PARTICLE_EXPLOSION_TTL = 3.0f;
+
     enum collisionGroups {
         Player = 1,
         Enemy = 2,

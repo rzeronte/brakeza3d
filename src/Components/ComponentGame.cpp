@@ -83,15 +83,17 @@ void ComponentGame::onStart()
     loadLevels();
     loadShaders();
 
-    auto emitter = new ParticleEmitter(
-        player,
-        player->getPosition(),
-        1114, 1000, 1, 0.025,
-        Color::yellow(), Color::green(),
-        Vertex3D(0, 15, 15)
-    );
+    swarm = new Swarm(Vertex3D(0, -1000, 500), Vertex3D(1000, 1000, 500));
 
-    Brakeza3D::get()->addObject3D(emitter, "emiadfadtter");
+    for (int i = 0; i < 250; i++) swarm->createBoid(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx");
+    for (int i = 0; i < 1; i++) swarm->createPredator(EngineSetup::get()->MODELS_FOLDER + "pill.fbx");
+
+    //Brakeza3D::get()->addObject3D(swarm, "swarm");
+
+    particleEmitter = new ParticleEmitter(ParticleEmitterState::EXPLOSION, player, player->getPosition(), 600, Color::red(), Color::yellow());
+
+    Brakeza3D::get()->addObject3D(particleEmitter, "particlEmitter");
+
 }
 
 void ComponentGame::loadShaders()

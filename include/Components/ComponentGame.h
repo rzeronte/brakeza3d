@@ -24,6 +24,9 @@
 #include "../2D/TextWriter.h"
 #include "../../darkheaz/src/shaders/ShaderParticles.h"
 #include "../../darkheaz/src/shaders/ShaderBilinear.h"
+#include "../Objects/Swarm.h"
+#include "../../darkheaz/src/shaders/ShaderSwarm.h"
+#include "../../darkheaz/src/shaders/ShaderExplosion.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 
@@ -65,6 +68,9 @@ private:
     Color primaryColor;
     Color secondaryColor;
     Color thirdColor;
+
+    Swarm *swarm;
+    ShaderSwarm *shaderSwarm;
 
     //PathFinder *pathFinder;
 public:
@@ -193,6 +199,9 @@ public:
     VideoPlayer* videoPlayer;
 
     void shaderBackgroundUpdate();
+
+    ShaderExplosion *shaderExplosion;
+    ParticleEmitter *particleEmitter;
 };
 
 

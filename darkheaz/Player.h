@@ -221,6 +221,8 @@ public:
     ShaderParticles *getShaderParticles() const;
 
     void drawCall();
+
+    void onDraw() override;
 };
 
 

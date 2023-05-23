@@ -16,7 +16,7 @@ ParticleEmitterFireworks::ParticleEmitterFireworks(
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmitter(this, position, ttlEmitter, force, ttl, step, colorFrom, colorTo, Vertex3D(0, 0, 0)),
+    ParticleEmitter(ParticleEmitterState::DEFAULT, this, position, ttlEmitter, colorFrom, colorTo),
     maxFires(maxFires),
     particlesByFire(particlesByFire),
     firesCounter(0)

@@ -187,3 +187,13 @@ Vertex4D Vertex3D::createVertex4D() {
     );
 }
 
+Vertex3D Vertex3D::divide(float value) {
+    Vertex3D v;
+
+    v.x = this->x / value;
+    v.y = this->y / value;
+    v.z = this->z / value;
+
+    return v;
+}
+

@@ -12,39 +12,36 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 #include "../../darkheaz/src/shaders/ShaderParticles.h"
+#include "../../darkheaz/src/shaders/ShaderExplosion.h"
+
+typedef enum {
+    DEFAULT = 0,
+    EXPLOSION = 1,
+} ParticleEmitterState;
 
 class ParticleEmitter : public Object3D {
 private:
     bool active;
     bool stopAdd;
-    float rotFrameX;
-    float rotFrameY;
-    float rotFrameZ;
-    ShaderParticles *shaderParticles;
+    ParticleEmitterState state;
+
 protected:
     std::vector<OCParticle> oclParticles;
 
     Counter lifeCounter;
-    float force;
-    float ttl;
     Color colorTo;
     Color colorFrom;
 public:
     ParticleEmitter(
+        ParticleEmitterState state,
         Object3D *parent,
         Vertex3D position,
         float ttlEmitter,
-        float force,
-        float ttl,
-        float step,
         Color colorFrom,
-        Color colorTo,
-        Vertex3D rotationFrame
+        Color colorTo
     );
 
     ~ParticleEmitter() override;
-
-    void setRotationFrame(float, float, float);
 
     void onUpdate() override;
 
@@ -56,7 +53,10 @@ public:
 
     void setStopAdd(bool stopAdd);
 
-    void drawCall();
+    void drawCall() override;
+
+    ShaderExplosion *shaderExplosion;
+    ShaderParticles *shaderParticles;
 };
 
 

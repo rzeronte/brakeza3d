@@ -247,21 +247,6 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    if (isStucked()) {
-        Drawable::drawLightning(
-            getPosition() + Tools::randomVertex().getScaled(5),
-            getPosition() + Tools::randomVertex().getScaled(5),
-            Color::green()
-        );
-        counterStucked.update();
-
-        if (counterStucked.isFinished()) {
-            unStuck();
-            startPlayerBlink();
-            Logging::Log("unStuck");
-        }
-    }
-
     //updateLight();
 
     applyFriction();
@@ -323,6 +308,24 @@ void Player::drawCall()
     }
 
     updateShaderParticles();
+}
+
+void Player::onDraw() {
+    Mesh3D::onDraw();
+    if (isStucked()) {
+        Drawable::drawLightning(
+                getPosition() + Tools::randomVertex().getScaled(5),
+                getPosition() + Tools::randomVertex().getScaled(5),
+                Color::green()
+        );
+        counterStucked.update();
+
+        if (counterStucked.isFinished()) {
+            unStuck();
+            startPlayerBlink();
+            Logging::Log("unStuck");
+        }
+    }
 }
 
 void Player::updateShaderParticles()

@@ -83,7 +83,6 @@ public:
     static M3 getFromVectors(Vertex3D ZAxis, Vertex3D YAxis);
 
     float m[9];
-
 };
 
 

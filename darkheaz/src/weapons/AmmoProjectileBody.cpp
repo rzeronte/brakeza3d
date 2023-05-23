@@ -75,6 +75,8 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     this->setRemoved(true);
+
+    Tools::makeExplosion(this, getPosition());
 }
 
 void AmmoProjectileBody::onUpdate()
