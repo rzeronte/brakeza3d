@@ -16,7 +16,7 @@
 
 class ShaderExplosion : public ShaderOpenCL {
 public:
-    ShaderExplosion(bool active, Color from, Color to, Point2D orgin);
+    ShaderExplosion(bool active, Color from, Color to, Point2D origin, float emissionTime, OCParticlesContext context);
 
     void update() override;
     void executeKernelOpenCL();
@@ -36,8 +36,12 @@ public:
     OCParticlesContext particlesContext;
 
     float intensity;
+    float emissionTime;
 
     void resetContext();
+
+    void setIntensity(float intensity);
+
 };
 
 

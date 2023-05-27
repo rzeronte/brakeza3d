@@ -9,7 +9,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shader(active)
+ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shader(active), useCustomProgram(true)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
     this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
@@ -17,6 +17,15 @@ ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shad
     this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
     initOpenCLProgram();
+
+    Logging::Log("Loading '%s' kernel", kernelFilename.c_str());
+}
+
+ShaderOpenCL::ShaderOpenCL(bool active): Shader(active), useCustomProgram(false)
+{
+    this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
+    this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
+    this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
     Logging::Log("Loading '%s' kernel", kernelFilename.c_str());
 }
@@ -69,6 +78,8 @@ void ShaderOpenCL::debugKernel(std::string from) const
 
 ShaderOpenCL::~ShaderOpenCL()
 {
-    clReleaseProgram(program);
-    clReleaseKernel(kernel);
+    if (useCustomProgram) {
+        clReleaseProgram(program);
+        clReleaseKernel(kernel);
+    }
 }

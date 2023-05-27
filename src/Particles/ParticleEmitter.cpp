@@ -9,7 +9,8 @@ ParticleEmitter::ParticleEmitter(
     Vertex3D position,
     float ttlEmitter,
     Color colorFrom,
-    Color colorTo
+    Color colorTo,
+    OCParticlesContext particlesContext
 ) :
     state(state),
     active(true),
@@ -22,10 +23,16 @@ ParticleEmitter::ParticleEmitter(
     setPosition(position);
 
     lifeCounter.setEnabled(true);
-    shaderParticles = new ShaderParticles(true, colorFrom, colorTo, OCParticlesContext());
+    shaderParticles = new ShaderParticles(true, colorFrom, colorTo, particlesContext);
 
-    Point2D screenPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
-    shaderExplosion = new ShaderExplosion(true, Color::red(), Color::yellow(), screenPoint);
+    shaderExplosion = new ShaderExplosion(
+        true,
+        colorFrom,
+        colorTo,
+        Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera()),
+        EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_EMISSION_TIME,
+        particlesContext
+    );
 }
 
 bool ParticleEmitter::isActive() const {
@@ -53,11 +60,13 @@ void ParticleEmitter::onUpdate()
 void ParticleEmitter::drawCall()
 {
     if (state == ParticleEmitterState::DEFAULT) {
-        shaderParticles->update(
+        /*shaderParticles->update(
             Transforms::WorldToPoint(getPosition(),ComponentsManager::get()->getComponentCamera()->getCamera()),
             AxisForward(),
             1.0f
-        );
+        );*/
+
+        shaderParticles->update();
     }
 
     if (state == ParticleEmitterState::EXPLOSION) {

@@ -4,7 +4,7 @@
 
 ShaderParticles::ShaderParticles(bool active, Color from, Color to, OCParticlesContext particlesContext)
 :
-    ShaderOpenCL(active, "particles.cl"),
+    ShaderOpenCL(active),
     particlesContext(particlesContext),
     intensity(1),
     stopAdd(false)
@@ -38,6 +38,12 @@ void ShaderParticles::update(Point2D origin, Vertex3D direction, float intensity
     setDirection(direction);
     setIntensity(intensity);
 
+    executeKernelOpenCL();
+}
+
+void ShaderParticles::update()
+{
+    Shader::update();
     executeKernelOpenCL();
 }
 

@@ -206,7 +206,8 @@ void Weapon::shootProjectile(
             position,
             4,
             Color::yellow(),
-            Color::red()
+            Color::white(),
+            OCParticlesContext()
         );
 
         projectile->setParticleEmitter(emitter);

@@ -245,7 +245,8 @@ public:
     float PARTICLES_SHADER_VELOCITY_NOISE = 0.1f;
     float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
 
-    float SHADER_PARTICLE_EXPLOSION_TTL = 3.0f;
+    float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
+    float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
 
     enum collisionGroups {
         Player = 1,

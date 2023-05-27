@@ -69,6 +69,8 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
     if (!indestructible) {
         this->setRemoved(true);
     }
+
+    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile());
 }
 
 int ProjectileRay::getSpeed() const {

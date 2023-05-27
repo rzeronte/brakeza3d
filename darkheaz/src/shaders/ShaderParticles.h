@@ -14,42 +14,6 @@
 
 #define MAX_OPENCL_PARTICLES 1024
 
-struct OCParticlesContext {
-    OCParticlesContext() = default;
-
-    OCParticlesContext(
-        float gravity, float stepAddParticle, float particleLifespan, float smokeAngleRange,
-        float minVelocity, float maxVelocity, float alphaMin, float alphaMax, float positionNoise,
-        float velocityNoise, float decelerationFactor
-    )
-    :
-    GRAVITY(gravity),
-    STEP_ADD_PARTICLE(stepAddParticle),
-    PARTICLE_LIFESPAN(particleLifespan),
-    SMOKE_ANGLE_RANGE(smokeAngleRange),
-    MIN_VELOCITY(minVelocity),
-    MAX_VELOCITY(maxVelocity), ALPHA_MIN(alphaMin),
-    ALPHA_MAX(alphaMax),
-    POSITION_NOISE(positionNoise),
-    VELOCITY_NOISE(velocityNoise),
-    DECELERATION_FACTOR(decelerationFactor)
-{
-
-}
-
-    float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;
-    float STEP_ADD_PARTICLE = EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE;
-    float PARTICLE_LIFESPAN = EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN;
-    float SMOKE_ANGLE_RANGE = EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE;
-    float MIN_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY;
-    float MAX_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY;
-    float ALPHA_MIN = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MIN;
-    float ALPHA_MAX = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MAX;
-    float POSITION_NOISE = EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE;
-    float VELOCITY_NOISE = EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE;
-    float DECELERATION_FACTOR =EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR;
-};
-
 class ShaderParticles : public ShaderOpenCL {
     cl_mem openCLBufferParticles;
     cl_mem openCLBufferColorFrom;
@@ -77,6 +41,7 @@ public:
     ShaderParticles(bool active, Color from, Color to, OCParticlesContext context);
 
     void update(Point2D origin, Vertex3D direction, float intensity);
+    void update() override;
 
     ~ShaderParticles() override;
 

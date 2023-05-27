@@ -41,6 +41,7 @@ unsigned int createRGBA(int r, int g, int b, int a);
 unsigned int lcg(unsigned int prev);
 float getRandomFloat(float a, float b, unsigned int *randVal);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
+float rand (float2 seed);
 
 __kernel void onUpdate(
     int screenWidth,
@@ -53,75 +54,94 @@ __kernel void onUpdate(
     __global OCVertex3D *colorFrom,
     __global OCVertex3D *colorTo,
     __global OCPoint2D *origin,
-    float intensity
+    float intensity,
+    float emissionTime
 )
 {
     int i = get_global_id(0);
-    OCParticle *p = &particles[i];
 
-    if(totalExecutionTimeInSeconds > context->step_add_particle && !p->active) {
-        // Reinitializing particle
-        p->position.x = origin->x + context->position_noise * getRandomFloat(-1.0, 1.0, &i);
-        p->position.y = origin->y + context->position_noise * getRandomFloat(-1.0, 1.0, &i);
+    int x = i % screenWidth;
+    int y = i / screenWidth;
+
+    float2 uv = { x, y };
+
+    OCParticle *p = &particles[i];
+    if (totalExecutionTimeInSeconds > i * context->step_add_particle && !p->active && (emissionTime < 0.0f || totalExecutionTimeInSeconds < emissionTime)) {
+        p->active = true;
+        float randVal = rand(uv * sin(totalExecutionTimeInSeconds));
+
+        intensity = intensity * totalExecutionTimeInSeconds;
+
+        float positionNoiseX = getRandomFloat(-context->position_noise, context->position_noise, &randVal) * intensity;
+        float positionNoiseY = getRandomFloat(-context->position_noise, context->position_noise, &randVal) * intensity;
+        p->position = (OCVertex3D) {origin->x + positionNoiseX, origin->y + positionNoiseY, 0, 0, 0};
+        p->rotation = (OCVertex3D) {0, 0, 0, 0, 0};
+
+        float velocityMagnitude = getRandomFloat(context->min_velocity, context->max_velocity, &randVal) * intensity;
+
+        float velocityNoiseX = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal);
+        float velocityNoiseY = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal);
+
+        p->velocity = (OCVertex3D) {
+            (velocityNoiseX) * velocityMagnitude,
+            (velocityNoiseY) * velocityMagnitude + context->gravity * deltaTimeInSeconds,
+            velocityMagnitude,
+            0, 0
+        };
+
+        p->timeToLive = getRandomFloat(-context->particle_lifespan / 2.0f, context->particle_lifespan / 2.0f, &randVal);
+        p->timeLiving = p->timeToLive;
+
         p->colorFrom = *colorFrom;
         p->colorTo = *colorTo;
-        // Random direction for particle
-        float angle = getRandomFloat(0, 2.0f * M_PI, &i);
-        float speed = getRandomFloat(context->min_velocity, context->max_velocity, &i);
-
-        p->velocity.x = speed * cos(angle) + context->velocity_noise * getRandomFloat(-1.0, 1.0, &i);
-        p->velocity.y = speed * sin(angle) + context->velocity_noise * getRandomFloat(-1.0, 1.0, &i);
-
-        p->timeToLive = context->particle_lifespan;
-        p->timeLiving = 0;
-        p->force = (int) getRandomFloat(-10.0, 20.0, &i);
-        p->active = true;
     }
 
-    if(p->active) {
+    if (p->active) {
+        p->timeLiving -= deltaTimeInSeconds;
         unsigned int randVal = lcg(i);
 
-        // Update particle's position
-        p->position.x += p->velocity.x * deltaTimeInSeconds;
-        p->position.y += p->velocity.y * deltaTimeInSeconds;
-
-        // Apply gravity and deceleration
-        p->velocity.y -= context->gravity * deltaTimeInSeconds;
-        p->velocity.x *= 1.0f - context->deceleration_factor * deltaTimeInSeconds;
-        p->velocity.y *= 1.0f - context->deceleration_factor * deltaTimeInSeconds;
-
-        // Apply velocity noise that decreases with time
-        float noiseFactor = (p->timeToLive - p->timeLiving) / p->timeToLive;
-
-        p->timeLiving += deltaTimeInSeconds;
-
-        // Blend colors over particle's lifespan
-        float alpha = p->timeLiving / p->timeToLive;
-
-        float t = alpha;
-        OCVertex3D color;
-        color.x = p->colorFrom.x * t + p->colorTo.x * (1 - t);
-        color.y = p->colorFrom.y * t + p->colorTo.y * (1 - t);
-        color.z = p->colorFrom.z * t + p->colorTo.z * (1 - t);
-
-        // Calculate transparency based on particle's lifespan
-        unsigned int transparency = alpha * 255;  // Assuming alpha is in the range [0, 1]
-
-        // Plot particle on screen if it's within the screen boundaries
-        int px = (int)p->position.x;
-        int py = (int)p->position.y;  // Assuming origin is at the top-left corner
-
-        if (px >= 0 && px < screenWidth && py >= 0 && py < screenHeight) {
-            unsigned int index = py * screenWidth + px;
-            unsigned int c2 = createRGBA(color.x, color.y, color.z, 255);
-            unsigned int c1 = video[index];
-
-            video[index] = alphaBlend(c2, c1, (int) alpha);
-        }
-
-        if(p->timeLiving > p->timeToLive) {
-            // Resetting particle when it exceeds its lifespan
+        if (p->timeLiving <= 0) {
             p->active = false;
+        } else {
+            p->velocity.y += context->gravity * deltaTimeInSeconds;
+            p->position.x += p->velocity.x * deltaTimeInSeconds;
+            p->position.y += p->velocity.y * deltaTimeInSeconds;
+            p->position.z += p->velocity.z * deltaTimeInSeconds;
+
+            // Añade la desaceleración aquí
+            p->velocity.x *= context->deceleration_factor;
+            p->velocity.y *= context->deceleration_factor;
+            p->velocity.z *= context->deceleration_factor;
+
+            // Calcula la relación de vida para escalar el ruido en la velocidad
+            float lifeRatio = p->timeLiving / p->timeToLive;
+
+            // Ajusta el ruido en función de la relación de vida
+            float velocityNoiseX = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal) * lifeRatio;
+            float velocityNoiseY = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal) * lifeRatio;
+
+            p->velocity.x += velocityNoiseX;
+            p->velocity.y += velocityNoiseY;
+
+            float t = lifeRatio;
+            OCVertex3D color;
+            color.x = p->colorFrom.x * t + p->colorTo.x * (1 - t);
+            color.y = p->colorFrom.y * t + p->colorTo.y * (1 - t);
+            color.z = p->colorFrom.z * t + p->colorTo.z * (1 - t);
+
+            int x = (int)p->position.x;
+            int y = (int)p->position.y;
+
+            if (x >= 0 && x < screenWidth && y >= 0 && y < screenHeight) {
+                unsigned int randVal = lcg(i);
+                float alpha = t * getRandomFloat(context->alpha_min, context->alpha_max, &randVal);
+
+                unsigned int index = y * screenWidth + x;
+                unsigned int c2 = createRGBA(color.x, color.y, color.z, 0);
+                unsigned int c1 = video[index];
+
+                video[index] = alphaBlend(c2, c1, (int) alpha);
+            }
         }
     }
 }
@@ -136,6 +156,7 @@ unsigned int lcg(unsigned int prev) {
 }
 
 float getRandomFloat(float a, float b, unsigned int *randVal) {
+
     *randVal = lcg(*randVal);
     return a + (*randVal / (float)0x7fffffff) * (b - a);
 }
@@ -147,4 +168,12 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
     g += ((color2 & 0x00ff00) - g) * alpha >> 8;
 
     return (rb & 0xff00ff) | (g & 0xff00);
+}
+
+float rand(float2 seed)
+{
+    float2 p = {12.9898, 78.233};
+    float intPart;
+
+    return fract (sin (dot (seed, p)) * 137.5453, &intPart);
 }

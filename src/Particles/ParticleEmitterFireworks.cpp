@@ -16,7 +16,7 @@ ParticleEmitterFireworks::ParticleEmitterFireworks(
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmitter(ParticleEmitterState::DEFAULT, this, position, ttlEmitter, colorFrom, colorTo),
+    ParticleEmitter(ParticleEmitterState::DEFAULT, this, position, ttlEmitter, colorFrom, colorTo, OCParticlesContext()),
     maxFires(maxFires),
     particlesByFire(particlesByFire),
     firesCounter(0)

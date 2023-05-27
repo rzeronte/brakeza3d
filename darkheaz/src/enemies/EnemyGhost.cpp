@@ -22,6 +22,29 @@ EnemyGhost::EnemyGhost() :
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
 
+    particleEmitter = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        this,
+        getPosition(),
+        0,
+        Color::white(),
+        Color::yellow(),
+        OCParticlesContext(
+            98,
+            0.0025f,
+            0.50f,
+            0.0f,
+            50.0f,
+            95.0f,
+            125.0f,
+            200.0f,
+            1.25,
+            0.1f,
+            0.99f
+        )
+    );
+    particleEmitter->setEnabled(true);
+
     setStuck(false);
 }
 
@@ -55,7 +78,6 @@ void EnemyGhost::onUpdate()
         }
     }
 
-
     auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
     auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
     if (
@@ -72,6 +94,8 @@ void EnemyGhost::onUpdate()
     }
 
     updateLasers();
+
+    particleEmitter->onUpdate();
 }
 
 void EnemyGhost::onDraw()
@@ -87,6 +111,8 @@ void EnemyGhost::onDraw()
         }
     }
 
+    particleEmitter->drawCall();
+    particleEmitter->setStopAdd(true);
 }
 
 void EnemyGhost::handleDie()
@@ -368,10 +394,7 @@ void EnemyGhost::makeExplosion()
 
     Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 
-    Brakeza3D::get()->addObject3D(
-        new ParticleEmitter(ParticleEmitterState::EXPLOSION, this, getPosition(), 5, Color::white(), Color::red()),
-        "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-    );
+    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
 }
 
 Object3D *EnemyGhost::getTarget()
@@ -400,4 +423,8 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
     fixedLasers.push_back(ray);
     Brakeza3D::get()->addObject3D(ray, "fixed_ray" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+}
+
+ParticleEmitter *EnemyGhost::getParticleEmitter() const {
+    return particleEmitter;
 }

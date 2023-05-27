@@ -62,8 +62,8 @@ __kernel void onUpdate(
         float l = line(A, B, st, 0.015f * laser.intensity);
 
         //--
-        float rad  = 0.075f;
-        float width = 0.2f;
+        float rad  = 0.025f;
+        float width = 0.4f;
         float len = length(A-st);
         float circleStart = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
 

@@ -18,6 +18,7 @@ Counter::Counter(float step)
     timer(Brakeza3D::get()->getTimer()),
     finished(false)
 {
+
 }
 
 void Counter::update()
@@ -40,6 +41,10 @@ void Counter::update()
 
 bool Counter::isFinished() const
 {
+    if (step <= 0) {
+        return false;
+    }
+
     return finished;
 }
 
