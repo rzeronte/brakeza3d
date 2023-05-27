@@ -60,6 +60,9 @@ private:
     cl_program particlesProgram;
     cl_kernel particlesKernel;
 
+    cl_program explosionProgram;
+    cl_kernel explosionKernel;
+
     ShaderBilinear *shaderBilinear;
 public:
     ComponentRender();
@@ -188,9 +191,13 @@ public:
 
     void loadParticlesKernel();
 
-    _cl_program *getParticlesProgram();
-
     _cl_kernel *getParticlesKernel();
+
+    void loadExplosionKernel();
+
+    void loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source);
+
+    _cl_kernel *getExplosionKernel();
 };
 
 
