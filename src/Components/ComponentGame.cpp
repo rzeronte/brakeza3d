@@ -90,10 +90,27 @@ void ComponentGame::onStart()
 
     //Brakeza3D::get()->addObject3D(swarm, "swarm");
 
-    particleEmitter = new ParticleEmitter(ParticleEmitterState::EXPLOSION, player, player->getPosition(), 600, Color::red(), Color::yellow());
-
-    Brakeza3D::get()->addObject3D(particleEmitter, "particlEmitter");
-
+    shaderExplosion = new ShaderExplosion(
+        true,
+        Color::white(),
+        Color::green(),
+        Point2D(320, 240),
+        -1,
+        OCParticlesContext(
+            0,
+            0.025f,
+            10.00f,
+            0.0f,
+            0.0f,
+            0.0000025f,
+            100.0f,
+            200.0f,
+            100.0f,
+            1.0f,
+            0.999f
+        )
+    );
+    shaderExplosion->setIntensity(1);
 }
 
 void ComponentGame::loadShaders()
@@ -129,6 +146,9 @@ ComponentGame::~ComponentGame()
 
 void ComponentGame::preUpdate()
 {
+    shaderBackgroundUpdate();
+    shaderExplosion->update();
+
     if (gameState == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
 
@@ -142,7 +162,6 @@ void ComponentGame::preUpdate()
     }
 
     getPlayer()->updateWeaponInteractionStatus();
-    shaderBackgroundUpdate();
 
 
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
@@ -211,6 +230,7 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
+
     updateFadeToGameState();
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
@@ -437,7 +457,7 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
-    player->setRotation(-15, 0, 0);
+    player->setRotation(0, 0, 0);
     player->setEnabled(false);
     player->setAlpha(255);
     player->setEnableLights(true);

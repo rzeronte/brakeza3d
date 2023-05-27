@@ -6,11 +6,15 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderExplosion::ShaderExplosion(bool active, Color from, Color to, Point2D origin)
+
+
+ShaderExplosion::ShaderExplosion(bool active, Color from, Color to, Point2D origin, float emissionTime, OCParticlesContext oclContext)
 :
-    ShaderOpenCL(active, "explosion.cl"),
+    ShaderOpenCL(active),
     origin(origin),
-    intensity(1.0f)
+    intensity(1.0f),
+    emissionTime(emissionTime),
+    particlesContext(oclContext)
 {
     openCLBufferParticles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_PARTICLES * sizeof(OCParticle), nullptr, nullptr);
 
@@ -38,12 +42,14 @@ void ShaderExplosion::executeKernelOpenCL()
 {
     auto dt = Brakeza3D::get()->getDeltaTime();
 
-    particlesContext = OCParticlesContext();
-    clEnqueueWriteBuffer(clQueue, openCLBufferParticles, CL_TRUE, 0, sizeof(OCParticlesContext), &particlesContext, 0, nullptr, nullptr);
+    //particlesContext = OCParticlesContext();
+    //clEnqueueWriteBuffer(clQueue, openCLBufferContext, CL_TRUE, 0, sizeof(OCParticlesContext), &particlesContext, 0, nullptr, nullptr);
+
+    auto kernel = ComponentsManager::get()->getComponentRender()->getExplosionKernel();
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
+    clSetKernelArg(kernel, 2, sizeof(float), &executionTime);
     clSetKernelArg(kernel, 3, sizeof(float), &dt);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferContext);
@@ -52,6 +58,7 @@ void ShaderExplosion::executeKernelOpenCL()
     clSetKernelArg(kernel, 8, sizeof(cl_mem), (void *)&openCLBufferColorTo);
     clSetKernelArg(kernel, 9, sizeof(cl_mem), (void *)&openCLBufferOrigin);
     clSetKernelArg(kernel, 10, sizeof(float), &intensity);
+    clSetKernelArg(kernel, 11, sizeof(float), &emissionTime);
 
     size_t global_item_size = MAX_OPENCL_PARTICLES;
     size_t local_item_size = 64;
@@ -68,4 +75,8 @@ void ShaderExplosion::resetContext()
     particlesContext = OCParticlesContext();
     clReleaseMemObject(openCLBufferContext);
     openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
+}
+
+void ShaderExplosion::setIntensity(float intensity) {
+    ShaderExplosion::intensity = intensity;
 }

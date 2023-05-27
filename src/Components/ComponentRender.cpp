@@ -1096,46 +1096,27 @@ void ComponentRender::initOpenCL()
 
     loadRenderKernel();
     loadParticlesKernel();
+    loadExplosionKernel();
 
     shaderBilinear = new ShaderBilinear(true);
 }
 
 void ComponentRender::loadParticlesKernel()
 {
-    size_t source_size;
-    char * source_str = Tools::readFile(EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "particles.cl", source_size );
-    particlesProgram = clCreateProgramWithSource(
-        clContext,
-        1,
-        (const char **)&source_str,
-        (const size_t *)&source_size,
-        &ret
-    );
+    Logging::Message("Loading particles kernel");
+    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "particles.cl");
+}
 
-    clBuildProgram(particlesProgram, 1, &clDeviceId, nullptr, nullptr, nullptr);
-    particlesKernel = clCreateKernel(particlesProgram, "onUpdate", &ret);
-
-    free(source_str);
+void ComponentRender::loadExplosionKernel()
+{
+    Logging::Message("Loading explosion kernel");
+    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "explosion.cl");
 }
 
 void ComponentRender::loadRenderKernel()
 {
     Logging::Message("Loading renders kernel");
-
-    size_t source_size;
-    char * source_str = Tools::readFile(EngineSetup::get()->ROOT_FOLDER + "renderer.cl", source_size );
-    rendererProgram = clCreateProgramWithSource(
-        clContext,
-        1,
-        (const char **)&source_str,
-        (const size_t *)&source_size,
-        &ret
-    );
-
-    clBuildProgram(rendererProgram, 1, &clDeviceId, nullptr, nullptr, nullptr);
-    rendererKernel = clCreateKernel(rendererProgram, "onUpdate", &ret);
-
-    free(source_str);
+    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->ROOT_FOLDER + "renderer.cl");
 }
 
 void ComponentRender::OpenCLInfo()
@@ -1266,10 +1247,28 @@ _cl_kernel *ComponentRender::getRendererKernel() {
     return rendererKernel;
 }
 
- _cl_program *ComponentRender::getParticlesProgram() {
-    return particlesProgram;
-}
-
  _cl_kernel *ComponentRender::getParticlesKernel() {
     return particlesKernel;
+}
+
+void ComponentRender::loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source)
+{
+    size_t source_size;
+    char * source_str = Tools::readFile(source, source_size );
+    program = clCreateProgramWithSource(
+        clContext,
+        1,
+        (const char **)&source_str,
+        (const size_t *)&source_size,
+        &ret
+    );
+
+    clBuildProgram(program, 1, &clDeviceId, nullptr, nullptr, nullptr);
+    kernel = clCreateKernel(program, "onUpdate", &ret);
+
+    free(source_str);
+}
+
+_cl_kernel *ComponentRender::getExplosionKernel(){
+    return explosionKernel;
 }

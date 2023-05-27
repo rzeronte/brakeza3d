@@ -527,16 +527,17 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
     Brakeza3D::get()->addObject3D(newObject, name + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
-void Tools::makeExplosion(Object3D *parent, Vertex3D position) {
-
+void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context)
+{
     Brakeza3D::get()->addObject3D(
         new ParticleEmitter(
             ParticleEmitterState::EXPLOSION,
             parent,
             position,
-            EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_TTL,
+            ttl,
             Color::white(),
-            Color::red()
+            Color::yellow(),
+            context
         ),
         "enemyFireworks_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
     );

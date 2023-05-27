@@ -57,7 +57,7 @@ private:
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
 
-    ShaderParticles *shaderParticles;
+    ShaderExplosion *shaderParticles;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
@@ -201,7 +201,6 @@ public:
     void shaderBackgroundUpdate();
 
     ShaderExplosion *shaderExplosion;
-    ParticleEmitter *particleEmitter;
 };
 
 

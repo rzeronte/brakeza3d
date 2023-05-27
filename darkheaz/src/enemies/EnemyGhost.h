@@ -20,6 +20,7 @@ private:
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
     std::vector<ProjectileRay *> fixedLasers;
+    ParticleEmitter *particleEmitter;
 public:
     EnemyGhost();
 
@@ -64,6 +65,8 @@ public:
     void handleDie();
 
     void onDraw() override;
+
+    [[nodiscard]] ParticleEmitter *getParticleEmitter() const;
 };
 
 

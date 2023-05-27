@@ -132,7 +132,8 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         getPosition(),
         5,
         Color::yellow(),
-        Color::green()
+        Color::green(),
+        OCParticlesContext()
     );
 
     projectile->setParticleEmitter(emitter);

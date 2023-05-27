@@ -300,6 +300,7 @@ struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct 
     float tx1 = 2 / ( vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
     float xt = (tx0 * tx1)  - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
 
+
     float Ay = A.y;
     float vNBy = vNB->y;
     float vNTy = vNT->y;

@@ -9,6 +9,7 @@
 #include <SDL_stdinc.h>
 #include <vector>
 #include "Vertex3D.h"
+#include "../EngineSetup.h"
 
 
 struct OCPoint2D {
@@ -173,6 +174,61 @@ struct OCLMeshContext {
     ObjectData objectData;
     CameraData cameraData;
     FrustumData frustumData;
+};
+
+
+struct OCParticlesContext {
+    OCParticlesContext() = default;
+
+    OCParticlesContext(
+        float gravity,
+        float stepAddParticle,
+        float particleLifespan,
+        float smokeAngleRange,
+        float minVelocity,
+        float maxVelocity,
+        float alphaMin,
+        float alphaMax,
+        float positionNoise,
+        float velocityNoise,
+        float decelerationFactor
+    )
+    :
+    GRAVITY(gravity),
+    STEP_ADD_PARTICLE(stepAddParticle),
+    PARTICLE_LIFESPAN(particleLifespan),
+    SMOKE_ANGLE_RANGE(smokeAngleRange),
+    MIN_VELOCITY(minVelocity),
+    MAX_VELOCITY(maxVelocity), ALPHA_MIN(alphaMin),
+    ALPHA_MAX(alphaMax),
+    POSITION_NOISE(positionNoise),
+    VELOCITY_NOISE(velocityNoise),
+    DECELERATION_FACTOR(decelerationFactor)
+    {
+
+    }
+
+    static OCParticlesContext forProjectile() {
+        return OCParticlesContext(0.0f, 0.0025f, 0.5f, 25.0f, 0.0f, 97.0f, 125.0f, 255.0f, 2.0f, 2.4f, 0.98f);
+    }
+
+    static OCParticlesContext forRayLight() {
+        return OCParticlesContext(0.0f, 0.05f, 0.6f, 0.0f, 20.0f, 245.0f, 125.0f, 255.0f, 9.5f, 9.5f, 0.75);
+    }
+    static OCParticlesContext forExplosion() {
+        return OCParticlesContext(0.0f, 0.0025f, 1.5f, 0.0f, 50.0f, 125.0f, 125.0f, 255.0f, 4.5f, 4.5f, 0.99);
+    }
+    float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;
+    float STEP_ADD_PARTICLE = EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE;
+    float PARTICLE_LIFESPAN = EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN;
+    float SMOKE_ANGLE_RANGE = EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE;
+    float MIN_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY;
+    float MAX_VELOCITY = EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY;
+    float ALPHA_MIN = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MIN;
+    float ALPHA_MAX = EngineSetup::get()->PARTICLES_SHADER_ALPHA_MAX;
+    float POSITION_NOISE = EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE;
+    float VELOCITY_NOISE = EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE;
+    float DECELERATION_FACTOR =EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR;
 };
 
 #endif //BRAKEZA3D_OPENCLTYPES_H

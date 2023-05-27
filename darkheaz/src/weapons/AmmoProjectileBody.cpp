@@ -76,7 +76,7 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 
     this->setRemoved(true);
 
-    Tools::makeExplosion(this, getPosition());
+    Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile());
 }
 
 void AmmoProjectileBody::onUpdate()
@@ -88,6 +88,12 @@ void AmmoProjectileBody::onUpdate()
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->removeCollisionObject();
         this->setRemoved(true);
+    }
+
+    if (particleEmitter != nullptr) {
+        particleEmitter->shaderParticles->setOrigin(Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera()));
+        particleEmitter->shaderParticles->setDirection(AxisForward());
+        particleEmitter->setPosition(getPosition());
     }
 }
 

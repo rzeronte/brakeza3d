@@ -38,7 +38,8 @@ public:
         Vertex3D position,
         float ttlEmitter,
         Color colorFrom,
-        Color colorTo
+        Color colorTo,
+        OCParticlesContext particlesContext
     );
 
     ~ParticleEmitter() override;

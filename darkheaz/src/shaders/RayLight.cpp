@@ -76,12 +76,14 @@ void RayLight::update()
                 enemy->takeDamage(damage);
                 increase = false;
 
-                Brakeza3D::get()->addObject3D(
-                        new ParticleEmitterFireworks(hitPosition, 1.5, 1000, 1, 0.02, Color::yellow(), Color::red(), 1, 5),
-                        "fireworks" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-                );
-            }
+                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight());
 
+                /*enemy->getParticleEmitter()->shaderParticles->setOrigin(
+                        Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera())
+                );
+                enemy->getParticleEmitter()->shaderParticles->setDirection((start - hitPosition).getInverse());
+                enemy->getParticleEmitter()->setStopAdd(false);*/
+            }
         }
     }
 
