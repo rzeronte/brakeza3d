@@ -340,11 +340,11 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
     cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
-    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"));
+    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY);
 
     enemy->setRewards(reward);
 
-    this->setBehaviorFromJSON(motion, enemy);
+    this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY);
     this->setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
@@ -381,7 +381,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
 }
 
-void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
+void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float depth)
 {
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
 
@@ -397,8 +397,8 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
-            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
-            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
+            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"), depth);
+            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"), depth);
 
             float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
@@ -422,7 +422,7 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
-            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
+            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"), depth);
 
             float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
@@ -446,7 +446,7 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, EnemyGhost *enemy)
 
             cJSON *currentPoint;
             cJSON_ArrayForEach(currentPoint, pointsJSON) {
-                Vertex3D position = getVertex3DFromJSONPosition(currentPoint);
+                Vertex3D position = getVertex3DFromJSONPosition(currentPoint, depth);
                 behavior->addPoint(position);
             }
             behavior->start();
@@ -548,28 +548,27 @@ Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)
     );
 }
 
-Vertex3D LevelLoader::getVertex3DFromJSONPosition(cJSON *positionJSON)
+Vertex3D LevelLoader::getVertex3DFromJSONPosition(cJSON *positionJSON, float depth)
 {
     Point2D fixedPosition = parsePositionJSON(positionJSON);
-    return getWorldPositionFromScreenPoint(fixedPosition);
-
+    return getWorldPositionFromScreenPoint(fixedPosition, depth);
 }
 
-Vertex3D LevelLoader::getWorldPositionFromScreenPoint(Point2D fixedPosition)
+Vertex3D LevelLoader::getWorldPositionFromScreenPoint(Point2D fixedPosition, float depth)
 {
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    return ray.getComponent().getScaled(Z_COORDINATE_GAMEPLAY);
+    return ray.getComponent().getScaled(depth);
 }
 
 void LevelLoader::parseItemJSON(cJSON *itemJSON)
 {
     const int typeItem = cJSON_GetObjectItemCaseSensitive(itemJSON, "type")->valueint;
 
-    Vertex3D position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(itemJSON, "position"));
+    Vertex3D position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(itemJSON, "position"), Z_COORDINATE_GAMEPLAY);
 
     switch(typeItem) {
         case LevelInfoItemsTypes::ITEM_ENERGY: {
@@ -652,14 +651,14 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
     int speed = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "speed")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "motion");
 
-    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(asteroidJSON, "position"));
+    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(asteroidJSON, "position"), Z_COORDINATE_GAMEPLAY);
 
     EnemyBehavior *behavior;
     const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
     switch(typeMotion) {
         case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
-            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"));
-            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"));
+            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"), Z_COORDINATE_GAMEPLAY);
+            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"), Z_COORDINATE_GAMEPLAY);
 
             float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
@@ -674,7 +673,7 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
-            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"));
+            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"), Z_COORDINATE_GAMEPLAY);
 
             behavior = new EnemyBehaviorCircle(
                 center,
@@ -759,6 +758,7 @@ void LevelLoader::parseBackgroundItem(cJSON *object)
     cJSON *rotationJSON = cJSON_GetObjectItemCaseSensitive(object, "rotation");
     float scale = (float) cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble;
     cJSON *positionJSON = cJSON_GetObjectItemCaseSensitive(object, "position");
+    cJSON *motion = cJSON_GetObjectItemCaseSensitive(object, "motion");
 
     auto mesh = new Mesh3D();
     mesh->setScale(scale);
@@ -771,11 +771,13 @@ void LevelLoader::parseBackgroundItem(cJSON *object)
     mesh->setRotationFrame(parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
     mesh->AssimpLoadGeometryFromFile(EngineSetup::get()->MODELS_FOLDER + model);
 
-    auto position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(object, "position"));
-    position.z = (float) cJSON_GetObjectItemCaseSensitive(positionJSON, "z")->valuedouble;
+    auto position = getVertex3DFromJSONPosition(positionJSON, (float) cJSON_GetObjectItemCaseSensitive(positionJSON, "z")->valueint);
 
     mesh->setPosition(position);
 
+    if (motion != nullptr) {
+        setBehaviorFromJSON(motion, mesh, position.z);
+    }
     objectsBackground.emplace_back(mesh);
 
     Brakeza3D::get()->addObject3D(mesh, name);

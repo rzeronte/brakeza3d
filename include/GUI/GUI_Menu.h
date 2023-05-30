@@ -45,8 +45,8 @@ public:
         const float range_sensibility_fog_distance = 5;
 
         const float range_sensibility_lightnin = 0.5;
-        const float range_sensibility_lightnin_min = -1000;
-        const float range_sensibility_lightnin_max = 10000;
+        const float range_sensibility_lightnin_min = -10000;
+        const float range_sensibility_lightnin_max = 100000;
 
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
@@ -187,11 +187,13 @@ public:
                     }
 
                     ImGui::Separator();
-                    ImGui::Checkbox("Lightmaps", &EngineSetup::get()->ENABLE_LIGHTMAPPING);
-                    if (EngineSetup::get()->ENABLE_LIGHTMAPPING) {
-                        ImGui::Checkbox("Lightmap Bilinear",
-                                        &EngineSetup::get()->LIGHTMAPS_BILINEAR_INTERPOLATION);
-                        ImGui::Checkbox("Show Lightmaps", &EngineSetup::get()->SHOW_LIGHTMAPPING);
+                    ImGui::Checkbox("Depth Of Field", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+                    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+                        auto shader = ComponentsManager::get()->getComponentRender()->shaderDepthOfField;
+                        ImGui::DragScalar("focusPlaneDepth", ImGuiDataType_Float, &shader->focusPlaneDepth, 10.0f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("focusRange", ImGuiDataType_Float, &shader->focusRange, 10.0f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("blurSize", ImGuiDataType_Float, &shader->blurSize, 0.000001f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
+                        ImGui::DragScalar("intensity", ImGuiDataType_Float, &shader->intensity, 0.0001f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     }
                 }
                 ImGui::Separator();
@@ -329,6 +331,7 @@ public:
                                       &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
                     ImGui::EndMenu();
                 }
+
                 ImGui::EndMenu();
             }
 

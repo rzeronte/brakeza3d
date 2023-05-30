@@ -190,7 +190,7 @@ public:
     int LOAD_OF_DETAIL = 1;
     bool ENABLE_MIPMAPPING = true;
 
-    bool ENABLE_LIGHTMAPPING = true;
+    bool ENABLE_DEPTH_OF_FIELD = true;
     bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
     float LIGHTMAPPING_INTENSITY = 0.75f;
