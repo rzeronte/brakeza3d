@@ -38,7 +38,7 @@
     },
     {
       "name":	"earth",
-      "position": { "x":	93,  "y":	25, "z": 40000 },
+      "position": { "x": 63,  "y":	35, "z": 40000 },
       "model":	"Earth.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },

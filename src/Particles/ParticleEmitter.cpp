@@ -60,12 +60,6 @@ void ParticleEmitter::onUpdate()
 void ParticleEmitter::drawCall()
 {
     if (state == ParticleEmitterState::DEFAULT) {
-        /*shaderParticles->update(
-            Transforms::WorldToPoint(getPosition(),ComponentsManager::get()->getComponentCamera()->getCamera()),
-            AxisForward(),
-            1.0f
-        );*/
-
         shaderParticles->update();
     }
 

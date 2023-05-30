@@ -115,7 +115,7 @@ public:
 
     void parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy);
 
-    void setBehaviorFromJSON(cJSON *behavior, EnemyGhost *enemy);
+    void setBehaviorFromJSON(cJSON *behavior, Object3D *enemy, float depth);
 
     void parseItemJSON(cJSON *itemJSON);
 
@@ -129,9 +129,9 @@ public:
     void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
     void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);
 
-    Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON);
+    Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON, float depth);
 
-    Vertex3D getWorldPositionFromScreenPoint(Point2D fixedPosition);
+    Vertex3D getWorldPositionFromScreenPoint(Point2D fixedPosition, float depth);
 
     void loadPrevious();
 

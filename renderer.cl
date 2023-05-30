@@ -117,6 +117,7 @@ unsigned int processPixelLights(__global struct OCTriangle *t, __global struct O
 unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struct OCVertex3D *Q, struct OCVertex3D *N);
 float distanceBetweenVertices(struct OCVertex3D *v1, struct OCVertex3D *v2);
 unsigned int mixColors(unsigned int color1, unsigned int color2, float t);
+bool isPixelInWindow(int x, int y, int w, int h);
 
 /* KERNEL */
 __kernel void onUpdate(
@@ -190,7 +191,9 @@ __kernel void onUpdate(
 
             for (int x = t->minX ; x < t->maxX ; x++) {
                 if ((w0 | w1 | w2) > 0) {
+
                     const int bufferIndex = y * screenWidth + x;
+
 
                     alpha = (float) w0 * reciprocalFullArea;
                     theta = (float) w1 * reciprocalFullArea;
@@ -222,8 +225,10 @@ __kernel void onUpdate(
                         }
 
                         //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-                        video[bufferIndex] = color;
-                        stencil[bufferIndex] = true;
+                        if (isPixelInWindow(x, y, screenWidth, screenHeight)) {
+                            video[bufferIndex] = color;
+                            stencil[bufferIndex] = true;
+                        }
                     }
                 }
                 w0 += A12;
@@ -608,4 +613,12 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
         mix((float) c1[1], (float) c2[1], t),
         mix((float) c1[2], (float) c2[2], t)
     );
+}
+
+bool isPixelInWindow(int x, int y, int w, int h)
+{
+    if (x <= 0 || x >= w) return false;
+    if (y <= 0 || y >= h) return false;
+
+    return true;
 }

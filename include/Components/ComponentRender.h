@@ -20,6 +20,7 @@
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
 #include "../../darkheaz/src/shaders/ShaderBilinear.h"
+#include "../../darkheaz/src/shaders/ShaderDepthOfField.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -198,6 +199,8 @@ public:
     void loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source);
 
     _cl_kernel *getExplosionKernel();
+
+    ShaderDepthOfField *shaderDepthOfField;
 };
 
 

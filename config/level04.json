@@ -82,5 +82,21 @@
     }
   ],
   "background": [
+    {
+      "name": "nave",
+      "position": { "x": 20,  "y":	40, "z": 35000 },
+      "model":	"space_hexagon.fbx",
+      "rotation": { "x": 60, "y": 0,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "scale":	0.6
+    },
+    {
+      "name": "marsh",
+      "model": "marsh.fbx",
+      "scale": 20,
+      "position": { "x": 50, "y": 50, "z": 40000 },
+      "rotation": { "x": 90, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
+    }
   ]
 }

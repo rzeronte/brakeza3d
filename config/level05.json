@@ -116,5 +116,19 @@
     }
   ],
   "background": [
+    {
+      "name": "nave",
+      "position": { "x": 900,  "y":	0, "z": 30000 },
+      "model":	"spaceships/destroyer.fbx",
+      "rotation": { "x": 90, "y": 90,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
+      "scale":	3,
+      "motion": {
+        "type": 1,
+        "from": { "x": 10, "y": 35 },
+        "to": { "x": 130, "y": 55 },
+        "speed": 0.05
+      }
+    }
   ]
 }
