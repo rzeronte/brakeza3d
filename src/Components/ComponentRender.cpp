@@ -83,8 +83,6 @@ void ComponentRender::onUpdate()
         }
     }
 
-
-
     if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
         for (auto & lightpoint : this->lightPoints) {
             if (!lightpoint->isEnabled()) {
@@ -93,9 +91,10 @@ void ComponentRender::onUpdate()
         }
     }
 
-    if(EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
+    if (EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
         shaderBilinear->update();
     }
+
 }
 
 void ComponentRender::postUpdate()
@@ -105,6 +104,7 @@ void ComponentRender::postUpdate()
 
 void ComponentRender::writeOCLBufferIntoHost() const
 {
+
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
@@ -257,14 +257,14 @@ void ComponentRender::deleteRemovedObjects()
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     sceneObjects.erase(
         std::remove_if(
-                sceneObjects.begin(),
-                sceneObjects.end(), [](Object3D* object) {
-                    if (object->isRemoved()) {
-                        delete object;
-                        return true;
-                    }
-                    return false;
+            sceneObjects.begin(),
+            sceneObjects.end(), [](Object3D* object) {
+                if (object->isRemoved()) {
+                    delete object;
+                    return true;
                 }
+                return false;
+            }
         ),
         sceneObjects.end()
     );
@@ -278,6 +278,10 @@ void ComponentRender::onUpdateSceneObjects()
         if (object != nullptr && object->isEnabled()) {
             object->onUpdate();
         }
+    }
+
+    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+        shaderDepthOfField->update();
     }
 
     for (auto object : sceneObjects) {
@@ -1097,6 +1101,8 @@ void ComponentRender::initOpenCL()
     loadRenderKernel();
     loadParticlesKernel();
     loadExplosionKernel();
+
+    shaderDepthOfField = new ShaderDepthOfField(true);
 
     shaderBilinear = new ShaderBilinear(true);
 }
