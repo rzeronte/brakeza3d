@@ -48,6 +48,9 @@
     { "file": "laser-shoot.wav", "label": "laserShoot", "type": "sound" },
     { "file": "laser.wav", "label": "laser", "type": "sound" },
 
-    { "file": "tic.wav", "label": "tic", "type": "sound" }
+    { "file": "tic.wav", "label": "tic", "type": "sound" },
+
+    { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" }
+
   ]
 }
