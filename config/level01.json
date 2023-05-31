@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "spaceShuttle",
+      "avatar": "avatars/default.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -16,7 +17,11 @@
       "reward": false,
       "motion": {
         "type": 6
-      }
+      },
+      "messages": [
+        { "text": "Finish it!", "stamina": 25 },
+        { "text": "Very good! keep going!", "stamina": 99 }
+      ]
     }
   ],
   "asteroids": [

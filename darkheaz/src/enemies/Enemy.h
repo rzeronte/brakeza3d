@@ -18,6 +18,7 @@ protected:
     bool stuck;
     EnemyState state;
     Weapon *weapon;
+    Image *avatar;
     float startStamina;
     float stamina;
     float range;
@@ -58,6 +59,10 @@ public:
     [[nodiscard]] float getStamina() const;
 
     [[nodiscard]] EnemyState getState() const;
+
+    void setAvatar(Image *avatar);
+
+    Image *getAvatar();
 };
 
 

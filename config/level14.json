@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "Blupincher",
+      "avatar": "avatars/default.png",
       "position": {"x": 95, "y": 8},
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,
@@ -52,6 +53,7 @@
     },
     {
       "name": "Blupincher",
+      "avatar": "avatars/default.png",
       "position": {"x": 5, "y": 8},
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,
@@ -96,6 +98,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 10, "y": 30 },
       "model": "spaceships/green_spaceship_03.fbx",
       "enableLights": true,
@@ -133,6 +136,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 90, "y": 30 },
       "model": "spaceships/green_spaceship_03.fbx",
       "enableLights": true,
@@ -170,6 +174,7 @@
     },
     {
       "name": "RedBallLaser",
+      "avatar": "avatars/default.png",
       "position": { "x": 50,  "y": 40 },
       "model": "energy_ball.fbx",
       "enableLights": true,

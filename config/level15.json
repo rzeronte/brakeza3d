@@ -8,6 +8,7 @@
     "enemies": [
       {
         "name": "Colossus",
+        "avatar": "avatars/default.png",
         "position": { "x": 50, "y": 5 },
         "model": "spaceships/Challenger.fbx",
         "enableLights": true,
@@ -44,6 +45,7 @@
       },
       {
         "name": "Rayer",
+        "avatar": "avatars/default.png",
         "position": { "x": 10, "y": 30 },
         "model": "spaceships/green_spaceship_03.fbx",
         "enableLights": true,
@@ -81,6 +83,7 @@
       },
       {
         "name": "Rayer",
+        "avatar": "avatars/default.png",
         "position": { "x": 90, "y": 30 },
         "model": "spaceships/green_spaceship_03.fbx",
         "enableLights": true,

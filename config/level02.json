@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "spaceShuttle",
+      "avatar": "avatars/default.png",
       "position": { "x": 15, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -20,6 +21,7 @@
     },
     {
       "name": "spaceShuttle",
+      "avatar": "avatars/default.png",
       "position": { "x": 50, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -32,6 +34,7 @@
     },
     {
       "name": "spaceShuttle",
+      "avatar": "avatars/default.png",
       "position": { "x": 85, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,

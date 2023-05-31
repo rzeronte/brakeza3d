@@ -42,7 +42,8 @@ Player::Player() :
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
     maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
+    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png"))
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
@@ -741,6 +742,7 @@ Player::~Player()
 {
     delete light;
     delete blink;
+    delete avatar;
 
     for (auto w : weaponTypes) {
         delete w;
@@ -749,4 +751,8 @@ Player::~Player()
 
 ShaderParticles *Player::getShaderParticles() const {
     return shaderParticles;
+}
+
+Image *Player::getAvatar() {
+    return avatar;
 }

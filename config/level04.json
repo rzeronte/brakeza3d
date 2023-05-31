@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "Patrol",
+      "avatar": "avatars/default.png",
       "position": { "x": 20, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -45,6 +46,7 @@
     },
     {
       "name": "Patrol",
+      "avatar": "avatars/default.png",
       "position": { "x": 20, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,

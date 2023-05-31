@@ -4,6 +4,7 @@
 #include "../../darkheaz/src/items/ItemWeaponGhost.h"
 #include "../../darkheaz/src/items/ItemEnergyGhost.h"
 #include "../../darkheaz/src/items/ItemBombGhost.h"
+#include "../../darkheaz/src/items/EnemyDialog.h"
 
 #define FREELOOK false
 #define SPLASH_TIME 3.0f
@@ -90,27 +91,6 @@ void ComponentGame::onStart()
 
     //Brakeza3D::get()->addObject3D(swarm, "swarm");
 
-    shaderExplosion = new ShaderExplosion(
-        true,
-        Color::white(),
-        Color::green(),
-        Point2D(320, 240),
-        -1,
-        OCParticlesContext(
-            0,
-            0.025f,
-            10.00f,
-            0.0f,
-            0.0f,
-            0.0000025f,
-            100.0f,
-            200.0f,
-            100.0f,
-            1.0f,
-            0.999f
-        )
-    );
-    shaderExplosion->setIntensity(1);
 }
 
 void ComponentGame::loadShaders()
@@ -147,7 +127,6 @@ ComponentGame::~ComponentGame()
 void ComponentGame::preUpdate()
 {
     shaderBackgroundUpdate();
-    shaderExplosion->update();
 
     if (gameState == EngineSetup::GameState::SPLASH) {
         splashCounter.update();

@@ -14,6 +14,7 @@
     {
       "type": 3,
       "name": "Prolis",
+      "avatar": "avatars/default.png",
       "position": { "x": 50, "y": 99 },
       "model": "spaceships/destroyer.fbx",
       "enableLights": false,
