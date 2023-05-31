@@ -65,6 +65,7 @@ void Enemy::setSoundChannel(int value) {
 Enemy::~Enemy()
 {
     delete weapon;
+    delete avatar;
 }
 
 bool Enemy::isRewards() const {
@@ -83,4 +84,12 @@ bool Enemy::isStuck() const
 void Enemy::setStuck(bool value)
 {
     Enemy::stuck = value;
+}
+
+void Enemy::setAvatar(Image *avatar) {
+    Enemy::avatar = avatar;
+}
+
+Image *Enemy::getAvatar(){
+    return avatar;
 }

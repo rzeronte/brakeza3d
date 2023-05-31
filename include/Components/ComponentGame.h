@@ -197,8 +197,6 @@ public:
     VideoPlayer* videoPlayer;
 
     void shaderBackgroundUpdate();
-
-    ShaderExplosion *shaderExplosion;
 };
 
 

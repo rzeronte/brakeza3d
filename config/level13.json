@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "RedBallLaser",
+      "avatar": "avatars/default.png",
       "position": { "x":10,  "y": 10 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -64,6 +65,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/Executioner.fbx",
       "enableLights": true,
@@ -101,6 +103,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/green_spaceship_03.fbx",
       "enableLights": true,
@@ -138,6 +141,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/green_spaceship_03.fbx",
       "enableLights": true,

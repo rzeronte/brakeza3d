@@ -8,12 +8,17 @@
   "enemies": [
     {
       "name": "Patrol",
+      "avatar": "avatars/default.png",
       "position": { "x": 20, "y": 50 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
       "reward": true,
+      "messages": [
+        { "text": "Te follo cabrón", "stamina": 75 },
+        { "text": "nooo me petes el kks", "stamina": 25 }
+      ],
       "motion": {
         "type": 1,
         "from": { "x": 10, "y": 10 },

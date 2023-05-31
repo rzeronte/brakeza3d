@@ -8,6 +8,7 @@
   "enemies": [
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 10, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -45,6 +46,7 @@
     },
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 90, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,

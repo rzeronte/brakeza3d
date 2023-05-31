@@ -7,6 +7,7 @@
   "enemies": [
     {
       "name": "Rayer",
+      "avatar": "avatars/default.png",
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/Executioner.fbx",
       "enableLights": true,
@@ -41,6 +42,7 @@
     },
     {
       "name": "Patrol",
+      "avatar": "avatars/default.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -78,6 +80,7 @@
     },
     {
       "name": "Patrol",
+      "avatar": "avatars/default.png",
       "position": { "x": 80, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -115,5 +118,13 @@
     }
   ],
   "background": [
+    {
+      "name": "marsh",
+      "model": "spaceFlower.fbx",
+      "scale": 10,
+      "position": { "x": 75, "y": 50, "z": 40000 },
+      "rotation": { "x": 100, "y": 200, "z": 60 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0 }
+    }
   ]
 }

@@ -158,6 +158,8 @@ public:
     void removeBackgroundObjects();
 
     void moveBackgroundObjects(Vertex3D offset);
+
+    static void parseMessageJSON(cJSON *pJson, EnemyGhost *pGhost);
 };
 
 

@@ -19,6 +19,7 @@
 #include "src/enemies/behaviors/EnemyBehaviorPath.h"
 #include "src/bosses/BossLevel30.h"
 #include "LevelStats.h"
+#include "src/items/EnemyDialog.h"
 
 #include <utility>
 
@@ -356,6 +357,12 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setScale(1);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
+
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar") != nullptr) {
+        std::string avatar = cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar")->valuestring;
+        enemy->setAvatar(new Image(EngineSetup::get()->ICONS_FOLDER + avatar));
+    }
+
     if (animated) {
         enemy->AssimpLoadAnimation(EngineSetup::get()->MODELS_FOLDER + model);
     } else {
@@ -378,6 +385,13 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
     if (emitter != nullptr) {
         this->setProjectileEmitterForEnemy(emitter, enemy);
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "messages") != nullptr) {
+        cJSON *currentMessage;
+        cJSON_ArrayForEach(currentMessage, cJSON_GetObjectItemCaseSensitive(enemyJSON, "messages")) {
+            parseMessageJSON(currentMessage, enemy);
+        }
     }
 }
 
@@ -413,9 +427,9 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float dept
         }
         case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
             auto behavior = new EnemyBehaviorFollow(
-                    ComponentsManager::get()->getComponentGame()->getPlayer(),
-                    cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
-                    cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
+                ComponentsManager::get()->getComponentGame()->getPlayer(),
+                cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
+                cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
             );
             behavior->setEnabled(false);
             enemy->setBehavior(behavior);
@@ -796,4 +810,12 @@ void LevelLoader::moveBackgroundObjects(Vertex3D offset)
     for (auto o : objectsBackground) {
         o->addToPosition(offset);
     }
+}
+
+void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
+{
+    std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
+    float stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
+
+    Brakeza3D::get()->addObject3D(new EnemyDialog(500, 40, stamina, text.c_str(), 4, enemy), "dialog");
 }

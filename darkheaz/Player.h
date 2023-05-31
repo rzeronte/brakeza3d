@@ -65,7 +65,6 @@ private:
     bool allowMakeReflections;
     bool allowEnergyShield;
 
-
     LightPoint3D *light;
     Vertex3D lightPositionOffset;
 
@@ -78,6 +77,8 @@ private:
     PlayerReflection reflection;
 
     ShaderParticles *shaderParticles;
+
+    Image *avatar;
 public:
 
     Player();
@@ -218,11 +219,13 @@ public:
 
     void updateShaderParticles();
 
-    ShaderParticles *getShaderParticles() const;
+    [[nodiscard]] ShaderParticles *getShaderParticles() const;
 
-    void drawCall();
+    void drawCall() override;
 
     void onDraw() override;
+
+    Image *getAvatar();
 };
 
 
