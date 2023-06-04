@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "RedBallLaser",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/energy_ball.png",
       "position": { "x": 75,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -62,7 +62,7 @@
     },
     {
       "name": "RedBallLaser",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/energy_ball.png",
       "position": { "x": 25,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,

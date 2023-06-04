@@ -9,7 +9,7 @@
   "enemies": [
     {
       "name": "Colossus",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/challenger.png",
       "position": { "x": 10, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -44,7 +44,7 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/challenger.png",
       "position": { "x": 90, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -83,6 +83,7 @@
   "bosses": [
     {
       "type": 2,
+      "avatar": "avatars/tentacle.png",
       "name": "Octscar",
       "position": { "x": 50, "y": 10 },
       "model": "tentacle.fbx",

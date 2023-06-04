@@ -43,6 +43,7 @@ private:
     ShaderProjectiles *shaderLasers;
 
     Sprite3D *explosionSpriteTemplate;
+    TextureAnimated *radioWave;
 
     Image *imageCredits;
     Image *imageHelp;
@@ -69,6 +70,8 @@ private:
 
     Swarm *swarm;
     ShaderSwarm *shaderSwarm;
+
+    TTF_Font *fontGame;
 
     //PathFinder *pathFinder;
 public:
@@ -197,6 +200,12 @@ public:
     VideoPlayer* videoPlayer;
 
     void shaderBackgroundUpdate();
+
+    void loadGameFonts();
+
+    TTF_Font *getFontGame() const;
+
+    TextureAnimated *getRadioWave() const;
 };
 
 

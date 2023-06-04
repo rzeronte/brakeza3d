@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "Rayer",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 10, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -46,7 +46,7 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 90, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -87,6 +87,7 @@
     {
       "type": 0,
       "name": "Leuman",
+      "avatar": "avatars/spitfire.png",
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/Spitfire.fbx",
       "enableLights": true,

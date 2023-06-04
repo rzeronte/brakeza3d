@@ -7,6 +7,7 @@
 
 
 #include "../enemies/EnemyGhost.h"
+#include "../../../include/2D/TextWriter.h"
 
 class EnemyDialog : public Object3D {
     int x;
@@ -15,13 +16,18 @@ class EnemyDialog : public Object3D {
 
     std::string message;
     Counter counter;
+
     EnemyGhost *enemy;
 
     Image *background;
 
     bool followEnemy;
+
+    TextWriter *writer;
+    TextureAnimated *radioWave;
+
 public:
-    EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy);
+    EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy, TTF_Font *font);
 
     void onUpdate() override;
 
@@ -31,7 +37,7 @@ public:
 
     void onDraw() override;
 
-    void drawDialog();
+    void drawDialog(float alpha);
 };
 
 

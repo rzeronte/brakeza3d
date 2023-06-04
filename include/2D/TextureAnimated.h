@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "../Render/Texture.h"
+#include "../Misc/Counter.h"
 
 #define ANIMATION2D_MAX_FRAMES 25
 
@@ -19,6 +20,8 @@ public:
 
     bool endAnimation;
     bool paused;
+
+    Counter counter;
 
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 
@@ -39,6 +42,12 @@ public:
     [[nodiscard]] int getFps() const;
 
     void setFps(int fps);
+
+    void updateStep();
+
+    void update();
+
+    const Counter &getCounter() const;
 };
 
 

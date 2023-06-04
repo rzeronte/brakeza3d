@@ -8,7 +8,7 @@
   "enemies": [
       {
       "name": "Shocker",
-        "avatar": "avatars/default.png",
+        "avatar": "avatars/imperial.png",
       "position": { "x": 50,  "y": 20 },
       "model": "spaceships/Imperial.fbx",
       "enableLights": true,
@@ -43,7 +43,7 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/green03.png",
       "position": { "x": 5, "y": 5 },
       "model": "spaceships/green_spaceship_03.fbx",
       "enableLights": true,
@@ -81,7 +81,7 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/challenger.png",
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -119,7 +119,7 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/challenger.png",
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
