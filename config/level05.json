@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "Patrol",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/striker.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceships/Striker.fbx",
       "enableLights": true,
@@ -43,7 +43,7 @@
     },
     {
       "name": "Patrol",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -81,7 +81,7 @@
     },
     {
       "name": "Patrol",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,

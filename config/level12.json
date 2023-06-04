@@ -8,7 +8,7 @@
   "enemies": [
     {
       "name": "RedBallLaser",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/energy_ball.png",
       "position": { "x": 50,  "y": 10 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -65,7 +65,7 @@
     },
     {
       "name": "Patrol",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -103,7 +103,7 @@
     },
     {
       "name": "Patrol",
-      "avatar": "avatars/default.png",
+      "avatar": "avatars/bob.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,

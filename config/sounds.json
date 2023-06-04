@@ -25,7 +25,6 @@
 
     { "file": "player_damage.wav", "label": "playerDamage", "type": "sound" },
 
-
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
     { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
 

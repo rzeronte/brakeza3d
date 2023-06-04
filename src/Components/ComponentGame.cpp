@@ -45,11 +45,8 @@ void ComponentGame::onStart()
 
     setGameState(EngineSetup::GameState::NONE);
 
-    textWriter = new TextWriter(
-        ComponentsManager::get()->getComponentWindow()->getRenderer(),
-        ComponentsManager::get()->getComponentWindow()->getFontDefault(),
-        std::string(SETUP->SPRITES_FOLDER + "conchars2.png").c_str()
-    );
+    auto componentWindow = ComponentsManager::get()->getComponentWindow();
+    textWriter = new TextWriter(componentWindow->getRenderer(), componentWindow->getFontDefault());
 
     fadeToGameState = new FaderToGameStates(
         Color(3, 3, 111),
@@ -83,6 +80,7 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
     loadShaders();
+    loadGameFonts();
 
     swarm = new Swarm(Vertex3D(0, -1000, 500), Vertex3D(1000, 1000, 500));
 
@@ -463,6 +461,8 @@ void ComponentGame::loadPlayer()
     explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 30);
     explosionSpriteTemplate->setAnimation(0);
+
+    radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
 }
 
 Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const
@@ -632,6 +632,7 @@ void ComponentGame::removeInGameObjects()
 {
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
+        auto *enemyDialog = dynamic_cast<EnemyDialog *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
@@ -642,6 +643,11 @@ void ComponentGame::removeInGameObjects()
 
         if (enemy != nullptr) {
             enemy->remove();
+            continue;
+        }
+
+        if (enemyDialog != nullptr) {
+            enemyDialog->setRemoved(true);
             continue;
         }
         if (health != nullptr) {
@@ -1027,10 +1033,6 @@ const Color &ComponentGame::getPrimaryColor() const {
     return primaryColor;
 }
 
-Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
-    return explosionSpriteTemplate;
-}
-
 const Color &ComponentGame::getSecondaryColor() const {
     return secondaryColor;explosionSpriteTemplate;
 }
@@ -1092,4 +1094,28 @@ void ComponentGame::handlePressKeyByWin()
 
 VideoPlayer *ComponentGame::getVideoPlayer() {
     return videoPlayer;
+}
+
+void ComponentGame::loadGameFonts()
+{
+    std::string file = EngineSetup::get()->FONTS_FOLDER + "Open24DisplaySt.ttf";
+
+    fontGame = TTF_OpenFont(file.c_str(), 50);
+
+    if (!fontGame)  {
+        Logging::Log(TTF_GetError());
+        exit(-1);
+    }
+}
+
+TTF_Font *ComponentGame::getFontGame() const {
+    return fontGame;
+}
+
+TextureAnimated *ComponentGame::getRadioWave() const {
+    return radioWave;
+}
+
+Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
+    return explosionSpriteTemplate;
 }

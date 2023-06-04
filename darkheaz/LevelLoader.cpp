@@ -814,8 +814,11 @@ void LevelLoader::moveBackgroundObjects(Vertex3D offset)
 
 void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 {
-    std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
-    float stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
+    auto componentGame = ComponentsManager::get()->getComponentGame();
 
-    Brakeza3D::get()->addObject3D(new EnemyDialog(500, 40, stamina, text.c_str(), 4, enemy), "dialog");
+    std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
+
+    auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
+
+    Brakeza3D::get()->addObject3D(new EnemyDialog(460, 40, stamina, text.c_str(), 4, enemy, componentGame->getFontGame()), "dialog");
 }

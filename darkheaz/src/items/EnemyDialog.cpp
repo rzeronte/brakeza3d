@@ -2,23 +2,28 @@
 // Created by eduardo on 31/05/23.
 //
 
+#include <sstream>
 #include "EnemyDialog.h"
 
-#include <utility>
 #include "../../../include/ComponentsManager.h"
 
-EnemyDialog::EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy)
-:
-    x(x),
-    y(y),
-    staminaPercentage(staminaPercentage),
-    message(message),
-    counter(Counter(ttl)),
-    enemy(enemy),
-    background(new Image(EngineSetup::get()->IMAGES_FOLDER + "dialogBubble.png")),
-    followEnemy(false)
+EnemyDialog::EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy, TTF_Font *font)
+        :
+        x(x),
+        y(y),
+        staminaPercentage(staminaPercentage),
+        message(message),
+        counter(Counter(ttl)),
+        enemy(enemy),
+        background(new Image(EngineSetup::get()->IMAGES_FOLDER + "dialogBubble.png")),
+        followEnemy(false)
 {
+    auto componentWindow = ComponentsManager::get()->getComponentWindow();
+    writer = new TextWriter(componentWindow->getRenderer(), font);
     counter.setEnabled(false);
+
+    radioWave = ComponentsManager::get()->getComponentGame()->getRadioWave();
+    radioWave->setPaused(false);
 }
 
 void EnemyDialog::onUpdate()
@@ -27,9 +32,13 @@ void EnemyDialog::onUpdate()
 
     if (!isEnabled()) return;
 
+    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+
+    if (gameState != EngineSetup::GAMING) return;
+
     const float staminaPercentage = (enemy->getStamina() * 100) / enemy->getStartStamina();
 
-    if (!counter.isEnabled() && staminaPercentage <= this->staminaPercentage) {
+    if (!counter.isEnabled() && staminaPercentage <= this->staminaPercentage && counter.getAcumulatedTime() <= counter.getStep() * 0.25f) {
         counter.setEnabled(true);
 
         ComponentSound::playSound(
@@ -46,47 +55,71 @@ void EnemyDialog::postUpdate() {
 
 void EnemyDialog::drawCall() {
     Object3D::drawCall();
-
 }
 
 void EnemyDialog::onDraw()
 {
     Object3D::onDraw();
+    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
-    if (counter.isEnabled()) {
-        if (counter.isFinished()) {
-            this->setRemoved(true);
-        }
+    if (gameState != EngineSetup::GAMING) return;
 
-        if (enemy == nullptr || enemy->isRemoved()) return;
+    if (!counter.isEnabled()) return;
 
-        if (followEnemy) {
-            auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-            Point2D screenPoint = Transforms::WorldToPoint(enemy->getPosition(), camera);
+    if (counter.getAcumulatedTime() >= counter.getStep()) {
+        this->setRemoved(true);
+    }
 
-            x = screenPoint.x;
-            y = screenPoint.y;
-        }
+    if (enemy == nullptr || enemy->isRemoved()) return;
 
-        drawDialog();
+    if (followEnemy) {
+        auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+        Point2D screenPoint = Transforms::WorldToPoint(enemy->getPosition(), camera);
 
-        counter.update();
-    };
+        x = screenPoint.x;
+        y = screenPoint.y;
+    }
+
+    float alpha = 0.0f;
+    if (counter.getAcumulatedTime() <= counter.getStep() * 0.25f) {
+        alpha = 255.0f * (counter.getAcumulatedTime() / (counter.getStep() * 0.25f));
+    } else if (counter.getAcumulatedTime() >= counter.getStep() * 0.75f) {
+        alpha = 255.0f * (1.0f - ((counter.getAcumulatedTime() - (counter.getStep() * 0.75f)) / (counter.getStep() * 0.25f)));
+    } else {
+        alpha = 255.0f;
+    }
+
+    drawDialog(alpha);
+
+    counter.update();
 }
 
-void EnemyDialog::drawDialog()
+void EnemyDialog::drawDialog(float alpha)
 {
+    if (this->isRemoved()) return;
+
     int backgroundX = x;
     int backgroundY = y;
-    int avatarX = x + 18;
-    int avatarY = y + 16;
-    int textX = x + 18;
-    int textY = y + 42;
+    int avatarX = x + 24;
+    int avatarY = y + 20;
+    int textX = x + 58;
+    int textY = y + 20;
+    int waveX = x + 26;
+    int waveY = y + 56;
 
-    background->drawFlat(backgroundX, backgroundY);
+    background->drawFlatAlpha(backgroundX, backgroundY, alpha);
+    enemy->getAvatar()->drawFlatAlpha(avatarX, avatarY, alpha);
 
-    enemy->getAvatar()->drawFlat(avatarX, avatarY);
+    std::istringstream stream(message);
+    std::string line;
+    int lineHeight = 15;
 
-    auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
-    textWriter->writeTextTTFAutoSize(textX, textY, message.c_str(), Color::green(), 0.15f);
+    writer->setAlpha(alpha);
+    while (std::getline(stream, line)) {
+        writer->writeTextTTFAutoSize(textX, textY, line.c_str(), Color::red(), 0.20f);
+        textY += lineHeight;
+    }
+
+    radioWave->update();
+    radioWave->getCurrentFrame()->getImage()->drawFlatAlpha(waveX, waveY, alpha);
 }
