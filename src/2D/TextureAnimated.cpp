@@ -18,6 +18,7 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
         std::cout << "Importing 2D animation file: " << file << std::endl;
         this->frames.push_back(new Texture(file));
     }
+    updateStep();
 }
 
 int TextureAnimated::getNumFrames() const {
@@ -68,4 +69,26 @@ void TextureAnimated::setFps(int value) {
     TextureAnimated::fps = value;
 }
 
+void TextureAnimated::updateStep()
+{
+    float step = (float) 1 / (float) getFps();
+    this->counter.setStep(step);
+}
+
+void TextureAnimated::update()
+{
+    counter.update();
+
+    if (counter.isFinished()) {
+        counter.setEnabled(true);
+        nextFrame();
+        if (isEndAnimation()) {
+            //this->setRemoved(true);
+        }
+    }
+}
+
+const Counter &TextureAnimated::getCounter() const {
+    return counter;
+}
 
