@@ -6,13 +6,6 @@
 #include "../../darkheaz/src/items/ItemBombGhost.h"
 #include "../../darkheaz/src/items/EnemyDialog.h"
 
-#define FREELOOK false
-#define SPLASH_TIME 3.0f
-#define FADE_SPEED_START_GAME 0.04
-#define FADE_SPEED_ENDLEVEL 0.04
-#define FADE_SPEED_FROM_MENU_TO_GAMING 0.04
-#define FADE_SPEED_PRESSKEY_NEWLEVEL 0.04
-
 ComponentGame::ComponentGame()
 :
     cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
@@ -31,7 +24,7 @@ ComponentGame::ComponentGame()
     shaderColor(nullptr),
     shaderShockWave(nullptr),
     gameState(EngineSetup::GameState::NONE),
-    primaryColor(Color(255, 0, 0)),
+    primaryColor(Color(24, 100, 5)),
     secondaryColor(Color(1, 179, 52)),
     thirdColor(Color(0, 0, 255))
 {
@@ -70,8 +63,8 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
     ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
 
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(FREELOOK);
-    ComponentsManager::get()->getComponentInput()->setEnabled(FREELOOK);
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(FREE_LOOK_ENABLED);
+    ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
     videoPlayer = new VideoPlayer(SETUP->VIDEOS_FOLDER + "0000-1326.mp4");
@@ -89,12 +82,45 @@ void ComponentGame::onStart()
 
     //Brakeza3D::get()->addObject3D(swarm, "swarm");
 
+    ComponentSound::fadeInMusic(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+        -1,
+        SPLASH_TIME * 1000
+    );
+
+    shaderExplosion = new ShaderExplosion(
+        true,
+        Color::white(),
+        Color::green(),
+        Point2D(320, 240),
+        -1,
+        OCParticlesContext(
+            0,
+            0.025f,
+            10.00f,
+            0.0f,
+            0.0f,
+            0.0000025f,
+            100.0f,
+            200.0f,
+            100.0f,
+            1.0f,
+            0.999f
+        )
+    );
+    shaderExplosion->setIntensity(1);
+
+    shaderTutorialMask = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
+    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorials/tutorial_box.png");
+
+    shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
+    shaderCRT->setMaxAlpha(255);
 }
 
 void ComponentGame::loadShaders()
 {
     shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-    shaderColor = new ShaderColor(false, Color::red(), 0.75);
+    shaderColor = new ShaderColor(false, Color::red(), 0.75f);
     shaderLasers = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
     shaderBackgroundImage->setUseOffset(true);
@@ -133,8 +159,11 @@ void ComponentGame::preUpdate()
 
         if (splashCounter.isFinished() && splashCounter.isEnabled()) {
             splashCounter.setEnabled(false);
-            setGameState(EngineSetup::GameState::INTRO);
-            videoPlayer->play();
+            //setGameState(EngineSetup::GameState::MENU);
+            getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
+            makeFadeToGameState(EngineSetup::GameState::MENU, false);
+
+            //videoPlayer->play();
         }
     }
 
@@ -144,27 +173,9 @@ void ComponentGame::preUpdate()
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
 
     switch(gameState) {
-        case EngineSetup::PRESS_KEY_NEWLEVEL:
-        case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
-            textWriter->writeTTFCenterHorizontal(50, "press a key to START...", primaryColor, 0.5);
-            if (getLevelLoader()->isHasTutorial()) {
-                getLevelLoader()->getTutorialImage()->drawFlat(EngineSetup::get()->screenWidth / 2 - (getLevelLoader()->getTutorialImage()->width() / 2), 40);
-            }
-            break;
-        }
         case EngineSetup::PRESS_KEY_BY_DEAD: {
             textWriter->writeTextTTFMiddleScreen("GAME OVER", Color::black(), 0.5f);
             shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
-            break;
-        }
-        case EngineSetup::COUNTDOWN: {
-            zoomCameraCountDown();
-            int restTime = (int) (getLevelLoader()->getCountDown()->getStep() - getLevelLoader()->getCountDown()->getAcumulatedTime() + 1);
-            textWriter->writeTextTTFMiddleScreen(std::to_string(restTime).c_str(), primaryColor, 1);
-            getLevelLoader()->getCountDown()->update();
-            if (getLevelLoader()->getCountDown()->isFinished()) {
-                setGameState(EngineSetup::GameState::GAMING);
-            }
             break;
         }
         case EngineSetup::GAMING: {
@@ -172,29 +183,23 @@ void ComponentGame::preUpdate()
             checkForEndLevel();
             break;
         }
-        case EngineSetup::HELP:
-        case EngineSetup::CREDITS: {
+        case EngineSetup::HELP: {
             imageHelp->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
+            break;
+        }
+        case EngineSetup::CREDITS: {
+            imageCredits->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
             textWriter->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);
             break;
         }
-        case EngineSetup::PRESS_KEY_BY_WIN: {
-            showLevelStatistics();
-            break;
-        }
+
         case EngineSetup::INTRO: {
             if (videoPlayer->isFinished() ) {
                 videoPlayer->finished = false;
-                makeFadeToGameState(EngineSetup::GameState::MENU);
-
-                ComponentSound::fadeInMusic(
-                        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
-                        -1,
-                        SPLASH_TIME * 1000
-                );
+                makeFadeToGameState(EngineSetup::GameState::MENU, true);
             }
             break;
         }
@@ -207,11 +212,77 @@ void ComponentGame::preUpdate()
 
 void ComponentGame::onUpdate()
 {
-
     updateFadeToGameState();
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
     updateShaders();
+
+    shaderExplosion->update();
+
+    switch(gameState) {
+        case EngineSetup::PRESS_KEY_NEWLEVEL:
+        case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
+            textWriter->writeTTFCenterHorizontal(400, "press a ENTER to START...", primaryColor, 0.5f);
+            handleTutorialImages(255);
+            break;
+        }
+        case EngineSetup::COUNTDOWN: {
+            zoomCameraCountDown();
+            float oldAlpha = textWriter->getAlpha();
+            // Obtén el tiempo total del contador y el tiempo acumulado
+            float accumulatedTime = getLevelLoader()->getCountDown()->getAcumulatedTime();
+
+            static float lastUpdateTime = 0;
+            static int lastRestTime = -1;
+
+            int restTime = (int) (getLevelLoader()->getCountDown()->getStep() - accumulatedTime + 1);
+
+            if (restTime != lastRestTime) {
+                lastUpdateTime = accumulatedTime;
+                lastRestTime = restTime;
+            }
+
+            // Calcula la proporción de tiempo restante en el segundo actual
+            float timeSinceLastUpdate = accumulatedTime - lastUpdateTime;
+            float timeRatio = 1 - timeSinceLastUpdate;
+
+            // Establece el alfa en función de la proporción de tiempo restante
+            textWriter->setAlpha(timeRatio * 255);
+
+            textWriter->writeTTFCenterHorizontal(120, std::to_string(restTime).c_str(), Color::red(), 3);
+
+            getLevelLoader()->getCountDown()->update();
+
+            if (getLevelLoader()->getCountDown()->isFinished()) {
+                setGameState(EngineSetup::GameState::GAMING);
+            }
+
+            textWriter->setAlpha(oldAlpha);
+            break;
+        }
+        case EngineSetup::PRESS_KEY_BY_WIN: {
+            showLevelStatistics();
+            break;
+        }
+    }
+}
+
+void ComponentGame::handleTutorialImages(float alpha)
+{
+    if (!getLevelLoader()->getTutorials().empty()) {
+        float oldAlpha = textWriter->getAlpha();
+        textWriter->setAlpha(alpha);
+        std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
+        textWriter->writeTTFCenterHorizontal(325, message.c_str(), Color::yellow(), 0.3f);
+        shaderTutorialMask->setMaxAlpha((int) alpha);
+        shaderTutorialMask->update();
+        boxTutorial->drawFlatAlpha(0, 0, alpha);
+        getLevelLoader()->drawCurrentTutorialImage(alpha);
+
+        textWriter->setAlpha(oldAlpha);
+        shaderCRT->setMaxAlpha((int) alpha);
+        shaderCRT->update();
+    }
 }
 
 void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
@@ -228,27 +299,45 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 void ComponentGame::showLevelStatistics()
 {
     const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-    textWriter->writeTTFCenterHorizontal(100, "congratulations! mission done...", primaryColor, 0.5);
+    textWriter->writeTTFCenterHorizontal(115, "congratulations! mission done...", primaryColor, 0.4);
 
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(124, 160, alpha);
-    textWriter->writeTextTTFAutoSize(124, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(124, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), 118, 250, alpha);
+    textWriter->setFont(fontGameAlternative);
 
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(244, 160, alpha);
-    textWriter->writeTextTTFAutoSize(244, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(244, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), 238, 250, alpha);
+    int offsetX = 160;
+    const int space = 100;
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, 250, alpha);
 
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(355, 160, alpha);
-    textWriter->writeTextTTFAutoSize(355, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(355, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), 348, 250, alpha);
+    offsetX += space;
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), offsetX, 250, alpha);
 
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(460, 160, alpha);
-    textWriter->writeTextTTFAutoSize(460, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(460, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), 454, 250, alpha);
+    offsetX += space;
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), offsetX, 250, alpha);
+
+    offsetX += space;
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, 250, alpha);
+
+    textWriter->setFont(fontGame);
+
+    textWriter->writeTTFCenterHorizontal(350, "press a ENTER to START...", primaryColor, 0.5f);
+
+    shaderTutorialMask->setMaxAlpha(alpha);
+    shaderTutorialMask->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+    shaderCRT->setMaxAlpha(alpha);
+    shaderCRT->update();
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -308,20 +397,34 @@ int ComponentGame::getLiveEnemiesCounter()
 void ComponentGame::checkForEndLevel()
 {
     if (getLiveEnemiesCounter() == 0 && !getLevelLoader()->isLevelFinished()) {
-        getPlayer()->setKillsCounter(0);
-        getLevelLoader()->setLevelFinished(true);
-        getLevelLoader()->setLevelStartedToPlay(false);
-        removeProjectiles();
-        getFadeToGameState()->setSpeed(FADE_SPEED_ENDLEVEL);
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
 
-        if (getLevelLoader()->isEndLevel()) {
-            makeFadeToGameState(EngineSetup::PRESS_KEY_GAMEOVER);
-        } else {
+        auto waiting = getLevelLoader()->getWaitingToWin();
+        waiting->update();
+        Logging::Message("entro");
+        if (!waiting->isEnabled()) {
+            Logging::Message("enabilizo");
+            waiting->setEnabled(true);
+        }
+
+        if (waiting->isFinished()) {
+            Logging::Message("final");
+
+            getPlayer()->setKillsCounter(0);
+            getLevelLoader()->setLevelFinished(true);
+            getLevelLoader()->setLevelStartedToPlay(false);
+            removeProjectiles();
+            getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+            ComponentSound::playSound(
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
+                EngineSetup::SoundChannels::SND_GLOBAL,
+                0
+            );
+
+            if (getLevelLoader()->isEndLevel()) {
+                makeFadeToGameState(EngineSetup::PRESS_KEY_GAMEOVER, true);
+                return;
+            }
+
             setGameState(EngineSetup::PRESS_KEY_BY_WIN);
         }
     }
@@ -354,12 +457,13 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             handleGamingGameState();
             break;
         case EngineSetup::HELP:
+            handlePressKeyHelp();
+                break;
+        case EngineSetup::CREDITS:
             handlePressKeyCredits();
             break;
         case EngineSetup::PRESS_KEY_GAMEOVER:
             handlePressKeyGameOver();
-            break;
-        case EngineSetup::CREDITS:
             break;
         case EngineSetup::PRESS_KEY_BY_WIN:
             handlePressKeyByWin();
@@ -621,9 +725,9 @@ void ComponentGame::removeProjectiles() const
     }
 }
 
-void ComponentGame::makeFadeToGameState(EngineSetup::GameState value) const
+void ComponentGame::makeFadeToGameState(EngineSetup::GameState value, bool blockInput) const
 {
-    ComponentsManager::get()->getComponentGameInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentGameInput()->setEnabled(!blockInput);
 
     getFadeToGameState()->resetTo(value);
 }
@@ -717,9 +821,8 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
     }
 }
 
-void ComponentGame::setVisibleInGameObjects(bool value)
-{
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+void ComponentGame::setVisibleInGameObjects(bool value) {
+    for (auto object: Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
@@ -736,13 +839,17 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             energy != nullptr ||
             bomb != nullptr ||
             enemiesEmitter != nullptr
-        ) {
+                ) {
             object->setEnabled(value);
         }
 
         if (particleEmitter != nullptr) {
             particleEmitter->setEnabled(value);
         }
+    }
+
+    for (auto object: getLevelLoader()->objectsBackground) {
+        object->setEnabled(value);
     }
 }
 
@@ -788,8 +895,8 @@ const std::vector<Weapon *> &ComponentGame::getWeapons() const
 void ComponentGame::pressedKeyForNewGame()
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
-        getFadeToGameState()->setSpeed(FADE_SPEED_START_GAME);
-        makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL);
+        getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+        makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL, true);
         ComponentSound::playSound(
             ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
             EngineSetup::SoundChannels::SND_GLOBAL,
@@ -798,22 +905,31 @@ void ComponentGame::pressedKeyForNewGame()
 
         player->respawn();
     } else {
-        makeFadeToGameState(EngineSetup::GameState::GAMING);
+        makeFadeToGameState(EngineSetup::GameState::GAMING, true);
     }
 }
 
 void ComponentGame::pressedKeyForWin()
 {
-    makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL);
+    makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL, true);
 }
 
 void ComponentGame::pressedKeyForBeginLevel()
 {
+    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+
     ComponentSound::playSound(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
+
+    if (getLevelLoader()->isHaveMusic()) {
+        ComponentSound::fadeInMusic(
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelLoader()->getMusic()), -1, 3000
+        );
+    }
+
     getLevelLoader()->startCountDown();
     setGameState(EngineSetup::GameState::COUNTDOWN);
     getPlayer()->startPlayerBlink();
@@ -823,7 +939,7 @@ void ComponentGame::pressedKeyForFinishGameAndRestart()
 {
     ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"), -1, 3000);
     getLevelLoader()->setCurrentLevelIndex(-1);
-    makeFadeToGameState(EngineSetup::GameState::MENU);
+    makeFadeToGameState(EngineSetup::GameState::MENU, true);
 }
 
 void ComponentGame::pressedKeyByDead()
@@ -835,7 +951,7 @@ void ComponentGame::pressedKeyByDead()
         EngineSetup::SoundChannels::SND_GLOBAL,
         0
     );
-    makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL);
+    makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL, true);
     getPlayer()->startPlayerBlink();
 }
 
@@ -875,7 +991,12 @@ void ComponentGame::zoomCameraCountDown()
 
     float t = counter->getAcumulatedTime() / counter->getStep();
 
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(origin + direction.getComponent().getScaled(t));
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(origin + direction.getComponent().getScaled(t * 0.025f));
+
+    int alpha = 255 - (t * 255 * 2.5);
+    alpha = std::max(0, std::min(alpha, 255));
+
+    handleTutorialImages(alpha);
 }
 
 void ComponentGame::handleMenuGameState()
@@ -908,7 +1029,7 @@ void ComponentGame::handleGamingGameState()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
 
-    getFadeToGameState()->setSpeed(FADE_SPEED_FROM_MENU_TO_GAMING);
+    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
 
     shaderColor->setEnabled(false);
     shaderLasers->setEnabled(true);
@@ -927,6 +1048,7 @@ void ComponentGame::handleCountDownGameState()
 void ComponentGame::handlePressNewLevelKeyGameState()
 {
     removeInGameObjects();
+    getPlayer()->respawn();
     getPlayer()->setEnabled(true);
     getPlayer()->getShaderLaser().setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
@@ -942,11 +1064,11 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
-    getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
-    if (getLevelLoader()->isHaveMusic()) {
-        ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(
-                getLevelLoader()->getMusic()), -1, 3000);
-    }
+    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+
+    ComponentSound::fadeInMusic(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("tutorial"), -1, 3000
+    );
 }
 
 void ComponentGame::reloadLevel(int level)
@@ -972,7 +1094,7 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
 
     getLevelLoader()->startCountDown();
-    setGameState(EngineSetup::GameState::COUNTDOWN);
+    setGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL);
     getPlayer()->startPlayerBlink();
 }
 
@@ -1006,7 +1128,7 @@ void ComponentGame::handlePressKeyPreviousLevel()
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     shaderColor->setEnabled(false);
-    getFadeToGameState()->setSpeed(FADE_SPEED_PRESSKEY_NEWLEVEL);
+    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
     ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(
             getLevelLoader()->getMusic()), -1, 3000);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
@@ -1025,6 +1147,11 @@ void ComponentGame::handlePressKeyGameOver()
 }
 
 void ComponentGame::handlePressKeyCredits()
+{
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+}
+
+void ComponentGame::handlePressKeyHelp()
 {
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 }
@@ -1089,23 +1216,30 @@ TextWriter *ComponentGame::getTextWriter() {
 
 void ComponentGame::handlePressKeyByWin()
 {
+    getLevelLoader()->getWaitingToWin()->setEnabled(false);
     removeInGameObjects();
 }
 
-VideoPlayer *ComponentGame::getVideoPlayer() {
+VideoPlayer *ComponentGame::getVideoPlayer()
+{
     return videoPlayer;
 }
 
 void ComponentGame::loadGameFonts()
 {
-    std::string file = EngineSetup::get()->FONTS_FOLDER + "Open24DisplaySt.ttf";
-
-    fontGame = TTF_OpenFont(file.c_str(), 50);
+    fontGame = TTF_OpenFont(std::string(EngineSetup::get()->FONTS_FOLDER + "TroubleFont.ttf").c_str(), 50);
 
     if (!fontGame)  {
         Logging::Log(TTF_GetError());
         exit(-1);
     }
+
+    fontGameAlternative = TTF_OpenFont(std::string(EngineSetup::get()->FONTS_FOLDER + "Open24DisplaySt.ttf").c_str(), 50);
+    if (!fontGameAlternative)  {
+        Logging::Log(TTF_GetError());
+        exit(-1);
+    }
+
 }
 
 TTF_Font *ComponentGame::getFontGame() const {
@@ -1119,3 +1253,4 @@ TextureAnimated *ComponentGame::getRadioWave() const {
 Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
     return explosionSpriteTemplate;
 }
+

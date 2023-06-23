@@ -11,10 +11,13 @@
 #include "../weapons/AmmoProjectileBodyEmitter.h"
 #include "../../../include/Physics/RayCollisionable.h"
 #include "../../../include/Physics/ProjectileRay.h"
+#include "../shaders/ShaderZombie.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
     ShaderBlink *blink;
+    ShaderZombie *zombie;
+
     RayLight rayLight;
     Counter counterDamageBlink;
     Counter counterStuck;
@@ -67,6 +70,8 @@ public:
     void onDraw() override;
 
     [[nodiscard]] ParticleEmitter *getParticleEmitter() const;
+
+    void drawCall() override;
 };
 
 

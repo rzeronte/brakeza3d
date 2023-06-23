@@ -617,8 +617,8 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
 
 bool isPixelInWindow(int x, int y, int w, int h)
 {
-    if (x <= 0 || x >= w) return false;
-    if (y <= 0 || y >= h) return false;
+    if (x < 0 || x >= w) return false;
+    if (y < 0 || y >= h) return false;
 
     return true;
 }

@@ -9,14 +9,14 @@
 
 EnemyDialog::EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy, TTF_Font *font)
         :
-        x(x),
-        y(y),
-        staminaPercentage(staminaPercentage),
-        message(message),
-        counter(Counter(ttl)),
-        enemy(enemy),
-        background(new Image(EngineSetup::get()->IMAGES_FOLDER + "dialogBubble.png")),
-        followEnemy(false)
+    x(x),
+    y(y),
+    staminaPercentage(staminaPercentage),
+    message(message),
+    counter(Counter(ttl)),
+    enemy(enemy),
+    background(new Image(EngineSetup::get()->IMAGES_FOLDER + "dialogBubble.png")),
+    followEnemy(false)
 {
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
     writer = new TextWriter(componentWindow->getRenderer(), font);
@@ -40,6 +40,13 @@ void EnemyDialog::onUpdate()
 
     if (!counter.isEnabled() && staminaPercentage <= this->staminaPercentage && counter.getAcumulatedTime() <= counter.getStep() * 0.25f) {
         counter.setEnabled(true);
+
+        int radioMessagesCounter = ComponentsManager::get()->getComponentHUD()->getRadioMessagesCounter();
+
+        y = 90 * radioMessagesCounter + 30  ;
+        Logging::Message("%d ", y);
+
+        ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(radioMessagesCounter + 1);
 
         ComponentSound::playSound(
             ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("radioBeep"),
@@ -68,6 +75,8 @@ void EnemyDialog::onDraw()
 
     if (counter.getAcumulatedTime() >= counter.getStep()) {
         this->setRemoved(true);
+        int radioMessagesCounter = ComponentsManager::get()->getComponentHUD()->getRadioMessagesCounter();
+        ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(radioMessagesCounter - 1);
     }
 
     if (enemy == nullptr || enemy->isRemoved()) return;
@@ -97,6 +106,7 @@ void EnemyDialog::onDraw()
 void EnemyDialog::drawDialog(float alpha)
 {
     if (this->isRemoved()) return;
+    if (this->enemy->isRemoved() || this->enemy == nullptr) return;
 
     int backgroundX = x;
     int backgroundY = y;
@@ -116,7 +126,7 @@ void EnemyDialog::drawDialog(float alpha)
 
     writer->setAlpha(alpha);
     while (std::getline(stream, line)) {
-        writer->writeTextTTFAutoSize(textX, textY, line.c_str(), Color::red(), 0.20f);
+        writer->writeTextTTFAutoSize(textX, textY, line.c_str(), Color::green(), 0.20f);
         textY += lineHeight;
     }
 

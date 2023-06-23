@@ -11,6 +11,7 @@
 #include "src/items/PlayerReflection.h"
 #include "src/shaders/RayLight.h"
 #include "src/shaders/ShaderParticles.h"
+#include "src/shaders/ShaderZombie.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100

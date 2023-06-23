@@ -1,9 +1,9 @@
 {
-  "name": "Level 03",
+  "name": "03",
   "backgroundImage": "levels/03.png",
   "allowGravitionalShield": false,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial03.png",
+  "tutorialImage": ["tutorials/tutorial03.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
@@ -16,8 +16,8 @@
       "stamina": 1000,
       "reward": true,
       "messages": [
-        { "text": "we will end...\nall the humans", "stamina": 75 },
-        { "text": "die!!", "stamina": 25 }
+        { "text": "get out of here! you are\not welcome...", "stamina": 100 },
+        { "text": "go back where you came from!!", "stamina": 50 }
       ],
       "motion": {
         "type": 1,

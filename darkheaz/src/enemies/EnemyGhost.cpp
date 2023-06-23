@@ -51,11 +51,13 @@ EnemyGhost::EnemyGhost() :
 void EnemyGhost::onStart()
 {
     blink = new ShaderBlink(true, this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
+    zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
 }
 
 void EnemyGhost::onUpdate()
 {
     Mesh3DAnimatedGhost::onUpdate();
+    zombie->update();
 
     if (!rotationFrameEnabled) {
         rotateToTarget();
@@ -96,6 +98,7 @@ void EnemyGhost::onUpdate()
     updateLasers();
 
     particleEmitter->onUpdate();
+
 }
 
 void EnemyGhost::onDraw()
@@ -127,9 +130,9 @@ void EnemyGhost::handleDie()
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
     ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
-            EngineSetup::SND_GLOBAL,
-            0
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
+        EngineSetup::SND_GLOBAL,
+        0
     );
     unstuck();
     remove();
@@ -382,7 +385,7 @@ void EnemyGhost::unstuck()
 
 void EnemyGhost::makeExplosion()
 {
-    auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
+    /*auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
 
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
     Vector3D direction(origin, getPosition());
@@ -393,6 +396,7 @@ void EnemyGhost::makeExplosion()
     sprite->setAutoRemoveAfterAnimation(true);
 
     Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    */
 
     Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
 }
@@ -427,4 +431,9 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 ParticleEmitter *EnemyGhost::getParticleEmitter() const {
     return particleEmitter;
+}
+
+void EnemyGhost::drawCall()
+{
+    Object3D::drawCall();
 }

@@ -52,10 +52,10 @@ public:
         std::string output;
 
         switch(weaponType) {
-            case WEAPON_PROJECTILE: { output += Tools::sprintf("%d -  %d", projectilesWasHit, projectiles); break; }
-            case WEAPON_LASER_RAY: { output += Tools::sprintf("%d - %d", rayLaserWasHit, rayLaser); break; }
-            case WEAPON_BOMB: { output += Tools::sprintf("%d - %d", projectilesLaserWasHit, projectilesLaser); break; }
-            case WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%d - %d", bombsWasHit, bombs); break; }
+            case WEAPON_PROJECTILE: { output += Tools::sprintf("%d/%d", projectilesWasHit, projectiles); break; }
+            case WEAPON_LASER_RAY: { output += Tools::sprintf("%d/%d", rayLaserWasHit, rayLaser); break; }
+            case WEAPON_BOMB: { output += Tools::sprintf("%d/%d", projectilesLaserWasHit, projectilesLaser); break; }
+            case WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%d/%d", bombsWasHit, bombs); break; }
             default: break;
         }
 

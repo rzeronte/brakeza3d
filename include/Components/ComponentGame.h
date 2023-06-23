@@ -27,8 +27,15 @@
 #include "../Objects/Swarm.h"
 #include "../../darkheaz/src/shaders/ShaderSwarm.h"
 #include "../../darkheaz/src/shaders/ShaderExplosion.h"
+#include "../../darkheaz/src/shaders/ShaderImageMask.h"
+#include "../../darkheaz/src/shaders/ShaderCRT.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
+#define FREE_LOOK_ENABLED false
+#define SPLASH_TIME 3.0f
+#define FADE_SPEED_FADEOUT_TIME 0.04
+#define FADE_SPEED_MENU_FIRST_TIME 0.003
+#define COUNTDOWN_TO_START 3
 
 class ComponentGame : public Component {
 private:
@@ -115,7 +122,7 @@ public:
 
     void removeProjectiles() const;
 
-    void makeFadeToGameState(EngineSetup::GameState value) const;
+    void makeFadeToGameState(EngineSetup::GameState value, bool blockInput) const;
 
     void setVisibleInGameObjects(bool value);
 
@@ -153,7 +160,7 @@ public:
 
     void handlePressKeyGameOver();
 
-    void handlePressKeyCredits();
+    static void handlePressKeyCredits();
 
     void updateEnemyTargetedCrossFire();
 
@@ -203,9 +210,21 @@ public:
 
     void loadGameFonts();
 
-    TTF_Font *getFontGame() const;
+    [[nodiscard]] TTF_Font *getFontGame() const;
 
-    TextureAnimated *getRadioWave() const;
+    [[nodiscard]] TextureAnimated *getRadioWave() const;
+
+    ShaderExplosion *shaderExplosion;
+
+    void handleTutorialImages(float alpha);
+
+    ShaderImageMask *shaderTutorialMask;
+    ShaderCRT *shaderCRT;
+    Image *boxTutorial;
+
+    void handlePressKeyHelp();
+
+    TTF_Font *fontGameAlternative;
 };
 
 

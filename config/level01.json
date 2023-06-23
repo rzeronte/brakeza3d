@@ -1,15 +1,16 @@
 {
-  "name": "Level 01",
+  "name": "01",
+  "music": "level01Music",
   "backgroundImage": "levels/01.png",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial01.png",
+  "tutorialImage": ["tutorials/tutorial01.png", "tutorials/tutorial01_2.png"],
   "color": { "r": 255, "g": 0, "b": 0 },
   "enemies": [
     {
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 10 },
+      "position": { "x": 50, "y": 20 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
       "animated": false,
@@ -19,9 +20,9 @@
         "type": 6
       },
       "messages": [
-        { "text": "hi? there are someone?\ncan you hear me?", "stamina": 100 },
-        { "text": "cool! keep going!", "stamina": 95 },
-        { "text": "Finish it!", "stamina": 25 }
+        { "text": "Welcome Commander,\nthe ship is ready to start", "stamina": 100 },
+        { "text": "Let's check the firing system.\nGet the ammo and shoot!", "stamina": 80 },
+        { "text": "Well done! continue firing...", "stamina": 75 }
       ]
     }
   ],
@@ -30,12 +31,12 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 50, "y": 35 }
+      "position": { "x": 50, "y": 45 }
     }
   ],
   "background": [
     {
-      "name": "marsh",
+      "name": "Star",
       "model": "marsh.fbx",
       "scale": 15,
       "position": { "x": 50, "y": 50, "z": 20000 },
@@ -43,12 +44,20 @@
       "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
     },
     {
-      "name":	"earth",
-      "position": { "x": 63,  "y":	35, "z": 40000 },
-      "model":	"Earth.fbx",
+      "name":	"Marsh",
+      "position": { "x": 63,  "y":	35, "z": 30000 },
+      "model":	"red_planet.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },
       "scale":	15
+    },
+    {
+      "name": "nave",
+      "position": { "x": 70,  "y":	40, "z": 90000 },
+      "model":	"space_hexagon.fbx",
+      "rotation": { "x": 60, "y": 0,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "scale":	0.6
     }
   ]
 }

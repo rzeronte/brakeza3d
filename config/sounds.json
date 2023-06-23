@@ -49,7 +49,8 @@
 
     { "file": "tic.wav", "label": "tic", "type": "sound" },
 
-    { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" }
+    { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" },
 
+    { "file": "tutorial.mp3", "label": "tutorial", "type": "music" }
   ]
 }

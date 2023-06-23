@@ -24,14 +24,16 @@
 #include <utility>
 
 LevelLoader::LevelLoader(std::string filename)
+:
+    waitingToWin(Counter(3))
 {
     stats = new LevelStats();
 
     addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
-    tutorialImage = new Image(EngineSetup::get()->IMAGES_FOLDER + "brakeza.png");
 
+    waitingToWin.setEnabled(false);
 }
 
 void LevelLoader::load(int levelIndex)
@@ -45,6 +47,7 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
+    ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(0);
 
     loadLevelFromJSON(levels[levelIndex]);
 }
@@ -101,7 +104,10 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     enemiesEmitter.resize(0);
 
-    hasTutorial = false;
+    for (auto tutorial: tutorials) {
+        delete tutorial;
+    }
+    tutorials.resize(0);
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
@@ -129,8 +135,12 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        tutorialImage->setImage(EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")->valuestring);
-        hasTutorial = true;
+        Logging::Message("Loading tutorials");
+        cJSON *currentTutorial;
+        cJSON_ArrayForEach(currentTutorial, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")) {
+            tutorials.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentTutorial->valuestring));
+        }
+        currentTutorialIndex = 0;
     }
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(
@@ -242,14 +252,6 @@ void LevelLoader::setLevelName(const std::string &value) {
 
 Counter * LevelLoader::getCountDown() {
     return &countDown;
-}
-
-bool LevelLoader::isHasTutorial() const {
-    return hasTutorial;
-}
-
-Image* LevelLoader::getTutorialImage() const {
-    return tutorialImage;
 }
 
 void LevelLoader::makeItemHealthGhost(Vertex3D position)
@@ -820,5 +822,36 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
-    Brakeza3D::get()->addObject3D(new EnemyDialog(460, 40, stamina, text.c_str(), 4, enemy, componentGame->getFontGame()), "dialog");
+    Brakeza3D::get()->addObject3D(new EnemyDialog(460, 40, stamina, text.c_str(), 5, enemy, componentGame->getFontGame()), "dialog");
+}
+
+std::vector<Image*> &LevelLoader::getTutorials() {
+    return tutorials;
+}
+
+void LevelLoader::drawCurrentTutorialImage(float alpha)
+{
+    this->tutorials[currentTutorialIndex]->drawFlatAlpha(0, 0, alpha);
+}
+
+void LevelLoader::increaseTutorialImage()
+{
+    if (currentTutorialIndex + 1 < (int) tutorials.size()) {
+        currentTutorialIndex++;
+    }
+}
+
+void LevelLoader::decreaseTutorialImage()
+{
+    if (currentTutorialIndex > 0) {
+        currentTutorialIndex--;
+    }
+}
+
+int LevelLoader::getCurrentTutorialIndex() const {
+    return currentTutorialIndex;
+}
+
+Counter *LevelLoader::getWaitingToWin() {
+    return &waitingToWin;
 }

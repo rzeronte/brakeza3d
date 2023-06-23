@@ -16,6 +16,8 @@ PlayerReflection::PlayerReflection(
 {
     timeToLive.setEnabled(true);
     counterDamageBlink.setEnabled(false);
+    zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
+
 }
 
 void PlayerReflection::onUpdate()
@@ -25,6 +27,8 @@ void PlayerReflection::onUpdate()
     Mesh3DGhost::onUpdate();
 
     timeToLive.update();
+
+    zombie->update();
 }
 
 void PlayerReflection::postUpdate()
@@ -138,7 +142,8 @@ void PlayerReflection::loadBlinkShader()
 
 void PlayerReflection::makeExplosion()
 {
-    auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
+    /*
+     auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
 
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
@@ -150,4 +155,7 @@ void PlayerReflection::makeExplosion()
     sprite->setAutoRemoveAfterAnimation(true);
 
     Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    */
+    
+    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
 }

@@ -84,8 +84,6 @@ void ShaderImage::setImage(const std::string& fileName)
 
 void ShaderImage::refreshBufferImage()
 {
-    clReleaseMemObject(clBufferImage);
-    clBufferImage = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->bufferSize * sizeof(Uint32), this->image.pixels(), nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferImage, CL_TRUE, 0, this->bufferSize * sizeof(Uint32), image.pixels(), 0, nullptr, nullptr );
 }
 

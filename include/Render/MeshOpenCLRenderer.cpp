@@ -17,15 +17,17 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
 {
     clBufferTriangles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
     clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(OCLMeshContext), nullptr, nullptr );
-    clBufferStencil = clCreateBuffer(context, CL_MEM_READ_ONLY, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
+    clBufferStencil = clCreateBuffer(context, CL_MEM_READ_WRITE, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
     clBufferLights = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
 }
 
 void MeshOpenCLRenderer::onUpdate(Texture *texture)
 {
-    meshContext = Tools::openCLMeshContext(object);
 
     if (object->isRemoved()) return;
+    if (!object->isEnabled()) return;
+
+    meshContext = Tools::openCLMeshContext(object);
 
     updateLights();
 
@@ -34,17 +36,17 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
 
     int numLights = (int) oclLights.size();
 
-    clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
+    //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferLights, CL_TRUE, 0, numLights * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
 
     const bool useStencil = object->isStencilBufferEnabled();
     auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
 
-    if (useStencil) {
+    //if (useStencil) {
         cl_int pattern = 0;
         clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
-    }
+    //}
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
@@ -115,6 +117,9 @@ void MeshOpenCLRenderer::makeOCLTriangles()
     for (auto t : this->triangles) {
         oclTriangles.emplace_back(OCVertex3D(t->A), OCVertex3D(t->B), OCVertex3D(t->C));
     }
+
+    clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, triangles.size() * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
+
 }
 
 void MeshOpenCLRenderer::updateLights()
@@ -136,5 +141,17 @@ void MeshOpenCLRenderer::updateLights()
         );
         oclLights.emplace_back(ocl);
     }
+}
+
+cl_mem *MeshOpenCLRenderer::getClBufferTriangles(){
+    return &clBufferTriangles;
+}
+
+cl_mem *MeshOpenCLRenderer::getClBufferMeshContext(){
+    return &clBufferMeshContext;
+}
+
+const std::vector<OCTriangle> &MeshOpenCLRenderer::getOclTriangles() const {
+    return oclTriangles;
 }
 

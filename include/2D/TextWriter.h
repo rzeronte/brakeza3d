@@ -36,6 +36,11 @@ public:
     [[nodiscard]] float getAlpha() const;
 
     void setAlpha(float alpha);
+
+    void setFont(TTF_Font *font);
+
+
+
 };
 
 

@@ -136,7 +136,7 @@ bool Player::takeDamage(float dmg)
             1,
             0
         );
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD);
+        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
         lives--;
@@ -172,7 +172,7 @@ void Player::makeReflection()
     gravityShieldsNumber++;
 
     ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("gravitationalShield"),
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("gravitationalShield"),
         1,
         0
     );

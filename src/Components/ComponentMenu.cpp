@@ -6,20 +6,18 @@
 
 ComponentMenu::ComponentMenu()
 :
-    shaderBackgroundImage(nullptr),
-    title(nullptr),
-    spaceship(nullptr),
-    light(nullptr),
-    pendulum(nullptr),
-    currentOption(0)
+        shaderBackgroundImage(nullptr),
+        planet(nullptr),
+        light(nullptr),
+        pendulum(nullptr),
+        currentOption(0)
 {
 }
 
 ComponentMenu::~ComponentMenu()
 {
     delete shaderBackgroundImage;
-    delete spaceship;
-    delete title;
+    delete planet;
     delete light;
     delete pendulum;
 }
@@ -41,33 +39,34 @@ void ComponentMenu::onStart()
     light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
     Brakeza3D::get()->addObject3D(light, "lightMenu");
 
-    shaderBackgroundImage = new ShaderImage(SETUP->IMAGES_FOLDER + "menu_background.png");
+    shaderBackgroundImage = new ShaderImage(SETUP->IMAGES_FOLDER + "menuBackground.png");
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
 
-    title = new Image(SETUP->IMAGES_FOLDER + "title.png");
+    shaderMenuTitle = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "menuTitle.png", SETUP->IMAGES_FOLDER + "menuTitleMask.png");
+    border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
+
 }
 
 void ComponentMenu::loadDecorative3DMesh()
 {
-    spaceship = new Mesh3D();
-    spaceship->setEnabled(true);
-    spaceship->setAlpha(2555);
-    spaceship->setEnableLights(true);
-    spaceship->setPosition(Vertex3D(1800, -1000, 3000));
-    spaceship->setRotationFrameEnabled(true);
-    spaceship->setRotationFrame(Vertex3D(0, 0.1, 0));
-    spaceship->setRotation(-30, 0, 0);
-    spaceship->setScale(6);
-    spaceship->setStencilBufferEnabled(true);
-    spaceship->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "Earth.fbx"));
-    spaceship->updateBoundingBox();
-    Brakeza3D::get()->addObject3D(spaceship, "spaceshipMenu");
+    planet = new Mesh3D();
+    planet->setEnabled(false);
+    planet->setAlpha(255);
+    planet->setEnableLights(false);
+    planet->setPosition(Vertex3D(-1540, 17000, 30000));
+    planet->setRotationFrameEnabled(true);
+    planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
+    planet->setRotation(0, 0, 0);
+    planet->setScale(61.9);
+    planet->setStencilBufferEnabled(true);
+    planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_planet.fbx"));
+    planet->updateBoundingBox();
+    Brakeza3D::get()->addObject3D(planet, "planetMenu");
 
     pendulum = new SimplePendulum(0, 1, 1000, 0.0);
     pendulum->setRotation(295, 30, -20);
 }
-
 
 void ComponentMenu::preUpdate()
 {
@@ -75,10 +74,7 @@ void ComponentMenu::preUpdate()
         return;
     }
 
-    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
-    title->drawFlatAlpha(0, 0, alpha);
     shaderBackgroundImage->update();
-
 }
 
 void ComponentMenu::onUpdate()
@@ -90,9 +86,16 @@ void ComponentMenu::onUpdate()
     pendulum->onUpdate();
     //spaceship->setRotation(pendulum->pendulumRotation);
 
-
     drawOptions();
     drawVersion();
+    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
+
+    ComponentsManager::get()->getComponentGame()->shaderTutorialMask->setMaxAlpha(alpha);
+    ComponentsManager::get()->getComponentGame()->shaderTutorialMask->update();
+    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha * 0.90f);
+    shaderMenuTitle->update();
+    border->drawFlatAlpha(0, 0, alpha);
+
 }
 
 void ComponentMenu::postUpdate()
@@ -134,13 +137,13 @@ void ComponentMenu::loadMenuOptions()
     cJSON_Delete(currentLoadingOption);
 }
 
-void ComponentMenu::drawOptions() {
-
+void ComponentMenu::drawOptions()
+{
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto levelInfo = componentGame->getLevelLoader();
 
     int offsetY = 140;
-    int stepY = 50;
+    int stepY = 40;
 
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();
@@ -150,17 +153,23 @@ void ComponentMenu::drawOptions() {
         }
 
         auto color = ComponentsManager::get()->getComponentGame()->getPrimaryColor();
+        float currentAlpha = componentGame->getTextWriter()->getAlpha();
+
         if (i == currentOption) {
-            color = Color::black();
+            float currentSelectionAlpha = 0.5f * (float) (1+sin(5 * PI * Brakeza3D::get()->getExecutionTime()));
+            componentGame->getTextWriter()->setAlpha(currentAlpha * currentSelectionAlpha);
         }
 
-        componentGame->getTextWriter()->writeTextTTFAutoSize(
-            30,
+        componentGame->getTextWriter()->writeTTFCenterHorizontal(
             stepY + offsetY,
             text.c_str(),
             color,
             0.5
         );
+
+        if (i == currentOption) {
+            componentGame->getTextWriter()->setAlpha(currentAlpha);
+        }
 
         offsetY += stepY;
     }
@@ -171,16 +180,15 @@ void ComponentMenu::setEnabled(bool value)
     Component::setEnabled(value);
 
     light->setEnabled(value);
-    spaceship->setEnabled(value);
+    planet->setEnabled(value);
 }
 
 void ComponentMenu::drawVersion()
 {
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTextTTFAutoSize(
-        520,
+    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
         455,
         "brakeza.com",
-        ComponentsManager::get()->getComponentGame()->getSecondaryColor(),
+        ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
         0.3
     );
 }

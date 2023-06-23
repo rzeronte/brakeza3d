@@ -47,7 +47,6 @@ typedef enum {
     ROTATE_FRAME = 6
 } EnemyBehaviorTypes;
 
-#define COUNTDOWN_TO_START 3
 
 class LevelLoader {
 public:
@@ -58,8 +57,9 @@ public:
     Weapon *parseWeaponJSON(cJSON *weaponJson);
 
     Counter countDown;
-    Image *tutorialImage;
-    bool hasTutorial;
+    std::vector<Image*> tutorials;
+    int currentTutorialIndex;
+
     bool endLevel;
     LevelStats *stats;
     std::vector<Object3D*> objectsBackground;
@@ -73,6 +73,8 @@ private:
     int currentLevelIndex;
     bool levelStartedToPlay;
     bool levelFinished;
+
+    Counter waitingToWin;
 public:
 
     [[nodiscard]] bool isLevelStartedToPlay() const;
@@ -98,10 +100,6 @@ public:
     void setLevelName(const std::string &levelName);
 
     Counter * getCountDown();
-
-    [[nodiscard]] bool isHasTutorial() const;
-
-    [[nodiscard]] Image * getTutorialImage() const;
 
     static void makeItemHealthGhost(Vertex3D position);
 
@@ -160,6 +158,18 @@ public:
     void moveBackgroundObjects(Vertex3D offset);
 
     static void parseMessageJSON(cJSON *pJson, EnemyGhost *pGhost);
+
+    [[nodiscard]] std::vector<Image*> &getTutorials();
+
+    void drawCurrentTutorialImage(float alpha);
+
+    void increaseTutorialImage();
+
+    void decreaseTutorialImage();
+
+    [[nodiscard]] int getCurrentTutorialIndex() const;
+
+    [[nodiscard]] Counter *getWaitingToWin();
 };
 
 

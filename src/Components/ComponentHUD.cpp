@@ -32,13 +32,21 @@ void ComponentHUD::preUpdate()
 void ComponentHUD::onUpdate()
 {
     if (!isEnabled()) return;
-    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlat(0, 0);
+     const float alpha = ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha();
+
+    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlatAlpha(0, 0, alpha);
 
     if (SETUP->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
     }
 
-    ComponentsManager::get()->getComponentHUD()->drawShaderLasers();
+    auto stamina = HUDTextures->getTextureByLabel("staminaIcon")->getImage();
+    auto energy = HUDTextures->getTextureByLabel("energyIcon")->getImage();
+
+    stamina->drawFlatAlpha(50, this->offsetY, alpha);
+    energy->drawFlatAlpha(50, this->offsetY + playerBarSeparation, alpha);
+
+    drawShaderLasers();
 }
 
 void ComponentHUD::postUpdate()
@@ -70,6 +78,8 @@ void ComponentHUD::loadImages()
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_bronze.png", "medalBronze");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_silver.png", "medalSilver");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_gold.png", "medalGold");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "energy.png", "energyIcon");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "stamina.png", "staminaIcon");
 }
 
 void ComponentHUD::drawHUD()
@@ -79,10 +89,9 @@ void ComponentHUD::drawHUD()
 
     drawIconWeaponAndLevelName();
 
-
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(
-            5,
+            10,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
             componentManager->getComponentGame()->getPrimaryColor(),
             0.3
@@ -117,31 +126,45 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
 
-    player->getWeapon()->getIcon()->drawFlat(470, 440);
+    // weapon icon
+    player->getWeapon()->getIcon()->drawFlatAlpha(280, this->offsetY, 255);
 
+    // ammo amount
     textWriter->writeTextTTFAutoSize(
-        510,
-        435,
-        std::to_string(player->getWeapon()->getAmmoAmount()).c_str(),
-        game->getSecondaryColor(),
-        0.50
-    );
-
-    textWriter->writeTextTTFAutoSize(
-        510,
-        462,
-        game->getLevelLoader()->getLevelName().c_str(),
+        280,
+        this->offsetY + player->getWeapon()->getIcon()->height(),
+        (std::string("x") + std::to_string(player->getWeapon()->getAmmoAmount())).c_str(),
         game->getPrimaryColor(),
         0.25
     );
 
-    if (player->isAllowedMakeReflections()) {
-        auto reflectionImage = HUDTextures->getTextureByLabel("reflectionIcon")->getImage();
-        int reflectionsNumber = MAX_REFLECTIONS - (int) player->getGravityShieldsNumber();
-        for (int i = 0; i < reflectionsNumber; i++) {
-            reflectionImage->drawFlat(5 + reflectionImage->width() * i, 440);
-        }
+    // level number
+    textWriter->writeTextTTFAutoSize(
+        340,
+        this->offsetY - 10,
+        game->getLevelLoader()->getLevelName().c_str(),
+        game->getPrimaryColor(),
+        0.7
+    );
+
+    // icon player reflection
+    float reflectionAlpha = 75  ;
+    auto reflectionImage = HUDTextures->getTextureByLabel("reflectionIcon")->getImage();
+    int reflectionsNumber = MAX_REFLECTIONS - (int) player->getGravityShieldsNumber();
+    if (player->isAllowedMakeReflections() && reflectionsNumber > 0) {
+        reflectionAlpha = 255;
+
+        textWriter->writeTextTTFAutoSize(
+            310,
+            this->offsetY + reflectionImage->height(),
+            (std::string("x") + std::to_string(reflectionsNumber)).c_str(),
+            game->getPrimaryColor(),
+            0.25
+        );
     }
+
+    reflectionImage->drawFlatAlpha(310, this->offsetY, reflectionAlpha);
+
 }
 
 int ComponentHUD::getButtonsOffsetY()
@@ -154,17 +177,18 @@ int ComponentHUD::getButtonsOffsetY()
 void ComponentHUD::drawShaderLasers()
 {
     const auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
-    const float fixedWidth = 1.0;
+    const float fixedWidth = 1.0f;
     const float health = ((float) player->getStamina() * fixedWidth) / (float) player->getStartStamina();
     const float energy = (player->getEnergy() * fixedWidth) / player->getStartEnergy();
 
-    const int startPositionX = 110;
-    const int width = 350;
-    const float stroke = 0.05;
+    const int startPositionX = 70.0f;
+    const int width = 195.0f;
+    const float stroke = 0.15f;
+    const float topBarMargin = 5;
 
     shaderLasers->addLaser(
-        startPositionX, 445,
-        startPositionX + (int) (width * health), 445 ,
+        startPositionX, this->offsetY + topBarMargin,
+        startPositionX + (int) (width * health), this->offsetY + topBarMargin,
         255, 0, 0,
         stroke,
         false,
@@ -172,8 +196,8 @@ void ComponentHUD::drawShaderLasers()
     );
 
     shaderLasers->addLaser(
-        startPositionX, 465,
-        startPositionX + (int) (width * energy), 465,
+        startPositionX, this->offsetY + playerBarSeparation + topBarMargin,
+        startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin,
         0, 255, 0,
         stroke,
         false,
@@ -186,14 +210,20 @@ void ComponentHUD::drawShaderLasers()
     if (enemy != nullptr) {
         const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
 
+        const int positionLaserX = 430;
+        const int positionLaserY = this->offsetY + topBarMargin;
+        const int width = 150;
+
         shaderLasers->addLaser(
-            90, 12,
-            90 + (int) (460 * enemyHealth), 12,
+            positionLaserX, positionLaserY,
+            positionLaserX + (int) (width * enemyHealth), positionLaserY        ,
             255, 0, 0,
             stroke,
             false,
             false
         );
+
+        enemy->getAvatar()->drawFlatAlpha(390, this->offsetY, 255);
     }
 
     shaderLasers->update();
@@ -207,4 +237,12 @@ ComponentHUD::~ComponentHUD()
 
 TexturePackage *ComponentHUD::getHudTextures() const {
     return HUDTextures;
+}
+
+int ComponentHUD::getRadioMessagesCounter() const {
+    return radioMessagesCounter;
+}
+
+void ComponentHUD::setRadioMessagesCounter(int radioMessagesCounter) {
+    ComponentHUD::radioMessagesCounter = radioMessagesCounter;
 }
