@@ -104,7 +104,7 @@ void ComponentWindow::initFontsTTF()
         Logging::Log(TTF_GetError());
         exit(-1);
     }
-    std::string pathFont = SETUP->FONTS_FOLDER + "kremlin.ttf";
+    std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
     Logging::Log("Loading FONT: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 50);

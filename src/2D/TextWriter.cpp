@@ -109,3 +109,7 @@ TextWriter::~TextWriter()
 {
 }
 
+void TextWriter::setFont(TTF_Font *font) {
+    TextWriter::font = font;
+}
+
