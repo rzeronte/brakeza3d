@@ -1,7 +1,6 @@
 #include "../../include/Components/ComponentGameInput.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
-#include "../../darkheaz/src/shaders/ShockWave.h"
 
 ComponentGameInput::ComponentGameInput() : controllerAxisThreshold(0.1), lockRightStick(false)
 {
@@ -74,14 +73,19 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto game = ComponentsManager::get()->getComponentGame();
+    auto componentSound = ComponentsManager::get()->getComponentSound();
+
     auto gameState = game->getGameState();
 
     if (
         (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
     ) {
+        ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
         if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
-            game->makeFadeToGameState(EngineSetup::GameState::GAMING);
+            game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+            game->makeFadeToGameState(EngineSetup::GameState::GAMING, true);
             return;
         }
 
@@ -96,7 +100,8 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
         ) return;
 
-        game->makeFadeToGameState(EngineSetup::GameState::MENU);
+        game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+        game->makeFadeToGameState(EngineSetup::GameState::MENU, true);
 
         SDL_WarpMouseInWindow(
             ComponentsManager::get()->getComponentWindow()->getWindow(),
@@ -112,6 +117,8 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
+    auto componentSound = ComponentsManager::get()->getComponentSound();
+
     auto menuOptions = componentMenu->getOptions();
 
     int currentOption = componentMenu->getCurrentOption();
@@ -122,22 +129,14 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("soundMenuClick"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
     if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("soundMenuClick"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
@@ -153,11 +152,14 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
-            componentGame->makeFadeToGameState(EngineSetup::GameState::HELP);
+            componentGame->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+
+            componentGame->makeFadeToGameState(EngineSetup::GameState::HELP, true);
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_CREDITS) {
-            componentGame->makeFadeToGameState(EngineSetup::GameState::CREDITS);
+            componentGame->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+            componentGame->makeFadeToGameState(EngineSetup::GameState::CREDITS, true);
         }
     }
 }
@@ -422,9 +424,12 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto player = componentGame->getPlayer();
 
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA()) {
+    if ((event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA()) ||
+        (event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_P])
+    ) {
         if (player->isAllowedMakeReflections()) {
             player->makeReflection();
         }
@@ -434,16 +439,37 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 {
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    bool isButtonGuidedPressed = (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE);
+    bool isButtonGuidedPressed = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
+    auto componentSound = ComponentsManager::get()->getComponentSound();
+
+    bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+    bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+
+    bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
+    bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
+    bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) &&
-        (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
+        (enter || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForWin();
     }
 
-    if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL) &&
-        (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
-        ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
+    if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
+        if (isButtonGuidedPressed || enter) {
+            ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
+        }
+
+        if (cursorLeft || controllerLeft) {
+            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentGame()->getLevelLoader()->decreaseTutorialImage();
+        }
+
+        if (cursorRight || controllerRight) {
+            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentGame()->getLevelLoader()->increaseTutorialImage();
+        }
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {

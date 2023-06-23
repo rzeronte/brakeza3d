@@ -148,7 +148,6 @@ public:
     std::string CFG_SOUNDS = "sounds.json";
 
     std::string CONCHARS_SPRITE_FILE = "conchars.png";
-    std::string DEFAULT_SHADER_BACKGROUND_IMAGE = "background_scrollable.png";
     std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
 
     std::string LOGO_BRAKEZA = "logo.png";

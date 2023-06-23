@@ -53,6 +53,12 @@ public:
     cl_mem clBufferStencil;
 
     void updateLights();
+
+    cl_mem *getClBufferTriangles();
+
+    cl_mem *getClBufferMeshContext();
+
+    [[nodiscard]] const std::vector<OCTriangle> &getOclTriangles() const;
 };
 
 

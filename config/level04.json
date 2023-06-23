@@ -1,5 +1,5 @@
 {
-  "name": "Level 04",
+  "name": "04",
   "backgroundImage": "levels/04.png",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
@@ -96,7 +96,7 @@
       "name": "marsh",
       "model": "marsh.fbx",
       "scale": 20,
-      "position": { "x": 50, "y": 50, "z": 40000 },
+      "position": { "x": 75, "y": 50, "z": 40000 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
     }

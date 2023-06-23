@@ -75,6 +75,7 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
 
     return (rb & 0xff00ff) | (g & 0xff00);
 }
+
 unsigned int calculateAlpha(int blurAmount, int numBlended) {
     if (blurAmount == 0) {
         return 255;

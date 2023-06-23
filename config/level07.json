@@ -1,5 +1,5 @@
 {
-  "name": "Level 07",
+  "name": "07",
   "backgroundImage": "levels/07.png",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
@@ -121,5 +121,13 @@
     }
   ],
   "background": [
+    {
+      "name": "nave",
+      "position": { "x": 50,  "y":	80, "z": 40000 },
+      "model":	"red_planet.fbx",
+      "rotation": { "x": 60, "y": 0,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "scale":	55
+    }
   ]
 }

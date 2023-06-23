@@ -96,7 +96,7 @@ public:
         FaderToGameStates::direction = direction;
     }
 
-    EngineSetup::GameState getGameStateWhenEnds() const {
+    [[nodiscard]] EngineSetup::GameState getGameStateWhenEnds() const {
         return gameStateWhenEnds;
     }
 

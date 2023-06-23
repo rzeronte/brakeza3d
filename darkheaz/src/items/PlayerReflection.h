@@ -10,6 +10,7 @@
 #include "../../../include/Misc/Counter.h"
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../shaders/ShaderShockWave.h"
+#include "../shaders/ShaderZombie.h"
 
 class PlayerReflection : public Mesh3DGhost {
 private:
@@ -19,6 +20,7 @@ private:
     Counter counterDamageBlink;
     bool hidden;
     Counter timeToLive;
+    ShaderZombie *zombie;
 public:
     PlayerReflection(float stamina, float ttl);
 

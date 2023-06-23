@@ -12,19 +12,21 @@
 #include "../Objects/Mesh3DAnimated.h"
 #include "../Physics/Mesh3DAnimatedGhost.h"
 #include "../Physics/SimplePendulum.h"
-
-#define MAX_MENU_OPTIONS 10
+#include "../../darkheaz/src/shaders/ShaderImageMask.h"
 
 class ComponentMenu : public Component {
 private:
     ShaderImage *shaderBackgroundImage;
-    Image *title;
-    Mesh3D *spaceship;
+    ShaderImageMask *shaderMenuTitle;
+
+    Mesh3D *planet;
+
     LightPoint3D *light;
     SimplePendulum *pendulum;
 
     std::vector<MenuOption> options;
     int currentOption;
+    Image *border;
 public:
     ComponentMenu();
 

@@ -19,8 +19,10 @@ private:
     std::vector<Button*> buttons;
     ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
+    int radioMessagesCounter = 0;
+    int offsetY = 435;
+    int playerBarSeparation = 15;
 public:
-
     ComponentHUD();
 
     virtual ~ComponentHUD();
@@ -53,8 +55,11 @@ public:
 
     void drawShaderLasers();
 
-    TexturePackage *getHudTextures() const;
+    [[nodiscard]] TexturePackage *getHudTextures() const;
 
+    int getRadioMessagesCounter() const;
+
+    void setRadioMessagesCounter(int radioMessagesCounter);
 };
 
 

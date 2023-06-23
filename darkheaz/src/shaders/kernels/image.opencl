@@ -11,14 +11,14 @@ float2 wrap(float2 uv, float2 resolution)
 }
 
 __kernel void onUpdate(
-        int screenWidth,
-        int screenHeight,
-        float iTime,
-        __global unsigned int *video,
-        __global unsigned int *image,
-        int usingOffset,
-        float offsetX,
-        float offsetY
+    int screenWidth,
+    int screenHeight,
+    float iTime,
+    __global unsigned int *video,
+    __global unsigned int *image,
+    int usingOffset,
+    float offsetX,
+    float offsetY
 )
 {
     int i = get_global_id(0);
@@ -45,8 +45,8 @@ __kernel void onUpdate(
 
     st = wrap(st, resolution);
 
-    int cx = (int)(st.x * resolution.x);
-    int cy = (int)(st.y * resolution.y);
+    int cx = (int) (st.x * resolution.x);
+    int cy = (int) (st.y * resolution.y);
 
     if (cx < 0) cx = 0;
     if (cx >= screenWidth) cx = screenWidth - 1;
@@ -62,10 +62,11 @@ __kernel void onUpdate(
     float t = s * c;
 
     video[i] = createRGB(
-            min((int)(im[0] * (1.0f - s * 0.5f)), 200),
-            min((int)(im[1] * (1.0f - c * 0.5f)), 200),
-            min((int)(im[2] * (1.0f - t * 0.5f)), 200)
+        min((int) (im[0] * (1.0f - s * 0.5f)), 200),
+        min((int) (im[1] * (1.0f - c * 0.5f)), 200),
+        min((int) (im[2] * (1.0f - t * 0.5f)), 200)
     );
+
 }
 
 unsigned int createRGB(int r, int g, int b)
