@@ -18,6 +18,7 @@ class ShaderImageMask : public ShaderOpenCL {
 
 public:
     ShaderImageMask(bool active, const std::string& imageFilename, const std::string& maskFilename);
+
     void executeKernelOpenCL();
 
     void update() override;

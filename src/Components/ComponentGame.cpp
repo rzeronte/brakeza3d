@@ -24,8 +24,8 @@ ComponentGame::ComponentGame()
     shaderColor(nullptr),
     shaderShockWave(nullptr),
     gameState(EngineSetup::GameState::NONE),
-    primaryColor(Color(24, 100, 5)),
-    secondaryColor(Color(1, 179, 52)),
+    primaryColor(Color(118, 185, 32)),
+    secondaryColor(Color(118, 185, 32)),
     thirdColor(Color(0, 0, 255))
 {
 }
@@ -110,7 +110,7 @@ void ComponentGame::onStart()
     );
     shaderExplosion->setIntensity(1);
 
-    shaderTutorialMask = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
+    dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
     boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorials/tutorial_box.png");
 
     shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
@@ -169,7 +169,6 @@ void ComponentGame::preUpdate()
 
     getPlayer()->updateWeaponInteractionStatus();
 
-
     textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
 
     switch(gameState) {
@@ -184,11 +183,32 @@ void ComponentGame::preUpdate()
             break;
         }
         case EngineSetup::HELP: {
-            imageHelp->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+            imageHelp->drawFlatAlpha(0, 0, alpha);
+
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
         }
         case EngineSetup::CREDITS: {
-            imageCredits->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            imageCredits->drawFlatAlpha(0, 0, alpha);
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
@@ -207,6 +227,7 @@ void ComponentGame::preUpdate()
         case EngineSetup::SPLASH:
         case EngineSetup::MENU:
             break;
+
     }
 }
 
@@ -222,7 +243,6 @@ void ComponentGame::onUpdate()
     switch(gameState) {
         case EngineSetup::PRESS_KEY_NEWLEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
-            textWriter->writeTTFCenterHorizontal(400, "press a ENTER to START...", primaryColor, 0.5f);
             handleTutorialImages(255);
             break;
         }
@@ -249,7 +269,7 @@ void ComponentGame::onUpdate()
             // Establece el alfa en función de la proporción de tiempo restante
             textWriter->setAlpha(timeRatio * 255);
 
-            textWriter->writeTTFCenterHorizontal(120, std::to_string(restTime).c_str(), Color::red(), 3);
+            textWriter->writeTTFCenterHorizontal(120, std::to_string(restTime).c_str(), secondaryColor, 3);
 
             getLevelLoader()->getCountDown()->update();
 
@@ -261,9 +281,21 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::PRESS_KEY_BY_WIN: {
-            showLevelStatistics();
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+            showLevelStatistics(alpha);
             break;
         }
+        case EngineSetup::GAMING_TUTORIAL:
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            help->drawFlatAlpha(0, 0, alpha);
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+            textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
+            break;
     }
 }
 
@@ -273,15 +305,18 @@ void ComponentGame::handleTutorialImages(float alpha)
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
-        textWriter->writeTTFCenterHorizontal(325, message.c_str(), Color::yellow(), 0.3f);
-        shaderTutorialMask->setMaxAlpha((int) alpha);
-        shaderTutorialMask->update();
-        boxTutorial->drawFlatAlpha(0, 0, alpha);
+        textWriter->writeTTFCenterHorizontal(325, message.c_str(), primaryColor, 0.3f);
         getLevelLoader()->drawCurrentTutorialImage(alpha);
+        dialogBackground->setMaxAlpha((int) alpha);
+        dialogBackground->update();
+        boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+        textWriter->writeTTFCenterHorizontal(360, "Press ENTER to start...", Color::black(), 0.2);
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
         shaderCRT->update();
+
     }
 }
 
@@ -296,10 +331,9 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
     }
 }
 
-void ComponentGame::showLevelStatistics()
+void ComponentGame::showLevelStatistics(float alpha)
 {
-    const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-    textWriter->writeTTFCenterHorizontal(115, "congratulations! mission done...", primaryColor, 0.4);
+    textWriter->writeTTFCenterHorizontal(115, "congratulations! Mission done", primaryColor, 0.4);
 
     textWriter->setFont(fontGameAlternative);
 
@@ -330,14 +364,17 @@ void ComponentGame::showLevelStatistics()
 
     textWriter->setFont(fontGame);
 
-    textWriter->writeTTFCenterHorizontal(350, "press a ENTER to START...", primaryColor, 0.5f);
+    //textWriter->writeTTFCenterHorizontal(350, "Press ENTER to START!", primaryColor, 0.5f);
 
-    shaderTutorialMask->setMaxAlpha(alpha);
-    shaderTutorialMask->update();
+    dialogBackground->setMaxAlpha(alpha);
+    dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha);
 
     shaderCRT->setMaxAlpha(alpha);
     shaderCRT->update();
+
+    textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
+
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -400,15 +437,11 @@ void ComponentGame::checkForEndLevel()
 
         auto waiting = getLevelLoader()->getWaitingToWin();
         waiting->update();
-        Logging::Message("entro");
         if (!waiting->isEnabled()) {
-            Logging::Message("enabilizo");
             waiting->setEnabled(true);
         }
 
         if (waiting->isFinished()) {
-            Logging::Message("final");
-
             getPlayer()->setKillsCounter(0);
             getLevelLoader()->setLevelFinished(true);
             getLevelLoader()->setLevelStartedToPlay(false);
@@ -467,6 +500,9 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             break;
         case EngineSetup::PRESS_KEY_BY_WIN:
             handlePressKeyByWin();
+            break;
+        case EngineSetup::GAMING_TUTORIAL:
+            handleGoIntoGamingTutorial();
             break;
     }
 
@@ -558,7 +594,6 @@ void ComponentGame::loadPlayer()
     Brakeza3D::get()->addObject3D(player, "player");
 
     // load in this point because alpha is not working if is load previous (todo)
-    player->loadShieldModel();
     player->loadShaders();
     player->loadReflection();
 
@@ -912,6 +947,11 @@ void ComponentGame::pressedKeyForNewGame()
 void ComponentGame::pressedKeyForWin()
 {
     makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL, true);
+    ComponentSound::playSound(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
 }
 
 void ComponentGame::pressedKeyForBeginLevel()
@@ -975,7 +1015,8 @@ void ComponentGame::shaderBackgroundUpdate() {
         gameState == EngineSetup::PRESS_KEY_BY_DEAD ||
         gameState == EngineSetup::PRESS_KEY_NEWLEVEL ||
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
-        gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL
+        gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
+        gameState == EngineSetup::GAMING_TUTORIAL
     ) {
         shaderBackgroundImage->update();
     }
@@ -1069,6 +1110,12 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("tutorial"), -1, 3000
     );
+
+    ComponentSound::playSound(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("crt"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
 }
 
 void ComponentGame::reloadLevel(int level)
@@ -1143,17 +1190,16 @@ void ComponentGame::handlePressKeyGameOver()
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-
 }
 
 void ComponentGame::handlePressKeyCredits()
 {
-    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
 }
 
 void ComponentGame::handlePressKeyHelp()
 {
-    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+    ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
 }
 
 const Color &ComponentGame::getPrimaryColor() const {
@@ -1252,5 +1298,29 @@ TextureAnimated *ComponentGame::getRadioWave() const {
 
 Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
     return explosionSpriteTemplate;
+}
+
+void ComponentGame::handleGoIntoGamingTutorial()
+{
+    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
+        auto enemy = dynamic_cast<EnemyGhost *> (object);
+
+        if (enemy != nullptr) {
+            if (enemy->getBehavior() != nullptr) {
+                enemy->getBehavior()->setEnabled(false);
+            }
+        }
+    }
+}
+
+void ComponentGame::setHelp(Image *help)
+{
+    ComponentGame::help = help;
+
+    ComponentSound::playSound(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("crt"),
+        EngineSetup::SoundChannels::SND_GLOBAL,
+        0
+    );
 }
 

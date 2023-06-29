@@ -12,6 +12,7 @@
 #include "src/shaders/RayLight.h"
 #include "src/shaders/ShaderParticles.h"
 #include "src/shaders/ShaderZombie.h"
+#include "src/shaders/ShaderEnergyShield.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -74,12 +75,13 @@ private:
     std::vector<Weapon *> weaponTypes;
     int currentWeaponIndex;
 
-    Mesh3D shieldModel;
     PlayerReflection reflection;
 
     ShaderParticles *shaderParticles;
 
     Image *avatar;
+    Image *shield;
+    ShaderEnergyShield *shaderEnergyShield;
 public:
 
     Player();
@@ -176,8 +178,6 @@ public:
 
     void setGravityShieldsNumber(int gravityShieldsNumber);
 
-    void loadShieldModel();
-
     void nextWeapon();
 
     void previousWeapon();
@@ -211,8 +211,6 @@ public:
     void updateWeaponAutomaticStatus();
 
     [[nodiscard]] RayLight &getShaderLaser();
-
-    [[nodiscard]] Mesh3D *getShieldModel();
 
     [[nodiscard]] PlayerReflection *getReflection();
 

@@ -4,8 +4,9 @@
 
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../weapons/Weapon.h"
+#include "ItemWithTutorial.h"
 
-class ItemWeaponGhost : public Mesh3DGhost {
+class ItemWeaponGhost : public Mesh3DGhost, public ItemWithTutorial  {
 public:
     explicit ItemWeaponGhost(Weapon *weaponType);
 

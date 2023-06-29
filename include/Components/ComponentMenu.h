@@ -27,6 +27,7 @@ private:
     std::vector<MenuOption> options;
     int currentOption;
     Image *border;
+    bool menuEnabled;
 public:
     ComponentMenu();
 
@@ -63,6 +64,12 @@ public:
     void increaseMenuOption();
 
     void decreaseMenuOption();
+
+    void setMenuEnabled(bool menuEnabled);
+
+    bool isMenuEnabled() const;
+
+    Image *getBorder() const;
 
     enum MenuActions {
         MNU_NEW_GAME = 0,

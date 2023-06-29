@@ -3,15 +3,16 @@
 
 
 #include "../../../include/Physics/Mesh3DGhost.h"
+#include "ItemWithTutorial.h"
 
-class ItemHealthGhost : public Mesh3DGhost {
+class ItemHealthGhost : public Mesh3DGhost, public ItemWithTutorial  {
     float aid;
 public:
     ItemHealthGhost();
 
     void setAid(float aid);
 
-    float getAid() const;
+    [[nodiscard]] float getAid() const;
 
     void resolveCollision(Collisionable *collisionable) override;
 

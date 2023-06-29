@@ -94,7 +94,6 @@ void ComponentRender::onUpdate()
     if (EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
         shaderBilinear->update();
     }
-
 }
 
 void ComponentRender::postUpdate()

@@ -99,6 +99,10 @@ void EnemyGhost::onUpdate()
 
     particleEmitter->onUpdate();
 
+    for ( auto dialog: dialogs) {
+        const float staminaPercentage = (getStamina() * 100) / getStartStamina();
+        dialog->onUpdate(staminaPercentage);
+    }
 }
 
 void EnemyGhost::onDraw()
@@ -116,6 +120,10 @@ void EnemyGhost::onDraw()
 
     particleEmitter->drawCall();
     particleEmitter->setStopAdd(true);
+
+    for ( auto dialog: dialogs) {
+        dialog->onDraw(getAvatar(), getPosition());
+    }
 }
 
 void EnemyGhost::handleDie()

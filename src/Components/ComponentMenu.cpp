@@ -6,11 +6,12 @@
 
 ComponentMenu::ComponentMenu()
 :
-        shaderBackgroundImage(nullptr),
-        planet(nullptr),
-        light(nullptr),
-        pendulum(nullptr),
-        currentOption(0)
+    shaderBackgroundImage(nullptr),
+    planet(nullptr),
+    light(nullptr),
+    pendulum(nullptr),
+    currentOption(0),
+    menuEnabled(false)
 {
 }
 
@@ -79,9 +80,7 @@ void ComponentMenu::preUpdate()
 
 void ComponentMenu::onUpdate()
 {
-    if (!isEnabled()) {
-        return;
-    }
+    if (!isEnabled()|| !isMenuEnabled()) return;
 
     pendulum->onUpdate();
     //spaceship->setRotation(pendulum->pendulumRotation);
@@ -90,12 +89,12 @@ void ComponentMenu::onUpdate()
     drawVersion();
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
 
-    ComponentsManager::get()->getComponentGame()->shaderTutorialMask->setMaxAlpha(alpha);
-    ComponentsManager::get()->getComponentGame()->shaderTutorialMask->update();
+    ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
+    ComponentsManager::get()->getComponentGame()->dialogBackground->update();
     ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha * 0.90f);
-    shaderMenuTitle->update();
-    border->drawFlatAlpha(0, 0, alpha);
 
+    border->drawFlatAlpha(0, 0, alpha);
+    shaderMenuTitle->update();
 }
 
 void ComponentMenu::postUpdate()
@@ -145,6 +144,7 @@ void ComponentMenu::drawOptions()
     int offsetY = 140;
     int stepY = 40;
 
+    auto color = Color(118, 185, 32);
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();
 
@@ -152,7 +152,6 @@ void ComponentMenu::drawOptions()
             text = this->options[ComponentMenu::MNU_NEW_GAME].getAlt();
         }
 
-        auto color = ComponentsManager::get()->getComponentGame()->getPrimaryColor();
         float currentAlpha = componentGame->getTextWriter()->getAlpha();
 
         if (i == currentOption) {
@@ -181,6 +180,7 @@ void ComponentMenu::setEnabled(bool value)
 
     light->setEnabled(value);
     planet->setEnabled(value);
+    setMenuEnabled(value);
 }
 
 void ComponentMenu::drawVersion()
@@ -216,3 +216,14 @@ std::vector<MenuOption> &ComponentMenu::getOptions()
     return options;
 }
 
+void ComponentMenu::setMenuEnabled(bool menuEnabled) {
+    ComponentMenu::menuEnabled = menuEnabled;
+}
+
+bool ComponentMenu::isMenuEnabled() const {
+    return menuEnabled;
+}
+
+Image *ComponentMenu::getBorder() const {
+    return border;
+}
