@@ -398,14 +398,17 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+    const bool triggerLeftOn = componentInput->getControllerAxisTriggerLeft() > 0.20;
+    const bool actionKey = keyboard[SDL_SCANCODE_I] && event->type == SDL_KEYDOWN;
 
-    if (componentInput->getControllerAxisTriggerLeft() > 0.20 && !player->isEnergyShieldEnabled()) {
+    if ((triggerLeftOn || actionKey) && !player->isEnergyShieldEnabled()) {
         if (!player->isAllowEnergyShield()) {
             return;
         }
 
         player->setEnergyShieldEnabled(true);
-        player->getShieldModel()->setEnabled(true);
+
         ComponentSound::playSound(
             ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("energyShield"),
             1,
@@ -451,9 +454,17 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
     bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
-    if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) &&
-        (enter || isButtonGuidedPressed)) {
+    if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->pressedKeyForWin();
+    }
+
+    if ((state == EngineSetup::GameState::GAMING_TUTORIAL) && (enter || isButtonGuidedPressed)) {
+        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING);
+        ComponentSound::playSound(
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
+            EngineSetup::SoundChannels::SND_GLOBAL,
+            0
+        );
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
@@ -497,7 +508,11 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX()) {
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_O];
+    const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX();
+
+    if (controllerXButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("bomb");
         weapon->onUpdate();
         weapon->shootBomb(player, player->getPosition());

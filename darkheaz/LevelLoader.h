@@ -15,6 +15,8 @@
 #include "src/items/ItemHealthGhost.h"
 #include "src/enemies/AsteroidEnemyGhost.h"
 #include "LevelStats.h"
+#include "src/items/ItemEnergyGhost.h"
+#include "src/items/ItemWeaponGhost.h"
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
@@ -58,6 +60,7 @@ public:
 
     Counter countDown;
     std::vector<Image*> tutorials;
+    std::vector<Image*> helps;
     int currentTutorialIndex;
 
     bool endLevel;
@@ -101,11 +104,11 @@ public:
 
     Counter * getCountDown();
 
-    static void makeItemHealthGhost(Vertex3D position);
+    static ItemHealthGhost* makeItemHealthGhost(Vertex3D position);
 
-    static void makeItemEnergyGhost(Vertex3D position);
+    static ItemEnergyGhost* makeItemEnergyGhost(Vertex3D position);
 
-    void makeItemWeapon(int index, Vertex3D position);
+    ItemWeaponGhost* makeItemWeapon(int index, Vertex3D position);
 
     [[nodiscard]] bool isLevelFinished() const;
 

@@ -20,7 +20,7 @@ private:
     ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
     int radioMessagesCounter = 0;
-    int offsetY = 435;
+    int offsetY = 430;
     int playerBarSeparation = 15;
 public:
     ComponentHUD();

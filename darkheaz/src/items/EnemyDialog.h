@@ -6,8 +6,10 @@
 #define BRAKEZA3D_ENEMYDIALOG_H
 
 
-#include "../enemies/EnemyGhost.h"
 #include "../../../include/2D/TextWriter.h"
+#include "../../../include/Misc/Image.h"
+#include "../../../include/2D/TextureAnimated.h"
+#include "../../../include/Objects/Object3D.h"
 
 class EnemyDialog : public Object3D {
     int x;
@@ -17,27 +19,22 @@ class EnemyDialog : public Object3D {
     std::string message;
     Counter counter;
 
-    EnemyGhost *enemy;
-
     Image *background;
 
     bool followEnemy;
 
     TextWriter *writer;
     TextureAnimated *radioWave;
+    Color color;
 
 public:
-    EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, EnemyGhost *enemy, TTF_Font *font);
+    EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, TTF_Font *font, Color color);
 
-    void onUpdate() override;
+    void onUpdate(float stamina);
 
-    void postUpdate() override;
+    void onDraw(Image *avatar, Vertex3D position);
 
-    void drawCall() override;
-
-    void onDraw() override;
-
-    void drawDialog(float alpha);
+    void drawDialog(float alpha, Image *avatar);
 };
 
 

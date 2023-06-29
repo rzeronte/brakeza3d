@@ -7,15 +7,16 @@
 
 
 #include "../../../include/Physics/Mesh3DGhost.h"
+#include "ItemWithTutorial.h"
 
-class ItemEnergyGhost : public Mesh3DGhost {
+class ItemEnergyGhost : public Mesh3DGhost, public ItemWithTutorial {
     float energy;
 public:
     ItemEnergyGhost();
 
     void setEnergy(float energy);
 
-    float getEnergy() const;
+    [[nodiscard]] float getEnergy() const;
 
     void resolveCollision(Collisionable *collisionable) override;
 

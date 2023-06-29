@@ -36,10 +36,6 @@ void ComponentHUD::onUpdate()
 
     HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlatAlpha(0, 0, alpha);
 
-    if (SETUP->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
-    }
-
     auto stamina = HUDTextures->getTextureByLabel("staminaIcon")->getImage();
     auto energy = HUDTextures->getTextureByLabel("energyIcon")->getImage();
 
@@ -47,6 +43,10 @@ void ComponentHUD::onUpdate()
     energy->drawFlatAlpha(50, this->offsetY + playerBarSeparation, alpha);
 
     drawShaderLasers();
+
+    if (SETUP->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
+    }
 }
 
 void ComponentHUD::postUpdate()
@@ -54,7 +54,6 @@ void ComponentHUD::postUpdate()
     if (!isEnabled()) return;
 
     drawHUD();
-
 }
 
 void ComponentHUD::onEnd()
@@ -138,9 +137,22 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         0.25
     );
 
-    // level number
+    // bomb icon
+    auto weaponBomb = player->getWeaponTypeByLabel("bomb");
+    weaponBomb->getIcon()->drawFlatAlpha(340, this->offsetY, 255);
+
+    // bomb ammo
     textWriter->writeTextTTFAutoSize(
         340,
+        this->offsetY + weaponBomb->getIcon()->height(),
+        (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
+        game->getPrimaryColor(),
+        0.25
+    );
+
+    // level number
+    textWriter->writeTextTTFAutoSize(
+        340 + weaponBomb->getIcon()->width() + 5,
         this->offsetY - 10,
         game->getLevelLoader()->getLevelName().c_str(),
         game->getPrimaryColor(),
@@ -164,7 +176,6 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     }
 
     reflectionImage->drawFlatAlpha(310, this->offsetY, reflectionAlpha);
-
 }
 
 int ComponentHUD::getButtonsOffsetY()
@@ -223,7 +234,7 @@ void ComponentHUD::drawShaderLasers()
             false
         );
 
-        enemy->getAvatar()->drawFlatAlpha(390, this->offsetY, 255);
+        enemy->getAvatar()->drawFlatAlpha(395, this->offsetY, 255);
     }
 
     shaderLasers->update();

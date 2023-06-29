@@ -12,6 +12,7 @@
 #include "../../../include/Physics/RayCollisionable.h"
 #include "../../../include/Physics/ProjectileRay.h"
 #include "../shaders/ShaderZombie.h"
+#include "../items/EnemyDialog.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
 private:
@@ -23,6 +24,7 @@ private:
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
     std::vector<ProjectileRay *> fixedLasers;
+
     ParticleEmitter *particleEmitter;
 public:
     EnemyGhost();
@@ -72,6 +74,8 @@ public:
     [[nodiscard]] ParticleEmitter *getParticleEmitter() const;
 
     void drawCall() override;
+
+    std::vector<EnemyDialog *> dialogs;
 };
 
 

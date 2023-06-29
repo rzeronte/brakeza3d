@@ -6,8 +6,11 @@
 #include "../../../include/EngineSetup.h"
 #include "../../../include/Brakeza3D.h"
 
-ShaderImageMask::
-ShaderImageMask(bool active, const std::string& imageFilename, const std::string& maskFilename) :
+ShaderImageMask::ShaderImageMask(
+    bool active,
+    const std::string& imageFilename,
+    const std::string& maskFilename
+) :
     ShaderOpenCL(active, "imageMask.opencl"),
     image(Image(imageFilename)),
     mask(Image(maskFilename)),

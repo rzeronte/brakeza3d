@@ -109,6 +109,11 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     }
     tutorials.resize(0);
 
+    for (auto help: helps) {
+        delete help;
+    }
+    helps.resize(0);
+
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
     cJSON *jsonContentFile = cJSON_Parse(contentFile);
@@ -135,12 +140,18 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        Logging::Message("Loading tutorials");
         cJSON *currentTutorial;
         cJSON_ArrayForEach(currentTutorial, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")) {
             tutorials.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentTutorial->valuestring));
         }
         currentTutorialIndex = 0;
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "helps") != nullptr) {
+        cJSON *currentHelp;
+        cJSON_ArrayForEach(currentHelp, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "helps")) {
+            helps.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentHelp->valuestring));
+        }
     }
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(
@@ -254,7 +265,7 @@ Counter * LevelLoader::getCountDown() {
     return &countDown;
 }
 
-void LevelLoader::makeItemHealthGhost(Vertex3D position)
+ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
 {
     auto *healthItem = new ItemHealthGhost();
     healthItem->setLabel("item_level_health_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
@@ -274,31 +285,35 @@ void LevelLoader::makeItemHealthGhost(Vertex3D position)
     healthItem->updateBulletFromMesh3D();
 
     Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
+
+    return healthItem;
 }
 
-void LevelLoader::makeItemEnergyGhost(Vertex3D position)
+ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
 {
-    auto *healthItem = new ItemEnergyGhost();
-    healthItem->setLabel("item_level_energy_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    healthItem->setEnableLights(true);
-    healthItem->setPosition(position);
-    healthItem->setRotationFrameEnabled(true);
-    healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
-    healthItem->setStencilBufferEnabled(true);
-    healthItem->setScale(1);
-    healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
-    healthItem->makeSimpleGhostBody(
+    auto *energyItem = new ItemEnergyGhost();
+    energyItem->setLabel("item_level_energy_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    energyItem->setEnableLights(true);
+    energyItem->setPosition(position);
+    energyItem->setRotationFrameEnabled(true);
+    energyItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    energyItem->setStencilBufferEnabled(true);
+    energyItem->setScale(1);
+    energyItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
+    energyItem->makeSimpleGhostBody(
         Vertex3D(500, 500, 500),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
     );
 
-    healthItem->updateBulletFromMesh3D();
-    Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
+    energyItem->updateBulletFromMesh3D();
+    Brakeza3D::get()->addObject3D(energyItem, energyItem->getLabel());
+
+    return energyItem;
 }
 
-void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
+ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
 {
     auto weapons = ComponentsManager::get()->getComponentGame()->getWeapons();
     auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
@@ -320,6 +335,8 @@ void LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->updateBulletFromMesh3D();
 
     Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
+
+    return weaponItem;
 }
 
 bool LevelLoader::isLevelFinished() const {
@@ -586,29 +603,49 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
 
     Vertex3D position = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(itemJSON, "position"), Z_COORDINATE_GAMEPLAY);
 
+    bool help = false;
+    int helpIndex = -1;
+
+    if (cJSON_GetObjectItemCaseSensitive(itemJSON, "help") != nullptr) {
+        help = true;
+        helpIndex = cJSON_GetObjectItemCaseSensitive(itemJSON, "help")->valueint;
+    }
+
     switch(typeItem) {
         case LevelInfoItemsTypes::ITEM_ENERGY: {
-            this->makeItemEnergyGhost(position);
+            auto item = this->makeItemEnergyGhost(position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_HEALTH: {
-            this->makeItemHealthGhost(position);
+            auto item = this->makeItemHealthGhost(position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_PROJECTILE: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_PROJECTILE, position);
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_PROJECTILE, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_BOMB: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_LASER_RAY, position);
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER_RAY, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
-            this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
             break;
         }
         default: {
@@ -822,7 +859,9 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
-    Brakeza3D::get()->addObject3D(new EnemyDialog(460, 40, stamina, text.c_str(), 5, enemy, componentGame->getFontGame()), "dialog");
+    auto dialog = new EnemyDialog(490, 40, stamina, text.c_str(), 5, componentGame->getFontGame(), componentGame->getPrimaryColor());
+
+    enemy->dialogs.push_back(dialog);
 }
 
 std::vector<Image*> &LevelLoader::getTutorials() {

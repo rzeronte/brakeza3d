@@ -176,7 +176,7 @@ public:
 
     void handlePressKeyByWin();
 
-    void showLevelStatistics();
+    void showLevelStatistics(float alpha);
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
 
@@ -218,13 +218,18 @@ public:
 
     void handleTutorialImages(float alpha);
 
-    ShaderImageMask *shaderTutorialMask;
+    ShaderImageMask *dialogBackground;
     ShaderCRT *shaderCRT;
     Image *boxTutorial;
+    Image *help;
 
     void handlePressKeyHelp();
 
     TTF_Font *fontGameAlternative;
+
+    void handleGoIntoGamingTutorial();
+
+    void setHelp(Image *help);
 };
 
 

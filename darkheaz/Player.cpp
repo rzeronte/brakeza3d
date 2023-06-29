@@ -36,14 +36,14 @@ Player::Player() :
     lightPositionOffset(Vertex3D(0, -550, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
-    shieldModel(Mesh3D()),
     reflection(PlayerReflection((float) stamina, 5)),
+    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
+    shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
     dashPower(INITIAL_POWERDASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
     maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
-    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png"))
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
@@ -63,25 +63,8 @@ Player::Player() :
             0.98f
         )
     );
-}
 
-void Player::loadShieldModel()
-{
-    shieldModel.setEnabled(false);
-    shieldModel.setLabel("shieldModel");
-    shieldModel.setPosition(getPosition());
-    shieldModel.setAlpha(200);
-    shieldModel.setAlphaEnabled(true);
-    shieldModel.setEnableLights(true);
-    shieldModel.setScale(1);
-    shieldModel.setStencilBufferEnabled(true);
-    shieldModel.setFlatTextureColor(false);
-    shieldModel.setFlatColor(Color::green());
-    //shieldModel->setRotationFrameEnabled(true);
-    //shieldModel->setRotationFrame(Vertex3D(0, 0, 1));
-    shieldModel.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "shield.fbx"));
-
-    Brakeza3D::get()->addObject3D(&shieldModel, "shieldPlayer");
+    shaderEnergyShield = new ShaderEnergyShield(true, this, std::string(EngineSetup::get()->IMAGES_FOLDER + "lava.png"));
 }
 
 void Player::loadReflection()
@@ -257,16 +240,10 @@ void Player::onUpdate()
     }
 
     if (isEnergyShieldEnabled()) {
-        shieldModel.setPosition(getPosition());
-        shieldModel.setRotation(getRotation());
-        shieldModel.setAlpha( (float) std::clamp((int)shieldModel.getAlpha() + 10, 0, 255));
-    } else {
-        if (shieldModel.getAlpha() == 0) {
-            shieldModel.setEnabled(false);
-        }
-        shieldModel.setRotation(getRotation());
-        shieldModel.setPosition(getPosition());
-        shieldModel.setAlpha( (float) std::clamp((int)shieldModel.getAlpha() - 25, 0, 255));
+        auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
+        shield->drawFlatAlpha(p.x - shield->width()/2, p.y - shield->height()/2, 200);
+
+        shaderEnergyShield->update();
     }
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
@@ -414,7 +391,17 @@ void Player::resolveCollision(Collisionable *with)
             0
         );
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
+
         weapon->setRemoved(true);
+
+        if (weapon->isHasTutorial()) {
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
+            if (weapon->getTutorialIndex() != -1) {
+                ComponentsManager::get()->getComponentGame()->setHelp(
+                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->helps[weapon->getTutorialIndex()]
+                );
+            }
+        }
     }
 
     auto health = dynamic_cast<ItemHealthGhost*> (with);
@@ -730,10 +717,6 @@ LightPoint3D *Player::getLight() const {
     return light;
 }
 
-Mesh3D *Player::getShieldModel() {
-    return &shieldModel;
-}
-
 PlayerReflection *Player::getReflection() {
     return &reflection;
 }
@@ -743,6 +726,8 @@ Player::~Player()
     delete light;
     delete blink;
     delete avatar;
+    delete shaderEnergyShield;
+    delete shaderParticles;
 
     for (auto w : weaponTypes) {
         delete w;

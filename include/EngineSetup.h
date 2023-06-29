@@ -305,6 +305,7 @@ public:
         CREDITS = 10,
         PRESS_KEY_BY_WIN = 11,
         INTRO = 12,
+        GAMING_TUTORIAL = 13
 
     } GameState;
 };

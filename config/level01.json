@@ -5,6 +5,7 @@
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
   "tutorialImage": ["tutorials/tutorial01.png", "tutorials/tutorial01_2.png"],
+  "helps": ["tutorials/help01.png"],
   "color": { "r": 255, "g": 0, "b": 0 },
   "enemies": [
     {
@@ -31,7 +32,8 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 50, "y": 45 }
+      "position": { "x": 50, "y": 45 },
+      "help": 0
     }
   ],
   "background": [
