@@ -81,7 +81,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
         (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
     ) {
-        ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
             game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
@@ -129,14 +129,14 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
-            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
     if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
-            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
@@ -193,29 +193,17 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_2]) {
             componentGame->getPlayer()->setWeaponTypeByIndex(1);
-            ComponentSound::playSound(
-                soundPackage.getByLabel("switchWeapon"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         if (keyboard[SDL_SCANCODE_3] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(2);
-            ComponentSound::playSound(
-                soundPackage.getByLabel("switchWeapon"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         if (keyboard[SDL_SCANCODE_4] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(3);
-            ComponentSound::playSound(
-                soundPackage.getByLabel("switchWeapon"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
@@ -315,12 +303,7 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
         if (currentClosestObject != nullptr) {
             ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
-
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
@@ -374,11 +357,7 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
             return;
         }
 
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("dash"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         Tools::makeExplosion(player, player->getPosition(), 1, OCParticlesContext::forExplosion());
 
@@ -409,11 +388,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 
         player->setEnergyShieldEnabled(true);
 
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("energyShield"),
-            1,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("energyShield", 1, 0);
     }
 
     if (componentInput->getControllerAxisTriggerLeft() < 0.20 && player->isEnergyShieldEnabled()) {
@@ -460,11 +435,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     if ((state == EngineSetup::GameState::GAMING_TUTORIAL) && (enter || isButtonGuidedPressed)) {
         ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING);
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
@@ -473,12 +444,12 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
 
         if (cursorLeft || controllerLeft) {
-            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             ComponentsManager::get()->getComponentGame()->getLevelLoader()->decreaseTutorialImage();
         }
 
         if (cursorRight || controllerRight) {
-            ComponentSound::playSound(componentSound->getSoundPackage().getByLabel("soundMenuClick"), EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             ComponentsManager::get()->getComponentGame()->getLevelLoader()->increaseTutorialImage();
         }
     }

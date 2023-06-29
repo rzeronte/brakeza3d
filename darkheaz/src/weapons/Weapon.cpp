@@ -189,11 +189,7 @@ void Weapon::shootProjectile(
         setAmmoAmount(getAmmoAmount() - 1);
 
         if (sound) {
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("projectileTypeOne"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("projectileTypeOne", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
@@ -261,11 +257,7 @@ void Weapon::shootLaserProjectile(
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
 
         if (sound) {
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("laserShoot"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("laserShoot", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 }
@@ -413,11 +405,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 
         setAmmoAmount(ammoAmount - 1);
 
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("projectileTypeThree"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("projectileTypeThree", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
@@ -441,11 +429,7 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
     rayLight.setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("laser"),
-            EngineSetup::SND_LASER,
-            -1
-        );
+        ComponentsManager::get()->getComponentSound()->sound("laser", EngineSetup::SoundChannels::SND_LASER, -1);
     }
 
     ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());

@@ -447,11 +447,7 @@ void ComponentGame::checkForEndLevel()
             getLevelLoader()->setLevelStartedToPlay(false);
             removeProjectiles();
             getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-            ComponentSound::playSound(
-                ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
-                EngineSetup::SoundChannels::SND_GLOBAL,
-                0
-            );
+            ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
             if (getLevelLoader()->isEndLevel()) {
                 makeFadeToGameState(EngineSetup::PRESS_KEY_GAMEOVER, true);
@@ -694,11 +690,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
     auto currentClosestObject = getClosesObject3DFromPosition(player->getPosition(), true, true);
 
     if (currentClosestObject != nullptr) {
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
     }
 }
@@ -932,11 +924,7 @@ void ComponentGame::pressedKeyForNewGame()
     if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
         makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL, true);
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("levelCompleted"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         player->respawn();
     } else {
@@ -947,22 +935,14 @@ void ComponentGame::pressedKeyForNewGame()
 void ComponentGame::pressedKeyForWin()
 {
     makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL, true);
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("tic"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void ComponentGame::pressedKeyForBeginLevel()
 {
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("startGame", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
     if (getLevelLoader()->isHaveMusic()) {
         ComponentSound::fadeInMusic(
@@ -986,11 +966,8 @@ void ComponentGame::pressedKeyByDead()
 {
     player->respawn();
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("startGame"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("startGame", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL, true);
     getPlayer()->startPlayerBlink();
 }
@@ -1111,11 +1088,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("tutorial"), -1, 3000
     );
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("crt"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("crt", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void ComponentGame::reloadLevel(int level)
@@ -1317,10 +1290,6 @@ void ComponentGame::setHelp(Image *help)
 {
     ComponentGame::help = help;
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("crt"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("crt", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 

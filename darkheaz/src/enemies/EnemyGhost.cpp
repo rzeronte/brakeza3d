@@ -1,8 +1,6 @@
 
 #include "EnemyGhost.h"
 #include "../../../include/Brakeza3D.h"
-#include "../items/ItemEnergyGhost.h"
-#include "../items/ItemWeaponGhost.h"
 
 EnemyGhost::EnemyGhost() :
     blink(nullptr),
@@ -109,7 +107,6 @@ void EnemyGhost::onDraw()
 {
     Mesh3D::onDraw();
 
-
     if (isStuck()) {
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
         counterStuck.update();
@@ -137,11 +134,8 @@ void EnemyGhost::handleDie()
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyExplosion"),
-        EngineSetup::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_LASER, 0);
+
     unstuck();
     remove();
 }
@@ -260,11 +254,8 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 
     auto *projectile = dynamic_cast<AmmoProjectile*> (withObject);
     if (projectile != nullptr) {
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("enemyDamage"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("enemyDamage", EngineSetup::SoundChannels::SND_LASER, 0);
+
         blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
 
@@ -374,11 +365,7 @@ void EnemyGhost::stuck(float time)
         this->getBehavior()->setEnabled(false);
     }
 
-    ComponentSound::playSound(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("electricStuck"),
-        EngineSetup::SoundChannels::SND_GLOBAL,
-        0
-    );
+    ComponentsManager::get()->getComponentSound()->sound("electricStuck", EngineSetup::SoundChannels::SND_LASER, -1);
 }
 
 void EnemyGhost::unstuck()
