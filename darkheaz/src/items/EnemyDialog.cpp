@@ -42,12 +42,7 @@ void EnemyDialog::onUpdate(float staminaPercentage)
         y = 90 * radioMessagesCounter + 30  ;
 
         ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(radioMessagesCounter + 1);
-
-        ComponentSound::playSound(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getByLabel("radioBeep"),
-            EngineSetup::SoundChannels::SND_GLOBAL,
-            0
-        );
+        ComponentsManager::get()->getComponentSound()->sound("radioBeep", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 }
 
