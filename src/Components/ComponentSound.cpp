@@ -93,6 +93,15 @@ void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
     Mix_PlayChannel(channel, chunk, times);
 }
 
+void ComponentSound::sound(const std::string& sound, int channel, int times)
+{
+    ComponentSound::playSound(
+       soundPackage.getByLabel(sound),
+        channel,
+        times
+    );
+}
+
 void ComponentSound::playMusic(Mix_Music *music, int loops = -1)
 {
     Mix_PlayMusic(music, loops);
@@ -112,7 +121,11 @@ void ComponentSound::stopChannel(int channel) {
     Mix_HaltChannel(channel);
 }
 
-SoundPackage &ComponentSound::getSoundPackage(){
+SoundPackage &ComponentSound::getSoundPackage() {
     return soundPackage;
+}
+
+Mix_Chunk *ComponentSound::soundByLabel(const std::string &label) {
+    return soundPackage.getByLabel(label);
 }
 

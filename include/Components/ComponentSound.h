@@ -12,6 +12,7 @@
 class ComponentSound : public Component {
 private:
     SoundPackage soundPackage;
+    void playSound(Mix_Chunk *chunk, int channel, int times);
 public:
     ComponentSound();
 
@@ -31,7 +32,7 @@ public:
 
     void loadSoundsJSON();
 
-    static void playSound(Mix_Chunk *chunk, int channel, int times);
+    void sound(const std::string& sound, int channel, int times);
 
     static void playMusic(Mix_Music *music, int loops);
 
@@ -42,6 +43,9 @@ public:
     static void stopChannel(int channel);
 
     [[nodiscard]] SoundPackage &getSoundPackage();
+
+    Mix_Chunk *soundByLabel(const std::string &label);
+
 };
 
 
