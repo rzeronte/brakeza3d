@@ -51,6 +51,8 @@
 
     { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" },
 
-    { "file": "tutorial.mp3", "label": "tutorial", "type": "music" }
+    { "file": "tutorial.mp3", "label": "tutorial", "type": "music" },
+
+    { "file": "crt.mp3", "label": "crt", "type": "sound" }
   ]
 }
