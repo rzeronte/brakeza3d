@@ -11,24 +11,20 @@
 #define INITIAL_STAMINA 100
 
 class LivingObject {
+protected:
     float startStamina;
     float stamina;
     ShaderBlink *blink;
     Counter counterDamageBlink;
 
 public:
-    LivingObject(float startStamina, float stamina, Mesh3D *parent);
+    explicit LivingObject(Mesh3D *parent);
 
     [[nodiscard]] float getStartStamina() const;
 
     [[nodiscard]] float getStamina() const;
 
-    [[nodiscard]] ShaderBlink *getBlink() const;
-
-    [[nodiscard]] const Counter &getCounterDamageBlink() const;
-
     void takeDamage(float damageTaken);
-
 };
 
 
