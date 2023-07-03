@@ -1,6 +1,6 @@
 #include "LivingObject.h"
 
-LivingObject::LivingObject(float startStamina, float stamina, Mesh3D *parent)
+LivingObject::LivingObject(Mesh3D *parent)
 :
     stamina(INITIAL_STAMINA),
     startStamina(INITIAL_STAMINA)
@@ -14,14 +14,6 @@ float LivingObject::getStartStamina() const {
 
 float LivingObject::getStamina() const {
     return stamina;
-}
-
-ShaderBlink *LivingObject::getBlink() const {
-    return blink;
-}
-
-const Counter &LivingObject::getCounterDamageBlink() const {
-    return counterDamageBlink;
 }
 
 void LivingObject::takeDamage(float damageTaken)
