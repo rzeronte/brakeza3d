@@ -48,7 +48,7 @@ EnemyGhost::EnemyGhost() :
 
 void EnemyGhost::onStart()
 {
-    blink = new ShaderBlink(true, this, 0.05, ComponentsManager::get()->getComponentGame()->getPrimaryColor());
+    blink = new ShaderBlink(true, this, 0.05, Color::red());
     zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
 }
 
@@ -159,7 +159,6 @@ void EnemyGhost::postUpdate()
     if (projectileEmitter != nullptr) {
         projectileEmitter->postUpdate();
     }
-
 }
 
 void EnemyGhost::makeReward()

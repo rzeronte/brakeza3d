@@ -79,6 +79,7 @@ void ComponentHUD::loadImages()
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_gold.png", "medalGold");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "energy.png", "energyIcon");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "stamina.png", "staminaIcon");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "coin.png", "coinIcon");
 }
 
 void ComponentHUD::drawHUD()
@@ -125,6 +126,16 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
 
+    //coins
+    auto iconCoin = HUDTextures->getTextureByLabel("coinIcon");
+    iconCoin->getImage()->drawFlatAlpha(50, offsetY - 15, 255);
+    textWriter->writeTextTTFAutoSize(
+            50 + 17,
+            this->offsetY - 16,
+            (std::string("x") + std::to_string(player->getCoins())).c_str(),
+            game->getPrimaryColor(),
+            0.25
+    );
     // weapon icon
     player->getWeapon()->getIcon()->drawFlatAlpha(280, this->offsetY, 255);
 
@@ -176,6 +187,8 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     }
 
     reflectionImage->drawFlatAlpha(310, this->offsetY, reflectionAlpha);
+
+    ComponentsManager::get()->getComponentGame()->getStoreManager()->drawHUD(255);
 }
 
 int ComponentHUD::getButtonsOffsetY()
@@ -234,7 +247,7 @@ void ComponentHUD::drawShaderLasers()
             false
         );
 
-        enemy->getAvatar()->drawFlatAlpha(395, this->offsetY, 255);
+        enemy->getAvatar()->drawFlatAlpha(396, this->offsetY, 255);
     }
 
     shaderLasers->update();

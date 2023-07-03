@@ -110,11 +110,15 @@ void ComponentGame::onStart()
     );
     shaderExplosion->setIntensity(1);
 
-    dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
-    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorials/tutorial_box.png");
+    dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "/tutorial_mask.png");
+    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
 
-    shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorials/tutorial_mask.png");
+    shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorial_mask.png");
     shaderCRT->setMaxAlpha(255);
+
+    boxStore = new Image(SETUP->IMAGES_FOLDER + "store_box.png");
+
+    storeManager = new StoreManager(player, textWriter);
 }
 
 void ComponentGame::loadShaders()
@@ -142,6 +146,8 @@ ComponentGame::~ComponentGame()
     delete imageCredits;
     delete imageHelp;
     delete imageSplash;
+
+    delete storeManager;
 
     for (auto weapon: weapons) {
         delete weapon;
@@ -180,35 +186,6 @@ void ComponentGame::preUpdate()
         case EngineSetup::GAMING: {
             blockPlayerPositionInCamera();
             checkForEndLevel();
-            break;
-        }
-        case EngineSetup::HELP: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-
-            imageHelp->drawFlatAlpha(0, 0, alpha);
-
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
-            break;
-        }
-        case EngineSetup::CREDITS: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
-            imageCredits->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
@@ -285,7 +262,7 @@ void ComponentGame::onUpdate()
             showLevelStatistics(alpha);
             break;
         }
-        case EngineSetup::GAMING_TUTORIAL:
+        case EngineSetup::GAMING_TUTORIAL: {
             const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
 
             dialogBackground->setMaxAlpha((int) alpha);
@@ -296,6 +273,55 @@ void ComponentGame::onUpdate()
             shaderCRT->update();
             textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
             break;
+        }
+        case EngineSetup::HELP: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+
+            imageHelp->drawFlatAlpha(0, 0, alpha);
+
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            break;
+        }
+        case EngineSetup::STORE: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            boxStore->drawFlatAlpha(0, 0, alpha);
+
+            storeManager->update(alpha);
+
+            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+            break;
+        }
+        case EngineSetup::CREDITS: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            imageCredits->drawFlatAlpha(0, 0, alpha);
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            break;
+        }
     }
 }
 
@@ -333,7 +359,7 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 
 void ComponentGame::showLevelStatistics(float alpha)
 {
-    textWriter->writeTTFCenterHorizontal(115, "congratulations! Mission done", primaryColor, 0.4);
+    textWriter->writeTTFCenterHorizontal(110, "congratulations! Mission done", primaryColor, 0.4);
 
     textWriter->setFont(fontGameAlternative);
 
@@ -374,6 +400,9 @@ void ComponentGame::showLevelStatistics(float alpha)
     shaderCRT->update();
 
     textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
+    auto iconCon = ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon");
+    iconCon->getImage()->drawFlatAlpha(313  , 300, alpha);
+    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), secondaryColor, 0.3);
 
 }
 
@@ -487,7 +516,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             break;
         case EngineSetup::HELP:
             handlePressKeyHelp();
-                break;
+            break;
         case EngineSetup::CREDITS:
             handlePressKeyCredits();
             break;
@@ -500,6 +529,9 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::GAMING_TUTORIAL:
             handleGoIntoGamingTutorial();
             break;
+        case EngineSetup::STORE: {
+            break;
+        }
     }
 
     this->gameState = state;
@@ -1291,5 +1323,9 @@ void ComponentGame::setHelp(Image *help)
     ComponentGame::help = help;
 
     ComponentsManager::get()->getComponentSound()->sound("crt", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+}
+
+StoreManager *ComponentGame::getStoreManager() const {
+    return storeManager;
 }
 

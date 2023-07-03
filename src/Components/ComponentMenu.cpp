@@ -186,7 +186,7 @@ void ComponentMenu::setEnabled(bool value)
 void ComponentMenu::drawVersion()
 {
     ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
-        455,
+        450,
         "brakeza.com",
         ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
         0.3

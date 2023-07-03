@@ -17,7 +17,6 @@ PlayerReflection::PlayerReflection(
     timeToLive.setEnabled(true);
     counterDamageBlink.setEnabled(false);
     zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
-
 }
 
 void PlayerReflection::onUpdate()
@@ -43,7 +42,7 @@ void PlayerReflection::postUpdate()
         }
     }
     if (timeToLive.isFinished()) {
-        makeExplosion();
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
         setStencilBufferEnabled(false);
         setEnabled(false);
         removeCollisionObject();
@@ -72,7 +71,7 @@ void PlayerReflection::takeDamage(float damageTaken)
     this->stamina -= damageTaken;
 
     if (this->stamina <= 0) {
-        makeExplosion();
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
         setEnabled(false);
         removeCollisionObject();
         setHidden(true);
@@ -140,22 +139,3 @@ void PlayerReflection::loadBlinkShader()
     setHidden(true);
 }
 
-void PlayerReflection::makeExplosion()
-{
-    /*
-     auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-
-    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-
-    Vector3D direction(origin, getPosition());
-    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(150));
-
-    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
-    sprite->setAnimation(0);
-    sprite->setAutoRemoveAfterAnimation(true);
-
-    Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    */
-    
-    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
-}

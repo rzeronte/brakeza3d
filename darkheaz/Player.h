@@ -1,4 +1,3 @@
-
 #ifndef BRAKEZA3D_PLAYER_H
 #define BRAKEZA3D_PLAYER_H
 
@@ -18,10 +17,10 @@
 #define INITIAL_ENERGY 100
 #define INITIAL_RECOVER_ENERGY 0.05f
 #define INITIAL_LIVES 10
-#define INITIAL_POWER 500
+#define INITIAL_POWER 250
 #define INITIAL_POWERDASH 6000
 #define INITIAL_FRICTION 5
-#define INITIAL_MAX_VELOCITY 150
+#define INITIAL_MAX_VELOCITY 50
 #define MAX_REFLECTIONS 3
 #define PLAYER_ROTATION_TARGET_SPEED 1
 
@@ -49,6 +48,7 @@ private:
     float startEnergy;
     float recoverEnergySpeed;
     bool stuck;
+    int coins;
 
     int lives;
     Vertex3D velocity;
@@ -97,6 +97,7 @@ public:
     bool takeDamage(float dmg);
 
     void receiveAid(float aid);
+
     void receiveEnergy(float energy);
 
     [[nodiscard]] int getStamina() const;
@@ -225,6 +226,12 @@ public:
     void onDraw() override;
 
     Image *getAvatar();
+
+    [[nodiscard]] int getCoins() const;
+
+    void increaseCoins(int value);
+
+    void decreaseCoins(int value);
 };
 
 

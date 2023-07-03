@@ -6,10 +6,9 @@
 #include "src/items/ItemHealthGhost.h"
 #include "src/items/ItemEnergyGhost.h"
 #include "src/items/PlayerReflection.h"
+#include "src/items/LivingObject.h"
 
 Player::Player() :
-    stamina(INITIAL_STAMINA),
-    startStamina(INITIAL_STAMINA),
     energy(INITIAL_ENERGY),
     startEnergy(INITIAL_ENERGY),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
@@ -36,14 +35,15 @@ Player::Player() :
     lightPositionOffset(Vertex3D(0, -550, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
-    reflection(PlayerReflection((float) stamina, 5)),
+    reflection(PlayerReflection((float) INITIAL_STAMINA, 5)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
     shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
     dashPower(INITIAL_POWERDASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
     maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
+    coins(1000)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
@@ -229,7 +229,11 @@ void Player::onUpdate()
     applyFriction();
 
     if (getEnergy() < getStartEnergy()) {
-        setEnergy(std::min(getEnergy() + recoverEnergySpeed, getStartEnergy()));
+        float recoverEnergy = getEnergy() + recoverEnergySpeed;
+        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_2)) {
+            recoverEnergy *= 1.0025f;
+        }
+        setEnergy(std::min(recoverEnergy, getStartEnergy()));
     }
 
     if (isEnergyShieldEnabled()) {
@@ -326,7 +330,8 @@ void Player::postUpdate()
     }
 }
 
-Vertex3D Player::getVelocity() {
+Vertex3D Player::getVelocity()
+{
     return this->velocity;
 }
 
@@ -338,7 +343,8 @@ void Player::applyFriction() {
     velocity = velocity + velocity.getInverse().getScaled(Brakeza3D::get()->getDeltaTime() * friction);
 }
 
-void Player::setVelocity(Vertex3D v) {
+void Player::setVelocity(Vertex3D v)
+{
     this->velocity = v;
 }
 
@@ -381,7 +387,7 @@ void Player::resolveCollision(Collisionable *with)
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
             if (weapon->getTutorialIndex() != -1) {
                 ComponentsManager::get()->getComponentGame()->setHelp(
-                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->helps[weapon->getTutorialIndex()]
+                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->levelTutorials[weapon->getTutorialIndex()]
                 );
             }
         }
@@ -393,6 +399,15 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveAid(health->getAid());
         health->remove();
+
+        if (health->isHasTutorial()) {
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
+            if (health->getTutorialIndex() != -1) {
+                ComponentsManager::get()->getComponentGame()->setHelp(
+                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->levelTutorials[health->getTutorialIndex()]
+                );
+            }
+        }
     }
 
     auto energy = dynamic_cast<ItemEnergyGhost*> (with);
@@ -401,6 +416,15 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveEnergy(energy->getEnergy());
         energy->remove();
+
+        if (energy->isHasTutorial()) {
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
+            if (energy->getTutorialIndex() != -1) {
+                ComponentsManager::get()->getComponentGame()->setHelp(
+                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->levelTutorials[energy->getTutorialIndex()]
+                );
+            }
+        }
     }
 
     auto enemy = dynamic_cast<EnemyGhost*> (with);
@@ -705,4 +729,19 @@ ShaderParticles *Player::getShaderParticles() const {
 
 Image *Player::getAvatar() {
     return avatar;
+}
+
+int Player::getCoins() const {
+    return coins;
+}
+
+void Player::increaseCoins(int value)
+{
+    ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->coinsGained += value;
+    coins += value;
+}
+
+void Player::decreaseCoins(int value)
+{
+    coins -= value;
 }

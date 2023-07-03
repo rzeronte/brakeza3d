@@ -104,15 +104,15 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     enemiesEmitter.resize(0);
 
-    for (auto tutorial: tutorials) {
+    for (auto tutorial: levelHistories) {
         delete tutorial;
     }
-    tutorials.resize(0);
+    levelHistories.resize(0);
 
-    for (auto help: helps) {
+    for (auto help: levelTutorials) {
         delete help;
     }
-    helps.resize(0);
+    levelTutorials.resize(0);
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
@@ -139,18 +139,18 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
        EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
     );
 
-    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage") != nullptr) {
-        cJSON *currentTutorial;
-        cJSON_ArrayForEach(currentTutorial, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorialImage")) {
-            tutorials.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentTutorial->valuestring));
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "histories") != nullptr) {
+        cJSON *currentHistory;
+        cJSON_ArrayForEach(currentHistory, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "histories")) {
+            levelHistories.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentHistory->valuestring));
         }
         currentTutorialIndex = 0;
     }
 
-    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "helps") != nullptr) {
-        cJSON *currentHelp;
-        cJSON_ArrayForEach(currentHelp, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "helps")) {
-            helps.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentHelp->valuestring));
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorials") != nullptr) {
+        cJSON *currentLevelTutorial;
+        cJSON_ArrayForEach(currentLevelTutorial, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "tutorials")) {
+            levelTutorials.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + currentLevelTutorial->valuestring));
         }
     }
 
@@ -865,17 +865,17 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 }
 
 std::vector<Image*> &LevelLoader::getTutorials() {
-    return tutorials;
+    return levelHistories;
 }
 
 void LevelLoader::drawCurrentTutorialImage(float alpha)
 {
-    this->tutorials[currentTutorialIndex]->drawFlatAlpha(0, 0, alpha);
+    this->levelHistories[currentTutorialIndex]->drawFlatAlpha(0, 0, alpha);
 }
 
 void LevelLoader::increaseTutorialImage()
 {
-    if (currentTutorialIndex + 1 < (int) tutorials.size()) {
+    if (currentTutorialIndex + 1 < (int) levelHistories.size()) {
         currentTutorialIndex++;
     }
 }

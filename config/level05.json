@@ -3,7 +3,7 @@
   "backgroundImage": "levels/05.png",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
-  "tutorialImage": "tutorials/tutorial05.png",
+  "histories": ["histories/lore_05_01.png", "histories/lore_05_02.png"],
   "color": { "r": 255, "g": 0, "b": 255 },
   "enemies": [
     {

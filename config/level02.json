@@ -3,8 +3,8 @@
   "backgroundImage": "levels/02.png",
   "allowGravitionalShield": false,
   "allowEnergyShield": false,
-  "tutorialImage": ["tutorials/tutorial02.png"],
-  "helps": ["tutorials/help02_1.png", "tutorials/help02_2.png", "tutorials/help02_3.png"],
+  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
+  "histories": ["no_news.png"],
   "color": { "r": 0, "g": 0, "b": 0 },
   "enemies": [
     {
