@@ -76,16 +76,24 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
     auto componentSound = ComponentsManager::get()->getComponentSound();
 
     auto gameState = game->getGameState();
+    auto escPressed = (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN);
+    auto buttonControllerPressed = (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE);
 
-    if (
-        (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN) ||
-        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
-    ) {
+    if (escPressed || buttonControllerPressed) {
         ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
             game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
             game->makeFadeToGameState(EngineSetup::GameState::GAMING, true);
+            return;
+        }
+
+        if (gameState == EngineSetup::GameState::STORE) {
+            game->setGameState(EngineSetup::GameState::GAMING);
+            return;
+        }
+        if (gameState == EngineSetup::GameState::GAMING_TUTORIAL) {
+            game->setGameState(EngineSetup::GameState::GAMING);
             return;
         }
 
@@ -244,12 +252,16 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
 
 void ComponentGameInput::handleKeyboardMovingPlayer()
 {
-    auto componentInput = ComponentsManager::get()->getComponentInput();
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto player = componentGame->getPlayer();
-    Uint8 *keyboard = componentInput->getKeyboard();
+    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
+
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_EXTRA_POWER)) {
+        speed *= 1.75f;
+    }
+
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
     if (keyboard[SDL_SCANCODE_A]) {
@@ -271,7 +283,6 @@ void ComponentGameInput::handleKeyboardMovingPlayer()
         Vertex3D velocity = player->getVelocity() - Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
     }
-
 }
 
 void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
@@ -324,6 +335,11 @@ void ComponentGameInput::handleGamePadMovingPlayer()
     auto componentInput = ComponentsManager::get()->getComponentInput();
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
+
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_EXTRA_POWER)) {
+        speed *= 1.75f;
+    }
+
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
     player->setVelocity(
@@ -419,6 +435,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
     bool isButtonGuidedPressed = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
     auto componentSound = ComponentsManager::get()->getComponentSound();
+    auto game = ComponentsManager::get()->getComponentGame();
 
     bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
     bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
@@ -430,36 +447,50 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
-        ComponentsManager::get()->getComponentGame()->pressedKeyForWin();
+        game->pressedKeyForWin();
     }
 
     if ((state == EngineSetup::GameState::GAMING_TUTORIAL) && (enter || isButtonGuidedPressed)) {
-        ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING);
-        ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        game->setGameState(EngineSetup::GAMING);
+        componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    }
+
+    if (state == EngineSetup::GameState::STORE) {
+        if (cursorLeft || controllerLeft) {
+            game->getStoreManager()->decreaseItemSelected();
+        }
+
+        if (cursorRight || controllerRight) {
+            game->getStoreManager()->increaseItemSelected();
+        }
+
+        if (enter) {
+            game->getStoreManager()->buyCurrentSelected();
+        }
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
         if (isButtonGuidedPressed || enter) {
-            ComponentsManager::get()->getComponentGame()->pressedKeyForBeginLevel();
+            game->pressedKeyForBeginLevel();
         }
 
         if (cursorLeft || controllerLeft) {
-            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-            ComponentsManager::get()->getComponentGame()->getLevelLoader()->decreaseTutorialImage();
+            componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            game->getLevelLoader()->decreaseTutorialImage();
         }
 
         if (cursorRight || controllerRight) {
-            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-            ComponentsManager::get()->getComponentGame()->getLevelLoader()->increaseTutorialImage();
+            componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            game->getLevelLoader()->increaseTutorialImage();
         }
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
-        ComponentsManager::get()->getComponentGame()->pressedKeyForFinishGameAndRestart();
+        game->pressedKeyForFinishGameAndRestart();
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
-        ComponentsManager::get()->getComponentGame()->pressedKeyByDead();
+        game->pressedKeyByDead();
     }
 }
 
@@ -487,6 +518,12 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
         auto weapon = player->getWeaponTypeByLabel("bomb");
         weapon->onUpdate();
         weapon->shootBomb(player, player->getPosition());
+    }
+
+    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
+
+    if (keyStorePressed) {
+        componentGame->setGameState(EngineSetup::STORE);
     }
 }
 

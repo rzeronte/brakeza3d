@@ -27,6 +27,7 @@ public:
     int projectilesLaserWasHit = 0;
     int rayLaserWasHit = 0;
     int bombsWasHit = 0;
+    int coinsGained = 0;
 
     void increaseHit(int weaponType) {
         switch(weaponType) {
@@ -112,6 +113,7 @@ public:
         projectilesLaserWasHit = 0;
         rayLaserWasHit = 0;
         bombsWasHit = 0;
+        coinsGained = 0;
     }
 };
 

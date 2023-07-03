@@ -258,32 +258,9 @@ public:
         AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
 
-    enum SpriteSoldierAnimations {
-        SOLDIER_IDLE = 0,
-        SOLDIER_WALK = 1,
-        SOLDIER_FIRE = 2,
-        SOLDIER_INJURIED = 3,
-        SOLDIER_DEAD = 4
-    };
-
-    enum SpriteDoom2CacodemonAnimations {
-        FLY = 0,
-        DEAD = 1
-    };
-
     enum SoundChannels {
         SND_GLOBAL = -1,
         SND_LASER = 10,
-    };
-
-    enum ShaderTypes {
-        BACKGROUND = 1,
-        WATER = 2,
-        FIRE = 3,
-        TINT_SCREEN = 4,
-        SILHOUETTE = 5,
-        SMOKE = 6,
-        BLINK = 7,
     };
 
     enum ShadersPhaseRender {
@@ -305,9 +282,17 @@ public:
         CREDITS = 10,
         PRESS_KEY_BY_WIN = 11,
         INTRO = 12,
-        GAMING_TUTORIAL = 13
-
+        GAMING_TUTORIAL = 13,
+        STORE = 14
     } GameState;
+
+    typedef enum {
+        STORE_ITEM_EXTRA_POWER = 0,
+        STORE_ITEM_2 = 1,
+        STORE_ITEM_3 = 2,
+        STORE_ITEM_4 = 3,
+        STORE_ITEM_5 = 4
+    } StoreItems;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

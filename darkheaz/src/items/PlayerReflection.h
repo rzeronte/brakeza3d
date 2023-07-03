@@ -47,8 +47,6 @@ public:
 
     void setHidden(bool hidden);
 
-    void makeExplosion();
-
     void loadBlinkShader();
 };
 

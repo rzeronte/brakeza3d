@@ -4,6 +4,7 @@
   "music": "BossMusic01",
   "allowGravitionalShield": true,
   "allowEnergyShield": true,
+  "histories": ["histories/lore_10_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {

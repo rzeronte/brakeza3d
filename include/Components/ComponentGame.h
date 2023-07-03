@@ -29,6 +29,7 @@
 #include "../../darkheaz/src/shaders/ShaderExplosion.h"
 #include "../../darkheaz/src/shaders/ShaderImageMask.h"
 #include "../../darkheaz/src/shaders/ShaderCRT.h"
+#include "../../darkheaz/StoreManager.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 #define FREE_LOOK_ENABLED false
@@ -79,6 +80,8 @@ private:
     ShaderSwarm *shaderSwarm;
 
     TTF_Font *fontGame;
+
+    StoreManager *storeManager;
 
     //PathFinder *pathFinder;
 public:
@@ -223,6 +226,8 @@ public:
     Image *boxTutorial;
     Image *help;
 
+    Image *boxStore;
+
     void handlePressKeyHelp();
 
     TTF_Font *fontGameAlternative;
@@ -230,6 +235,8 @@ public:
     void handleGoIntoGamingTutorial();
 
     void setHelp(Image *help);
+
+    [[nodiscard]] StoreManager *getStoreManager() const;
 };
 
 

@@ -59,8 +59,8 @@ public:
     Weapon *parseWeaponJSON(cJSON *weaponJson);
 
     Counter countDown;
-    std::vector<Image*> tutorials;
-    std::vector<Image*> helps;
+    std::vector<Image*> levelHistories;
+    std::vector<Image*> levelTutorials;
     int currentTutorialIndex;
 
     bool endLevel;

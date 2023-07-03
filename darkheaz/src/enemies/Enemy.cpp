@@ -18,6 +18,7 @@ Enemy::Enemy()
 void Enemy::takeDamage(float damageTaken) {
     this->stamina -= damageTaken;
     if (this->stamina <= 0) {
+        ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
         setState(EnemyState::ENEMY_STATE_DIE);
     }
 }

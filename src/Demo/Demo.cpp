@@ -3,6 +3,14 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Objects/Decal.h"
 
+enum SpriteSoldierAnimations {
+    SOLDIER_IDLE = 0,
+    SOLDIER_WALK = 1,
+    SOLDIER_FIRE = 2,
+    SOLDIER_INJURIED = 3,
+    SOLDIER_DEAD = 4
+};
+
 Demo::Demo() {
 
     // marine (sprite directional)
@@ -15,7 +23,7 @@ Demo::Demo() {
     marine->addAnimationDirectional2D("enemies/soldier/injuried", 1, 20, false, -1);
     marine->addAnimationDirectional2D("enemies/soldier/dead", 5, 20, true, 1);
     marine->addAnimationDirectional2D("enemies/soldier/explosion", 8, 20, true, 1);
-    marine->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
+    marine->setAnimation(SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(marine, "marine");
 
     // skull (sprite directional)
@@ -23,18 +31,8 @@ Demo::Demo() {
     skull->setEnabled(false);
     skull->setPosition(Vertex3D(5, 0, -10));
     skull->addAnimationDirectional2D("enemies/skull/idle", 5, 20, false, -1);
-    skull->setAnimation(EngineSetup::get()->SpriteSoldierAnimations::SOLDIER_WALK);
+    skull->setAnimation(SpriteSoldierAnimations::SOLDIER_WALK);
     Brakeza3D::get()->addObject3D(skull, "skull");
-
-    // caco (sprite directional)
-    auto *caco = new SpriteDirectional3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-    caco->setEnabled(false);
-    caco->setPosition(Vertex3D(20, 0, -10));
-    caco->addAnimationDirectional2D("enemies/cacodemon/walk", 6, 20, false, -1);
-    caco->addAnimationDirectional2D("enemies/cacodemon/dead", 6, 20, false, -1);
-    caco->setAnimation(EngineSetup::get()->SpriteDoom2CacodemonAnimations::FLY);
-    Brakeza3D::get()->addObject3D(caco, "caco");
-
 
     /*Mesh3DGhost *cuboPhysicGhost = new Mesh3DGhost();
     cuboPhysicGhost->setEnabled(true);
