@@ -138,7 +138,7 @@ public:
 
     virtual cJSON *getJSON();
 
-    const Vertex3D &getRotationFrame() const;
+    [[nodiscard]] const Vertex3D &getRotationFrame() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

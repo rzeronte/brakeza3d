@@ -3,20 +3,25 @@
 #include "../../../include/ComponentsManager.h"
 #include "../../../include/Brakeza3D.h"
 
-PlayerReflection::PlayerReflection(
-    float stamina,
-    float ttl
-):
-    startStamina(stamina),
-    stamina(stamina),
-    blink(nullptr),
-    counterDamageBlink(Counter(1)),
+PlayerReflection::PlayerReflection(float ttl)
+:
     hidden(true),
     timeToLive(Counter(ttl))
 {
     timeToLive.setEnabled(true);
-    counterDamageBlink.setEnabled(false);
     zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
+}
+
+void PlayerReflection::onStartSetup()
+{
+    makeSimpleGhostBody(
+        Vertex3D(600, 600, 600),
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::Enemy
+    );
+
+    removeCollisionObject();
 }
 
 void PlayerReflection::onUpdate()
@@ -32,15 +37,8 @@ void PlayerReflection::onUpdate()
 
 void PlayerReflection::postUpdate()
 {
-    Object3D::postUpdate();
+    Mesh3D::postUpdate();
 
-    if (counterDamageBlink.isEnabled()) {
-        counterDamageBlink.update();
-        blink->update();
-        if (counterDamageBlink.isFinished()) {
-            blink->setEnabled(false);
-        }
-    }
     if (timeToLive.isFinished()) {
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
         setStencilBufferEnabled(false);
@@ -50,58 +48,16 @@ void PlayerReflection::postUpdate()
     }
 }
 
-float PlayerReflection::getStartStamina() const {
-    return startStamina;
-}
-
-void PlayerReflection::setStartStamina(float value) {
-    PlayerReflection::startStamina = value;
-}
-
-float PlayerReflection::getStamina() const {
-    return stamina;
-}
-
-void PlayerReflection::setStamina(float value) {
-    PlayerReflection::stamina = value;
-}
-
-void PlayerReflection::takeDamage(float damageTaken)
-{
-    this->stamina -= damageTaken;
-
-    if (this->stamina <= 0) {
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
-        setEnabled(false);
-        removeCollisionObject();
-        setHidden(true);
-        setStencilBufferEnabled(false);
-    }
-}
-
 void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)
 {
     Mesh3DGhost::resolveCollision(objectWithCollision);
-
-    auto *projectile = dynamic_cast<AmmoProjectileBody*> (objectWithCollision);
-    if (projectile != nullptr) {
-        blink->setEnabled(true);
-        counterDamageBlink.setEnabled(true);
-
-        auto fireworks = new ParticleEmitterFireworks(getPosition(), 5, 1000, 1, 0.02, Color::yellow(), Color::red(), 1, 4);
-        Brakeza3D::get()->addObject3D(fireworks, ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-
-        takeDamage(projectile->getWeaponType()->getDamage());
-    }
 }
-
 
 void PlayerReflection::reset()
 {
     setEnabled(true);
     setHidden(false);
     timeToLive.setEnabled(true);
-    setStamina(getStartStamina());
     setStencilBufferEnabled(true);
 
     if (!isHidden()) {
@@ -124,18 +80,3 @@ void PlayerReflection::setHidden(bool value)
 {
     PlayerReflection::hidden = value;
 }
-
-void PlayerReflection::loadBlinkShader()
-{
-    blink = new ShaderBlink(true, this, 0.05, Color::red());
-
-    makeSimpleGhostBody(
-        Vertex3D(600, 600, 600),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
-    );
-    removeCollisionObject();
-    setHidden(true);
-}
-

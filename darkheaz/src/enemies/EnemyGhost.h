@@ -6,7 +6,6 @@
 #include "../../../src/Collisions/Collisionable.h"
 #include "Enemy.h"
 #include "../../../include/Physics/Mesh3DGhost.h"
-#include "../../../include/Shaders/ShaderBlink.h"
 #include "../../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../weapons/AmmoProjectileBodyEmitter.h"
 #include "../../../include/Physics/RayCollisionable.h"
@@ -14,13 +13,11 @@
 #include "../shaders/ShaderZombie.h"
 #include "../items/EnemyDialog.h"
 
-class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy {
+class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject {
 private:
-    ShaderBlink *blink;
     ShaderZombie *zombie;
 
     RayLight rayLight;
-    Counter counterDamageBlink;
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
     std::vector<ProjectileRay *> fixedLasers;
@@ -65,17 +62,16 @@ public:
 
     [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmitter() const;
 
-    [[nodiscard]] ShaderBlink *getBlink();
-
     void handleDie();
 
     void onDraw() override;
 
-    [[nodiscard]] ParticleEmitter *getParticleEmitter() const;
-
     void drawCall() override;
 
     std::vector<EnemyDialog *> dialogs;
+
+    void takeDamage(float damageTaken);
+
 };
 
 

@@ -90,7 +90,8 @@ Vertex3D Vertex3D::getNormalize() const {
     return C;
 }
 
-Vertex3D Vertex3D::zero() {
+Vertex3D Vertex3D::zero()
+{
     return Vertex3D(0, 0, 0);
 }
 

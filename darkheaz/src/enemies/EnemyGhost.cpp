@@ -3,7 +3,7 @@
 #include "../../../include/Brakeza3D.h"
 
 EnemyGhost::EnemyGhost() :
-    blink(nullptr),
+    LivingObject(this),
     rayLight(RayLight(
         false,
         this,
@@ -13,7 +13,6 @@ EnemyGhost::EnemyGhost() :
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player
     )),
-    counterDamageBlink(Counter(1)),
     counterStuck(Counter(5)),
     projectileEmitter(nullptr)
 {
@@ -271,6 +270,14 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 
         this->takeDamage((float) projectile->getDamage());
     }
+
+    auto *satellite = dynamic_cast<PlayerSatellite*> (withObject);
+    if (satellite != nullptr) {
+        blink->setEnabled(true);
+        counterDamageBlink.setEnabled(true);
+
+        this->takeDamage(satellite->getDamage() * Brakeza3D::get()->getDeltaTime());
+    }
 }
 
 void EnemyGhost::remove()
@@ -339,11 +346,6 @@ void EnemyGhost::shoot(Object3D *target)
             break;
         }
     }
-}
-
-ShaderBlink *EnemyGhost::getBlink()
-{
-    return blink;
 }
 
 EnemyGhost::~EnemyGhost()
@@ -423,11 +425,16 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
     Brakeza3D::get()->addObject3D(ray, "fixed_ray" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
 }
 
-ParticleEmitter *EnemyGhost::getParticleEmitter() const {
-    return particleEmitter;
-}
-
 void EnemyGhost::drawCall()
 {
     Object3D::drawCall();
+}
+
+void EnemyGhost::takeDamage(float damageTaken)
+{
+    this->stamina -= damageTaken;
+    if (this->stamina <= 0) {
+        ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
+        setState(EnemyState::ENEMY_STATE_DIE);
+    }
 }
