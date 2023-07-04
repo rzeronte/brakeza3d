@@ -288,8 +288,8 @@ public:
 
     typedef enum {
         STORE_ITEM_EXTRA_POWER = 0,
-        STORE_ITEM_2 = 1,
-        STORE_ITEM_3 = 2,
+        STORE_ITEM_FAST_ENERGY = 1,
+        STORE_ITEM_SATELLITE = 2,
         STORE_ITEM_4 = 3,
         STORE_ITEM_5 = 4
     } StoreItems;

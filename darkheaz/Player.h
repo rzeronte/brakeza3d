@@ -12,6 +12,8 @@
 #include "src/shaders/ShaderParticles.h"
 #include "src/shaders/ShaderZombie.h"
 #include "src/shaders/ShaderEnergyShield.h"
+#include "src/items/LivingObject.h"
+#include "src/items/PlayerSatellite.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -39,24 +41,18 @@ enum WeaponStatus {
     RELOAD = 4,
 };
 
-class Player : public Mesh3DGhost {
+class Player : public Mesh3DGhost, public LivingObject {
 private:
 
-    float stamina;
-    float startStamina;
     float energy;
     float startEnergy;
     float recoverEnergySpeed;
     bool stuck;
     int coins;
 
-    int lives;
     Vertex3D velocity;
     Weapon *weapon;
-    Counter counterDamageBlink;
     Counter counterStucked;
-
-    ShaderBlink *blink;
 
     RayLight rayLight;
 
@@ -76,6 +72,7 @@ private:
     int currentWeaponIndex;
 
     PlayerReflection reflection;
+    PlayerSatellite satellite;
 
     ShaderParticles *shaderParticles;
 
@@ -99,12 +96,6 @@ public:
     void receiveAid(float aid);
 
     void receiveEnergy(float energy);
-
-    [[nodiscard]] int getStamina() const;
-
-    void setStamina(int stamina);
-
-    void setLives(int lives);
 
     void onUpdate() override;
     void postUpdate() override;
@@ -161,10 +152,6 @@ public:
 
     void setEnergy(float energy);
 
-    [[nodiscard]] int getStartStamina() const;
-
-    void setStartStamina(int startStamina);
-
     [[nodiscard]] float getStartEnergy() const;
 
     void setStartEnergy(float startEnergy);
@@ -191,7 +178,7 @@ public:
 
     [[nodiscard]] bool isAllowEnergyShield() const;
 
-    void loadShaders();
+    void onStartSetup();
 
     void loadReflection();
 
@@ -232,6 +219,8 @@ public:
     void increaseCoins(int value);
 
     void decreaseCoins(int value);
+
+    void loadSatellite();
 };
 
 

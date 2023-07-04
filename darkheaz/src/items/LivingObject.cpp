@@ -3,9 +3,11 @@
 LivingObject::LivingObject(Mesh3D *parent)
 :
     stamina(INITIAL_STAMINA),
-    startStamina(INITIAL_STAMINA)
+    startStamina(INITIAL_STAMINA),
+    counterDamageBlink(Counter(0.45)),
+    blink(nullptr)
+
 {
-    blink = new ShaderBlink(true, parent, 0.05, Color::red());
 }
 
 float LivingObject::getStartStamina() const {
@@ -16,8 +18,11 @@ float LivingObject::getStamina() const {
     return stamina;
 }
 
-void LivingObject::takeDamage(float damageTaken)
-{
-    stamina -= damageTaken;
+void LivingObject::setStamina(float stamina) {
+    LivingObject::stamina = stamina;
+}
+
+void LivingObject::setStartStamina(float startStamina) {
+    LivingObject::startStamina = startStamina;
 }
 

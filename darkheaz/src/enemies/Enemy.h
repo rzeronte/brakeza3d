@@ -8,6 +8,7 @@
 #include "../../../include/Misc/Counter.h"
 #include "../../../include/Render/M3.h"
 #include "../weapons/Weapon.h"
+#include "../items/LivingObject.h"
 
 typedef enum {
     ENEMY_STATE_STOP, ENEMY_STATE_DIE
@@ -19,8 +20,6 @@ protected:
     EnemyState state;
     Weapon *weapon;
     Image *avatar;
-    float startStamina;
-    float stamina;
     float range;
     int soundChannel;
     bool rewards;
@@ -30,15 +29,9 @@ public:
 
     virtual ~Enemy();
 
-    void takeDamage(float damageTaken);
-
     void setState(EnemyState value);
 
     void setWeapon(Weapon *weaponType);
-
-    void setStamina(float stamina);
-
-    void setStartStamina(float startStamina);
 
     void setSoundChannel(int soundChannel);
 
@@ -52,11 +45,7 @@ public:
 
     [[nodiscard]] bool isStuck() const;
 
-    [[nodiscard]] float getStartStamina() const;
-
     [[nodiscard]] Weapon *getWeapon() const;
-
-    [[nodiscard]] float getStamina() const;
 
     [[nodiscard]] EnemyState getState() const;
 

@@ -1,10 +1,7 @@
 #include "../../include/Components/ComponentGame.h"
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../darkheaz/src/items/ItemWeaponGhost.h"
-#include "../../darkheaz/src/items/ItemEnergyGhost.h"
 #include "../../darkheaz/src/items/ItemBombGhost.h"
-#include "../../darkheaz/src/items/EnemyDialog.h"
 
 ComponentGame::ComponentGame()
 :
@@ -621,9 +618,7 @@ void ComponentGame::loadPlayer()
     );
     Brakeza3D::get()->addObject3D(player, "player");
 
-    // load in this point because alpha is not working if is load previous (todo)
-    player->loadShaders();
-    player->loadReflection();
+    player->onStartSetup();
 
     explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
     explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 30);

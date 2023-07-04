@@ -12,7 +12,6 @@ void Mesh3DAnimatedGhost::integrate()
     updateBulletFromMesh3D();
 }
 
-
 void Mesh3DAnimatedGhost::onUpdate()
 {
     Mesh3DAnimated::onUpdate();

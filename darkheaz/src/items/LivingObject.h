@@ -16,7 +16,6 @@ protected:
     float stamina;
     ShaderBlink *blink;
     Counter counterDamageBlink;
-
 public:
     explicit LivingObject(Mesh3D *parent);
 
@@ -24,7 +23,9 @@ public:
 
     [[nodiscard]] float getStamina() const;
 
-    void takeDamage(float damageTaken);
+    void setStamina(float stamina);
+
+    void setStartStamina(float startStamina);
 };
 
 

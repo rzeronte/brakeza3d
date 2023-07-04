@@ -111,7 +111,7 @@ void StoreManager::loadDefaultItems()
         new Image(SETUP->IMAGES_FOLDER + "store/item1_icon_small.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item1_icon_off.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item1_desc.png"),
-        1001,
+        500,
         nullptr,
         true
     ));
@@ -121,7 +121,7 @@ void StoreManager::loadDefaultItems()
         new Image(SETUP->IMAGES_FOLDER + "store/item2_icon_small.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item2_icon_off.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item2_desc.png"),
-        11,
+        500,
         nullptr,
         true
     ));
@@ -131,9 +131,9 @@ void StoreManager::loadDefaultItems()
         new Image(SETUP->IMAGES_FOLDER + "store/item3_icon_small.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item3_icon_off.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item3_desc.png"),
-        12,
+        1100,
         nullptr,
-        false
+        true
     ));
 
     addItem(new StoreItem(
@@ -141,7 +141,7 @@ void StoreManager::loadDefaultItems()
         new Image(SETUP->IMAGES_FOLDER + "store/item4_icon_small.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item4_icon_off.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item4_desc.png"),
-        13,
+        1100,
         nullptr,
         false
     ));
@@ -151,7 +151,7 @@ void StoreManager::loadDefaultItems()
         new Image(SETUP->IMAGES_FOLDER + "store/item5_icon_small.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item5_icon_off.png"),
         new Image(SETUP->IMAGES_FOLDER + "store/item5_desc.png"),
-        14,
+        1100,
         nullptr,
         false
     ));

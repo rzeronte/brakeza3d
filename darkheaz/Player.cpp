@@ -9,24 +9,14 @@
 #include "src/items/LivingObject.h"
 
 Player::Player() :
+    LivingObject(this),
     energy(INITIAL_ENERGY),
     startEnergy(INITIAL_ENERGY),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
-    lives(INITIAL_LIVES),
     weapon(nullptr),
-    counterDamageBlink (Counter(0.45)),
     counterStucked(Counter(5)),
-    blink(nullptr),
-    rayLight(RayLight(
-        false,
-        this,
-        1000,
-        0,
-        Color::green(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy
-    )),
+    rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
     killsCounter(0),
     energyShieldEnabled(false),
     gravityShieldsNumber(0),
@@ -35,7 +25,8 @@ Player::Player() :
     lightPositionOffset(Vertex3D(0, -550, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
-    reflection(PlayerReflection((float) INITIAL_STAMINA, 5)),
+    reflection(PlayerReflection(5)),
+    satellite(PlayerSatellite(this)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
     shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
     dashPower(INITIAL_POWERDASH),
@@ -50,19 +41,18 @@ Player::Player() :
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
     shaderParticles = new ShaderParticles(true, Color(0, 0, 255), Color(0, 255, 255), OCParticlesContext(
-            0.0f,
-            0.0025f,
-            1.5f,
-            45.0f,
-            0.0f,
-            50.0f,
-            50.0f,
-            255.0f,
-            2.0f,
-            0.8f,
-            0.98f
-        )
-    );
+        0.0f,
+        0.0025f,
+        1.5f,
+        45.0f,
+        0.0f,
+        50.0f,
+        50.0f,
+        255.0f,
+        2.0f,
+        0.8f,
+        0.98f
+    ));
 
     shaderEnergyShield = new ShaderEnergyShield(true, this, std::string(EngineSetup::get()->IMAGES_FOLDER + "lava.png"));
 }
@@ -78,20 +68,23 @@ void Player::loadReflection()
     reflection.setStencilBufferEnabled(true);
     reflection.setRotationFrameEnabled(true);
     reflection.setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    reflection.onStartSetup();
 
     Brakeza3D::get()->addObject3D(&reflection, "gravitationalShieldPlayer");
 }
 
-int Player::getStamina() const {
-    return (int) stamina;
-}
-
-void Player::setStamina(int value) {
-    Player::stamina = (float) value;
-}
-
-void Player::setLives(int value) {
-    Player::lives = value;
+void Player::loadSatellite()
+{
+    satellite.setEnabled(true);
+    satellite.setLabel("satellitePlayer");
+    satellite.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
+    satellite.setParent(parent);
+    satellite.setFlatTextureColor(false);
+    satellite.setPosition(getPosition());
+    satellite.setStencilBufferEnabled(true);
+    satellite.setRotationFrameEnabled(true);
+    satellite.setRotationFrame(Vertex3D(0, 0, 2.5f));
+    satellite.onStartSetup();
 }
 
 bool Player::takeDamage(float dmg)
@@ -119,7 +112,6 @@ bool Player::takeDamage(float dmg)
         ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
         ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
-        lives--;
     }
 
     setState(PlayerState::GETTING_DAMAGE);
@@ -211,6 +203,7 @@ void Player::receiveAid(float value) {
         this->stamina = (float) getStartStamina();
     }
 }
+
 void Player::receiveEnergy(float value)
 {
     this->energy = energy + value;
@@ -230,7 +223,7 @@ void Player::onUpdate()
 
     if (getEnergy() < getStartEnergy()) {
         float recoverEnergy = getEnergy() + recoverEnergySpeed;
-        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_2)) {
+        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_FAST_ENERGY)) {
             recoverEnergy *= 1.0025f;
         }
         setEnergy(std::min(recoverEnergy, getStartEnergy()));
@@ -270,6 +263,9 @@ void Player::onUpdate()
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+        satellite.onUpdate();
+    }
 }
 
 void Player::drawCall()
@@ -282,16 +278,21 @@ void Player::drawCall()
         }
     }
 
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+        satellite.drawCall();
+    }
+
     updateShaderParticles();
 }
 
-void Player::onDraw() {
+void Player::onDraw()
+{
     Mesh3D::onDraw();
     if (isStucked()) {
         Drawable::drawLightning(
-                getPosition() + Tools::randomVertex().getScaled(5),
-                getPosition() + Tools::randomVertex().getScaled(5),
-                Color::green()
+            getPosition() + Tools::randomVertex().getScaled(5),
+            getPosition() + Tools::randomVertex().getScaled(5),
+            Color::green()
         );
         counterStucked.update();
 
@@ -327,6 +328,10 @@ void Player::postUpdate()
 
     if (weapon != nullptr) {
         weapon->onUpdate();
+    }
+
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+        satellite.postUpdate();
     }
 }
 
@@ -534,14 +539,6 @@ void Player::setEnergy(float value) {
     Player::energy = value;
 }
 
-int Player::getStartStamina() const {
-    return startStamina;
-}
-
-void Player::setStartStamina(int value) {
-    Player::startStamina = value;
-}
-
 float Player::getStartEnergy() const {
     return startEnergy;
 }
@@ -620,12 +617,13 @@ bool Player::isAllowEnergyShield() const
     return allowEnergyShield;
 }
 
-void Player::loadShaders()
+void Player::onStartSetup()
 {
     blink = new ShaderBlink(false, this, 0.05, Color::green());
-
     counterDamageBlink.setEnabled(false);
-    reflection.loadBlinkShader();
+
+    loadReflection();
+    loadSatellite();
 }
 
 PlayerState Player::getState() const
@@ -640,7 +638,7 @@ void Player::makeStuck(float time)
 
     setStucked(true);
 
-    velocity = Vertex3D(0, 0, 0);
+    velocity = Vertex3D::zero();
 
     setState(PlayerState::GETTING_DAMAGE);
 
