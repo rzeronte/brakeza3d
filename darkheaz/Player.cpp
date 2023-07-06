@@ -9,32 +9,33 @@
 #include "src/items/LivingObject.h"
 
 Player::Player() :
-    LivingObject(this),
-    energy(INITIAL_ENERGY),
-    startEnergy(INITIAL_ENERGY),
-    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-    stuck(false),
-    weapon(nullptr),
-    counterStucked(Counter(5)),
-    rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
-    killsCounter(0),
-    energyShieldEnabled(false),
-    gravityShieldsNumber(0),
-    allowMakeReflections(false),
-    allowEnergyShield(false),
-    lightPositionOffset(Vertex3D(0, -550, 0)),
-    state(PlayerState::EMPTY),
-    currentWeaponIndex(0),
-    reflection(PlayerReflection(5)),
-    satellite(PlayerSatellite(this)),
-    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
-    shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
-    dashPower(INITIAL_POWERDASH),
-    power(INITIAL_POWER),
-    friction(INITIAL_FRICTION),
-    maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
-    coins(1000)
+        LivingObject(this),
+        energy(INITIAL_ENERGY),
+        startEnergy(INITIAL_ENERGY),
+        recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+        stuck(false),
+        weapon(nullptr),
+        counterStucked(Counter(5)),
+        counterDashCadence(Counter(1)),
+        rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
+        killsCounter(0),
+        energyShieldEnabled(false),
+        gravityShieldsNumber(0),
+        allowMakeReflections(false),
+        allowEnergyShield(false),
+        lightPositionOffset(Vertex3D(0, -550, 0)),
+        state(PlayerState::EMPTY),
+        currentWeaponIndex(0),
+        reflection(PlayerReflection(5)),
+        satellite(PlayerSatellite(this)),
+        avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
+        shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
+        dashPower(INITIAL_POWER_DASH),
+        power(INITIAL_POWER),
+        friction(INITIAL_FRICTION),
+        maxVelocity(INITIAL_MAX_VELOCITY),
+        rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
+        coins(1000)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
@@ -160,14 +161,17 @@ void Player::shoot(float intensity)
         case WeaponTypes::WEAPON_PROJECTILE: {
             weapon->shootProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(1000),
+                getPosition(),
+                AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 getRotation(),
                 intensity,
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy,
+                true,
                 true
             );
+
             break;
         }
         case WeaponTypes::WEAPON_LASER_PROJECTILE: {
@@ -217,13 +221,17 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    //updateLight();
+    counterDashCadence.update();
+
+    if (counterDashCadence.isFinished()) {
+        counterDashCadence.setEnabled(false);
+    }
 
     applyFriction();
 
     if (getEnergy() < getStartEnergy()) {
         float recoverEnergy = getEnergy() + recoverEnergySpeed;
-        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_FAST_ENERGY)) {
+        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_ENERGY_RELOAD)) {
             recoverEnergy *= 1.0025f;
         }
         setEnergy(std::min(recoverEnergy, getStartEnergy()));
@@ -263,7 +271,7 @@ void Player::onUpdate()
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.onUpdate();
     }
 }
@@ -278,7 +286,7 @@ void Player::drawCall()
         }
     }
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.drawCall();
     }
 
@@ -330,7 +338,7 @@ void Player::postUpdate()
         weapon->onUpdate();
     }
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_SATELLITE)) {
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.postUpdate();
     }
 }
@@ -353,7 +361,8 @@ void Player::setVelocity(Vertex3D v)
     this->velocity = v;
 }
 
-void Player::updateLight() {
+void Player::updateLight()
+{
     light->setPosition(getPosition() + lightPositionOffset);
     light->onUpdate();
 }
@@ -599,7 +608,7 @@ void Player::previousWeapon()
     }
 }
 
-void Player::setAllowGravitationalShields(bool value) {
+void Player::setAllowReflections(bool value) {
     Player::allowMakeReflections = value;
 }
 
@@ -742,4 +751,39 @@ void Player::increaseCoins(int value)
 void Player::decreaseCoins(int value)
 {
     coins -= value;
+}
+
+void Player::dashMovement()
+{
+    if (isStucked()) return;
+
+    if (!counterDashCadence.isEnabled()) {
+
+        if (getVelocity().getModule() <= 0.007f) return;
+
+        counterDashCadence.setEnabled(true);
+        Brakeza3D::get()->addObject3D(
+            new ShockWave(getPosition(), 0.50, 50, 1, true),
+            Brakeza3D::uniqueObjectLabel("shockWave")
+        );
+
+        const float dashEnergyCost = DASH_ENERGY_COST;
+
+        if (getEnergy() < dashEnergyCost) {
+            return;
+        }
+
+        ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
+        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion());
+
+        float power = dashPower;
+        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {
+            power *= 2;
+        }
+
+        setPosition(getPosition() + getVelocity().getNormalize().getScaled(power));
+
+        useEnergy(dashEnergyCost);
+    }
 }

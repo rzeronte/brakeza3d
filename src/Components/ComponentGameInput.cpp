@@ -80,7 +80,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
     auto buttonControllerPressed = (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE);
 
     if (escPressed || buttonControllerPressed) {
-        ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         if (gameState == EngineSetup::GameState::MENU && game->getLevelLoader()->isLevelStartedToPlay()) {
             game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
@@ -89,7 +89,8 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         }
 
         if (gameState == EngineSetup::GameState::STORE) {
-            game->setGameState(EngineSetup::GameState::GAMING);
+            game->gameState = EngineSetup::GameState::PRESS_KEY_BY_WIN;
+
             return;
         }
         if (gameState == EngineSetup::GameState::GAMING_TUTORIAL) {
@@ -103,7 +104,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         }
 
         if (gameState == EngineSetup::GameState::COUNTDOWN ||
-            gameState == EngineSetup::GameState::PRESS_KEY_NEWLEVEL ||
+            gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
         ) return;
@@ -258,7 +259,7 @@ void ComponentGameInput::handleKeyboardMovingPlayer()
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_EXTRA_POWER)) {
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_POWER)) {
         speed *= 1.75f;
     }
 
@@ -336,7 +337,7 @@ void ComponentGameInput::handleGamePadMovingPlayer()
 
     float speed = player->power * Brakeza3D::get()->getDeltaTime();
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::STORE_ITEM_EXTRA_POWER)) {
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_POWER)) {
         speed *= 1.75f;
     }
 
@@ -350,41 +351,13 @@ void ComponentGameInput::handleGamePadMovingPlayer()
 
 void ComponentGameInput::handleDashMovement(SDL_Event *event)
 {
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto player = componentGame->getPlayer();
-
-    if (player->isStucked()) return;
-
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     auto input = ComponentsManager::get()->getComponentInput();
+    Uint8 *keyboard = input->getKeyboard();
+    auto leftShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN;
+    auto controlButtonPressed = event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB();
 
-    if (
-        (keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN) ||
-        (event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB())
-    ) {
-        Brakeza3D::get()->addObject3D(
-            new ShockWave(player->getPosition(), 0.50, 50, 1, true),
-            "shockWave_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
-        );
-
-        const float dashEnergyCost = 10;
-
-        if (player->getEnergy() < dashEnergyCost) {
-            return;
-        }
-
-        ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-
-        Tools::makeExplosion(player, player->getPosition(), 1, OCParticlesContext::forExplosion());
-
-        float speed = player->dashPower * Brakeza3D::get()->getDeltaTime();
-
-        player->setVelocity(
-            player->getVelocity() +
-            Vertex3D(input->getControllerAxisLeftX() * speed, input->getControllerAxisLeftY() * speed, 0)
-        );
-
-        player->useEnergy(dashEnergyCost);
+    if ( leftShiftPressed || controlButtonPressed) {
+        ComponentsManager::get()->getComponentGame()->getPlayer()->dashMovement();
     }
 }
 
@@ -439,18 +412,25 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
     bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+    bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
 
-    bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
-    bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
-    bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
+    const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
+    const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
+    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
+    const bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
         game->pressedKeyForWin();
     }
 
-    if ((state == EngineSetup::GameState::GAMING_TUTORIAL) && (enter || isButtonGuidedPressed)) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_WIN && (controllerUpPad || keyStorePressed)) {
+        game->setGameState(EngineSetup::STORE);
+        componentSound->sound("wrench", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    }
+
+    if (state == EngineSetup::GameState::GAMING_TUTORIAL && (enter || isButtonGuidedPressed)) {
         game->setGameState(EngineSetup::GAMING);
         componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
@@ -458,10 +438,12 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     if (state == EngineSetup::GameState::STORE) {
         if (cursorLeft || controllerLeft) {
             game->getStoreManager()->decreaseItemSelected();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         if (cursorRight || controllerRight) {
             game->getStoreManager()->increaseItemSelected();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         if (enter) {
@@ -469,7 +451,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
     }
 
-    if ((state == EngineSetup::GameState::PRESS_KEY_NEWLEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
+    if ((state == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
         if (isButtonGuidedPressed || enter) {
             game->pressedKeyForBeginLevel();
         }
@@ -520,11 +502,6 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
         weapon->shootBomb(player, player->getPosition());
     }
 
-    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
-
-    if (keyStorePressed) {
-        componentGame->setGameState(EngineSetup::STORE);
-    }
 }
 
 float ComponentGameInput::getControllerAxisThreshold() const {

@@ -124,7 +124,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         nullptr
     );
 
-    Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
 
     auto emitter = new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
@@ -138,7 +138,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
 
     projectile->setParticleEmitter(emitter);
 
-    Brakeza3D::get()->addObject3D(emitter, "particleEmitter_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
 }
 
 void AmmoProjectileBodyEmitter::launchCircleProjectiles()
@@ -180,7 +180,7 @@ void AmmoProjectileBodyEmitter::launchUniqueLaser()
             color,
             false
         ),
-        "laser_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        Brakeza3D::uniqueObjectLabel("laser")
     );
 
 }

@@ -242,3 +242,8 @@ Brakeza3D::~Brakeza3D()
 float &Brakeza3D::getExecutionTime() {
     return executionTime;
 }
+
+std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
+{
+    return prefix + std::string("_") + std::to_string(Brakeza3D::get()->getSceneObjects().size() + 1);
+}

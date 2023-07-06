@@ -126,7 +126,7 @@ void EnemyGhost::handleDie()
 {
     Brakeza3D::get()->addObject3D(
         new ShockWave(getPosition(), 0.50, 50, 1, true),
-        "shockWave_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        Brakeza3D::uniqueObjectLabel("shockWave")
     );
     makeReward();
     makeExplosion();
@@ -207,7 +207,7 @@ void EnemyGhost::makeReward()
             break;
         }
         case 2: {
-            int randomWeapon = Tools::random(0, 2);
+            int randomWeapon = Tools::random(0, 3);
             auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon]);
             weaponItem->setLabel("item_weapon");
             weaponItem->setEnableLights(false);
@@ -303,11 +303,13 @@ void EnemyGhost::shoot(Object3D *target)
             weapon->shootProjectile(
                 this,
                 positionProjectile,
+                Vertex3D(0, 0, 0),
                 direction,
                 getRotation(),
                 1.0,
                 EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player,
+                false,
                 false
             );
             break;
@@ -422,7 +424,7 @@ AmmoProjectileBodyEmitter *EnemyGhost::getProjectileEmitter() const
 void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
     fixedLasers.push_back(ray);
-    Brakeza3D::get()->addObject3D(ray, "fixed_ray" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(ray, Brakeza3D::uniqueObjectLabel("fixedRay"));
 }
 
 void EnemyGhost::drawCall()

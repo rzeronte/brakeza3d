@@ -1,10 +1,11 @@
 {
   "name": "02",
+  "music": "level01Music",
   "backgroundImage": "levels/02.png",
-  "allowGravitionalShield": false,
+  "allowReflection": false,
   "allowEnergyShield": false,
   "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
-  "histories": ["no_news.png"],
+  "histories": ["default_history.png"],
   "color": { "r": 0, "g": 0, "b": 0 },
   "enemies": [
     {

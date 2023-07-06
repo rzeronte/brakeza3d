@@ -57,6 +57,10 @@ private:
     Image *imageHelp;
     Image *imageSplash;
     Image *imageCrossFire;
+    Image *imageCablesVertical;
+    Image *imageCablesHorizontal;
+    Image *imageCablesStore;
+    Image *imageStatistics;
 
     Counter splashCounter;
 
@@ -69,7 +73,6 @@ private:
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
-    EngineSetup::GameState gameState;
     std::vector<Weapon *> weapons;
 
     Color primaryColor;
@@ -237,6 +240,8 @@ public:
     void setHelp(Image *help);
 
     [[nodiscard]] StoreManager *getStoreManager() const;
+
+    EngineSetup::GameState gameState;
 };
 
 

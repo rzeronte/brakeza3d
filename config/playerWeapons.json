@@ -68,10 +68,10 @@
     },
     {
       "index": 3,
-      "available": false,
+      "available": true,
       "name": "bomb",
       "damage": 400,
-      "amount": 1000,
+      "amount": 3,
       "startAmount": 10,
       "speed": 0,
       "dispersion": 10,
@@ -83,7 +83,7 @@
       "type": 3,
       "icon": "icons/weapon_instant.png",
       "modelProjectile": "projectile_weapon_03.fbx",
-      "model": "item_weapon_02.fbx",
+      "model": "bomb_green.fbx",
       "flatTexture": false,
       "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }

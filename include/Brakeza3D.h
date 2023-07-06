@@ -80,6 +80,9 @@ public:
 
     float &getExecutionTime();
 
+    static std::string uniqueObjectLabel(const char *prefix);
+
+
     bool finish = false;
 };
 

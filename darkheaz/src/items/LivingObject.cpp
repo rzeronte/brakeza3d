@@ -6,7 +6,6 @@ LivingObject::LivingObject(Mesh3D *parent)
     startStamina(INITIAL_STAMINA),
     counterDamageBlink(Counter(0.45)),
     blink(nullptr)
-
 {
 }
 
