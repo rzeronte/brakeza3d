@@ -25,7 +25,7 @@ void AsteroidEnemyGhost::onUpdate()
 void AsteroidEnemyGhost::addAsteroid() {
     auto *asteroid = new AsteroidEnemyGhost();
     asteroid->setEnabled(true);
-    asteroid->setLabel("asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    asteroid->setLabel(Brakeza3D::uniqueObjectLabel("asteroid"));
     asteroid->setEnableLights(false);
     asteroid->setPosition(getPosition());
     asteroid->setStencilBufferEnabled(true);

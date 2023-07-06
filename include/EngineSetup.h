@@ -272,7 +272,7 @@ public:
         NONE = 0,
         SPLASH = 1,
         MENU = 2,
-        PRESS_KEY_NEWLEVEL = 3,
+        PRESS_KEY_NEW_LEVEL = 3,
         PRESS_KEY_PREVIOUS_LEVEL = 4,
         PRESS_KEY_BY_DEAD = 5,
         COUNTDOWN = 6,
@@ -287,11 +287,12 @@ public:
     } GameState;
 
     typedef enum {
-        STORE_ITEM_EXTRA_POWER = 0,
-        STORE_ITEM_FAST_ENERGY = 1,
-        STORE_ITEM_SATELLITE = 2,
-        STORE_ITEM_4 = 3,
-        STORE_ITEM_5 = 4
+        ITEM_EXTRA_POWER = 0,
+        ITEM_FAST_ENERGY_RELOAD = 1,
+        ITEM_SATELLITE = 2,
+        ITEM_MIRROR_SHOOT = 3,
+        ITEM_EXTRA_DASH = 4,
+        ITEM_FAST_SHOOT_CADENCE = 5
     } StoreItems;
 };
 

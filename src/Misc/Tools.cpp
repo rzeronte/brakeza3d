@@ -524,7 +524,7 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
 
     Logging::Message("Loading from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
-    Brakeza3D::get()->addObject3D(newObject, name + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name.c_str()));
 }
 
 void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context)
@@ -539,6 +539,6 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
             Color::yellow(),
             context
         ),
-        "enemyFireworks_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel()
+        Brakeza3D::uniqueObjectLabel("fireworks")
     );
 }

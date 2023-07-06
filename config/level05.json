@@ -1,9 +1,11 @@
 {
   "name": "05",
+  "music": "level01Music",
   "backgroundImage": "levels/05.png",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 255, "g": 0, "b": 255 },
+  "histories": ["histories/lore_05_1.png", "histories/lore_05_2.png"],
   "enemies": [
     {
       "name": "Patrol",
@@ -120,17 +122,25 @@
   "background": [
     {
       "name": "nave",
-      "position": { "x": 900,  "y":	0, "z": 30000 },
+      "position": { "x": 900,  "y":	0, "z": 35000 },
       "model":	"spaceships/destroyer.fbx",
       "rotation": { "x": 90, "y": 90,  "z": 30 },
       "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
       "scale":	3,
       "motion": {
         "type": 1,
-        "from": { "x": 10, "y": 35 },
-        "to": { "x": 130, "y": 55 },
-        "speed": 0.05
+        "from": { "x": 10, "y": 25 },
+        "to": { "x": 130, "y": 45 },
+        "speed": 0.06
       }
+    },
+    {
+      "name": "nave",
+      "position": { "x": 20,  "y":	60, "z": 25000 },
+      "model":	"space_hexagon.fbx",
+      "rotation": { "x": 60, "y": 0,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "scale":	0.6
     }
   ]
 }

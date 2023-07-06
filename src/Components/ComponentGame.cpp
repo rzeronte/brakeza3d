@@ -49,6 +49,10 @@ void ComponentGame::onStart()
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
     imageHelp = new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE);
     imageSplash = new Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA);
+    imageCablesVertical = new Image(SETUP->IMAGES_FOLDER + "cables_hud_vertical.png");
+    imageCablesHorizontal = new Image(SETUP->IMAGES_FOLDER + "cables_hud_horizontal.png");
+    imageCablesStore = new Image(SETUP->IMAGES_FOLDER + "cables_hud_store.png");
+    imageStatistics = new Image(SETUP->IMAGES_FOLDER + "statistics_screen.png");
     splashCounter.setStep(SPLASH_TIME);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -215,7 +219,7 @@ void ComponentGame::onUpdate()
     shaderExplosion->update();
 
     switch(gameState) {
-        case EngineSetup::PRESS_KEY_NEWLEVEL:
+        case EngineSetup::PRESS_KEY_NEW_LEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
             handleTutorialImages(255);
             break;
@@ -261,14 +265,16 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::GAMING_TUTORIAL: {
             const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+            imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
 
             dialogBackground->setMaxAlpha((int) alpha);
             dialogBackground->update();
             boxTutorial->drawFlatAlpha(0, 0, alpha);
-            help->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
+
+            help->drawFlatAlpha(0, 0, alpha);
             break;
         }
         case EngineSetup::HELP: {
@@ -280,7 +286,7 @@ void ComponentGame::onUpdate()
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
 
             imageHelp->drawFlatAlpha(0, 0, alpha);
 
@@ -289,6 +295,8 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::STORE: {
             const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            imageCablesStore->drawFlatAlpha(0, 0, alpha);
 
             dialogBackground->setMaxAlpha((int) alpha);
             dialogBackground->update();
@@ -301,7 +309,7 @@ void ComponentGame::onUpdate()
 
             storeManager->update(alpha);
 
-            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
             break;
         }
         case EngineSetup::CREDITS: {
@@ -314,7 +322,7 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(360, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
 
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
@@ -325,21 +333,24 @@ void ComponentGame::onUpdate()
 void ComponentGame::handleTutorialImages(float alpha)
 {
     if (!getLevelLoader()->getTutorials().empty()) {
+        imageCablesVertical->drawFlatAlpha(0, 0, alpha);
+
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
-        textWriter->writeTTFCenterHorizontal(325, message.c_str(), primaryColor, 0.3f);
+        if (getLevelLoader()->getTutorials().size() > 1) {
+            textWriter->writeTTFCenterHorizontal(323, message.c_str(), primaryColor, 0.3f);
+        }
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         dialogBackground->setMaxAlpha((int) alpha);
         dialogBackground->update();
         boxTutorial->drawFlatAlpha(0, 0, alpha);
 
-        textWriter->writeTTFCenterHorizontal(360, "Press ENTER to start...", Color::black(), 0.2);
+        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", Color::black(), 0.2);
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
         shaderCRT->update();
-
     }
 }
 
@@ -356,9 +367,16 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 
 void ComponentGame::showLevelStatistics(float alpha)
 {
-    textWriter->writeTTFCenterHorizontal(110, "congratulations! Mission done", primaryColor, 0.4);
+    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
 
     textWriter->setFont(fontGameAlternative);
+
+    dialogBackground->setMaxAlpha(alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+    shaderCRT->setMaxAlpha(alpha);
+    shaderCRT->update();
 
     int offsetX = 160;
     const int space = 100;
@@ -389,18 +407,12 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     //textWriter->writeTTFCenterHorizontal(350, "Press ENTER to START!", primaryColor, 0.5f);
 
-    dialogBackground->setMaxAlpha(alpha);
-    dialogBackground->update();
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    imageStatistics->drawFlatAlpha(0, 0, alpha);
 
-    shaderCRT->setMaxAlpha(alpha);
-    shaderCRT->update();
-
-    textWriter->writeTTFCenterHorizontal(360, "Press ENTER to continue...", Color::black(), 0.2);
+    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
     auto iconCon = ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon");
     iconCon->getImage()->drawFlatAlpha(313  , 300, alpha);
     textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), secondaryColor, 0.3);
-
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -496,7 +508,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::MENU:
             handleMenuGameState();
             break;
-        case EngineSetup::PRESS_KEY_NEWLEVEL:
+        case EngineSetup::PRESS_KEY_NEW_LEVEL:
             handlePressNewLevelKeyGameState();
             break;
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL:
@@ -950,7 +962,7 @@ void ComponentGame::pressedKeyForNewGame()
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-        makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEWLEVEL, true);
+        makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
         ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         player->respawn();
@@ -961,7 +973,7 @@ void ComponentGame::pressedKeyForNewGame()
 
 void ComponentGame::pressedKeyForWin()
 {
-    makeFadeToGameState(EngineSetup::PRESS_KEY_NEWLEVEL, true);
+    makeFadeToGameState(EngineSetup::PRESS_KEY_NEW_LEVEL, true);
     ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
@@ -1017,9 +1029,10 @@ void ComponentGame::shaderBackgroundUpdate() {
         gameState == EngineSetup::PRESS_KEY_GAMEOVER ||
         gameState == EngineSetup::COUNTDOWN ||
         gameState == EngineSetup::PRESS_KEY_BY_DEAD ||
-        gameState == EngineSetup::PRESS_KEY_NEWLEVEL ||
+        gameState == EngineSetup::PRESS_KEY_NEW_LEVEL ||
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
+        gameState == EngineSetup::GAMING_TUTORIAL ||
         gameState == EngineSetup::GAMING_TUTORIAL
     ) {
         shaderBackgroundImage->update();

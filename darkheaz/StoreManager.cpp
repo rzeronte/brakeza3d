@@ -104,60 +104,70 @@ void StoreManager::buyCurrentSelected()
 
 void StoreManager::loadDefaultItems()
 {
-    auto SETUP = EngineSetup::get();
+    const auto folder = EngineSetup::get()->IMAGES_FOLDER + "store/";
 
     addItem(new StoreItem(
-        new Image(SETUP->IMAGES_FOLDER + "store/item1_icon.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item1_icon_small.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item1_icon_off.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item1_desc.png"),
+        new Image(folder + "item1_icon.png"),
+        new Image(folder + "item1_icon_small.png"),
+        new Image(folder + "item1_icon_off.png"),
+        new Image(folder + "item1_desc.png"),
         500,
         nullptr,
         true
     ));
 
     addItem(new StoreItem(
-        new Image(SETUP->IMAGES_FOLDER + "store/item2_icon.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item2_icon_small.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item2_icon_off.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item2_desc.png"),
+        new Image(folder + "item2_icon.png"),
+        new Image(folder + "item2_icon_small.png"),
+        new Image(folder + "item2_icon_off.png"),
+        new Image(folder + "item2_desc.png"),
         500,
         nullptr,
         true
     ));
 
     addItem(new StoreItem(
-        new Image(SETUP->IMAGES_FOLDER + "store/item3_icon.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item3_icon_small.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item3_icon_off.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item3_desc.png"),
+        new Image(folder + "item3_icon.png"),
+        new Image(folder + "item3_icon_small.png"),
+        new Image(folder + "item3_icon_off.png"),
+        new Image(folder + "item3_desc.png"),
         1100,
         nullptr,
         true
     ));
 
     addItem(new StoreItem(
-        new Image(SETUP->IMAGES_FOLDER + "store/item4_icon.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item4_icon_small.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item4_icon_off.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item4_desc.png"),
+        new Image(folder + "item4_icon.png"),
+        new Image(folder + "item4_icon_small.png"),
+        new Image(folder + "item4_icon_off.png"),
+        new Image(folder + "item4_desc.png"),
         1100,
         nullptr,
-        false
+        true
     ));
 
     addItem(new StoreItem(
-        new Image(SETUP->IMAGES_FOLDER + "store/item5_icon.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item5_icon_small.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item5_icon_off.png"),
-        new Image(SETUP->IMAGES_FOLDER + "store/item5_desc.png"),
+        new Image(folder + "item5_icon.png"),
+        new Image(folder + "item5_icon_small.png"),
+        new Image(folder + "item5_icon_off.png"),
+        new Image(folder + "item5_desc.png"),
         1100,
         nullptr,
-        false
+        true
+    ));
+
+    addItem(new StoreItem(
+        new Image(folder + "item6_icon.png"),
+        new Image(folder + "item6_icon_small.png"),
+        new Image(folder + "item6_icon_off.png"),
+        new Image(folder + "item6_desc.png"),
+        1100,
+        nullptr,
+        true
     ));
 }
 
-void StoreManager:: drawHUD(float alpha)
+void StoreManager::drawHUD(float alpha)
 {
     int x = 40;
     int y = 15;

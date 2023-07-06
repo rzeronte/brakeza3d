@@ -154,8 +154,8 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         }
     }
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowGravitationalShields(
-        cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowGravitionalShield")->valueint
+    ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowReflections(
+        cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowReflection")->valueint
     );
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowEnergyShield(
@@ -174,7 +174,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
         auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
-        Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("rewpawner"));
         enemiesEmitter.push_back(respawner);
     }
 
@@ -193,7 +193,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto asteroid = this->parseAsteroidJSON(currentAsteroid);
         auto respawner = new EnemyGhostEmitter(asteroid, 3);
         respawner->setPosition(asteroid->getPosition());
-        Brakeza3D::get()->addObject3D(respawner, "asteroid_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("asteroid"));
         enemiesEmitter.push_back(respawner);
     }
 
@@ -268,7 +268,7 @@ Counter * LevelLoader::getCountDown() {
 ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
 {
     auto *healthItem = new ItemHealthGhost();
-    healthItem->setLabel("item_level_health_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    healthItem->setLabel(Brakeza3D::uniqueObjectLabel("itemLevelHealth"));
     healthItem->setEnableLights(true);
     healthItem->setPosition(position);
     healthItem->setRotationFrameEnabled(true);
@@ -292,7 +292,7 @@ ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
 ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
 {
     auto *energyItem = new ItemEnergyGhost();
-    energyItem->setLabel("item_level_energy_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    energyItem->setLabel(Brakeza3D::uniqueObjectLabel("itemLevelEnergy"));
     energyItem->setEnableLights(true);
     energyItem->setPosition(position);
     energyItem->setRotationFrameEnabled(true);
@@ -317,7 +317,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
 {
     auto weapons = ComponentsManager::get()->getComponentGame()->getWeapons();
     auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
-    weaponItem->setLabel("item_weapon_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    weaponItem->setLabel(Brakeza3D::uniqueObjectLabel("itemWeapon"));
     weaponItem->setEnableLights(false);
     weaponItem->clone(weapons[indexWeapon]->getModel());
     weaponItem->setPosition(position);
@@ -368,7 +368,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     this->setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
-    enemy->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    enemy->setLabel(Brakeza3D::uniqueObjectLabel("npc"));
     enemy->setEnableLights(enableLights);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
@@ -568,7 +568,7 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
         (float) cJSON_GetObjectItemCaseSensitive(rotationFrame, "z")->valueint
     ));
 
-    projectileEmitter->setLabel("boss_emitter_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectileEmitter->setLabel(Brakeza3D::uniqueObjectLabel("bossProjectileEmitter"));
 
     enemy->setProjectileEmitter(projectileEmitter);
 }
@@ -682,7 +682,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
     auto respawner = new EnemyGhostEmitter(boss, 3);
     respawner->setPosition(boss->getPosition());
 
-    Brakeza3D::get()->addObject3D(respawner, "respawner_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
     enemiesEmitter.push_back(respawner);
 }
 
@@ -744,7 +744,7 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
 
     auto *asteroid = new AsteroidEnemyGhost();
     asteroid->setEnabled(true);
-    asteroid->setLabel("npc_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    asteroid->setLabel(Brakeza3D::uniqueObjectLabel("npc"));
     asteroid->setEnableLights(false);
     asteroid->setPosition(worldPosition);
     asteroid->setStencilBufferEnabled(true);

@@ -2,7 +2,7 @@
   "name": "20",
   "backgroundImage": "levels/20.png",
   "music": "BossMusic01",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": true,

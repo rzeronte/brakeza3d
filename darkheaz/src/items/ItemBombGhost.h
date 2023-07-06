@@ -10,15 +10,13 @@
 class ItemBombGhost: public Mesh3DGhost {
     float damage;
     Counter timeToLive;
-    float ttl;
+    ShaderBlink *blink;
+    Counter counterDamageBlink;
+
 public:
     explicit ItemBombGhost(float ttl, float damage);
 
-    float getTtl() const;
-
-    void setTtl(float ttl);
-
-    float getDamage() const;
+    [[nodiscard]] float getDamage() const;
 
     void setDamage(float damage);
 

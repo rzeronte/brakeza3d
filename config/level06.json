@@ -1,8 +1,10 @@
 {
   "name": "06",
+  "music": "level01Music",
   "backgroundImage": "levels/06.png",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": true,
+  "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
@@ -119,12 +121,12 @@
   ],
   "background": [
     {
-      "name": "marsh",
-      "model": "spaceFlower.fbx",
-      "scale": 10,
-      "position": { "x": 75, "y": 50, "z": 40000 },
-      "rotation": { "x": 100, "y": 200, "z": 60 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0 }
+      "name": "Star",
+      "model": "broken_planet.fbx",
+      "scale": 15,
+      "position": { "x": 50, "y": 40, "z": 20000 },
+      "rotation": { "x": 20, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.001, "y": 0.1, "z": 0 }
     }
   ]
 }

@@ -1,10 +1,11 @@
 {
   "name": "03",
+  "music": "level01Music",
   "backgroundImage": "levels/03.png",
-  "allowGravitionalShield": false,
+  "allowReflection": false,
   "allowEnergyShield": true,
   "tutorials": ["tutorials/tutorial_stamina.png", "tutorials/tutorial_energy.png"],
-  "histories": ["no_news.png"],
+  "histories": ["histories/lore_03_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
@@ -53,16 +54,24 @@
   "items": [
     {
       "type": 4,
-      "position": { "x": 20, "y": 40 },
+      "position": { "x": 20, "y": 30 },
       "help": 0
     },
     {
       "type": 5,
-      "position": { "x": 80, "y": 40 },
+      "position": { "x": 80, "y": 30 },
       "help": 1
     }
   ],
   "background": [
+    {
+      "name": "Star",
+      "model": "marsh.fbx",
+      "scale": 18,
+      "position": { "x": 30, "y": 70, "z": 20000 },
+      "rotation": { "x": 90, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
+    },
     {
       "name": "asteroid01",
       "position": { "x": 900,  "y":	0, "z": 40000 },

@@ -1,8 +1,10 @@
 {
   "name": "09",
+  "music": "level01Music",
   "backgroundImage": "levels/09.png",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": true,
+  "histories": ["default_history.png"],
   "color": { "r": 0, "g": 0, "b": 255 },
   "enemies": [
     {

@@ -2,7 +2,7 @@
   "name": "01",
   "music": "level01Music",
   "backgroundImage": "levels/01.png",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": false,
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png"],
   "tutorials": ["tutorials/tutorial_first.png"],

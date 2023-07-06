@@ -150,16 +150,19 @@ void ComponentHUD::drawIconWeaponAndLevelName()
 
     // bomb icon
     auto weaponBomb = player->getWeaponTypeByLabel("bomb");
-    weaponBomb->getIcon()->drawFlatAlpha(340, this->offsetY, 255);
-
-    // bomb ammo
-    textWriter->writeTextTTFAutoSize(
-        340,
-        this->offsetY + weaponBomb->getIcon()->height(),
-        (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
-        game->getPrimaryColor(),
-        0.25
-    );
+    float bombAlpha = 75;
+    if (weaponBomb->getAmmoAmount() > 0) {
+        bombAlpha = 255;
+        // bomb ammo
+        textWriter->writeTextTTFAutoSize(
+            340,
+            this->offsetY + weaponBomb->getIcon()->height(),
+            (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
+            game->getPrimaryColor(),
+            0.25
+        );
+    }
+    weaponBomb->getIcon()->drawFlatAlpha(340, this->offsetY, bombAlpha);
 
     // level number
     textWriter->writeTextTTFAutoSize(
@@ -171,7 +174,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     );
 
     // icon player reflection
-    float reflectionAlpha = 75  ;
+    float reflectionAlpha = 75;
     auto reflectionImage = HUDTextures->getTextureByLabel("reflectionIcon")->getImage();
     int reflectionsNumber = MAX_REFLECTIONS - (int) player->getGravityShieldsNumber();
     if (player->isAllowedMakeReflections() && reflectionsNumber > 0) {

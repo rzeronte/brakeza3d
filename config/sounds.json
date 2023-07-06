@@ -56,6 +56,7 @@
     { "file": "crt.mp3", "label": "crt", "type": "sound" },
     { "file": "selling.wav", "label": "selling", "type": "sound" },
 
-    { "file": "error.wav", "label": "error", "type": "sound" }
+    { "file": "error.wav", "label": "error", "type": "sound" },
+    { "file": "wrench.wav", "label": "wrench", "type": "sound" }
   ]
 }

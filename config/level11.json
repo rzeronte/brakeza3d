@@ -2,7 +2,7 @@
   "name": "11",
   "backgroundImage": "levels/11.png",
   "music": "musicMainMenu",
-  "allowGravitionalShield": true,
+  "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
@@ -118,5 +118,6 @@
   "items": [
   ],
   "background": [
+
   ]
 }

@@ -41,7 +41,7 @@ Weapon::Weapon(
     getModelProjectile()->setFlatTextureColor(projectileFlatTexture);
     getModelProjectile()->setEnableLights(projectileEnableLights);
     getModelProjectile()->AssimpLoadGeometryFromFile(projectileModel);
-    getModelProjectile()->setLabel("projectile_weapon_template" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    getModelProjectile()->setLabel(Brakeza3D::uniqueObjectLabel("projectile_weapon_template"));
     getModelProjectile()->setFlatColor(projectileColor);
     getModelProjectile()->setScale(1);
 
@@ -145,29 +145,38 @@ Mesh3D *Weapon::getModel() const {
 void Weapon::shootProjectile(
     Object3D *parent,
     Vertex3D position,
+    Vertex3D offsetPosition,
     Vertex3D direction,
     M3 rotation,
     float intensity,
     int filterGroup,
     int filterMask,
-    bool sound
+    bool sound,
+    bool allowMirror
 )
 {
     if (getAmmoAmount() <= 0) return;
 
-    if (isStop() && counterStopDuration.isEnabled()) {
+    if (isStop() && counterStopDuration.isEnabled() ) {
         return;
     }
 
+    auto storeManager = ComponentsManager::get()->getComponentGame()->getStoreManager();
+
     if (counterCadence->isFinished()) {
-        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        float t = cadenceTime + ((1 - intensity) * cadenceTime);
+
+        if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE)){
+            t = t - (t * 0.5f);
+        }
+
         this->counterCadence->setStep(t);
         this->counterCadence->setEnabled(true);
 
         setStatus(WeaponStatus::PRESSED);
 
         auto *projectile = new AmmoProjectileBody(
-            position,
+            position - offsetPosition,
             parent,
             this,
             rotation,
@@ -194,7 +203,7 @@ void Weapon::shootProjectile(
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
-        Brakeza3D::get()->addObject3D(projectile, "projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
 
         auto emitter = new ParticleEmitter(
             ParticleEmitterState::DEFAULT,
@@ -207,7 +216,42 @@ void Weapon::shootProjectile(
         );
 
         projectile->setParticleEmitter(emitter);
-        Brakeza3D::get()->addObject3D(emitter, "particleEm_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
+
+
+        if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_MIRROR_SHOOT) && getType() == WEAPON_PROJECTILE && allowMirror) {
+            auto *projectile = new AmmoProjectileBody(
+                position + offsetPosition,
+                parent,
+                this,
+                rotation,
+                Vertex3D(50, 50, 50),
+                direction.getInverse(),
+                getDamage(),
+                (float) getSpeed(),
+                getAccuracy(),
+                filterGroup,
+                filterMask,
+                nullptr
+            );
+
+            //setAmmoAmount(getAmmoAmount() - 1);
+
+            Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
+
+            auto emitter = new ParticleEmitter(
+                    ParticleEmitterState::DEFAULT,
+                    projectile,
+                    position,
+                    4,
+                    Color::yellow(),
+                    Color::white(),
+                    OCParticlesContext()
+            );
+
+            projectile->setParticleEmitter(emitter);
+            Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
+        }
     }
 }
 
@@ -248,7 +292,7 @@ void Weapon::shootLaserProjectile(
             false
         );
 
-        projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+        projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
 
         setAmmoAmount(getAmmoAmount() - 1);
 
@@ -379,14 +423,12 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         counterCadence->setEnabled(true);
         setStatus(WeaponStatus::PRESSED);
 
-        auto *componentRender = ComponentsManager::get()->getComponentRender();
-
         Logging::Log("Weapon shootProjectile from %s", parent->getLabel().c_str());
 
         auto *projectile = new ItemBombGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
-        projectile->setLabel("projectile_" + componentRender->getUniqueGameObjectLabel());
+        projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
 
         projectile->clone(getModelProjectile());
 

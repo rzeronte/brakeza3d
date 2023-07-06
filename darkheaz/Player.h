@@ -18,9 +18,9 @@
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
 #define INITIAL_RECOVER_ENERGY 0.05f
-#define INITIAL_LIVES 10
 #define INITIAL_POWER 250
-#define INITIAL_POWERDASH 6000
+#define INITIAL_POWER_DASH 1000
+#define DASH_ENERGY_COST 15
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 50
 #define MAX_REFLECTIONS 3
@@ -53,6 +53,7 @@ private:
     Vertex3D velocity;
     Weapon *weapon;
     Counter counterStucked;
+    Counter counterDashCadence;
 
     RayLight rayLight;
 
@@ -170,7 +171,7 @@ public:
 
     void previousWeapon();
 
-    void setAllowGravitationalShields(bool allowGravitationalShields);
+    void setAllowReflections(bool allowGravitationalShields);
 
     void setAllowEnergyShield(bool allowEnergyShield);
 
@@ -221,6 +222,8 @@ public:
     void decreaseCoins(int value);
 
     void loadSatellite();
+
+    void dashMovement();
 };
 
 
