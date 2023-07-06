@@ -175,7 +175,7 @@ void ComponentCollisions::demoProjectile(int type) {
     );
     projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition());
-    projectile->setLabel("projectile_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
+    projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,

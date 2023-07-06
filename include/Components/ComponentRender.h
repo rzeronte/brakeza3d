@@ -140,8 +140,6 @@ public:
 
     void createLightPointsDepthMappings();
 
-    std::string getUniqueGameObjectLabel();
-
     [[nodiscard]] Object3D* getSelectedObject() const;
 
     void setSelectedObject(Object3D *o);

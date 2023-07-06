@@ -23,17 +23,19 @@ public:
 
     void setStep(float step);
 
-    float getStep() const;
+    [[nodiscard]] float getStep() const;
 
     void update();
 
-    bool isFinished() const;
+    [[nodiscard]] bool isFinished() const;
 
-    float getAcumulatedTime() const;
+    [[nodiscard]] float getAcumulatedTime() const;
 
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     void setEnabled(bool enabled);
+
+    float currentPercentage();
 
 };
 

@@ -83,3 +83,8 @@ void Counter::setEnabled(bool e)
     }
 }
 
+float Counter::currentPercentage()
+{
+    return getAcumulatedTime() * 100 / getStep();
+}
+

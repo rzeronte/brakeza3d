@@ -957,11 +957,6 @@ void ComponentRender::updateLights()
     }
 }
 
-std::string ComponentRender::getUniqueGameObjectLabel()
-{
-    return std::to_string(Brakeza3D::get()->getSceneObjects().size()+1);
-}
-
 Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
 {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
