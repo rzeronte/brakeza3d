@@ -517,17 +517,17 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
 
-    auto *newObject = new Mesh3D();
+    auto *newObject = new Mesh3DAnimated();
     newObject->setPosition(position);
     newObject->setScale(1);
-    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
+    newObject->AssimpLoadAnimation(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
 
     Logging::Message("Loading from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name.c_str()));
 }
 
-void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context)
+void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to)
 {
     Brakeza3D::get()->addObject3D(
         new ParticleEmitter(
@@ -535,8 +535,8 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
             parent,
             position,
             ttl,
-            Color::white(),
-            Color::yellow(),
+            from,
+            to,
             context
         ),
         Brakeza3D::uniqueObjectLabel("fireworks")
