@@ -4,7 +4,7 @@
   "backgroundImage": "levels/02.png",
   "allowReflection": false,
   "allowEnergyShield": false,
-  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
+  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png", "tutorials/tutorial_humans.png"],
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 0, "b": 0 },
   "enemies": [
@@ -12,19 +12,6 @@
       "name": "spaceShuttle",
       "avatar": "avatars/default.png",
       "position": { "x": 15, "y": 12 },
-      "model": "spaceShuttle.fbx",
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false,
-      "motion": {
-        "type": 6
-      }
-    },
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/default.png",
-      "position": { "x": 50, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
       "animated": false,
@@ -49,6 +36,11 @@
     }
   ],
   "items": [
+    {
+      "type": 7,
+      "position": { "x": 50, "y": 5 },
+      "help": 3
+    },
     {
       "type": 1,
       "position": { "x": 30, "y": 40 },

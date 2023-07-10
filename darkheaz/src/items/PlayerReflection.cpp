@@ -40,7 +40,7 @@ void PlayerReflection::postUpdate()
     Mesh3D::postUpdate();
 
     if (timeToLive.isFinished()) {
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
         setStencilBufferEnabled(false);
         setEnabled(false);
         removeCollisionObject();

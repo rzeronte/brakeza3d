@@ -10,8 +10,6 @@ class ItemHealthGhost : public Mesh3DGhost, public ItemWithTutorial  {
 public:
     ItemHealthGhost();
 
-    void setAid(float aid);
-
     [[nodiscard]] float getAid() const;
 
     void resolveCollision(Collisionable *collisionable) override;

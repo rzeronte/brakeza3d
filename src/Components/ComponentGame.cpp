@@ -805,6 +805,7 @@ void ComponentGame::removeInGameObjects()
         auto *enemyDialog = dynamic_cast<EnemyDialog *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto *human = dynamic_cast<ItemHumanGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
         auto *particleEmitter = dynamic_cast<ParticleEmitter *> (object);
@@ -822,6 +823,10 @@ void ComponentGame::removeInGameObjects()
         }
         if (health != nullptr) {
             health->remove();
+            continue;
+        }
+        if (human != nullptr) {
+            human->remove();
             continue;
         }
         if (weapon != nullptr) {
@@ -892,6 +897,7 @@ void ComponentGame::setVisibleInGameObjects(bool value) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
+        auto *human = dynamic_cast<ItemHumanGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *enemiesEmitter = dynamic_cast<EnemyGhostEmitter *> (object);
@@ -903,9 +909,10 @@ void ComponentGame::setVisibleInGameObjects(bool value) {
             weapon != nullptr ||
             projectile != nullptr ||
             energy != nullptr ||
+            human != nullptr ||
             bomb != nullptr ||
             enemiesEmitter != nullptr
-                ) {
+        ) {
             object->setEnabled(value);
         }
 
@@ -1023,7 +1030,8 @@ void ComponentGame::updateShaders()
     levelLoader->moveBackgroundObjects(offset.getScaled(20000).getInverse());
 }
 
-void ComponentGame::shaderBackgroundUpdate() {
+void ComponentGame::shaderBackgroundUpdate()
+{
     if (
         gameState == EngineSetup::GAMING ||
         gameState == EngineSetup::PRESS_KEY_GAMEOVER ||

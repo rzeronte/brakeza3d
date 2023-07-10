@@ -36,6 +36,7 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
 
     int numLights = (int) oclLights.size();
 
+    makeOCLTriangles();
     //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferLights, CL_TRUE, 0, numLights * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
@@ -119,7 +120,6 @@ void MeshOpenCLRenderer::makeOCLTriangles()
     }
 
     clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, triangles.size() * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
-
 }
 
 void MeshOpenCLRenderer::updateLights()

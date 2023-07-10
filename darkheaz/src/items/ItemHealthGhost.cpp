@@ -1,11 +1,10 @@
 #include "ItemHealthGhost.h"
 #include "../../../include/ComponentsManager.h"
 
-void ItemHealthGhost::setAid(float aid) {
-    ItemHealthGhost::aid = aid;
-}
-
-ItemHealthGhost::ItemHealthGhost() : aid(25) {
+ItemHealthGhost::ItemHealthGhost()
+:
+    aid(25)
+{
 
 }
 

@@ -50,8 +50,6 @@ public:
 
     void unstuck();
 
-    void makeExplosion();
-
     void addFixedLaser(ProjectileRay *ray);
 
     void updateLasers();
@@ -72,6 +70,7 @@ public:
 
     void takeDamage(float damageTaken);
 
+    void updateEmitterParticles();
 };
 
 

@@ -24,20 +24,20 @@ EnemyGhost::EnemyGhost() :
         this,
         getPosition(),
         0,
-        Color::white(),
+        Color::red(),
         Color::yellow(),
         OCParticlesContext(
-            98,
+            0.0f,
             0.0025f,
-            0.50f,
+            1.5f,
+            45.0f,
             0.0f,
             50.0f,
-            95.0f,
-            125.0f,
-            200.0f,
-            1.25,
-            0.1f,
-            0.99f
+            50.0f,
+            255.0f,
+            2.0f,
+            0.8f,
+            0.98f
         )
     );
     particleEmitter->setEnabled(true);
@@ -94,12 +94,24 @@ void EnemyGhost::onUpdate()
 
     updateLasers();
 
-    particleEmitter->onUpdate();
+    updateEmitterParticles();
 
     for ( auto dialog: dialogs) {
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
         dialog->onUpdate(staminaPercentage);
     }
+}
+
+void EnemyGhost::updateEmitterParticles()
+{
+    particleEmitter->shaderParticles->setOrigin(
+        Transforms::WorldToPoint(
+                getPosition() - AxisUp().getScaled(-700),
+                ComponentsManager::get()->getComponentCamera()->getCamera()
+        )
+    );
+    particleEmitter->shaderParticles->setDirection(AxisForward());
+    particleEmitter->setPosition(getPosition());
 }
 
 void EnemyGhost::onDraw()
@@ -114,9 +126,6 @@ void EnemyGhost::onDraw()
         }
     }
 
-    particleEmitter->drawCall();
-    particleEmitter->setStopAdd(true);
-
     for ( auto dialog: dialogs) {
         dialog->onDraw(getAvatar(), getPosition());
     }
@@ -129,7 +138,7 @@ void EnemyGhost::handleDie()
         Brakeza3D::uniqueObjectLabel("shockWave")
     );
     makeReward();
-    makeExplosion();
+    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
@@ -381,24 +390,6 @@ void EnemyGhost::unstuck()
     }
 }
 
-void EnemyGhost::makeExplosion()
-{
-    /*auto sprite = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-
-    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-    Vector3D direction(origin, getPosition());
-    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(350));
-
-    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
-    sprite->setAnimation(0);
-    sprite->setAutoRemoveAfterAnimation(true);
-
-    Brakeza3D::get()->addObject3D(sprite, "enemy_explosion_" + ComponentsManager::get()->getComponentRender()->getUniqueGameObjectLabel());
-    */
-
-    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion());
-}
-
 Object3D *EnemyGhost::getTarget()
 {
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
@@ -430,6 +421,10 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 void EnemyGhost::drawCall()
 {
     Object3D::drawCall();
+
+    if (getBehavior() != nullptr) {
+        particleEmitter->drawCall();
+    }
 }
 
 void EnemyGhost::takeDamage(float damageTaken)
