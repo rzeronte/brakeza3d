@@ -46,6 +46,9 @@ Weapon *AmmoProjectileBody::getWeaponType() const {
 
 void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 {
+    Color from = Color::white();
+    Color to = Color::yellow();
+
     auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
         return;
@@ -59,6 +62,12 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     auto ray = dynamic_cast<ProjectileRay*> (collisionable);
     if (ray != nullptr) {
         return;
+    }
+
+    auto human = dynamic_cast<ItemHumanGhost*> (collisionable);
+    if (human != nullptr) {
+        from = Color::red();
+        to = Color::red();
     }
 
     auto object = dynamic_cast<Object3D*> (collisionable);
@@ -76,7 +85,7 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 
     this->setRemoved(true);
 
-    Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile());
+    Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
 }
 
 void AmmoProjectileBody::onUpdate()

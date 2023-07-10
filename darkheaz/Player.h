@@ -48,6 +48,7 @@ private:
     float startEnergy;
     float recoverEnergySpeed;
     bool stuck;
+    int rescuedHumans;
     int coins;
 
     Vertex3D velocity;
@@ -224,6 +225,10 @@ public:
     void loadSatellite();
 
     void dashMovement();
+
+    void increaseHumans();
+
+    int getRescuedHumans();
 };
 
 

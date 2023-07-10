@@ -471,7 +471,7 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
     rayLight.setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
-        ComponentsManager::get()->getComponentSound()->sound("laser", EngineSetup::SoundChannels::SND_LASER, -1);
+        ComponentsManager::get()->getComponentSound()->sound("projectileEnergy", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
     ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());

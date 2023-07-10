@@ -8,34 +8,36 @@
 #include "src/items/PlayerReflection.h"
 #include "src/items/LivingObject.h"
 
-Player::Player() :
-        LivingObject(this),
-        energy(INITIAL_ENERGY),
-        startEnergy(INITIAL_ENERGY),
-        recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-        stuck(false),
-        weapon(nullptr),
-        counterStucked(Counter(5)),
-        counterDashCadence(Counter(1)),
-        rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
-        killsCounter(0),
-        energyShieldEnabled(false),
-        gravityShieldsNumber(0),
-        allowMakeReflections(false),
-        allowEnergyShield(false),
-        lightPositionOffset(Vertex3D(0, -550, 0)),
-        state(PlayerState::EMPTY),
-        currentWeaponIndex(0),
-        reflection(PlayerReflection(5)),
-        satellite(PlayerSatellite(this)),
-        avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
-        shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
-        dashPower(INITIAL_POWER_DASH),
-        power(INITIAL_POWER),
-        friction(INITIAL_FRICTION),
-        maxVelocity(INITIAL_MAX_VELOCITY),
-        rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED),
-        coins(1000)
+Player::Player()
+:
+    LivingObject(this),
+    energy(INITIAL_ENERGY),
+    startEnergy(INITIAL_ENERGY),
+    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+    stuck(false),
+    rescuedHumans(0),
+    coins(5000),
+    weapon(nullptr),
+    counterStucked(Counter(5)),
+    counterDashCadence(Counter(1)),
+    rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
+    killsCounter(0),
+    energyShieldEnabled(false),
+    gravityShieldsNumber(0),
+    allowMakeReflections(false),
+    allowEnergyShield(false),
+    lightPositionOffset(Vertex3D(0, -550, 0)),
+    state(PlayerState::EMPTY),
+    currentWeaponIndex(0),
+    reflection(PlayerReflection(5)),
+    satellite(PlayerSatellite(this)),
+    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
+    shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
+    dashPower(INITIAL_POWER_DASH),
+    power(INITIAL_POWER),
+    friction(INITIAL_FRICTION),
+    maxVelocity(INITIAL_MAX_VELOCITY),
+    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
     light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
@@ -391,7 +393,7 @@ void Player::resolveCollision(Collisionable *with)
     if (weapon != nullptr) {
         this->addWeapon(weapon->getWeaponType());
 
-        ComponentsManager::get()->getComponentSound()->sound("itemWeapon", 1, 0);
+        ComponentsManager::get()->getComponentSound()->sound("getAmmo", 1, 0);
 
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
@@ -419,6 +421,23 @@ void Player::resolveCollision(Collisionable *with)
             if (health->getTutorialIndex() != -1) {
                 ComponentsManager::get()->getComponentGame()->setHelp(
                         ComponentsManager::get()->getComponentGame()->getLevelLoader()->levelTutorials[health->getTutorialIndex()]
+                );
+            }
+        }
+    }
+
+    auto human = dynamic_cast<ItemHumanGhost*> (with);
+    if (human != nullptr) {
+        Logging::Log("human rescued!");
+        ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        increaseHumans();
+        human->remove();
+
+        if (human->isHasTutorial()) {
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
+            if (human->getTutorialIndex() != -1) {
+                ComponentsManager::get()->getComponentGame()->setHelp(
+                        ComponentsManager::get()->getComponentGame()->getLevelLoader()->levelTutorials[human->getTutorialIndex()]
                 );
             }
         }
@@ -775,7 +794,7 @@ void Player::dashMovement()
 
         ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
-        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion());
+        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
         float power = dashPower;
         if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {
@@ -786,4 +805,13 @@ void Player::dashMovement()
 
         useEnergy(dashEnergyCost);
     }
+}
+
+void Player::increaseHumans()
+{
+    rescuedHumans++;
+}
+
+int Player::getRescuedHumans() {
+    return rescuedHumans;
 }

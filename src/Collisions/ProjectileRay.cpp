@@ -70,7 +70,7 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
         this->setRemoved(true);
     }
 
-    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile());
+    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), Color::white(), Color::yellow());
 }
 
 int ProjectileRay::getSpeed() const {

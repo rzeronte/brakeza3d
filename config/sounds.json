@@ -30,15 +30,15 @@
 
     { "file": "shield.mp3", "label": "energyShield", "type": "sound" },
 
-    { "file": "get_ammo.wav", "label": "getAmmo", "type": "sound" },
+    { "file": "get_ammo.mp3", "label": "getAmmo", "type": "sound" },
 
     { "file": "item_health.mp3", "label": "itemHealth", "type": "sound" },
 
     { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
 
-    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" },
-    { "file": "projectile_type_02.wav", "label": "projectileTypeTwo", "type": "sound" },
+    { "file": "projectile_type_01.mp3", "label": "projectileTypeOne", "type": "sound" },
     { "file": "projectile_type_03.wav", "label": "projectileTypeThree", "type": "sound" },
+    { "file": "energy-released.wav", "label": "projectileEnergy", "type": "sound" },
 
     { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
 
@@ -57,6 +57,8 @@
     { "file": "selling.wav", "label": "selling", "type": "sound" },
 
     { "file": "error.wav", "label": "error", "type": "sound" },
-    { "file": "wrench.wav", "label": "wrench", "type": "sound" }
+    { "file": "wrench.wav", "label": "wrench", "type": "sound" },
+
+    { "file": "human_damage.wav", "label": "humanDamage", "type": "sound" }
   ]
 }

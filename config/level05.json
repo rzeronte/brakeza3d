@@ -119,6 +119,12 @@
       }
     }
   ],
+  "items": [
+    {
+      "type": 7,
+      "position": { "x": 50, "y": 30 }
+    }
+  ],
   "background": [
     {
       "name": "nave",

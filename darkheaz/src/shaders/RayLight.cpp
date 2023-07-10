@@ -76,7 +76,7 @@ void RayLight::update()
                 enemy->takeDamage(damage);
                 increase = false;
 
-                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight());
+                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), Color::white(), Color::yellow());
 
                 /*enemy->getParticleEmitter()->shaderParticles->setOrigin(
                         Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera())

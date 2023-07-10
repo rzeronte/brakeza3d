@@ -17,6 +17,7 @@
 #include "LevelStats.h"
 #include "src/items/ItemEnergyGhost.h"
 #include "src/items/ItemWeaponGhost.h"
+#include "src/items/ItemHumanGhost.h"
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
@@ -24,7 +25,8 @@ typedef enum {
     ITEM_WEAPON_SMART = 3,
     ITEM_WEAPON_LASER = 6,
     ITEM_HEALTH = 4,
-    ITEM_ENERGY = 5
+    ITEM_ENERGY = 5,
+    ITEM_HUMAN = 7
 } LevelInfoItemsTypes;
 
 typedef enum {
@@ -173,6 +175,8 @@ public:
     [[nodiscard]] int getCurrentTutorialIndex() const;
 
     [[nodiscard]] Counter *getWaitingToWin();
+
+    ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
 };
 
 

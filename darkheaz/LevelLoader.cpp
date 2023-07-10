@@ -289,6 +289,31 @@ ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
     return healthItem;
 }
 
+ItemHumanGhost* LevelLoader::makeItemHuman(Vertex3D position)
+{
+    auto *human = new ItemHumanGhost();
+    human->setLabel(Brakeza3D::uniqueObjectLabel("itemLevelHuman"));
+    human->setEnableLights(true);
+    human->setPosition(position);
+    human->onStart();
+    human->setRotationFrameEnabled(true);
+    human->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    human->setStencilBufferEnabled(true);
+    human->setScale(1);
+    human->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "astronaut.fbx"));
+    human->makeSimpleGhostBody(
+        Vertex3D(500, 500, 500),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy | EngineSetup::collisionGroups::Player
+    );
+
+    human->updateBulletFromMesh3D();
+    Brakeza3D::get()->addObject3D(human, human->getLabel());
+
+    return human;
+}
+
 ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
 {
     auto *energyItem = new ItemEnergyGhost();
@@ -644,6 +669,12 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
             auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
+            break;
+        }
+        case LevelInfoItemsTypes::ITEM_HUMAN: {
+            auto item = this->makeItemHuman(position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;

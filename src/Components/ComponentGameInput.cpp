@@ -64,11 +64,25 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         this->handleMakeReflection(event);
         this->handleBomb(event);
         this->handleEnergyShield(event);
+        this->updateWeaponStatus(event);
     }
 
     //this->handleZoom(event);
 }
+void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
+{
+    auto game = ComponentsManager::get()->getComponentGame();
 
+    auto player = game->getPlayer();
+
+    if (event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+        player->getWeapon()->setStatus(WeaponStatus::RELEASED);
+    }
+
+    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+        player->getWeapon()->setStatus(WeaponStatus::PRESSED);
+    }
+}
 void ComponentGameInput::handleEscape(SDL_Event *event)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
@@ -126,7 +140,6 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
-    auto componentSound = ComponentsManager::get()->getComponentSound();
 
     auto menuOptions = componentMenu->getOptions();
 
@@ -409,12 +422,14 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool isButtonGuidedPressed = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
     auto componentSound = ComponentsManager::get()->getComponentSound();
     auto game = ComponentsManager::get()->getComponentGame();
+    auto componentInput = ComponentsManager::get()->getComponentInput();
 
-    bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-    bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+    Uint8 *keyboard = componentInput->getKeyboard();
+
+    bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+    bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
     bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
 
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
@@ -446,7 +461,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
             componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
-        if (enter) {
+        if (enter || componentInput->getControllerButtonA()) {
             game->getStoreManager()->buyCurrentSelected();
         }
     }

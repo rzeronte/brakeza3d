@@ -218,6 +218,7 @@ struct OCParticlesContext {
     static OCParticlesContext forExplosion() {
         return OCParticlesContext(0.0f, 0.0025f, 1.5f, 0.0f, 50.0f, 125.0f, 125.0f, 255.0f, 4.5f, 4.5f, 0.99);
     }
+
     float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;
     float STEP_ADD_PARTICLE = EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE;
     float PARTICLE_LIFESPAN = EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN;
