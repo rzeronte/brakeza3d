@@ -129,43 +129,8 @@ __kernel void onUpdate(
         int indexT = cy * screenWidth + cx;
 
         float alpha = 0.5f + 0.1f * sin(time);
-        video[i] = alphaBlend(video[i], texture[indexT], 144 * alpha);
+        video[i] = alphaBlend(video[i], texture[indexT], 255 * alpha);
 
-        // Definir el tamaño de la aura
-        int auraSize = 8;
-
-        // Loop para crear un borde difuso alrededor del objeto
-        for(int auraX = x - auraSize; auraX <= x + auraSize; auraX++) {
-            for (int auraY = y - auraSize; auraY <= y + auraSize; auraY++) {
-
-                // Verificar que no estamos fuera del área de la pantalla
-                if (auraX < 0 || auraY < 0 || auraX >= screenWidth || auraY >= screenHeight) continue;
-
-                // Calcular el índice del pixel
-                int auraIndex = auraY * screenWidth + auraX;
-
-                // Verificar que el pixel no está dentro del objeto
-                if (stencil[auraIndex]) continue;
-
-                // Calcular la distancia a la posición original para la intensidad
-                int dx = auraX - x;
-                int dy = auraY - y;
-                float distance = sqrt((float) (dx * dx + dy * dy));
-                float intensity = 1.0 - (distance / auraSize);
-
-                // Suavizar la intensidad con la función smoothstep
-                float smoothedIntensity = smoothstep(0.005f, 0.5f, intensity);
-
-                // Usar la intensidad suavizada al crear el color del aura
-                int auraR = 0;
-                int auraG = 255 * smoothedIntensity;
-                int auraB = 0;
-
-                // Crear el color del aura y aplicar alpha blending
-                unsigned int auraColor = createRGB(auraR, auraG, auraB);
-                video[auraIndex] = alphaBlend(video[auraIndex], auraColor, 144 * smoothedIntensity);
-            }
-        }
     }
 }
 

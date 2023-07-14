@@ -15,6 +15,7 @@ Player::Player()
     startEnergy(INITIAL_ENERGY),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
+    warningDamage(false),
     rescuedHumans(0),
     coins(5000),
     weapon(nullptr),
@@ -57,7 +58,12 @@ Player::Player()
         0.98f
     ));
 
-    shaderEnergyShield = new ShaderEnergyShield(true, this, std::string(EngineSetup::get()->IMAGES_FOLDER + "lava.png"));
+    shaderEnergyShield = new ShaderEnergyShield(
+        true,
+        this,
+        std::string(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"),
+        std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
+    );
 }
 
 void Player::loadReflection()
@@ -92,29 +98,24 @@ void Player::loadSatellite()
 
 bool Player::takeDamage(float dmg)
 {
-    if (ComponentsManager::get()->getComponentGame()->getGameState() != EngineSetup::GAMING) return false;
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+
+    if (componentGame->getGameState() != EngineSetup::GAMING) return false;
 
     if ((state == PlayerState::GETTING_DAMAGE && !isStucked()) || state == PlayerState::DEAD) {
         return false;
     }
 
-    if (isEnergyShieldEnabled() && getEnergy() > 0) {
-        useEnergy(dmg);
-        setState(PlayerState::GETTING_DAMAGE);
-        startPlayerBlink();
-        return false;
-    }
-
-    //this->stamina -= dmg;
+    this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
         setState(PlayerState::DEAD);
 
-        ComponentsManager::get()->getComponentSound()->sound("playerDead", 1, 0);
-        ComponentsManager::get()->getComponentGame()->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
-        ComponentsManager::get()->getComponentGame()->getFadeToGameState()->setupForFadeIn();
-        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
+        ComponentsManager::get()->getComponentSound()->sound("playerDead", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        componentGame->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
+        componentGame->getFadeToGameState()->setupForFadeIn();
+        componentGame->getShaderColor()->setEnabled(true);
     }
 
     setState(PlayerState::GETTING_DAMAGE);
@@ -146,7 +147,9 @@ void Player::makeReflection()
 
     gravityShieldsNumber++;
 
-    ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", 1, 0);
+    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+
+    ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void Player::shoot(float intensity)
@@ -231,20 +234,7 @@ void Player::onUpdate()
 
     applyFriction();
 
-    if (getEnergy() < getStartEnergy()) {
-        float recoverEnergy = getEnergy() + recoverEnergySpeed;
-        if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_ENERGY_RELOAD)) {
-            recoverEnergy *= 1.0025f;
-        }
-        setEnergy(std::min(recoverEnergy, getStartEnergy()));
-    }
-
-    if (isEnergyShieldEnabled()) {
-        auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
-        shield->drawFlatAlpha(p.x - shield->width()/2, p.y - shield->height()/2, 200);
-
-        shaderEnergyShield->update();
-    }
+    updatePlayerEnergy();
 
     auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     if (selectedObject != this && selectedObject != nullptr) {
@@ -276,6 +266,36 @@ void Player::onUpdate()
     if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.onUpdate();
     }
+
+    if (currentStaminaPercentage() < 25 && !warningDamage) {
+        warningDamage = true;
+        warningSoundChannel = ComponentsManager::get()->getComponentSound()->sound("alarmDamage", EngineSetup::SoundChannels::SND_GLOBAL, -1);
+    }
+    if (currentStaminaPercentage() >= 25 && warningDamage) {
+        warningDamage = false;
+        ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
+    }
+}
+
+void Player::updatePlayerEnergy()
+{
+    if (!isEnergyShieldEnabled()) {
+        if (getEnergy() < getStartEnergy()) {
+            float recoverEnergy = getEnergy() + recoverEnergySpeed;
+            if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::ITEM_FAST_ENERGY_RELOAD)) {
+                recoverEnergy *= 1.0025f;
+            }
+            setEnergy(std::min(recoverEnergy, getStartEnergy()));
+        }
+    } else {
+        const float energyCost = Brakeza3D::get()->getDeltaTime() * ENERGY_DELTATIME_COST;
+        if (getEnergy() > energyCost) {
+            useEnergy(energyCost);
+        } else {
+            setEnergyShieldEnabled(false);
+            //ComponentsManager::get()->getComponentSound()->sound("energyOff", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        }
+    }
 }
 
 void Player::drawCall()
@@ -293,6 +313,13 @@ void Player::drawCall()
     }
 
     updateShaderParticles();
+
+    if (isEnergyShieldEnabled()) {
+        auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
+        shield->drawFlatAlpha(p.x - shield->width()/2, p.y - shield->height()/2, 200);
+
+        shaderEnergyShield->update();
+    }
 }
 
 void Player::onDraw()
@@ -373,27 +400,36 @@ void Player::resolveCollision(Collisionable *with)
 {
     Mesh3DGhost::resolveCollision(with);
     auto projectile = dynamic_cast<AmmoProjectileBody*> (with);
-    if (projectile != nullptr) {
-        if (projectile->getParent() != this) {
-            if (takeDamage(projectile->getWeaponType()->getDamage())) {
-                ComponentsManager::get()->getComponentSound()->sound("playerDamage", 1, 0);
+    if (projectile != nullptr && projectile->getParent() != this) {
+        const float dmg = projectile->getWeaponType()->getDamage();
+        if (isEnergyShieldEnabled() ) {
+            if (getEnergy() > dmg) {
+                useEnergy(dmg);
+                ComponentsManager::get()->getComponentSound()->sound("energyDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                setState(PlayerState::GETTING_DAMAGE);
+                startPlayerBlink();
+            } else {
+                setEnergy(0);
+                setEnergyShieldEnabled(false);
             }
+        } else {
+            makeRandomPlayerDamageSound();
+            takeDamage(dmg);
             projectile->setRemoved(true);
         }
     }
 
     auto laser = dynamic_cast<ProjectileRay*> (with);
     if (laser != nullptr) {
-        if (takeDamage(laser->getDamage())) {
-            ComponentsManager::get()->getComponentSound()->sound("playerDamage", 1, 0);
-        }
+        ComponentsManager::get()->getComponentSound()->sound("playerDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        takeDamage(laser->getDamage());
     }
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
     if (weapon != nullptr) {
         this->addWeapon(weapon->getWeaponType());
 
-        ComponentsManager::get()->getComponentSound()->sound("getAmmo", 1, 0);
+        ComponentsManager::get()->getComponentSound()->sound("getAmmo", EngineSetup::SND_GLOBAL, 0);
 
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
@@ -550,8 +586,15 @@ bool Player::isEnergyShieldEnabled() const {
     return energyShieldEnabled;
 }
 
-void Player::setEnergyShieldEnabled(bool shieldEnabled) {
+void Player::setEnergyShieldEnabled(bool shieldEnabled)
+{
     Player::energyShieldEnabled = shieldEnabled;
+
+    if (shieldEnabled) {
+        blink->setColor(Color::green());
+    } else {
+        blink->setColor(Color::red());
+    }
 }
 
 float Player::getEnergy() const {
@@ -647,7 +690,7 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new ShaderBlink(false, this, 0.05, Color::green());
+    blink = new ShaderBlink(false, this, 0.05, Color::red());
     counterDamageBlink.setEnabled(false);
 
     loadReflection();
@@ -718,7 +761,7 @@ void Player::updateWeaponAutomaticStatus()
 
     if (getWeapon()->getStatus() == RELEASED) {
         rayLight.resetReach();
-        ComponentSound::stopChannel(EngineSetup::SND_LASER);
+        //ComponentSound::stopChannel(EngineSetup::SND_GLOBAL);
         getWeapon()->setStatus(NONE);
     }
 }
@@ -781,12 +824,8 @@ void Player::dashMovement()
         if (getVelocity().getModule() <= 0.007f) return;
 
         counterDashCadence.setEnabled(true);
-        Brakeza3D::get()->addObject3D(
-            new ShockWave(getPosition(), 0.50, 50, 1, true),
-            Brakeza3D::uniqueObjectLabel("shockWave")
-        );
 
-        const float dashEnergyCost = DASH_ENERGY_COST;
+        float dashEnergyCost = DASH_ENERGY_COST;
 
         if (getEnergy() < dashEnergyCost) {
             return;
@@ -795,6 +834,8 @@ void Player::dashMovement()
         ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         float power = dashPower;
         if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {
@@ -814,4 +855,11 @@ void Player::increaseHumans()
 
 int Player::getRescuedHumans() {
     return rescuedHumans;
+}
+
+void Player::makeRandomPlayerDamageSound()
+{
+    std::string randomMetalSound = "metalHit0" + std::to_string(Tools::random(1, 6));
+
+    ComponentsManager::get()->getComponentSound()->sound(randomMetalSound, EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }

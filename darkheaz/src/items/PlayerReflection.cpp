@@ -58,7 +58,6 @@ void PlayerReflection::reset()
     setEnabled(true);
     setHidden(false);
     timeToLive.setEnabled(true);
-    setStencilBufferEnabled(true);
 
     if (!isHidden()) {
         removeCollisionObject();

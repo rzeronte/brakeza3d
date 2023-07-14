@@ -48,8 +48,9 @@ __kernel void onUpdate(
 
         float2 resultUV = fragCoord - modifiedUV * res;
 
-        int cx = resultUV.x;
-        int cy = resultUV.y;
+        int cx = clamp((int)resultUV.x, 0, screenWidth - 1);
+        int cy = clamp((int)resultUV.y, 0, screenHeight - 1);
+
         int index = cy * screenWidth + cx;
 
         __global unsigned char *cc = &video[index];

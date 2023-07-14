@@ -61,6 +61,8 @@ private:
     Image *imageCablesHorizontal;
     Image *imageCablesStore;
     Image *imageStatistics;
+    Image *imageDead;
+
 
     Counter splashCounter;
 

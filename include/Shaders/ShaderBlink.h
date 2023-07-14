@@ -77,7 +77,11 @@ public:
 
         clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr );
 
-        this->debugKernel("ShaderBlink");
+        //this->debugKernel("ShaderBlink");
+    }
+
+    void setColor(Color color) {
+        this->color = color;
     }
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

@@ -15,8 +15,6 @@
 
     { "file": "dash.wav", "label": "dash", "type": "sound" },
 
-    { "file": "voltage_loop.wav", "label": "voltageLoop", "type": "sound" },
-
     { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
     { "file": "get_weapon.wav", "label": "itemWeapon", "type": "sound" },
 
@@ -28,7 +26,7 @@
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
     { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
 
-    { "file": "shield.mp3", "label": "energyShield", "type": "sound" },
+    { "file": "shield.wav", "label": "energyShield", "type": "sound" },
 
     { "file": "get_ammo.mp3", "label": "getAmmo", "type": "sound" },
 
@@ -36,9 +34,9 @@
 
     { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
 
-    { "file": "projectile_type_01.mp3", "label": "projectileTypeOne", "type": "sound" },
+    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" },
     { "file": "projectile_type_03.wav", "label": "projectileTypeThree", "type": "sound" },
-    { "file": "energy-released.wav", "label": "projectileEnergy", "type": "sound" },
+    { "file": "laser.wav", "label": "projectileEnergy", "type": "sound" },
 
     { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
 
@@ -53,12 +51,23 @@
 
     { "file": "tutorial.mp3", "label": "tutorial", "type": "music" },
 
-    { "file": "crt.mp3", "label": "crt", "type": "sound" },
+    { "file": "crt.wav", "label": "crt", "type": "sound" },
     { "file": "selling.wav", "label": "selling", "type": "sound" },
 
     { "file": "error.wav", "label": "error", "type": "sound" },
     { "file": "wrench.wav", "label": "wrench", "type": "sound" },
 
-    { "file": "human_damage.wav", "label": "humanDamage", "type": "sound" }
+    { "file": "human_damage.wav", "label": "humanDamage", "type": "sound" },
+
+    { "file": "metals/metal_hit_01.wav", "label": "metalHit01", "type": "sound" },
+    { "file": "metals/metal_hit_02.wav", "label": "metalHit02", "type": "sound" },
+    { "file": "metals/metal_hit_03.wav", "label": "metalHit03", "type": "sound" },
+    { "file": "metals/metal_hit_04.wav", "label": "metalHit04", "type": "sound" },
+    { "file": "metals/metal_hit_05.wav", "label": "metalHit05", "type": "sound" },
+    { "file": "metals/metal_hit_06.wav", "label": "metalHit06", "type": "sound" },
+    { "file": "metals/metal_hit_07.wav", "label": "metalHit07", "type": "sound" },
+
+    { "file": "alarm-damage.wav", "label": "alarmDamage", "type": "sound" },
+    { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" }
   ]
 }

@@ -8,18 +8,22 @@
 ShaderEnergyShield::ShaderEnergyShield(
     bool active,
     Mesh3D* parent,
+    const std::string &textureFilename,
     const std::string &maskFilename
 )
 :
     ShaderOpenCL(active, "energyShield.opencl"),
+    texture(Image(textureFilename)),
     mask(Image(maskFilename)),
     maxAlpha(255),
     parent(parent)
 {
+    clBufferTexture = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->bufferSize * sizeof(Uint32), this->texture.pixels(), nullptr);
+    clEnqueueWriteBuffer(clQueue, clBufferTexture, CL_TRUE, 0, this->bufferSize * sizeof(Uint32), texture.pixels(), 0, nullptr, nullptr);
+
     clBufferMask = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->bufferSize * sizeof(Uint32), this->mask.pixels(), nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMask, CL_TRUE, 0, this->bufferSize * sizeof(Uint32), mask.pixels(), 0, nullptr, nullptr);
 }
-
 
 void ShaderEnergyShield::update()
 {
@@ -39,10 +43,11 @@ void ShaderEnergyShield::executeKernelOpenCL()
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&this->parent->getOpenClRenderer()->clBufferStencil);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferMask);
-    clSetKernelArg(kernel, 6, sizeof(unsigned int), &point.x);
-    clSetKernelArg(kernel, 7, sizeof(unsigned int), &point.y);
-    clSetKernelArg(kernel, 8, sizeof(unsigned int), &maxAlpha);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTexture);
+    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&clBufferMask);
+    clSetKernelArg(kernel, 7, sizeof(unsigned int), &point.x);
+    clSetKernelArg(kernel, 8, sizeof(unsigned int), &point.y);
+    clSetKernelArg(kernel, 9, sizeof(unsigned int), &maxAlpha);
 
     size_t global_item_size = this->bufferSize;
     size_t local_item_size = 64;

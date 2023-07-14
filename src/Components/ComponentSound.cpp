@@ -15,8 +15,8 @@ void ComponentSound::onStart()
     loadSoundsJSON();
 }
 
-void ComponentSound::preUpdate() {
-
+void ComponentSound::preUpdate()
+{
 }
 
 void ComponentSound::onUpdate() {
@@ -83,19 +83,25 @@ void ComponentSound::loadSoundsJSON()
     free(contentFile);
 }
 
-void ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
+int ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
 {
     if (chunk == nullptr) {
         Logging::Log("Error loading chunk sound");
-        return;
+        return -1;
     }
 
-    Mix_PlayChannel(channel, chunk, times);
+    const int resultPlaying = Mix_PlayChannel(channel, chunk, times);
+
+    if (resultPlaying < 0) {
+        Logging::Log("No channel available for sound...");
+    }
+
+    return resultPlaying;
 }
 
-void ComponentSound::sound(const std::string& sound, int channel, int times)
+int ComponentSound::sound(const std::string& sound, int channel, int times)
 {
-    ComponentSound::playSound(
+    return ComponentSound::playSound(
        soundPackage.getByLabel(sound),
         channel,
         times
