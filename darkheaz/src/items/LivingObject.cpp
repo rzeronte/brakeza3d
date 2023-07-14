@@ -2,10 +2,10 @@
 
 LivingObject::LivingObject(Mesh3D *parent)
 :
-    stamina(INITIAL_STAMINA),
     startStamina(INITIAL_STAMINA),
-    counterDamageBlink(Counter(0.45)),
-    blink(nullptr)
+    stamina(INITIAL_STAMINA),
+    blink(nullptr),
+    counterDamageBlink(Counter(0.45))
 {
 }
 
@@ -23,5 +23,10 @@ void LivingObject::setStamina(float stamina) {
 
 void LivingObject::setStartStamina(float startStamina) {
     LivingObject::startStamina = startStamina;
+}
+
+float LivingObject::currentStaminaPercentage()
+{
+    return getStamina() * 100 / getStartStamina();
 }
 

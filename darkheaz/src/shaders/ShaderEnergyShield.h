@@ -11,13 +11,14 @@
 #include "../../../include/Objects/Mesh3D.h"
 
 class ShaderEnergyShield : public ShaderOpenCL{
-    Image image;
+    Image texture;
     Image mask;
+    cl_mem clBufferTexture;
     cl_mem clBufferMask;
     unsigned int maxAlpha;
     Mesh3D *parent;
 public:
-    ShaderEnergyShield(bool active, Mesh3D* paren, const std::string &maskFilename);
+    ShaderEnergyShield(bool active, Mesh3D* parent, const std::string &textureFilename, const std::string &maskFilename);
 
     void executeKernelOpenCL();
 

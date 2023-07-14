@@ -380,20 +380,41 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool triggerLeftOn = componentInput->getControllerAxisTriggerLeft() > 0.20;
+    const bool triggerLeftOn = componentInput->getControllerAxisTriggerLeft() >= 0.20;
     const bool actionKey = keyboard[SDL_SCANCODE_I] && event->type == SDL_KEYDOWN;
+    const bool actionKeyReleased = !keyboard[SDL_SCANCODE_I] && event->type == SDL_KEYUP;
+    const bool leftAxisTriggerRelease = componentInput->getControllerAxisTriggerLeft() < 0.20;
+    const bool isKeyboardAction = event->type == SDL_KEYUP || event->type == SDL_KEYDOWN;
+    const float percentageReached =  player->getEnergy() * 100 / player->getStartEnergy();
 
-    if ((triggerLeftOn || actionKey) && !player->isEnergyShieldEnabled()) {
+    if (isKeyboardAction) {
+        if (actionKey && !player->isEnergyShieldEnabled() && percentageReached > 10) {
+            if (!player->isAllowEnergyShield()) {
+                return;
+            }
+
+            player->setEnergyShieldEnabled(true);
+            Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 50, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+            ComponentsManager::get()->getComponentSound()->sound("energyShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        }
+
+        if (actionKeyReleased && player->isEnergyShieldEnabled()) {
+            player->setEnergyShieldEnabled(false);
+        }
+
+        return;
+    }
+    if (triggerLeftOn && !player->isEnergyShieldEnabled()) {
         if (!player->isAllowEnergyShield()) {
             return;
         }
 
         player->setEnergyShieldEnabled(true);
-
-        ComponentsManager::get()->getComponentSound()->sound("energyShield", 1, 0);
+        Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 50, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        ComponentsManager::get()->getComponentSound()->sound("energyShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
-    if (componentInput->getControllerAxisTriggerLeft() < 0.20 && player->isEnergyShieldEnabled()) {
+    if (leftAxisTriggerRelease && player->isEnergyShieldEnabled() && !keyboard[SDL_SCANCODE_I]) {
         player->setEnergyShieldEnabled(false);
     }
 }

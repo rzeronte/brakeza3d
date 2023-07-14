@@ -414,10 +414,10 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
     enemy->updateBoundingBox();
     enemy->makeSimpleGhostBody(
-        enemy->getAabb().size().getScaled(0.5),
+        enemy->getAabb().size().getScaled(0.3f),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,
-        EngineSetup::collisionGroups::Projectile | EngineSetup::collisionGroups::Player
+        EngineSetup::collisionGroups::Projectile | EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::ProjectileEnemy
     );
     enemy->setSoundChannel((int) enemiesEmitter.size() + 2);
 

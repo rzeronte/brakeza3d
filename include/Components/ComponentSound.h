@@ -12,7 +12,7 @@
 class ComponentSound : public Component {
 private:
     SoundPackage soundPackage;
-    void playSound(Mix_Chunk *chunk, int channel, int times);
+    int playSound(Mix_Chunk *chunk, int channel, int times);
 public:
     ComponentSound();
 
@@ -32,7 +32,7 @@ public:
 
     void loadSoundsJSON();
 
-    void sound(const std::string& sound, int channel, int times);
+    int sound(const std::string& sound, int channel, int times);
 
     static void playMusic(Mix_Music *music, int loops);
 

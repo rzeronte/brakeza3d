@@ -1,8 +1,9 @@
-#define CIRCLE_RADIUS 100
-#define CIRCLE_THICKNESS 5
 #define PI 3.14159265358979323846
-#define RADIUS 0.07f
-#define BRIGHTNESS 0.4f
+#define RADIUS 0.08f
+#define BRIGHTNESS 0.3f
+
+#define MASK_WIDTH 128
+#define MASK_HEIGHT 128
 
 unsigned int createRGB(int r, int g, int b);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
@@ -13,6 +14,7 @@ __kernel void onUpdate(
     float time,
     __global unsigned int *video,
     __global bool *stencil,
+    __global unsigned int *texture,
     __global unsigned int *mask,
     unsigned int centerX,
     unsigned int centerY,
@@ -30,42 +32,54 @@ __kernel void onUpdate(
     float2 resolution = { (float)screenWidth, (float)screenHeight };
     float2 st = uv / resolution;
 
-    if(stencil[i]) {
-        float2 st_centered = st - 0.5f; // Center around (0.5, 0.5)
-        float angle = time * 0.05f * 2 * PI; // Calculate rotation angle
-        float2 nst;
-        nst.x = st_centered.x * cos(angle) - st_centered.y * sin(angle);
-        nst.y = st_centered.x * sin(angle) + st_centered.y * cos(angle);
-        nst += 0.5f; // Re-center after rotation
+    int maskX = x - centerX + MASK_WIDTH / 2;
+    int maskY = y - centerY + MASK_HEIGHT / 2;
 
-        float intPart;
-        nst.x = fract(nst.x, &intPart);
-        nst.y = fract(nst.y, &intPart);
+    float rotationSpeed = 5.1;  // Controla la velocidad de rotación
+    float angle = time * rotationSpeed;
+    float s = sin(angle);
+    float c = cos(angle);
 
-        int cx = nst.x * screenWidth;
-        int cy = nst.y * screenHeight;
-        int indexT = cy * screenWidth + cx;
+    // Centramos las coordenadas alrededor del punto de rotación
+    float2 rotationCenter = {centerX / (float)screenWidth, centerY / (float)screenHeight};
+    float2 translatedSt = st - rotationCenter;
 
-        float alpha = 0.5f + 0.1f * sin(time * 100);
-        unsigned int color = alphaBlend(video[i], mask[indexT], alpha * 255);
+    // Aplicamos la rotación
+    float2 rotatedCoords;
+    rotatedCoords.x = c * translatedSt.x - s * translatedSt.y;
+    rotatedCoords.y = s * translatedSt.x + c * translatedSt.y;
 
-        alpha = 1.0f - clamp((dist - CIRCLE_RADIUS) / CIRCLE_THICKNESS, 0.0f, 1.0f);
-        video[i] = alphaBlend(video[i], color, (unsigned int)(alpha * 255));
+    // Deshacemos la translación
+    rotatedCoords += rotationCenter;
+
+    // Aseguramos que las coordenadas estén dentro de la textura
+    rotatedCoords.x = fmod(rotatedCoords.x, 1.0f);
+    rotatedCoords.y = fmod(rotatedCoords.y, 1.0f);
+
+    // Obtenemos la posición de la textura
+    int textureX = (int)(rotatedCoords.x * screenWidth);
+    int textureY = (int)(rotatedCoords.y * screenHeight);
+
+    if (maskX >= 0 && maskX < MASK_WIDTH && maskY >= 0 && maskY < MASK_HEIGHT) {
+        unsigned int maskPixel = mask[maskY * MASK_WIDTH + maskX];
+        unsigned int alpha = (maskPixel >> 24) & 0xFF;
+        unsigned int textureColor = texture[textureY * screenWidth + textureX];
+        video[i] = alphaBlend(video[i], textureColor, clamp((int)alpha, 0, (int) maxAlpha));
     }
 
-    // Draw a circle with halo effect on top of everything
-    float2 norm_uv = (uv - center) / resolution;
-    norm_uv.x *= resolution.x / resolution.y;
-    float d = length(norm_uv);
+        // Draw a circle with halo effect on top of everything
+        float2 norm_uv = (uv - center) / resolution;
+        norm_uv.x *= resolution.x / resolution.y;
+        float d = length(norm_uv);
 
-    float3 halo = BRIGHTNESS * (float3)(RADIUS / d);
-    halo = mix(halo, (float3)(0.0f, 0.0f, 0.0f), d);
-    halo *= (float3)(smoothstep(RADIUS, RADIUS + 0.01f, d));
+        float3 halo = BRIGHTNESS * (float3)(RADIUS / d);
+        halo = mix(halo, (float3)(0.0f, 0.0f, 0.0f), d);
+        halo *= (float3)(smoothstep(RADIUS, RADIUS + 0.01f, d));
 
-    float3 color = (float3)(1.0f, 0.0f, 1.0f); // Adjust halo color here
-    unsigned int haloColor = createRGB(color.x * 255, color.y * 255, color.z * 255);
+        float3 color = (float3)(0.0f, 1.0f, 0.0f); // Adjust halo color here
+        unsigned int haloColor = createRGB(color.x * 255, color.y * 255, color.z * 255);
 
-    video[i] = alphaBlend(video[i], haloColor, halo.x * 255);
+        video[i] = alphaBlend(video[i], haloColor, halo.x * 255);
 }
 
 unsigned int createRGB(int r, int g, int b)

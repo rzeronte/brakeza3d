@@ -53,6 +53,7 @@ void ComponentGame::onStart()
     imageCablesHorizontal = new Image(SETUP->IMAGES_FOLDER + "cables_hud_horizontal.png");
     imageCablesStore = new Image(SETUP->IMAGES_FOLDER + "cables_hud_store.png");
     imageStatistics = new Image(SETUP->IMAGES_FOLDER + "statistics_screen.png");
+    imageDead =  new Image(SETUP->IMAGES_FOLDER + "game_over.png");
     splashCounter.setStep(SPLASH_TIME);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -176,11 +177,12 @@ void ComponentGame::preUpdate()
 
     getPlayer()->updateWeaponInteractionStatus();
 
-    textWriter->setAlpha(255 - getFadeToGameState()->getProgress() * 255);
+    const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+    textWriter->setAlpha(alpha);
 
     switch(gameState) {
         case EngineSetup::PRESS_KEY_BY_DEAD: {
-            textWriter->writeTextTTFMiddleScreen("GAME OVER", Color::black(), 0.5f);
+            imageDead->drawFlatAlpha(0, 0, alpha);
             shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
             break;
         }
@@ -1012,7 +1014,7 @@ void ComponentGame::pressedKeyByDead()
 {
     player->respawn();
 
-    ComponentsManager::get()->getComponentSound()->sound("startGame", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL, true);
     getPlayer()->startPlayerBlink();

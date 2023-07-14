@@ -133,16 +133,15 @@ void EnemyGhost::onDraw()
 
 void EnemyGhost::handleDie()
 {
-    Brakeza3D::get()->addObject3D(
-        new ShockWave(getPosition(), 0.50, 50, 1, true),
-        Brakeza3D::uniqueObjectLabel("shockWave")
-    );
+    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+
     makeReward();
+
     Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
-    ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_LASER, 0);
+    ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
     unstuck();
     remove();
@@ -259,25 +258,28 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 {
     Mesh3DAnimatedGhost::resolveCollision(withObject);
 
-    auto *projectile = dynamic_cast<AmmoProjectile*> (withObject);
+    auto *projectile = dynamic_cast<AmmoProjectileBody*> (withObject);
     if (projectile != nullptr) {
-        ComponentsManager::get()->getComponentSound()->sound("enemyDamage", EngineSetup::SoundChannels::SND_LASER, 0);
+        if (projectile->getParent() != this) {
+            ComponentsManager::get()->getComponentSound()->sound("enemyDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
-        blink->setEnabled(true);
-        counterDamageBlink.setEnabled(true);
+            blink->setEnabled(true);
+            counterDamageBlink.setEnabled(true);
 
-        auto *body = dynamic_cast<AmmoProjectileBody*> (withObject);
-        auto *ray = dynamic_cast<ProjectileRay*> (withObject);
+            auto *body = dynamic_cast<AmmoProjectileBody*> (withObject);
+            auto *ray = dynamic_cast<ProjectileRay*> (withObject);
 
-        if (body != nullptr) {
-            ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_PROJECTILE);
+            if (body != nullptr) {
+                ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_PROJECTILE);
+            }
+
+            if (ray != nullptr) {
+                ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_PROJECTILE);
+            }
+
+            this->takeDamage((float) projectile->getDamage());
         }
 
-        if (ray != nullptr) {
-            ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_PROJECTILE);
-        }
-
-        this->takeDamage((float) projectile->getDamage());
     }
 
     auto *satellite = dynamic_cast<PlayerSatellite*> (withObject);
@@ -317,7 +319,7 @@ void EnemyGhost::shoot(Object3D *target)
                 getRotation(),
                 1.0,
                 EngineSetup::collisionGroups::ProjectileEnemy,
-                EngineSetup::collisionGroups::Player,
+                EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
                 false,
                 false
             );
@@ -377,7 +379,7 @@ void EnemyGhost::stuck(float time)
         this->getBehavior()->setEnabled(false);
     }
 
-    ComponentsManager::get()->getComponentSound()->sound("electricStuck", EngineSetup::SoundChannels::SND_LASER, -1);
+    ComponentsManager::get()->getComponentSound()->sound("electricStuck", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void EnemyGhost::unstuck()

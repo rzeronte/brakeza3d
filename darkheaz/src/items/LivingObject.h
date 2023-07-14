@@ -26,6 +26,8 @@ public:
     void setStamina(float stamina);
 
     void setStartStamina(float startStamina);
+
+    float currentStaminaPercentage();
 };
 
 

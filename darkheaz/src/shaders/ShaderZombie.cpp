@@ -11,8 +11,8 @@ ShaderZombie::ShaderZombie(bool active, const std::string& filename,Mesh3D* obje
     ShaderOpenCL(active, "zombie.cl"),
     meshOpenCLRenderer(renderer),
     object(object),
-    offsetY(0),
     offsetX(0),
+    offsetY(0),
     image(Image(filename))
 {
     offsetX = 10;
@@ -24,6 +24,7 @@ ShaderZombie::ShaderZombie(bool active, const std::string& filename,Mesh3D* obje
 void ShaderZombie::update()
 {
     Shader::update();
+
     counter.update();
 
     if (counter.isFinished()) {
@@ -44,10 +45,9 @@ void ShaderZombie::update()
     clSetKernelArg(kernel, 8, sizeof(int), &offsetY);
 
     size_t global_item_size = bufferSize;
-    size_t local_item_size = 64;
+    size_t local_item_size = 12;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
-    debugKernel("ShaderZombie");
 }
 
 void ShaderZombie::updateOffsets()
