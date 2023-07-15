@@ -100,7 +100,9 @@ int LevelLoader::getCurrentLevelIndex() const {
 
 void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 {
-    Logging::Log("Loading Enemies for Level: %s", filePath.c_str());
+    Logging::Message("*************************************");
+    Logging::Message("Loading Level: %s", filePath.c_str());
+    Logging::Message("*************************************");
 
     enemiesEmitter.resize(0);
 

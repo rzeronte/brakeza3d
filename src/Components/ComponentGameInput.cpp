@@ -503,11 +503,11 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
+    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (enter || isButtonGuidedPressed)) {
         game->pressedKeyForFinishGameAndRestart();
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (event->type == SDL_KEYDOWN || isButtonGuidedPressed)) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (enter || isButtonGuidedPressed)) {
         game->pressedKeyByDead();
     }
 }

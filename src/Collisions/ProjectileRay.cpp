@@ -18,7 +18,7 @@ ProjectileRay::ProjectileRay(
 ) :
     RayCollisionable(ray, filterGroup, filterMask),
     Projectile(direction),
-    AmmoProjectile(color, damage),
+    AmmoProjectile(this, color, damage),
     speed(speed),
     indestructible(indestructible)
 {

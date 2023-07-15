@@ -54,6 +54,9 @@ void EnemyGhost::onStart()
 void EnemyGhost::onUpdate()
 {
     Mesh3DAnimatedGhost::onUpdate();
+
+    if (isRemoved()) return;
+
     zombie->update();
 
     if (!rotationFrameEnabled) {
@@ -258,9 +261,9 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 {
     Mesh3DAnimatedGhost::resolveCollision(withObject);
 
-    auto *projectile = dynamic_cast<AmmoProjectileBody*> (withObject);
+    auto *projectile = dynamic_cast<AmmoProjectile*> (withObject);
     if (projectile != nullptr) {
-        if (projectile->getParent() != this) {
+        if (projectile->getOwner() != this) {
             ComponentsManager::get()->getComponentSound()->sound("enemyDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
             blink->setEnabled(true);
@@ -279,7 +282,6 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 
             this->takeDamage((float) projectile->getDamage());
         }
-
     }
 
     auto *satellite = dynamic_cast<PlayerSatellite*> (withObject);
@@ -433,6 +435,7 @@ void EnemyGhost::takeDamage(float damageTaken)
 {
     this->stamina -= damageTaken;
     if (this->stamina <= 0) {
+        blink->setEnabled(false);
         ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
         setState(EnemyState::ENEMY_STATE_DIE);
     }
