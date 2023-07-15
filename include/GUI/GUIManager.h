@@ -39,7 +39,7 @@ public:
         int numTilesColumns
     ) {
         bool show_demo_window = true;
-        ImGui::ShowDemoWindow(&show_demo_window);
+        //ImGui::ShowDemoWindow(&show_demo_window);
 
         guiMenu->draw(
             finish,
