@@ -806,6 +806,7 @@ void ComponentGame::removeInGameObjects()
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *enemyDialog = dynamic_cast<EnemyDialog *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
+        auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *human = dynamic_cast<ItemHumanGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
@@ -823,37 +824,19 @@ void ComponentGame::removeInGameObjects()
             enemyDialog->setRemoved(true);
             continue;
         }
-        if (health != nullptr) {
-            health->remove();
-            continue;
-        }
-        if (human != nullptr) {
-            human->remove();
-            continue;
-        }
-        if (weapon != nullptr) {
-            weapon->remove();
-            continue;
-        }
-        if (projectile != nullptr) {
-            projectile->setRemoved(true);
-            continue;
-        }
-        if (projectileRay != nullptr) {
-            projectileRay->setRemoved(true);
-            continue;
-        }
-        if (projectileEmitter != nullptr) {
-            projectileEmitter->setRemoved(true);
-            continue;
-        }
-        if (particleEmitter) {
-            particleEmitter->setRemoved(true);
-            continue;
-        }
 
-        if (bomb != nullptr) {
-            bomb->remove();
+        if (
+            energy != nullptr ||
+            health != nullptr ||
+            human != nullptr ||
+            weapon != nullptr ||
+            projectile != nullptr ||
+            projectileRay != nullptr ||
+            projectileEmitter != nullptr ||
+            particleEmitter != nullptr ||
+            bomb != nullptr
+        ) {
+            object->setRemoved(true);
             continue;
         }
     }
@@ -1159,12 +1142,12 @@ void ComponentGame::reloadLevel(int level)
     getPlayer()->setPosition(playerStartPosition);
     setVisibleInGameObjects(true);
 
-    ComponentsManager::get()->getComponentHUD()->setEnabled(true);
+    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
 
     getLevelLoader()->startCountDown();
-    setGameState(EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL);
+    gameState = EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL;
     getPlayer()->startPlayerBlink();
 }
 

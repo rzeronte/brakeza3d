@@ -18,7 +18,7 @@ AmmoProjectileBody::AmmoProjectileBody(
     ParticleEmitter *particleEmitter
 ) :
     Projectile3DBody(direction),
-    AmmoProjectile(weaponType->getModelProjectile()->getFlatColor(), damage),
+    AmmoProjectile(parent, weaponType->getModelProjectile()->getFlatColor(), damage),
     weaponType(weaponType),
     particleEmitter(particleEmitter)
 {
