@@ -102,10 +102,10 @@ int ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
 int ComponentSound::sound(const std::string& sound, int channel, int times)
 {
     return ComponentSound::playSound(
-       soundPackage.getByLabel(sound),
-        channel,
-        times
-    );
+            soundPackage.getByLabel(sound),
+            channel,
+            times
+    );;
 }
 
 void ComponentSound::playMusic(Mix_Music *music, int loops = -1)

@@ -14,6 +14,7 @@
 #include "src/shaders/ShaderEnergyShield.h"
 #include "src/items/LivingObject.h"
 #include "src/items/PlayerSatellite.h"
+#include "src/behaviors/RotatableToTarget.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -42,7 +43,7 @@ enum WeaponStatus {
     RELOAD = 4,
 };
 
-class Player : public Mesh3DGhost, public LivingObject {
+class Player : public Mesh3DGhost, public LivingObject, public RotatableToTarget {
 private:
 
     float energy;
@@ -236,6 +237,8 @@ public:
     void makeRandomPlayerDamageSound();
 
     void updatePlayerEnergy();
+
+    void updateTargetRotation();
 };
 
 

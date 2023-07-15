@@ -32,20 +32,20 @@ void PlayerReflection::onUpdate()
 
     timeToLive.update();
 
+    if (timeToLive.isFinished()) {
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        //setStencilBufferEnabled(false);
+        setEnabled(false);
+        removeCollisionObject();
+        setHidden(true);
+    }
+
     zombie->update();
 }
 
 void PlayerReflection::postUpdate()
 {
     Mesh3D::postUpdate();
-
-    if (timeToLive.isFinished()) {
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
-        setStencilBufferEnabled(false);
-        setEnabled(false);
-        removeCollisionObject();
-        setHidden(true);
-    }
 }
 
 void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)

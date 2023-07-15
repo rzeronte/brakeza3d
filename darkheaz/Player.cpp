@@ -11,6 +11,7 @@
 Player::Player()
 :
     LivingObject(this),
+    RotatableToTarget(nullptr, this, 1.0f),
     energy(INITIAL_ENERGY),
     startEnergy(INITIAL_ENERGY),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
@@ -69,7 +70,7 @@ Player::Player()
 void Player::loadReflection()
 {
     reflection.setEnabled(false);
-    reflection.setLabel("gravitationalShieldPlayer");
+    reflection.setLabel("playerReflection");
     reflection.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
     reflection.setParent(parent);
     reflection.setFlatTextureColor(false);
@@ -79,14 +80,14 @@ void Player::loadReflection()
     reflection.setRotationFrame(Tools::randomVertex().getScaled(0.5));
     reflection.onStartSetup();
 
-    Brakeza3D::get()->addObject3D(&reflection, "gravitationalShieldPlayer");
+    Brakeza3D::get()->addObject3D(&reflection, reflection.getLabel());
 }
 
 void Player::loadSatellite()
 {
     satellite.setEnabled(true);
     satellite.setLabel("satellitePlayer");
-    satellite.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "energy_ball.fbx"));
+    satellite.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "droid_ball.fbx"));
     satellite.setParent(parent);
     satellite.setFlatTextureColor(false);
     satellite.setPosition(getPosition());
@@ -111,7 +112,10 @@ bool Player::takeDamage(float dmg)
     if (stamina <= 0) {
         stamina = 0;
         setState(PlayerState::DEAD);
-
+        if (warningDamage) {
+            warningDamage = false;
+            ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
+        }
         ComponentsManager::get()->getComponentSound()->sound("playerDead", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         componentGame->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
         componentGame->getFadeToGameState()->setupForFadeIn();
@@ -141,13 +145,13 @@ void Player::makeReflection()
     if (gravityShieldsNumber >= (int) MAX_REFLECTIONS) {
         return;
     }
-
+    Logging::Message("makeReflection!");
     reflection.setPosition(getPosition());
     reflection.reset();
 
     gravityShieldsNumber++;
 
-    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+    //Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
@@ -236,45 +240,40 @@ void Player::onUpdate()
 
     updatePlayerEnergy();
 
-    auto selectedObject = ComponentsManager::get()->getComponentRender()->getSelectedObject();
-    if (selectedObject != this && selectedObject != nullptr) {
-        Vector3D way(selectedObject->getPosition(), getPosition());
-        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
-        Vertex3D b = getRotation() * EngineSetup::get()->up;
-
-        const float theta = newRot.X() * b;
-        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->rotationToTargetSpeed);
-        setRotation(getRotation() * rotation.getTranspose());
-    }
-
-    if (selectedObject == nullptr) {
-        Vertex3D end = getPosition() + Vertex3D(0, 1, 0);
-        Vector3D way(getPosition(), end);
-
-        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward, way.getComponent().getNormalize());
-        Vertex3D b = getRotation() * EngineSetup::get()->up;
-
-        const float theta = newRot.X() * b;
-        M3 rotation = M3::getMatrixRotationForEulerAngles(0, 0, theta * this->rotationToTargetSpeed);
-        setRotation(getRotation() * rotation.getTranspose());
-    }
+    updateTargetRotation();
 
     setPosition(getPosition() + this->velocity);
 
     light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    if (componentGame->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.onUpdate();
     }
 
-    if (currentStaminaPercentage() < 25 && !warningDamage) {
+    auto isGameStateDistinctOfGameOver = componentGame->getGameState() != EngineSetup::PRESS_KEY_BY_DEAD;
+    if (warningDamage && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
+        float currentSelectionAlpha = 0.5f * (float) (1 + sin(10 * PI * Brakeza3D::get()->getExecutionTime()));
+        ComponentsManager::get()->getComponentGame()->getShaderColor()->setProgress(currentSelectionAlpha);
+    }
+
+    if ((currentStaminaPercentage() < 25 && !warningDamage) && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
+        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
         warningDamage = true;
         warningSoundChannel = ComponentsManager::get()->getComponentSound()->sound("alarmDamage", EngineSetup::SoundChannels::SND_GLOBAL, -1);
     }
-    if (currentStaminaPercentage() >= 25 && warningDamage) {
+
+    if ((currentStaminaPercentage() >= 25 && warningDamage) && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
+        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(false);
         warningDamage = false;
         ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
     }
+}
+
+void Player::updateTargetRotation()
+{
+    setRotationTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
+    makeRotationToTarget();
 }
 
 void Player::updatePlayerEnergy()

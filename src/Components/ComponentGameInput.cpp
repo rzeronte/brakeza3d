@@ -425,15 +425,13 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    auto player = componentGame->getPlayer();
 
-    if ((event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA()) ||
-        (event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_P])
-    ) {
-        if (player->isAllowedMakeReflections()) {
-            player->makeReflection();
-        }
+    auto player = componentGame->getPlayer();
+    auto controllerButtonA = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
+    auto keyPressed = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_p;
+
+    if ((controllerButtonA || keyPressed) && player->isAllowedMakeReflections()) {
+        player->makeReflection();
     }
 }
 

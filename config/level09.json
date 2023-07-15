@@ -192,8 +192,22 @@
       }
     }
   ],
+  "items": [
+    {
+      "type": 3,
+      "position": { "x": 50, "y": 40 }
+    }
+  ],
   "asteroids": [
   ],
   "background": [
+    {
+      "name": "Star",
+      "model": "broken_planet.fbx",
+      "scale": 20,
+      "position": { "x": 50, "y": 10, "z": 20000 },
+      "rotation": { "x": 20, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.001, "y": 0.1, "z": 0 }
+    }
   ]
 }

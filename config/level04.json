@@ -88,7 +88,7 @@
   "items": [
     {
       "type": 2,
-      "position": { "x": 50, "y": 30 },
+      "position": { "x": 50, "y": 20 },
       "help": 0
     }
   ],

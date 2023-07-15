@@ -5,6 +5,7 @@
   "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
+  "histories": ["default_history.png"],
   "enemies": [
     {
       "name": "Blupincher",
@@ -220,5 +221,13 @@
   "items": [
   ],
   "background": [
+    {
+      "name": "nave",
+      "position": { "x": 50,  "y":	50, "z": 15000 },
+      "model":	"spaceships/destroyer.fbx",
+      "rotation": { "x": 90, "y": 90,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
+      "scale":	2
+    }
   ]
 }

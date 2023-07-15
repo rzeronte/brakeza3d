@@ -4,6 +4,7 @@
 
 EnemyGhost::EnemyGhost() :
     LivingObject(this),
+    RotatableToTarget(ComponentsManager::get()->getComponentGame()->getPlayer(), this, 1.0f),
     rayLight(RayLight(
         false,
         this,
@@ -109,8 +110,8 @@ void EnemyGhost::updateEmitterParticles()
 {
     particleEmitter->shaderParticles->setOrigin(
         Transforms::WorldToPoint(
-                getPosition() - AxisUp().getScaled(-700),
-                ComponentsManager::get()->getComponentCamera()->getCamera()
+            getPosition() - AxisUp().getScaled(-700),
+            ComponentsManager::get()->getComponentCamera()->getCamera()
         )
     );
     particleEmitter->shaderParticles->setDirection(AxisForward());
@@ -243,13 +244,8 @@ void EnemyGhost::makeReward()
 
 void EnemyGhost::rotateToTarget()
 {
-    setRotation(M3::getFromVectors(
-        EngineSetup::get()->forward,
-        Vector3D(
-            getTarget()->getPosition(),
-            getPosition()).getComponent().getNormalize()
-        )
-    );
+    setRotationTarget(getTarget());
+    makeRotationToTarget();
 }
 
 void EnemyGhost::integrate()
@@ -398,12 +394,11 @@ Object3D *EnemyGhost::getTarget()
 {
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
-    Object3D *target = player;
     if (!player->getReflection()->isHidden()) {
-        target = (Object3D *) player->getReflection();
+        return player->getReflection();
     }
 
-    return target;
+    return player;
 }
 
 void EnemyGhost::setProjectileEmitter(AmmoProjectileBodyEmitter *emitter)

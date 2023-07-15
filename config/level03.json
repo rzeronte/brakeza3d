@@ -2,7 +2,7 @@
   "name": "03",
   "music": "level01Music",
   "backgroundImage": "levels/03.png",
-  "allowReflection": false,
+  "allowReflection": true,
   "allowEnergyShield": true,
   "tutorials": ["tutorials/tutorial_stamina.png", "tutorials/tutorial_energy.png"],
   "histories": ["histories/lore_03_1.png"],
