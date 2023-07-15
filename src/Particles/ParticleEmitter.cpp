@@ -12,12 +12,12 @@ ParticleEmitter::ParticleEmitter(
     Color colorTo,
     OCParticlesContext particlesContext
 ) :
-    state(state),
     active(true),
+    stopAdd(false),
+    state(state),
     lifeCounter(Counter(ttlEmitter)),
     colorTo(colorTo),
-    colorFrom(colorFrom),
-    stopAdd(false)
+    colorFrom(colorFrom)
 {
     setParent(parent);
     setPosition(position);

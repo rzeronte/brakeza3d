@@ -5,6 +5,7 @@
   "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
+  "histories": ["default_history.png"],
   "enemies": [
     {
       "name": "RedBallLaser",
@@ -143,5 +144,13 @@
   "items": [
   ],
   "background": [
+    {
+      "name": "nave",
+      "position": { "x": 50,  "y":	40, "z": 30000 },
+      "model":	"stargate.fbx",
+      "rotation": { "x": 0, "y": 0,  "z": 0 },
+      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.1 },
+      "scale":	20.0
+    }
   ]
 }

@@ -9,41 +9,6 @@
   "enemies": [
     {
       "name": "Patrol",
-      "avatar": "avatars/striker.png",
-      "position": { "x": 50, "y": 10 },
-      "model": "spaceships/Striker.fbx",
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 0
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 999,
-        "startAmount": 1000,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.30,
-        "stop": true,
-        "stopDuration": 1,
-        "stopEvery": 5,
-        "type": 0,
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 0 }
-      }
-    },
-    {
-      "name": "Patrol",
       "avatar": "avatars/bob.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
@@ -122,24 +87,11 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 50, "y": 30 }
+      "position": { "x": 50, "y": 10 }
     }
   ],
   "background": [
-    {
-      "name": "nave",
-      "position": { "x": 900,  "y":	0, "z": 35000 },
-      "model":	"spaceships/destroyer.fbx",
-      "rotation": { "x": 90, "y": 90,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
-      "scale":	3,
-      "motion": {
-        "type": 1,
-        "from": { "x": 10, "y": 25 },
-        "to": { "x": 130, "y": 45 },
-        "speed": 0.06
-      }
-    },
+
     {
       "name": "nave",
       "position": { "x": 20,  "y":	60, "z": 25000 },

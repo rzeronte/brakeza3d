@@ -12,8 +12,9 @@
 #include "../../../include/Physics/ProjectileRay.h"
 #include "../shaders/ShaderZombie.h"
 #include "../items/EnemyDialog.h"
+#include "../behaviors/RotatableToTarget.h"
 
-class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject {
+class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
 private:
     ShaderZombie *zombie;
 

@@ -89,7 +89,7 @@
       "type": 0,
       "name": "Leuman",
       "avatar": "avatars/spitfire.png",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 15 },
       "model": "spaceships/Spitfire.fbx",
       "enableLights": true,
       "animated": true,

@@ -205,11 +205,13 @@ void Weapon::shootProjectile(
 
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
 
+        const float emitterTTL = 10.0f;
+
         auto emitter = new ParticleEmitter(
             ParticleEmitterState::DEFAULT,
             projectile,
             position,
-            4,
+            emitterTTL,
             Color::yellow(),
             Color::white(),
             OCParticlesContext()
@@ -217,7 +219,6 @@ void Weapon::shootProjectile(
 
         projectile->setParticleEmitter(emitter);
         Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
-
 
         if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_MIRROR_SHOOT) && getType() == WEAPON_PROJECTILE && allowMirror) {
             auto *projectile = new AmmoProjectileBody(
@@ -243,7 +244,7 @@ void Weapon::shootProjectile(
                     ParticleEmitterState::DEFAULT,
                     projectile,
                     position,
-                    4,
+                    emitterTTL,
                     Color::yellow(),
                     Color::white(),
                     OCParticlesContext()

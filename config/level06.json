@@ -119,6 +119,16 @@
       }
     }
   ],
+  "items": [
+    {
+      "type": 7,
+      "position": { "x": 10, "y": 5 }
+    },
+    {
+      "type": 7,
+      "position": { "x": 90, "y": 5 }
+    }
+  ],
   "background": [
     {
       "name": "Star",
