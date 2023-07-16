@@ -2,7 +2,6 @@
   "name": "02",
   "music": "musicLevel01",
   "backgroundImage": "levels/02.png",
-  "allowReflection": false,
   "allowEnergyShield": false,
   "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png", "tutorials/tutorial_humans.png"],
   "histories": ["default_history.png"],
