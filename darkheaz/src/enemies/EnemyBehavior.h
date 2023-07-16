@@ -30,6 +30,8 @@ public:
     [[nodiscard]] float getExecutionTime() const;
 
     [[nodiscard]] bool isEnabled() const;
+
+
 };
 
 

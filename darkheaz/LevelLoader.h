@@ -134,7 +134,7 @@ public:
 
     Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON, float depth);
 
-    Vertex3D getWorldPositionFromScreenPoint(Point2D fixedPosition, float depth);
+    Vertex3D getPositionFromScreenPoint(Point2D fixedPosition, float depth);
 
     void loadPrevious();
 

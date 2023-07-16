@@ -391,7 +391,10 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
     enemy->setRewards(reward);
 
-    this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY);
+    if (motion != nullptr) {
+        this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY);
+    }
+
     this->setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
@@ -611,10 +614,10 @@ Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)
 Vertex3D LevelLoader::getVertex3DFromJSONPosition(cJSON *positionJSON, float depth)
 {
     Point2D fixedPosition = parsePositionJSON(positionJSON);
-    return getWorldPositionFromScreenPoint(fixedPosition, depth);
+    return getPositionFromScreenPoint(fixedPosition, depth);
 }
 
-Vertex3D LevelLoader::getWorldPositionFromScreenPoint(Point2D fixedPosition, float depth)
+Vertex3D LevelLoader::getPositionFromScreenPoint(Point2D fixedPosition, float depth)
 {
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -805,6 +808,7 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
         asteroid->setExplodeNumberPartitions(numberPartitions);
 
     }
+
     if (typeMotion > 0) {
         asteroid->setBehavior(behavior);
     }

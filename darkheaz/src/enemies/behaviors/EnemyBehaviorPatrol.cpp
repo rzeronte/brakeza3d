@@ -4,6 +4,8 @@
 #include "../../../../include/Misc/Tools.h"
 
 EnemyBehaviorPatrol::EnemyBehaviorPatrol(Vertex3D from, Vertex3D to, float speed)
+:
+    returnedCounter(0)
 {
     this->origin = from;
     this->speed = speed;
@@ -16,9 +18,25 @@ void EnemyBehaviorPatrol::onUpdate(Vertex3D &position)
 
     if (!isEnabled()) return;
 
-    position = origin + direction.getComponent().getScaled(
-            abs(Tools::interpolate(sin((getExecutionTime() * speed) + (M_PI / 2)), -1, 1))
+    auto v = direction.getComponent().getScaled(
+        abs(Tools::interpolate((float) sin((getExecutionTime() * speed) + (M_PI / 2)), -1, 1))
     );
+
+    float length = v.getModule();
+
+    returned = false;
+
+    if (!hasMovedAway && length > BEHAVIOR_PATROL_FAR_TOLERANCE) {
+        hasMovedAway = true;
+    }
+
+    if (hasMovedAway && length < BEHAVIOR_PATROL_CLOSEST_TOLERANCE) {
+        hasMovedAway = false;
+        returnedCounter++;
+        returned = true;
+    }
+
+    position = origin + v;
 }
 
 float EnemyBehaviorPatrol::getSpeed() const
@@ -38,6 +56,18 @@ EnemyBehavior *EnemyBehaviorPatrol::clone()
         this->direction.vertex2,
         this->speed
     );
+}
+
+bool EnemyBehaviorPatrol::isReturned() const {
+    return returned;
+}
+
+int EnemyBehaviorPatrol::getReturnedCounter() const {
+    return returnedCounter;
+}
+
+void EnemyBehaviorPatrol::setReturnedCounter(int returnedCounter) {
+    EnemyBehaviorPatrol::returnedCounter = returnedCounter;
 }
 
 EnemyBehaviorPatrol::~EnemyBehaviorPatrol() = default;

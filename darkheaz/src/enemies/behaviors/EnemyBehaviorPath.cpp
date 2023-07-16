@@ -4,9 +4,11 @@
 #include "../../../../include/Render/Drawable.h"
 
 EnemyBehaviorPath::EnemyBehaviorPath(float speed)
+:
+    speed(speed),
+    returnedCounter(0),
+    currentPointIndex(-1)
 {
-    this->speed = speed;
-    this->currentPointIndex = -1;
     this->path.resize(0);
 }
 
@@ -42,7 +44,7 @@ void EnemyBehaviorPath::nextPoint()
         this->currentTo = path[currentPointIndex+1];
         this->currentDirection = Vector3D(currentFrom, currentTo);
     } else {
-        std::reverse(path.begin(),path.end());
+        returnedCounter++;
         start();
     }
 
@@ -58,3 +60,10 @@ void EnemyBehaviorPath::start()
     this->currentDirection = Vector3D(currentFrom, currentTo);
 }
 
+int EnemyBehaviorPath::getReturnedCounter() const {
+    return returnedCounter;
+}
+
+void EnemyBehaviorPath::setReturnedCounter(int returnedCounter) {
+    EnemyBehaviorPath::returnedCounter = returnedCounter;
+}

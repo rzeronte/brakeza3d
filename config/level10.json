@@ -95,12 +95,6 @@
       "animated": true,
       "stamina": 3000,
       "reward": true,
-      "motion": {
-        "type": 1,
-        "from": { "x": 25, "y": 5 },
-        "to": { "x": 75, "y": 5 },
-        "speed": 0.5
-      },
       "weapon": {
         "index": 0,
         "available": true,

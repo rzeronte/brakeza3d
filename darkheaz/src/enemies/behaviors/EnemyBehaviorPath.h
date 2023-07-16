@@ -14,6 +14,9 @@ class EnemyBehaviorPath: public EnemyBehavior {
     Vector3D currentDirection;
     float speed;
 
+    int returnedCounter;
+    bool returned = false;
+
     int currentPointIndex;
 public:
     EnemyBehaviorPath(float speed);
@@ -26,6 +29,10 @@ public:
     void nextPoint();
 
     EnemyBehavior *clone() override;
+
+    int getReturnedCounter() const;
+
+    void setReturnedCounter(int returnedCounter);
 };
 
 
