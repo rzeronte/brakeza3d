@@ -15,6 +15,7 @@ enum WeaponTypes {
     WEAPON_LASER_RAY = 2,
     WEAPON_BOMB = 3,
     SHOCK = 4,
+    WEAPON_HOLOGRAM = 5
 };
 
 class Weapon {
@@ -160,6 +161,8 @@ public:
     [[nodiscard]] int getAmmoAmount() const;
 
     [[nodiscard]] int getType() const;
+
+    void shootHologram(Object3D *parent, Vertex3D position);
 };
 
 

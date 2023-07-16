@@ -27,6 +27,7 @@ private:
     std::vector<MenuOption> options;
     int currentOption;
     Image *border;
+    Image *imageLogoBox;
     bool menuEnabled;
 public:
     ComponentMenu();

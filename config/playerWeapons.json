@@ -87,6 +87,28 @@
       "flatTexture": false,
       "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
+    },
+    {
+      "index": 4,
+      "available": true,
+      "name": "hologram",
+      "damage": 0,
+      "amount": 25,
+      "startAmount": 10,
+      "speed": 0,
+      "dispersion": 10,
+      "accuracy": 100,
+      "cadenceTime": 1.5,
+      "stop": false,
+      "stopDuration": 0,
+      "stopEvery": 0,
+      "type": 5,
+      "icon": "icons/gravitational_shield.png",
+      "modelProjectile": "spaceships/player.fbx",
+      "model": "spaceships/player.fbx",
+      "flatTexture": false,
+      "enableLights": false,
+      "color": { "r": 0, "g": 255, "b": 0 }
     }
   ]
 }

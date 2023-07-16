@@ -1,6 +1,6 @@
 {
   "name": "04",
-  "music": "level01Music",
+  "music": "musicLevel01",
   "backgroundImage": "levels/04.png",
   "allowReflection": true,
   "allowEnergyShield": true,

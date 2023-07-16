@@ -156,10 +156,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         }
     }
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowReflections(
-        cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowReflection")->valueint
-    );
-
     ComponentsManager::get()->getComponentGame()->getPlayer()->setAllowEnergyShield(
         cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowEnergyShield")->valueint
     );
@@ -212,7 +208,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 {
     int index = cJSON_GetObjectItemCaseSensitive(weaponJson, "index")->valueint;
 
-    Logging::Log("Loading Weapon with index: %d", index);
+    Logging::Message("Loading Weapon with index: %d", index);
 
     return new Weapon(
         cJSON_GetObjectItemCaseSensitive(weaponJson, "name")->valuestring,

@@ -1,13 +1,19 @@
 {
   "sounds": [
-    { "file": "menu.mp3", "label": "musicMainMenu", "type": "music" },
+    { "file": "music/menu.mp3", "label": "musicMainMenu", "type": "music" },
+    { "file": "music/music_level_01.mp3", "label": "musicLevel01", "type": "music" },
+    { "file": "music/music_level_05.mp3", "label": "musicLevel05", "type": "music" },
+    { "file": "music/music_level_11.mp3", "label": "musicLevel11", "type": "music" },
+
+    { "file": "music/boss_01_music.mp3", "label": "bossMusic01", "type": "music" },
+    { "file": "music/boss_02_music.mp3", "label": "bossMusic02", "type": "music" },
+
+    { "file": "music/game_over.mp3", "label": "gameOverMusic", "type": "music" },
+    { "file": "music/tutorial.mp3", "label": "tutorial", "type": "music" },
+
     { "file": "start_game.wav", "label": "startGame", "type": "sound" },
     { "file": "move_menu_option.wav", "label": "soundMenuClick", "type": "sound" },
     { "file": "new_level.wav", "label": "newLevel", "type": "sound" },
-
-    { "file": "music_level_01.mp3", "label": "level01Music", "type": "music" },
-    { "file": "game_over.mp3", "label": "gameOverMusic", "type": "music" },
-    { "file": "boss_01_music.mp3", "label": "BossMusic01", "type": "music" },
 
     { "file": "level_completed.wav", "label": "levelCompleted", "type": "sound" },
 
@@ -49,7 +55,6 @@
 
     { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" },
 
-    { "file": "tutorial.mp3", "label": "tutorial", "type": "music" },
 
     { "file": "crt.wav", "label": "crt", "type": "sound" },
     { "file": "selling.wav", "label": "selling", "type": "sound" },

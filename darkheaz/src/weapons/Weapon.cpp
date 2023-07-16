@@ -68,7 +68,6 @@ Weapon::Weapon(
 void Weapon::onUpdate()
 {
     counterCadence->update();
-
     if (isStop()) {
         counterStopEvery.update();
         counterStopDuration.update();
@@ -424,7 +423,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         counterCadence->setEnabled(true);
         setStatus(WeaponStatus::PRESSED);
 
-        Logging::Log("Weapon shootProjectile from %s", parent->getLabel().c_str());
+        Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
 
         auto *projectile = new ItemBombGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);
@@ -453,6 +452,42 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
         Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+    }
+}
+
+void Weapon::shootHologram(Object3D *parent, Vertex3D position)
+{
+    if (getAmmoAmount() <= 0) return;
+
+    if (isStop() && counterStopDuration.isEnabled()) {
+        return;
+    }
+
+    if (counterCadence->isFinished()) {
+        counterCadence->setEnabled(true);
+        setStatus(WeaponStatus::PRESSED);
+
+        Logging::Log("Weapon shootHologram from %s", parent->getLabel().c_str());
+
+        auto *reflection = new PlayerReflection(5);
+        reflection->setStencilBufferEnabled(true);
+        reflection->setParent(parent);
+        reflection->setLabel(Brakeza3D::uniqueObjectLabel("playerReflection"));
+
+        reflection->clone(getModelProjectile());
+
+        reflection->setPosition(position);
+        reflection->setEnableLights(false);
+        reflection->setEnabled(true);
+        reflection->setRotationFrame(Vertex3D(1, 0, 0));
+        reflection->setRotationFrameEnabled(true);
+        reflection->setFlatTextureColor(false);
+
+        setAmmoAmount(ammoAmount - 1);
+
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+
+        Brakeza3D::get()->addObject3D(reflection, reflection->getLabel());
     }
 }
 
