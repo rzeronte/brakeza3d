@@ -64,9 +64,7 @@ private:
 
     int killsCounter;
     bool energyShieldEnabled;
-    int gravityShieldsNumber;
 
-    bool allowMakeReflections;
     bool allowEnergyShield;
 
     LightPoint3D *light;
@@ -77,7 +75,6 @@ private:
     std::vector<Weapon *> weaponTypes;
     int currentWeaponIndex;
 
-    PlayerReflection reflection;
     PlayerSatellite satellite;
 
     ShaderParticles *shaderParticles;
@@ -94,8 +91,6 @@ public:
     void respawn();
 
     void shoot(float intensity);
-
-    void makeReflection();
 
     bool takeDamage(float dmg);
 
@@ -168,25 +163,15 @@ public:
 
     void startPlayerBlink();
 
-    [[nodiscard]] int getGravityShieldsNumber() const;
-
-    void setGravityShieldsNumber(int gravityShieldsNumber);
-
     void nextWeapon();
 
     void previousWeapon();
 
-    void setAllowReflections(bool allowGravitationalShields);
-
     void setAllowEnergyShield(bool allowEnergyShield);
-
-    [[nodiscard]] bool isAllowedMakeReflections() const;
 
     [[nodiscard]] bool isAllowEnergyShield() const;
 
     void onStartSetup();
-
-    void loadReflection();
 
     [[nodiscard]] PlayerState getState() const;
 
@@ -205,8 +190,6 @@ public:
     void updateWeaponAutomaticStatus();
 
     [[nodiscard]] RayLight &getShaderLaser();
-
-    [[nodiscard]] PlayerReflection *getReflection();
 
     [[nodiscard]] LightPoint3D *getLight() const;
 

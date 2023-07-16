@@ -34,10 +34,9 @@ void PlayerReflection::onUpdate()
 
     if (timeToLive.isFinished()) {
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
-        //setStencilBufferEnabled(false);
         setEnabled(false);
         removeCollisionObject();
-        setHidden(true);
+        setRemoved(true);
     }
 
     zombie->update();

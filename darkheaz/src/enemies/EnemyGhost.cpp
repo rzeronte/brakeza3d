@@ -58,7 +58,7 @@ void EnemyGhost::onUpdate()
 
     if (isRemoved()) return;
 
-    zombie->update();
+    //zombie->update();
 
     if (!rotationFrameEnabled) {
         rotateToTarget();
@@ -392,13 +392,14 @@ void EnemyGhost::unstuck()
 
 Object3D *EnemyGhost::getTarget()
 {
-    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto target = game->getClosestReflection(getPosition());
 
-    if (!player->getReflection()->isHidden()) {
-        return player->getReflection();
+    if (target != nullptr) {
+        return target;
     }
 
-    return player;
+    return game->getPlayer();
 }
 
 void EnemyGhost::setProjectileEmitter(AmmoProjectileBodyEmitter *emitter)

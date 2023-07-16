@@ -188,22 +188,19 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     );
 
     // icon player reflection
+    auto weaponReflection = player->getWeaponTypeByLabel("hologram");
     float reflectionAlpha = 75;
-    auto reflectionImage = HUDTextures->getTextureByLabel("reflectionIcon")->getImage();
-    int reflectionsNumber = MAX_REFLECTIONS - (int) player->getGravityShieldsNumber();
-    if (player->isAllowedMakeReflections() && reflectionsNumber > 0) {
+    if (weaponReflection->getAmmoAmount() > 0) {
         reflectionAlpha = 255;
-
         textWriter->writeTextTTFAutoSize(
             300,
-            this->offsetY + reflectionImage->height(),
-            (std::string("x") + std::to_string(reflectionsNumber)).c_str(),
+            this->offsetY + weaponReflection->getIcon()->height(),
+            (std::string("x") + std::to_string(weaponReflection->getAmmoAmount())).c_str(),
             game->getPrimaryColor(),
             0.25
         );
     }
-
-    reflectionImage->drawFlatAlpha(300, this->offsetY, reflectionAlpha);
+    weaponReflection->getIcon()->drawFlatAlpha(300, this->offsetY, reflectionAlpha);
 
     ComponentsManager::get()->getComponentGame()->getStoreManager()->drawHUD(255);
 }

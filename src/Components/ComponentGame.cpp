@@ -683,6 +683,34 @@ Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D dire
     return currentClosestObject;
 }
 
+PlayerReflection *ComponentGame::getClosestReflection(Vertex3D from) const
+{
+    PlayerReflection *currentClosestObject = nullptr;
+    float currentMinDistance = 0;
+
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        auto reflection = dynamic_cast<PlayerReflection *>(object);
+        if (reflection == nullptr) {
+            continue;
+        }
+
+        const Vertex3D to = (reflection->getPosition() - from);
+
+        const float distance = to.getSquaredLength();
+        if (currentClosestObject == nullptr) {
+            currentMinDistance = distance;
+            currentClosestObject = reflection;
+        } else {
+            if (distance < currentMinDistance) {
+                currentMinDistance = distance;
+                currentClosestObject = reflection;
+            }
+        }
+    }
+
+    return currentClosestObject;
+}
+
 Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected)
 {
     Object3D *currentClosestObject = nullptr;
@@ -758,7 +786,6 @@ void ComponentGame::loadLevels()
     levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
     levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
     levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level30.json");
 }
 
 
@@ -1109,7 +1136,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     getLevelLoader()->loadNext();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
-    getPlayer()->setGravityShieldsNumber(0);
     getPlayer()->setPosition(playerStartPosition);
     setVisibleInGameObjects(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
@@ -1138,7 +1164,6 @@ void ComponentGame::reloadLevel(int level)
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
-    getPlayer()->setGravityShieldsNumber(0);
     getPlayer()->setPosition(playerStartPosition);
     setVisibleInGameObjects(true);
 
@@ -1173,7 +1198,6 @@ void ComponentGame::handlePressKeyPreviousLevel()
     getLevelLoader()->loadPrevious();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
-    getPlayer()->setGravityShieldsNumber(0);
     getPlayer()->setPosition(playerStartPosition);
     getPlayer()->respawn();
     setVisibleInGameObjects(true);

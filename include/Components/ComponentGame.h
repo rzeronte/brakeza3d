@@ -63,7 +63,6 @@ private:
     Image *imageStatistics;
     Image *imageDead;
 
-
     Counter splashCounter;
 
     LevelLoader *levelLoader;
@@ -244,6 +243,8 @@ public:
     [[nodiscard]] StoreManager *getStoreManager() const;
 
     EngineSetup::GameState gameState;
+
+    PlayerReflection *getClosestReflection(Vertex3D from) const;
 };
 
 

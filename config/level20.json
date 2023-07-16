@@ -1,98 +1,32 @@
 {
   "name": "20",
+  "music": "bossMusic02",
   "backgroundImage": "levels/20.png",
-  "music": "BossMusic01",
   "allowReflection": true,
   "allowEnergyShield": true,
+  "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": true,
   "enemies": [
-    {
-      "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "position": { "x": 10, "y": 5 },
-      "model": "spaceships/Challenger.fbx",
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 0
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 25000,
-        "startAmount": 1000,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 2,
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 0 }
-      }
-    },
-    {
-      "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "position": { "x": 90, "y": 5 },
-      "model": "spaceships/Challenger.fbx",
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": 0
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 10,
-        "amount": 25000,
-        "startAmount": 1000,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.25,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": 2,
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 0 }
-      }
-    }
   ],
   "items": [
   ],
   "bosses": [
     {
-      "type": 2,
-      "avatar": "avatars/tentacle.png",
-      "name": "Octscar",
-      "position": { "x": 50, "y": 10 },
-      "model": "tentacle.fbx",
-      "enableLights": true,
+      "type": 3,
+      "name": "Prolis",
+      "avatar": "avatars/default.png",
+      "position": { "x": 50, "y": 99 },
+      "model": "spaceships/Dispatcher.fbx",
+      "enableLights": false,
       "animated": true,
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 0
+        "type": 1,
+        "from": { "x": 25, "y": 25 },
+        "to": { "x": 75, "y": 25 },
+        "speed": 0.5
       },
       "weapon": {
         "index": 0,
@@ -104,7 +38,7 @@
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 0.25,
+        "cadenceTime": 0.40,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -118,13 +52,13 @@
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
-        "rotationFrame": { "x": 0, "y": 316, "z": 0 },
-        "cadenceTime": 3.0,
+        "rotationFrame": { "x": 0, "y": 4, "z": 0 },
+        "cadenceTime": 0.35,
         "type": 1,
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],

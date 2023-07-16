@@ -25,13 +25,10 @@ Player::Player()
     rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
     killsCounter(0),
     energyShieldEnabled(false),
-    gravityShieldsNumber(0),
-    allowMakeReflections(false),
     allowEnergyShield(false),
     lightPositionOffset(Vertex3D(0, -550, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
-    reflection(PlayerReflection(5)),
     satellite(PlayerSatellite(this)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
     shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
@@ -65,22 +62,6 @@ Player::Player()
         std::string(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"),
         std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
     );
-}
-
-void Player::loadReflection()
-{
-    reflection.setEnabled(false);
-    reflection.setLabel("playerReflection");
-    reflection.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
-    reflection.setParent(parent);
-    reflection.setFlatTextureColor(false);
-    reflection.setPosition(getPosition());
-    reflection.setStencilBufferEnabled(true);
-    reflection.setRotationFrameEnabled(true);
-    reflection.setRotationFrame(Tools::randomVertex().getScaled(0.5));
-    reflection.onStartSetup();
-
-    Brakeza3D::get()->addObject3D(&reflection, reflection.getLabel());
 }
 
 void Player::loadSatellite()
@@ -140,22 +121,6 @@ void Player::respawn()
     setStamina(INITIAL_STAMINA);
 }
 
-void Player::makeReflection()
-{
-    if (gravityShieldsNumber >= (int) MAX_REFLECTIONS) {
-        return;
-    }
-    Logging::Message("makeReflection!");
-    reflection.setPosition(getPosition());
-    reflection.reset();
-
-    gravityShieldsNumber++;
-
-    //Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
-
-    ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-}
-
 void Player::shoot(float intensity)
 {
     if (getWeapon() == nullptr) {
@@ -198,6 +163,10 @@ void Player::shoot(float intensity)
         }
         case WeaponTypes::WEAPON_BOMB: {
             weapon->shootBomb(this, getPosition());
+            break;
+        }
+        case WeaponTypes::WEAPON_HOLOGRAM: {
+            weapon->shootHologram(this, getPosition());
             break;
         }
         case WeaponTypes::WEAPON_LASER_RAY: {
@@ -625,14 +594,6 @@ void Player::setRecoverEnergySpeed(float value) {
     Player::recoverEnergySpeed = value;
 }
 
-int Player::getGravityShieldsNumber() const {
-    return gravityShieldsNumber;
-}
-
-void Player::setGravityShieldsNumber(int value) {
-    Player::gravityShieldsNumber = value;
-}
-
 void Player::nextWeapon()
 {
     auto currentWeapon = getWeapon();
@@ -669,17 +630,8 @@ void Player::previousWeapon()
     }
 }
 
-void Player::setAllowReflections(bool value) {
-    Player::allowMakeReflections = value;
-}
-
 void Player::setAllowEnergyShield(bool value) {
     Player::allowEnergyShield = value;
-}
-
-bool Player::isAllowedMakeReflections() const
-{
-    return allowMakeReflections;
 }
 
 bool Player::isAllowEnergyShield() const
@@ -692,7 +644,6 @@ void Player::onStartSetup()
     blink = new ShaderBlink(false, this, 0.05, Color::red());
     counterDamageBlink.setEnabled(false);
 
-    loadReflection();
     loadSatellite();
 }
 
@@ -772,10 +723,6 @@ RayLight &Player::getShaderLaser()
 
 LightPoint3D *Player::getLight() const {
     return light;
-}
-
-PlayerReflection *Player::getReflection() {
-    return &reflection;
 }
 
 Player::~Player()

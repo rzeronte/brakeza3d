@@ -227,6 +227,10 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
             componentGame->getPlayer()->setWeaponTypeByIndex(3);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
+        if (keyboard[SDL_SCANCODE_5] ) {
+            componentGame->getPlayer()->setWeaponTypeByIndex(4);
+            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        }
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
@@ -419,19 +423,20 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
     }
 }
 
-
-
 void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
-
     auto player = componentGame->getPlayer();
-    auto controllerButtonA = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
-    auto keyPressed = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_p;
 
-    if ((controllerButtonA || keyPressed) && player->isAllowedMakeReflections()) {
-        player->makeReflection();
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+    const bool reflectionKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_P];
+    const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
+
+    if (controllerXButtonPressed || reflectionKeyPressed) {
+        auto weapon = player->getWeaponTypeByLabel("hologram");
+        weapon->onUpdate();
+        weapon->shootHologram(player, player->getPosition());
     }
 }
 

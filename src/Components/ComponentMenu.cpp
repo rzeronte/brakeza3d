@@ -46,7 +46,7 @@ void ComponentMenu::onStart()
 
     shaderMenuTitle = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "menuTitle.png", SETUP->IMAGES_FOLDER + "menuTitleMask.png");
     border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
-
+    imageLogoBox =  new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
 }
 
 void ComponentMenu::loadDecorative3DMesh()
@@ -94,6 +94,7 @@ void ComponentMenu::onUpdate()
     ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha * 0.90f);
 
     border->drawFlatAlpha(0, 0, alpha);
+    imageLogoBox->drawFlatAlpha(0, 0, alpha);
     shaderMenuTitle->update();
 }
 
