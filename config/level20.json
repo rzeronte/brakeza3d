@@ -2,7 +2,6 @@
   "name": "20",
   "music": "bossMusic02",
   "backgroundImage": "levels/20.png",
-  "allowReflection": true,
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },

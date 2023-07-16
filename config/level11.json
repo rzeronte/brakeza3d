@@ -2,7 +2,6 @@
   "name": "11",
   "backgroundImage": "levels/11.png",
   "music": "musicLevel11",
-  "allowReflection": true,
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "histories": ["histories/lore_11_1.png", "histories/lore_11_2.png"],

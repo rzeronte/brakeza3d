@@ -2,7 +2,6 @@
   "name": "07",
   "music": "musicLevel05",
   "backgroundImage": "levels/07.png",
-  "allowReflection": true,
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
