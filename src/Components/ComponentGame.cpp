@@ -249,7 +249,7 @@ void ComponentGame::onUpdate()
             // Establece el alfa en función de la proporción de tiempo restante
             textWriter->setAlpha(timeRatio * 255);
 
-            textWriter->writeTTFCenterHorizontal(120, std::to_string(restTime).c_str(), secondaryColor, 3);
+            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), secondaryColor, 2);
 
             getLevelLoader()->getCountDown()->update();
 

@@ -45,7 +45,6 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 {
-    this->handleEscape(event);
     this->handleCheckPadConnection(event);
 
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
@@ -91,7 +90,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
 
     auto gameState = game->getGameState();
     auto escPressed = (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN);
-    auto buttonControllerPressed = (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE);
+    auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
 
     if (escPressed || buttonControllerPressed) {
         componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -120,7 +119,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         if (gameState == EngineSetup::GameState::COUNTDOWN ||
             gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
-            gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
+                gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
         ) return;
 
         game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
@@ -223,14 +222,14 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
-        if (keyboard[SDL_SCANCODE_4] ) {
+        /*if (keyboard[SDL_SCANCODE_4] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(3);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
         if (keyboard[SDL_SCANCODE_5] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(4);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        }
+        }*/
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
@@ -443,7 +442,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
 void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 {
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    bool isButtonGuidedPressed = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
+    bool isButtonGuidedPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
     auto componentSound = ComponentsManager::get()->getComponentSound();
     auto game = ComponentsManager::get()->getComponentGame();
     auto componentInput = ComponentsManager::get()->getComponentInput();
@@ -454,7 +453,6 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
     bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
-
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
     const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
@@ -462,57 +460,71 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
         game->pressedKeyForWin();
+        return;
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_BY_WIN && (controllerUpPad || keyStorePressed)) {
         game->setGameState(EngineSetup::STORE);
         componentSound->sound("wrench", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        return;
     }
 
     if (state == EngineSetup::GameState::GAMING_TUTORIAL && (enter || isButtonGuidedPressed)) {
         game->setGameState(EngineSetup::GAMING);
         componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        return;
     }
 
     if (state == EngineSetup::GameState::STORE) {
         if (cursorLeft || controllerLeft) {
             game->getStoreManager()->decreaseItemSelected();
             componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
         }
 
         if (cursorRight || controllerRight) {
             game->getStoreManager()->increaseItemSelected();
             componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
         }
 
         if (enter || componentInput->getControllerButtonA()) {
             game->getStoreManager()->buyCurrentSelected();
+            return;
         }
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
         if (isButtonGuidedPressed || enter) {
             game->pressedKeyForBeginLevel();
+            return;
         }
 
         if (cursorLeft || controllerLeft) {
             componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             game->getLevelLoader()->decreaseTutorialImage();
+            return;
         }
 
         if (cursorRight || controllerRight) {
             componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             game->getLevelLoader()->increaseTutorialImage();
+            return;
         }
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (enter || isButtonGuidedPressed)) {
         game->pressedKeyForFinishGameAndRestart();
+        return;
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (enter || isButtonGuidedPressed)) {
         game->pressedKeyByDead();
+        return;
     }
+
+    this->handleEscape(event);
+
 }
 
 void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
