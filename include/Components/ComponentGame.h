@@ -62,6 +62,7 @@ private:
     Image *imageCablesStore;
     Image *imageStatistics;
     Image *imageDead;
+    Image *imageEndGame;
 
     Counter splashCounter;
 

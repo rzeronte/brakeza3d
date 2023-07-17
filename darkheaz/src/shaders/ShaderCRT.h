@@ -12,8 +12,6 @@
 class ShaderCRT : public ShaderOpenCL  {
     Image image;
     Image mask;
-    cl_mem clBufferImage;
-    cl_mem clBufferMask;
     unsigned int maxAlpha;
 
 public:

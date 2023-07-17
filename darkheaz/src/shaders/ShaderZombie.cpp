@@ -11,14 +11,11 @@ ShaderZombie::ShaderZombie(bool active, const std::string& filename,Mesh3D* obje
     ShaderOpenCL(active, "zombie.cl"),
     meshOpenCLRenderer(renderer),
     object(object),
-    offsetX(0),
-    offsetY(0),
+    offsetX(10),
+    offsetY(10),
+    counter(Counter(0.10f)),
     image(Image(filename))
 {
-    offsetX = 10;
-    offsetY = 10;
-    counter = Counter(0.10f);
-    clBufferImage = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, this->bufferSize * sizeof(Uint32), this->image.pixels(), nullptr);
 }
 
 void ShaderZombie::update()
@@ -40,7 +37,7 @@ void ShaderZombie::update()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&object->getOpenClRenderer()->clBufferStencil);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
-    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&clBufferImage);
+    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&image.openClTexture);
     clSetKernelArg(kernel, 7, sizeof(int), &offsetX);
     clSetKernelArg(kernel, 8, sizeof(int), &offsetY);
 

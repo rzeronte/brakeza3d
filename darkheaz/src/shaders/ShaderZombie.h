@@ -17,9 +17,7 @@ class ShaderZombie : public ShaderOpenCL {
     int offsetX;
     int offsetY;
     Counter counter;
-
     Image image;
-    cl_mem clBufferImage;
 public:
     ShaderZombie(bool active, const std::string& filename, Mesh3D* object, MeshOpenCLRenderer *renderer);
 

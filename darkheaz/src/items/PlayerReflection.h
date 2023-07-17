@@ -9,13 +9,14 @@
 #include "../../../include/Misc/Counter.h"
 #include "../../../include/Shaders/ShaderBlink.h"
 #include "../shaders/ShaderShockWave.h"
-#include "../shaders/ShaderZombie.h"
 
 class PlayerReflection : public Mesh3DGhost {
 private:
-    bool hidden;
     Counter timeToLive;
-    ShaderZombie *zombie;
+
+    ShaderBlink *blink;
+    Counter counterDamageBlink;
+
 public:
     explicit PlayerReflection(float ttl);
 
@@ -25,14 +26,7 @@ public:
 
     void resolveCollision(Collisionable *objectWithCollision) override;
 
-    void reset();
-
-    void setHidden(bool hidden);
-
-    void onStartSetup();
-
-    [[nodiscard]] bool isHidden() const;
-
+    ~PlayerReflection() override;
 };
 
 

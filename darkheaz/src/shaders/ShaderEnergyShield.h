@@ -13,8 +13,6 @@
 class ShaderEnergyShield : public ShaderOpenCL{
     Image texture;
     Image mask;
-    cl_mem clBufferTexture;
-    cl_mem clBufferMask;
     unsigned int maxAlpha;
     Mesh3D *parent;
 public:

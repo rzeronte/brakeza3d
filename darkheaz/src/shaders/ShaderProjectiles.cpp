@@ -1,5 +1,4 @@
 #include "ShaderProjectiles.h"
-#include "../../../include/EngineSetup.h"
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 

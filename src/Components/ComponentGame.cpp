@@ -53,7 +53,8 @@ void ComponentGame::onStart()
     imageCablesHorizontal = new Image(SETUP->IMAGES_FOLDER + "cables_hud_horizontal.png");
     imageCablesStore = new Image(SETUP->IMAGES_FOLDER + "cables_hud_store.png");
     imageStatistics = new Image(SETUP->IMAGES_FOLDER + "statistics_screen.png");
-    imageDead =  new Image(SETUP->IMAGES_FOLDER + "game_over.png");
+    imageDead = new Image(SETUP->IMAGES_FOLDER + "game_over.png");
+    imageEndGame = new Image(SETUP->IMAGES_FOLDER + "end_game.png");
     splashCounter.setStep(SPLASH_TIME);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -192,7 +193,7 @@ void ComponentGame::preUpdate()
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
-            textWriter->writeTextTTFMiddleScreen("congratulations! END GAME...", primaryColor, 0.5);
+            imageEndGame->drawFlatAlpha(0, 0, alpha);
             break;
         }
 
@@ -1206,13 +1207,17 @@ void ComponentGame::handlePressKeyPreviousLevel()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     shaderColor->setEnabled(false);
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(
-            getLevelLoader()->getMusic()), -1, 3000);
+    ComponentSound::fadeInMusic(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelLoader()->getMusic()),
+        -1,
+        3000
+    );
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 }
 
 void ComponentGame::handlePressKeyGameOver()
 {
+    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
     ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
     setVisibleInGameObjects(false);
