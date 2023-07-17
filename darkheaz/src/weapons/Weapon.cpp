@@ -163,7 +163,7 @@ void Weapon::shootProjectile(
     auto storeManager = ComponentsManager::get()->getComponentGame()->getStoreManager();
 
     if (counterCadence->isFinished()) {
-        float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        float t = cadenceTime;
 
         if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE)){
             t = t - (t * 0.5f);
@@ -473,19 +473,24 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
         reflection->setStencilBufferEnabled(true);
         reflection->setParent(parent);
         reflection->setLabel(Brakeza3D::uniqueObjectLabel("playerReflection"));
-
         reflection->clone(getModelProjectile());
-
         reflection->setPosition(position);
         reflection->setEnableLights(false);
         reflection->setEnabled(true);
-        reflection->setRotationFrame(Vertex3D(1, 0, 0));
+        reflection->setRotationFrame(Tools::randomVertex());
         reflection->setRotationFrameEnabled(true);
         reflection->setFlatTextureColor(false);
-
+        reflection->makeSimpleGhostBody(
+            Vertex3D(600, 600, 600),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::Enemy
+        );
         setAmmoAmount(ammoAmount - 1);
 
-        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+        ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
+        //ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
         Brakeza3D::get()->addObject3D(reflection, reflection->getLabel());
     }
@@ -504,7 +509,7 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
     rayLight.setColor(getModelProjectile()->getFlatColor());
     rayLight.setDamage(getDamage());
     rayLight.setEnabled(true);
-    rayLight.setIntensity(intensity);
+    rayLight.setIntensity(intensity / 2);
 
     if (getStatus() == PRESSED) {
         ComponentsManager::get()->getComponentSound()->sound("projectileEnergy", EngineSetup::SoundChannels::SND_GLOBAL, 0);

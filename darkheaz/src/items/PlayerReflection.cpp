@@ -1,27 +1,12 @@
 #include "PlayerReflection.h"
 #include "../weapons/AmmoProjectileBody.h"
-#include "../../../include/ComponentsManager.h"
-#include "../../../include/Brakeza3D.h"
 
 PlayerReflection::PlayerReflection(float ttl)
 :
-    hidden(true),
     timeToLive(Counter(ttl))
 {
     timeToLive.setEnabled(true);
-    zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
-}
-
-void PlayerReflection::onStartSetup()
-{
-    makeSimpleGhostBody(
-        Vertex3D(600, 600, 600),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::Enemy
-    );
-
-    removeCollisionObject();
+    blink = new ShaderBlink(false, this, 0.05, Color::red());
 }
 
 void PlayerReflection::onUpdate()
@@ -34,12 +19,17 @@ void PlayerReflection::onUpdate()
 
     if (timeToLive.isFinished()) {
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
-        setEnabled(false);
         removeCollisionObject();
         setRemoved(true);
+        return;
     }
 
-    zombie->update();
+    blink->update();
+
+    if (timeToLive.currentPercentage() > 75) {
+        counterDamageBlink.setEnabled(true);
+        blink->setEnabled(true);
+    }
 }
 
 void PlayerReflection::postUpdate()
@@ -52,29 +42,6 @@ void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)
     Mesh3DGhost::resolveCollision(objectWithCollision);
 }
 
-void PlayerReflection::reset()
+PlayerReflection::~PlayerReflection()
 {
-    setEnabled(true);
-    setHidden(false);
-    timeToLive.setEnabled(true);
-
-    if (!isHidden()) {
-        removeCollisionObject();
-    }
-
-    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
-        ghostObject,
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::Projectile
-    );
-}
-
-bool PlayerReflection::isHidden() const
-{
-    return hidden;
-}
-
-void PlayerReflection::setHidden(bool value)
-{
-    PlayerReflection::hidden = value;
 }
