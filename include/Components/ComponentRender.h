@@ -64,6 +64,9 @@ private:
     cl_program explosionProgram;
     cl_kernel explosionKernel;
 
+    cl_program blinkProgram;
+    cl_kernel blinkKernel;
+
     ShaderBilinear *shaderBilinear;
 public:
     ComponentRender();
@@ -199,6 +202,10 @@ public:
     _cl_kernel *getExplosionKernel();
 
     ShaderDepthOfField *shaderDepthOfField;
+
+    void loadBlinkKernel();
+
+    _cl_kernel *getBlinkKernel();
 };
 
 

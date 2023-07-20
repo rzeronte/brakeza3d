@@ -69,8 +69,7 @@
     { "file": "metals/metal_hit_03.wav", "label": "metalHit03", "type": "sound" },
     { "file": "metals/metal_hit_04.wav", "label": "metalHit04", "type": "sound" },
     { "file": "metals/metal_hit_05.wav", "label": "metalHit05", "type": "sound" },
-    { "file": "metals/metal_hit_06.wav", "label": "metalHit06", "type": "sound" },
-    { "file": "metals/metal_hit_07.wav", "label": "metalHit07", "type": "sound" },
+    { "file": "metals/metal_hit_06.mp3", "label": "metalHit06", "type": "sound" },
 
     { "file": "alarm-damage.wav", "label": "alarmDamage", "type": "sound" },
     { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" }

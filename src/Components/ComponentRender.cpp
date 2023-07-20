@@ -1095,6 +1095,7 @@ void ComponentRender::initOpenCL()
     loadRenderKernel();
     loadParticlesKernel();
     loadExplosionKernel();
+    loadBlinkKernel();
 
     shaderDepthOfField = new ShaderDepthOfField(true);
 
@@ -1112,6 +1113,13 @@ void ComponentRender::loadExplosionKernel()
     Logging::Message("Loading explosion kernel");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "explosion.cl");
 }
+
+void ComponentRender::loadBlinkKernel()
+{
+    Logging::Message("Loading blink kernel");
+    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "blink.opencl");
+}
+
 
 void ComponentRender::loadRenderKernel()
 {
@@ -1269,6 +1277,13 @@ void ComponentRender::loadKernel(cl_program &program, cl_kernel &kernel, const s
     free(source_str);
 }
 
-_cl_kernel *ComponentRender::getExplosionKernel(){
+_cl_kernel *ComponentRender::getExplosionKernel()
+{
     return explosionKernel;
+}
+
+
+_cl_kernel *ComponentRender::getBlinkKernel()
+{
+    return blinkKernel;
 }
