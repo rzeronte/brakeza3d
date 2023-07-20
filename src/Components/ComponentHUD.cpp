@@ -81,6 +81,7 @@ void ComponentHUD::loadImages()
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "stamina.png", "staminaIcon");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "coin.png", "coinIcon");
     HUDTextures->addItem(SETUP->ICONS_FOLDER + "astronaut.png", "astrounautIcon");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "empty_enemy.png", "emptyEnemy");
 }
 
 void ComponentHUD::drawHUD()
@@ -132,11 +133,11 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     auto iconCoin = HUDTextures->getTextureByLabel("coinIcon");
     iconCoin->getImage()->drawFlatAlpha(40, offsetY - 16, 255);
     textWriter->writeTextTTFAutoSize(
-            40 + 16,
-            this->offsetY - 17,
-            (std::string("x") + std::to_string(player->getCoins())).c_str(),
-            game->getPrimaryColor(),
-            0.25
+        40 + 16,
+        this->offsetY - 17,
+        (std::string("x") + std::to_string(player->getCoins())).c_str(),
+        game->getPrimaryColor(),
+        0.25
     );
 
     // weapon icon
@@ -167,16 +168,31 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     }
     weaponBomb->getIcon()->drawFlatAlpha(330, this->offsetY, bombAlpha);
 
+    // shield
+    auto weaponShield = player->getWeaponTypeByLabel("shield");
+    float shieldAlpha = 75;
+    if (weaponShield->getAmmoAmount() > 0) {
+        shieldAlpha = 255;
+        textWriter->writeTextTTFAutoSize(
+            360,
+            this->offsetY + weaponShield->getIcon()->height(),
+            (std::string("x") + std::to_string(weaponShield->getAmmoAmount())).c_str(),
+            game->getPrimaryColor(),
+            0.25
+        );
+    }
+    weaponShield->getIcon()->drawFlatAlpha(360, this->offsetY, bombAlpha);
+
     // human
-    auto humanIcon = HUDTextures->getTextureByLabel("astrounautIcon");
+    /*auto humanIcon = HUDTextures->getTextureByLabel("astrounautIcon");
     humanIcon->getImage()->drawFlatAlpha(360, offsetY, 255);
     textWriter->writeTextTTFAutoSize(
-        360,
-        this->offsetY + humanIcon->getImage()->height(),
-        (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
-        game->getPrimaryColor(),
-        0.25
-    );
+            360,
+            this->offsetY + humanIcon->getImage()->height(),
+            (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
+            game->getPrimaryColor(),
+            0.25
+    );*/
 
     // level number
     textWriter->writeTextTTFAutoSize(
@@ -243,6 +259,7 @@ void ComponentHUD::drawShaderLasers()
     );
 
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+    auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
 
     auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
     if (enemy != nullptr) {
@@ -253,16 +270,34 @@ void ComponentHUD::drawShaderLasers()
         const int width = 146;
 
         shaderLasers->addLaser(
-                positionLaserX, positionLaserY,
-                positionLaserX - (int)(width * enemyHealth),
-                positionLaserY,
-                255, 0, 0,
-                stroke,
-                false,
-                false
+            positionLaserX, positionLaserY,
+            positionLaserX - (int)(width * enemyHealth),
+            positionLaserY,
+            255, 0, 0,
+            stroke,
+            false,
+            false
         );
 
         enemy->getAvatar()->drawFlatAlpha(580, this->offsetY, 255);
+
+        textWriter->writeTextTTFAutoSize(
+            418,
+            this->offsetY + 10,
+            enemy->getName().c_str(),
+            Color(196, 20, 20),
+            0.25
+        );
+    } else {
+        HUDTextures->getTextureByLabel("emptyEnemy")->getImage()->drawFlatAlpha(580, this->offsetY, 144);
+        textWriter->writeTextTTFAutoSize(
+            537,
+            this->offsetY + 10,
+            "No target",
+            Color(196, 20, 20),
+            0.25
+        );
+
     }
 
     shaderLasers->update();

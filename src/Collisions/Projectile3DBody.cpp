@@ -32,10 +32,6 @@ void Projectile3DBody::makeProjectileRigidBody(
 void Projectile3DBody::onUpdate()
 {
     Mesh3D::onUpdate();
-
-    if (isRemoved()) {
-        return;
-    }
 }
 
 void Projectile3DBody::resolveCollision(Collisionable *objectWithCollision) {

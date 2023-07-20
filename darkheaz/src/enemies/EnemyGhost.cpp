@@ -12,7 +12,7 @@ EnemyGhost::EnemyGhost() :
         0,
         ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
         EngineSetup::collisionGroups::ProjectileEnemy,
-        EngineSetup::collisionGroups::Player
+        EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
     )),
     counterStuck(Counter(5)),
     projectileEmitter(nullptr)

@@ -60,9 +60,10 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         this->handleFindClosestObject3D(event);
         this->handleWeaponSelector(event);
         this->handleDashMovement(event);
-        this->handleMakeReflection(event);
-        this->handleBomb(event);
         this->handleEnergyShield(event);
+        this->handleBomb(event);
+        this->handleShield(event);
+        this->handleMakeReflection(event);
         this->updateWeaponStatus(event);
     }
 
@@ -230,6 +231,13 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
             componentGame->getPlayer()->setWeaponTypeByIndex(4);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }*/
+
+        if (keyboard[SDL_SCANCODE_0] ) {
+            player->nextWeapon();
+        }
+        if (keyboard[SDL_SCANCODE_9] ) {
+            player->previousWeapon();
+        }
     }
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
@@ -552,7 +560,23 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
         weapon->onUpdate();
         weapon->shootBomb(player, player->getPosition());
     }
+}
 
+void ComponentGameInput::handleShield(SDL_Event *event)
+{
+    auto componentInput = ComponentsManager::get()->getComponentInput();
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    auto player = componentGame->getPlayer();
+
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
+    const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX();
+
+    if (controllerXButtonPressed || bombKeyPressed) {
+        auto weapon = player->getWeaponTypeByLabel("shield");
+        weapon->onUpdate();
+        weapon->shootShield(player, player->getPosition());
+    }
 }
 
 float ComponentGameInput::getControllerAxisThreshold() const {

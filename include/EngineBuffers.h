@@ -15,6 +15,7 @@ class EngineBuffers {
 
 private:
     static EngineBuffers *instance;
+    std::vector<OCParticle> particles;
 
     EngineBuffers();
 
@@ -55,6 +56,10 @@ public:
     void flipVideoBufferToSurface(SDL_Surface *);
 
     void createOpenCLBuffers(_cl_context *context, cl_command_queue &queue);
+
+    void loadParticlesEmptyBuffer();
+
+    const std::vector<OCParticle> &getParticles() const;
 };
 
 #endif

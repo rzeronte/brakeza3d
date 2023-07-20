@@ -7,10 +7,10 @@
 
 #include "GravitationalGhost.h"
 #include "../../../include/Misc/Counter.h"
-#include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderBlink.h"
 #include "../shaders/ShaderShockWave.h"
 
-class PlayerReflection : public Mesh3DGhost {
+class PlayerReflection : public Mesh3D {
 private:
     Counter timeToLive;
 
@@ -23,8 +23,6 @@ public:
     void onUpdate() override;
 
     void postUpdate() override;
-
-    void resolveCollision(Collisionable *objectWithCollision) override;
 
     ~PlayerReflection() override;
 };

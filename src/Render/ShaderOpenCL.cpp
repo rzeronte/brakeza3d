@@ -27,7 +27,7 @@ ShaderOpenCL::ShaderOpenCL(bool active): Shader(active), useCustomProgram(false)
     this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
     this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
-    Logging::Log("Loading '%s' kernel", kernelFilename.c_str());
+    Logging::Log("Reusing '%s' kernel", kernelFilename.c_str());
 }
 
 void ShaderOpenCL::initOpenCLProgram()

@@ -109,7 +109,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
 
     if (weaponType == nullptr) return;
 
-    auto *projectile = new AmmoProjectileBody(
+    Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
         getPosition(),
         this,
         weaponType,
@@ -121,24 +121,16 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         100,
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player,
-        nullptr
-    );
-
-    Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
-
-    auto emitter = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        projectile,
-        getPosition(),
-        5,
-        Color::yellow(),
-        Color::green(),
-        OCParticlesContext()
-    );
-
-    projectile->setParticleEmitter(emitter);
-
-    Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
+        new ParticleEmitter(
+            ParticleEmitterState::DEFAULT,
+            nullptr,
+            getPosition(),
+            10,
+            Color::yellow(),
+            Color::green(),
+            OCParticlesContext()
+        )
+    ), Brakeza3D::uniqueObjectLabel("emitterProjectile"));
 }
 
 void AmmoProjectileBodyEmitter::launchCircleProjectiles()

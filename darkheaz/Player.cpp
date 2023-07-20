@@ -11,7 +11,7 @@
 Player::Player()
 :
     LivingObject(this),
-    RotatableToTarget(nullptr, this, 1.0f),
+    RotatableToTarget(nullptr, this, 1.5f),
     energy(INITIAL_ENERGY),
     startEnergy(INITIAL_ENERGY),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
@@ -123,11 +123,7 @@ void Player::respawn()
 
 void Player::shoot(float intensity)
 {
-    if (getWeapon() == nullptr) {
-        return;
-    }
-
-    if (!getWeapon()->isAvailable()) {
+    if (getWeapon() == nullptr || !getWeapon()->isAvailable()) {
         return;
     }
 
@@ -163,6 +159,10 @@ void Player::shoot(float intensity)
         }
         case WeaponTypes::WEAPON_BOMB: {
             weapon->shootBomb(this, getPosition());
+            break;
+        }
+        case WeaponTypes::WEAPON_SHIELD: {
+            weapon->shootShield(this, getPosition());
             break;
         }
         case WeaponTypes::WEAPON_HOLOGRAM: {
@@ -389,8 +389,19 @@ void Player::resolveCollision(Collisionable *with)
 
     auto laser = dynamic_cast<ProjectileRay*> (with);
     if (laser != nullptr) {
-        ComponentsManager::get()->getComponentSound()->sound("playerDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        takeDamage(laser->getDamage());
+        const float dmg = laser->getDamage() * Brakeza3D::get()->getDeltaTime();
+        if (isEnergyShieldEnabled() ) {
+            if (getEnergy() > dmg) {
+                useEnergy(dmg);
+                setState(PlayerState::GETTING_DAMAGE);
+                startPlayerBlink();
+            } else {
+                setEnergy(0);
+                setEnergyShieldEnabled(false);
+            }
+        } else {
+            takeDamage(dmg);
+        }
     }
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
@@ -435,6 +446,7 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("human rescued!");
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         increaseHumans();
+        human->removeCollisionObject();
         human->remove();
 
         if (human->isHasTutorial()) {
@@ -604,7 +616,7 @@ void Player::nextWeapon()
             continue;
         }
         auto weapon = *(it);
-        if (weapon->isAvailable()) {
+        if (weapon->isAvailable() && weapon->isSelectable()) {
             setWeapon(weapon);
             return;
         }
@@ -805,7 +817,7 @@ int Player::getRescuedHumans() {
 
 void Player::makeRandomPlayerDamageSound()
 {
-    std::string randomMetalSound = "metalHit0" + std::to_string(Tools::random(1, 6));
+    std::string randomMetalSound = "metalHit0" + std::to_string(Tools::random(1, 5));
 
     ComponentsManager::get()->getComponentSound()->sound(randomMetalSound, EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }

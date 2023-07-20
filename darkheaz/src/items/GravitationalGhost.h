@@ -7,7 +7,7 @@
 
 
 #include "../../../include/Physics/Mesh3DGhost.h"
-#include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderBlink.h"
 
 class GravitationalGhost: public Mesh3DGhost {
 private:

@@ -6,7 +6,7 @@
 #define BRAKEZA3D_LIVINGOBJECT_H
 
 
-#include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderBlink.h"
 
 #define INITIAL_STAMINA 100
 

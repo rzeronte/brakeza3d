@@ -4,11 +4,11 @@
 ItemBombGhost::ItemBombGhost(float ttl, float damage)
 :
     damage(damage),
+    timeToLive(Counter(ttl)),
+    blink(new ShaderBlink(false, this, 0.05, Color(255, 102, 0))),
     counterDamageBlink(Counter(0.45))
 {
-    timeToLive.setStep(ttl);
     timeToLive.setEnabled(true);
-    blink = new ShaderBlink(false, this, 0.05, Color::red());
 }
 
 void ItemBombGhost::onUpdate()
@@ -34,10 +34,6 @@ void ItemBombGhost::onUpdate()
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
-}
-
-void ItemBombGhost::postUpdate() {
-    Object3D::postUpdate();
 }
 
 void ItemBombGhost::resolveCollision(Collisionable *collisionable)

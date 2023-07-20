@@ -141,6 +141,14 @@
     }
   ],
   "items": [
+    {
+      "type": 7,
+      "position": { "x": 10, "y": 85 }
+    },
+    {
+      "type": 7,
+      "position": { "x": 90, "y": 85 }
+    }
   ],
   "background": [
     {

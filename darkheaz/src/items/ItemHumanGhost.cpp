@@ -32,7 +32,11 @@ void ItemHumanGhost::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    this->magnetizableTo(ComponentsManager::get()->getComponentGame()->getPlayer());
+    if (!isEnabled() || isRemoved()) return;
+
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GAMING) {
+        this->magnetizableTo(ComponentsManager::get()->getComponentGame()->getPlayer());
+    }
 
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
@@ -51,6 +55,8 @@ void ItemHumanGhost::takeDamage(float damage)
         blink->setEnabled(false);
         ComponentsManager::get()->getComponentSound()->sound("humanDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::red(), Color::white());
-        remove();
+        removeCollisionObject();
+        setRemoved(true);
+        setRender(false);
     }
 }

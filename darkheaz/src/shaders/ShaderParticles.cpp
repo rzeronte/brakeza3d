@@ -10,6 +10,7 @@ ShaderParticles::ShaderParticles(bool active, Color from, Color to, OCParticlesC
     stopAdd(false)
 {
     openCLBufferParticles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_PARTICLES * sizeof(OCParticle), nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, openCLBufferParticles, CL_TRUE, 0, MAX_OPENCL_PARTICLES * sizeof(OCParticle), EngineBuffers::get()->getParticles().data(), 0, nullptr, nullptr );
 
     Vertex3D vFrom(from.r, from.g, from.b);
     auto oclFrom = Tools::vertexOCL(vFrom);

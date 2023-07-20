@@ -1,45 +1,41 @@
 #include "PlayerReflection.h"
-#include "../weapons/AmmoProjectileBody.h"
+#include "../../../include/Brakeza3D.h"
 
 PlayerReflection::PlayerReflection(float ttl)
 :
-    timeToLive(Counter(ttl))
+    timeToLive(Counter(ttl)),
+    blink(new ShaderBlink(false, this, 0.05, Color(255, 102, 0)))
 {
     timeToLive.setEnabled(true);
-    blink = new ShaderBlink(false, this, 0.05, Color::red());
 }
 
 void PlayerReflection::onUpdate()
 {
-    if (!isEnabled()) return;
+    Mesh3D::onUpdate();
 
-    Mesh3DGhost::onUpdate();
+    if (!isEnabled()) return;
 
     timeToLive.update();
 
-    if (timeToLive.isFinished()) {
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
-        removeCollisionObject();
-        setRemoved(true);
-        return;
-    }
-
-    blink->update();
+    counterDamageBlink.update();
 
     if (timeToLive.currentPercentage() > 75) {
         counterDamageBlink.setEnabled(true);
         blink->setEnabled(true);
+    }
+
+    blink->update();
+    if (timeToLive.isFinished()) {
+        setRemoved(true);
+        setEnabled(false);
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
 
 void PlayerReflection::postUpdate()
 {
     Mesh3D::postUpdate();
-}
-
-void PlayerReflection::resolveCollision(Collisionable *objectWithCollision)
-{
-    Mesh3DGhost::resolveCollision(objectWithCollision);
 }
 
 PlayerReflection::~PlayerReflection()

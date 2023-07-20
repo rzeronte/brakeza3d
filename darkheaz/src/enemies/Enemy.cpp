@@ -68,3 +68,11 @@ void Enemy::setAvatar(Image *avatar) {
 Image *Enemy::getAvatar(){
     return avatar;
 }
+
+const std::string &Enemy::getName() const {
+    return name;
+}
+
+void Enemy::setName(const std::string &name) {
+    Enemy::name = name;
+}

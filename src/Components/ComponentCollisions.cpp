@@ -175,7 +175,6 @@ void ComponentCollisions::demoProjectile(int type) {
     );
     projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition());
-    projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
@@ -189,7 +188,7 @@ void ComponentCollisions::demoProjectile(int type) {
         EngineSetup::collisionGroups::AllFilter
     );
 
-    Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+    Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
 }
 
 ComponentCollisions::~ComponentCollisions()
