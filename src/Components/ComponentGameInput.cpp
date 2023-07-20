@@ -570,9 +570,9 @@ void ComponentGameInput::handleShield(SDL_Event *event)
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
-    const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX();
+    const bool controllerYButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonY();
 
-    if (controllerXButtonPressed || bombKeyPressed) {
+    if (controllerYButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("shield");
         weapon->onUpdate();
         weapon->shootShield(player, player->getPosition());
