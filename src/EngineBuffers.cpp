@@ -21,6 +21,8 @@ EngineBuffers::EngineBuffers()
     sizeBuffers = setup->RESOLUTION;
     depthBuffer = new float[sizeBuffers];
     videoBuffer = new Uint32[sizeBuffers];
+
+    loadParticlesEmptyBuffer();
 }
 
 void EngineBuffers::clearDepthBuffer() const {
@@ -91,4 +93,25 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
         nullptr,
         nullptr
     );
+}
+
+void EngineBuffers::loadParticlesEmptyBuffer()
+{
+
+    for (int i = 0; i < MAX_OPENCL_PARTICLES; i++) {
+        particles.emplace_back(
+                OCVertex3D(0, 0, 0),
+                OCVertex3D(0, 0, 0),
+                OCVertex3D(0, 0, 0),
+                OCVertex3D(0, 0, 0),
+                OCVertex3D(0, 0, 0),
+                0,
+                0,
+                false
+        );
+    }
+}
+
+const std::vector<OCParticle> &EngineBuffers::getParticles() const {
+    return particles;
 }

@@ -102,6 +102,8 @@ __kernel void onUpdate(
 
         if (p->timeLiving <= 0) {
             p->active = false;
+            p->position = (OCVertex3D) {origin->x, origin->y, 0, 0, 0};
+
         } else {
             p->velocity.y += context->gravity * deltaTimeInSeconds;
             p->position.x += p->velocity.x * deltaTimeInSeconds;
@@ -143,6 +145,8 @@ __kernel void onUpdate(
                 video[index] = alphaBlend(c2, c1, (int) alpha);
             }
         }
+    } else {
+        p->position = (OCVertex3D) {origin->x, origin->y, 0, 0, 0};
     }
 }
 

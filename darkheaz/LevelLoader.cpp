@@ -210,6 +210,11 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 
     Logging::Message("Loading Weapon with index: %d", index);
 
+    bool selectable = false;
+    if (cJSON_GetObjectItemCaseSensitive(weaponJson, "selectable") != nullptr) {
+        selectable = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "selectable")->valueint;
+    }
+
     return new Weapon(
         cJSON_GetObjectItemCaseSensitive(weaponJson, "name")->valuestring,
         std::string(EngineSetup::get()->MODELS_FOLDER + cJSON_GetObjectItemCaseSensitive(weaponJson, "model")->valuestring),
@@ -229,7 +234,8 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble,
         cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint,
-        (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint
+        (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint,
+        selectable
     );
 }
 
@@ -386,6 +392,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY);
 
     enemy->setRewards(reward);
+    enemy->setName(name);
 
     if (motion != nullptr) {
         this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY);

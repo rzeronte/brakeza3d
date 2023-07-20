@@ -14,7 +14,8 @@
 
 #define MAX_OPENCL_PARTICLES 1024
 
-class ShaderParticles : public ShaderOpenCL {
+class ShaderParticles : public ShaderOpenCL
+{
     cl_mem openCLBufferParticles;
     cl_mem openCLBufferColorFrom;
     cl_mem openCLBufferColorTo;

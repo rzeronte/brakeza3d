@@ -13,6 +13,8 @@
 class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     Weapon *weaponType;
     ParticleEmitter *particleEmitter;
+    bool wasCollision;
+    Counter ending;
 public:
     AmmoProjectileBody(
         Vertex3D position,
@@ -35,7 +37,13 @@ public:
 
     void onUpdate() override;
 
-    void setParticleEmitter(ParticleEmitter *particleEmitter);
+    void startEndingCounter();
+
+    [[nodiscard]] bool isWasCollision() const;
+
+    void drawCall() override;
+
+    ~AmmoProjectileBody() override;
 };
 
 

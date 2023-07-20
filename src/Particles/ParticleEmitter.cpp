@@ -23,8 +23,8 @@ ParticleEmitter::ParticleEmitter(
     setPosition(position);
 
     lifeCounter.setEnabled(true);
-    shaderParticles = new ShaderParticles(true, colorFrom, colorTo, particlesContext);
 
+    shaderParticles = new ShaderParticles(true, colorFrom, colorTo, particlesContext);
     shaderExplosion = new ShaderExplosion(
         true,
         colorFrom,
@@ -43,9 +43,7 @@ void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved()) return;
-
-    if (!isActive()) return;
+    if (isRemoved() || !isActive()) return;
 
     if (parent != nullptr && !parent->isRemoved()) {
         setPosition(parent->getPosition());
@@ -72,15 +70,18 @@ void ParticleEmitter::setActive(bool value) {
     this->active = value;
 }
 
-ParticleEmitter::~ParticleEmitter() {
+ParticleEmitter::~ParticleEmitter()
+{
     delete shaderParticles;
+    delete shaderExplosion;
 }
 
 bool ParticleEmitter::isStopAdd() const {
     return stopAdd;
 }
 
-void ParticleEmitter::setStopAdd(bool stopAdd) {
+void ParticleEmitter::setStopAdd(bool stopAdd)
+{
     ParticleEmitter::stopAdd = stopAdd;
     shaderParticles->setStopAdd(stopAdd);
 }

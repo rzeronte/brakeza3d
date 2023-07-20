@@ -102,6 +102,7 @@ public:
     void postUpdate() override;
 
     Vertex3D getVelocity();
+
     void setVelocity(Vertex3D v);
 
     float dashPower;

@@ -5,14 +5,13 @@
 
 #include "../../../include/Physics/Mesh3DGhost.h"
 #include "../../../include/Misc/Counter.h"
-#include "../../../include/Shaders/ShaderBlink.h"
+#include "../shaders/ShaderBlink.h"
 
 class ItemBombGhost: public Mesh3DGhost {
     float damage;
     Counter timeToLive;
     ShaderBlink *blink;
     Counter counterDamageBlink;
-
 public:
     explicit ItemBombGhost(float ttl, float damage);
 
@@ -21,8 +20,6 @@ public:
     void setDamage(float damage);
 
     void onUpdate() override;
-
-    void postUpdate() override;
 
     void resolveCollision(Collisionable *collisionable) override;
 };

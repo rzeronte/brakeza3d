@@ -56,11 +56,12 @@ void RayLight::update()
         if (object != this->parent) {
             btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
             auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+            auto dt = Brakeza3D::get()->getDeltaTime() * 50;
 
             if (player != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
-                player->takeDamage(damage);
+                player->takeDamage(damage * dt );
                 increase = false;
             }
 
@@ -73,16 +74,10 @@ void RayLight::update()
                 middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
                 ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_RAY);
 
-                enemy->takeDamage(damage);
+                enemy->takeDamage(damage * dt);
                 increase = false;
 
                 Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), Color::white(), Color::yellow());
-
-                /*enemy->getParticleEmitter()->shaderParticles->setOrigin(
-                        Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera())
-                );
-                enemy->getParticleEmitter()->shaderParticles->setDirection((start - hitPosition).getInverse());
-                enemy->getParticleEmitter()->setStopAdd(false);*/
             }
         }
     }

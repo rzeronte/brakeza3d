@@ -35,23 +35,23 @@ struct OCVertex3D {
 
 struct OCParticle {
     OCParticle(
-            const OCVertex3D &position,
-            const OCVertex3D &rotation,
-            const OCVertex3D &colorFrom,
-            const OCVertex3D &colorTo,
-            const OCVertex3D &velocity,
-            float timeToLive,
-            float force,
-            bool active
+        const OCVertex3D &position,
+        const OCVertex3D &rotation,
+        const OCVertex3D &colorFrom,
+        const OCVertex3D &colorTo,
+        const OCVertex3D &velocity,
+        float timeToLive,
+        float force,
+        bool active
     ) :
-            position(position),
-            rotation(rotation),
-            timeToLive(timeToLive),
-            timeLiving(0),
-            force(force), velocity(velocity),
-            colorFrom(colorFrom),
-            colorTo(colorTo),
-            active(active)
+        position(position),
+        rotation(rotation),
+        timeToLive(timeToLive),
+        timeLiving(0),
+        force(force), velocity(velocity),
+        colorFrom(colorFrom),
+        colorTo(colorTo),
+        active(active)
     {
     }
 

@@ -26,8 +26,12 @@ Weapon::Weapon(
     float stopEver,
     float stopDuration,
     int type,
-    bool available
-) {
+    bool available,
+    bool selectable
+)
+:
+    selectable(selectable)
+{
     setLabel(name);
     setStatus(WeaponStatus::NONE);
 
@@ -174,7 +178,15 @@ void Weapon::shootProjectile(
 
         setStatus(WeaponStatus::PRESSED);
 
-        auto *projectile = new AmmoProjectileBody(
+        setAmmoAmount(getAmmoAmount() - 1);
+
+        if (sound) {
+            ComponentsManager::get()->getComponentSound()->sound("projectileTypeOne", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        }
+
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+
+        Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
             position - offsetPosition,
             parent,
             this,
@@ -186,41 +198,20 @@ void Weapon::shootProjectile(
             getAccuracy(),
             filterGroup,
             filterMask,
-            nullptr
-        );
-
-        if (getType() == WEAPON_BOMB) {
-            projectile->setRotationFrameEnabled(true);
-            projectile->setRotationFrame(Vertex3D(1, 1, 0));
-        }
-
-        setAmmoAmount(getAmmoAmount() - 1);
-
-        if (sound) {
-            ComponentsManager::get()->getComponentSound()->sound("projectileTypeOne", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        }
-
-        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
-
-        Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
-
-        const float emitterTTL = 10.0f;
-
-        auto emitter = new ParticleEmitter(
-            ParticleEmitterState::DEFAULT,
-            projectile,
-            position,
-            emitterTTL,
-            Color::yellow(),
-            Color::white(),
-            OCParticlesContext()
-        );
-
-        projectile->setParticleEmitter(emitter);
-        Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
+            new ParticleEmitter(
+                ParticleEmitterState::DEFAULT,
+                nullptr,
+                position,
+                0,
+                Color::yellow(),
+                Color::white(),
+                OCParticlesContext()
+            )
+        ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 
         if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_MIRROR_SHOOT) && getType() == WEAPON_PROJECTILE && allowMirror) {
-            auto *projectile = new AmmoProjectileBody(
+
+            Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
                 position + offsetPosition,
                 parent,
                 this,
@@ -232,25 +223,16 @@ void Weapon::shootProjectile(
                 getAccuracy(),
                 filterGroup,
                 filterMask,
-                nullptr
-            );
-
-            //setAmmoAmount(getAmmoAmount() - 1);
-
-            Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
-
-            auto emitter = new ParticleEmitter(
+                new ParticleEmitter(
                     ParticleEmitterState::DEFAULT,
-                    projectile,
+                    nullptr,
                     position,
-                    emitterTTL,
+                    0,
                     Color::yellow(),
                     Color::white(),
                     OCParticlesContext()
-            );
-
-            projectile->setParticleEmitter(emitter);
-            Brakeza3D::get()->addObject3D(emitter, Brakeza3D::uniqueObjectLabel("particleEmmissor"));
+            )
+            ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
         }
     }
 }
@@ -292,13 +274,11 @@ void Weapon::shootLaserProjectile(
             false
         );
 
-        projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
-
         setAmmoAmount(getAmmoAmount() - 1);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(WEAPON_LASER_PROJECTILE);
 
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+        Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 
         if (sound) {
             ComponentsManager::get()->getComponentSound()->sound("laserShoot", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -411,7 +391,7 @@ Weapon::~Weapon()
     delete counterCadence;
 }
 
-void Weapon::shootBomb(Object3D *parent, Vertex3D position)
+void Weapon::shootShield(Object3D *parent, Vertex3D position)
 {
     if (getAmmoAmount() <= 0) return;
 
@@ -428,10 +408,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         auto *projectile = new ItemBombGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
-        projectile->setLabel(Brakeza3D::uniqueObjectLabel("projectile"));
-
         projectile->clone(getModelProjectile());
-
         projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
@@ -451,7 +428,48 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
-        Brakeza3D::get()->addObject3D(projectile, projectile->getLabel());
+        Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
+    }
+}
+
+void Weapon::shootBomb(Object3D *parent, Vertex3D position)
+{
+    if (getAmmoAmount() <= 0) return;
+
+    if (isStop() && counterStopDuration.isEnabled()) {
+        return;
+    }
+
+    if (counterCadence->isFinished()) {
+        counterCadence->setEnabled(true);
+        setStatus(WeaponStatus::PRESSED);
+
+        Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
+
+        auto *projectile = new ItemBombGhost(5, this->getDamage());
+        projectile->setStencilBufferEnabled(true);
+        projectile->setParent(parent);
+        projectile->clone(getModelProjectile());
+        projectile->setPosition(position);
+        projectile->setEnableLights(false);
+        projectile->setEnabled(true);
+        projectile->setRotationFrame(Vertex3D(1, 0, 0));
+        projectile->setRotationFrameEnabled(true);
+        projectile->setFlatTextureColor(false);
+        projectile->makeSimpleGhostBody(
+            Vertex3D(600, 600, 600),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
+        );
+
+        setAmmoAmount(ammoAmount - 1);
+
+        ComponentsManager::get()->getComponentSound()->sound("projectileTypeThree", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+
+        Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
     }
 }
 
@@ -477,15 +495,10 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
         reflection->setPosition(position);
         reflection->setEnableLights(false);
         reflection->setEnabled(true);
-        reflection->setRotationFrame(Tools::randomVertex());
+        reflection->setRotationFrame(Tools::randomVertex().getScaled(0.25f));
         reflection->setRotationFrameEnabled(true);
         reflection->setFlatTextureColor(false);
-        reflection->makeSimpleGhostBody(
-            Vertex3D(600, 600, 600),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::Player,
-            EngineSetup::collisionGroups::Enemy
-        );
+
         setAmmoAmount(ammoAmount - 1);
 
         ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -509,7 +522,7 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
     rayLight.setColor(getModelProjectile()->getFlatColor());
     rayLight.setDamage(getDamage());
     rayLight.setEnabled(true);
-    rayLight.setIntensity(intensity / 2);
+    rayLight.setIntensity(intensity / 3);
 
     if (getStatus() == PRESSED) {
         ComponentsManager::get()->getComponentSound()->sound("projectileEnergy", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -526,5 +539,13 @@ void Weapon::setLabel(const std::string &value) {
 
 Counter *Weapon::getCounterCadence() const {
     return counterCadence;
+}
+
+bool Weapon::isSelectable() const {
+    return selectable;
+}
+
+void Weapon::setSelectable(bool selectable) {
+    Weapon::selectable = selectable;
 }
 

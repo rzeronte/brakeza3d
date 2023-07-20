@@ -15,12 +15,14 @@ enum WeaponTypes {
     WEAPON_LASER_RAY = 2,
     WEAPON_BOMB = 3,
     SHOCK = 4,
-    WEAPON_HOLOGRAM = 5
+    WEAPON_HOLOGRAM = 5,
+    WEAPON_SHIELD = 6
 };
 
 class Weapon {
 private:
     bool available;
+    bool selectable;
     int status;
     int type;
     int soundChannel;
@@ -71,7 +73,8 @@ public:
         float stopEver,
         float stopDuration,
         int type,
-        bool available
+        bool available,
+        bool selectable
     );
 
     void onUpdate();
@@ -122,6 +125,8 @@ public:
 
     void shootBomb(Object3D *parent, Vertex3D position);
 
+    void shootShield(Object3D *parent, Vertex3D position);
+
     void shootRayLight(RayLight &rayLight, float intensity);
 
     void setLabel(const std::string &value);
@@ -163,6 +168,10 @@ public:
     [[nodiscard]] int getType() const;
 
     void shootHologram(Object3D *parent, Vertex3D position);
+
+    bool isSelectable() const;
+
+    void setSelectable(bool selectable);
 };
 
 

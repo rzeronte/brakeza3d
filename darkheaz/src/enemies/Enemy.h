@@ -16,6 +16,7 @@ typedef enum {
 
 class Enemy {
 protected:
+    std::string name;
     bool stuck;
     EnemyState state;
     Weapon *weapon;
@@ -52,6 +53,11 @@ public:
     void setAvatar(Image *avatar);
 
     Image *getAvatar();
+
+    [[nodiscard]] const std::string &getName() const;
+
+    void setName(const std::string &name);
+
 };
 
 

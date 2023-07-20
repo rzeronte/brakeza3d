@@ -20,10 +20,10 @@ ComponentGame::ComponentGame()
     shaderBackgroundImage(nullptr),
     shaderColor(nullptr),
     shaderShockWave(nullptr),
-    gameState(EngineSetup::GameState::NONE),
     primaryColor(Color(118, 185, 32)),
     secondaryColor(Color(118, 185, 32)),
-    thirdColor(Color(0, 0, 255))
+    thirdColor(Color(0, 0, 255)),
+    gameState(EngineSetup::GameState::NONE)
 {
 }
 
@@ -1242,7 +1242,7 @@ const Color &ComponentGame::getPrimaryColor() const {
 }
 
 const Color &ComponentGame::getSecondaryColor() const {
-    return secondaryColor;explosionSpriteTemplate;
+    return secondaryColor;
 }
 
 ShaderColor *ComponentGame::getShaderColor() const {
@@ -1269,7 +1269,7 @@ void ComponentGame::addProjectilesToShaderLasers()
         auto ray = dynamic_cast<ProjectileRay *> (object);
         auto wave = dynamic_cast<ShockWave *> (object);
 
-        if (projectile != nullptr) {
+        if (projectile != nullptr && !projectile->isWasCollision()) {
             shaderLasers->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),
