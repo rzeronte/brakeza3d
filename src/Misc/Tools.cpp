@@ -542,3 +542,22 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
         Brakeza3D::uniqueObjectLabel("fireworks")
     );
 }
+
+void Tools::makeExplosionSprite(Vertex3D position)
+{
+    auto sprite = new Sprite3D(10, 10);
+
+    Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+    Vector3D direction(origin, position);
+    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(30));
+
+    sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
+    sprite->setAnimation(0);
+    sprite->setAutoRemoveAfterAnimation(true);
+
+    sprite->updateTrianglesCoordinatesAndTexture();
+    sprite->getOpenClRenderer()->makeOCLTriangles();
+
+    Brakeza3D::get()->addObject3D(sprite, Brakeza3D::uniqueObjectLabel("enemySpriteExplosion"));
+}
+

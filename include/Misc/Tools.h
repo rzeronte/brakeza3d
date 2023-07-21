@@ -102,6 +102,9 @@ public:
     static void addSceneObject(const std::string& filename, const std::string& name);
 
     static void makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to);
+
+    static void makeExplosionSprite(Vertex3D position);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
+
