@@ -34,7 +34,7 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
 
     int numLights = (int) oclLights.size();
 
-    makeOCLTriangles();
+    //makeOCLTriangles();
     //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferLights, CL_TRUE, 0, numLights * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
@@ -42,10 +42,10 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
     const bool useStencil = object->isStencilBufferEnabled();
     auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
 
-    //if (useStencil) {
+    if (useStencil) {
         cl_int pattern = 0;
         clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
-    //}
+    }
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);

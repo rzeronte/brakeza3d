@@ -2,6 +2,7 @@
 #include "../../../include/EngineBuffers.h"
 #include "../../../include/Brakeza3D.h"
 #include "../items/ItemBombGhost.h"
+#include "../items/ItemShieldGhost.h"
 
 RayLight::RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask)
 :
@@ -51,7 +52,7 @@ void RayLight::update()
         auto *object = dynamic_cast<Object3D*> (brkObjectA);
         auto *enemy = dynamic_cast<EnemyGhost*> (brkObjectA);
         auto *player = dynamic_cast<Player*> (brkObjectA);
-        auto *bomb = dynamic_cast<ItemBombGhost*> (brkObjectA);
+        auto *bomb = dynamic_cast<ItemShieldGhost*> (brkObjectA);
 
         if (object != this->parent) {
             btVector3 rayHitPosition = rayCallback->m_hitPointWorld;

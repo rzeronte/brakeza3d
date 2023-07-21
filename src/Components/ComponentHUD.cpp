@@ -127,15 +127,27 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     auto game = ComponentsManager::get()->getComponentGame();
     auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
-
+    const int gatheringResourcesOffsetX = 530;
+    const int gatheringResourcesOffsetY = 13;
 
     //coins
     auto iconCoin = HUDTextures->getTextureByLabel("coinIcon");
-    iconCoin->getImage()->drawFlatAlpha(40, offsetY - 16, 255);
+    iconCoin->getImage()->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255);
     textWriter->writeTextTTFAutoSize(
-        40 + 16,
-        this->offsetY - 17,
+        gatheringResourcesOffsetX + 16,
+        gatheringResourcesOffsetY,
         (std::string("x") + std::to_string(player->getCoins())).c_str(),
+        game->getPrimaryColor(),
+        0.25
+    );
+
+    // human
+    auto humanIcon = HUDTextures->getTextureByLabel("astrounautIcon");
+    humanIcon->getImage()->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255);
+    textWriter->writeTextTTFAutoSize(
+        gatheringResourcesOffsetX + 54,
+        13,
+        (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
         game->getPrimaryColor(),
         0.25
     );
@@ -182,17 +194,6 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         );
     }
     weaponShield->getIcon()->drawFlatAlpha(360, this->offsetY, bombAlpha);
-
-    // human
-    /*auto humanIcon = HUDTextures->getTextureByLabel("astrounautIcon");
-    humanIcon->getImage()->drawFlatAlpha(360, offsetY, 255);
-    textWriter->writeTextTTFAutoSize(
-            360,
-            this->offsetY + humanIcon->getImage()->height(),
-            (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
-            game->getPrimaryColor(),
-            0.25
-    );*/
 
     // level number
     textWriter->writeTextTTFAutoSize(

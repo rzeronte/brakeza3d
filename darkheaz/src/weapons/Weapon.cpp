@@ -5,6 +5,7 @@
 #include "../../../include/Brakeza3D.h"
 #include "AmmoProjectileBody.h"
 #include "../items/ItemBombGhost.h"
+#include "../items/ItemShieldGhost.h"
 
 
 Weapon::Weapon(
@@ -181,7 +182,7 @@ void Weapon::shootProjectile(
         setAmmoAmount(getAmmoAmount() - 1);
 
         if (sound) {
-            ComponentsManager::get()->getComponentSound()->sound("projectileTypeOne", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("projectileStandard", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
@@ -281,7 +282,7 @@ void Weapon::shootLaserProjectile(
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 
         if (sound) {
-            ComponentsManager::get()->getComponentSound()->sound("laserShoot", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            ComponentsManager::get()->getComponentSound()->sound("projectileLaser", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 }
@@ -405,7 +406,7 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
 
         Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
 
-        auto *projectile = new ItemBombGhost(5, this->getDamage());
+        auto *projectile = new ItemShieldGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->clone(getModelProjectile());
@@ -424,11 +425,14 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
 
         setAmmoAmount(ammoAmount - 1);
 
-        ComponentsManager::get()->getComponentSound()->sound("projectileTypeThree", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentSound()->sound("projectileShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
+
+        Brakeza3D::get()->addObject3D(new ShockWave(position, 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+
     }
 }
 
@@ -453,19 +457,19 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setPosition(position);
         projectile->setEnableLights(false);
         projectile->setEnabled(true);
-        projectile->setRotationFrame(Vertex3D(1, 0, 0));
+        projectile->setRotationFrame(Tools::randomVertex().getScaled(0.25f));
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
             Vertex3D(600, 600, 600),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
-            EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
+            EngineSetup::collisionGroups::Enemy
         );
 
         setAmmoAmount(ammoAmount - 1);
 
-        ComponentsManager::get()->getComponentSound()->sound("projectileTypeThree", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentSound()->sound("projectileBomb", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
@@ -525,7 +529,7 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity)
     rayLight.setIntensity(intensity / 3);
 
     if (getStatus() == PRESSED) {
-        ComponentsManager::get()->getComponentSound()->sound("projectileEnergy", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentSound()->sound("projectileRaylight", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
     ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());

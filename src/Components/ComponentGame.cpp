@@ -5,25 +5,25 @@
 
 ComponentGame::ComponentGame()
 :
-    cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
-    cameraInGamePosition(Vertex3D(0, -1000, -1000)),
-    textWriter(nullptr),
-    fadeToGameState(nullptr),
-    player(nullptr),
-    shaderLasers(nullptr),
-    explosionSpriteTemplate(nullptr),
-    imageCredits(nullptr),
-    imageHelp(nullptr),
-    imageSplash(nullptr),
-    imageCrossFire(nullptr),
-    levelLoader(nullptr),
-    shaderBackgroundImage(nullptr),
-    shaderColor(nullptr),
-    shaderShockWave(nullptr),
-    primaryColor(Color(118, 185, 32)),
-    secondaryColor(Color(118, 185, 32)),
-    thirdColor(Color(0, 0, 255)),
-    gameState(EngineSetup::GameState::NONE)
+        cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
+        cameraInGamePosition(Vertex3D(0, -1000, -1000)),
+        textWriter(nullptr),
+        fadeToGameState(nullptr),
+        player(nullptr),
+        shaderProjectiles(nullptr),
+        explosionSpriteTemplate(nullptr),
+        imageCredits(nullptr),
+        imageHelp(nullptr),
+        imageSplash(nullptr),
+        imageCrossFire(nullptr),
+        levelLoader(nullptr),
+        shaderBackgroundImage(nullptr),
+        shaderColor(nullptr),
+        shaderShockWave(nullptr),
+        primaryColor(Color(118, 185, 32)),
+        secondaryColor(Color(118, 185, 32)),
+        thirdColor(Color(0, 0, 255)),
+        gameState(EngineSetup::GameState::NONE)
 {
 }
 
@@ -128,7 +128,7 @@ void ComponentGame::loadShaders()
 {
     shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
     shaderColor = new ShaderColor(false, Color::red(), 0.75f);
-    shaderLasers = new ShaderProjectiles();
+    shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
     shaderBackgroundImage->setUseOffset(true);
 }
@@ -140,7 +140,7 @@ ComponentGame::~ComponentGame()
     delete fadeToGameState;
     delete levelLoader;
 
-    delete shaderLasers;
+    delete shaderProjectiles;
     delete shaderBackgroundImage;
     delete shaderColor;
 
@@ -636,7 +636,7 @@ void ComponentGame::loadPlayer()
     player->onStartSetup();
 
     explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 30);
+    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 20);
     explosionSpriteTemplate->setAnimation(0);
 
     radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
@@ -1034,7 +1034,7 @@ void ComponentGame::pressedKeyByDead()
 void ComponentGame::updateShaders()
 {
     shaderColor->update();
-    shaderLasers->update();
+    shaderProjectiles->update();
     shaderShockWave->update();
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
@@ -1111,13 +1111,13 @@ void ComponentGame::handleGamingGameState()
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
 
     shaderColor->setEnabled(false);
-    shaderLasers->setEnabled(true);
+    shaderProjectiles->setEnabled(true);
 
 }
 
 void ComponentGame::handleCountDownGameState()
 {
-    shaderLasers->setEnabled(true);
+    shaderProjectiles->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
@@ -1270,7 +1270,7 @@ void ComponentGame::addProjectilesToShaderLasers()
         auto wave = dynamic_cast<ShockWave *> (object);
 
         if (projectile != nullptr && !projectile->isWasCollision()) {
-            shaderLasers->addProjectile(
+            shaderProjectiles->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),
                 (float) projectile->getWeaponType()->getSpeed()
@@ -1282,13 +1282,13 @@ void ComponentGame::addProjectilesToShaderLasers()
         }
 
         if (ray != nullptr) {
-            shaderLasers->addLaserFromRay(ray);
+            shaderProjectiles->addLaserFromRay(ray);
         }
     }
 }
 
 ShaderProjectiles *ComponentGame::getShaderLasers() const {
-    return shaderLasers;
+    return shaderProjectiles;
 }
 
 TextWriter *ComponentGame::getTextWriter() {

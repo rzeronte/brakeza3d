@@ -19,6 +19,7 @@ ComponentMenu::~ComponentMenu()
 {
     delete shaderBackgroundImage;
     delete planet;
+    delete astronaut;
     delete light;
     delete pendulum;
 }
@@ -65,8 +66,22 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->updateBoundingBox();
     Brakeza3D::get()->addObject3D(planet, "planetMenu");
 
-    pendulum = new SimplePendulum(0, 1, 1000, 0.0);
-    pendulum->setRotation(295, 30, -20);
+    astronaut = new Mesh3D();
+    astronaut->setEnabled(false);
+    astronaut->setAlpha(255);
+    astronaut->setEnableLights(false);
+    astronaut->setPosition(Vertex3D(0, -928, 10000));
+    astronaut->setRotationFrameEnabled(true);
+    astronaut->setRotationFrame(Vertex3D(0.1f, 0.02, 0.01));
+    astronaut->setRotation(0, 0, 0);
+    astronaut->setScale(3.4);
+    astronaut->setStencilBufferEnabled(true);
+    astronaut->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
+    astronaut->updateBoundingBox();
+    Brakeza3D::get()->addObject3D(astronaut, "astronautMenu");
+
+    pendulum = new SimplePendulum(0, 5, 5000, 0.0);
+    pendulum->setRotation(-40, 0, 0);
 }
 
 void ComponentMenu::preUpdate()
@@ -83,10 +98,9 @@ void ComponentMenu::onUpdate()
     if (!isEnabled()|| !isMenuEnabled()) return;
 
     pendulum->onUpdate();
-    //spaceship->setRotation(pendulum->pendulumRotation);
+    astronaut->setRotation(pendulum->pendulumRotation);
 
-    drawOptions();
-    drawVersion();
+
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
 
     ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
@@ -96,6 +110,8 @@ void ComponentMenu::onUpdate()
     border->drawFlatAlpha(0, 0, alpha);
     imageLogoBox->drawFlatAlpha(0, 0, alpha);
     shaderMenuTitle->update();
+    drawOptions();
+    drawVersion();
 }
 
 void ComponentMenu::postUpdate()
@@ -181,6 +197,8 @@ void ComponentMenu::setEnabled(bool value)
 
     light->setEnabled(value);
     planet->setEnabled(value);
+    astronaut->setEnabled(value);
+
     setMenuEnabled(value);
 }
 
@@ -189,9 +207,11 @@ void ComponentMenu::drawVersion()
     ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
         447,
         "https://brakeza.com",
-        ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
+        Color::black(),
         0.3
     );
+
+    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7", Color::black(), 0.2);
 }
 
 int ComponentMenu::getCurrentOption() const {

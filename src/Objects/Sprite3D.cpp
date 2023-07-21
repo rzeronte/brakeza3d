@@ -14,20 +14,21 @@ Sprite3D::Sprite3D(float width, float height):
     this->counter.setEnabled(true);
 
     openClRenderer = new MeshOpenCLRenderer(this, this->billboard->getTriangles());
+    //openClRenderer->makeOCLTriangles();
 }
 
 void Sprite3D::onUpdate()
 {
     Object3D::onUpdate();
 
-    this->updateTrianglesCoordinatesAndTexture();
-
     if (isRemoved()) return;
 
-    //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
-    //ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
+    /* CPU Render
+     ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
+     ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
+    */
 
-    openClRenderer->makeOCLTriangles();
+    this->updateTrianglesCoordinatesAndTexture();
 
     openClRenderer->onUpdate(billboard->getT1()->getTexture());
 }
@@ -115,4 +116,10 @@ Sprite3D::~Sprite3D()
             delete animation;
         }
     }
+
+    delete openClRenderer;
+}
+
+MeshOpenCLRenderer *Sprite3D::getOpenClRenderer() const {
+    return openClRenderer;
 }

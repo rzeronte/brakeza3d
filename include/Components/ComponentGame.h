@@ -48,7 +48,7 @@ private:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
-    ShaderProjectiles *shaderLasers;
+    ShaderProjectiles *shaderProjectiles;
 
     Sprite3D *explosionSpriteTemplate;
     TextureAnimated *radioWave;

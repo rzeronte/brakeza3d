@@ -144,8 +144,6 @@ __kernel void onUpdate(
     }
 
     video[i] = mixedColor;
-
-
 }
 
 unsigned int createRGB(int r, int g, int b)
@@ -154,8 +152,8 @@ unsigned int createRGB(int r, int g, int b)
 }
 
 float line(float2 A, float2 B, float2 C, float thickness)
- {
-	float2 AB = B-A;
+{
+    float2 AB = B-A;
     float2 AC = C-A;
 
     float t = dot(AC, AB) / dot(AB, AB);
@@ -166,4 +164,3 @@ float line(float2 A, float2 B, float2 C, float thickness)
     float dist = length(Q-C);
     return smoothstep(0.001f, -dist, -thickness) + smoothstep(-0.002f, dist, thickness);
 }
-

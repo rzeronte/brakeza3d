@@ -75,7 +75,7 @@
       "selectable": false,
       "name": "bomb",
       "damage": 400,
-      "amount": 3,
+      "amount": 25,
       "startAmount": 10,
       "speed": 0,
       "dispersion": 10,

@@ -13,15 +13,15 @@ ShaderProjectiles::ShaderProjectiles() : ShaderOpenCL(true, "projectiles.opencl"
     );
 
     clEnqueueWriteBuffer(
-            clQueue,
-            opencl_buffer_pixels_image,
-            CL_TRUE,
-            0,
+        clQueue,
+        opencl_buffer_pixels_image,
+        CL_TRUE,
+        0,
         this->bufferSize * sizeof(Uint32),
-            image.pixels(),
-            0,
-            nullptr,
-            nullptr
+        image.pixels(),
+        0,
+        nullptr,
+        nullptr
     );
 
     clBufferLasers = clCreateBuffer(

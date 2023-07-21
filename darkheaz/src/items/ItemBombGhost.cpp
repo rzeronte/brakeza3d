@@ -9,6 +9,7 @@ ItemBombGhost::ItemBombGhost(float ttl, float damage)
     counterDamageBlink(Counter(0.45))
 {
     timeToLive.setEnabled(true);
+    counterDamageBlink.setEnabled(false);
 }
 
 void ItemBombGhost::onUpdate()
@@ -21,9 +22,10 @@ void ItemBombGhost::onUpdate()
 
     counterDamageBlink.update();
 
-    if (timeToLive.currentPercentage() > 75) {
+    if (timeToLive.currentPercentage() > 75 && !counterDamageBlink.isEnabled()) {
         counterDamageBlink.setEnabled(true);
         blink->setEnabled(true);
+        ComponentsManager::get()->getComponentSound()->sound("countdownItem", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
     blink->update();
@@ -32,6 +34,7 @@ void ItemBombGhost::onUpdate()
         setEnabled(false);
         removeCollisionObject();
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        Tools::makeExplosionSprite(getPosition());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
