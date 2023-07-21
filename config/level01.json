@@ -10,7 +10,7 @@
     {
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 10 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
       "animated": false,
@@ -20,9 +20,7 @@
         "type": 6
       },
       "messages": [
-        { "text": "Welcome Commander,\nthe ship is ready to start", "stamina": 100 },
-        { "text": "Let's check the firing system.\nGet the ammo and shoot!", "stamina": 80 },
-        { "text": "Well done! continue firing...", "stamina": 75 }
+        { "text": "--", "stamina": 50 }
       ]
     }
   ],

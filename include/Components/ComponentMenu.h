@@ -20,6 +20,7 @@ private:
     ShaderImageMask *shaderMenuTitle;
 
     Mesh3D *planet;
+    Mesh3D *astronaut;
 
     LightPoint3D *light;
     SimplePendulum *pendulum;

@@ -142,6 +142,7 @@ void EnemyGhost::handleDie()
     makeReward();
 
     Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+    Tools::makeExplosionSprite(getPosition());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 

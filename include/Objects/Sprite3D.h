@@ -51,6 +51,8 @@ public:
     void updateTrianglesCoordinatesAndTexture();
 
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
+
+    MeshOpenCLRenderer *getOpenClRenderer() const;
 };
 
 

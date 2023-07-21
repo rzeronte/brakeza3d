@@ -16,13 +16,14 @@ class ItemShieldGhost: public Mesh3DGhost  {
     ShaderBlink *blink;
     Counter counterDamageBlink;
 
-    explicit ItemShieldGhost(float ttl, float damage);
-
     [[nodiscard]] float getDamage() const;
 
     void onUpdate() override;
 
     void resolveCollision(Collisionable *collisionable) override;
+
+public:
+    explicit ItemShieldGhost(float ttl, float damage);
 };
 
 

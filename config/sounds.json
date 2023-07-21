@@ -32,7 +32,7 @@
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
     { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
 
-    { "file": "shield.wav", "label": "energyShield", "type": "sound" },
+    { "file": "energy_shield.wav", "label": "energyShield", "type": "sound" },
 
     { "file": "get_ammo.mp3", "label": "getAmmo", "type": "sound" },
 
@@ -40,21 +40,21 @@
 
     { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
 
-    { "file": "projectile_type_01.wav", "label": "projectileTypeOne", "type": "sound" },
-    { "file": "projectile_type_03.wav", "label": "projectileTypeThree", "type": "sound" },
-    { "file": "laser.wav", "label": "projectileEnergy", "type": "sound" },
+    { "file": "projectile_standard.wav", "label": "projectileStandard", "type": "sound" },
+    { "file": "projectile_bomb.wav", "label": "projectileBomb", "type": "sound" },
+    { "file": "projectile_raylight.wav", "label": "projectileRaylight", "type": "sound" },
+    { "file": "laser_shoot.wav", "label": "projectileLaser", "type": "sound" },
+    { "file": "projectile_shield.mp3", "label": "projectileShield", "type": "sound" },
 
     { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
 
     { "file": "switch_weapon.wav", "label": "switchWeapon", "type": "sound" },
 
-    { "file": "laser-shoot.wav", "label": "laserShoot", "type": "sound" },
     { "file": "laser.wav", "label": "laser", "type": "sound" },
 
     { "file": "tic.wav", "label": "tic", "type": "sound" },
 
     { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" },
-
 
     { "file": "crt.wav", "label": "crt", "type": "sound" },
     { "file": "selling.wav", "label": "selling", "type": "sound" },
@@ -72,6 +72,10 @@
     { "file": "metals/metal_hit_06.mp3", "label": "metalHit06", "type": "sound" },
 
     { "file": "alarm-damage.wav", "label": "alarmDamage", "type": "sound" },
-    { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" }
+    { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" },
+    { "file": "countdown_item.mp3", "label": "countdownItem", "type": "sound" },
+
+    { "file": "energy_off.wav", "label": "energyOff", "type": "sound" }
+
   ]
 }

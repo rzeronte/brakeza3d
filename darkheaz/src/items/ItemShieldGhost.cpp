@@ -13,6 +13,7 @@ ItemShieldGhost::ItemShieldGhost(float ttl, float damage)
     counterDamageBlink(Counter(0.45))
 {
     timeToLive.setEnabled(true);
+    counterDamageBlink.setEnabled(false);
 }
 
 void ItemShieldGhost::onUpdate()
@@ -25,9 +26,10 @@ void ItemShieldGhost::onUpdate()
 
     counterDamageBlink.update();
 
-    if (timeToLive.currentPercentage() > 75) {
+    if (timeToLive.currentPercentage() > 80 && !counterDamageBlink.isEnabled()) {
         counterDamageBlink.setEnabled(true);
         blink->setEnabled(true);
+        ComponentsManager::get()->getComponentSound()->sound("energyOff", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
     blink->update();
