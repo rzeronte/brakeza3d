@@ -85,8 +85,6 @@ public:
 
     static ColorHSV getColorHSV(Color in);
 
-    static Color getColorRGB(ColorHSV in);
-
     static Vertex3D randomVertex();
 
     static const char *sprintf(const char *, ...);

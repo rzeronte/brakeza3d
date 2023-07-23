@@ -75,7 +75,9 @@
     { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" },
     { "file": "countdown_item.mp3", "label": "countdownItem", "type": "sound" },
 
-    { "file": "energy_off.wav", "label": "energyOff", "type": "sound" }
+    { "file": "energy_off.wav", "label": "energyOff", "type": "sound" },
+
+    { "file": "yes.wav", "label": "yes", "type": "sound" }
 
   ]
 }
