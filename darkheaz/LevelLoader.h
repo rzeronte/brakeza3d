@@ -22,24 +22,20 @@
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
     ITEM_WEAPON_BOMB = 2,
-    ITEM_WEAPON_SMART = 3,
-    ITEM_WEAPON_LASER = 6,
+    ITEM_WEAPON_LASER = 3,
+    ITEM_WEAPON_RAYLIGHT = 6,
     ITEM_HEALTH = 4,
     ITEM_ENERGY = 5,
-    ITEM_HUMAN = 7
+    ITEM_HUMAN = 7,
+    ITEM_SHIELD = 8,
+    ITEM_WEAPON_REFLECTION = 9
+
 } LevelInfoItemsTypes;
 
 typedef enum {
     BOSS_LEVEL_10 = 1,
     BOSS_LEVEL_20 = 2,
     BOSS_LEVEL_30 = 3,
-    BOSS_LEVEL_40 = 4,
-    BOSS_LEVEL_50 = 5,
-    BOSS_LEVEL_60 = 6,
-    BOSS_LEVEL_70 = 7,
-    BOSS_LEVEL_80 = 8,
-    BOSS_LEVEL_90 = 9,
-    BOSS_LEVEL_100 = 10,
 } BossesTypes;
 
 typedef enum {

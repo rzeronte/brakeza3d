@@ -9,7 +9,7 @@
     {
       "name": "Pancake",
       "avatar": "avatars/pancake.png",
-      "position": {"x": 90, "y": 75},
+      "position": {"x": 95, "y": 75},
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,
       "animated": true,
@@ -107,7 +107,7 @@
       "reward": true,
       "motion": {
         "type": 5,
-        "points": [{ "x": 40, "y": 5 }, { "x": 5, "y": 60 }, { "x": 40, "y": 5 }],
+        "points": [{ "x": 45, "y": 5 }, { "x": 15, "y": 60 }, { "x": 45, "y": 5 }],
         "speed": 0.5
       },
       "weapon": {
@@ -144,7 +144,7 @@
       "reward": true,
       "motion": {
         "type": 5,
-        "points": [{ "x": 60, "y": 5 }, { "x": 95, "y": 60 }, { "x": 60, "y": 5 }],
+        "points": [{ "x": 65, "y": 80} , { "x": 90, "y": 40 }, { "x": 65, "y": 80}],
         "speed": 0.5
       },
       "weapon": {
@@ -186,7 +186,7 @@
       "lasers": [
         {
           "damage": 30,
-          "length": 3500,
+          "length": 3000,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }

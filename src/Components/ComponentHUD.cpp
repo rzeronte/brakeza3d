@@ -72,7 +72,7 @@ void ComponentHUD::loadImages()
 {
     HUDTextures->addItem(SETUP->HUD_FOLDER + "splash.png", "splash");
     HUDTextures->addItem(SETUP->HUD_FOLDER + "loading.png", "loading");
-    HUDTextures->addItem(SETUP->ICONS_FOLDER + "gravitational_shield.png", "reflectionIcon");
+    HUDTextures->addItem(SETUP->ICONS_FOLDER + "weapon_reflection.png", "reflectionIcon");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "hud_background.png", "hudBackground");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_bronze.png", "medalBronze");
     HUDTextures->addItem(SETUP->IMAGES_FOLDER + "medals/shaded_medal_silver.png", "medalSilver");
@@ -205,7 +205,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     );
 
     // icon player reflection
-    auto weaponReflection = player->getWeaponTypeByLabel("hologram");
+    auto weaponReflection = player->getWeaponTypeByLabel("reflection");
     float reflectionAlpha = 75;
     if (weaponReflection->getAmmoAmount() > 0) {
         reflectionAlpha = 255;

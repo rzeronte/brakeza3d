@@ -9,6 +9,43 @@
   "enemies": [
   ],
   "items": [
+    {
+      "type": 1,
+      "position": { "x": 10, "y": 5 }
+    },
+    {
+      "type": 2,
+      "position": { "x": 20, "y": 5 }
+    },
+    {
+      "type": 3,
+      "position": { "x": 30, "y": 5 }
+    },
+    {
+      "type": 4,
+      "position": { "x": 40, "y": 5 }
+    },
+    {
+      "type": 5,
+      "position": { "x": 50, "y": 5 }
+    },
+    {
+      "type": 6,
+      "position": { "x": 60, "y": 5 }
+    },
+    {
+      "type": 7,
+      "position": { "x": 70, "y": 5 }
+    },
+    {
+      "type": 8,
+      "position": { "x": 80, "y": 5 }
+    },
+    {
+      "type": 9,
+      "position": { "x": 90, "y": 5 }
+    }
+
   ],
   "bosses": [
     {

@@ -53,6 +53,8 @@ private:
     Sprite3D *explosionSpriteTemplate;
     TextureAnimated *radioWave;
 
+    Mesh3D *itemBoxFrame;
+
     Image *imageCredits;
     Image *imageHelp;
     Image *imageSplash;
@@ -245,7 +247,9 @@ public:
 
     EngineSetup::GameState gameState;
 
-    PlayerReflection *getClosestReflection(Vertex3D from) const;
+    [[nodiscard]] PlayerReflection *getClosestReflection(Vertex3D from) const;
+
+    Mesh3D *getItemBoxFrame() const;
 };
 
 

@@ -142,7 +142,7 @@ void EnemyGhost::handleDie()
     makeReward();
 
     Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
-    Tools::makeExplosionSprite(getPosition());
+    //Tools::makeExplosionSprite(getPosition());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
 
@@ -183,7 +183,7 @@ void EnemyGhost::makeReward()
     switch(typePresent) {
         case 0: {
             auto *healthItem = new ItemHealthGhost();
-            healthItem->setLabel("item_health");
+            healthItem->setLabel("itemHealth");
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
@@ -202,7 +202,7 @@ void EnemyGhost::makeReward()
         }
         case 1: {
             auto *healthItem = new ItemEnergyGhost();
-            healthItem->setLabel("item_energy");
+            healthItem->setLabel("itemEnergy");
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
@@ -220,9 +220,13 @@ void EnemyGhost::makeReward()
             break;
         }
         case 2: {
-            int randomWeapon = Tools::random(0, 3);
-            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon]);
-            weaponItem->setLabel("item_weapon");
+            int randomWeapon = Tools::random(0, 5);
+            bool frameBox = false;
+            if (randomWeapon == WEAPON_SHIELD || randomWeapon == WEAPON_REFLECTION || randomWeapon == WEAPON_BOMB) {
+                frameBox = true;
+            }
+            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon], frameBox);
+            weaponItem->setLabel("itemWeapon");
             weaponItem->setEnableLights(false);
             weaponItem->setPosition(getPosition());
             weaponItem->setRotation(0, 0, 180);
@@ -274,7 +278,7 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
             }
 
             if (ray != nullptr) {
-                ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER_PROJECTILE);
+                ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_LASER);
             }
 
             this->takeDamage((float) projectile->getDamage());
@@ -324,7 +328,7 @@ void EnemyGhost::shoot(Object3D *target)
             );
             break;
         }
-        case WeaponTypes::WEAPON_LASER_PROJECTILE: {
+        case WeaponTypes::WEAPON_LASER: {
             weapon->shootLaserProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
@@ -352,7 +356,7 @@ void EnemyGhost::shoot(Object3D *target)
 
             break;
         }
-        case WeaponTypes::WEAPON_LASER_RAY: {
+        case WeaponTypes::WEAPON_RAYLIGHT: {
             rayLight.setEnabled(true);
             weapon->shootRayLight(rayLight, 0.5);
             break;

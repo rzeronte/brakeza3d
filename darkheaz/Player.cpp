@@ -42,7 +42,7 @@ Player::Player()
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    shaderParticles = new ShaderParticles(true, Color(0, 0, 255), Color(0, 255, 255), OCParticlesContext(
+    shaderParticles = new ShaderParticles(true, Color(0, 255, 0), Color(255, 255, 255), OCParticlesContext(
         0.0f,
         0.0025f,
         1.5f,
@@ -54,6 +54,20 @@ Player::Player()
         2.0f,
         0.8f,
         0.98f
+    ));
+
+    shaderParticlesTwo = new ShaderParticles(true, Color(0, 255, 0), Color(255, 255, 255), OCParticlesContext(
+            0.0f,
+            0.0025f,
+            1.5f,
+            45.0f,
+            0.0f,
+            50.0f,
+            50.0f,
+            255.0f,
+            2.0f,
+            0.8f,
+            0.98f
     ));
 
     shaderEnergyShield = new ShaderEnergyShield(
@@ -88,7 +102,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    //this->stamina -= dmg;
+    this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
@@ -144,7 +158,7 @@ void Player::shoot(float intensity)
 
             break;
         }
-        case WeaponTypes::WEAPON_LASER_PROJECTILE: {
+        case WeaponTypes::WEAPON_LASER: {
             weapon->shootLaserProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
@@ -165,11 +179,11 @@ void Player::shoot(float intensity)
             weapon->shootShield(this, getPosition());
             break;
         }
-        case WeaponTypes::WEAPON_HOLOGRAM: {
+        case WeaponTypes::WEAPON_REFLECTION: {
             weapon->shootHologram(this, getPosition());
             break;
         }
-        case WeaponTypes::WEAPON_LASER_RAY: {
+        case WeaponTypes::WEAPON_RAYLIGHT: {
             weapon->shootRayLight(rayLight, intensity * 0.5f);
             break;
         }
@@ -313,7 +327,16 @@ void Player::updateShaderParticles()
 {
     shaderParticles->update(
         Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-1000),
+            getPosition() - AxisUp().getScaled(-1000) - AxisLeft().getScaled(220),
+            ComponentsManager::get()->getComponentCamera()->getCamera()
+        ),
+        AxisUp(),
+        (velocity.getModule() / maxVelocity) + 0.1f
+    );
+
+    shaderParticlesTwo->update(
+        Transforms::WorldToPoint(
+            getPosition() - AxisUp().getScaled(-1000) + AxisLeft().getScaled(220),
             ComponentsManager::get()->getComponentCamera()->getCamera()
         ),
         AxisUp(),
@@ -444,7 +467,7 @@ void Player::resolveCollision(Collisionable *with)
     auto human = dynamic_cast<ItemHumanGhost*> (with);
     if (human != nullptr) {
         Logging::Log("human rescued!");
-        ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentSound()->sound("yes", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         increaseHumans();
         human->removeCollisionObject();
         human->remove();
@@ -744,6 +767,7 @@ Player::~Player()
     delete avatar;
     delete shaderEnergyShield;
     delete shaderParticles;
+    delete shaderParticlesTwo;
 
     for (auto w : weaponTypes) {
         delete w;
