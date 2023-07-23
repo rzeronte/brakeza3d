@@ -376,72 +376,11 @@ ColorHSV Tools::getColorHSV(Color in)
     return out;
 }
 
-Color Tools::getColorRGB(ColorHSV in)
-{
-    double      hh, p, q, t, ff;
-    long        i;
-    Color         out;
-
-    if(in.s <= 0.0) {       // < is bogus, just shuts up warnings
-        out.r = in.v;
-        out.g = in.v;
-        out.b = in.v;
-        return out;
-    }
-    hh = in.h;
-    if(hh >= 360.0) hh = 0.0;
-    hh /= 60.0;
-    i = (long)hh;
-    ff = hh - i;
-    p = in.v * (1.0 - in.s);
-    q = in.v * (1.0 - (in.s * ff));
-    t = in.v * (1.0 - (in.s * (1.0 - ff)));
-
-    switch(i) {
-        case 0:
-            out.r = in.v;
-            out.g = t;
-            out.b = p;
-            break;
-        case 1:
-            out.r = q;
-            out.g = in.v;
-            out.b = p;
-            break;
-        case 2:
-            out.r = p;
-            out.g = in.v;
-            out.b = t;
-            break;
-
-        case 3:
-            out.r = p;
-            out.g = q;
-            out.b = in.v;
-            break;
-        case 4:
-            out.r = t;
-            out.g = p;
-            out.b = in.v;
-            break;
-        case 5:
-        default:
-            out.r = in.v;
-            out.g = p;
-            out.b = q;
-            break;
-    }
-
-    out = Color(out.r * 255, out.g * 255, out.b * 255);
-
-    return out;
-}
-
 Vertex3D Tools::randomVertex() {
     return Vertex3D(
-        Tools::random(1, 2),
-        Tools::random(1, 2),
-        Tools::random(1, 2)
+        Tools::random(-2, 2),
+        Tools::random(-2, 2),
+        Tools::random(-2, 2)
     );
 }
 
@@ -545,11 +484,11 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
 
 void Tools::makeExplosionSprite(Vertex3D position)
 {
-    auto sprite = new Sprite3D(10, 10);
+    auto sprite = new Sprite3D(100, 100);
 
     Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
     Vector3D direction(origin, position);
-    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(30));
+    sprite->setPosition(origin + direction.getComponent().getNormalize().getScaled(1000));
 
     sprite->linkTextureAnimation(ComponentsManager::get()->getComponentGame()->getExplosionSpriteTemplate());
     sprite->setAnimation(0);

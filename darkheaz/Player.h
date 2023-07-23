@@ -78,6 +78,7 @@ private:
     PlayerSatellite satellite;
 
     ShaderParticles *shaderParticles;
+    ShaderParticles *shaderParticlesTwo;
 
     Image *avatar;
     Image *shield;

@@ -441,7 +441,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
     const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
 
     if (controllerXButtonPressed || reflectionKeyPressed) {
-        auto weapon = player->getWeaponTypeByLabel("hologram");
+        auto weapon = player->getWeaponTypeByLabel("reflection");
         weapon->onUpdate();
         weapon->shootHologram(player, player->getPosition());
     }

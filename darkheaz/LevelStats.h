@@ -32,9 +32,9 @@ public:
     void increaseHit(int weaponType) {
         switch(weaponType) {
             case WEAPON_PROJECTILE: { projectilesWasHit++; break; }
-            case WEAPON_LASER_RAY: { rayLaserWasHit++; break; }
+            case WEAPON_RAYLIGHT: { rayLaserWasHit++; break; }
             case WEAPON_BOMB: { bombsWasHit++; break;}
-            case WEAPON_LASER_PROJECTILE: { projectilesLaserWasHit++; break; }
+            case WEAPON_LASER: { projectilesLaserWasHit++; break; }
             default: break;
         }
     }
@@ -42,9 +42,9 @@ public:
     void increase(int weaponType) {
         switch(weaponType) {
             case WEAPON_PROJECTILE: { projectiles++; break; }
-            case WEAPON_LASER_RAY: { rayLaser++; break; }
+            case WEAPON_RAYLIGHT: { rayLaser++; break; }
             case WEAPON_BOMB: { bombs++; break; }
-            case WEAPON_LASER_PROJECTILE: { projectilesLaser++; break;}
+            case WEAPON_LASER: { projectilesLaser++; break;}
             default: break;
         }
     }
@@ -54,9 +54,9 @@ public:
 
         switch(weaponType) {
             case WEAPON_PROJECTILE: { output += Tools::sprintf("%d/%d", projectilesWasHit, projectiles); break; }
-            case WEAPON_LASER_RAY: { output += Tools::sprintf("%d/%d", rayLaserWasHit, rayLaser); break; }
+            case WEAPON_RAYLIGHT: { output += Tools::sprintf("%d/%d", rayLaserWasHit, rayLaser); break; }
             case WEAPON_BOMB: { output += Tools::sprintf("%d/%d", projectilesLaserWasHit, projectilesLaser); break; }
-            case WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%d/%d", bombsWasHit, bombs); break; }
+            case WEAPON_LASER: { output += Tools::sprintf("%d/%d", bombsWasHit, bombs); break; }
             default: break;
         }
 
@@ -69,9 +69,9 @@ public:
 
         switch(weaponType) {
             case WEAPON_PROJECTILE: { percentage = Tools::percentage(projectilesWasHit, projectiles); break; }
-            case WEAPON_LASER_RAY: { percentage = Tools::percentage(rayLaserWasHit, rayLaser); break; }
+            case WEAPON_RAYLIGHT: { percentage = Tools::percentage(rayLaserWasHit, rayLaser); break; }
             case WEAPON_BOMB: { percentage = Tools::percentage(projectilesLaserWasHit, projectilesLaser); break; }
-            case WEAPON_LASER_PROJECTILE: {  percentage = Tools::percentage(bombsWasHit, bombs); break; }
+            case WEAPON_LASER: { percentage = Tools::percentage(bombsWasHit, bombs); break; }
             default: break;
         }
 
@@ -93,9 +93,9 @@ public:
 
         switch(weaponType) {
             case WEAPON_PROJECTILE: { output += Tools::sprintf("%.2f%%", Tools::percentage(projectilesWasHit, projectiles)); break; }
-            case WEAPON_LASER_RAY: { output += Tools::sprintf("%.2f%%", Tools::percentage(rayLaserWasHit, rayLaser)); break; }
+            case WEAPON_RAYLIGHT: { output += Tools::sprintf("%.2f%%", Tools::percentage(rayLaserWasHit, rayLaser)); break; }
             case WEAPON_BOMB: { output += Tools::sprintf("%.2f%%", Tools::percentage(projectilesLaserWasHit, projectilesLaser)); break; }
-            case WEAPON_LASER_PROJECTILE: {  output += Tools::sprintf("%.2f%%", Tools::percentage(bombsWasHit, bombs)); break; }
+            case WEAPON_LASER: { output += Tools::sprintf("%.2f%%", Tools::percentage(bombsWasHit, bombs)); break; }
             default: break;
         }
 

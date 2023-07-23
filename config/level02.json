@@ -42,17 +42,17 @@
     },
     {
       "type": 1,
-      "position": { "x": 30, "y": 40 },
+      "position": { "x": 30, "y": 30 },
       "help": 0
     },
     {
       "type": 3,
-      "position": { "x": 50, "y": 40 },
+      "position": { "x": 50, "y": 30 },
       "help": 1
     },
     {
       "type": 6,
-      "position": { "x": 70, "y": 40 },
+      "position": { "x": 70, "y": 30 },
       "help": 2
     }
   ],

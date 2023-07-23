@@ -11,12 +11,12 @@
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,
-    WEAPON_LASER_PROJECTILE = 1,
-    WEAPON_LASER_RAY = 2,
+    WEAPON_LASER = 1,
+    WEAPON_RAYLIGHT = 2,
     WEAPON_BOMB = 3,
-    SHOCK = 4,
-    WEAPON_HOLOGRAM = 5,
-    WEAPON_SHIELD = 6
+    WEAPON_REFLECTION = 4,
+    WEAPON_SHIELD = 5,
+    SHOCK = 6,
 };
 
 class Weapon {

@@ -122,6 +122,15 @@ void ComponentGame::onStart()
     boxStore = new Image(SETUP->IMAGES_FOLDER + "store_box.png");
 
     storeManager = new StoreManager(player, textWriter);
+
+    itemBoxFrame = new Mesh3D();
+    itemBoxFrame->setRotation(0, 0, 0);
+    itemBoxFrame->setEnabled(false);
+    itemBoxFrame->setAlpha(255);
+    itemBoxFrame->setEnableLights(true);
+    itemBoxFrame->setScale(1);
+    itemBoxFrame->setStencilBufferEnabled(true);
+    itemBoxFrame->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "frame_box.fbx"));
 }
 
 void ComponentGame::loadShaders()
@@ -390,15 +399,15 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     offsetX += space;
     player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_PROJECTILE).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_PROJECTILE), offsetX, 250, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER_RAY).c_str(), secondaryColor, 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER_RAY), offsetX, 250, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(), secondaryColor, 0.3);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
@@ -636,7 +645,7 @@ void ComponentGame::loadPlayer()
     player->onStartSetup();
 
     explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 12, 20);
+    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion02/explosion"), 12, 20);
     explosionSpriteTemplate->setAnimation(0);
 
     radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
@@ -1357,5 +1366,9 @@ void ComponentGame::setHelp(Image *help)
 
 StoreManager *ComponentGame::getStoreManager() const {
     return storeManager;
+}
+
+Mesh3D *ComponentGame::getItemBoxFrame() const {
+    return itemBoxFrame;
 }
 

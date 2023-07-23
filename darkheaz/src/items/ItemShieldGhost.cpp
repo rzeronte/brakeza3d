@@ -54,9 +54,8 @@ void ItemShieldGhost::resolveCollision(Collisionable *collisionable)
         setRemoved(true);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
-
         enemy->takeDamage(getDamage());
-        enemy->stuck(5);
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
     }
 }
 

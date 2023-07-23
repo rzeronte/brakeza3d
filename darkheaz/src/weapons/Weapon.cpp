@@ -277,7 +277,7 @@ void Weapon::shootLaserProjectile(
 
         setAmmoAmount(getAmmoAmount() - 1);
 
-        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(WEAPON_LASER_PROJECTILE);
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(WEAPON_LASER);
 
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 

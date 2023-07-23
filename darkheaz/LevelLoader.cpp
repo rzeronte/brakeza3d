@@ -345,7 +345,13 @@ ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
 ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
 {
     auto weapons = ComponentsManager::get()->getComponentGame()->getWeapons();
-    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
+
+    bool frameBox = false;
+    if (indexWeapon == WEAPON_SHIELD || indexWeapon == WEAPON_REFLECTION || indexWeapon == WEAPON_BOMB) {
+        frameBox = true;
+    }
+
+    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon], frameBox);
     weaponItem->setLabel(Brakeza3D::uniqueObjectLabel("itemWeapon"));
     weaponItem->setEnableLights(false);
     weaponItem->clone(weapons[indexWeapon]->getModel());
@@ -663,20 +669,32 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             item->setTutorialIndex(helpIndex);
             break;
         }
+        case LevelInfoItemsTypes::ITEM_WEAPON_RAYLIGHT: {
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_RAYLIGHT, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
+            break;
+        }
+        case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER, position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
+            break;
+        }
         case LevelInfoItemsTypes::ITEM_WEAPON_BOMB: {
             auto item = this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
-        case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER_RAY, position);
+        case LevelInfoItemsTypes::ITEM_WEAPON_REFLECTION: {
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_REFLECTION, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
-        case LevelInfoItemsTypes::ITEM_WEAPON_SMART: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER_PROJECTILE, position);
+        case LevelInfoItemsTypes::ITEM_SHIELD: {
+            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_SHIELD, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
