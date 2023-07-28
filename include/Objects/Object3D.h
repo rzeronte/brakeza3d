@@ -139,6 +139,8 @@ public:
     virtual cJSON *getJSON();
 
     [[nodiscard]] const Vertex3D &getRotationFrame() const;
+
+    void lookAt(Object3D *o);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

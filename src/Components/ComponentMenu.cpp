@@ -70,13 +70,13 @@ void ComponentMenu::loadDecorative3DMesh()
     astronaut->setEnabled(false);
     astronaut->setAlpha(255);
     astronaut->setEnableLights(false);
-    astronaut->setPosition(Vertex3D(0, -928, 10000));
+    astronaut->setPosition(Vertex3D(-3800, 1000, 10000));
     astronaut->setRotationFrameEnabled(true);
-    astronaut->setRotationFrame(Vertex3D(0.1f, 0.02, 0.01));
-    astronaut->setRotation(0, 0, 0);
-    astronaut->setScale(3.4);
+    astronaut->setRotationFrame(Vertex3D(0.02f, 0.1f, 0.01));
+    astronaut->setRotation(20, 40, 0);
+    astronaut->setScale(0.2);
     astronaut->setStencilBufferEnabled(true);
-    astronaut->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
+    astronaut->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "space_hexagon.fbx"));
     astronaut->updateBoundingBox();
     Brakeza3D::get()->addObject3D(astronaut, "astronautMenu");
 
@@ -98,8 +98,7 @@ void ComponentMenu::onUpdate()
     if (!isEnabled()|| !isMenuEnabled()) return;
 
     pendulum->onUpdate();
-    astronaut->setRotation(pendulum->pendulumRotation);
-
+    //astronaut->setRotation(pendulum->pendulumRotation);
 
     const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
 

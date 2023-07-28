@@ -152,8 +152,8 @@ __kernel void onUpdate(
         updateFullArea(t);
         updateUVCache(t);
 
-        //t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
-        //if (t->clipped) return;
+        t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
+        if (t->clipped) return;
 
         if (isBackFaceCulling(t, &context->cameraData.position)) return;
 
@@ -194,7 +194,6 @@ __kernel void onUpdate(
 
                     const int bufferIndex = y * screenWidth + x;
 
-
                     alpha = (float) w0 * reciprocalFullArea;
                     theta = (float) w1 * reciprocalFullArea;
                     gamma = (float) w2 * reciprocalFullArea;
@@ -212,6 +211,17 @@ __kernel void onUpdate(
                         int tx = (int) getXTextureFromUV(surfaceWidth, texU);
                         int ty = (int) getYTextureFromUV(surfaceHeight, texV);
 
+                        if (texU < 0.0f) {
+                            texU = 1.0f - fmod(fabs(texU), 1.0f);
+                        } else {
+                            texU = fmod(texU, 1.0f);
+                        }
+
+                        if (texV < 0.0f) {
+                            texV = 1.0f - fmod(fabs(texV), 1.0f);
+                        } else {
+                            texV = fmod(texV, 1.0f);
+                        }
                         unsigned int color = texture[ty * surfaceWidth + tx];
 
                         unsigned char *color_bytes = (unsigned char *)&color;

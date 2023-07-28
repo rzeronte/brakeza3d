@@ -40,14 +40,14 @@
       "scale": 15,
       "position": { "x": 50, "y": 50, "z": 20000 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
+      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
     },
     {
       "name":	"Marsh",
       "position": { "x": 63,  "y":	35, "z": 30000 },
       "model":	"red_planet.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },
+      "rotationFrame": { "x": 0.01, "y": 0.1, "z": 0.05 },
       "scale":	15
     },
     {
@@ -55,7 +55,7 @@
       "position": { "x": 70,  "y":	40, "z": 90000 },
       "model":	"space_hexagon.fbx",
       "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
+      "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
       "scale":	0.6
     }
   ]
