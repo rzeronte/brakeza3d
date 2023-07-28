@@ -118,9 +118,9 @@ void EnemyGhost::updateEmitterParticles()
     particleEmitter->setPosition(getPosition());
 }
 
-void EnemyGhost::onDraw()
+void EnemyGhost::onDrawHostBuffer()
 {
-    Mesh3D::onDraw();
+    Mesh3D::onDrawHostBuffer();
 
     if (isStuck()) {
         Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
@@ -423,12 +423,12 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
     Brakeza3D::get()->addObject3D(ray, Brakeza3D::uniqueObjectLabel("fixedRay"));
 }
 
-void EnemyGhost::drawCall()
+void EnemyGhost::drawOnUpdateSecondPass()
 {
-    Object3D::drawCall();
+    Object3D::drawOnUpdateSecondPass();
 
     if (getBehavior() != nullptr) {
-        particleEmitter->drawCall();
+        particleEmitter->drawOnUpdateSecondPass();
     }
 }
 

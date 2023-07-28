@@ -79,7 +79,7 @@ public:
 
     virtual void postUpdate();
 
-    virtual void drawCall();
+    virtual void drawOnUpdateSecondPass();
 
     bool isRotationFrameEnabled();
 
@@ -125,7 +125,7 @@ public:
 
     [[nodiscard]] Object3D *getParent() const;
 
-    virtual void onDraw();
+    virtual void onDrawHostBuffer();
 
     [[nodiscard]] bool isEnableLights() const;
 

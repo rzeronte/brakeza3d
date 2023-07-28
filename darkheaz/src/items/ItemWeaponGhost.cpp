@@ -45,21 +45,21 @@ void ItemWeaponGhost::onUpdate()
     }
 }
 
-void ItemWeaponGhost::onDraw()
+void ItemWeaponGhost::onDrawHostBuffer()
 {
-    Mesh3D::onDraw();
+    Mesh3D::onDrawHostBuffer();
 
     if (hasFrame) {
-        frame->onDraw();
+        frame->onDrawHostBuffer();
     }
 }
 
-void ItemWeaponGhost::drawCall()
+void ItemWeaponGhost::drawOnUpdateSecondPass()
 {
-    Object3D::drawCall();
+    Object3D::drawOnUpdateSecondPass();
 
     if (hasFrame) {
-        frame->drawCall();
+        frame->drawOnUpdateSecondPass();
     }
 }
 

@@ -116,9 +116,9 @@ Color LightPoint3D::mixColor(Color colorTexture, Vertex3D Q, Fragment *fragment)
     return Color::mixColor(specularColor, diffuseColor, 0.5);
 }
 
-void LightPoint3D::onDraw()
+void LightPoint3D::onDrawHostBuffer()
 {
-    Object3D::onDraw();
+    Object3D::onDrawHostBuffer();
 
     if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
         Drawable::drawLinePoints(

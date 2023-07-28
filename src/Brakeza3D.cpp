@@ -63,7 +63,7 @@ void Brakeza3D::mainLoop()
 
         onUpdateComponents();
 
-        componentsManager->getComponentRender()->drawObjetsInHostBuffer();
+        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass(sceneObjects);
 
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 

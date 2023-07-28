@@ -41,7 +41,7 @@ public:
 
     [[nodiscard]] bool isWasCollision() const;
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
     ~AmmoProjectileBody() override;
 };

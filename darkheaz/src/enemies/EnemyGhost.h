@@ -63,9 +63,9 @@ public:
 
     void handleDie();
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
     std::vector<EnemyDialog *> dialogs;
 

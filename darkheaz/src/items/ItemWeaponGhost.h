@@ -18,9 +18,9 @@ public:
 
     void onUpdate() override;
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
     void postUpdate() override;
 

@@ -37,9 +37,9 @@ void Swarm::postUpdate()
 {
 }
 
-void Swarm::onDraw()
+void Swarm::onDrawHostBuffer()
 {
-    Object3D::onDraw();
+    Object3D::onDrawHostBuffer();
     for (auto o: objects) {
         //o->object->onDraw();
         Drawable::drawVertex(o->object->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());

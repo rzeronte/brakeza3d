@@ -20,13 +20,13 @@ public:
 
     void postUpdate() override;
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 
     void onStartSetup();
 
     void resolveCollision(Collisionable *collisionable) override;
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
     [[nodiscard]] float getDamage() const;
 

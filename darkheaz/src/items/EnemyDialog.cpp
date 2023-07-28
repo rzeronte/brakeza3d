@@ -49,7 +49,7 @@ void EnemyDialog::onUpdate(float staminaPercentage)
 
 void EnemyDialog::onDraw(Image *avatar, Vertex3D position)
 {
-    Object3D::onDraw();
+    Object3D::onDrawHostBuffer();
     auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
     if (gameState != EngineSetup::GAMING) return;

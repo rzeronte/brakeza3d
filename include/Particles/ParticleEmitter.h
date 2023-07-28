@@ -54,7 +54,7 @@ public:
 
     void setStopAdd(bool stopAdd);
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
     ShaderExplosion *shaderExplosion;
     ShaderParticles *shaderParticles;
