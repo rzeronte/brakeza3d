@@ -206,6 +206,8 @@ public:
     void loadBlinkKernel();
 
     _cl_kernel *getBlinkKernel();
+
+    void onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const;
 };
 
 
