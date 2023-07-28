@@ -209,7 +209,8 @@ float M3::getRollDegree() {
     return Maths::radiansToDegrees(this->getRoll());
 }
 
-M3 M3::getFromVectors(Vertex3D ZAxis, Vertex3D YAxis) {
+M3 M3::getFromVectors(Vertex3D ZAxis, Vertex3D YAxis)
+{
     M3 m;
 
     Vertex3D Xi = (ZAxis % YAxis).getNormalize();
