@@ -146,6 +146,7 @@ void ComponentGame::loadShaders()
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
     shaderBackgroundImage->setUseOffset(true);
+    shaderEdgeObject = new ShaderEdgeObject(false, Color::green());
 }
 
 ComponentGame::~ComponentGame()
@@ -229,16 +230,7 @@ void ComponentGame::preUpdate()
         case EngineSetup::SPACESHIP_SELECTOR: {
             const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
 
-            imageCablesStore->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
-
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", Color::black(), 0.2);
             break;
         }
     }
@@ -380,8 +372,20 @@ void ComponentGame::onUpdate()
         case EngineSetup::SPACESHIP_SELECTOR: {
             const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
 
+            imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            //spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
+
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", Color::black(), 0.2);
+
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
+            shaderEdgeObject->update();
             break;
         }
     }
@@ -604,6 +608,10 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         }
         case EngineSetup::SPACESHIP_SELECTOR: {
             spaceships[spaceshipSelectedIndex]->setEnabled(true);
+            shaderEdgeObject->setEnabled(true);
+
+            shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
+
             ComponentsManager::get()->getComponentMenu()->astronaut->setEnabled(false);
         }
 
@@ -1009,6 +1017,8 @@ void ComponentGame::setVisibleInGameObjects(bool value)
     for (auto spaceship: spaceships) {
         spaceship->setEnabled(false);
     }
+
+    shaderEdgeObject->setEnabled(false);
 }
 
 void ComponentGame::loadWeapons()
@@ -1055,6 +1065,8 @@ void ComponentGame::selectSpaceshipAndStartGame()
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
     ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     loadSelectedSpaceshipModel();
+    spaceships[spaceshipSelectedIndex]->setEnabled(false);
+    shaderEdgeObject->setEnabled(false);
 
     player->respawn();
 }
@@ -1456,6 +1468,7 @@ void ComponentGame::handleEnableVAT()
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
 {
     auto model = new Mesh3D();
+    model->setLayer(Mesh3DRenderLayer::SECONDARY);
     model->setRotation(0, 0, 0);
     model->setRotationFrameEnabled(true);
     model->setRotationFrame(Vertex3D(0, 1, 0));
@@ -1481,6 +1494,7 @@ void ComponentGame::increaseSpaceshipSelected()
         spaceshipSelectedIndex++;
     }
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
+    shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
 }
 
 void ComponentGame::decreaseSpaceshipSelected()
@@ -1490,4 +1504,5 @@ void ComponentGame::decreaseSpaceshipSelected()
         spaceshipSelectedIndex--;
     }
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
+    shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
 }

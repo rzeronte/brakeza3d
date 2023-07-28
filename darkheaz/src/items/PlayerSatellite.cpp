@@ -59,8 +59,8 @@ void PlayerSatellite::postUpdate()
     Mesh3D::postUpdate();
 }
 
-void PlayerSatellite::onDraw() {
-    Mesh3D::onDraw();
+void PlayerSatellite::onDrawHostBuffer() {
+    Mesh3D::onDrawHostBuffer();
 }
 
 void PlayerSatellite::resolveCollision(Collisionable *collisionable)
@@ -74,9 +74,9 @@ void PlayerSatellite::resolveCollision(Collisionable *collisionable)
     }
 }
 
-void PlayerSatellite::drawCall()
+void PlayerSatellite::drawOnUpdateSecondPass()
 {
-    Object3D::drawCall();
+    Object3D::drawOnUpdateSecondPass();
 
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();

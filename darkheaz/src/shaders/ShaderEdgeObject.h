@@ -26,6 +26,7 @@ public:
 
     void setColor(Color c);
 
+    void setObject(Mesh3D *object);
 };
 
 

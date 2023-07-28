@@ -113,10 +113,10 @@ void AmmoProjectileBody::onUpdate()
 }
 
 
-void AmmoProjectileBody::drawCall()
+void AmmoProjectileBody::drawOnUpdateSecondPass()
 {
-    Object3D::drawCall();
-    particleEmitter->drawCall();
+    Object3D::drawOnUpdateSecondPass();
+    particleEmitter->drawOnUpdateSecondPass();
 }
 
 void AmmoProjectileBody::startEndingCounter()

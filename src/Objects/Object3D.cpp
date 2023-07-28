@@ -232,7 +232,7 @@ float &Object3D::getRotZ() {
     return rotZ;
 }
 
-void Object3D::onDraw()
+void Object3D::onDrawHostBuffer()
 {
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(
@@ -262,7 +262,7 @@ const Vertex3D &Object3D::getRotationFrame() const {
     return rotationFrame;
 }
 
-void Object3D::drawCall() {
+void Object3D::drawOnUpdateSecondPass() {
 }
 
 void Object3D::lookAt(Object3D *o)

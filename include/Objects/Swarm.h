@@ -102,7 +102,7 @@ public:
 private:
     void postUpdate() override;
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 
     Vertex3D randomVertexInsideAABB();
 

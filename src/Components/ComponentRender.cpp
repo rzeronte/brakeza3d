@@ -46,7 +46,7 @@ void ComponentRender::drawObjetsInHostBuffer()
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         if (object != nullptr && !object->isRemoved()) {
-            object->onDraw();
+            object->onDrawHostBuffer();
         }
     }
 
@@ -282,10 +282,12 @@ void ComponentRender::onUpdateSceneObjects()
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderDepthOfField->update();
     }
+}
 
+void ComponentRender::onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const {
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
-            object->drawCall();
+            object->drawOnUpdateSecondPass();
         }
     }
 }

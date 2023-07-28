@@ -199,9 +199,9 @@ public:
 
     [[nodiscard]] ShaderParticles *getShaderParticles() const;
 
-    void drawCall() override;
+    void drawOnUpdateSecondPass() override;
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 
     Image *getAvatar();
 

@@ -280,7 +280,7 @@ void Player::updatePlayerEnergy()
     }
 }
 
-void Player::drawCall()
+void Player::drawOnUpdateSecondPass()
 {
     if (counterDamageBlink.isEnabled()) {
         counterDamageBlink.update();
@@ -291,7 +291,7 @@ void Player::drawCall()
     }
 
     if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
-        satellite.drawCall();
+        satellite.drawOnUpdateSecondPass();
     }
 
     updateShaderParticles();
@@ -304,9 +304,9 @@ void Player::drawCall()
     }
 }
 
-void Player::onDraw()
+void Player::onDrawHostBuffer()
 {
-    Mesh3D::onDraw();
+    Mesh3D::onDrawHostBuffer();
     if (isStucked()) {
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),

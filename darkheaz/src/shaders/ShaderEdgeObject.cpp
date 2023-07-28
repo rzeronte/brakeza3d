@@ -58,3 +58,7 @@ ShaderEdgeObject::~ShaderEdgeObject() {
 void ShaderEdgeObject::setColor(Color c) {
     this->color = c;
 }
+
+void ShaderEdgeObject::setObject(Mesh3D *object) {
+    ShaderEdgeObject::object = object;
+}

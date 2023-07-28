@@ -11,7 +11,8 @@ Mesh3D::Mesh3D()
     grid(nullptr),
     sharedTextures(false),
     flatTextureColor(false),
-    render(true)
+    render(true),
+    layer(Mesh3DRenderLayer::ONUPDATE)
 {
     decal = false;
     openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
@@ -120,6 +121,21 @@ void Mesh3D::onUpdate()
         //this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
     }
 
+    if (layer == Mesh3DRenderLayer::ONUPDATE) {
+        onUpdateOpenCLRender();
+    }
+}
+
+void Mesh3D::drawOnUpdateSecondPass()
+{
+    Object3D::drawOnUpdateSecondPass();
+
+    if (layer == Mesh3DRenderLayer::SECONDARY) {
+        onUpdateOpenCLRender();
+    }
+}
+
+void Mesh3D::onUpdateOpenCLRender() {
     if ((int) modelTriangles.size() > 0) {
         openClRenderer->onUpdate(modelTextures[0]);
     }
@@ -398,9 +414,9 @@ MeshOpenCLRenderer *Mesh3D::getOpenClRenderer() const {
     return openClRenderer;
 }
 
-void Mesh3D::onDraw()
+void Mesh3D::onDrawHostBuffer()
 {
-    Object3D::onDraw();
+    Object3D::onDrawHostBuffer();
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
         if (this->octree != nullptr) {
@@ -465,4 +481,12 @@ cJSON * Mesh3D::getJSON()
     cJSON_AddNumberToObject(root, "scale", getScale());
 
     return root;
+}
+
+Mesh3DRenderLayer Mesh3D::getLayer() const {
+    return layer;
+}
+
+void Mesh3D::setLayer(Mesh3DRenderLayer layer) {
+    Mesh3D::layer = layer;
 }

@@ -73,6 +73,7 @@ private:
     ShaderImage *shaderBackgroundImage;
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
+    ShaderEdgeObject *shaderEdgeObject;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;

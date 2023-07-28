@@ -55,7 +55,7 @@ void ParticleEmitter::onUpdate()
     }
 }
 
-void ParticleEmitter::drawCall()
+void ParticleEmitter::drawOnUpdateSecondPass()
 {
     if (state == ParticleEmitterState::DEFAULT) {
         shaderParticles->update();

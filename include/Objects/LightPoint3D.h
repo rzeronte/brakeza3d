@@ -66,7 +66,7 @@ public:
 
     void drawDeepMap(int pos_x, int pos_y) const;
 
-    void onDraw() override;
+    void onDrawHostBuffer() override;
 };
 
 
