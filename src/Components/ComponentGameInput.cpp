@@ -17,7 +17,8 @@ void ComponentGameInput::preUpdate()
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING ||
+            ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::VAT) {
         this->handleKeyboardMovingPlayer();
         this->handleGamePadMovingPlayer();
         this->handleFire();
@@ -50,21 +51,22 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
 
     if (state == EngineSetup::GameState::MENU) {
-        this->handleMenuKeyboard(event, end);
+        handleMenuKeyboard(event, end);
         return;
     }
 
     this->handlePressKeyGameStates(event);
 
-    if (state == EngineSetup::GameState::GAMING) {
-        this->handleFindClosestObject3D(event);
-        this->handleWeaponSelector(event);
-        this->handleDashMovement(event);
-        this->handleEnergyShield(event);
-        this->handleBomb(event);
-        this->handleShield(event);
-        this->handleMakeReflection(event);
-        this->updateWeaponStatus(event);
+    if (state == EngineSetup::GameState::GAMING || state == EngineSetup::VAT) {
+        handleFindClosestObject3D(event);
+        handleWeaponSelector(event);
+        handleDashMovement(event);
+        handleEnergyShield(event);
+        handleBomb(event);
+        handleShield(event);
+        handleMakeReflection(event);
+        updateWeaponStatus(event);
+        updateVat(event);
     }
 
     //this->handleZoom(event);
@@ -170,7 +172,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_NEW_GAME) {
-            ComponentsManager::get()->getComponentGame()->pressedKeyForNewGame();
+            ComponentsManager::get()->getComponentGame()->pressedKeyForNewGameOrResumeGame();
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
@@ -502,6 +504,25 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
     }
 
+    if (state == EngineSetup::GameState::SPACESHIP_SELECTOR) {
+        if (cursorLeft || controllerLeft) {
+            game->decreaseSpaceshipSelected();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
+        }
+
+        if (cursorRight || controllerRight) {
+            game->increaseSpaceshipSelected();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
+        }
+
+        if (enter || componentInput->getControllerButtonA()) {
+            ComponentsManager::get()->getComponentGame()->selectSpaceshipAndStartGame();
+            return;
+        }
+    }
+
     if ((state == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
         if (isButtonGuidedPressed || enter) {
             game->pressedKeyForBeginLevel();
@@ -581,4 +602,15 @@ void ComponentGameInput::handleShield(SDL_Event *event)
 
 float ComponentGameInput::getControllerAxisThreshold() const {
     return controllerAxisThreshold;
+}
+
+void ComponentGameInput::updateVat(SDL_Event *event)
+{
+    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
+    const bool vatKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_V];
+
+    if (vatKeyPressed) {
+        ComponentsManager::get()->getComponentGame()->pressedKeyToVAT();
+
+    }
 }

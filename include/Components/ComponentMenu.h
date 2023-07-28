@@ -20,7 +20,6 @@ private:
     ShaderImageMask *shaderMenuTitle;
 
     Mesh3D *planet;
-    Mesh3D *astronaut;
 
     LightPoint3D *light;
     SimplePendulum *pendulum;
@@ -79,6 +78,7 @@ public:
         MNU_HELP = 2,
         MNU_EXIT = 3,
     };
+    Mesh3D *astronaut;
 };
 
 

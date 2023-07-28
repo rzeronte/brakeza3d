@@ -5,25 +5,26 @@
 
 ComponentGame::ComponentGame()
 :
-        cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
-        cameraInGamePosition(Vertex3D(0, -1000, -1000)),
-        textWriter(nullptr),
-        fadeToGameState(nullptr),
-        player(nullptr),
-        shaderProjectiles(nullptr),
-        explosionSpriteTemplate(nullptr),
-        imageCredits(nullptr),
-        imageHelp(nullptr),
-        imageSplash(nullptr),
-        imageCrossFire(nullptr),
-        levelLoader(nullptr),
-        shaderBackgroundImage(nullptr),
-        shaderColor(nullptr),
-        shaderShockWave(nullptr),
-        primaryColor(Color(118, 185, 32)),
-        secondaryColor(Color(118, 185, 32)),
-        thirdColor(Color(0, 0, 255)),
-        gameState(EngineSetup::GameState::NONE)
+    cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
+    cameraInGamePosition(Vertex3D(0, -1000, -1000)),
+    textWriter(nullptr),
+    fadeToGameState(nullptr),
+    player(nullptr),
+    shaderProjectiles(nullptr),
+    explosionSpriteTemplate(nullptr),
+    imageCredits(nullptr),
+    imageHelp(nullptr),
+    imageSplash(nullptr),
+    imageCrossFire(nullptr),
+    levelLoader(nullptr),
+    shaderBackgroundImage(nullptr),
+    shaderColor(nullptr),
+    shaderShockWave(nullptr),
+    primaryColor(Color(118, 185, 32)),
+    secondaryColor(Color(118, 185, 32)),
+    thirdColor(Color(0, 0, 255)),
+    spaceshipSelectedIndex(0),
+    gameState(EngineSetup::GameState::NONE)
 {
 }
 
@@ -131,6 +132,11 @@ void ComponentGame::onStart()
     itemBoxFrame->setScale(1);
     itemBoxFrame->setStencilBufferEnabled(true);
     itemBoxFrame->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "frame_box.fbx"));
+
+
+    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png");
+    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
+    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
 }
 
 void ComponentGame::loadShaders()
@@ -213,11 +219,28 @@ void ComponentGame::preUpdate()
             }
             break;
         }
+        case EngineSetup::VAT: {
+
+        }
         case EngineSetup::NONE:
         case EngineSetup::SPLASH:
         case EngineSetup::MENU:
             break;
+        case EngineSetup::SPACESHIP_SELECTOR: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
 
+            imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
+
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", Color::black(), 0.2);
+            break;
+        }
     }
 }
 
@@ -337,6 +360,28 @@ void ComponentGame::onUpdate()
             textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
 
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            break;
+        }
+        /*case EngineSetup::VAT: {
+            Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+            Vertex3D to = player->getPosition() - player->AxisLeft().getScaled(-2000) - player->AxisUp().getScaled(-2000);
+
+            Vector3D direction(origin, to);
+
+            float t = Brakeza3D::get()->getDeltaTime();
+            auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+            auto selected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+            camera->setPosition(to);
+            if (selected != nullptr) {
+                camera->lookAt(selected);
+            }
+            break;
+        }*/
+        case EngineSetup::SPACESHIP_SELECTOR: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
             break;
         }
     }
@@ -553,6 +598,15 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::STORE: {
             break;
         }
+        case EngineSetup::VAT: {
+            handleEnableVAT();
+            break;
+        }
+        case EngineSetup::SPACESHIP_SELECTOR: {
+            spaceships[spaceshipSelectedIndex]->setEnabled(true);
+            ComponentsManager::get()->getComponentMenu()->astronaut->setEnabled(false);
+        }
+
     }
 
     this->gameState = state;
@@ -620,6 +674,18 @@ EngineSetup::GameState ComponentGame::getGameState() {
     return gameState;
 }
 
+void ComponentGame::loadSelectedSpaceshipModel()
+{
+    player->clone(spaceships[spaceshipSelectedIndex]);
+    player->updateBoundingBox();
+    player->makeSimpleGhostBody(
+        Vertex3D(500, 500, 500),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Player,
+        EngineSetup::collisionGroups::AllFilter
+    );
+}
+
 void ComponentGame::loadPlayer()
 {
     player->setLabel("player");
@@ -632,14 +698,6 @@ void ComponentGame::loadPlayer()
     player->setStamina(100);
     player->setStencilBufferEnabled(true);
     player->setAutoRotationToFacingSelectedObjectSpeed(5);
-    player->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "spaceships/player.fbx"));
-    player->updateBoundingBox();
-    player->makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::AllFilter
-    );
     Brakeza3D::get()->addObject3D(player, "player");
 
     player->onStartSetup();
@@ -914,7 +972,8 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
     }
 }
 
-void ComponentGame::setVisibleInGameObjects(bool value) {
+void ComponentGame::setVisibleInGameObjects(bool value)
+{
     for (auto object: Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
@@ -945,6 +1004,10 @@ void ComponentGame::setVisibleInGameObjects(bool value) {
 
     for (auto object: getLevelLoader()->objectsBackground) {
         object->setEnabled(value);
+    }
+
+    for (auto spaceship: spaceships) {
+        spaceship->setEnabled(false);
     }
 }
 
@@ -987,14 +1050,22 @@ const std::vector<Weapon *> &ComponentGame::getWeapons() const
     return weapons;
 }
 
-void ComponentGame::pressedKeyForNewGame()
+void ComponentGame::selectSpaceshipAndStartGame()
+{
+    makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
+    ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    loadSelectedSpaceshipModel();
+
+    player->respawn();
+}
+
+void ComponentGame::pressedKeyForNewGameOrResumeGame()
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-        makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
-        ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
+        makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
 
-        player->respawn();
     } else {
         makeFadeToGameState(EngineSetup::GameState::GAMING, true);
     }
@@ -1063,7 +1134,7 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
         gameState == EngineSetup::GAMING_TUTORIAL ||
-        gameState == EngineSetup::GAMING_TUTORIAL
+        gameState == EngineSetup::VAT
     ) {
         shaderBackgroundImage->update();
     }
@@ -1372,3 +1443,51 @@ Mesh3D *ComponentGame::getItemBoxFrame() const {
     return itemBoxFrame;
 }
 
+void ComponentGame::pressedKeyToVAT()
+{
+    setGameState(EngineSetup::VAT);
+
+}
+
+void ComponentGame::handleEnableVAT()
+{
+}
+
+void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
+{
+    auto model = new Mesh3D();
+    model->setRotation(0, 0, 0);
+    model->setRotationFrameEnabled(true);
+    model->setRotationFrame(Vertex3D(0, 1, 0));
+    model->setEnabled(false);
+    model->setAlpha(255);
+    model->setEnableLights(true);
+    model->setScale(1);
+    model->setStencilBufferEnabled(true);
+    model->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "/" + fileNameModel));
+    model->setPosition(Vertex3D(-1300, -1300, 4100));
+
+    Brakeza3D::get()->addObject3D(model, "spaceshipForSelection_" + std::to_string(spaceships.size()));
+    spaceships.push_back(model);
+
+    spaceshipsInformation.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + "/" + fileNameInformation));
+}
+
+
+void ComponentGame::increaseSpaceshipSelected()
+{
+    spaceships[spaceshipSelectedIndex]->setEnabled(false);
+    if (spaceshipSelectedIndex + 1 < (unsigned int) spaceships.size()) {
+        spaceshipSelectedIndex++;
+    }
+    spaceships[spaceshipSelectedIndex]->setEnabled(true);
+}
+
+void ComponentGame::decreaseSpaceshipSelected()
+{
+    spaceships[spaceshipSelectedIndex]->setEnabled(false);
+    if (spaceshipSelectedIndex > 0) {
+        spaceshipSelectedIndex--;
+    }
+    spaceships[spaceshipSelectedIndex]->setEnabled(true);
+}

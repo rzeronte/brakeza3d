@@ -182,3 +182,4 @@ Vector3D &Camera3D::getVelocity() {
 const Vertex3D &Camera3D::getFollowToPositionOffset() const {
     return followToPositionOffset;
 }
+

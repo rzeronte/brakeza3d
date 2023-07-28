@@ -57,17 +57,17 @@ Player::Player()
     ));
 
     shaderParticlesTwo = new ShaderParticles(true, Color(0, 255, 0), Color(255, 255, 255), OCParticlesContext(
-            0.0f,
-            0.0025f,
-            1.5f,
-            45.0f,
-            0.0f,
-            50.0f,
-            50.0f,
-            255.0f,
-            2.0f,
-            0.8f,
-            0.98f
+        0.0f,
+        0.0025f,
+        1.5f,
+        45.0f,
+        0.0f,
+        50.0f,
+        50.0f,
+        255.0f,
+        2.0f,
+        0.8f,
+        0.98f
     ));
 
     shaderEnergyShield = new ShaderEnergyShield(
@@ -102,7 +102,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    this->stamina -= dmg;
+    //this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;

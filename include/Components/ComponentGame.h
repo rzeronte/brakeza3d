@@ -90,6 +90,10 @@ private:
 
     StoreManager *storeManager;
 
+    std::vector <Mesh3D*> spaceships;
+    std::vector <Image*> spaceshipsInformation;
+    unsigned int spaceshipSelectedIndex;
+
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -142,7 +146,7 @@ public:
 
     void loadWeapons();
 
-    void pressedKeyForNewGame();
+    void pressedKeyForNewGameOrResumeGame();
 
     void pressedKeyForBeginLevel();
 
@@ -249,7 +253,21 @@ public:
 
     [[nodiscard]] PlayerReflection *getClosestReflection(Vertex3D from) const;
 
-    Mesh3D *getItemBoxFrame() const;
+    [[nodiscard]] Mesh3D *getItemBoxFrame() const;
+
+    void pressedKeyToVAT();
+
+    void handleEnableVAT();
+
+    void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation);
+
+    void increaseSpaceshipSelected();
+
+    void decreaseSpaceshipSelected();
+
+    void selectSpaceshipAndStartGame();
+
+    void loadSelectedSpaceshipModel();
 };
 
 

@@ -281,7 +281,10 @@ public:
         PRESS_KEY_BY_WIN = 11,
         INTRO = 12,
         GAMING_TUTORIAL = 13,
-        STORE = 14
+        STORE = 14,
+        VAT = 15,
+        SPACESHIP_SELECTOR = 16
+
     } GameState;
 
     typedef enum {
