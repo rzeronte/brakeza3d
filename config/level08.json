@@ -9,6 +9,7 @@
     {
       "name": "Patrol",
       "avatar": "avatars/bob.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -47,6 +48,7 @@
     {
       "name": "Patrol",
       "avatar": "avatars/bob.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "enableLights": true,
@@ -85,6 +87,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/pancake.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,

@@ -21,7 +21,6 @@ private:
 
     Mesh3D *planet;
 
-    LightPoint3D *light;
     SimplePendulum *pendulum;
 
     std::vector<MenuOption> options;
@@ -78,7 +77,7 @@ public:
         MNU_HELP = 2,
         MNU_EXIT = 3,
     };
-    Mesh3D *astronaut;
+    Mesh3D *hexagonStation;
 };
 
 

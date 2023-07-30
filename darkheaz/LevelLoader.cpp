@@ -47,7 +47,6 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
-    ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(0);
 
     loadLevelFromJSON(levels[levelIndex]);
 }
@@ -419,6 +418,11 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar") != nullptr) {
         std::string avatar = cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar")->valuestring;
         enemy->setAvatar(new Image(EngineSetup::get()->ICONS_FOLDER + avatar));
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatarHud") != nullptr) {
+        std::string avatarHud = cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatarHud")->valuestring;
+        enemy->setAvatarHud(new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud));
     }
 
     if (animated) {
@@ -917,7 +921,7 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
-    auto dialog = new EnemyDialog(490, 40, stamina, text.c_str(), 5, componentGame->getFontGame(), componentGame->getPrimaryColor());
+    auto dialog = new EnemyDialog(enemy, enemy->getAvatarHud(), enemy->getAvatar(), stamina, text.c_str(), enemy->getName().c_str(), componentGame->getFontGame(), componentGame->getPrimaryColor());
 
     enemy->dialogs.push_back(dialog);
 }

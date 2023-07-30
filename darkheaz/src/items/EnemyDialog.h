@@ -11,30 +11,30 @@
 #include "../../../include/2D/TextureAnimated.h"
 #include "../../../include/Objects/Object3D.h"
 
-class EnemyDialog : public Object3D {
-    int x;
-    int y;
-    float staminaPercentage;
-
+class EnemyDialog {
+    bool showed;
+    Object3D *parent;
     std::string message;
-    Counter counter;
+    std::string from;
 
     Image *background;
 
-    bool followEnemy;
-
     TextWriter *writer;
-    TextureAnimated *radioWave;
     Color color;
-
+    Image *avatar;
+    Image *avatarSmall;
 public:
-    EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, TTF_Font *font, Color color);
+    EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *from, TTF_Font *font, Color color);
 
-    void onUpdate(float stamina);
-
-    void onDraw(Image *avatar, Vertex3D position);
+    void update();
 
     void drawDialog(float alpha, Image *avatar);
+
+    [[nodiscard]] bool isShowed() const;
+
+    void setShowed(bool showed);
+
+    float staminaPercentage;
 };
 
 

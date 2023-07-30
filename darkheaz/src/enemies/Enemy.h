@@ -21,6 +21,7 @@ protected:
     EnemyState state;
     Weapon *weapon;
     Image *avatar;
+    Image *avatarHud;
     float range;
     int soundChannel;
     bool rewards;
@@ -57,6 +58,10 @@ public:
     [[nodiscard]] const std::string &getName() const;
 
     void setName(const std::string &name);
+
+    Image *getAvatarHud() const;
+
+    void setAvatarHud(Image *avatarHud);
 
 };
 

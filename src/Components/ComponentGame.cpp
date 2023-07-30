@@ -137,6 +137,7 @@ void ComponentGame::onStart()
     loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png");
     loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
     loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
+    loadSpaceship("spaceships/player04.fbx", "spaceships/spaceship_04.png");
 }
 
 void ComponentGame::loadShaders()
@@ -220,9 +221,7 @@ void ComponentGame::preUpdate()
             }
             break;
         }
-        case EngineSetup::VAT: {
 
-        }
         case EngineSetup::NONE:
         case EngineSetup::SPLASH:
         case EngineSetup::MENU:
@@ -249,6 +248,20 @@ void ComponentGame::onUpdate()
         case EngineSetup::PRESS_KEY_NEW_LEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
             handleTutorialImages(255);
+            break;
+        }
+        case EngineSetup::RADIO_MESSAGE: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+
+            currentEnemyDialog->update();
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
+
             break;
         }
         case EngineSetup::COUNTDOWN: {
@@ -597,24 +610,18 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             handlePressKeyByWin();
             break;
         case EngineSetup::GAMING_TUTORIAL:
-            handleGoIntoGamingTutorial();
+            stopEnemiesBehaviors();
             break;
         case EngineSetup::STORE: {
             break;
         }
-        case EngineSetup::VAT: {
-            handleEnableVAT();
+        case EngineSetup::RADIO_MESSAGE: {
+            handleEnableRadioMessage();
             break;
         }
         case EngineSetup::SPACESHIP_SELECTOR: {
-            spaceships[spaceshipSelectedIndex]->setEnabled(true);
-            shaderEdgeObject->setEnabled(true);
-
-            shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
-
-            ComponentsManager::get()->getComponentMenu()->astronaut->setEnabled(false);
+            handleSpaceShipSelector();
         }
-
     }
 
     this->gameState = state;
@@ -907,7 +914,6 @@ void ComponentGame::removeInGameObjects()
 {
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
-        auto *enemyDialog = dynamic_cast<EnemyDialog *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
@@ -920,11 +926,6 @@ void ComponentGame::removeInGameObjects()
 
         if (enemy != nullptr) {
             enemy->remove();
-            continue;
-        }
-
-        if (enemyDialog != nullptr) {
-            enemyDialog->setRemoved(true);
             continue;
         }
 
@@ -1063,7 +1064,7 @@ const std::vector<Weapon *> &ComponentGame::getWeapons() const
 void ComponentGame::selectSpaceshipAndStartGame()
 {
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
-    ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     loadSelectedSpaceshipModel();
     spaceships[spaceshipSelectedIndex]->setEnabled(false);
     shaderEdgeObject->setEnabled(false);
@@ -1075,6 +1076,8 @@ void ComponentGame::pressedKeyForNewGameOrResumeGame()
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+
+        ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
         makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
 
@@ -1146,7 +1149,7 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
         gameState == EngineSetup::GAMING_TUTORIAL ||
-        gameState == EngineSetup::VAT
+        gameState == EngineSetup::RADIO_MESSAGE
     ) {
         shaderBackgroundImage->update();
     }
@@ -1427,7 +1430,7 @@ Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
     return explosionSpriteTemplate;
 }
 
-void ComponentGame::handleGoIntoGamingTutorial()
+void ComponentGame::stopEnemiesBehaviors()
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         auto enemy = dynamic_cast<EnemyGhost *> (object);
@@ -1455,14 +1458,9 @@ Mesh3D *ComponentGame::getItemBoxFrame() const {
     return itemBoxFrame;
 }
 
-void ComponentGame::pressedKeyToVAT()
+void ComponentGame::handleEnableRadioMessage()
 {
-    setGameState(EngineSetup::VAT);
-
-}
-
-void ComponentGame::handleEnableVAT()
-{
+    stopEnemiesBehaviors();
 }
 
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
@@ -1486,7 +1484,6 @@ void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::s
     spaceshipsInformation.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + "/" + fileNameInformation));
 }
 
-
 void ComponentGame::increaseSpaceshipSelected()
 {
     spaceships[spaceshipSelectedIndex]->setEnabled(false);
@@ -1505,4 +1502,19 @@ void ComponentGame::decreaseSpaceshipSelected()
     }
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
     shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
+}
+
+void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog) {
+    ComponentGame::currentEnemyDialog = currentEnemyDialog;
+}
+
+void ComponentGame::handleSpaceShipSelector()
+{
+    spaceships[spaceshipSelectedIndex]->setEnabled(true);
+    shaderEdgeObject->setEnabled(true);
+
+    shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
+
+    ComponentsManager::get()->getComponentMenu()->hexagonStation->setEnabled(false);
+
 }

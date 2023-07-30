@@ -9,6 +9,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 75,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -63,6 +64,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 25,  "y": 30 },
       "model": "energy_ball.fbx",
       "enableLights": true,

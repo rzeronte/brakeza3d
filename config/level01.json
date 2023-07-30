@@ -10,6 +10,7 @@
     {
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
+      "avatarHud": "avatars/shuttle_hud.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -20,7 +21,7 @@
         "type": 6
       },
       "messages": [
-        { "text": "--", "stamina": 50 }
+        { "text": "Welcome Commander!.\nIn order to achieve targets, you will need to master piloting.\nPractice firing to crap spaceship. After erase all targets you will pass next mission.\nGood luck.", "stamina": 90 }
       ]
     }
   ],
@@ -57,76 +58,6 @@
       "rotation": { "x": 60, "y": 0,  "z": 30 },
       "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
       "scale":	0.6
-    },
-    {
-      "name": "asteroid01",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.02, "y": 0.07, "z": 0.11 },
-      "scale":	1.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -10 },
-        "from": { "x": -20, "y": 95 },
-        "speed": 0.05
-      }
-    },
-    {
-      "name": "asteroid02",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.07, "z": 0.11 },
-      "scale":	2.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -20 },
-        "from": { "x": 30, "y": 70 },
-        "speed": 0.05
-      }
-    },
-    {
-      "name": "asteroid03",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.03, "z": 0.14 },
-      "scale":	2.0,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": 0 },
-        "from": { "x": 20, "y": 75 },
-        "speed": 0.05
-      }
-    },
-    {
-      "name": "asteroid04",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	3,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 50 },
-        "from": { "x": 10, "y": 100 },
-        "speed": 0.05
-      }
-    },
-    {
-      "name": "asteroid05",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 40 },
-        "from": { "x": 45, "y": 80 },
-        "speed": 0.05
-      }
     }
   ]
 }

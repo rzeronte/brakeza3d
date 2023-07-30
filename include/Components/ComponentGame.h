@@ -95,6 +95,9 @@ private:
     std::vector <Image*> spaceshipsInformation;
     unsigned int spaceshipSelectedIndex;
 
+
+    EnemyDialog *currentEnemyDialog;
+
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -244,7 +247,7 @@ public:
 
     TTF_Font *fontGameAlternative;
 
-    void handleGoIntoGamingTutorial();
+    void stopEnemiesBehaviors();
 
     void setHelp(Image *help);
 
@@ -256,9 +259,7 @@ public:
 
     [[nodiscard]] Mesh3D *getItemBoxFrame() const;
 
-    void pressedKeyToVAT();
-
-    void handleEnableVAT();
+    void handleEnableRadioMessage();
 
     void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation);
 
@@ -269,6 +270,10 @@ public:
     void selectSpaceshipAndStartGame();
 
     void loadSelectedSpaceshipModel();
+
+    void setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog);
+
+    void handleSpaceShipSelector();
 };
 
 

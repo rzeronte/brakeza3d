@@ -17,8 +17,7 @@ void ComponentGameInput::preUpdate()
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING ||
-            ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::VAT) {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
         this->handleKeyboardMovingPlayer();
         this->handleGamePadMovingPlayer();
         this->handleFire();
@@ -57,7 +56,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
     this->handlePressKeyGameStates(event);
 
-    if (state == EngineSetup::GameState::GAMING || state == EngineSetup::VAT) {
+    if (state == EngineSetup::GameState::GAMING) {
         handleFindClosestObject3D(event);
         handleWeaponSelector(event);
         handleDashMovement(event);
@@ -66,7 +65,6 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
         handleShield(event);
         handleMakeReflection(event);
         updateWeaponStatus(event);
-        updateVat(event);
     }
 
     //this->handleZoom(event);
@@ -552,6 +550,11 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         return;
     }
 
+    if (state == EngineSetup::GameState::RADIO_MESSAGE && (enter || isButtonGuidedPressed)) {
+        game->gameState = EngineSetup::GameState::GAMING;
+        ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        return;
+    }
     this->handleEscape(event);
 
 }
@@ -602,15 +605,4 @@ void ComponentGameInput::handleShield(SDL_Event *event)
 
 float ComponentGameInput::getControllerAxisThreshold() const {
     return controllerAxisThreshold;
-}
-
-void ComponentGameInput::updateVat(SDL_Event *event)
-{
-    Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool vatKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_V];
-
-    if (vatKeyPressed) {
-        ComponentsManager::get()->getComponentGame()->pressedKeyToVAT();
-
-    }
 }

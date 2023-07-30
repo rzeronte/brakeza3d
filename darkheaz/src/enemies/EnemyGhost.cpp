@@ -102,7 +102,12 @@ void EnemyGhost::onUpdate()
 
     for ( auto dialog: dialogs) {
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
-        dialog->onUpdate(staminaPercentage);
+        if (staminaPercentage < dialog->staminaPercentage && !dialog->isShowed()) {
+            ComponentsManager::get()->getComponentSound()->sound("radioBeep", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            dialog->setShowed(true);
+            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::RADIO_MESSAGE);
+            ComponentsManager::get()->getComponentGame()->setCurrentEnemyDialog(dialog);
+        }
     }
 }
 
@@ -128,10 +133,6 @@ void EnemyGhost::onDrawHostBuffer()
         if (counterStuck.isFinished()) {
             unstuck();
         }
-    }
-
-    for ( auto dialog: dialogs) {
-        dialog->onDraw(getAvatar(), getPosition());
     }
 }
 
@@ -425,7 +426,7 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 void EnemyGhost::drawOnUpdateSecondPass()
 {
-    Object3D::drawOnUpdateSecondPass();
+    Mesh3D::drawOnUpdateSecondPass();
 
     if (getBehavior() != nullptr) {
         particleEmitter->drawOnUpdateSecondPass();

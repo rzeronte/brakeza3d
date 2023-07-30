@@ -9,6 +9,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50,  "y": 40 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -53,6 +54,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 10, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -88,6 +90,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/challenger.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 90, "y": 5 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -123,6 +126,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/challenger.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 90, "y": 75 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
@@ -158,6 +162,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/challenger.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 10, "y": 75 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,

@@ -10,6 +10,7 @@
     {
       "name": "spaceShuttle",
       "avatar": "avatars/default.png",
+      "avatarHud": "avatars/shuttle_hud.png",
       "position": { "x": 15, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -18,11 +19,15 @@
       "reward": false,
       "motion": {
         "type": 6
-      }
+      },
+      "messages": [
+        { "text": "Hi Commander!.\nOur mechanics are working on a few new features for the spaceship.\nYou will get them in next missions.\nChange and short...", "stamina": 90 }
+      ]
     },
     {
       "name": "spaceShuttle",
       "avatar": "avatars/default.png",
+      "avatarHud": "avatars/shuttle_hud.png",
       "position": { "x": 85, "y": 12 },
       "model": "spaceShuttle.fbx",
       "enableLights": true,
@@ -31,7 +36,10 @@
       "reward": false,
       "motion": {
         "type": 6
-      }
+      },
+      "messages": [
+        { "text": "Commander!.\nThe radar show several survivors floating through space.\nTry rescue them for us. We will send you a transport spaceship for bring back at home.\nThanks Commander!", "stamina": 90 }
+      ]
     }
   ],
   "items": [
