@@ -284,7 +284,7 @@ void ComponentHUD::drawShaderLasers()
 
         textWriter->writeTextTTFAutoSize(
             418,
-            this->offsetY + 10,
+            this->offsetY + 11,
             enemy->getName().c_str(),
             Color(196, 20, 20),
             0.25
@@ -312,12 +312,4 @@ ComponentHUD::~ComponentHUD()
 
 TexturePackage *ComponentHUD::getHudTextures() const {
     return HUDTextures;
-}
-
-int ComponentHUD::getRadioMessagesCounter() const {
-    return radioMessagesCounter;
-}
-
-void ComponentHUD::setRadioMessagesCounter(int radioMessagesCounter) {
-    ComponentHUD::radioMessagesCounter = radioMessagesCounter;
 }

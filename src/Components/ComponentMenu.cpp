@@ -8,7 +8,6 @@ ComponentMenu::ComponentMenu()
 :
     shaderBackgroundImage(nullptr),
     planet(nullptr),
-    light(nullptr),
     pendulum(nullptr),
     currentOption(0),
     menuEnabled(false)
@@ -19,8 +18,7 @@ ComponentMenu::~ComponentMenu()
 {
     delete shaderBackgroundImage;
     delete planet;
-    delete astronaut;
-    delete light;
+    delete hexagonStation;
     delete pendulum;
 }
 
@@ -32,14 +30,6 @@ void ComponentMenu::onStart()
     loadMenuOptions();
 
     Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 3000);
-
-    light = new LightPoint3D(200, 1, 0, 0, 10, Color(255, 0, 0), Color(255, 0, 0));
-    light->setPosition(lightPosition);
-    light->setEnabled(true);
-    light->setLabel("lightMenu");
-    light->setRotation(270, 0, 0);
-    light->setBehavior(new EnemyBehaviorPatrol(lightPosition + Vertex3D(-5000, 0, 0), lightPosition + Vertex3D(5000, 0, 0), 1));
-    Brakeza3D::get()->addObject3D(light, "lightMenu");
 
     shaderBackgroundImage = new ShaderImage(SETUP->IMAGES_FOLDER + "menuBackground.png");
     shaderBackgroundImage->setEnabled(true);
@@ -66,19 +56,19 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->updateBoundingBox();
     Brakeza3D::get()->addObject3D(planet, "planetMenu");
 
-    astronaut = new Mesh3D();
-    astronaut->setEnabled(false);
-    astronaut->setAlpha(255);
-    astronaut->setEnableLights(false);
-    astronaut->setPosition(Vertex3D(-3800, 1000, 10000));
-    astronaut->setRotationFrameEnabled(true);
-    astronaut->setRotationFrame(Vertex3D(0.02f, 0.1f, 0.01));
-    astronaut->setRotation(20, 40, 0);
-    astronaut->setScale(0.2);
-    astronaut->setStencilBufferEnabled(true);
-    astronaut->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "space_hexagon.fbx"));
-    astronaut->updateBoundingBox();
-    Brakeza3D::get()->addObject3D(astronaut, "astronautMenu");
+    hexagonStation = new Mesh3D();
+    hexagonStation->setEnabled(false);
+    hexagonStation->setAlpha(255);
+    hexagonStation->setEnableLights(false);
+    hexagonStation->setPosition(Vertex3D(-3800, 1000, 10000));
+    hexagonStation->setRotationFrameEnabled(true);
+    hexagonStation->setRotationFrame(Vertex3D(0.02f, 0.1f, 0.01));
+    hexagonStation->setRotation(20, 40, 0);
+    hexagonStation->setScale(0.2);
+    hexagonStation->setStencilBufferEnabled(true);
+    hexagonStation->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "space_hexagon.fbx"));
+    hexagonStation->updateBoundingBox();
+    Brakeza3D::get()->addObject3D(hexagonStation, "astronautMenu");
 
     pendulum = new SimplePendulum(0, 5, 5000, 0.0);
     pendulum->setRotation(-40, 0, 0);
@@ -104,7 +94,7 @@ void ComponentMenu::onUpdate()
 
     ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
     ComponentsManager::get()->getComponentGame()->dialogBackground->update();
-    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha * 0.90f);
+    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha);
 
     border->drawFlatAlpha(0, 0, alpha);
     imageLogoBox->drawFlatAlpha(0, 0, alpha);
@@ -194,9 +184,8 @@ void ComponentMenu::setEnabled(bool value)
 {
     Component::setEnabled(value);
 
-    light->setEnabled(value);
     planet->setEnabled(value);
-    astronaut->setEnabled(value);
+    hexagonStation->setEnabled(value);
 
     setMenuEnabled(value);
 }

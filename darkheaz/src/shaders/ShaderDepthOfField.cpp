@@ -8,7 +8,7 @@ ShaderDepthOfField::ShaderDepthOfField(bool active)
     ShaderOpenCL(active, "dof.cl"),
     focusPlaneDepth(15000),
     focusRange(4500),
-    blurSize(0.0000045f),
+    blurSize(0.0000025f),
     intensity(1.15)
 {
 }

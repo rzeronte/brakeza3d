@@ -7,109 +7,54 @@
 
 #include "../../../include/ComponentsManager.h"
 
-EnemyDialog::EnemyDialog(int x, int y, float staminaPercentage, const char *message, float ttl, TTF_Font *font, Color color)
+EnemyDialog::EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *from, TTF_Font *font, Color color)
 :
-    x(x),
-    y(y),
-    staminaPercentage(staminaPercentage),
+    showed(false),
+    parent(parent),
     message(message),
-    counter(Counter(ttl)),
-    background(new Image(EngineSetup::get()->IMAGES_FOLDER + "dialogBubble.png")),
-    followEnemy(false),
-    color(color)
+    from(from),
+    background(new Image(EngineSetup::get()->IMAGES_FOLDER + "radio_notification.png")),
+    color(color),
+    avatar(avatar),
+    avatarSmall(avatarSmall),
+    staminaPercentage(staminaPercentage)
 {
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
-    writer = new TextWriter(componentWindow->getRenderer(), font);
-    counter.setEnabled(false);
-
-    radioWave = ComponentsManager::get()->getComponentGame()->getRadioWave();
-    radioWave->setPaused(false);
+    writer = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), font);
 }
 
-void EnemyDialog::onUpdate(float staminaPercentage)
+void EnemyDialog::update()
 {
-    if (!isEnabled()) return;
-
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
-
-    if (gameState != EngineSetup::GAMING) return;
-
-    if (!counter.isEnabled() && staminaPercentage <= this->staminaPercentage && counter.getAcumulatedTime() <= counter.getStep() * 0.25f) {
-        counter.setEnabled(true);
-
-        int radioMessagesCounter = ComponentsManager::get()->getComponentHUD()->getRadioMessagesCounter();
-
-        y = 90 * radioMessagesCounter + 30  ;
-
-        ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(radioMessagesCounter + 1);
-        ComponentsManager::get()->getComponentSound()->sound("radioBeep", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-    }
-}
-
-
-void EnemyDialog::onDraw(Image *avatar, Vertex3D position)
-{
-    Object3D::onDrawHostBuffer();
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
-
-    if (gameState != EngineSetup::GAMING) return;
-
-    if (!counter.isEnabled()) return;
-
-    if (counter.getAcumulatedTime() >= counter.getStep()) {
-        this->setRemoved(true);
-        int radioMessagesCounter = ComponentsManager::get()->getComponentHUD()->getRadioMessagesCounter();
-        ComponentsManager::get()->getComponentHUD()->setRadioMessagesCounter(radioMessagesCounter - 1);
-    }
-
-    if (followEnemy) {
-        auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-        Point2D screenPoint = Transforms::WorldToPoint(position, camera);
-
-        x = screenPoint.x;
-        y = screenPoint.y;
-    }
-
-    float alpha = 0.0f;
-    if (counter.getAcumulatedTime() <= counter.getStep() * 0.25f) {
-        alpha = 255.0f * (counter.getAcumulatedTime() / (counter.getStep() * 0.25f));
-    } else if (counter.getAcumulatedTime() >= counter.getStep() * 0.75f) {
-        alpha = 255.0f * (1.0f - ((counter.getAcumulatedTime() - (counter.getStep() * 0.75f)) / (counter.getStep() * 0.25f)));
-    } else {
-        alpha = 255.0f;
-    }
-
-    drawDialog(alpha, avatar);
-
-    counter.update();
+    drawDialog(255, avatar);
 }
 
 void EnemyDialog::drawDialog(float alpha, Image *avatar)
 {
-    if (this->isRemoved()) return;
+    Point2D positionAvatar(137, 142);
+    Point2D positionAvatarSmall(208, 183);
+    Point2D positionText(137, 240);
+    Point2D positionFrom(208, 160);
 
-    int backgroundX = x;
-    int backgroundY = y;
-    int avatarX = x + 24;
-    int avatarY = y + 20;
-    int textX = x + 58;
-    int textY = y + 20;
-    int waveX = x + 26;
-    int waveY = y + 56;
-
-    background->drawFlatAlpha(backgroundX, backgroundY, alpha);
-    avatar->drawFlatAlpha(avatarX, avatarY, alpha);
+    background->drawFlatAlpha(0, 0, alpha);
+    avatar->drawFlatAlpha(positionAvatar.x, positionAvatar.y, alpha);
+    avatarSmall->drawFlatAlpha(positionAvatarSmall.x, positionAvatarSmall.y, alpha);
 
     std::istringstream stream(message);
     std::string line;
     int lineHeight = 15;
 
     writer->setAlpha(alpha);
-    while (std::getline(stream, line)) {
-        writer->writeTextTTFAutoSize(textX, textY, line.c_str(), color, 0.20f);
-        textY += lineHeight;
-    }
+    writer->writeTextTTFAutoSize(positionFrom.x, positionFrom.y, from.c_str(), color, 0.20f);
 
-    radioWave->update();
-    radioWave->getCurrentFrame()->getImage()->drawFlatAlpha(waveX, waveY, alpha);
+    while (std::getline(stream, line)) {
+        writer->writeTextTTFAutoSize(positionText.x, positionText.y, line.c_str(), color, 0.20f);
+        positionText.y += lineHeight;
+    }
+}
+
+bool EnemyDialog::isShowed() const {
+    return showed;
+}
+
+void EnemyDialog::setShowed(bool showed) {
+    EnemyDialog::showed = showed;
 }

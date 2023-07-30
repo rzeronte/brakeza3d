@@ -9,6 +9,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/pancake.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 5, "y": 40},
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,
@@ -57,6 +58,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/pancake.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 95, "y": 40 },
       "model": "spaceships/Pancake.fbx",
       "enableLights": true,
@@ -105,6 +107,7 @@
     {
       "name": "Shocker",
       "avatar": "avatars/imperial.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50,  "y": 10 },
       "model": "spaceships/Imperial.fbx",
       "enableLights": true,
@@ -140,6 +143,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50,  "y": 50 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -184,6 +188,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 20,  "y": 70 },
       "model": "energy_ball.fbx",
       "enableLights": true,
@@ -228,6 +233,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 80,  "y": 70 },
       "model": "energy_ball.fbx",
       "enableLights": true,

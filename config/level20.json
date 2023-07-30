@@ -52,6 +52,7 @@
       "type": 3,
       "name": "Prolis",
       "avatar": "avatars/default.png",
+      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50, "y": 99 },
       "model": "spaceships/Dispatcher.fbx",
       "enableLights": false,

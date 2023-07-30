@@ -436,6 +436,7 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
         weapon->setRemoved(true);
+        Tools::makeExplosion(this, weapon->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
         if (weapon->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -453,6 +454,7 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveAid(health->getAid());
         health->remove();
+        Tools::makeExplosion(this, health->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
         if (health->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -488,6 +490,7 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveEnergy(energy->getEnergy());
         energy->remove();
+        Tools::makeExplosion(this, energy->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
 
         if (energy->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);

@@ -282,7 +282,7 @@ public:
         INTRO = 12,
         GAMING_TUTORIAL = 13,
         STORE = 14,
-        VAT = 15,
+        RADIO_MESSAGE = 15,
         SPACESHIP_SELECTOR = 16
 
     } GameState;

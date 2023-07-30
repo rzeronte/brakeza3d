@@ -76,3 +76,11 @@ const std::string &Enemy::getName() const {
 void Enemy::setName(const std::string &name) {
     Enemy::name = name;
 }
+
+Image *Enemy::getAvatarHud() const {
+    return avatarHud;
+}
+
+void Enemy::setAvatarHud(Image *avatarHud) {
+    Enemy::avatarHud = avatarHud;
+}
