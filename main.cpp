@@ -1,3 +1,5 @@
+#define SDL_MAIN_HANDLED
+
 #include "include/Brakeza3D.h"
 
 #pragma pack(push, MAIN)
