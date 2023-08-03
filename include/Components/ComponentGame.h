@@ -14,7 +14,6 @@
 #include "../../darkheaz/FaderToGameStates.h"
 #include "../../darkheaz/LevelLoader.h"
 #include "../Particles/ParticleEmitterFireworks.h"
-#include "../Misc/VideoPlayer.h"
 #include "../../darkheaz/src/shaders/ShaderImage.h"
 #include "../../darkheaz/src/shaders/ShaderEdgeObject.h"
 #include "../../darkheaz/src/shaders/RayLight.h"
@@ -216,10 +215,6 @@ public:
     [[nodiscard]] LevelLoader *getLevelLoader() const;
 
     void loadShaders();
-
-    VideoPlayer *getVideoPlayer();
-
-    VideoPlayer* videoPlayer;
 
     void shaderBackgroundUpdate();
 
