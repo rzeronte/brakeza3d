@@ -79,7 +79,6 @@ add_executable(Brakeza3D
     src/Collisions/Sprite3DBody.cpp include/Physics/Sprite3DBody.h
     src/Collisions/Body.cpp include/Physics/Body.h
     src/Objects/Cube3D.cpp include/Objects/Cube3D.h
-    src/Demo/Demo.cpp include/Demo/Demo.h
     src/Misc/Counter.cpp include/Misc/Counter.h
     src/Misc/TexturePackage.cpp include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
