@@ -9,39 +9,32 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL2_IMAGE_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL_MIXER_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL_TTF_INCLUDE_DIRS /usr/include/SDL2)
 set(BULLET_INCLUDE_DIRS /usr/include/bullet)
 set(ASSIMP_INCLUDE_DIRS /usr/include/assimp)
 set(GLM_INCLUDE_DIRS /usr/include/glm)
 set(DEARIMGUI_INCLUDE_DIRS imgui)
 
 if (WIN32)
-    set(SDL2_INCLUDE_DIRS C:\\Users\\eduar\\Downloads\\SDL2-2.0.16\\x86_64-w64-mingw32\\include\\)
-    set(SDL2_IMAGE_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_image-2.0.5\\x86_64-w64-mingw32\\include)
-    set(SDL_MIXER_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_mixer-2.0.4\\x86_64-w64-mingw32\\include)
-    set(SDL_TTF_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\SDL2_ttf-2.0.15\\x86_64-w64-mingw32\\include)
-    set(BULLET_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\bullet)
-    set(ASSIMP_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\assimp-5.0.1\\cmake-build-default-mingw\\include)
-    set(GLM_INCLUDE_DIRS C:\\Users\\eduar\\Desktop\\glm)
+    set(BASE_INCLUDE_DIRECTORY C:\\Users\\Eduardo\\Desktop\\include\\)
+    set(SDL2_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\SDL2)
+    set(ASSIMP_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\assimp)
+    set(GLM_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\glm)
+    set(BULLET_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\include\\bullet)
+    set(OPENCL_LIBRARIES_DIR C:\\Users\\Eduardo\\Desktop\\include\\CL)
 endif (WIN32)
 
 include_directories(
-        ${SDL2_INCLUDE_DIRS}
-        ${SDL2_IMAGE_INCLUDE_DIRS}
-        ${SDL_MIXER_INCLUDE_DIRS}
-        ${SDL_TTF_INCLUDE_DIRS}
-        ${BULLET_INCLUDE_DIRS}
-        ${ASSIMP_INCLUDE_DIRS}
-        ${GLM_INCLUDE_DIRS}
-        ${DEARIMGUI_INCLUDE_DIRS}
+    ${BASE_INCLUDE_DIRECTORY}
+    ${SDL2_INCLUDE_DIRS}
+    ${BULLET_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIRS}
+    ${GLM_INCLUDE_DIRS}
+    ${DEARIMGUI_INCLUDE_DIRS}
+    ${OPENCL_LIBRARIES_DIR}
 )
 
 add_executable(Brakeza3D
-    #WIN32
     main.cpp
     src/Components/ComponentCamera.cpp
     include/Components/ComponentCamera.h
@@ -227,7 +220,7 @@ add_executable(Brakeza3D
     include/Objects/Vertex4D.h
     src/Particles/ParticleEmitter.cpp
     include/Particles/ParticleEmitter.h
-        src/Collisions/SimplePendulum.cpp
+    src/Collisions/SimplePendulum.cpp
     include/Physics/SimplePendulum.h
     src/Render/Shader.cpp
     include/Render/Shader.h
@@ -238,7 +231,7 @@ add_executable(Brakeza3D
     src/2D/Button.cpp
     include/2D/Button.h
     include/2D/ButtonsCallbacks.h
-        darkheaz/src/shaders/ShaderBlink.h
+    darkheaz/src/shaders/ShaderBlink.h
     darkheaz/src/weapons/AmmoProjectileBody.cpp
     darkheaz/src/weapons/AmmoProjectileBody.h
     darkheaz/FaderToGameStates.h
@@ -274,15 +267,13 @@ add_executable(Brakeza3D
     darkheaz/src/bosses/BossLevel20.h
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h
-        include/Objects/Vector2D.cpp
+    include/Objects/Vector2D.cpp
     include/Objects/Vector2D.h
     include/Misc/ColorHSV.cpp
     include/Misc/ColorHSV.h
     src/Render/ShaderOpenCL.cpp
     include/Render/ShaderOpenCL.h
-    src/Misc/VideoPlayer.cpp
-    include/Misc/VideoPlayer.h
-        darkheaz/src/shaders/ShaderImage.cpp
+    darkheaz/src/shaders/ShaderImage.cpp
     darkheaz/src/shaders/ShaderImage.h
     darkheaz/src/shaders/ShaderEdgeObject.cpp
     darkheaz/src/shaders/ShaderEdgeObject.h
@@ -290,7 +281,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderColor.h
     darkheaz/src/items/ItemBombGhost.cpp
     darkheaz/src/items/ItemBombGhost.h
-        src/Collisions/Mesh3DAnimatedGhost.cpp
+    src/Collisions/Mesh3DAnimatedGhost.cpp
     include/Physics/Mesh3DAnimatedGhost.h
     darkheaz/src/bosses/BossLevel30.cpp
     darkheaz/src/bosses/BossLevel30.h
@@ -304,30 +295,64 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderProjectiles.cpp
     darkheaz/src/shaders/ShaderProjectiles.h
     darkheaz/src/weapons/AmmoProjectile.h
-        darkheaz/src/shaders/ShockWave.cpp darkheaz/src/shaders/ShockWave.h renderer.cl include/Render/MeshOpenCLRenderer.cpp include/Render/MeshOpenCLRenderer.h renderer.cl include/GUI/GUI_Files.h darkheaz/src/shaders/ShaderParticles.cpp darkheaz/src/shaders/ShaderParticles.h darkheaz/src/shaders/kernels/particles.cl include/Objects/OpenCLTypes.h darkheaz/src/shaders/ShaderBilinear.cpp darkheaz/src/shaders/ShaderBilinear.h src/Objects/Swarm.cpp include/Objects/Swarm.h darkheaz/src/shaders/ShaderSwarm.cpp darkheaz/src/shaders/ShaderSwarm.h darkheaz/src/shaders/ShaderExplosion.cpp darkheaz/src/shaders/ShaderExplosion.h darkheaz/src/shaders/ShaderDepthOfField.cpp darkheaz/src/shaders/ShaderDepthOfField.h darkheaz/src/items/EnemyDialog.cpp darkheaz/src/items/EnemyDialog.h darkheaz/src/shaders/ShaderZombie.cpp darkheaz/src/shaders/ShaderZombie.h darkheaz/src/shaders/ShaderImageMask.cpp darkheaz/src/shaders/ShaderImageMask.h darkheaz/src/shaders/ShaderCRT.cpp darkheaz/src/shaders/ShaderCRT.h darkheaz/src/shaders/ShaderEnergyShield.cpp darkheaz/src/shaders/ShaderEnergyShield.h darkheaz/src/items/ItemWithTutorial.cpp darkheaz/src/items/ItemWithTutorial.h darkheaz/StoreManager.cpp darkheaz/StoreManager.h darkheaz/src/items/StoreItem.cpp darkheaz/src/items/StoreItem.h darkheaz/src/items/PlayerSatellite.cpp darkheaz/src/items/PlayerSatellite.h darkheaz/src/items/LivingObject.cpp darkheaz/src/items/LivingObject.h darkheaz/src/items/ItemHumanGhost.cpp darkheaz/src/items/ItemHumanGhost.h darkheaz/src/behaviors/RotatableToTarget.cpp darkheaz/src/behaviors/RotatableToTarget.h darkheaz/src/shaders/ShaderBlink.cpp darkheaz/src/items/ItemShieldGhost.cpp darkheaz/src/items/ItemShieldGhost.h)
-
-if (WIN32)
-    target_link_libraries(Brakeza3D
-            mingw32
-            SDL2main
-    )
-endif (WIN32)
+    darkheaz/src/shaders/ShockWave.cpp
+    darkheaz/src/shaders/ShockWave.h
+    include/Render/MeshOpenCLRenderer.cpp
+    include/Render/MeshOpenCLRenderer.h
+    include/GUI/GUI_Files.h
+    darkheaz/src/shaders/ShaderParticles.cpp
+    darkheaz/src/shaders/ShaderParticles.h
+    include/Objects/OpenCLTypes.h
+    darkheaz/src/shaders/ShaderBilinear.cpp
+    darkheaz/src/shaders/ShaderBilinear.h
+    src/Objects/Swarm.cpp
+    include/Objects/Swarm.h
+    darkheaz/src/shaders/ShaderSwarm.cpp
+    darkheaz/src/shaders/ShaderSwarm.h
+    darkheaz/src/shaders/ShaderExplosion.cpp
+    darkheaz/src/shaders/ShaderExplosion.h
+    darkheaz/src/shaders/ShaderDepthOfField.cpp
+    darkheaz/src/shaders/ShaderDepthOfField.h
+    darkheaz/src/items/EnemyDialog.cpp
+    darkheaz/src/items/EnemyDialog.h
+    darkheaz/src/shaders/ShaderZombie.cpp
+    darkheaz/src/shaders/ShaderZombie.h
+    darkheaz/src/shaders/ShaderImageMask.cpp
+    darkheaz/src/shaders/ShaderImageMask.h
+    darkheaz/src/shaders/ShaderCRT.cpp
+    darkheaz/src/shaders/ShaderCRT.h
+    darkheaz/src/shaders/ShaderEnergyShield.cpp
+    darkheaz/src/shaders/ShaderEnergyShield.h
+    darkheaz/src/items/ItemWithTutorial.cpp
+    darkheaz/src/items/ItemWithTutorial.h
+    darkheaz/StoreManager.cpp
+    darkheaz/StoreManager.h
+    darkheaz/src/items/StoreItem.cpp
+    darkheaz/src/items/StoreItem.h
+    darkheaz/src/items/PlayerSatellite.cpp
+    darkheaz/src/items/PlayerSatellite.h
+    darkheaz/src/items/LivingObject.cpp
+    darkheaz/src/items/LivingObject.h
+    darkheaz/src/items/ItemHumanGhost.cpp
+    darkheaz/src/items/ItemHumanGhost.h
+    darkheaz/src/behaviors/RotatableToTarget.cpp
+    darkheaz/src/behaviors/RotatableToTarget.h
+    darkheaz/src/shaders/ShaderBlink.cpp
+    darkheaz/src/items/ItemShieldGhost.cpp
+    darkheaz/src/items/ItemShieldGhost.h
+)
 
 target_link_libraries(Brakeza3D
-        pthread
-        SDL2
-        SDL2_image
-        SDL2_ttf
-        SDL2_mixer
-        BulletSoftBody
-        BulletDynamics
-        BulletCollision
-        LinearMath
-        assimp
-        OpenCL
-        avformat
-        avutil
-        avcodec
-        swscale
-    )
+    pthread
+    SDL2
+    SDL2_image
+    SDL2_ttf
+    SDL2_mixer
+    BulletSoftBody
+    BulletDynamics
+    BulletCollision
+    LinearMath
+    assimp
+    OpenCL
+)
 
