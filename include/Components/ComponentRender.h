@@ -19,8 +19,8 @@
 #include "ComponentWindow.h"
 #include "ComponentCollisions.h"
 #include "ComponentCamera.h"
-#include "../../darkheaz/src/shaders/ShaderBilinear.h"
-#include "../../darkheaz/src/shaders/ShaderDepthOfField.h"
+#include "../Shaders/ShaderBilinear.h"
+#include "../Shaders/ShaderDepthOfField.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
