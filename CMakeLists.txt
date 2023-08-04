@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
@@ -105,23 +105,13 @@ add_executable(Brakeza3D
     src/Misc/cJSON.c
     src/Collisions/SpriteDirectional3DBody.cpp
     include/Physics/SpriteDirectional3DBody.h
-    darkheaz/src/enemies/EnemyGhostEmitter.h
-    darkheaz/src/enemies/EnemyGhostEmitter.cpp
-    darkheaz/src/weapons/Weapon.cpp
-    darkheaz/src/weapons/Weapon.h
-    src/Components/ComponentMenu.cpp
-    include/Components/ComponentMenu.h
     src/2D/MenuOption.cpp
     include/2D/MenuOption.h
-    darkheaz/src/enemies/Enemy.cpp
-    darkheaz/src/enemies/Enemy.h
-    src/Brakeza3D.cpp
+        src/Brakeza3D.cpp
     include/Brakeza3D.h
     src/Components/ComponentCollisions.cpp
     include/Components/ComponentCollisions.h
-    darkheaz/src/enemies/EnemyGhost.cpp
-    darkheaz/src/enemies/EnemyGhost.h
-    src/Collisions/Projectile3DBody.cpp
+        src/Collisions/Projectile3DBody.cpp
     include/Physics/Projectile3DBody.h
     src/Objects/Decal.cpp
     include/Objects/Decal.h
@@ -131,9 +121,7 @@ add_executable(Brakeza3D
     include/Physics/Body.h
     src/Objects/Cube3D.cpp
     include/Objects/Cube3D.h
-    darkheaz/Player.cpp
-    darkheaz/Player.h
-    src/Demo/Demo.cpp include/Demo/Demo.h
+        src/Demo/Demo.cpp include/Demo/Demo.h
     src/Misc/Counter.cpp
     include/Misc/Counter.h
     src/Misc/TexturePackage.cpp
@@ -145,10 +133,6 @@ add_executable(Brakeza3D
     include/Misc/VariablePackage.h
     src/Collisions/BillboardBody.cpp
     include/Physics/BillboardBody.h
-    darkheaz/src/items/ItemWeaponGhost.cpp
-    darkheaz/src/items/ItemWeaponGhost.h
-    darkheaz/src/items/ItemHealthGhost.cpp
-    darkheaz/src/items/ItemHealthGhost.h
     src/Components/Component.cpp
     include/Components/Component.h
     src/Components/ComponentRender.cpp
@@ -161,15 +145,9 @@ add_executable(Brakeza3D
     include/Components/ComponentSound.h
     src/Objects/Camera3D.cpp
     include/Components/Camera3D.h
-    src/Components/ComponentHUD.cpp
-    include/Components/ComponentHUD.h
     src/ComponentsManager.cpp
     include/ComponentsManager.h
-    src/Components/ComponentGame.cpp
-    include/Components/ComponentGame.h
-    src/Components/ComponentGameInput.cpp
-    include/Components/ComponentGameInput.h
-    src/Objects/Mesh3DAnimated.cpp
+        src/Objects/Mesh3DAnimated.cpp
     include/Objects/Mesh3DAnimated.h
     src/Objects/Mesh3DAnimatedCollection.cpp
     include/Objects/Mesh3DAnimatedCollection.h
@@ -231,115 +209,52 @@ add_executable(Brakeza3D
     src/2D/Button.cpp
     include/2D/Button.h
     include/2D/ButtonsCallbacks.h
-    darkheaz/src/shaders/ShaderBlink.h
-    darkheaz/src/weapons/AmmoProjectileBody.cpp
-    darkheaz/src/weapons/AmmoProjectileBody.h
-    darkheaz/FaderToGameStates.h
-    darkheaz/src/enemies/behaviors/EnemyBehavior.cpp
-    darkheaz/src/enemies/EnemyBehavior.h
-    darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.cpp
-    darkheaz/src/enemies/behaviors/EnemyBehaviorPatrol.h
-    darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.cpp
-    darkheaz/src/enemies/behaviors/EnemyBehaviorCircle.h
-    darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.cpp
-    darkheaz/src/enemies/behaviors/EnemyBehaviorFollow.h
-    darkheaz/LevelLoader.cpp darkheaz/LevelLoader.h
-    darkheaz/src/shaders/ShaderShockWave.cpp
-    darkheaz/src/shaders/ShaderShockWave.h
-    darkheaz/src/items/ItemEnergyGhost.cpp
-    darkheaz/src/items/ItemEnergyGhost.h
-    darkheaz/src/items/GravitationalGhost.cpp
-    darkheaz/src/items/GravitationalGhost.h
-    darkheaz/src/items/PlayerReflection.cpp
-    darkheaz/src/items/PlayerReflection.h
-    src/Particles/ParticleEmitterFireworks.cpp
+        include/Shaders/ShaderBlink.h
+
+        src/Behaviors/EnemyBehavior.cpp
+        include/Behaviors/Object3DBehavior.h
+        src/Particles/ParticleEmitterFireworks.cpp
     include/Particles/ParticleEmitterFireworks.h
-    darkheaz/src/weapons/AmmoProjectileBodyEmitter.cpp
-    darkheaz/src/weapons/AmmoProjectileBodyEmitter.h
-    darkheaz/src/bosses/BossEnemy.cpp darkheaz/src/bosses/BossEnemy.h
-    darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.cpp
-    darkheaz/src/enemies/behaviors/EnemyBehaviorRandom.h
-    darkheaz/src/enemies/AsteroidEnemyGhost.cpp
-    darkheaz/src/enemies/AsteroidEnemyGhost.h
-    darkheaz/src/bosses/BossLevel10.cpp
-    darkheaz/src/bosses/BossLevel10.h
-    darkheaz/src/bosses/BossLevel20.cpp
-    darkheaz/src/bosses/BossLevel20.h
-    darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp
-    darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h
+
     include/Objects/Vector2D.cpp
     include/Objects/Vector2D.h
     include/Misc/ColorHSV.cpp
     include/Misc/ColorHSV.h
     src/Render/ShaderOpenCL.cpp
     include/Render/ShaderOpenCL.h
-    darkheaz/src/shaders/ShaderImage.cpp
-    darkheaz/src/shaders/ShaderImage.h
-    darkheaz/src/shaders/ShaderEdgeObject.cpp
-    darkheaz/src/shaders/ShaderEdgeObject.h
-    darkheaz/src/shaders/ShaderColor.cpp
-    darkheaz/src/shaders/ShaderColor.h
-    darkheaz/src/items/ItemBombGhost.cpp
-    darkheaz/src/items/ItemBombGhost.h
+        src/Shaders/ShaderImage.cpp
+        include/Shaders/ShaderImage.h
+        src/Shaders/ShaderEdgeObject.cpp
+        include/Shaders/ShaderEdgeObject.h
+        src/Shaders/ShaderColor.cpp
+        include/Shaders/ShaderColor.h
     src/Collisions/Mesh3DAnimatedGhost.cpp
     include/Physics/Mesh3DAnimatedGhost.h
-    darkheaz/src/bosses/BossLevel30.cpp
-    darkheaz/src/bosses/BossLevel30.h
-    darkheaz/src/shaders/RayLight.cpp
-    darkheaz/src/shaders/RayLight.h
-    src/Collisions/RayCollisionable.cpp
+        src/Collisions/RayCollisionable.cpp
     include/Physics/RayCollisionable.h
-    src/Collisions/ProjectileRay.cpp
-    include/Physics/ProjectileRay.h
-    include/Physics/Projectile.h
-    darkheaz/src/shaders/ShaderProjectiles.cpp
-    darkheaz/src/shaders/ShaderProjectiles.h
-    darkheaz/src/weapons/AmmoProjectile.h
-    darkheaz/src/shaders/ShockWave.cpp
-    darkheaz/src/shaders/ShockWave.h
+        include/Physics/Projectile.h
+        src/Shaders/ShockWave.cpp
+        include/Shaders/ShockWave.h
     include/Render/MeshOpenCLRenderer.cpp
     include/Render/MeshOpenCLRenderer.h
     include/GUI/GUI_Files.h
-    darkheaz/src/shaders/ShaderParticles.cpp
-    darkheaz/src/shaders/ShaderParticles.h
+        src/Shaders/ShaderParticles.cpp
+        include/Shaders/ShaderParticles.h
     include/Objects/OpenCLTypes.h
-    darkheaz/src/shaders/ShaderBilinear.cpp
-    darkheaz/src/shaders/ShaderBilinear.h
+        src/Shaders/ShaderBilinear.cpp
+        include/Shaders/ShaderBilinear.h
     src/Objects/Swarm.cpp
     include/Objects/Swarm.h
-    darkheaz/src/shaders/ShaderSwarm.cpp
-    darkheaz/src/shaders/ShaderSwarm.h
-    darkheaz/src/shaders/ShaderExplosion.cpp
-    darkheaz/src/shaders/ShaderExplosion.h
-    darkheaz/src/shaders/ShaderDepthOfField.cpp
-    darkheaz/src/shaders/ShaderDepthOfField.h
-    darkheaz/src/items/EnemyDialog.cpp
-    darkheaz/src/items/EnemyDialog.h
-    darkheaz/src/shaders/ShaderZombie.cpp
-    darkheaz/src/shaders/ShaderZombie.h
-    darkheaz/src/shaders/ShaderImageMask.cpp
-    darkheaz/src/shaders/ShaderImageMask.h
-    darkheaz/src/shaders/ShaderCRT.cpp
-    darkheaz/src/shaders/ShaderCRT.h
-    darkheaz/src/shaders/ShaderEnergyShield.cpp
-    darkheaz/src/shaders/ShaderEnergyShield.h
-    darkheaz/src/items/ItemWithTutorial.cpp
-    darkheaz/src/items/ItemWithTutorial.h
-    darkheaz/StoreManager.cpp
-    darkheaz/StoreManager.h
-    darkheaz/src/items/StoreItem.cpp
-    darkheaz/src/items/StoreItem.h
-    darkheaz/src/items/PlayerSatellite.cpp
-    darkheaz/src/items/PlayerSatellite.h
-    darkheaz/src/items/LivingObject.cpp
-    darkheaz/src/items/LivingObject.h
-    darkheaz/src/items/ItemHumanGhost.cpp
-    darkheaz/src/items/ItemHumanGhost.h
-    darkheaz/src/behaviors/RotatableToTarget.cpp
-    darkheaz/src/behaviors/RotatableToTarget.h
-    darkheaz/src/shaders/ShaderBlink.cpp
-    darkheaz/src/items/ItemShieldGhost.cpp
-    darkheaz/src/items/ItemShieldGhost.h
+        src/Shaders/ShaderExplosion.cpp
+        include/Shaders/ShaderExplosion.h
+        src/Shaders/ShaderDepthOfField.cpp
+        include/Shaders/ShaderDepthOfField.h
+        src/Shaders/ShaderImageMask.cpp
+        include/Shaders/ShaderImageMask.h
+        src/Behaviors/RotatableToTarget.cpp
+        include/Behaviors/RotatableToTarget.h
+        src/Shaders/ShaderBlink.cpp
+    renderer.cl
 )
 
 target_link_libraries(Brakeza3D

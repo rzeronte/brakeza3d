@@ -4,6 +4,7 @@
 
 #include "MeshOpenCLRenderer.h"
 #include "../ComponentsManager.h"
+#include "Logging.h"
 
 
 MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> &triangles)

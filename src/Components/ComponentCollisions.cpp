@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Physics/Projectile3DBody.h"
 
 ComponentCollisions::ComponentCollisions()
 :

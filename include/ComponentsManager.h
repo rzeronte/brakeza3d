@@ -5,12 +5,8 @@
 #include "Components/Component.h"
 #include "Components/ComponentCamera.h"
 #include "Components/ComponentCollisions.h"
-#include "Components/ComponentHUD.h"
 #include "Components/ComponentRender.h"
 #include "Components/ComponentInput.h"
-#include "Components/ComponentGame.h"
-#include "Components/ComponentGameInput.h"
-#include "Components/ComponentMenu.h"
 #include "Components/ComponentSound.h"
 
 enum ComponentID {
@@ -46,14 +42,6 @@ public:
         return dynamic_cast<ComponentCollisions *>(components[ComponentID::COMPONENT_COLLISIONS]);
     };
 
-    ComponentMenu *getComponentMenu() {
-        return dynamic_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
-    };
-
-    ComponentHUD *getComponentHUD() {
-        return dynamic_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]);
-    };
-
     ComponentWindow *getComponentWindow() {
         return dynamic_cast<ComponentWindow *>(components[ComponentID::COMPONENT_WINDOW]);
     };
@@ -64,14 +52,6 @@ public:
 
     ComponentInput *getComponentInput() {
         return dynamic_cast<ComponentInput *>(components[ComponentID::COMPONENT_INPUT]);
-    };
-
-    ComponentGame *getComponentGame() {
-        return dynamic_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]);
-    };
-
-    ComponentGameInput *getComponentGameInput() {
-        return dynamic_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]);
     };
 
     ComponentSound *getComponentSound() {

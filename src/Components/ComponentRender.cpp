@@ -2,6 +2,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender() :
     fps(0),
@@ -27,6 +28,7 @@ ComponentRender::ComponentRender() :
 void ComponentRender::onStart()
 {
     Logging::Log("ComponentRender onStart");
+    setEnabled(true);
 
     initTiles();
     initOpenCL();

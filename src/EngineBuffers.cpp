@@ -2,6 +2,7 @@
 #include <SDL2/SDL_surface.h>
 #include "../include/EngineBuffers.h"
 #include "../include/ComponentsManager.h"
+#include "../include/Shaders/ShaderExplosion.h"
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 

@@ -16,7 +16,7 @@
 #include "../Objects/Mesh3DAnimatedCollection.h"
 #include "../Particles/ParticleEmitter.h"
 #include "../Physics/SimplePendulum.h"
-#include "../../darkheaz/Player.h"
+#include "../Objects/Swarm.h"
 
 class GUI_Objects3D : public GUI {
 private:
@@ -45,9 +45,6 @@ public:
 
             for(int i = 0; i < (int)gameObjects.size(); i++) {
                 auto object = gameObjects[i];
-
-                auto *projectile = dynamic_cast<AmmoProjectileBody *>(object);
-                if (projectile != nullptr) continue;
 
                 //auto *emitter = dynamic_cast<ParticleEmitter *>(object);
                 //if (emitter != nullptr) continue;
@@ -418,33 +415,7 @@ public:
     }
 
     void GuiPlayer(Object3D *object, int i) {
-        auto player = dynamic_cast<Player *>(object);
-        if (player != nullptr) {
-            std::string player_movement_text = "Movement##" + std::to_string(i);
 
-            if (ImGui::TreeNode(player_movement_text.c_str())) {
-                std::string activeFriction = "Active friction##" + std::to_string(i);
-                const float step_range_min = 0;
-                const float step_range_max = 50000;
-                ImGui::DragScalar("Power", ImGuiDataType_Float, &player->power, 1,&step_range_min, &step_range_max, "%f", 1.0f);
-                ImGui::DragScalar("Friction", ImGuiDataType_Float, &player->friction, 1,&step_range_min, &step_range_max, "%f", 1.0f);
-                ImGui::DragScalar("Max Vel.", ImGuiDataType_Float, &player->maxVelocity, 1,&step_range_min, &step_range_max, "%f", 1.0f);
-                ImGui::DragScalar("Auto Rotation Speed", ImGuiDataType_Float, &player->rotationToTargetSpeed, 1, &step_range_min, &step_range_max, "%f", 1.0f);
-
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f),std::to_string(player->getVelocity().x).c_str());
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),std::to_string(player->getVelocity().y).c_str());
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f),std::to_string(player->getVelocity().z).c_str());
-
-                ImGui::TreePop();
-            }
-
-            ImGui::Button("Reset");
-            if (ImGui::IsItemClicked()) {
-                player->getShaderParticles()->resetContext();
-            }
-        }
     }
 
 
