@@ -6,7 +6,7 @@
 #define BRAKEDA3D_TEXTWRITER_H
 
 #include <vector>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 #include "../Misc/Color.h"
 
 

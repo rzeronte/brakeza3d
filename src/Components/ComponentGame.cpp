@@ -71,8 +71,6 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
-    videoPlayer = new VideoPlayer(SETUP->VIDEOS_FOLDER + "0000-1326.mp4");
-
     loadPlayer();
     loadWeapons();
     loadLevels();
@@ -215,10 +213,7 @@ void ComponentGame::preUpdate()
         }
 
         case EngineSetup::INTRO: {
-            if (videoPlayer->isFinished() ) {
-                videoPlayer->finished = false;
-                makeFadeToGameState(EngineSetup::GameState::MENU, true);
-            }
+
             break;
         }
 
@@ -1396,10 +1391,6 @@ void ComponentGame::handlePressKeyByWin()
     removeInGameObjects();
 }
 
-VideoPlayer *ComponentGame::getVideoPlayer()
-{
-    return videoPlayer;
-}
 
 void ComponentGame::loadGameFonts()
 {
