@@ -79,6 +79,7 @@ public:
 
     static std::string uniqueObjectLabel(const char *prefix);
 
+    static void LoadDemo();
 
     bool finish = false;
 };
