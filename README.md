@@ -61,7 +61,7 @@ Is not complex, but you will have to download the compiler and libraries to comp
 
 Here for detailed instructions for installing with CLion + MinGW:
 
-https://github.com/rzeronte/brakeza3d/WINDOWS_BUILD.md
+https://github.com/rzeronte/brakeza3d/blob/master/WINDOWS_BUILD.md
 
 # OSX compilation
 
