@@ -1,4 +1,5 @@
 .idea/inspectionProfiles/
 .idea/vcs.xml
+.idea/
 build/
 cmake-build-debug/
