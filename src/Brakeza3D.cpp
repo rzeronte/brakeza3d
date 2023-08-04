@@ -44,6 +44,7 @@ void Brakeza3D::mainLoop()
 
     onStartComponents();
 
+    LoadDemo();
 
     ImGuiInitialize();
 
@@ -248,4 +249,18 @@ float &Brakeza3D::getExecutionTime() {
 std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
 {
     return prefix + std::string("_") + std::to_string(Brakeza3D::get()->getSceneObjects().size() + 1);
+}
+
+void Brakeza3D::LoadDemo()
+{
+    auto *newObject = new Mesh3D();
+    newObject->setEnabled(true);
+    newObject->setStencilBufferEnabled(true);
+    newObject->setRotationFrameEnabled(true);
+    newObject->setRotationFrame(Vertex3D(1, 0, 0));
+    newObject->setPosition(Vertex3D(0, 0, 6000));
+    newObject->setScale(1);
+    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("eye"));
 }

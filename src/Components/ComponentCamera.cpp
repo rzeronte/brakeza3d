@@ -13,6 +13,8 @@ ComponentCamera::ComponentCamera()
 void ComponentCamera::onStart()
 {
     Logging::Log("ComponentCamera onStart");
+
+    this->getCamera()->updateFrustum();
 }
 
 void ComponentCamera::preUpdate()
