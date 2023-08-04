@@ -5,53 +5,36 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL2_IMAGE_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL_MIXER_INCLUDE_DIRS /usr/include/SDL2)
-set(SDL_TTF_INCLUDE_DIRS /usr/include/SDL2)
 set(BULLET_INCLUDE_DIRS /usr/include/bullet)
 set(ASSIMP_INCLUDE_DIRS /usr/include/assimp)
 set(GLM_INCLUDE_DIRS /usr/include/glm)
 set(DEARIMGUI_INCLUDE_DIRS imgui)
 
 if (WIN32)
-    set(SDL2_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\SDL2-2.28.2\\x86_64-w64-mingw32\\include)
-    set(SDL2_INCLUDE_DIRS2 C:\\Users\\eduardo\\Desktop\\SDL2-2.28.2\\x86_64-w64-mingw32\\include\\SDL2)
-
-    set(SDL2_IMAGE_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\SDL2_image-2.6.3\\x86_64-w64-mingw32\\include)
-    set(SDL_MIXER_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\SDL2_mixer-2.6.3\\x86_64-w64-mingw32\\include)
-    set(SDL_TTF_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\SDL2_ttf-2.20.2\\x86_64-w64-mingw32\\include)
-    set(ASSIMP_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\assimp-5.2.5\\include)
-    set(ASSIMP_INCLUDE_DIRS2 C:\\Users\\Eduardo\\Desktop\\assimp-5.2.5\\cmake-build-debug\\include)
-
-    set(GLM_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\glm-master)
-    set(BULLET_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\include\\)
-    set(LINEAR_MATH_DIRS C:\\Users\\eduardo\\Desktop\\include\\bullet)
-    set(OPENCL_LIBRARIES_DIR C:\\Users\\Eduardo\\Desktop\\OpenCL-SDK-v2023.04.17-Win-x64\\include)
-
+    set(BASE_INCLUDE_DIRECTORY C:\\Users\\Eduardo\\Desktop\\include\\)
+    set(SDL2_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\SDL2)
+    set(ASSIMP_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\assimp)
+    set(GLM_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\glm)
+    set(BULLET_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\include\\bullet)
+    set(OPENCL_LIBRARIES_DIR C:\\Users\\Eduardo\\Desktop\\include\\CL)
 endif (WIN32)
 
 include_directories(
-        ${SDL2_INCLUDE_DIRS}
-        ${SDL2_IMAGE_INCLUDE_DIRS}
-        ${SDL_MIXER_INCLUDE_DIRS}
-        ${SDL_TTF_INCLUDE_DIRS}
-        ${BULLET_INCLUDE_DIRS}
-        ${ASSIMP_INCLUDE_DIRS}
-        ${GLM_INCLUDE_DIRS}
-        ${DEARIMGUI_INCLUDE_DIRS}
-        ${LINEAR_MATH_DIRS}
-        ${SDL2_INCLUDE_DIRS2}
-        ${OPENCL_LIBRARIES_DIR}
-        ${ASSIMP_INCLUDE_DIRS2}
+    ${BASE_INCLUDE_DIRECTORY}
+    ${SDL2_INCLUDE_DIRS}
+    ${BULLET_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIRS}
+    ${GLM_INCLUDE_DIRS}
+    ${DEARIMGUI_INCLUDE_DIRS}
+    ${OPENCL_LIBRARIES_DIR}
 )
+
 add_executable(Brakeza3D
-    #WIN32
     main.cpp
     src/Components/ComponentCamera.cpp
     include/Components/ComponentCamera.h
@@ -284,13 +267,13 @@ add_executable(Brakeza3D
     darkheaz/src/bosses/BossLevel20.h
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.cpp
     darkheaz/src/enemies/behaviors/EnemyBehaviorPath.h
-        include/Objects/Vector2D.cpp
+    include/Objects/Vector2D.cpp
     include/Objects/Vector2D.h
     include/Misc/ColorHSV.cpp
     include/Misc/ColorHSV.h
     src/Render/ShaderOpenCL.cpp
     include/Render/ShaderOpenCL.h
-        darkheaz/src/shaders/ShaderImage.cpp
+    darkheaz/src/shaders/ShaderImage.cpp
     darkheaz/src/shaders/ShaderImage.h
     darkheaz/src/shaders/ShaderEdgeObject.cpp
     darkheaz/src/shaders/ShaderEdgeObject.h
@@ -298,7 +281,7 @@ add_executable(Brakeza3D
     darkheaz/src/shaders/ShaderColor.h
     darkheaz/src/items/ItemBombGhost.cpp
     darkheaz/src/items/ItemBombGhost.h
-        src/Collisions/Mesh3DAnimatedGhost.cpp
+    src/Collisions/Mesh3DAnimatedGhost.cpp
     include/Physics/Mesh3DAnimatedGhost.h
     darkheaz/src/bosses/BossLevel30.cpp
     darkheaz/src/bosses/BossLevel30.h
