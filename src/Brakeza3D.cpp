@@ -29,6 +29,10 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
 
     // Custom components here
+    componentsManager->registerComponent(new ComponentMenu(), "ComponentMenu");
+    componentsManager->registerComponent(new ComponentGame(), "ComponentGame");
+    componentsManager->registerComponent(new ComponentHUD(), "ComponentHUD");
+    componentsManager->registerComponent(new ComponentGameInput(), "ComponentGameInput");
 
     mainLoop();
 }
