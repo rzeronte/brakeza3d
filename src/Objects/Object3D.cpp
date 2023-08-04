@@ -192,11 +192,11 @@ void Object3D::setStencilBufferEnabled(bool value) {
     Object3D::stencilBufferEnabled = value;
 }
 
-EnemyBehavior *Object3D::getBehavior() const {
+Object3DBehavior *Object3D::getBehavior() const {
     return motion;
 }
 
-void Object3D::setBehavior(EnemyBehavior *motion) {
+void Object3D::setBehavior(Object3DBehavior *motion) {
     Object3D::motion = motion;
 }
 

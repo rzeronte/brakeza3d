@@ -12,10 +12,7 @@
 #include "Components/ComponentWindow.h"
 #include "Components/ComponentSound.h"
 #include "Components/ComponentRender.h"
-#include "Components/ComponentHUD.h"
 #include "ComponentsManager.h"
-#include "Components/ComponentGame.h"
-#include "Components/ComponentGameInput.h"
 #include "GUI/GUIManager.h"
 #include <thread>
 

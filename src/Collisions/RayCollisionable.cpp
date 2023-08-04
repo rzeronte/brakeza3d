@@ -1,6 +1,7 @@
 #include "../../include/Physics/RayCollisionable.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Render/Logging.h"
 
 RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask): ray(ray)
 {

@@ -1,4 +1,5 @@
 #include "../include/ComponentsManager.h"
+#include "../include/Render/Logging.h"
 
 ComponentsManager *ComponentsManager::instance = nullptr;
 

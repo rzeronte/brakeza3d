@@ -27,10 +27,6 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentInput(), "ComponentInput");
     componentsManager->registerComponent(new ComponentSound(), "ComponentSound");
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
-    componentsManager->registerComponent(new ComponentMenu(), "ComponentMenu");
-    componentsManager->registerComponent(new ComponentGame(), "ComponentGame");
-    componentsManager->registerComponent(new ComponentHUD(), "ComponentHUD");
-    componentsManager->registerComponent(new ComponentGameInput(), "ComponentGameInput");
 
     mainLoop();
 }
@@ -41,7 +37,11 @@ void Brakeza3D::mainLoop()
 
     engineTimer.start();
 
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+
     onStartComponents();
+
 
     ImGuiInitialize();
 

@@ -4,6 +4,7 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
 
 Mesh3D::Mesh3D()
 :

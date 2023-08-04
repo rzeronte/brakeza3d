@@ -11,8 +11,8 @@
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
-#include "../../darkheaz/src/shaders/ShaderParticles.h"
-#include "../../darkheaz/src/shaders/ShaderExplosion.h"
+#include "../Shaders/ShaderParticles.h"
+#include "../Shaders/ShaderExplosion.h"
 
 typedef enum {
     DEFAULT = 0,

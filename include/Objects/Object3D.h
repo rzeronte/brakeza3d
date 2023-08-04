@@ -5,7 +5,7 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
-#include "../../darkheaz/src/enemies/EnemyBehavior.h"
+#include "../Behaviors/Object3DBehavior.h"
 #include "Point2D.h"
 #include "../Misc/cJSON.h"
 
@@ -16,7 +16,7 @@ protected:
     Vertex3D drawOffset;
     M3 rotation;
 
-    EnemyBehavior *motion;
+    Object3DBehavior *motion;
     Object3D *parent;
 
     bool enabled;
@@ -93,7 +93,7 @@ public:
 
     void setAlphaEnabled(bool alphaEnabled);
 
-    void setBehavior(EnemyBehavior *motion);
+    void setBehavior(Object3DBehavior *motion);
 
     float &getRotX();
 
@@ -101,7 +101,7 @@ public:
 
     float &getRotZ();
 
-    [[nodiscard]] EnemyBehavior *getBehavior() const;
+    [[nodiscard]] Object3DBehavior *getBehavior() const;
 
     [[nodiscard]] bool &isAlphaEnabled();
 
