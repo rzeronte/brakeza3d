@@ -18,12 +18,16 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 ### CLion
 - Download: https://www.jetbrains.com/clion/download/download-thanks.html
 
+---
+
 ### MinGW
 
 - Source: https://winlibs.com
 - Download: https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0-16.0.6-11.0.0-ucrt-r1/winlibs-x86_64-posix-seh-gcc-13.2.0-llvm-16.0.6-mingw-w64ucrt-11.0.0-r1.zip
 
 ![Download MinGW](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/mingw_screenshot.png?raw=true)
+
+---
 
 ### SDL2
 
@@ -32,12 +36,16 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 
 ![Download SDL2](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/sdl2_image_screenshot.png?raw=true)
 
+---
+
 ### SDL2_image
 
 - Source: https://github.com/libsdl-org/SDL_image/releases
 - Download: https://github.com/libsdl-org/SDL_image/releases/download/release-2.6.3/SDL2_image-devel-2.6.3-mingw.zip
 
 ![Download SDL2_image](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/sdl2_image_screenshot.png?raw=true)
+
+---
 
 ### SDL2_ttf
 
@@ -46,12 +54,16 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 
 ![Download SDL2_ttf](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/sdl2_ttf_screenshot.png?raw=true)
 
+---
+
 ### SDL2_mixer
 
 - Source: https://www.libsdl.org/projects/SDL_mixer/release/
 - Download: https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.6.3-mingw.zip
 
 ![Download SDL2_mixer](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/sdl2_mixer_screenshot.png?raw=true)
+
+---
 
 ### Assimp
 
@@ -60,12 +72,16 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 
 ![Download Assimp](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/assimp_screenshot.png?raw=true)
 
+---
+
 ### Bullet Physics
 
 - Source: https://github.com/bulletphysics/bullet3/releases
 - Download: https://github.com/bulletphysics/bullet3/archive/refs/tags/3.25.zip
 
 ![Download Bullet Physics](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/bullet_screenshot.png?raw=true)
+
+---
 
 ### GLM
 
@@ -79,7 +95,7 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 
 ### Install CLion + MinGW
 
-Not explanation is required for install Clion. Follow his installer instructions and go will get.
+Not explanation is required for install Clion. Follow his installer instructions and you will get.
 MinGW only required decompress the previously downloaded file.
 
 Once MinGW had been decompressed, you need setup CMake toolchain in CLion
@@ -87,6 +103,9 @@ Once MinGW had been decompressed, you need setup CMake toolchain in CLion
 File > Setting > Build, Execution, Deployment > Toolchain. 
 
 In this option you can select the MinGW previously decompressed folder like this:
+
+![Toolchain MinGW](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/clion_toolchain_screenshot.png?raw=true)
+
 
 ---
 ### Notes
