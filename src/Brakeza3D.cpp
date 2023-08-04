@@ -48,7 +48,7 @@ void Brakeza3D::mainLoop()
 
     onStartComponents();
 
-    LoadDemo();
+    //LoadDemo();
 
     ImGuiInitialize();
 
