@@ -2,40 +2,38 @@
 
 Brakeza3D is an open source 3D engine written from scratch with SDL2.0
 
-No 3D graphics libraries such as OpenGL or Direct3D have been used.
+Custom CPU/OpenCL render is made (No OpenCL / Direct3D. )
 
 Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
-- Easy architecture (Based in components with preUpdate/update/postUpdate lyfecicle)
-- BSP Quake Geometry/Texture/Light maps/Entities loader
+- Easy architecture (Based in components easily maintainable)
 - Bullet Physics Integration
 - ImGui Integration
-- CPU Triangle rasterizer
+- CPU/OpenCL render engine
 - Load models & animations with ASSIMP library
 - 2D Billboard
 - 3D Billboard (8 directions)
 - Decals  
 - UV Mapping
-- Lights/Specularity/Shadow real time
+- Light points / Specularity
+- Shadow real time
 - Game Menu Interface
-- Octrees
-- Grid3D
+- Grid3D / Octrees
 - Basic component for add sounds
-- Basic component for input management
-- Extensible Shaders
+- Interface for XBOX/Playstation controller
+- Extensible Shaders vía custom OpenCL kernels
 
 # Dependences
 
-- SDL2 (https://www.libsdl.org/download-2.0.php)
-- SDL2_image (https://www.libsdl.org/projects/SDL_image/)
-- SDL2_ttf (https://www.libsdl.org/projects/SDL_ttf/)
-- SDL2_mixer (https://www.libsdl.org/projects/SDL_mixer/)
-- BulletSoftBody (https://github.com/bulletphysics/bullet3)
-- BulletDynamics 
-- BulletCollision
-- LinearMath (Included with Bullet)
-- Assimp (https://github.com/assimp/assimp)
+- SDL2
+- SDL2_image
+- SDL2_ttf
+- SDL2_mixer
+- Bullet Physics
+- Assimp
+- OpenCL SDK
+- GLM
 
 # Linux compilation
 
@@ -46,7 +44,7 @@ In Unix systems we will only have to make sure that we have installed the develo
 ``` 
 apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-image-2.0-0 libsdl2-ttf-dev \
 libsdl2-ttf-2.0-0 libsdl2-mixer-dev libsdl2-mixer-2.0-0 libbullet-dev libbullet2.88 libassimp-dev \
-libassimp5 assimp-utils intel-opencl-icd intel-opencl-icd
+libassimp5 assimp-utils intel-opencl-icd intel-opencl-icd libglm-dev
 ```
 
 ``` 
@@ -59,23 +57,15 @@ make
 
 # Windows compilation
 
-This project has been checked on Windows in a CLion/MinGW setup.
+Is not complex, but you will have to download the compiler and libraries to compile it by yourself.
 
-You can download MinGW compiler from https://sourceforge.net/projects/mingw-w64/
+Here for detailed instructions for installing with CLion + MinGW:
 
-You can download MinGW precompiled libraries for SDL, SDL_image, SDL_ttf and SDL_mixer. When you have the files you will have to unzip them in the folder where MinGw is installed. Usually you must to copy a structure with three folders: 'lib', 'bin' and 'include'.
-
-[![BSP Loader](https://github.com/rzeronte/brakeza3d/raw/master/doc/levels/libraries_brakeza_windows2.png)](https://github.com/rzeronte/brakeza3d/blob/master/doc/levels/cmakelist_windows_sample.png "CMakeList.txt sample")
-
-In addition you will also need to compile specific libraries for Assimp and Bullet Physics compiling for MinGW and when are ready, move this libraries to MinGW compiler folder.
-
-Finally, we need check routes for libraries and includes in CMakeList.txt according to your installation routes.
-
-[![BSP Loader](https://github.com/rzeronte/brakeza3d/raw/master/doc/levels/cmakelist_windows_sample.png)](https://github.com/rzeronte/brakeza3d/blob/master/doc/levels/cmakelist_windows_sample.png "CMakeList.txt sample")
+https://github.com/rzeronte/brakeza3d/WINDOWS_BUILD.md
 
 # OSX compilation
 
-Currently I do not compile for Mac, but the project was started on this system, it should not vary much compared to compiling with Linux, once the dependencies are satisfied.
+Currently, I do not compile for Mac, but the project was started on it, so that it shouldn't vary much compared to compiling with Linux, once the dependencies are satisfied.
 
 # Brakeza3D - Videos
 
