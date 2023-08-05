@@ -8,7 +8,6 @@
 #include "GUI_Objects3D.h"
 #include "GUI_Camera.h"
 #include "GUI_Tiles.h"
-#include "GUI_Weapons.h"
 #include "GUI_Files.h"
 
 class GUIManager : public GUI {
@@ -17,7 +16,6 @@ public:
     GUI_Objects3D *guiInspector;
     GUI_Camera *guiCamera;
     GUI_Tiles *guiTiles;
-    GUI_Weapons *guiWeapons;
     GUI_Files *guiFiles;
 
     GUIManager() {
@@ -25,7 +23,6 @@ public:
         guiInspector = new GUI_Objects3D();
         guiCamera = new GUI_Camera();
         guiTiles = new GUI_Tiles();
-        guiWeapons = new GUI_Weapons();
         guiFiles = new GUI_Files(EngineSetup::get()->MODELS_FOLDER);
     }
 
@@ -46,7 +43,6 @@ public:
             guiInspector->show,
             guiCamera->show,
             guiTiles->show,
-            guiWeapons->show,
             guiFiles->show,
             cam
         );
@@ -54,7 +50,6 @@ public:
         guiInspector->draw(gameObjects);
         guiCamera->draw(cam);
         guiTiles->draw(cam, tiles, numTilesColumns);
-        guiWeapons->draw();
         guiFiles->draw();
     }
 };
