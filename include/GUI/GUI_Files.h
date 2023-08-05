@@ -17,7 +17,7 @@ class GUI_Files : public GUI {
 private:
 
 public:
-    bool show = false;
+    bool show = true;
     int miscFlags = ImGuiColorEditFlags_NoOptions;
     ImGuiWindowFlags window_flags = 0;
 
@@ -26,7 +26,8 @@ public:
 
     explicit GUI_Files(std::string directoryPath) : directory_path(std::move(directoryPath)) {}
 
-    virtual void draw() {
+    virtual void draw()
+    {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
@@ -34,16 +35,23 @@ public:
 
             DIR *dir;
             struct dirent *ent;
+            std::vector<std::string> result;
             if ((dir = opendir (directory_path.c_str())) != NULL) {
                 int index = 1;
                 while ((ent = readdir (dir)) != NULL) {
-                    if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-                        if(ImGui::Selectable(ent->d_name, selected_file == ent->d_name)){
-                            selected_file = ent->d_name;
+                    result.push_back(ent->d_name);
+                }
+                std::sort( result.begin(), result.end() );
+
+                closedir (dir);
+
+                for (const auto& file: result) {
+                    if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                        if(ImGui::Selectable(file.c_str(), selected_file == file.c_str())){
+                            selected_file = file.c_str();
                         }
                     }
                 }
-                closedir (dir);
             } else {
                 ImGui::Text("Could not open directory");
             }

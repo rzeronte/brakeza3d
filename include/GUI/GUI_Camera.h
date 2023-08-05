@@ -11,15 +11,15 @@
 
 class GUI_Camera : public GUI {
 public:
-    bool show = false;
+    bool show = true;
 
     virtual void draw(Camera3D *camera) {
         ImGuiWindowFlags window_flags = 0;
 
         if (show) {
 
-            ImGui::SetNextWindowPos(ImVec2(250, 22), ImGuiCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(250, 190), ImGuiCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(305, 22), ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(300, 190), ImGuiCond_Once);
             //window_flags |= ImGuiWindowFlags_NoMove;
 
             std::string title = "Camera Inspector";
