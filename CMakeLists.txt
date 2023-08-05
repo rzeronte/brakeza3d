@@ -107,8 +107,7 @@ add_executable(Brakeza3D
     include/GUI/GUI_Menu.h
     include/GUI/GUI_Objects3D.h
     include/GUI/GUI_Tiles.h
-    include/GUI/GUI_Weapons.h
-    include/GUI/GUIManager.h
+        include/GUI/GUIManager.h
 
     imgui/imconfig.h
     imgui/imgui.h

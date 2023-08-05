@@ -24,7 +24,6 @@ public:
         bool &show_window_inspector,
         bool &show_camera_info,
         bool &show_window_physics,
-        bool &show_window_weapons,
         bool &show_window_files,
         Camera3D *cam
     ) {
@@ -340,7 +339,6 @@ public:
                 ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Separator();
                 ImGui::Checkbox("Tiles", &show_window_physics);
-                ImGui::Checkbox("Weapons", &show_window_weapons);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw main Frustum", &EngineSetup::get()->DRAW_FRUSTUM);
                 ImGui::Separator();
@@ -394,7 +392,7 @@ public:
         if (show_about_window) ImGui::OpenPopup("New");
 
         if (ImGui::BeginPopup("New")) {
-            ImGui::Text("Brakeza v.0.6.");
+            ImGui::Text("%s", std::string("Brakeza3D" + EngineSetup::get()->VERSION).c_str());
             ImGui::Text("Eduardo Rodríguez <eduardo@brakeza.com>");
             ImGui::Text("https://brakeza.com");
             ImGui::EndPopup();
