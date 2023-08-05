@@ -24,7 +24,7 @@ private:
     ImVec4 imguiColorSpecularity;
 
 public:
-    bool show = false;
+    bool show = true;
     bool showJSON = false;
     int miscFlags = ImGuiColorEditFlags_NoOptions;
     std::string text_area;
