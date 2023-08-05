@@ -63,8 +63,8 @@ public:
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
-    bool RENDER_MAIN_AXIS = true;
-    bool RENDER_OBJECTS_AXIS = true;
+    bool RENDER_MAIN_AXIS = false;
+    bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 600;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
@@ -91,7 +91,7 @@ public:
     bool DRAW_PENDULUM_THREAD = false;
 
 
-    bool DRAW_MESH3D_AABB = true;
+    bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
     bool DRAW_MESH3D_GRID = false;
     bool DRAW_MESH3D_GRID_POINTS = true;
