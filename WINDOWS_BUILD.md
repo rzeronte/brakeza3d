@@ -92,6 +92,19 @@ We are gonna to compile 64bits version of Brakeza3D on Windows using CLion like 
 
 
 ---
+### Saving all download resources
+
+![Download Resources](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/downloaded_resources.png?raw=true)
+
+### Decompress all download resources
+
+We will unzip MinGW in one folder:
+
+![MinGW Folder](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/mingw_folder.png?raw=true)
+
+... and all the libraries in another:
+
+![Descompress Resources](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/decompress_downloaded_resources.png?raw=true)
 
 ### Install CLion + MinGW
 
@@ -106,8 +119,8 @@ In this option you can select the MinGW previously decompressed folder like this
 
 ![Toolchain MinGW](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/clion_toolchain_screenshot.png?raw=true)
 
-
 ---
+
 ### Notes
 
 We will only need to compile for ourselves two things. 
@@ -116,13 +129,11 @@ We will only need to compile for ourselves two things.
 - Assimp
 
 Once had been decompressed into his individual folder, we can open each of them and compile them individually. This may take a minutes.
-
 Rest of libraries (SDL2, SDL2_image, SDL2_ttf, SDL2_mixer, GLM and SDK OpenCL) do not require to be compiled.
 
 GLM is a header library, so that it not have DLL associated. Only development files will be needed.
 
----
-We are interested in two things about each of these projects:
+We are interested in two things about each of these libraries:
 
 - lib and bin files (.ddl / .a): Files used for compiling and linking. We will move this files into a folder inside MinGW scope.
 - includes (.h, .hpp...): Used for development includes. We will make a folder with all of them to keep easy maintainable
@@ -132,7 +143,11 @@ We are interested in two things about each of these projects:
 
 We will be able to find a LIB and a BIN folder inside our MinGW toolchain.
 
-In each of the libraries you will also find these folders, so that we will go copying this files inside MinGW folders.
+
+In each of the libraries you will also find these folders, so that we will go copying this files inside MinGW folders. Here un example inside SDL2 sources folder:
+
+![DLLs](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/sdl2_example_dlls.png?raw=true)
+
 
 ### Move development header files and update CMakeLists
 
@@ -140,9 +155,13 @@ Now we are gonna to join in a folder all headers needed for development. So we c
 
 Same way with lib/bin, you will find a 'include' folder inside each library project. We will go copying to newly 'include' folder.
 
+![Development Headers](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/include_headers_folder.png?raw=true)
+
 ---
 
 At last, you will have to update CMakeLists.txt folders route, with newly 'include' folder.
+
+![CMake Update](https://github.com/rzeronte/brakeza3d/blob/master/doc/images/cmake_windows_example.png?raw=true)
 
 ---
 
