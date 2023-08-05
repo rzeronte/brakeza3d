@@ -63,9 +63,9 @@ public:
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
-    bool RENDER_MAIN_AXIS = false;
-    bool RENDER_OBJECTS_AXIS = false;
-    float OBJECT_AXIS_SIZE = 100;
+    bool RENDER_MAIN_AXIS = true;
+    bool RENDER_OBJECTS_AXIS = true;
+    float OBJECT_AXIS_SIZE = 600;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
@@ -91,7 +91,7 @@ public:
     bool DRAW_PENDULUM_THREAD = false;
 
 
-    bool DRAW_MESH3D_AABB = false;
+    bool DRAW_MESH3D_AABB = true;
     bool DRAW_MESH3D_OCTREE = false;
     bool DRAW_MESH3D_GRID = false;
     bool DRAW_MESH3D_GRID_POINTS = true;
@@ -175,7 +175,7 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
-    bool BULLET_DEBUG_MODE = false;
+    bool BULLET_DEBUG_MODE = true;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
     float TESTING = 64.0;
@@ -246,6 +246,8 @@ public:
 
     float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
     float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
+
+    std::string VERSION = "v.1.0.0";
 
     enum collisionGroups {
         Player = 1,
