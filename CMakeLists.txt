@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
@@ -223,7 +223,7 @@ add_executable(Brakeza3D
     ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
     ProjectDarkHeaZ/Bosses/BossLevel20.h ProjectDarkHeaZ/Bosses/BossLevel20.cpp
     ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
-    )
+        ProjectDarkHeaZ/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp ProjectDarkHeaZ/Items/SalvageSpaceship.h)
 
 target_link_libraries(Brakeza3D
     pthread
