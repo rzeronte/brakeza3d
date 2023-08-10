@@ -140,6 +140,16 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
        EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
     );
 
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage") != nullptr) {
+        ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(true);
+        ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setImage(
+            EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage")->valuestring
+        );
+    } else {
+        ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(false);
+    }
+
+
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "histories") != nullptr) {
         cJSON *currentHistory;
         cJSON_ArrayForEach(currentHistory, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "histories")) {
@@ -576,6 +586,7 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
         EngineSetup::collisionGroups::Player,
         0,
         parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
+        0.1f,
         true
     ));
 }
@@ -709,6 +720,12 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
             item->setTutorialIndex(helpIndex);
             break;
         }
+        case LevelInfoItemsTypes::ITEM_SALVAGE_SPACESHIP: {
+            auto item = this->makeSalvageSpaceship(position);
+            item->setHasTutorial(help);
+            item->setTutorialIndex(helpIndex);
+            break;
+        }
         default: {
             Logging::Log("Item not found in parsing JSON");
             exit(-1);
@@ -739,7 +756,7 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
     }
 
     parseEnemyJSON(bossJSON, boss);
-
+    boss->onStart();
     auto respawner = new EnemyGhostEmitter(boss, 3);
     respawner->setPosition(boss->getPosition());
 
@@ -921,7 +938,16 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
-    auto dialog = new EnemyDialog(enemy, enemy->getAvatarHud(), enemy->getAvatar(), stamina, text.c_str(), enemy->getName().c_str(), componentGame->getFontGame(), componentGame->getPrimaryColor());
+    auto dialog = new EnemyDialog(
+        enemy,
+        enemy->getAvatarHud(),
+        enemy->getAvatar(),
+        stamina,
+        text.c_str(),
+        enemy->getName().c_str(),
+        componentGame->getFontGame(),
+        componentGame->getPalette().getCRT()
+    );
 
     enemy->dialogs.push_back(dialog);
 }
@@ -955,4 +981,28 @@ int LevelLoader::getCurrentTutorialIndex() const {
 
 Counter *LevelLoader::getWaitingToWin() {
     return &waitingToWin;
+}
+
+SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
+{
+    auto salvage = new SalvageSpaceship();
+    salvage->setLayer(Mesh3DRenderLayer::ONUPDATE);
+    salvage->setRotation(10, 10, 0);
+    salvage->setEnabled(true);
+    salvage->setAlpha(255);
+    salvage->setEnableLights(true);
+    salvage->setStencilBufferEnabled(true);
+    salvage->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "/spaceships/salvage.fbx"));
+    salvage->setPosition(position + Vertex3D(0, 0, 2000));
+    salvage->makeSimpleGhostBody(
+        Vertex3D(800, 800, 5000),
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::Weapon,
+        EngineSetup::collisionGroups::Player
+    );
+    salvage->updateBulletFromMesh3D();
+
+    Brakeza3D::get()->addObject3D(salvage, "salvage");
+
+    return salvage;
 }

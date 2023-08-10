@@ -21,9 +21,10 @@ private:
     RayLight rayLight;
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
-    std::vector<ProjectileRay *> fixedLasers;
 
     ParticleEmitter *particleEmitter;
+protected:
+    std::vector<ProjectileRay *> fixedLasers;
 public:
     EnemyGhost();
 
@@ -31,7 +32,7 @@ public:
 
     void resolveCollision(Collisionable *withObject) override;
 
-    void onStart();
+    virtual void onStart();
 
     void onUpdate() override;
 

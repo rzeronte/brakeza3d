@@ -2,6 +2,7 @@
   "name": "10",
   "music": "bossMusic01",
   "backgroundImage": "levels/10.png",
+  "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
   "histories": ["histories/lore_10_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -89,14 +90,17 @@
     {
       "type": 0,
       "name": "Leuman",
-      "avatar": "avatars/spitfire.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/boss10.png",
+      "avatarHud": "avatars/boss10_hud.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Spitfire.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 3000,
       "reward": true,
+      "messages": [
+        { "text": "You are not welcome!\nThe Earth has been fallen. We are like a virus! They order us to die", "stamina": 75 }
+      ],
       "weapon": {
         "index": 0,
         "available": true,
@@ -127,7 +131,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 9,
-        "color": { "r": 255, "g": 255, "b": 0 }
+        "color": { "r": 170, "g": 0, "b": 0 }
       }
     }
   ],
@@ -140,5 +144,8 @@
       "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
       "scale":	55
     }
+  ],
+  "items": [
+
   ]
 }

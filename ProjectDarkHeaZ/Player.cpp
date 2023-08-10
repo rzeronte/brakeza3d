@@ -22,7 +22,17 @@ Player::Player()
     weapon(nullptr),
     counterStucked(Counter(5)),
     counterDashCadence(Counter(1)),
-    rayLight(RayLight(false, this, 1000, 0, Color::green(), EngineSetup::collisionGroups::Projectile, EngineSetup::collisionGroups::Enemy )),
+    rayLight(RayLight(
+        false,
+        this,
+        this->AxisDown().getNormalize(),
+        this->AxisDown().getScaled(1100),
+        500,
+        0,
+        Color::green(),
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Enemy
+    )),
     killsCounter(0),
     energyShieldEnabled(false),
     allowEnergyShield(false),
@@ -42,31 +52,33 @@ Player::Player()
     light->setRotation(180, 0, 0);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    shaderParticles = new ShaderParticles(true, Color(0, 255, 0), Color(255, 255, 255), OCParticlesContext(
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+
+    shaderParticles = new ShaderParticles(true, palette.getParticlesPlayerFrom(), palette.getParticlesPlayerTo(), OCParticlesContext(
         0.0f,
         0.0025f,
-        1.5f,
+        2.5f,
         45.0f,
         0.0f,
         50.0f,
         50.0f,
         255.0f,
         2.0f,
-        0.8f,
+        1.8f,
         0.98f
     ));
 
-    shaderParticlesTwo = new ShaderParticles(true, Color(0, 255, 0), Color(255, 255, 255), OCParticlesContext(
+    shaderParticlesTwo = new ShaderParticles(true, palette.getParticlesPlayerFrom(), palette.getParticlesPlayerTo(), OCParticlesContext(
         0.0f,
         0.0025f,
-        1.5f,
+        2.5f,
         45.0f,
         0.0f,
         50.0f,
         50.0f,
         255.0f,
         2.0f,
-        0.8f,
+        1.8f,
         0.98f
     ));
 
@@ -149,6 +161,7 @@ void Player::shoot(float intensity)
                 AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 getRotation(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getProjectilePlayer(),
                 intensity,
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy,
@@ -163,9 +176,9 @@ void Player::shoot(float intensity)
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
-                intensity,
+                0.1f,
                 true,
-                Color::green(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getLaserPlayer(),
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy
             );
@@ -184,7 +197,12 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_RAYLIGHT: {
-            weapon->shootRayLight(rayLight, intensity * 0.5f);
+            rayLight.updateDirection(
+                rayLight.getParent()->AxisDown().getNormalize(),
+                rayLight.getParent()->AxisDown().getScaled(1100)
+            );
+
+            weapon->shootRayLight(rayLight, intensity * 0.5f, ComponentsManager::get()->getComponentGame()->getPalette().getRayLightPlayer());
             break;
         }
         default:
@@ -224,6 +242,8 @@ void Player::onUpdate()
     updatePlayerEnergy();
 
     updateTargetRotation();
+
+    updateShaderParticles();
 
     setPosition(getPosition() + this->velocity);
 
@@ -294,8 +314,6 @@ void Player::drawOnUpdateSecondPass()
         satellite.drawOnUpdateSecondPass();
     }
 
-    updateShaderParticles();
-
     if (isEnergyShieldEnabled()) {
         auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
         shield->drawFlatAlpha(p.x - shield->width()/2, p.y - shield->height()/2, 200);
@@ -311,7 +329,7 @@ void Player::onDrawHostBuffer()
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),
             getPosition() + Tools::randomVertex().getScaled(5),
-            Color::green()
+            ComponentsManager::get()->getComponentGame()->getPalette().getCRT()
         );
         counterStucked.update();
 
@@ -327,7 +345,7 @@ void Player::updateShaderParticles()
 {
     shaderParticles->update(
         Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-1000) - AxisLeft().getScaled(220),
+            getPosition() - AxisUp().getScaled(-1150) - AxisLeft().getScaled(220),
             ComponentsManager::get()->getComponentCamera()->getCamera()
         ),
         AxisUp(),
@@ -336,7 +354,7 @@ void Player::updateShaderParticles()
 
     shaderParticlesTwo->update(
         Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-1000) + AxisLeft().getScaled(220),
+            getPosition() - AxisUp().getScaled(-1150) + AxisLeft().getScaled(220),
             ComponentsManager::get()->getComponentCamera()->getCamera()
         ),
         AxisUp(),
@@ -429,6 +447,7 @@ void Player::resolveCollision(Collisionable *with)
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);
     if (weapon != nullptr) {
+        auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
         this->addWeapon(weapon->getWeaponType());
 
         ComponentsManager::get()->getComponentSound()->sound("getAmmo", EngineSetup::SND_GLOBAL, 0);
@@ -436,7 +455,7 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
         weapon->setRemoved(true);
-        Tools::makeExplosion(this, weapon->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        Tools::makeExplosion(this, weapon->getPosition(), 5, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 
         if (weapon->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -451,10 +470,11 @@ void Player::resolveCollision(Collisionable *with)
     auto health = dynamic_cast<ItemHealthGhost*> (with);
     if (health != nullptr) {
         Logging::Log("Health to Player!");
+        auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveAid(health->getAid());
         health->remove();
-        Tools::makeExplosion(this, health->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        Tools::makeExplosion(this, health->getPosition(), 5, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 
         if (health->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -487,10 +507,11 @@ void Player::resolveCollision(Collisionable *with)
     auto energy = dynamic_cast<ItemEnergyGhost*> (with);
     if (energy != nullptr) {
         Logging::Log("Health to Player!");
+        auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveEnergy(energy->getEnergy());
         energy->remove();
-        Tools::makeExplosion(this, energy->getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        Tools::makeExplosion(this, energy->getPosition(), 5, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 
         if (energy->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -597,9 +618,9 @@ void Player::setEnergyShieldEnabled(bool shieldEnabled)
     Player::energyShieldEnabled = shieldEnabled;
 
     if (shieldEnabled) {
-        blink->setColor(Color::green());
+        blink->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getFirst());
     } else {
-        blink->setColor(Color::red());
+        blink->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer());
     }
 }
 
@@ -679,7 +700,7 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new ShaderBlink(false, this, 0.05, Color::red());
+    blink = new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer());
     counterDamageBlink.setEnabled(false);
 
     loadSatellite();
@@ -818,7 +839,8 @@ void Player::dashMovement()
 
         ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
-        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+        auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
@@ -847,4 +869,8 @@ void Player::makeRandomPlayerDamageSound()
     std::string randomMetalSound = "metalHit0" + std::to_string(Tools::random(1, 5));
 
     ComponentsManager::get()->getComponentSound()->sound(randomMetalSound, EngineSetup::SoundChannels::SND_GLOBAL, 0);
+}
+
+RayLight &Player::getRayLight() {
+    return rayLight;
 }

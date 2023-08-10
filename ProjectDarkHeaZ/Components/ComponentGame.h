@@ -26,6 +26,8 @@
 #include "../Shaders/ShaderCRT.h"
 #include "../../include/Shaders/ShaderEdgeObject.h"
 #include "../Shaders/ShaderSwarm.h"
+#include "../PaletteColors.h"
+#include "../Items/SalvageSpaceship.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 #define FREE_LOOK_ENABLED false
@@ -67,6 +69,8 @@ private:
     LevelLoader *levelLoader;
 
     ShaderImage *shaderBackgroundImage;
+    ShaderImage *shaderForegroundImage;
+
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
     ShaderEdgeObject *shaderEdgeObject;
@@ -75,10 +79,6 @@ private:
     Point2D imageCrossFireScreenPosition;
 
     std::vector<Weapon *> weapons;
-
-    Color primaryColor;
-    Color secondaryColor;
-    Color thirdColor;
 
     Swarm *swarm;
     ShaderSwarm *shaderSwarm;
@@ -95,6 +95,8 @@ private:
     EnemyDialog *currentEnemyDialog;
 
     //PathFinder *pathFinder;
+
+    PaletteColors palette;
 public:
     ComponentGame();
 
@@ -194,10 +196,6 @@ public:
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
 
-    [[nodiscard]] const Color &getPrimaryColor() const;
-
-    [[nodiscard]] const Color &getSecondaryColor() const;
-
     [[nodiscard]] Sprite3D *getExplosionSpriteTemplate() const;
 
     [[nodiscard]] ShaderColor *getShaderColor() const;
@@ -239,7 +237,7 @@ public:
 
     TTF_Font *fontGameAlternative;
 
-    void stopEnemiesBehaviors();
+    static void setEnemiesBehaviors(bool value);
 
     void setHelp(Image *help);
 
@@ -266,6 +264,10 @@ public:
     void setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog);
 
     void handleSpaceShipSelector();
+
+    [[nodiscard]] const PaletteColors &getPalette() const;
+
+    ShaderImage *getShaderForegroundImage() const;
 };
 
 

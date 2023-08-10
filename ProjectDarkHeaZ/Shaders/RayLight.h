@@ -22,11 +22,16 @@ private:
     Color color;
     Object3D* parent;
 
+    Vertex3D direction;
+    Vertex3D startOffset;
+
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
 public:
-    explicit RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask);
+    explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, int filterGroup, int filterMask);
 
     void update();
+
+    void updateDirection(Vertex3D direction, Vertex3D startOffset);
 
     void setIntensity(float intensity);
 
@@ -41,6 +46,14 @@ public:
     void setEnabled(bool enabled);
 
     void setColor(const Color &color);
+
+    [[nodiscard]] const Vertex3D &getDirection() const;
+
+    void setDirection(Vertex3D direction);
+
+    Object3D *getParent() const;
+
+    void setReach(int i);
 };
 
 

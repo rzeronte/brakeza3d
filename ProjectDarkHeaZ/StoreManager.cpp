@@ -44,8 +44,9 @@ void StoreManager::update(float alpha)
         }
     }
 
+    auto game = ComponentsManager::get()->getComponentGame();
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->getImage()->drawFlatAlpha(130, 155, alpha);
-    writer->writeTextTTFAutoSize(150, 155, std::to_string(ComponentsManager::get()->getComponentGame()->getPlayer()->getCoins()).c_str(), Color::green(), 0.25f);
+    writer->writeTextTTFAutoSize(150, 155, std::to_string(game->getPlayer()->getCoins()).c_str(), game->getPalette().getFirst(), 0.25f);
 }
 
 void StoreManager::drawItem(StoreItem *item, int x, int y, float alpha)
@@ -81,7 +82,7 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
     item->getDescription()->drawFlatAlpha(0, 0, alpha);
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->getImage()->drawFlatAlpha(345, 323, alpha);
-    writer->writeTextTTFAutoSize(365, 323, std::to_string(item->getCost()).c_str(), Color::red(), 0.25f);
+    writer->writeTextTTFAutoSize(365, 323, std::to_string(item->getCost()).c_str(), ComponentsManager::get()->getComponentGame()->getPalette().getSecond(), 0.25f);
 }
 
 void StoreManager::buyCurrentSelected()

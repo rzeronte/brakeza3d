@@ -35,9 +35,7 @@ void AmmoProjectileBodyEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved()) return;
-
-    if (!isActive())  return;
+    if (isRemoved() || !isActive() || !isEnabled())  return;
 
     this->counter.update();
 
@@ -119,6 +117,8 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         weaponType->getDamage(),
         (float) weaponType->getSpeed(),
         100,
+        color,
+        2.5f,
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player,
         new ParticleEmitter(
@@ -126,8 +126,8 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
             nullptr,
             getPosition(),
             10,
-            Color::yellow(),
-            Color::green(),
+            ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyFrom(),
+            ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyTo(),
             OCParticlesContext()
         )
     ), Brakeza3D::uniqueObjectLabel("emitterProjectile"));
@@ -170,6 +170,7 @@ void AmmoProjectileBodyEmitter::launchUniqueLaser()
             EngineSetup::collisionGroups::Player,
             weaponType->getSpeed(),
             color,
+            0.1f,
             false
         ),
         Brakeza3D::uniqueObjectLabel("laser")

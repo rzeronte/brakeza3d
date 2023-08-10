@@ -2,6 +2,7 @@
   "name": "02",
   "music": "musicLevel01",
   "backgroundImage": "levels/02.png",
+  "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": false,
   "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png", "tutorials/tutorial_humans.png"],
   "histories": ["default_history.png"],
@@ -70,7 +71,7 @@
     {
       "name": "Star",
       "model": "marsh.fbx",
-      "scale": 18,
+      "scale": 16,
       "position": { "x": 30, "y": 50, "z": 20000 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }

@@ -18,11 +18,9 @@ ComponentGame::ComponentGame()
     imageCrossFire(nullptr),
     levelLoader(nullptr),
     shaderBackgroundImage(nullptr),
+    shaderForegroundImage(nullptr),
     shaderColor(nullptr),
     shaderShockWave(nullptr),
-    primaryColor(Color(118, 185, 32)),
-    secondaryColor(Color(118, 185, 32)),
-    thirdColor(Color(0, 0, 255)),
     spaceshipSelectedIndex(0),
     gameState(EngineSetup::GameState::NONE)
 {
@@ -141,11 +139,15 @@ void ComponentGame::onStart()
 void ComponentGame::loadShaders()
 {
     shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    shaderForegroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    shaderBackgroundImage->setUseOffset(true);
+    shaderForegroundImage->setUseOffset(true);
+    shaderForegroundImage->setUseColors(false);
     shaderColor = new ShaderColor(false, Color::red(), 0.75f);
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
-    shaderBackgroundImage->setUseOffset(true);
-    shaderEdgeObject = new ShaderEdgeObject(false, Color::green());
+
+    shaderEdgeObject = new ShaderEdgeObject(false, palette.getSecond());
 }
 
 ComponentGame::~ComponentGame()
@@ -157,6 +159,7 @@ ComponentGame::~ComponentGame()
 
     delete shaderProjectiles;
     delete shaderBackgroundImage;
+    delete shaderForegroundImage;
     delete shaderColor;
 
     delete explosionSpriteTemplate;
@@ -207,16 +210,9 @@ void ComponentGame::preUpdate()
             checkForEndLevel();
             break;
         }
-        case EngineSetup::PRESS_KEY_GAMEOVER: {
-            imageEndGame->drawFlatAlpha(0, 0, alpha);
-            break;
-        }
-
         case EngineSetup::INTRO: {
-
             break;
         }
-
         case EngineSetup::NONE:
         case EngineSetup::SPLASH:
         case EngineSetup::MENU:
@@ -255,7 +251,7 @@ void ComponentGame::onUpdate()
             shaderCRT->update();
 
             currentEnemyDialog->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
 
             break;
         }
@@ -282,7 +278,7 @@ void ComponentGame::onUpdate()
             // Establece el alfa en función de la proporción de tiempo restante
             textWriter->setAlpha(timeRatio * 255);
 
-            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), secondaryColor, 2);
+            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), palette.getCRT(), 2);
 
             getLevelLoader()->getCountDown()->update();
 
@@ -307,7 +303,7 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
 
             help->drawFlatAlpha(0, 0, alpha);
             break;
@@ -321,7 +317,7 @@ void ComponentGame::onUpdate()
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
 
             imageHelp->drawFlatAlpha(0, 0, alpha);
 
@@ -344,7 +340,7 @@ void ComponentGame::onUpdate()
 
             storeManager->update(alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
             break;
         }
         case EngineSetup::CREDITS: {
@@ -357,7 +353,7 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
 
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
@@ -389,13 +385,32 @@ void ComponentGame::onUpdate()
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             //spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", Color::black(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", palette.getFive(), 0.2);
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
             shaderEdgeObject->update();
             break;
         }
+        case EngineSetup::PRESS_KEY_GAMEOVER: {
+            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+            imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+            boxTutorial->drawFlatAlpha(0, 0, alpha);
+            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+
+            dialogBackground->setMaxAlpha((int) alpha);
+            dialogBackground->update();
+
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
+
+            shaderCRT->setMaxAlpha((int) alpha);
+            shaderCRT->update();
+
+            imageEndGame->drawFlatAlpha(0, 0, alpha);
+            break;
+        }
+
     }
 }
 
@@ -408,14 +423,14 @@ void ComponentGame::handleTutorialImages(float alpha)
         textWriter->setAlpha(alpha);
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
         if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(323, message.c_str(), primaryColor, 0.3f);
+            textWriter->writeTTFCenterHorizontal(323, message.c_str(), palette.getCRT(), 0.3f);
         }
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         dialogBackground->setMaxAlpha((int) alpha);
         dialogBackground->update();
         boxTutorial->drawFlatAlpha(0, 0, alpha);
 
-        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", Color::black(), 0.2);
+        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", palette.getFive(), 0.2);
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
@@ -450,26 +465,26 @@ void ComponentGame::showLevelStatistics(float alpha)
     int offsetX = 160;
     const int space = 100;
     player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), palette.getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(), palette.getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(), palette.getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), secondaryColor, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), palette.getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, 250, alpha);
 
     textWriter->setFont(fontGame);
@@ -478,10 +493,10 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     imageStatistics->drawFlatAlpha(0, 0, alpha);
 
-    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", Color::black(), 0.2);
+    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
     auto iconCon = ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon");
     iconCon->getImage()->drawFlatAlpha(313  , 300, alpha);
-    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), secondaryColor, 0.3);
+    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), palette.getSecond(), 0.3);
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -605,7 +620,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             handlePressKeyByWin();
             break;
         case EngineSetup::GAMING_TUTORIAL:
-            stopEnemiesBehaviors();
+            setEnemiesBehaviors(false);
             break;
         case EngineSetup::STORE: {
             break;
@@ -913,6 +928,7 @@ void ComponentGame::removeInGameObjects()
         auto *energy = dynamic_cast<ItemEnergyGhost *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *human = dynamic_cast<ItemHumanGhost *> (object);
+        auto *salvage = dynamic_cast<SalvageSpaceship *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
         auto *projectileEmitter = dynamic_cast<AmmoProjectileBodyEmitter *> (object);
         auto *particleEmitter = dynamic_cast<ParticleEmitter *> (object);
@@ -933,7 +949,8 @@ void ComponentGame::removeInGameObjects()
             projectileRay != nullptr ||
             projectileEmitter != nullptr ||
             particleEmitter != nullptr ||
-            bomb != nullptr
+            bomb != nullptr ||
+            salvage != nullptr
         ) {
             object->setRemoved(true);
             continue;
@@ -968,10 +985,6 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
             if (enemy->getProjectileEmitter() != nullptr) {
                 enemy->getProjectileEmitter()->setActive(value);
             }
-
-            if (enemy->getBehavior() != nullptr) {
-                enemy->getBehavior()->setEnabled(true);
-            }
         }
     }
 }
@@ -981,6 +994,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
     for (auto object: Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *health = dynamic_cast<ItemHealthGhost *> (object);
+        auto *salvage = dynamic_cast<SalvageSpaceship *> (object);
         auto *weapon = dynamic_cast<ItemWeaponGhost *> (object);
         auto *human = dynamic_cast<ItemHumanGhost *> (object);
         auto *projectile = dynamic_cast<Projectile3DBody *> (object);
@@ -996,7 +1010,8 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             energy != nullptr ||
             human != nullptr ||
             bomb != nullptr ||
-            enemiesEmitter != nullptr
+            enemiesEmitter != nullptr ||
+            salvage != nullptr
         ) {
             object->setEnabled(value);
         }
@@ -1146,7 +1161,10 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::GAMING_TUTORIAL ||
         gameState == EngineSetup::RADIO_MESSAGE
     ) {
-        shaderBackgroundImage->update();
+        Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
+
+        shaderBackgroundImage->update(vel.x, vel.y);
+        shaderForegroundImage->update(vel.x/2, vel.y/2);
     }
 }
 
@@ -1189,6 +1207,7 @@ void ComponentGame::handleGamingGameState()
 {
     setVisibleInGameObjects(true);
     setEnemyWeaponsEnabled(true);
+    setEnemiesBehaviors(true);
 
     getPlayer()->setEnabled(true);
     getPlayer()->startPlayerBlink();
@@ -1223,6 +1242,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     shaderBackgroundImage->resetOffsets();
+    shaderForegroundImage->resetOffsets();
 
     getLevelLoader()->loadNext();
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -1250,6 +1270,7 @@ void ComponentGame::reloadLevel(int level)
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
 
     shaderBackgroundImage->resetOffsets();
+    shaderForegroundImage->resetOffsets();
 
     getLevelLoader()->load(level);
 
@@ -1272,6 +1293,7 @@ void ComponentGame::handlePressKeyByDead()
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 
     shaderBackgroundImage->resetOffsets();
+    shaderForegroundImage->resetOffsets();
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
 
@@ -1327,20 +1349,16 @@ void ComponentGame::handlePressKeyHelp()
     ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
 }
 
-const Color &ComponentGame::getPrimaryColor() const {
-    return primaryColor;
-}
-
-const Color &ComponentGame::getSecondaryColor() const {
-    return secondaryColor;
-}
-
 ShaderColor *ComponentGame::getShaderColor() const {
     return shaderColor;
 }
 
 ShaderImage *ComponentGame::getShaderBackgroundImage() const {
     return shaderBackgroundImage;
+}
+
+ShaderImage *ComponentGame::getShaderForegroundImage() const {
+    return shaderForegroundImage;
 }
 
 void ComponentGame::handleSplash()
@@ -1363,7 +1381,7 @@ void ComponentGame::addProjectilesToShaderLasers()
             shaderProjectiles->addProjectile(
                 object->getPosition(),
                 projectile->getColor(),
-                (float) projectile->getWeaponType()->getSpeed()
+                projectile->getIntensity()
             );
         }
 
@@ -1371,7 +1389,7 @@ void ComponentGame::addProjectilesToShaderLasers()
             shaderShockWave->addShockWave(wave);
         }
 
-        if (ray != nullptr) {
+        if (ray != nullptr && ray->isEnabled()) {
             shaderProjectiles->addLaserFromRay(ray);
         }
     }
@@ -1421,14 +1439,14 @@ Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
     return explosionSpriteTemplate;
 }
 
-void ComponentGame::stopEnemiesBehaviors()
+void ComponentGame::setEnemiesBehaviors(bool value)
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         auto enemy = dynamic_cast<EnemyGhost *> (object);
 
         if (enemy != nullptr) {
             if (enemy->getBehavior() != nullptr) {
-                enemy->getBehavior()->setEnabled(false);
+                enemy->getBehavior()->setEnabled(value);
             }
         }
     }
@@ -1451,7 +1469,7 @@ Mesh3D *ComponentGame::getItemBoxFrame() const {
 
 void ComponentGame::handleEnableRadioMessage()
 {
-    stopEnemiesBehaviors();
+    setEnemiesBehaviors(false);
 }
 
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
@@ -1508,4 +1526,8 @@ void ComponentGame::handleSpaceShipSelector()
 
     ComponentsManager::get()->getComponentMenu()->hexagonStation->setEnabled(false);
 
+}
+
+const PaletteColors &ComponentGame::getPalette() const {
+    return palette;
 }

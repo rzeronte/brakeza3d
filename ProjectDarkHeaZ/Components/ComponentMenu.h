@@ -67,9 +67,9 @@ public:
 
     void setMenuEnabled(bool menuEnabled);
 
-    bool isMenuEnabled() const;
+    [[nodiscard]] bool isMenuEnabled() const;
 
-    Image *getBorder() const;
+    [[nodiscard]] Image *getBorder() const;
 
     enum MenuActions {
         MNU_NEW_GAME = 0,

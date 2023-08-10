@@ -2,54 +2,26 @@
   "name": "20",
   "music": "bossMusic02",
   "backgroundImage": "levels/20.png",
+  "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": ["histories/lore_20_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": true,
   "enemies": [
   ],
   "items": [
     {
-      "type": 1,
-      "position": { "x": 10, "y": 5 }
-    },
-    {
-      "type": 2,
-      "position": { "x": 20, "y": 5 }
-    },
-    {
-      "type": 3,
-      "position": { "x": 30, "y": 5 }
-    },
-    {
       "type": 4,
-      "position": { "x": 40, "y": 5 }
+      "position": { "x": 5, "y": 5 }
     },
     {
       "type": 5,
-      "position": { "x": 50, "y": 5 }
-    },
-    {
-      "type": 6,
-      "position": { "x": 60, "y": 5 }
-    },
-    {
-      "type": 7,
-      "position": { "x": 70, "y": 5 }
-    },
-    {
-      "type": 8,
-      "position": { "x": 80, "y": 5 }
-    },
-    {
-      "type": 9,
-      "position": { "x": 90, "y": 5 }
+      "position": { "x": 95, "y": 5 }
     }
-
   ],
   "bosses": [
     {
-      "type": 3,
+      "type": 2,
       "name": "Prolis",
       "avatar": "avatars/default.png",
       "avatarHud": "avatars/shuttle.png",
@@ -61,13 +33,13 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 25, "y": 25 },
-        "to": { "x": 75, "y": 25 },
+        "from": { "x": 48, "y": 10 },
+        "to": { "x": 52, "y": 10 },
         "speed": 0.5
       },
       "weapon": {
         "index": 0,
-        "available": true,
+        "available": false,
         "name": "Linear",
         "damage": 10,
         "amount": 999,
@@ -95,8 +67,10 @@
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 255, "g": 255, "b": 0 }
-      }
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "lasers": [
+      ]
     }
   ],
   "asteroids": [

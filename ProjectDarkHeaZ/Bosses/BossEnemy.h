@@ -9,6 +9,11 @@
 #include "../Enemies/EnemyGhost.h"
 #include "../Weapons/AmmoProjectileBodyEmitter.h"
 
+typedef enum {
+    BOSS10_PHASE_ONE = 1,
+    BOSS10_PHASE_TWO = 2
+} Bosses10Phase;
+
 class BossEnemy : public EnemyGhost {
 
 public:

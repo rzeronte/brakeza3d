@@ -13,12 +13,14 @@ AmmoProjectileBody::AmmoProjectileBody(
     float damage,
     float speed,
     float accuracy,
+    Color color,
+    float intensity,
     int collisionGroup,
     int collisionMask,
     ParticleEmitter *particleEmitter
 ) :
     Projectile3DBody(direction),
-    AmmoProjectile(parent, weaponType->getModelProjectile()->getFlatColor(), damage),
+    AmmoProjectile(parent, color, damage, intensity),
     weaponType(weaponType),
     particleEmitter(particleEmitter),
     wasCollision(false),
@@ -50,8 +52,10 @@ Weapon *AmmoProjectileBody::getWeaponType() const {
 
 void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 {
-    Color from = Color::white();
-    Color to = Color::yellow();
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+
+    Color from = palette.getExplosionEnemyFrom();
+    Color to = palette.getExplosionEnemyTo();
 
     auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
@@ -110,13 +114,14 @@ void AmmoProjectileBody::onUpdate()
     particleEmitter->setPosition(getPosition());
 
     particleEmitter->onUpdate();
+    particleEmitter->drawOnUpdateSecondPass();
+
 }
 
 
 void AmmoProjectileBody::drawOnUpdateSecondPass()
 {
     Object3D::drawOnUpdateSecondPass();
-    particleEmitter->drawOnUpdateSecondPass();
 }
 
 void AmmoProjectileBody::startEndingCounter()

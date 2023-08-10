@@ -39,8 +39,8 @@ void ComponentHUD::onUpdate()
     auto stamina = HUDTextures->getTextureByLabel("staminaIcon")->getImage();
     auto energy = HUDTextures->getTextureByLabel("energyIcon")->getImage();
 
-    stamina->drawFlatAlpha(40, this->offsetY, alpha);
-    energy->drawFlatAlpha(40, this->offsetY + playerBarSeparation, alpha);
+    stamina->drawFlatAlpha(38, this->offsetY - 2, alpha);
+    energy->drawFlatAlpha(38, this->offsetY + playerBarSeparation, alpha);
 
     drawShaderLasers();
 
@@ -95,7 +95,7 @@ void ComponentHUD::drawHUD()
         textWriter->writeTTFCenterHorizontal(
             10,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
-            componentManager->getComponentGame()->getPrimaryColor(),
+            componentManager->getComponentGame()->getPalette().getFirst(),
             0.3
         );
     }
@@ -137,7 +137,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         gatheringResourcesOffsetX + 16,
         gatheringResourcesOffsetY,
         (std::string("x") + std::to_string(player->getCoins())).c_str(),
-        game->getPrimaryColor(),
+        game->getPalette().getFirst(),
         0.25
     );
 
@@ -148,7 +148,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         gatheringResourcesOffsetX + 54,
         13,
         (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
-        game->getPrimaryColor(),
+        game->getPalette().getFirst(),
         0.25
     );
 
@@ -160,7 +160,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         270,
         this->offsetY + player->getWeapon()->getIcon()->height(),
         (std::string("x") + std::to_string(player->getWeapon()->getAmmoAmount())).c_str(),
-        game->getPrimaryColor(),
+        game->getPalette().getFirst(),
         0.25
     );
 
@@ -174,7 +174,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             330,
             this->offsetY + weaponBomb->getIcon()->height(),
             (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
-            game->getPrimaryColor(),
+            game->getPalette().getFirst(),
             0.25
         );
     }
@@ -189,7 +189,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             360,
             this->offsetY + weaponShield->getIcon()->height(),
             (std::string("x") + std::to_string(weaponShield->getAmmoAmount())).c_str(),
-            game->getPrimaryColor(),
+            game->getPalette().getFirst(),
             0.25
         );
     }
@@ -200,7 +200,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         390,
         this->offsetY - 10,
         game->getLevelLoader()->getLevelName().c_str(),
-        game->getPrimaryColor(),
+        game->getPalette().getFirst(),
         0.7
     );
 
@@ -213,7 +213,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             300,
             this->offsetY + weaponReflection->getIcon()->height(),
             (std::string("x") + std::to_string(weaponReflection->getAmmoAmount())).c_str(),
-            game->getPrimaryColor(),
+            game->getPalette().getFirst(),
             0.25
         );
     }
@@ -244,7 +244,7 @@ void ComponentHUD::drawShaderLasers()
     shaderLasers->addLaser(
         startPositionX, this->offsetY + topBarMargin,
         startPositionX + (int) (width * health), this->offsetY + topBarMargin,
-        255, 0, 0,
+        ComponentsManager::get()->getComponentGame()->getPalette().getStamina(),
         stroke,
         false,
         false
@@ -253,7 +253,7 @@ void ComponentHUD::drawShaderLasers()
     shaderLasers->addLaser(
         startPositionX, this->offsetY + playerBarSeparation + topBarMargin,
         startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin,
-        0, 255, 0,
+        ComponentsManager::get()->getComponentGame()->getPalette().getEnergy(),
         stroke,
         false,
         false
@@ -274,7 +274,7 @@ void ComponentHUD::drawShaderLasers()
             positionLaserX, positionLaserY,
             positionLaserX - (int)(width * enemyHealth),
             positionLaserY,
-            255, 0, 0,
+            ComponentsManager::get()->getComponentGame()->getPalette().getStamina(),
             stroke,
             false,
             false
@@ -286,7 +286,7 @@ void ComponentHUD::drawShaderLasers()
             418,
             this->offsetY + 11,
             enemy->getName().c_str(),
-            Color(196, 20, 20),
+            ComponentsManager::get()->getComponentGame()->getPalette().getStamina(),
             0.25
         );
     } else {
@@ -295,7 +295,7 @@ void ComponentHUD::drawShaderLasers()
             537,
             this->offsetY + 10,
             "No target",
-            Color(196, 20, 20),
+            ComponentsManager::get()->getComponentGame()->getPalette().getStamina(),
             0.25
         );
 
@@ -312,4 +312,8 @@ ComponentHUD::~ComponentHUD()
 
 TexturePackage *ComponentHUD::getHudTextures() const {
     return HUDTextures;
+}
+
+ShaderProjectiles *ComponentHUD::getShaderLasers() const {
+    return shaderLasers;
 }
