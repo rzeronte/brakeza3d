@@ -1,10 +1,9 @@
 #include "RayLight.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Brakeza3D.h"
-#include "../Items/ItemBombGhost.h"
 #include "../Items/ItemShieldGhost.h"
 
-RayLight::RayLight(bool enabled, Object3D *parent, float speed, float damage, Color c, int filterGroup, int filterMask)
+RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, int filterGroup, int filterMask)
 :
     enabled(enabled),
     intensity(0),
@@ -12,7 +11,9 @@ RayLight::RayLight(bool enabled, Object3D *parent, float speed, float damage, Co
     speed(speed),
     damage(damage),
     color(c),
-    parent(parent)
+    parent(parent),
+    direction(direction),
+    startOffset(startOffset)
 {
     Vertex3D start = parent->getPosition();
 
@@ -29,11 +30,14 @@ void RayLight::update()
 {
     if (!isEnabled()) return;
 
-    Vertex3D start = parent->getPosition() + parent->AxisDown().getScaled(1100);
-    Point2D screenPoint = Transforms::WorldToPoint(start, ComponentsManager::get()->getComponentCamera()->getCamera());
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    Vertex3D end = parent->getPosition() + parent->AxisDown().getScaled(reach);
-    Point2D middlePoint = Transforms::WorldToPoint(end, ComponentsManager::get()->getComponentCamera()->getCamera());
+    Vertex3D start = parent->getPosition() + startOffset;
+    Point2D screenPoint = Transforms::WorldToPoint(start, camera);
+
+    Vertex3D end = parent->getPosition() + direction.getScaled(reach);
+    Point2D middlePoint = Transforms::WorldToPoint(end, camera);
 
     rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
     rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
@@ -55,30 +59,32 @@ void RayLight::update()
         auto *bomb = dynamic_cast<ItemShieldGhost*> (brkObjectA);
 
         if (object != this->parent) {
+            auto palette = game->getPalette();
             btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
             auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
             auto dt = Brakeza3D::get()->getDeltaTime() * 50;
 
             if (player != nullptr) {
-                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
+                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 
                 player->takeDamage(damage * dt );
                 increase = false;
             }
 
             if (bomb != nullptr) {
-                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
                 increase = false;
             }
 
             if (enemy != nullptr) {
-                middlePoint = Transforms::WorldToPoint(hitPosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
                 ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_RAYLIGHT);
 
                 enemy->takeDamage(damage * dt);
                 increase = false;
 
-                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), Color::white(), Color::yellow());
+                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
             }
         }
     }
@@ -87,10 +93,10 @@ void RayLight::update()
         increaseReach();
     }
 
-    ComponentsManager::get()->getComponentGame()->getShaderLasers()->addLaser(
+    game->getShaderLasers()->addLaser(
         screenPoint.x, screenPoint.y,
         middlePoint.x, middlePoint.y,
-        (int) color.r, (int) color.g, (int) color.b,
+        color,
         intensity,
         true,
         true
@@ -130,4 +136,26 @@ void RayLight::setEnabled(bool enabled) {
 
 void RayLight::setColor(const Color &color) {
     RayLight::color = color;
+}
+
+const Vertex3D &RayLight::getDirection() const {
+    return direction;
+}
+
+void RayLight::setDirection(Vertex3D direction) {
+    RayLight::direction = direction;
+}
+
+void RayLight::updateDirection(Vertex3D direction, Vertex3D startsOffset)
+{
+    this->direction = direction;
+    this->startOffset = startsOffset;
+}
+
+Object3D *RayLight::getParent() const {
+    return parent;
+}
+
+void RayLight::setReach(int value) {
+    reach = value;
 }

@@ -26,6 +26,8 @@ public:
         float damage,
         float speed,
         float accuracy,
+        Color color,
+        float intensity,
         int collisionGroup,
         int collisionMask,
         ParticleEmitter *particleEmitter

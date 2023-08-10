@@ -152,6 +152,7 @@ void Weapon::shootProjectile(
     Vertex3D offsetPosition,
     Vertex3D direction,
     M3 rotation,
+    Color color,
     float intensity,
     int filterGroup,
     int filterMask,
@@ -197,6 +198,8 @@ void Weapon::shootProjectile(
             getDamage(),
             (float) getSpeed(),
             getAccuracy(),
+            color,
+            intensity,
             filterGroup,
             filterMask,
             new ParticleEmitter(
@@ -204,8 +207,8 @@ void Weapon::shootProjectile(
                 nullptr,
                 position,
                 0,
-                Color::yellow(),
-                Color::white(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyFrom(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyTo(),
                 OCParticlesContext()
             )
         ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
@@ -222,6 +225,8 @@ void Weapon::shootProjectile(
                 getDamage(),
                 (float) getSpeed(),
                 getAccuracy(),
+                color,
+                intensity,
                 filterGroup,
                 filterMask,
                 new ParticleEmitter(
@@ -229,8 +234,8 @@ void Weapon::shootProjectile(
                     nullptr,
                     position,
                     0,
-                    Color::yellow(),
-                    Color::white(),
+                    ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyFrom(),
+                    ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyTo(),
                     OCParticlesContext()
             )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
@@ -272,6 +277,7 @@ void Weapon::shootLaserProjectile(
             filterMask,
             getSpeed(),
             color,
+            intensity,
             false
         );
 
@@ -417,7 +423,7 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-            Vertex3D(600, 600, 600),
+            Vertex3D(800, 800, 800),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
@@ -513,20 +519,21 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
     }
 }
 
-void Weapon::shootRayLight(RayLight &rayLight, float intensity)
+void Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
 {
     if (getAmmoAmount() <= 0) return;
 
     if (isStop() && counterStopDuration.isEnabled()) {
+        rayLight.setReach(0);
         return;
     }
 
     setAmmoAmount(ammoAmount - 1);
 
-    rayLight.setColor(getModelProjectile()->getFlatColor());
+    rayLight.setColor(color);
     rayLight.setDamage(getDamage());
     rayLight.setEnabled(true);
-    rayLight.setIntensity(intensity / 3);
+    rayLight.setIntensity(0.25f);
 
     if (getStatus() == PRESSED) {
         ComponentsManager::get()->getComponentSound()->sound("projectileRaylight", EngineSetup::SoundChannels::SND_GLOBAL, 0);

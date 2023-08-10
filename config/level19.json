@@ -1,6 +1,7 @@
 {
   "name": "19",
   "backgroundImage": "levels/19.png",
+  "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel05",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -42,17 +43,17 @@
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
+        "color": { "r": 144, "g": 255, "b": 0 }
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
-        "cadenceTime": 3.0,
+        "cadenceTime": 1,
         "type": 3,
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 144, "g": 0, "b": 0 }
       }
     },
     {
@@ -91,17 +92,17 @@
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
+        "color": { "r": 144, "g": 255, "b": 0 }
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
-        "cadenceTime": 3.0,
+        "cadenceTime": 1,
         "type": 3,
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 144, "g": 0, "b": 0 }
       }
     },
     {
@@ -159,7 +160,7 @@
           "damage": 30,
           "length": 3000,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
+          "color": { "r": 144, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -204,7 +205,7 @@
           "damage": 30,
           "length": 3000,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
+          "color": { "r": 144, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -227,7 +228,7 @@
         "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
+        "color": { "r": 144, "g": 255, "b": 0 }
       }
     },
     {
@@ -249,7 +250,7 @@
           "damage": 30,
           "length": 3000,
           "direction": { "x": -1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
+          "color": { "r": 144, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -281,5 +282,13 @@
   "asteroids": [
   ],
   "background": [
+    {
+      "name": "Star",
+      "model": "marsh.fbx",
+      "scale": 20,
+      "position": { "x": 50, "y": 80, "z": 20000 },
+      "rotation": { "x": 90, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
+    }
   ]
 }

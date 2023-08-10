@@ -11,11 +11,12 @@ ProjectileRay::ProjectileRay(
     int filterMask,
     int speed,
     const Color &color,
+    float intensity,
     bool indestructible
 ) :
     RayCollisionable(ray, filterGroup, filterMask),
     Projectile(direction),
-    AmmoProjectile(this, color, damage),
+    AmmoProjectile(this, color, damage, intensity),
     speed(speed),
     indestructible(indestructible)
 {
@@ -67,7 +68,8 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
         this->setRemoved(true);
     }
 
-    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), Color::white(), Color::yellow());
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
 }
 
 int ProjectileRay::getSpeed() const {

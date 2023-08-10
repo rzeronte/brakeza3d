@@ -28,6 +28,7 @@ public:
         int filterMask,
         int speed,
         const Color &color,
+        float intensity,
         bool indestructible
     );
 

@@ -1,6 +1,7 @@
 {
   "name": "11",
   "backgroundImage": "levels/11.png",
+  "foregroundImage": "foregrounds/02.png",
   "music": "musicLevel11",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -23,7 +24,7 @@
       "lasers": [
         {
           "damage": 300,
-          "length": 4900,
+          "length": 4700,
           "direction": { "x": -1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }
@@ -78,9 +79,9 @@
       "lasers": [
         {
           "damage": 300,
-          "length": 4900,
+          "length": 4700,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
+          "color": { "r": 144, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -113,7 +114,7 @@
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 4,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "color": { "r": 144, "g": 0, "b": 0 }
       }
     }
   ],

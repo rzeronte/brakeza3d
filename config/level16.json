@@ -1,6 +1,7 @@
 {
   "name": "16",
   "backgroundImage": "levels/16.png",
+  "foregroundImage": "foregrounds/02.png",
   "music": "musicLevel05",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -14,7 +15,7 @@
       "model": "spaceships/Imperial.fbx",
       "enableLights": true,
       "animated": true,
-      "stamina": 1500,
+      "stamina": 600,
       "reward": true,
       "motion": {
         "type": 0
@@ -25,7 +26,7 @@
         "name": "Instant",
         "damage": 20,
         "amount": 1000,
-        "startAmount": 10000,
+        "startAmount": 300,
         "speed": 500,
         "dispersion": 10,
         "accuracy": 100,
@@ -163,5 +164,13 @@
   "items": [
   ],
   "background": [
+    {
+      "name": "Star",
+      "model": "marsh.fbx",
+      "scale": 11,
+      "position": { "x": 25, "y": 30, "z": 20000 },
+      "rotation": { "x": 90, "y": 0, "z": 0 },
+      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
+    }
   ]
 }

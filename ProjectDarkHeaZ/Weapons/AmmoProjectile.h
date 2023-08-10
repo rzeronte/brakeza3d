@@ -11,8 +11,9 @@ class AmmoProjectile {
     float damage;
     Color color;
     Object3D *owner;
+    float intensity;
 public:
-    explicit AmmoProjectile(Object3D *owner, Color color, float damage) : damage(damage), color(color), owner(owner) {
+    explicit AmmoProjectile(Object3D *owner, Color color, float damage, float intensity) : damage(damage), color(color), owner(owner), intensity(intensity) {
     }
 
     [[nodiscard]] float getDamage() const {
@@ -29,6 +30,14 @@ public:
 
     [[nodiscard]] Object3D *getOwner() const {
         return owner;
+    }
+
+    [[nodiscard]] float getIntensity() const {
+        return intensity;
+    }
+
+    void setIntensity(float intensity) {
+        AmmoProjectile::intensity = intensity;
     }
 };
 

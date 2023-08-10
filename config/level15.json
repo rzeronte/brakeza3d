@@ -1,16 +1,17 @@
 {
   "name": "15",
   "backgroundImage": "levels/15.png",
+  "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel05",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": ["histories/lore_15_1.png", "histories/lore_15_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
       "name": "Colossus",
       "avatar": "avatars/challenger.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 10 },
       "model": "spaceships/Challenger.fbx",
       "enableLights": true,
       "animated": true,
@@ -124,6 +125,10 @@
     }
   ],
   "items": [
+    {
+      "type": 10,
+      "position": { "x": 20, "y": 15 }
+    }
   ],
   "background": [
     {

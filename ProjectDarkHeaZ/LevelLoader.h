@@ -18,6 +18,7 @@
 #include "Items/ItemEnergyGhost.h"
 #include "Items/ItemWeaponGhost.h"
 #include "Items/ItemHumanGhost.h"
+#include "Items/SalvageSpaceship.h"
 
 typedef enum {
     ITEM_WEAPON_PROJECTILE = 1,
@@ -28,7 +29,8 @@ typedef enum {
     ITEM_ENERGY = 5,
     ITEM_HUMAN = 7,
     ITEM_SHIELD = 8,
-    ITEM_WEAPON_REFLECTION = 9
+    ITEM_WEAPON_REFLECTION = 9,
+    ITEM_SALVAGE_SPACESHIP = 10
 
 } LevelInfoItemsTypes;
 
@@ -173,6 +175,8 @@ public:
     [[nodiscard]] Counter *getWaitingToWin();
 
     ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
+
+    SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
 };
 
 

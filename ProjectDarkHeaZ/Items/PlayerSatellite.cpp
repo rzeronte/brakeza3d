@@ -12,7 +12,8 @@ PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 {
     setParent(parent);
 
-    shaderParticles = new ShaderParticles(true, Color::yellow(), Color::green(), OCParticlesContext(
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+    shaderParticles = new ShaderParticles(true, palette.getParticlesPlayerFrom(), palette.getParticlesPlayerTo(), OCParticlesContext(
         0.0f,
         0.0025f,
         1.5f,
@@ -52,6 +53,8 @@ void PlayerSatellite::onUpdate()
 
     addToPosition(r * l);
 
+    updateShaderParticles();
+
 }
 
 void PlayerSatellite::postUpdate()
@@ -86,7 +89,6 @@ void PlayerSatellite::drawOnUpdateSecondPass()
         }
     }
 
-    updateShaderParticles();
 }
 
 float PlayerSatellite::getDamage() const {

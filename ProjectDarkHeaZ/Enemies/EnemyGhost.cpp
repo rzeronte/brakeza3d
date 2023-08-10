@@ -8,9 +8,11 @@ EnemyGhost::EnemyGhost() :
     rayLight(RayLight(
         false,
         this,
-        1000,
+        this->AxisUp().getNormalize(),
+        this->AxisUp().getScaled(1100),
+        150,
         0,
-        ComponentsManager::get()->getComponentGame()->getPrimaryColor(),
+        ComponentsManager::get()->getComponentGame()->getPalette().getFirst(),
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
     )),
@@ -20,20 +22,22 @@ EnemyGhost::EnemyGhost() :
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
 
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
+
     particleEmitter = new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
         this,
         getPosition(),
         0,
-        Color::red(),
-        Color::yellow(),
+        palette.getParticlesPlayerFrom(),
+        palette.getParticlesPlayerTo(),
         OCParticlesContext(
             0.0f,
             0.0025f,
             1.5f,
             45.0f,
             0.0f,
-            50.0f,
+            150.0f,
             50.0f,
             255.0f,
             2.0f,
@@ -48,7 +52,7 @@ EnemyGhost::EnemyGhost() :
 
 void EnemyGhost::onStart()
 {
-    blink = new ShaderBlink(true, this, 0.05, Color::red());
+    blink = new ShaderBlink(true, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getBlinkEnemy());
     zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
 }
 
@@ -109,6 +113,11 @@ void EnemyGhost::onUpdate()
             ComponentsManager::get()->getComponentGame()->setCurrentEnemyDialog(dialog);
         }
     }
+
+    if (getBehavior() != nullptr) {
+        particleEmitter->drawOnUpdateSecondPass();
+    }
+
 }
 
 void EnemyGhost::updateEmitterParticles()
@@ -128,7 +137,7 @@ void EnemyGhost::onDrawHostBuffer()
     Mesh3D::onDrawHostBuffer();
 
     if (isStuck()) {
-        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(5), getPosition() + Tools::randomVertex().getScaled(5), Color::cyan());
+        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(4), getPosition() + Tools::randomVertex().getScaled(5), ComponentsManager::get()->getComponentGame()->getPalette().getFirst());
         counterStuck.update();
         if (counterStuck.isFinished()) {
             unstuck();
@@ -141,8 +150,9 @@ void EnemyGhost::handleDie()
     Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
+    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
 
-    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), Color::white(), Color::yellow());
+    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getFirst());
     //Tools::makeExplosionSprite(getPosition());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
@@ -321,7 +331,8 @@ void EnemyGhost::shoot(Object3D *target)
                 Vertex3D(0, 0, 0),
                 direction,
                 getRotation(),
-                1.0,
+                ComponentsManager::get()->getComponentGame()->getPalette().getProjectileEnemy(),
+                2.5f,
                 EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
                 false,
@@ -334,9 +345,9 @@ void EnemyGhost::shoot(Object3D *target)
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
-                0.3,
+                0.1f,
                 false,
-                Color::red(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getLaserEnemy(),
                 EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player
             );
@@ -346,7 +357,7 @@ void EnemyGhost::shoot(Object3D *target)
             auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
             if (getPosition().distance(player->getPosition()) < 5000) {
-                Drawable::drawLightning(getPosition(), target->getPosition(), Color::yellow());
+                Drawable::drawLightning(getPosition(), target->getPosition(), ComponentsManager::get()->getComponentGame()->getPalette().getCRT());
 
                 if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
                     break;
@@ -359,7 +370,11 @@ void EnemyGhost::shoot(Object3D *target)
         }
         case WeaponTypes::WEAPON_RAYLIGHT: {
             rayLight.setEnabled(true);
-            weapon->shootRayLight(rayLight, 0.5);
+            rayLight.updateDirection(
+                rayLight.getParent()->AxisDown().getNormalize(),
+                rayLight.getParent()->AxisDown().getScaled(1100)
+            );
+            weapon->shootRayLight(rayLight, 0.5, ComponentsManager::get()->getComponentGame()->getPalette().getLaserEnemy());
             break;
         }
     }
@@ -427,10 +442,6 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 void EnemyGhost::drawOnUpdateSecondPass()
 {
     Mesh3D::drawOnUpdateSecondPass();
-
-    if (getBehavior() != nullptr) {
-        particleEmitter->drawOnUpdateSecondPass();
-    }
 }
 
 void EnemyGhost::takeDamage(float damageTaken)

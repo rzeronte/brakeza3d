@@ -55,6 +55,8 @@ public:
     void drawShaderLasers();
 
     [[nodiscard]] TexturePackage *getHudTextures() const;
+
+    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
 };
 
 

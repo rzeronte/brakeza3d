@@ -5,11 +5,6 @@
 #ifndef BRAKEDA3D_BOSSLEVEL10_H
 #define BRAKEDA3D_BOSSLEVEL10_H
 
-typedef enum {
-    BOSS10_PHASE_ONE = 1,
-    BOSS10_PHASE_TWO = 2
-} Bosses10Phase;
-
 #include "../Weapons/AmmoProjectileBodyEmitter.h"
 #include "BossEnemy.h"
 #include "../Behaviors/EnemyBehaviorPatrol.h"

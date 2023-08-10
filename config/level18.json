@@ -1,6 +1,7 @@
 {
   "name": "18",
   "backgroundImage": "levels/18.png",
+  "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel05",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -23,7 +24,7 @@
       "lasers": [
         {
           "damage": 30,
-          "length": 5000,
+          "length": 4500,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }
@@ -201,5 +202,13 @@
   "asteroids": [
   ],
   "background": [
+    {
+      "name":	"moon",
+      "position": { "x":	50,  "y":	50, "z": 20000 },
+      "model":	"moon_planet.fbx",
+      "rotation": { "x": 0, "y": 0,  "z": 0 },
+      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.01 },
+      "scale":	10
+    }
   ]
 }

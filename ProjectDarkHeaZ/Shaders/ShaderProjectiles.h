@@ -55,7 +55,7 @@ public:
 
     void update() override;
 
-    void addLaser(int x1, int y1, int x2, int y2, int r, int g, int b, float intensity, bool startCircle, bool endCircle);
+    void addLaser(int x1, int y1, int x2, int y2, Color color, float intensity, bool startCircle, bool endCircle);
     void addProjectile(Vertex3D position, Color color, float i);
     void addLaserFromRay(ProjectileRay *pRay);
 

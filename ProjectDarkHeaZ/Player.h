@@ -223,6 +223,8 @@ public:
     void updatePlayerEnergy();
 
     void updateTargetRotation();
+
+    RayLight &getRayLight();
 };
 
 

@@ -1,6 +1,7 @@
 {
   "name": "12",
   "backgroundImage": "levels/12.png",
+  "foregroundImage": "foregrounds/04.png",
   "music": "musicLevel11",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
@@ -18,7 +19,7 @@
       "reward": true,
       "motion": {
         "type": 1,
-        "from": { "x": 50, "y": 10 },
+        "from": { "x": 50, "y": 20 },
         "to": { "x": 50, "y": 50 },
         "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": -1 }
@@ -28,7 +29,7 @@
           "damage": 30,
           "length": 5000,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
+          "color": { "r": 155, "g": 0, "b": 0 }
         }
       ],
       "weapon": {

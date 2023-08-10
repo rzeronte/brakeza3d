@@ -77,7 +77,10 @@
 
     { "file": "energy_off.wav", "label": "energyOff", "type": "sound" },
 
-    { "file": "yes.wav", "label": "yes", "type": "sound" }
+    { "file": "yes.wav", "label": "yes", "type": "sound" },
+
+    { "file": "gogogo.mp3", "label": "salvageConnection", "type": "sound" },
+    { "file": "salvage_finish.wav", "label": "salvageFinish", "type": "sound" }
 
   ]
 }

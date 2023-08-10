@@ -79,7 +79,7 @@ void ComponentMenu::preUpdate()
         return;
     }
 
-    shaderBackgroundImage->update();
+    shaderBackgroundImage->update(0, 0);
 }
 
 void ComponentMenu::onUpdate()
@@ -149,7 +149,8 @@ void ComponentMenu::drawOptions()
     int offsetY = 140;
     int stepY = 40;
 
-    auto color = Color(118, 185, 32);
+    auto color = componentGame->getPalette().getCRT();
+
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();
 
@@ -194,11 +195,11 @@ void ComponentMenu::drawVersion()
     ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
         447,
         "https://brakeza.com",
-        Color::black(),
+        ComponentsManager::get()->getComponentGame()->getPalette().getFive(),
         0.3
     );
 
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7", Color::black(), 0.2);
+    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7", ComponentsManager::get()->getComponentGame()->getPalette().getFive(), 0.2);
 }
 
 int ComponentMenu::getCurrentOption() const {

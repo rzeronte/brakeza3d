@@ -2,6 +2,7 @@
   "name": "06",
   "music": "musicLevel05",
   "backgroundImage": "levels/06.png",
+  "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },

@@ -77,12 +77,18 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
 
     if (event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
         player->getWeapon()->setStatus(WeaponStatus::RELEASED);
+        player->getRayLight().setReach(0);
     }
 
     if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
         player->getWeapon()->setStatus(WeaponStatus::PRESSED);
     }
+
+    if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_SPACE) {
+        player->getRayLight().setReach(0);
+    }
 }
+
 void ComponentGameInput::handleEscape(SDL_Event *event)
 {
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
@@ -195,7 +201,8 @@ void ComponentGameInput::handleFire() const
 
     Uint8 *keyboard = componentInput->getKeyboard();
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
-        player->shoot(componentInput->getControllerAxisTriggerRight());
+        // controller intensity: componentInput->getControllerAxisTriggerRight()
+        player->shoot(2.5f);
     }
 }
 
@@ -551,6 +558,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     if (state == EngineSetup::GameState::RADIO_MESSAGE && (enter || isButtonGuidedPressed)) {
         game->gameState = EngineSetup::GameState::GAMING;
+        game->setEnemiesBehaviors(true);
         ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         return;
     }
