@@ -15,7 +15,7 @@
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
-      "stamina": 1250,
+      "stamina": 600,
       "reward": true,
       "motion": {
         "type": 6,
@@ -70,7 +70,7 @@
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
-      "stamina": 1250,
+      "stamina": 600,
       "reward": true,
       "motion": {
         "type": 6,

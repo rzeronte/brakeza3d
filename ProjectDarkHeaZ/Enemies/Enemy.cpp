@@ -4,13 +4,20 @@
 
 Enemy::Enemy()
 :
+    light(new LightPoint3D(11, 1, 0, 0, 0,
+                           ComponentsManager::get()->getComponentGame()->getPalette().getEnemyProjectile(), Color(15, 33, 92))),
+    counterLight(Counter(0.05)),
     stuck(false),
     state(EnemyState::ENEMY_STATE_STOP),
     weapon(nullptr),
     range(0),
     soundChannel(-1),
-    rewards(false)
+    rewards(false),
+    lightPositionOffset(Vertex3D(0, 0, -1000))
 {
+    light->setRotation(180, 0, 0);
+    light->setEnabled(false);
+    Brakeza3D::get()->addObject3D(light, "enemyLight");
 }
 
 EnemyState Enemy::getState() const {
@@ -41,6 +48,8 @@ Enemy::~Enemy()
 {
     delete weapon;
     delete avatar;
+
+    light->setRemoved(true);
 }
 
 bool Enemy::isRewards() const {
@@ -83,4 +92,9 @@ Image *Enemy::getAvatarHud() const {
 
 void Enemy::setAvatarHud(Image *avatarHud) {
     Enemy::avatarHud = avatarHud;
+}
+
+
+LightPoint3D *Enemy::getLight() const {
+    return light;
 }

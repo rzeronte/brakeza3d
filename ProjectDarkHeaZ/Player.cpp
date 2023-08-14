@@ -36,7 +36,8 @@ Player::Player()
     killsCounter(0),
     energyShieldEnabled(false),
     allowEnergyShield(false),
-    lightPositionOffset(Vertex3D(0, -550, 0)),
+    counterLight(Counter(0.05)),
+    lightPositionOffset(Vertex3D(0, 0, -1000)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
     satellite(PlayerSatellite(this)),
@@ -48,8 +49,9 @@ Player::Player()
     maxVelocity(INITIAL_MAX_VELOCITY),
     rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
-    light = new LightPoint3D(45, 5.7, 0, 0, 9, Color(100, 16, 22), Color(15, 33, 92));
+    light = new LightPoint3D(15, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
+    light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
     auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
@@ -155,13 +157,13 @@ void Player::shoot(float intensity)
 
     switch (getWeapon()->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
-            weapon->shootProjectile(
+            bool resultShoot = weapon->shootProjectile(
                 this,
                 getPosition(),
                 AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 getRotation(),
-                ComponentsManager::get()->getComponentGame()->getPalette().getProjectilePlayer(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getPlayerProjectile(),
                 intensity,
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy,
@@ -169,19 +171,29 @@ void Player::shoot(float intensity)
                 true
             );
 
+            if (resultShoot) {
+                getLight()->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getPlayerProjectileLight());
+                initLight();
+            }
             break;
         }
         case WeaponTypes::WEAPON_LASER: {
-            weapon->shootLaserProjectile(
+            bool resultShoot = weapon->shootLaserProjectile(
                 this,
                 getPosition() - AxisUp().getScaled(1000),
                 AxisUp().getInverse(),
                 0.1f,
                 true,
-                ComponentsManager::get()->getComponentGame()->getPalette().getLaserPlayer(),
+                ComponentsManager::get()->getComponentGame()->getPalette().getPlayerLaser(),
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy
             );
+
+            if (resultShoot) {
+                getLight()->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getPlayerLaserLight());
+                initLight();
+            }
+
             break;
         }
         case WeaponTypes::WEAPON_BOMB: {
@@ -202,7 +214,9 @@ void Player::shoot(float intensity)
                 rayLight.getParent()->AxisDown().getScaled(1100)
             );
 
-            weapon->shootRayLight(rayLight, intensity * 0.5f, ComponentsManager::get()->getComponentGame()->getPalette().getRayLightPlayer());
+            weapon->shootRayLight(rayLight, intensity * 0.5f,ComponentsManager::get()->getComponentGame()->getPalette().getPlayerRay());
+            getLight()->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getPlayerRayLight());
+            initLight();
             break;
         }
         default:
@@ -231,8 +245,13 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    counterDashCadence.update();
+    counterLight.update();
+    if (counterLight.isFinished()) {
+        light->setEnabled(false);
+        counterLight.setEnabled(false);
+    }
 
+    counterDashCadence.update();
     if (counterDashCadence.isFinished()) {
         counterDashCadence.setEnabled(false);
     }
@@ -241,13 +260,13 @@ void Player::onUpdate()
 
     updatePlayerEnergy();
 
+    updateLight();
+
     updateTargetRotation();
 
     updateShaderParticles();
 
     setPosition(getPosition() + this->velocity);
-
-    light->setPosition(getPosition() + Vertex3D(0, 0, -5000));
 
     auto componentGame = ComponentsManager::get()->getComponentGame();
     if (componentGame->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
@@ -329,7 +348,7 @@ void Player::onDrawHostBuffer()
         Drawable::drawLightning(
             getPosition() + Tools::randomVertex().getScaled(5),
             getPosition() + Tools::randomVertex().getScaled(5),
-            ComponentsManager::get()->getComponentGame()->getPalette().getCRT()
+            ComponentsManager::get()->getComponentGame()->getPalette().getCrt()
         );
         counterStucked.update();
 
@@ -401,7 +420,7 @@ void Player::setVelocity(Vertex3D v)
 
 void Player::updateLight()
 {
-    light->setPosition(getPosition() + lightPositionOffset);
+    light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-1000));
     light->onUpdate();
 }
 
@@ -620,7 +639,7 @@ void Player::setEnergyShieldEnabled(bool shieldEnabled)
     if (shieldEnabled) {
         blink->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getFirst());
     } else {
-        blink->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer());
+        blink->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getPlayerBlink());
     }
 }
 
@@ -700,7 +719,8 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer());
+    blink = new ShaderBlink(false, this, 0.05,
+                            ComponentsManager::get()->getComponentGame()->getPalette().getPlayerBlink());
     counterDamageBlink.setEnabled(false);
 
     loadSatellite();
@@ -744,10 +764,9 @@ void Player::unStuck()
 void Player::setEnabled(bool value)
 {
     Object3D::setEnabled(value);
-    this->light->setEnabled(value);
 }
 
-void Player::updateWeaponInteractionStatus() const
+void Player::updateWeaponInteractionStatus()
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
@@ -873,4 +892,10 @@ void Player::makeRandomPlayerDamageSound()
 
 RayLight &Player::getRayLight() {
     return rayLight;
+}
+
+void Player::initLight()
+{
+    counterLight.setEnabled(true);
+    light->setEnabled(true);
 }

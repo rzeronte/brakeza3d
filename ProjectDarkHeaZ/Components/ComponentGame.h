@@ -28,6 +28,7 @@
 #include "../Shaders/ShaderSwarm.h"
 #include "../PaletteColors.h"
 #include "../Items/SalvageSpaceship.h"
+#include "../../include/2D/Sprite2D.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 #define FREE_LOOK_ENABLED false
@@ -50,6 +51,8 @@ private:
 
     Sprite3D *explosionSpriteTemplate;
     TextureAnimated *radioWave;
+    Sprite2D *explosionSprite;
+    TextureAnimated * test;
 
     Mesh3D *itemBoxFrame;
 
@@ -267,7 +270,10 @@ public:
 
     [[nodiscard]] const PaletteColors &getPalette() const;
 
-    ShaderImage *getShaderForegroundImage() const;
+    [[nodiscard]] ShaderImage *getShaderForegroundImage() const;
+
+    Sprite2D *getExplosionSprite() const;
+
 };
 
 

@@ -149,7 +149,7 @@ void ComponentMenu::drawOptions()
     int offsetY = 140;
     int stepY = 40;
 
-    auto color = componentGame->getPalette().getCRT();
+    auto color = componentGame->getPalette().getCrt();
 
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();

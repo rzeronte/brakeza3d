@@ -5,7 +5,7 @@ ItemBombGhost::ItemBombGhost(float ttl, float damage)
 :
     damage(damage),
     timeToLive(Counter(ttl)),
-    blink(new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer())),
+    blink(new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getPlayerBlink())),
     counterDamageBlink(Counter(0.45))
 {
     timeToLive.setEnabled(true);

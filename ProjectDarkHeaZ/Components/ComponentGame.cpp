@@ -12,6 +12,7 @@ ComponentGame::ComponentGame()
     player(nullptr),
     shaderProjectiles(nullptr),
     explosionSpriteTemplate(nullptr),
+    explosionSprite(nullptr),
     imageCredits(nullptr),
     imageHelp(nullptr),
     imageSplash(nullptr),
@@ -28,6 +29,8 @@ ComponentGame::ComponentGame()
 
 void ComponentGame::onStart()
 {
+    Brakeza3D::get()->addObject3D(new LightPoint3D(11, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92)), "epe");
+
     player = new Player();
 
     Logging::Log("ComponentGame onStart");
@@ -134,6 +137,10 @@ void ComponentGame::onStart()
     loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
     loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
     loadSpaceship("spaceships/player04.fbx", "spaceships/spaceship_04.png");
+
+    explosionSprite = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 11, 24));
+
+    test = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion.png"), 128, 128, 25);
 }
 
 void ComponentGame::loadShaders()
@@ -153,6 +160,8 @@ void ComponentGame::loadShaders()
 ComponentGame::~ComponentGame()
 {
     delete player;
+
+    delete explosionSprite;
 
     delete fadeToGameState;
     delete levelLoader;
@@ -278,7 +287,7 @@ void ComponentGame::onUpdate()
             // Establece el alfa en función de la proporción de tiempo restante
             textWriter->setAlpha(timeRatio * 255);
 
-            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), palette.getCRT(), 2);
+            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), palette.getCrt(), 2);
 
             getLevelLoader()->getCountDown()->update();
 
@@ -423,7 +432,7 @@ void ComponentGame::handleTutorialImages(float alpha)
         textWriter->setAlpha(alpha);
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
         if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(323, message.c_str(), palette.getCRT(), 0.3f);
+            textWriter->writeTTFCenterHorizontal(323, message.c_str(), palette.getCrt(), 0.3f);
         }
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         dialogBackground->setMaxAlpha((int) alpha);
@@ -442,9 +451,9 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 {
     auto hudTexturePackage = ComponentsManager::get()->getComponentHUD()->getHudTextures();
     switch(type) {
-        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->getImage()->drawFlatAlpha(x, y, alpha); break; }
-        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->getImage()->drawFlatAlpha(x, y, alpha); break; }
-        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->getImage()->drawFlatAlpha(x, y, alpha); break; }
+        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->drawFlatAlpha(x, y, alpha); break; }
+        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->drawFlatAlpha(x, y, alpha); break; }
+        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->drawFlatAlpha(x, y, alpha); break; }
         default: break;
     }
 }
@@ -494,8 +503,7 @@ void ComponentGame::showLevelStatistics(float alpha)
     imageStatistics->drawFlatAlpha(0, 0, alpha);
 
     textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
-    auto iconCon = ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon");
-    iconCon->getImage()->drawFlatAlpha(313  , 300, alpha);
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(313  , 300, alpha);
     textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), palette.getSecond(), 0.3);
 }
 
@@ -1530,4 +1538,8 @@ void ComponentGame::handleSpaceShipSelector()
 
 const PaletteColors &ComponentGame::getPalette() const {
     return palette;
+}
+
+Sprite2D *ComponentGame::getExplosionSprite() const {
+    return explosionSprite;
 }

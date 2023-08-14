@@ -34,7 +34,7 @@
       "speed": 400,
       "dispersion": 10,
       "accuracy": 100,
-      "cadenceTime": 0.20,
+      "cadenceTime": 0.15,
       "stop": false,
       "stopDuration": 1,
       "stopEvery": 5,

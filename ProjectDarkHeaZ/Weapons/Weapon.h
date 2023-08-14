@@ -91,9 +91,9 @@ public:
 
     void setDispersion(int value);
 
-    void shootProjectile(Object3D *parent, Vertex3D position, Vertex3D offsetPosition, Vertex3D direction, M3 rotation, Color color, float intensity, int filterGroup, int filterMask, bool sound, bool allowMirror);
+    bool shootProjectile(Object3D *parent, Vertex3D position, Vertex3D offsetPosition, Vertex3D direction, M3 rotation, Color color, float intensity, int filterGroup, int filterMask, bool sound, bool allowMirror);
 
-    void shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask);
+    bool shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask);
 
     void setCadenceTime(float value);
 
@@ -127,7 +127,7 @@ public:
 
     void shootShield(Object3D *parent, Vertex3D position);
 
-    void shootRayLight(RayLight &rayLight, float intensity, Color color);
+    bool shootRayLight(RayLight &rayLight, float intensity, Color color);
 
     void setLabel(const std::string &value);
 

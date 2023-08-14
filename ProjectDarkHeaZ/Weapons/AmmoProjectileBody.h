@@ -15,6 +15,7 @@ class AmmoProjectileBody: public Projectile3DBody, public AmmoProjectile {
     ParticleEmitter *particleEmitter;
     bool wasCollision;
     Counter ending;
+    Vertex3D lightOffset;
 public:
     AmmoProjectileBody(
         Vertex3D position,

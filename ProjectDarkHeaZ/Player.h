@@ -24,8 +24,7 @@
 #define ENERGY_DELTATIME_COST 5.0f
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 50
-#define MAX_REFLECTIONS 3
-#define PLAYER_ROTATION_TARGET_SPEED 1
+#define PLAYER_ROTATION_TARGET_SPEED 1.5
 
 typedef enum {
     EMPTY = -1,
@@ -67,6 +66,8 @@ private:
     bool allowEnergyShield;
 
     LightPoint3D *light;
+    Counter counterLight;
+
     Vertex3D lightPositionOffset;
 
     PlayerState state;
@@ -82,6 +83,7 @@ private:
     Image *avatar;
     Image *shield;
     ShaderEnergyShield *shaderEnergyShield;
+
 public:
 
     Player();
@@ -186,7 +188,7 @@ public:
 
     void setEnabled(bool value) override;
 
-    void updateWeaponInteractionStatus() const;
+    void updateWeaponInteractionStatus();
 
     void updateWeaponAutomaticStatus();
 
@@ -225,6 +227,8 @@ public:
     void updateTargetRotation();
 
     RayLight &getRayLight();
+
+    void initLight();
 };
 
 

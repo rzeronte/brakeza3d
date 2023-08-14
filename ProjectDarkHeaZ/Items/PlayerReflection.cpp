@@ -4,7 +4,7 @@
 PlayerReflection::PlayerReflection(float ttl)
 :
     timeToLive(Counter(ttl)),
-    blink(new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getBlinkPlayer()))
+    blink(new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getPlayerBlink()))
 {
     timeToLive.setEnabled(true);
 }
