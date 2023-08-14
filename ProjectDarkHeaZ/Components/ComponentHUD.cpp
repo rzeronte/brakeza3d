@@ -34,10 +34,10 @@ void ComponentHUD::onUpdate()
     if (!isEnabled()) return;
      const float alpha = ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha();
 
-    HUDTextures->getTextureByLabel("hudBackground")->getImage()->drawFlatAlpha(0, 0, alpha);
+    HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(0, 0, alpha);
 
-    auto stamina = HUDTextures->getTextureByLabel("staminaIcon")->getImage();
-    auto energy = HUDTextures->getTextureByLabel("energyIcon")->getImage();
+    auto stamina = HUDTextures->getTextureByLabel("staminaIcon");
+    auto energy = HUDTextures->getTextureByLabel("energyIcon");
 
     stamina->drawFlatAlpha(38, this->offsetY - 2, alpha);
     energy->drawFlatAlpha(38, this->offsetY + playerBarSeparation, alpha);
@@ -131,8 +131,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     const int gatheringResourcesOffsetY = 13;
 
     //coins
-    auto iconCoin = HUDTextures->getTextureByLabel("coinIcon");
-    iconCoin->getImage()->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255);
+    HUDTextures->getTextureByLabel("coinIcon")->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255);
     textWriter->writeTextTTFAutoSize(
         gatheringResourcesOffsetX + 16,
         gatheringResourcesOffsetY,
@@ -142,8 +141,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     );
 
     // human
-    auto humanIcon = HUDTextures->getTextureByLabel("astrounautIcon");
-    humanIcon->getImage()->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255);
+    HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255);
     textWriter->writeTextTTFAutoSize(
         gatheringResourcesOffsetX + 54,
         13,
@@ -290,7 +288,7 @@ void ComponentHUD::drawShaderLasers()
             0.25
         );
     } else {
-        HUDTextures->getTextureByLabel("emptyEnemy")->getImage()->drawFlatAlpha(580, this->offsetY, 144);
+        HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(580, this->offsetY, 144);
         textWriter->writeTextTTFAutoSize(
             537,
             this->offsetY + 10,

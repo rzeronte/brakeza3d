@@ -946,7 +946,7 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
         text.c_str(),
         enemy->getName().c_str(),
         componentGame->getFontGame(),
-        componentGame->getPalette().getCRT()
+        componentGame->getPalette().getCrt()
     );
 
     enemy->dialogs.push_back(dialog);

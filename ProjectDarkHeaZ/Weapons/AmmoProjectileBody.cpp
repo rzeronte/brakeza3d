@@ -18,7 +18,8 @@ AmmoProjectileBody::AmmoProjectileBody(
     int collisionGroup,
     int collisionMask,
     ParticleEmitter *particleEmitter
-) :
+)
+:
     Projectile3DBody(direction),
     AmmoProjectile(parent, color, damage, intensity),
     weaponType(weaponType),
@@ -26,6 +27,8 @@ AmmoProjectileBody::AmmoProjectileBody(
     wasCollision(false),
     ending(Counter(5))
 {
+    lightOffset = Vertex3D(0, 0, -1000);
+
     setPosition(position);
     setParent(parent);
     setRender(false);
@@ -44,6 +47,7 @@ AmmoProjectileBody::AmmoProjectileBody(
         collisionGroup,
         collisionMask
     );
+
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {
@@ -86,7 +90,6 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     }
 
     particleEmitter->setStopAdd(true);
-
     startEndingCounter();
 
     Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
@@ -117,7 +120,6 @@ void AmmoProjectileBody::onUpdate()
     particleEmitter->drawOnUpdateSecondPass();
 
 }
-
 
 void AmmoProjectileBody::drawOnUpdateSecondPass()
 {

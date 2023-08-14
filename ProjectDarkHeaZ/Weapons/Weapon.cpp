@@ -146,7 +146,7 @@ Mesh3D *Weapon::getModel() const {
     return model;
 }
 
-void Weapon::shootProjectile(
+bool Weapon::shootProjectile(
     Object3D *parent,
     Vertex3D position,
     Vertex3D offsetPosition,
@@ -160,10 +160,10 @@ void Weapon::shootProjectile(
     bool allowMirror
 )
 {
-    if (getAmmoAmount() <= 0) return;
+    if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled() ) {
-        return;
+        return false;
     }
 
     auto storeManager = ComponentsManager::get()->getComponentGame()->getStoreManager();
@@ -240,10 +240,14 @@ void Weapon::shootProjectile(
             )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
         }
+
+        return true;
     }
+
+    return false;
 }
 
-void Weapon::shootLaserProjectile(
+bool Weapon::shootLaserProjectile(
     Object3D *parent,
     Vertex3D position,
     Vertex3D direction,
@@ -254,10 +258,10 @@ void Weapon::shootLaserProjectile(
     int filterMask
 )
 {
-    if (getAmmoAmount() <= 0) return;
+    if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled()) {
-        return;
+        return false;
     }
 
     if (counterCadence->isFinished()) {
@@ -290,7 +294,11 @@ void Weapon::shootLaserProjectile(
         if (sound) {
             ComponentsManager::get()->getComponentSound()->sound("projectileLaser", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
+
+        return true;
     }
+
+    return false;
 }
 
 const std::string &Weapon::getLabel() const {
@@ -519,13 +527,13 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
     }
 }
 
-void Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
+bool Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
 {
-    if (getAmmoAmount() <= 0) return;
+    if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled()) {
         rayLight.setReach(0);
-        return;
+        return false;
     }
 
     setAmmoAmount(ammoAmount - 1);
@@ -542,6 +550,8 @@ void Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
     ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
     rayLight.update();
+
+    return true;
 }
 
 void Weapon::setLabel(const std::string &value) {

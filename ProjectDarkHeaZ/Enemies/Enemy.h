@@ -16,6 +16,9 @@ typedef enum {
 
 class Enemy {
 protected:
+    LightPoint3D *light;
+    Counter counterLight;
+
     std::string name;
     bool stuck;
     EnemyState state;
@@ -25,6 +28,8 @@ protected:
     float range;
     int soundChannel;
     bool rewards;
+    Vertex3D lightPositionOffset;
+
 public:
 
     Enemy();
@@ -59,9 +64,12 @@ public:
 
     void setName(const std::string &name);
 
-    Image *getAvatarHud() const;
+    [[nodiscard]] Image *getAvatarHud() const;
 
     void setAvatarHud(Image *avatarHud);
+
+    [[nodiscard]] LightPoint3D *getLight() const;
+
 
 };
 

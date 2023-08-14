@@ -15,18 +15,25 @@ class PaletteColors {
     Color five;
     Color stamina;
     Color energy;
-    Color blinkPlayer;
-    Color blinkEnemy;
+    Color playerBlink;
+    Color enemyBlink;
     Color crt;
-    Color projectilePlayer;
-    Color laserPlayer;
-    Color laserEnemy;
-    Color projectileEnemy;
-    Color rayLightPlayer;
+    Color playerProjectile;
+    Color playerLaser;
+    Color enemyLaser;
+    Color enemyProjectile;
+    Color playerRay;
     Color explosionEnemyFrom;
     Color explosionEnemyTo;
     Color particlesPlayerFrom;
     Color particlesPlayerTo;
+    Color playerProjectileLight;
+    Color playerLaserLight;
+    Color playerRayLight;
+
+    Color enemyProjectileLight;
+    Color enemyLaserLight;
+    Color enemyRayLight;
 
 public:
     PaletteColors() :
@@ -37,18 +44,26 @@ public:
         five(Color(22, 22, 22)),
         stamina(Color(168, 48, 22)),
         energy(Color(76, 196, 112)),
-        blinkPlayer(Color(112, 0, 0)),
-        blinkEnemy(Color(112, 0, 0)),
+        playerBlink(Color(112, 0, 0)),
+        enemyBlink(Color(112, 0, 0)),
         crt(Color(138, 104, 0)),
-        projectilePlayer(Color(241, 197, 61)),
-        laserPlayer(Color(0, 144, 0)),
-        laserEnemy(Color(144, 0, 0)),
-        projectileEnemy(Color(170, 0, 0)),
-        rayLightPlayer(Color(228, 204, 62)),
+        playerProjectile(Color(241, 197, 61)),
+        playerLaser(Color(0, 144, 0)),
+        enemyLaser(Color(144, 0, 0)),
+        enemyProjectile(Color(170, 0, 0)),
+        playerRay(Color(228, 204, 62)),
         explosionEnemyFrom(Color(228, 204, 62)),
         explosionEnemyTo(Color(176, 64, 22)),
         particlesPlayerFrom(fourth),
-        particlesPlayerTo(Color(255, 255, 255))
+        particlesPlayerTo(Color(255, 255, 255)),
+
+        playerProjectileLight(Color(163, 142, 81)),
+        playerLaserLight(Color(35, 115, 35)),
+        playerRayLight(Color(168, 152, 63)),
+
+        enemyProjectileLight(Color(170, 0, 0)),
+        enemyLaserLight(Color(144, 0, 0)),
+        enemyRayLight(Color(170, 0, 0))
     {
     }
 
@@ -80,28 +95,28 @@ public:
         return energy;
     }
 
-    [[nodiscard]] const Color &getBlinkEnemy() const {
-        return blinkEnemy;
+    [[nodiscard]] const Color &getEnemyBlink() const {
+        return enemyBlink;
     }
 
-    [[nodiscard]] const Color &getCRT() const {
+    [[nodiscard]] const Color &getCrt() const {
         return crt;
     }
 
-    [[nodiscard]] const Color &getProjectilePlayer() const {
-        return projectilePlayer;
+    [[nodiscard]] const Color &getPlayerProjectile() const {
+        return playerProjectile;
     }
 
-    [[nodiscard]] const Color &getLaserPlayer() const {
-        return laserPlayer;
+    [[nodiscard]] const Color &getPlayerLaser() const {
+        return playerLaser;
     }
 
-    [[nodiscard]] const Color &getProjectileEnemy() const {
-        return projectileEnemy;
+    [[nodiscard]] const Color &getEnemyProjectile() const {
+        return enemyProjectile;
     }
 
-    [[nodiscard]] const Color &getRayLightPlayer() const {
-        return rayLightPlayer;
+    [[nodiscard]] const Color &getPlayerRay() const {
+        return playerRay;
     }
 
     [[nodiscard]] const Color &getExplosionEnemyFrom() const {
@@ -112,8 +127,8 @@ public:
         return explosionEnemyTo;
     }
 
-    [[nodiscard]] const Color &getBlinkPlayer() const {
-        return blinkPlayer;
+    [[nodiscard]] const Color &getPlayerBlink() const {
+        return playerBlink;
     }
 
     [[nodiscard]] const Color &getParticlesPlayerFrom() const {
@@ -124,8 +139,32 @@ public:
         return particlesPlayerTo;
     }
 
-    [[nodiscard]] const Color &getLaserEnemy() const {
-        return laserEnemy;
+    [[nodiscard]] const Color &getEnemyLaser() const {
+        return enemyLaser;
+    }
+
+    [[nodiscard]] const Color &getPlayerProjectileLight() const {
+        return playerProjectileLight;
+    }
+
+    [[nodiscard]] const Color &getPlayerLaserLight() const {
+        return playerLaserLight;
+    }
+
+    [[nodiscard]] const Color &getPlayerRayLight() const {
+        return playerRayLight;
+    }
+
+    [[nodiscard]] const Color &getEnemyProjectileLight() const {
+        return enemyProjectileLight;
+    }
+
+    [[nodiscard]] const Color &getEnemyLaserLight() const {
+        return enemyLaserLight;
+    }
+
+    [[nodiscard]] const Color &getEnemyRayLight() const {
+        return enemyRayLight;
     }
 };
 
