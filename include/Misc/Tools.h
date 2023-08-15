@@ -7,12 +7,12 @@
 #include "../Render/Frustum.h"
 #include "../Objects/Object3D.h"
 #include "../Objects/Vector3D.h"
-#include "../Render/Texture.h"
 #include "../Objects/LightPoint3D.h"
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "PathFinder.h"
 #include "../Render/MeshOpenCLRenderer.h"
+#include "../2D/TextureAnimated.h"
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -101,7 +101,9 @@ public:
 
     static void makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to);
 
-    static void makeExplosionSprite(Vertex3D position);
+    static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
+
+    void makeSparkle(Vertex3D position, TextureAnimated *animation);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

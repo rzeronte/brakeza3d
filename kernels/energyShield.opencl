@@ -60,12 +60,12 @@ __kernel void onUpdate(
     int textureX = (int)(rotatedCoords.x * screenWidth);
     int textureY = (int)(rotatedCoords.y * screenHeight);
 
-    if (maskX >= 0 && maskX < MASK_WIDTH && maskY >= 0 && maskY < MASK_HEIGHT) {
+    /*if (maskX >= 0 && maskX < MASK_WIDTH && maskY >= 0 && maskY < MASK_HEIGHT) {
         unsigned int maskPixel = mask[maskY * MASK_WIDTH + maskX];
         unsigned int alpha = (maskPixel >> 24) & 0xFF;
         unsigned int textureColor = texture[textureY * screenWidth + textureX];
         video[i] = alphaBlend(video[i], textureColor, clamp((int)alpha, 0, (int) maxAlpha));
-    }
+    }*/
 
         // Draw a circle with halo effect on top of everything
         float2 norm_uv = (uv - center) / resolution;
@@ -76,7 +76,7 @@ __kernel void onUpdate(
         halo = mix(halo, (float3)(0.0f, 0.0f, 0.0f), d);
         halo *= (float3)(smoothstep(RADIUS, RADIUS + 0.01f, d));
 
-        float3 color = (float3)(0.0f, 1.0f, 0.0f); // Adjust halo color here
+        float3 color = (float3)(0.0f, 0.45f, 0.0f); // Adjust halo color here
         unsigned int haloColor = createRGB(color.x * 255, color.y * 255, color.z * 255);
 
         video[i] = alphaBlend(video[i], haloColor, halo.x * 255);

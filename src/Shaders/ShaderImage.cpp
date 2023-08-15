@@ -9,6 +9,7 @@ ShaderImage::ShaderImage(const std::string& filename)
     ShaderOpenCL(true, "image.opencl"),
     image(Image(filename)),
     useOffset(true),
+    useColors(true),
     offsetX(0),
     offsetY(0)
 {
@@ -16,20 +17,19 @@ ShaderImage::ShaderImage(const std::string& filename)
     clEnqueueWriteBuffer(clQueue, clBufferImage, CL_TRUE, 0, this->bufferSize * sizeof(Uint32), image.pixels(), 0, nullptr, nullptr );
 }
 
-void ShaderImage::update()
+void ShaderImage::update(float increaseOffsetX, float increaseOffsetY)
 {
     Shader::update();
 
     if (!this->enabled) return;
 
-    executeKernelOpenCL();
+    executeKernelOpenCL(increaseOffsetX, increaseOffsetY);
 }
 
-void ShaderImage::executeKernelOpenCL()
+void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffsetY)
 {
-
-    offsetX += 0;
-    offsetY += 0;
+    offsetX += increaseOffsetX;
+    offsetY += increaseOffsetY;
 
     limitOffset();
 
@@ -41,13 +41,14 @@ void ShaderImage::executeKernelOpenCL()
     clSetKernelArg(kernel, 5, sizeof(int), &useOffset);
     clSetKernelArg(kernel, 6, sizeof(float), &offsetX);
     clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
+    clSetKernelArg(kernel, 8, sizeof(int), &useColors);
 
     size_t global_item_size = this->bufferSize;
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
 
-    //debugKernel("ShaderImage");
+    debugKernel("ShaderImage");
 }
 
 void ShaderImage::limitOffset()
@@ -98,10 +99,7 @@ ShaderImage::~ShaderImage() {
     clReleaseMemObject(clBufferImage);
 }
 
-float ShaderImage::getOffsetX() const {
-    return offsetX;
+void ShaderImage::setUseColors(int useColors) {
+    ShaderImage::useColors = useColors;
 }
 
-float ShaderImage::getOffsetY() const {
-    return offsetY;
-}

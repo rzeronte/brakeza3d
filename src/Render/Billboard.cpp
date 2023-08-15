@@ -1,7 +1,6 @@
 
 #include "../../include/Render/Billboard.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/EngineSetup.h"
 
 Billboard::Billboard(float width, float height)
 :
@@ -70,11 +69,11 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
 
 void Billboard::loadTexture(const std::string &fileName)
 {
-    texture->getImage()->loadTGA(fileName);
+    texture->loadTGA(fileName);
     setTrianglesTexture(texture);
 }
 
-void Billboard::setTrianglesTexture(Texture *t) {
+void Billboard::setTrianglesTexture(Image *t) {
     this->T1.setTexture(t);
     this->T2.setTexture(t);
 }

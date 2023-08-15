@@ -8,9 +8,9 @@
 #include "../Objects/Object3D.h"
 #include "../Objects/Point2D.h"
 #include "../Components/Camera3D.h"
-#include "Texture.h"
 #include "../Objects/LightPoint3D.h"
 #include "../Objects/Triangle3D.h"
+#include "../Misc/Image.h"
 
 class Maths {
 public:
@@ -44,7 +44,7 @@ public:
             Vertex3D normal,
             std::vector<Triangle *> &triangles,
             Object3D *parent,
-            Texture *texture,
+            Image *texture,
             bool isClipped,
             bool isFlattenTextureColor,
             Color flatColor,

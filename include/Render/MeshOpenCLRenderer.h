@@ -15,8 +15,6 @@
 
 
 #define MAX_OPENCL_TRIANGLES 10240
-#define MAX_OPENCL_LIGHTS 16
-
 
 class MeshOpenCLRenderer {
 
@@ -26,13 +24,11 @@ class MeshOpenCLRenderer {
     cl_context context;
 
     cl_mem clBufferTriangles;
-    cl_mem clBufferLights;
     cl_mem clBufferMeshContext;
 
     std::vector<Triangle*> &triangles;
 
     std::vector<OCTriangle> oclTriangles;
-    std::vector<OCLight> oclLights;
 
     Object3D *object;
 
@@ -44,15 +40,13 @@ public:
 
     void makeOCLTriangles();
 
-    void onUpdate(Texture *texture);
+    void onUpdate(Image *texture);
 
     void debugKernel() const;
 
     void updateTriangles();
 
     cl_mem clBufferStencil;
-
-    void updateLights();
 
     cl_mem *getClBufferTriangles();
 

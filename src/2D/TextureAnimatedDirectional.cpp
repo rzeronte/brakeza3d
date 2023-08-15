@@ -18,7 +18,7 @@ void TextureAnimatedDirectional::loadImages() {
     for (int d = 1; d <= 8; d++) {
         for (int i = 0; i < this->getNumFrames(); i++) {
             std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
-            this->frames[d][i] = new Texture(file);
+            this->frames[d][i] = new Image(file);
         }
     }
 }
@@ -27,7 +27,7 @@ void TextureAnimatedDirectional::loadImagesForZeroDirection() {
     int d = 0;
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
-        this->frames[0][i] = new Texture(file);
+        this->frames[0][i] = new Image(file);
     }
 }
 
@@ -35,7 +35,7 @@ int TextureAnimatedDirectional::getNumFrames() const {
     return numFrames;
 }
 
-Texture *TextureAnimatedDirectional::getCurrentFrame(int direction) {
+Image *TextureAnimatedDirectional::getCurrentFrame(int direction) {
     return this->frames[direction][current];
 }
 

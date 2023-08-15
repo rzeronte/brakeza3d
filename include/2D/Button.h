@@ -6,22 +6,22 @@
 #define BRAKEDA3D_BUTTON_H
 
 
-#include "../Render/Texture.h"
+#include "../Misc/Image.h"
 
-class Button: public Texture {
+class Button: public Image {
 private:
     int x;
     int y;
     bool pressed;
 public:
     void (*callback)();
-    Button(int x, int y, std::string imageFileName, void (*functionCallBack)());
+    Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)());
 
-    int getX() const;
+    [[nodiscard]] int getX() const;
 
-    int getY() const;
+    [[nodiscard]] int getY() const;
 
-    bool isPressed() const;
+    [[nodiscard]] bool isPressed() const;
 
     void setX(int x);
 

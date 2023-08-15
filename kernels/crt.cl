@@ -37,7 +37,7 @@ __kernel void onUpdate(
 
     // Si la posición está dentro de la altura de la barra, pinta la barra de verde
     if (barPosition < barHeight && mask[i] > 0) {  // Se aplica el efecto solo donde la máscara es distinta de cero
-        unsigned int greenColor = createRGB(0, 255, 0); // Color verde
+        unsigned int greenColor = createRGB(0, 181, 35); // Color verde
         __global unsigned char *ci = &image[i];
 
         float alpha = ci[0]*0.25f;

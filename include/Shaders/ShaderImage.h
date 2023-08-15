@@ -14,6 +14,7 @@ class ShaderImage: public ShaderOpenCL {
     Image image;
     cl_mem clBufferImage;
     int useOffset;
+    int useColors;
 
     float offsetX;
     float offsetY;
@@ -22,9 +23,9 @@ public:
 
     ~ShaderImage() override;
 
-    void update() override;
+    void update(float increaseOffsetX, float increaseOffsetY);
 
-    void executeKernelOpenCL();
+    void executeKernelOpenCL(float increaseOffsetX, float increaseOffsetY);
 
     void setImage(const std::string& fileName);
 
@@ -38,9 +39,7 @@ public:
 
     void limitOffset();
 
-    float getOffsetX() const;
-
-    float getOffsetY() const;
+    void setUseColors(int useColors);
 };
 
 
