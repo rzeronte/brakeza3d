@@ -6,8 +6,24 @@
 #define BRAKEZA3D_SPRITE2D_H
 
 
-class Sprite2D {
+#include "TextureAnimated.h"
+#include "../Objects/Object3D.h"
 
+class Sprite2D : public Object3D {
+    int x;
+    int y;
+    bool removeWhenEnds;
+    TextureAnimated *animation;
+
+public:
+    explicit Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation);
+
+    void onUpdate() override;
+
+    [[nodiscard]] TextureAnimated *getAnimation() const;
+
+
+    void updatePosition(int x, int y);
 };
 
 
