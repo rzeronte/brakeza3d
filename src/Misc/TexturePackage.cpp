@@ -2,17 +2,17 @@
 
 #include "../../include/Misc/TexturePackage.h"
 
-TexturePackageItem::TexturePackageItem(Texture *texture, std::string label) : texture(texture), label(std::move(label)) {
+TexturePackageItem::TexturePackageItem(Image *texture, std::string label) : texture(texture), label(std::move(label)) {
 }
 
 
 void TexturePackage::addItem(const std::string &srcTexture, const std::string& label) {
     this->items.emplace_back(
-        new TexturePackageItem(new Texture(srcTexture), label)
+        new TexturePackageItem(new Image(srcTexture), label)
     );
 }
 
-Texture *TexturePackage::getTextureByLabel(const std::string &label)
+Image *TexturePackage::getTextureByLabel(const std::string &label)
 {
     for (int i = 0; i < (int) this->items.size(); i++) {
         if (items[i]->label == label) {
@@ -26,7 +26,7 @@ int TexturePackage::size() {
     return (int) items.size();
 }
 
-Texture *TexturePackage::getTextureByIndex(int i) {
+Image *TexturePackage::getTextureByIndex(int i) {
     return items[i]->texture;
 }
 

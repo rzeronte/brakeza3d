@@ -163,6 +163,8 @@ add_executable(Brakeza3D
     include/Objects/OpenCLTypes.h
     include/Physics/Projectile.h
 
+        src/2D/Sprite2D.cpp include/2D/Sprite2D.h
+
     renderer.cl
 
     ProjectDarkHeaZ/Components/ComponentGameInput.h ProjectDarkHeaZ/Components/ComponentGameInput.cpp

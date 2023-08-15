@@ -8,6 +8,7 @@ ComponentWindow::ComponentWindow()
     renderer(nullptr),
     screenSurface(nullptr),
     screenTexture(nullptr),
+    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
     fontDefault(nullptr)
 {
     this->initWindow();
@@ -93,6 +94,8 @@ void ComponentWindow::initWindow() {
             EngineSetup::get()->screenWidth,
             EngineSetup::get()->screenHeight
         );
+
+        SDL_SetWindowIcon(this->window, applicationIcon);
     }
 }
 

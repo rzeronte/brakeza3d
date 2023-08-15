@@ -5,8 +5,8 @@
 #ifndef BRAKEDA3D_TEXTUREATLAS_H
 #define BRAKEDA3D_TEXTUREATLAS_H
 
-#include "../Render/Texture.h"
 #include <vector>
+#include "Image.h"
 
 struct TextureAtlasImageInfo {
     std::string name;
@@ -24,9 +24,9 @@ class TextureAtlas {
 public:
     TextureAtlas(int totalWidth, int totalHeight);
 
-    bool addTexture(Texture *texture, bool lightmap, const std::string& name);
+    bool addTexture(Image *texture, bool lightmap, const std::string& name);
 
-    std::vector<Texture *> textures;
+    std::vector<Image *> textures;
     std::vector<TextureAtlasImageInfo> textures_info;
 
     TextureAtlasImageInfo getAtlasTextureInfoForName(const std::string& name);
@@ -43,9 +43,8 @@ private:
 
     void allocateMask(int xpos, int ypos, int width, int height);
 
-
 public:
-    SDL_Surface *getAtlasSurface() const;
+    [[nodiscard]] SDL_Surface *getAtlasSurface() const;
 };
 
 
