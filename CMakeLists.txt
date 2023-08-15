@@ -46,8 +46,7 @@ add_executable(Brakeza3D
     src/Objects/Line2D.cpp include/Objects/Line2D.h
     include/Misc/Color.h src/Misc/Color.cpp
     include/EngineSetup.h src/EngineSetup.cpp
-    src/Render/Texture.cpp include/Render/Texture.h
-    include/EngineBuffers.h src/EngineBuffers.cpp
+        include/EngineBuffers.h src/EngineBuffers.cpp
     src/Render/Frustum.cpp include/Render/Frustum.h
     src/Render/Plane.cpp include/Render/Plane.h
     src/Objects/Object3D.cpp include/Objects/Object3D.h
@@ -163,6 +162,8 @@ add_executable(Brakeza3D
     include/GUI/GUI_Files.h
     include/Objects/OpenCLTypes.h
     include/Physics/Projectile.h
+
+        src/2D/Sprite2D.cpp include/2D/Sprite2D.h
 
     renderer.cl
 )
