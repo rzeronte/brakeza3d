@@ -2,7 +2,6 @@
 #ifndef SDL2_3D_ENGINE_CAMERA_H
 #define SDL2_3D_ENGINE_CAMERA_H
 
-#include <SDL2/SDL_surface.h>
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Object3D.h"
 #include "../Render/Frustum.h"

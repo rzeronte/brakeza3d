@@ -152,8 +152,8 @@ __kernel void onUpdate(
         updateFullArea(t);
         updateUVCache(t);
 
-        t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
-        if (t->clipped) return;
+        //t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
+        //if (t->clipped) return;
 
         if (isBackFaceCulling(t, &context->cameraData.position)) return;
 

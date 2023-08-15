@@ -3,7 +3,6 @@
 #define SDL2_3D_ENGINE_BILLBOARD_H
 
 #include "../Objects/Object3D.h"
-#include "Texture.h"
 #include "../Objects/Triangle3D.h"
 
 class Billboard {
@@ -19,7 +18,7 @@ private:
     Vertex3D Q3;
     Vertex3D Q4;
 
-    Texture *texture;
+    Image *texture;
     std::vector<Triangle *> triangles;
 public:
     Billboard(float width, float height);
@@ -28,7 +27,7 @@ public:
 
     void loadTexture(const std::string &name);
 
-    void setTrianglesTexture(Texture *);
+    void setTrianglesTexture(Image *);
 
     void reassignTexture();
 

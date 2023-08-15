@@ -4,8 +4,8 @@
 
 #include <string>
 #include <vector>
-#include "../Render/Texture.h"
 #include "../Misc/Counter.h"
+#include "../Misc/Image.h"
 
 #define ANIMATION2D_MAX_FRAMES 25
 
@@ -16,7 +16,7 @@ public:
     int numberFramesToLoad;
     int currentFrame;
     int fps;
-    std::vector<Texture*> frames;
+    std::vector<Image*> frames;
 
     bool endAnimation;
     bool paused;
@@ -25,11 +25,15 @@ public:
 
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 
+    explicit TextureAnimated(TextureAnimated *textureAnimated);
+
+    TextureAnimated(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int frames, int fps);
+
     [[nodiscard]] int getNumFrames() const;
 
     void nextFrame();
 
-    Texture *getCurrentFrame();
+    Image *getCurrentFrame();
 
     [[nodiscard]] bool isEndAnimation() const;
 
@@ -47,7 +51,6 @@ public:
 
     void update();
 
-    const Counter &getCounter() const;
 };
 
 

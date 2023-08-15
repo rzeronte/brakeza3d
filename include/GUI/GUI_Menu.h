@@ -385,7 +385,22 @@ public:
                 ImGui::Separator();
                 ImGui::EndMenu();
             }
+            static const char *itemCurrent = "--Niveles--"; // Here our selection is a single pointer stored outside the object.
+            static ImGuiComboFlags flags = 0;
 
+            if (ImGui::BeginMenu("Levels")) {
+
+                auto levels = ComponentsManager::get()->getComponentGame()->getLevelLoader()->getLevels();
+                for (int n = 0; n < levels.size(); n++) {
+                    auto levelName = std::to_string(n+1) + ") " + levels[n];
+                    ImGui::Button(levelName.c_str());
+                    if (ImGui::IsItemClicked()) {
+                        ComponentsManager::get()->getComponentGame()->reloadLevel(n);
+                    }
+                }
+
+                ImGui::EndMenu();
+            }
             ImGui::EndMainMenuBar();
         }
 

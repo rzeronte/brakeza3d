@@ -935,7 +935,7 @@ int BSPMap::getTextureAnimatedFrames(const std::string& name) {
     return count;
 }
 
-Texture *BSPMap::getTexture(const std::string& name) {
+Image *BSPMap::getTexture(const std::string& name) {
     for (int i = 0; i < this->getNumTextures(); i++) {
         //if (!strcmp(name.c_str(), textures[i].getFilename().c_str())) {
         //    return &textures[i];

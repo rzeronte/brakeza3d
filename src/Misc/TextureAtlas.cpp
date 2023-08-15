@@ -18,9 +18,9 @@ SDL_Surface *TextureAtlas::getAtlasSurface() const {
     return atlas_surface;
 }
 
-bool TextureAtlas::addTexture(Texture *texture, bool lightmap, const std::string& name)
+bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& name)
 {
-    SDL_Surface *texture_surface = texture->getImage()->getSurface();
+    SDL_Surface *texture_surface = texture->getSurface();
 
     int texw = texture_surface->w;
     int texh = texture_surface->h;
@@ -106,6 +106,7 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string
             return textures_info[i];
         }
     }
+
     return TextureAtlasImageInfo();
 }
 

@@ -1,4 +1,5 @@
 unsigned int createRGB(int r, int g, int b);
+unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
 
 #define PI 3.14159f
 #define FLOW_SPEED_FACTOR 0.5f
@@ -18,7 +19,8 @@ __kernel void onUpdate(
     __global unsigned int *image,
     int usingOffset,
     float offsetX,
-    float offsetY
+    float offsetY,
+    int usingColors
 )
 {
     int i = get_global_id(0);
@@ -61,15 +63,34 @@ __kernel void onUpdate(
     float c = cos(iTime);
     float t = s * c;
 
-    video[i] = createRGB(
-        min((int) (im[0] * (1.0f - s * 0.5f)), 200),
-        min((int) (im[1] * (1.0f - c * 0.5f)), 200),
-        min((int) (im[2] * (1.0f - t * 0.5f)), 200)
+    if (usingColors <= 0) {
+        s = 1;
+        c = 1;
+        t = 1;
+    }
+
+    unsigned int new = createRGB(
+        min((int) (im[0] * (1.0f - s * 0.2f)), 200),
+        min((int) (im[1] * (1.0f - c * 0.2f)), 200),
+        min((int) (im[2] * (1.0f - t * 0.2f)), 200)
     );
+
+    unsigned int alpha = (image[index] >> 24) & 0xFF;  // Suponemos que el canal alfa está en el byte más significativo.
+
+    video[i] = alphaBlend(video[i], new, alpha);
 
 }
 
 unsigned int createRGB(int r, int g, int b)
 {
     return (b << 16) + (g << 8) + (r);
+}
+
+unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha) {
+    unsigned int rb = color1 & 0xff00ff;
+    unsigned int g = color1 & 0x00ff00;
+    rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
+    g += ((color2 & 0x00ff00) - g) * alpha >> 8;
+
+    return (rb & 0xff00ff) | (g & 0xff00);
 }

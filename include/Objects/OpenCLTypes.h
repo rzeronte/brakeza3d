@@ -68,13 +68,14 @@ struct OCParticle {
 
 struct OCLight {
     OCLight(
-            OCVertex3D position, OCVertex3D forward,
-            float power, float kc, float kl, float kq, float specularComponent,
-            const Uint32 color, const Uint32 colorSpecularity
+        OCVertex3D position, OCVertex3D forward,
+        float power, float kc, float kl, float kq, float specularComponent,
+        const Uint32 color, const Uint32 colorSpecularity
     )
-            : position(position), forward(forward),
-              power(power), kc(kc), kl(kl), kq(kq), specularComponent(specularComponent),
-              color(color), colorSpecularity(colorSpecularity)
+    :
+        position(position), forward(forward),
+        power(power), kc(kc), kl(kl), kq(kq), specularComponent(specularComponent),
+        color(color), colorSpecularity(colorSpecularity)
     {
     }
     OCVertex3D position;
@@ -217,6 +218,9 @@ struct OCParticlesContext {
     }
     static OCParticlesContext forExplosion() {
         return OCParticlesContext(0.0f, 0.0025f, 1.5f, 0.0f, 50.0f, 125.0f, 125.0f, 255.0f, 4.5f, 4.5f, 0.99);
+    }
+    static OCParticlesContext forPlayerEngine() {
+        return OCParticlesContext(0.0f, 0.0025f, 2.5f, 45.0f, 0.0f, 50.0f, 20.0f, 255.0f, 2.0f, 1.8f, 0.98f );
     }
 
     float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;

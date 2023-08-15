@@ -2,8 +2,8 @@
 #ifndef BRAKEDA3D_TEXTUREANIMATEDDIRECTIONAL_H
 #define BRAKEDA3D_TEXTUREANIMATEDDIRECTIONAL_H
 
-#include "../Render/Texture.h"
 #include "../Misc/Timer.h"
+#include "../Misc/Image.h"
 
 #define ANIMATION2D_MAX_FRAMES 10
 
@@ -20,7 +20,7 @@ public:
     int fps = 20;
 
     bool isZeroDirection = false;
-    Texture *frames[9][ANIMATION2D_MAX_FRAMES];
+    Image *frames[9][ANIMATION2D_MAX_FRAMES];
 
     TextureAnimatedDirectional();
 
@@ -30,9 +30,9 @@ public:
 
     void loadImagesForZeroDirection();
 
-    Texture *getCurrentFrame(int direction);
+    Image *getCurrentFrame(int direction);
 
-    int getNumFrames() const;
+    [[nodiscard]] int getNumFrames() const;
 
     void nextFrame();
 
