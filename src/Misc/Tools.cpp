@@ -10,6 +10,8 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
+#include "../../include/2D/Sprite2D.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -479,27 +481,6 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
             context
         ),
         Brakeza3D::uniqueObjectLabel("fireworks")
-    );
-}
-
-void Tools::makeExplosionSprite(Vertex3D position)
-{
-    Vertex3D A;
-    const auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Transforms::cameraSpace(A, position, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
-
-    Brakeza3D::get()->addObject3D(new Sprite2D(
-         P1.x,
-         P1.y,
-         true,
-         new TextureAnimated(ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation())
-      ),
-      Brakeza3D::uniqueObjectLabel("enemySpriteExplosion")
     );
 }
 
