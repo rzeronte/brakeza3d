@@ -11,17 +11,13 @@ BossLevel20::BossLevel20()
 {
     changePhase.setEnabled(true);
 
-    auto game = ComponentsManager::get()->getComponentGame();
-
     const auto filter = EngineSetup::collisionGroups::ProjectileEnemy;
     const auto mask = EngineSetup::collisionGroups::Player;
 
-    auto color = game->getPalette().getEnemyLaser();
-
-    rays.push_back(new RayLight(false, this, Vertex3D(1, 0, 0), Vertex3D::zero(), 500, 0, color, filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(-1, 0, 0), Vertex3D::zero(), 500, 0, color, filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(0, 1, 0), Vertex3D::zero(), 500, 0, color, filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(0, -1, 0), Vertex3D::zero(), 500, 0, color, filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(1, 0, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(-1, 0, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(0, 1, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(0, -1, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), filter, mask ));
 }
 
 void BossLevel20::onStart()
@@ -79,7 +75,7 @@ void BossLevel20::updateRays()
 {
     for (auto rayLight : rays) {
         rayLight->setDirection(M3::getMatrixRotationForEulerAngles(0, 0, 0.5) * rayLight->getDirection());
-        rayLight->setColor(ComponentsManager::get()->getComponentGame()->getPalette().getEnemyLaser());
+        rayLight->setColor(PaletteColors::getEnemyLaser());
         rayLight->setDamage(1);
         rayLight->setEnabled(true);
         rayLight->setIntensity(0.25f);

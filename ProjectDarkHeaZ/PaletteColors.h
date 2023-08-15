@@ -8,164 +8,57 @@
 #include "../include/Misc/Color.h"
 
 class PaletteColors {
-    Color first;
-    Color second;
-    Color third;
-    Color fourth;
-    Color five;
-    Color stamina;
-    Color energy;
-    Color playerBlink;
-    Color enemyBlink;
-    Color crt;
-    Color playerProjectile;
-    Color playerLaser;
-    Color enemyLaser;
-    Color enemyProjectile;
-    Color playerRay;
-    Color explosionEnemyFrom;
-    Color explosionEnemyTo;
-    Color particlesPlayerFrom;
-    Color particlesPlayerTo;
-    Color playerProjectileLight;
-    Color playerLaserLight;
-    Color playerRayLight;
-
-    Color enemyProjectileLight;
-    Color enemyLaserLight;
-    Color enemyRayLight;
 
 public:
-    PaletteColors() :
-        first(Color(77, 120, 78)),
-        second(Color(110, 161, 113)),
-        third(Color(225, 215, 152)),
-        fourth(Color(108, 86, 69)),
-        five(Color(22, 22, 22)),
-        stamina(Color(168, 48, 22)),
-        energy(Color(76, 196, 112)),
-        playerBlink(Color(112, 0, 0)),
-        enemyBlink(Color(112, 0, 0)),
-        crt(Color(138, 104, 0)),
-        playerProjectile(Color(241, 197, 61)),
-        playerLaser(Color(0, 144, 0)),
-        enemyLaser(Color(144, 0, 0)),
-        enemyProjectile(Color(170, 0, 0)),
-        playerRay(Color(228, 204, 62)),
-        explosionEnemyFrom(Color(228, 204, 62)),
-        explosionEnemyTo(Color(176, 64, 22)),
-        particlesPlayerFrom(fourth),
-        particlesPlayerTo(Color(255, 255, 255)),
+    [[nodiscard]] static Color getFirst() { return {77, 120, 78}; }
 
-        playerProjectileLight(Color(163, 142, 81)),
-        playerLaserLight(Color(35, 115, 35)),
-        playerRayLight(Color(168, 152, 63)),
+    [[nodiscard]] static Color getSecond() { return {110, 161, 113}; }
 
-        enemyProjectileLight(Color(170, 0, 0)),
-        enemyLaserLight(Color(144, 0, 0)),
-        enemyRayLight(Color(170, 0, 0))
-    {
-    }
+    [[nodiscard]] static Color getThird() { return {225, 215, 152}; }
 
-    [[nodiscard]] const Color &getFirst() const {
-        return first;
-    }
+    [[nodiscard]] static Color getFourth() { return {108, 86, 69}; }
 
-    [[nodiscard]] const Color &getSecond() const {
-        return second;
-    }
+    [[nodiscard]] static Color getFive() { return {22, 22, 22}; }
 
-    [[nodiscard]] const Color &getThird() const {
-        return third;
-    }
+    [[nodiscard]] static Color getStamina() { return {168, 48, 22}; }
 
-    [[nodiscard]] const Color &getFourth() const {
-        return fourth;
-    }
+    [[nodiscard]] static Color getEnergy() { return {76, 196, 112}; }
 
-    [[nodiscard]] const Color &getFive() const {
-        return five;
-    }
+    [[nodiscard]] static Color getEnemyBlink() { return {112, 0, 0}; }
 
-    [[nodiscard]] const Color &getStamina() const {
-        return stamina;
-    }
+    [[nodiscard]] static Color getCrt() { return {138, 104, 0}; }
 
-    [[nodiscard]] const Color &getEnergy() const {
-        return energy;
-    }
+    [[nodiscard]] static Color getPlayerProjectile() { return {241, 197, 61}; }
 
-    [[nodiscard]] const Color &getEnemyBlink() const {
-        return enemyBlink;
-    }
+    [[nodiscard]] static Color getPlayerLaser() { return {0, 144, 0}; }
 
-    [[nodiscard]] const Color &getCrt() const {
-        return crt;
-    }
+    [[nodiscard]] static Color getEnemyProjectile() { return {170, 0, 0}; }
 
-    [[nodiscard]] const Color &getPlayerProjectile() const {
-        return playerProjectile;
-    }
+    [[nodiscard]] static Color getPlayerRay() { return {228, 204, 62}; }
 
-    [[nodiscard]] const Color &getPlayerLaser() const {
-        return playerLaser;
-    }
+    [[nodiscard]] static Color getExplosionEnemyFrom() { return {228, 204, 62}; }
 
-    [[nodiscard]] const Color &getEnemyProjectile() const {
-        return enemyProjectile;
-    }
+    [[nodiscard]] static Color getExplosionEnemyTo() { return {176, 64, 22}; }
 
-    [[nodiscard]] const Color &getPlayerRay() const {
-        return playerRay;
-    }
+    [[nodiscard]] static Color getPlayerBlink() { return {112, 0, 0}; }
 
-    [[nodiscard]] const Color &getExplosionEnemyFrom() const {
-        return explosionEnemyFrom;
-    }
+    [[nodiscard]] static Color getParticlesPlayerFrom() { return {108, 86, 69}; }
 
-    [[nodiscard]] const Color &getExplosionEnemyTo() const {
-        return explosionEnemyTo;
-    }
+    [[nodiscard]] static Color getParticlesPlayerTo() { return {255, 255, 255}; }
 
-    [[nodiscard]] const Color &getPlayerBlink() const {
-        return playerBlink;
-    }
+    [[nodiscard]] static Color getEnemyLaser() { return {144, 0, 0}; }
 
-    [[nodiscard]] const Color &getParticlesPlayerFrom() const {
-        return particlesPlayerFrom;
-    }
+    [[nodiscard]] static Color getPlayerProjectileLight() { return {163, 142, 81}; }
 
-    [[nodiscard]] const Color &getParticlesPlayerTo() const {
-        return particlesPlayerTo;
-    }
+    [[nodiscard]] static Color getPlayerLaserLight() { return {35, 115, 35}; }
 
-    [[nodiscard]] const Color &getEnemyLaser() const {
-        return enemyLaser;
-    }
+    [[nodiscard]] static Color getPlayerRayLight() { return {168, 152, 63}; }
 
-    [[nodiscard]] const Color &getPlayerProjectileLight() const {
-        return playerProjectileLight;
-    }
+    [[nodiscard]] static Color getEnemyProjectileLight() { return {170, 0, 0}; }
 
-    [[nodiscard]] const Color &getPlayerLaserLight() const {
-        return playerLaserLight;
-    }
+    [[nodiscard]] static Color getEnemyLaserLight() { return {144, 0, 0}; }
 
-    [[nodiscard]] const Color &getPlayerRayLight() const {
-        return playerRayLight;
-    }
-
-    [[nodiscard]] const Color &getEnemyProjectileLight() const {
-        return enemyProjectileLight;
-    }
-
-    [[nodiscard]] const Color &getEnemyLaserLight() const {
-        return enemyLaserLight;
-    }
-
-    [[nodiscard]] const Color &getEnemyRayLight() const {
-        return enemyRayLight;
-    }
+    [[nodiscard]] static Color getEnemyRayLight() { return {170, 0, 0}; }
 };
 
 #endif //BRAKEZA3D_PALETTECOLORS_H

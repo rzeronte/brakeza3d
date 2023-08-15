@@ -12,8 +12,7 @@ PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 {
     setParent(parent);
 
-    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
-    shaderParticles = new ShaderParticles(true, palette.getParticlesPlayerFrom(), palette.getParticlesPlayerTo(), OCParticlesContext(
+    shaderParticles = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext(
         0.0f,
         0.0025f,
         1.5f,

@@ -68,8 +68,8 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
         this->setRemoved(true);
     }
 
-    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
-    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
+    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
+    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation());
 }
 
 int ProjectileRay::getSpeed() const {

@@ -27,8 +27,6 @@ AmmoProjectileBody::AmmoProjectileBody(
     wasCollision(false),
     ending(Counter(5))
 {
-    lightOffset = Vertex3D(0, 0, -1000);
-
     setPosition(position);
     setParent(parent);
     setRender(false);
@@ -56,10 +54,8 @@ Weapon *AmmoProjectileBody::getWeaponType() const {
 
 void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 {
-    auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
-
-    Color from = palette.getExplosionEnemyFrom();
-    Color to = palette.getExplosionEnemyTo();
+    Color from = PaletteColors::getExplosionEnemyFrom();
+    Color to = PaletteColors::getExplosionEnemyTo();
 
     auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
@@ -93,6 +89,7 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     startEndingCounter();
 
     Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
+    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesRed()->getAnimation());
 }
 
 void AmmoProjectileBody::onUpdate()

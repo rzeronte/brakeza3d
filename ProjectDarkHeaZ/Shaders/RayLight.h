@@ -9,6 +9,8 @@
 #include "../../include/Render/ShaderOpenCL.h"
 #include "../../include/Misc/Image.h"
 #include "../../include/Objects/Object3D.h"
+#include "../../include/Shaders/ShaderParticles.h"
+#include "../../include/Objects/LightPoint3D.h"
 
 class RayLight {
 private:
@@ -26,6 +28,8 @@ private:
     Vertex3D startOffset;
 
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
+    LightPoint3D *light;
+
 public:
     explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, int filterGroup, int filterMask);
 

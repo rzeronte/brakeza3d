@@ -440,9 +440,16 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     } else {
         enemy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
     }
+
     enemy->updateBoundingBox();
+    Vertex3D aabbSize =enemy->getAabb().size().getScaled(0.3f);
+
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "size") != nullptr) {
+        aabbSize = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(enemyJSON, "size"));
+    }
+
     enemy->makeSimpleGhostBody(
-        enemy->getAabb().size().getScaled(0.3f),
+        aabbSize,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Enemy,
         EngineSetup::collisionGroups::Projectile | EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::ProjectileEnemy
@@ -946,7 +953,7 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
         text.c_str(),
         enemy->getName().c_str(),
         componentGame->getFontGame(),
-        componentGame->getPalette().getCrt()
+        PaletteColors::getCrt()
     );
 
     enemy->dialogs.push_back(dialog);

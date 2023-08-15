@@ -333,6 +333,8 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
     if (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+        ComponentsManager::get()->getComponentGame()->shaderEdgeObject->setEnabled(false);
+        ComponentsManager::get()->getComponentGame()->shaderEdgeObject->setObject(nullptr);
         lockRightStick = false;
     }
 
@@ -345,6 +347,9 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
 
         if (currentClosestObject != nullptr) {
             ComponentsManager::get()->getComponentRender()->setSelectedObject(currentClosestObject);
+            ComponentsManager::get()->getComponentGame()->shaderEdgeObject->setEnabled(true);
+            ComponentsManager::get()->getComponentGame()->shaderEdgeObject->setObject((Mesh3D*) currentClosestObject);
+
             ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }

@@ -4,7 +4,7 @@
 PlayerReflection::PlayerReflection(float ttl)
 :
     timeToLive(Counter(ttl)),
-    blink(new ShaderBlink(false, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getPlayerBlink()))
+    blink(new ShaderBlink(false, this, 0.05, PaletteColors::getPlayerBlink()))
 {
     timeToLive.setEnabled(true);
 }
@@ -28,8 +28,7 @@ void PlayerReflection::onUpdate()
     if (timeToLive.isFinished()) {
         setRemoved(true);
         setEnabled(false);
-        auto palette = ComponentsManager::get()->getComponentGame()->getPalette();
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
+        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }

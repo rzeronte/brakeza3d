@@ -11,8 +11,6 @@ ComponentGame::ComponentGame()
     fadeToGameState(nullptr),
     player(nullptr),
     shaderProjectiles(nullptr),
-    explosionSpriteTemplate(nullptr),
-    explosionSprite(nullptr),
     imageCredits(nullptr),
     imageHelp(nullptr),
     imageSplash(nullptr),
@@ -138,9 +136,19 @@ void ComponentGame::onStart()
     loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
     loadSpaceship("spaceships/player04.fbx", "spaceships/spaceship_04.png");
 
-    explosionSprite = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion/explosion"), 11, 24));
+    fadeInSpriteRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash01.png"), 96, 96, 37, 45));
+    fadeInSpriteGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash02.png"), 96, 96, 37, 45));
+    fadeInSpriteBlue = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash03.png"), 96, 96, 37, 45));
 
-    test = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion.png"), 128, 128, 25);
+    spriteSparklesRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact03.png"), 64, 64, 40, 60));
+    spriteSparklesGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact02.png"), 64, 64, 40, 160));
+    spriteSparklesBlue = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact03.png"), 64, 64, 40, 160));
+
+    explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion01.png"), 128, 128, 64, 160)));
+    explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion02.png"), 128, 128, 64, 160)));
+    explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion03.png"), 128, 128, 64, 160)));
+    explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion04.png"), 128, 128, 64, 160)));
+
 }
 
 void ComponentGame::loadShaders()
@@ -154,14 +162,16 @@ void ComponentGame::loadShaders()
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
 
-    shaderEdgeObject = new ShaderEdgeObject(false, palette.getSecond());
+    shaderEdgeObject = new ShaderEdgeObject(false, PaletteColors::getSecond());
 }
 
 ComponentGame::~ComponentGame()
 {
     delete player;
 
-    delete explosionSprite;
+    for (auto sprite: explosionSprites) {
+        delete sprite;
+    }
 
     delete fadeToGameState;
     delete levelLoader;
@@ -171,7 +181,6 @@ ComponentGame::~ComponentGame()
     delete shaderForegroundImage;
     delete shaderColor;
 
-    delete explosionSpriteTemplate;
     delete imageCrossFire;
     delete imageCredits;
     delete imageHelp;
@@ -260,7 +269,7 @@ void ComponentGame::onUpdate()
             shaderCRT->update();
 
             currentEnemyDialog->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
 
             break;
         }
@@ -287,7 +296,7 @@ void ComponentGame::onUpdate()
             // Establece el alfa en función de la proporción de tiempo restante
             textWriter->setAlpha(timeRatio * 255);
 
-            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), palette.getCrt(), 2);
+            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 2);
 
             getLevelLoader()->getCountDown()->update();
 
@@ -312,7 +321,7 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
 
             help->drawFlatAlpha(0, 0, alpha);
             break;
@@ -326,7 +335,7 @@ void ComponentGame::onUpdate()
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getFive(), 0.2);
 
             imageHelp->drawFlatAlpha(0, 0, alpha);
 
@@ -349,7 +358,7 @@ void ComponentGame::onUpdate()
 
             storeManager->update(alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getFive(), 0.2);
             break;
         }
         case EngineSetup::CREDITS: {
@@ -362,7 +371,7 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getFive(), 0.2);
 
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
@@ -394,7 +403,7 @@ void ComponentGame::onUpdate()
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             //spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...", PaletteColors::getFive(), 0.2);
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
@@ -411,7 +420,7 @@ void ComponentGame::onUpdate()
             dialogBackground->setMaxAlpha((int) alpha);
             dialogBackground->update();
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
+            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
@@ -432,14 +441,14 @@ void ComponentGame::handleTutorialImages(float alpha)
         textWriter->setAlpha(alpha);
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
         if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(323, message.c_str(), palette.getCrt(), 0.3f);
+            textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
         }
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         dialogBackground->setMaxAlpha((int) alpha);
         dialogBackground->update();
         boxTutorial->drawFlatAlpha(0, 0, alpha);
 
-        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", palette.getFive(), 0.2);
+        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", PaletteColors::getFive(), 0.2);
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
@@ -474,26 +483,26 @@ void ComponentGame::showLevelStatistics(float alpha)
     int offsetX = 160;
     const int space = 100;
     player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), palette.getSecond(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(), PaletteColors::getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(), PaletteColors::getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(), palette.getSecond(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(), PaletteColors::getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(), PaletteColors::getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(), palette.getSecond(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(), PaletteColors::getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(), PaletteColors::getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, 250, alpha);
 
     offsetX += space;
     player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), palette.getSecond(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(), PaletteColors::getSecond(), 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(), PaletteColors::getSecond(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, 250, alpha);
 
     textWriter->setFont(fontGame);
@@ -502,9 +511,9 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     imageStatistics->drawFlatAlpha(0, 0, alpha);
 
-    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", palette.getFive(), 0.2);
+    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(313  , 300, alpha);
-    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), palette.getSecond(), 0.3);
+    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(), PaletteColors::getSecond(), 0.3);
 }
 
 void ComponentGame::updateFadeToGameState()
@@ -712,7 +721,7 @@ void ComponentGame::loadSelectedSpaceshipModel()
     player->clone(spaceships[spaceshipSelectedIndex]);
     player->updateBoundingBox();
     player->makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
+        Vertex3D(600, 600, 600),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::AllFilter
@@ -735,11 +744,7 @@ void ComponentGame::loadPlayer()
 
     player->onStartSetup();
 
-    explosionSpriteTemplate = new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT);
-    explosionSpriteTemplate->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion02/explosion"), 12, 20);
-    explosionSpriteTemplate->setAnimation(0);
-
-    radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
+   radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
 }
 
 Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const
@@ -1443,10 +1448,6 @@ TextureAnimated *ComponentGame::getRadioWave() const {
     return radioWave;
 }
 
-Sprite3D *ComponentGame::getExplosionSpriteTemplate() const {
-    return explosionSpriteTemplate;
-}
-
 void ComponentGame::setEnemiesBehaviors(bool value)
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
@@ -1536,10 +1537,37 @@ void ComponentGame::handleSpaceShipSelector()
 
 }
 
-const PaletteColors &ComponentGame::getPalette() const {
-    return palette;
+Sprite2D *ComponentGame::getExplosionSprite() const
+{
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    const int index = std::rand() % explosionSprites.size();
+
+    return explosionSprites[index];
 }
 
-Sprite2D *ComponentGame::getExplosionSprite() const {
-    return explosionSprite;
+Sprite2D *ComponentGame::getFadeInSpriteRed()  {
+    return fadeInSpriteRed;
 }
+
+Sprite2D *ComponentGame::getFadeInSpriteGreen() {
+    return fadeInSpriteGreen;
+}
+
+Sprite2D *ComponentGame::getFadeInSpriteBlue() {
+    return fadeInSpriteBlue;
+}
+
+
+Sprite2D *ComponentGame::getSpriteSparklesRed() const {
+    return spriteSparklesRed;
+}
+
+Sprite2D *ComponentGame::getSpriteSparklesGreen() const {
+    return spriteSparklesGreen;
+}
+
+Sprite2D *ComponentGame::getSpriteSparklesBlue() const {
+    return spriteSparklesBlue;
+}
+

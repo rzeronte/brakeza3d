@@ -13,7 +13,7 @@ SalvageSpaceship::SalvageSpaceship()
     finished(false),
     timeGetting(Counter(3)),
     timeToRemove(Counter(3)),
-    blink(new ShaderBlink(true, this, 0.05, ComponentsManager::get()->getComponentGame()->getPalette().getFirst()))
+    blink(new ShaderBlink(true, this, 0.05, PaletteColors::getFirst()))
 {
     timeGetting.setEnabled(false);
 }
@@ -39,7 +39,7 @@ void SalvageSpaceship::onUpdate()
 
         auto game = ComponentsManager::get()->getComponentGame();
         auto textWriter = game->getTextWriter();
-        textWriter->writeTTFCenterHorizontal(390, "Boarding...", game->getPalette().getStamina(), 0.3);
+        textWriter->writeTTFCenterHorizontal(390, "Boarding...", PaletteColors::getStamina(), 0.3);
         blink->update();
 
         const int width = 80.0f;
@@ -53,7 +53,7 @@ void SalvageSpaceship::onUpdate()
         ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
             startPositionX, startPositionY + topBarMargin,
             startPositionX + (int) (width * progress), startPositionY + topBarMargin,
-            ComponentsManager::get()->getComponentGame()->getPalette().getStamina(),
+            PaletteColors::getStamina(),
             stroke,
             false,
             false
@@ -62,7 +62,7 @@ void SalvageSpaceship::onUpdate()
         ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
             startPositionX, startPositionY + topBarMargin,
             startPositionX + (int) (width * 1), startPositionY + topBarMargin,
-            ComponentsManager::get()->getComponentGame()->getPalette().getFive(),
+            PaletteColors::getFive(),
             stroke,
             false,
             false

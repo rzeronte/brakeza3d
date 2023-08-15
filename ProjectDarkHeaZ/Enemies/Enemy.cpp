@@ -4,8 +4,7 @@
 
 Enemy::Enemy()
 :
-    light(new LightPoint3D(11, 1, 0, 0, 0,
-                           ComponentsManager::get()->getComponentGame()->getPalette().getEnemyProjectile(), Color(15, 33, 92))),
+    light(new LightPoint3D(11, 1, 0, 0, 0, PaletteColors::getEnergy(), Color(15, 33, 92))),
     counterLight(Counter(0.05)),
     stuck(false),
     state(EnemyState::ENEMY_STATE_STOP),

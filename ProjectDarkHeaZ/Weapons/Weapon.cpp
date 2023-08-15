@@ -207,8 +207,8 @@ bool Weapon::shootProjectile(
                 nullptr,
                 position,
                 0,
-                ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyFrom(),
-                ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyTo(),
+                PaletteColors::getExplosionEnemyFrom(),
+                PaletteColors::getExplosionEnemyTo(),
                 OCParticlesContext()
             )
         ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
@@ -234,8 +234,8 @@ bool Weapon::shootProjectile(
                     nullptr,
                     position,
                     0,
-                    ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyFrom(),
-                    ComponentsManager::get()->getComponentGame()->getPalette().getExplosionEnemyTo(),
+                    PaletteColors::getExplosionEnemyFrom(),
+                    PaletteColors::getExplosionEnemyTo(),
                     OCParticlesContext()
             )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
@@ -447,6 +447,7 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
 
         Brakeza3D::get()->addObject3D(new ShockWave(position, 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
+        Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteBlue()->getAnimation());
     }
 }
 
@@ -488,6 +489,8 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
+
+        Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteRed()->getAnimation());
     }
 }
 
@@ -524,6 +527,7 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
         //ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
 
         Brakeza3D::get()->addObject3D(reflection, reflection->getLabel());
+        Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteGreen()->getAnimation());
     }
 }
 

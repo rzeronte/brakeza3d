@@ -14,6 +14,7 @@
 #include "Items/LivingObject.h"
 #include "Items/PlayerSatellite.h"
 #include "../include/Behaviors/RotatableToTarget.h"
+#include "../include/2D/Sprite2D.h"
 
 #define INITIAL_STAMINA 100
 #define INITIAL_ENERGY 100
@@ -83,6 +84,7 @@ private:
     Image *avatar;
     Image *shield;
     ShaderEnergyShield *shaderEnergyShield;
+    Sprite2D *spriteEnergyShield;
 
 public:
 
@@ -229,6 +231,8 @@ public:
     RayLight &getRayLight();
 
     void initLight();
+
+    void updateSpriteEnergyShield();
 };
 
 
