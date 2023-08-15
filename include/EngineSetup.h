@@ -16,12 +16,14 @@ public:
 
     bool LOGGING = false;
 
-    bool IMGUI_ENABLED = true;
+    bool IMGUI_ENABLED = false;
 
     std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
+
+    const std::string iconApplication = "application.png";
 
     Vertex3D right = Vertex3D(1, 0, 0);
     Vertex3D up = Vertex3D(0, 1, 0);
@@ -175,7 +177,7 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
-    bool BULLET_DEBUG_MODE = true;
+    bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
     float TESTING = 64.0;
